@@ -9,7 +9,6 @@
  */
 import type { BookInput, CellStyle, ClearKind, ColumnInput, ConditionalFormat, RowInput, Session, SheetInput } from '../../../src/contract.js'
 import { createSession } from '../../../src/index.js'
-import { checkBook } from '../../../src/input.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { sheetLines } from '../../../src/layout/lines.js'
 import { lineAt, patchLines, parseSpan } from '../../../src/layout/spans.js'
@@ -17,6 +16,7 @@ import { parseAddress } from '../../../src/model.js'
 import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
 import { cellsOf, viewLook, type Look } from '../cond/cases.js'
 import { editParts } from '../xlsx/sent.js'
+import { takenBook, type StoredBook } from '../stored.js'
 
 /** A step Excel takes through its object model on a column (`B:B`), a row (`4:4`) or a cell: formats set, or a value typed. */
 export interface LineStep {
@@ -48,7 +48,7 @@ export interface LinesCase {
 }
 
 export interface LinesCases {
-  books: Record<string, BookInput>
+  books: Record<string, StoredBook>
   cases: LinesCase[]
   /** The engine's answers are those of the steps taken by a session (`sessionCase`), as a host formats a sheet. */
   session?: true
@@ -117,8 +117,6 @@ export const formatName = (f: string | number | undefined): string => (f === und
 
 /** What the cells of `range` on a sheet show in a computed session's book, each by the whole look its row or column gives it. */
 export function sheetLooks(book: BookInput, sheet: string, range: string): Record<string, LineLook> {
-  // a stored book names the number format by its old name: taken as the engine takes it, for the lines read here
-  book = checkBook(book)
   const sh: SheetInput = book.sheets.find((s) => s.name === sheet)!
   const s = createSession(book)
   const views = s.getCells(sheet, range)
@@ -136,7 +134,7 @@ export function sheetLooks(book: BookInput, sheet: string, range: string): Recor
 /** The file of a case: its book as `writeXlsx` writes it; for a bare case without the empty cells no cell of the book is at. */
 export async function caseFile(set: LinesCases, c: LinesCase): Promise<Uint8Array> {
   const book = set.books[c.book]
-  const data = (await writeXlsx(book)).data
+  const data = (await writeXlsx({ book: takenBook(book) })).data
   if (!c.bare) return data
   return editParts(data, (name, xml) => {
     const sh = /^xl\/worksheets\/sheet(\d+)\.xml$/.exec(name)
@@ -146,7 +144,7 @@ export async function caseFile(set: LinesCases, c: LinesCase): Promise<Uint8Arra
 }
 
 /** The book the engine computes for a case: the set's, or for a bare case the one the reader reads from its file. */
-export const caseBook = async (set: LinesCases, c: LinesCase): Promise<BookInput> => (c.bare ? (await readXlsx(await caseFile(set, c))).book : set.books[c.book])
+export const caseBook = async (set: LinesCases, c: LinesCase): Promise<BookInput> => (c.bare ? (await readXlsx(await caseFile(set, c))).book : takenBook(set.books[c.book]))
 
 /** The engine's answer to a case on its book (`caseBook`): what the read cells show after its steps. */
 export function engineCase(c: LinesCase, book: BookInput): LinesAnswer['looks'] {

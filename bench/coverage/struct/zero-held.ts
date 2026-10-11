@@ -5,14 +5,14 @@
  * a row of height 0 rather than under it. The engine gives an inserted row the entry of the row above it but `hidden`,
  * so under a row of height 0 the new row has height 0 and is hidden.
  */
-import type { BookInput, CellInput } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
+import type { StoredBook, StoredCell } from '../stored.js'
 
-const f = (formula: string): CellInput => ({ formula })
+const f = (formula: string): StoredCell => ({ formula })
 
 /** S: values in A1:B16, the sums in D1:D2; rows 3, 6 (orange, `0.00`), 9:10 and 13 (also hidden) at height 0, 15 hidden at 30. T: a sum over S. */
-function zeroBook(): BookInput {
-  const cells: Record<string, CellInput> = { D1: f('SUM(A1:A16)'), D2: f('SUBTOTAL(109,A1:A16)') }
+function zeroBook(): StoredBook {
+  const cells: Record<string, StoredCell> = { D1: f('SUM(A1:A16)'), D2: f('SUBTOTAL(109,A1:A16)') }
   for (let r = 1; r <= 16; r++) Object.assign(cells, { [`A${r}`]: { value: r }, [`B${r}`]: { value: r * 10 } })
   return {
     sheets: [

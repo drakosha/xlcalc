@@ -3,12 +3,12 @@
  * reaching XFD. Excel takes such a span's width as the sheet's standard width when it loads the book, so widths
  * are not compared; the look of every cell is.
  */
-import type { BookInput } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
 import { STYLES } from './edge-layout.js'
+import type { StoredBook, StoredCell } from '../stored.js'
 
 /** S: columns C to XFD 15 wide, filled, with a format; rows 3 and 4 bold, 25 points high, with a format. */
-function wideBook(): BookInput {
+function wideBook(): StoredBook {
   return {
     styles: STYLES,
     sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { value: 2 }, C1: { value: 3 }, A3: { formula: 'SUM(A1:C1)' } }, columns: { 'C:XFD': { width: 15, style: 1, format: '0.0' } }, rows: { '3:4': { height: 25, style: 0, format: '#,##0' } } }],

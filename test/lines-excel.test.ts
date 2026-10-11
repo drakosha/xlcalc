@@ -12,6 +12,7 @@ import type { StoredLines } from '../bench/coverage/lines.js'
 import { caseBook, caseFile, engineCase, partsOf, sessionBook, sessionCase, type LineLook, type LinesAnswer } from '../bench/coverage/lines/cases.js'
 import { compareBooks, entries } from '../bench/coverage/xlsx/compare.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
+import { takenBook } from '../bench/coverage/stored.js'
 import type { BookInput, NumberFormat } from '../src/contract.js'
 import { checkBook } from '../src/input.js'
 import { readXlsx } from '../src/xlsx.js'
@@ -104,7 +105,7 @@ describe.each(PLATFORMS)('formats of rows and columns against %s', (_, sets) => 
         })
         if (!c.steps && !c.bare)
           it(`${c.id}: Excel's file reads back as the book written`, async () => {
-            expect(compareBooks(entries(checkBook(set.books[c.book])), entries(unescaped((await saved(set, c.id)).book)))).toEqual([])
+            expect(compareBooks(entries(checkBook(takenBook(set.books[c.book]))), entries(unescaped((await saved(set, c.id)).book)))).toEqual([])
           })
       }
     })

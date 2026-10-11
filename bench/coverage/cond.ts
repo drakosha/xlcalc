@@ -13,7 +13,7 @@ import { writeXlsx } from '../../src/xlsx.js'
 import { fromRgb, type CondAnswer, type CondCase, type CondCases, type CondSet, type Look } from './cond/cases.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
-import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
+import { fileAnswers, runFileCases, secondsSince, setModule, takenBook } from './stored.js'
 import { opJson } from './struct.js'
 import { caseFiles } from './xlsx/sent.js'
 
@@ -33,7 +33,7 @@ export interface StoredCond extends CondCases {
 /** The set's cases and books, and where its answers go (`test/excel/<base>cond/[<tag>/]<set>`). */
 export async function condSet(set: string): Promise<{ built: CondCases; tag: string; files: Map<string, Uint8Array>; sent: Record<string, string> }> {
   const built = (await setModule<CondSet>('cond', set)).buildCondCases()
-  return { built, tag: built.locale ?? 'en-US', ...(await caseFiles(built.cases, async (c) => (await writeXlsx(built.books[c.book])).data)) }
+  return { built, tag: built.locale ?? 'en-US', ...(await caseFiles(built.cases, async (c) => (await writeXlsx({ book: takenBook(built.books[c.book]) })).data)) }
 }
 
 type RawLook = [address: string, text: string, fill: number[], colorIndex: string, font: number[], bold: boolean, italic: boolean]

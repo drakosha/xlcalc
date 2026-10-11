@@ -3,8 +3,9 @@
  * typed, structure and table operations), and the rectangles read at the end, with the tables of every sheet.
  */
 import type { Val } from '../formulajs.js'
-import type { BookInput, CellInput, NameInput, RangeRef, StructureOp, TableColumn, TableInput } from '../../../src/contract.js'
+import type { NameInput, RangeRef, StructureOp, TableColumn, TableInput } from '../../../src/contract.js'
 import { colToIndex, indexToCol } from '../../../src/model.js'
+import type { StoredBook, StoredCell } from '../stored.js'
 
 /** A step after the computation, Excel recalculating after each: a cell typed or cleared, an operation, a name added. */
 export type TableStep =
@@ -32,7 +33,7 @@ export interface TableCase {
   /** What the case checks. */
   about: string
   /** Formulas in the engine's spelling, written as `writeXlsx` writes them. */
-  book: BookInput
+  book: StoredBook
   steps?: TableStep[]
   /** Rectangles read after the steps, where the steps left their cells. */
   read: RangeRef[]
@@ -61,11 +62,11 @@ export interface TableAnswer {
 }
 
 /** A cell: `=…` a formula, else a value. */
-export type CellSpec = number | string | boolean | CellInput
+export type CellSpec = number | string | boolean | StoredCell
 
-export const cell = (v: CellSpec): CellInput => (typeof v === 'string' && v.startsWith('=') ? { formula: v.slice(1) } : typeof v === 'object' ? v : { value: v })
+export const cell = (v: CellSpec): StoredCell => (typeof v === 'string' && v.startsWith('=') ? { formula: v.slice(1) } : typeof v === 'object' ? v : { value: v })
 
-export const cellsOf = (cells: Record<string, CellSpec>): Record<string, CellInput> => Object.fromEntries(Object.entries(cells).map(([a, v]) => [a, cell(v)]))
+export const cellsOf = (cells: Record<string, CellSpec>): Record<string, StoredCell> => Object.fromEntries(Object.entries(cells).map(([a, v]) => [a, cell(v)]))
 
 /**
  * A table from its header cells' row: `table('Sales', 'A1', ['Region', 'Qty'], rows)` puts the names in A1:B1 and the rows
@@ -78,12 +79,12 @@ export function table(
   names: string[],
   rows: CellSpec[][],
   opts: { headers?: false; totals?: CellSpec[]; columns?: Partial<TableColumn>[] } = {},
-): { cells: Record<string, CellInput>; table: TableInput } {
+): { cells: Record<string, StoredCell>; table: TableInput } {
   const m = /^([A-Z]+)(\d+)$/.exec(at)!
   const col0 = colToIndex(m[1])
   const row0 = Number(m[2])
   const letter = (i: number) => indexToCol(col0 + i)
-  const cells: Record<string, CellInput> = {}
+  const cells: Record<string, StoredCell> = {}
   let r = row0
   if (opts.headers !== false) {
     names.forEach((h, i) => (cells[`${letter(i)}${r}`] = { value: h }))
@@ -99,7 +100,7 @@ export function table(
 }
 
 /** Sales on S!A1:D5: Region, Qty, Price, and Total, a calculated column of Qty times Price. */
-export function sales(): { cells: Record<string, CellInput>; table: TableInput } {
+export function sales(): { cells: Record<string, StoredCell>; table: TableInput } {
   const calc = '=[@Qty]*[@Price]'
   return table(
     'Sales',
@@ -116,7 +117,7 @@ export function sales(): { cells: Record<string, CellInput>; table: TableInput }
 }
 
 /** A book of sheets: each a name, its cells (`=…` formulas) and its tables (from `table`). */
-export function book(...sheets: [string, Record<string, CellSpec>, ...{ cells: Record<string, CellInput>; table: TableInput }[]][]): BookInput {
+export function book(...sheets: [string, Record<string, CellSpec>, ...{ cells: Record<string, StoredCell>; table: TableInput }[]][]): StoredBook {
   return {
     sheets: sheets.map(([name, cells, ...tables]) => ({
       name,

@@ -2,11 +2,11 @@
  * Stored answers, as every step of both harnesses keeps them: read to go on from (`FCOV_FRESH=1` starts over), kept while
  * a case is the same, written in the order of the cases, so a run that adds or reruns cases changes the lines of those
  * cases only, however the run went. A set's module by its checked name, the run over the cases to do and its last line.
- * And the number format of a stored case or answer by either of its names.
+ * And the number format of a stored case or answer by either of its names, and a stored book as the engine takes it.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import type { NumberFormat } from '../../src/contract.js'
+import type { BookInput, CellInput, ColumnInput, ConditionalFormat, ConditionalStyle, NumberFormat, RowInput, SheetInput } from '../../src/contract.js'
 
 /** A step's stored file to go on from; null without one, or with `FCOV_FRESH=1`, which runs every case again. */
 export const loadStored = <T>(file: string): T | null => (existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as T) : null)
@@ -138,9 +138,57 @@ export function fileAnswers<C extends { id: string }, A>(file: string, cases: C[
 /**
  * The number format of a stored case or answer: the books, cells and answers stored before the field was named
  * `numberFormat` name it `format`, and so do the case generators, whose cases are compared with their stored copies. The
- * engine takes both names and answers by the new one; the harness reads either.
+ * engine takes the new name alone (`takenBook`); the harness reads either.
  */
 export const numberFormatOf = (x: { numberFormat?: NumberFormat; format?: NumberFormat } | null | undefined): NumberFormat | undefined => x?.numberFormat ?? x?.format
+
+/** The number format by its old name, as the case generators and the stored cases name it. */
+type OldFormat = { format?: NumberFormat }
+
+/**
+ * A book as the case generators and the stored cases give it: the number format by its old name `format` in cells, rows,
+ * columns and conditional formats' styles, as the engine took it when the cases were stored. The engine takes
+ * `numberFormat` alone: `takenBook` gives it one.
+ */
+export interface StoredBook extends Omit<BookInput, 'sheets'> {
+  sheets: StoredSheet[]
+}
+
+/** A sheet of a stored book. */
+export interface StoredSheet extends Omit<SheetInput, 'cells' | 'rows' | 'columns' | 'conditionalFormats'> {
+  cells: Record<string, StoredCell>
+  rows?: Record<string, StoredRow>
+  columns?: Record<string, StoredColumn>
+  conditionalFormats?: StoredRule[]
+}
+
+export type StoredCell = CellInput & OldFormat
+export type StoredRow = RowInput & OldFormat
+export type StoredColumn = ColumnInput & OldFormat
+export type StoredStyle = ConditionalStyle & OldFormat
+export type StoredRule = ConditionalFormat & { style?: StoredStyle }
+
+/** A cell, a line or a conditional style of a stored book as the engine takes it: its number format by the name `numberFormat`. */
+export function takenPart<T extends OldFormat & { numberFormat?: NumberFormat | null }>(x: T): Omit<T, 'format'> {
+  if (!('format' in x)) return x
+  const { format, ...rest } = x
+  return format === undefined || rest.numberFormat !== undefined ? rest : { ...rest, numberFormat: format }
+}
+
+/** A stored book as the engine takes it, its sheets' fields in their order. */
+export const takenBook = (book: StoredBook): BookInput => ({ ...book, sheets: book.sheets.map(takenSheet) })
+
+function takenSheet(s: StoredSheet): SheetInput {
+  const out: Record<string, unknown> = {}
+  for (const [k, v] of Object.entries(s))
+    out[k] =
+      k === 'cells' || k === 'rows' || k === 'columns'
+        ? Object.fromEntries(Object.entries(v as Record<string, OldFormat>).map(([key, x]) => [key, takenPart(x)]))
+        : k === 'conditionalFormats'
+          ? (v as StoredRule[]).map((f) => (f.style ? { ...f, style: takenPart(f.style) } : f))
+          : v
+  return out as unknown as SheetInput
+}
 
 /**
  * Runs the cases to do of a step whose cases go to Excel as files, as `runCases` does: each answer or refusal goes into

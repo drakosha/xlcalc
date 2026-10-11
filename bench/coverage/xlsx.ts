@@ -99,7 +99,7 @@ async function roundTrip() {
   const books = await Promise.all(
     cases.map(async (c) => {
       const result = compute(c.book, { clock: XLSX_CLOCK })
-      const { data } = await writeXlsx(c.book, { result, mode: c.mode })
+      const { data } = await writeXlsx({ book: c.book, result }, { mode: c.mode })
       return { id: c.id, locale: c.book.locale ?? 'en-US', bytes: async () => data, hash: await partsHash(data), c, result }
     }),
   )

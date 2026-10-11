@@ -15,12 +15,13 @@ import { localeMeta } from './locales.js'
 import { ensureExcel, excelVersion, runWatched } from './excel.js'
 import { markDynamic } from './book.js'
 import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from './case-book.js'
-import type { BookInput, CellStyle, NumberFormat, RowInput, SheetInput } from '../../src/contract.js'
+import type { CellStyle, NumberFormat } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { colToIndex, formatAddress, indexToCol, parseAddress } from '../../src/model.js'
 import { parseRange, rectCells } from '../../src/structure/area.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
 import { fromRgb } from './cond/cases.js'
+import type { StoredBook, StoredRow, StoredSheet } from './stored.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -65,7 +66,7 @@ export interface StoredStruct extends StructCases {
 }
 
 /** A book has styles to write and a look to read. */
-export const styled = (book: BookInput) =>
+export const styled = (book: StoredBook) =>
   !!book.styles?.length || book.sheets.some((s) => s.columns || s.rows || s.merges || Object.values(s.cells).some((c) => c.style !== undefined || c.format !== undefined))
 
 const argb = (color: string) => ({ argb: `FF${color.slice(1).toUpperCase()}` })
@@ -92,7 +93,7 @@ function excelStyle(st: CellStyle | undefined, format: NumberFormat | undefined)
  * Columns, rows and the cells' own style and format of a sheet. ExcelJS writes a column with a style and
  * no width as width 9, and drops a row with a style and neither a height nor cells: cases avoid both.
  */
-function writeLayout(c: StructCase, book: BookInput, s: SheetInput, ws: ExcelJS.Worksheet) {
+function writeLayout(c: StructCase, book: StoredBook, s: StoredSheet, ws: ExcelJS.Worksheet) {
   const style = (i: number | undefined) => (i === undefined ? undefined : book.styles![i])
   const cols = lines(s.columns, 'c')
   const rows = lines(s.rows, 'r')
@@ -129,10 +130,10 @@ function writeLayout(c: StructCase, book: BookInput, s: SheetInput, ws: ExcelJS.
 }
 
 /** The file parts of a book: its hidden rows and rows of height 0, and the autofilter `files` gives each `filtered` sheet. */
-function partsOf(c: StructCase, book: BookInput, files: FileParts = {}): FileParts {
+function partsOf(c: StructCase, book: StoredBook, files: FileParts = {}): FileParts {
   const sheets: FileParts['sheets'] = {}
   for (const s of book.sheets) {
-    const spans = (is: (e: RowInput) => boolean) => lines(s.rows, 'r').flatMap(([lo, hi, e]) => (is(e) ? [lo === hi ? `${lo + 1}` : `${lo + 1}:${hi + 1}`] : []))
+    const spans = (is: (e: StoredRow) => boolean) => lines(s.rows, 'r').flatMap(([lo, hi, e]) => (is(e) ? [lo === hi ? `${lo + 1}` : `${lo + 1}:${hi + 1}`] : []))
     const hiddenRows = spans((e) => !!e.hidden)
     const zeroRows = spans((e) => e.height === 0)
     const filter = files.sheets?.[s.name]?.filter
@@ -147,7 +148,7 @@ function partsOf(c: StructCase, book: BookInput, files: FileParts = {}): FilePar
  * their scope, the layout of a styled book with its hidden lines and filters; with `dynamic`, formulas as dynamic
  * array formulas (Excel 365).
  */
-export async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: boolean, files?: FileParts): Promise<void> {
+export async function writeBook(c: StructCase, book: StoredBook, file: string, dynamic: boolean, files?: FileParts): Promise<void> {
   const wb = new ExcelJS.Workbook()
   for (const s of book.sheets) {
     const ws = wb.addWorksheet(s.name)
@@ -257,7 +258,7 @@ export function lookOf([cells, widths, heights]: RawLook): SheetLook {
 }
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
-async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRects: string, files?: FileParts): Promise<ExcelStructAnswer> {
+async function runCase(c: StructCase, book: StoredBook, dynamic: boolean, lookRects: string, files?: FileParts): Promise<ExcelStructAnswer> {
   const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
   const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
   return runWatched<ExcelStructAnswer>({

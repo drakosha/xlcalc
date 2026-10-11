@@ -11,6 +11,7 @@ import { MAX_COLS, MAX_ROWS } from '../../../src/model.js'
 import { cellCount, parseRange, rectCells } from '../../../src/structure/area.js'
 import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
 import '../locales.js'
+import { takenBook, type StoredBook, type StoredRule } from '../stored.js'
 
 /**
  * A rule Excel makes through its object model (Windows: `FormatConditions.Add` and its kin): `cellIs` with an operator
@@ -47,7 +48,7 @@ export interface CondCase {
 }
 
 export interface CondCases {
-  books: Record<string, BookInput>
+  books: Record<string, StoredBook>
   cases: CondCase[]
   /** The locale Excel runs the set in: en-US without one. */
   locale?: string
@@ -56,7 +57,7 @@ export interface CondCases {
 export interface CondSet {
   buildCondCases(): CondCases
   /** The book of a case whose rules Excel makes, with the rules it is expected to make. */
-  expectedBook?(c: CondCase): BookInput
+  expectedBook?(c: CondCase): StoredBook
 }
 
 /** What a cell shows: `Range.Text`, the fill (null: none), the font's colour, bold and italic, by its display format. */
@@ -127,7 +128,7 @@ function canonicalText(f: string): string {
  * a number format as its code without Excel's escapes of spaces (a dxf's built-in format comes back as its code), keys
  * sorted.
  */
-export function ruleKey(rule: ConditionalFormat): unknown {
+export function ruleKey(rule: StoredRule): unknown {
   const { ranges: _, ...rest } = rule
   const canon = JSON.parse(JSON.stringify(rest), (k, v) =>
     (k === 'formula' || k === 'value') && typeof v === 'string' ? canonicalText(v) : k === 'formulas' ? (v as string[]).map(canonicalText) : k === 'numberFormat' || k === 'format' ? (typeof v === 'number' ? (v === 0 ? 'General' : BUILTIN[v]) : (v as string).replaceAll('\\ ', ' ')) : v,
@@ -143,7 +144,8 @@ export interface CondPrediction {
 }
 
 /** The engine's answer to a case at the moment `clock` (TODAY of time periods): the book after its operation, in a session. */
-export function engineCase(set: CondCases, c: CondCase, clock: Clock, book: BookInput = set.books[c.book]): CondPrediction {
+export function engineCase(set: CondCases, c: CondCase, clock: Clock, stored: StoredBook = set.books[c.book]): CondPrediction {
+  const book = takenBook(stored)
   const r = c.op ? editStructure(book, c.op) : { ok: true as const, book }
   if (!r.ok) return { refused: r.code, rules: {}, looks: {} }
   const s = createSession(r.book, { clock })
@@ -159,4 +161,4 @@ export function engineCase(set: CondCases, c: CondCase, clock: Clock, book: Book
 }
 
 /** Each sheet's rules as `ruleKey` gives them. */
-export const rulesOf = (book: BookInput): Record<string, unknown[]> => Object.fromEntries(book.sheets.map((s) => [s.name, (s.conditionalFormats ?? []).map(ruleKey)]))
+export const rulesOf = (book: StoredBook): Record<string, unknown[]> => Object.fromEntries(book.sheets.map((s) => [s.name, (s.conditionalFormats ?? []).map(ruleKey)]))

@@ -63,7 +63,7 @@ describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip th
   for (const c of await buildRoundTrips()) {
     it(`${c.id}: ${c.what}`, async () => {
       const result = compute(c.book, { clock: XLSX_CLOCK })
-      const { data } = await writeXlsx(c.book, { result, mode: c.mode })
+      const { data } = await writeXlsx({ book: c.book, result }, { mode: c.mode })
       const sent = run.books[c.id]
       expect(sent, 'no Excel answer: run the xlsx roundtrip step').toBeDefined()
       expect(sent.sent, 'the writer changed since Excel saw the file: run the xlsx roundtrip step').toBe(await partsHash(data))

@@ -5,8 +5,9 @@
  * a spill across formatted columns, cells with their own General, plain style or italic; the file as written and
  * without the cells where lines cross, values typed into both; Excel formatting a row and then columns crossing it.
  */
-import type { BookInput, CellStyle } from '../../../src/contract.js'
+import type { CellStyle } from '../../../src/contract.js'
 import type { LineStep, LinesCase, LinesCases } from './cases.js'
+import type { StoredBook } from '../stored.js'
 
 const STYLES: CellStyle[] = [
   { font: { italic: true } },
@@ -20,7 +21,7 @@ const STYLES: CellStyle[] = [
  * Columns: B:C a date, D a fill, E:F a number format and a bold red font, H a fill and bold. Rows: 3:4 italic alone,
  * 6 a percent alone, 9 a fill and a format, 11 a date alone.
  */
-function grid(): BookInput {
+function grid(): StoredBook {
   return {
     styles: STYLES,
     sheets: [
@@ -51,7 +52,7 @@ function grid(): BookInput {
   }
 }
 
-const blank = (): BookInput => ({ sheets: [{ name: 'H', cells: { A1: { value: 'x' } }, columns: { 'B:F': { width: 16 } } }] })
+const blank = (): StoredBook => ({ sheets: [{ name: 'H', cells: { A1: { value: 'x' } }, columns: { 'B:F': { width: 16 } } }] })
 
 const READ: [string, string][] = [['H', 'A1:H15']]
 

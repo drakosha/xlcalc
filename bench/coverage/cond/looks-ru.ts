@@ -3,15 +3,16 @@
  * numbers that read with a decimal comma, a cell value rule over text in the locale's order, dates between two, a rule's
  * number format shown by the locale. Predicted before Excel ran it (`looks-ru.predicted.json`).
  */
-import type { BookInput, CellInput, ConditionalFormat, ConditionalStyle } from '../../../src/contract.js'
+import type { CellInput, ConditionalFormat, ConditionalStyle } from '../../../src/contract.js'
 import type { CondCases } from './cases.js'
+import type { StoredBook, StoredCell } from '../stored.js'
 
 const RED: ConditionalStyle = { fill: { color: '#FFC7CE' }, font: { color: '#9C0006' } }
 const v = (value: CellInput['value']): CellInput => ({ value })
 
-function ruBook(): BookInput {
+function ruBook(): StoredBook {
   const words = [v('Яблоко'), v('ЯБЛОКО'), v('яблоня'), v('груша'), v(1.5), v('1,5'), v(1234.5), v('ёлка'), v('Ёж'), v('b')]
-  const cells: Record<string, CellInput> = {}
+  const cells: Record<string, StoredCell> = {}
   for (const c of ['A', 'B', 'C', 'D', 'E', 'F', 'G']) words.forEach((w, i) => (cells[`${c}${i + 1}`] = w))
   const dates = [45658, 45689, 45717, 45748, 45778, 45809, 45839, 45870, 45901, 45931]
   dates.forEach((d, i) => (cells[`H${i + 1}`] = { value: d, format: 14 }))
