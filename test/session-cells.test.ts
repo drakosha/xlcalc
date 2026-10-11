@@ -1,12 +1,12 @@
 /**
- * `Session.cells(sheet, range)`: the cells of a rectangle are the slice of `result()` over it, with each cell's own
+ * `Session.getCells(sheet, range)`: the cells of a rectangle are the slice of `getResult()` over it, with each cell's own
  * style, note and link and an old-kind array formula's area, in a synchronous session, in the same thread and in a thread, with
  * closures and eval: the case books, the tables of the table sets, a book with styles, rectangles small (read cell by cell) and large (whole columns, whole
  * rows, the whole sheet), before and after edits.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { buildTableCases } from '../bench/coverage/tables/ops.js'
-import { createInlineCalc, InputError, openSession, type BookInput, type CellView, type ComputeResult, type Execution } from '../src/index.js'
+import { createInlineCalc, InputError, createSession, type BookInput, type CellView, type ComputeResult, type Execution } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { parseRange } from '../src/structure/area.js'
 import { synthBook } from '../src/synth.js'
@@ -53,15 +53,15 @@ afterAll(() => Promise.all(pools.map((p) => p.close())))
 describe.each(['closures', 'eval'] as const)('cells of a rectangle, execution %s', (execution: Execution) => {
   it('a synchronous session', async () => {
     for (const [name, book] of BOOKS_HERE) {
-      const s = openSession(book, { clock: CLOCK, execution })
-      await agree(name, book, async (sh, rg) => s.cells(sh, rg), async () => s.result(), async () => s.book())
+      const s = createSession(book, { clock: CLOCK, execution })
+      await agree(name, book, async (sh, rg) => s.getCells(sh, rg), async () => s.getResult(), async () => s.getBook())
     }
   }, 120_000)
 
   it('in the same thread', async () => {
     const calc = createInlineCalc({ sliceMs: 2 })
     for (const [name, book] of BOOKS_HERE) {
-      const s = await calc.openSession(book, { clock: CLOCK, execution })
+      const s = await calc.createSession(book, { clock: CLOCK, execution })
       await agree(name, book, s.cells, s.result, s.book)
     }
   }, 120_000)
@@ -70,7 +70,7 @@ describe.each(['closures', 'eval'] as const)('cells of a rectangle, execution %s
     const p = await pool({ threads: 2 })
     pools.push(p)
     for (const [name, book] of BOOKS_HERE) {
-      const s = await p.openSession(book, { clock: CLOCK, execution })
+      const s = await p.createSession(book, { clock: CLOCK, execution })
       await agree(name, book, s.cells, s.result, s.book)
     }
   }, 120_000)
@@ -79,25 +79,25 @@ describe.each(['closures', 'eval'] as const)('cells of a rectangle, execution %s
 describe('cells of a rectangle', () => {
   it('after edits, and without the display', async () => {
     const synth = synthBook({ seed: 1, rows: 340 })
-    const s = openSession(synth.book, { clock: CLOCK })
-    const quiet = openSession(synth.book, { clock: CLOCK, display: false })
+    const s = createSession(synth.book, { clock: CLOCK })
+    const quiet = createSession(synth.book, { clock: CLOCK, display: false })
     const p = await pool({ threads: 1 })
     pools.push(p)
-    const t = await p.openSession(synth.book, { clock: CLOCK })
+    const t = await p.createSession(synth.book, { clock: CLOCK })
     for (const batch of edits(2, 12, synth)) {
       s.setCells(batch)
       quiet.setCells(batch)
       await t.setCells(batch)
     }
-    await agree('the synthetic book after edits', synth.book, async (sh, rg) => s.cells(sh, rg), async () => s.result(), async () => s.book())
+    await agree('the synthetic book after edits', synth.book, async (sh, rg) => s.getCells(sh, rg), async () => s.getResult(), async () => s.getBook())
     await agree('the synthetic book in a thread after edits', synth.book, t.cells, t.result, t.book)
-    await agree('without the display', synth.book, async (sh, rg) => quiet.cells(sh, rg), async () => quiet.result(), async () => quiet.book())
+    await agree('without the display', synth.book, async (sh, rg) => quiet.getCells(sh, rg), async () => quiet.getResult(), async () => quiet.getBook())
   }, 120_000)
 
   it('the sheet and the range are checked as input', () => {
-    const s = openSession(styled, { clock: CLOCK })
-    expect(() => s.cells('Nope', 'A1')).toThrow(InputError)
-    expect(() => s.cells('S', 'A0')).toThrow('range: expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got "A0"')
-    expect(s.cells('s', 'B2:B3')).toEqual({ B2: { value: 3, text: '3', spillOf: 'B1' }, B3: { value: 5, text: '5', spillOf: 'B1' } })
+    const s = createSession(styled, { clock: CLOCK })
+    expect(() => s.getCells('Nope', 'A1')).toThrow(InputError)
+    expect(() => s.getCells('S', 'A0')).toThrow('range: expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got "A0"')
+    expect(s.getCells('s', 'B2:B3')).toEqual({ B2: { value: 3, text: '3', spillOf: 'B1' }, B3: { value: 5, text: '5', spillOf: 'B1' } })
   })
 })

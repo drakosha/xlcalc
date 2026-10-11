@@ -10,7 +10,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, posix } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { compute, FUNCTION_NAMES, openSession } from '../src/index.js'
+import { compute, FUNCTION_NAMES, createSession } from '../src/index.js'
 import { classAEdits, synthBook } from '../src/synth.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
@@ -47,17 +47,17 @@ describe('built package', () => {
     const out = JSON.parse(execFileSync(process.execPath, [child], { cwd: root, encoding: 'utf8' }).trim())
     const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
     const synth = synthBook({ seed: 1, rows: 340 })
-    const session = openSession(synth.book, { clock })
+    const session = createSession(synth.book, { clock })
     for (const e of classAEdits(synth, 3, 10)) session.setCells([e])
     expect(out.hash).toBe(compute(synth.book, { clock }).hash)
-    expect(out.edited).toBe(session.result().hash)
+    expect(out.edited).toBe(session.getResult().hash)
     // the synthetic book written to xlsx and read back computes to the same values
     expect(out.xlsx).toBe(out.hash)
     // and in a thread of the pool, which an open pool does not keep the process alive for
     expect(out.threads).toEqual({ hash: out.hash, edited: out.edited })
     session.close()
     expect(out.functions).toBe(FUNCTION_NAMES.length)
-    expect(out.engine).toEqual(['compute', 'displayValue', 'entryWidth', 'fitColumns', 'openSession', 'parseEntry', 'restructure', 'validateFormula', 'validateName', 'validateNames'])
+    expect(out.engine).toEqual(['compute', 'displayValue', 'entryWidth', 'fitColumns', 'createSession', 'parseEntry', 'editStructure', 'validateFormula', 'validateName', 'validateNames'])
     expect(out.inputError).toBe('function')
     expect(out.validate).toBe(true)
     expect(out.contract).toEqual(['MAX_FORMULA_DEPTH', 'MAX_FORMULA_LENGTH'])

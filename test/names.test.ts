@@ -4,7 +4,7 @@
  * sheet, names qualified by a sheet in checks, a session's `setNames`, and both execution modes.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, validateFormula, type BookInput, type NameInput } from '../src/index.js'
+import { compute, createSession, validateFormula, type BookInput, type NameInput } from '../src/index.js'
 
 /** A sheet S with values A1:A3 = 1, 2, 3 and the formulas given, and the names. */
 function book(cells: Record<string, string>, names: NameInput[], more: BookInput['sheets'] = []): BookInput {
@@ -57,8 +57,8 @@ describe('names of any formula', () => {
   })
 
   it('a session takes new names of formulas and returns the cells they change', () => {
-    const s = openSession(book({ B1: 'rate*100' }, [{ name: 'rate', ref: '0.2' }]))
-    expect(s.result().sheets[0].cells.B1.value).toBe(20)
+    const s = createSession(book({ B1: 'rate*100' }, [{ name: 'rate', ref: '0.2' }]))
+    expect(s.getResult().sheets[0].cells.B1.value).toBe(20)
     expect(s.setNames([{ name: 'rate', ref: "'S'!$A$3/10" }]).changes.map((c) => [c.cell, c.value])).toEqual([['B1', 30]])
   })
 

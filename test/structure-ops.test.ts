@@ -1,6 +1,6 @@
-/** `restructure` beyond Excel's answers: the API, refusals, mapCell, cells' format and meta, formula text. */
+/** `editStructure` beyond Excel's answers: the API, refusals, mapCell, cells' format and meta, formula text. */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, restructure, type BookInput, type StructureOp } from '../src/index.js'
+import { compute, InputError, editStructure, type BookInput, type StructureOp } from '../src/index.js'
 
 const book = (): BookInput => ({
   sheets: [
@@ -14,14 +14,14 @@ const book = (): BookInput => ({
 })
 
 function ok(b: BookInput, op: StructureOp) {
-  const r = restructure(b, op)
+  const r = editStructure(b, op)
   if (!r.ok) throw new Error(r.message)
   return r
 }
 
 const cells = (b: BookInput, sheet = 'S') => b.sheets.find((s) => s.name === sheet)!.cells
 
-describe('restructure', () => {
+describe('editStructure', () => {
   it('rewrites only the references that change, in place; formulas that do not parse and unknown sheets stay as written', () => {
     const r = ok(book(), { op: 'insertRows', sheet: 'S', row: 3, count: 2 })
     expect(cells(r.book).B1.formula).toBe('sum( A7 , $A$1 ) + Нет!A5')
@@ -107,18 +107,18 @@ describe('restructure', () => {
 
   it('refuses what Excel refuses', () => {
     const edge: BookInput = { sheets: [{ name: 'S', cells: { A1048576: { format: '0' }, XFD1: { meta: 1 } } }] }
-    expect(restructure(edge, { op: 'insertRows', sheet: 'S', row: 1 })).toMatchObject({ ok: false, code: 'off_sheet' })
-    expect(restructure(edge, { op: 'insertColumns', sheet: 'S', column: 'B' })).toMatchObject({ ok: false, code: 'off_sheet' })
-    expect(restructure(edge, { op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, code: 'last_sheet' })
-    expect(restructure(book(), { op: 'renameSheet', sheet: 'S', name: 'лист 2' })).toMatchObject({ ok: false, code: 'sheet_name' })
-    expect(restructure(book(), { op: 'renameSheet', sheet: 'S', name: '' })).toMatchObject({ ok: false, code: 'sheet_name' })
-    expect(restructure(book(), { op: 'renameSheet', sheet: 'S', name: 's' }).ok).toBe(true)
-    expect(restructure(book(), { op: 'moveRange', from: { sheet: 'S', range: 'A1:A5' }, to: { sheet: 'S', cell: 'A1048575' } })).toMatchObject({ ok: false, code: 'off_sheet' })
-    expect(restructure(book(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', range: 'XFD1' } })).toMatchObject({ ok: false, code: 'off_sheet' })
+    expect(editStructure(edge, { op: 'insertRows', sheet: 'S', row: 1 })).toMatchObject({ ok: false, code: 'off_sheet' })
+    expect(editStructure(edge, { op: 'insertColumns', sheet: 'S', column: 'B' })).toMatchObject({ ok: false, code: 'off_sheet' })
+    expect(editStructure(edge, { op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, code: 'last_sheet' })
+    expect(editStructure(book(), { op: 'renameSheet', sheet: 'S', name: 'лист 2' })).toMatchObject({ ok: false, code: 'sheet_name' })
+    expect(editStructure(book(), { op: 'renameSheet', sheet: 'S', name: '' })).toMatchObject({ ok: false, code: 'sheet_name' })
+    expect(editStructure(book(), { op: 'renameSheet', sheet: 'S', name: 's' }).ok).toBe(true)
+    expect(editStructure(book(), { op: 'moveRange', from: { sheet: 'S', range: 'A1:A5' }, to: { sheet: 'S', cell: 'A1048575' } })).toMatchObject({ ok: false, code: 'off_sheet' })
+    expect(editStructure(book(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', range: 'XFD1' } })).toMatchObject({ ok: false, code: 'off_sheet' })
   })
 
   it('throws InputError on input of the wrong shape', () => {
-    const fails = (op: unknown, message: string) => expect(() => restructure(book(), op as StructureOp)).toThrow(new InputError(message.split(': ')[0], message.slice(message.indexOf(': ') + 2)))
+    const fails = (op: unknown, message: string) => expect(() => editStructure(book(), op as StructureOp)).toThrow(new InputError(message.split(': ')[0], message.slice(message.indexOf(': ') + 2)))
     fails({ op: 'insertRow', sheet: 'S', row: 1 }, 'op.op: expected one of insertRows, deleteRows, insertColumns, deleteColumns, moveRange, copyRange, renameSheet, deleteSheet, insertSheet, moveSheet, hideSheet, unhideSheet, addTable, renameTable, deleteTable, convertTable, got "insertRow"')
     fails({ op: 'insertRows', sheet: 'Нет', row: 1 }, 'op.sheet: unknown sheet "Нет"')
     fails({ op: 'insertRows', sheet: 'S', row: 0 }, 'op.row: expected an integer from 1 to 1048576, got 0')

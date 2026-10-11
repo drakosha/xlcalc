@@ -3,7 +3,7 @@
  * of `parts/<set>.ts` with `writeXlsx`, Excel opens it, makes what the case makes, applies its operation, reads every
  * sheet's parts and saves the book (`excel-parts.applescript`). The answers go to `test/excel/parts/<set>.json` and the
  * saved files to `test/excel/parts/<set>/<id>.xlsx`; `test/sheet-parts-excel.test.ts` compares them with the writer,
- * the reader and `restructure` without Excel. `FPARTS_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` every case again.
+ * the reader and `editStructure` without Excel. `FPARTS_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` every case again.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'

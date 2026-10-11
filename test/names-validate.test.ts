@@ -3,7 +3,7 @@
  * same issues as `ComputeResult.nameIssues`, each telling a name left out of the book from one kept with an error.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, engine, InputError, openSession, validateName, validateNames, type BookInput, type NameInput } from '../src/index.js'
+import { compute, engine, InputError, createSession, validateName, validateNames, type BookInput, type NameInput } from '../src/index.js'
 import './locales.js'
 
 const NAMES: NameInput[] = [
@@ -82,10 +82,10 @@ describe('validateNames', () => {
     for (const locale of [undefined, 'en-US', 'ru-RU']) {
       const issues = validateNames(NAMES, ctx(locale))
       expect(compute(book(locale), { display: false }).nameIssues, locale).toEqual(issues)
-      const s = openSession(book(locale), { display: false })
+      const s = createSession(book(locale), { display: false })
       try {
         s.setNames(NAMES.slice(0, 7))
-        expect(s.result().nameIssues).toEqual(validateNames(NAMES.slice(0, 7), ctx(locale)))
+        expect(s.getResult().nameIssues).toEqual(validateNames(NAMES.slice(0, 7), ctx(locale)))
       } finally { s.close() }
     }
   })

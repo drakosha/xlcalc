@@ -5,7 +5,7 @@
  * `test/fit-excel.test.ts`.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, entryWidth, fitColumns, InputError, openSession, parseEntry, type BookInput, type Calc } from '../src/index.js'
+import { compute, createInlineCalc, entryWidth, fitColumns, InputError, createSession, parseEntry, type BookInput, type Calc } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { pool } from './fixtures/pool.js'
 import './locales.js'
@@ -57,26 +57,26 @@ describe('fitColumns', () => {
 
 describe.each(['closures', 'eval'] as const)('AutoFit in a session, execution %s', (execution) => {
   it('sets the widths as Excel fitted them, shows a hidden column, returns the cells shown otherwise', () => {
-    const s = openSession(book(), { clock, execution })
+    const s = createSession(book(), { clock, execution })
     expect(s.setLayout([{ sheet: 'S', columns: 'A:F', fit: true }]).changes).toEqual([
       { sheet: 'S', cell: 'B1', value: 46096, text: '3/15/2026' },
       { sheet: 'S', cell: 'C1', value: 123456789012, text: '1.23457E+11' },
       { sheet: 'S', cell: 'B2', value: 1234567.891, text: '1,234,567.89' },
     ])
-    expect(s.layout().sheets[0].columns).toEqual({ A: { width: 16, bestFit: true }, B: { width: 11.6640625, bestFit: true }, C: { width: 11.83203125, bestFit: true }, E: { width: 5.6640625, bestFit: true }, F: { width: 20 } })
-    expect(compute(s.book(), { clock, execution }).sheets[0].cells.C1.text).toBe('1.23457E+11')
+    expect(s.getLayout().sheets[0].columns).toEqual({ A: { width: 16, bestFit: true }, B: { width: 11.6640625, bestFit: true }, C: { width: 11.83203125, bestFit: true }, E: { width: 5.6640625, bestFit: true }, F: { width: 20 } })
+    expect(compute(s.getBook(), { clock, execution }).sheets[0].cells.C1.text).toBe('1.23457E+11')
   })
   it('fits by the layout the edits before it leave', () => {
-    const s = openSession(book(), { clock, execution })
+    const s = createSession(book(), { clock, execution })
     s.setLayout([
       { sheet: 'S', columns: 'C', set: { format: '#,##0' } },
       { sheet: 'S', merges: [] },
       { sheet: 'S', columns: 'C:D', fit: true },
     ])
-    expect(s.layout().sheets[0].columns).toMatchObject({ C: { width: 14.6640625, bestFit: true, format: '#,##0' }, D: { width: 11.83203125, bestFit: true } })
+    expect(s.getLayout().sheets[0].columns).toMatchObject({ C: { width: 14.6640625, bestFit: true, format: '#,##0' }, D: { width: 11.83203125, bestFit: true } })
   })
   it('refuses AutoFit of rows and a fit that is not true, and checks bestFit', () => {
-    const s = openSession(book(), { clock, execution })
+    const s = createSession(book(), { clock, execution })
     expect(() => s.setLayout([{ sheet: 'S', rows: '1', fit: true } as never])).toThrow(InputError)
     expect(() => s.setLayout([{ sheet: 'S', columns: 'A', fit: false } as never])).toThrow(/expected true/)
     expect(() => s.setLayout([{ sheet: 'S', rows: '1', set: { bestFit: true } } as never])).toThrow(InputError)
@@ -94,9 +94,9 @@ describe.each([
   it('goes through setLayout and the layout gives the widths', async () => {
     const calc = await make()
     calcs.push(calc)
-    const s = await calc.openSession(book(), { clock })
+    const s = await calc.createSession(book(), { clock })
     expect((await s.setLayout([{ sheet: 'S', columns: 'A:F', fit: true }])).changes.map((c) => c.cell)).toEqual(['B1', 'C1', 'B2'])
-    expect((await s.layout()).sheets[0].columns?.C).toEqual({ width: 11.83203125, bestFit: true })
+    expect((await s.getLayout()).sheets[0].columns?.C).toEqual({ width: 11.83203125, bestFit: true })
   })
 })
 

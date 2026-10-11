@@ -1,6 +1,6 @@
 /** Styles and the sheet layout as input: their shape is checked, they do not touch values, they go into `inputHash` only when present. */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, restructure, type BookInput } from '../src/index.js'
+import { compute, InputError, editStructure, type BookInput } from '../src/index.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
 
@@ -88,9 +88,9 @@ describe('styles and layout as input', () => {
 
   it('renameSheet refuses a name Excel refuses', () => {
     const b = styled()
-    expect(restructure(b, { op: 'renameSheet', sheet: 'S', name: 'a:b' })).toMatchObject({ ok: false, code: 'sheet_name', message: 'a sheet name must not contain ":" (Excel forbids : \\ / ? * [ ])' })
-    expect(restructure(b, { op: 'renameSheet', sheet: 'S', name: 'y'.repeat(31) }).ok).toBe(true)
-    expect(restructure(b, { op: 'renameSheet', sheet: 'S', name: 'history' })).toMatchObject({ ok: false, code: 'sheet_name' })
-    expect(restructure(b, { op: 'renameSheet', sheet: 'S', name: 'My History' }).ok).toBe(true)
+    expect(editStructure(b, { op: 'renameSheet', sheet: 'S', name: 'a:b' })).toMatchObject({ ok: false, code: 'sheet_name', message: 'a sheet name must not contain ":" (Excel forbids : \\ / ? * [ ])' })
+    expect(editStructure(b, { op: 'renameSheet', sheet: 'S', name: 'y'.repeat(31) }).ok).toBe(true)
+    expect(editStructure(b, { op: 'renameSheet', sheet: 'S', name: 'history' })).toMatchObject({ ok: false, code: 'sheet_name' })
+    expect(editStructure(b, { op: 'renameSheet', sheet: 'S', name: 'My History' }).ok).toBe(true)
   })
 })

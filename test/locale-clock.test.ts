@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ComputeResult } from '../src/contract.js'
-import { compute, openSession } from '../src/index.js'
+import { compute, createSession } from '../src/index.js'
 import './locales.js'
 
 const at = (year: number, seed = 1) => ({ now: `${year}-10-05T12:00:00Z`, seed })
@@ -56,11 +56,11 @@ describe('date text without a year depends on the clock', () => {
   })
 
   it('a session after setClock equals a full computation with that clock', () => {
-    const s = openSession(book, { clock: at(2026) })
+    const s = createSession(book, { clock: at(2026) })
     for (const year of [2027, 2028, 2026]) {
       s.setClock(at(year, year))
       const full = compute(book, { clock: at(year, year) })
-      const r = s.result()
+      const r = s.getResult()
       expect(values(r), String(year)).toEqual(values(full))
       expect(r.hash).toBe(full.hash)
       expect(volatile(r)).toEqual(volatile(full))
@@ -68,16 +68,16 @@ describe('date text without a year depends on the clock', () => {
   })
 
   it('setClock reports the cells whose value the year changed', () => {
-    const s = openSession(book, { clock: at(2026) })
+    const s = createSession(book, { clock: at(2026) })
     expect(s.setClock(at(2027)).changes.map((c) => c.cell).sort()).toEqual(['B1', 'B2', 'B3', 'B4', 'B7', 'B8'])
   })
 
   it('an edit that removes the text without a year leaves the clock', () => {
-    const s = openSession(book, { clock: at(2026) })
+    const s = createSession(book, { clock: at(2026) })
     s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'VALUE("1.5.2026")' } }])
-    expect(volatile(s.result())).not.toContain('B1')
-    expect(volatile(s.result())).not.toContain('B2')
+    expect(volatile(s.getResult())).not.toContain('B1')
+    expect(volatile(s.getResult())).not.toContain('B2')
     s.setClock(at(2027))
-    expect(values(s.result())).toEqual(values(compute(s.book(), { clock: at(2027) })))
+    expect(values(s.getResult())).toEqual(values(compute(s.getBook(), { clock: at(2027) })))
   })
 })

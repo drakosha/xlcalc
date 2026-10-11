@@ -1,6 +1,6 @@
 /**
  * Excel's answers to structure operations (`test/excel/struct/<set>.json`, from `run.ts struct <set>`)
- * and the comparison with `restructure`: what each cell shows (`=formula` or the value) in the read
+ * and the comparison with `editStructure`: what each cell shows (`=formula` or the value) in the read
  * rectangle of every sheet, the extra cells, the sheets and the names. Formulas are compared in the form
  * Excel writes references (`A1:A1048576` is `A:A`), with sheet names quoted.
  */

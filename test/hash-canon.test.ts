@@ -1,6 +1,6 @@
 /**
  * The values hash against the canonical text built here from its rules and hashed by node:crypto, independently of
- * `src/canon.ts`: `Session.hash()`, `result().hash`, `compute().hash` and `valuesHash` agree with it on edge books
+ * `src/canon.ts`: `Session.getHash()`, `getResult().hash`, `compute().hash` and `valuesHash` agree with it on edge books
  * (sheet and address order, rounding, non-finite numbers, Unicode, ru-RU, 1904, spills and their fills) and seeded
  * random books, after cell edits and structure operations, in a synchronous session, in the same thread and in a thread,
  * with closures and eval.
@@ -9,7 +9,7 @@ import { createHash } from 'node:crypto'
 import { afterAll, describe, expect, it } from 'vitest'
 import { valuesHash, type FillLine } from '../src/canon.js'
 import { CONFIG_VERSION } from '../src/config.js'
-import { compute, createInlineCalc, openSession, type BookInput, type CellEdit, type CellInput, type CellValue, type ComputeResult, type Execution, type Session, type StructureOp } from '../src/index.js'
+import { compute, createInlineCalc, createSession, type BookInput, type CellEdit, type CellInput, type CellValue, type ComputeResult, type Execution, type Session, type StructureOp } from '../src/index.js'
 import { clockSerial, createState, formatAddress, outValue, toCellValue } from '../src/internal.js'
 import { mulberry32, synthBook } from '../src/synth.js'
 import { pool } from './fixtures/pool.js'
@@ -68,16 +68,16 @@ function referenceText(r: ComputeResult, book: BookInput, fills: FillLine[]): st
 const sha256 = (text: string) => createHash('sha256').update(text, 'utf8').digest('hex')
 
 /**
- * A synchronous session's `hash()` and `result().hash` (with and without display), `compute()` of its book and
+ * A synchronous session's `getHash()` and `getResult().hash` (with and without display), `compute()` of its book and
  * `valuesHash` over the computed values (prepared and not) all equal the reference hash; returns it.
  */
 function agree(s: Session, execution: Execution, label: string): string {
-  const h = s.hash()
-  const book = s.book()
+  const h = s.getHash()
+  const book = s.getBook()
   const fresh = compute(book, { clock: CLOCK, execution })
   const fills = fillsOf(book, execution)
   const expected = sha256(referenceText(fresh, book, fills))
-  expect([h, s.result().hash, fresh.hash, compute(book, { clock: CLOCK, execution, display: false }).hash], label).toEqual([expected, expected, expected, expected])
+  expect([h, s.getResult().hash, fresh.hash, compute(book, { clock: CLOCK, execution, display: false }).hash], label).toEqual([expected, expected, expected, expected])
   const values = new Map(fresh.sheets.map((x) => [x.name, new Map(Object.entries(x.cells).map(([a, c]): [string, CellValue] => [a, c.value]))]))
   expect([valuesHash(values, CONFIG_VERSION, fills, book.locale, book.dateSystem, true), valuesHash(values, CONFIG_VERSION, fills, book.locale, book.dateSystem)], label).toEqual([expected, expected])
   return expected
@@ -267,11 +267,11 @@ describe('hash and the canonical text', () => {
 describe.each(['closures', 'eval'] as const)('execution %s', (execution: Execution) => {
   it('a synchronous session: books, then cell edits and structure operations', () => {
     BOOKS.forEach(([name, book], i) => {
-      const s = openSession(book, { clock: CLOCK, execution })
+      const s = createSession(book, { clock: CLOCK, execution })
       agree(s, execution, name)
       randomSteps(100 + i, book, 6).forEach((step, j) => {
         if ('edits' in step) s.setCells(step.edits)
-        else s.restructure(step.op)
+        else s.editStructure(step.op)
         agree(s, execution, `${name}, step ${j + 1}: ${JSON.stringify(step)}`)
       })
     })
@@ -282,11 +282,11 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution: Executi
     const p = await pool({ threads: 2 })
     pools.push(p)
     for (const [i, [name, book]] of BOOKS.slice(0, EDGE.length + 8).entries()) {
-      const s = openSession(book, { clock: CLOCK, execution })
-      const [a, b] = [await calc.openSession(book, { clock: CLOCK, execution }), await p.openSession(book, { clock: CLOCK, execution })]
+      const s = createSession(book, { clock: CLOCK, execution })
+      const [a, b] = [await calc.createSession(book, { clock: CLOCK, execution }), await p.createSession(book, { clock: CLOCK, execution })]
       const check = async (label: string) => {
-        const h = s.hash()
-        expect([await a.hash(), (await a.result()).hash, await b.hash(), (await b.result()).hash], label).toEqual([h, h, h, h])
+        const h = s.getHash()
+        expect([await a.getHash(), (await a.getResult()).hash, await b.getHash(), (await b.getResult()).hash], label).toEqual([h, h, h, h])
       }
       await check(name)
       for (const [j, step] of randomSteps(100 + i, book, 4).entries()) {
@@ -295,9 +295,9 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution: Executi
           await a.setCells(step.edits)
           await b.setCells(step.edits)
         } else {
-          s.restructure(step.op)
-          await a.restructure(step.op)
-          await b.restructure(step.op)
+          s.editStructure(step.op)
+          await a.editStructure(step.op)
+          await b.editStructure(step.op)
         }
         await check(`${name}, step ${j + 1}`)
       }

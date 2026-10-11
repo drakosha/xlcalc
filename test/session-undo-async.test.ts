@@ -5,7 +5,7 @@
  * (undos and redos in it) and from a snapshot, and one that left a full thread too.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { CalcError, createInlineCalc, openSession, type AsyncSession, type BookInput, type Calc, type CellRef, type Execution, type Session, type UndoResult } from '../src/index.js'
+import { CalcError, createInlineCalc, createSession, type AsyncSession, type BookInput, type Calc, type CellRef, type Execution, type Session, type UndoResult } from '../src/index.js'
 import { CLOCK, heavyBook } from './async-books.js'
 import { inside, pool } from './fixtures/pool.js'
 
@@ -21,12 +21,12 @@ type Call = (s: Session | AsyncSession) => unknown
 const CALLS: Call[] = [
   (s) => s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }]),
   (s) => s.patchCells([{ sheet: 'S', cell: 'A2', set: { format: '0.00', note: { text: 'n' } } }]),
-  (s) => s.restructure({ op: 'insertRows', sheet: 'S', row: 2, count: 2 }),
+  (s) => s.editStructure({ op: 'insertRows', sheet: 'S', row: 2, count: 2 }),
   (s) => s.setLayout([{ sheet: 'S', merges: ['C2:D3'] }]),
   (s) => s.setNames([{ name: 'k', ref: '3' }]),
   (s) => s.setStyles([{ font: { bold: true } }]),
-  (s) => s.restructure({ op: 'renameSheet', sheet: 'R', name: 'Q' }),
-  (s) => s.restructure({ op: 'deleteSheet', sheet: 'S' }),
+  (s) => s.editStructure({ op: 'renameSheet', sheet: 'R', name: 'Q' }),
+  (s) => s.editStructure({ op: 'deleteSheet', sheet: 'S' }),
 ]
 const UNDO = (s: Session | AsyncSession) => s.undo()
 const REDO = (s: Session | AsyncSession) => s.redo()
@@ -48,14 +48,14 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
   const o = { clock: CLOCK, execution }
 
   /** The moves on `s` give what they give on a synchronous session, with its book, hash and history after each. */
-  async function same(s: AsyncSession, moves = MOVES, y = openSession(book(), o)) {
+  async function same(s: AsyncSession, moves = MOVES, y = createSession(book(), o)) {
     for (const [k, move] of moves.entries()) {
-      const sheets = y.book().sheets.map((x) => x.name)
+      const sheets = y.getBook().sheets.map((x) => x.name)
       const want = plain(move(y), sheets)
       expect(plain(await move(s), sheets), `move ${k}`).toEqual(want)
       expect(s.history, `move ${k}`).toEqual(y.history)
-      expect(await s.book(), `move ${k}`).toEqual(y.book())
-      expect(await s.hash(), `move ${k}`).toBe(y.hash())
+      expect(await s.getBook(), `move ${k}`).toEqual(y.getBook())
+      expect(await s.getHash(), `move ${k}`).toBe(y.getHash())
     }
     return y
   }
@@ -63,21 +63,21 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
   it('in the same thread', async () => {
     const calc = createInlineCalc({ sliceMs: 1 })
     calcs.push(calc)
-    await same(await calc.openSession(book(), o))
+    await same(await calc.createSession(book(), o))
   })
 
   it('in a thread: mapCell from the geometry the thread sends', async () => {
     const calc = await pool({ threads: 1 })
     calcs.push(calc)
-    await same(await calc.openSession(book(), o))
+    await same(await calc.createSession(book(), o))
   }, 60_000)
 
   it('an undo stopped by its deadline or its signal changes nothing', async () => {
     const calc = createInlineCalc({ sliceMs: 1 })
     calcs.push(calc)
-    const s = await calc.openSession(heavyBook(), o)
+    const s = await calc.createSession(heavyBook(), o)
     await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }])
-    const [b, hash] = [JSON.stringify(await s.book()), await s.hash()]
+    const [b, hash] = [JSON.stringify(await s.getBook()), await s.getHash()]
     const e = await s.undo({ timeoutMs: 1 }).catch((x) => x)
     expect(e).toBeInstanceOf(CalcError)
     expect(e.code).toBe('soft_timeout')
@@ -86,8 +86,8 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
     stop.abort()
     expect((await waiting).code).toBe('aborted')
     expect(s.history).toEqual({ undo: 1, redo: 0 })
-    expect(JSON.stringify(await s.book())).toBe(b)
-    expect(await s.hash()).toBe(hash)
+    expect(JSON.stringify(await s.getBook())).toBe(b)
+    expect(await s.getHash()).toBe(hash)
     // B1 of the heavy book is too large to change by 1
     expect((await s.undo())!.changes).toEqual([{ sheet: 'S', cell: 'A1', value: 1, text: '1' }])
     expect(s.history).toEqual({ undo: 0, redo: 1 })
@@ -97,7 +97,7 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
     for (const snapshotEvery of [64, 2]) {
       const { calc, inside: x, crash } = await inside({ threads: 1, snapshotEvery })
       calcs.push(calc)
-      const s = await calc.openSession(book(), o)
+      const s = await calc.createSession(book(), o)
       const y = await same(s, MOVES.slice(0, 13))
       const r = [...x.recs][0]
       if (snapshotEvery === 64) expect(r.journal.map((e) => e.op)).toContain('undo')
@@ -115,14 +115,14 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
     const big = (): BookInput => ({ sheets: [{ name: 'S', cells: { ...cells } }] })
     const { calc, inside: x } = await inside({ threads: 1, maxHeapMb: 384, maxSessionsPerThread: 6, snapshotEvery: 1 })
     calcs.push(calc)
-    const [s, own] = [await calc.openSession(big(), o), await calc.openSession(big(), { ...o, undo: { maxMb: 64 } })]
-    const y = openSession(big(), { ...o, undo: { maxMb: 8 } })
+    const [s, own] = [await calc.createSession(big(), o), await calc.createSession(big(), { ...o, undo: { maxMb: 64 } })]
+    const y = createSession(big(), { ...o, undo: { maxMb: 8 } })
     const counts: number[] = []
     for (const count of [1000, 1000, 1000, 1000, 4000]) {
       const op = { op: 'deleteRows', sheet: 'S', row: 1, count } as const
-      await s.restructure(op)
-      await own.restructure(op)
-      y.restructure(op)
+      await s.editStructure(op)
+      await own.editStructure(op)
+      y.editStructure(op)
       expect(s.history).toEqual(y.history)
       counts.push(s.history.undo)
       // what the snapshot taken after the call holds: within 8 MB by the estimate
@@ -134,29 +134,29 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
     expect(counts).toEqual([1, 2, 3, 4, 3])
     expect(own.history).toEqual({ undo: 5, redo: 0 })
     for (let k = 0; k < 3; k++) {
-      expect((await s.undo())!.call).toBe('restructure')
+      expect((await s.undo())!.call).toBe('editStructure')
       y.undo()
-      expect(await s.hash()).toBe(y.hash())
+      expect(await s.getHash()).toBe(y.getHash())
     }
     expect(await s.undo()).toBeNull()
-    expect(await s.book()).toEqual(y.book())
+    expect(await s.getBook()).toEqual(y.getBook())
     // the book after the first two deletes, of 1,000 rows each
-    expect(Object.keys((await s.book()).sheets[0].cells)).toHaveLength(180_000)
+    expect(Object.keys((await s.getBook()).sheets[0].cells)).toHaveLength(180_000)
   }, 120_000)
 
   it('sessions that take turns on a full thread keep their histories', async () => {
     const calc = await pool({ threads: 1, maxSessionsPerThread: 1 })
     calcs.push(calc)
-    const [a, b] = [await calc.openSession(book(), o), await calc.openSession(book(), o)]
-    const [ya, yb] = [openSession(book(), o), openSession(book(), o)]
+    const [a, b] = [await calc.createSession(book(), o), await calc.createSession(book(), o)]
+    const [ya, yb] = [createSession(book(), o), createSession(book(), o)]
     for (const [k, move] of MOVES.entries()) {
       for (const [s, y] of [[a, ya], [b, yb]] as const) {
-        const sheets = y.book().sheets.map((x) => x.name)
+        const sheets = y.getBook().sheets.map((x) => x.name)
         expect(plain(await move(s), sheets), `move ${k}`).toEqual(plain(move(y), sheets))
         expect(s.history).toEqual(y.history)
       }
     }
-    expect(await a.book()).toEqual(ya.book())
-    expect(await b.hash()).toBe(yb.hash())
+    expect(await a.getBook()).toEqual(ya.getBook())
+    expect(await b.getHash()).toBe(yb.getHash())
   }, 120_000)
 })

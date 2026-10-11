@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ComputeResult } from '../src/contract.js'
-import { compute, openSession } from '../src/index.js'
+import { compute, createSession } from '../src/index.js'
 
 const at = (year: number, seed = 1) => ({ now: `${year}-10-05T12:00:00Z`, seed })
 
@@ -47,12 +47,12 @@ describe('en-US date text without a year depends on the clock', () => {
   })
 
   it('a session after setClock equals a full computation with that clock', () => {
-    const s = openSession(book, { clock: at(2026) })
+    const s = createSession(book, { clock: at(2026) })
     for (const year of [2028, 2027, 2026]) {
       s.setClock(at(year, year))
       const full = compute(book, { clock: at(year, year) })
-      expect(values(s.result()), String(year)).toEqual(values(full))
-      expect(s.result().hash).toBe(full.hash)
+      expect(values(s.getResult()), String(year)).toEqual(values(full))
+      expect(s.getResult().hash).toBe(full.hash)
     }
   })
 })

@@ -13,7 +13,7 @@ const rows = Number(process.argv[2] ?? 3400)
 const execution = (process.argv[3] ?? 'closures') as Execution
 const display = process.argv[4] !== 'off'
 const { libUrl } = await import('./target.js')
-const { compute, openSession, validateFormula } = (await import(libUrl('index.js'))) as typeof import('../../src/index.js')
+const { compute, createSession, validateFormula } = (await import(libUrl('index.js'))) as typeof import('../../src/index.js')
 const { synthBook, classAEdits, classBEdit } = (await import(libUrl('synth.js'))) as typeof import('../../src/synth.js')
 const { codegenContext, createState } = (await import(libUrl('engine.js'))) as typeof import('../../src/engine.js')
 const { makeCompiler } = (await import(libUrl('compile.js'))) as typeof import('../../src/compile.js')
@@ -34,12 +34,12 @@ const first = time(() => compute(synth.book, { clock, execution, display }))
 compute(synth.book, { clock, execution, display })
 const cold = [0, 1, 2, 3, 4].map(() => time(() => compute(synth.book, { clock, execution, display })))
 gc()
-const session = openSession(synth.book, { clock, execution, display })
+const session = createSession(synth.book, { clock, execution, display })
 gc()
 const m1 = process.memoryUsage()
 const editA = classAEdits(synth, 101, 100).map((e) => time(() => session.setCells([e])))
 const editB = [0, 1, 2, 3, 4].map((i) => time(() => session.setCells([classBEdit(synth, 200 + i)])))
-const hash = session.result().hash
+const hash = session.getResult().hash
 session.close()
 const formulas = synth.book.sheets.flatMap((s) => Object.values(s.cells).flatMap((c) => (c.formula === undefined ? [] : [c.formula])))
 const sheets = synth.book.sheets.map((s) => s.name)

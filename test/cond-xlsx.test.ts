@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ConditionalFormat, DataValidation } from '../src/contract.js'
-import { restructure, validateFormula } from '../src/index.js'
+import { editStructure, validateFormula } from '../src/index.js'
 import { buildCondCases as buildBoth } from '../bench/coverage/cond/both.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
@@ -124,7 +124,7 @@ describe('conditional formats in xlsx', () => {
     for (const dir of ['./excel/cond/both/', './excel/win/cond/both/'])
       for (const c of built.cases) {
         const r = await readXlsx(new Uint8Array(readFileSync(new URL(`${dir}${c.id}.xlsx`, import.meta.url))))
-        const r2 = c.op ? restructure(built.books.both, c.op) : { ok: true as const, book: built.books.both }
+        const r2 = c.op ? editStructure(built.books.both, c.op) : { ok: true as const, book: built.books.both }
         if (!r2.ok) throw new Error(r2.code)
         expect(r.issues, `${dir}${c.id}`).toEqual([])
         expect(norm(r.book.sheets[0].validations), `${dir}${c.id}`).toEqual(norm(r2.book.sheets[0].validations))

@@ -3,11 +3,11 @@
  * style alone over a column with a format (the cell shows the column's format); built-in formats as the locale's codes;
  * spills that reach into the window, a large one's unstored rest too; merged areas on its edge; the widths and heights of
  * its lines; formulas in the book's locale inside a table; `maxCells`; equal styles as one object, through a thread
- * too; the cells `Session.cells` gives, each with the same value and look. In a synchronous session, in the same thread
+ * too; the cells `Session.getCells` gives, each with the same value and look. In a synchronous session, in the same thread
  * and in a thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { InputError, openSession, type BookInput, type CellView, type Execution, type ViewportCell } from '../src/index.js'
+import { InputError, createSession, type BookInput, type CellView, type Execution, type ViewportCell } from '../src/index.js'
 import { CLOCK } from './async-books.js'
 import { randomBook } from './seeded-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
@@ -61,7 +61,7 @@ const orders = (locale?: string): BookInput => ({
   ],
 })
 
-/** A window cell as `Session.cells` gives it: the style by index, the conditional formats' look, the cell's own format. */
+/** A window cell as `Session.getCells` gives it: the style by index, the conditional formats' look, the cell's own format. */
 function asView(w: ViewportCell, styles: object[], own: CellView['format']): CellView {
   const { style, effectiveStyle: _e, numberFormat: _n, numberFormatSource: _s, appearance, formulaLocal: _f, issue: _i, ...rest } = w
   const out: CellView = { ...rest }
@@ -93,12 +93,12 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       expect(v.columns).toEqual([{ width: 8.83203125 }, { width: 8.83203125 }, { width: 8.83203125 }, { width: 8.83203125 }, { width: 20 }, { width: 5, hidden: true }, { width: 8.83203125 }])
       expect(v.rows).toEqual([{ height: 15 }, { height: 15 }, { height: 15 }, { height: 15 }, { height: 15 }, { height: 30 }, { height: 15, hidden: true }, { height: 0, hidden: true }])
       expect(v.merges).toEqual(['C5:D6', 'F1:G1'])
-      expect(v).toMatchObject({ range: 'A1:G8', truncated: false, extent: { rows: 11, columns: 9 } })
+      expect(v).toMatchObject({ range: 'A1:G8', truncated: false, usedRange: { rows: 11, columns: 9 } })
       // equal styles are one object, and the answer's own
       expect(v.cells.A3.effectiveStyle).toBe(v.cells.D4.effectiveStyle)
       expect(v.cells.C1.effectiveStyle).toBe(v.cells.C2.effectiveStyle)
       v.cells.A3.effectiveStyle!.font!.bold = false
-      expect((await s.layout()).styles![0]).toEqual(BOLD)
+      expect((await s.getLayout()).styles![0]).toEqual(BOLD)
       await s.close()
     })
 
@@ -120,7 +120,7 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       expect(v.cells.E6).toEqual({ value: 0, text: '0', spillOf: 'E1' })
       expect(Object.keys(v.cells)).toEqual(['B3', 'E3', 'B4', 'E4', 'B5', 'E5', 'E6'])
       expect((await s.getViewport('S', 'E1')).cells.E1).toEqual({ value: 2, text: '2', formula: 'D:D*2', spill: 'E1:E1048576', spillFill: 0 })
-      expect((await s.getViewport('S', 'C1:C9')).extent).toEqual({ rows: 1_048_576, columns: 5 })
+      expect((await s.getViewport('S', 'C1:C9')).usedRange).toEqual({ rows: 1_048_576, columns: 5 })
       await s.close()
     })
 
@@ -165,7 +165,7 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       await s.close()
     })
 
-    it('the cells Session.cells gives, with the same values and looks; the others with a style of their line or spilled', async () => {
+    it('the cells Session.getCells gives, with the same values and looks; the others with a style of their line or spilled', async () => {
       const open = await opener(kind)
       const cond = lines()
       cond.sheets[0].conditionalFormats = [
@@ -176,10 +176,10 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       const books: [string, BookInput][] = [['lines', cond], ['spills', spills()], ['orders', orders('ru-RU')], ['the spill book', spillBook()], ['a seeded book', randomBook(5)]]
       for (const [name, book] of books) {
         const s = await open(book, { clock: CLOCK, execution })
-        const b = await s.book()
+        const b = await s.getBook()
         for (const sheet of b.sheets)
           for (const range of ['A1:J12', 'B2:D4', 'H1:H3', 'A5:Z40']) {
-            const [cells, v] = [await s.cells(sheet.name, range), await s.getViewport(sheet.name, range)]
+            const [cells, v] = [await s.getCells(sheet.name, range), await s.getViewport(sheet.name, range)]
             for (const [a, c] of Object.entries(cells)) expect(asView(v.cells[a], b.styles ?? [], c.format), `${name}: ${sheet.name}!${a}`).toEqual(c)
             for (const [a, w] of Object.entries(v.cells)) if (!(a in cells)) expect(w.effectiveStyle !== undefined || w.spillOf !== undefined, `${name}: ${sheet.name}!${a}`).toBe(true)
           }
@@ -208,7 +208,7 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
 
 describe('a window for a grid', () => {
   it('the sheet, the range and the options are checked as input', () => {
-    const s = openSession(lines(), { clock: CLOCK })
+    const s = createSession(lines(), { clock: CLOCK })
     expect(() => s.getViewport('Nope', 'A1')).toThrow(InputError)
     expect(() => s.getViewport('S', 'A0')).toThrow('range: expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got "A0"')
     expect(() => s.getViewport('S', 'A1', { maxCells: 0 })).toThrow('opts.maxCells')

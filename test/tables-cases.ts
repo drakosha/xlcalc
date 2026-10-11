@@ -1,6 +1,6 @@
 /**
  * A table case of `bench/coverage/tables/` taken by the engine as Excel took it: the book opened in a session, each
- * step applied (a cell typed through `setCells`, an operation through `restructure`, a name added through `setNames`,
+ * step applied (a cell typed through `setCells`, an operation through `editStructure`, a name added through `setNames`,
  * a refusal noted), and the answer read as the harness reads Excel's: the rectangles' values, their formulas as stored
  * text, the tables, the names.
  */
@@ -8,7 +8,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import { cellsOf } from '../bench/coverage/case-book.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { TableAnswer, TableCase, TableShape } from '../bench/coverage/tables/cases.js'
-import { compute, enUS, InputError, LOCALES, openSession, quoteSheetIfNeeded, toInvariant, toLocal, type BookInput, type ComputeResult, type Locale } from '../src/index.js'
+import { compute, enUS, InputError, LOCALES, createSession, quoteSheetIfNeeded, toInvariant, toLocal, type BookInput, type ComputeResult, type Locale } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { sheetKey, validate } from '../src/syntax.js'
 import { tableAt, tablesOf } from '../src/tables/model.js'
@@ -37,12 +37,12 @@ export const shapes = (book: BookInput): TableShape[] =>
 const localeOf = (c: TableCase, tag = 'en-US') => LOCALES.get(c.book.locale ?? tag)!
 
 export function engineAnswer(c: TableCase): EngineAnswer {
-  const s = openSession(c.book, { clock: CLOCK })
+  const s = createSession(c.book, { clock: CLOCK })
   const refused: Record<number, string> = {}
   ;(c.steps ?? []).forEach((step, i) => {
     if ('name' in step) {
       // Excel's Names.Add takes a name or refuses it: a name left out with an issue is refused
-      const before = s.book().names ?? []
+      const before = s.getBook().names ?? []
       try {
         s.setNames([...before, step.name])
       } catch (e) {
@@ -50,7 +50,7 @@ export function engineAnswer(c: TableCase): EngineAnswer {
         refused[i] = e.message
         return
       }
-      const issue = s.result().nameIssues.find((x) => x.name === step.name.name && x.scope === step.name.scope)
+      const issue = s.getResult().nameIssues.find((x) => x.name === step.name.name && x.scope === step.name.scope)
       if (issue) {
         refused[i] = issue.reason
         s.setNames(before)
@@ -58,7 +58,7 @@ export function engineAnswer(c: TableCase): EngineAnswer {
       return
     }
     if ('op' in step) {
-      const r = s.restructure(step.op)
+      const r = s.editStructure(step.op)
       if (!r.ok) refused[i] = `${r.code}: ${r.message}`
       return
     }
@@ -68,7 +68,7 @@ export function engineAnswer(c: TableCase): EngineAnswer {
     const input = v === null ? null : typeof v === 'object' ? { formula: local?.ok ? local.formula : (v as { formula: string }).formula } : { value: v }
     // a cell typed over keeps its style and number format, as in Excel
     const look = (a: string) => {
-      const { value: _, formula: __, ...rest } = s.book().sheets.find((x) => sheetKey(x.name) === sheetKey(sheet))?.cells[a] ?? {}
+      const { value: _, formula: __, ...rest } = s.getBook().sheets.find((x) => sheetKey(x.name) === sheetKey(sheet))?.cells[a] ?? {}
       return rest
     }
     try {
@@ -78,8 +78,8 @@ export function engineAnswer(c: TableCase): EngineAnswer {
       refused[i] = e.message
     }
   })
-  const book = s.book()
-  const result = s.result()
+  const book = s.getBook()
+  const result = s.getResult()
   const values: Record<string, Val> = {}
   const formulas: Record<string, string> = {}
   for (const g of c.read) {

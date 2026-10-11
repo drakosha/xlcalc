@@ -6,7 +6,7 @@
  * save rules the reader reads back as the book holds them. Predicted before Excel ran it (`files.predicted.json`).
  */
 import type { BookInput, CellInput, ConditionalFormat } from '../../../src/contract.js'
-import { restructure } from '../../../src/index.js'
+import { editStructure } from '../../../src/index.js'
 import type { CondCase, CondCases } from './cases.js'
 
 const v = (value: CellInput['value']): CellInput => ({ value })
@@ -67,8 +67,8 @@ function wideBook(): BookInput {
 }
 
 /** The kinds book after a structure operation in the engine: the file is the engine's book. */
-function after(op: Parameters<typeof restructure>[1]): BookInput {
-  const r = restructure(kindsBook(), op)
+function after(op: Parameters<typeof editStructure>[1]): BookInput {
+  const r = editStructure(kindsBook(), op)
   if (!r.ok) throw new Error(`files: ${op.op} refused`)
   return r.book
 }

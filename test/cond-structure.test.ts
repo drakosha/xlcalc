@@ -1,10 +1,10 @@
 /**
  * Conditional formats under structure operations, by the rules measured in Excel (the set `cond/struct-held`), in
- * `restructure` and in a session (both execution modes).
+ * `editStructure` and in a session (both execution modes).
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ConditionalFormat, StructureOp } from '../src/contract.js'
-import { openSession, restructure } from '../src/index.js'
+import { createSession, editStructure } from '../src/index.js'
 
 const RED = { fill: { color: '#FFC7CE' } }
 const SCALE: ConditionalFormat = { type: 'colorScale', ranges: ['C1:C10'], points: [{ value: { type: 'min' }, color: '#F8696B' }, { value: { type: 'max' }, color: '#63BE7B' }] }
@@ -31,7 +31,7 @@ function book(): BookInput {
 
 /** Each sheet's rules as `ranges formula`, in order. */
 function rules(op: StructureOp, b = book()): Record<string, string[]> {
-  const r = restructure(b, op)
+  const r = editStructure(b, op)
   if (!r.ok) throw new Error(r.code)
   return Object.fromEntries(r.book.sheets.map((s) => [s.name, (s.conditionalFormats ?? []).map((x) => `${x.ranges.join(' ')} ${'formula' in x && x.formula ? x.formula : x.type === 'cellIs' ? x.formulas.join(';') : x.type}`)]))
 }
@@ -74,13 +74,13 @@ describe('conditional formats under structure operations', () => {
 
 describe.each(['closures', 'eval'] as const)('a session restructures its rules (%s)', (execution) => {
   it('the rules move with the operation and the looks follow', () => {
-    const s = openSession(book(), { clock: { now: '2026-10-10T12:00:00Z', seed: 1 }, execution })
-    expect(s.cells('S', 'C1').C1).toBeUndefined()
+    const s = createSession(book(), { clock: { now: '2026-10-10T12:00:00Z', seed: 1 }, execution })
+    expect(s.getCells('S', 'C1').C1).toBeUndefined()
     s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 1 } }, { sheet: 'S', cell: 'C2', input: { value: 2 } }])
-    expect(s.cells('S', 'C1:C2').C2.look).toEqual({ style: { fill: { color: '#63BE7B' } } })
-    const r = s.restructure({ op: 'insertRows', sheet: 'S', row: 1 })
+    expect(s.getCells('S', 'C1:C2').C2.look).toEqual({ style: { fill: { color: '#63BE7B' } } })
+    const r = s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 })
     expect(r.ok).toBe(true)
-    expect(s.book().sheets[0].conditionalFormats![2].ranges).toEqual(['C2:C11'])
-    expect(s.cells('S', 'C3').C3.look).toEqual({ style: { fill: { color: '#63BE7B' } } })
+    expect(s.getBook().sheets[0].conditionalFormats![2].ranges).toEqual(['C2:C11'])
+    expect(s.getCells('S', 'C3').C3.look).toEqual({ style: { fill: { color: '#63BE7B' } } })
   })
 })

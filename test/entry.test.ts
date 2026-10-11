@@ -4,7 +4,7 @@
  * Excel's own answers are checked in `entry-excel.test.ts` and `entry-win.test.ts`.
  */
 import { describe, expect, it } from 'vitest'
-import { displayValue, engine, InputError, openSession, parseEntry, type EntryResult } from '../src/index.js'
+import { displayValue, engine, InputError, createSession, parseEntry, type EntryResult } from '../src/index.js'
 import './locales.js'
 
 const now = '2026-10-10T12:00:00Z'
@@ -124,8 +124,8 @@ describe('parseEntry', () => {
 
   it("puts typed text into a session's cell, read from the session with its style and meta", () => {
     const book = { locale: 'ru-RU', styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, format: '0.00', style: 0, meta: { id: 7 } }, A2: { formula: 'A1*2' } } }] }
-    const session = openSession(book, { clock: { now, seed: 1 } })
-    const r = parseEntry('1 234,5', { locale: 'ru-RU', cell: session.cells('S', 'A1').A1 })
+    const session = createSession(book, { clock: { now, seed: 1 } })
+    const r = parseEntry('1 234,5', { locale: 'ru-RU', cell: session.getCells('S', 'A1').A1 })
     expect(r).toEqual({ ok: true, input: { value: 1234.5, format: '0.00', style: 0, meta: { id: 7 } } })
     if (r.ok) expect(session.setCells([{ sheet: 'S', cell: 'A1', input: r.input }]).changes).toEqual([
       { sheet: 'S', cell: 'A1', value: 1234.5, text: '1234,50' },

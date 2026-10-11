@@ -3,7 +3,7 @@
  * large whole columns, INDEX answering a reference, and LOOKUP past the end of its result range.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, type CellInput, type CellValue } from '../src/index.js'
+import { compute, createSession, type CellInput, type CellValue } from '../src/index.js'
 
 const err = (code: Extract<CellValue, { error: unknown }>['error']): CellValue => ({ error: code })
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
@@ -38,7 +38,7 @@ describe('lookup and database functions beyond the Excel cases', () => {
     Object.assign(cells, { B1: { value: 'x' }, B2: { value: 'y' }, B3: { formula: 'UPPER("z")' }, C6: { value: 'c' }, D6: { value: 'd' }, E6: { value: 'e' }, I1: { formula: 'LOWER("I")' } })
     const v = sheet(cells)
     expect([v.E1, v.E2, v.E3, v.E4, v.E5, v.E7]).toEqual(['Z', 'y', 'e', 'i', 'Z', 0])
-    const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock })
+    const s = createSession({ sheets: [{ name: 'S', cells }] }, { clock })
     const { changes: changed } = s.setCells([
       { sheet: 'S', cell: 'B3', input: { value: 'w' } },
       { sheet: 'S', cell: 'I1', input: { value: 'v' } },
@@ -62,7 +62,7 @@ describe('lookup and database functions beyond the Excel cases', () => {
     Object.assign(cells, { B1: { value: 'x' }, B2: { value: 'y' }, B3: { formula: 'UPPER("z")' }, C1: { formula: 'LOWER("C")' }, G3: { formula: 'UPPER("g")' }, I1: { value: 'i1' }, I2: { formula: 'LOWER("I")' }, K1: { value: 2 } })
     const v = sheet(cells)
     expect([v.E1, v.E2, v.E3, v.E4, v.E6, v.E7]).toEqual(['Z', 'Z', 'Z', 'c', 'G', 'i'])
-    const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock })
+    const s = createSession({ sheets: [{ name: 'S', cells }] }, { clock })
     const edit = (cell: string, value: string | number) =>
       Object.fromEntries(s.setCells([{ sheet: 'S', cell, input: { value } }]).changes.filter((c) => /^E\d$/.test(c.cell)).map((c) => [c.cell, c.value]))
     expect(edit('B3', 'w')).toEqual({ E1: 'w', E2: 'w', E3: 'w' })
@@ -70,7 +70,7 @@ describe('lookup and database functions beyond the Excel cases', () => {
     expect(edit('I2', 'j')).toEqual({ E7: 'j' })
     // an array of one value does not spill: G1# is the cell G1, read on along row 1, and so is TAKE's last cell
     expect(edit('K1', 1)).toEqual({ E6: 'i1', E7: 'i1' })
-    expect(s.hash()).toBe(compute(s.book(), { clock }).hash)
+    expect(s.getHash()).toBe(compute(s.getBook(), { clock }).hash)
     s.close()
   })
 
@@ -88,13 +88,13 @@ describe('lookup and database functions beyond the Excel cases', () => {
     const book = { sheets: [{ name: 'S', cells }] }
     const v = compute(book, { clock, execution }).sheets[0].cells
     expect([v.C1.value, v.I10.value]).toEqual([0, 'F'])
-    const s = openSession(book, { clock, execution })
+    const s = createSession(book, { clock, execution })
     const edit = (cell: string, input: CellInput) => Object.fromEntries(s.setCells([{ sheet: 'S', cell, input }]).changes.filter((c) => c.cell === 'C1' || c.cell === 'I10').map((c) => [c.cell, c.value]))
     expect(edit('D1', { value: 5 })).toEqual({ C1: 50 })
     expect(edit('F10', { value: 'g' })).toEqual({ I10: 'g' })
     expect(edit('D1', { value: 3 })).toEqual({ C1: 0 })
     expect(edit('B5', { value: 7 })).toEqual({ C1: 7 })
-    expect(s.hash()).toBe(compute(s.book(), { clock, execution }).hash)
+    expect(s.getHash()).toBe(compute(s.getBook(), { clock, execution }).hash)
     s.close()
   })
 
@@ -128,13 +128,13 @@ describe('lookup and database functions beyond the Excel cases', () => {
       F2: { formula: 'DSUM(A1:B3,"Profit",D1:D2)' },
       F3: { formula: 'INDEX(B:B,MATCH("Apple",A:A,0))' },
     }
-    const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock })
+    const s = createSession({ sheets: [{ name: 'S', cells }] }, { clock })
     const { changes: changed } = s.setCells([
       { sheet: 'S', cell: 'B3', input: { value: 25 } },
       { sheet: 'S', cell: 'B2', input: { value: 11 } },
     ])
     expect(Object.fromEntries(changed.filter((c) => c.cell.startsWith('F')).map((c) => [c.cell, c.value]))).toEqual({ F1: 25, F2: 25, F3: 11 })
-    expect(s.result().hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...cells, B3: { value: 25 }, B2: { value: 11 } } }] }, { clock }).hash)
+    expect(s.getResult().hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...cells, B3: { value: 25 }, B2: { value: 11 } } }] }, { clock }).hash)
     s.close()
   })
 

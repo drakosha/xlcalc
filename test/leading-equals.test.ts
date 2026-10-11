@@ -1,11 +1,11 @@
 /**
  * A formula's leading `=` is dropped as input is taken: in cells, names, calculated columns of tables, conditional
- * formats and rules of data validation, in `compute`, `restructure`, `validateNames`, `writeXlsx` and a session's edits
+ * formats and rules of data validation, in `compute`, `editStructure`, `validateNames`, `writeXlsx` and a session's edits
  * (in a synchronous session, in the same thread and in a thread), in both execution modes. The book with `=` is the book
  * without it, `inputHash` too; a second `=` stays an error of the formula; the caller's input is not changed.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, openSession, restructure, validateNames, type BookInput, type Execution } from '../src/index.js'
+import { compute, createSession, editStructure, validateNames, type BookInput, type Execution } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
@@ -49,8 +49,8 @@ describe.each(['closures', 'eval'] as Execution[])('a leading = in the input, %s
     compute(b, { clock: CLOCK, execution })
     expect(b.sheets[0].cells.C1.formula).toBe('=SUM(A2:A3)')
     expect(b.names![0].ref).toBe('=0.5')
-    const s = openSession(book(''), { clock: CLOCK, execution })
-    expect(s.book().sheets[0].cells.C1).toEqual({ formula: 'SUM(A2:A3)' })
+    const s = createSession(book(''), { clock: CLOCK, execution })
+    expect(s.getBook().sheets[0].cells.C1).toEqual({ formula: 'SUM(A2:A3)' })
     s.close()
   })
 
@@ -61,11 +61,11 @@ describe.each(['closures', 'eval'] as Execution[])('a leading = in the input, %s
     expect(r.sheets[0].cells.A1.formula).toBe('=1')
   })
 
-  it('restructure, validateNames and writeXlsx take it so too', async () => {
-    const moved = restructure(book('='), { op: 'insertRows', sheet: 'S', row: 1 })
+  it('editStructure, validateNames and writeXlsx take it so too', async () => {
+    const moved = editStructure(book('='), { op: 'insertRows', sheet: 'S', row: 1 })
     if (!moved.ok) throw new Error(moved.message)
     expect(moved.book.sheets[0].cells.C2.formula).toBe('SUM(A3:A4)')
-    const added = restructure(book(''), { op: 'addTable', sheet: 'S', table: { name: 'U', range: 'F1:G2', columns: [{ name: 'a' }, { name: 'b', formula: '=[@a]+1' }] } })
+    const added = editStructure(book(''), { op: 'addTable', sheet: 'S', table: { name: 'U', range: 'F1:G2', columns: [{ name: 'a' }, { name: 'b', formula: '=[@a]+1' }] } })
     if (!added.ok) throw new Error(added.message)
     expect(added.book.sheets[0].tables![1].columns[1].formula).toBe('[@a]+1')
     expect(validateNames([{ name: 'first', ref: "='S'!$A$1" }], { sheets: ['S'] })).toEqual([])
@@ -83,19 +83,19 @@ describe.each(KINDS)("a session's edits, %s", (kind) => {
   it.each(['closures', 'eval'] as Execution[])('drop a leading = as the book does, %s', async (execution) => {
     const [open, eq] = [await opener(kind), await opener(kind)]
     const [a, b] = await Promise.all([open(book(''), { clock: CLOCK, execution }), eq(book('='), { clock: CLOCK, execution })])
-    expect((await b.result()).inputHash).toBe((await a.result()).inputHash)
+    expect((await b.getResult()).inputHash).toBe((await a.getResult()).inputHash)
     expect(await b.setCells([{ sheet: 'S', cell: 'C3', input: { formula: '=C1*10' } }])).toEqual(await a.setCells([{ sheet: 'S', cell: 'C3', input: { formula: 'C1*10' } }]))
     expect(await b.setNames([{ name: 'rate', ref: '=2' }])).toEqual(await a.setNames([{ name: 'rate', ref: '2' }]))
     const cf = (e: string) => [{ sheet: 'S', conditionalFormats: [{ type: 'expression' as const, ranges: ['C1'], formula: `${e}C1>1`, style: { fill: { color: '#FFC7CE' } } }] }]
     await Promise.all([b.setLayout(cf('=')), a.setLayout(cf(''))])
     const op = (e: string) => ({ op: 'addTable' as const, sheet: 'S', table: { name: 'U', range: 'F1:G2', columns: [{ name: 'a' }, { name: 'b', formula: `${e}[@a]+1` }] } })
-    await Promise.all([b.restructure(op('=')), a.restructure(op(''))])
+    await Promise.all([b.editStructure(op('=')), a.editStructure(op(''))])
     expect(await b.validateEntry('S', 'E1', { formula: '=A3' })).toEqual({ ok: true })
     expect(await b.validateEntry('S', 'E1', { formula: '=A3+1' })).toEqual(await a.validateEntry('S', 'E1', { formula: 'A3+1' }))
-    const [x, y] = [await a.book(), await b.book()]
+    const [x, y] = [await a.getBook(), await b.getBook()]
     expect(y).toEqual(x)
     expect(y.sheets[0].cells.C3).toEqual({ formula: 'C1*10' })
-    expect((await b.result()).hash).toBe((await a.result()).hash)
+    expect((await b.getResult()).hash).toBe((await a.getResult()).hash)
     expect((await b.setCells([{ sheet: 'S', cell: 'C3', input: { formula: '==1' } }])).changes[0].value).toEqual({ error: 'ERROR' })
     await Promise.all([a.close(), b.close()])
   })

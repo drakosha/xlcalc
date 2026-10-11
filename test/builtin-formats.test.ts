@@ -3,7 +3,7 @@
  * Excel for Windows shows them): on rows and columns, through a session and `displayValue`, and the checks of the input.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, displayValue, InputError, openSession, type BookInput } from '../src/index.js'
+import { compute, displayValue, InputError, createSession, type BookInput } from '../src/index.js'
 import './locales.js'
 
 const book = (locale?: string): BookInput => ({
@@ -20,7 +20,7 @@ describe('built-in formats by number', () => {
   })
 
   it('a session takes them in edits and layout', () => {
-    const s = openSession(book('ru-RU'))
+    const s = createSession(book('ru-RU'))
     expect(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 45688.75, format: 15 } }]).changes.map((c) => c.text)).toEqual(['31.янв.25'])
     expect(s.setLayout([{ sheet: 'S', columns: 'C', set: { format: 7 } }]).changes.map((c) => c.text)).toEqual(['-1 234,50 ₽'])
     s.close()

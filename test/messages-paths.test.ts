@@ -1,13 +1,13 @@
 /**
  * Every way a message reaches a person gives it in the language of the book or of the locale called with: a formula that
  * does not read (`validateLocalFormula`, `toInvariant`, `toLocal`, `parseEntry`), a refused structure operation
- * (`restructure`, and a session's, synchronous, in the same thread and in threads, in both execution modes), and the
+ * (`editStructure`, and a session's, synchronous, in the same thread and in threads, in both execution modes), and the
  * text of `explain`. Each case names the message of the catalog it gives: in ru-RU its Russian text, in a locale
  * without messages of its own (and in an en-US book) the English one, at the same place. Together the cases reach
  * every message of the catalog but the rules of names, which only `validateName` gives, in English.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { createInlineCalc, openSession, parseEntry, restructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
+import { createInlineCalc, createSession, parseEntry, editStructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { say, type Message, type MessageKey } from '../src/locale/messages.js'
@@ -160,15 +160,15 @@ const REFUSED: [string, () => Pick<BookInput, 'sheets' | 'names'>, StructureOp, 
 const message = (r: { ok: boolean; message?: string }) => (r.ok ? 'done' : r.message)
 
 describe('a refused structure operation', () => {
-  it("restructure gives the message in the book's locale", () => {
+  it("editStructure gives the message in the book's locale", () => {
     for (const [what, book, op, m] of REFUSED) {
       reached.add(m.key)
-      expect(message(restructure({ locale: 'ru-RU', ...book() }, op)), what).toBe(ru(m))
-      expect(message(restructure({ ...book() }, op)), what).toBe(en(m))
-      expect(message(restructure({ locale: 'en-US', ...book() }, op)), what).toBe(en(m))
+      expect(message(editStructure({ locale: 'ru-RU', ...book() }, op)), what).toBe(ru(m))
+      expect(message(editStructure({ ...book() }, op)), what).toBe(en(m))
+      expect(message(editStructure({ locale: 'en-US', ...book() }, op)), what).toBe(en(m))
     }
     // ИСТИНА is the boolean of a ru-RU book, a name in en-US
-    const named = (locale: string) => message(restructure({ locale, sheets: [tables()] }, { op: 'renameTable', table: 'Т1', name: 'истина' }))
+    const named = (locale: string) => message(editStructure({ locale, sheets: [tables()] }, { op: 'renameTable', table: 'Т1', name: 'истина' }))
     expect([named('ru-RU'), named('en-US')]).toEqual([ru({ key: 'tableName', name: 'истина', rule: 'boolean' }), 'done'])
   })
 
@@ -178,8 +178,8 @@ describe('a refused structure operation', () => {
 
     it('a synchronous session', () => {
       for (const [what, book, op, m] of REFUSED) {
-        const s = openSession({ locale: 'ru-RU', ...book() }, { execution })
-        expect(message(s.restructure(op)), what).toBe(ru(m))
+        const s = createSession({ locale: 'ru-RU', ...book() }, { execution })
+        expect(message(s.editStructure(op)), what).toBe(ru(m))
         s.close()
       }
     })
@@ -191,8 +191,8 @@ describe('a refused structure operation', () => {
       const calc = await make()
       calcs.push(calc)
       for (const [what, book, op, m] of REFUSED) {
-        const s = await calc.openSession({ locale: 'ru-RU', ...book() }, { execution })
-        expect(message(await s.restructure(op)), what).toBe(ru(m))
+        const s = await calc.createSession({ locale: 'ru-RU', ...book() }, { execution })
+        expect(message(await s.editStructure(op)), what).toBe(ru(m))
         await s.close()
       }
     }, 60_000)
@@ -258,7 +258,7 @@ const EN_TEXT = [
 describe('explain', () => {
   it("writes the text in the book's locale: words, numbers, formulas, errors and booleans; the tree as stored", () => {
     for (const key of ['explainCells', 'explainSpill', 'explainValue', 'explainFormula', 'explainErrorFrom', 'explainErrorHere'] as const) reached.add(key)
-    const [r, e] = [openSession(explained('ru-RU')), openSession(explained())]
+    const [r, e] = [createSession(explained('ru-RU')), createSession(explained())]
     expect(r.explain('План', 'B1').text).toBe(RU_TEXT)
     expect(e.explain('План', 'B1').text).toBe(EN_TEXT)
     expect(r.explain('План', 'F1').text).toBe("'План'!F1 = #Н/Д  ← D1*2  (ошибка из 'План'!D1)\n  'План'!D1 = #Н/Д  ← ЕСЛИ(E1;1,5;НД())  (ошибка возникает здесь)\n    'План'!E1 = пусто")
@@ -271,7 +271,7 @@ describe('explain', () => {
 
   it('the same text in the same thread and in threads', async () => {
     for (const calc of [createInlineCalc(), await pool({ threads: 1 })]) {
-      const s = await calc.openSession(explained('ru-RU'))
+      const s = await calc.createSession(explained('ru-RU'))
       expect((await s.explain('План', 'B1')).text).toBe(RU_TEXT)
       await calc.close()
     }

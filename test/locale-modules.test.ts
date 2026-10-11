@@ -8,7 +8,7 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { builtinFormatCode, compute, createInlineCalc, displayValue, entryText, entryWidth, enUS, errorText, fitColumns, InputError, needsApostrophe, scanReferences, validateSheetName, LOCALES, openSession, parseEntry, registerLocale, restructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
+import { builtinFormatCode, compute, createInlineCalc, displayValue, entryText, entryWidth, enUS, errorText, fitColumns, InputError, needsApostrophe, scanReferences, validateSheetName, LOCALES, createSession, parseEntry, registerLocale, editStructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
 import { PACKAGE_LOCALES } from '../src/locale/registry.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { LOCALE_MODULES } from '../src/worker/locales.js'
@@ -43,14 +43,14 @@ describe('without ru-RU loaded', () => {
     const result = compute(enBook, { clock })
     const calls: [string, () => unknown][] = [
       ['compute', () => compute(ruBook, { clock })],
-      ['openSession', () => openSession(ruBook, { clock })],
-      ['restructure', () => restructure(ruBook, { op: 'insertRows', sheet: 'S', row: 1 })],
+      ['createSession', () => createSession(ruBook, { clock })],
+      ['editStructure', () => editStructure(ruBook, { op: 'insertRows', sheet: 'S', row: 1 })],
       ['fitColumns', () => fitColumns(ruBook, result, 'S', 'A:B')],
     ]
     for (const [name, call] of calls) expect(refusal(call).message, name).toBe(`book.locale: ${HINT}`)
     const calc = createInlineCalc()
     await expect(calc.compute(ruBook, { clock })).rejects.toThrow(`book.locale: ${HINT}`)
-    await expect(calc.openSession(ruBook, { clock })).rejects.toBeInstanceOf(InputError)
+    await expect(calc.createSession(ruBook, { clock })).rejects.toBeInstanceOf(InputError)
     await calc.close()
     await expect(writeXlsx({ book: ruBook })).rejects.toThrow(`book.locale: ${HINT}`)
   })
@@ -126,14 +126,14 @@ describe('registerLocale', () => {
       const r = compute(ruBook, { clock, execution })
       const v = r.sheets[0].cells
       expect([v.A1.value, v.A2.value, v.A3.text]).toEqual([1236, 'a1,5ИСТИНА', '15.03.2026'])
-      const session = openSession(ruBook, { clock, execution })
-      expect(session.result().hash).toBe(r.hash)
+      const session = createSession(ruBook, { clock, execution })
+      expect(session.getResult().hash).toBe(r.hash)
       expect(session.explain('S', 'A1').text).toBe("'S'!A1 = 1236  ← ЗНАЧЕН(\"1,5\")+ЗНАЧЕН(\"1 234,5\")")
-      expect(session.restructure({ op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, message: 'В книге должен остаться хотя бы один лист' })
+      expect(session.editStructure({ op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, message: 'В книге должен остаться хотя бы один лист' })
       const calc = createInlineCalc()
       expect((await calc.compute(ruBook, { clock, execution })).hash).toBe(r.hash)
-      const inline = await calc.openSession(ruBook, { clock, execution })
-      expect([(await inline.result()).hash, (await inline.explain('S', 'A1')).text]).toEqual([r.hash, session.explain('S', 'A1').text])
+      const inline = await calc.createSession(ruBook, { clock, execution })
+      expect([(await inline.getResult()).hash, (await inline.explain('S', 'A1')).text]).toEqual([r.hash, session.explain('S', 'A1').text])
       await calc.close()
     })
   })

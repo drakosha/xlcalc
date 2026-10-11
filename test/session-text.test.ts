@@ -51,7 +51,7 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
           { sheet: 'S', cell: 'B1', value: 2469, text: '2469' },
         ],
       })
-      const cells = () => s.book().then((b) => b.sheets[0].cells)
+      const cells = () => s.getBook().then((b) => b.sheets[0].cells)
       expect((await cells()).A1).toEqual({ value: 1234.5, format: 4, style: 0, meta: 'm', note: { text: 'n' } })
       // a number into a percent column is percent, by the column's format, which the cell does not take
       await s.setCellText('S', 'D2', '5')
@@ -65,7 +65,7 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
       // empty text clears the value and keeps the rest
       await s.setCellText('S', 'A1', '')
       expect((await cells()).A1).toEqual({ format: 4, style: 0, meta: 'm', note: { text: 'n' } })
-      expect(await s.hash()).toBe(compute(await s.book(), { clock, execution }).hash)
+      expect(await s.getHash()).toBe(compute(await s.getBook(), { clock, execution }).hash)
       await s.close()
     })
 
@@ -74,16 +74,16 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
       expect(await s.previewCellText('S', 'B9', '1234567890')).toEqual({ ok: true, input: { value: 1234567890 }, value: 1234567890, width: 11.1640625 })
       const r = await s.setCellText('S', 'B9', '1234567890')
       expect(r).toMatchObject({ ok: true, revision: 1, width: 11.1640625, layout: ['S'] })
-      expect((await s.layout()).sheets[0].columns!.B).toEqual({ width: 11.1640625, bestFit: true })
+      expect((await s.getLayout()).sheets[0].columns!.B).toEqual({ width: 11.1640625, bestFit: true })
       const told = await s.setCellText('S', 'H1', '1234567890', { widen: false })
       expect(told).toMatchObject({ ok: true, width: 11.1640625 })
-      expect((await s.layout()).sheets[0].columns!.H).toBeUndefined()
+      expect((await s.getLayout()).sheets[0].columns!.H).toBeUndefined()
       expect(await s.setCellText('S', 'F1', '1234567890')).not.toHaveProperty('width')
       // the width goes back with the value, in one step
       expect((await s.undo())!.call).toBe('setCellText')
       await s.undo()
       expect((await s.undo())!.layout).toEqual(['S'])
-      expect((await s.layout()).sheets[0].columns!.B).toBeUndefined()
+      expect((await s.getLayout()).sheets[0].columns!.B).toBeUndefined()
       await s.close()
     })
 
@@ -91,11 +91,11 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
       const s = await (await opener(kind))(book(), { clock, execution })
       const rule = book().sheets[0].validations![0]
       expect(await s.previewCellText('S', 'G2', '-3')).toEqual({ ok: true, input: { value: -3 }, value: -3, validation: { valid: false, rule, severity: 'warning', message: 'Positive only' } })
-      expect((await s.book()).sheets[0].cells.G2).toBeUndefined()
+      expect((await s.getBook()).sheets[0].cells.G2).toBeUndefined()
       expect(s.revision).toBe(0)
       const r = await s.setCellText('S', 'G2', '-3')
       expect(r.ok && r.validation).toEqual({ valid: false, rule, severity: 'warning', message: 'Positive only' })
-      expect((await s.book()).sheets[0].cells.G2).toEqual({ value: -3 })
+      expect((await s.getBook()).sheets[0].cells.G2).toEqual({ value: -3 })
       expect(await s.setCellText('S', 'G3', '4')).not.toHaveProperty('validation')
       expect(await s.validateEntry('S', 'G3', { value: 0 })).toEqual({ ok: false, code: 'validation', message: 'Positive only', rule, severity: 'warning' })
       await s.close()
@@ -109,7 +109,7 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
       expect([s.revision, s.history.undo]).toEqual([0, 0])
       const r = await s.setCellText('S', 'E1', 'Кол-во')
       expect(r).toMatchObject({ ok: true, revision: 1, layout: ['S'] })
-      expect((await s.book()).sheets[0].tables![0].columns[0].name).toBe('Кол-во')
+      expect((await s.getBook()).sheets[0].tables![0].columns[0].name).toBe('Кол-во')
       await s.close()
     })
   })

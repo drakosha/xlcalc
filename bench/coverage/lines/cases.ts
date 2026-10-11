@@ -8,7 +8,7 @@
  * writers leave it: the engine's book of it is the one the reader reads.
  */
 import type { BookInput, CellStyle, ClearKind, ColumnInput, ConditionalFormat, RowInput, Session, SheetInput } from '../../../src/contract.js'
-import { openSession } from '../../../src/index.js'
+import { createSession } from '../../../src/index.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { sheetLines } from '../../../src/layout/lines.js'
 import { lineAt, patchLines, parseSpan } from '../../../src/layout/spans.js'
@@ -117,8 +117,8 @@ export const formatName = (f: string | number | undefined): string => (f === und
 /** What the cells of `range` on a sheet show in a computed session's book, each by the whole look its row or column gives it. */
 export function sheetLooks(book: BookInput, sheet: string, range: string): Record<string, LineLook> {
   const sh: SheetInput = book.sheets.find((s) => s.name === sheet)!
-  const s = openSession(book)
-  const views = s.cells(sheet, range)
+  const s = createSession(book)
+  const views = s.getCells(sheet, range)
   s.close()
   const at = sheetLines(sh)
   return Object.fromEntries(
@@ -163,9 +163,9 @@ export function sessionStep(s: Session, step: LineStep) {
 
 /** The book after a case's steps taken by a session as a host formats a sheet (`sessionStep`). */
 export function sessionBook(c: LinesCase, book: BookInput): BookInput {
-  const s = openSession(book)
+  const s = createSession(book)
   for (const step of c.steps ?? []) sessionStep(s, step)
-  const after = structuredClone(s.book())
+  const after = structuredClone(s.getBook())
   s.close()
   return after
 }

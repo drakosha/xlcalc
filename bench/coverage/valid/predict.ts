@@ -4,7 +4,7 @@
  * or each sheet's rules, checks of values and lines over the window after what Excel makes and the operation.
  */
 import { writeFileSync } from 'node:fs'
-import { restructure } from '../../../src/index.js'
+import { editStructure } from '../../../src/index.js'
 import { bookViews, made, WINDOW, type ValidSet } from './cases.js'
 
 const set = process.argv[2]
@@ -13,7 +13,7 @@ const { books, cases, window } = ((await import(`./${set}.js`)) as ValidSet).bui
 const out: Record<string, unknown> = {}
 for (const c of cases) {
   const book = made(books[c.book], c.make)
-  const r = c.op ? restructure(book, c.op) : { ok: true as const, book }
+  const r = c.op ? editStructure(book, c.op) : { ok: true as const, book }
   out[c.id] = r.ok ? bookViews(r.book, window ?? WINDOW) : { refused: r.code }
 }
 writeFileSync(new URL(`./${set}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')

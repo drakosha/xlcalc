@@ -4,7 +4,7 @@
  * gives back the same book and the same hash.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, restructure, type BookInput, type CellRef, type StructureOp } from '../src/index.js'
+import { compute, editStructure, type BookInput, type CellRef, type StructureOp } from '../src/index.js'
 import { S, synthBook } from '../src/synth.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -12,7 +12,7 @@ const { book } = synthBook({ seed: 1, rows: 340 })
 const before = compute(book, { clock })
 
 function apply(b: BookInput, op: StructureOp) {
-  const r = restructure(b, op)
+  const r = editStructure(b, op)
   if (!r.ok) throw new Error(r.message)
   return r
 }
