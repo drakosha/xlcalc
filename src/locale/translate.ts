@@ -5,7 +5,7 @@
  * does whitespace. The output is lexed again on the target side: a piece that would read differently there
  * (`1.5` typed in ru-RU, where the decimal separator is `,`) is a syntax error at its place in the input.
  */
-import { caseKey } from '../collate.js'
+import { wordKey } from '../collate.js'
 import { LOCALE_ERRORS } from '../syntax/errors.js'
 import { INVARIANT, lex, numberRule, tableText, type Piece, type Syntax } from './lex.js'
 import type { Message } from './messages.js'
@@ -41,7 +41,7 @@ export interface Fail {
   at: number
 }
 
-const upperKeys = (entries: [string, string][]) => new Map(entries.map(([k, v]) => [caseKey(k), v]))
+const upperKeys = (entries: [string, string][]) => new Map(entries.map(([k, v]) => [wordKey(k), v]))
 const byLength = (xs: readonly string[]) => [...new Set(xs)].sort((a, b) => b.length - a.length)
 const swap = (xs: [string, string][]) => xs.map(([a, b]): [string, string] => [b, a])
 const same = (xs: readonly string[]) => xs.map((x): [string, string] => [x, x])
@@ -75,7 +75,7 @@ export function sides(loc: Locale): Sides {
 const fail = (at: number, msg: Message): Fail => ({ ok: false, msg, at })
 
 /** A name in quotes because it reads as a boolean of the side (`'ИСТИНА'`), which stands for the name where it is no boolean. */
-const quotedWord = (text: string, side: Side) => text.length > 2 && text.startsWith("'") && text.endsWith("'") && side.word.has(caseKey(text.slice(1, -1)))
+const quotedWord = (text: string, side: Side) => text.length > 2 && text.startsWith("'") && text.endsWith("'") && side.word.has(wordKey(text.slice(1, -1)))
 
 /** A translated text; `back` maps a position in it to the input: the same character, or the start of a translated piece. */
 export interface Translated {
@@ -94,23 +94,23 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
   for (const [i, p] of pieces.entries()) {
     let text = p.text
     if (p.k === 'num') text = text.replace(from.syn.decimal, to.syn.decimal)
-    else if (p.k === 'fn') text = from.fn.get(caseKey(text)) ?? text
-    else if (p.k === 'err') text = from.err.get(caseKey(text)) ?? text
+    else if (p.k === 'fn') text = from.fn.get(wordKey(text)) ?? text
+    else if (p.k === 'err') text = from.err.get(wordKey(text)) ?? text
     else if (p.k === 'list') text = to.syn.list
     else if (p.k === 'tbl') text = tableText(text, from.item, from.syn.list, to.syn.list)
     else if (p.k === 'col') text = to.syn.arrayColumn
     else if (p.k === 'row') text = to.syn.arrayRow
     else if (p.k === 'word') {
-      const w = from.word.get(caseKey(text))
+      const w = from.word.get(wordKey(text))
       if (w === undefined && p.arr) return fail(offset + p.at, { key: 'unexpectedInArray', text })
       // a name that reads as a boolean on the other side goes in quotes, as Excel ru-RU shows a name ИСТИНА ('ИСТИНА');
       // a table's name before its brackets does not (ИСТИНА[Qty])
-      if (w === undefined && to.word.has(caseKey(text)) && pieces[i + 1]?.k !== 'tbl') {
+      if (w === undefined && to.word.has(wordKey(text)) && pieces[i + 1]?.k !== 'tbl') {
         out.push({ ...p, k: 'raw', text: `'${text}'` })
         continue
       }
       text = w ?? text
-    } else if (p.k === 'raw' && quotedWord(text, from) && !to.word.has(caseKey(text.slice(1, -1)))) {
+    } else if (p.k === 'raw' && quotedWord(text, from) && !to.word.has(wordKey(text.slice(1, -1)))) {
       out.push({ ...p, k: 'word', text: text.slice(1, -1) })
       continue
     } else if (special[p.arr ? 1 : 0].has(text)) return fail(offset + p.at, { key: 'unexpectedText', text }) // `,` outside a number in ru-RU

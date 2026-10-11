@@ -131,6 +131,8 @@ export const REASONS = {
     '`LINEST` and `TREND` over y far from 0 against its spread give Excel\'s coefficients, but Excel\'s intercept and regression sum of squares follow the mean it sums plainly: of 10,000 values 1E12 + 0, 0.01, 0.02 on their steps 0, 1, 2 the slope is 0.0100098 in both (0.010009765625 exactly), the intercept 1E12 − 0.0096 in Excel and 1E12 here, the regression sum of squares 1.598 in Excel and 0.668 here (as exactly, `DEVSQ` of the values), so `TREND` at step 3 is 1E12 + 0.0204 in Excel and 1E12 + 0.0300 here.',
   growthRange:
     '`GROWTH` far from 0 in x is `#NUM!` in Excel where the fitted value fits a double: of 100·1.1^k to cents on x = 1E10 + k, k = 0…11, the value at 1E10 + 12 is 313.84 here, where b·m^x has `LOGEST`\'s b 0 and m^x past the largest double.',
+  macLongS:
+    'Excel for Mac reads the long s (`ſ`) as `s`: `falſe` is FALSE in a formula, typed and as text (`IF("falſe",1,2)` is 2), `=ſum(1,2)` typed is `SUM`, and `ſ` is the name `S` (a LET name, a defined name, a table, a sheet); the engine follows Excel for Windows, where `ſ` is a letter of its own (`falſe` a name, `#NAME?`, and the text `"falſe"` no boolean).',
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).',
 } as const
@@ -184,6 +186,14 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'fuzz:2#472': { reason: 'textDigits', engine: { t: 's', v: '2048.47532711546' } },
   'near-integer:literal#7': { reason: 'lastBits', engine: { t: 'n', v: 1 } },
   'let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
+  'name-case-held:bool#1': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
+  'name-case-held:bool#2': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
+  'name-case-held:bool#3': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
+  'name-case-held:bool#4': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
+  'name-case-held:bool#5': { reason: 'macLongS', engine: { t: 'e', v: 'ERROR' } },
+  'name-case-held:bool#6': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
+  'name-case-held:let#2': { reason: 'macLongS', engine: { t: 'e', v: 'NAME' } },
+  'name-case-held:text#1': { reason: 'macLongS', engine: { t: 'e', v: 'VALUE' } },
   'text-format:date#78': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
   'text-format:date#79': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
   'text-format:date#82': { reason: 'macMonthCase', engine: { t: 's', v: "Февраль" } },

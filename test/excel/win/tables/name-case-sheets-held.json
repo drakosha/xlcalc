@@ -1,0 +1,806 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 19.2
+ },
+ "cases": [
+  {
+   "id": "sheet-long-s",
+   "about": "the sheet X renamed ſ beside the sheet S: refused if it is the same name",
+   "book": {
+    "sheets": [
+     {
+      "name": "Q",
+      "cells": {
+       "A1": {
+        "formula": "X!A1*2"
+       }
+      }
+     },
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       }
+      }
+     },
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameSheet",
+      "sheet": "X",
+      "name": "ſ"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "Q",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "table-long-s",
+   "about": "a table Tſ, formulas over TS and Tſ typed",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       }
+      },
+      "tables": [
+       {
+        "name": "Tſ",
+        "range": "A1:A3",
+        "columns": [
+         {
+          "name": "x"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "ROWS(TS)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ROWS(Tſ)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "sheet-sharp-s",
+   "about": "the sheet X renamed ß beside the sheet SS: refused if it is the same name",
+   "book": {
+    "sheets": [
+     {
+      "name": "Q",
+      "cells": {
+       "A1": {
+        "formula": "X!A1*2"
+       }
+      }
+     },
+     {
+      "name": "SS",
+      "cells": {
+       "A1": {
+        "value": 3
+       }
+      }
+     },
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameSheet",
+      "sheet": "X",
+      "name": "ß"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "Q",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "table-sharp-s",
+   "about": "a table Tß, formulas over TSS and Tß typed",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       }
+      },
+      "tables": [
+       {
+        "name": "Tß",
+        "range": "A1:A3",
+        "columns": [
+         {
+          "name": "x"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "ROWS(TSS)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ROWS(Tß)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "sheet-dotless-i",
+   "about": "the sheet X renamed ı beside the sheet I: refused if it is the same name",
+   "book": {
+    "sheets": [
+     {
+      "name": "Q",
+      "cells": {
+       "A1": {
+        "formula": "X!A1*2"
+       }
+      }
+     },
+     {
+      "name": "I",
+      "cells": {
+       "A1": {
+        "value": 3
+       }
+      }
+     },
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameSheet",
+      "sheet": "X",
+      "name": "ı"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "Q",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "table-dotless-i",
+   "about": "a table Tı, formulas over TI and Tı typed",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       }
+      },
+      "tables": [
+       {
+        "name": "Tı",
+        "range": "A1:A3",
+        "columns": [
+         {
+          "name": "x"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "ROWS(TI)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ROWS(Tı)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "sheet-dotted-i",
+   "about": "the sheet X renamed İ beside the sheet i: refused if it is the same name",
+   "book": {
+    "sheets": [
+     {
+      "name": "Q",
+      "cells": {
+       "A1": {
+        "formula": "X!A1*2"
+       }
+      }
+     },
+     {
+      "name": "i",
+      "cells": {
+       "A1": {
+        "value": 3
+       }
+      }
+     },
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameSheet",
+      "sheet": "X",
+      "name": "İ"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "Q",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "table-dotted-i",
+   "about": "a table Tİ, formulas over Ti and Tİ typed",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       }
+      },
+      "tables": [
+       {
+        "name": "Tİ",
+        "range": "A1:A3",
+        "columns": [
+         {
+          "name": "x"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "ROWS(Ti)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ROWS(Tİ)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "sheet-ligature-fi",
+   "about": "the sheet X renamed ﬁ beside the sheet FI: refused if it is the same name",
+   "book": {
+    "sheets": [
+     {
+      "name": "Q",
+      "cells": {
+       "A1": {
+        "formula": "X!A1*2"
+       }
+      }
+     },
+     {
+      "name": "FI",
+      "cells": {
+       "A1": {
+        "value": 3
+       }
+      }
+     },
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameSheet",
+      "sheet": "X",
+      "name": "ﬁ"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "Q",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "table-ligature-fi",
+   "about": "a table Tﬁ, formulas over TFI and Tﬁ typed",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       }
+      },
+      "tables": [
+       {
+        "name": "Tﬁ",
+        "range": "A1:A3",
+        "columns": [
+         {
+          "name": "x"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "ROWS(TFI)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ROWS(Tﬁ)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "sheet-long-s": {
+   "values": {
+    "Q!A1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "Q!A1": "=ſ!A1*2"
+   },
+   "tables": []
+  },
+  "table-long-s": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!C1": "=ROWS(TS)",
+    "S!C2": "=ROWS(Tſ)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Tſ",
+     "range": "A1:A3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "x"
+     ]
+    }
+   ]
+  },
+  "sheet-sharp-s": {
+   "values": {
+    "Q!A1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "Q!A1": "=ß!A1*2"
+   },
+   "tables": []
+  },
+  "table-sharp-s": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!C1": "=ROWS(Tß)",
+    "S!C2": "=ROWS(Tß)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Tß",
+     "range": "A1:A3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "x"
+     ]
+    }
+   ]
+  },
+  "sheet-dotless-i": {
+   "values": {
+    "Q!A1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "Q!A1": "=ı!A1*2"
+   },
+   "tables": []
+  },
+  "table-dotless-i": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!C1": "=ROWS(TI)",
+    "S!C2": "=ROWS(Tı)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Tı",
+     "range": "A1:A3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "x"
+     ]
+    }
+   ]
+  },
+  "sheet-dotted-i": {
+   "values": {
+    "Q!A1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "Q!A1": "=İ!A1*2"
+   },
+   "tables": []
+  },
+  "table-dotted-i": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!C1": "=ROWS(Ti)",
+    "S!C2": "=ROWS(Tİ)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Tİ",
+     "range": "A1:A3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "x"
+     ]
+    }
+   ]
+  },
+  "sheet-ligature-fi": {
+   "values": {
+    "Q!A1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "Q!A1": "=ﬁ!A1*2"
+   },
+   "tables": []
+  },
+  "table-ligature-fi": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!C1": "=ROWS(Tﬁ)",
+    "S!C2": "=ROWS(Tﬁ)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Tﬁ",
+     "range": "A1:A3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "x"
+     ]
+    }
+   ]
+  }
+ }
+}

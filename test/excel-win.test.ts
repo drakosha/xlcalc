@@ -7,7 +7,9 @@ import { describe, expect, it } from 'vitest'
 import { describeWinOff, runWinSet, WIN_KNOWN, WIN_REASONS, WIN_SETS } from './excel-win-cases.js'
 
 /** Cases whose formula Excel for Windows did not take when it opened the book, by `<locale>:<source>:<case id>`, and why. */
-const WIN_REJECTED: Readonly<Record<string, string>> = {}
+const WIN_REJECTED: Readonly<Record<string, string>> = {
+  'en-US:name-case-held:bool#5': 'ISLOGICAL({falſe}): Excel for Windows reads falſe as a name, which an array constant does not hold, and does not open the book; the engine refuses the formula (#ERROR!)',
+}
 
 const keys = new Set<string>()
 

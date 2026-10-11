@@ -1,0 +1,60 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-11",
+  "seconds": 2.1
+ },
+ "cases": [
+  {
+   "id": "value-1",
+   "text": "falſe"
+  },
+  {
+   "id": "value-2",
+   "text": "FALſE"
+  },
+  {
+   "id": "value-3",
+   "text": "false"
+  },
+  {
+   "id": "value-4",
+   "text": "trUE"
+  }
+ ],
+ "answers": {
+  "value-1": {
+   "cell": {
+    "value": false
+   },
+   "text": "FALSE",
+   "code": "General",
+   "local": "General"
+  },
+  "value-2": {
+   "cell": {
+    "value": false
+   },
+   "text": "FALSE",
+   "code": "General",
+   "local": "General"
+  },
+  "value-3": {
+   "cell": {
+    "value": false
+   },
+   "text": "FALSE",
+   "code": "General",
+   "local": "General"
+  },
+  "value-4": {
+   "cell": {
+    "value": true
+   },
+   "text": "TRUE",
+   "code": "General",
+   "local": "General"
+  }
+ }
+}

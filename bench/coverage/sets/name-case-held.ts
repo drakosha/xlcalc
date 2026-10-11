@@ -29,3 +29,10 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./name-case-held.predicted.json', import.meta.url), 'utf8'))
+
+/**
+ * The predictions Excel for Mac did not confirm: a function's name in a file compares by its letters alone (`ſum(1,2)`,
+ * `ﬁnd`, `gauß`, `ıf` are `#NAME?`), `_xlpm.falſe` is LET's name, and `{falſe}` holds FALSE (the Mac reads `ſ` as `s`;
+ * Excel for Windows does not open that book).
+ */
+export const MISSED: readonly string[] = ['bool#5', 'let#1', 'fn#1', 'fn#2', 'fn#3', 'fn#4', 'fn#5', 'fn#6', 'fn#7', 'fn#9']

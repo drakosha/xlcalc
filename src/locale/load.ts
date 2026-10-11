@@ -2,6 +2,7 @@
  * Loading locales: `registerLocale`, which loads one of the package's locale modules for books in it, and the checks
  * of a locale given by the tag of a loaded one or as an object, whose shape is checked once.
  */
+import { wordKey } from '../collate.js'
 import { checkString, InputError, object, onlyKeys } from '../input.js'
 import { EN_MESSAGES } from '../locales/en-US.js'
 import { LOCALE_ERRORS } from '../syntax/errors.js'
@@ -27,9 +28,9 @@ function words(v: unknown, path: string, keys: readonly string[] | null, rule: R
   for (const [k, w] of Object.entries(v)) {
     if (keys && !keys.includes(k)) throw new InputError(path, `unknown key ${JSON.stringify(k)} (expected ${keys.join(', ')})`)
     if (typeof w !== 'string' || !rule.test(w)) throw new InputError(`${path}[${JSON.stringify(k)}]`, `expected ${expected}, got ${JSON.stringify(w)}`)
-    const other = seen.get(w.toUpperCase())
+    const other = seen.get(wordKey(w))
     if (other !== undefined) throw new InputError(`${path}[${JSON.stringify(k)}]`, `${JSON.stringify(w)} is also the word for ${other}`)
-    seen.set(w.toUpperCase(), k)
+    seen.set(wordKey(w), k)
   }
 }
 

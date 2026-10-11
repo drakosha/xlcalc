@@ -3,6 +3,7 @@
  * array constants, the `@` operator, the reference operators (`:` binds tightest, then the intersection, a space,
  * then `@`), unions of references in parentheses (and at the top of a name's formula).
  */
+import { wordKey } from '../collate.js'
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH } from '../contract.js'
 import type { Found } from '../locale/messages.js'
 import { bad, type Ast, type BinOp, type Bind, type Lit } from './ast.js'
@@ -19,7 +20,13 @@ const MAX_LET_ARGS = 254
  * Any other cell is a name in LET, written without `$` (`A1`, `XFD1`), and so is R1C1's cell (`R1C1`, `RC`): the sets
  * `entry/names-held`, `let-grid-held` and `let-cells-held`, in Excel for Mac and Windows.
  */
-export const letNameClash = (word: string) => /^(TRUE|FALSE)$/i.test(word) || (readsAsCell(word) && /^(R|C|RC)[0-9]+$/i.test(word))
+export const letNameClash = (word: string) => boolWord(word) !== undefined || (readsAsCell(word) && /^(R|C|RC)[0-9]+$/i.test(word))
+
+/** The boolean a word of formula text is (TRUE or FALSE in any case, by `wordKey`: `falſe` is a name), else undefined. */
+export function boolWord(word: string): boolean | undefined {
+  const key = wordKey(word)
+  return key === 'TRUE' ? true : key === 'FALSE' ? false : undefined
+}
 
 /** `union`: a top-level comma joins references (a name's formula: `'S'!A1:A3,'S'!C1:C3`). */
 export function parse(src: string, opts: { union?: boolean } = {}): Ast {
@@ -107,7 +114,7 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
       case 'ref': {
         // inside a LET that declares it, a cell's word is the name
         const word = cellWord(t)
-        const bind = word === undefined ? undefined : scope.get(word.toUpperCase())
+        const bind = word === undefined ? undefined : scope.get(wordKey(word))
         if (bind) return { k: 'local', name: bind.name, slot: bind.slot }
         return t.last === undefined ? { k: 'ref', sheet: t.sheet, ref: t.ref } : { k: 'ref3d', first: t.sheet!, last: t.last, ref: t.ref }
       }
@@ -115,10 +122,10 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
         return { k: 'table', table: t.table, spec: t.spec }
       case 'ident': {
         if (t.sheet !== undefined) return { k: 'name', name: t.v, sheet: t.sheet }
-        const up = t.v.toUpperCase()
-        if (up === 'TRUE' || up === 'FALSE') return { k: 'bool', v: up === 'TRUE' }
+        const bool = boolWord(t.v)
+        if (bool !== undefined) return { k: 'bool', v: bool }
         // a LET name as it is declared, as Excel shows it
-        const bind = scope.get(up)
+        const bind = scope.get(wordKey(t.v))
         return bind ? { k: 'local', name: bind.name, slot: bind.slot } : { k: 'name', name: t.v }
       }
       case '(': {
@@ -176,10 +183,10 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
     let body: Ast | undefined
     for (;;) {
       const t = peek()
-      const name = t.t === 'ident' && !/^(TRUE|FALSE)$/i.test(t.v) ? t.v : cellWord(t)
+      const name = t.t === 'ident' && boolWord(t.v) === undefined ? t.v : cellWord(t)
       if (name !== undefined && toks[p + 1].t === ',') {
-        const up = name.toUpperCase()
-        if (binds.some((b) => b.name.toUpperCase() === up)) bad(t.at, { key: 'letTwice', name })
+        const up = wordKey(name)
+        if (binds.some((b) => wordKey(b.name) === up)) bad(t.at, { key: 'letTwice', name })
         p += 2
         const bind: Bind = { name, slot: slots++, value: arg() }
         binds.push(bind)
@@ -227,7 +234,8 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
     if (t.t === 'num') return { k: 'num', v: t.v }
     if (t.t === 'str') return { k: 'str', v: t.v }
     if (t.t === 'err' && t.sheet === undefined && t.ref === undefined) return { k: 'err', code: t.code }
-    if (t.t === 'ident' && /^(TRUE|FALSE)$/i.test(t.v)) return { k: 'bool', v: t.v.toUpperCase() === 'TRUE' }
+    const bool = t.t === 'ident' ? boolWord(t.v) : undefined
+    if (bool !== undefined) return { k: 'bool', v: bool }
     return bad(t.at, { key: 'arrayValue', found: found(t) })
   }
   const expect = (k: '(' | ')') => {
