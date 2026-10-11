@@ -34,7 +34,7 @@ An operation is plain data, so an interface can store it, send it to a server an
 
 The input book is not changed. Sheets, cells and names the operation does not touch are shared with it.
 
-`mapCell` tells where a cell of the old book is now: a new address and sheet name, or `null` if the cell was deleted or overwritten. A host uses it for anything it keeps by address, such as comments, the selection or links to source rows.
+`mapCell` tells where a cell of the old book is now: a new address and sheet name, or `null` if the cell was deleted or overwritten, or if its sheet is none of the old book's (a window can hold a sheet that is gone). A host uses it for anything it keeps by address, such as comments, the selection or links to source rows.
 
 Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fields) throws `InputError`. An operation that Excel would refuse returns `ok: false` with a message for the user:
 
@@ -266,7 +266,7 @@ Only two of these recompute values. A merged area added or removed over an array
 
 ## How it was checked
 
-`test/structure-geometry.test.ts` checks that every kind of operation puts the cells where its `mapCell` says: each cell it keeps is at the address `mapCell` gives and nowhere else, a cell it takes away is in no other place, and the way back takes each cell to the place it came from; `test/session-geometry.test.ts` checks `moved` and `mapCell` of a filtered delete and a deleted table done, undone and redone in every kind of session. The seeded undo sessions (`test/session-undo-fuzz.test.ts`) keep a host's screen, moved by `mapCell` and given the changes, equal to the session's values.
+`test/structure-geometry.test.ts` checks that every kind of operation puts the cells where its `mapCell` says: each cell it keeps is at the address `mapCell` gives and nowhere else, a cell it takes away is in no other place, and the way back takes each cell to the place it came from; `test/session-geometry.test.ts` checks `moved` and `mapCell` of a filtered delete and a deleted table done, undone and redone in every kind of session, and `null` for a sheet `mapCell` does not know. The seeded undo sessions (`test/session-undo-fuzz.test.ts`) keep a host's screen, moved by `mapCell` and given the changes, equal to the session's values.
 
 `test/copy-formula.test.ts` checks `copyFormula` against `copyRange` on every copy of the structure sets and the table sets: each formula of the source at each place the copy pastes it, 317 and 8 of them.
 

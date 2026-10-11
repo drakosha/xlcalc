@@ -68,14 +68,16 @@ export function editStructure(book: BookInput, op: StructureOp): StructureResult
 export const namesOf = (book: { sheets: { name: string }[] }) => book.sheets.map((s) => s.name)
 
 /**
- * The mapCell callers get, made from a geometry: it takes cells of the book before (a sheet of it in any case, an
- * address) and checks them. It is kept with its geometry, which a pool's thread sends instead of the function (`GEOMETRY`).
+ * The mapCell callers get, made from a geometry: it takes cells of the book before (a sheet's name, in any case, and an
+ * address) and checks their shape; a sheet the book before does not have holds no cell of it, so its cells are null, as
+ * a host's window can hold a sheet that is gone. It is kept with its geometry, which a pool's thread sends instead of
+ * the function (`GEOMETRY`).
  */
 export function checkedMapCell(g: SentGeometry): (ref: CellRef) => CellRef | null {
   const inner = mapCellOf(g.geometry, g.before, g.after)
   const mapCell = (ref: CellRef) => {
     const x = object(ref, 'ref')
-    return inner({ sheet: sheetOf(g.before, x.sheet, 'ref.sheet'), cell: checkAddress(x.cell, 'ref.cell') })
+    return inner({ sheet: checkString(x.sheet, 'ref.sheet'), cell: checkAddress(x.cell, 'ref.cell') })
   }
   GEOMETRY.set(mapCell, g)
   return mapCell

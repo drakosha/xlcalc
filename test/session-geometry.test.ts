@@ -1,8 +1,9 @@
 /**
  * A structure operation's geometry through a session, done, undone and redone: `moved` and `mapCell` of an undo and a
  * redo are those of the operation taken back and again, where the operation did more than its arguments say (visible
- * rows of a filtered sheet, a table deleted with its cells); one answer without the book in every kind of session. In a
- * synchronous session, in the same thread and in a thread, with closures and eval.
+ * rows of a filtered sheet, a table deleted with its cells); one answer without the book in every kind of session; a
+ * sheet mapCell does not know answers null, as a deleted cell. In a synchronous session, in the same thread and in a
+ * thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import type { AsyncSession, BookInput, CellRef, Execution } from '../src/index.js'
@@ -76,6 +77,23 @@ describe.each(['closures', 'eval'] as const)('the geometry of an operation done,
         expect(typeof (r.ok && r.mapCell)).toBe('function')
       }
       expect((await s.getBook()).sheets[0].cells.A3).toEqual({ value: 2 })
+      await s.close()
+    })
+
+    it('a sheet mapCell does not know is a cell nowhere, as a deleted one, after an operation, an undo and a redo', async () => {
+      const s = await open()
+      const r = await s.editStructure({ op: 'deleteSheet', sheet: 'T' })
+      if (!r.ok) throw new Error(r.message)
+      // T is gone, and Nope never was: both null, as the deleted cells of S are
+      expect([r.mapCell({ sheet: 'T', cell: 'A1' }), r.mapCell({ sheet: 'Nope', cell: 'A1' }), r.mapCell({ sheet: 's', cell: 'A1' })]).toEqual([null, null, { sheet: 'S', cell: 'A1' }])
+      // undone, T is a sheet of no book before: its cells come from nowhere
+      const u = (await s.undo())!
+      expect([u.mapCell!({ sheet: 'T', cell: 'A1' }), u.mapCell!({ sheet: 'Nope', cell: 'A1' }), u.mapCell!({ sheet: 'S', cell: 'A2' })]).toEqual([null, null, { sheet: 'S', cell: 'A2' }])
+      const again = (await s.redo())!
+      expect([again.mapCell!({ sheet: 'T', cell: 'A1' }), again.mapCell!({ sheet: 'Nope', cell: 'B9' })]).toEqual([null, null])
+      // input of the wrong shape is still refused
+      expect(() => again.mapCell!({ sheet: 'S', cell: 'a1' })).toThrow('ref.cell')
+      expect(() => again.mapCell!({ sheet: 1, cell: 'A1' } as never)).toThrow('ref.sheet')
       await s.close()
     })
   })

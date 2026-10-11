@@ -44,6 +44,7 @@ A book hashes as before whichever name it gives the number format: `inputHash` w
 | after a structure operation `changes` listed the cells whose value changed | they also list the cells whose formula's text, own style or own number format differ from the cell that was at their old place, and `moved` says how addresses moved, so a window moves by `moved` and applies `changes` instead of reading itself again |
 | `patchCells` listed the cells whose shown text changed | it also lists the cells whose own style or number format it set, with `style` and `numberFormat` |
 | a synchronous session's `editStructure` answered the book too | it answers `mapCell` and what an edit answers without the book, as an asynchronous session's does; `getBook()` gives the book |
+| `mapCell` threw `InputError` for a sheet the book before the operation does not have | it answers null, as for a deleted cell, in every place it is given: `editStructure`'s answer, a session's, and `undo`'s and `redo`'s |
 | `getViewport` gave a cell's `style` and `effectiveStyle` as style objects | as numbers of the book's `styles`, as `getCells`, the changes of edits and the book give a style; `Viewport.styles` has the objects of the styles the window shows, by number |
 | `explain`'s text wrote an error by its code (`#DIV0`) and an empty cell as `null` | the error as the cells show it in the book's locale (`#DIV/0!`, `#ДЕЛ/0!`) with the cell it began in (`(error from 'S'!A2)`), and an empty cell as `empty`; the tree's error nodes have `origin` |
 
