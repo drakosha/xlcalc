@@ -6,7 +6,7 @@ import type { AddressMove, StructureOp } from '../contract.js'
 import { colToIndex } from '../model.js'
 import { parseRange } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
-import { areaText } from '../validation/rules.js'
+import { areaText } from '../structure/area.js'
 import type { Way } from './rebook.js'
 
 /**
