@@ -5,7 +5,7 @@
  */
 import type { BookInput, CellInput, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
-import { formatAddress, parseAddress } from '../model.js'
+import { formatAddress, readAddress } from '../model.js'
 import { FormulaError, parse, quoteSheet, tokenize, type Tok } from '../syntax.js'
 import { caseKey } from '../collate.js'
 import { specText, type TableSpec } from '../syntax/table.js'
@@ -24,7 +24,10 @@ const SPACE = new Set([' ', '\t', '\n', '\r'])
  * (it gives the references written without a table name). `qualify` names the table in those too: the formula leaves it.
  */
 export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table | undefined, at: { s: number; r: number } | null, edit: TableEdit, qualify = false): string {
-  if (!text.includes('[') && !tables.list.some((t) => caseKey(text).includes(caseKey(t.name)))) return text
+  if (!text.includes('[')) {
+    const key = caseKey(text)
+    if (!tables.list.some((t) => key.includes(caseKey(t.name)))) return text
+  }
   let toks: Tok[]
   try {
     parse(text, { union: at === null })
@@ -71,15 +74,16 @@ export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table 
 export function rewriteBookTables(book: BookInput, edit: TableEdit): BookInput {
   const tables = tablesOf(book)
   let changed = false
+  const p = { r: 0, c: 0 }
   const sheets = book.sheets.map((sheet, s) => {
     let cells: Record<string, CellInput> | undefined
-    for (const addr of Object.keys(sheet.cells)) {
+    for (const addr in sheet.cells) {
       const cell = sheet.cells[addr]
       // a session's operation stops here at its deadline or abort (`exec/budget.ts`)
       spend(1)
       if (cell.formula === undefined) continue
-      const { row, col } = parseAddress(addr)
-      const formula = rewriteTableRefs(cell.formula, tables, tableAt(tables, s, row, col), { s, r: row }, edit)
+      readAddress(addr, p)
+      const formula = rewriteTableRefs(cell.formula, tables, tableAt(tables, s, p.r, p.c), { s, r: p.r }, edit)
       if (formula !== cell.formula) (cells ??= { ...sheet.cells })[addr] = { ...cell, formula }
     }
     let list: TableInput[] | undefined
