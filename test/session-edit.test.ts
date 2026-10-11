@@ -47,7 +47,7 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       expect(f.changes[0]).toEqual({ sheet: 'S', cell: 'A2', value: 1, text: '1', formula: null, style: null })
       expect((await s.book()).sheets[0].cells.A2).toEqual({ value: 1 })
       // a formula over a value: its canonical text in the change
-      expect((await s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'a1*3' } }])).changes[0]).toMatchObject({ cell: 'A2', value: 15, formula: 'A1*3' })
+      expect((await s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: '=a1*3' } }])).changes[0]).toMatchObject({ cell: 'A2', value: 15, formula: 'A1*3' })
       // Delete: the value and the hyperlink go, the style, format, meta and note stay
       await s.setCells([{ sheet: 'S', cell: 'A1', input: null }])
       expect((await s.book()).sheets[0].cells.A1).toEqual({ style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' } })
