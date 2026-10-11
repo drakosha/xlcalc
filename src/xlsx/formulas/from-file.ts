@@ -8,7 +8,7 @@
  */
 import { FormulaError } from '../../syntax/ast.js'
 import { letNameClash, parse } from '../../syntax/parse.js'
-import { IDENT_RULE } from '../../syntax/tokens.js'
+import { bracketEnd, closingQuote, FILE_WORD_CHAR, IDENT_RULE } from '../../syntax/scan.js'
 
 export type Found = 'userFunction' | 'table' | 'externalLink' | 'letName'
 
@@ -18,24 +18,15 @@ export interface Converted {
 }
 
 const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf)\./i
-const IDENT = /[\p{L}\p{N}_.\\]/u
 /** A function's or a LET name's word after its prefix, `?` and `\` inside too (`_xlpm.a?b`, the set `entry/names-held`). */
 const IDENT_START = new RegExp(`^${IDENT_RULE}`, 'u')
 /** A cell or a lost reference, with its sheet or without: what `#` may follow. */
 const ANCHOR = /^(?:(?:'(?:[^']|'')+'|[^\s'!(),]+)!)?(?:\$?[A-Za-z]{1,3}\$?\d+|#REF!)$/
 
-/** The end (past the closing quote) of a quoted run starting at `i`: `""` and `''` inside are kept. */
+/** The end (past the closing quote) of a quoted run starting at `i`, the text's end when it is not closed: `""` and `''` inside are kept. */
 function quoted(src: string, i: number): number {
-  const q = src[i]
-  let j = i + 1
-  while (j < src.length) {
-    if (src[j] === q) {
-      if (src[j + 1] !== q) return j + 1
-      j++
-    }
-    j++
-  }
-  return src.length
+  const j = closingQuote(src, i)
+  return j < 0 ? src.length : j + 1
 }
 
 /** The index of the parenthesis closing the one at `open`, outside quotes; -1 when there is none. */
@@ -48,17 +39,6 @@ function closing(src: string, open: number): number {
     else if (c === ')' && --depth === 0) return i
   }
   return -1
-}
-
-/** The end of a bracketed run (`[1]`, `Table1[[#This Row],[Col]]`) starting at `i`. */
-function bracket(src: string, i: number): number {
-  let depth = 0
-  for (let j = i; j < src.length; j++) {
-    if (src[j] === "'" && src[j + 1] !== undefined) j++
-    else if (src[j] === '[') depth++
-    else if (src[j] === ']' && --depth === 0) return j + 1
-  }
-  return src.length
 }
 
 /** `@x` where `@` takes the whole of `x` (a reference, a name, a call, a constant), else `@(x)`. */
@@ -86,15 +66,15 @@ export function fromFile(src: string): Converted {
       continue
     }
     // `[0]!x`: the book's own name x, as Excel saves a global name qualified by a sheet
-    if (c === '[' && !IDENT.test(src[i - 1] ?? '') && src.startsWith('[0]!', i)) {
+    if (c === '[' && !FILE_WORD_CHAR.test(src[i - 1] ?? '') && src.startsWith('[0]!', i)) {
       i += 4
       continue
     }
     if (c === '[') {
-      const end = bracket(src, i)
+      const end = bracketEnd(src, i)
       const run = src.slice(i, end)
       // a structured reference: a file writes no `@` for the formula's row, so one before a column name is part of it
-      if (IDENT.test(src[i - 1] ?? '')) out += run.replace(/(^|[^'])\[@/g, "$1['@")
+      if (FILE_WORD_CHAR.test(src[i - 1] ?? '')) out += run.replace(/(^|[^'])\[@/g, "$1['@")
       else {
         found.add(/[@#[]/.test(src[i + 1] ?? '') ? 'table' : 'externalLink')
         out += run
@@ -102,7 +82,7 @@ export function fromFile(src: string): Converted {
       i = end
       continue
     }
-    if (c !== '_' || IDENT.test(src[i - 1] ?? '') || !PREFIX.test(src.slice(i, i + 7))) {
+    if (c !== '_' || FILE_WORD_CHAR.test(src[i - 1] ?? '') || !PREFIX.test(src.slice(i, i + 7))) {
       out += c
       i++
       continue

@@ -5,7 +5,6 @@
  */
 import { caseKey } from '../collate.js'
 import type { Message } from '../locale/messages.js'
-import type { TableItem } from '../locale/types.js'
 import { bad } from './ast.js'
 
 /** A table's rows a reference takes: all of them, the data, the header row, the totals row, the formula's row. */
@@ -17,18 +16,24 @@ export interface TableSpec {
   cols?: [string] | [string, string]
 }
 
-/** The specifiers' words in stored text; the reader takes them in any case. */
-export const AREA_WORDS: Record<TableArea, TableItem> = { all: '#All', headers: '#Headers', data: '#Data', totals: '#Totals', row: '#This Row' }
+/** The specifiers' words in stored text, a locale's `tableItems` keyed by them; the reader takes them in any case. */
+export const AREA_WORDS = { all: '#All', data: '#Data', headers: '#Headers', totals: '#Totals', row: '#This Row' } as const satisfies Record<TableArea, `#${string}`>
+
+/** A specifier of structured references in stored text. */
+export type TableItem = (typeof AREA_WORDS)[TableArea]
+
+/** The specifiers in the order a locale's check lists them (`AREA_WORDS`' own). */
+export const TABLE_ITEMS: readonly TableItem[] = Object.values(AREA_WORDS)
 
 const ORDER: TableArea[] = ['all', 'headers', 'data', 'totals', 'row']
 
 /** The sets of areas Excel takes (by their order): one alone, headers with data, data with totals. */
 const ALLOWED = new Set(['', 'all', 'headers', 'data', 'totals', 'row', 'headers,data', 'data,totals'])
 
-/** An area by its word in any case, `words` (a locale's) beside the stored ones. */
-export function areaOf(word: string, words: Record<TableArea, string> = AREA_WORDS): TableArea | undefined {
+/** An area by its word in any case. */
+function areaOf(word: string): TableArea | undefined {
   const w = caseKey(word)
-  for (const k of ORDER) if (caseKey(AREA_WORDS[k]) === w || caseKey(words[k]) === w) return k
+  for (const k of ORDER) if (caseKey(AREA_WORDS[k]) === w) return k
   return undefined
 }
 
@@ -41,21 +46,16 @@ export const escapeColumn = (name: string, file = false) => {
   return file ? out : out.replace(/^@/, "'@")
 }
 
-/** How a structured reference is printed: a locale's specifier words and list separator, the file's escapes. */
-export interface SpecStyle {
-  words?: Record<TableArea, string>
-  list?: string
-  file?: boolean
-}
-
-/** The text between a structured reference's brackets as stored: `Qty`, `[Qty]:[Price]`, `#All`, `[#This Row],[Qty]`, empty for the data. */
-export function specText(spec: TableSpec, style: SpecStyle = {}): string {
-  const { words = AREA_WORDS, list = ',', file = false } = style
+/**
+ * The text between a structured reference's brackets as stored: `Qty`, `[Qty]:[Price]`, `#All`, `[#This Row],[Qty]`,
+ * empty for the data; `file`, with the escapes of an xlsx file.
+ */
+export function specText(spec: TableSpec, { file = false }: { file?: boolean } = {}): string {
   const esc = (c: string) => escapeColumn(c, file)
   const cols = spec.cols ? spec.cols.map((c) => `[${esc(c)}]`).join(':') : ''
   if (!spec.areas.length) return spec.cols?.length === 1 ? esc(spec.cols[0]) : cols
-  if (spec.areas.length === 1 && !spec.cols) return words[spec.areas[0]]
-  return [...spec.areas.map((a) => `[${words[a]}]`), ...(cols ? [cols] : [])].join(list)
+  if (spec.areas.length === 1 && !spec.cols) return AREA_WORDS[spec.areas[0]]
+  return [...spec.areas.map((a) => `[${AREA_WORDS[a]}]`), ...(cols ? [cols] : [])].join(',')
 }
 
 /**
@@ -63,7 +63,7 @@ export function specText(spec: TableSpec, style: SpecStyle = {}): string {
  * position for messages. Spaces may stand inside the outer brackets around a list of items and after its commas,
  * not around `:`; a column written alone (`Sales[Qty]`) is all the text to its `]`, spaces included.
  */
-export function readSpec(src: string, i: number, at: number, words?: Record<TableArea, string>, list = ','): { spec: TableSpec; end: number } {
+export function readSpec(src: string, i: number, at: number): { spec: TableSpec; end: number } {
   let j = i + 1
   const fail = (msg: Message): never => bad(at, msg)
   const skip = () => {
@@ -89,7 +89,7 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
   }
   const area = (): TableArea => {
     const w = `#${name()}`
-    return areaOf(w, words) ?? fail({ key: 'specUnknown', word: w })
+    return areaOf(w) ?? fail({ key: 'specUnknown', word: w })
   }
   // `[Col]` or `[Col]:[Col2]` at j (on its `[`)
   const column = (): [string] | [string, string] => {
@@ -125,7 +125,7 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
         cols = column()
       }
       skip()
-      if (src[j] !== list) break
+      if (src[j] !== ',') break
       j++
       skip()
     }
@@ -153,8 +153,8 @@ const SPECIAL = /[\s:.[\]#'"{}$^&*+=\-<>/@]/
  * Price]`, `@[Qty]:[Price]`, `@` alone), the rest as stored. `list`, the list separator of the locale it is shown in,
  * puts a name in brackets after `@` too (`@[1,5]` in en-US, `@1,5` in ru-RU: the set `tables/headers-ru-held`).
  */
-export function shownSpec(spec: TableSpec, style: SpecStyle = {}, list = ','): string {
-  if (spec.areas.length !== 1 || spec.areas[0] !== 'row') return specText(spec, style)
+export function shownSpec(spec: TableSpec, list = ','): string {
+  if (spec.areas.length !== 1 || spec.areas[0] !== 'row') return specText(spec)
   if (!spec.cols) return '@'
   const [a, b] = spec.cols
   if (b !== undefined) return `@[${escapeColumn(a)}]:[${escapeColumn(b)}]`

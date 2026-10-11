@@ -7,18 +7,9 @@ import { PLAIN_SHEET } from '../sheet-pattern.js'
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
+import { ERROR_CODE, FORMULA_ERRORS } from './errors.js'
+import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_CHAR, IDENT_RULE, isSpace, numberSource } from './scan.js'
 import { readSpec, type TableSpec } from './table.js'
-
-const ERROR_LITERALS: Record<string, ErrorCode> = {
-  '#DIV/0!': 'DIV0',
-  '#N/A': 'NA',
-  '#NAME?': 'NAME',
-  '#NUM!': 'NUM',
-  '#REF!': 'REF',
-  '#VALUE!': 'VALUE',
-  '#NULL!': 'NULL',
-  '#SPILL!': 'SPILL',
-}
 
 export type Tok =
   | { t: 'num'; v: number; at: number }
@@ -38,8 +29,6 @@ export type Tok =
   | { t: '{' | '}' | ';'; at: number }
   | { t: 'eof'; at: number }
 
-/** An identifier (function or name): a letter, `_` or `\`, then letters, digits, `_`, `.`, `\` and `?`; the locale lexer reads the same. */
-export const IDENT_RULE = '[\\p{L}_\\\\][\\p{L}\\p{N}_.\\\\?]*'
 const IDENT = new RegExp(`^${IDENT_RULE}`, 'u')
 const QUOTED_SHEET = /^'((?:[^']|'')+)'!/
 const UNQUOTED_SHEET = new RegExp(`^(${PLAIN_SHEET})!`, 'u')
@@ -50,21 +39,7 @@ const CELL_NAME = /^([A-Za-z]{1,3})([0-9]+)$/
 const CELL_RANGE = /^(\$?)([A-Za-z]{1,3})(\$?)([0-9]+)(?::(\$?)([A-Za-z]{1,3})(\$?)([0-9]+))?/
 const COL_RANGE = /^(\$?)([A-Za-z]{1,3}):(\$?)([A-Za-z]{1,3})/
 const ROW_RANGE = /^(\$?)([0-9]+):(\$?)([0-9]+)/
-const NUMBER = /^(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?/
-const IDENT_CHAR = /[\p{L}\p{N}_.(\\?]/u
-/** After a bracketed run, what makes it a reference to another workbook (`[1]Sheet1!A1`, `[Book.xlsx]S!A1`, `[1]!name`). */
-const BOOK_SHEET = /^(?:[\p{L}\p{N}_.]+|'(?:[^']|'')+')?!/u
-
-/** The end of the bracketed run that opens at `i`, nested brackets and `'` escapes inside; the text's length when it is not closed. */
-function bracketEnd(src: string, i: number): number {
-  let depth = 0
-  for (let j = i; j < src.length; j++) {
-    if (src[j] === "'") j++
-    else if (src[j] === '[') depth++
-    else if (src[j] === ']' && --depth === 0) return j + 1
-  }
-  return src.length
-}
+const NUMBER = new RegExp(`^${numberSource('\\.')}`)
 
 function rowNo(s: string, at: number): number {
   const n = Number(s)
@@ -148,38 +123,26 @@ export function tokenize(src: string): Tok[] {
   let i = 0
   while (i < src.length) {
     const ch = src[i]
-    if (ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r') {
+    if (isSpace(ch)) {
       if (space < 0) space = i
       i++
       continue
     }
     const rest = src.slice(i)
     if (ch === '"') {
-      let j = i + 1
-      let v = ''
-      for (;;) {
-        if (j >= src.length) bad(i, { key: 'unterminatedString' })
-        if (src[j] === '"') {
-          if (src[j + 1] === '"') {
-            v += '"'
-            j += 2
-            continue
-          }
-          break
-        }
-        v += src[j++]
-      }
-      push({ t: 'str', v, at: i })
+      const j = closingQuote(src, i)
+      if (j < 0) bad(i, { key: 'unterminatedString' })
+      push({ t: 'str', v: src.slice(i + 1, j).replaceAll('""', '"'), at: i })
       i = j + 1
       continue
     }
     if (ch === '#') {
-      const lit = Object.keys(ERROR_LITERALS).find((e) => rest.toUpperCase().startsWith(e))
+      const lit = FORMULA_ERRORS.find((e) => rest.toUpperCase().startsWith(e))
       if (!lit) bad(i, { key: 'unknownErrorLiteral' })
       // a reference whose sheet was deleted: `#REF!A1`, `#REF!#REF!`; a lost spill reference ends in `#`
       let tail = lit === '#REF!' ? (readRef(src.slice(i + 5), i)?.ref.text ?? (rest.slice(5).toUpperCase().startsWith('#REF!') ? '#REF!' : '')) : ''
       if (lit === '#REF!' && src[i + 5 + tail.length] === '#') tail += '#'
-      push({ t: 'err', code: ERROR_LITERALS[lit], at: i, ...(tail ? { ref: tail } : {}) })
+      push({ t: 'err', code: ERROR_CODE[lit], at: i, ...(tail ? { ref: tail } : {}) })
       i += lit.length + tail.length
       continue
     }
@@ -253,9 +216,7 @@ export function tokenize(src: string): Tok[] {
     }
     const im = IDENT.exec(rest)
     if (im) {
-      let j = i + im[0].length
-      while (src[j] === ' ') j++
-      if (src[j] === '(') push({ t: 'fn', v: im[0].toUpperCase(), at: i })
+      if (callFollows(src, i + im[0].length)) push({ t: 'fn', v: im[0].toUpperCase(), at: i })
       else if (src[i + im[0].length] === '[') {
         const { spec, end } = readSpec(src, i + im[0].length, i)
         push({ t: 'table', table: im[0], spec, at: i })

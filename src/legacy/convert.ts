@@ -14,8 +14,9 @@
  * - `A` inside an argument that takes an array: nothing gets `@`.
  */
 import type { NameInput } from '../contract.js'
-import { canonical, FormulaError, isRefOp, parse, sheetKey, type Ast } from '../syntax.js'
+import { canonical, FormulaError, isRefOp, parse, type Ast } from '../syntax.js'
 import { caseKey } from '../collate.js'
+import { inputNameFor } from '../names.js'
 import { object, onlyKeys } from '../input.js'
 import { strict } from '../strict-args.js'
 import { PARAMS } from './params.js'
@@ -261,9 +262,7 @@ export function legacyConverter(names: readonly NameInput[] = []): (ast: Ast, sh
     return parsed.get(n)!
   }
   const lookup: Names = (name, sheet) => {
-    const up = caseKey(name)
-    const local = sheet === undefined ? undefined : names.find((n) => n.scope !== undefined && sheetKey(n.scope) === sheetKey(sheet) && caseKey(n.name) === up)
-    const found = local ?? names.find((n) => n.scope === undefined && caseKey(n.name) === up)
+    const found = inputNameFor(names, sheet, name)
     const ast = found && formulaOf(found)
     return found && ast ? { ast } : undefined
   }

@@ -74,3 +74,10 @@ export function nameFor(names: PreparedName[], here: number, name: string): Prep
   const up = caseKey(name)
   return names.find((n) => n.scope === here && caseKey(n.name) === up) ?? names.find((n) => n.scope === -1 && caseKey(n.name) === up)
 }
+
+/** `nameFor` among a book's names as given: the one `sheet` sees, its own local name, else the global one (no sheet: the global one). */
+export function inputNameFor(names: readonly NameInput[], sheet: string | undefined, name: string): NameInput | undefined {
+  const up = caseKey(name)
+  const here = sheet === undefined ? undefined : sheetKey(sheet)
+  return (here === undefined ? undefined : names.find((n) => n.scope !== undefined && sheetKey(n.scope) === here && caseKey(n.name) === up)) ?? names.find((n) => n.scope === undefined && caseKey(n.name) === up)
+}

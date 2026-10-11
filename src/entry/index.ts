@@ -12,7 +12,7 @@ import { checkEntryOptions, checkString } from '../input.js'
 import { validateLocalFormula, toInvariant } from '../locale/index.js'
 import { validate } from '../syntax.js'
 import { localeOf } from '../locale/registry.js'
-import type { RulesClock } from '../locale/rules/data.js'
+import { markingClock, type RulesClock } from '../locale/rules/data.js'
 import { rulesOf, type Rules } from '../locale/rules.js'
 import type { Locale } from '../locale/types.js'
 import { epochOf, ymd } from '../dates.js'
@@ -29,14 +29,7 @@ function rulesFor(locale: Locale, epoch: number, year: number) {
   if (!byEpoch) RULES.set(locale, (byEpoch = new Map()))
   let r = byEpoch.get(epoch)
   if (!r) {
-    const clock: RulesClock & { y: number } = {
-      y: year,
-      read: false,
-      year: () => {
-        clock.read = true
-        return clock.y
-      },
-    }
+    const clock: RulesClock & { y: number } = Object.assign(markingClock(() => clock.y), { y: year })
     byEpoch.set(epoch, (r = { rules: rulesOf(locale, clock, epoch), clock }))
   }
   r.clock.y = year

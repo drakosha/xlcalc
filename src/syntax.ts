@@ -10,4 +10,4 @@ export { ERROR_TEXT, FormulaError, isRefOp, type Ast, type BinOp, type Lit, type
 export { bindTables, checkCalls, nameProblem, nameRule, reservedName, validate, validateName } from './syntax/check.js'
 export { parse } from './syntax/parse.js'
 export { canonical, mapAst, printFormula, quoteSheet, sheetKey, walk, type PrintOptions } from './syntax/print.js'
-export { IDENT_RULE, tokenize, type Tok } from './syntax/tokens.js'
+export { tokenize, type Tok } from './syntax/tokens.js'

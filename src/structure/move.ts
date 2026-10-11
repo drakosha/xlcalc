@@ -8,6 +8,7 @@ import type { BookInput, CellInput, NameInput } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import { inputNameFor } from '../names.js'
 import { parse, sheetKey, walk } from '../syntax.js'
 import { contains, hasCell, hi, isFull, lo, meets, parseRange, rectOf, shiftRect, withSpan, type Area, type Axis, type Rect } from './area.js'
 import { arrayRefusal, relocated } from './arrays.js'
@@ -113,7 +114,7 @@ function moveTransform(from: string, src: Rect, to: string, dr: number, dc: numb
  * (local or global): Excel defines them on `to` too, `repoint` gives the reference.
  */
 export function carryNames(names: NameInput[], formulas: string[], from: string, to: string, repoint: (ref: string) => string): NameInput[] {
-  const [fk, tk] = [sheetKey(from), sheetKey(to)]
+  const fk = sheetKey(from)
   const named = (k: string | null, name: string) => names.find((n) => (n.scope === undefined ? k === null : sheetKey(n.scope) === k) && caseKey(n.name) === caseKey(name))
   const added: NameInput[] = []
   for (const f of formulas) {
@@ -126,7 +127,7 @@ export function carryNames(names: NameInput[], formulas: string[], from: string,
     walk(ast, (n) => {
       if (n.k !== 'name') return
       const own = named(fk, n.name)
-      if (own && !named(tk, n.name) && !named(null, n.name) && !added.some((a) => caseKey(a.name) === caseKey(n.name))) added.push({ name: own.name, ref: repoint(own.ref), scope: to })
+      if (own && !inputNameFor(names, to, n.name) && !added.some((a) => caseKey(a.name) === caseKey(n.name))) added.push({ name: own.name, ref: repoint(own.ref), scope: to })
     })
   }
   return added
