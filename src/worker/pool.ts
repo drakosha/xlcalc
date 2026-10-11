@@ -71,7 +71,7 @@ interface Rec {
 }
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
-const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setLayout: 'edits', setNames: 'names', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setCellTexts: 'entries', previewCellTexts: 'entries', setLayout: 'edits', setNames: 'names', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
@@ -401,6 +401,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       patchCells: (patches, co) => value(edit('patchCells', [patches], co)),
       setCellText: (sheet, cell, text, co) => value(edit('setCellText', [sheet, cell, text], co, ['widen'])),
       previewCellText: (sheet, cell, text, co) => value(edit('previewCellText', [sheet, cell, text], co, ['widen'])),
+      setCellTexts: (entries, co) => value(edit('setCellTexts', [entries], co, ['widen'])),
+      previewCellTexts: (entries, co) => value(edit('previewCellTexts', [entries], co, ['widen'])),
       setNames: (names, co) => value(edit('setNames', [names], co)),
       setClock: (next, co) => value(edit('setClock', [next], co)),
       editStructure: (op, co) => mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>,
@@ -411,6 +413,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       getUsedRange: (sheet) => value(call('getUsedRange', [sheet])),
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
       getCells: (sheet, range) => value(call('getCells', [sheet, range])),
+      getCell: (sheet, cell) => value(call('getCell', [sheet, cell])),
       getViewport: (sheet, range, vo) => value(call('getViewport', [sheet, range, vo])),
       getCellIssue: (sheet, cell) => value(call('getCellIssue', [sheet, cell])),
       getValidation: (sheet, cell) => value(call('getValidation', [sheet, cell])),

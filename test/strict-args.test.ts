@@ -21,8 +21,8 @@ const book = (): BookInput => ({ styles: [{ font: { bold: true } }], sheets: [{ 
 
 /** The arguments each method of a synchronous session takes (`Session`), by its new name and its old one. */
 const SESSION: Record<string, number> = {
-  setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setNames: 2, setClock: 2, editStructure: 2, setStyles: 2, setLayout: 2,
-  getBook: 0, getLayout: 0, getUsedRange: 1, explain: 3, getCells: 2, getViewport: 3, getCellIssue: 2, getValidation: 2, validateEntry: 3,
+  setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setCellTexts: 2, previewCellTexts: 2, setNames: 2, setClock: 2, editStructure: 2, setStyles: 2, setLayout: 2,
+  getBook: 0, getLayout: 0, getUsedRange: 1, explain: 3, getCells: 2, getCell: 2, getViewport: 3, getCellIssue: 2, getValidation: 2, validateEntry: 3,
   getResult: 0, getSnapshot: 0, getHash: 0, undo: 1, redo: 1, close: 0,
   restructure: 2, book: 0, layout: 0, extent: 1, cells: 2, validation: 2, result: 0, hash: 0,
 }

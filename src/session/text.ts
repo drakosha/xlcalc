@@ -13,7 +13,7 @@ import { formatOf, sheetLines } from '../layout/lines.js'
 import { parseMerge } from '../layout/merges.js'
 import { hasCell } from '../structure/area.js'
 import { say } from '../locale/messages.js'
-import { formatAddress, parseAddress } from '../model.js'
+import { parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { arrayPart } from '../spill/fixed.js'
 import { brokenRule } from '../validation/session.js'
@@ -22,11 +22,9 @@ import { cellValue } from './looks.js'
 /** The fields an entry replaces: the content and the number format. */
 const TYPED = ['value', 'formula', 'array', 'numberFormat'] as const
 
-/** The cell's input after `text` is typed into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */
-export function cellText(s: EngineState, i: number, r: number, c: number, text: string, now: string): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
-  const sh = s.input.sheets[i]
-  const own = sh.cells[formatAddress(r, c)]
-  const lines = sheetLines(sh, s)
+/** The input `own` of the cell after `text` is typed into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */
+export function cellText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
+  const lines = sheetLines(s.input.sheets[i], s)
   const inherited = formatOf(undefined, lines.row(r), lines.column(c))
   const shown = own?.numberFormat ?? inherited
   const p = parseEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown } })
