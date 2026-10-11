@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.3 (2026-10-11)
+
+Internal release; not published to npm. A fill no longer walks the whole sheet for each copy it pastes.
+
+Fixed:
+
+- `copyRange` (and so a fill down or right, and a copy over a target several times the source) kept the look of each pasted position by walking every cell of the source sheet once per copy pasted: filling one row of the 3,400-row synthetic book down 2,000 rows took 11.4 s (192 s on the 34,000-row book). The source's cells and their looks are now found once for all the copies: 0.2 s and 2.6 s. The book, the values and the changes are the same.
+
 ## 0.16.2 (2026-10-11)
 
 Internal release; not published to npm. `LINEST` and its relatives far from 0, `SORTBY` with a by-array of one value.
