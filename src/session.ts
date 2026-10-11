@@ -14,7 +14,7 @@ import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budge
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
-import { checkBase, editFields, inOrder, joined, layoutChanged, movedFields, nothing, repaintOf, ruleRanges, sortedKeys, type FieldChange, type Outcome } from './session/answer.js'
+import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, sortedKeys, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf } from './session/book.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
@@ -209,8 +209,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     if (live) tick(old)
     try {
       const next = yield* build(book)
-      const keys = movedChanges(old, next, mapCell ?? ((ref) => ref), display && looks ? [cellLooks(old), cellLooks(next)] : undefined)
-      const fields = yield* movedFields(old, next, mapCell)
+      const fields = new Map<string, FieldChange>()
+      const keys = movedChanges(old, next, mapCell ?? ((ref) => ref), display && looks ? [cellLooks(old), cellLooks(next)] : undefined, fields)
       const diff = yield* back()
       state = next
       return [next, { ...nothing(), keys: sortedKeys([...keys, ...fields.keys()]), fields, valued: true, layout: new Set(layoutChanged(old.input, next.input)) }, diff]

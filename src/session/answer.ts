@@ -6,7 +6,7 @@
  */
 import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, RangeRef, SheetInput } from '../contract.js'
 import { key, type EngineState } from '../engine.js'
-import { CalcError, paced, type Steps } from '../exec/budget.js'
+import { CalcError } from '../exec/budget.js'
 import { InputError, object, onlyKeys } from '../input.js'
 import { parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -63,11 +63,13 @@ export function formulaText(s: EngineState, i: number, r: number, c: number, inp
   return id === undefined ? input.formula : s.formulas[id]!.text
 }
 
-/** What differs between a cell's input before and now: its formula (as now), own style and own number format. */
-function fieldsOf(s: EngineState, i: number, r: number, c: number, was: CellInput | undefined, now: CellInput | undefined): FieldChange | null {
-  if (was === now) return null
+/**
+ * What differs of a cell beside its value between the input `was` and the input `now` at its place: its formula as each
+ * state shows it (`wasText`, `nowText`), its own style and its own number format; null when nothing does.
+ */
+export function fieldsBetween(was: CellInput | undefined, wasText: string | undefined, now: CellInput | undefined, nowText: string | undefined): FieldChange | null {
   const out: FieldChange = {}
-  if (was?.formula !== now?.formula) out.formula = now?.formula === undefined ? null : formulaText(s, i, r, c, now)
+  if (wasText !== nowText) out.formula = nowText ?? null
   if (was?.style !== now?.style) out.style = now?.style ?? null
   if (was?.format !== now?.format) out.numberFormat = now?.format ?? null
   return 'formula' in out || 'style' in out || 'numberFormat' in out ? out : null
@@ -78,58 +80,12 @@ export function editFields(s: EngineState, was: { sheet: string; cell: string; i
   const out = new Map<string, FieldChange>()
   for (const { sheet, cell, input } of was) {
     const i = s.sheetIdx.get(sheetKey(sheet))!
+    const now = s.input.sheets[i].cells[cell]
+    if (now === (input ?? undefined)) continue
     const { row, col } = parseAddress(cell)
-    const f = fieldsOf(s, i, row, col, input ?? undefined, s.input.sheets[i].cells[cell])
+    // a formula's text as written before, as the state shows it now: one that changes is listed
+    const f = fieldsBetween(input ?? undefined, input?.formula, now, now?.formula === input?.formula ? input?.formula : now?.formula === undefined ? undefined : formulaText(s, i, row, col, now))
     if (f) out.set(`${i}:${row}:${col}`, f)
-  }
-  return out
-}
-
-/**
- * The cells of a book built again (`next`) whose formula (as each state shows it), own style or own number format
- * differ from those of the cell `mapCell` brought there from the old book (none: the cell stays where it is), by key of
- * `next`; a cell nothing came to differs from an empty one.
- */
-export function* movedFields(old: EngineState, next: EngineState, mapCell: ((ref: CellRef) => CellRef | null) | null): Steps<Map<string, FieldChange>> {
-  const out = new Map<string, FieldChange>()
-  // the cells of each sheet of `next` some old cell came to, by address
-  const reached = next.input.sheets.map(() => new Set<string>())
-  const textOf = (s: EngineState, i: number, addr: string, input: CellInput | undefined) => {
-    if (input?.formula === undefined) return undefined
-    const { row, col } = parseAddress(addr)
-    return formulaText(s, i, row, col, input)
-  }
-  const compare = (j: number, addr: string, was: CellInput | undefined, wasText: string | undefined, now: CellInput | undefined) => {
-    const nowText = textOf(next, j, addr, now)
-    const f: FieldChange = {}
-    if (wasText !== nowText) f.formula = nowText ?? null
-    if (was?.style !== now?.style) f.style = now?.style ?? null
-    if (was?.format !== now?.format) f.numberFormat = now?.format ?? null
-    if (!('formula' in f || 'style' in f || 'numberFormat' in f)) return
-    const { row, col } = parseAddress(addr)
-    out.set(`${j}:${row}:${col}`, f)
-  }
-  for (let s = 0; s < old.input.sheets.length; s++) {
-    const cells = old.input.sheets[s].cells
-    for (const addr in cells) {
-      if (paced(1)) yield
-      const to = mapCell ? mapCell({ sheet: old.sheetNames[s], cell: addr }) : { sheet: old.sheetNames[s], cell: addr }
-      if (!to) continue
-      const j = next.sheetIdx.get(sheetKey(to.sheet))
-      if (j === undefined) continue
-      reached[j].add(to.cell)
-      const [was, now] = [cells[addr], next.input.sheets[j].cells[to.cell]]
-      // the same input without a formula: nothing of it can differ (a formula's text may, with new names)
-      if (was === now && was.formula === undefined) continue
-      compare(j, to.cell, was, textOf(old, s, addr, was), now)
-    }
-  }
-  for (let j = 0; j < next.input.sheets.length; j++) {
-    const cells = next.input.sheets[j].cells
-    for (const addr in cells) {
-      if (paced(1)) yield
-      if (!reached[j].has(addr)) compare(j, addr, undefined, undefined, cells[addr])
-    }
   }
   return out
 }
