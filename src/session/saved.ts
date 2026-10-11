@@ -2,12 +2,11 @@
  * A window over a saved version of a book (`viewportOf`): the book and its result as a host keeps them, read as a
  * session's window reads its state (`viewport.ts`), without a session and without computing. The values, the text, the
  * colour and the reasons of errors come from the result, the formats, the styles and the layout from the book; the
- * cells of a large spill that the result leaves out show its `spillFill`. A result with the old names (`issues`, a
- * cell's `format`) reads alike. What a book and a result give beside their cells (the checked book, its tables, each
- * sheet's large spills and extent, the reasons by cell) is found once and kept with the two objects, so a host that
- * serves several windows of one version passes the same objects.
+ * cells of a large spill that the result leaves out show its `spillFill`. What a book and a result give beside their
+ * cells (the checked book, its tables, each sheet's large spills and extent, the reasons by cell) is found once and kept
+ * with the two objects, so a host that serves several windows of one version passes the same objects.
  */
-import type { BookInput, CellIssue, CellValue, SavedBook, SavedCellResult, SavedResult, SavedViewport, SheetExtent, ViewportCell, ViewportOptions } from '../contract.js'
+import type { BookInput, BookSnapshot, CellIssue, CellResult, CellValue, ComputeResult, SavedViewport, SheetExtent, ViewportCell, ViewportOptions } from '../contract.js'
 import { holds } from '../array-areas.js'
 import { epochOf } from '../dates.js'
 import { run } from '../exec/budget.js'
@@ -39,7 +38,7 @@ interface SheetFound {
 /** What a saved book and its result give beside their cells. */
 interface Found {
   book: BookInput
-  result: SavedResult
+  result: ComputeResult
   tables: Tables
   /** The sheets' indexes by key (`sheetKey`). */
   index: Map<string, number>
@@ -53,8 +52,8 @@ interface Found {
 /** What each pair of a book and a result gave, by the book, then the result. */
 const kept = new WeakMap<object, WeakMap<object, Found>>()
 
-/** The result checked as one of `book`: its sheets the book's, in order, each with its cells; its reasons lists; its clock. */
-function checkResult(v: unknown, book: BookInput, path: string): SavedResult {
+/** The result checked as one of `book`: its sheets the book's, in order, each with its cells; its reasons (`diagnostics`); its clock. */
+function checkResult(v: unknown, book: BookInput, path: string): ComputeResult {
   const r = object(v, path, 'a result such as compute or getResult gives')
   const sheets = array(r.sheets, `${path}.sheets`, 'an array of the sheets of the result')
   if (sheets.length !== book.sheets.length) throw new InputError(`${path}.sheets`, `expected the ${book.sheets.length} sheets of the book, got ${sheets.length}: the result is not of this book`)
@@ -65,13 +64,13 @@ function checkResult(v: unknown, book: BookInput, path: string): SavedResult {
       throw new InputError(`${p}.name`, `expected the book's sheet ${JSON.stringify(book.sheets[i].name)}, got ${JSON.stringify(sheet.name)}: the result is not of this book`)
     object(sheet.cells, `${p}.cells`, 'an object of cells by address')
   })
-  for (const k of ['diagnostics', 'issues']) if (r[k] !== undefined) array(r[k], `${path}.${k}`, 'an array of reasons')
+  array(r.diagnostics, `${path}.diagnostics`, 'an array of reasons')
   checkClock(r.clock, `${path}.clock`)
-  return r as unknown as SavedResult
+  return r as unknown as ComputeResult
 }
 
 /** Whether a result has its cells' text: its first cell has it, or it has no cell (the display is on by default). */
-function displayed(result: SavedResult): boolean {
+function displayed(result: ComputeResult): boolean {
   for (const sheet of result.sheets) for (const a in sheet.cells) return sheet.cells[a].text !== undefined
   return true
 }
@@ -130,7 +129,7 @@ function sheetFound(f: Found, s: number): SheetFound {
 /** The result's reasons of the cells with an error, by `s:address`. */
 function reasons(f: Found): Map<string, CellIssue> {
   if (f.reasons) return f.reasons
-  const list: CellIssue[] = f.result.diagnostics?.flatMap((d) => (d.kind === 'cell' ? [d] : [])) ?? f.result.issues ?? []
+  const list: CellIssue[] = f.result.diagnostics.flatMap((d) => (d.kind === 'cell' ? [d] : []))
   const out = new Map<string, CellIssue>()
   for (const i of list) {
     const s = f.index.get(sheetKey(i.sheet))
@@ -163,7 +162,7 @@ function stepBack(f: Found, p: Place): Place | null {
 }
 
 /** A saved cell as a window gives it: its value and what the result shows of it, without its own number format. */
-function resultCell(x: SavedCellResult): ViewportCell {
+function resultCell(x: CellResult): ViewportCell {
   const out: Record<string, unknown> = { value: x.value }
   for (const k of ['text', 'color', 'formula', 'meta', 'spill', 'spillFill', 'spillOf'] as const) if (x[k] !== undefined) out[k] = x[k]
   return out as unknown as ViewportCell
@@ -203,7 +202,7 @@ function savedSource(f: Found, s: number): WindowSource {
  * A window over a saved book and its result, as `Session.getViewport` gives it over a session of that book, without
  * computing anything: the result's values, text and colour, the book's formats, styles and layout.
  */
-export function viewportOf(saved: SavedBook, sheet: string, range: string, opts?: ViewportOptions): SavedViewport {
+export function viewportOf(saved: BookSnapshot, sheet: string, range: string, opts?: ViewportOptions): SavedViewport {
   const f = found(saved)
   const s = checkSheet(sheet, (name) => f.index.get(sheetKey(name)), 'sheet')
   const asked = checkRange(range, 'range')
