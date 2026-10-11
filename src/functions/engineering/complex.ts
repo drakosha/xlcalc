@@ -7,6 +7,7 @@ import { gridAt, occupied, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { atp } from '../date/atp.js'
 import { trimSpaces } from '../../dates.js'
+import { generalText } from '../../numfmt/general.js'
 import { E, fitNumber, isErr, type CErr, type V } from '../../values.js'
 import { MAX_TRIG } from '../common.js'
 
@@ -89,16 +90,7 @@ function unitOf(zs: readonly Complex[]): 'i' | 'j' | null {
 }
 
 /** A part as Excel writes it in complex text: 15 significant digits, positional up to 21 characters (the General rule of `&` with 20). */
-function partText(n: number, rules: Rules): string {
-  if (n === 0) return '0'
-  const [m, e] = Math.abs(n).toExponential(14).split('e')
-  const exp = Number(e)
-  const digits = m.replace('.', '').replace(/0+$/, '')
-  const fixed =
-    exp < 0 ? `0.${'0'.repeat(-exp - 1)}${digits}` : digits.length <= exp + 1 ? digits.padEnd(exp + 1, '0') : `${digits.slice(0, exp + 1)}.${digits.slice(exp + 1)}`
-  const text = fixed.length <= 21 ? fixed : `${digits[0]}${digits.length > 1 ? '.' + digits.slice(1) : ''}E${exp < 0 ? '-' : '+'}${String(Math.abs(exp)).padStart(2, '0')}`
-  return (n < 0 ? '-' + text : text).replace('.', rules.decimal)
-}
+const partText = (n: number, rules: Rules): string => generalText(n, 21).replace('.', rules.decimal)
 
 /** The text of re + im·unit; a part that overflows is #NUM!. */
 function complexText(re: number, im: number, unit: 'i' | 'j', rules: Rules): string | CErr {
