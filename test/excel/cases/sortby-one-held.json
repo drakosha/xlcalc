@@ -1,0 +1,202 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.777,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "SORTBY#1",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,1,5,1),1)"
+  },
+  {
+   "id": "SORTBY#2",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,1,5,),1)"
+  },
+  {
+   "id": "SORTBY#3",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,-1,D!E1,1),1)"
+  },
+  {
+   "id": "SORTBY#4",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,1,{5},1),1)"
+  },
+  {
+   "id": "SORTBY#5",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,1,\"x\",1),1)"
+  },
+  {
+   "id": "SORTBY#6",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,1,D!E1:E8,1,5,1),1)"
+  },
+  {
+   "id": "SORTBY#7",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,5,1,D!C1:C8,1),1)"
+  },
+  {
+   "id": "SORTBY#8",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,5,1,7,-1),1)"
+  },
+  {
+   "id": "SORTBY#9",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "ROWS(_xlfn.SORTBY(D!B1:B8,5))"
+  },
+  {
+   "id": "SORTBY#10",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:C8,5,1),1)"
+  },
+  {
+   "id": "SORTBY#11",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:C8,,-1),1)"
+  },
+  {
+   "id": "SORTBY#12",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!L8:Q8,D!L10:Q10,-1,5,1),1)"
+  },
+  {
+   "id": "SORTBY#13",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!L8:Q8,5,1),1)"
+  },
+  {
+   "id": "SORTBY#14",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!L8:Q8,5,1,D!L10:Q10,-1),1)"
+  },
+  {
+   "id": "SORTBY#15",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.SORTBY(D!B1,D!C1,1,5,1)"
+  },
+  {
+   "id": "SORTBY#16",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,1,1/0,1),1)"
+  },
+  {
+   "id": "SORTBY#17",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,1,D!B1:B8*0,1),1)"
+  },
+  {
+   "id": "SORTBY#18",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{1;-1},5,1),1)"
+  },
+  {
+   "id": "SORTBY#19",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,5,{1;-1}),1)"
+  }
+ ],
+ "values": {
+  "SORTBY#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#8": {
+   "t": "s",
+   "v": "{4;8;15;16;23;42;-3.5;10.25}"
+  },
+  "SORTBY#9": {
+   "t": "n",
+   "v": 8
+  },
+  "SORTBY#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#13": {
+   "t": "s",
+   "v": "{1,2,3,5,8,13}"
+  },
+  "SORTBY#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SORTBY#15": {
+   "t": "n",
+   "v": 4
+  },
+  "SORTBY#16": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SORTBY#17": {
+   "t": "s",
+   "v": "{-3.5;4;8;10.25;15;16;23;42}"
+  },
+  "SORTBY#18": {
+   "t": "s",
+   "v": "{#VALUE!;#VALUE!}"
+  },
+  "SORTBY#19": {
+   "t": "s",
+   "v": "{4;}"
+  }
+ }
+}

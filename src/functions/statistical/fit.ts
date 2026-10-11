@@ -1,15 +1,17 @@
 /**
  * LINEST, LOGEST, TREND and GROWTH: least squares over one or more x variables by Householder QR (Excel
- * solves by QR too). This engine's own. LOGEST and GROWTH fit ln y. Sizes that do not fit are #REF!, then a
- * value that is not a number #VALUE!, as in Excel. A variable that depends linearly on the others (or on the
- * constant) is left out with coefficient 0, as Excel does: variables are taken by the largest norm left after
- * the ones taken (centered with a constant), a tie going to the later variable with a constant, to the earlier
- * without, as measured.
+ * solves by QR too). This engine's own. LOGEST and GROWTH fit ln y. With a constant, y and each variable are
+ * taken about their means before the decomposition, so data far from 0 against their spread keep their digits,
+ * and the intercept comes back after. Sizes that do not fit are #REF!, then a value that is not a number
+ * #VALUE!, as in Excel. A variable that depends linearly on the others (or on the constant) is left out with
+ * coefficient 0, as Excel does: variables are taken by the largest norm left after the ones taken (centered with
+ * a constant), a tie going to the later variable with a constant, to the earlier without, as measured.
  */
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
-import { sum, sumSquares } from '../common.js'
+import { sumSquares } from '../common.js'
+import { devsq, mean } from './common.js'
 
 interface Data {
   /** Observations × variables. */
@@ -71,15 +73,8 @@ const DEPENDENT = 1e-10
 /** Residual norms this close count as a tie. */
 const TIE = 1e-9
 
-/** The variables Excel keeps: by the largest norm left after projecting out those kept (and the constant). */
-function independent(x: number[][], constant: boolean): number[] {
-  const n = x.length
-  const k = x[0]?.length ?? 0
-  const cols = Array.from({ length: k }, (_, j) => {
-    const c = x.map((row) => row[j])
-    const mean = constant ? sum(c) / n : 0
-    return c.map((t) => t - mean)
-  })
+/** The variables Excel keeps: by the largest norm left after projecting out those kept (`cols` centered with a constant). */
+function independent(cols: number[][], constant: boolean): number[] {
   const scale = cols.map((c) => Math.hypot(...c))
   const basis: number[][] = []
   const kept: number[] = []
@@ -107,19 +102,40 @@ function independent(x: number[][], constant: boolean): number[] {
   }
 }
 
-/** Least squares on the variables Excel keeps; one left out gets coefficient 0. */
+/**
+ * Least squares on the variables Excel keeps; one left out gets coefficient 0. With a constant the decomposition
+ * takes y and the variables less their means, keeping its column of ones for what the rounded means leave, and the
+ * intercept and its variance come back from the means after.
+ */
 function solve(d: Data, constant: boolean): Fit {
+  const n = d.y.length
   const k = d.x[0]?.length ?? 0
-  const keep = independent(d.x, constant)
-  const f = qr({ x: d.x.map((row) => keep.map((j) => row[j])), y: d.y, byRow: d.byRow }, constant)
+  const cols = Array.from({ length: k }, (_, j) => d.x.map((row) => row[j]))
+  const mx = cols.map((c) => (constant ? mean(c) : 0))
+  const my = constant ? mean(d.y) : 0
+  const centered = cols.map((c, j) => c.map((t) => t - mx[j]))
+  const keep = independent(centered, constant)
+  const { beta, rinv, ssresid } = qr(
+    Array.from({ length: n }, (_, i) => keep.map((j) => centered[j][i])),
+    d.y.map((t) => t - my),
+    constant,
+  )
+  const lead = constant ? 1 : 0
   const m = new Array<number>(k).fill(0)
   const diag = new Array<number>(k).fill(0)
-  keep.forEach((j, i) => ((m[j] = f.m[i]), (diag[j] = f.diag[i])))
-  return { ...f, m, diag: constant ? [...diag, f.diag[keep.length]] : diag, used: keep.length }
+  keep.forEach((j, i) => ((m[j] = beta[lead + i]), (diag[j] = sumSquares(rinv[lead + i]))))
+  const b0 = constant ? beta[0] : 0
+  // the intercept is b0 less each coefficient times its mean: its (XᵀX)⁻¹ element is |R⁻ᵀa|² for a = (1, −means)
+  const a = [1, ...keep.map((j) => -mx[j])]
+  const intercept = constant ? [sumSquares(a.map((_, c) => a.reduce((s, t, i) => s + rinv[i][c] * t, 0)))] : []
+  const b = constant ? my + b0 - keep.reduce((s, j) => s + m[j] * mx[j], 0) : 0
+  const sstot = constant ? devsq(d.y) : sumSquares(d.y)
+  // Excel counts at least one fitted parameter: no constant and every variable left out keeps n − 1
+  return { m, b, diag: [...diag, ...intercept], ssresid, sstot, df: n - Math.max(1, lead + keep.length), used: keep.length }
 }
 
-/** Least squares by Householder QR on the design matrix (a column of ones first when `constant`) of independent columns. */
-function qr({ x, y }: Data, constant: boolean): Omit<Fit, 'used'> {
+/** Least squares by Householder QR on the design matrix (a column of ones first when `constant`) of independent columns: the coefficients, R⁻¹ and the residual sum of squares. */
+function qr(x: number[][], y: number[], constant: boolean): { beta: number[]; rinv: number[][]; ssresid: number } {
   const n = y.length
   const a = x.map((row) => (constant ? [1, ...row] : [...row]))
   const p = a[0].length
@@ -158,14 +174,9 @@ function qr({ x, y }: Data, constant: boolean): Omit<Fit, 'used'> {
       rinv[i][j] = -s / a[i][i]
     }
   }
-  const diag = rinv.map(sumSquares)
   let ssresid = 0
   for (let i = p; i < n; i++) ssresid += q[i] * q[i]
-  const my = constant ? sum(y) / n : 0
-  const sstot = y.reduce((s, t) => s + (t - my) * (t - my), 0)
-  const m = constant ? beta.slice(1) : beta
-  // Excel counts at least one fitted parameter: no constant and every variable left out keeps n − 1
-  return { m, b: constant ? beta[0] : 0, diag: constant ? [...diag.slice(1), diag[0]] : diag, ssresid, sstot, df: n - Math.max(1, p) }
+  return { beta, rinv, ssresid }
 }
 
 /** LINEST's answer: coefficients last variable first, then the intercept; with `stats` four rows more. */
@@ -225,6 +236,7 @@ function trend(log: boolean) {
         ;[rows, cols] = vertical ? [n, 1] : [1, n]
       }
     }
+    // b + m·x as Excel evaluates it (fit-offset-held), not about the means
     const out = points.map((p) => {
       const z = f.b + p.reduce((s, x, j) => s + x * f.m[j], 0)
       return log ? Math.exp(z) : z
