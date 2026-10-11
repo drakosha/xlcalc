@@ -6,7 +6,7 @@
 import { attributes, element, elements, flag } from '../xml/scan.js'
 
 /** The errors of rich values by their `errorType`. */
-const RICH_ERRORS = ['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#GETTING_DATA', '#SPILL!', '#CONNECT!', '#BLOCKED!', '#UNKNOWN!', '#FIELD!', '#CALC!']
+export const RICH_ERRORS = ['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#GETTING_DATA', '#SPILL!', '#CONNECT!', '#BLOCKED!', '#UNKNOWN!', '#FIELD!', '#CALC!']
 
 export interface CellMetadata {
   /** Whether a cell metadata index (`cm`, 1-based) marks a dynamic array formula. */

@@ -27,6 +27,7 @@ import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
 import { HEAD, MAIN } from './xml.js'
+import { RICH_ERRORS } from '../read/metadata.js'
 import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
 import { parseAddress } from '../../model.js'
 
@@ -37,7 +38,7 @@ const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 const RICH = 'http://schemas.microsoft.com/office/spreadsheetml/2017/richdata'
 const RICH_REL = 'http://schemas.microsoft.com/office/2017/06/relationships'
 /** The rich value `errorType` of the errors Excel keeps as rich values. */
-const RICH_TYPE = { SPILL: 8, CALC: 13 } as const
+const RICH_TYPE = { SPILL: RICH_ERRORS.indexOf('#SPILL!'), CALC: RICH_ERRORS.indexOf('#CALC!') }
 
 /**
  * The cell metadata: XLDAPR (dynamic array formulas, which `cm="1"` points at) as Excel 365 writes it, and the rich
