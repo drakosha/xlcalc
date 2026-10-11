@@ -10,6 +10,7 @@ import type { Issues } from '../issues.js'
 import { attr, attributes, element, elements, has } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import type { Rel } from './package.js'
+import { fileCell } from './refs.js'
 import { stringItem } from './strings.js'
 
 /** A sheet's parts as the archive holds them: its comments, VML drawing and threaded comments, the book's persons. */
@@ -47,12 +48,6 @@ export function readFrozen(head: string, sheet: string, issues: Issues): FrozenP
   return out.rows || out.columns ? out : undefined
 }
 
-/** Whether an upper-case reference is one cell of the sheet (`A1`, `A1:A1`). */
-function oneCell(ref: string): boolean {
-  const r = parseRange(ref)
-  return !!r && r.r1 === r.r2 && r.c1 === r.c2
-}
-
 /** The person names of threaded comments by id (`persons/person.xml`). */
 function persons(xml: string | undefined): Map<string, string> {
   return new Map(elements(xml ?? '', 'person').map((e) => {
@@ -69,13 +64,20 @@ interface Comment {
   formatted: boolean
 }
 
-function comments(xml: string | undefined): Comment[] {
+/** The cell of a note or a thread (`ref`), as Excel reads it; one that is no one cell is reported, as Excel does not open such a file (the set `parts/refs-held`). */
+function commentCell(ref: string | undefined, sheet: string, issues: Issues): string | null {
+  const cell = ref === undefined ? null : fileCell(ref)
+  if (!cell) issues.add('comment', 'a note or a thread of comments whose cell is no one cell of the sheet is left out', { sheet, cell: ref ?? '' })
+  return cell
+}
+
+function comments(xml: string | undefined, sheet: string, issues: Issues): Comment[] {
   if (!xml) return []
   const authors = elements(element(xml, 'authors')?.body ?? '', 'author').map((e) => readText(e.body ?? ''))
   return elements(element(xml, 'commentList')?.body ?? '', 'comment').flatMap((e) => {
     const a = attributes(e.attrs)
-    const cell = a.ref?.toUpperCase()
-    if (!cell || !oneCell(cell)) return []
+    const cell = commentCell(a.ref, sheet, issues)
+    if (!cell) return []
     const body = element(e.body ?? '', 'text')?.body ?? ''
     // runs of more than one look (the bold author's name of a note made in Excel's window); one look is the note's font
     return [{ cell, author: authors[Number(a.authorId)] ?? '', text: stringItem(body).text, formatted: new Set(elements(body, 'rPr').map((r) => r.body ?? '')).size > 1 }]
@@ -99,8 +101,8 @@ function threads(src: PartsSource, placed: Map<string, string>, issues: Issues):
     const a = attributes(e.attrs)
     const text = readText(element(e.body ?? '', 'text')?.body ?? '')
     const author = who.get(a.personId ?? '')
-    const cell = a.parentId !== undefined ? byId.get(a.parentId) : (placed.get(a.id ?? '') ?? a.ref?.toUpperCase())
-    if (!cell || !oneCell(cell)) continue
+    const cell = a.parentId !== undefined ? byId.get(a.parentId) : (placed.get(a.id ?? '') ?? commentCell(a.ref, src.sheet, issues))
+    if (!cell) continue
     if (a.id) byId.set(a.id, cell)
     const note = out.get(cell)
     if (!note) {
@@ -167,7 +169,7 @@ function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issue
 
 /** Notes, threads of comments and hyperlinks put on the sheet's cells (a cell holding only them is made). */
 export function readCellParts(src: PartsSource, cells: Record<string, CellInput>, issues: Issues): void {
-  const list = comments(src.comments)
+  const list = comments(src.comments, src.sheet, issues)
   const placed = new Map(list.flatMap((c) => (placeholderOf(c) ? [[placeholderOf(c)!, c.cell] as const] : [])))
   const thread = threads(src, placed, issues)
   for (const [cell, note] of [...notes(src, list, thread, issues), ...thread]) cells[cell] = { ...cells[cell], note }

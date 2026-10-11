@@ -133,7 +133,14 @@ export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, s
       })
       for (const c of set.cases) {
         const key = `${set.name}:${c.id}`
-        it(`${c.id}: Excel loaded the book`, () => expect(set.rejected?.[c.id]).toBeUndefined())
+        const repaired = PARTS_REPAIRED[key]
+        if (repaired)
+          it(`${c.id}: Excel does not load the book; the reader reads it and reports what it leaves out`, async () => {
+            expect(set.rejected?.[c.id]).toBeDefined()
+            const read = await readXlsx(await partsFile(c, set))
+            expect(read.issues.map((i) => `${i.code} ${i.sheet ?? ''} ${(i.cells ?? []).join(' ')}`.trim())).toEqual(repaired)
+          })
+        else it(`${c.id}: Excel loaded the book`, () => expect(set.rejected?.[c.id]).toBeUndefined())
         if (!set.answers[c.id]) continue
         it(`${c.id}: Excel read what the engine holds`, async () => {
           const a = set.answers[c.id]
@@ -161,6 +168,12 @@ export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, s
     })
   }
 }
+
+/**
+ * `<set>:<case id>` → what the reader reports of a file changed by hand that neither Excel loads (the repair window on
+ * the Mac, `Workbooks.Open` failing on Windows): a note on a range of cells.
+ */
+export const PARTS_REPAIRED: Readonly<Record<string, string[]>> = { 'refs-held:range': ['comment S A1:B2'] }
 
 /** Excel takes the part of an address after `#` as its place (Address and SubAddress); the book keeps the address as written. */
 const anchor = (cell: string) => `S link ${cell}: Excel {"url":"https://example.com/page","location":"top"}, book {"url":"https://example.com/page#top"}`
