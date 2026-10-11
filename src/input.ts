@@ -206,38 +206,50 @@ export const LINES: readonly BorderLine['style'][] = ['thin', 'medium', 'thick',
 export const HORIZONTAL: readonly NonNullable<AlignmentStyle['horizontal']>[] = ['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed']
 export const VERTICAL: readonly NonNullable<AlignmentStyle['vertical']>[] = ['top', 'center', 'bottom', 'justify', 'distributed']
 
+/** Whether a field of a style is given: a cell's style and a conditional one take different fields as given (`checkStyle`). */
+export type Given = (o: Record<string, unknown>, k: string) => boolean
+
+/** A font's fields: a cell's (`named`) has a name and a size too, which a conditional style (a dxf) has not. */
+export function checkFont(v: unknown, p: string, given: Given, named: boolean) {
+  const f = object(v, p, 'a font such as { bold: true }')
+  onlyKeys(f, p, [...(named ? ['name', 'size'] : []), 'bold', 'italic', 'underline', 'strike', 'color'])
+  if (given(f, 'name')) checkString(f.name, `${p}.name`)
+  if (given(f, 'size')) checkNumber(f.size, `${p}.size`, 1, 409)
+  for (const k of ['bold', 'italic', 'strike']) if (given(f, k)) checkBoolean(f[k], `${p}.${k}`)
+  if (given(f, 'underline')) checkOneOf(f.underline, `${p}.underline`, ['single', 'double'])
+  if (given(f, 'color')) checkColor(f.color, `${p}.color`)
+}
+
+/** A solid fill; `example` is the colour its message shows. */
+export function checkFill(v: unknown, p: string, example: string) {
+  const f = object(v, p, `a fill such as { color: "${example}" }`)
+  onlyKeys(f, p, ['color'])
+  checkColor(f.color, `${p}.color`)
+}
+
+/** A border's sides; `side` says which of those it names are given. */
+export function checkBorder(v: unknown, p: string, side: Given) {
+  const b = object(v, p, 'a border such as { bottom: { style: "thin" } }')
+  onlyKeys(b, p, ['top', 'right', 'bottom', 'left'])
+  for (const [k, l] of Object.entries(b)) {
+    if (!side(b, k)) continue
+    const lp = `${p}.${k}`
+    const line = object(l, lp, 'a line such as { style: "thin", color: "#000000" }')
+    onlyKeys(line, lp, ['style', 'color'])
+    checkOneOf(line.style, `${lp}.style`, LINES)
+    if (line.color !== undefined) checkColor(line.color, `${lp}.color`)
+  }
+}
+
 /** A style, or with `patch` the fields of one to change (`StylePatch`), where null removes a field. */
 export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
   const s = object(v, p, 'a style such as { font: { bold: true } }')
   onlyKeys(s, p, ['font', 'fill', 'border', 'alignment'])
   // a field given: in a patch, null is a field removed
-  const given = (o: Record<string, unknown>, k: string) => o[k] !== undefined && !(patch && o[k] === null)
-  if (given(s, 'font')) {
-    const f = object(s.font, `${p}.font`, 'a font such as { bold: true }')
-    onlyKeys(f, `${p}.font`, ['name', 'size', 'bold', 'italic', 'underline', 'strike', 'color'])
-    if (given(f, 'name')) checkString(f.name, `${p}.font.name`)
-    if (given(f, 'size')) checkNumber(f.size, `${p}.font.size`, 1, 409)
-    for (const k of ['bold', 'italic', 'strike']) if (given(f, k)) checkBoolean(f[k], `${p}.font.${k}`)
-    if (given(f, 'underline')) checkOneOf(f.underline, `${p}.font.underline`, ['single', 'double'])
-    if (given(f, 'color')) checkColor(f.color, `${p}.font.color`)
-  }
-  if (given(s, 'fill')) {
-    const f = object(s.fill, `${p}.fill`, 'a fill such as { color: "#FFC000" }')
-    onlyKeys(f, `${p}.fill`, ['color'])
-    checkColor(f.color, `${p}.fill.color`)
-  }
-  if (given(s, 'border')) {
-    const b = object(s.border, `${p}.border`, 'a border such as { bottom: { style: "thin" } }')
-    onlyKeys(b, `${p}.border`, ['top', 'right', 'bottom', 'left'])
-    for (const [side, l] of Object.entries(b)) {
-      if (!given(b, side)) continue
-      const lp = `${p}.border.${side}`
-      const line = object(l, lp, 'a line such as { style: "thin", color: "#000000" }')
-      onlyKeys(line, lp, ['style', 'color'])
-      checkOneOf(line.style, `${lp}.style`, LINES)
-      if (line.color !== undefined) checkColor(line.color, `${lp}.color`)
-    }
-  }
+  const given: Given = (o, k) => o[k] !== undefined && !(patch && o[k] === null)
+  if (given(s, 'font')) checkFont(s.font, `${p}.font`, given, true)
+  if (given(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC000')
+  if (given(s, 'border')) checkBorder(s.border, `${p}.border`, given)
   if (given(s, 'alignment')) {
     const a = object(s.alignment, `${p}.alignment`, 'an alignment such as { horizontal: "center" }')
     onlyKeys(a, `${p}.alignment`, ['horizontal', 'vertical', 'wrap', 'indent'])

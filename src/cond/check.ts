@@ -4,7 +4,7 @@
  * parse never holds, as a cell's formula computes an error.
  */
 import type { ConditionalFormat, IconSetName } from '../contract.js'
-import { array, checkBoolean, checkColor, checkFormat, checkFormatNames, checkNumber, checkOneOf, checkString, InputError, LINES, object, onlyKeys } from '../input.js'
+import { array, checkBoolean, checkBorder, checkColor, checkFill, checkFont, checkFormat, checkFormatNames, checkNumber, checkOneOf, checkString, InputError, object, onlyKeys, type Given } from '../input.js'
 import { parseRange } from '../structure/area.js'
 
 /** The icon sets by name, with their number of icons. */
@@ -63,31 +63,17 @@ const FIELDS: Record<ConditionalFormat['type'], string[]> = {
 /** The types of rules with a style (a differential format): all but colour scales, data bars and icon sets. */
 export const STYLED: ReadonlySet<string> = new Set(Object.entries(FIELDS).flatMap(([t, fields]) => (fields.includes('style') ? [t] : [])))
 
+/** A field of a conditional style is given unless undefined. */
+const given: Given = (o, k) => o[k] !== undefined
+
+/** A rule's style: a cell's style's font, fill and border, without a font's name and size (a dxf has none) and with a number format. */
 function checkStyle(v: unknown, p: string) {
   const s = object(v, p, 'a style such as { fill: { color: "#FFC7CE" }, font: { color: "#9C0006" } }')
   onlyKeys(s, p, ['font', 'fill', 'border', 'numberFormat', 'format'])
-  if (s.font !== undefined) {
-    const f = object(s.font, `${p}.font`, 'a font such as { bold: true }')
-    onlyKeys(f, `${p}.font`, ['bold', 'italic', 'underline', 'strike', 'color'])
-    for (const k of ['bold', 'italic', 'strike']) if (f[k] !== undefined) checkBoolean(f[k], `${p}.font.${k}`)
-    if (f.underline !== undefined) checkOneOf(f.underline, `${p}.font.underline`, ['single', 'double'])
-    if (f.color !== undefined) checkColor(f.color, `${p}.font.color`)
-  }
-  if (s.fill !== undefined) {
-    const f = object(s.fill, `${p}.fill`, 'a fill such as { color: "#FFC7CE" }')
-    onlyKeys(f, `${p}.fill`, ['color'])
-    checkColor(f.color, `${p}.fill.color`)
-  }
-  if (s.border !== undefined) {
-    const b = object(s.border, `${p}.border`, 'a border such as { bottom: { style: "thin" } }')
-    onlyKeys(b, `${p}.border`, ['top', 'right', 'bottom', 'left'])
-    for (const [side, l] of Object.entries(b)) {
-      const line = object(l, `${p}.border.${side}`, 'a line such as { style: "thin", color: "#000000" }')
-      onlyKeys(line, `${p}.border.${side}`, ['style', 'color'])
-      checkOneOf(line.style, `${p}.border.${side}.style`, LINES)
-      if (line.color !== undefined) checkColor(line.color, `${p}.border.${side}.color`)
-    }
-  }
+  if (given(s, 'font')) checkFont(s.font, `${p}.font`, given, false)
+  if (given(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC7CE')
+  // every side the border names, one undefined too
+  if (given(s, 'border')) checkBorder(s.border, `${p}.border`, () => true)
   for (const k of ['numberFormat', 'format']) if (s[k] !== undefined) checkFormat(s[k], `${p}.${k}`)
   checkFormatNames(s, p)
 }
