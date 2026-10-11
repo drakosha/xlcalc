@@ -1,7 +1,7 @@
 /**
  * Edits of cells by their fields (`Session.setCells`): an edit's fields go over the cell's input, as Excel keeps a cell's
  * look when a value is typed over it. The content is one whole, a value or a formula with its array area: a new value
- * takes the formula's place and a new formula the value's; an edit of null clears the content alone, as Delete.
+ * takes the formula's place and a new formula the value's; an edit of null clears the content and the hyperlink, as Delete.
  */
 import type { CellEdit, CellFields, CellInput, CellReplace } from '../contract.js'
 import type { EngineState } from '../engine.js'
@@ -11,11 +11,15 @@ import { sheetKey } from '../syntax.js'
 /** The fields of a cell's content. */
 const CONTENT = ['value', 'formula', 'array'] as const
 
-/** A cell's input with an edit's fields over it (null: the content cleared); null when nothing is left of the cell. */
+/**
+ * A cell's input with an edit's fields over it; null when nothing is left of the cell. An edit of null clears the content
+ * and the hyperlink, as Excel's Delete key and ClearContents do (the set `lines/clear`).
+ */
 export function withFields(input: CellInput | undefined, fields: CellFields | null): CellInput | null {
   const out: Record<string, unknown> = { ...input }
   // a new value or formula, or none, replaces the content whole; a formula removed takes its area along
   if (fields === null || fields.value !== undefined || typeof fields.formula === 'string') for (const k of CONTENT) delete out[k]
+  if (fields === null) delete out.link
   if (fields?.formula === null) delete out.array
   if (fields)
     for (const k in fields) {

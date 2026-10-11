@@ -1,10 +1,10 @@
 /**
- * Cells cleared (`Session.clearCells`), as Excel's ClearContents, ClearFormats and Clear: the plan of the cells' new
- * inputs, the lines' looks and the sheets' rules. Contents: values and formulas. Formats: each cell's style and number
- * format, so that it shows the book's plain look whatever its row or column has (a cell whose lines show a look gets the
- * plain style or General of its own), whole rows' and columns' own looks, and the cells of conditional formats over
- * them. All: both, the cells' notes, hyperlinks and meta, and the cells of rules of data validation over them
- * (`docs/edits.md`).
+ * Cells cleared (`Session.clearCells`), as Excel's ClearContents, ClearFormats and Clear (the set `lines/clear`): the plan
+ * of the cells' new inputs, the lines' looks and the sheets' rules. Contents: values, formulas and hyperlinks; notes and
+ * meta stay. Formats: each cell's style and number format, so that it shows the book's plain look whatever its row or
+ * column has (a cell whose lines show a look gets the plain style or General of its own), whole rows' and columns' own
+ * looks, and the cells of conditional formats over them. All: both, the cells' notes and meta, and the cells of rules
+ * of data validation over them (`docs/edits.md`).
  */
 import type { ClearKind, RangeRef } from '../contract.js'
 import type { EngineState } from '../engine.js'
@@ -18,7 +18,7 @@ import { checkRange, linesOf, type Look } from './patch.js'
 import { Draft, lookAt, type Plan } from './styles.js'
 
 const LOOKS: Record<ClearKind, Look> = {
-  contents: { content: true },
+  contents: { content: true, link: null },
   formats: { style: { reset: true }, format: { reset: true } },
   all: { content: true, style: { reset: true }, format: { reset: true }, meta: null, note: null, link: null },
 }
