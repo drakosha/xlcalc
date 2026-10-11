@@ -1,0 +1,2996 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-11",
+  "seconds": 22.1
+ },
+ "cases": [
+  {
+   "id": "numbers-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1234.5"
+     ],
+     [
+      "1,234.5"
+     ],
+     [
+      "1234,5"
+     ],
+     [
+      "1 234,5"
+     ],
+     [
+      "-5"
+     ],
+     [
+      "(5)"
+     ],
+     [
+      "1E+3"
+     ],
+     [
+      "007"
+     ],
+     [
+      " 5"
+     ],
+     [
+      "5 "
+     ],
+     [
+      "5 abc"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "wide-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1234567890123",
+      "12/31/2025 18:00",
+      "31.12.2025 18:00",
+      "abcdefghijklmnopqrstuvwxyz"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "wide-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1234567890123456789",
+      "3.14159265358979",
+      "3,14159265358979",
+      "12345678.9"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "fractions-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1 1/2"
+     ],
+     [
+      "0 1/3"
+     ],
+     [
+      "3/4"
+     ],
+     [
+      "1 1/12"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "dates-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1/31/2025"
+     ],
+     [
+      "31.01.2025"
+     ],
+     [
+      "2025-01-31"
+     ],
+     [
+      "31-Jan-2025"
+     ],
+     [
+      "Jan 2025"
+     ],
+     [
+      "15.3"
+     ],
+     [
+      "3/15"
+     ],
+     [
+      "31 янв 2025"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "times-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "18:30"
+     ],
+     [
+      "6:30 PM"
+     ],
+     [
+      "18:30:15"
+     ],
+     [
+      "25:30"
+     ],
+     [
+      "18:30:15,5"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "percents-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "12%"
+     ],
+     [
+      "12.5%"
+     ],
+     [
+      "12,5%"
+     ],
+     [
+      "-5%"
+     ],
+     [
+      "5 1/2%"
+     ],
+     [
+      "%5"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "money-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "$1,234.50"
+     ],
+     [
+      "$5"
+     ],
+     [
+      "($5)"
+     ],
+     [
+      "1 234,50 ₽"
+     ],
+     [
+      "5 ₽"
+     ],
+     [
+      "€5"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "bools-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "TRUE"
+     ],
+     [
+      "false"
+     ],
+     [
+      "ИСТИНА"
+     ],
+     [
+      "ложь"
+     ],
+     [
+      "#N/A"
+     ],
+     [
+      "#Н/Д"
+     ],
+     [
+      "#DIV/0!"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "apostrophe-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "'007"
+     ],
+     [
+      "'1.5"
+     ],
+     [
+      "'=1+2"
+     ],
+     [
+      "'abc"
+     ],
+     [
+      "'TRUE"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "formulas-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "=A1*2"
+     ],
+     [
+      "=A1+A3"
+     ],
+     [
+      "-A1"
+     ],
+     [
+      "+A1"
+     ],
+     [
+      "=A1&\"x\""
+     ],
+     [
+      "=1/0"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "formula-en-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "=SUM(A1:A3)"
+     ],
+     [
+      "=SUM(A1,1.5)"
+     ],
+     [
+      "5"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "formula-ru-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "=СУММ(A1:A3)"
+     ],
+     [
+      "=СУММ(A1;1,5)"
+     ],
+     [
+      "5"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "bad-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "=1+"
+     ],
+     [
+      "5"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "grid-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1",
+      "abc",
+      "1/31/2025"
+     ],
+     [
+      "2.5",
+      "=A1*2",
+      "TRUE"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "empty-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    },
+    "B1": {
+     "value": "old"
+    },
+    "C1": {
+     "value": "old"
+    },
+    "D1": {
+     "value": "old"
+    },
+    "B2": {
+     "value": "old"
+    },
+    "C2": {
+     "value": "old"
+    },
+    "D2": {
+     "value": "old"
+    }
+   },
+   "read": [
+    "C2",
+    "D2"
+   ],
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1",
+      "",
+      "3"
+     ],
+     [
+      "4"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "trailing-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    },
+    "B2": {
+     "value": "old"
+    }
+   },
+   "read": [
+    "B2"
+   ],
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "5"
+     ]
+    ],
+    "trailing": true
+   }
+  },
+  {
+   "id": "newline-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1",
+      "2"
+     ],
+     [
+      "3",
+      "4"
+     ]
+    ],
+    "newline": "\r\n"
+   }
+  },
+  {
+   "id": "newline-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1",
+      "2"
+     ],
+     [
+      "3",
+      "4"
+     ]
+    ],
+    "newline": "\r"
+   }
+  },
+  {
+   "id": "text-cell-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    },
+    "B1": {
+     "numberFormat": "@"
+    },
+    "B2": {
+     "numberFormat": "@"
+    },
+    "B3": {
+     "numberFormat": "@"
+    },
+    "B4": {
+     "numberFormat": "@"
+    },
+    "B5": {
+     "numberFormat": "@"
+    },
+    "B6": {
+     "numberFormat": "@"
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "007"
+     ],
+     [
+      "1.5"
+     ],
+     [
+      "=A1*2"
+     ],
+     [
+      "1/31/2025"
+     ],
+     [
+      "12%"
+     ],
+     [
+      "TRUE"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "percent-cell-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    },
+    "B1": {
+     "numberFormat": "0%"
+    },
+    "B2": {
+     "numberFormat": "0%"
+    },
+    "B3": {
+     "numberFormat": "0%"
+    },
+    "B4": {
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "5"
+     ],
+     [
+      "0.5"
+     ],
+     [
+      "5%"
+     ],
+     [
+      "abc"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "date-cell-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    },
+    "B1": {
+     "numberFormat": 14
+    },
+    "B2": {
+     "numberFormat": 14
+    },
+    "B3": {
+     "numberFormat": 14
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "45688"
+     ],
+     [
+      "18:30"
+     ],
+     [
+      "5%"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "hand-width-1",
+   "columns": {
+    "B": {
+     "width": 5
+    }
+   },
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "1234567890123"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "valid-1",
+   "validations": [
+    {
+     "range": "B1:B3",
+     "type": "whole",
+     "operator": "greaterThan",
+     "formula1": "0"
+    }
+   ],
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "-2"
+     ],
+     [
+      "5"
+     ],
+     [
+      "abc"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "valid-2",
+   "validations": [
+    {
+     "range": "B1:B2",
+     "type": "list",
+     "formula1": "\"a,b\""
+    }
+   ],
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "A2": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "paste",
+    "at": "B1",
+    "rows": [
+     [
+      "c"
+     ],
+     [
+      "a"
+     ]
+    ]
+   }
+  }
+ ],
+ "answers": {
+  "numbers-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "1234.5"
+     },
+     "text": "1234.5",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "1,234.5"
+     },
+     "text": "1,234.5",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "1,234.5",
+     "formulaLocal": "1,234.5",
+     "formula2": "1,234.5",
+     "formula2Local": "1,234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 1234.5
+     },
+     "text": "1234,5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234,5",
+     "formula2": "1234.5",
+     "formula2Local": "1234,5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5
+     },
+     "text": "1 234,50",
+     "code": "# ##0,00",
+     "local": "# ##0,00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234,5",
+     "formula2": "1234.5",
+     "formula2Local": "1234,5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": -5
+     },
+     "text": "-5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": -5,
+     "formula": "-5",
+     "formulaLocal": "-5",
+     "formula2": "-5",
+     "formula2Local": "-5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "value": -5
+     },
+     "text": "-5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": -5,
+     "formula": "-5",
+     "formulaLocal": "-5",
+     "formula2": "-5",
+     "formula2Local": "-5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B7": {
+     "cell": {
+      "value": 1000
+     },
+     "text": "1,00E+03",
+     "code": "0,00E+00",
+     "local": "0,00E+00",
+     "value2": 1000,
+     "formula": "1000",
+     "formulaLocal": "1000",
+     "formula2": "1000",
+     "formula2Local": "1000",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B8": {
+     "cell": {
+      "value": 7
+     },
+     "text": "7",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 7,
+     "formula": "7",
+     "formulaLocal": "7",
+     "formula2": "7",
+     "formula2Local": "7",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B9": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B10": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B11": {
+     "cell": {
+      "value": "5 abc"
+     },
+     "text": "5 abc",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "5 abc",
+     "formulaLocal": "5 abc",
+     "formula2": "5 abc",
+     "formula2Local": "5 abc",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "wide-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1234567890123
+     },
+     "text": "1,23E+12",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 1234567890123,
+     "formula": "1234567890123",
+     "formulaLocal": "1234567890123",
+     "formula2": "1234567890123",
+     "formula2Local": "1234567890123",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": "12/31/2025 18:00"
+     },
+     "text": "12/31/2025 18:00",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "12/31/2025 18:00",
+     "formulaLocal": "12/31/2025 18:00",
+     "formula2": "12/31/2025 18:00",
+     "formula2Local": "12/31/2025 18:00",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 46022.75
+     },
+     "text": "########",
+     "code": "ДД.ММ.ГГГГ ч:мм",
+     "local": "ДД.ММ.ГГГГ ч:мм",
+     "value2": 46022.75,
+     "formula": "46022.75",
+     "formulaLocal": "46022,75",
+     "formula2": "46022.75",
+     "formula2Local": "46022,75",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "E1": {
+     "cell": {
+      "value": "abcdefghijklmnopqrstuvwxyz"
+     },
+     "text": "abcdefghijklmnopqrstuvwxyz",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "abcdefghijklmnopqrstuvwxyz",
+     "formulaLocal": "abcdefghijklmnopqrstuvwxyz",
+     "formula2": "abcdefghijklmnopqrstuvwxyz",
+     "formula2Local": "abcdefghijklmnopqrstuvwxyz",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "E": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "wide-2": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1234567890123450000
+     },
+     "text": "1,23E+18",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 1234567890123450000,
+     "formula": "1234567890123450000",
+     "formulaLocal": "1234567890123450000",
+     "formula2": "1234567890123450000",
+     "formula2Local": "1234567890123450000",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": "3.14159265358979"
+     },
+     "text": "3.14159265358979",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "3.14159265358979",
+     "formulaLocal": "3.14159265358979",
+     "formula2": "3.14159265358979",
+     "formula2Local": "3.14159265358979",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 3.14159265358979
+     },
+     "text": "3,141593",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 3.14159265358979,
+     "formula": "3.14159265358979",
+     "formulaLocal": "3,14159265358979",
+     "formula2": "3.14159265358979",
+     "formula2Local": "3,14159265358979",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "E1": {
+     "cell": {
+      "value": "12345678.9"
+     },
+     "text": "12345678.9",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "12345678.9",
+     "formulaLocal": "12345678.9",
+     "formula2": "12345678.9",
+     "formula2Local": "12345678.9",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "E": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "fractions-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1 1/2",
+     "code": "#\" \"?/?",
+     "local": "#\" \"?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.3333333333333333
+     },
+     "text": " 1/3",
+     "code": "#\" \"?/?",
+     "local": "#\" \"?/?",
+     "value2": 0.3333333333333333,
+     "formula": "0.333333333333333",
+     "formulaLocal": "0,333333333333333",
+     "formula2": "0.333333333333333",
+     "formula2Local": "0,333333333333333",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46115
+     },
+     "text": "03.апр",
+     "code": "ДД.МММ",
+     "local": "ДД.МММ",
+     "value2": 46115,
+     "formula": "46115",
+     "formulaLocal": "46115",
+     "formula2": "46115",
+     "formula2Local": "46115",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1.0833333333333333
+     },
+     "text": "1  1/12",
+     "code": "#\" \"??/??",
+     "local": "#\" \"??/??",
+     "value2": 1.0833333333333333,
+     "formula": "1.08333333333333",
+     "formulaLocal": "1,08333333333333",
+     "formula2": "1.08333333333333",
+     "formula2Local": "1,08333333333333",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "dates-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "1/31/2025"
+     },
+     "text": "1/31/2025",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "1/31/2025",
+     "formulaLocal": "1/31/2025",
+     "formula2": "1/31/2025",
+     "formula2Local": "1/31/2025",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 45688
+     },
+     "text": "########",
+     "code": "ДД.ММ.ГГГГ",
+     "local": "ДД.ММ.ГГГГ",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 45688
+     },
+     "text": "########",
+     "code": "ДД.ММ.ГГГГ",
+     "local": "ДД.ММ.ГГГГ",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": "31-Jan-2025"
+     },
+     "text": "31-Jan-2025",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "31-Jan-2025",
+     "formulaLocal": "31-Jan-2025",
+     "formula2": "31-Jan-2025",
+     "formula2Local": "31-Jan-2025",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": "Jan 2025"
+     },
+     "text": "Jan 2025",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "Jan 2025",
+     "formulaLocal": "Jan 2025",
+     "formula2": "Jan 2025",
+     "formula2Local": "Jan 2025",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "value": 46096
+     },
+     "text": "15.мар",
+     "code": "ДД.МММ",
+     "local": "ДД.МММ",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B7": {
+     "cell": {
+      "value": 42064
+     },
+     "text": "мар.15",
+     "code": "МММ.ГГ",
+     "local": "МММ.ГГ",
+     "value2": 42064,
+     "formula": "42064",
+     "formulaLocal": "42064",
+     "formula2": "42064",
+     "formula2Local": "42064",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B8": {
+     "cell": {
+      "value": 45688
+     },
+     "text": "31.янв.25",
+     "code": "ДД.МММ.ГГ",
+     "local": "ДД.МММ.ГГ",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "times-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 0.7708333333333334
+     },
+     "text": "18:30",
+     "code": "ч:мм",
+     "local": "ч:мм",
+     "value2": 0.7708333333333334,
+     "formula": "0.770833333333333",
+     "formulaLocal": "0,770833333333333",
+     "formula2": "0.770833333333333",
+     "formula2Local": "0,770833333333333",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.7708333333333334
+     },
+     "text": "6:30 PM",
+     "code": "ч:мм AM/PM",
+     "local": "ч:мм AM/PM",
+     "value2": 0.7708333333333334,
+     "formula": "0.770833333333333",
+     "formulaLocal": "0,770833333333333",
+     "formula2": "0.770833333333333",
+     "formula2Local": "0,770833333333333",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 0.7710069444444444
+     },
+     "text": "18:30:15",
+     "code": "ч:мм:сс",
+     "local": "ч:мм:сс",
+     "value2": 0.7710069444444444,
+     "formula": "0.771006944444444",
+     "formulaLocal": "0,771006944444444",
+     "formula2": "0.771006944444444",
+     "formula2Local": "0,771006944444444",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1.0625
+     },
+     "text": "25:30:00",
+     "code": "[ч]:мм:сс",
+     "local": "[ч]:мм:сс",
+     "value2": 1.0625,
+     "formula": "1.0625",
+     "formulaLocal": "1,0625",
+     "formula2": "1.0625",
+     "formula2Local": "1,0625",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.7710127314814815
+     },
+     "text": "30:15,5",
+     "code": "мм:сс,0",
+     "local": "мм:сс,0",
+     "value2": 0.7710127314814815,
+     "formula": "0.771012731481482",
+     "formulaLocal": "0,771012731481482",
+     "formula2": "0.771012731481482",
+     "formula2Local": "0,771012731481482",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "percents-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 0.12
+     },
+     "text": "12%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.12,
+     "formula": "0.12",
+     "formulaLocal": "0,12",
+     "formula2": "0.12",
+     "formula2Local": "0,12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "12.5%"
+     },
+     "text": "12.5%",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "12.5%",
+     "formulaLocal": "12.5%",
+     "formula2": "12.5%",
+     "formula2Local": "12.5%",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 0.125
+     },
+     "text": "12,50%",
+     "code": "0,00%",
+     "local": "0,00%",
+     "value2": 0.125,
+     "formula": "0.125",
+     "formulaLocal": "0,125",
+     "formula2": "0.125",
+     "formula2Local": "0,125",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": -0.05
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0,05",
+     "formula2": "-0.05",
+     "formula2Local": "-0,05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.055
+     },
+     "text": "5,50%",
+     "code": "0,00%",
+     "local": "0,00%",
+     "value2": 0.055,
+     "formula": "0.055",
+     "formulaLocal": "0,055",
+     "formula2": "0.055",
+     "formula2Local": "0,055",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "value": 0.05
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0,05",
+     "formula2": "0.05",
+     "formula2Local": "0,05",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "money-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "$1,234.50"
+     },
+     "text": "$1,234.50",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "$1,234.50",
+     "formulaLocal": "$1,234.50",
+     "formula2": "$1,234.50",
+     "formula2Local": "$1,234.50",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "$5"
+     },
+     "text": "$5",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "$5",
+     "formulaLocal": "$5",
+     "formula2": "$5",
+     "formula2Local": "$5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": "($5)"
+     },
+     "text": "($5)",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "($5)",
+     "formulaLocal": "($5)",
+     "formula2": "($5)",
+     "formula2Local": "($5)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5
+     },
+     "text": "########",
+     "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+     "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234,5",
+     "formula2": "1234.5",
+     "formula2Local": "1234,5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5 ₽",
+     "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+     "local": "# ##0 ₽;[Красный]-# ##0 ₽",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "value": 5
+     },
+     "text": "€ 5",
+     "code": "[$€-2] # ##0;[Красный]-[$€-2] # ##0",
+     "local": "[$€-2] # ##0;[Красный]-[$€-2] # ##0",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "bools-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "TRUE"
+     },
+     "text": "TRUE",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "TRUE",
+     "formulaLocal": "TRUE",
+     "formula2": "TRUE",
+     "formula2Local": "TRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "false"
+     },
+     "text": "false",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "false",
+     "formulaLocal": "false",
+     "formula2": "false",
+     "formula2Local": "false",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": true
+     },
+     "text": "ИСТИНА",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "TRUE",
+     "formulaLocal": "ИСТИНА",
+     "formula2": "TRUE",
+     "formula2Local": "ИСТИНА",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": false
+     },
+     "text": "ЛОЖЬ",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "FALSE",
+     "formulaLocal": "ЛОЖЬ",
+     "formula2": "FALSE",
+     "formula2Local": "ЛОЖЬ",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": "#N/A"
+     },
+     "text": "#N/A",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "#N/A",
+     "formulaLocal": "#N/A",
+     "formula2": "#N/A",
+     "formula2Local": "#N/A",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "#N/A"
+     },
+     "computed": {
+      "error": "NA"
+     },
+     "text": "#Н/Д",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "#N/A",
+     "formulaLocal": "#Н/Д",
+     "formula2": "#N/A",
+     "formula2Local": "#Н/Д",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B7": {
+     "cell": {
+      "value": "#DIV/0!"
+     },
+     "text": "#DIV/0!",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "#DIV/0!",
+     "formulaLocal": "#DIV/0!",
+     "formula2": "#DIV/0!",
+     "formula2Local": "#DIV/0!",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "apostrophe-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "'007"
+     },
+     "text": "'007",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "'007",
+     "formulaLocal": "'007",
+     "formula2": "'007",
+     "formula2Local": "'007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "'1.5"
+     },
+     "text": "'1.5",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "'1.5",
+     "formulaLocal": "'1.5",
+     "formula2": "'1.5",
+     "formula2Local": "'1.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": "'=1+2"
+     },
+     "text": "'=1+2",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "'=1+2",
+     "formulaLocal": "'=1+2",
+     "formula2": "'=1+2",
+     "formula2Local": "'=1+2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": "'abc"
+     },
+     "text": "'abc",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "'abc",
+     "formulaLocal": "'abc",
+     "formula2": "'abc",
+     "formula2Local": "'abc",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": "'TRUE"
+     },
+     "text": "'TRUE",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "'TRUE",
+     "formulaLocal": "'TRUE",
+     "formula2": "'TRUE",
+     "formula2Local": "'TRUE",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "formulas-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "formula": "A1*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "=A1*2",
+     "formulaLocal": "=A1*2",
+     "formula2": "=A1*2",
+     "formula2Local": "=A1*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "formula": "A1+A3"
+     },
+     "computed": 5,
+     "text": "5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "=A1+A3",
+     "formulaLocal": "=A1+A3",
+     "formula2": "=A1+A3",
+     "formula2Local": "=A1+A3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "-A1"
+     },
+     "computed": -2,
+     "text": "-2",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": -2,
+     "formula": "=-A1",
+     "formulaLocal": "=-A1",
+     "formula2": "=-A1",
+     "formula2Local": "=-A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "+A1"
+     },
+     "computed": 2,
+     "text": "2",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 2,
+     "formula": "=+A1",
+     "formulaLocal": "=+A1",
+     "formula2": "=+A1",
+     "formula2Local": "=+A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "formula": "A1&\"x\""
+     },
+     "computed": "2x",
+     "text": "2x",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "=A1&\"x\"",
+     "formulaLocal": "=A1&\"x\"",
+     "formula2": "=A1&\"x\"",
+     "formula2Local": "=A1&\"x\"",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#ДЕЛ/0!",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "formula-en-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "formula": "SUM(A1:A3)"
+     },
+     "computed": {
+      "error": "NAME"
+     },
+     "text": "#ИМЯ?",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "=SUM(A1:A3)",
+     "formulaLocal": "=SUM(A1:A3)",
+     "formula2": "=SUM(A1:A3)",
+     "formula2Local": "=SUM(A1:A3)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "=SUM(A1,1.5)"
+     },
+     "text": "=SUM(A1,1.5)",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "=SUM(A1,1.5)",
+     "formulaLocal": "=SUM(A1,1.5)",
+     "formula2": "=SUM(A1,1.5)",
+     "formula2Local": "=SUM(A1,1.5)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "formula-ru-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "formula": "SUM(A1:A3)"
+     },
+     "computed": 46101,
+     "text": "46101",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 46101,
+     "formula": "=SUM(A1:A3)",
+     "formulaLocal": "=СУММ(A1:A3)",
+     "formula2": "=SUM(A1:A3)",
+     "formula2Local": "=СУММ(A1:A3)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "formula": "SUM(A1,1.5)"
+     },
+     "computed": 3.5,
+     "text": "3,5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 3.5,
+     "formula": "=SUM(A1,1.5)",
+     "formulaLocal": "=СУММ(A1;1,5)",
+     "formula2": "=SUM(A1,1.5)",
+     "formula2Local": "=СУММ(A1;1,5)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "bad-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "=1+"
+     },
+     "text": "=1+",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "=1+",
+     "formulaLocal": "=1+",
+     "formula2": "=1+",
+     "formula2Local": "=1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "grid-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": "abc"
+     },
+     "text": "abc",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "abc",
+     "formulaLocal": "abc",
+     "formula2": "abc",
+     "formula2Local": "abc",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": "1/31/2025"
+     },
+     "text": "1/31/2025",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "1/31/2025",
+     "formulaLocal": "1/31/2025",
+     "formula2": "1/31/2025",
+     "formula2Local": "1/31/2025",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 46144
+     },
+     "text": "02.май",
+     "code": "ДД.МММ",
+     "local": "ДД.МММ",
+     "value2": 46144,
+     "formula": "46144",
+     "formulaLocal": "46144",
+     "formula2": "46144",
+     "formula2Local": "46144",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C2": {
+     "cell": {
+      "formula": "A1*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "=A1*2",
+     "formulaLocal": "=A1*2",
+     "formula2": "=A1*2",
+     "formula2Local": "=A1*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": "TRUE"
+     },
+     "text": "TRUE",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "TRUE",
+     "formulaLocal": "TRUE",
+     "formula2": "TRUE",
+     "formula2Local": "TRUE",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "empty-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": null,
+     "text": "",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 4
+     },
+     "text": "4",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "4",
+     "formulaLocal": "4",
+     "formula2": "4",
+     "formula2Local": "4",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C2": {
+     "cell": null,
+     "text": "",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": null,
+     "text": "",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "trailing-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": null,
+     "text": "",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "newline-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C2": {
+     "cell": {
+      "value": 4
+     },
+     "text": "4",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "4",
+     "formulaLocal": "4",
+     "formula2": "4",
+     "formula2Local": "4",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "newline-2": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C2": {
+     "cell": {
+      "value": 4
+     },
+     "text": "4",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "4",
+     "formulaLocal": "4",
+     "formula2": "4",
+     "formula2Local": "4",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "text-cell-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "007"
+     },
+     "text": "007",
+     "code": "@",
+     "local": "@",
+     "formula": "007",
+     "formulaLocal": "007",
+     "formula2": "007",
+     "formula2Local": "007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "1.5"
+     },
+     "text": "1.5",
+     "code": "@",
+     "local": "@",
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": "=A1*2"
+     },
+     "text": "=A1*2",
+     "code": "@",
+     "local": "@",
+     "formula": "=A1*2",
+     "formulaLocal": "=A1*2",
+     "formula2": "=A1*2",
+     "formula2Local": "=A1*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": "1/31/2025"
+     },
+     "text": "1/31/2025",
+     "code": "@",
+     "local": "@",
+     "formula": "1/31/2025",
+     "formulaLocal": "1/31/2025",
+     "formula2": "1/31/2025",
+     "formula2Local": "1/31/2025",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": "12%"
+     },
+     "text": "12%",
+     "code": "@",
+     "local": "@",
+     "formula": "12%",
+     "formulaLocal": "12%",
+     "formula2": "12%",
+     "formula2Local": "12%",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "value": "TRUE"
+     },
+     "text": "TRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "TRUE",
+     "formulaLocal": "TRUE",
+     "formula2": "TRUE",
+     "formula2Local": "TRUE",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "percent-cell-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 5
+     },
+     "text": "500%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "0.5"
+     },
+     "text": "0.5",
+     "code": "0%",
+     "local": "0%",
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 0.05
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0,05",
+     "formula2": "0.05",
+     "formula2Local": "0,05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": "abc"
+     },
+     "text": "abc",
+     "code": "0%",
+     "local": "0%",
+     "formula": "abc",
+     "formulaLocal": "abc",
+     "formula2": "abc",
+     "formula2Local": "abc",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "date-cell-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 45688
+     },
+     "text": "########",
+     "code": "ДД.ММ.ГГГГ",
+     "local": "ДД.ММ.ГГГГ",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.7708333333333334
+     },
+     "text": "18:30",
+     "code": "ч:мм",
+     "local": "ч:мм",
+     "value2": 0.7708333333333334,
+     "formula": "0.770833333333333",
+     "formulaLocal": "0,770833333333333",
+     "formula2": "0.770833333333333",
+     "formula2Local": "0,770833333333333",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 0.05
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0,05",
+     "formula2": "0.05",
+     "formula2Local": "0,05",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "hand-width-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1234567890123
+     },
+     "text": "####",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 1234567890123,
+     "formula": "1234567890123",
+     "formulaLocal": "1234567890123",
+     "formula2": "1234567890123",
+     "formula2Local": "1234567890123",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 4.29,
+     "points": 26.25,
+     "standard": false,
+     "saved": {
+      "width": 5,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "valid-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": -2
+     },
+     "text": "-2",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": -2,
+     "formula": "-2",
+     "formulaLocal": "-2",
+     "formula2": "-2",
+     "formula2Local": "-2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "Основной",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": "abc"
+     },
+     "text": "abc",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "abc",
+     "formulaLocal": "abc",
+     "formula2": "abc",
+     "formula2Local": "abc",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "valid-2": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "c"
+     },
+     "text": "c",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "c",
+     "formulaLocal": "c",
+     "formula2": "c",
+     "formula2Local": "c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "a"
+     },
+     "text": "a",
+     "code": "Основной",
+     "local": "Основной",
+     "formula": "a",
+     "formulaLocal": "a",
+     "formula2": "a",
+     "formula2Local": "a",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}
