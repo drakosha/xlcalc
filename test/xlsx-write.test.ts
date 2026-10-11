@@ -45,7 +45,7 @@ const book: BookInput = {
 describe('xlsx writer', () => {
   it('writes formulas as dynamic array formulas in the file spelling, with their values and spills', async () => {
     const result = compute(book, { clock })
-    const { data, issues } = await writeXlsx(book, { result })
+    const { data, issues } = await writeXlsx({ book, result })
     expect(issues).toEqual([])
     const sheet = await part(data, 'xl/worksheets/sheet1.xml')
     expect(sheet).toContain('<c r="B1" cm="1"><f t="array" ref="B1:B3">_xlfn.SEQUENCE(3)</f><v>1</v></c>')
@@ -62,7 +62,7 @@ describe('xlsx writer', () => {
 
   it('the book comes back from its file, and the stored values are the result', async () => {
     const result = compute(book, { clock })
-    const r = await readXlsx((await writeXlsx(book, { result })).data)
+    const r = await readXlsx((await writeXlsx({ book, result })).data)
     expect(r.book).toEqual({
       ...book,
       sheets: [{ ...book.sheets[0], cells: { ...book.sheets[0].cells, A5: { value: 45688 }, H1: { formula: "SUM('It''s'!A1:A2)" } } }, book.sheets[1]],
@@ -73,7 +73,7 @@ describe('xlsx writer', () => {
 
   it('values only: formulas give way to their values, spills too; errors are stored as errors', async () => {
     const result = compute(book, { clock })
-    const { data } = await writeXlsx(book, { result, mode: 'values' })
+    const { data } = await writeXlsx({ book, result }, { mode: 'values' })
     const r = await readXlsx(data)
     expect(r.book.sheets[0].cells).toMatchObject({ B1: { value: 1 }, B3: { value: 3 }, C3: { value: 6 }, D1: { value: 2.5 }, G1: { formula: '#SPILL!' }, H1: { value: 12 } })
     expect(r.book.sheets[0].cells.F1).toBeUndefined()
@@ -82,7 +82,7 @@ describe('xlsx writer', () => {
   })
 
   it('formulas without a result: the file asks Excel to compute them', async () => {
-    const { data } = await writeXlsx({ sheets: [{ name: 'S', cells: { A1: { formula: 'SEQUENCE(2)' }, B1: { value: 1 } } }] })
+    const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { formula: 'SEQUENCE(2)' }, B1: { value: 1 } } }] } })
     const sheet = await part(data, 'xl/worksheets/sheet1.xml')
     expect(sheet).toContain('<c r="A1" cm="1"><f t="array" ref="A1">_xlfn.SEQUENCE(2)</f></c>')
     expect(await part(data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1"/>')
@@ -90,7 +90,7 @@ describe('xlsx writer', () => {
 
   it('the same book gives the same bytes', async () => {
     const result = compute(book, { clock })
-    expect((await writeXlsx(book, { result })).data).toEqual((await writeXlsx(book, { result })).data)
+    expect((await writeXlsx({ book, result })).data).toEqual((await writeXlsx({ book, result })).data)
   })
 
   it('reports what a file cannot hold: meta, a circular reference, text past 32,767 characters, formulas and names it cannot write', async () => {
@@ -111,7 +111,7 @@ describe('xlsx writer', () => {
       names: [{ name: 'A1', ref: "'S'!$A$1" }, { name: 'ok', ref: "'S'!$A$1" }, { name: 'ok', ref: "'S'!$A$2" }, { name: 'gone', ref: "'S'!$A$1", scope: 'Nope' }, { name: 'bad', ref: 'SUM(' }],
     }
     const result = compute(odd, { clock })
-    const { data, issues } = await writeXlsx(odd, { result })
+    const { data, issues } = await writeXlsx({ book: odd, result })
     expect(codes(issues)).toEqual(['meta A1', 'errorValue A2', 'textLength A3', 'formula A4 A5 A6', 'name', 'name', 'name', 'name'])
     expect(issues.filter((i) => i.code === 'name').map((i) => `${i.name}: ${i.message}`)).toEqual([
       'A1: a name Excel does not take is left out of the file',
@@ -125,10 +125,10 @@ describe('xlsx writer', () => {
   })
 
   it('checks its input: the book, the mode, a result of another book', async () => {
-    await expect(writeXlsx({ sheets: [{ name: 'a:b', cells: {} }] })).rejects.toThrow(InputError)
-    await expect(writeXlsx(book, { mode: 'values' })).rejects.toThrow(/values mode takes the values from the result/)
-    await expect(writeXlsx(book, { mode: 'other' as 'values' })).rejects.toThrow(/expected "formulas" or "values"/)
+    await expect(writeXlsx({ book: { sheets: [{ name: 'a:b', cells: {} }] } })).rejects.toThrow(InputError)
+    await expect(writeXlsx({ book }, { mode: 'values' })).rejects.toThrow(/values mode takes the values from the result/)
+    await expect(writeXlsx({ book }, { mode: 'other' as 'values' })).rejects.toThrow(/expected "formulas" or "values"/)
     const other = compute({ sheets: [{ name: 'X', cells: {} }] }, { clock })
-    await expect(writeXlsx(book, { result: other })).rejects.toThrow(/its sheets differ from the book's/)
+    await expect(writeXlsx({ book, result: other })).rejects.toThrow(/its sheets differ from the book's/)
   })
 })

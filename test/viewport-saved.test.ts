@@ -2,16 +2,15 @@
  * `viewportOf`, a window over a saved book and its result without a session. The book of `test/fixtures/saved` (two
  * sheets in ru-RU: an error and the cells it goes on to, on the other sheet too, a formula that does not read, a row's
  * and a column's format, a row's style, a merged area, a table, a note, a link, a conditional format, a small spill and
- * a large one whose error the result leaves out) was computed once by xlcalc 0.11.0 and 0.16.3, whose results have the
- * old names (`issues`, a cell's `format`), and by this version; each saved window is compared with a live session's over
- * the same book, with every option, whole and by some rows and columns: all a result holds is the same, and only the
- * conditional formats' appearance, which a result does not hold, is missing. The windows of a session's snapshots of
- * other books, a result without the display, a cycle's origin, the objects of the answer and the input checks. The
- * fixtures are made outside the suite by a script that installs the old versions from their tarballs.
+ * a large one whose error the result leaves out) with its result: each saved window is compared with a live session's
+ * over the same book, with every option, whole and by some rows and columns: all a result holds is the same, and only
+ * the conditional formats' appearance, which a result does not hold, is missing. The windows of a session's snapshots of
+ * other books, a result without the display, a cycle's origin, the objects of the answer and the input checks: a book
+ * or a result of an earlier version's form (`format`, `issues`) is refused.
  */
 import { readFileSync } from 'node:fs'
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createSession, InputError, viewportOf, type BookInput, type Execution, type SavedResult, type SavedViewport, type Viewport, type ViewportOptions } from '../src/index.js'
+import { compute, createSession, InputError, viewportOf, type BookInput, type Execution, type SavedViewport, type Viewport, type ViewportOptions } from '../src/index.js'
 import { CLOCK } from './async-books.js'
 import { randomBook } from './seeded-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
@@ -21,7 +20,11 @@ import './locales.js'
 afterAll(closeCalcs)
 
 const fixture = <T>(name: string): T => JSON.parse(readFileSync(new URL(`./fixtures/saved/${name}.json`, import.meta.url), 'utf8')) as T
-const VERSIONS = ['0.11.0', '0.16.3', '0.17.0']
+/** The fixture book with its result, as a host saves a version. */
+const savedBook = (execution?: Execution) => {
+  const book = fixture<BookInput>('book')
+  return { book, result: compute(book, { clock: CLOCK, ...(execution ? { execution } : {}) }) }
+}
 
 /** A live window as a saved one gives it: without the session's revision and the conditional formats' appearance. */
 function asSaved(v: Viewport): SavedViewport {
@@ -46,12 +49,10 @@ const WINDOWS: [string, string, ViewportOptions?][] = [
 
 describe.each(['closures', 'eval'] as const)('a saved window against a live one, execution %s', (execution: Execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    it('each version\'s result: all it holds as the live window has it, without the appearance', async () => {
+    it('all the result holds as the live window has it, without the appearance', async () => {
       const s = await (await opener(kind))(fixture('book'), { clock: CLOCK, execution })
-      for (const version of VERSIONS) {
-        const saved = { book: fixture<BookInput>('book'), result: fixture<SavedResult>(`result-${version}`) }
-        for (const [sheet, range, opts] of WINDOWS) expect(viewportOf(saved, sheet, range, opts), `${version}: ${sheet}!${range}`).toEqual(asSaved(await s.getViewport(sheet, range, opts)))
-      }
+      const saved = savedBook(execution)
+      for (const [sheet, range, opts] of WINDOWS) expect(viewportOf(saved, sheet, range, opts), `${sheet}!${range}`).toEqual(asSaved(await s.getViewport(sheet, range, opts)))
       await s.close()
     })
 
@@ -73,13 +74,11 @@ describe.each(['closures', 'eval'] as const)('a saved window against a live one,
 describe('a window over a saved book and its result', () => {
   const book = () => fixture<BookInput>('book')
 
-  it('reads the old names of a result, and says what the cells and the errors show', () => {
-    const old = fixture<SavedResult>('result-0.11.0')
-    expect(old.issues).toBeDefined()
-    expect(old.diagnostics).toBeUndefined()
+  it('says what the cells and the errors show', () => {
+    const saved = savedBook()
     // a date that its column is too narrow for, as Excel shows it
-    expect(old.sheets[0].cells.A8).toEqual({ value: 46096, text: '#########', format: 14 })
-    const v = viewportOf({ book: book(), result: old }, 'Данные', 'A1:L8', ALL)
+    expect(saved.result.sheets[0].cells.A8).toEqual({ value: 46096, text: '#########', numberFormat: 14 })
+    const v = viewportOf(saved, 'Данные', 'A1:L8', ALL)
     expect(v.cells.A8).toEqual({ value: 46096, text: '#########', numberFormat: 'dd.mm.yyyy', numberFormatSource: 'cell', editText: '15.03.2026' })
     // a rule's appearance is not in a result: the cell as the result has it
     expect(v.cells.C3).toEqual({ value: 20, text: '20', editText: '20' })
@@ -89,7 +88,7 @@ describe('a window over a saved book and its result', () => {
     expect(v.cells.L1.issue).toEqual({ error: 'DIV0', reason: "division by zero, from 'Данные'!K5", origin: { sheet: 'Данные', cell: 'K1' } })
     expect(v.cells.K5).toMatchObject({ value: { error: 'DIV0' }, text: '#ДЕЛ/0!', spillOf: 'K1', issue: { reason: "division by zero, in the array spilled from 'Данные'!K1", origin: { sheet: 'Данные', cell: 'K1' } } })
     expect(v.cells.F4.issue).toEqual({ error: 'ERROR', reason: 'unexpected end of formula', check: 'syntax', at: 4, origin: { sheet: 'Данные', cell: 'F4' } })
-    expect(viewportOf({ book: book(), result: old }, 'Итоги', 'A1', ALL).cells.A1.issue?.origin).toEqual({ sheet: 'Данные', cell: 'F1' })
+    expect(viewportOf(saved, 'Итоги', 'A1', ALL).cells.A1.issue?.origin).toEqual({ sheet: 'Данные', cell: 'F1' })
     expect(v.usedRange).toEqual({ rows: 70_000, columns: 12 })
     expect(v.merges).toEqual(['H6:I7'])
     expect(v.tables).toEqual([{ name: 'Заказы', range: 'A1:D3', headers: true, totals: false }])
@@ -109,7 +108,7 @@ describe('a window over a saved book and its result', () => {
   })
 
   it('the objects are read once and kept with them; the answer has its own', () => {
-    const saved = { book: book(), result: fixture<SavedResult>('result-0.17.0') }
+    const saved = savedBook()
     const first = viewportOf(saved, 'Данные', 'A1:I8')
     first.usedRange.rows = 1
     first.styles[0].font!.bold = false
@@ -119,13 +118,19 @@ describe('a window over a saved book and its result', () => {
   })
 
   it('the book, the result, the sheet, the range and the options are checked as input', () => {
-    const result = fixture<SavedResult>('result-0.17.0')
+    const { result } = savedBook()
     const call = (saved: unknown, sheet = 'Данные', range = 'A1', opts?: unknown) => () => viewportOf(saved as never, sheet, range, opts as never)
     expect(call(null)).toThrow(InputError)
     expect(call({ book: { sheets: 'x' }, result })).toThrow('saved.book.sheets')
     expect(call({ book: book(), result: { ...result, sheets: result.sheets.slice(1) } })).toThrow('saved.result.sheets: expected the 2 sheets of the book, got 1: the result is not of this book')
     expect(call({ book: book(), result: { ...result, sheets: [...result.sheets].reverse() } })).toThrow('saved.result.sheets[0].name')
     expect(call({ book: book(), result: { ...result, clock: undefined } })).toThrow('saved.result.clock')
+    // a book or a result in an earlier version's form: the number format by its old name, the reasons by theirs
+    const old = book()
+    old.sheets[0].cells.D5 = { value: 4, format: '0%' } as never
+    expect(call({ book: old, result })).toThrow('saved.book.sheets[0].cells["D5"]: unknown field "format" (expected value, formula, numberFormat, style, meta, array, note, link) (format is the old name of numberFormat)')
+    const { diagnostics, ...rest } = result
+    expect(call({ book: book(), result: { ...rest, issues: diagnostics } })).toThrow(/^saved\.result\.diagnostics: expected an array of reasons/)
     expect(call({ book: book(), result }, 'Нет')).toThrow('sheet: unknown sheet "Нет"')
     expect(call({ book: book(), result }, 'Данные', 'A0')).toThrow('range: expected a range')
     expect(call({ book: book(), result }, 'Данные', 'A1', { maxcells: 5 })).toThrow(InputError)

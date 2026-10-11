@@ -46,7 +46,6 @@ import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
-import { withOldNames } from './old-names.js'
 import { strictMethods } from './strict-args.js'
 
 /** How a session is run by its host. */
@@ -578,7 +577,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
   const budget = limitsBudget(checkSessionOptions(opts).limits)
   const now = <T>(steps: () => Steps<T>): T => withBudget(budget, () => run(steps()))
   const core = now(() => openSteps(book, opts))
-  return withOldNames<Session>(strictMethods({
+  return strictMethods<Session>({
     get clock() {
       return core.clock
     },
@@ -617,5 +616,5 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
       return core.history
     },
     close: () => core.close(),
-  }))
+  })
 }

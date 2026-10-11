@@ -6,6 +6,7 @@
 import { compare } from '../bench/coverage/compare.js'
 import type { RectsAnswer } from '../bench/coverage/case-book.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
+import { takenBook } from '../bench/coverage/stored.js'
 import { compute, InputError, createSession, type BookInput, type ComputeResult } from '../src/index.js'
 import { fromLegacy } from '../src/xlsx.js'
 import { formatAddress, parseAddress } from '../src/model.js'
@@ -13,15 +14,16 @@ import { shownValue } from './spill-shown.js'
 
 const CLOCK = { now: '2026-10-06T12:00:00Z', seed: 1 }
 
-/** The case's book as a reader loads it: the formulas a file stores as of the old kind converted (`fromLegacy`). */
+/** The case's book as a reader loads it, as the engine takes it: the formulas a file stores as of the old kind converted (`fromLegacy`). */
 function loaded(c: SpillCase): BookInput {
-  if (!c.legacy) return c.book
+  const book = takenBook(c.book)
+  if (!c.legacy) return book
   const old = new Set(c.legacy)
   return {
-    ...c.book,
-    sheets: c.book.sheets.map((sh) => ({
+    ...book,
+    sheets: book.sheets.map((sh) => ({
       ...sh,
-      cells: Object.fromEntries(Object.entries(sh.cells).map(([a, x]) => [a, old.has(`${sh.name}!${a}`) && x.formula !== undefined ? { ...x, formula: fromLegacy(x.formula, { names: c.book.names, sheet: sh.name }) } : x])),
+      cells: Object.fromEntries(Object.entries(sh.cells).map(([a, x]) => [a, old.has(`${sh.name}!${a}`) && x.formula !== undefined ? { ...x, formula: fromLegacy(x.formula, { names: book.names, sheet: sh.name }) } : x])),
     })),
   }
 }

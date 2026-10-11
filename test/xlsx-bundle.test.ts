@@ -48,7 +48,7 @@ describe('xlsx outside Node', () => {
       `(async () => {
         Xlsx.registerLocale(Xlsx.ruRU)
         const book = { sheets: [{ name: 'Лист', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }], locale: 'ru-RU' }
-        const { data } = await Xlsx.writeXlsx(book)
+        const { data } = await Xlsx.writeXlsx({ book })
         const r = await Xlsx.readXlsx(data)
         return JSON.stringify(r.book)
       })()`,
@@ -61,6 +61,6 @@ describe('xlsx outside Node', () => {
     const { code } = await bundle()
     const ctx = createContext({})
     runInContext(code, ctx)
-    await expect(runInContext(`Xlsx.writeXlsx({ sheets: [{ name: 'S', cells: {} }] })`, ctx)).rejects.toThrow(/no TextEncoder|no CompressionStream/)
+    await expect(runInContext(`Xlsx.writeXlsx({ book: { sheets: [{ name: 'S', cells: {} }] } })`, ctx)).rejects.toThrow(/no TextEncoder|no CompressionStream/)
   }, 60_000)
 })

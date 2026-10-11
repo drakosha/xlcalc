@@ -39,7 +39,7 @@ const book: BookInput = {
 
 describe('xlsx: names of any formula, @, references across sheets, old-kind arrays', () => {
   it('writes them as Excel stores them', async () => {
-    const { data, issues } = await writeXlsx(book, { result: compute(book) })
+    const { data, issues } = await writeXlsx({ book, result: compute(book) })
     expect(issues).toEqual([])
     const sheet = await part(data, 'xl/worksheets/sheet2.xml')
     expect(sheet).toContain('<c r="B1"><f t="array" ref="B1:B3">A1:A3*2</f><v>20</v></c><c r="C1"><f t="array" ref="C1">SUM(A1:A3*A1:A3)</f><v>1400</v></c>')
@@ -52,7 +52,7 @@ describe('xlsx: names of any formula, @, references across sheets, old-kind arra
 
   it('reads them back into the same book, with the values computed', async () => {
     const result = compute(book)
-    const r = await readXlsx((await writeXlsx(book, { result })).data)
+    const r = await readXlsx((await writeXlsx({ book, result })).data)
     expect(r.book).toEqual(book)
     expect(r.issues).toEqual([])
     expect(r.cached).toEqual(storedOf(result))

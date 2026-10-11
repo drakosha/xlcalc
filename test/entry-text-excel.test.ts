@@ -11,7 +11,8 @@ import { describe, expect, it } from 'vitest'
 import type { StoredEntry } from '../bench/coverage/entry.js'
 import { formulaBar, type EntryAnswer } from '../bench/coverage/entry/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
-import { entryText, parseEntry, sameValue, type CellInput } from '../src/index.js'
+import type { StoredCell } from '../bench/coverage/stored.js'
+import { entryText, parseEntry, sameValue } from '../src/index.js'
 import './locales.js'
 
 /** Excel for Mac's own regional data: its ru-RU long time has a leading zero, where Windows's has none and the engine follows it. */
@@ -54,7 +55,7 @@ const RUNS: Run[] = (['Mac', 'Windows'] as const).flatMap((excel) =>
  * The text a cell opens with by `entryText`, for a cell that holds a value (a formula has its own text). A stored cell
  * names its number format `format`, as the engine's input did when it was stored.
  */
-function opened(cell: CellInput | null, tag: string, date: string): string | null {
+function opened(cell: StoredCell | null, tag: string, date: string): string | null {
   if (!cell || cell.value === undefined || cell.formula !== undefined) return null
   return entryText(cell.value as string | number | boolean, { locale: tag, now: date, ...(cell.format !== undefined ? { numberFormat: cell.format } : {}) })
 }
@@ -63,7 +64,7 @@ function opened(cell: CellInput | null, tag: string, date: string): string | nul
 const kept = (a: EntryAnswer, tag: string, date: string) => a.prefix === "'" && typeof a.cell?.value === 'string' && opened(a.cell, tag, date) === a.cell.value
 
 /** Whether the cell's format shows a date, a time or a percent, where the object model gives the number itself. */
-const datedOrPercent = (cell: CellInput, tag: string, date: string) => typeof cell.value === 'number' && opened(cell, tag, date) !== opened({ value: cell.value }, tag, date)
+const datedOrPercent = (cell: StoredCell, tag: string, date: string) => typeof cell.value === 'number' && opened(cell, tag, date) !== opened({ value: cell.value }, tag, date)
 
 for (const run of RUNS) {
   const { excel, tag, set, stored } = run

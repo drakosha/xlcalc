@@ -69,12 +69,12 @@ describe.each(['closures', 'eval'] as const)('styles by their fields, execution 
       await s.close()
     })
 
-    it('the number format by numberFormat or its old name; whole lines take no meta; a rectangle past the bound is refused', async () => {
+    it('the number format by numberFormat, its old name refused; whole lines take no meta; a rectangle past the bound is refused', async () => {
       const s = await (await opener(kind))(book(), opts)
       const r = await s.patchCells([{ sheet: 'S', cell: 'B2', set: { numberFormat: '0.0' } }, { sheet: 'S', range: 'D5:D6', set: { numberFormat: '0.000', meta: { id: 1 } } }])
       expect(r.changes.map((c) => [c.cell, c.text, c.numberFormat])).toEqual([['B2', '2.0', '0.0'], ['D5', '4.000', '0.000'], ['D6', '', '0.000']])
       await expect(Promise.resolve(s.patchCells([{ sheet: 'S', range: 'B:B', set: { meta: 1 } }]))).rejects.toThrow('patches[0].set.meta: whole columns take no meta')
-      await expect(Promise.resolve(s.patchCells([{ sheet: 'S', cell: 'B2', set: { format: '0', numberFormat: '0.0' } }]))).rejects.toThrow('patches[0].set.format: the number format is numberFormat, and format its old name: given both, they differ')
+      await expect(Promise.resolve(s.patchCells([{ sheet: 'S', cell: 'B2', set: { format: '0', numberFormat: '0.0' } as never }]))).rejects.toThrow('patches[0].set: unknown field "format" (expected style, numberFormat, meta, note, link) (format is the old name of numberFormat)')
       await expect(Promise.resolve(s.patchCells([{ sheet: 'S', range: 'A1:Z50000', set: { style: { font: { bold: true } } } }]))).rejects.toThrow('a look goes to 1048576 cells of a rectangle at most')
       await expect(Promise.resolve(s.patchCells([{ sheet: 'S', range: 'A1:B2', set: { style: { font: { size: 500 } } } }]))).rejects.toThrow('patches[0].set.style.font.size')
       // whole lines lose meta, notes and links of their cells with null

@@ -2,7 +2,7 @@
  * Display cases for Excel (`run.ts display <set> [ru]`): a cell (a value or a formula, a number format), the
  * width of its column and an optional merged area; Excel shows it and the text it shows is read back.
  */
-import type { CellInput } from '../../../src/contract.js'
+import type { StoredCell } from '../stored.js'
 
 /**
  * What Excel shows in a cell: its text (`Range.Text`) and the colour of its format's section as `#RRGGBB`, left
@@ -19,7 +19,7 @@ export interface DisplayAnswer {
 export interface DisplayCase {
   id: string
   /** The cell as the engine takes it: a value or a formula (errors come from formulas), with its `format`. */
-  cell: CellInput
+  cell: StoredCell
   /** The column's width as xlsx stores it; the sheet's default width without it. */
   width?: number
   /** A merged area of this many columns from the cell, all of `width`. */
@@ -37,7 +37,7 @@ export interface DisplaySet {
 }
 
 /** A cell from a value, or a formula written `=…`, with a format. */
-export const cellOf = (v: number | string | boolean | null, format?: string): CellInput => ({
+export const cellOf = (v: number | string | boolean | null, format?: string): StoredCell => ({
   ...(typeof v === 'string' && v.startsWith('=') ? { formula: v.slice(1) } : { value: v }),
   ...(format !== undefined ? { format } : {}),
 })

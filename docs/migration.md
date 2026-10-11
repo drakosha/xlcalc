@@ -1,34 +1,34 @@
 # Moving to the new names
 
-The package's calls were renamed so that a name says what a call does: a function that makes a session is `createSession`, a session's methods that read start with `get`, and a field is named by what it holds (`numberFormat`, `appearance`, `diagnostics`). The old names of functions, methods and input fields still work as deprecated synonyms, the same functions as the new ones, so a host moves call by call; the types mark each old name `@deprecated` with its new one. Fields of answers have the new names alone, and a few calls answer otherwise than before. This page lists both, a line each.
+The package's calls were renamed so that a name says what a call does: a function that makes a session is `createSession`, a session's methods that read start with `get`, and a field is named by what it holds (`numberFormat`, `appearance`, `diagnostics`). The old names are gone, so that a call left on one fails where it is made: a function or a method by its old name is no function (a `TypeError` at the call, and it does not compile), a type by its old name does not compile, and an input field by its old name is an `InputError` that names the new one (`unknown field "format" (expected …) (format is the old name of numberFormat)`). Fields of answers have the new names alone, and a few calls answer otherwise than before. This page lists both, a line each.
 
 ## Renamed
 
-| old | new | the old name |
+| old | new | the old name now |
 |---|---|---|
-| `openSession(book, opts)` | `createSession(book, opts)` | a synonym |
-| `calc.openSession(book, opts)` (`createInlineCalc`, `createCalcPool`) | `calc.createSession(book, opts)` | a synonym |
-| `restructure(book, op)` | `editStructure(book, op)` | a synonym |
-| `session.restructure(op)` | `session.editStructure(op)` | a synonym |
-| `RestructureResult`, `SessionRestructureResult`, `AsyncRestructureResult` | `StructureResult`, `SessionStructureResult`, `AsyncStructureResult` | type aliases |
-| `session.book()` | `session.getBook()` | a synonym |
-| `session.layout()` | `session.getLayout()` | a synonym |
-| `session.extent(sheet)` | `session.getUsedRange(sheet)` | a synonym |
-| `session.cells(sheet, range)` | `session.getCells(sheet, range)` | a synonym |
-| `session.validation(sheet, cell)` | `session.getValidation(sheet, cell)` | a synonym |
-| `session.result()` | `session.getResult()` | a synonym |
-| `session.hash()` | `session.getHash()` | a synonym |
-| `Viewport.extent` | `Viewport.usedRange` | none |
-| `call: 'restructure'` in the answer of `undo` and `redo` | `call: 'editStructure'` | none |
-| `format` of cells, rows, columns, conditional formats' styles and their edits (`setCells`, `replaceCells`, `patchCells`, `setLayout`) | `numberFormat` | taken in input; both with two values are an `InputError` |
-| `format` of `displayValue`'s and `entryWidth`'s options and of `parseEntry`'s `cell` | `numberFormat` | taken |
-| `format` of a result's cell (`CellResult`, `CellView`) and of a book a session, `parseEntry` or `readXlsx` gives | `numberFormat` | none |
-| `CellView.look`, the type `ConditionalLook` | `CellView.appearance`, `ConditionalAppearance` | none; the type an alias |
-| `result.issues` and `result.nameIssues` | `result.diagnostics`, one list: the cells with an error (`kind: 'cell'`), then the names with a problem (`kind: 'name'`), each with the fields it had | none |
-| the object `engine` | the functions by name: `import { compute, createSession } from 'xlcalc'` | deprecated whole |
-| `fromLegacy` from `xlcalc` | `fromLegacy` from `xlcalc/xlsx` | a synonym |
+| `openSession(book, opts)` | `createSession(book, opts)` | `TypeError`: not a function |
+| `calc.openSession(book, opts)` (`createInlineCalc`, `createCalcPool`) | `calc.createSession(book, opts)` | `TypeError`: not a function |
+| `restructure(book, op)` | `editStructure(book, op)` | `TypeError`: not a function |
+| `session.restructure(op)` | `session.editStructure(op)` | `TypeError`: not a function |
+| `RestructureResult`, `SessionRestructureResult`, `AsyncRestructureResult` | `StructureResult`, `SessionStructureResult`, `AsyncStructureResult` | does not compile |
+| `session.book()` | `session.getBook()` | `TypeError`: not a function |
+| `session.layout()` | `session.getLayout()` | `TypeError`: not a function |
+| `session.extent(sheet)` | `session.getUsedRange(sheet)` | `TypeError`: not a function |
+| `session.cells(sheet, range)` | `session.getCells(sheet, range)` | `TypeError`: not a function |
+| `session.validation(sheet, cell)` | `session.getValidation(sheet, cell)` | `TypeError`: not a function |
+| `session.result()` | `session.getResult()` | `TypeError`: not a function |
+| `session.hash()` | `session.getHash()` | `TypeError`: not a function |
+| `Viewport.extent` | `Viewport.usedRange` | absent; reading it does not compile |
+| `call: 'restructure'` in the answer of `undo` and `redo` | `call: 'editStructure'` | never answered |
+| `format` of cells, rows, columns, conditional formats' styles and their edits (`setCells`, `replaceCells`, `patchCells`, `setLayout`) | `numberFormat` | `InputError`: unknown field, the old name of `numberFormat` |
+| `format` of `displayValue`'s and `entryWidth`'s options and of `parseEntry`'s `cell` | `numberFormat` | `InputError`: unknown field, the old name of `numberFormat` |
+| `format` of a result's cell (`CellResult`, `CellView`) and of a book a session, `parseEntry` or `readXlsx` gives | `numberFormat` | absent; reading it does not compile |
+| `CellView.look`, the type `ConditionalLook` | `CellView.appearance`, `ConditionalAppearance` | absent; the type does not compile |
+| `result.issues` and `result.nameIssues` | `result.diagnostics`, one list: the cells with an error (`kind: 'cell'`), then the names with a problem (`kind: 'name'`), each with the fields it had | absent |
+| the object `engine` | the functions by name: `import { compute, createSession } from 'xlcalc'` | not exported |
+| `fromLegacy` and the type `LegacyContext` from `xlcalc` | `fromLegacy` and `LegacyContext` from `xlcalc/xlsx` | not exported |
 
-A book hashes as before whichever name it gives the number format: `inputHash` writes the field by its old name, and neither the values hash nor `inputHash` depends on `diagnostics`.
+A book hashes as before: `inputHash` writes the number format by its old name, so a book hashes as it did when it named the number format `format`, and neither the values hash nor `inputHash` depends on `diagnostics`.
 
 ## Answering otherwise
 
@@ -39,7 +39,7 @@ A book hashes as before whichever name it gives the number format: `inputHash` w
 | an edit answered the changed cells, an array | every call that changes the book answers an `EditResult`: `{ revision, changes, layout?, styles?, moved?, repaint? }` |
 | `readXlsx`'s `cached` was a list of sheets with a value by address (`cached[0].cells.B1` is 200) | `cached` has the shape of a result: `cached.sheets[0].cells.B1` is `{ value: 200 }` |
 | ru-RU was built in and the root exported `ruRU` | `import { ruRU } from 'xlcalc/locales/ru-RU'`, and `registerLocale(ruRU)` once for books in ru-RU and for its tag; a locale object needs no loading where no book is needed |
-| `writeXlsx(book, { result })` | `writeXlsx({ book, result })`, or `writeXlsx(session.getSnapshot())`; the older form writes the same file |
+| `writeXlsx(book, { result })` | `writeXlsx({ book, result })`, or `writeXlsx(session.getSnapshot())`; the older form is an `InputError`: a book is not a snapshot |
 | `validateEntry` refused with `{ ok: false, rule }` | `{ ok: false, code: 'validation', message, rule, severity }`, as every check refuses |
 | after a structure operation `changes` listed the cells whose value changed | they also list the cells whose formula's text, own style or own number format differ from the cell that was at their old place, and `moved` says how addresses moved, so a window moves by `moved` and applies `changes` instead of reading itself again |
 | `patchCells` listed the cells whose shown text changed | it also lists the cells whose own style or number format it set, with `style` and `numberFormat` |
@@ -51,4 +51,4 @@ A book hashes as before whichever name it gives the number format: `inputHash` w
 
 ## How it was checked
 
-`test/old-names.test.ts` calls every old name of a function and a method in a synchronous session, in the same thread and in a thread of the pool, and checks that it is the function of its new name and answers the same. `test/number-format-name.test.ts` gives every input that takes a number format the old name, both names and two different values, in the three kinds of session with closures and eval, and checks the input hash of the synthetic book and of a book with formats of cells, rows, columns and conditional formats against the hashes they had before the field was renamed. `test/result-diagnostics.test.ts` checks the list of diagnostics, its order and the hashes of a book with errors and bad names, and the appearance of a cell's conditional formats. Of the answers that changed their shape, in the three kinds of session with closures and eval: `test/session-viewport.test.ts` compares a window's styles by number with `getCells` and the book's table, `test/session-geometry.test.ts` checks that `editStructure` answers without the book and that `mapCell` answers null for a sheet it does not know, after an undo and a redo too, and `test/number-format-name.test.ts` reads `format` from every book an answer gives under `@ts-expect-error`, which `npm run typecheck` refuses to compile if a type lets it through.
+`test/old-names.test.ts` calls every old name of a function and a method in a synchronous session, in the same thread and in a thread of the pool and checks that it is no function, checks that no entry of the package exports an old name and that no type by an old name compiles, and gives every input that takes a number format the old name, in the three kinds of session, for the `InputError` that names `numberFormat`. `test/number-format-name.test.ts` checks the input hash of the synthetic book and of a book with formats of cells, rows, columns and conditional formats against the hashes they had before the field was renamed. `test/result-diagnostics.test.ts` checks the list of diagnostics, its order and the hashes of a book with errors and bad names, and the appearance of a cell's conditional formats. Of the answers that changed their shape, in the three kinds of session with closures and eval: `test/session-viewport.test.ts` compares a window's styles by number with `getCells` and the book's table, `test/session-geometry.test.ts` checks that `editStructure` answers without the book and that `mapCell` answers null for a sheet it does not know, after an undo and a redo too, and `test/number-format-name.test.ts` reads `format` from every book an answer gives under `@ts-expect-error`, which `npm run typecheck` refuses to compile if a type lets it through.

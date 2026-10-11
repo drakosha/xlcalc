@@ -7,16 +7,17 @@
  */
 import type { BookInput, CellInput, CellStyle, ColumnInput } from '../../../src/contract.js'
 import { formatAddress } from '../../../src/model.js'
+import { takenPart, type StoredCell, type StoredColumn } from '../stored.js'
 
 /** How a text is typed: Excel's `Value` with the text, `Formula2Local` (Excel 365's typing in the user's language), or keys (Excel for Mac only). */
 export type Via = 'value' | 'local' | 'keys'
 
 export interface FitCase {
   id: string
-  /** The column's cells by row number, as the engine takes them (errors come from formulas). */
-  cells?: Record<number, CellInput>
+  /** The column's cells by row number, as a stored case names their fields (errors come from formulas). */
+  cells?: Record<number, StoredCell>
   /** The column before: a width set by hand (xlsx `customWidth`), its format, hidden; the default width without them. */
-  column?: ColumnInput
+  column?: StoredColumn
   /** Rows whose cell is merged with the cell to its right. */
   merged?: number[]
   /** Rows merged down: the cell of the first with the cells below it to the last. */
@@ -60,15 +61,15 @@ export const caseColumn = (k: number) => 1 + 2 * k
 /** The rows a case shows something in: its cells and the cells typed into. */
 export const caseRows = (c: FitCase): number[] => [...new Set([...Object.keys(c.cells ?? {}).map(Number), ...(c.typed ?? []).map(([r]) => r)])].sort((a, b) => a - b)
 
-/** The book of a part: each case's cells, column and merged areas in its column of the sheet `S`. */
+/** The book of a part, as the engine takes it: each case's cells, column and merged areas in its column of the sheet `S`. */
 export function fitBook(cases: FitCase[]): BookInput {
   const cells: Record<string, CellInput> = {}
   const columns: Record<string, ColumnInput> = {}
   const merges: string[] = []
   cases.forEach((c, k) => {
     const col = caseColumn(k)
-    for (const [r, cell] of Object.entries(c.cells ?? {})) cells[formatAddress(Number(r) - 1, col)] = cell
-    if (c.column) columns[formatAddress(0, col).replace(/\d+$/, '')] = c.column
+    for (const [r, cell] of Object.entries(c.cells ?? {})) cells[formatAddress(Number(r) - 1, col)] = takenPart(cell)
+    if (c.column) columns[formatAddress(0, col).replace(/\d+$/, '')] = takenPart(c.column)
     for (const r of c.merged ?? []) merges.push(`${formatAddress(r - 1, col)}:${formatAddress(r - 1, col + 1)}`)
     if (c.mergedDown) merges.push(`${formatAddress(c.mergedDown[0] - 1, col)}:${formatAddress(c.mergedDown[1] - 1, col)}`)
   })

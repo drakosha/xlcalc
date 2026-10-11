@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/contract.js'
-import { compute, displayValue, engine, entryWidth, fitColumns, InputError, LOCALES } from '../src/index.js'
+import { compute, displayValue, entryWidth, fitColumns, InputError, LOCALES } from '../src/index.js'
 import './locales.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -68,7 +68,7 @@ describe('displayValue', () => {
     expect(displayValue(45688.75, { numberFormat: 'h:mm AM/PM' })).toEqual({ text: '6:00 PM' })
     expect(displayValue({ error: 'DIV0' }, { locale: 'ru-RU' })).toEqual({ text: '#ДЕЛ/0!' })
     expect(displayValue(null, { numberFormat: '0.00' })).toEqual({ text: '' })
-    expect(engine.displayValue('abc', { numberFormat: '"<"@">"' })).toEqual({ text: '<abc>' })
+    expect(displayValue('abc', { numberFormat: '"<"@">"' })).toEqual({ text: '<abc>' })
   })
 
   it('without a width the width is not limited: General keeps its digits, no number turns into #', () => {
@@ -95,7 +95,7 @@ describe('displayValue', () => {
     const fails = (f: () => unknown, message: string) => expect(f).toThrow(new InputError(message.split(':')[0], message.slice(message.indexOf(':') + 2)))
     fails(() => displayValue(1, { locale: 'de-DE' }), `opts.locale: unknown locale "de-DE" (loaded: ${[...LOCALES.keys()].join(', ')}; the package's: en-US, ru-RU)`)
     fails(() => displayValue(1, { width: -1 }), 'opts.width: expected a number from 0 to 4177920, got number -1')
-    fails(() => displayValue(1, { size: 3 } as never), 'opts: unknown field "size" (expected numberFormat, format, locale, width, dateSystem)')
+    fails(() => displayValue(1, { size: 3 } as never), 'opts: unknown field "size" (expected numberFormat, locale, width, dateSystem)')
     fails(() => displayValue(Number.NaN), 'value: expected a number, text, a boolean, null or { error: code }, got number NaN')
     fails(() => displayValue({ error: 'OOPS' } as never), 'value: expected a number, text, a boolean, null or { error: code }, got an object')
     fails(() => compute({ sheets: [] }, { display: 'yes' } as never), 'opts.display: expected a boolean, got the string "yes"')

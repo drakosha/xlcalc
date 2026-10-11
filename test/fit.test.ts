@@ -135,7 +135,7 @@ describe('entryWidth', () => {
 describe('bestFit in xlsx', () => {
   it('is written with the width and read back', async () => {
     const b: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 } }, columns: { A: { width: 12.5, bestFit: true }, B: { width: 4 } } }] }
-    const { data } = await writeXlsx(b)
+    const { data } = await writeXlsx({ book: b })
     expect((await readXlsx(data)).book.sheets[0].columns).toEqual({ A: { width: 12.5, bestFit: true }, B: { width: 4 } })
   })
 })

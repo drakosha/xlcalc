@@ -8,8 +8,9 @@
  * file without them so, and the cases `bare` and `typed-written` were added, predicted before the second run
  * (`files.2.predicted.json`).
  */
-import type { BookInput, CellStyle } from '../../../src/contract.js'
+import type { CellStyle } from '../../../src/contract.js'
 import type { LineStep, LinesCase, LinesCases } from './cases.js'
+import type { StoredBook } from '../stored.js'
 
 const DATE = 'dddd, mmmm d, yyyy'
 
@@ -25,7 +26,7 @@ const STYLES: CellStyle[] = [
  * Columns: B a date and a fill, C a percent, D an italic red font, E a fill alone, G a percent. Rows: 4 a number format
  * alone, 6 bold alone, 8 both. E4 and G6 are empty where a row with one crosses a column with the other.
  */
-function formatted(): BookInput {
+function formatted(): StoredBook {
   return {
     styles: STYLES,
     sheets: [
@@ -64,7 +65,7 @@ function formatted(): BookInput {
 }
 
 /** An empty sheet with wide columns, for Excel to format. */
-const blank = (): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 'x' } }, columns: { 'B:K': { width: 28 } } }] })
+const blank = (): StoredBook => ({ sheets: [{ name: 'S', cells: { A1: { value: 'x' } }, columns: { 'B:K': { width: 28 } } }] })
 
 const READ: [string, string][] = [['S', 'A1:G19']]
 

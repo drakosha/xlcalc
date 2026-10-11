@@ -6,13 +6,13 @@
  * across it; a row italic over a filled cell; a column filled across a row with a number format alone; a style set over
  * a book's own column and row styles.
  */
-import type { BookInput } from '../../../src/contract.js'
 import type { LinesCase, LinesCases } from './cases.js'
+import type { StoredBook } from '../stored.js'
 
-const blank = (): BookInput => ({ sheets: [{ name: 'P', cells: { A1: { value: 'x' } }, columns: { 'B:H': { width: 14 } } }] })
+const blank = (): StoredBook => ({ sheets: [{ name: 'P', cells: { A1: { value: 'x' } }, columns: { 'B:H': { width: 14 } } }] })
 
 /** A column with a fill and a percent format, a row bold with a date, written in the book. */
-const lined = (): BookInput => ({
+const lined = (): StoredBook => ({
   styles: [{ fill: { color: '#C6EFCE' } }, { font: { bold: true } }],
   sheets: [
     {

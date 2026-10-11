@@ -1,10 +1,10 @@
 /**
  * Patches of looks (`Session.patchCells`) checked: a sheet of the book and a cell or a range of it, and the fields to
- * set: a style by its number of the book's table or by its fields (`StylePatch`), the number format by `numberFormat` or
- * its old name `format` (`checkFormatNames`), meta, a note, a link. On whole rows and columns meta, notes and links can only be removed.
+ * set: a style by its number of the book's table or by its fields (`StylePatch`), the number format, meta, a note, a
+ * link. On whole rows and columns meta, notes and links can only be removed.
  */
 import type { CellLink, CellNote, JsonValue, NumberFormat, StylePatch } from '../contract.js'
-import { array, checkAddress, checkCell, checkFormat, checkFormatNames, checkSheet, checkString, checkStyle, checkStyleIndex, InputError, object, onlyKeys } from '../input.js'
+import { array, checkAddress, checkCell, checkFormat, checkSheet, checkString, checkStyle, checkStyleIndex, InputError, object, onlyKeys } from '../input.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { parseRange, type Rect } from '../structure/area.js'
 
@@ -35,7 +35,7 @@ export interface CheckedPatch extends Target {
   look: Look
 }
 
-const FIELDS = ['style', 'numberFormat', 'format', 'meta', 'note', 'link'] as const
+const FIELDS = ['style', 'numberFormat', 'meta', 'note', 'link'] as const
 
 /** Whole rows, whole columns, or neither: a rectangle across the sheet's width is rows, as Excel takes it. */
 export const linesOf = (x: Rect): 'r' | 'c' | undefined => (x.c1 === 0 && x.c2 === MAX_COLS - 1 ? 'r' : x.r1 === 0 && x.r2 === MAX_ROWS - 1 ? 'c' : undefined)
@@ -58,7 +58,6 @@ export function checkPatches(v: unknown, sheetIndex: (name: string) => number | 
     const rect = o.cell !== undefined ? parseRange(checkAddress(o.cell, `${p}.cell`))! : checkRange(o.range, `${p}.range`)
     const set = object(o.set, `${p}.set`, 'the fields to change, such as { style: { font: { bold: true } }, numberFormat: "0.00", note: null }')
     onlyKeys(set, `${p}.set`, FIELDS)
-    checkFormatNames(set, `${p}.set`)
     const lines = linesOf(rect)
     const look: Look = {}
     const style = set.style
@@ -67,11 +66,10 @@ export function checkPatches(v: unknown, sheetIndex: (name: string) => number | 
       checkStyleIndex(style, `${p}.set.style`, styles)
       look.style = { set: style }
     } else if (style !== undefined) look.style = { merge: checkStyle(style, `${p}.set.style`, true) as StylePatch }
-    const fk = set.numberFormat !== undefined ? 'numberFormat' : 'format'
-    if (set[fk] === null) look.format = { remove: true }
-    else if (set[fk] !== undefined) {
-      checkFormat(set[fk], `${p}.set.${fk}`)
-      look.format = { set: set[fk] as NumberFormat }
+    if (set.numberFormat === null) look.format = { remove: true }
+    else if (set.numberFormat !== undefined) {
+      checkFormat(set.numberFormat, `${p}.set.numberFormat`)
+      look.format = { set: set.numberFormat as NumberFormat }
     }
     const given: Record<string, unknown> = {}
     for (const key of ['meta', 'note', 'link'] as const) {

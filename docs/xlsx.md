@@ -192,7 +192,7 @@ const values = await writeXlsx({ book, result }, { mode: 'values' })
 const later = await writeXlsx({ book }, { values: 'omit' })
 ```
 
-A session is no snapshot: an asynchronous session is a proxy of a thread, and its book and result are taken there by `await session.getSnapshot()`. Given one, a result alone (`writeXlsx(compute(book))`, told by its hashes) or a result of another shape, `writeXlsx` throws `InputError` saying what to pass. `writeXlsx(book, { result, mode })`, the older form, is the same call and writes the same file.
+A session is no snapshot: an asynchronous session is a proxy of a thread, and its book and result are taken there by `await session.getSnapshot()`. Given one, a result alone (`writeXlsx(compute(book))`, told by its hashes) or a result of another shape, `writeXlsx` throws `InputError` saying what to pass. The older form, the book first and its result in the options (`writeXlsx(book, { result, mode })`), is an `InputError` too: a book is not a snapshot.
 
 ### Formulas
 
@@ -214,7 +214,7 @@ Each table is written as a table part, as Excel writes one: its name, range, hea
 
 Styles, number formats, widths, heights, hidden rows and columns, outline levels and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits. Every cell is written with the look it shows, its row's or column's where it has none of its own, as Excel writes it ([The cells of formatted rows and columns](#the-cells-of-formatted-rows-and-columns)).
 
-A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yyyy` (format 14), is written as a code of the file's own, so every locale shows what `format` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
+A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yyyy` (format 14), is written as a code of the file's own, so every locale shows what `numberFormat` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
 
 ### Hidden sheets
 
@@ -255,7 +255,7 @@ Excel shows a cell the file stores (a `<c>` element) by the cell's own cell form
 // <col min="2" max="2" … style="1"/> and <c r="B2" s="1"><v>46096</v></c>
 ```
 
-The reader keeps of a stored cell only what its row or column does not give it: `B2` of that file comes back as `{ value: 46096 }`, without a format of its own. Where a cell stores less than its line gives, the reader spells the default out: a cell stored in General in a column of dates gets `format: 'General'`, and one without a fill in a filled column the book's plain style, a style with nothing set.
+The reader keeps of a stored cell only what its row or column does not give it: `B2` of that file comes back as `{ value: 46096 }`, without a format of its own. Where a cell stores less than its line gives, the reader spells the default out: a cell stored in General in a column of dates gets `numberFormat: 'General'`, and one without a fill in a filled column the book's plain style, a style with nothing set.
 
 ### Where a row crosses a column
 

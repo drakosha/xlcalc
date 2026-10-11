@@ -5,7 +5,7 @@
  */
 import type { CellEdit, CellFields, CellInput, CellReplace } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { array, checkAddress, checkCell, checkFormatNames, checkSheet, InputError, object, onlyKeys } from '../input.js'
+import { array, CELL_FIELDS, checkAddress, checkCell, checkSheet, InputError, object, onlyKeys } from '../input.js'
 import { sheetKey } from '../syntax.js'
 
 /** The fields of a cell's content. */
@@ -43,7 +43,7 @@ export function checkFieldEdits(v: unknown, sheetIndex: (name: string) => number
     if (o.input !== null) {
       const f = object(o.input, `${p}.input`, 'the fields of a cell such as { value: 1 } or { formula: "A1*2", style: null }')
       // the fields given are checked as a cell's, those removed (null) left out; most edits remove none
-      checkFormatNames(f, `${p}.input`)
+      onlyKeys(f, `${p}.input`, CELL_FIELDS)
       let given = f
       for (const k in f)
         if (f[k] === null && k !== 'value') {
