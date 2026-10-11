@@ -83,14 +83,24 @@ A cell that shows its lines' look without a look of its own takes none: the line
 
 `previewCellText` answers the same, the cell's input, its value, the width and the alert, and changes nothing.
 
+`setCellTexts(entries, opts?)` takes several texts at once, as a paste of text or an entry into a selection does, each `{ sheet, cell, text }` read as `setCellText` reads it in its cell:
+
+- The texts are read in order, so a cell given twice keeps the later text, read by the format the earlier one gave it: `15.03.2026` then `45` leave the cell at 45 with the date format.
+- All are written with one recomputation, one revision and one step of the undo.
+- A column widens once, to the largest width a text typed alone into one of its cells would give it, measured with the values all the texts give: `widths` lists `{ sheet, column, width }`, and `widen: false` gives them without setting them.
+- `validations` lists the cells whose values their rules of data validation do not take, each with its alert, as `setCellText`'s `validation`, after all the texts are written.
+- A text `setCellText` refuses refuses the whole call with its code, message and position, and its `sheet` and `cell`; nothing is written.
+
+`previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
+
 `validateEntry(sheet, cell, input)` answers `{ ok: true }` or `{ ok: false, code: 'validation', message, rule, severity }`.
 
 ## What an edit answers
 
-Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setNames`, `setClock`, `setStyles`, `setLayout`, `editStructure`, `undo`, `redo`) answers an `EditResult`:
+Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setCellTexts`, `setNames`, `setClock`, `setStyles`, `setLayout`, `editStructure`, `undo`, `redo`) answers an `EditResult`:
 
 - `revision`: the session's revision after the call. Each such call adds one, `undo` and `redo` too; a refusal, a failure and an undo with nothing to undo add none.
-- `changes`: the cells whose value or shown text changed, and those whose formula, own style or own number format changed, with `formula`, `style` and `numberFormat` then (null when the cell has none now). After a structure operation, the cells whose value or formula text differ from those of the cell that was at their old place: after a row is inserted, `SUM(A1:A4)` that became `SUM(A1:A5)` is listed with its new text.
+- `changes`: the cells whose value or shown text changed, and those whose formula, own style or own number format changed, with `formula`, `style` and `numberFormat` then (null when the cell has none now), and a new format also as a code, `numberFormatCode`, a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU), as a window gives it. After a structure operation, the cells whose value or formula text differ from those of the cell that was at their old place: after a row is inserted, `SUM(A1:A4)` that became `SUM(A1:A5)` is listed with its new text.
 - `layout`: the sheets whose layout changed (lines, merged areas, tables, rules): a host reads `getLayout()` again.
 - `styles`: the book's style table, when the call changed it.
 - `moved`: after a structure operation and its undo, how the addresses moved, in order: `{ kind: 'lines', sheet, axis, at, count }` (the lines from `at` on move by `count`, up or left when it is negative), `{ kind: 'range', from, to }`, and a sheet renamed, deleted, inserted or moved. Rows deleted on a filtered sheet are one `lines` move for each run of visible rows, from the bottom up. A host moves its window by them rather than each cell by `mapCell`.
@@ -102,7 +112,7 @@ Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `pat
 
 ## Undo
 
-Each call is one step: `clearCells` and `patchCells` whatever their parts (the cells, the lines, the rules, the style table), `setCellText` with the width it gave the column. A call given nothing to do (`setCells([])`) is no step; one given cells that changed nothing is. The undo's answer is the call's `EditResult` with `call`, and `cells` for the calls that change cells.
+Each call is one step: `clearCells` and `patchCells` whatever their parts (the cells, the lines, the rules, the style table), `setCellText` and `setCellTexts` with the widths they gave the columns. A call given nothing to do (`setCells([])`) is no step; one given cells that changed nothing is. The undo's answer is the call's `EditResult` with `call`, and `cells` for the calls that change cells.
 
 ## How it was checked
 
@@ -117,3 +127,5 @@ The lines harness (`bench/coverage/lines.ts`, `npx tsx bench/coverage/run.ts lin
 The engine's answers to `patch` and `clear` were committed before Excel for Mac ran them. Every cell of both sets showed what was predicted, and so did the notes, conditional formats and rules of data validation of the files; the hyperlinks did not: Excel's ClearContents takes a cell's hyperlinks, which the prediction kept, and the session now takes them. Excel for Windows, run after, showed what Excel for Mac showed in every cell and every part of the files. On the cases of `files` and `held` Excel showed what a session's `patchCells` gives in every cell, the cells where Excel formats a line across a formatted one, which `setLayout` leaves to the line's style, among them.
 
 The seeded test of sessions against full computations (`test/session-fuzz.test.ts`) replaces, clears, formats and types into cells beside its other edits, compares the session's hash with a full computation's after each, and at the end undoes every step and finds the book it opened. `test/session-edit.test.ts`, `test/session-styles.test.ts` and `test/session-text.test.ts` check each call in a synchronous session, in the same thread and in a thread, with closures and eval.
+
+`setCellTexts` adds no rule of its own: each text is read as `setCellText` reads it, whose rules were measured in Excel ([Typed entry](entry.md)). `test/session-texts.test.ts` types a mixed set (numbers, dates and a formula in ru-RU, text that reads as a number, a column of percents, a cell with a rule, two cells that widen one column to different widths, a cell given twice, a table's header) at once and one by one, and finds the same book, values and changes; one undo takes the whole call back.

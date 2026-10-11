@@ -121,7 +121,7 @@ describe('styles and layout in a session', () => {
     const s = createSession(book(), { live: true, display: false })
     const c = s.clock
     expect(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', numberFormat: '0.0', style: null } }, { sheet: 'S', cell: 'B9', input: { style: 0 } }]).changes).toEqual([
-      { sheet: 'S', cell: 'A2', value: 4, style: null, numberFormat: '0.0' },
+      { sheet: 'S', cell: 'A2', value: 4, style: null, numberFormat: '0.0', numberFormatCode: '0.0' },
       { sheet: 'S', cell: 'B9', value: null, style: 0 },
     ])
     expect(s.clock).toEqual(c)
