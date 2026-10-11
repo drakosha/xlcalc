@@ -1,19 +1,23 @@
 /** Time of day and the clock functions. */
 import type { Cx, FnDef } from '../../args.js'
-import { E, isErr, type V } from '../../values.js'
+import { MAX_SERIAL, momentOf } from '../../dates.js'
+import { E, isErr, type CErr, type V } from '../../values.js'
 import { textDate } from './calendar.js'
 
-/** The day fraction to the nearest second, as Excel's HOUR, MINUTE and SECOND read it. */
-function clock(t: number): { h: number; m: number; s: number } {
-  const secs = Math.round((t - Math.floor(t)) * 86_400) % 86_400
-  return { h: Math.floor(secs / 3600), m: Math.floor(secs / 60) % 60, s: secs % 60 }
+/**
+ * `f` of the second of the day of a moment, as HOUR, MINUTE and SECOND read it (`momentOf`), in the book's date system
+ * (`epoch`); a moment past 9999-12-31 once rounded is #NUM! (the set `seconds-held`).
+ */
+function clock(t: number, epoch: number, f: (second: number) => number): number | CErr {
+  const { day, second } = momentOf(t)
+  return day + epoch > MAX_SERIAL ? E.NUM : f(second)
 }
 
 export const functions: Record<string, FnDef> = {
-  HOUR: { args: 'h', fn: (t: number) => clock(t).h },
-  MINUTE: { args: 'h', fn: (t: number) => clock(t).m },
+  HOUR: { args: 'h', cx: true, fn: (cx: Cx, t: number) => clock(t, cx.rules.epoch, (s) => Math.floor(s / 3600)) },
+  MINUTE: { args: 'h', cx: true, fn: (cx: Cx, t: number) => clock(t, cx.rules.epoch, (s) => Math.floor(s / 60) % 60) },
   NOW: { args: '', cx: true, volatile: true, fn: (cx: Cx) => cx.now },
-  SECOND: { args: 'h', fn: (t: number) => clock(t).s },
+  SECOND: { args: 'h', cx: true, fn: (cx: Cx, t: number) => clock(t, cx.rules.epoch, (s) => s % 60) },
   // INT of each part, each at most 32767, wrapped to a day; a negative total is #NUM!
   TIME: {
     args: 'n n n',

@@ -75,7 +75,7 @@ A section writes the minus of a negative number unless it can only take negative
 
 - Excel's 1900 calendar: serial 0 is `1/0/1900`, 60 is `2/29/1900`. A negative serial, or one from 2,958,466 (past 9999-12-31), shows `#` and is `#VALUE!` in `TEXT`.
 - In a book of the 1904 date system, serial 0 is `1/1/1904` and the last date is serial 2,957,003. A negative date or time shows as its size with a minus: −1 with `m/d/yyyy` shows `-1/2/1904`, −0.5 with `h:mm` shows `-12:00`, and `TEXT` gives the same.
-- Time is rounded to what the format shows: whole seconds, or the decimals of `ss.0` to `ss.000`. 45688.999999 is `2025-02-01 00:00:00` with `yyyy-mm-dd hh:mm:ss` and `23:59:59.9` with `h:mm:ss.0`.
+- Time is rounded to what the format shows: whole seconds, or the decimals of `ss.0` to `ss.000`. 45688.999999 is `2025-02-01 00:00:00` with `yyyy-mm-dd hh:mm:ss` and `23:59:59.9` with `h:mm:ss.0`. Whole seconds are taken as `SECOND` takes them: half a second added and the sum split in floating point, so an exact half second of a date of today stays below (45688+1/256, 00:05:37.5, shows `00:05:37`).
 - `m` means minutes after hours or before seconds, and the month elsewhere. `mmmmm` is the month's first letter. `ddd`, `dddd`, `mmm` and `mmmm` are the locale's names. `A/P` writes the letter in the format's case (`a/p` shows `6:00 p`).
 - `[h]`, `[mm]` and `[ss]` count elapsed hours, minutes or seconds from 0. A negative value shows with a minus when the section has elapsed time alone (`[h]` shows −1 as `-24`), and `#` otherwise.
 - In a cell, a bare `/` in a date format is the locale's date separator: `dd/mm/yyyy` shows `31.01.2025` in ru-RU. In `TEXT` it stays `/`. Quoted and escaped separators stay as written.
@@ -186,8 +186,9 @@ Most cells are text or General numbers in a default column, and their text is th
 | `held` | 58 per locale | predicted by the engine before Excel computed them; 57 of 58 matched in each locale, and the miss became the rule for values no section takes |
 | `builtin` | 300 per locale | the built-in formats 0 to 49 by number on six values, with the codes Excel reports for them |
 | `builtin-held` | 350 per locale | built-in formats on other values and widths, predicted by the engine before Excel computed them, all matched |
+| `seconds-held` | 35 (en-US) | moments at the edge of a second in `d h:mm:ss`, predicted by the engine before Excel computed them; 15 missed (the rounding to the second, and the 15 digits a cell's text is written from, a known difference), Windows the same |
 
-`TEXT` was measured as formulas in the case sets `text-format` and `text-format-more` (en-US) and `text-format-ru` and `text-format-ru-more` (ru-RU), 771 cases in all.
+`TEXT` was measured as formulas in the case sets `text-format` and `text-format-more` (en-US) and `text-format-ru` and `text-format-ru-more` (ru-RU), 771 cases in all; a moment's whole seconds in the set `seconds-held` (35 values next to `SECOND` and `DAY`, the same in Excel for Mac and for Windows).
 
 The cases write a format as a custom code, so a code equal to a built-in format does not show by the locale. The sets of built-in formats write the number alone, as Excel stores it.
 

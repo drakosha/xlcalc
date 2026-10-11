@@ -1,0 +1,340 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-11",
+  "autoPercentEntry": "true",
+  "seconds": 15.2
+ },
+ "cases": [
+  {
+   "id": "bool-1",
+   "text": "=falſe"
+  },
+  {
+   "id": "bool-2",
+   "text": "=FALſE"
+  },
+  {
+   "id": "bool-3",
+   "text": "=IF(falſe,1,2)"
+  },
+  {
+   "id": "bool-4",
+   "text": "={falſe}"
+  },
+  {
+   "id": "bool-5",
+   "text": "=LET(falſe,1,falſe)"
+  },
+  {
+   "id": "bool-6",
+   "text": "=LET(x,1,falſe)"
+  },
+  {
+   "id": "fn-1",
+   "text": "=ſum(1,2)"
+  },
+  {
+   "id": "fn-2",
+   "text": "=ﬁnd(\"a\",\"a\")"
+  },
+  {
+   "id": "fn-3",
+   "text": "=gauß(1)"
+  },
+  {
+   "id": "fn-4",
+   "text": "=addreß(1,1)"
+  },
+  {
+   "id": "fn-5",
+   "text": "=ıf(TRUE,1,2)"
+  },
+  {
+   "id": "fn-6",
+   "text": "=İF(TRUE,1,2)"
+  },
+  {
+   "id": "fn-7",
+   "text": "=if(TRUE,1,2)"
+  },
+  {
+   "id": "let-1",
+   "text": "=LET(ſ,1,S)"
+  },
+  {
+   "id": "let-2",
+   "text": "=LET(S,1,ſ+1)"
+  },
+  {
+   "id": "let-3",
+   "text": "=LET(ß,1,SS)"
+  },
+  {
+   "id": "let-4",
+   "text": "=LET(SS,1,ß+1)"
+  },
+  {
+   "id": "let-5",
+   "text": "=LET(ı,1,I)"
+  },
+  {
+   "id": "let-6",
+   "text": "=LET(I,1,ı+1)"
+  },
+  {
+   "id": "let-7",
+   "text": "=LET(İ,1,i)"
+  },
+  {
+   "id": "let-8",
+   "text": "=LET(i,1,İ+1)"
+  },
+  {
+   "id": "let-9",
+   "text": "=LET(ﬁ,1,FI)"
+  }
+ ],
+ "answers": {
+  "bool-1": {
+   "cell": {
+    "formula": "falſe"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "bool-2": {
+   "cell": {
+    "formula": "falſe"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "bool-3": {
+   "cell": {
+    "formula": "IF(falſe,1,2)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "bool-4": {
+   "refused": "-2146827284 Exception from HRESULT: 0x800A03EC",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "bool-5": {
+   "cell": {
+    "formula": "LET(falſe,1,falſe)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "bool-6": {
+   "cell": {
+    "formula": "LET(x,1,falſe)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "fn-1": {
+   "cell": {
+    "formula": "ſum(1,2)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "fn-2": {
+   "cell": {
+    "formula": "ﬁnd(\"a\",\"a\")"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "fn-3": {
+   "cell": {
+    "formula": "gauß(1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "fn-4": {
+   "cell": {
+    "formula": "addreß(1,1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "fn-5": {
+   "cell": {
+    "formula": "IF(TRUE,1,2)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "fn-6": {
+   "cell": {
+    "formula": "IF(TRUE,1,2)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "fn-7": {
+   "cell": {
+    "formula": "IF(TRUE,1,2)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-1": {
+   "cell": {
+    "formula": "LET(ſ,1,S)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "let-2": {
+   "cell": {
+    "formula": "LET(S,1,ſ+1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "let-3": {
+   "cell": {
+    "formula": "LET(ß,1,SS)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "let-4": {
+   "cell": {
+    "formula": "LET(SS,1,SS+1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "let-5": {
+   "cell": {
+    "formula": "LET(ı,1,I)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "let-6": {
+   "cell": {
+    "formula": "LET(I,1,ı+1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "let-7": {
+   "cell": {
+    "formula": "LET(İ,1,I)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "let-8": {
+   "cell": {
+    "formula": "LET(i,1,İ+1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "let-9": {
+   "cell": {
+    "formula": "LET(ﬁ,1,FI)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  }
+ }
+}

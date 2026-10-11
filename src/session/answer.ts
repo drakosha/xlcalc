@@ -77,6 +77,10 @@ export function fieldsBetween(was: CellInput | undefined, wasText: string | unde
   return Object.keys(out).length ? out : null
 }
 
+/** Whether an input has a field `fieldsBetween` compares beside its value: an input of a value alone differs from none in nothing else. */
+export const hasFields = (x: CellInput): boolean =>
+  x.formula !== undefined || x.style !== undefined || x.numberFormat !== undefined || x.note !== undefined || x.link !== undefined
+
 /** The fields that changed of edited cells, from their inputs before the edits (`was`) to the book's now. */
 export function editFields(s: EngineState, was: { sheet: string; cell: string; input: CellInput | null }[]): Map<string, FieldChange> {
   const out = new Map<string, FieldChange>()
@@ -121,13 +125,6 @@ export function repaintOf(book: BookInput, o: Outcome): RangeRef[] | undefined {
   for (const x of [...o.rules, ...(o.valued ? book.sheets.flatMap(ruleRanges) : [])]) out.set(`${sheetKey(x.sheet)}!${x.range}`, x)
   return out.size ? [...out.values()] : undefined
 }
-
-/** The keys of cells in address order, once each. */
-export const sortedKeys = (keys: Iterable<string>): string[] =>
-  [...new Set(keys)]
-    .map((k) => k.split(':').map(Number))
-    .sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2])
-    .map((k) => k.join(':'))
 
 /** An edit's options checked (`allowed` beside `baseRevision`), and the session's revision against its `baseRevision`. */
 export function checkBase<T extends EditOptions>(v: unknown, revision: number, allowed: readonly string[] = [], path = 'opts'): T {

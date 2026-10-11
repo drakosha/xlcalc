@@ -1,0 +1,506 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 15
+ },
+ "cases": [
+  {
+   "id": "day#1",
+   "cell": {
+    "value": 45688.430907407404,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#2",
+   "cell": {
+    "value": 45688.430908553244,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#3",
+   "cell": {
+    "value": 45688.43090855787,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#4",
+   "cell": {
+    "value": 45688.430908560185,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#5",
+   "cell": {
+    "value": 45688.430908563656,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#6",
+   "cell": {
+    "value": 45688.4309085647,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#7",
+   "cell": {
+    "value": 45688.4309085648,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#8",
+   "cell": {
+    "value": 45688.43090856481,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#9",
+   "cell": {
+    "value": 45688.43090856482,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:30"
+   }
+  },
+  {
+   "id": "day#10",
+   "cell": {
+    "value": 45688.43090856597,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 10:20:31"
+   }
+  },
+  {
+   "id": "day#11",
+   "cell": {
+    "value": 444615.13495949074,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "24 3:14:21"
+   }
+  },
+  {
+   "id": "day#12",
+   "cell": {
+    "value": 2504553.1110706017,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "25 2:39:56"
+   }
+  },
+  {
+   "id": "day#13",
+   "cell": {
+    "value": 2577729.1113368054,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "30 2:40:20"
+   }
+  },
+  {
+   "id": "day#14",
+   "cell": {
+    "value": 1963420.4880381944,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "28 11:42:46"
+   }
+  },
+  {
+   "id": "day#15",
+   "cell": {
+    "value": 2693171.0251446757,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "24 0:36:13"
+   }
+  },
+  {
+   "id": "day#16",
+   "cell": {
+    "value": 2072685.826105324,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "25 19:49:35"
+   }
+  },
+  {
+   "id": "day#17",
+   "cell": {
+    "value": 45688.00390625,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 0:05:38"
+   }
+  },
+  {
+   "id": "day#18",
+   "cell": {
+    "value": 45688.01171875,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 0:16:53"
+   }
+  },
+  {
+   "id": "day#19",
+   "cell": {
+    "value": 45688.99609375,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 23:54:23"
+   }
+  },
+  {
+   "id": "day#20",
+   "cell": {
+    "value": 45688.99999420602,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 23:59:59"
+   }
+  },
+  {
+   "id": "day#21",
+   "cell": {
+    "value": 45688.99999420833,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 23:59:59"
+   }
+  },
+  {
+   "id": "day#22",
+   "cell": {
+    "value": 45688.99999421295,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "1 0:00:00"
+   }
+  },
+  {
+   "id": "day#23",
+   "cell": {
+    "value": 45688.999994212965,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "1 0:00:00"
+   }
+  },
+  {
+   "id": "day#24",
+   "cell": {
+    "value": 46022.999994210055,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 23:59:59"
+   }
+  },
+  {
+   "id": "day#25",
+   "cell": {
+    "value": 46022.99999421295,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "1 0:00:00"
+   }
+  },
+  {
+   "id": "day#26",
+   "cell": {
+    "value": 59.99999421296295,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "29 0:00:00"
+   }
+  },
+  {
+   "id": "day#27",
+   "cell": {
+    "value": 59.99999421296296,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "29 0:00:00"
+   }
+  },
+  {
+   "id": "day#28",
+   "cell": {
+    "value": 0.9999942129629625,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "1 0:00:00"
+   }
+  },
+  {
+   "id": "day#29",
+   "cell": {
+    "value": 999999.9999942129,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "26 0:00:00"
+   }
+  },
+  {
+   "id": "day#30",
+   "cell": {
+    "value": 1020183.9999942129,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "28 23:59:59"
+   }
+  },
+  {
+   "id": "day#31",
+   "cell": {
+    "value": 1000000.999994213,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "26 23:59:59"
+   }
+  },
+  {
+   "id": "day#32",
+   "cell": {
+    "value": 2958464.9999942128,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "30 23:59:59"
+   }
+  },
+  {
+   "id": "day#33",
+   "cell": {
+    "value": 2958464.999994213,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "30 23:59:59"
+   }
+  },
+  {
+   "id": "day#34",
+   "cell": {
+    "value": 2958465.999994213,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 23:59:59"
+   }
+  },
+  {
+   "id": "day#35",
+   "cell": {
+    "value": 2958465.9999942128,
+    "format": "d h:mm:ss"
+   },
+   "width": 20,
+   "predicted": {
+    "text": "31 23:59:59"
+   }
+  }
+ ],
+ "answers": {
+  "day#1": {
+   "text": "31 10:20:30"
+  },
+  "day#2": {
+   "text": "31 10:20:30"
+  },
+  "day#3": {
+   "text": "31 10:20:30"
+  },
+  "day#4": {
+   "text": "31 10:20:30"
+  },
+  "day#5": {
+   "text": "31 10:20:30"
+  },
+  "day#6": {
+   "text": "31 10:20:30"
+  },
+  "day#7": {
+   "text": "31 10:20:30"
+  },
+  "day#8": {
+   "text": "31 10:20:30"
+  },
+  "day#9": {
+   "text": "31 10:20:31"
+  },
+  "day#10": {
+   "text": "31 10:20:31"
+  },
+  "day#11": {
+   "text": "24 3:14:21"
+  },
+  "day#12": {
+   "text": "25 2:39:57"
+  },
+  "day#13": {
+   "text": "30 2:40:20"
+  },
+  "day#14": {
+   "text": "28 11:42:46"
+  },
+  "day#15": {
+   "text": "24 0:36:13"
+  },
+  "day#16": {
+   "text": "25 19:49:35"
+  },
+  "day#17": {
+   "text": "31 0:05:37"
+  },
+  "day#18": {
+   "text": "31 0:16:52"
+  },
+  "day#19": {
+   "text": "31 23:54:22"
+  },
+  "day#20": {
+   "text": "31 23:59:59"
+  },
+  "day#21": {
+   "text": "31 23:59:59"
+  },
+  "day#22": {
+   "text": "31 23:59:59"
+  },
+  "day#23": {
+   "text": "1 0:00:00"
+  },
+  "day#24": {
+   "text": "31 23:59:59"
+  },
+  "day#25": {
+   "text": "31 23:59:59"
+  },
+  "day#26": {
+   "text": "28 23:59:59"
+  },
+  "day#27": {
+   "text": "29 0:00:00"
+  },
+  "day#28": {
+   "text": "0 23:59:59"
+  },
+  "day#29": {
+   "text": "25 23:59:59"
+  },
+  "day#30": {
+   "text": "28 23:59:59"
+  },
+  "day#31": {
+   "text": "27 0:00:00"
+  },
+  "day#32": {
+   "text": "31 0:00:00"
+  },
+  "day#33": {
+   "text": "31 0:00:00"
+  },
+  "day#34": {
+   "text": "###################"
+  },
+  "day#35": {
+   "text": "###################"
+  }
+ }
+}

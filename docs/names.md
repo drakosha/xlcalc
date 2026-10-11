@@ -31,7 +31,7 @@ const r = compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'СТАВКА*
 console.log(r.sheets[0].cells.A1.value, r.sheets[0].cells.A1.formula) // → 0.4 Ставка*2
 ```
 
-Names are compared in any case, Cyrillic too: `ставка` and `СТАВКА` in a formula are the name `Ставка`, and the formula's text shows it as it is defined (`Ставка*2`), as Excel shows it. A second name `СТАВКА` beside it is a duplicate, left out with a name issue. `Ё` and `Е` are two letters, so `Ёлка` and `Елка` are two names.
+Names are compared in any case, Cyrillic too: `ставка` and `СТАВКА` in a formula are the name `Ставка`, and the formula's text shows it as it is defined (`Ставка*2`), as Excel shows it. A second name `СТАВКА` beside it is a duplicate, left out with a name issue. `Ё` and `Е` are two letters, so `Ёлка` and `Елка` are two names. A letter compares by its whole upper case, so `ß` is `SS` and `ﬁ` is `FI` (`straße` is the name `STRASSE`), but the dotless `ı` and the long `ſ` are no `I` and `S`, as Excel for Windows compares names; a LET name compares letter by letter, so `LET(ß,1,SS)` is `#NAME?`.
 
 A name is written as it is in every locale. In ru-RU a Russian function name followed by `(` is the function and the same word alone is a name: `=СУММ(Сумма;1)` sums the name `Сумма`. A stored formula can hold the word `ИСТИНА` as a name only from an en-US book; `toLocal` shows it in ru-RU in quotes, `'ИСТИНА'`, as Excel ru-RU does, and `toInvariant` reads `'ИСТИНА'` back as the name, while `ИСТИНА` typed in Russian is TRUE. A table named `ИСТИНА` keeps no quotes before its brackets (`ИСТИНА[Qty]`).
 
@@ -113,8 +113,12 @@ The rules of a name were measured in Excel 16.113 for Mac and Excel 16.0.20430 f
 | `names-tables-held` | 4 | 3 | a table renamed `?Продажи` (known) |
 | `names-ru-tables-held` (ru-RU) | 3 | 0 | tables renamed `ИСТИНА`, `ложь`, `TRUE`, where the two Excels part (known) |
 | `paste-names-held` (`add-cell-shapes`) | 1 | 0 | `XFE1` and `A0` taken and read by a formula (fixed); `R1`, `C5`, `XFD1`, `r1` and `R1C1` refused, as predicted |
+| `name-case-held`, `name-case-sheets-held` | 11 and 10 | 8 and 6 (Windows: 6 and 8; the rule the first set gave predicted the second) | the dotless `ı` is no `I`, the long `ſ` no `S` in Excel for Windows, which the engine follows (fixed; Excel for Mac takes `ſ` for `S`, known); `ß` is `SS` and `ﬁ` is `FI` in names and tables, as predicted; sheets compare letter by letter in both Excels, `ß` beside `SS` (known) |
+| `name-case-ru-held` (ru-RU) | 10 | 8 (Windows: 10) | the long `ſ` taken for `S` by Excel for Mac (known); the rest as in en-US |
 
-In all, 34 of the 54 cases came out as predicted on the Mac and 35 on Windows, which agreed with the Mac on every case but the 255-letter name and the tables of `names-ru-tables-held`. The two Excels agree on `add-cell-shapes`.
+In all, 34 of the 54 cases before `name-case-held` came out as predicted on the Mac and 35 on Windows, which agreed with the Mac on every case but the 255-letter name and the tables of `names-ru-tables-held`. The two Excels agree on `add-cell-shapes`. Of the 31 cases of the `name-case` sets, 22 came out as predicted on the Mac and 24 on Windows; the two Excels part on the long `ſ` alone.
+
+The words of a formula, TRUE and FALSE, function names and LET's names in the long s, the sharp s, the ligature `ﬁ` and the dotless and dotted i, were measured in a file and typed (the case set `name-case-held` and the entry sets `name-case-held` and `name-case-values-held`): Excel for Windows reads them letter by letter (`falſe` is a name, `gauß(1)` no `GAUSS`, `LET(ß,1,SS)` `#NAME?`), Excel for Mac reads `ſ` as `s`.
 
 LET's names were measured as text typed into cells (the entry sets `names-held`, `let-grid-held` and `let-cells-held`, [Typed entry](entry.md)), predicted before Excel ran them: of the cells' words the engine refused all, and Excel takes every one but those that read as R1C1's row or column too (`R2`, `C100`, `RC5`), on the Mac and Windows alike; `?` and `\` inside, first and after a cell's shape (`A1?x`) are names, as predicted. The engine takes them so now (fixed).
 

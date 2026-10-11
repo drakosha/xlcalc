@@ -14,7 +14,7 @@ import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budge
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
-import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, sortedKeys, type FieldChange, type Outcome } from './session/answer.js'
+import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf } from './session/book.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
@@ -124,7 +124,16 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
   const { externals, execution } = o
   const display = o.display !== false
-  const build = (b: BookInput) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution })
+  // the cells a host was given (`getBook`; `getSnapshot` gives a copy), which it may keep: a state built later copies
+  // them, so they change no more, and takes the others as they are (an old state's, an operation's new ones, a deleted sheet's put back)
+  const lent = new WeakSet<object>()
+  const lend = (s: EngineState) => {
+    for (const x of s.input.sheets) lent.add(x.cells)
+    return s.input
+  }
+  const unlent = (cells: object) => !lent.has(cells)
+  /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are. */
+  const build = (b: BookInput, own?: (cells: object) => boolean) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution, own })
   let state: EngineState | null = yield* build(book)
   let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one
@@ -137,7 +146,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const s = st()
     if (stale) {
       // what an earlier call left to do does not count in this call's soft deadline
-      state = yield* untimed(build(s.input))
+      state = yield* untimed(build(s.input, unlent))
       stale = false
     }
     return state!
@@ -216,13 +225,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const at = clock
     if (live) tick(old)
     try {
-      const next = yield* build(book)
+      const next = yield* build(book, unlent)
       const fields = new Map<string, FieldChange>()
       const pass = back ? new DiffPass(book, old.input) : undefined
       const keys = movedChanges(old, next, g, fields, display && looks ? [cellLooks(old), cellLooks(next)] : undefined, pass)
       const diff = pass ? yield* bookDiff(pass, inverse(g)) : null
       state = next
-      return [next, { ...nothing(), keys: sortedKeys([...keys, ...fields.keys()]), fields, valued: true, layout: new Set(layoutChanged(old.input, next.input)) }, diff]
+      return [next, { ...nothing(), keys, fields, valued: true, layout: new Set(layoutChanged(old.input, next.input)) }, diff]
     } catch (e) {
       untick(old, at)
       throw e
@@ -527,7 +536,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return answer(s, out)
     },
     getBook() {
-      return st().input
+      return lend(st())
     },
     getLayout() {
       return bookLayout(st().input)

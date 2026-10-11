@@ -159,6 +159,17 @@ describe.each(['closures', 'eval'] as const)('snapshot and cell attachments, %s'
       } finally { await s.close() }
     })
 
+    it('a deleted sheet put back by undo reports its notes and links, a cell of a note alone too', async () => {
+      const s = await session({ sheets: [{ name: 'D', cells: { A1: { note }, B1: { value: 1, note }, C1: { value: 2, link } } }, { name: 'S', cells: { A1: { formula: 'SUM(D!B1:C1)' } } }] })
+      try {
+        expect((await s.editStructure({ op: 'deleteSheet', sheet: 'D' })).ok).toBe(true)
+        const back = [{ sheet: 'D', cell: 'A1', note }, { sheet: 'D', cell: 'B1', note }, { sheet: 'D', cell: 'C1', link }]
+        expect(attachments((await s.undo())!).filter((c) => c.sheet === 'D')).toEqual(back)
+        await s.redo()
+        expect(attachments((await s.undo())!).filter((c) => c.sheet === 'D')).toEqual(back)
+      } finally { await s.close() }
+    })
+
     it.each(['row', 'column'] as const)('the documented entry context accounts for an inherited %s format without changing parsing', async (source) => {
       const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
       const contract = readFileSync(new URL('../src/contract.ts', import.meta.url), 'utf8')

@@ -7,7 +7,7 @@
 import { describe, expect, it } from 'vitest'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
 import { compute, displayValue, type CellDisplay } from '../src/index.js'
-import { CLOCK, DISPLAY_SETS, displayBook, formatted, sameShown } from './display-cases.js'
+import { CLOCK, DISPLAY_SETS, displayBook, formatted, ROUNDED_MOMENT, sameShown } from './display-cases.js'
 
 /** A case as Excel for Mac showed it and as the engine shows it. */
 interface Shown {
@@ -44,8 +44,19 @@ function macRule(s: Shown): boolean {
   return !!rule
 }
 
+/** Whether the known difference `ROUNDED_MOMENT` covers a case, noted as used. */
+function rounded(c: DisplayCase, locale: string, excel: DisplayAnswer): boolean {
+  const covers = ROUNDED_MOMENT[1](c, locale, excel.text)
+  if (covers) used.add(ROUNDED_MOMENT[0])
+  return covers
+}
+
 /** Held-out cases whose prediction Excel did not confirm, by `<locale>:<set>:<id>` (the engine was fixed after the run). */
-const MISSED: readonly string[] = ['en-US:held:condition#6', 'ru-RU:held-ru:condition#6']
+const MISSED: readonly string[] = [
+  'en-US:held:condition#6',
+  'ru-RU:held-ru:condition#6',
+  ...[9, 12, 17, 18, 19, 22, 25, 26, 28, 29, 31, 32, 33, 34, 35].map((n) => `en-US:seconds-held:day#${n}`),
+]
 
 for (const set of DISPLAY_SETS) {
   describe(`cells shown as in Excel ${set.locale}: set ${set.name}`, async () => {
@@ -62,7 +73,7 @@ for (const set of DISPLAY_SETS) {
       const off = set.cases.flatMap((c) => {
         const out = cells[at.get(c.id)!]
         const engine = { text: out.text!, ...(out.color ? { color: out.color } : {}) }
-        if (sameShown(set.answers[c.id], engine, out.value) || macRule({ c, locale: set.locale, mac: set.answers[c.id], engine })) return []
+        if (sameShown(set.answers[c.id], engine, out.value) || macRule({ c, locale: set.locale, mac: set.answers[c.id], engine }) || rounded(c, set.locale, set.answers[c.id])) return []
         return [`${c.id} ${JSON.stringify(c.cell)} width ${c.width ?? 'default'}: Excel ${JSON.stringify(set.answers[c.id])}, engine ${JSON.stringify(engine)}`]
       })
       expect(off).toEqual([])
@@ -93,5 +104,9 @@ for (const set of DISPLAY_SETS) {
 describe('known differences from Excel for Mac: shown text', () => {
   it('every reason of MAC_SHOWN covers a case', () => {
     expect(MAC_SHOWN.map(([why]) => why).filter((why) => !used.has(why))).toEqual([])
+  })
+
+  it('the known difference ROUNDED_MOMENT covers a case', () => {
+    expect(used.has(ROUNDED_MOMENT[0])).toBe(true)
   })
 })

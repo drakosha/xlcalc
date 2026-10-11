@@ -11,7 +11,7 @@ import { matches, show } from './excel-cases.js'
 import { LOCALE_SETS } from './excel-locale-cases.js'
 import { SETS } from './excel-sets.js'
 
-const PREDICTING = ['areas-each', 'binom-sumx-held', 'findate-edges', 'fit-offset-held', 'intersect', 'known-held', 'lookup-held', 'lookup-own-held', 'pct-text', 'ref-deps', 'sheet-cells', 'single-values', 'sortby-one-held', 'stat-edges-held', 'sumproduct-held', 'sumx-cell-held', 'tests-cell-held']
+const PREDICTING = ['areas-each', 'binom-sumx-held', 'findate-edges', 'fit-offset-held', 'intersect', 'known-held', 'lookup-held', 'lookup-own-held', 'name-case-held', 'pct-text', 'ref-deps', 'seconds-held', 'sheet-cells', 'single-values', 'sortby-one-held', 'stat-edges-held', 'sumproduct-held', 'sumx-cell-held', 'tests-cell-held']
 const LEGACY_PREDICTING = ['ifs-text']
 const RU_PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'pct-text', 'ref-deps', 'sheet-cells', 'single-values']
 const RU_SETS = LOCALE_SETS.get('ru-RU') ?? []
@@ -30,7 +30,7 @@ describe('case sets predicted before Excel ran them', async () => {
       const missed = Object.entries(mod.PREDICTED)
         .filter(([id, v]) => !matches(set!.cases.find((c) => c.id === id)?.fn, set!.values[id], v))
         .map(([id, v]) => `${id}: predicted ${show(v)}, Excel ${show(set!.values[id])}`)
-      expect(missed.map((m) => m.slice(0, m.indexOf(':')))).toEqual([...(mod.MISSED ?? [])])
+      expect(missed.map((m) => m.slice(0, m.indexOf(': predicted')))).toEqual([...(mod.MISSED ?? [])])
       expect(Object.keys(mod.PREDICTED).length).toBeGreaterThan(0)
     })
   }

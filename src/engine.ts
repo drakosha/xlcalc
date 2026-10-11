@@ -59,6 +59,8 @@ export interface EngineOptions {
   execution?: Execution
   /** What the range caches may hold, shared with other books: those of this heap by default. */
   cache?: CacheBudget
+  /** Whether the state may take a sheet's cells as they are, no one else reading or changing them after: else it takes a copy. */
+  own?: (cells: Record<string, CellInput>) => boolean
 }
 
 export interface EngineState {
@@ -185,8 +187,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const sheetNames = book.sheets.map((s) => s.name)
   const sheetIdx = new Map(sheetNames.map((n, i) => [sheetKey(n), i]))
   if (sheetIdx.size !== sheetNames.length) throw new Error('duplicate sheet name')
-  // the state's own copy of the cells (edits change it); the layout and the styles are shared
-  const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
+  // the state's own cells (edits change them), copied unless they are its own already; the layout and the styles are shared
+  const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: opts.own?.(s.cells) ? s.cells : { ...s.cells } })) }
   const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
   const tables = tablesOf(input)
   const { names, issues } = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale))

@@ -1,17 +1,17 @@
 /** Checks of a formula with codes: functions and their argument counts, sheets, names; valid range names. */
 import type { CheckCode, NameCheck, NameRefusal, ValidateContext, ValidateResult } from '../contract.js'
-import { caseKey } from '../collate.js'
+import { caseKey, wordKey } from '../collate.js'
 import { FUNCTIONS, isFunction } from '../functions.js'
 import { english } from '../locale/english.js'
 import type { Message, NameRule } from '../locale/messages.js'
 import { FormulaError, type Ast } from './ast.js'
-import { parse } from './parse.js'
+import { boolWord, parse } from './parse.js'
 import { IDENT_FIRST, IDENT_NEXT } from './scan.js'
 import { readsAsCell } from './tokens.js'
 import { canonical, mapAst, sheetKey, walk } from './print.js'
 
 /** Where a message points: the first place of `needle` in `text` in any case, the start when it is not there. */
-const positionOf = (text: string, needle: string) => Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase()))
+const positionOf = (text: string, needle: string) => Math.max(0, wordKey(text).indexOf(wordKey(needle)))
 
 /** Argument counts of each function and the arguments it cannot leave out; literal arguments of external functions. */
 export function checkCalls(ast: Ast, src: string, external: (fn: string) => boolean): FormulaError | null {
@@ -134,7 +134,7 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
   const bound = ctx.tables?.length || text.includes('[') ? bindTables(ast, text, ctx) : { ok: true as const, ast, tables: [] }
   if (!bound.ok) return bound
   ast = bound.ast
-  const externalSet = new Set((ctx.externalFunctions ?? []).map((f) => f.toUpperCase()))
+  const externalSet = new Set((ctx.externalFunctions ?? []).map(wordKey))
   const functions = new Set<string>()
   const sheets = new Set<string>()
   const names = new Set<string>()
@@ -182,9 +182,9 @@ export function reservedName(name: string, booleans: readonly string[] = []): Na
   // a cell of the sheet in Latin letters only (`АБ12`, `XFE1` and `A0` are names: the set `tables/paste-names-held`), R1C1
   // with `R` and `C` alone too
   if (readsAsCell(name) || /^[RrCc]$|^[Rr][0-9]*[Cc][0-9]*$/.test(name)) return 'cell'
-  if (/^(TRUE|FALSE)$/i.test(name)) return 'true'
-  const up = name.toUpperCase()
-  if (booleans.some((b) => b.toUpperCase() === up)) return 'boolean'
+  if (boolWord(name) !== undefined) return 'true'
+  const up = wordKey(name)
+  if (booleans.some((b) => wordKey(b) === up)) return 'boolean'
   return null
 }
 

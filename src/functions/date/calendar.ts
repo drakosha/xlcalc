@@ -1,12 +1,18 @@
 /** Calendar functions in Excel's 1900 system (serial 0 is 1900-01-00, 60 the phantom 1900-02-29). */
 import { toDate, type Cx, type FnDef } from '../../args.js'
-import { addMonths, dayAt, daysInMonth, lastDayExcel, MAX_SERIAL, serialExcel, serialOf, trimSpaces, ymd } from '../../dates.js'
+import { addMonths, daysInMonth, lastDayExcel, MAX_SERIAL, momentOf, serialExcel, serialOf, trimSpaces, ymd } from '../../dates.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, WHOLE, type CErr, type V } from '../../values.js'
 import { atp } from './atp.js'
 
 /** 0 is Sunday: Excel takes serial 1 (1900-01-01) for a Sunday. */
 export const weekday = (serial: number) => (serial + 6) % 7
+
+/** `f` of the day of a moment, as DAY, MONTH, YEAR and WEEKDAY read it (`momentOf`); a moment past 9999-12-31 once rounded is #NUM! (the set `seconds-held`). */
+function ofDay<T>(t: number, f: (day: number) => T): T | CErr {
+  const { day } = momentOf(t)
+  return day > MAX_SERIAL ? E.NUM : f(day)
+}
 
 /** DATEVALUE and TIMEVALUE take text only, read by the book's locale after dropping spaces before it (`lead-spaces` set). */
 export function textDate(v: V, rules: Rules): number | CErr {
@@ -80,7 +86,7 @@ export const functions: Record<string, FnDef> = {
       return isErr(t) ? t : Math.floor(t)
     },
   },
-  DAY: { args: 't', fn: (t: number) => ymd(dayAt(t)).d },
+  DAY: { args: 't', fn: (t: number) => ofDay(t, (d) => ymd(d).d) },
   DAYS: {
     args: 'v v',
     cx: true,
@@ -106,17 +112,18 @@ export const functions: Record<string, FnDef> = {
     return serialOf(t.y, t.m, daysInMonth(t.y, t.m))
   }, { date: 'calendar' }),
   ISOWEEKNUM: { args: 'd', fn: isoWeek },
-  MONTH: { args: 't', fn: (t: number) => ymd(dayAt(t)).m },
+  MONTH: { args: 't', fn: (t: number) => ofDay(t, (d) => ymd(d).m) },
   WEEKDAY: {
     args: 't w?',
-    fn: (t: number, type = 1) => {
-      const w = weekday(dayAt(t))
-      if (type === 1) return w + 1
-      if (type === 2) return ((w + 6) % 7) + 1
-      if (type === 3) return (w + 6) % 7
-      if (type >= 11 && type <= 17) return ((w - WEEK_START[type] + 7) % 7) + 1
-      return E.NUM
-    },
+    fn: (t: number, type = 1) =>
+      ofDay(t, (d) => {
+        const w = weekday(d)
+        if (type === 1) return w + 1
+        if (type === 2) return ((w + 6) % 7) + 1
+        if (type === 3) return (w + 6) % 7
+        if (type >= 11 && type <= 17) return ((w - WEEK_START[type] + 7) % 7) + 1
+        return E.NUM
+      }),
   },
   // week 1 contains January 1 (type 21: ISO weeks), so serial 0 is in week 0
   WEEKNUM: atp('e j?', (s: number, type = 1) => {
@@ -126,5 +133,5 @@ export const functions: Record<string, FnDef> = {
     const jan1 = serialOf(ymd(s).y, 1, 1)
     return Math.floor((s - jan1 + ((weekday(jan1) - first + 7) % 7)) / 7) + 1
   }),
-  YEAR: { args: 't', fn: (t: number) => ymd(dayAt(t)).y },
+  YEAR: { args: 't', fn: (t: number) => ofDay(t, (d) => ymd(d).y) },
 }

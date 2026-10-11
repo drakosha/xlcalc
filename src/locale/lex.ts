@@ -4,7 +4,7 @@
  * constants too) and copies the rest (strings, sheet names, references, operators, whitespace) as raw pieces,
  * so text the engine cannot parse translates as well. Every character of the text belongs to exactly one piece.
  */
-import { caseKey } from '../collate.js'
+import { wordKey } from '../collate.js'
 import { literal } from '../criteria.js'
 import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_RULE, numberSource } from '../syntax/scan.js'
 import type { Message } from './messages.js'
@@ -67,7 +67,7 @@ export function tableText(run: string, words: ReadonlyMap<string, string>, from:
     } else if (ch === '#' && run[j - 1] === '[') {
       const end = run.indexOf(']', j)
       const w = run.slice(j, end < 0 ? run.length : end)
-      out += words.get(caseKey(w)) ?? w
+      out += words.get(wordKey(w)) ?? w
       j += w.length - 1
       continue
     }
@@ -98,8 +98,8 @@ export function lex(src: string, syn: Syntax, errors: readonly string[], num: Re
       continue
     }
     if (ch === '#') {
-      const head = caseKey(src.slice(i))
-      const e = errors.find((x) => head.startsWith(caseKey(x)))
+      const head = wordKey(src.slice(i))
+      const e = errors.find((x) => head.startsWith(wordKey(x)))
       if (e) {
         push('err', e.length)
         continue

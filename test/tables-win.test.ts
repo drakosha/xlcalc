@@ -28,6 +28,8 @@ const WIN_TABLES: Readonly<Record<string, string>> = {
   'names-ru-tables-held:rename-bool': "a table renamed ИСТИНА in ru-RU, a name Excel for Windows does not take: its object model makes one (ИСТИНА_); renameTable refuses with table_name",
   'names-ru-tables-held:rename-bool-lower': "a table renamed ложь in ru-RU, a name Excel for Windows does not take: its object model makes one (ложь_); renameTable refuses with table_name",
   'names-ru-tables-held:rename-true': 'a table renamed TRUE in ru-RU: Excel for Windows keeps the name; the engine keeps formulas in en-US text, where TRUE is the boolean, and refuses it in every locale',
+  'name-case-sheets-held:sheet-sharp-s': "a sheet renamed ß beside a sheet SS (ﬁ beside FI): Excel, for Mac and for Windows, compares sheet names letter by letter and takes it; the engine compares sheets as defined names and tables, where ß is SS, and refuses the name",
+  'name-case-sheets-held:sheet-ligature-fi': "a sheet renamed ß beside a sheet SS (ﬁ beside FI): Excel, for Mac and for Windows, compares sheet names letter by letter and takes it; the engine compares sheets as defined names and tables, where ß is SS, and refuses the name",
   'headers-ru-held:text-iso': 'text typed into a header cell that Excel reads as a date (2025-01-31): Excel names the column by the date as it shows it (31.01.2025), as on the Mac; setCells takes text as text',
   'headers-ru-held:tiny': "1E-09 typed into a header cell (the harness types a number on Windows as its text, 1e-9): Excel parses it and gives the cell the format 0.00E+00 of typed exponents, so the column is 1,00E-09 by the cell's format; setCells takes the number as given, General, 0,000000001, as Excel for Mac given the value",
 }

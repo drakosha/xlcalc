@@ -3,7 +3,7 @@
  * of operators and functions (number, text, boolean).
  */
 import type { CellValue, ErrorCode } from './contract.js'
-import { collator } from './collate.js'
+import { collator, wordKey } from './collate.js'
 import { decimalFirst, textToNumber } from './dates.js'
 import { generalText } from './numfmt/general.js'
 
@@ -68,8 +68,8 @@ export const fitNumber = (x: number): number | CErr => (!Number.isFinite(x) ? E.
  * `words`, any case).
  */
 export function coercions(number: (text: string) => number | null, words: { readonly TRUE: string; readonly FALSE: string }, numberText: (n: number) => string) {
-  const T = words.TRUE.toUpperCase()
-  const F = words.FALSE.toUpperCase()
+  const T = wordKey(words.TRUE)
+  const F = wordKey(words.FALSE)
   return {
     toNum(v: V): number | CErr {
       if (typeof v === 'number') return v
@@ -90,7 +90,7 @@ export function coercions(number: (text: string) => number | null, words: { read
       if (typeof v === 'number') return v !== 0
       if (v === null) return false
       if (isErr(v)) return v
-      const u = v.toUpperCase()
+      const u = wordKey(v)
       return u === T ? true : u === F ? false : E.VALUE
     },
   }

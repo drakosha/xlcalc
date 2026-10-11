@@ -1,0 +1,71 @@
+{
+ "names": {
+  "values": {
+   "S!C1": {
+    "t": "n",
+    "v": 6
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 14
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 16
+   }
+  },
+  "formulas": {
+   "S!C1": "a?_xlfn.b+1",
+   "S!C2": "x?_xlpm.y*2",
+   "S!C3": "u?_xludf.v+a?_xlfn.b"
+  },
+  "tables": [],
+  "refused": []
+ },
+ "table": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "x"
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 50
+   }
+  },
+  "formulas": {
+   "S!C1": "SUM(T?[x])",
+   "S!C2": "ROWS(T?[#Data])",
+   "S!C3": "SUM(T?[[#Data],[x]])*10"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "T?",
+    "range": "A1:A3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "x"
+    ]
+   }
+  ],
+  "refused": []
+ }
+}

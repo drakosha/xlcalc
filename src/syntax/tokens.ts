@@ -4,6 +4,7 @@
  * references (or names, calls, parentheses) is the intersection operator, `' '`; elsewhere it is skipped.
  */
 import { PLAIN_SHEET } from '../sheet-pattern.js'
+import { wordKey } from '../collate.js'
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
@@ -216,7 +217,7 @@ export function tokenize(src: string): Tok[] {
     }
     const im = IDENT.exec(rest)
     if (im) {
-      if (callFollows(src, i + im[0].length)) push({ t: 'fn', v: im[0].toUpperCase(), at: i })
+      if (callFollows(src, i + im[0].length)) push({ t: 'fn', v: wordKey(im[0]), at: i })
       else if (src[i + im[0].length] === '[') {
         const { spec, end } = readSpec(src, i + im[0].length, i)
         push({ t: 'table', table: im[0], spec, at: i })

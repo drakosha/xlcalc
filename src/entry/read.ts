@@ -7,6 +7,7 @@
  * a number is dropped in every locale, and a number in scientific form past the range of numbers is text with the
  * scientific format.
  */
+import { wordKey } from '../collate.js'
 import type { NumberFormat } from '../contract.js'
 import { literal } from '../criteria.js'
 import { dateTimeParts, trimSpaces, type DateTimeParts } from '../dates.js'
@@ -112,9 +113,9 @@ export function readTyped(typed: string, r: Rules, clock: RulesClock, percent = 
   if (p) return { t: 'number', v: p.value, form: p.date === null ? 'time' : 'date', format: dateFormat(p, yearless, r.dates.decimal) }
   const e = euro(text, r)
   if (e !== null) return { t: 'number', v: e, form: 'plain' }
-  const u = text.toUpperCase()
+  const u = wordKey(text)
   const { TRUE, FALSE } = r.locale.booleans
-  if (u === TRUE.toUpperCase() || u === FALSE.toUpperCase()) return { t: 'boolean', v: u === TRUE.toUpperCase() }
-  const err = TYPED_ERRORS.find((e) => u === (r.locale.errors[e] ?? e).toUpperCase())
+  if (u === wordKey(TRUE) || u === wordKey(FALSE)) return { t: 'boolean', v: u === wordKey(TRUE) }
+  const err = TYPED_ERRORS.find((e) => u === wordKey(r.locale.errors[e] ?? e))
   return err ? { t: 'error', literal: err } : { t: 'text', v: text }
 }

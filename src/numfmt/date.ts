@@ -5,7 +5,7 @@
  * system (`Style.epoch`), where a negative value shows as its size with a minus; outside it a section that is not
  * elapsed time alone gives null (TEXT answers #VALUE!, a cell shows `#`).
  */
-import { ymd } from '../dates.js'
+import { momentOf, ymd } from '../dates.js'
 import type { Ph, Section, Tok } from './parse.js'
 import { plain, type Names, type Style } from './style.js'
 
@@ -38,10 +38,11 @@ export function formatDate(v: number, sec: Section, style: Style, names: Names):
   // the precision of the time: whole seconds, or the decimals after the seconds
   const s = toks.findIndex((t, i) => t.t === 'dot' && (toks[i - 1]?.t === 'date' || toks[i - 1]?.t === 'elapsed') && (toks[i - 1] as { s: string }).s[0] === 's')
   const k = s < 0 ? 0 : Math.min(3, subseconds(toks, s))
-  const unit = 86_400 * 10 ** k
   const a = Math.abs(v)
-  let day = Math.floor(a)
-  let ticks = Math.round((a - day) * unit)
+  const unit = 86_400 * 10 ** k
+  // whole seconds as Excel reads a moment (`momentOf`); decimals of a second round the day's fraction to their unit (TEXT's
+  // `ss.000` in the set `seconds-held`, where no case tells this rule from momentOf's at the unit)
+  let { day, second: ticks } = k ? { day: Math.floor(a), second: Math.round((a - Math.floor(a)) * unit) } : momentOf(a)
   if (ticks >= unit) [day, ticks] = [day + 1, ticks - unit]
   if (day + epoch >= END && !elapsedOnly) return null
   const secs = Math.floor(ticks / 10 ** k)

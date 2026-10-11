@@ -8,6 +8,7 @@ import { place, type StoredDisplay } from '../bench/coverage/display.js'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import type { BookInput, CellDisplay, CellInput, CellValue, SheetInput } from '../src/contract.js'
+import { displayValue } from '../src/index.js'
 import { formatAddress, indexToCol } from '../src/model.js'
 import './locales.js'
 
@@ -67,3 +68,19 @@ export function sameShown(excel: DisplayAnswer, engine: CellDisplay, value: Cell
   const color = engine.color === '#000000' ? undefined : engine.color
   return excel.color === color || (excel.color === undefined && (value === 0 || typeof value === 'string' || typeof value === 'boolean'))
 }
+
+/**
+ * A known difference from both Excels (README, Known differences), with the test of the cases it covers: a cell's shown
+ * text is written from its value as the result gives it, to 15 significant digits, where Excel writes a date and a time
+ * from the whole number; `displayValue` of the case's own value shows Excel's text (`#` across the cell in as many
+ * characters as the platform fits). The set `seconds-held`: moments a few millionths of a second from half a second.
+ */
+export const ROUNDED_MOMENT: readonly [string, (c: DisplayCase, locale: string, excel: string) => boolean] = [
+  "a cell's text is written from its value to 15 significant digits, where Excel writes a date and a time from the whole number",
+  (c, locale, excel) => {
+    const v = c.cell.value
+    if (typeof v !== 'number' || Number(v.toPrecision(15)) === v) return false
+    const shown = displayValue(v, { numberFormat: formatted(c).numberFormat, locale, ...(c.width === undefined ? {} : { width: c.width }) }).text
+    return shown === excel || (/^#+$/.test(shown) && /^#+$/.test(excel))
+  },
+]
