@@ -243,16 +243,16 @@ const explained = (locale?: string): BookInput => ({
   sheets: [{ name: 'План', cells: { A1: { value: 100 }, A2: { value: 250.5 }, B1: { formula: 'ROUND(SUM(A1:A2)*1.2,0)+C2' }, C1: { formula: 'SEQUENCE(2)' }, D1: { formula: 'IF(E1,1.5,NA())' }, F1: { formula: 'D1*2' } } }],
 })
 const RU_TEXT = [
-  "'План'!B1 = 423  ← ОКРУГЛ(СУММ(A1:A2)*1,2;0)+C2",
-  "  'План'!A1:A2 (2 ячейки)",
-  "  'План'!C2 = 2  ← перенос из 'План'!C1",
-  "    'План'!C1 = 1  ← ПОСЛЕД(2)",
+  "План!B1 = 423  ← ОКРУГЛ(СУММ(A1:A2)*1,2;0)+C2",
+  "  План!A1:A2 (2 ячейки)",
+  "  План!C2 = 2  ← перенос из План!C1",
+  "    План!C1 = 1  ← ПОСЛЕД(2)",
 ].join('\n')
 const EN_TEXT = [
-  "'План'!B1 = 423  ← ROUND(SUM(A1:A2)*1.2,0)+C2",
-  "  'План'!A1:A2 (2 cells)",
-  "  'План'!C2 = 2  ← spilled from 'План'!C1",
-  "    'План'!C1 = 1  ← SEQUENCE(2)",
+  "План!B1 = 423  ← ROUND(SUM(A1:A2)*1.2,0)+C2",
+  "  План!A1:A2 (2 cells)",
+  "  План!C2 = 2  ← spilled from План!C1",
+  "    План!C1 = 1  ← SEQUENCE(2)",
 ].join('\n')
 
 describe('explain', () => {
@@ -261,10 +261,10 @@ describe('explain', () => {
     const [r, e] = [createSession(explained('ru-RU')), createSession(explained())]
     expect(r.explain('План', 'B1').text).toBe(RU_TEXT)
     expect(e.explain('План', 'B1').text).toBe(EN_TEXT)
-    expect(r.explain('План', 'F1').text).toBe("'План'!F1 = #Н/Д  ← D1*2  (ошибка из 'План'!D1)\n  'План'!D1 = #Н/Д  ← ЕСЛИ(E1;1,5;НД())  (ошибка возникает здесь)\n    'План'!E1 = пусто")
-    expect(e.explain('План', 'F1').text).toBe("'План'!F1 = #N/A  ← D1*2  (error from 'План'!D1)\n  'План'!D1 = #N/A  ← IF(E1,1.5,NA())  (the error begins here)\n    'План'!E1 = empty")
+    expect(r.explain('План', 'F1').text).toBe("План!F1 = #Н/Д  ← D1*2  (ошибка из План!D1)\n  План!D1 = #Н/Д  ← ЕСЛИ(E1;1,5;НД())  (ошибка возникает здесь)\n    План!E1 = пусто")
+    expect(e.explain('План', 'F1').text).toBe("План!F1 = #N/A  ← D1*2  (error from План!D1)\n  План!D1 = #N/A  ← IF(E1,1.5,NA())  (the error begins here)\n    План!E1 = empty")
     r.setCells([{ sheet: 'План', cell: 'E1', input: { value: true } }])
-    expect(r.explain('План', 'D1').text).toBe("'План'!D1 = 1,5  ← ЕСЛИ(E1;1,5;НД())\n  'План'!E1 = ИСТИНА")
+    expect(r.explain('План', 'D1').text).toBe("План!D1 = 1,5  ← ЕСЛИ(E1;1,5;НД())\n  План!E1 = ИСТИНА")
     const { text: _, ...tree } = r.explain('План', 'B1')
     expect(tree).toEqual((({ text: _t, ...rest }) => rest)(e.explain('План', 'B1')))
   })

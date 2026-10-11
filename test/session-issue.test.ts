@@ -62,31 +62,31 @@ describe.each(['closures', 'eval'] as const)('the reason and origin of an error,
     it("explain leads to the origin through a range, past its depth and as far as errorDepth, and stops at a cycle", async () => {
       const s = await (await opener(kind))(errors(), { clock: CLOCK, execution })
       const a3 = await s.explain('S', 'A3')
-      expect(a3.text).toBe(["'S'!A3 = #DIV/0!  ← SUM(A1:A2)  (error from 'S'!A1)", "  'S'!A1:A2 (2 cells)", "    'S'!A1 = #DIV/0!  ← 1/0  (the error begins here)"].join('\n'))
+      expect(a3.text).toBe(["S!A3 = #DIV/0!  ← SUM(A1:A2)  (error from S!A1)", "  S!A1:A2 (2 cells)", "    S!A1 = #DIV/0!  ← 1/0  (the error begins here)"].join('\n'))
       expect(a3.root).toEqual({
         ref: "'S'!A3", value: { error: 'DIV0' }, formula: 'SUM(A1:A2)', origin: "'S'!A1",
         children: [{ ref: "'S'!A1:A2", cells: 2, children: [{ ref: "'S'!A1", value: { error: 'DIV0' }, formula: '1/0', origin: "'S'!A1", children: [] }] }],
       })
       expect((await s.explain('S', 'D2')).text).toBe([
-        "'S'!D2 = #DIV/0!  ← spilled from 'S'!D1  (error from 'S'!A1)",
-        "  'S'!D1 = #DIV/0!  ← A1:A3  (error from 'S'!A1)",
-        "    'S'!A1:A3 (3 cells)",
-        "      'S'!A1 = #DIV/0!  ← 1/0  (the error begins here)",
+        "S!D2 = #DIV/0!  ← spilled from S!D1  (error from S!A1)",
+        "  S!D1 = #DIV/0!  ← A1:A3  (error from S!A1)",
+        "    S!A1:A3 (3 cells)",
+        "      S!A1 = #DIV/0!  ← 1/0  (the error begins here)",
       ].join('\n'))
       // the cells of a range are all there when it is expanded
       expect((await s.explain('S', 'A3', { expand: true })).root.children[0].children.map((n) => n.ref)).toEqual(["'S'!A1", "'S'!A2"])
       const far = await s.explain('S', 'J10', { depth: 2 })
-      expect([far.nodes, far.truncated, far.text.split('\n').at(-1)]).toEqual([10, false, "                  'S'!J1 = #DIV/0!  ← 1/0  (the error begins here)"])
+      expect([far.nodes, far.truncated, far.text.split('\n').at(-1)]).toEqual([10, false, "                  S!J1 = #DIV/0!  ← 1/0  (the error begins here)"])
       const short = await s.explain('S', 'J10', { depth: 2, errorDepth: 3 })
-      expect([short.nodes, short.truncated, short.text.split('\n').at(-1)]).toEqual([6, true, "          'S'!J5 = #DIV/0!  ← J4+1  (error from 'S'!J1)"])
+      expect([short.nodes, short.truncated, short.text.split('\n').at(-1)]).toEqual([6, true, "          S!J5 = #DIV/0!  ← J4+1  (error from S!J1)"])
       expect((await s.explain('S', 'J10', { depth: 1, maxNodes: 4 })).nodes).toBe(4)
       const cycle = await s.explain('S', 'E3', { depth: 0, errorDepth: 1000 })
-      expect([cycle.nodes, cycle.text]).toEqual([3, ["'S'!E3 = #CYCLE!  ← E1*2  (error from 'S'!E1)", "  'S'!E1 = #CYCLE!  ← E2+1  (the error begins here)", "    'S'!E2 = #CYCLE!  ← E1+1  (the error begins here)"].join('\n')])
-      expect((await s.explain('S', 'I1')).text).toBe("'S'!I1 = #DIV/0!  ← 'Other'!A1+1  (error from 'Other'!A1)\n  'Other'!A1 = #DIV/0!  ← 1/0  (the error begins here)")
-      expect((await s.explain('S', 'C2')).text).toBe("'S'!C2 = #DIV/0!  ← spilled from 'S'!C1  (error from 'S'!C1)\n  'S'!C1 = 1  ← SEQUENCE(3)/{1;0;1}")
+      expect([cycle.nodes, cycle.text]).toEqual([3, ["S!E3 = #CYCLE!  ← E1*2  (error from S!E1)", "  S!E1 = #CYCLE!  ← E2+1  (the error begins here)", "    S!E2 = #CYCLE!  ← E1+1  (the error begins here)"].join('\n')])
+      expect((await s.explain('S', 'I1')).text).toBe("S!I1 = #DIV/0!  ← Other!A1+1  (error from Other!A1)\n  Other!A1 = #DIV/0!  ← 1/0  (the error begins here)")
+      expect((await s.explain('S', 'C2')).text).toBe("S!C2 = #DIV/0!  ← spilled from S!C1  (error from S!C1)\n  S!C1 = 1  ← SEQUENCE(3)/{1;0;1}")
       // an empty cell, and errors as cells show them
-      expect((await s.explain('S', 'Z9')).text).toBe("'S'!Z9 = empty")
-      expect((await s.explain('S', 'G1')).text).toBe("'S'!G1 = #SPILL!  ← SEQUENCE(2)  (the error begins here)")
+      expect((await s.explain('S', 'Z9')).text).toBe("S!Z9 = empty")
+      expect((await s.explain('S', 'G1')).text).toBe("S!G1 = #SPILL!  ← SEQUENCE(2)  (the error begins here)")
       await s.close()
     })
   })
@@ -95,7 +95,7 @@ describe.each(['closures', 'eval'] as const)('the reason and origin of an error,
 describe('the reason and origin of an error', () => {
   it("in ru-RU, explain writes errors as the book's cells show them", () => {
     const s = createSession({ ...errors(), locale: 'ru-RU' }, { clock: CLOCK })
-    expect(s.explain('S', 'A2').text).toBe("'S'!A2 = #ДЕЛ/0!  ← A1*2  (ошибка из 'S'!A1)\n  'S'!A1 = #ДЕЛ/0!  ← 1/0  (ошибка возникает здесь)")
+    expect(s.explain('S', 'A2').text).toBe("S!A2 = #ДЕЛ/0!  ← A1*2  (ошибка из S!A1)\n  S!A1 = #ДЕЛ/0!  ← 1/0  (ошибка возникает здесь)")
     expect(s.getViewport('S', 'A2').cells.A2.text).toBe('#ДЕЛ/0!')
   })
 

@@ -118,6 +118,6 @@ describe('sessions with spilled arrays', () => {
     const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 4 }, B1: { formula: 'SEQUENCE(2)*A1' } } }] }, { clock })
     const e = s.explain('S', 'B2')
     expect(e.root).toMatchObject({ ref: "'S'!B2", value: 8, spillOf: "'S'!B1", children: [{ ref: "'S'!B1", formula: 'SEQUENCE(2)*A1' }] })
-    expect(e.text).toBe(["'S'!B2 = 8  ← spilled from 'S'!B1", "  'S'!B1 = 4  ← SEQUENCE(2)*A1", "    'S'!A1 = 4"].join('\n'))
+    expect(e.text).toBe(["S!B2 = 8  ← spilled from S!B1", "  S!B1 = 4  ← SEQUENCE(2)*A1", "    S!A1 = 4"].join('\n'))
   })
 })
