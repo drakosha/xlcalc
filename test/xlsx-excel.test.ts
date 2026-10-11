@@ -125,10 +125,20 @@ describe.skipIf(!existsSync(new URL('colors.json', dir)))('xlsx fill colours as 
   })
 })
 
+/** Excel for Mac's reading of the long s, a known difference. */
+const MAC_LONG_S = 'Excel for Mac reads the long s as s and saves falſe as FALSE, which the formula read is; the engine, as Excel for Windows, takes falſe for a name (README, Known differences)'
+
 /** Cases whose value differs between the book Excel saved and the book sent, and why: Excel's doing, not the reader's. */
 const SAVED_KNOWN: Record<string, string> = {
   'let-held:held#5':
     "Excel saves a LET that ends with a value with its last name as the calculation (LET(x,1) as LET(x,1,x)): with 127 names that makes 255 arguments, one past the engine's limit, and the formula read does not parse",
+  'name-case-held:bool#1': MAC_LONG_S,
+  'name-case-held:bool#2': MAC_LONG_S,
+  'name-case-held:bool#3': MAC_LONG_S,
+  'name-case-held:bool#4': MAC_LONG_S,
+  'name-case-held:bool#5': MAC_LONG_S,
+  'name-case-held:bool#6': MAC_LONG_S,
+  'name-case-held:let#2': MAC_LONG_S,
 }
 
 /** Cases where the value Excel stored on saving differs from its stored answer: Excel does not repeat it. */
