@@ -1,0 +1,7723 @@
+{
+ "day": "2026-10-11",
+ "delete-row-5": {
+  "rules": {
+   "S": [
+    {
+     "cells": "XFD1048575:XFD1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFB1048575:XFB1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFD1048569",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XEZ1048575:XFA1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#BDD7EE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048574:XFC1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#F8CBAD"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFD1048564:XFD1048565",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048567:XFD1048567",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#E2EFDA"
+      }
+     },
+     "type": "cellIs"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "XEV1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048564": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048565": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048567": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048567": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048569": {
+     "text": "5",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048574": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048575": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048575": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048575": {
+     "text": "5",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048575": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048575": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "delete-rows-5x3": {
+  "rules": {
+   "S": [
+    {
+     "cells": "XFD1048573:XFD1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFB1048573:XFB1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFD1048567",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XEZ1048573:XFA1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#BDD7EE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048572:XFC1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#F8CBAD"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFD1048562:XFD1048563",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048565:XFD1048565",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#E2EFDA"
+      }
+     },
+     "type": "cellIs"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "XEV1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048562": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048563": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048565": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048565": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048567": {
+     "text": "5",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048572": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048573": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048573": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048573": {
+     "text": "5",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048573": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048573": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "delete-last-row": {
+  "rules": {
+   "S": [
+    {
+     "cells": "XFD1048570",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048575:XFC1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#F8CBAD"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFD1048565:XFD1048566",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048568:XFD1048568",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#E2EFDA"
+      }
+     },
+     "type": "cellIs"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "XEV1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048565": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048566": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048568": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048568": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048570": {
+     "text": "5",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048575": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "delete-col-b": {
+  "rules": {
+   "S": [
+    {
+     "cells": "XFC1048576:XFD1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFA1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048570:XFD1048570",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XEY1048576:XEZ1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#BDD7EE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFB1048575:XFB1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#F8CBAD"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048565:XFD1048566",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFB1048568:XFD1048568",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#E2EFDA"
+      }
+     },
+     "type": "cellIs"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "XEV1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048565": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048566": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048568": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048568": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048570": {
+     "text": "5",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048575": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048576": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048576": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048576": {
+     "text": "5",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048576": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048576": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "delete-cols-bx3": {
+  "rules": {
+   "S": [
+    {
+     "cells": "XFA1048576:XFD1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XEY1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFA1048570:XFD1048570",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XEW1048576:XEX1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#BDD7EE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XEZ1048575:XEZ1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#F8CBAD"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFA1048565:XFD1048566",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XEZ1048568:XFD1048568",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#E2EFDA"
+      }
+     },
+     "type": "cellIs"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "XEV1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048565": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048566": {
+     "text": "5",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048568": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048568": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048570": {
+     "text": "5",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048575": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048576": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048576": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048576": {
+     "text": "5",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048576": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048576": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "delete-last-col": {
+  "rules": {
+   "S": [
+    {
+     "cells": "XFB1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XEZ1048576:XFA1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#BDD7EE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048575:XFC1048576",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#F8CBAD"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "XFC1048568:XFD1048568",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "fill": {
+       "color": "#E2EFDA"
+      }
+     },
+     "type": "cellIs"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "XEV1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048558": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048559": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048560": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048561": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048562": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048563": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048564": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048565": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048566": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048567": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048568": {
+     "text": "5",
+     "fill": "#E2EFDA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048568": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048569": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048570": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048571": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048572": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048573": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048574": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048575": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048575": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEV1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEW1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEX1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEY1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XEZ1048576": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFA1048576": {
+     "text": "5",
+     "fill": "#BDD7EE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFB1048576": {
+     "text": "5",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFC1048576": {
+     "text": "5",
+     "fill": "#F8CBAD",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "XFD1048576": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "insert-row-5": {
+  "refused": "off_sheet",
+  "rules": {},
+  "looks": {}
+ },
+ "insert-col-b": {
+  "refused": "off_sheet",
+  "rules": {},
+  "looks": {}
+ }
+}

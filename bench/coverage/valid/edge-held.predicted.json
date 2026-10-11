@@ -1,0 +1,1082 @@
+{
+ "delete-row-5": [
+  {
+   "name": "S",
+   "rules": {
+    "XFD1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "corner"
+    },
+    "XFB1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last row"
+    },
+    "XFD1048569": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last column"
+    },
+    "XEZ1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFA1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XEZ1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFA1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFC1048574": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFD1048564": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFD1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFC1048567": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFD1048567": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    }
+   },
+   "meets": {
+    "XFD1048575": false,
+    "XFB1048575": true,
+    "XFD1048569": true,
+    "XEZ1048575": true,
+    "XFA1048575": true,
+    "XEZ1048576": true,
+    "XFA1048576": true,
+    "XFC1048574": true,
+    "XFC1048575": true,
+    "XFC1048576": true,
+    "XFD1048564": true,
+    "XFD1048565": true,
+    "XFC1048567": true,
+    "XFD1048567": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "delete-rows-5x3": [
+  {
+   "name": "S",
+   "rules": {
+    "XFD1048573": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "corner"
+    },
+    "XFB1048573": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last row"
+    },
+    "XFD1048567": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last column"
+    },
+    "XEZ1048573": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFA1048573": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XEZ1048574": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFA1048574": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XEZ1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFA1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XEZ1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFA1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFC1048572": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048573": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048574": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFD1048562": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFD1048563": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFC1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFD1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    }
+   },
+   "meets": {
+    "XFD1048573": false,
+    "XFB1048573": true,
+    "XFD1048567": true,
+    "XEZ1048573": true,
+    "XFA1048573": true,
+    "XEZ1048574": true,
+    "XFA1048574": true,
+    "XEZ1048575": true,
+    "XFA1048575": true,
+    "XEZ1048576": true,
+    "XFA1048576": true,
+    "XFC1048572": true,
+    "XFC1048573": true,
+    "XFC1048574": true,
+    "XFC1048575": true,
+    "XFC1048576": true,
+    "XFD1048562": true,
+    "XFD1048563": true,
+    "XFC1048565": true,
+    "XFD1048565": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "delete-last-row": [
+  {
+   "name": "S",
+   "rules": {
+    "XFD1048570": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last column"
+    },
+    "XFC1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFD1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFD1048566": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFC1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFD1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    }
+   },
+   "meets": {
+    "XFD1048570": true,
+    "XFC1048575": true,
+    "XFC1048576": true,
+    "XFD1048565": true,
+    "XFD1048566": true,
+    "XFC1048568": true,
+    "XFD1048568": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "delete-col-b": [
+  {
+   "name": "S",
+   "rules": {
+    "XFC1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "corner"
+    },
+    "XFA1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last row"
+    },
+    "XFC1048570": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last column"
+    },
+    "XEY1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XEZ1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFB1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFB1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFD1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFC1048566": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFD1048566": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFB1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFC1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFD1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    }
+   },
+   "meets": {
+    "XFC1048576": false,
+    "XFA1048576": true,
+    "XFC1048570": true,
+    "XEY1048576": true,
+    "XEZ1048576": true,
+    "XFB1048575": true,
+    "XFB1048576": true,
+    "XFC1048565": true,
+    "XFD1048565": true,
+    "XFC1048566": true,
+    "XFD1048566": true,
+    "XFB1048568": true,
+    "XFC1048568": true,
+    "XFD1048568": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "delete-cols-bx3": [
+  {
+   "name": "S",
+   "rules": {
+    "XFA1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "corner"
+    },
+    "XEY1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last row"
+    },
+    "XFA1048570": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last column"
+    },
+    "XEW1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XEX1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XEZ1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XEZ1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFA1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFB1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFC1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFD1048565": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFA1048566": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFB1048566": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFC1048566": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XFD1048566": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one column of two on the last column"
+    },
+    "XEZ1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFA1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFB1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFC1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFD1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    }
+   },
+   "meets": {
+    "XFA1048576": false,
+    "XEY1048576": true,
+    "XFA1048570": true,
+    "XEW1048576": true,
+    "XEX1048576": true,
+    "XEZ1048575": true,
+    "XEZ1048576": true,
+    "XFA1048565": true,
+    "XFB1048565": true,
+    "XFC1048565": true,
+    "XFD1048565": true,
+    "XFA1048566": true,
+    "XFB1048566": true,
+    "XFC1048566": true,
+    "XFD1048566": true,
+    "XEZ1048568": true,
+    "XFA1048568": true,
+    "XFB1048568": true,
+    "XFC1048568": true,
+    "XFD1048568": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "delete-last-col": [
+  {
+   "name": "S",
+   "rules": {
+    "XFB1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "last row"
+    },
+    "XEZ1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFA1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "one row of two on the last row"
+    },
+    "XFC1048575": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048576": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two rows to the last row"
+    },
+    "XFC1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    },
+    "XFD1048568": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1",
+     "formula2": "10",
+     "prompt": "two columns to the last column"
+    }
+   },
+   "meets": {
+    "XFB1048576": true,
+    "XEZ1048576": true,
+    "XFA1048576": true,
+    "XFC1048575": true,
+    "XFC1048576": true,
+    "XFC1048568": true,
+    "XFD1048568": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "insert-row-5": {
+  "refused": "off_sheet"
+ },
+ "insert-col-b": {
+  "refused": "off_sheet"
+ }
+}
