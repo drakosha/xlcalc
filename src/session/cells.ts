@@ -42,8 +42,13 @@ export function checkFieldEdits(v: unknown, sheetIndex: (name: string) => number
     if (o.input === undefined) throw new InputError(`${p}.input`, 'expected the fields of a cell, or null to clear its content')
     if (o.input !== null) {
       const f = object(o.input, `${p}.input`, 'the fields of a cell such as { value: 1 } or { formula: "A1*2", style: null }')
-      const given: Record<string, unknown> = {}
-      for (const k in f) if (f[k] !== null || k === 'value') given[k] = f[k]
+      // the fields given are checked as a cell's, those removed (null) left out; most edits remove none
+      let given = f
+      for (const k in f)
+        if (f[k] === null && k !== 'value') {
+          given = Object.fromEntries(Object.entries(f).filter(([x, v]) => v !== null || x === 'value'))
+          break
+        }
       checkCell(given, `${p}.input`, styles)
       if (given.array !== undefined && typeof f.formula !== 'string') throw new InputError(`${p}.input.array`, 'an array area goes with its formula')
     }
