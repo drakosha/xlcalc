@@ -1129,10 +1129,14 @@ export interface ViewportCell extends Partial<CellDisplay> {
   /** On the top-left cell of an array formula of the old kind, its area (`CellInput.array`). */
   array?: string
   meta?: JsonValue
-  /** The cell's own style. */
-  style?: CellStyle
-  /** The style the cell shows: its own, else its row's, else its column's. Equal styles of one window are one object. */
-  effectiveStyle?: CellStyle
+  /** The cell's own style, an index of the book's `styles` as `CellView.style`; its object is in `Viewport.styles`. */
+  style?: number
+  /**
+   * The style the cell shows, an index of the book's `styles` (its object in `Viewport.styles`): its own, else its row's,
+   * else its column's. It is always one of the table's: a cell where a styled row crosses a styled column shows the row's,
+   * as Excel shows a file's empty cell there, and the two merged are a style of the cell's own (`Session.patchCells`).
+   */
+  effectiveStyle?: number
   /** The number format the cell shows by, as a code: its own, else its row's, else its column's, a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU). */
   numberFormat?: string
   /** Where `numberFormat` comes from. */
@@ -1165,6 +1169,8 @@ export interface Viewport {
   truncated: boolean
   /** By address, row by row: every cell with something to show, an empty one with its row's or column's style, an appearance of a conditional format, a note or a link too. */
   cells: Record<string, ViewportCell>
+  /** The styles the window's cells have or show (`ViewportCell.style`, `effectiveStyle`), by their index in the book's `styles`: copies, the answer's own. */
+  styles: Record<number, CellStyle>
   /** The columns of `range`, left to right. */
   columns: ViewportColumn[]
   /** The rows of `range`, top to bottom. */
@@ -1713,7 +1719,7 @@ export interface AsyncSession {
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
   /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
   getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
-  /** As `Session.getViewport`; from a thread the window comes back in one call, its equal styles still one object each. */
+  /** As `Session.getViewport`; from a thread the window comes back in one call. */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Promise<Viewport>
   getCellIssue(sheet: string, cell: string): Promise<CellIssueDetail | null>
   getValidation(sheet: string, cell: string): Promise<CellValidation | null>
