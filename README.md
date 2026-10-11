@@ -303,6 +303,19 @@ console.log(session.getCells('Plan', 'D1').D1.array, session.getLayout().sheets)
 
 A grid edits cells as Excel does: a value typed over a cell keeps the cell's look, Delete clears the content, Clear Formats the look, and Bold over a selection goes over what each cell shows. The session does each in one call, recomputes what depends on it and answers what the grid draws again.
 
+| to | call |
+|---|---|
+| put a value or a formula into cells, keeping their look (typing over a cell, a paste of values) | `setCells([{ sheet, cell, input: { value } }])` |
+| replace cells whole, or remove them (`input: null`) | `replaceCells([{ sheet, cell, input }])` |
+| set the look, a note or a link of cells, a range, whole rows or columns, without their values (Bold, Fill, a number format) | `patchCells([{ sheet, range, set: { style, numberFormat } }])` |
+| clear the content, the look or both (Delete, Clear Formats, Clear All) | `clearCells([{ sheet, range }], 'contents')`, `'formats'` or `'all'` |
+| take text a person typed into a cell, as Excel reads it in the book's locale | `setCellText(sheet, cell, text)` |
+| change widths, heights, hidden lines, a line's style, merged areas, frozen panes, conditional formats, data validation, or AutoFit columns | `setLayout([{ sheet, columns, set: { width } }])` ([Layout](#layout)) |
+| replace the book's table of styles | `setStyles(styles)` |
+| insert or delete rows and columns, move or copy a range, insert, rename, move, hide or delete a sheet, add, rename, convert or delete a table | `editStructure(op)` ([Structure operations](#structure-operations)) |
+
+A style by its fields, `{ font: { bold: true } }`, is what `patchCells` takes: it goes over the style each cell shows, and the session finds or adds the style in the book's `styles`. `setCells` and `replaceCells` take a cell's input as the book stores it, a style by its number in `styles`, as `getCells`, `getViewport` and the changes give it.
+
 ```js
 import { createSession } from 'xlcalc'
 
