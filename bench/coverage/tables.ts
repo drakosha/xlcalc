@@ -11,13 +11,13 @@ import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, writeAnswers } from './stored.js'
-import { answerOf, MIRRORS, mirrorRanges } from './case-book.js'
+import { answerOf, editOf, MIRRORS, mirrorRanges, refusedOf } from './case-book.js'
+import { columnCells, rowCells } from './struct.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { sleep } from './proc.js'
 import { localeDir, localeMeta } from './locales.js'
 import type { TableAnswer, TableCase, TableSet, TableShape, TableStep } from './tables/cases.js'
 import type { BookInput } from '../../src/contract.js'
-import { colToIndex, indexToCol } from '../../src/model.js'
 import { sheetKey } from '../../src/syntax.js'
 import { writeXlsx } from '../../src/xlsx.js'
 
@@ -43,22 +43,20 @@ export function stepLines(c: TableCase): string[] {
     if (!s) throw new Error(`${c.id}: no table ${table}`)
     return s
   }
-  const span = (col: string, n = 1) => `${col}1:${indexToCol(colToIndex(col) + n - 1)}1`
   return (c.steps ?? []).map((step: TableStep) => {
     if ('name' in step) return `name\t${step.name.scope ?? ''}\t${step.name.name}\t=${step.name.ref}`
     if ('edit' in step) {
-      const { sheet, cell, value: v } = step.edit
-      const kind = v === null ? 'x\t' : typeof v === 'number' ? `n\t${v}` : typeof v === 'string' ? `s\t${v}` : 'local' in v ? `l\t${v.local}` : `f\t=${v.formula}`
-      return `e\t${sheet}\t${cell}\t${kind}`
+      const { sheet, cell, value } = step.edit
+      return ['e', sheet, cell, ...editOf(value)].join('\t')
     }
     const o = step.op
     switch (o.op) {
       case 'insertRows':
       case 'deleteRows':
-        return `${o.op === 'insertRows' ? 'insr' : 'delr'}\t${o.sheet}\tA${o.row}:A${o.row + (o.count ?? 1) - 1}`
+        return `${o.op === 'insertRows' ? 'insr' : 'delr'}\t${o.sheet}\t${rowCells(o.row, o.count)}`
       case 'insertColumns':
       case 'deleteColumns':
-        return `${o.op === 'insertColumns' ? 'insc' : 'delc'}\t${o.sheet}\t${span(o.column, o.count)}`
+        return `${o.op === 'insertColumns' ? 'insc' : 'delc'}\t${o.sheet}\t${columnCells(o.column, o.count)}`
       case 'moveRange':
         return `cut\t${o.from.sheet}\t${o.from.range}\t${o.to.sheet}\t${o.to.cell}`
       case 'copyRange':
@@ -81,6 +79,12 @@ export function stepLines(c: TableCase): string[] {
     }
   })
 }
+
+/** A table as both platforms read it: sheet, name, range, headers shown, totals shown, the columns' names. */
+export type RawTable = [string, string, string, boolean, boolean, string[]]
+
+/** The tables read, their ranges without `$`. */
+export const tableShapes = (raw: RawTable[]): TableShape[] => raw.map(([sheet, name, range, headers, totals, columns]) => ({ sheet, name, range: range.replaceAll('$', ''), headers, totals, columns }))
 
 /** A case that adds names: its answer lists the names Excel has after the steps. */
 export const addsNames = (c: TableCase): boolean => (c.steps ?? []).some((s) => 'name' in s)
@@ -130,12 +134,12 @@ async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
     failed: (err, stop) => rejectedBook(stop, c.id, /the book did not open/.test(err)),
     late: (stop) => rejectedBook(stop, c.id),
     done: (out) => {
-      const raw = JSON.parse(out) as { steps: string[]; rects: [unknown, unknown, unknown, unknown, unknown][]; tables: [string, string, string, boolean, boolean, string[]][]; names: string[] }
+      const raw = JSON.parse(out) as { steps: string[]; rects: [unknown, unknown, unknown, unknown, unknown][]; tables: RawTable[]; names: string[] }
       const read = answerOf(c.read, raw.rects, local)
-      const answer: TableAnswer = { values: read.values, formulas: read.formulas, ...(local ? { local: read.formulas2 } : {}), tables: raw.tables.map(([sheet, name, range, headers, totals, columns]): TableShape => ({ sheet, name, range: range.replaceAll('$', ''), headers, totals, columns })) }
+      const answer: TableAnswer = { values: read.values, formulas: read.formulas, ...(local ? { local: read.formulas2 } : {}), tables: tableShapes(raw.tables) }
       if (addsNames(c)) answer.names = raw.names
-      raw.steps.forEach((e, i) => e && ((answer.refused ??= {})[i] = e))
-      return answer
+      const refused = refusedOf(raw.steps)
+      return refused ? { ...answer, refused } : answer
     },
   })
 }

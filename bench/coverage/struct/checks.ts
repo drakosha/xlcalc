@@ -5,10 +5,11 @@
  * empty cells over values, a copy that does not fit.
  */
 import type { BookInput, CellInput, RangeRef } from '../../../src/contract.js'
+import { indexToCol } from '../../../src/model.js'
 import type { StructCase, StructCases } from './cases.js'
 
 const f = (formula: string): CellInput => ({ formula })
-const col = (i: number) => String.fromCharCode(64 + i)
+const col = (i: number) => indexToCol(i - 1)
 
 /** S: A1:B14 values; T: every `S!Ai:Aj` and `S!Ai:Bj` in a 12-row window; U: values to move onto S. */
 function windowBook(): BookInput {

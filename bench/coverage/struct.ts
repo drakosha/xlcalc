@@ -17,8 +17,9 @@ import { markDynamic } from './book.js'
 import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from './case-book.js'
 import type { BookInput, CellStyle, NumberFormat, RowInput, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
-import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
+import { colToIndex, formatAddress, indexToCol, parseAddress } from '../../src/model.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
+import { fromRgb } from './cond/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -164,6 +165,12 @@ export async function writeBook(c: StructCase, book: BookInput, file: string, dy
   if (Object.keys(parts.sheets!).length) await writeParts(file, book, parts)
 }
 
+/** The cells of the first column of the rows an operation inserts or deletes (`A5:A7`). */
+export const rowCells = (row: number, count = 1): string => `A${row}:A${row + count - 1}`
+
+/** The cells of the first row of the columns an operation inserts or deletes (`C1:D1`). */
+export const columnCells = (column: string, count = 1): string => `${column}1:${colAt(column, count - 1)}1`
+
 /**
  * The AppleScript arguments of an operation: sheet, range, target sheet or new name, target range. Excel's
  * `range` takes cell ranges only: whole columns and rows are spelled as cells (`B1:B1048576`), rows and
@@ -175,10 +182,10 @@ export function opArgs(c: StructCase): string[] {
   switch (o.op) {
     case 'insertRows':
     case 'deleteRows':
-      return [o.sheet, `A${o.row}:A${o.row + (o.count ?? 1) - 1}`, '', '']
+      return [o.sheet, rowCells(o.row, o.count), '', '']
     case 'insertColumns':
     case 'deleteColumns':
-      return [o.sheet, `${o.column}1:${colAt(o.column, (o.count ?? 1) - 1)}1`, '', '']
+      return [o.sheet, columnCells(o.column, o.count), '', '']
     case 'moveRange':
       return [o.from.sheet, cells(o.from.range), o.to.sheet, o.to.cell]
     case 'copyRange':
@@ -199,17 +206,8 @@ export function opArgs(c: StructCase): string[] {
 /** A case's operation as the scripts of the steps with files take it: JSON of the operation and its arguments, `[]` for none. */
 export const opJson = (c: { id: string; book: string; op?: StructCase['op'] }): string => JSON.stringify(c.op ? [c.op.op, ...opArgs({ id: c.id, book: c.book, op: c.op })] : [])
 
-function colAt(letters: string, plus: number): string {
-  let n = 0
-  for (const ch of letters) n = n * 26 + (ch.charCodeAt(0) - 64)
-  n += plus
-  let s = ''
-  while (n > 0) {
-    s = String.fromCharCode(65 + ((n - 1) % 26)) + s
-    n = Math.floor((n - 1) / 26)
-  }
-  return s
-}
+/** The column `plus` columns right of `letters`. */
+const colAt = (letters: string, plus: number): string => indexToCol(colToIndex(letters) + plus)
 
 /** Formulas of `READ` as Excel returns them (a list of rows) by address, empty cells left out. */
 export function cellsOf(rows: unknown): Record<string, string> {
@@ -241,10 +239,9 @@ export type RawLook = [[string, boolean, number[], string, string][], [string, b
 
 /** Excel's look of a sheet: a white fill is no fill (cases do not use white), sizes of the standard size are left out. */
 export function lookOf([cells, widths, heights]: RawLook): SheetLook {
-  const hex = (rgb: number[]) => `#${rgb.map((x) => x.toString(16).padStart(2, '0')).join('').toUpperCase()}`
   const out: SheetLook = { cells: {}, widths: {}, heights: {}, merges: [] }
   for (const [addr, bold, rgb, format, merge] of cells) {
-    const fill = hex(rgb)
+    const fill = fromRgb(rgb)
     const look: CellLook = { ...(bold ? { bold: true } : {}), ...(fill !== '#FFFFFF' ? { fill } : {}), ...(format !== 'General' ? { format } : {}) }
     if (Object.keys(look).length) out.cells[addr] = look
     const m = merge.replaceAll('$', '')

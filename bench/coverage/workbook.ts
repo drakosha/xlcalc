@@ -9,7 +9,7 @@
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
-import { answerOf, cellsOf, fileFormula, MIRRORS, runOnBook } from './case-book.js'
+import { answerOf, cellsOf, editOf, fileFormula, MIRRORS, runOnBook } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
 import { compute } from '../../src/index.js'
@@ -28,17 +28,20 @@ export interface StoredWorkbook {
 /** Where the answers of a set are stored. */
 export const workbookFile = (set: string) => join(ROOT, `test/excel/workbook/${set}.json`)
 
+/** The cells of the rows (their first column) or the columns (their first row) a step hides or shows. */
+export const hideRange = ({ rows, columns }: { rows?: string; columns?: string }): string => (rows !== undefined ? `A${rows.replace(':', ':A')}` : `${columns!.split(':')[0]}1:${columns!.split(':').at(-1)}1`)
+
 /** A step as a line of the AppleScript's argument. */
 function stepLine(s: Step): string {
   if (typeof s === 'string') return s
   if ('set' in s) {
     const { sheet, cell, value } = s.set
-    return ['set', sheet, cell, value === null ? 'x' : typeof value === 'number' ? 'n' : 's', value ?? ''].join('\t')
+    return ['set', sheet, cell, ...editOf(value)].join('\t')
   }
   if ('formula' in s) return ['formula', s.formula.sheet, s.formula.cell, `=${fileFormula(s.formula.formula)}`].join('\t')
   if ('hide' in s) {
-    const { sheet, rows, columns, hidden } = s.hide
-    return rows !== undefined ? ['hide', sheet, `A${rows.replace(':', ':A')}`, hidden ? 1 : 0].join('\t') : ['hidecols', sheet, `${columns!.split(':')[0]}1:${columns!.split(':').at(-1)}1`, hidden ? 1 : 0].join('\t')
+    const { sheet, rows, hidden } = s.hide
+    return [rows !== undefined ? 'hide' : 'hidecols', sheet, hideRange(s.hide), hidden ? 1 : 0].join('\t')
   }
   const { sheet, range, field, criterion } = s.filter
   return ['filter', sheet, range, field, criterion].join('\t')

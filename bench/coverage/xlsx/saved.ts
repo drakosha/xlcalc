@@ -5,7 +5,7 @@
  * Formulas lose their file prefixes by a plain replacement, not by the reader's code.
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
-import { CASE_SHEET } from '../book.js'
+import { CASE_SHEET, READ_COLUMNS } from '../book.js'
 import { DATA_SHEET, dataCells } from '../data.js'
 import type { Probe, SheetCells } from '../probes.js'
 
@@ -26,9 +26,9 @@ export function sentBook(probes: Probe[], sheets: SheetCells): BookInput {
   probes.forEach((p, i) => {
     const r = i + 1
     c[`A${r}`] = { formula: plainFormula(p.formula) }
-    c[`B${r}`] = { formula: `IF(ISERROR(A${r}),ERROR.TYPE(A${r}),IF(ISNUMBER(A${r}),0,IF(ISLOGICAL(A${r}),IF(A${r},-1,-2),IF(ISTEXT(A${r}),-3,-4))))` }
-    c[`C${r}`] = { formula: `IF(ISNUMBER(A${r}),A${r},0)` }
-    c[`D${r}`] = { formula: `IF(ISTEXT(A${r}),A${r},"")` }
+    c[`B${r}`] = { formula: READ_COLUMNS.type(`A${r}`) }
+    c[`C${r}`] = { formula: READ_COLUMNS.num(`A${r}`) }
+    c[`D${r}`] = { formula: READ_COLUMNS.text(`A${r}`) }
     c[`E${r}`] = { value: p.id }
   })
   c[`A${probes.length + 1}`] = { value: 'end' }

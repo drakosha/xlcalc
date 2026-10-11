@@ -18,6 +18,7 @@
  */
 import * as fj from '@formulajs/formulajs'
 import { dateToSerial } from '../../src/model.js'
+import { ERROR_CODE, ERROR_TEXT, TYPED_ERRORS } from '../../src/syntax/errors.js'
 import { CErr, E, isErr, toBool, toNum, toText, type V } from '../../src/values.js'
 import type { Case } from './cases.js'
 import { kindAt, parseKinds } from './cases.js'
@@ -43,17 +44,8 @@ export interface FjResult {
   bare: Val
 }
 
-const FJ_ERR: Record<string, ErrCode> = {
-  '#NULL!': 'NULL',
-  '#DIV/0!': 'DIV0',
-  '#VALUE!': 'VALUE',
-  '#REF!': 'REF',
-  '#NAME?': 'NAME',
-  '#NUM!': 'NUM',
-  '#N/A': 'NA',
-  '#GETTING_DATA': 'GETTING_DATA',
-  '#CALC!': 'CALC',
-}
+/** formulajs's errors by their text: those typed into a cell, `#GETTING_DATA` and `#CALC!` (no `#SPILL!`). */
+const FJ_ERR: Record<string, ErrCode> = { ...Object.fromEntries(TYPED_ERRORS.map((t) => [t, ERROR_CODE[t] as ErrCode])), '#GETTING_DATA': 'GETTING_DATA', [ERROR_TEXT.CALC]: 'CALC' }
 const toFjErr: Record<string, Error> = {
   DIV0: fj.utils.errors.div0,
   NA: fj.utils.errors.na,

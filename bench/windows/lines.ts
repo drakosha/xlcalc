@@ -9,7 +9,7 @@ import { fromBgr } from '../coverage/cond/cases.js'
 import { linesSet } from '../coverage/lines.js'
 import type { LineLook, LinesAnswer, LinesCase, LineStep } from '../coverage/lines/cases.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
-import { fileJobs, stepErrors } from './books.js'
+import { comEdit, fileJobs, stepErrors } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -26,7 +26,7 @@ const comStep = (s: LineStep): Step =>
   s.clear
     ? { do: 'clear', sheet: s.sheet, range: s.range, what: s.clear }
     : s.value !== undefined
-    ? { do: 'set', sheet: s.sheet, cell: s.range, kind: typeof s.value === 'number' ? 'n' : 's', value: String(s.value) }
+    ? { do: 'set', sheet: s.sheet, cell: s.range, ...comEdit(s.value) }
     : { do: 'format', sheet: s.sheet, range: s.range, ...(s.format !== undefined ? { numberFormat: s.format } : {}), ...(s.bold ? { bold: true } : {}), ...(s.italic ? { italic: true } : {}), ...(s.fill ? { fill: bgr(s.fill) } : {}) }
 
 export async function stepLines(set: string, tag: Tag, e: WinEnv): Promise<void> {

@@ -7,6 +7,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { fromRgb } from '../cond/cases.js'
 import { runWatched, settleRejected } from '../excel.js'
 
 const script = (name: string) => fileURLToPath(new URL(`../${name}`, import.meta.url))
@@ -45,7 +46,7 @@ export async function saveThroughExcel(data: Uint8Array, label: string): Promise
 export async function fillColors(data: Uint8Array, cells: string[]): Promise<string[]> {
   const r = await watched('excel-colors.applescript', data, 'colors', () => [cells.join(',')], (_, out) => out)
   if ('rejected' in r) throw new Error(`colors: Excel refused the book: ${r.rejected}`)
-  return (JSON.parse(r.out as string) as number[][]).map((c) => `#${c.map((x) => x.toString(16).padStart(2, '0')).join('').toUpperCase()}`)
+  return (JSON.parse(r.out as string) as number[][]).map(fromRgb)
 }
 
 

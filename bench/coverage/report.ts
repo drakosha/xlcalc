@@ -98,7 +98,8 @@ const TAG_CLASS: Record<string, string> = Object.fromEntries(
   }).flatMap(([cls, tags]) => tags.map((t) => [t, cls])),
 )
 
-const esc = (s: string) => s.replace(/\|/g, '\\|').replace(/\n/g, '\\n')
+/** Text in a cell of a markdown table. */
+export const esc = (s: string) => s.replace(/\|/g, '\\|').replace(/\n/g, '\\n')
 const code = (s: string) => '`' + s.replace(/`/g, "'") + '`'
 
 function kindsText(k: Partial<Record<Kind, number>>): string {

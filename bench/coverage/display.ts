@@ -23,6 +23,7 @@ import { formatCode } from './case-book.js'
 import { xl } from './sets/arrays/common.js'
 import { formatAddress, inputScalar } from '../../src/model.js'
 import type { DisplayAnswer, DisplayCase, DisplaySet } from './display/cases.js'
+import { fromRgb } from './cond/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -126,7 +127,7 @@ async function runPart(cases: DisplayCase[], label: string): Promise<DisplayAnsw
   if (raw.length !== cases.length) throw new Error(`${label}: Excel gave ${raw.length} cells of ${cases.length}`)
   return raw.map(([text, rgb, code, local], i) => {
     if (!Array.isArray(rgb)) throw new Error(`${label}: no colour for ${text}`)
-    const color = '#' + rgb.map((x) => x.toString(16).padStart(2, '0').toUpperCase()).join('')
+    const color = fromRgb(rgb)
     const codesOf = cases[i].numFmtId !== undefined ? { code, local } : {}
     return color === BLACK ? { text, ...codesOf } : { text, color, ...codesOf }
   })

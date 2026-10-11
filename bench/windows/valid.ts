@@ -5,11 +5,9 @@
  * Answers go to `test/excel/win/valid/[<tag>/]<set>.json` in the Mac's shape (COM's numbers as the Mac's names), the saved
  * files beside them; `test/validation-win.test.ts` reads them.
  */
-import { areasOf } from '../../src/validation/rules.js'
-import { formatAddress } from '../../src/model.js'
 import { localeDir } from '../coverage/locales.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
-import { formulaForExcel, validSet } from '../coverage/valid.js'
+import { flag, formulaForExcel, ruleRange, validSet } from '../coverage/valid.js'
 import { lineRange, WINDOW, type ExcelLine, type ExcelRule, type ValidAnswer, type ValidCase, type ValidMake } from '../coverage/valid/cases.js'
 import { fileJobs, opSteps, stepErrors } from './books.js'
 import { winFile } from './functions.js'
@@ -22,17 +20,14 @@ const TYPE_OF: Record<string, number> = { any: 0, whole: 1, decimal: 2, list: 3,
 const OPERATOR_OF: Record<string, number> = { between: 1, notBetween: 2, equal: 3, notEqual: 4, greaterThan: 5, lessThan: 6, greaterThanOrEqual: 7, lessThanOrEqual: 8 }
 const ALERT_OF: Record<string, number> = { stop: 1, warning: 2, information: 3 }
 
-const flag = (v: boolean | undefined) => (v === undefined ? '' : v ? '1' : '0')
-
 /** A step of `xl.ps1` that makes what the case makes. */
 function makeStep(m: ValidMake): Step {
   if ('rule' in m) {
     const r = m.rule
-    const first = areasOf(m.range)![0]
+    const { range, first } = ruleRange(m.range)
     const [f1, f2] = m.excel ?? [formulaForExcel(r.formula1), formulaForExcel(r.formula2)]
-    const range = areasOf(m.range)!.map((x) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`).join(',')
     return {
-      do: 'vmake', kind: 'rule', sheet: m.sheet, range, first: formatAddress(first.r1, first.c1), type: TYPE_OF[r.type], alert: ALERT_OF[r.errorStyle ?? 'stop'], operator: OPERATOR_OF[r.operator ?? 'between'], f1, f2: f2 ?? '',
+      do: 'vmake', kind: 'rule', sheet: m.sheet, range, first, type: TYPE_OF[r.type], alert: ALERT_OF[r.errorStyle ?? 'stop'], operator: OPERATOR_OF[r.operator ?? 'between'], f1, f2: f2 ?? '',
       ignore: flag(r.allowBlank), dropdown: flag(r.dropdown), showInput: flag(r.showPrompt), showError: flag(r.showError), inputTitle: r.promptTitle ?? '', inputMessage: r.prompt ?? '', errorTitle: r.errorTitle ?? '', errorMessage: r.error ?? '',
     }
   }

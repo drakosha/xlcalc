@@ -9,7 +9,7 @@
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
-import { answerOf, BookRejected, runOnBook, type FileParts, type RectsAnswer } from './case-book.js'
+import { answerOf, BookRejected, editOf, refusedOf, runOnBook, type FileParts, type RectsAnswer } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
 import type { SpillCase, SpillSet } from './spill/cases.js'
@@ -42,8 +42,7 @@ export function partsOf(c: SpillCase): FileParts | undefined {
 
 /** One case in Excel: its book opened and computed, its edits applied, its rectangles read. */
 async function runCase(c: SpillCase): Promise<SpillAnswer> {
-  const kind = (v: NonNullable<SpillCase['edits']>[number]['value']) => (v === null ? 'x\t' : typeof v === 'number' ? `n\t${v}` : typeof v === 'string' ? `s\t${v}` : `f\t=${v.formula}`)
-  const edits = (c.edits ?? []).map((e) => `${e.sheet}\t${e.cell}\t${kind(e.value)}`).join('\n')
+  const edits = (c.edits ?? []).map((e) => [e.sheet, e.cell, ...editOf(e.value)].join('\t')).join('\n')
   let out: string
   try {
     out = await runOnBook(c.id, SCRIPT, c.book, c.read, [edits, c.legacy ? '1' : ''], partsOf(c))
@@ -54,8 +53,8 @@ async function runCase(c: SpillCase): Promise<SpillAnswer> {
   }
   const raw = JSON.parse(out) as { rects: [unknown, unknown, unknown, unknown, unknown][]; edits: string[] }
   const answer: SpillAnswer = answerOf(c.read, raw.rects, !!c.legacy)
-  raw.edits.forEach((e, i) => e && ((answer.refused ??= {})[i] = e))
-  return answer
+  const refused = refusedOf(raw.edits)
+  return refused ? { ...answer, refused } : answer
 }
 
 /** Runs the set's cases without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */

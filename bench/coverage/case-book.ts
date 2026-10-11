@@ -282,6 +282,32 @@ export async function runOnBook(id: string, script: string, book: BookInput, rea
   })
 }
 
+/**
+ * A value typed into a cell as the scripts take it, a kind and its text: x clears the cell, n a number, s a text, f a
+ * formula as Excel 365 enters it, l a formula in the user's language.
+ */
+export function editOf(v: null | number | string | { formula: string } | { local: string }): [kind: 'x' | 'n' | 's' | 'f' | 'l', value: string] {
+  if (v === null) return ['x', '']
+  if (typeof v === 'number') return ['n', String(v)]
+  if (typeof v === 'string') return ['s', v]
+  return 'local' in v ? ['l', v.local] : ['f', `=${v.formula}`]
+}
+
+/** The steps of a case Excel refused, by their index: their errors (an empty one or none where Excel took the step); undefined when it took all. */
+export function refusedOf(errors: (string | null | undefined)[]): Record<number, string> | undefined {
+  let out: Record<number, string> | undefined
+  errors.forEach((e, i) => e && ((out ??= {})[i] = e))
+  return out
+}
+
+/** Each cell of the rectangles read, row by row: its key (`S!A1`), its rectangle's index, its row and column there. */
+export function eachRectCell(read: RangeRef[], f: (key: string, i: number, r: number, j: number) => void): void {
+  read.forEach((g, i) => {
+    const { cols, addrs } = cellsOf(g.range)
+    addrs.forEach((a, k) => f(`${g.sheet}!${a}`, i, Math.floor(k / cols), k % cols))
+  })
+}
+
 /** A range's `value` or `formula` as AppleScript returns it (a cell alone is not a list) as rows. */
 const grid = (x: unknown): unknown[][] => (Array.isArray(x) ? (Array.isArray(x[0]) ? (x as unknown[][]) : [x]) : [[x]])
 
@@ -291,19 +317,15 @@ const grid = (x: unknown): unknown[][] => (Array.isArray(x) ? (Array.isArray(x[0
  */
 export function answerOf(read: RangeRef[], raw: [unknown, unknown, unknown, unknown, unknown?][], withF2 = false): RectsAnswer & { formulas2?: Record<string, string> } {
   const out: RectsAnswer & { formulas2?: Record<string, string> } = { values: {}, formulas: {}, ...(withF2 ? { formulas2: {} } : {}) }
-  read.forEach((g, i) => {
-    const [t, nums, strs, fs, f2s] = raw[i].map(grid)
-    const { cols, addrs } = cellsOf(g.range)
-    addrs.forEach((a, k) => {
-      const [r, j] = [Math.floor(k / cols), k % cols]
-      const key = `${g.sheet}!${a}`
-      const type = Number(t[r][j])
-      const f = String(fs[r][j])
-      if (f.startsWith('=')) out.formulas[key] = f
-      if (out.formulas2 && f.startsWith('=')) out.formulas2[key] = String(f2s[r][j])
-      if (type === -5) return
-      out.values[key] = typedValue(type, nums[r][j], strs[r][j])
-    })
+  const grids = raw.map((x) => x.map(grid))
+  eachRectCell(read, (key, i, r, j) => {
+    const [t, nums, strs, fs, f2s] = grids[i]
+    const type = Number(t[r][j])
+    const f = String(fs[r][j])
+    if (f.startsWith('=')) out.formulas[key] = f
+    if (out.formulas2 && f.startsWith('=')) out.formulas2[key] = String(f2s[r][j])
+    if (type === -5) return
+    out.values[key] = typedValue(type, nums[r][j], strs[r][j])
   })
   return out
 }

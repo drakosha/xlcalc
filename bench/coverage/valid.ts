@@ -38,19 +38,23 @@ export function formulaForExcel(text: string | undefined): string {
   return lit ? lit[1].replace(/""/g, '"') : `=${text}`
 }
 
-const flag = (v: boolean | undefined) => (v === undefined ? '' : v ? '1' : '0')
+/** A setting of a rule as both platforms take it: 1, 0, or empty for Excel's own. */
+export const flag = (v: boolean | undefined) => (v === undefined ? '' : v ? '1' : '0')
 
-/** A range of rules as Excel's object model takes it: areas separated by commas, whole columns and rows as cells. */
-const excelRange = (range: string) => areasOf(range)!.map((x) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`).join(',')
+/** A range of rules as Excel's object model takes it (areas separated by commas, whole columns and rows as cells) and its first cell, selected while the rule is made. */
+export function ruleRange(range: string): { range: string; first: string } {
+  const areas = areasOf(range)!
+  return { range: areas.map((x) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`).join(','), first: formatAddress(areas[0].r1, areas[0].c1) }
+}
 
 /** What a case makes, as the script takes it. */
 export function makeArgs(make: ValidMake[] = []): string[][] {
   return make.map((m) => {
     if ('rule' in m) {
       const r = m.rule
-      const first = areasOf(m.range)![0]
+      const { range, first } = ruleRange(m.range)
       const [f1, f2] = m.excel ?? [formulaForExcel(r.formula1), formulaForExcel(r.formula2)]
-      return ['rule', m.sheet, excelRange(m.range), formatAddress(first.r1, first.c1), r.type, r.errorStyle ?? '', r.operator ?? '', f1, f2 ?? '', flag(r.allowBlank), flag(r.dropdown), flag(r.showPrompt), flag(r.showError), r.promptTitle ?? '', r.prompt ?? '', r.errorTitle ?? '', r.error ?? '']
+      return ['rule', m.sheet, range, first, r.type, r.errorStyle ?? '', r.operator ?? '', f1, f2 ?? '', flag(r.allowBlank), flag(r.dropdown), flag(r.showPrompt), flag(r.showError), r.promptTitle ?? '', r.prompt ?? '', r.errorTitle ?? '', r.error ?? '']
     }
     if ('summary' in m) return ['summary', m.sheet, flag(m.summary.summaryBelow), flag(m.summary.summaryRight)]
     const text = 'group' in m ? m.group : m.collapse
