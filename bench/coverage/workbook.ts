@@ -6,12 +6,12 @@
  * `test/workbook-excel.test.ts` compares the engine with them. The book and its reading through mirror sheets:
  * `case-book.ts`. `FBOOK_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inCaseOrder } from './stored.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
 import { answerOf, cellsOf, fileFormula, MIRRORS, runOnBook } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
+import { localeMeta } from './locales.js'
 import { compute } from '../../src/index.js'
 import type { Step, WorkbookAnswer, WorkbookCase, WorkbookSet } from './workbook/cases.js'
 
@@ -71,32 +71,14 @@ async function runCase(c: WorkbookCase): Promise<WorkbookAnswer> {
 
 /** Runs the set's cases without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepWorkbook(set: string): Promise<void> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const mod = (await import(`./workbook/${set}.js`)) as WorkbookSet
-  const cases = mod.buildWorkbookCases()
+  const cases = (await setModule<WorkbookSet>('workbook', set)).buildWorkbookCases()
   const target = workbookFile(set)
-  const same = (c: WorkbookCase) => JSON.stringify({ ...c, predicted: undefined })
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredWorkbook) : null
-  const was = new Map(prev?.cases.map((c) => [c.id, same(c)]) ?? [])
-  const answers: Record<string, WorkbookAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === same(c)) answers[c.id] = prev.answers[c.id]
+  const answers = keptSame({ cases }, loadStored<StoredWorkbook>(target), unpredicted)
   const t0 = Date.now()
-  mkdirSync(join(target, '..'), { recursive: true })
-  const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
-  }
+  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta('en-US'), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
   await ensureExcel('en-US')
-  let done = 0
-  try {
-    const only = process.env.FBOOK_ONLY?.split(',')
-    for (const c of cases) {
-      if (answers[c.id] || (only && !only.includes(c.id))) continue
-      answers[c.id] = await runCase(c)
-      done++
-    }
-  } finally {
+  await runCases(cases.filter((c) => !answers[c.id]), 'FBOOK_ONLY', async (c) => void (answers[c.id] = await runCase(c)), (done) => {
     save()
-    console.log(`workbook ${set}: ${done} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
-  }
+    console.log(`${answeredLine(`workbook ${set}`, done, answers, cases)}, ${took(t0)} s`)
+  })
 }

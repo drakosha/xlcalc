@@ -4,14 +4,11 @@
  * and the read cells' values (`Value2`) read, and the book saved. Answers go to `test/excel/win/hidden/<set>.json` in the
  * Mac's shape, the saved files beside them; `test/hidden-sheets-win.test.ts` reads them.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
 import type { CellValue } from '../../src/contract.js'
-import { hiddenFiles, type StoredHidden } from '../coverage/hidden.js'
-import type { HiddenSet, Visible } from '../coverage/hidden/cases.js'
-import { inCaseOrder, keptAnswers } from '../coverage/stored.js'
-import { opArgs } from '../coverage/struct.js'
-import { caseJobs } from './books.js'
+import { hiddenSet } from '../coverage/hidden.js'
+import type { HiddenAnswer, HiddenCase, Visible } from '../coverage/hidden/cases.js'
+import { fileAnswers, secondsSince } from '../coverage/stored.js'
+import { fileJobs, opSteps, stepErrors } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -19,50 +16,27 @@ import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 const value = (v: unknown): CellValue => (v !== null && typeof v === 'object' ? { error: 'VALUE' } : (v as CellValue))
 
 export async function stepHidden(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const built = ((await import(`../coverage/hidden/${set}.js`)) as HiddenSet).buildHiddenCases()
-  const file = winFile(`hidden/${set}.json`)
-  const dir = winFile(`hidden/${set}`)
-  const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredHidden) : null
-  const { files, sent } = await hiddenFiles(built)
-  const { answers, rejected } = keptAnswers(built.cases, sent, prev, (id) => existsSync(join(dir, `${id}.xlsx`)))
-  mkdirSync(dir, { recursive: true })
+  const { built, files, sent } = await hiddenSet(set)
+  const store = fileAnswers<HiddenCase, HiddenAnswer>(winFile(`hidden/${set}.json`), built.cases, sent)
   const t0 = Date.now()
-  const save = () => {
-    const refused = inCaseOrder(built.cases, rejected)
-    mkdirSync(dirname(file), { recursive: true })
-    writeFileSync(file, JSON.stringify({ meta: { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }, ...built, sent: inCaseOrder(built.cases, sent), answers: inCaseOrder(built.cases, answers), ...(Object.keys(refused).length ? { rejected: refused } : {}) }, null, 1) + '\n')
-  }
+  const save = () => store.save({ ...metaOf(e, tag), seconds: secondsSince(t0) }, built)
   const { sheet: readSheet, cells } = built.read
-  const todo = built.cases.filter((c) => !answers[c.id] && !rejected[c.id])
-  await caseJobs(
+  await fileJobs(
+    `hidden ${set}`,
     `hidden-${set}`,
-    todo,
-    async (c, f) => {
-      writeFileSync(f, files.get(c.id)!)
-      const [sheet, range, target, to] = c.op ? opArgs({ id: c.id, book: c.book, op: c.op }) : []
-      const steps: Step[] = [{ do: 'book' }, ...(c.make ?? []).map((m) => ({ do: 'visible', sheet: m.sheet, visible: m.visible })), ...(c.op ? [{ do: 'struct', op: c.op.op, sheet, range, target, to }] : [])]
-      return { file: f, steps: [...steps, { do: 'calc' }, { do: 'book' }, ...cells.map((cell) => ({ do: 'values', sheet: readSheet, range: cell })), { do: 'saveAs' }] }
-    },
+    store,
+    files,
+    (c) => [{ do: 'book' }, ...(c.make ?? []).map((m): Step => ({ do: 'visible', sheet: m.sheet, visible: m.visible })), ...opSteps(c), { do: 'calc' }, { do: 'book' }, ...cells.map((cell) => ({ do: 'values', sheet: readSheet, range: cell })), { do: 'saveAs' }],
     (c, a) => {
-      const n = 1 + (c.make ?? []).length + (c.op ? 1 : 0)
+      const makes = (c.make ?? []).length
+      const n = 1 + makes + (c.op ? 1 : 0)
       // the first step Excel refused, where the Mac stops
-      const errors = (a.answers.slice(1, n) as ({ error?: string } | null)[]).map((x, i) => (x?.error ? `${i < (c.make ?? []).length ? 'make' : 'op'}: ${x.error}` : '')).filter(Boolean)
+      const [error] = stepErrors(a.answers.slice(1, n), (i) => (i < makes ? 'make' : 'op'))
       const [opened] = a.answers[0] as [string, [string, number][]]
       const [active, sheets] = a.answers[n + 1] as [string, [string, number][]]
       const values = cells.map((_, i) => value((a.answers[n + 2 + i] as unknown[][])[0][0]))
-      answers[c.id] = { ...(errors.length ? { error: errors[0] } : {}), opened, active, sheets: sheets.map(([name, v]) => [name, v as Visible]), values }
-      if (a.saved) writeFileSync(join(dir, `${c.id}.xlsx`), a.saved)
-      else {
-        delete answers[c.id]
-        rejected[c.id] = 'Excel did not save the book'
-      }
-    },
-    (c, why) => {
-      console.log(`${c.id}: Excel did not load the book (${why})`)
-      rejected[c.id] = why
+      return { ...(error ? { error } : {}), opened, active, sheets: sheets.map(([name, v]) => [name, v as Visible]), values }
     },
     save,
   )
-  save()
-  console.log(`hidden ${set}: ${todo.length} cases run, ${Object.keys(answers).length} of ${built.cases.length} answered, ${Object.keys(rejected).length} not loaded`)
 }

@@ -7,20 +7,22 @@
  * `test/entry-excel.test.ts` compares `parseEntry` with them without Excel. `FENTRY_ONLY=id,id` runs only those cases,
  * `FCOV_FRESH=1` every case again.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { CellInput } from '../../src/contract.js'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
-import { inCaseOrder } from './stored.js'
+import { inParts } from './book.js'
+import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, writeAnswers } from './stored.js'
 import { entryBook, type EntryAnswer, type EntryCase, type EntrySet } from './entry/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-entry.applescript')
-const PART = 100
+/** The cases of one book, at most. */
+export const ENTRY_PART = 100
 
 export interface StoredEntry {
   meta: Record<string, string | number>
@@ -88,32 +90,25 @@ async function runPart(part: EntryCase[], label: string, keys: boolean, edit: bo
 
 /** Runs the set's cases without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepEntry(set: string, tag: string): Promise<void> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const mod = (await import(`./entry/${set}.js`)) as EntrySet
+  const mod = await setModule<EntrySet>('entry', set)
   const cases = mod.buildEntryCases()
   const target = entryFile(set, tag)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredEntry) : null
-  const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
-  const answers: Record<string, EntryAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c)) answers[c.id] = prev.answers[c.id]
-  const only = process.env.FENTRY_ONLY?.split(',')
-  const todo = cases.filter((c) => !answers[c.id] && (!only || only.includes(c.id)))
+  const prev = loadStored<StoredEntry>(target)
+  const answers = keptSame({ cases }, prev)
+  const only = chosen('FENTRY_ONLY')
+  const todo = cases.filter((c) => !answers[c.id] && only(c))
   const t0 = Date.now()
-  mkdirSync(join(target, '..'), { recursive: true })
-  const save = () => {
-    const meta = { version: excelVersion(), locale: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: Math.round((Number(prev?.meta.seconds ?? 0) * 1000 + Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
-  }
+  // the time of the runs before it too
+  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0 - Number(prev?.meta.seconds ?? 0) * 1000) }, cases, answers: inCaseOrder(cases, answers) })
   await ensureExcel(tag)
   try {
-    for (let k = 0; k * PART < todo.length; k++) {
-      const part = todo.slice(k * PART, (k + 1) * PART)
+    for (const [k, part] of inParts(todo, ENTRY_PART).entries()) {
       Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`, mod.keys === true, mod.edit === true))
       save()
-      console.log(`entry ${set} ${tag}: part ${k + 1}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+      console.log(`entry ${set} ${tag}: part ${k + 1}, ${part.length} cases, ${took(t0)} s`)
     }
   } finally {
     save()
-    console.log(`entry ${set} ${tag}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered`)
+    console.log(answeredLine(`entry ${set} ${tag}`, todo.length, answers, cases))
   }
 }

@@ -5,13 +5,11 @@
  * colours, bold, italic), and the book saved. Answers go to `test/excel/win/lines/<set>.json` in the Mac's shape, the
  * saved files beside them; `test/lines-excel.test.ts` reads them.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
 import { fromBgr } from '../coverage/cond/cases.js'
-import { linesSet, type StoredLines } from '../coverage/lines.js'
-import type { LineLook, LinesAnswer, LineStep } from '../coverage/lines/cases.js'
-import { inCaseOrder, keptAnswers } from '../coverage/stored.js'
-import { caseJobs } from './books.js'
+import { linesSet } from '../coverage/lines.js'
+import type { LineLook, LinesAnswer, LinesCase, LineStep } from '../coverage/lines/cases.js'
+import { fileAnswers, secondsSince } from '../coverage/stored.js'
+import { fileJobs, stepErrors } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -33,44 +31,23 @@ const comStep = (s: LineStep): Step =>
 
 export async function stepLines(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const { built, files, sent } = await linesSet(set)
-  const file = winFile(`lines/${set}.json`)
-  const dir = winFile(`lines/${set}`)
-  const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredLines) : null
-  const { answers, rejected } = keptAnswers(built.cases, sent, prev, (id) => existsSync(join(dir, `${id}.xlsx`)))
-  mkdirSync(dir, { recursive: true })
+  const store = fileAnswers<LinesCase, LinesAnswer>(winFile(`lines/${set}.json`), built.cases, sent)
   const t0 = Date.now()
-  const save = () => {
-    const refused = inCaseOrder(built.cases, rejected)
-    mkdirSync(dirname(file), { recursive: true })
-    writeFileSync(file, JSON.stringify({ meta: { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }, ...built, sent: inCaseOrder(built.cases, sent), answers: inCaseOrder(built.cases, answers), ...(Object.keys(refused).length ? { rejected: refused } : {}) }, null, 1) + '\n')
-  }
-  const todo = built.cases.filter((c) => !answers[c.id] && !rejected[c.id])
-  await caseJobs(
+  const save = () => store.save({ ...metaOf(e, tag), seconds: secondsSince(t0) }, built)
+  await fileJobs(
+    `lines ${set}`,
     `lines-${set}`,
-    todo,
-    async (c, f) => {
-      writeFileSync(f, files.get(c.id)!)
-      return { file: f, steps: [...(c.steps ?? []).map(comStep), { do: 'full' }, { do: 'cond', kind: 'looks', read: c.read, codes: true }, { do: 'saveAs' }] }
-    },
+    store,
+    files,
+    (c) => [...(c.steps ?? []).map(comStep), { do: 'full' }, { do: 'cond', kind: 'looks', read: c.read, codes: true }, { do: 'saveAs' }],
     (c, a) => {
       const n = (c.steps ?? []).length
-      const errors = (a.answers.slice(0, n) as ({ error?: string } | null)[]).flatMap((x, i) => (x?.error ? [`${c.steps![i].range}: ${x.error}`] : []))
+      const errors = stepErrors(a.answers.slice(0, n), (i) => c.steps![i].range)
       const looks: LinesAnswer['looks'] = {}
       for (const [sheet, cells] of a.answers[n + 1] as [string, RawLook[]][])
         looks[sheet] = Object.fromEntries(cells.map(([addr, text, fill, ci, font, bold, italic, format]): [string, LineLook] => [addr, { text, format, fill: ci === NO_FILL ? null : fromBgr(fill), font: fromBgr(font), bold, italic }]))
-      answers[c.id] = { ...(errors.length ? { error: errors.join('; ') } : {}), looks }
-      if (a.saved) writeFileSync(join(dir, `${c.id}.xlsx`), a.saved)
-      else {
-        delete answers[c.id]
-        rejected[c.id] = 'Excel did not save the book'
-      }
-    },
-    (c, why) => {
-      console.log(`${c.id}: Excel did not load the book (${why})`)
-      rejected[c.id] = why
+      return { ...(errors.length ? { error: errors.join('; ') } : {}), looks }
     },
     save,
   )
-  save()
-  console.log(`lines ${set}: ${todo.length} cases run, ${Object.keys(answers).length} of ${built.cases.length} answered, ${Object.keys(rejected).length} not loaded`)
 }

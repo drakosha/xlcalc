@@ -7,21 +7,23 @@
  * cases, `FFIT_AGAIN=id,id` those again, `FCOV_FRESH=1` every case again.
  */
 import JSZip from 'jszip'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { writeXlsx } from '../../src/xlsx.js'
 import { indexToCol } from '../../src/model.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
-import { inCaseOrder } from './stored.js'
+import { inParts } from './book.js'
+import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, writeAnswers } from './stored.js'
 import { caseColumn, caseRows, fitBook, type FitAnswer, type FitCase, type FitSet } from './fit/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-fit.applescript')
 const KEYS = join(HERE, 'excel-keys.applescript')
-const PART = 60
+/** The cases of one book, at most: a column each. */
+export const FIT_PART = 60
 
 export interface StoredFit {
   meta: Record<string, string | number>
@@ -37,11 +39,9 @@ export const fitFile = (set: string, tag = 'en-US', win = false) => join(ROOT, '
  * names, whose book the writer writes otherwise now; FCOV_FRESH=1 runs all), with the stored file's metadata.
  */
 export function keptAnswers(file: string, cases: FitCase[]): { answers: Record<string, FitAnswer>; meta?: StoredFit['meta'] } {
-  const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredFit) : null
-  const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
-  const again = new Set(process.env.FFIT_AGAIN?.split(','))
-  const answers: Record<string, FitAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c) && !again.has(c.id)) answers[c.id] = prev.answers[c.id]
+  const prev = loadStored<StoredFit>(file)
+  const answers = keptSame({ cases }, prev)
+  for (const id of process.env.FFIT_AGAIN?.split(',') ?? []) delete answers[id]
   return { answers, meta: prev?.meta }
 }
 
@@ -115,29 +115,23 @@ async function runPart(part: FitCase[], label: string): Promise<Record<string, F
 
 /** Runs the set's cases in a locale without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepFit(set: string, tag: string): Promise<void> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const mod = (await import(`./fit/${set}.js`)) as FitSet
-  const cases = mod.buildFitCases(tag)
+  const cases = (await setModule<FitSet>('fit', set)).buildFitCases(tag)
   const target = fitFile(set, tag)
   const { answers, meta: prev } = keptAnswers(target, cases)
-  const only = process.env.FFIT_ONLY?.split(',')
-  const todo = cases.filter((c) => !answers[c.id] && (!only || only.includes(c.id)))
+  const only = chosen('FFIT_ONLY')
+  const todo = cases.filter((c) => !answers[c.id] && only(c))
   const t0 = Date.now()
-  mkdirSync(join(target, '..'), { recursive: true })
-  const save = () => {
-    const meta = { version: excelVersion(), locale: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: Math.round((Number(prev?.seconds ?? 0) * 1000 + Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
-  }
+  // the time of the runs before it too
+  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0 - Number(prev?.seconds ?? 0) * 1000) }, cases, answers: inCaseOrder(cases, answers) })
   await ensureExcel(tag)
   try {
-    for (let k = 0; k * PART < todo.length; k++) {
-      const part = todo.slice(k * PART, (k + 1) * PART)
+    for (const [k, part] of inParts(todo, FIT_PART).entries()) {
       Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`))
       save()
-      console.log(`fit ${set} ${tag}: part ${k + 1}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+      console.log(`fit ${set} ${tag}: part ${k + 1}, ${part.length} cases, ${took(t0)} s`)
     }
   } finally {
     save()
-    console.log(`fit ${set} ${tag}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered`)
+    console.log(answeredLine(`fit ${set} ${tag}`, todo.length, answers, cases))
   }
 }

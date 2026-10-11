@@ -7,10 +7,10 @@
  * `FTABLES_ONLY=id,id` runs only those cases, `FTABLES_AGAIN=id,id` runs those again, `FCOV_FRESH=1` runs every case again.
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inCaseOrder } from './stored.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, writeAnswers } from './stored.js'
 import { answerOf, MIRRORS, mirrorRanges } from './case-book.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { sleep } from './proc.js'
@@ -142,35 +142,19 @@ async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
 
 /** Runs the set's cases without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepTables(set: string, tag: string): Promise<void> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const mod = (await import(`./tables/${set}.js`)) as TableSet
+  const mod = await setModule<TableSet>('tables', set)
   const cases = mod.buildTableCases()
   // formulas typed and read in the user's language in every locale but en-US
   const local = mod.local === true || tag !== 'en-US'
   const target = tablesFile(set, tag)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredTables) : null
-  const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
-  const answers: Record<string, TableAnswer> = {}
+  const answers = keptSame({ cases }, loadStored<StoredTables>(target))
   // FTABLES_AGAIN=id,id runs those cases again (a fix in the harness), keeping the other answers
-  const again = new Set(process.env.FTABLES_AGAIN?.split(',') ?? [])
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c) && !again.has(c.id)) answers[c.id] = prev.answers[c.id]
+  for (const id of process.env.FTABLES_AGAIN?.split(',') ?? []) delete answers[id]
   const t0 = Date.now()
-  mkdirSync(join(target, '..'), { recursive: true })
-  const save = () => {
-    const meta = { version: excelVersion(), locale: localeMeta(tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
-  }
+  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta(tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
   await ensureExcel(tag)
-  let done = 0
-  try {
-    const only = process.env.FTABLES_ONLY?.split(',')
-    for (const c of cases) {
-      if (answers[c.id] || (only && !only.includes(c.id))) continue
-      answers[c.id] = await runCase(c, local)
-      done++
-    }
-  } finally {
+  await runCases(cases.filter((c) => !answers[c.id]), 'FTABLES_ONLY', async (c) => void (answers[c.id] = await runCase(c, local)), (done) => {
     save()
-    console.log(`tables ${set}: ${done} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
-  }
+    console.log(`${answeredLine(`tables ${set}`, done, answers, cases)}, ${took(t0)} s`)
+  })
 }

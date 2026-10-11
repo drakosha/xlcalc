@@ -7,11 +7,11 @@
  * rows, merged areas or number formats is written with them, and the look of `LOOK` (and of the set's `look` rectangles) is read back too.
  * `FSTRUCT_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
-import { inCaseOrder } from './stored.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, writeAnswers } from './stored.js'
+import { localeMeta } from './locales.js'
 import { ensureExcel, excelVersion, runWatched } from './excel.js'
 import { markDynamic } from './book.js'
 import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from './case-book.js'
@@ -196,6 +196,9 @@ export function opArgs(c: StructCase): string[] {
   }
 }
 
+/** A case's operation as the scripts of the steps with files take it: JSON of the operation and its arguments, `[]` for none. */
+export const opJson = (c: { id: string; book: string; op?: StructCase['op'] }): string => JSON.stringify(c.op ? [c.op.op, ...opArgs({ id: c.id, book: c.book, op: c.op })] : [])
+
 function colAt(letters: string, plus: number): string {
   let n = 0
   for (const ch of letters) n = n * 26 + (ch.charCodeAt(0) - 64)
@@ -287,36 +290,24 @@ async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRec
   })
 }
 
+/** A case is the same while it and its book are: its stored key and its current one, by the set each comes from. */
+export const structKey = (c: StructCase, set: Pick<StructCases, 'books' | 'files'>) => JSON.stringify([c, set.books[c.book], set.files?.[c.book]])
+
 /** Runs the set's cases that have no stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepStruct(set: string): Promise<void> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const mod = (await import(`./struct/${set}.js`)) as StructSet
-  const { books, cases, dynamic = false, look = [], widths, files } = mod.buildStructCases()
+  const built = (await setModule<StructSet>('struct', set)).buildStructCases()
+  const { books, cases, dynamic = false, look = [], widths, files } = built
   const lookRects = [LOOK, ...look].join(',')
   const target = join(ROOT, `test/excel/struct/${set}.json`)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredStruct) : null
-  // an answer is kept when its case and the case's book are unchanged
-  const key = (c: StructCase, bs: Record<string, BookInput>, fs?: Record<string, FileParts>) => JSON.stringify([c, bs[c.book], fs?.[c.book]])
-  const same = new Map(prev?.cases.map((c) => [c.id, key(c, prev.books, prev.files)]) ?? [])
-  const answers: Record<string, ExcelStructAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && same.get(c.id) === key(c, books, files)) answers[c.id] = prev.answers[c.id]
+  const answers = keptSame(built, loadStored<StoredStruct>(target), structKey)
   const t0 = Date.now()
-  mkdirSync(join(ROOT, 'test/excel/struct'), { recursive: true })
   const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), ...(files ? { files } : {}), answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
+    const meta = { version: excelVersion(), locale: localeMeta('en-US'), read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: secondsSince(t0) }
+    writeAnswers(target, { meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), ...(files ? { files } : {}), answers: inCaseOrder(cases, answers) })
   }
   await ensureExcel('en-US')
-  let done = 0
-  try {
-    const only = process.env.FSTRUCT_ONLY?.split(',')
-    for (const c of cases) {
-      if (answers[c.id] || (only && !only.includes(c.id))) continue
-      answers[c.id] = await runCase(c, books[c.book], dynamic, lookRects, files?.[c.book])
-      done++
-    }
-  } finally {
+  await runCases(cases.filter((c) => !answers[c.id]), 'FSTRUCT_ONLY', async (c) => void (answers[c.id] = await runCase(c, books[c.book], dynamic, lookRects, files?.[c.book])), (done) => {
     save()
-    console.log(`struct ${set}: ${done} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
-  }
+    console.log(`${answeredLine(`struct ${set}`, done, answers, cases)}, ${took(t0)} s`)
+  })
 }

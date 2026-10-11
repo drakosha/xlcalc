@@ -5,14 +5,10 @@
  * which Excel 2024 does not list) and the book saved. Answers go to `test/excel/win/parts/<set>.json` in the Mac's shape, the saved files beside them;
  * `test/sheet-parts-win.test.ts` reads them.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { partsFile, type StoredParts } from '../coverage/parts.js'
-import type { PartsAnswer, PartsCase, PartsMake, PartsSet } from '../coverage/parts/cases.js'
-import { inCaseOrder } from '../coverage/stored.js'
-import { opArgs } from '../coverage/struct.js'
-import { partsHash } from '../coverage/xlsx/sent.js'
-import { caseJobs } from './books.js'
+import { partsSet } from '../coverage/parts.js'
+import type { PartsAnswer, PartsCase, PartsMake } from '../coverage/parts/cases.js'
+import { fileAnswers, secondsSince } from '../coverage/stored.js'
+import { fileJobs, opSteps, stepErrors } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -28,44 +24,23 @@ type RawSheet = [string, [string, string, string][], [string, [string, string][]
 const plain = (a: string) => a.replaceAll('$', '')
 
 export async function stepParts(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const built = ((await import(`../coverage/parts/${set}.js`)) as PartsSet).buildPartsCases()
+  const { built, files, sent } = await partsSet(set)
   const { books, cases, threads } = built
-  const file = winFile(`parts/${set}.json`)
-  const dir = winFile(`parts/${set}`)
-  const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredParts) : null
-  const files = new Map(await Promise.all(cases.map(async (c) => [c.id, await partsFile(c, built)] as const)))
-  const sent = Object.fromEntries(await Promise.all(cases.map(async (c) => [c.id, await partsHash(files.get(c.id)!)] as const)))
-  const key = (c: PartsCase, hash: string | undefined) => JSON.stringify([c, hash])
-  const same = new Map(prev?.cases.map((c) => [c.id, key(c, prev.sent[c.id])]) ?? [])
-  const answers: Record<string, PartsAnswer> = {}
-  const rejected: Record<string, string> = {}
-  for (const c of cases)
-    if (same.get(c.id) === key(c, sent[c.id])) {
-      if (prev!.answers[c.id] && existsSync(join(dir, `${c.id}.xlsx`))) answers[c.id] = prev!.answers[c.id]
-      else if (prev!.rejected?.[c.id]) rejected[c.id] = prev!.rejected[c.id]
-    }
-  mkdirSync(dir, { recursive: true })
+  const store = fileAnswers<PartsCase, PartsAnswer>(winFile(`parts/${set}.json`), cases, sent)
   const t0 = Date.now()
-  const save = () => {
-    const refused = inCaseOrder(cases, rejected)
-    mkdirSync(dirname(file), { recursive: true })
-    writeFileSync(file, JSON.stringify({ meta: { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }, books, cases, ...(threads ? { threads } : {}), sent: inCaseOrder(cases, sent), answers: inCaseOrder(cases, answers), ...(Object.keys(refused).length ? { rejected: refused } : {}) }, null, 1) + '\n')
-  }
-  const todo = cases.filter((c) => !answers[c.id] && !rejected[c.id])
-  await caseJobs(
+  const save = () => store.save({ ...metaOf(e, tag), seconds: secondsSince(t0) }, { books, cases, ...(threads ? { threads } : {}) })
+  await fileJobs(
+    `parts ${set}`,
     `parts-${set}`,
-    todo,
-    async (c, f) => {
-      writeFileSync(f, files.get(c.id)!)
-      const [sheet, range, target, to] = c.op ? opArgs({ id: c.id, book: c.book, op: c.op }) : []
-      const op: Step[] = c.op ? [{ do: 'struct', op: c.op.op, sheet, range, target, to }] : []
-      return { file: f, steps: [...(c.make ?? []).map(makeStep), ...op, { do: 'parts' }, { do: 'saveAs' }] }
-    },
+    store,
+    files,
+    (c) => [...(c.make ?? []).map(makeStep), ...opSteps(c), { do: 'parts' }, { do: 'saveAs' }],
     (c, a) => {
-      const n = (c.make ?? []).length + (c.op ? 1 : 0)
-      const errors = (a.answers.slice(0, n) as ({ error?: string } | null)[]).flatMap((x, i) => (x?.error ? [`${i < (c.make ?? []).length ? 'make' : 'op'}: ${x.error}`] : []))
+      const makes = (c.make ?? []).length
+      const n = makes + (c.op ? 1 : 0)
+      const errors = stepErrors(a.answers.slice(0, n), (i) => (i < makes ? 'make' : 'op'))
       const raw = a.answers[n] as RawSheet[]
-      answers[c.id] = {
+      return {
         ...(errors.length ? { error: errors.join('; ') } : {}),
         sheets: raw.map(([name, notes, threads, links, [freeze, splitRow, splitColumn, , , scrollRow, scrollColumn]]) => ({
           name,
@@ -75,18 +50,7 @@ export async function stepParts(set: string, tag: Tag, e: WinEnv): Promise<void>
           ...(threads.length ? { threads: Object.fromEntries(threads.map(([addr, list]) => [plain(addr), list.map(([author, text]) => ({ author, text }))])) } : {}),
         })),
       }
-      if (a.saved) writeFileSync(join(dir, `${c.id}.xlsx`), a.saved)
-      else {
-        delete answers[c.id]
-        rejected[c.id] = 'Excel did not save the book'
-      }
-    },
-    (c, why) => {
-      console.log(`${c.id}: Excel did not load the book (${why})`)
-      rejected[c.id] = why
     },
     save,
   )
-  save()
-  console.log(`parts ${set}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${Object.keys(rejected).length} not loaded`)
 }

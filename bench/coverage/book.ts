@@ -20,6 +20,30 @@ import type { SheetCells } from './probes.js'
 
 export const CASE_SHEET = 'C'
 
+/** The cases of one book Excel computes, at most: its runs go in parts of this many. */
+export const PART = 400
+
+/** Items in parts of `size`, in order. */
+export const inParts = <T>(items: T[], size = PART): T[][] => Array.from({ length: Math.ceil(items.length / size) }, (_, k) => items.slice(k * size, (k + 1) * size))
+
+/** The measurement's cases in parts of whole functions, at most PART cases each but a function of more. */
+export function functionParts<T extends { fn?: string }>(cases: T[]): T[][] {
+  const out: T[][] = []
+  let cur: T[] = []
+  for (let i = 0; i < cases.length; ) {
+    let j = i + 1
+    while (j < cases.length && cases[j].fn === cases[i].fn) j++
+    if (cur.length && cur.length + (j - i) > PART) {
+      out.push(cur)
+      cur = []
+    }
+    cur.push(...cases.slice(i, j))
+    i = j
+  }
+  if (cur.length) out.push(cur)
+  return out
+}
+
 /** Spill references (`E2#`) as a file writes them, `_xlfn.ANCHORARRAY(E2)`. */
 export const anchorArray = (f: string) => f.replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
 

@@ -12,8 +12,8 @@ import type { Probe, SheetCells } from '../probes.js'
 /** A formula without the file's prefixes of newer functions and of LET's names. */
 export const plainFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
 
-/** The parts of a set as `xlsx saved` sends them: 400 cases each, `<set>-<k>`. */
-export const PART = 400
+/** The parts of a set as `xlsx saved` sends them: PART cases each, `<set>-<k>`. */
+export { PART } from '../book.js'
 
 export function sentBook(probes: Probe[], sheets: SheetCells): BookInput {
   const own = Object.entries(sheets).map(([name, cells]) => ({

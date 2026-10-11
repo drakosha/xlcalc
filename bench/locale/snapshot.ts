@@ -21,6 +21,7 @@ import { fileURLToPath } from 'node:url'
 import { writeBook } from '../coverage/book.js'
 import { ensureExcel, excelDialogs, excelVersion, runScriptWatched, withExcelLock } from '../coverage/excel.js'
 import { localeMeta, parseTag } from '../coverage/locales.js'
+import { secondsSince } from '../coverage/stored.js'
 import type { Probe } from '../coverage/probes.js'
 import { serialize, snapshotFile, type Snapshot } from './derive.js'
 import { buildProbes, SHEETS } from './probes.js'
@@ -80,7 +81,7 @@ async function snapshot(tag: string): Promise<void> {
     console.log(`part ${k + 1}/${parts.length}: ${parts[k].length} formulas, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
   }
   const snap: Snapshot = {
-    meta: { excel: excelVersion(), mode: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: Math.round((Date.now() - t0) / 100) / 10 },
+    meta: { excel: excelVersion(), mode: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0) },
     international,
     functions,
     formulas,
