@@ -1,0 +1,1403 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-11",
+  "seconds": 69.9
+ },
+ "cases": [
+  {
+   "id": "num-1",
+   "text": "1234.5"
+  },
+  {
+   "id": "num-2",
+   "text": "1234567.891"
+  },
+  {
+   "id": "num-3",
+   "text": "(0.5)"
+  },
+  {
+   "id": "num-4",
+   "text": "-5"
+  },
+  {
+   "id": "num-5",
+   "text": "0.0000001"
+  },
+  {
+   "id": "num-6",
+   "text": "1E-20"
+  },
+  {
+   "id": "num-7",
+   "text": "123456789012345678"
+  },
+  {
+   "id": "num-8",
+   "text": "12345678901234.5"
+  },
+  {
+   "id": "num-9",
+   "text": "100000000000000000000"
+  },
+  {
+   "id": "num-10",
+   "text": "1E+20"
+  },
+  {
+   "id": "num-11",
+   "text": "1.5E+3"
+  },
+  {
+   "id": "num-12",
+   "text": "0.1"
+  },
+  {
+   "id": "num-13",
+   "text": "3.14159265358979"
+  },
+  {
+   "id": "num-14",
+   "text": "0"
+  },
+  {
+   "id": "num-ru-1",
+   "text": "1234,5"
+  },
+  {
+   "id": "num-ru-2",
+   "text": "1234567,891"
+  },
+  {
+   "id": "num-ru-3",
+   "text": "(0,5)"
+  },
+  {
+   "id": "num-ru-4",
+   "text": "0,0000001"
+  },
+  {
+   "id": "num-ru-5",
+   "text": "1,5E+3"
+  },
+  {
+   "id": "num-ru-6",
+   "text": "3,14159265358979"
+  },
+  {
+   "id": "pct-1",
+   "text": "12%"
+  },
+  {
+   "id": "pct-2",
+   "text": "12.5%"
+  },
+  {
+   "id": "pct-3",
+   "text": "-5%"
+  },
+  {
+   "id": "pct-4",
+   "text": "0.5%"
+  },
+  {
+   "id": "pct-5",
+   "text": "1234%"
+  },
+  {
+   "id": "pct-6",
+   "text": "12,5%"
+  },
+  {
+   "id": "pct-7",
+   "text": "0,5%"
+  },
+  {
+   "id": "money-1",
+   "text": "$1,234.50"
+  },
+  {
+   "id": "money-2",
+   "text": "$5"
+  },
+  {
+   "id": "money-3",
+   "text": "($5)"
+  },
+  {
+   "id": "money-4",
+   "text": "1 234,50 ₽"
+  },
+  {
+   "id": "money-5",
+   "text": "5 ₽"
+  },
+  {
+   "id": "frac-1",
+   "text": "1 1/2"
+  },
+  {
+   "id": "frac-2",
+   "text": "0 1/3"
+  },
+  {
+   "id": "frac-3",
+   "text": "2 3/4"
+  },
+  {
+   "id": "date-1",
+   "text": "1/31/2025"
+  },
+  {
+   "id": "date-2",
+   "text": "1/31/2025 18:00"
+  },
+  {
+   "id": "date-3",
+   "text": "1/31/2025 6:30 PM"
+  },
+  {
+   "id": "date-4",
+   "text": "31-Jan-2025"
+  },
+  {
+   "id": "date-5",
+   "text": "Jan 2025"
+  },
+  {
+   "id": "date-6",
+   "text": "2025-01-31"
+  },
+  {
+   "id": "date-7",
+   "text": "12/31/9999"
+  },
+  {
+   "id": "date-ru-1",
+   "text": "31.01.2025"
+  },
+  {
+   "id": "date-ru-2",
+   "text": "31.01.2025 18:00"
+  },
+  {
+   "id": "date-ru-3",
+   "text": "31 янв 2025"
+  },
+  {
+   "id": "date-ru-4",
+   "text": "31.12.9999"
+  },
+  {
+   "id": "time-1",
+   "text": "18:30"
+  },
+  {
+   "id": "time-2",
+   "text": "6:30 PM"
+  },
+  {
+   "id": "time-3",
+   "text": "18:30:15"
+  },
+  {
+   "id": "time-4",
+   "text": "25:30"
+  },
+  {
+   "id": "time-5",
+   "text": "0:00"
+  },
+  {
+   "id": "time-6",
+   "text": "12:00 AM"
+  },
+  {
+   "id": "bool-1",
+   "text": "TRUE"
+  },
+  {
+   "id": "bool-2",
+   "text": "false"
+  },
+  {
+   "id": "bool-3",
+   "text": "ИСТИНА"
+  },
+  {
+   "id": "bool-4",
+   "text": "ложь"
+  },
+  {
+   "id": "text-1",
+   "text": "'007"
+  },
+  {
+   "id": "text-2",
+   "text": "'1.5"
+  },
+  {
+   "id": "text-3",
+   "text": "'1,5"
+  },
+  {
+   "id": "text-4",
+   "text": "'=1+2"
+  },
+  {
+   "id": "text-5",
+   "text": "'TRUE"
+  },
+  {
+   "id": "text-6",
+   "text": "'ИСТИНА"
+  },
+  {
+   "id": "text-7",
+   "text": "'abc"
+  },
+  {
+   "id": "text-8",
+   "text": "abc"
+  },
+  {
+   "id": "text-9",
+   "text": "'12%"
+  },
+  {
+   "id": "text-10",
+   "text": "'1/31/2025"
+  },
+  {
+   "id": "text-11",
+   "text": "'31.01.2025"
+  },
+  {
+   "id": "date-cell-1",
+   "text": "45688",
+   "format": 14
+  },
+  {
+   "id": "date-cell-2",
+   "text": "45688.75",
+   "format": 14
+  },
+  {
+   "id": "date-cell-3",
+   "text": "45688,75",
+   "format": 14
+  },
+  {
+   "id": "date-cell-4",
+   "text": "0",
+   "format": 14
+  },
+  {
+   "id": "date-cell-5",
+   "text": "-1",
+   "format": 14
+  },
+  {
+   "id": "long-date-cell-1",
+   "text": "45688",
+   "format": "d mmmm yyyy"
+  },
+  {
+   "id": "time-cell-1",
+   "text": "0.75",
+   "format": "h:mm"
+  },
+  {
+   "id": "time-cell-2",
+   "text": "0,75",
+   "format": "h:mm"
+  },
+  {
+   "id": "time-cell-3",
+   "text": "1.75",
+   "format": "h:mm"
+  },
+  {
+   "id": "elapsed-cell-1",
+   "text": "1.5",
+   "format": "[h]:mm:ss"
+  },
+  {
+   "id": "money-cell-1",
+   "text": "1234.5",
+   "format": "$#,##0.00"
+  },
+  {
+   "id": "frac-cell-1",
+   "text": "0.5",
+   "format": "# ?/?"
+  },
+  {
+   "id": "sci-cell-1",
+   "text": "1234.5",
+   "format": "0.00E+00"
+  },
+  {
+   "id": "text-cell-1",
+   "text": "007",
+   "format": "@"
+  },
+  {
+   "id": "text-cell-2",
+   "text": "1.5",
+   "format": "@"
+  },
+  {
+   "id": "grouped-cell-1",
+   "text": "1234567.891",
+   "format": "#,##0.00"
+  },
+  {
+   "id": "month-cell-1",
+   "text": "45688.5",
+   "format": "mmm-yy"
+  },
+  {
+   "id": "pct-text-1",
+   "text": "'5",
+   "format": "0%"
+  }
+ ],
+ "answers": {
+  "num-1": {
+   "cell": {
+    "value": 1234.5
+   },
+   "text": "1234.5",
+   "code": "General",
+   "local": "General",
+   "value2": 1234.5,
+   "formula": "1234.5",
+   "formulaLocal": "1234.5",
+   "bar": "Formula Bar. A,1 1234.5"
+  },
+  "num-2": {
+   "cell": {
+    "value": 1234567.891
+   },
+   "text": "1234568",
+   "code": "General",
+   "local": "General",
+   "value2": 1234567.891,
+   "formula": "1234567.891",
+   "formulaLocal": "1234567.891",
+   "bar": "Formula Bar. A,2 1234567.891"
+  },
+  "num-3": {
+   "cell": {
+    "value": -0.5
+   },
+   "text": "-0.5",
+   "code": "General",
+   "local": "General",
+   "value2": -0.5,
+   "formula": "-0.5",
+   "formulaLocal": "-0.5",
+   "bar": "Formula Bar. A,3 -0.5"
+  },
+  "num-4": {
+   "cell": {
+    "value": -5
+   },
+   "text": "-5",
+   "code": "General",
+   "local": "General",
+   "value2": -5,
+   "formula": "-5",
+   "formulaLocal": "-5",
+   "bar": "Formula Bar. A,4 -5"
+  },
+  "num-5": {
+   "cell": {
+    "value": 1e-7
+   },
+   "text": "1E-07",
+   "code": "General",
+   "local": "General",
+   "value2": 1e-7,
+   "formula": "0.0000001",
+   "formulaLocal": "0.0000001",
+   "bar": "Formula Bar. A,5 0.0000001"
+  },
+  "num-6": {
+   "cell": {
+    "value": 1e-20,
+    "format": 11
+   },
+   "text": "1.00E-20",
+   "code": "0.00E+00",
+   "local": "0.00E+00",
+   "value2": 1e-20,
+   "formula": "1E-20",
+   "formulaLocal": "1E-20",
+   "bar": "Formula Bar. A,6 1E-20"
+  },
+  "num-7": {
+   "cell": {
+    "value": 123456789012345000
+   },
+   "text": "1.23E+17",
+   "code": "General",
+   "local": "General",
+   "value2": 123456789012345000,
+   "formula": "123456789012345000",
+   "formulaLocal": "123456789012345000",
+   "bar": "Formula Bar. A,7 123456789012345000"
+  },
+  "num-8": {
+   "cell": {
+    "value": 12345678901234.5
+   },
+   "text": "1.23E+13",
+   "code": "General",
+   "local": "General",
+   "value2": 12345678901234.5,
+   "formula": "12345678901234.5",
+   "formulaLocal": "12345678901234.5",
+   "bar": "Formula Bar. A,8 12345678901234.5"
+  },
+  "num-9": {
+   "cell": {
+    "value": 100000000000000000000
+   },
+   "text": "1E+20",
+   "code": "General",
+   "local": "General",
+   "value2": 100000000000000000000,
+   "formula": "100000000000000000000",
+   "formulaLocal": "100000000000000000000",
+   "bar": "Formula Bar. A,9 100000000000000000000"
+  },
+  "num-10": {
+   "cell": {
+    "value": 100000000000000000000,
+    "format": 11
+   },
+   "text": "1.00E+20",
+   "code": "0.00E+00",
+   "local": "0.00E+00",
+   "value2": 100000000000000000000,
+   "formula": "100000000000000000000",
+   "formulaLocal": "100000000000000000000",
+   "bar": "Formula Bar. A,10 100000000000000000000"
+  },
+  "num-11": {
+   "cell": {
+    "value": 1500,
+    "format": 11
+   },
+   "text": "1.50E+03",
+   "code": "0.00E+00",
+   "local": "0.00E+00",
+   "value2": 1500,
+   "formula": "1500",
+   "formulaLocal": "1500",
+   "bar": "Formula Bar. A,11 1500"
+  },
+  "num-12": {
+   "cell": {
+    "value": 0.1
+   },
+   "text": "0.1",
+   "code": "General",
+   "local": "General",
+   "value2": 0.1,
+   "formula": "0.1",
+   "formulaLocal": "0.1",
+   "bar": "Formula Bar. A,12 0.1"
+  },
+  "num-13": {
+   "cell": {
+    "value": 3.14159265358979
+   },
+   "text": "3.141593",
+   "code": "General",
+   "local": "General",
+   "value2": 3.14159265358979,
+   "formula": "3.14159265358979",
+   "formulaLocal": "3.14159265358979",
+   "bar": "Formula Bar. A,13 3.14159265358979"
+  },
+  "num-14": {
+   "cell": {
+    "value": 0
+   },
+   "text": "0",
+   "code": "General",
+   "local": "General",
+   "value2": 0,
+   "formula": "0",
+   "formulaLocal": "0",
+   "bar": "Formula Bar. A,14 0"
+  },
+  "num-ru-1": {
+   "cell": {
+    "value": "1234,5"
+   },
+   "text": "1234,5",
+   "code": "General",
+   "local": "General",
+   "formula": "1234,5",
+   "formulaLocal": "1234,5",
+   "bar": "Formula Bar. A,15 1234,5"
+  },
+  "num-ru-2": {
+   "cell": {
+    "value": 1234567891,
+    "format": 3
+   },
+   "text": "#########",
+   "code": "#,##0",
+   "local": "#,##0",
+   "value2": 1234567891,
+   "formula": "1234567891",
+   "formulaLocal": "1234567891",
+   "bar": "Formula Bar. A,16 1234567891"
+  },
+  "num-ru-3": {
+   "cell": {
+    "value": "(0,5)"
+   },
+   "text": "(0,5)",
+   "code": "General",
+   "local": "General",
+   "formula": "(0,5)",
+   "formulaLocal": "(0,5)",
+   "bar": "Formula Bar. A,17 (0,5)"
+  },
+  "num-ru-4": {
+   "cell": {
+    "value": "0,0000001"
+   },
+   "text": "0,0000001",
+   "code": "General",
+   "local": "General",
+   "formula": "0,0000001",
+   "formulaLocal": "0,0000001",
+   "bar": "Formula Bar. A,18 0,0000001"
+  },
+  "num-ru-5": {
+   "cell": {
+    "value": "1,5E+3"
+   },
+   "text": "1,5E+3",
+   "code": "General",
+   "local": "General",
+   "formula": "1,5E+3",
+   "formulaLocal": "1,5E+3",
+   "bar": "Formula Bar. A,19 1,5E+3"
+  },
+  "num-ru-6": {
+   "cell": {
+    "value": 314159265358979,
+    "format": 3
+   },
+   "text": "#########",
+   "code": "#,##0",
+   "local": "#,##0",
+   "value2": 314159265358979,
+   "formula": "314159265358979",
+   "formulaLocal": "314159265358979",
+   "bar": "Formula Bar. A,20 314159265358979"
+  },
+  "pct-1": {
+   "cell": {
+    "value": 0.12,
+    "format": 9
+   },
+   "text": "12%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.12,
+   "formula": "0.12",
+   "formulaLocal": "0.12",
+   "bar": "Formula Bar. A,21 12%"
+  },
+  "pct-2": {
+   "cell": {
+    "value": 0.125,
+    "format": 10
+   },
+   "text": "12.50%",
+   "code": "0.00%",
+   "local": "0.00%",
+   "value2": 0.125,
+   "formula": "0.125",
+   "formulaLocal": "0.125",
+   "bar": "Formula Bar. A,22 12.5%"
+  },
+  "pct-3": {
+   "cell": {
+    "value": -0.05,
+    "format": 9
+   },
+   "text": "-5%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.05,
+   "formula": "-0.05",
+   "formulaLocal": "-0.05",
+   "bar": "Formula Bar. A,23 -5%"
+  },
+  "pct-4": {
+   "cell": {
+    "value": 0.005,
+    "format": 10
+   },
+   "text": "0.50%",
+   "code": "0.00%",
+   "local": "0.00%",
+   "value2": 0.005,
+   "formula": "0.005",
+   "formulaLocal": "0.005",
+   "bar": "Formula Bar. A,24 0.5%"
+  },
+  "pct-5": {
+   "cell": {
+    "value": 12.34,
+    "format": 9
+   },
+   "text": "1234%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 12.34,
+   "formula": "12.34",
+   "formulaLocal": "12.34",
+   "bar": "Formula Bar. A,25 1234%"
+  },
+  "pct-6": {
+   "cell": {
+    "value": "12,5%"
+   },
+   "text": "12,5%",
+   "code": "General",
+   "local": "General",
+   "formula": "12,5%",
+   "formulaLocal": "12,5%",
+   "bar": "Formula Bar. A,26 12,5%"
+  },
+  "pct-7": {
+   "cell": {
+    "value": "0,5%"
+   },
+   "text": "0,5%",
+   "code": "General",
+   "local": "General",
+   "formula": "0,5%",
+   "formulaLocal": "0,5%",
+   "bar": "Formula Bar. A,27 0,5%"
+  },
+  "money-1": {
+   "cell": {
+    "value": 1234.5,
+    "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+   },
+   "text": "#########",
+   "code": "$#,##0.00_);[Red]($#,##0.00)",
+   "local": "$#,##0.00_);[Red]($#,##0.00)",
+   "value2": 1234.5,
+   "formula": "1234.5",
+   "formulaLocal": "1234.5",
+   "bar": "Formula Bar. A,28 1234.5"
+  },
+  "money-2": {
+   "cell": {
+    "value": 5,
+    "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+   },
+   "text": "$5 ",
+   "code": "$#,##0_);[Red]($#,##0)",
+   "local": "$#,##0_);[Red]($#,##0)",
+   "value2": 5,
+   "formula": "5",
+   "formulaLocal": "5",
+   "bar": "Formula Bar. A,29 5"
+  },
+  "money-3": {
+   "cell": {
+    "value": -5,
+    "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+   },
+   "text": "($5)",
+   "code": "$#,##0_);[Red]($#,##0)",
+   "local": "$#,##0_);[Red]($#,##0)",
+   "value2": -5,
+   "formula": "-5",
+   "formulaLocal": "-5",
+   "bar": "Formula Bar. A,30 -5"
+  },
+  "money-4": {
+   "cell": {
+    "value": "1 234,50 ₽"
+   },
+   "text": "1 234,50 ₽",
+   "code": "General",
+   "local": "General",
+   "formula": "1 234,50 ₽",
+   "formulaLocal": "1 234,50 ₽",
+   "bar": "Formula Bar. A,31 1 234,50 ₽"
+  },
+  "money-5": {
+   "cell": {
+    "value": "5 ₽"
+   },
+   "text": "5 ₽",
+   "code": "General",
+   "local": "General",
+   "formula": "5 ₽",
+   "formulaLocal": "5 ₽",
+   "bar": "Formula Bar. A,32 5 ₽"
+  },
+  "frac-1": {
+   "cell": {
+    "value": 1.5,
+    "format": 12
+   },
+   "text": "1 1/2",
+   "code": "# ?/?",
+   "local": "# ?/?",
+   "value2": 1.5,
+   "formula": "1.5",
+   "formulaLocal": "1.5",
+   "bar": "Formula Bar. A,33 1.5"
+  },
+  "frac-2": {
+   "cell": {
+    "value": 0.3333333333333333,
+    "format": 12
+   },
+   "text": " 1/3",
+   "code": "# ?/?",
+   "local": "# ?/?",
+   "value2": 0.3333333333333333,
+   "formula": "0.333333333333333",
+   "formulaLocal": "0.333333333333333",
+   "bar": "Formula Bar. A,34 0.333333333333333"
+  },
+  "frac-3": {
+   "cell": {
+    "value": 2.75,
+    "format": 12
+   },
+   "text": "2 3/4",
+   "code": "# ?/?",
+   "local": "# ?/?",
+   "value2": 2.75,
+   "formula": "2.75",
+   "formulaLocal": "2.75",
+   "bar": "Formula Bar. A,35 2.75"
+  },
+  "date-1": {
+   "cell": {
+    "value": 45688,
+    "format": 14
+   },
+   "text": "1/31/25",
+   "code": "m/d/yy",
+   "local": "m/d/yy",
+   "formula": "45688",
+   "formulaLocal": "45688",
+   "bar": "Formula Bar. A,36 1/31/2025"
+  },
+  "date-2": {
+   "cell": {
+    "value": 45688.75,
+    "format": 22
+   },
+   "text": "#########",
+   "code": "m/d/yy h:mm",
+   "local": "m/d/yy h:mm",
+   "formula": "45688.75",
+   "formulaLocal": "45688.75",
+   "bar": "Formula Bar. A,37 1/31/2025  6:00:00 PM"
+  },
+  "date-3": {
+   "cell": {
+    "value": 45688.770833333336,
+    "format": 22
+   },
+   "text": "#########",
+   "code": "m/d/yy h:mm",
+   "local": "m/d/yy h:mm",
+   "formula": "45688.7708333333",
+   "formulaLocal": "45688.7708333333",
+   "bar": "Formula Bar. A,38 1/31/2025  6:30:00 PM"
+  },
+  "date-4": {
+   "cell": {
+    "value": 45688,
+    "format": 15
+   },
+   "text": "31-Jan-25",
+   "code": "d-mmm-yy",
+   "local": "d-mmm-yy",
+   "formula": "45688",
+   "formulaLocal": "45688",
+   "bar": "Formula Bar. A,39 1/31/2025"
+  },
+  "date-5": {
+   "cell": {
+    "value": 45658,
+    "format": 17
+   },
+   "text": "Jan-25",
+   "code": "mmm-yy",
+   "local": "mmm-yy",
+   "formula": "45658",
+   "formulaLocal": "45658",
+   "bar": "Formula Bar. A,40 1/1/2025"
+  },
+  "date-6": {
+   "cell": {
+    "value": 45688,
+    "format": 14
+   },
+   "text": "1/31/25",
+   "code": "m/d/yy",
+   "local": "m/d/yy",
+   "formula": "45688",
+   "formulaLocal": "45688",
+   "bar": "Formula Bar. A,41 1/31/2025"
+  },
+  "date-7": {
+   "cell": {
+    "value": 2958465,
+    "format": 14
+   },
+   "text": "12/31/99",
+   "code": "m/d/yy",
+   "local": "m/d/yy",
+   "formula": "2958465",
+   "formulaLocal": "2958465",
+   "bar": "Formula Bar. A,42 12/31/9999"
+  },
+  "date-ru-1": {
+   "cell": {
+    "value": "31.01.2025"
+   },
+   "text": "31.01.2025",
+   "code": "General",
+   "local": "General",
+   "formula": "31.01.2025",
+   "formulaLocal": "31.01.2025",
+   "bar": "Formula Bar. A,43 31.01.2025"
+  },
+  "date-ru-2": {
+   "cell": {
+    "value": "31.01.2025 18:00"
+   },
+   "text": "31.01.2025 18:00",
+   "code": "General",
+   "local": "General",
+   "formula": "31.01.2025 18:00",
+   "formulaLocal": "31.01.2025 18:00",
+   "bar": "Formula Bar. A,44 31.01.2025 18:00"
+  },
+  "date-ru-3": {
+   "cell": {
+    "value": "31 янв 2025"
+   },
+   "text": "31 янв 2025",
+   "code": "General",
+   "local": "General",
+   "formula": "31 янв 2025",
+   "formulaLocal": "31 янв 2025",
+   "bar": "Formula Bar. A,45 31 янв 2025"
+  },
+  "date-ru-4": {
+   "cell": {
+    "value": "31.12.9999"
+   },
+   "text": "31.12.9999",
+   "code": "General",
+   "local": "General",
+   "formula": "31.12.9999",
+   "formulaLocal": "31.12.9999",
+   "bar": "Formula Bar. A,46 31.12.9999"
+  },
+  "time-1": {
+   "cell": {
+    "value": 0.7708333333333334,
+    "format": 20
+   },
+   "text": "18:30",
+   "code": "h:mm",
+   "local": "h:mm",
+   "value2": 0.7708333333333334,
+   "formula": "0.770833333333333",
+   "formulaLocal": "0.770833333333333",
+   "bar": "Formula Bar. A,47 6:30:00 PM"
+  },
+  "time-2": {
+   "cell": {
+    "value": 0.7708333333333334,
+    "format": 18
+   },
+   "text": "6:30 PM",
+   "code": "h:mm AM/PM",
+   "local": "h:mm AM/PM",
+   "value2": 0.7708333333333334,
+   "formula": "0.770833333333333",
+   "formulaLocal": "0.770833333333333",
+   "bar": "Formula Bar. A,48 6:30:00 PM"
+  },
+  "time-3": {
+   "cell": {
+    "value": 0.7710069444444444,
+    "format": 21
+   },
+   "text": "18:30:15",
+   "code": "h:mm:ss",
+   "local": "h:mm:ss",
+   "value2": 0.7710069444444444,
+   "formula": "0.771006944444444",
+   "formulaLocal": "0.771006944444444",
+   "bar": "Formula Bar. A,49 6:30:15 PM"
+  },
+  "time-4": {
+   "cell": {
+    "value": 1.0625,
+    "format": 46
+   },
+   "text": "25:30:00",
+   "code": "[h]:mm:ss",
+   "local": "[h]:mm:ss",
+   "value2": 1.0625,
+   "formula": "1.0625",
+   "formulaLocal": "1.0625",
+   "bar": "Formula Bar. A,50 1/1/1900  1:30:00 AM"
+  },
+  "time-5": {
+   "cell": {
+    "value": 0,
+    "format": 20
+   },
+   "text": "0:00",
+   "code": "h:mm",
+   "local": "h:mm",
+   "value2": 0,
+   "formula": "0",
+   "formulaLocal": "0",
+   "bar": "Formula Bar. A,51 12:00:00 AM"
+  },
+  "time-6": {
+   "cell": {
+    "value": 0,
+    "format": 18
+   },
+   "text": "12:00 AM",
+   "code": "h:mm AM/PM",
+   "local": "h:mm AM/PM",
+   "value2": 0,
+   "formula": "0",
+   "formulaLocal": "0",
+   "bar": "Formula Bar. A,52 12:00:00 AM"
+  },
+  "bool-1": {
+   "cell": {
+    "value": true
+   },
+   "text": "TRUE",
+   "code": "General",
+   "local": "General",
+   "formula": "TRUE",
+   "formulaLocal": "TRUE",
+   "bar": "Formula Bar. A,53 TRUE"
+  },
+  "bool-2": {
+   "cell": {
+    "value": false
+   },
+   "text": "FALSE",
+   "code": "General",
+   "local": "General",
+   "formula": "FALSE",
+   "formulaLocal": "FALSE",
+   "bar": "Formula Bar. A,54 FALSE"
+  },
+  "bool-3": {
+   "cell": {
+    "value": "ИСТИНА"
+   },
+   "text": "ИСТИНА",
+   "code": "General",
+   "local": "General",
+   "formula": "ИСТИНА",
+   "formulaLocal": "ИСТИНА",
+   "bar": "Formula Bar. A,55 ИСТИНА"
+  },
+  "bool-4": {
+   "cell": {
+    "value": "ложь"
+   },
+   "text": "ложь",
+   "code": "General",
+   "local": "General",
+   "formula": "ложь",
+   "formulaLocal": "ложь",
+   "bar": "Formula Bar. A,56 ложь"
+  },
+  "text-1": {
+   "cell": {
+    "value": "007"
+   },
+   "text": "007",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "007",
+   "formulaLocal": "007",
+   "bar": "Formula Bar. A,57 '007"
+  },
+  "text-2": {
+   "cell": {
+    "value": "1.5"
+   },
+   "text": "1.5",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "1.5",
+   "formulaLocal": "1.5",
+   "bar": "Formula Bar. A,58 '1.5"
+  },
+  "text-3": {
+   "cell": {
+    "value": "1,5"
+   },
+   "text": "1,5",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "1,5",
+   "formulaLocal": "1,5",
+   "bar": "Formula Bar. A,59 '1,5"
+  },
+  "text-4": {
+   "cell": {
+    "value": "=1+2"
+   },
+   "text": "=1+2",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "=1+2",
+   "formulaLocal": "=1+2",
+   "bar": "Formula Bar. A,60 '=1+2"
+  },
+  "text-5": {
+   "cell": {
+    "value": "TRUE"
+   },
+   "text": "TRUE",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "TRUE",
+   "formulaLocal": "TRUE",
+   "bar": "Formula Bar. A,61 'TRUE"
+  },
+  "text-6": {
+   "cell": {
+    "value": "ИСТИНА"
+   },
+   "text": "ИСТИНА",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "ИСТИНА",
+   "formulaLocal": "ИСТИНА",
+   "bar": "Formula Bar. A,62 'ИСТИНА"
+  },
+  "text-7": {
+   "cell": {
+    "value": "abc"
+   },
+   "text": "abc",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "abc",
+   "formulaLocal": "abc",
+   "bar": "Formula Bar. A,63 'abc"
+  },
+  "text-8": {
+   "cell": {
+    "value": "abc"
+   },
+   "text": "abc",
+   "code": "General",
+   "local": "General",
+   "formula": "abc",
+   "formulaLocal": "abc",
+   "bar": "Formula Bar. A,64 abc"
+  },
+  "text-9": {
+   "cell": {
+    "value": "12%"
+   },
+   "text": "12%",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "12%",
+   "formulaLocal": "12%",
+   "bar": "Formula Bar. A,65 '12%"
+  },
+  "text-10": {
+   "cell": {
+    "value": "1/31/2025"
+   },
+   "text": "1/31/2025",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "1/31/2025",
+   "formulaLocal": "1/31/2025",
+   "bar": "Formula Bar. A,66 '1/31/2025"
+  },
+  "text-11": {
+   "cell": {
+    "value": "31.01.2025"
+   },
+   "text": "31.01.2025",
+   "code": "General",
+   "local": "General",
+   "prefix": "'",
+   "formula": "31.01.2025",
+   "formulaLocal": "31.01.2025",
+   "bar": "Formula Bar. A,67 '31.01.2025"
+  },
+  "date-cell-1": {
+   "cell": {
+    "value": 45688,
+    "format": 14
+   },
+   "text": "1/31/25",
+   "code": "m/d/yy",
+   "local": "m/d/yy",
+   "formula": "45688",
+   "formulaLocal": "45688",
+   "bar": "Formula Bar. A,68 1/31/2025"
+  },
+  "date-cell-2": {
+   "cell": {
+    "value": 45688.75,
+    "format": 14
+   },
+   "text": "1/31/25",
+   "code": "m/d/yy",
+   "local": "m/d/yy",
+   "formula": "45688.75",
+   "formulaLocal": "45688.75",
+   "bar": "Formula Bar. A,69 1/31/2025  6:00:00 PM"
+  },
+  "date-cell-3": {
+   "cell": {
+    "value": "45688,75",
+    "format": 14
+   },
+   "text": "45688,75",
+   "code": "m/d/yy",
+   "local": "m/d/yy",
+   "formula": "45688,75",
+   "formulaLocal": "45688,75",
+   "bar": "Formula Bar. A,70 45688,75"
+  },
+  "date-cell-4": {
+   "cell": {
+    "value": 0,
+    "format": 14
+   },
+   "text": "1/0/00",
+   "code": "m/d/yy",
+   "local": "m/d/yy",
+   "formula": "0",
+   "formulaLocal": "0",
+   "bar": "Formula Bar. A,71 1/0/1900"
+  },
+  "date-cell-5": {
+   "cell": {
+    "value": -1,
+    "format": 14
+   },
+   "text": "#########",
+   "code": "m/d/yy",
+   "local": "m/d/yy",
+   "formula": "-1",
+   "formulaLocal": "-1",
+   "bar": "Formula Bar. A,72 -1"
+  },
+  "long-date-cell-1": {
+   "cell": {
+    "value": 45688,
+    "format": "d\\ mmmm\\ yyyy"
+   },
+   "text": "#########",
+   "code": "d mmmm yyyy",
+   "local": "d mmmm yyyy",
+   "formula": "45688",
+   "formulaLocal": "45688",
+   "bar": "Formula Bar. A,73 1/31/2025"
+  },
+  "time-cell-1": {
+   "cell": {
+    "value": 0.75,
+    "format": 20
+   },
+   "text": "18:00",
+   "code": "h:mm",
+   "local": "h:mm",
+   "value2": 0.75,
+   "formula": "0.75",
+   "formulaLocal": "0.75",
+   "bar": "Formula Bar. A,74 6:00:00 PM"
+  },
+  "time-cell-2": {
+   "cell": {
+    "value": "0,75",
+    "format": 20
+   },
+   "text": "0,75",
+   "code": "h:mm",
+   "local": "h:mm",
+   "formula": "0,75",
+   "formulaLocal": "0,75",
+   "bar": "Formula Bar. A,75 0,75"
+  },
+  "time-cell-3": {
+   "cell": {
+    "value": 1.75,
+    "format": 20
+   },
+   "text": "18:00",
+   "code": "h:mm",
+   "local": "h:mm",
+   "value2": 1.75,
+   "formula": "1.75",
+   "formulaLocal": "1.75",
+   "bar": "Formula Bar. A,76 1/1/1900  6:00:00 PM"
+  },
+  "elapsed-cell-1": {
+   "cell": {
+    "value": 1.5,
+    "format": 46
+   },
+   "text": "36:00:00",
+   "code": "[h]:mm:ss",
+   "local": "[h]:mm:ss",
+   "value2": 1.5,
+   "formula": "1.5",
+   "formulaLocal": "1.5",
+   "bar": "Formula Bar. A,77 1/1/1900  12:00:00 PM"
+  },
+  "money-cell-1": {
+   "cell": {
+    "value": 1234.5,
+    "format": "\\$#,##0.00"
+   },
+   "text": "$1,234.50",
+   "code": "\\$#,##0.00",
+   "local": "\\$#,##0.00",
+   "value2": 1234.5,
+   "formula": "1234.5",
+   "formulaLocal": "1234.5",
+   "bar": "Formula Bar. A,78 1234.5"
+  },
+  "frac-cell-1": {
+   "cell": {
+    "value": 0.5,
+    "format": 12
+   },
+   "text": " 1/2",
+   "code": "# ?/?",
+   "local": "# ?/?",
+   "value2": 0.5,
+   "formula": "0.5",
+   "formulaLocal": "0.5",
+   "bar": "Formula Bar. A,79 0.5"
+  },
+  "sci-cell-1": {
+   "cell": {
+    "value": 1234.5,
+    "format": 11
+   },
+   "text": "1.23E+03",
+   "code": "0.00E+00",
+   "local": "0.00E+00",
+   "value2": 1234.5,
+   "formula": "1234.5",
+   "formulaLocal": "1234.5",
+   "bar": "Formula Bar. A,80 1234.5"
+  },
+  "text-cell-1": {
+   "cell": {
+    "value": "007",
+    "format": 49
+   },
+   "text": "007",
+   "code": "@",
+   "local": "@",
+   "formula": "007",
+   "formulaLocal": "007",
+   "bar": "Formula Bar. A,81 007"
+  },
+  "text-cell-2": {
+   "cell": {
+    "value": "1.5",
+    "format": 49
+   },
+   "text": "1.5",
+   "code": "@",
+   "local": "@",
+   "formula": "1.5",
+   "formulaLocal": "1.5",
+   "bar": "Formula Bar. A,82 1.5"
+  },
+  "grouped-cell-1": {
+   "cell": {
+    "value": 1234567.891,
+    "format": 4
+   },
+   "text": "#########",
+   "code": "#,##0.00",
+   "local": "#,##0.00",
+   "value2": 1234567.891,
+   "formula": "1234567.891",
+   "formulaLocal": "1234567.891",
+   "bar": "Formula Bar. A,83 1234567.891"
+  },
+  "month-cell-1": {
+   "cell": {
+    "value": 45688.5,
+    "format": 17
+   },
+   "text": "Jan-25",
+   "code": "mmm-yy",
+   "local": "mmm-yy",
+   "formula": "45688.5",
+   "formulaLocal": "45688.5",
+   "bar": "Formula Bar. A,84 1/31/2025  12:00:00 PM"
+  },
+  "pct-text-1": {
+   "cell": {
+    "value": "5",
+    "format": 9
+   },
+   "text": "5",
+   "code": "0%",
+   "local": "0%",
+   "prefix": "'",
+   "formula": "5",
+   "formulaLocal": "5",
+   "bar": "Formula Bar. A,85 '5"
+  }
+ }
+}

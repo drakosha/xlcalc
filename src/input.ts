@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { english } from './locale/english.js'
@@ -15,29 +15,12 @@ import type { Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
+import { InputError, what } from './input-error.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookWithoutEquals, editsWithoutEquals, layoutWithoutEquals, leadingEquals, namesWithoutEquals } from './equals.js'
 
-/** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
-export class InputError extends TypeError {
-  override readonly name = 'InputError'
-  constructor(
-    readonly path: string,
-    problem: string,
-  ) {
-    super(`${path}: ${problem}`)
-  }
-}
-
-export function what(v: unknown): string {
-  if (v === undefined || v === null) return String(v)
-  if (Array.isArray(v)) return 'an array'
-  if (typeof v === 'object') return 'an object'
-  if (typeof v === 'function') return 'a function'
-  if (typeof v === 'string') return `the string ${JSON.stringify(v)}`
-  return `${typeof v} ${String(v)}`
-}
+export { InputError, what } from './input-error.js'
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
@@ -558,6 +541,16 @@ export function checkEntryWidthOptions(v: unknown, path = 'opts'): EntryWidthOpt
   const { bestFit, ...rest } = object(v, path, "options such as { format: 14, locale: 'ru-RU', width: 9.5, bestFit: true }")
   if (bestFit !== undefined) checkBoolean(bestFit, `${path}.bestFit`)
   return { ...checkDisplayOptions(rest, path), ...(bestFit !== undefined ? { bestFit: bestFit as boolean } : {}) }
+}
+
+/** `entryText`'s and `needsApostrophe`'s options: the cell's number format, the book's locale and date system, the moment for a date without a year. */
+export function checkEntryTextOptions(v: unknown, path = 'opts'): EntryTextOptions {
+  if (v === undefined) return {}
+  const o = object(v, path, "options such as { numberFormat: '0%', locale: 'ru-RU' }")
+  onlyKeys(o, path, ['numberFormat', 'locale', 'dateSystem', 'now'])
+  if (o.numberFormat !== undefined) checkFormat(o.numberFormat, `${path}.numberFormat`)
+  checkEntryOptions({ ...(o.locale !== undefined ? { locale: o.locale } : {}), ...(o.dateSystem !== undefined ? { dateSystem: o.dateSystem } : {}), ...(o.now !== undefined ? { now: o.now } : {}) }, path)
+  return o as EntryTextOptions
 }
 
 /** `parseEntry`'s options; of the cell only its format, style, meta, note and link are read (it may be a `CellView`). */

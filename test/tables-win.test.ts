@@ -11,7 +11,7 @@ import { winFiles } from './excel-win-cases.js'
 import { differences } from './tables-cases.js'
 import './locales.js'
 
-const SETS = TAGS.flatMap((tag) => winFiles<StoredTables>(`tables/${localeDir(tag)}`).map((s) => ({ ...s, sub: localeDir(tag) })))
+const SETS = TAGS.flatMap((tag) => winFiles<StoredTables>(`tables/${localeDir(tag)}`).map((s) => ({ ...s, sub: localeDir(tag), tag })))
 
 /** `<set>:<case>` → why the engine's answer differs from Excel for Windows's. */
 const WIN_TABLES: Readonly<Record<string, string>> = {
@@ -34,7 +34,7 @@ describe.each(SETS)('tables $name ($sub) against Excel for Windows', (set) => {
   const mod = import(`../bench/coverage/tables/${set.name}.ts`) as Promise<TableSet>
   it.each(set.cases.map((c) => [c.id, c] as const))('%s', async (id, c) => {
     expect((await mod).buildTableCases().find((x) => x.id === id), "the stored case is the generator's current one").toEqual(c)
-    const diff = differences(c, set.answers[id])
+    const diff = differences(c, set.answers[id], set.tag)
     const known = WIN_TABLES[`${set.name}:${id}`]
     if (known) expect(diff.length, `${id} is known to differ: ${known}`).toBeGreaterThan(0)
     else expect(diff).toEqual([])

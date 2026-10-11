@@ -21,12 +21,17 @@ export const enUS: Locale = EN_US
 
 const cache = new WeakMap<object, Sides>()
 
-/** The translation tables of a locale given by its tag or as an object, built once per locale object. */
-function sidesOf(where: string | Locale): [Locale, Sides] {
-  const locale = checkLocaleArg(where, 'locale')
+/** A checked locale's translation tables (`checkLocaleArg`), built once per locale object (a locale must not change after its first use). */
+export function sidesOf(locale: Locale): Sides {
   let s = cache.get(locale)
   if (!s) cache.set(locale, (s = sides(locale)))
-  return [locale, s]
+  return s
+}
+
+/** A locale given by a loaded locale's tag or as an object, and its translation tables. */
+function localeSides(where: string | Locale): [Locale, Sides] {
+  const locale = checkLocaleArg(where, 'locale')
+  return [locale, sidesOf(locale)]
 }
 
 /** A translation's result, its message in the locale's language. */
@@ -41,7 +46,7 @@ const refusal = (r: Fail, locale: Locale) => ({ ok: false as const, code: 'synta
  * formula inside a table.
  */
 export function toLocal(formula: string, where: string | Locale, opts: { table?: string } = {}): Translation {
-  const [locale, s] = sidesOf(where)
+  const [locale, s] = localeSides(where)
   if (opts.table !== undefined) checkString(opts.table, 'opts.table')
   return result(translate(shownTables(checkString(formula, 'formula'), opts.table, s.local.syn.list), s.invariant, s.local), locale)
 }
@@ -81,7 +86,7 @@ function shownTables(formula: string, table: string | undefined, list: string): 
  * error texts are read too. Positions of errors are in `text`, their messages in the locale's language.
  */
 export function toInvariant(text: string, where: string | Locale): Translation {
-  const [locale, s] = sidesOf(where)
+  const [locale, s] = localeSides(where)
   const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
   return result(translate(text.slice(eq), s.local, s.invariant, eq), locale)
 }
@@ -91,7 +96,7 @@ export function toInvariant(text: string, where: string | Locale): Translation {
  * canonical stored text, positions of errors in `text` (a leading `=` is allowed) and messages in the locale's language.
  */
 export function validateLocalFormula(text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult {
-  const [locale, s] = sidesOf(where)
+  const [locale, s] = localeSides(where)
   const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
   const c = checkValidateContext(ctx)
   const t = translate(text.slice(eq), s.local, s.invariant, eq)

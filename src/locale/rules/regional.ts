@@ -8,7 +8,7 @@ import { textOrder } from '../../collate.js'
 import { errorWords } from '../../criteria.js'
 import { inSystem, parseDateWith, textReaders } from '../../dates.js'
 import { displayWith, fitPoints, formatWith, generalText, styleIn, typedPoints, type Names } from '../../numfmt.js'
-import { ERROR_TEXT } from '../../syntax.js'
+import { errorIn } from '../../syntax/errors.js'
 import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
 import type { Locale } from '../types.js'
@@ -53,7 +53,7 @@ export function regionalRules(locale: Locale, data: RegionalData, clock: RulesCl
     typedPoints: (value, format, now) => typedPoints(value, format, cell, now),
     compare,
     compareOp: operatorOrder(compare),
-    errorText: (code: ErrorCode) => locale.errors[ERROR_TEXT[code]] ?? ERROR_TEXT[code],
+    errorText: (code: ErrorCode) => errorIn(code, locale.errors),
     codePage: data.codePage,
     critNumber: argument,
     critBool: word,

@@ -8,7 +8,7 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { builtinFormatCode, compute, createInlineCalc, displayValue, entryWidth, enUS, fitColumns, InputError, LOCALES, openSession, parseEntry, registerLocale, restructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
+import { builtinFormatCode, compute, createInlineCalc, displayValue, entryText, entryWidth, enUS, errorText, fitColumns, InputError, needsApostrophe, scanReferences, validateSheetName, LOCALES, openSession, parseEntry, registerLocale, restructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
 import { PACKAGE_LOCALES } from '../src/locale/registry.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { LOCALE_MODULES } from '../src/worker/locales.js'
@@ -66,6 +66,11 @@ describe('without ru-RU loaded', () => {
       ['locale', () => toInvariant('1', 'ru-RU')],
       ['locale', () => validateLocalFormula('1', 'ru-RU')],
       ['locale', () => builtinFormatCode(14, 'ru-RU')],
+      ['locale', () => errorText('DIV0', 'ru-RU')],
+      ['opts.locale', () => entryText(1.5, { locale: 'ru-RU' })],
+      ['opts.locale', () => needsApostrophe('1,5', { locale: 'ru-RU' })],
+      ['opts.locale', () => scanReferences('=A1', { locale: 'ru-RU' })],
+      ['opts.locale', () => validateSheetName('S', { locale: 'ru-RU' })],
     ]
     for (const [path, call] of calls) expect(refusal(call)).toMatchObject({ path, message: `${path}: ${HINT}` })
   })
@@ -80,6 +85,9 @@ describe('without ru-RU loaded', () => {
     expect(displayValue(46096, { format: 14, locale: ruRU, width: 12 })).toEqual({ text: '15.03.2026' })
     expect(entryWidth(1234567890, { locale: ruRU })).toBe(11.1640625)
     expect(builtinFormatCode(14, ruRU)).toBe('dd.mm.yyyy')
+    expect([errorText('DIV0', ruRU), entryText(1.5, { locale: ruRU }), needsApostrophe('1,5', { locale: ruRU })]).toEqual(['#ДЕЛ/0!', '1,5', true])
+    expect(scanReferences('=СУММ(B2:B9;C1)', { locale: ruRU }).map((r) => r.text)).toEqual(['B2:B9', 'C1'])
+    expect(validateSheetName('Итоги/2025', { locale: ruRU })).toMatchObject({ ok: false, message: 'Имя листа не может содержать «/» (Excel запрещает : \\ / ? * [ ])' })
     expect([validateName('ложь', { locale: ruRU }).ok, validateName('ложь').ok]).toEqual([false, true])
     expect(validateNames([{ name: 'ИСТИНА', ref: '1' }], { sheets: ['S'], locale: ruRU })).toMatchObject([{ name: 'ИСТИНА', dropped: true }])
     expect([...LOCALES.keys()]).toEqual(['en-US'])
