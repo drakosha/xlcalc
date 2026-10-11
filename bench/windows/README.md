@@ -90,10 +90,6 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 - The xlsx round trip, the saved books and the colours of `bench/coverage/xlsx.ts`, and the ru-RU formula text snapshot (`bench/locale`): they work through COM (`SaveAs`, `Interior.Color`, `FormulaLocal`) but are not ported; only the filters and the built-in formats are.
 - The spill order runs (`order-runs.json`) record Excel for Mac's varying choice and are no set.
 
-## The first probe
-
-`probe.ps1` is the probe that first showed COM working over SSH, kept as it ran: its Office settings do not change the interface language.
-
 ## How it was checked
 
 Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale; Excel took every formula and opened every book.
