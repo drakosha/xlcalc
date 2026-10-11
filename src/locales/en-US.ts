@@ -5,6 +5,7 @@
  */
 import type { Counts, EnglishMessages, Found, NameRule } from '../locale/messages.js'
 import type { Locale } from '../locale/types.js'
+import { ERROR_TEXT } from '../syntax/errors.js'
 
 const found = (f: Found) => (f.t === 'op' || f.t === 'ident' || f.t === 'fn' ? JSON.stringify(f.v) : f.t === 'eof' ? 'end of formula' : f.t)
 
@@ -96,9 +97,11 @@ export const EN_MESSAGES: EnglishMessages = {
   tableOverMerge: (p) => `${p.range} meets the merged area ${p.area}`,
   explainCells: (p) => `${p.count} cells`,
   explainSpill: (p) => `spilled from ${p.ref}`,
-  // the value as JSON, an error by its code (`#DIV0`)
-  explainValue: ({ value: v }) => (v === undefined ? '' : v !== null && typeof v === 'object' ? `#${v.error}` : JSON.stringify(v)),
+  // the value as JSON, an error as a cell shows it (`#DIV/0!`)
+  explainValue: ({ value: v }) => (v === undefined ? '' : v === null ? 'empty' : typeof v === 'object' ? ERROR_TEXT[v.error] : JSON.stringify(v)),
   explainFormula: (p) => p.formula,
+  explainErrorFrom: (p) => `(error from ${p.ref})`,
+  explainErrorHere: () => '(the error begins here)',
 }
 
 /** en-US's formula text, the invariant syntax; its messages are `EN_MESSAGES`, which every locale falls back to. */

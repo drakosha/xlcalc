@@ -2,8 +2,9 @@
  * A pool's threads compute in the locales loaded where the pool runs: those loaded when a thread starts come with it,
  * those loaded later are sent to every thread, a thread started again after a loss gets them all. A locale goes as its
  * data, which a structured clone carries, but its messages, which are functions: a thread imports the package's
- * module of the tag for them, and a locale outside the package speaks English there, as it does here. Before ru-RU is
- * loaded a pool refuses a ru-RU book as the same thread does. The file does not import `locales.ts`.
+ * module of the tag for them, and a locale outside the package speaks English there, as it does here. A session's
+ * explanation, a window's formulas in the locale (`getViewport`) and its refusals are a synchronous session's. Before
+ * ru-RU is loaded a pool refuses a ru-RU book as the same thread does. The file does not import `locales.ts`.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, InputError, openSession, registerLocale, type BookInput, type Calc } from '../src/index.js'
@@ -24,16 +25,18 @@ const made = async (...a: Parameters<typeof pool>) => {
 }
 afterAll(() => Promise.all(open.map((p) => p.close())))
 
-/** What a synchronous session answers: its values, its explanation and its refusal of deleting the last sheet. */
+/** What a synchronous session answers: its values, its explanation, a window's formula in the locale and its refusal of deleting the last sheet. */
 function sync(b: BookInput, execution: 'closures' | 'eval') {
   const s = openSession(b, { clock, execution })
-  return { hash: s.result().hash, explain: s.explain('S', 'A1').text, refusal: s.restructure({ op: 'deleteSheet', sheet: 'S' }) }
+  const local = s.getViewport('S', 'A1:A3', { formulaLocal: true }).cells.A1.formulaLocal
+  return { hash: s.result().hash, explain: s.explain('S', 'A1').text, local, refusal: s.restructure({ op: 'deleteSheet', sheet: 'S' }) }
 }
 
 /** The same of a session in a pool. */
 async function threaded(calc: Calc, b: BookInput, execution: 'closures' | 'eval') {
   const s = await calc.openSession(b, { clock, execution })
-  return { hash: (await s.result()).hash, explain: (await s.explain('S', 'A1')).text, refusal: await s.restructure({ op: 'deleteSheet', sheet: 'S' }) }
+  const local = (await s.getViewport('S', 'A1:A3', { formulaLocal: true })).cells.A1.formulaLocal
+  return { hash: (await s.result()).hash, explain: (await s.explain('S', 'A1')).text, local, refusal: await s.restructure({ op: 'deleteSheet', sheet: 'S' }) }
 }
 
 describe('locales in a pool', () => {
@@ -59,7 +62,7 @@ describe('locales in a pool', () => {
       expect((await calc.compute(book('ru-RU'), { clock, execution })).hash).toBe(compute(book('ru-RU'), { clock, execution }).hash)
       // two sessions, one on each thread
       const want = sync(book('ru-RU'), execution)
-      expect(want.refusal).toMatchObject({ ok: false, message: 'В книге должен остаться хотя бы один лист' })
+      expect(want).toMatchObject({ local: 'ЗНАЧЕН("1,5")+ЗНАЧЕН("1 234,5")', refusal: { ok: false, message: 'В книге должен остаться хотя бы один лист' } })
       expect(await Promise.all([threaded(calc, book('ru-RU'), execution), threaded(calc, book('ru-RU'), execution)])).toEqual([want, want])
     })
 

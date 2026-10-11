@@ -13,7 +13,7 @@ export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
 export const CHANGING = ['setCells', 'patchCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
-export type Op = (typeof CHANGING)[number] | 'book' | 'layout' | 'extent' | 'explain' | 'cells' | 'validation' | 'validateEntry' | 'result' | 'hash'
+export type Op = (typeof CHANGING)[number] | 'book' | 'layout' | 'extent' | 'explain' | 'cells' | 'getViewport' | 'getCellIssue' | 'validation' | 'validateEntry' | 'result' | 'hash'
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {

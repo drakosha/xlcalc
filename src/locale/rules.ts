@@ -8,7 +8,7 @@
 import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders, type DateSyntax } from '../dates.js'
-import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
+import { builtinCodes, displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { EN_US } from '../locales/en-US.js'
@@ -17,6 +17,12 @@ import { localeOf } from './registry.js'
 import type { CodePage, RulesClock } from './rules/data.js'
 import { regionalRules } from './rules/regional.js'
 import type { Locale } from './types.js'
+
+/** The codes a locale (a loaded locale's tag or an object; en-US without one) shows the built-in formats by, by number: its own, en-US's for the rest (`numfmt/builtin.ts`). */
+export function builtinIn(where: string | Locale | undefined): (id: number) => string {
+  const own = localeOf(where).regional?.builtin
+  return own ? builtinCodes(own) : (id) => EN_BUILTIN[id]
+}
 
 export interface Rules extends CritRules {
   /** The locale of formula text: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */

@@ -263,6 +263,8 @@ const MESSAGES: Messages = {
   explainSpill: (p) => `перенос из ${p.ref}`,
   explainValue: ({ value: v }, w) => (v === undefined ? '' : v === null ? 'пусто' : w.value(v)),
   explainFormula: (p, w) => w.formula(p.formula),
+  explainErrorFrom: (p) => `(ошибка из ${p.ref})`,
+  explainErrorHere: () => '(ошибка возникает здесь)',
 }
 
 /** ru-RU, for `registerLocale`, and for `toLocal` and the functions without a book as it is. */

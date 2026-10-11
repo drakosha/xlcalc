@@ -24,7 +24,7 @@ const changes = await session.setCells(edits, { signal: AbortSignal.timeout(5_00
 
 A session takes its calls in order: each starts when the one before has finished. Two `setCells` called without waiting give each promise its own changes, as two synchronous calls would. A call that fails changes nothing: the session is as it was before the call, and the next call works on that state.
 
-`restructure` answers `{ ok, mapCell, changes }` without the book, which a thread would otherwise send back on every operation; `book()` fetches it. From a thread, `book()`, `result()` and `explain()` answer copies.
+`restructure` answers `{ ok, mapCell, changes }` without the book, which a thread would otherwise send back on every operation; `book()` fetches it. From a thread, `book()`, `result()`, `explain()` and `getViewport()` answer copies; a window's cells of one style still share one style object, as a structured clone keeps an object met twice once.
 
 A session's `clock` is its clock as of its last finished call.
 

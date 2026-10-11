@@ -6,37 +6,17 @@
  * thread and in a thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { createInlineCalc, InputError, openSession, type AsyncSession, type BookInput, type Calc, type CellView, type Execution, type LayoutEdit, type Session, type SessionOptions, type SheetExtent, type StructureOp } from '../src/index.js'
+import { InputError, openSession, type AsyncSession, type BookInput, type CellView, type Execution, type LayoutEdit, type SheetExtent, type StructureOp } from '../src/index.js'
 import { compareAddress } from '../src/model.js'
 import { synthBook } from '../src/synth.js'
 import { CLOCK } from './async-books.js'
-import { pool } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
+import { closeCalcs, keptPool, KINDS, opener } from './session-kinds.js'
 import { spillBook } from './session-spill-edits.js'
 import { extentOf } from './sheet-extent.js'
 import './locales.js'
 
-/** A synchronous session behind the asynchronous API, so that one test covers the three ways. */
-function wrapped(s: Session): AsyncSession {
-  const out: Record<string, unknown> = {}
-  for (const k of ['setCells', 'patchCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout', 'book', 'layout', 'extent', 'explain', 'cells', 'validation', 'validateEntry', 'result', 'hash', 'close'] as const)
-    out[k] = async (...a: unknown[]) => (s[k] as (...a: unknown[]) => unknown)(...a)
-  return Object.defineProperty(out, 'clock', { get: () => s.clock }) as unknown as AsyncSession
-}
-
-const KINDS = ['a synchronous session', 'the same thread', 'a thread'] as const
-type Kind = (typeof KINDS)[number]
-
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
-
-/** Opens sessions of one kind. */
-async function opener(kind: Kind): Promise<(book: BookInput, opts: SessionOptions) => Promise<AsyncSession>> {
-  if (kind === 'a synchronous session') return async (book, opts) => wrapped(openSession(book, opts))
-  const calc = kind === 'the same thread' ? createInlineCalc({ sliceMs: 2 }) : await pool({ threads: 1 })
-  calcs.push(calc)
-  return (book, opts) => calc.openSession(book, opts)
-}
+afterAll(closeCalcs)
 
 /** A sheet of values, an old-kind array formula, a spill as tall as A1 says, a merged area and a table; a sheet of nothing; one spilling down a whole column. */
 const crafted = (): BookInput => ({
@@ -189,9 +169,7 @@ describe('a window beside the cells', () => {
     const l = s.layout()
     expect(l.sheets[0].merges).toBe(s.book().sheets[0].merges)
     expect(l.styles).toBe(s.book().styles)
-    const p = await pool({ threads: 1 })
-    calcs.push(p)
-    const t = await p.openSession(crafted(), { clock: CLOCK })
+    const t = await (await keptPool()).openSession(crafted(), { clock: CLOCK })
     const a = await t.layout()
     a.sheets[0].merges!.push('A20:B20')
     expect((await t.layout()).sheets[0].merges).toEqual(['J5:K6'])
