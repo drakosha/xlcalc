@@ -112,11 +112,11 @@ The rules of a name were measured in Excel 16.113 for Mac and Excel 16.0.20430 f
 | `names-ru-more-held` (ru-RU) | 10 | 5 | `ИСТИНА` and `ЛОЖЬ` refused and TRUE and FALSE taken (TRUE known), `?` and `\` (fixed), files with `ИСТИНА`, `истина`, `ЛОЖЬ` not opened (3, fixed); one more the predictions held no text for: the word `ИСТИНА` shown as `'ИСТИНА'` (fixed) |
 | `names-tables-held` | 4 | 3 | a table renamed `?Продажи` (known) |
 | `names-ru-tables-held` (ru-RU) | 3 | 0 | tables renamed `ИСТИНА`, `ложь`, `TRUE`, where the two Excels part (known) |
+| `paste-names-held` (`add-cell-shapes`) | 1 | 0 | `XFE1` and `A0` taken and read by a formula (fixed); `R1`, `C5`, `XFD1`, `r1` and `R1C1` refused, as predicted |
 | `name-case-held`, `name-case-sheets-held` | 11 and 10 | 8 and 6 (Windows: 6 and 8; the rule the first set gave predicted the second) | the dotless `ı` is no `I`, the long `ſ` no `S` in Excel for Windows, which the engine follows (fixed; Excel for Mac takes `ſ` for `S`, known); `ß` is `SS` and `ﬁ` is `FI` in names and tables, as predicted; sheets compare letter by letter in both Excels, `ß` beside `SS` (known) |
 | `name-case-ru-held` (ru-RU) | 10 | 8 (Windows: 10) | the long `ſ` taken for `S` by Excel for Mac (known); the rest as in en-US |
-| `paste-names-held` (`add-cell-shapes`) | 1 | 0 | `XFE1` and `A0` taken and read by a formula (fixed); `R1`, `C5`, `XFD1`, `r1` and `R1C1` refused, as predicted |
 
-In all, 34 of the 54 cases came out as predicted on the Mac and 35 on Windows, which agreed with the Mac on every case but the 255-letter name and the tables of `names-ru-tables-held`. The two Excels agree on `add-cell-shapes`.
+In all, 34 of the 54 cases before `name-case-held` came out as predicted on the Mac and 35 on Windows, which agreed with the Mac on every case but the 255-letter name and the tables of `names-ru-tables-held`. The two Excels agree on `add-cell-shapes`. Of the 31 cases of the `name-case` sets, 22 came out as predicted on the Mac and 24 on Windows; the two Excels part on the long `ſ` alone.
 
 The words of a formula, TRUE and FALSE, function names and LET's names in the long s, the sharp s, the ligature `ﬁ` and the dotless and dotted i, were measured in a file and typed (the case set `name-case-held` and the entry sets `name-case-held` and `name-case-values-held`): Excel for Windows reads them letter by letter (`falſe` is a name, `gauß(1)` no `GAUSS`, `LET(ß,1,SS)` `#NAME?`), Excel for Mac reads `ſ` as `s`.
 
