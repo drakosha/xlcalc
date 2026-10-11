@@ -11,6 +11,9 @@
 /** Excel's largest argument count of a function newer than Excel 2007 (`_xlfn.NAME` in a file): one fewer than its 255, measured by the `arity` set. */
 export const NEWER_MAX_ARGS = 254
 
+/** Excel: sine, cosine and their kin are #NUM! from 2^27 on, for a real argument (IMSIN …) and BESSELJ and BESSELY too. */
+export const MAX_TRIG = 2 ** 27
+
 /** Numeric aggregates in input order, with Excel's empty-list results. */
 export const sum = (xs: readonly number[]) => xs.reduce((s, x) => s + x, 0)
 export const sumSquares = (xs: readonly number[]) => xs.reduce((s, x) => s + x * x, 0)
@@ -40,6 +43,17 @@ export function roundDigits(x: number, digits: number, f: (y: number) => number)
   const y = shift(Math.abs(x), digits)
   if (!Number.isFinite(y) || y >= 2 ** 53) return x
   return Math.sign(x) * shift(f(y), -digits)
+}
+
+/** Digits in radix `r` (letters of either case) as a number; null at a character that is no digit of it. */
+export function digitsValue(s: string, r: number): number | null {
+  let n = 0
+  for (const ch of s) {
+    const d = parseInt(ch, 36)
+    if (!(d < r)) return null
+    n = n * r + d
+  }
+  return n
 }
 
 /** n / s to 15 significant digits, as Excel sees the quotient before CEILING and FLOOR round it (1.5 / 0.1 is 15). */

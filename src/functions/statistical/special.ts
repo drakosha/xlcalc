@@ -4,7 +4,7 @@
  * and beta by series and Lentz continued fractions (Numerical Recipes) with prefactors that keep their
  * precision for large parameters, and a bracketed Newton solver for the inverses.
  */
-import { erfc, gammafn } from '../jstat.js'
+import { deviate, erfc, gammafn } from '../jstat.js'
 
 const LN_SQRT_2PI = 0.9189385332046728
 const SQRT_2PI = 2.5066282746310002
@@ -14,7 +14,7 @@ const FPMIN = 1e-300
 const MAX_ITER = 5_000_000
 
 /** ln Γ(x) − ((x − ½) ln x − x + ln √(2π)), the Stirling remainder. */
-export function stirlerr(x: number): number {
+function stirlerr(x: number): number {
   if (x < 10) return Math.log(gammafn(x)) - (x - 0.5) * Math.log(x) + x - LN_SQRT_2PI
   const v = 1 / (x * x)
   return (1 / 12 - v * (1 / 360 - v * (1 / 1260 - v * (1 / 1680 - v * (1 / 1188 - v * (691 / 360360 - v / 156)))))) / x
@@ -24,7 +24,7 @@ export function stirlerr(x: number): number {
 export const lgamma = (x: number): number => (x < 10 ? Math.log(gammafn(x)) : (x - 0.5) * Math.log(x) - x + LN_SQRT_2PI + stirlerr(x))
 
 /** x ln(x/m) + m − x without cancellation when x is near m (Loader). */
-export function bd0(x: number, m: number): number {
+function bd0(x: number, m: number): number {
   if (Math.abs(x - m) < 0.1 * (x + m)) {
     let v = (x - m) / (x + m)
     let s = (x - m) * v
@@ -191,8 +191,7 @@ export function normCdf(z: number): [number, number] {
 export function normInv(p: number, q = 1 - p): number {
   const pp = 2 * Math.min(p, q)
   if (pp <= 0) return NaN
-  const t = Math.sqrt(-2 * Math.log(pp / 2))
-  let x = -0.70711 * ((2.30753 + t * 0.27061) / (1 + t * (0.99229 + t * 0.04481)) - t)
+  let x = 0.70711 * deviate(pp / 2)
   for (let j = 0; j < 50; j++) {
     const err = erfc(x) - pp
     const step = err / (1.1283791670955126 * Math.exp(-x * x) - x * err)

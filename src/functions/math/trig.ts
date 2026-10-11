@@ -4,9 +4,7 @@
  */
 import { E, type CErr } from '../../values.js'
 import type { FnDef } from '../../args.js'
-
-/** Excel: sine, cosine and their kin are #NUM! from 2^27 on. */
-const MAX_TRIG = 2 ** 27
+import { MAX_TRIG } from '../common.js'
 
 /** f(x) within Excel's range; `zero` is the answer at 0 where f has a pole there. */
 const trig = (f: (x: number) => number, zero?: CErr): FnDef => ({

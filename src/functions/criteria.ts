@@ -6,7 +6,7 @@ import type { Cx } from '../args.js'
 export const asRng = (x: V | Rng): Rng | CErr => x instanceof Rng ? x : isErr(x) ? x : E.VALUE
 
 /** SUMIF/AVERAGEIF resize the value range from its anchor, cutting it at the sheet edge. */
-export const resizeRange = (values: Rng, criteria: Rng): Rng => new Rng(
+const resizeRange = (values: Rng, criteria: Rng): Rng => new Rng(
   values.s, values.r1, values.c1,
   Math.min(values.r1 + criteria.r2 - criteria.r1, MAX_ROWS - 1),
   Math.min(values.c1 + criteria.c2 - criteria.c1, MAX_COLS - 1),

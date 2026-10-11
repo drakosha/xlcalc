@@ -2,6 +2,7 @@
 import { generalText } from '../../numfmt/general.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import type { FnDef } from '../../args.js'
+import { digitsValue } from '../common.js'
 import { atp, need } from '../date/atp.js'
 
 const DIGITS = 10
@@ -17,12 +18,8 @@ function read(v: V, r: number): number | CErr {
   const s = digitsOf(v)
   if (isErr(s)) return s
   if (s.length > DIGITS) return E.NUM
-  let n = 0
-  for (const ch of s) {
-    const d = parseInt(ch, 36)
-    if (!(d < r)) return E.NUM
-    n = n * r + d
-  }
+  const n = digitsValue(s, r)
+  if (n === null) return E.NUM
   const full = r ** DIGITS
   return s.length === DIGITS && n >= full / 2 ? n - full : n
 }

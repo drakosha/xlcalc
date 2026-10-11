@@ -1,5 +1,5 @@
 /** Factorials, binomial coefficients, GCD and LCM with Excel's argument checks. This engine's own. */
-import { gridAt, type Arg, type Cx, type FnDef } from '../../args.js'
+import { gridAt, occupied, type Arg, type Cx, type FnDef } from '../../args.js'
 import { E, isErr, whole, type CErr, type V } from '../../values.js'
 import { fact, sum } from '../common.js'
 
@@ -54,7 +54,7 @@ function wholes(cx: Cx, args: readonly Arg[]): number[] | CErr {
     const g = cx.grid(x)
     const n = g.rows * g.cols
     if (n === 1 && gridAt(g, 0) === null) continue
-    const end = Math.min(n, g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
+    const end = Math.min(n, occupied(g))
     for (let i = 0; i < end; i++) {
       const v: V = gridAt(g, i)
       const x = typeof v === 'boolean' ? E.VALUE : cx.rules.toNum(v)

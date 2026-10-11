@@ -89,7 +89,7 @@ export function erfc(x: number): number {
 }
 
 /** A&S 26.2.22: the normal deviate with upper tail pp, the first step of jStat's inverses. */
-const deviate = (pp: number) => {
+export const deviate = (pp: number) => {
   const t = Math.sqrt(-2 * Math.log(pp))
   return t - (2.30753 + t * 0.27061) / (1 + t * (0.99229 + t * 0.04481))
 }
