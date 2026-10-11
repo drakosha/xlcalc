@@ -64,7 +64,7 @@ function checkLocale(locale: unknown): Locale {
 const cache = new WeakMap<object, Sides>()
 
 /** A locale's translation tables, built once per locale object (a locale must not change after its first use). */
-function sidesOf(locale: Locale): Sides {
+export function sidesOf(locale: Locale): Sides {
   let s = cache.get(locale)
   if (!s) cache.set(locale, (s = sides(checkLocale(locale))))
   return s

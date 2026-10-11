@@ -185,7 +185,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     delete sheets[0].hidden
   }
   // table names are unique through the book and apart from the defined names
-  const taken = new Set(names.map((n) => n.name.toUpperCase()))
+  const taken = new Set(names.map((n) => caseKey(n.name)))
   for (const sh of sheets) {
     if (!sh.tables) continue
     sh.tables = sh.tables.filter((t) => {

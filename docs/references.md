@@ -1,4 +1,4 @@
-# The @ operator, unions, references across sheets and the reference operators
+# The @ operator, unions, references across sheets, sheet names and the reference operators
 
 Kinds of references that Excel files use. `@A1:A10` takes one cell of a range. `(A1:A3,C1:C3)` joins ranges of one sheet. `'Jan:Mar'!A1:B2` is the same rectangle on every sheet from Jan to Mar. `A1:C3 B2:D4` is the cells two ranges share, and `A1:INDEX(B1:B9,3)` the range from one reference to another.
 
@@ -51,6 +51,18 @@ The list functions take each sheet's rectangle in turn: `SUM`, `COUNT`, `COUNTA`
 
 Alone or under an operator it is `#REF!` (`=Jan:Mar!A1+1`). `INDEX`, `AREAS`, `ROWS`, `SUBTOTAL` and `AGGREGATE` give `#VALUE!`, `SORTBY` and a value `SWITCH` compares give `#REF!`, `ISREF` gives FALSE.
 
+## Sheet names in references
+
+A formula shows a sheet's name before its reference in quotes only where the name needs them, and `quoteSheetIfNeeded` writes a name the way Excel does. Excel quotes a name:
+
+- that is not a letter or `_` followed by letters, digits, `_` and `.`: `'Q1 data'`, `'2024'`, `'Sheet-1'`, `'€uro'`, `'.a'`; letters of any script count (`Лист1`, `Straße`, `日本`, `a.b`, `_x` stay as they are), and an apostrophe inside is doubled (`'O''Brien'`);
+- that is a cell of the sheet in A1 notation, in either case and with leading zeros (`'A1'`, `'ab12'`, `'A01'`, `'XFD1048576'`, `'RCC1'`); a name past the sheet's edge is no cell (`XFE1`, `A1048577`, `A0`), nor one with more after the cell (`A1B`, `AB12x`);
+- that begins with an R1C1 reference holding a row or column number of the sheet, unless a `.` follows the reference: `'R2'`, `'R2D2'`, `'C3PO'`, `'R1x'`, `'RC1C'`, `'R1C0'` (the row's reference, the column 0 aside), but `R0`, `R1048577`, `C16385x`, `C1.x` and `R1.` stay as they are;
+- that is an R1C1 reference without numbers as a whole: `'R'`, `'C'`, `'RC'`, `'R1C'`; with more after it, it stays (`Region`, `Cost`, `RCx`, `R_`);
+- that is TRUE or FALSE in any case (`'TRUE'`, `'false'`) in the stored text (`Range.Formula`), and the locale's words in the text shown in a locale (`Range.FormulaLocal`): `'ИСТИНА'` and `'ЛОЖЬ'` in ru-RU, where `TRUE` stays as it is. `quoteSheetIfNeeded(name, locale)` takes a locale object for its words, en-US's without one.
+
+Letters of other scripts that look like R and C are no references (`Р1`, `С1`, `Ř1`, `К1С1`), and words that are no boolean stay as they are (`TRUEx`, `FALSE1`). The engine's canonical text quotes every sheet (`'Sales'!A1`), and its tokenizer reads a name without quotes by the first rule above, so both Excel's text and the canonical one read back.
+
 ## The intersection and the range operator
 
 A space between two references is the intersection operator: the cells both cover. Line breaks count as spaces. A space next to an operator, a parenthesis that opens or a comma is no operator (`SUM( A1:A3 , B1 )`).
@@ -92,3 +104,5 @@ A function that does not take several areas gives an error, which depends on the
 ## How it was checked
 
 The set `areas` (1,137 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above; its case ids name the function and the argument (`fn:union:SUBTOTAL#2`). The set `areas-each` (52 cases) measures how `SUBTOTAL`, `AGGREGATE`, `FREQUENCY` and `SORTBY` take them: 40 of its 47 predicted answers came out as predicted, and the misses were all `SORTBY`, which takes neither. The set `intersect` (44 cases) measures the intersection and the range operator, 40 of its 41 predicted answers as predicted (the miss: `'D'!B1:B2:C3`, whose C3 is on the formula's sheet), and `sheet-cells` (13 cases) the sheets named like cells, all 11 predictions as predicted. The set `ref-deps` (11 cases) puts formulas between the ends of ranges, on the middle sheet of a reference across sheets and in the second area of a union, all 11 predictions as predicted. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.
+
+Sheet names were measured in the tables step of the harness (`bench/coverage/tables.ts`, `bench/windows/run.ts tables`): a book of sheets named as above, whose sheet `F` refers to each one's A1 as the engine stores it (in quotes), opened in Excel, its formula text read back (`Range.Formula`, and `Range.FormulaLocal`). The set `sheet-quotes-held` (54 names) came out as predicted on 49; its misses (`R0`, `R1048577` unquoted, `R2D2`, `C3PO`, `RC1C` quoted) showed that Excel reads an R1C1 reference at the start of a name, and the set `sheet-quotes-r1c1-held` (54 more), predicted after them, came out on 48: a `.` after the reference (`C1.x`, `R1.`), the column past the sheet (`R1C0`, `R1C16385`) and names that are A1 cells (`RCC1`, `xR1`) made the rule above. Excel 16.113 for Mac and Excel 16.0.20430 for Windows, in en-US and in ru-RU, wrote every name alike (`test/excel/tables/` and `test/excel/win/tables/`, `test/a1-excel.test.ts`), and the formula text of every other table set is now compared with the names quoted by the same rule.

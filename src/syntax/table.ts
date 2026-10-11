@@ -5,6 +5,7 @@
  */
 import { caseKey } from '../collate.js'
 import type { Message } from '../locale/messages.js'
+import type { TableItem } from '../locale/types.js'
 import { bad } from './ast.js'
 
 /** A table's rows a reference takes: all of them, the data, the header row, the totals row, the formula's row. */
@@ -17,7 +18,7 @@ export interface TableSpec {
 }
 
 /** The specifiers' words in stored text; the reader takes them in any case. */
-export const AREA_WORDS: Record<TableArea, string> = { all: '#All', headers: '#Headers', data: '#Data', totals: '#Totals', row: '#This Row' }
+export const AREA_WORDS: Record<TableArea, TableItem> = { all: '#All', headers: '#Headers', data: '#Data', totals: '#Totals', row: '#This Row' }
 
 const ORDER: TableArea[] = ['all', 'headers', 'data', 'totals', 'row']
 

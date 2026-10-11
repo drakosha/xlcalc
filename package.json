@@ -38,6 +38,10 @@
       "types": "./dist/contract.d.ts",
       "default": "./dist/contract.js"
     },
+    "./a1": {
+      "types": "./dist/a1.d.ts",
+      "default": "./dist/a1.js"
+    },
     "./unstable/internal": {
       "types": "./dist/internal.d.ts",
       "default": "./dist/internal.js"

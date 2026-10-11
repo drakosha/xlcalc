@@ -708,6 +708,91 @@ export interface EntryOptions {
 export type EntryResult = { ok: true; input: CellInput | null } | (Refusal<CheckCode> & { at: number })
 
 /**
+ * `entryText`'s and `needsApostrophe`'s options: the cell's number format (its row's or column's without its own), the
+ * book's locale and date system, and for text the moment whose year completes a date typed without one, as `parseEntry`
+ * reads it.
+ */
+export interface EntryTextOptions {
+  numberFormat?: NumberFormat
+  /** A tag of `LOCALES` (`'en-US'` by default). */
+  locale?: string
+  dateSystem?: 1900 | 1904
+  /** ISO, as `Clock.now`; the current moment without it. */
+  now?: string
+}
+
+/** A cell's row and column, numbered from 1 as A1 numbers them: `B12` is row 12, column 2. */
+export interface CellPosition {
+  row: number
+  col: number
+}
+
+/** A rectangle of a sheet: rows and columns numbered from 1, bounds inclusive; a whole column runs from row 1 to `MAX_ROWS`. */
+export interface CellRect {
+  top: number
+  left: number
+  bottom: number
+  right: number
+}
+
+/** A range's rectangle and what its text names: cells (`B2:D9`, `B2`), whole columns (`B:D`) or whole rows (`2:9`). */
+export interface RangeRect extends CellRect {
+  kind: 'cells' | 'columns' | 'rows'
+}
+
+/** The lines a key of `SheetInput.columns` or `rows` names (`C`, `B:D`, `5`, `5:9`), numbered from 1. */
+export interface LineSpan {
+  first: number
+  last: number
+}
+
+/** Why Excel does not take a sheet name: empty, over 31 characters, one of `: \ / ? * [ ]`, an apostrophe at either end, `History`. */
+export type SheetNameCode = 'empty' | 'too_long' | 'character' | 'apostrophe' | 'reserved'
+
+/** `validateSheetName`'s answer; `at` is the position of the character Excel does not take. */
+export type SheetNameCheck = { ok: true } | Refusal<SheetNameCode>
+
+/** Where a reference stands in formula text (`scanReferences`): from `at` to `end` (exclusive), with its text as written. */
+interface ReferenceSpan {
+  at: number
+  end: number
+  text: string
+}
+
+/**
+ * A reference to cells, whole columns or whole rows, with its rectangle (`CellRect`) and its sheet as written (unquoted):
+ * `sheet` alone for one sheet, `sheet` and `sheetLast` for a reference across sheets (`Jan:Mar!A1`), neither for the
+ * formula's own sheet. `spill`: a spill reference (`E2#`), whose rectangle is the formula's cell.
+ */
+export interface GridReference extends ReferenceSpan, CellRect {
+  kind: 'cells' | 'columns' | 'rows'
+  sheet?: string
+  sheetLast?: string
+  spill?: true
+}
+
+/**
+ * A structured reference (`Sales[Qty]`, `[@Qty]`): the table as written (absent inside a table, `[@Qty]`), the column or
+ * the first and last of a span, and the specifiers in stored words (`#Headers`, `#This Row` for `@`); a host lays it on
+ * the table's range.
+ */
+export interface TableReference extends ReferenceSpan {
+  kind: 'table'
+  table?: string
+  columns?: [string] | [string, string]
+  items?: ('#All' | '#Data' | '#Headers' | '#Totals' | '#This Row')[]
+}
+
+/** A reference found in formula text: to cells or lines of a sheet, or to a table. */
+export type FormulaReference = GridReference | TableReference
+
+/** `scanReferences`'s options. */
+export interface ScanOptions {
+  /** The locale the text is typed in, a tag of `LOCALES`; without it the text is a stored formula. */
+  locale?: string
+}
+
+/**
  * Size limits of a computation. A book over them is not computed: the call throws `CalcError` with code `limit`, so a
  * result is either exact or absent and the values hash never depends on the limits.
  */
