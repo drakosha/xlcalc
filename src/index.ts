@@ -4,7 +4,7 @@
  * the reference graph.
  * The `./unstable/*` subpaths (internals, the synthetic book) are outside semver.
  */
-import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, FormulaEngine, NameCheck, NameInput, NameIssue, NameOptions, NamesContext, ValidateContext, ValidateResult } from './contract.js'
+import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, NameCheck, NameInput, NameIssue, NameOptions, NamesContext, ValidateContext, ValidateResult } from './contract.js'
 import * as sessions from './session.js'
 import * as saved from './session/saved.js'
 import * as structure from './structure/index.js'
@@ -33,7 +33,6 @@ import { clockSerial } from './result.js'
 import { FUNCTIONS } from './functions.js'
 import { prepareNames } from './names.js'
 import { sheetKey, validate, validateName as checkName } from './syntax.js'
-import { fromLegacy as legacyFormula, type LegacyContext as LegacyFormulaContext } from './legacy/convert.js'
 
 export * from './contract.js'
 export { FUNCTION_NAMES } from './functions.js'
@@ -88,6 +87,10 @@ export const validateFormula = /* @__PURE__ */ strict(function validateFormula(t
   return rest
 })
 
+/**
+ * Excel's rules for a name (`NameInput.name`) in a book of `opts.locale` (en-US without one; a locale's words for TRUE
+ * and FALSE are refused too, ИСТИНА and ЛОЖЬ in ru-RU).
+ */
 export const validateName = /* @__PURE__ */ strict(function validateName(name: string, opts?: NameOptions): NameCheck {
   return checkName(checkString(name, 'name'), localeBooleans(checkNameOptions(opts).locale))
 })
@@ -117,16 +120,3 @@ export const displayValue = /* @__PURE__ */ strict(function displayValue(value: 
   const o = checkDisplayOptions(opts)
   return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.numberFormat, o.width === undefined ? Infinity : room(columnPoints(o.width)))
 })
-
-/** @deprecated `fromLegacy` reads formulas of files: `import { fromLegacy } from 'xlcalc/xlsx'`. */
-export const fromLegacy: typeof legacyFormula = legacyFormula
-/** @deprecated `import type { LegacyContext } from 'xlcalc/xlsx'`. */
-export type LegacyContext = LegacyFormulaContext
-
-/** @deprecated The name is `createSession`. */
-export const openSession: typeof createSession = createSession
-/** @deprecated The name is `editStructure`. */
-export const restructure: typeof editStructure = editStructure
-
-/** @deprecated The package's named exports are these functions: `import { compute, createSession } from 'xlcalc'`. */
-export const engine: FormulaEngine = { compute, validateFormula, validateName, validateNames, createSession, editStructure, openSession, restructure, displayValue, parseEntry, fitColumns, entryWidth }
