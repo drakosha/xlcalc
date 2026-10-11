@@ -156,7 +156,7 @@ Names' formulas change like cells' formulas: each part of a union on its own, a 
 
 ## Styles and layout
 
-A book keeps styles the way an xlsx file does (`BookInput.styles`, `CellInput.style`, `SheetInput.columns`, `rows`, `merges`): a table of cell styles (font, solid fill, borders, alignment), a style number in each cell, and per sheet the columns and rows by line or span (`C`, `B:D`; `5`, `5:9`) with a width or height, a style and a number format, plus the merged areas. A cell's number format is its `format`. A cell shows its own style, else its row's, else its column's, and the same for the format. Widths are in characters as xlsx stores them, heights in points. Computation does not read styles, and they are not in the values hash; `inputHash` includes them when a book has any.
+A book keeps styles the way an xlsx file does (`BookInput.styles`, `CellInput.style`, `SheetInput.columns`, `rows`, `merges`): a table of cell styles (font, solid fill, borders, alignment), a style number in each cell, and per sheet the columns and rows by line or span (`C`, `B:D`; `5`, `5:9`) with a width or height, a style and a number format, plus the merged areas. A cell's number format is its `numberFormat`. A cell shows its own style, else its row's, else its column's, and the same for the format. Widths are in characters as xlsx stores them, heights in points. Computation does not read styles, and they are not in the values hash; `inputHash` includes them when a book has any.
 
 Excel resolves an empty cell's style and format together: from its row if the row has either, else from its column. The two can differ only where a row with a style but no format (or the other way round) crosses a column with the other; an xlsx reader spells such a case out on the row.
 
