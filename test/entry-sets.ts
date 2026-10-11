@@ -13,6 +13,7 @@ import { entryDifferences } from '../bench/coverage/entry/compare.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { parseEntry } from '../src/index.js'
 import { ENTRY_REASONS, type EntryReason } from './entry-known.js'
+import './locales.js'
 
 export interface EntrySetFile extends StoredEntry {
   name: string

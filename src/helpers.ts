@@ -5,9 +5,11 @@
  */
 import type { CellValue, ErrorCode, NameOptions, SheetNameCheck, SheetNameCode } from './contract.js'
 import { canonValue as canonText, outNumber } from './canon.js'
-import { checkCellValue, checkLocale, checkNameOptions, checkString, InputError, sheetNameProblem } from './input.js'
+import { checkCellValue, checkNameOptions, checkString, InputError, sheetNameProblem } from './input.js'
+import { checkLocaleArg } from './locale/load.js'
 import { say, type MessageKey } from './locale/messages.js'
-import { DEFAULT_LOCALE, LOCALE_FILES } from './locale/registry.js'
+import { EN_US } from './locales/en-US.js'
+import type { Locale } from './locale/types.js'
 import { ERROR_TEXT, errorIn } from './syntax/errors.js'
 
 /** The code of each reason the book check gives for a sheet name. */
@@ -26,11 +28,10 @@ export function validateSheetName(name: string, opts?: NameOptions): SheetNameCh
   return { ok: false, code: SHEET_CODES[problem.key]!, message: say(o.locale, problem), ...(at === undefined ? {} : { at }) }
 }
 
-/** An error as a cell shows it in `locale` (a tag of `LOCALES`, en-US without one): `#DIV/0!`, `#ДЕЛ/0!` in ru-RU. */
-export function errorText(code: ErrorCode, locale?: string): string {
+/** An error as a cell shows it in `locale` (a loaded locale's tag or a locale object, en-US without one): `#DIV/0!`, `#ДЕЛ/0!` in ru-RU. */
+export function errorText(code: ErrorCode, locale?: string | Locale): string {
   if (!Object.hasOwn(ERROR_TEXT, code)) throw new InputError('code', `expected an error code (${Object.keys(ERROR_TEXT).join(', ')}), got ${JSON.stringify(code)}`)
-  if (locale !== undefined) checkLocale(locale, 'locale')
-  return errorIn(code, LOCALE_FILES.get(locale ?? DEFAULT_LOCALE)!.text.errors)
+  return errorIn(code, (locale === undefined ? EN_US : checkLocaleArg(locale, 'locale')).errors)
 }
 
 /** A value checked at the boundary; an absent one (`undefined`) is an empty cell. */

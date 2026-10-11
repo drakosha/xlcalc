@@ -7,6 +7,7 @@ import * as a1 from '../src/a1.js'
 import * as root from '../src/index.js'
 import { caseKey } from '../src/collate.js'
 import { checkBook, InputError } from '../src/input.js'
+import { ruRU } from '../src/locales/ru-RU.js'
 import { cellAddress, colLetters, colNumber, linesKey, MAX_COLS, MAX_ROWS, nameKey, parseCell, parseLines, parseRange, quoteSheetIfNeeded, rangeAddress, rectContains, rectsMeet, sameName } from '../src/a1.js'
 
 describe('cells', () => {
@@ -115,8 +116,8 @@ describe('names', () => {
     const q = (n: string) => quoteSheetIfNeeded(n)
     expect(['Sales', 'Лист1', '_x', 'a.b', 'XFE1', 'Region', 'R0', 'C1.x', 'A1B'].map(q)).toEqual(['Sales', 'Лист1', '_x', 'a.b', 'XFE1', 'Region', 'R0', 'C1.x', 'A1B'])
     expect(["O'Brien", 'Q1 data', '2024', 'A1', 'R1C1', 'R', 'TRUE', 'false', 'R2D2', 'R1C0'].map(q)).toEqual(["'O''Brien'", "'Q1 data'", "'2024'", "'A1'", "'R1C1'", "'R'", "'TRUE'", "'false'", "'R2D2'", "'R1C0'"])
-    expect(quoteSheetIfNeeded('ИСТИНА', root.ruRU)).toBe("'ИСТИНА'")
-    expect(quoteSheetIfNeeded('TRUE', root.ruRU)).toBe('TRUE')
+    expect(quoteSheetIfNeeded('ИСТИНА', ruRU)).toBe("'ИСТИНА'")
+    expect(quoteSheetIfNeeded('TRUE', ruRU)).toBe('TRUE')
   })
 })
 

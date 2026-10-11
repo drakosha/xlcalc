@@ -10,6 +10,7 @@ import { synthBook } from '../src/synth.js'
 import { BOOKS, CLOCK } from './async-books.js'
 import { pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
+import './locales.js'
 
 const fills: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 }, B1: { formula: 'A:A*2' }, C1: { formula: 'SEQUENCE(3,2)' } } }] }
 const BOOKS_HERE: [string, BookInput][] = [...BOOKS, ['a whole column spilled', fills], ...buildTableCases().slice(0, 6).map((c): [string, BookInput] => [`the table case ${c.id}`, c.book])]

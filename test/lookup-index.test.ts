@@ -3,6 +3,7 @@ import { compute, openSession, type BookInput, type CellInput } from '../src/ind
 import { find } from '../src/functions/lookup/search.js'
 import { compareValues, E, type V } from '../src/values.js'
 import { formatAddress } from '../src/model.js'
+import './locales.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 

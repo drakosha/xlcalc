@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { displayValue, engine, InputError, openSession, parseEntry, type EntryResult } from '../src/index.js'
+import './locales.js'
 
 const now = '2026-10-10T12:00:00Z'
 const ru = (text: string, cell?: object) => parseEntry(text, { locale: 'ru-RU', now, ...(cell ? { cell } : {}) })

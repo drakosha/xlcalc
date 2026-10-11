@@ -10,6 +10,7 @@ import { openSession, restructure, validateFormula } from '../../../src/index.js
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
+import '../locales.js'
 
 /**
  * A rule Excel makes through its object model (Windows: `FormatConditions.Add` and its kin): `cellIs` with an operator

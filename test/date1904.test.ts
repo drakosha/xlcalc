@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, displayValue, InputError, openSession, type BookInput, type CellInput } from '../src/index.js'
+import './locales.js'
 
 const clock = { now: '2026-10-07T18:00:00Z', seed: 1 }
 

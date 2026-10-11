@@ -6,7 +6,8 @@
 import { compare } from '../bench/coverage/compare.js'
 import type { RectsAnswer } from '../bench/coverage/case-book.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
-import { compute, fromLegacy, InputError, openSession, type BookInput, type ComputeResult } from '../src/index.js'
+import { compute, InputError, openSession, type BookInput, type ComputeResult } from '../src/index.js'
+import { fromLegacy } from '../src/xlsx.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 import { shownValue } from './spill-shown.js'
 

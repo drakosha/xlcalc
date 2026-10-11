@@ -9,6 +9,7 @@ import { CASES, excelBook } from './excel-cases.js'
 import { randomBook } from './seeded-books.js'
 import { CASES as SEMANTICS, semanticsBook } from './semantics-cases.js'
 import { spillBook } from './session-spill-edits.js'
+import './locales.js'
 
 export const CLOCK = { now: '2026-10-04T12:00:00Z', seed: 7 }
 

@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, displayValue, InputError, openSession, type BookInput } from '../src/index.js'
+import './locales.js'
 
 const book = (locale?: string): BookInput => ({
   ...(locale ? { locale } : {}),

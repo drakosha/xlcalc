@@ -9,6 +9,7 @@ import { describe, expect, it } from 'vitest'
 import type { StoredTables } from '../bench/coverage/tables.js'
 import { cellOf } from '../bench/coverage/tables/sheet-quotes-held.js'
 import { LOCALES, quoteSheetIfNeeded } from '../src/index.js'
+import './locales.js'
 
 const SETS = ['sheet-quotes-held', 'sheet-quotes-r1c1-held']
 /** Each run: the Excel, its locale and where its answers are. */

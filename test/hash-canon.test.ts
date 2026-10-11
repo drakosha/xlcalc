@@ -13,6 +13,7 @@ import { compute, createInlineCalc, openSession, type BookInput, type CellEdit, 
 import { clockSerial, createState, formatAddress, outValue, toCellValue } from '../src/internal.js'
 import { mulberry32, synthBook } from '../src/synth.js'
 import { pool } from './fixtures/pool.js'
+import './locales.js'
 
 const CLOCK = { now: '2026-10-04T12:00:00Z', seed: 7 }
 

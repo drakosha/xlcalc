@@ -14,6 +14,7 @@ import { randomBook } from './seeded-books.js'
 import { closeCalcs, keptPool, KINDS, opener } from './session-kinds.js'
 import { spillBook } from './session-spill-edits.js'
 import { extentOf } from './sheet-extent.js'
+import './locales.js'
 
 afterAll(closeCalcs)
 

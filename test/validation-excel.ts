@@ -11,6 +11,7 @@ import { bookViews, excelView, made, viewDifferences, WINDOW, type SheetView, ty
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { restructure } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import './locales.js'
 
 export type ValidSetFile = StoredValid & { name: string; tag: string; dir: URL }
 

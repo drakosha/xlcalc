@@ -8,12 +8,13 @@ import { abortError } from '../async/queue.js'
 import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, StructureOp, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
+import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
 import { splitCall, checkCall } from '../async/options.js'
 import { applyOp, checkedMapCell } from '../structure/index.js'
 import { mapCellOf, type Geometry } from '../session/rebook.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
 import { pack, unpackSlowly } from './pack.js'
-import { CHANGING, fromData, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
+import { CHANGING, fromData, sentLocale, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
 
 interface Timers {
   setTimeout(f: () => void, ms: number): unknown
@@ -125,13 +126,18 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       (m) => slot.thread === t && answered(slot, m),
       (l) => slot.thread === t && lose(slot, l),
     )
-    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}) })
+    // a thread computes in the locales loaded here, those loaded later as they are
+    const locales = [...LOCALES.values()].filter((l) => l.tag !== DEFAULT_LOCALE).map(sentLocale)
+    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}) })
     return t
   }
   const slots: Slot[] = Array.from({ length: o.threads ?? 2 }, () => {
     const slot = { busy: null, timer: undefined, queue: [], sessions: new Set(), resident: new Set() } as unknown as Slot
     slot.thread = start(slot)
     return slot
+  })
+  const unlisten = onLocale((l) => {
+    for (const s of slots) s.thread?.post({ t: 'locales', locales: [sentLocale(l)] })
   })
 
   peek?.({ slots, recs })
@@ -444,6 +450,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     async close() {
       if (closed) return
       closed = new CalcError('closed', 'the pool is closed')
+      unlisten()
       for (const t of jobs.splice(0)) fail(t, closed)
       for (const s of slots) {
         // a session closing is closed with the pool; the pool's own tasks end

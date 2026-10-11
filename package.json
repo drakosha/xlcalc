@@ -58,6 +58,10 @@
       "types": "./dist/worker/index.d.ts",
       "default": "./dist/worker/index.js"
     },
+    "./locales/ru-RU": {
+      "types": "./dist/locales/ru-RU.d.ts",
+      "default": "./dist/locales/ru-RU.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",

@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { CellValue, ErrorCode, Scalar } from '../src/contract.js'
 import { canonValue, compute, displayValue, errorText, InputError, restructure, sameValue, validateSheetName } from '../src/index.js'
+import './locales.js'
 
 describe('validateSheetName', () => {
   it('takes what Excel takes', () => {

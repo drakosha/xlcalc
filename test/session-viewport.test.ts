@@ -12,6 +12,7 @@ import { CLOCK } from './async-books.js'
 import { randomBook } from './seeded-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 import { spillBook } from './session-spill-edits.js'
+import './locales.js'
 
 afterAll(closeCalcs)
 

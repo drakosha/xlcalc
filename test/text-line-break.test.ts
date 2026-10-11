@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, openSession, type BookInput } from '../src/index.js'
+import './locales.js'
 
 const TEXTS = ['x\ny', '1\n2', 'x\r\ny', 'x y', '$1\n']
 const book = (locale: string, text: string): BookInput => ({ locale, sheets: [{ name: 'S', cells: { A1: { value: text }, B1: { formula: 'A1*1' }, B2: { formula: 'IFERROR(A1+1,"no")' }, B3: { formula: '1+1' } } }] })

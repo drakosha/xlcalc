@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, engine, InputError, openSession, validateName, validateNames, type BookInput, type NameInput } from '../src/index.js'
+import './locales.js'
 
 const NAMES: NameInput[] = [
   { name: 'Ставка', ref: '0.2' },

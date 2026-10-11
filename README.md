@@ -25,6 +25,22 @@ npm install xlcalc
 
 The package is ESM with TypeScript types included. From CommonJS use `await import('xlcalc')`, or `require()` on Node versions that can require ES modules (20.19+ and 22.12+). It has no dependencies.
 
+### What to import
+
+The package is split where hosts' needs part, so a bundle takes only what it uses:
+
+| for | import |
+|---|---|
+| computing a book | `compute` from `xlcalc` |
+| a session over a book: edits, structure operations, undo, AutoFit, conditional formats, data validation, what cells show | `openSession` from `xlcalc` |
+| reading and writing xlsx files | `readXlsx`, `writeXlsx` and `fromLegacy` from `xlcalc/xlsx` |
+| computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
+| cell addresses in A1 style, without the engine | `xlcalc/a1` |
+| books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](#localization)) |
+| types alone | `xlcalc/contract` |
+
+en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 253 KB (96 KB gzip), `openSession` 356 KB (134 KB), the whole root 393 KB (147 KB), `xlcalc/xlsx` 167 KB (62 KB), `xlcalc/worker` 286 KB (109 KB) and the thread it starts 366 KB (137 KB), `xlcalc/a1` 5 KB (2 KB), the ru-RU module 52 KB (10 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+
 ## Quick start
 
 ```js
@@ -134,8 +150,10 @@ console.log(session.cells('Plan', 'D1').D1.array, session.layout().sheets) // �
 A grid draws a window of a sheet with `getViewport(sheet, range, opts?)`: in one call it gives the cells with their look resolved, the sizes of the window's lines, the merged areas that meet it and where the sheet ends.
 
 ```js
-import { openSession } from 'xlcalc'
+import { openSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
+registerLocale(ruRU)
 const session = openSession({
   locale: 'ru-RU',
   styles: [{ font: { bold: true } }],
@@ -266,7 +284,7 @@ const out = compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells
 console.log(out.C1.value, out.C2.value, out.C3.value) // → 10 20 { error: 'NA' }
 ```
 
-The array fills its area and never spills. A session refuses to change part of the area, as Excel does. `fromLegacy` turns a formula of the old kind from a file into the dynamic formula Excel 365 shows for it, with `@` where Excel puts it, and `readXlsx` does so for every such formula of a file. [docs/legacy.md](docs/legacy.md) has both.
+The array fills its area and never spills. A session refuses to change part of the area, as Excel does. `fromLegacy` from `xlcalc/xlsx` turns a formula of the old kind from a file into the dynamic formula Excel 365 shows for it, with `@` where Excel puts it, and `readXlsx` does so for every such formula of a file. [docs/legacy.md](docs/legacy.md) has both.
 
 ### Checking formulas
 
@@ -274,18 +292,19 @@ The array fills its area and never spills. A session refuses to change part of t
 
 ```js
 import { validateFormula, validateName, validateNames } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
 console.log(validateFormula("sum(Sales!b1:b3, 'Q1 data'!A1)", { sheets: ['Sales', 'Q1 data'] }).canonical)
 // → SUM('Sales'!B1:B3,'Q1 data'!A1)
 const bad = validateFormula('SUM(B1:B3', { sheets: ['Sales'] })
 console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax expected ), found end of formula 9
 console.log(validateName('Q1').ok, validateName('tax_rate').ok, validateName('Ставка').ok) // → false true true
-console.log(validateName('ложь').ok, validateName('ложь', { locale: 'ru-RU' }).code) // → true boolean
+console.log(validateName('ложь').ok, validateName('ложь', { locale: ruRU }).code) // → true boolean
 const names = [{ name: 'R', ref: '1' }, { name: 'rate', ref: "'Q1 data'!B1" }, { name: 'gone', ref: "'Other'!A1" }]
 console.log(validateNames(names, { sheets: ['Sales', 'Q1 data'] }).map((x) => `${x.name} ${x.dropped}`)) // → [ 'R true', 'gone false' ]
 ```
 
-`validateName` checks a name by Excel's rules for a book of `locale`, en-US without one (a ru-RU book also refuses `ИСТИНА` and `ЛОЖЬ`), and refuses with the rule the name breaks: `chars` (a character or a length Excel does not take), `reference` (it reads as a cell, `Q1`, or R1C1, `R2C3`) or `boolean`. `validateNames` gives the name issues a book with these sheets, tables and locale would give, without the book: `dropped` is true for a name the book leaves out (one Excel would not take, a duplicate, an unknown scope sheet, a formula that does not parse or a reference without its sheet), false for one it keeps that gives an error where it is used, so a host can refuse a name before it stores it.
+`validateName` checks a name by Excel's rules for a book of `locale`, a loaded locale's tag or a locale object (en-US without one; a ru-RU book also refuses `ИСТИНА` and `ЛОЖЬ`), and refuses with the rule the name breaks: `chars` (a character or a length Excel does not take), `reference` (it reads as a cell, `Q1`, or R1C1, `R2C3`) or `boolean`. `validateNames` gives the name issues a book with these sheets, tables and locale would give, without the book: `dropped` is true for a name the book leaves out (one Excel would not take, a duplicate, an unknown scope sheet, a formula that does not parse or a reference without its sheet), false for one it keeps that gives an error where it is used, so a host can refuse a name before it stores it.
 
 Every check answers `{ ok: true, … }` or a refusal, the type `Refusal`: `{ ok: false, code, message, at? }`, a code a program reads, a message for people and, for text, the position in it. So do `validateFormula`, `validateLocalFormula`, `toLocal`, `toInvariant`, `parseEntry`, `validateName` and `restructure`.
 
@@ -297,8 +316,9 @@ Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (
 
 ```js
 import { parseEntry } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
-const ru = (text, cell) => parseEntry(text, { locale: 'ru-RU', cell, now: '2026-10-10T12:00:00Z' })
+const ru = (text, cell) => parseEntry(text, { locale: ruRU, cell, now: '2026-10-10T12:00:00Z' })
 console.log(ru('1 234,5').input, ru('15.03.2026').input, ru('5%').input) // → { value: 1234.5, format: 4 } { value: 46096, format: 14 } { value: 0.05, format: 9 }
 console.log(ru('ИСТИНА').input, ru('#Н/Д').input, ru("'007").input, ru('15.3').input) // → { value: true } { formula: '#N/A' } { value: '007' } { value: 46096, format: 16 }
 console.log(ru('=СУММ(A1;1,5)').input, ru('=FOO(1)').input, ru('-C1').input) // → { formula: 'SUM(A1,1.5)' } { formula: 'FOO(1)' } { formula: '-C1' }
@@ -315,26 +335,27 @@ console.log(ru('18:30', { format: 14, style: 2, meta: { id: 7 }, note: { text: '
 console.log(parseEntry('3/15/2026').input, parseEntry('$1,234.50').input.value, parseEntry('5', { cell: { format: '0%' } }).input) // → { value: 46096, format: 14 } 1234.5 { value: 0.05, format: '0%' }
 ```
 
-`opts.locale` is the book's locale, `opts.cell` the cell as the book holds it (its `format`, `style`, `meta`, `note` and `link`; a `CellView` of `Session.cells` will do), `opts.now` the moment whose year completes a date typed without one (`15.3`), `opts.dateSystem` the book's date system. Only a formula that does not parse stops the entry, with the check code, its position in the text and a message in the book's locale, as Excel's window does; an unknown function is taken and computes `#NAME?`. Empty text clears the value and keeps the rest of the cell (`null` when nothing is left). The rules, measured case by case in Excel for Mac and Excel for Windows, typed through the object model and on the keyboard, are in [docs/entry.md](docs/entry.md). A number typed into a column too narrow for it widens the column: `entryWidth` gives the width ([Showing values](#showing-values)).
+`opts.locale` is the book's locale, a loaded locale's tag or a locale object ([Localization](#localization)), `opts.cell` the cell as the book holds it (its `format`, `style`, `meta`, `note` and `link`; a `CellView` of `Session.cells` will do), `opts.now` the moment whose year completes a date typed without one (`15.3`), `opts.dateSystem` the book's date system. Only a formula that does not parse stops the entry, with the check code, its position in the text and a message in the book's locale, as Excel's window does; an unknown function is taken and computes `#NAME?`. Empty text clears the value and keeps the rest of the cell (`null` when nothing is left). The rules, measured case by case in Excel for Mac and Excel for Windows, typed through the object model and on the keyboard, are in [docs/entry.md](docs/entry.md). A number typed into a column too narrow for it widens the column: `entryWidth` gives the width ([Showing values](#showing-values)).
 
 ### Addresses and helpers
 
-A grid, a dialog or a server that keeps versions of a book needs Excel's rules for addresses, names and values without computing anything. The package gives them by the engine's own code: `xlcalc/a1` holds the addresses and names in a few kilobytes and none of the engine, and `xlcalc` exports the same functions with the helpers that need a locale.
+A grid, a dialog or a server that keeps versions of a book needs Excel's rules for addresses, names and values without computing anything. The package gives them by the engine's own code: `xlcalc/a1` holds the addresses and names in a few kilobytes and none of the engine, and `xlcalc` exports the same functions with the helpers that need a locale. These take a loaded locale's tag or a locale object, which needs no loading; `quoteSheetIfNeeded` takes the object alone, so `xlcalc/a1` carries no list of locales.
 
 ```js
 import { cellAddress, linesKey, parseLines, parseRange, quoteSheetIfNeeded, rangeAddress, sameName } from 'xlcalc/a1'
-import { entryText, errorText, needsApostrophe, ruRU, sameValue, scanReferences, validateSheetName } from 'xlcalc'
+import { entryText, errorText, needsApostrophe, sameValue, scanReferences, validateSheetName } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
 console.log(parseRange('$d$9:B2'), parseRange('ZZZ1'), rangeAddress({ top: 1, left: 2, bottom: 1048576, right: 4 }))
 // → { kind: 'cells', top: 2, left: 2, bottom: 9, right: 4 } null B:D
 console.log(cellAddress(12, 2), parseLines('B:D', 'columns'), linesKey(9, 5, 'rows')) // → B12 { first: 2, last: 4 } 5:9
 console.log(quoteSheetIfNeeded('Sales'), quoteSheetIfNeeded('Q1 data'), quoteSheetIfNeeded('R2D2'), quoteSheetIfNeeded('ИСТИНА', ruRU), sameName('straße', 'STRASSE'))
 // → Sales 'Q1 data' 'R2D2' 'ИСТИНА' true
-const bad = validateSheetName('Итоги/2025', { locale: 'ru-RU' })
+const bad = validateSheetName('Итоги/2025', { locale: ruRU })
 console.log(bad.code, bad.at, bad.message) // → character 5 Имя листа не может содержать «/» (Excel запрещает : \ / ? * [ ])
-console.log(errorText('DIV0', 'ru-RU'), entryText(0.125, { numberFormat: '0.0%' }), entryText(45688.75, { numberFormat: 14, locale: 'ru-RU' }), entryText('007'), needsApostrophe('1.5', { locale: 'ru-RU' }))
+console.log(errorText('DIV0', ruRU), entryText(0.125, { numberFormat: '0.0%' }), entryText(45688.75, { numberFormat: 14, locale: ruRU }), entryText('007'), needsApostrophe('1.5', { locale: ruRU }))
 // → #ДЕЛ/0! 12.5% 31.01.2025  18:00:00 '007 true
-console.log(scanReferences('=СУММ(B2:B9;\'Q1 data\'!C1;"D4")', { locale: 'ru-RU' }).map((r) => `${r.at}-${r.end} ${r.text} ${r.sheet ?? ''}`))
+console.log(scanReferences('=СУММ(B2:B9;\'Q1 data\'!C1;"D4")', { locale: ruRU }).map((r) => `${r.at}-${r.end} ${r.text} ${r.sheet ?? ''}`))
 // → [ '6-11 B2:B9 ', "12-24 'Q1 data'!C1 Q1 data" ]
 console.log(sameValue(0.1 + 0.2, 0.3), sameValue(1, true)) // → true false
 ```
@@ -413,28 +434,44 @@ Arguments of an external function must be literals; a call without a value gives
 
 ### Localization
 
-Books store formulas the way xlsx files do: English function names, `,` between arguments, `.` as the decimal separator. A locale changes how formulas are typed and shown, as Excel shows them in another language. The package's locales are in `LOCALES` by tag, ru-RU (Excel with the Russian interface) and en-US, and these two are also exported as `ruRU` and `enUS`; a locale is a plain object (the `Locale` type), so formula text in another language is another object of the same shape. A book computes only in the package's locales; adding one is a file and a line in the package ([docs/locale.md](docs/locale.md#adding-a-locale)).
+Books store formulas the way xlsx files do: English function names, `,` between arguments, `.` as the decimal separator. A locale changes how formulas are typed and shown, as Excel shows them in another language, and how a book computes, as Excel computes with those regional settings. en-US is built in. ru-RU (Excel with the Russian interface) is a module of its own, which a bundle carries only when it is imported: `registerLocale` loads it, once, for books in ru-RU and for its tag.
 
 ```js
-import { LOCALES, ruRU, toInvariant, toLocal, validateLocalFormula } from 'xlcalc'
+import { LOCALES, registerLocale, toInvariant, toLocal, validateLocalFormula } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
 console.log(toLocal('IF(B1>0.5,SUM({1,2;3,4}),#N/A)', ruRU).formula) // → ЕСЛИ(B1>0,5;СУММ({1;2:3;4});#Н/Д)
-console.log(LOCALES.get('ru-RU') === ruRU, LOCALES.has('en-US')) // → true true
-console.log(toInvariant('=СУММ(A1:A3;1,5)', ruRU).formula) // → SUM(A1:A3,1.5)
-const bad = validateLocalFormula('=СУММ(A1;1.5)', ruRU)
+registerLocale(ruRU)
+console.log(LOCALES.get('ru-RU') === ruRU, [...LOCALES.keys()]) // → true [ 'en-US', 'ru-RU' ]
+console.log(toInvariant('=СУММ(A1:A3;1,5)', 'ru-RU').formula) // → SUM(A1:A3,1.5)
+const bad = validateLocalFormula('=СУММ(A1;1.5)', 'ru-RU')
 console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Здесь не может стоять «.» 10
 console.log(validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', ruRU, { sheets: ['Данные'] }).canonical) // → ROUND('Данные'!B2*1.2,0)
+```
+
+`LOCALES` lists the loaded locales by tag. Every function that takes a locale takes the tag of a loaded one or the locale object, and an object needs no loading where no book is needed: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `validateSheetName`, `validateName` and `validateNames`. A book's `locale` is a tag, and a book in a locale that is not loaded is an `InputError` that says what to import, wherever the book goes (`compute`, sessions, `restructure`, `fitColumns`, `writeXlsx`, a pool); `readXlsx` keeps a file's locale as it reads it. A pool of threads loads in its threads the locales loaded where it runs, and those loaded later too. A locale is a plain object (the `Locale` type), so formula text in another language is another object of the same shape; one without rules of computation reads and shows values as en-US does. Adding a locale to the package is a module ([docs/locale.md](docs/locale.md#adding-a-locale)).
+
+```js
+import { compute } from 'xlcalc'
+
+try {
+  compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })
+} catch (e) {
+  console.log(e.message) // → book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)
+}
 ```
 
 `toLocal` and `toInvariant` return `{ ok: true, formula }` or `{ ok: false, code, message, at }` with the position in the given text. They translate function names, TRUE and FALSE, error literals, the decimal separator and the separators of arguments and of array constants (`{1;2:3;4}` in ru-RU); strings, sheet names, defined names, references and whitespace stay as they are. `toInvariant` drops a leading `=` and also reads English function names, TRUE/FALSE and error texts; a function the locale does not name (an external one, say) passes through. Text that would read differently once translated (`1.5` typed in ru-RU, where `.` is not a decimal separator) is a `syntax` error at its place. `validateLocalFormula(text, locale, ctx?)` is `validateFormula` for typed text: the same result with the canonical stored text, and positions in `text`. The messages of all three are in the locale's language.
 
 The ru-RU data come from Excel itself. `bench/locale/snapshot.ts` opens books with 6,381 formulas (the coverage measurement's cases, the probes, a call of every function on Microsoft's list that the measurement lacks, literals) in Excel 16.113 for Mac with the Russian interface and reads each formula back in English and in Russian; `bench/locale/generate.ts ru-RU` writes the formula text of ru-RU's locale file, `src/locales/ru-RU.ts`, from that text (`test/excel/locale/ru-RU.json`). `test/locale-excel.test.ts` checks that both translations reproduce Excel's text of all 6,381 formulas, and `test/locale-roundtrip.test.ts` that the 15,266 formulas of the measurement, the case sets and the probes come back unchanged from ru-RU. Excel 16.113 for Mac does not know `ENCODEURL`, `FILTERXML`, `WEBSERVICE`, `REGEXEXTRACT`, `REGEXREPLACE` and `REGEXTEST`, and deletes `CALL` and `REGISTER.ID` from the books it loads, so these keep their English names; so do the error literals newer than `#GETTING_DATA` (`#SPILL!`, `#CALC!` and the rest), which it does not take as literals in a formula.
 
-A book is computed in its own locale, `BookInput.locale` (a tag of `LOCALES`: `'en-US'` by default, or `'ru-RU'`), as Excel computes with those regional settings, whoever opens the book; a viewer still sees the formulas in their own language through `toLocal`. The locale changes how text reads as a number, a date or a boolean, how numbers and booleans become text, `TEXT`'s format codes and what cells show, `DOLLAR` and `FIXED`, error texts, the words and numbers in criteria and the order of text:
+A book is computed in its own locale, `BookInput.locale` (the tag of a loaded locale: `'en-US'` by default, or `'ru-RU'` once loaded), as Excel computes with those regional settings, whoever opens the book; a viewer still sees the formulas in their own language through `toLocal`. The locale changes how text reads as a number, a date or a boolean, how numbers and booleans become text, `TEXT`'s format codes and what cells show, `DOLLAR` and `FIXED`, error texts, the words and numbers in criteria and the order of text:
 
 ```js
-import { compute } from 'xlcalc'
+import { compute, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
+registerLocale(ruRU)
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { formula: 'TEXT(45688.75,"ДД ММММ ГГГГ ч:мм")' }, A4: { formula: 'DOLLAR(-1234.567)' }, A5: { formula: 'VALUE("1.5")' } }
 const r = compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells }] }, { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
 const v = r.sheets[0].cells
@@ -447,8 +484,10 @@ In ru-RU, as Excel 16.113 for Mac with the Russian interface and locale computes
 Messages for people come in the book's locale too: why a typed formula does not read (`parseEntry`, and `toLocal`, `toInvariant` and `validateLocalFormula` in their locale), why a structure operation is refused, and the text of `explain`, whose numbers, formulas, booleans and errors are written as the locale writes them. Codes, positions and the fields of `explain`'s tree stay as they are, so a program reads them the same in every locale.
 
 ```js
-import { openSession, parseEntry, restructure } from 'xlcalc'
+import { openSession, parseEntry, registerLocale, restructure } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
+registerLocale(ruRU)
 const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 400 }, B1: { formula: 'ROUND(A1*1.2,0)' } } }] }
 console.log(openSession(book).explain('План', 'B1').text)
 // → 'План'!B1 = 480  ← ОКРУГЛ(A1*1,2;0)
@@ -457,15 +496,17 @@ console.log(parseEntry('=ОКРУГЛ(A1;2;3)', { locale: 'ru-RU' }).message) //
 console.log(restructure(book, { op: 'deleteSheet', sheet: 'План' }).message) // → В книге должен остаться хотя бы один лист
 ```
 
-`validateFormula`, which has no locale, answers in English, as do the reasons of cell errors and the checks of names. A locale's messages are part of its file ([docs/locale.md](docs/locale.md#messages)).
+`validateFormula`, which has no locale, answers in English, as do the reasons of cell errors and the checks of names. A locale's messages are part of its module ([docs/locale.md](docs/locale.md#messages)), and a locale object without messages of its own speaks as the loaded locale of its tag, else in English.
 
 ### Showing values
 
 A result gives each cell, beside its `value`, the `text` Excel shows in it (VBA's `Range.Text`) and the `color` of its format's section. The format is the cell's own `format`, else its row's, else its column's: an Excel format code as an xlsx file stores it (`#,##0.00`, `d mmmm yyyy`, `[Blue]0;[Red]-0`), shown in the book's locale. The width is the column's (`columns: { A: { width: 16 } }`, as xlsx stores it; Excel's default without one), or a merged area's columns: General drops decimals or turns scientific to fit, a number that still does not fit shows `#` across the column, text is never cut (it runs over the next cells). The value stays the number whatever the text shows, and the text is not part of the values hash.
 
 ```js
-import { compute, displayValue, openSession } from 'xlcalc'
+import { compute, displayValue, openSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
+registerLocale(ruRU)
 const book = {
   sheets: [{
     name: 'S',
@@ -496,14 +537,15 @@ console.log(displayValue(0.4567, { format: '0.0%', locale: 'ru-RU' }), displayVa
 console.log(displayValue(46096, { format: 'dd.mm.yyyy' }), displayValue(46096, { format: 'dd.mm.yyyy', width: 8.83203125 })) // → { text: '15.03.2026' } { text: '#########' }
 ```
 
-`compute(book, { display: false })` and `openSession(book, { display: false })` give values alone and spend nothing on formatting. A session's changes carry the text of the cells they list, and with the display on they also list the cells whose text or colour changed without a new value: a new `format` through `setCells`, a width, a row's or a column's format or a merged area through `setLayout`, a column moved by `restructure`. `displayValue(value, { format, locale, width })` shows a value without a book, for a cell being edited, say; the number itself is always the cell's `value`. Without `width` the width is not limited: General keeps its digits and no number turns into `#`, as no column narrows it. With the column's width it shows what the cell shows (Excel's default column is `width: 8.83203125`, as xlsx stores it).
+`compute(book, { display: false })` and `openSession(book, { display: false })` give values alone and spend nothing on formatting. A session's changes carry the text of the cells they list, and with the display on they also list the cells whose text or colour changed without a new value: a new `format` through `setCells`, a width, a row's or a column's format or a merged area through `setLayout`, a column moved by `restructure`. `displayValue(value, { format, locale, width })` shows a value without a book, for a cell being edited, say, in a loaded locale's tag or a locale object; the number itself is always the cell's `value`. Without `width` the width is not limited: General keeps its digits and no number turns into `#`, as no column narrows it. With the column's width it shows what the cell shows (Excel's default column is `width: 8.83203125`, as xlsx stores it).
 
-A format can also be the number of one of Excel's built-in formats, from 0 to 49, as an xlsx file stores a cell's format without a code. Excel shows some of them by the locale: `format: 14` is the short date, `1/31/2025` in en-US and `31.01.2025` in ru-RU, as Excel for Windows shows it. `builtinFormatCode(id, locale?)` gives the code a number shows by, for a format menu or an editor, and undefined for a number that is no built-in format, so `builtinFormatCode(id) !== undefined` tells whether it is one. The table is in [docs/formats.md](docs/formats.md).
+A format can also be the number of one of Excel's built-in formats, from 0 to 49, as an xlsx file stores a cell's format without a code. Excel shows some of them by the locale: `format: 14` is the short date, `1/31/2025` in en-US and `31.01.2025` in ru-RU, as Excel for Windows shows it. `builtinFormatCode(id, locale?)` gives the code a number shows by (`locale` a loaded locale's tag or a locale object), for a format menu or an editor, and undefined for a number that is no built-in format, so `builtinFormatCode(id) !== undefined` tells whether it is one. The table is in [docs/formats.md](docs/formats.md).
 
 ```js
 import { builtinFormatCode } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
-console.log(builtinFormatCode(14), builtinFormatCode(14, 'ru-RU'), builtinFormatCode(7, 'ru-RU')) // → m/d/yyyy dd.mm.yyyy #,##0.00 "₽";-#,##0.00 "₽"
+console.log(builtinFormatCode(14), builtinFormatCode(14, ruRU), builtinFormatCode(7, ruRU)) // → m/d/yyyy dd.mm.yyyy #,##0.00 "₽";-#,##0.00 "₽"
 console.log(builtinFormatCode(3), builtinFormatCode(50), builtinFormatCode(164) !== undefined) // → #,##0 undefined false
 ```
 
@@ -512,8 +554,10 @@ console.log(builtinFormatCode(3), builtinFormatCode(50), builtinFormatCode(164) 
 Excel widens columns by itself in two places, and the engine gives the same widths. AutoFit (a double click on a column's border) gives a column the width of its widest cell: `fitColumns(book, result, sheet, columns)` computes the widths for a computed book, and the layout edit `{ sheet, columns, fit: true }` applies them in a session. And a number typed into a column whose width nobody set widens it until the number shows whole: `entryWidth(value, opts)` gives that width for the value a typed text computes, for a host to set with `bestFit: true`. A width Excel fitted (`ColumnInput.bestFit`) widens again as numbers are typed; one set by hand stays.
 
 ```js
-import { compute, entryWidth, fitColumns, openSession, parseEntry } from 'xlcalc'
+import { compute, entryWidth, fitColumns, openSession, parseEntry, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
+registerLocale(ruRU)
 const book = {
   locale: 'ru-RU',
   sheets: [{ name: 'S', cells: { A1: { value: 'Итого' }, B1: { value: 1234567.5, format: '#,##0.00' }, C1: { value: 46096, format: 14 } } }],
@@ -766,7 +810,7 @@ From `xlcalc`:
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`, `spill`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
 | `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `patchCells(patches)` (a cell's `style`, `format`, `meta`, `note`, `link` without its value), `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes; columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings; columns AutoFit with `{ columns, fit: true }`), `book()`, `layout()` (the book without its cells), `extent(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand, errorDepth })` (an error's `origin` marked and the way to it), `cells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array` and conditional formats' `look`), `getViewport(sheet, range, { formulaLocal, diagnostics, maxCells })` (a window for a grid: cells with their style and number format resolved, empty ones with a line's style, the lines' sizes, merged areas, the extent), `getCellIssue(sheet, cell)` (an error's reason and `origin`, or null), `validation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok }`, with the rule when not), `result()`, `getSnapshot()` (`{ book, result }` in one call, what `writeXlsx` takes), `hash()` (the values hash without the result), `undo()` and `redo()` (`{ call, changes, cells?, mapCell? }` or null), `history` (`{ undo, redo }`, the steps each way), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display`, `limits` and `undo` (`{ depth, maxMb }`, 100 steps and 64 MB by default); edits are compiled in the session's execution mode |
-| `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width` (no limit without it), `dateSystem` ([Showing values](#showing-values)) |
+| `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale` (a loaded locale's tag or a locale object, as every function's `locale` below), `width` (no limit without it), `dateSystem` ([Showing values](#showing-values)) |
 | `builtinFormatCode(id, locale?)` | the code a built-in number format (0 to 49) shows by in the locale, undefined for a number that is none ([Showing values](#showing-values)) |
 | `dateToSerial(text, opts?)`, `serialToDate(serial, opts?)` | a date as `{ date }` takes it and its serial number, in `opts.dateSystem` ([Date systems](#date-systems)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
@@ -783,12 +827,12 @@ From `xlcalc`:
 | `entryWidth(value, opts?)` | the width a column takes as a typed value widens it, or undefined; `opts`: `format`, `locale`, `dateSystem`, the column's `width` and `bestFit` ([Showing values](#showing-values)) |
 | `toLocal(formula, locale, opts?)`, `toInvariant(text, locale)` | a stored formula as the locale shows it, typed text as a stored formula: `{ ok: true, formula }` or `{ ok: false, code, message, at }` ([Localization](#localization)); `opts.table`, the table of the formula's cell, shows its references as Excel does inside it (`[@Qty]`, [docs/tables.md](docs/tables.md)) |
 | `validateLocalFormula(text, locale, ctx?)` | `validateFormula` for text typed in the locale, positions in `text` |
-| `LOCALES` | the package's locales by tag, each a `Locale` (`LOCALES.get('ru-RU')`), the tags `BookInput.locale` takes ([Localization](#localization)) |
-| `enUS`, `ruRU` | two of them by name (`Locale` objects) |
+| `registerLocale(locale)` | loads a locale module of the package (`ruRU` of `xlcalc/locales/ru-RU`) for books in it and for its tag ([Localization](#localization)) |
+| `LOCALES` | the loaded locales by tag, en-US and those registered, each a `Locale` (`LOCALES.get('ru-RU')`): the tags `BookInput.locale` takes |
+| `enUS` | en-US's `Locale`, built in |
 | `engine` | `compute`, `validateFormula`, `validateName`, `validateNames`, `openSession`, `restructure`, `displayValue`, `parseEntry`, `fitColumns` and `entryWidth` as one `FormulaEngine` object |
 | `restructure(book, op)` | one structure operation (`StructureOp`): `{ ok: true, book, mapCell }` or `{ ok: false, code, message }`; [docs/structure.md](docs/structure.md) |
 | `copyFormula(text, from, to, book?)` | the text of a formula copied from cell `from` to `to` (`{ sheet, cell }`), as `copyRange` pastes it; with the book, a formula leaving its table names it ([docs/structure.md](docs/structure.md)) |
-| `fromLegacy(formula, { names?, sheet? })` | a file's formula of the old kind as the dynamic formula Excel 365 shows for it, canonical text; [docs/legacy.md](docs/legacy.md) |
 | `FUNCTION_NAMES`, `CONFIG_VERSION` | the whitelist; the configuration version that goes into every hash |
 | `createInlineCalc(opts?)` | a `Calc` computing in the same thread in portions: `compute`, `openSession` (an `AsyncSession`) and `close`, as promises; `opts`: `sliceMs`, `timeoutMs`, `limits` ([docs/async.md](docs/async.md)) |
 | `InputError` | thrown on input of the wrong shape |
@@ -801,7 +845,9 @@ From `xlcalc`:
 
 `xlcalc/worker` exports `createCalcPool(opts?)`, a `Calc` over a pool of threads (`opts`: `threads`, `maxHeapMb`, `hardTimeoutMs`, `timeoutMs`, `maxQueue`, `maxSessions`, `maxSessionsPerThread`, `limits`, `snapshotEvery`, `sliceMs`, `spawn`), and `CalcError`.
 
-`xlcalc/xlsx` exports `readXlsx(data)`, which resolves to `{ book, cached, issues }`, and `writeXlsx({ book, result? }, opts?)`, which resolves to `{ data, issues }` (`opts`: `values` `'require'`, `'omit'` or `'preserve'`, `mode` `'formulas'` or `'values'`), with their types `XlsxRead`, `XlsxCached`, `XlsxCachedCell`, `XlsxSnapshot`, `XlsxWritten`, `WriteXlsxOptions`, `XlsxIssue` and `XlsxIssueCode`.
+`xlcalc/xlsx` exports `readXlsx(data)`, which resolves to `{ book, cached, issues }`, and `writeXlsx({ book, result? }, opts?)`, which resolves to `{ data, issues }` (`opts`: `values` `'require'`, `'omit'` or `'preserve'`, `mode` `'formulas'` or `'values'`), with their types `XlsxRead`, `XlsxCached`, `XlsxCachedCell`, `XlsxSnapshot`, `XlsxWritten`, `WriteXlsxOptions`, `XlsxIssue` and `XlsxIssueCode`, and `fromLegacy(formula, { names?, sheet? })`, a file's formula of the old kind as the dynamic formula Excel 365 shows for it, canonical text ([docs/legacy.md](docs/legacy.md)); the root's `fromLegacy` is a deprecated synonym of it.
+
+`xlcalc/locales/ru-RU` exports `ruRU`, ru-RU's `Locale`, for `registerLocale` and for the functions that take a locale; importing it does nothing else.
 
 `xlcalc/unstable/internal` (the parser, the criteria index, engine state) and `xlcalc/unstable/synth` (a seeded synthetic book for tests and benchmarks) exist for benchmark harnesses and adapters of other engines. They are outside semver and change in any release.
 

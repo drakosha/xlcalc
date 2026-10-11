@@ -16,6 +16,8 @@ export const ctx = createContext({}, { codeGeneration: { strings: false } })
 runInContext((await bundle()).code, ctx)
 /** The library inside the context without code generation from strings; its results are cloned out of it. */
 export const strict = runInContext('FormulaEngine', ctx) as typeof import('../src/index.js')
+// the context's own registry of locales, loaded as the tests' (`locales.ts`)
+runInContext('FormulaEngine.registerLocale(FormulaEngine.ruRU)', ctx)
 
 export const byEval = (book: BookInput, opts: ComputeOptions = {}) => compute(book, { clock, ...opts, execution: 'eval' })
 export const byClosures = (book: BookInput, opts: ComputeOptions = {}) => structuredClone(strict.compute(book, { clock, ...opts, execution: 'closures' }))

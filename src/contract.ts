@@ -7,6 +7,9 @@
  * a string from data never becomes a formula. Function names are English, arguments are separated
  * by commas, the decimal separator is a dot.
  */
+import type { Locale } from './locale/types.js'
+
+export type { Locale } from './locale/types.js'
 
 export type Scalar = number | string | boolean | null
 
@@ -568,10 +571,11 @@ export interface BookInput {
   /** The cell styles that cells, rows and columns refer to by index. */
   styles?: CellStyle[]
   /**
-   * The locale the book is computed in, a BCP 47 tag of one of the package's locales, `LOCALES` (`'en-US'` by
-   * default). It changes computed values as Excel's regional settings do (text read as a number or a date, numbers
-   * and booleans turned into text, `TEXT` format codes, currency), not the formula text: formulas stay invariant, and
-   * `toLocal` shows them in a locale. An unknown tag is an `InputError`.
+   * The locale the book is computed in, the BCP 47 tag of a loaded locale, `LOCALES` (`'en-US'` by default; another
+   * of the package's locales is loaded by `registerLocale`). It changes computed values as Excel's regional settings do
+   * (text read as a number or a date, numbers and booleans turned into text, `TEXT` format codes, currency), not the
+   * formula text: formulas stay invariant, and `toLocal` shows them in a locale. A tag that is not loaded is an
+   * `InputError` that names the module to import.
    */
   locale?: string
   /**
@@ -664,8 +668,8 @@ export interface CellDisplay {
 export interface DisplayOptions {
   /** The number format; General without it. */
   format?: NumberFormat
-  /** A tag of the package's locales, `LOCALES` (`'en-US'` by default). */
-  locale?: string
+  /** A loaded locale's tag (`LOCALES`), or a locale object, loaded or not; en-US without one. */
+  locale?: string | Locale
   /**
    * The column's width as `ColumnInput.width` (several columns' widths added for a merged area). Without it the width
    * is not limited: General shows all the digits it would in a wide column and no number turns into `#`.
@@ -686,8 +690,11 @@ export interface EntryWidthOptions extends DisplayOptions {
 
 /** `parseEntry`'s options: the book text is typed into and the cell it goes to. */
 export interface EntryOptions {
-  /** The book's locale, a tag of `LOCALES` (`'en-US'` by default): numbers, dates, booleans, errors and formulas are read as Excel reads them there. */
-  locale?: string
+  /**
+   * The book's locale, a loaded locale's tag (`LOCALES`) or a locale object, loaded or not; en-US without one: numbers,
+   * dates, booleans, errors and formulas are read as Excel reads them there.
+   */
+  locale?: string | Locale
   /** The book's date system, as `BookInput.dateSystem`; 1900 without it. */
   dateSystem?: 1900 | 1904
   /**
@@ -714,8 +721,8 @@ export type EntryResult = { ok: true; input: CellInput | null } | (Refusal<Check
  */
 export interface EntryTextOptions {
   numberFormat?: NumberFormat
-  /** A tag of `LOCALES` (`'en-US'` by default). */
-  locale?: string
+  /** A loaded locale's tag (`LOCALES`) or a locale object; en-US without one. */
+  locale?: string | Locale
   dateSystem?: 1900 | 1904
   /** ISO, as `Clock.now`; the current moment without it. */
   now?: string
@@ -788,8 +795,8 @@ export type FormulaReference = GridReference | TableReference
 
 /** `scanReferences`'s options. */
 export interface ScanOptions {
-  /** The locale the text is typed in, a tag of `LOCALES`; without it the text is a stored formula. */
-  locale?: string
+  /** The locale the text is typed in, a loaded locale's tag (`LOCALES`) or a locale object; without it the text is a stored formula. */
+  locale?: string | Locale
 }
 
 /**
@@ -931,8 +938,8 @@ export type NameCheck = { ok: true } | Refusal<NameRefusal>
 
 /** The book whose rules `validateName` checks a name by. */
 export interface NameOptions {
-  /** A tag of the package's locales (`BookInput.locale`); en-US without one. */
-  locale?: string
+  /** The book's locale (`BookInput.locale`): a loaded locale's tag, or a locale object; en-US without one. */
+  locale?: string | Locale
 }
 
 /** The parts of a book `validateNames` checks names against. */
@@ -942,8 +949,8 @@ export interface NamesContext {
   /** Tables of the book with their columns, for the structured references of names' formulas. */
   tables?: { name: string; columns: string[] }[]
   externalFunctions?: string[]
-  /** The book's locale (`BookInput.locale`); en-US without one. */
-  locale?: string
+  /** The book's locale (`BookInput.locale`): a loaded locale's tag, or a locale object; en-US without one. */
+  locale?: string | Locale
 }
 
 /** A cell edit; `input: null` clears the cell. */

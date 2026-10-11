@@ -25,6 +25,7 @@ import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 import { CLOCK, matches, show, toVal } from './excel-cases.js'
+import './locales.js'
 
 const dir = new URL('./excel/xlsx/', import.meta.url)
 const json = <T>(name: string): T => JSON.parse(readFileSync(new URL(name, dir), 'utf8')) as T

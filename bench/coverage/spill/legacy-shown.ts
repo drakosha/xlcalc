@@ -5,7 +5,7 @@
  * two kinds part in Excel itself.
  */
 import { dataCells } from '../data.js'
-import { fromLegacy } from '../../../src/index.js'
+import { fromLegacy } from '../../../src/xlsx.js'
 import { sheet, type CellSpec, type SpillCase } from './cases.js'
 import NESTING from '../../../test/excel/legacy/nesting.json' with { type: 'json' }
 import PARAMS from '../../../test/excel/legacy/params.json' with { type: 'json' }

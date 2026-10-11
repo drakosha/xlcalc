@@ -3,11 +3,16 @@
  * (`en`, `ru`, `de-DE`), where a locale's answers are stored, how Excel for Mac starts in it and what Windows needs for
  * it. A locale added to `src/locales/` needs nothing here.
  */
+import { registerLocale } from '../../src/locale/load.js'
 import { DEFAULT_LOCALE, LOCALES } from '../../src/locale/registry.js'
-import { displayRules, REGIONAL } from '../../src/locale/rules.js'
+import { displayRules } from '../../src/locale/rules.js'
+import { LOCALE_MODULES } from '../../src/worker/locales.js'
+
+// the harnesses compute in every locale of the package: its modules loaded, as a host loads the ones it needs
+for (const load of Object.values(LOCALE_MODULES)) registerLocale(await load())
 
 /** The package's locales, in the order of their tags; each has answers of Excel where they were taken. */
-export const TAGS: readonly string[] = [...LOCALES.keys()]
+export const TAGS: readonly string[] = [...LOCALES.keys()].sort()
 
 /** The short names a command line takes for en-US and ru-RU, which are also the names of their measurement files. */
 const SHORT: Readonly<Record<string, string>> = { en: 'en-US', ru: 'ru-RU' }
@@ -53,6 +58,6 @@ export const localeMeta = (tag: string): string => `${tag} (${launchArgs(tag).jo
  */
 export function windowsLocale(tag: string): { lcid: number; codepage: number } {
   if (!LOCALES.has(tag)) throw new Error(`${tag} is none of the package's locales (${TAGS.join(', ')}): Windows takes its language id and code page from its file in src/locales/`)
-  const lcid = tag === DEFAULT_LOCALE ? 0x409 : parseInt(REGIONAL.get(tag)!.lcid, 16)
+  const lcid = tag === DEFAULT_LOCALE ? 0x409 : parseInt(LOCALES.get(tag)!.regional!.lcid, 16)
   return { lcid, codepage: Number(/^windows-(\d+)$/.exec(displayRules(tag).codePage.name)?.[1]) }
 }

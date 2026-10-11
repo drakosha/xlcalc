@@ -4,16 +4,19 @@
  * shows the formats by (`numfmt/builtin.ts`, a locale's `builtin`, through `builtinIn`), in en-US syntax as a cell's
  * `format` takes a code.
  */
-import { checkLocale, InputError, what } from './input.js'
+import { InputError, what } from './input.js'
+import { checkLocaleArg } from './locale/load.js'
 import { builtinIn } from './locale/rules.js'
+import type { Locale } from './locale/types.js'
 import { isBuiltin } from './numfmt.js'
 
 /**
- * The code a built-in number format (0 to 49, `NumberFormat` as a number) shows by in `locale` (en-US without one), in
- * en-US syntax as a cell's `format` takes it; undefined for a number that is not a built-in format's.
+ * The code a built-in number format (0 to 49, `NumberFormat` as a number) shows by in `locale` (a loaded locale's tag
+ * or a locale object; en-US without one), in en-US syntax as a cell's `format` takes it; undefined for a number that
+ * is not a built-in format's.
  */
-export function builtinFormatCode(id: number, locale?: string): string | undefined {
+export function builtinFormatCode(id: number, locale?: string | Locale): string | undefined {
   if (typeof id !== 'number') throw new InputError('id', `expected the number of a built-in format, 0 to 49, got ${what(id)}`)
-  if (locale !== undefined) checkLocale(locale, 'locale')
-  return isBuiltin(id) ? builtinIn(locale)(id) : undefined
+  const loc = locale === undefined ? undefined : checkLocaleArg(locale, 'locale')
+  return isBuiltin(id) ? builtinIn(loc)(id) : undefined
 }
