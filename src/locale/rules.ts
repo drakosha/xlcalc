@@ -15,6 +15,7 @@ import { EN_US } from '../locales/en-US.js'
 import { RU_NAMES } from './lcid.js'
 import { localeOf } from './registry.js'
 import type { CodePage, RulesClock } from './rules/data.js'
+import { cellNumberOf } from './rules/numbers.js'
 import { regionalRules } from './rules/regional.js'
 import type { Locale } from './types.js'
 
@@ -109,7 +110,7 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
     ...coercions(number, EN_US.booleans, generalText),
     clock,
     critNumber: argument,
-    cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
+    cellNumber: cellNumberOf(argument),
     locale: EN_US,
     decimal: '.',
     group: ',',

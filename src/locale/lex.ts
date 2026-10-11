@@ -5,6 +5,7 @@
  * so text the engine cannot parse translates as well. Every character of the text belongs to exactly one piece.
  */
 import { caseKey } from '../collate.js'
+import { literal } from '../criteria.js'
 import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_RULE, numberSource } from '../syntax/scan.js'
 import type { Message } from './messages.js'
 
@@ -39,10 +40,8 @@ export interface LexFail {
 // the identifier rule of the engine's tokenizer
 const IDENT = new RegExp(IDENT_RULE, 'uy')
 
-const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
 /** The number rule of a syntax: `1.5`, `.5`, `5.`, `1.5E-07` with its decimal separator. */
-export const numberRule = (syn: Syntax) => new RegExp(numberSource(escape(syn.decimal)), 'y')
+export const numberRule = (syn: Syntax) => new RegExp(numberSource(literal(syn.decimal)), 'y')
 
 /**
  * A structured reference's brackets with its specifiers in other words (`#Data` as `#Данные`, `words` mapping upper-case

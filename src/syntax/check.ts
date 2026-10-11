@@ -9,9 +9,11 @@ import { parse } from './parse.js'
 import { readsAsCell } from './tokens.js'
 import { canonical, mapAst, sheetKey, walk } from './print.js'
 
+/** Where a message points: the first place of `needle` in `text` in any case, the start when it is not there. */
+const positionOf = (text: string, needle: string) => Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase()))
+
 /** Argument counts of each function and the arguments it cannot leave out; literal arguments of external functions. */
 export function checkCalls(ast: Ast, src: string, external: (fn: string) => boolean): FormulaError | null {
-  const at = (needle: string) => Math.max(0, src.toUpperCase().indexOf(needle.toUpperCase()))
   const visit = (n: Ast): FormulaError | null => {
     switch (n.k) {
       case 'paren':
@@ -37,16 +39,16 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
         if (external(n.name)) {
           for (const a of n.args) {
             const lit = a.k === 'num' || a.k === 'str' || a.k === 'bool' || (a.k === 'un' && a.a.k === 'num')
-            if (!lit) return new FormulaError('unsupported', { key: 'externalLiterals', fn: n.name }, at(n.name))
+            if (!lit) return new FormulaError('unsupported', { key: 'externalLiterals', fn: n.name }, positionOf(src, n.name))
           }
           return null
         }
         const spec = FUNCTIONS[n.name]
         if (!spec) return null
         const k = n.args.length
-        if (!spec.takes(k)) return new FormulaError('syntax', { key: 'argumentCount', fn: n.name, counts: spec.counts, got: k }, at(n.name))
+        if (!spec.takes(k)) return new FormulaError('syntax', { key: 'argumentCount', fn: n.name, counts: spec.counts, got: k }, positionOf(src, n.name))
         const left = n.args.findIndex((a, i) => a.k === 'missing' && !spec.omits(i))
-        if (left >= 0) return new FormulaError('syntax', { key: 'argumentLeftOut', fn: n.name, position: left + 1 }, at(n.name))
+        if (left >= 0) return new FormulaError('syntax', { key: 'argumentLeftOut', fn: n.name, position: left + 1 }, positionOf(src, n.name))
         for (const a of n.args) {
           const e = visit(a)
           if (e) return e
@@ -82,8 +84,7 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
   const known = ctx.tables ? new Map(ctx.tables.map((t) => [sheetKey(t.name), t])) : null
   const used = new Set<string>()
   let fail: Fail | null = null
-  const at = (needle: string) => Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase()))
-  const unknown = (m: Message, needle: string): Fail => ({ ok: false, code: 'unknown_name', message: (ctx.say ?? english)(m), at: at(needle) })
+  const unknown = (m: Message, needle: string): Fail => ({ ok: false, code: 'unknown_name', message: (ctx.say ?? english)(m), at: positionOf(text, needle) })
   const out = mapAst(ast, (n) => {
     if (fail) return undefined
     if (n.k === 'name' && n.sheet === undefined && known?.has(sheetKey(n.name))) {
@@ -149,7 +150,7 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
       if (n.sheet !== undefined) sheets.add(n.sheet)
     }
   })
-  const fail = (code: CheckCode, m: Message, needle: string) => ({ ok: false as const, code, message: say(m), at: Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase())) })
+  const fail = (code: CheckCode, m: Message, needle: string) => ({ ok: false as const, code, message: say(m), at: positionOf(text, needle) })
   for (const f of functions) if (!isFunction(f) && !externalSet.has(f)) return fail('unknown_function', { key: 'unknownFunction', fn: f }, f)
   if (ctx.sheets) {
     const known = new Set(ctx.sheets.map(sheetKey))
