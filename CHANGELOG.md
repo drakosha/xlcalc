@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.16.2 (2026-10-11)
+
+Internal release; not published to npm. `LINEST` and its relatives far from 0, `SORTBY` with a by-array of one value.
+
+Fixed:
+
+- `LINEST`, `LOGEST`, `TREND` and `GROWTH` with a constant take y and each variable about their means before the Householder QR and bring the intercept back after, so data far from 0 against their spread keep their digits: of 10,000 values 1E12 + 0, 0.01, 0.02 on their steps 0, 1, 2 the slope is 0.010009765625, as Excel gives it (0.0101547 before). The known difference `linestOffset` goes. The variables Excel leaves out and the refusals are as before. Measured with the engine's answers committed before the run: the set `fit-offset-held` (43 cases: `LINEST` with two variables and without a constant, `TREND`, `LOGEST`, `GROWTH` on shifted data) in Excel for Mac and Windows, which answered alike to the bit; 34 cases as predicted, two more once `TREND` stayed b + m·x as Excel evaluates it.
+- `SORTBY` takes a by-array of one value as one row and one column, and the first by-array decides whether rows or columns are sorted: `SORTBY(D!B1:B8,D!C1:C8,1,5,1)` is `#VALUE!`, as in Excel (the engine sorted). The set `sortby-one-held` (19 cases) as predicted in both Excels.
+
+Known differences (README): `linestMean`, Excel's intercept and regression sum of squares over y far from 0 follow the mean it sums plainly, so they and `TREND` there differ from the exact ones here; `growthRange`, `GROWTH` far from 0 in x is `#NUM!` in Excel where the fitted value fits a double.
+
 ## 0.16.1 (2026-10-10)
 
 Internal release; not published to npm. The cells of formatted rows and columns in xlsx as Excel shows them.
