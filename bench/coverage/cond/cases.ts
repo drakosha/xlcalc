@@ -5,7 +5,7 @@
  * colours, bold, italic) and saves the book. The answer is what Excel showed, and the file it saved goes beside it, for
  * the reader to read the rules Excel kept.
  */
-import type { BookInput, CellStyle, CellView, Clock, ConditionalFormat, StructureOp } from '../../../src/contract.js'
+import type { CellStyle, CellView, Clock, StructureOp } from '../../../src/contract.js'
 import { createSession, editStructure, validateFormula } from '../../../src/index.js'
 import { MAX_COLS, MAX_ROWS } from '../../../src/model.js'
 import { cellCount, parseRange, rectCells } from '../../../src/structure/area.js'

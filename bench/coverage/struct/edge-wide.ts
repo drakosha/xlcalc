@@ -5,7 +5,7 @@
  */
 import type { StructCase, StructCases } from './cases.js'
 import { STYLES } from './edge-layout.js'
-import type { StoredBook, StoredCell } from '../stored.js'
+import type { StoredBook } from '../stored.js'
 
 /** S: columns C to XFD 15 wide, filled, with a format; rows 3 and 4 bold, 25 points high, with a format. */
 function wideBook(): StoredBook {
