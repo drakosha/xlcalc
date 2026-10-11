@@ -55,7 +55,7 @@ Every whitelisted function's typical call was run with a two-cell range and a tw
 
 `INDEX` with row or column 0 returns the whole column, row or range. `ROW` and `COLUMN` of several rows or columns return the list of numbers. TRANSPOSE, MMULT, MUNIT, MINVERSE, SEQUENCE, CHOOSECOLS, CHOOSEROWS, TAKE, DROP, EXPAND, HSTACK, VSTACK, TOCOL, TOROW, WRAPROWS, WRAPCOLS, SORT, SORTBY, UNIQUE, FILTER, FREQUENCY, MODE.MULT, LINEST, LOGEST, TREND, GROWTH, TEXTSPLIT and RANDARRAY return arrays.
 
-`RANDARRAY` is volatile and draws from the clock's seed, the cell and the element's position, as `RAND` does. Sorting is stable and orders numbers, text, booleans, errors, then blanks; blanks stay last in a descending sort too. Text is compared in the book's locale order (en-US puts Latin before Cyrillic). LINEST and its relatives solve by Householder QR.
+`RANDARRAY` is volatile and draws from the clock's seed, the cell and the element's position, as `RAND` does. Sorting is stable and orders numbers, text, booleans, errors, then blanks; blanks stay last in a descending sort too. Text is compared in the book's locale order (en-US puts Latin before Cyrillic). LINEST and its relatives solve by Householder QR, about the means of y and the variables when the model has a constant.
 
 An empty array, such as `FILTER` that keeps nothing, `TAKE` of zero rows or `DROP` of everything, is `#CALC!`, as in Excel.
 

@@ -70,7 +70,6 @@ export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: 
   'en-US:stat-edges-held:RSQ#1': { reason: 'momentRounding', engine: { t: 'n', v: 1 } },
   'en-US:stat-edges-held:SLOPE#2': { reason: 'momentRounding', engine: { t: 'n', v: 99.9024390243902 } },
   'en-US:stat-edges-held:STEYX#1': { reason: 'momentRounding', engine: { t: 'n', v: 0 } },
-  'en-US:stat-edges-held:LINEST#1': { reason: 'linestOffset', engine: { t: 'n', v: 0.0101547267909801 } },
   'en-US:stat-edges-held:DVAR#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668069581190745 } },
   'en-US:stat-edges-held:DVARP#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'en-US:stat-edges-held:DSTDEV#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.00817355235617137 } },
