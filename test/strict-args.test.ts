@@ -108,7 +108,7 @@ describe('the functions of the package take no options they do not', () => {
   /** Every function the package gives out, by entry point, and the arguments it takes. */
   const FUNCTIONS: [string, Record<string, unknown>, Record<string, number>][] = [
     ['xlcalc', root, {
-      compute: 2, createSession: 2, openSession: 2, createInlineCalc: 1, editStructure: 2, restructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
+      compute: 2, createSession: 2, openSession: 2, createInlineCalc: 1, viewportOf: 4, editStructure: 2, restructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
       toLocal: 3, toInvariant: 2, registerLocale: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, entryWidth: 2, fitColumns: 4, displayValue: 2, builtinFormatCode: 2, errorText: 2,
       scanReferences: 2, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, fromLegacy: 2,
       parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2,
