@@ -120,13 +120,6 @@ export function repaintOf(book: BookInput, o: Outcome): RangeRef[] | undefined {
   return out.size ? [...out.values()] : undefined
 }
 
-/** The keys of cells in address order, once each. */
-export const sortedKeys = (keys: Iterable<string>): string[] =>
-  [...new Set(keys)]
-    .map((k) => k.split(':').map(Number))
-    .sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2])
-    .map((k) => k.join(':'))
-
 /** An edit's options checked (`allowed` beside `baseRevision`), and the session's revision against its `baseRevision`. */
 export function checkBase<T extends EditOptions>(v: unknown, revision: number, allowed: readonly string[] = [], path = 'opts'): T {
   if (v === undefined) return {} as T
