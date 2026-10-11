@@ -78,19 +78,23 @@ export function readNumber(text: string, shift = 0): number {
 
 // ---------- dates ----------
 
-const DAY_MS = 86_400_000
+export const DAY_MS = 86_400_000
 /** Excel 1900 serial number: 1 = 1900-01-01, with the phantom 1900-02-29 (`leapYear1900`). */
-const EPOCH_MS = Date.UTC(1899, 11, 30)
+export const EPOCH_MS = Date.UTC(1899, 11, 30)
+
+/** Days from 1899-12-30 as Excel's serial number: before 1900-03-01 Excel is one day behind (the phantom 1900-02-29). */
+export const fromUtcDays = (days: number) => (days < 61 ? days - 1 : days)
 
 export function dateToSerial(iso: string): number {
   const m = /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?)?/.exec(iso)
   if (!m) throw new Error(`bad date: ${iso}`)
   const ms = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] ?? 0), Number(m[5] ?? 0), 0) + Number(m[6] ?? 0) * 1000
-  const serial = (ms - EPOCH_MS) / DAY_MS
-  // before 1900-03-01 Excel is one day behind; its phantom 1900-02-29 is serial 60 (Date.UTC rolls it to 1900-03-01)
-  return serial < 61 || (m[1] === '1900' && m[2] === '02' && m[3] === '29') ? serial - 1 : serial
+  const days = (ms - EPOCH_MS) / DAY_MS
+  // the phantom 1900-02-29 is serial 60 (Date.UTC rolls it to 1900-03-01)
+  return m[1] === '1900' && m[2] === '02' && m[3] === '29' ? days - 1 : fromUtcDays(days)
 }
 
+/** The moment (UTC ms) of a serial number, the inverse of `msToSerial`. */
 export function serialToUtcMs(serial: number): number {
   const s = serial < 61 ? serial + 1 : serial
   return EPOCH_MS + Math.round(s * DAY_MS)
@@ -111,8 +115,7 @@ export function bookScalar(v: CellInput['value'], epoch: number): Scalar {
 
 /** A moment (UTC ms) as a serial number with a day fraction; the engine clock runs in UTC. */
 export function msToSerial(ms: number): number {
-  const serial = (ms - EPOCH_MS) / DAY_MS
-  return serial < 61 ? serial - 1 : serial
+  return fromUtcDays((ms - EPOCH_MS) / DAY_MS)
 }
 
 /** An address's place in the order of `sortAddresses`: row, then column. */

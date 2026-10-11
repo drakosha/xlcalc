@@ -2,7 +2,8 @@
  * Excel's 1900 date system and date and time text in the en-US locale (`src/dates.ts`).
  */
 import { describe, expect, it } from 'vitest'
-import { parseDateText, serialOf, ymd } from '../src/dates.js'
+import { calendarDate, lastDayExcel, parseDateText, serialExcel, serialOf, utcDays, ymd } from '../src/dates.js'
+import { msToSerial, serialToUtcMs } from '../src/model.js'
 
 describe('1900 date system', () => {
   it('serial numbers and calendar dates, with day 0 and the phantom 1900-02-29', () => {
@@ -14,6 +15,14 @@ describe('1900 date system', () => {
       { y: 1900, m: 3, d: 1 },
       { y: 2025, m: 1, d: 31 },
     ])
+  })
+
+  it('the real calendar against Excel\'s: 1900-02-29 only in Excel\'s, one day behind before 1900-03-01', () => {
+    expect([utcDays(1900, 2, 28), utcDays(1900, 2, 29), utcDays(1900, 3, 1)]).toEqual([60, 61, 61])
+    expect([serialOf(1900, 2, 29), serialExcel(1900, 2, 29), serialExcel(1900, 3, 1), serialExcel(2024, 2, 29)]).toEqual([61, 60, 61, 45351])
+    expect([lastDayExcel(1900, 2), lastDayExcel(2000, 2), calendarDate(1900, 2, 29), calendarDate(1900, 2, 30), calendarDate(2023, 2, 29)]).toEqual([29, 29, 60, null, null])
+    // a moment and its serial number with a day fraction, both ways across the phantom day
+    for (const s of [0.25, 59.5, 61.75, 45688.75]) expect(msToSerial(serialToUtcMs(s))).toBe(s)
   })
 
   it('date and time text as Excel en-US reads it', () => {

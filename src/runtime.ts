@@ -22,7 +22,7 @@ import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
-import { Areas, E, fitNumber, fromCellValue, isErr, Rng, type CErr, type V } from './values.js'
+import { Areas, E, fitNumber, fromCellValue, holds, isErr, Rng, type CErr, type V } from './values.js'
 
 export interface SheetData {
   name: string
@@ -190,8 +190,7 @@ export function makeRuntime(ctx: RuntimeContext) {
   const cmp = (op: string, a: V, b: V): V => {
     if (isErr(a)) return a
     if (isErr(b)) return b
-    const c = compareOp(a, b)
-    return op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0
+    return holds(op, compareOp(a, b))
   }
 
   // ---------- operators over arrays (the code generator uses them where an operand can be an array) ----------

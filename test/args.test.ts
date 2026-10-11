@@ -3,7 +3,7 @@
  * book, empty input, paired arrays, the answer rules (non-finite numbers), and the function specs derived from kinds.
  */
 import { describe, expect, it } from 'vitest'
-import { makeCaller, pairs, specOf, type Arg, type FnDef, type Grid } from '../src/args.js'
+import { gridError, makeCaller, occupied, pairs, specOf, type Arg, type FnDef, type Grid } from '../src/args.js'
 import { Arr } from '../src/arrays/value.js'
 import { createState } from '../src/engine.js'
 import { english } from '../src/locale/english.js'
@@ -29,13 +29,12 @@ const state = createState(
 const cx = state.rt.cx
 const rng = (r1: number, c1: number, r2: number, c2: number) => new Rng(0, r1, c1, r2, c2)
 const MIX = rng(0, 0, 7, 0)
-const DATES = rng(0, 1, 2, 1)
 const ERR = rng(0, 2, 0, 2)
 const NUMS = rng(0, 4, 2, 4)
 
 /** Calls a one-argument (or repeated) function of the given kind that returns its coerced argument as JSON text. */
 const coerce = (args: string, ...a: Arg[]) => {
-  const r = makeCaller({ args, rep: args.length === 1 && 'NAZVD'.includes(args) ? 1 : undefined, fn: (x: unknown) => JSON.stringify(x) }, cx)(...a)
+  const r = makeCaller({ args, rep: args.length === 1 && 'NAZV'.includes(args) ? 1 : undefined, fn: (x: unknown) => JSON.stringify(x) }, cx)(...a)
   return isErr(r) ? r : JSON.parse(r as string)
 }
 
@@ -84,7 +83,6 @@ describe('argument layer', () => {
     expect(coerce('Y', a)).toEqual([1, 0, 0, 5, 3.5])
     expect(coerce('Y', MIX)).toEqual([1, 0, 0, 1, 5, 0, 3.5])
     expect(coerce('Z', a)).toBe(E.VALUE)
-    expect(coerce('D', new Arr(1, 2, 1, 2, [45688.75, 45700.5]))).toEqual([45688, 45700])
     expect(coerce('N', new Arr(4, 2, 2, 1, [1, 3], 2))).toEqual([1, 2, 3, 2, 2, 2, 2, 2])
     expect(coerce('N', new Arr(4, 2, 2, 1, [1, 3]))).toEqual([1, 3])
     expect(coerce('N', new Arr(4, 2, 2, 1, [1, E.NA], E.DIV0))).toBe(E.DIV0)
@@ -117,16 +115,18 @@ describe('argument layer', () => {
     expect(pairs(g(2, 1, [1, 2]), g(3, 1, [1, 2, 3]))).toBe(E.NA)
   })
 
+  it('the occupied part of a grid and its first error', () => {
+    // 4 × 3 referenced, 2 × 2 occupied: positions 0, 1, 3, 4 hold cells, the rest is blank
+    const g: Grid = { rows: 4, cols: 3, h: 2, w: 2, v: [1, E.DIV0, 'a', E.NA] }
+    expect([occupied(g), occupied({ ...g, h: 0, w: 0, v: [] }), occupied({ ...g, h: 4, w: 3 })]).toEqual([5, 0, 12])
+    expect(gridError(g)).toBe(E.DIV0)
+    expect(gridError({ ...g, v: [1, 'a', null, true] })).toBeUndefined()
+  })
+
   it('rule 5: a non-finite answer is #NUM!, an exception #VALUE!', () => {
     expect(makeCaller({ args: 'n', fn: (x: number) => x / 0 }, cx)(1)).toBe(E.NUM)
     expect(makeCaller({ args: 'n', fn: () => Math.sqrt(-1) }, cx)(1)).toBe(E.NUM)
     expect(makeCaller({ args: '', fn: () => ([] as number[]).reduce((a, b) => a + b) }, cx)()).toBe(E.VALUE)
-  })
-
-  it('rule 6: holidays as whole serial numbers; text or a boolean in the list is #VALUE!', () => {
-    expect(coerce('D', DATES)).toEqual([45688, 45689, 45700])
-    expect(coerce('D', '2025-01-31')).toEqual([45688])
-    expect(coerce('D', MIX)).toBe(E.VALUE)
   })
 
   it('repeated arguments arrive as one array after the fixed ones', () => {

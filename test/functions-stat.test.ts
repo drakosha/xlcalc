@@ -8,6 +8,8 @@ import { compute, type CellInput } from '../src/index.js'
 import { gammafn } from '../src/functions/jstat.js'
 import { chisqInvRt, gammaInv } from '../src/functions/statistical/inverse.js'
 import { gammaPQ, ibeta, lgamma, normInv } from '../src/functions/statistical/special.js'
+import { numbersOf } from '../src/functions/statistical/common.js'
+import { E } from '../src/values.js'
 
 const near = (x: number, ref: number, tol = 1e-14) => expect(Math.abs(x - ref), `${x} vs ${ref}`).toBeLessThanOrEqual(tol * Math.max(1, Math.abs(ref)))
 
@@ -52,6 +54,17 @@ describe('special functions against mpmath', () => {
     near(normInv(0.3), -0.52440051270804082)
     near(normInv(1e-300), -37.0470962993612, 1e-13)
     near(normInv(1 - 1e-10, 1e-10), 6.361340902404056, 1e-13)
+  })
+})
+
+describe('numbers of values', () => {
+  it('skip text, booleans and blanks; the first error in order is the answer, at the selected positions too', () => {
+    expect(numbersOf([1, 'a', true, null, 2])).toEqual([1, 2])
+    expect(numbersOf([1, 'a', E.NA, 2, E.DIV0])).toBe(E.NA)
+    const vs = [5, E.DIV0, 'x', 7, E.NA]
+    expect(numbersOf(vs, [3, 0, 2])).toEqual([7, 5])
+    expect(numbersOf(vs, [3, 4, 1])).toBe(E.NA)
+    expect(numbersOf(vs, [])).toEqual([])
   })
 })
 

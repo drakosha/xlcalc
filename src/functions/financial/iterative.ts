@@ -1,8 +1,9 @@
 /** Rates found by iteration (RATE, IRR, XIRR) and the cash-flow functions next to them (MIRR, XNPV), this engine's own. */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
-import { Areas, E, isErr, type CErr, type V } from '../../values.js'
+import { E, isErr, type CErr, type V } from '../../values.js'
 import { atp } from '../date/atp.js'
+import { areaNumbers, numbersOf } from '../statistical/common.js'
 
 /**
  * Newton's method on a rate: null when it does not settle (|Δ| < 1e-7) within `max` steps or settles at −1 or
@@ -52,14 +53,10 @@ function irr(xs: number[], guess: number): number | null {
   return null
 }
 
-/** Numbers of a range in order (IRR: text, booleans and blanks skipped, an error is #VALUE!). */
+/** Numbers of a range in order (IRR: text, booleans and blanks skipped, an error is #VALUE!, where MIRR answers it). */
 function flows(g: Grid): number[] | CErr {
-  const out: number[] = []
-  for (const v of g.v) {
-    if (isErr(v)) return E.VALUE
-    if (typeof v === 'number') out.push(v)
-  }
-  return out
+  const xs = numbersOf(g.v)
+  return isErr(xs) ? E.VALUE : xs
 }
 
 const signs = (xs: number[]) => xs.some((x) => x > 0) && xs.some((x) => x < 0)
@@ -156,13 +153,8 @@ export const functions: Record<string, FnDef> = {
     cx: true,
     areas: true,
     fn: (cx: Cx, values: Arg, finance: number, reinvest: number) => {
-      const xs: number[] = []
-      for (const x of values instanceof Areas ? values.list : [values]) {
-        const g = cx.grid(x)
-        const e = g.v.find(isErr)
-        if (e) return e
-        for (const v of g.v) if (typeof v === 'number') xs.push(v)
-      }
+      const xs = areaNumbers(cx, values)
+      if (isErr(xs)) return xs
       if (reinvest === -1) return E.DIV0
       const n = xs.length
       let pos = 0

@@ -24,18 +24,18 @@ function mod(n: number, d: number): number | CErr {
   return r === d ? 0 : r + 0
 }
 
+/** LOG, and LOG10 by its default base. */
+function log(x: number, base = 10): number | CErr {
+  if (x <= 0 || base <= 0) return E.NUM
+  return base === 1 ? E.DIV0 : Math.log(x) / Math.log(base)
+}
+
 export const functions: Record<string, FnDef> = {
   ABS: { args: 'n', fn: Math.abs },
   EXP: { args: 'n', fn: Math.exp },
   LN: { args: 'n', fn: (x: number) => (x <= 0 ? E.NUM : Math.log(x)) },
-  LOG: {
-    args: 'n n?',
-    fn: (x: number, base = 10) => {
-      if (x <= 0 || base <= 0) return E.NUM
-      return base === 1 ? E.DIV0 : Math.log(x) / Math.log(base)
-    },
-  },
-  LOG10: { args: 'n', fn: (x: number) => (x <= 0 ? E.NUM : Math.log(x) / Math.log(10)) },
+  LOG: { args: 'n n?', fn: log },
+  LOG10: { args: 'n', fn: log },
   MOD: { args: 'n n', fn: mod },
   POWER: { args: 'n n', fn: power },
   QUOTIENT: { args: 'x x', fn: (n: number, d: number) => (d === 0 ? E.DIV0 : Math.trunc(n / d)) },

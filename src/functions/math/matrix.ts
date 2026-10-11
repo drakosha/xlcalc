@@ -23,6 +23,15 @@ const square = (g: Grid): number[][] | CErr => (g.rows === g.cols ? numbers(g) :
 
 const matrix = (m: number[][]): Arr => new Arr(m.length, m[0].length, m.length, m[0].length, m.flat())
 
+const identity = (n: number) => Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)))
+
+/** Partial pivoting: the row from `k` down whose value in column `k` is the largest in magnitude. */
+function pivot(a: number[][], k: number): number {
+  let p = k
+  for (let i = k + 1; i < a.length; i++) if (Math.abs(a[i][k]) > Math.abs(a[p][k])) p = i
+  return p
+}
+
 function mdeterm(g: Grid): number | CErr {
   const a = square(g)
   if (!Array.isArray(a)) return a
@@ -30,8 +39,7 @@ function mdeterm(g: Grid): number | CErr {
   let det = 1
   for (let k = 0; k < n; k++) {
     spend(n * n)
-    let p = k
-    for (let i = k + 1; i < n; i++) if (Math.abs(a[i][k]) > Math.abs(a[p][k])) p = i
+    const p = pivot(a, k)
     if (a[p][k] === 0) return 0
     if (p !== k) {
       ;[a[p], a[k]] = [a[k], a[p]]
@@ -51,11 +59,10 @@ function minverse(g: Grid): V | Arr {
   const a = square(g)
   if (!Array.isArray(a)) return a
   const n = a.length
-  const inv = a.map((_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)))
+  const inv = identity(n)
   for (let k = 0; k < n; k++) {
     spend(2 * n * n)
-    let p = k
-    for (let i = k + 1; i < n; i++) if (Math.abs(a[i][k]) > Math.abs(a[p][k])) p = i
+    const p = pivot(a, k)
     if (a[p][k] === 0) return E.NUM
     ;[a[p], a[k]] = [a[k], a[p]]
     ;[inv[p], inv[k]] = [inv[k], inv[p]]
@@ -102,7 +109,7 @@ export const functions: Record<string, FnDef> = {
     fn: (n: number) => {
       if (n < 1) return E.VALUE
       allot(n * n)
-      return matrix(Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))))
+      return matrix(identity(n))
     },
   },
 }

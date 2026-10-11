@@ -1,5 +1,6 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
+import { lifts } from '../../arrays/lift.js'
 import { arr, Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
@@ -27,8 +28,8 @@ const tableLookup = (horizontal: boolean): FnDef => ({
     if (isErr(given)) return given
     const k = keyOf(key)
     if (isErr(k)) return k
-    const many = idx instanceof Arr || (idx instanceof Rng && (idx.r2 > idx.r1 || idx.c2 > idx.c1))
-    const n = many ? 0 : indexArg(cx, idx as V | Rng)
+    const many = lifts(idx)
+    const n = many ? 0 : indexArg(cx, idx)
     if (isErr(n)) return n
     const a = cx.rules.toBool(approx)
     if (isErr(a)) return a

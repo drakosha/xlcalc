@@ -6,26 +6,23 @@
  */
 import { gammaPQ, normCdf } from './special.js'
 import { fCdf, tCdf } from './distributions.js'
-import { gridAt, type FnDef, type Grid } from '../../args.js'
+import type { FnDef, Grid } from '../../args.js'
 import { E, isErr, type V } from '../../values.js'
-import { devsq, gridError, gridNumbers, mean, numberPairs } from './common.js'
+import { devsq, mean, numberPairs, numbersOf } from './common.js'
 
 function chisqTest(actual: Grid, expected: Grid): V {
   const n = actual.rows * actual.cols
-  // Excel's order after a one-cell reference's own error (kind `C`): the sizes, then errors inside
-  const err = n !== expected.rows * expected.cols || n === 1 ? E.NA : (gridError(actual) ?? gridError(expected))
-  if (err) return err
+  // Excel's order after a one-cell reference's own error (kind `C`): the sizes (one value is #N/A too), then errors inside
+  const p = n === 1 ? E.NA : numberPairs(actual, expected)
+  if (isErr(p)) return p
+  const [xs, es] = p
   let x2 = 0
-  let pairs = 0
-  for (let i = 0; i < n; i++) {
-    const a = gridAt(actual, i)
-    const e = gridAt(expected, i)
-    if (typeof a !== 'number' || typeof e !== 'number') continue
+  for (let i = 0; i < xs.length; i++) {
+    const e = es[i]
     if (e === 0) return E.DIV0
-    x2 += ((a - e) * (a - e)) / e
-    pairs++
+    x2 += ((xs[i] - e) * (xs[i] - e)) / e
   }
-  if (!pairs) return E.DIV0
+  if (!xs.length) return E.DIV0
   const df = actual.rows > 1 && actual.cols > 1 ? (actual.rows - 1) * (actual.cols - 1) : n - 1
   return gammaPQ(df / 2, x2 / 2)[1]
 }
@@ -55,9 +52,9 @@ function tTest(ga: Grid, gb: Grid, tails: number, type: number): V {
     t = mean(d) / (sd / Math.sqrt(n))
     df = n - 1
   } else {
-    const a = gridNumbers(ga)
+    const a = numbersOf(ga.v)
     if (isErr(a)) return a
-    const b = gridNumbers(gb)
+    const b = numbersOf(gb.v)
     if (isErr(b)) return b
     const na = a.length
     const nb = b.length

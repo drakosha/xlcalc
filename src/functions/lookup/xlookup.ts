@@ -1,8 +1,8 @@
 /** XLOOKUP and XMATCH, this engine's own. */
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr, asArray } from '../../arrays/value.js'
-import { E, isErr, Rng, sameType, type V } from '../../values.js'
-import { exactMatch, type Compare, type Key } from './search.js'
+import { E, isErr, Rng, type V } from '../../values.js'
+import { comparable, exactMatch, type Compare, type Key } from './search.js'
 
 const MATCH_MODES = [0, -1, 1, 2]
 const SEARCH_MODES = [1, -1, 2, -2]
@@ -30,7 +30,7 @@ function xfind(k: Key | null, look: Grid, matchMode: number, searchMode: number,
   for (let j = 0; j < n; j++) {
     const i = searchMode > 0 ? j : n - 1 - j
     const v = look.v[i]
-    if (v === null || isErr(v) || !sameType(v, k)) continue
+    if (!comparable(v, k)) continue
     if (compare(v, k) === 0) {
       pos = i
       break

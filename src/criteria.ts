@@ -10,7 +10,7 @@ import { collator } from './collate.js'
 import { textToNumber } from './dates.js'
 import { spend } from './exec/budget.js'
 import { readsClock, type RulesClock } from './locale/rules/data.js'
-import { to15 } from './values.js'
+import { holds, to15 } from './values.js'
 
 /** A cell value for a criterion; errors are any object. */
 export type CritValue = number | string | boolean | null | object
@@ -136,7 +136,6 @@ function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
 }
 
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
-const opOk = (op: string, c: number) => (op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0)
 
 export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): boolean {
   switch (c.kind) {
@@ -148,10 +147,10 @@ export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): bool
       }
       if (typeof v !== 'number') return c.op === '<>'
       // numbers equal to 15 significant digits are equal, as with the comparison operators
-      return opOk(c.op, ord(to15(v), to15(c.n)))
+      return holds(c.op, ord(to15(v), to15(c.n)))
     case 'bool':
       if (typeof v !== 'boolean') return c.op === '<>'
-      return opOk(c.op, ord(Number(v), Number(c.b)))
+      return holds(c.op, ord(Number(v), Number(c.b)))
     case 'blank':
       if (c.op === '=') return v === null || v === ''
       if (c.op === '<>') return !(v === null || v === '')
@@ -164,32 +163,31 @@ export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): bool
       const code = v !== null && typeof v === 'object' ? (v as { code?: string }).code : undefined
       if (c.op === '=' || c.op === '<>') return (code === c.code) === (c.op === '=')
       const r = code === undefined ? undefined : ERROR_RANK[code]
-      return r !== undefined && opOk(c.op, ord(r, ERROR_RANK[c.code]))
+      return r !== undefined && holds(c.op, ord(r, ERROR_RANK[c.code]))
     }
     case 'str':
       if (typeof v !== 'string') return c.op === '<>'
       if (c.op === '=' || c.op === '<>') return (v.toLowerCase() === c.s) === (c.op === '=')
-      return opOk(c.op, rules.compareText(v.toLowerCase(), c.s))
+      return holds(c.op, rules.compareText(v.toLowerCase(), c.s))
   }
 }
 
-/** Equality key in the index: case-insensitive strings, numbers (and text that reads as a number), booleans. */
+/** The index's key of what equality matches: text in lower case, a number to 15 digits, a boolean. */
+const equalityKey = (x: string | number | boolean): string => (typeof x === 'string' ? 's' + x : typeof x === 'number' ? 'n' + to15(x) : 'b' + x)
+
+/** Equality key of a value in the index: case-insensitive strings, numbers (and text that reads as a number), booleans. */
 function eqKey(v: CritValue, rules: CritRules): string | null {
   if (typeof v === 'string') {
     const n = rules.cellNumber(v)
-    return n === null ? 's' + v.toLowerCase() : 'n' + to15(n)
+    return equalityKey(n === null ? v.toLowerCase() : n)
   }
-  if (typeof v === 'number') return 'n' + to15(v)
-  if (typeof v === 'boolean') return 'b' + v
-  return null
+  return typeof v === 'number' || typeof v === 'boolean' ? equalityKey(v) : null
 }
 
+/** Equality key of a criterion, the key of the values it selects; null for one that is no equality. */
 export function critKey(c: Crit): string | null {
   if (c.op !== '=') return null
-  if (c.kind === 'str') return 's' + c.s
-  if (c.kind === 'num') return 'n' + to15(c.n)
-  if (c.kind === 'bool') return 'b' + c.b
-  return null
+  return c.kind === 'str' ? equalityKey(c.s) : c.kind === 'num' ? equalityKey(c.n) : c.kind === 'bool' ? equalityKey(c.b) : null
 }
 
 /** One-column COUNTIF uses the same equality keys as the selection index; other criteria use the scan rules. */

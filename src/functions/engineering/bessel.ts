@@ -2,16 +2,15 @@
  * BESSELI, BESSELJ, BESSELK, BESSELY. Ported from bessel 1.0.2 (bessel.js), Copyright (C) 2013-present SheetJS,
  * Apache License 2.0 (THIRD_PARTY.md). Changed: Excel's J1 above 8 and start of the I recurrence, argument checks, loop caps.
  */
-import { E } from '../../values.js'
+import { E, MIN_NORMAL } from '../../values.js'
+import { MAX_TRIG } from '../common.js'
 import { gammaln } from '../jstat.js'
 import type { FnDef } from '../../args.js'
 
-/** Excel's limit for J and Y, as for its trigonometric functions. */
-const MAX_X = 2 ** 27
-/** Recurrence steps allowed: enough for any order below MAX_X; beyond it #NUM! rather than a long loop. */
+/** Recurrence steps allowed: enough for any order below MAX_TRIG, Excel's limit for J and Y; beyond it #NUM! rather than a long loop. */
 const MAX_STEPS = 1.5e8
 /** Below this (the smallest normal number) Excel's answer is 0. */
-const LOG_TINY = Math.log(2.2250738585072014e-308)
+const LOG_TINY = Math.log(MIN_NORMAL)
 
 function horner(arr: readonly number[], v: number): number {
   let z = 0
@@ -188,7 +187,7 @@ const order = (n: number, f: (n: number) => number) => (n < 0 ? E.NUM : f(Math.t
 
 export const functions: Record<string, FnDef> = {
   BESSELI: { args: 'x x', fn: (x: number, n: number) => order(n, (k) => besseli(x, k)) },
-  BESSELJ: { args: 'x x', fn: (x: number, n: number) => (Math.abs(x) >= MAX_X ? E.NUM : order(n, (k) => besselj(x, k))) },
+  BESSELJ: { args: 'x x', fn: (x: number, n: number) => (Math.abs(x) >= MAX_TRIG ? E.NUM : order(n, (k) => besselj(x, k))) },
   BESSELK: { args: 'x x', fn: (x: number, n: number) => (x <= 0 ? E.NUM : order(n, (k) => forward(x, k, k0(x), k1(x), 1))) },
-  BESSELY: { args: 'x x', fn: (x: number, n: number) => (x <= 0 || x >= MAX_X ? E.NUM : order(n, (k) => forward(x, k, y0(x), y1(x), -1))) },
+  BESSELY: { args: 'x x', fn: (x: number, n: number) => (x <= 0 || x >= MAX_TRIG ? E.NUM : order(n, (k) => forward(x, k, y0(x), y1(x), -1))) },
 }
