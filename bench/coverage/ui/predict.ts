@@ -9,9 +9,8 @@
 import { fileURLToPath } from 'node:url'
 import { setModule, writeAnswers } from '../stored.js'
 import { createSession, type CellInput, type CellValidationAlert, type CellValue } from '../../../src/index.js'
-import { formatAddress, parseAddress } from '../../../src/model.js'
 import { TAGS } from '../locales.js'
-import { entriesOf, readCells, readColumns, uiBook, type UiCase, type UiSet } from './cases.js'
+import { entriesOf, readCells, readColumns, uiBook, windowOver, type UiCase, type UiSet } from './cases.js'
 
 const set = process.argv[2]
 const { buildUiCases } = await setModule<UiSet>('ui', set)
@@ -26,8 +25,7 @@ function predict(c: UiCase, tag: string) {
   try {
     const cells = readCells(c)
     if (c.act.do === 'bars') {
-      const at = cells.map(parseAddress)
-      const v = s.getViewport('S', `A1:${formatAddress(Math.max(...at.map((p) => p.row)), Math.max(...at.map((p) => p.col)))}`, { editText: true })
+      const v = s.getViewport('S', windowOver(cells), { editText: true })
       return { editText: Object.fromEntries(cells.map((a) => [a, v.cells[a]?.editText ?? ''])) }
     }
     const entries = entriesOf(c.act)

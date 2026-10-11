@@ -113,6 +113,12 @@ export const readCells = (c: UiCase): string[] => [...new Set([...(c.act.do === 
 /** The columns of the cells read, by letter. */
 export const readColumns = (c: UiCase): string[] => [...new Set(readCells(c).map((a) => indexToCol(parseAddress(a).col)))]
 
+/** The window from A1 that holds the cells given, for `getViewport`. */
+export function windowOver(cells: string[]): string {
+  const at = cells.map(parseAddress)
+  return `A1:${formatAddress(Math.max(...at.map((p) => p.row)), Math.max(...at.map((p) => p.col)))}`
+}
+
 /** The book of a case. */
 export const uiBook = (c: UiCase, locale?: string): BookInput => ({
   ...(locale ? { locale } : {}),
