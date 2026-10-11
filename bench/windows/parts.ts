@@ -8,7 +8,7 @@
 import { partsSet } from '../coverage/parts.js'
 import type { PartsAnswer, PartsCase, PartsMake } from '../coverage/parts/cases.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
-import { fileJobs, opSteps, stepErrors } from './books.js'
+import { fileJobs, makeErrors, opSteps } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -36,9 +36,7 @@ export async function stepParts(set: string, tag: Tag, e: WinEnv): Promise<void>
     files,
     (c) => [...(c.make ?? []).map(makeStep), ...opSteps(c), { do: 'parts' }, { do: 'saveAs' }],
     (c, a) => {
-      const makes = (c.make ?? []).length
-      const n = makes + (c.op ? 1 : 0)
-      const errors = stepErrors(a.answers.slice(0, n), (i) => (i < makes ? 'make' : 'op'))
+      const { n, errors } = makeErrors(c, a.answers)
       const raw = a.answers[n] as RawSheet[]
       return {
         ...(errors.length ? { error: errors.join('; ') } : {}),

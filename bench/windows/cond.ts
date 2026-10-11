@@ -9,7 +9,7 @@ import { condSet } from '../coverage/cond.js'
 import { fromBgr, type CondAnswer, type CondCase, type Look } from '../coverage/cond/cases.js'
 import { localeDir } from '../coverage/locales.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
-import { fileJobs, opSteps, stepErrors } from './books.js'
+import { fileJobs, makeErrors, opSteps } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -33,9 +33,7 @@ export async function stepCond(set: string, tag: Tag, e: WinEnv): Promise<void> 
     files,
     (c) => [...(c.make ?? []).map((m): Step => ({ do: 'cond', kind: 'make', ...m })), ...opSteps(c), { do: 'full' }, { do: 'cond', kind: 'looks', read: c.read }, { do: 'cond', kind: 'rules' }, { do: 'saveAs' }],
     (c, a) => {
-      const makes = (c.make ?? []).length
-      const n = makes + (c.op ? 1 : 0)
-      const errors = stepErrors(a.answers.slice(0, n), (i) => (i < makes ? 'make' : 'op'))
+      const { n, errors } = makeErrors(c, a.answers)
       const looks: CondAnswer['looks'] = {}
       for (const [sheet, cells] of a.answers[n + 1] as [string, RawLook[]][])
         looks[sheet] = Object.fromEntries(cells.map(([addr, text, fill, ci, font, bold, italic]): [string, Look] => [addr, { text, fill: ci === NO_FILL ? null : fromBgr(fill), font: fromBgr(font), bold, italic }]))

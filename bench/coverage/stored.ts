@@ -24,8 +24,8 @@ export const secondsSince = (t0: number): number => Math.round((Date.now() - t0)
 export const took = (t0: number): string => ((Date.now() - t0) / 1000).toFixed(1)
 
 /** A case set's module, `bench/coverage/<kind>/<set>.ts`, by a name that is a file name and nothing more. */
-export function setModule<T>(kind: string, set: string): Promise<T> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
+export function setModule<T>(kind: string, set: string | undefined): Promise<T> {
+  if (!/^[a-z0-9-]+$/.test(set ?? '')) throw new Error(`set name: [a-z0-9-], not ${set}`)
   return import(`./${kind}/${set}.js`) as Promise<T>
 }
 

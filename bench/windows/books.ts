@@ -112,6 +112,13 @@ export function opSteps(c: { id: string; book: string; op?: StructCase['op'] }, 
 /** The errors of the steps whose answers these are (null, or `{ error }`), each after the name `name` gives its step. */
 export const stepErrors = (answers: unknown[], name: (i: number) => string): string[] => (answers as ({ error?: string } | null)[]).flatMap((x, i) => (x?.error ? [`${name(i)}: ${x.error}`] : []))
 
+/** The errors of what a case makes and of its operation, whose steps come after the first `skip`; `n` the answers up to their end. */
+export function makeErrors(c: { make?: unknown[]; op?: unknown }, answers: unknown[], skip = 0): { n: number; errors: string[] } {
+  const makes = (c.make ?? []).length
+  const n = skip + makes + (c.op ? 1 : 0)
+  return { n, errors: stepErrors(answers.slice(skip, n), (i) => (i < makes ? 'make' : 'op')) }
+}
+
 /**
  * The cases to do of a step whose cases go to Excel as files (`files`) and come back saved, one book each, in jobs
  * (`job` names them): `steps` are a case's steps, `answer` its answer from theirs. A case whose book Excel did not load,

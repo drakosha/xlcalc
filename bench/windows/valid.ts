@@ -9,7 +9,7 @@ import { localeDir } from '../coverage/locales.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
 import { flag, formulaForExcel, ruleRange, validSet } from '../coverage/valid.js'
 import { lineRange, WINDOW, type ExcelLine, type ExcelRule, type ValidAnswer, type ValidCase, type ValidMake } from '../coverage/valid/cases.js'
-import { fileJobs, opSteps, stepErrors } from './books.js'
+import { fileJobs, makeErrors, opSteps } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -55,9 +55,7 @@ export async function stepValid(set: string, tag: Tag, e: WinEnv): Promise<void>
     files,
     (c) => [...(c.make ?? []).map(makeStep), ...opSteps(c), { do: 'valid', window }, { do: 'saveAs' }],
     (c, a) => {
-      const makes = (c.make ?? []).length
-      const n = makes + (c.op ? 1 : 0)
-      const errors = stepErrors(a.answers.slice(0, n), (i) => (i < makes ? 'make' : 'op'))
+      const { n, errors } = makeErrors(c, a.answers)
       const raw = a.answers[n] as RawSheet[]
       return {
         ...(errors.length ? { error: errors.join('; ') } : {}),

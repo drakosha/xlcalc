@@ -8,7 +8,7 @@ import type { CellValue } from '../../src/contract.js'
 import { hiddenSet } from '../coverage/hidden.js'
 import type { HiddenAnswer, HiddenCase, Visible } from '../coverage/hidden/cases.js'
 import { fileAnswers, secondsSince } from '../coverage/stored.js'
-import { fileJobs, opSteps, stepErrors } from './books.js'
+import { fileJobs, makeErrors, opSteps } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -28,10 +28,9 @@ export async function stepHidden(set: string, tag: Tag, e: WinEnv): Promise<void
     files,
     (c) => [{ do: 'book' }, ...(c.make ?? []).map((m): Step => ({ do: 'visible', sheet: m.sheet, visible: m.visible })), ...opSteps(c), { do: 'calc' }, { do: 'book' }, ...cells.map((cell) => ({ do: 'values', sheet: readSheet, range: cell })), { do: 'saveAs' }],
     (c, a) => {
-      const makes = (c.make ?? []).length
-      const n = 1 + makes + (c.op ? 1 : 0)
+      const { n, errors } = makeErrors(c, a.answers, 1)
       // the first step Excel refused, where the Mac stops
-      const [error] = stepErrors(a.answers.slice(1, n), (i) => (i < makes ? 'make' : 'op'))
+      const [error] = errors
       const [opened] = a.answers[0] as [string, [string, number][]]
       const [active, sheets] = a.answers[n + 1] as [string, [string, number][]]
       const values = cells.map((_, i) => value((a.answers[n + 2 + i] as unknown[][])[0][0]))
