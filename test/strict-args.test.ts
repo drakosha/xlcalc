@@ -84,6 +84,8 @@ describe.each(['closures', 'eval'] as const)('arguments a call does not take, ex
       const s = await open()
       await expect(s.explain('S', 'A2', { formulaLocal: true } as never)).rejects.toThrow('opts: unknown field "formulaLocal" (expected depth, maxNodes, expand, errorDepth) (formulaLocal is an option of getViewport)')
       await expect(s.getViewport('S', 'A1', { depth: 2 } as never)).rejects.toThrow('(depth is an option of explain)')
+      // a session's window has the appearance always: the option is the saved window's
+      await expect(s.getViewport('S', 'A1', { appearance: true } as never)).rejects.toThrow('(appearance is an option of viewportOf)')
       await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }], { formulaLocal: true } as never)).rejects.toThrow('(formulaLocal is an option of getViewport)')
       await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }], { clock: CLOCK } as never)).rejects.toThrow('(clock is an option of compute and createSession)')
       await expect(s.setCellText('S', 'A1', '3', { widen: false, maxCells: 2 } as never)).rejects.toThrow('(maxCells is an option of getViewport)')

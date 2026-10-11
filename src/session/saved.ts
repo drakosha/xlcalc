@@ -2,25 +2,32 @@
  * A window over a saved version of a book (`viewportOf`): the book and its result as a host keeps them, read as a
  * session's window reads its state (`viewport.ts`), without a session and without computing. The values, the text, the
  * colour and the reasons of errors come from the result, the formats, the styles and the layout from the book; the
- * cells of a large spill that the result leaves out show its `spillFill`. What a book and a result give beside their
- * cells (the checked book, its tables, each sheet's large spills and extent, the reasons by cell) is found once and kept
- * with the two objects, so a host that serves several windows of one version passes the same objects.
+ * cells of a large spill that the result leaves out show its `spillFill`. With `appearance`, the conditional formats
+ * are computed as a session computes them (`windowLooks`), over a state of the book whose cells hold the result's
+ * values and no formula. What a book and a result give beside their cells (the checked book, its tables, each sheet's
+ * large spills and extent, the reasons by cell, that state) is found once and kept with the two objects, so a host
+ * that serves several windows of one version passes the same objects.
  */
-import type { BookInput, BookSnapshot, CellIssue, CellResult, CellValue, ComputeResult, SavedViewport, SheetExtent, ViewportCell, ViewportOptions } from '../contract.js'
+import type { BookInput, BookSnapshot, CellIssue, CellResult, CellValue, ComputeResult, ConditionalAppearance, SavedViewport, SavedViewportOptions, SheetExtent, ViewportCell } from '../contract.js'
 import { holds } from '../array-areas.js'
+import { appearanceOf, windowLooks } from '../cond/looks.js'
 import { epochOf } from '../dates.js'
+import { createState, type EngineState } from '../engine.js'
+import { put } from '../evaluate.js'
 import { run } from '../exec/budget.js'
 import { array, checkBook, checkClock, checkSheet, checkString, InputError, object } from '../input.js'
 import { issueWith, reasonSource, spilledReason, wayBack, type Place } from '../issues.js'
 import { sheetLines } from '../layout/lines.js'
 import { parseMerge } from '../layout/merges.js'
 import { displayRules } from '../locale/rules.js'
-import { formatAddress, parseAddress, readAddress } from '../model.js'
+import { formatAddress, MAX_COLS, parseAddress, readAddress } from '../model.js'
+import { clockSerial } from '../result.js'
 import { bookLooks, type Looks } from '../shown.js'
 import { hasCell, parseRange, type Rect } from '../structure/area.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
 import { tablesOf, type Tables } from '../tables/model.js'
-import { checkRange, checkViewportOptions, windowLines, windowOf, type WindowSource } from './viewport.js'
+import { E, fromCellValue, Rng } from '../values.js'
+import { checkRange, checkViewportOptions, windowLines, windowOf, type WindowLines, type WindowSource } from './viewport.js'
 
 /** The cells of a large spill that its result leaves out (`CellResult.spillFill`): the spill's range, its formula's cell and their value. */
 interface Fill {
@@ -47,6 +54,8 @@ interface Found {
   sheets: Map<number, SheetFound>
   /** The reasons of the cells with an error, by `s:address`, once a window asks for them. */
   reasons?: Map<string, CellIssue>
+  /** The state the conditional formats are computed over (`valuesState`), once a window asks for the appearance. */
+  state?: EngineState
 }
 
 /** What each pair of a book and a result gave, by the book, then the result. */
@@ -161,6 +170,37 @@ function stepBack(f: Found, p: Place): Place | null {
   return { s, r: row, c: col }
 }
 
+/**
+ * The state a session would hold over the saved book, for its conditional formats (`windowLooks`): the book's rules,
+ * names, tables and layout on the result's clock, each cell holding the result's value (a large spill's unlisted cells
+ * its `spillFill`) and no formula, so nothing is computed; `A1#` reads the spill the result gives A1.
+ */
+function valuesState(f: Found): EngineState {
+  if (f.state) return f.state
+  const { book, result } = f
+  const state = createState({ ...book, sheets: book.sheets.map((x) => ({ ...x, cells: {} })) }, { now: clockSerial(result.clock), seed: result.clock.seed })
+  const at = { r: 0, c: 0 }
+  result.sheets.forEach(({ cells }, s) => {
+    const data = state.ctx.sheets[s]
+    for (const a in cells) {
+      const x = cells[a]
+      if (x.value === null) continue
+      readAddress(a, at)
+      put(data, at.r, at.c, fromCellValue(x.value))
+      const g = x.spill === undefined || x.spillFill === undefined ? null : parseRange(x.spill)
+      if (g) data.fills.push({ ...g, v: fromCellValue(x.spillFill!) })
+    }
+  })
+  state.ctx.spillRef = (s, r, c) => {
+    const a = formatAddress(r, c)
+    if (book.sheets[s].cells[a]?.formula === undefined) return E.REF
+    const x = result.sheets[s].cells[a]?.spill
+    const g = x === undefined ? null : parseRange(x)
+    return g ? new Rng(s, g.r1, g.c1, g.r2, g.c2) : new Rng(s, r, c, r, c)
+  }
+  return (f.state = state)
+}
+
 /** A saved cell as a window gives it: its value and what the result shows of it, without its own number format. */
 function resultCell(x: CellResult): ViewportCell {
   const out: Record<string, unknown> = { value: x.value }
@@ -168,11 +208,12 @@ function resultCell(x: CellResult): ViewportCell {
   return out as unknown as ViewportCell
 }
 
-/** Sheet `s` of a saved book as a window reads it. */
-function savedSource(f: Found, s: number): WindowSource {
+/** Sheet `s` of a saved book as a window of lines `w` reads it; with `appearance`, its cells' conditional appearance. */
+function savedSource(f: Found, s: number, w: WindowLines, appearance: boolean): WindowSource {
   const sheet = sheetFound(f, s)
   const cells = f.result.sheets[s].cells
   const look = f.looks
+  const cond = appearance ? run(windowLooks(valuesState(f), s, w.rects)) : new Map<number, ConditionalAppearance>()
   return {
     book: f.book,
     s,
@@ -184,10 +225,9 @@ function savedSource(f: Found, s: number): WindowSource {
       if (x) return resultCell(x)
       const fill = sheet.fills.find((y) => hasCell(y.x, r, c))
       if (fill) return { value: fill.value, ...look?.(s, r, c, fill.value, own), spillOf: fill.from }
-      return own || styled ? { value: null, ...look?.(s, r, c, null, own) } : undefined
+      return own || styled || cond.has(r * MAX_COLS + c) ? { value: null, ...look?.(s, r, c, null, own) } : undefined
     },
-    // a result holds no conditional appearance
-    appearance() {},
+    appearance: appearanceOf(cond, look, s),
     issue(r, c, origins) {
       const i = issueAt(f, { s, r, c })
       if (!i) return null
@@ -200,13 +240,14 @@ function savedSource(f: Found, s: number): WindowSource {
 
 /**
  * A window over a saved book and its result, as `Session.getViewport` gives it over a session of that book, without
- * computing anything: the result's values, text and colour, the book's formats, styles and layout.
+ * computing its formulas: the result's values, text and colour, the book's formats, styles and layout; with
+ * `appearance`, its conditional formats computed over the result's values.
  */
-export function viewportOf(saved: BookSnapshot, sheet: string, range: string, opts?: ViewportOptions): SavedViewport {
+export function viewportOf(saved: BookSnapshot, sheet: string, range: string, opts?: SavedViewportOptions): SavedViewport {
   const f = found(saved)
   const s = checkSheet(sheet, (name) => f.index.get(sheetKey(name)), 'sheet')
   const asked = checkRange(range, 'range')
-  const o = checkViewportOptions(opts)
+  const o = checkViewportOptions(opts, 'opts', true)
   const w = windowLines(asked, o)
-  return run(windowOf(savedSource(f, s), w, o))
+  return run(windowOf(savedSource(f, s, w, o.appearance === true), w, o))
 }

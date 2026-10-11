@@ -1290,12 +1290,25 @@ export interface Viewport {
   revision: number
 }
 
+/** `viewportOf`'s options: `getViewport`'s, and `appearance`. */
+export interface SavedViewportOptions extends ViewportOptions {
+  /**
+   * Each cell also with the `appearance` its sheet's conditional formats give it, and its `text` and `color` by a number
+   * format of theirs, as `getViewport` gives them in a session of the book on the result's clock; false by default. A
+   * result holds no appearance: the rules are computed over the result's values, its formulas are not (TODAY in a rule
+   * is the result's day). The first window with it over a book and a result reads all their values, the later ones
+   * cost what the window and its rules read.
+   */
+  appearance?: boolean
+}
+
 /**
  * A cell of a window over a saved result (`viewportOf`): as `ViewportCell`, its value, `text` and `color` as the result
- * has them, without the `appearance` of conditional formats, which a result does not hold (its `text` shows the value by
- * the cell's own format, not a rule's); without `text` and `color` when the result was computed without the display.
+ * has them; without `text` and `color` when the result was computed without the display. The `appearance` of
+ * conditional formats only with `SavedViewportOptions.appearance`: without it the cell's `text` shows the value by the
+ * cell's own format, not a rule's.
  */
-export type SavedViewportCell = Omit<ViewportCell, 'appearance'>
+export type SavedViewportCell = ViewportCell
 
 /** A window over a saved result (`viewportOf`): as `Viewport`, without a session's revision, its cells `SavedViewportCell`. */
 export interface SavedViewport extends Omit<Viewport, 'revision' | 'cells'> {

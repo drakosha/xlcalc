@@ -6,7 +6,7 @@
  * tables that meet its cells, the sheet's frozen panes and where its cells end. A session's window reads its state
  * (`sessionSource`), a saved one a book and its result (`saved.ts`); either reads the window's cells, never the whole sheet.
  */
-import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, SheetExtent, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
+import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, SavedViewportOptions, SheetExtent, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { checkedEntryText } from '../entry/text.js'
 import { paced, type Steps } from '../exec/budget.js'
@@ -26,7 +26,7 @@ import { lowerBound } from '../sorted.js'
 import { parseRange, rectText, type Rect } from '../structure/area.js'
 import { tableAt, type Tables } from '../tables/model.js'
 import { holds } from '../array-areas.js'
-import { windowLooks, withLook } from '../cond/looks.js'
+import { appearanceOf, windowLooks } from '../cond/looks.js'
 import { sheetExtent } from './extent.js'
 
 /** The cells a window gives by default, as many as the window of a sheet a server sends. */
@@ -52,15 +52,16 @@ export function checkRange(text: unknown, path: string): Rect {
   return x
 }
 
-export function checkViewportOptions(v: unknown, path = 'opts'): ViewportOptions {
+/** `getViewport`'s options; with `saved`, `viewportOf`'s (`appearance` too). */
+export function checkViewportOptions(v: unknown, path = 'opts', saved = false): SavedViewportOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { formulaLocal: true, maxCells: 20000 }')
-  onlyOptions(o, path, ['formulaLocal', 'diagnostics', 'maxCells', 'rows', 'columns', 'editText'])
-  for (const k of ['formulaLocal', 'diagnostics', 'editText']) if (o[k] !== undefined) checkBoolean(o[k], `${path}.${k}`)
+  onlyOptions(o, path, ['formulaLocal', 'diagnostics', 'maxCells', 'rows', 'columns', 'editText', ...(saved ? ['appearance'] : [])])
+  for (const k of ['formulaLocal', 'diagnostics', 'editText', 'appearance']) if (o[k] !== undefined) checkBoolean(o[k], `${path}.${k}`)
   if (o.maxCells !== undefined) checkNumber(o.maxCells, `${path}.maxCells`, 1, MAX_COLS * MAX_ROWS, true)
   if (o.rows !== undefined) checkLineNumbers(o.rows, `${path}.rows`, MAX_ROWS)
   if (o.columns !== undefined) checkLineNumbers(o.columns, `${path}.columns`, MAX_COLS)
-  return o as ViewportOptions
+  return o as SavedViewportOptions
 }
 
 /** The lines of a window, zero-based and in order, the rectangles their runs make, and the part of the range asked it gives. */
@@ -250,10 +251,7 @@ function* sessionSource(state: EngineState, s: number, w: WindowLines, display: 
       if (!own && from === undefined && !styled && !cond.has(r * MAX_COLS + c)) return undefined
       return cellResult(state, s, addr, look, from, false) as ViewportCell
     },
-    appearance(out, r, c, own) {
-      const cf = cond.get(r * MAX_COLS + c)
-      if (cf) withLook(out, cf, look && ((format) => look(s, r, c, out.value, { ...own, numberFormat: format })))
-    },
+    appearance: appearanceOf(cond, look, s),
     issue: (r, c, origins) => issueDetail(state, s, r, c, origins),
     usedRange: () => sheetExtent(state, s),
   }
