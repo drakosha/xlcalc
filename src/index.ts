@@ -54,6 +54,8 @@ export const toLocal = /* @__PURE__ */ strict(locales.toLocal)
 export const toInvariant = /* @__PURE__ */ strict(locales.toInvariant)
 export const validateLocalFormula = /* @__PURE__ */ strict(locales.validateLocalFormula)
 export const registerLocale = /* @__PURE__ */ strict(load.registerLocale)
+// a locale not loaded is refused with the module to import, where registerLocale is at hand
+load.rootLoaded()
 export const editStructure = /* @__PURE__ */ strict(structure.editStructure)
 export const copyFormula = /* @__PURE__ */ strict(copy.copyFormula)
 export const parseEntry = /* @__PURE__ */ strict(entry.parseEntry)
