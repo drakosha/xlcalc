@@ -50,7 +50,11 @@ describe('LET', () => {
   })
 
   it('Excel does not load a name twice, a reference, number or text as a name, no name, over 254 arguments', () => {
-    for (const f of [...REFUSED, ...HELD_REFUSED]) expect(validateFormula(engineFormula(f)), f).toMatchObject({ ok: false, code: 'syntax' })
+    // the set's book holds `LET(A1,1,A1)` without the prefix `_xlpm.`, which Excel does not load; typed, Excel takes A1 as
+    // the name (entry/let-cells-held), and the engine's writer gives it the prefix, which Excel loads (let:file#1)
+    for (const f of [...REFUSED, ...HELD_REFUSED].filter((f) => f !== 'LET(A1,1,A1)')) expect(validateFormula(engineFormula(f)), f).toMatchObject({ ok: false, code: 'syntax' })
+    expect(validateFormula('LET(A1,1,A1)')).toMatchObject({ ok: true, canonical: 'LET(A1,1,A1)' })
+    expect(validateFormula('LET(R2,1,R2)')).toMatchObject({ ok: false, code: 'syntax' })
     expect(validateFormula('LET(x,1,X,2,x)')).toMatchObject({ message: 'LET names X twice' })
     expect(validateFormula('LET(1,2,3)')).toMatchObject({ message: 'LET takes a name as its argument 1' })
     expect(validateFormula('LET(TRUE,1,2)').ok).toBe(false)
@@ -89,5 +93,14 @@ describe('LET', () => {
     expect(r.ok && r.book.sheets[0].cells.B2.formula).toBe('LET(A,A2,b,A+1,b*$A$2)')
     const renamed = restructure({ sheets: [...book.sheets, { name: 'T', cells: { A1: { formula: 'LET(x,S!A1,x)' } } }] }, { op: 'renameSheet', sheet: 'S', name: 'R' })
     expect(renamed.ok && renamed.book.sheets[1].cells.A1.formula).toBe("LET(x,'R'!A1,x)")
+  })
+})
+
+describe.each(['closures', 'eval'] as const)("cells' words as names (%s): the entry sets names-held, let-grid-held, let-cells-held", (execution) => {
+  it("LET takes a cell's word as a name but one that reads as R1C1's row or column too; a cell's shape past the sheet is a name anywhere", () => {
+    const r = compute({ sheets: [{ name: 'S', cells: { A1: { value: 100 }, B1: { formula: 'LET(A1,1,A1)' }, B2: { formula: 'LET(XFD1,5,XFD1*2)+A1' }, B3: { formula: 'XFE1+1' }, B4: { formula: 'LET(A0,3,A0)' }, B5: { formula: 'xfe1*2' } } }], names: [{ name: 'XFE1', ref: '4' }] }, { execution })
+    expect(['B1', 'B2', 'B3', 'B4', 'B5'].map((a) => r.sheets[0].cells[a].value)).toEqual([1, 110, 5, 3, 8])
+    for (const f of ['LET(R2,1,R2)', 'LET(C5,1,C5)', 'LET(RC5,1,RC5)', 'LET($A$1,1,1)']) expect(validateFormula(f).ok, f).toBe(false)
+    for (const f of ['LET(R1C1,1,R1C1)', 'LET(R0,1,R0)', 'LET(A1?x,1,A1?x)']) expect(validateFormula(f).ok, f).toBe(true)
   })
 })

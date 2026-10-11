@@ -84,7 +84,9 @@ function readRef(rest: string, at: number): { ref: RangeRef; len: number } | nul
   let m = CELL_RANGE.exec(rest)
   // the second cell of `S1:S3!A1` is a sheet's name, of `A1:E2#` a spill reference: the first is a cell alone, before the range operator
   if (m && m[6] !== undefined && (next(m[0].length) === '!' || next(m[0].length) === '#')) m = CELL_RANGE.exec(rest.slice(0, rest.indexOf(':')))
-  if (m && !IDENT_CHAR.test(next(m[0].length))) {
+  // a cell's shape past the sheet, without `$`, is a name, as Excel reads `XFE1` and `A0` (the sets `entry/names-held`,
+  // `tables/paste-names-held`)
+  if (m && !IDENT_CHAR.test(next(m[0].length)) && !(m[6] === undefined && !m[1] && !m[3] && !readsAsCell(m[0]))) {
     const r1 = rowNo(m[4], at)
     const c1 = colNo(m[2], at)
     const two = m[6] !== undefined
@@ -120,10 +122,10 @@ function spilled(r: { ref: RangeRef; len: number }, next: string | undefined, at
 
 const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%', '@', ':']
 
-/** Whether a name reads as a cell within the sheet (`S1`, not `XFE1` or `A0`). */
-function cellName(name: string): boolean {
-  const m = CELL_NAME.exec(name)
-  return !!m && colToIndex(m[1]) < MAX_COLS && Number(m[2]) >= 1 && Number(m[2]) <= MAX_ROWS
+/** Whether a word reads as a cell within a sheet of `cols` columns and `rows` rows (`S1`, not `XFE1` or `A0`). */
+export function readsAsCell(word: string, cols = MAX_COLS, rows = MAX_ROWS): boolean {
+  const m = CELL_NAME.exec(word)
+  return !!m && colToIndex(m[1]) < cols && Number(m[2]) >= 1 && Number(m[2]) <= rows
 }
 
 /** Tokens that end and begin a reference: whitespace between two of them is the intersection operator. */
@@ -198,7 +200,7 @@ export function tokenize(src: string): Tok[] {
       sheet = sm[1].replaceAll("''", "'")
       const k = sheet.indexOf(':')
       if (k >= 0) [sheet, last] = [sheet.slice(0, k), sheet.slice(k + 1)]
-    } else if (rest.includes('!') && (sm = UNQUOTED_SHEETS.exec(rest)) && !cellName(sm[1])) [sheet, last] = [sm[1], sm[2] ?? sm[3].replaceAll("''", "'")]
+    } else if (rest.includes('!') && (sm = UNQUOTED_SHEETS.exec(rest)) && !readsAsCell(sm[1])) [sheet, last] = [sm[1], sm[2] ?? sm[3].replaceAll("''", "'")]
     else if ((sm = UNQUOTED_SHEET.exec(rest))) sheet = sm[1]
     if (sm && last === undefined && src.slice(i + sm[0].length, i + sm[0].length + 5).toUpperCase() === '#REF!') {
       // a reference Excel lost on a sheet that is still there: `'S'!#REF!`, `'S'!#REF!#`
