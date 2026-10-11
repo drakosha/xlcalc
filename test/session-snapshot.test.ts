@@ -6,32 +6,13 @@
  * session's window keeps the cell's note and link (`parseEntry` with the cell's view).
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { createInlineCalc, openSession, parseEntry, type AsyncSession, type BookInput, type Calc, type Execution, type Session, type SessionOptions } from '../src/index.js'
+import { parseEntry, type BookInput, type Execution } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
-import { pool } from './fixtures/pool.js'
+import { closeCalcs, KINDS, opener } from './session-kinds.js'
 import { storedOf } from './xlsx-fixtures.js'
 
-/** A synchronous session behind the asynchronous API, so that one test covers the three ways. */
-function wrapped(s: Session): AsyncSession {
-  const out: Record<string, unknown> = {}
-  for (const k of ['setCells', 'patchCells', 'setNames', 'setLayout', 'book', 'cells', 'result', 'getSnapshot', 'close'] as const)
-    out[k] = async (...a: unknown[]) => (s[k] as (...a: unknown[]) => unknown)(...a)
-  return out as unknown as AsyncSession
-}
-
-const KINDS = ['a synchronous session', 'the same thread', 'a thread'] as const
-type Kind = (typeof KINDS)[number]
-
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
-
-async function opener(kind: Kind): Promise<(book: BookInput, opts: SessionOptions) => Promise<AsyncSession>> {
-  if (kind === 'a synchronous session') return async (book, opts) => wrapped(openSession(book, opts))
-  const calc = kind === 'the same thread' ? createInlineCalc({ sliceMs: 2 }) : await pool({ threads: 1 })
-  calcs.push(calc)
-  return (book, opts) => calc.openSession(book, opts)
-}
+afterAll(closeCalcs)
 
 const book = (): BookInput => ({
   styles: [{ font: { bold: true } }],

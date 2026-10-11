@@ -5,10 +5,10 @@
  * without it, `inputHash` too; a second `=` stays an error of the formula; the caller's input is not changed.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, openSession, restructure, validateNames, type AsyncSession, type BookInput, type Calc, type Execution, type Session, type SessionOptions } from '../src/index.js'
+import { compute, openSession, restructure, validateNames, type BookInput, type Execution } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
-import { pool } from './fixtures/pool.js'
+import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 /** The book with `=` before each of its formulas, or without (`eq` empty). */
 const book = (eq: string): BookInput => ({
@@ -77,26 +77,7 @@ describe.each(['closures', 'eval'] as Execution[])('a leading = in the input, %s
   })
 })
 
-/** A synchronous session behind the asynchronous API, so that one test covers the three ways. */
-function wrapped(s: Session): AsyncSession {
-  const out: Record<string, unknown> = {}
-  for (const k of ['setCells', 'setNames', 'setLayout', 'restructure', 'validateEntry', 'book', 'result', 'close'] as const)
-    out[k] = async (...a: unknown[]) => (s[k] as (...a: unknown[]) => unknown)(...a)
-  return out as unknown as AsyncSession
-}
-
-const KINDS = ['a synchronous session', 'the same thread', 'a thread'] as const
-type Kind = (typeof KINDS)[number]
-
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
-
-async function opener(kind: Kind): Promise<(book: BookInput, opts: SessionOptions) => Promise<AsyncSession>> {
-  if (kind === 'a synchronous session') return async (b, opts) => wrapped(openSession(b, opts))
-  const calc = kind === 'the same thread' ? createInlineCalc({ sliceMs: 2 }) : await pool({ threads: 1 })
-  calcs.push(calc)
-  return (b, opts) => calc.openSession(b, opts)
-}
+afterAll(closeCalcs)
 
 describe.each(KINDS)("a session's edits, %s", (kind) => {
   it.each(['closures', 'eval'] as Execution[])('drop a leading = as the book does, %s', async (execution) => {

@@ -67,7 +67,7 @@ interface Rec {
 }
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
-const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', patchCells: 'patches', setLayout: 'edits', setNames: 'names', setClock: 'clock', restructure: 'op', setStyles: 'styles', explain: 'opts', result: 'opts', getSnapshot: 'opts' }
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', patchCells: 'patches', setLayout: 'edits', setNames: 'names', setClock: 'clock', restructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', result: 'opts', getSnapshot: 'opts' }
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
@@ -389,6 +389,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       extent: (sheet) => value(call('extent', [sheet])),
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
       cells: (sheet, range) => value(call('cells', [sheet, range])),
+      getViewport: (sheet, range, vo) => value(call('getViewport', [sheet, range, vo])),
+      getCellIssue: (sheet, cell) => value(call('getCellIssue', [sheet, cell])),
       validation: (sheet, cell) => value(call('validation', [sheet, cell])),
       validateEntry: (sheet, cell, input, co) => value(call('validateEntry', [sheet, cell, input], co)),
       result: (co) => value(call('result', [], co)),

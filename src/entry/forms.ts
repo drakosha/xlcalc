@@ -7,7 +7,7 @@
  * format of the book's own are kept whatever is typed. A code is a built-in format where Excel takes a file's code so.
  */
 import type { NumberFormat } from '../contract.js'
-import { builtinCodesOf } from '../builtin-format.js'
+import { builtinIn } from '../locale/rules.js'
 import { EN_BUILTIN, EN_CODES, isBuiltin } from '../numfmt.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import type { Form } from './read.js'
@@ -48,7 +48,7 @@ const MONEY: ReadonlySet<number> = new Set([5, 6, 7, 8, 41, 42, 43, 44])
 export function builtinOf(format: NumberFormat, tag: string): number | undefined {
   if (typeof format === 'number') return format
   if (format.toLowerCase() === 'general') return 0
-  const code = builtinCodesOf(tag)
+  const code = builtinIn(tag)
   for (let id = 0; isBuiltin(id); id++) if (!MONEY.has(id) && EN_BUILTIN[id] === format && code(id) === format) return id
   return undefined
 }

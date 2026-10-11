@@ -39,14 +39,15 @@ export function spillFields(state: EngineState, s: number, r: number, c: number)
   return o ? { spillOf: formatAddress(o.r1, o.c1) } : {}
 }
 
-/** The stored cells of a sheet's spills (those in `within`), by address, with their formula's address. */
-function* spilled(state: EngineState, s: number, within?: Rect): Steps<Map<string, string>> {
+/** The stored cells of a sheet's spills (those in `within`), by address, with their formula's address; `whole`: a large spill's unstored rest too. */
+export function* spilled(state: EngineState, s: number, within?: Rect, whole = false): Steps<Map<string, string>> {
   const out = new Map<string, string>()
   const xs: Spill[] = [...state.spills.on.values()].filter((x) => x.s === s && (!within || meets(x, within)))
   for (const x of xs) {
     const from = formatAddress(x.r1, x.c1)
-    const [r1, r2] = within ? [Math.max(x.r1, within.r1), Math.min(x.r1 + x.h - 1, within.r2)] : [x.r1, x.r1 + x.h - 1]
-    const [c1, c2] = within ? [Math.max(x.c1, within.c1), Math.min(x.c1 + x.w - 1, within.c2)] : [x.c1, x.c1 + x.w - 1]
+    const [last, right] = whole ? [x.r2, x.c2] : [x.r1 + x.h - 1, x.c1 + x.w - 1]
+    const [r1, r2] = within ? [Math.max(x.r1, within.r1), Math.min(last, within.r2)] : [x.r1, last]
+    const [c1, c2] = within ? [Math.max(x.c1, within.c1), Math.min(right, within.c2)] : [x.c1, right]
     for (let r = r1; r <= r2; r++)
       for (let c = c1; c <= c2; c++) {
         if (paced(1)) yield
@@ -56,8 +57,8 @@ function* spilled(state: EngineState, s: number, within?: Rect): Steps<Map<strin
   return out
 }
 
-/** A cell of sheet `s` as a result gives it; `spillOf`, the formula of a spilled cell. */
-function cellResult(state: EngineState, s: number, addr: string, look: Looks | null, spillOf: string | undefined): CellResult {
+/** A cell of sheet `s` as a result gives it; `spillOf`, the formula of a spilled cell; `format`, with the cell's own format. */
+export function cellResult(state: EngineState, s: number, addr: string, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const { row, col } = parseAddress(addr)
   const inCell = state.input.sheets[s].cells[addr] ?? {}
   const value = outValue(toCellValue(valueAt(state, s, row, col)))
@@ -65,7 +66,7 @@ function cellResult(state: EngineState, s: number, addr: string, look: Looks | n
   const out: CellResult = look ? { value, ...look(s, row, col, value, inCell) } : { value }
   const text = id === undefined ? inCell.formula : state.formulas[id]!.text
   if (text !== undefined) out.formula = text
-  if (inCell.format !== undefined) out.format = inCell.format
+  if (format && inCell.format !== undefined) out.format = inCell.format
   if (inCell.meta !== undefined) out.meta = inCell.meta
   const x = id === undefined ? undefined : state.spills.on.get(id)
   if (x) Object.assign(out, anchorFields(x))

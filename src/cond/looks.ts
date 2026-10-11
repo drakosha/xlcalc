@@ -304,13 +304,21 @@ export function* windowLooks(state: EngineState, s: number, x: Rect, only?: Set<
   return out
 }
 
-/** A cell's view with its look; a number format of the look shows its value by it (`display`, the view's text by a format). */
-export function withLook(view: { text?: string; color?: Color; look?: ConditionalLook }, look: ConditionalLook, display?: ((format: NonNullable<ConditionalStyle['format']>) => { text: string; color?: Color }) | null) {
-  view.look = look
+/** What shows a value by a format: the view's text and colour by it. */
+type ShownBy = ((format: NonNullable<ConditionalStyle['format']>) => { text: string; color?: Color }) | null | undefined
+
+/** A view's text and colour by its look's number format, when it has one (`display`, the view's text by a format). */
+export function lookShown(view: { text?: string; color?: Color }, look: ConditionalLook, display: ShownBy) {
   const format = look.style?.format
   if (format === undefined || !display) return
   const d = display(format)
   view.text = d.text
   if (d.color === undefined) delete view.color
   else view.color = d.color
+}
+
+/** A cell's view with its look; a number format of the look shows its value by it. */
+export function withLook(view: { text?: string; color?: Color; look?: ConditionalLook }, look: ConditionalLook, display?: ShownBy) {
+  view.look = look
+  lookShown(view, look, display)
 }
