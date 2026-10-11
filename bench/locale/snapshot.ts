@@ -19,7 +19,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { writeBook } from '../coverage/book.js'
-import { ensureExcel, excelDialogs, excelVersion, runScriptWatched, withExcelLock } from '../coverage/excel.js'
+import { ensureExcel, excelDialogs, excelVersion, halving, runScriptWatched, withExcelLock } from '../coverage/excel.js'
 import { localeMeta, parseTag } from '../coverage/locales.js'
 import { secondsSince } from '../coverage/stored.js'
 import type { Probe } from '../coverage/probes.js'
@@ -48,7 +48,7 @@ async function snapshot(tag: string): Promise<void> {
   const rejected: string[] = []
   const dropped: string[] = []
   mkdirSync(OUT, { recursive: true })
-  const run = async (cases: Probe[], label: string): Promise<void> => {
+  const run = async (cases: Probe[], label: string): Promise<boolean> => {
     windows(`part ${label}`)
     const book = join(OUT, `locale-${tag}-${label}.xlsx`)
     // the script reads a column of two cells at least
@@ -66,18 +66,16 @@ async function snapshot(tag: string): Promise<void> {
         if (pair[0] === null || pair[1] === null) throw new Error(`${c.id} ${c.formula}: Excel gives ${JSON.stringify([en[i][0], loc[i][0]])}`)
         formulas[c.id] = pair as [string, string]
       })
-      return
+      return true
     }
-    if (cases.length === 1) {
-      rejected.push(cases[0].id)
-      return void console.log(`Excel does not load ${cases[0].id}: ${cases[0].formula}`)
-    }
-    const mid = cases.length >> 1
-    await run(cases.slice(0, mid), `${label}a`)
-    await run(cases.slice(mid), `${label}b`)
+    return false
+  }
+  const refused = (c: Probe) => {
+    rejected.push(c.id)
+    console.log(`Excel does not load ${c.id}: ${c.formula}`)
   }
   for (let k = 0; k < parts.length; k++) {
-    await run(parts[k], String(k + 1))
+    await halving(parts[k], String(k + 1), run, refused)
     console.log(`part ${k + 1}/${parts.length}: ${parts[k].length} formulas, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
   }
   const snap: Snapshot = {

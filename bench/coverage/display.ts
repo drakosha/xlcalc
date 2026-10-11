@@ -16,7 +16,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
-import { dialogText, ensureExcel, excelVersion, runScriptWatched } from './excel.js'
+import { dialogText, ensureExcel, excelVersion, halving, runScriptWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
 import { formatCode } from './case-book.js'
@@ -145,15 +145,14 @@ export async function stepDisplay(set: string, tag: string): Promise<void> {
   const rejected: string[] = []
   try {
     // a book Excel does not load is halved down to the cases it refuses
-    const run = async (part: DisplayCase[], label: string): Promise<void> => {
+    const run = async (part: DisplayCase[], label: string): Promise<boolean> => {
       const got = await runPart(part, label)
-      if (got !== 'rejected') return void part.forEach((c, i) => (answers[c.id] = got[i]))
-      if (part.length === 1) return void rejected.push(part[0].id)
-      await run(part.slice(0, part.length >> 1), `${label}a`)
-      await run(part.slice(part.length >> 1), `${label}b`)
+      if (got === 'rejected') return false
+      part.forEach((c, i) => (answers[c.id] = got[i]))
+      return true
     }
     for (const [k, part] of inParts(todo).entries()) {
-      await run(part, `${set} ${tag} part ${k + 1}`)
+      await halving(part, `${set} ${tag} part ${k + 1}`, run, (c) => rejected.push(c.id))
       save()
     }
   } finally {

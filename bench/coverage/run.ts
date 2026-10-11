@@ -40,7 +40,7 @@ import { fileURLToPath } from 'node:url'
 import { inCaseOrder, loadStored, setModule, took, writeAnswers } from './stored.js'
 import { functionParts, inParts, writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
-import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock } from './excel.js'
+import { declineRepair, dialogText, ensureExcel, excelVersion, halving, runExcel, runExcelWatched, withExcelLock } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
 import { localeDir, localeMeta, measurementFile, parseTag } from './locales.js'
@@ -245,7 +245,7 @@ async function stepProbes(set: string | undefined, tag: string, legacy = false) 
     writeAnswers(target, { meta, cases: ps, values: inCaseOrder(ps, values), ...more, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) })
   }
   // a book Excel does not read is halved down to the formula at fault
-  const run = async (cases: Probe[], label: string): Promise<void> => {
+  const run = async (cases: Probe[], label: string): Promise<boolean> => {
     if (declineRepair()) console.log('closed a leftover book repair window')
     const before = dialogText()
     if (before) throw new Error(`probes ${label}: Excel has a window that is not a book: ${before}`)
@@ -254,25 +254,23 @@ async function stepProbes(set: string | undefined, tag: string, legacy = false) 
     const sent = cases.length === 1 ? [...cases, { id: 'pad', group: 'pad', formula: '0' }] : cases
     await writeBook(sent, book, sheets, legacy)
     const got = await runExcelWatched(book, sent.length, legacy)
-    if (got !== 'rejected')
-      return void cases.forEach((p, i) => {
-        values[p.id] = got.values[i]
-        if (legacy) [formulas[p.id], rows[p.id]] = [got.formulas![i], i + 1]
-      })
-    if (cases.length === 1) {
-      rejected.push(cases[0])
-      return void console.log(`Excel does not load the formula: ${cases[0].id} ${cases[0].formula}`)
-    }
-    const mid = cases.length >> 1
-    await run(cases.slice(0, mid), `${label}a`)
-    await run(cases.slice(mid), `${label}b`)
+    if (got === 'rejected') return false
+    cases.forEach((p, i) => {
+      values[p.id] = got.values[i]
+      if (legacy) [formulas[p.id], rows[p.id]] = [got.formulas![i], i + 1]
+    })
+    return true
+  }
+  const refused = (p: Probe) => {
+    rejected.push(p)
+    console.log(`Excel does not load the formula: ${p.id} ${p.formula}`)
   }
   await ensureExcel(tag)
   mkdirSync(OUT, { recursive: true })
   for (const [k, all] of inParts(ps).entries()) {
     const part = all.filter((p) => !values[p.id])
     if (!part.length) continue
-    await run(part, String(k + 1))
+    await halving(part, String(k + 1), run, refused)
     save()
     console.log(`probes ${stem}: part ${k + 1}, ${part.length} cases, ${took(t0)} s`)
   }

@@ -264,6 +264,18 @@ export async function runExcelWatched(book: string, n: number, formula2 = false)
   return { values, formulas: f.map(([x]) => String(x)) }
 }
 
+/**
+ * Runs `items` in one book; a book Excel does not load is halved, and so on down to the items it refuses one by one
+ * (`refused`). `run` answers whether Excel loaded the book; `label` names the halves (`3a`, `3ab`).
+ */
+export async function halving<T>(items: T[], label: string, run: (part: T[], label: string) => Promise<boolean>, refused: (item: T) => void): Promise<void> {
+  if (await run(items, label)) return
+  if (items.length === 1) return refused(items[0])
+  const mid = items.length >> 1
+  await halving(items.slice(0, mid), `${label}a`, run, refused)
+  await halving(items.slice(mid), `${label}b`, run, refused)
+}
+
 /** How `runWatched` runs an AppleScript over a book in Excel's sandbox and what it does with the windows Excel shows meanwhile. */
 export interface Watch<T> {
   script: string

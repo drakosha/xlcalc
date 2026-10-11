@@ -207,6 +207,17 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
 }
 
 /**
+ * A part of items whose book got no answer, to run again: whole when its job stopped before it, else halved down to
+ * the item Excel does not take (`refused`).
+ */
+export function again<T>(part: T[], a: Answer, cutShort: boolean, refused: (item: T) => void): T[][] {
+  if (!a && cutShort) return [part]
+  if (part.length > 1) return [part.slice(0, part.length >> 1), part.slice(part.length >> 1)]
+  refused(part[0])
+  return []
+}
+
+/**
  * Items (a part of cases, a case) as books in jobs of up to `per`: `take` stores a book's answer and gives back what is
  * to run again (a part halved, the books after the one a cut-short job hung on); `save` follows every job.
  */

@@ -25,7 +25,7 @@ import type { Step as BookStep, WorkbookAnswer, WorkbookCase, WorkbookSet } from
 import { formatAddress } from '../../src/model.js'
 import { writeXlsx } from '../../src/xlsx.js'
 import { valOf, winFile, type WinCell } from './functions.js'
-import { inJobs, metaOf, type Answer, type Step, type Tag, type WinEnv } from './remote.js'
+import { again, inJobs, metaOf, type Answer, type Step, type Tag, type WinEnv } from './remote.js'
 
 /** A colour as COM gives it (BGR in one number) as `[r, g, b]`. */
 const rgb = (bgr: number) => [bgr & 0xff, (bgr >> 8) & 0xff, (bgr >> 16) & 0xff]
@@ -57,10 +57,7 @@ export async function stepDisplay(set: string, tag: Tag, e: WinEnv): Promise<voi
       })
       return []
     }
-    if (!a && cutShort) return [part]
-    if (part.length > 1) return [part.slice(0, part.length >> 1), part.slice(part.length >> 1)]
-    rejected.push(part[0].id)
-    return []
+    return again(part, a, cutShort, (c) => rejected.push(c.id))
   }, save)
   save()
   console.log(`${answeredLine(`display ${set} ${tag}`, todo.length, answers, cases)}${rejected.length ? `, not loaded: ${rejected.join(', ')}` : ''}`)

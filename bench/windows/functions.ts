@@ -16,7 +16,7 @@ import type { Val } from '../coverage/formulajs.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../coverage/probes.js'
 import { localeDir, measurementFile } from '../coverage/locales.js'
 import { inCaseOrder, loadStored, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
-import { inJobs, metaOf, type Answer, type Book, type Tag, type WinEnv } from './remote.js'
+import { again, inJobs, metaOf, type Answer, type Book, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 
@@ -142,11 +142,10 @@ function take(r: Run, part: Probe[], a: Answer, cutShort: boolean): Probe[][] {
     })
     return []
   }
-  if (!a && cutShort) return [part]
-  if (part.length > 1) return [part.slice(0, part.length >> 1), part.slice(part.length >> 1)]
-  r.got.rejected.push(part[0].id)
-  console.log(`${r.name}: Excel does not take ${part[0].id} ${part[0].formula}: ${a ? ('rejected' in a ? a.rejected : 'the book was repaired') : 'it hangs'}`)
-  return []
+  return again(part, a, cutShort, (p) => {
+    r.got.rejected.push(p.id)
+    console.log(`${r.name}: Excel does not take ${p.id} ${p.formula}: ${a ? ('rejected' in a ? a.rejected : 'the book was repaired') : 'it hangs'}`)
+  })
 }
 
 /**
