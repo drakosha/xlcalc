@@ -15,7 +15,7 @@ import { nameFor } from '../names.js'
 import { formatAddress } from '../model.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
 import { decode } from '../structure/area.js'
-import { tableAt } from '../tables/model.js'
+import { tableAt, tableNames } from '../tables/model.js'
 import { Arr } from '../arrays/value.js'
 import { E, isErr, Rng, type V } from '../values.js'
 import { anchorOf, ruleAt, twoBounds } from './rules.js'
@@ -25,8 +25,7 @@ import { formulaAt } from './structure.js'
 function computeAt(state: EngineState, s: number, r: number, c: number, text: string): Arg {
   const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
   const enclosing = tableAt(state.tables, s, r, c)?.name
-  const tables = state.tables.list.map((t) => ({ name: t.name, columns: t.cols }))
-  const v = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables, ...(enclosing ? { enclosing } : {}) })
+  const v = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { enclosing } : {}) })
   if (!v.ok) return E[invalidError(v.code)]
   return walk(codegenContext(state, s), v.ast, s, r, c, closureBackend(state.rt)).code()
 }

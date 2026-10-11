@@ -27,7 +27,7 @@ import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
 import { HEAD, MAIN } from './xml.js'
-import { tableAt, tablesOf } from '../../tables/model.js'
+import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
 import { parseAddress } from '../../model.js'
 
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
@@ -129,7 +129,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
   const rich: (keyof typeof RICH_TYPE)[] = []
   const richError = (code: keyof typeof RICH_TYPE) => (rich.includes(code) ? rich.indexOf(code) : rich.push(code) - 1) + 1
   const tables = tablesOf(book)
-  const tableNames = tables.list.map((t) => ({ name: t.name, columns: t.cols }))
+  const tableCols = tableNames(tables)
   // table parts are numbered through the book, each sheet's from rId1 of its own relationships
   let tableId = 0
   const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
@@ -148,7 +148,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
       mode,
       result: cells?.[i],
       richError,
-      tables: tableNames,
+      tables: tableCols,
       tableAt: (addr) => {
         const { row, col } = parseAddress(addr)
         return tableAt(tables, i, row, col)?.name
@@ -178,7 +178,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {
-      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableNames, issues, t.name === filterTables[i]) })
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableCols, issues, t.name === filterTables[i]) })
       contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
     }
     if (s.notes) {
@@ -214,7 +214,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableCols)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {
