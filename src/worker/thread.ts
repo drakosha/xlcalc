@@ -97,6 +97,9 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'getCells':
       value = await s.getCells(args[0] as string, args[1] as string | string[])
       break
+    case 'getCell':
+      value = await s.getCell(args[0] as string, args[1] as string)
+      break
     case 'getViewport':
       value = await s.getViewport(args[0] as string, args[1] as string, args[2] as never)
       break

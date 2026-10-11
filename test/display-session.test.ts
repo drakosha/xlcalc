@@ -61,7 +61,7 @@ describe('a session shows its cells', () => {
 
   it('display: false: changes and results without text; a format alone lists the cell with it', () => {
     const s = createSession(book(), { clock, display: false })
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, numberFormat: '0.0' } }]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 1234.5, numberFormat: '0.0' }])
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, numberFormat: '0.0' } }]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 1234.5, numberFormat: '0.0', numberFormatCode: '0.0' }])
     expect(s.setLayout([{ sheet: 'S', columns: 'A', set: { width: 1 } }]).changes).toEqual([])
     expect(s.getResult().sheets[0].cells.A1).toEqual({ value: 1234.5, numberFormat: '0.0' })
   })

@@ -105,7 +105,7 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     const s = createSession(book(), o)
     const before = structuredClone(s.getBook())
     expect(s.patchCells([{ sheet: 'S', cell: 'A3', set: { numberFormat: null, style: 0, note: { text: 'n' } } }, { sheet: 'S', cell: 'H5', set: { link: { url: 'https://example.com/' } } }]).changes).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3', style: 0, numberFormat: null }])
-    expect(s.undo()).toEqual({ call: 'patchCells', revision: 2, changes: [{ sheet: 'S', cell: 'A3', value: 3, text: '3.0', style: null, numberFormat: '0.0' }], cells: [{ sheet: 'S', cell: 'A3' }, { sheet: 'S', cell: 'H5' }] })
+    expect(s.undo()).toEqual({ call: 'patchCells', revision: 2, changes: [{ sheet: 'S', cell: 'A3', value: 3, text: '3.0', style: null, numberFormat: '0.0', numberFormatCode: '0.0' }], cells: [{ sheet: 'S', cell: 'A3' }, { sheet: 'S', cell: 'H5' }] })
     same(s, before, o)
     expect(s.redo()!.changes).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3', style: 0, numberFormat: null }])
     expect(s.getBook().sheets[0].cells.H5).toEqual({ link: { url: 'https://example.com/' } })

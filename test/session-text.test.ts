@@ -46,7 +46,7 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
         ok: true,
         revision: 1,
         changes: [
-          { sheet: 'S', cell: 'A1', value: 1234.5, text: '1 234,50', numberFormat: 4 },
+          { sheet: 'S', cell: 'A1', value: 1234.5, text: '1 234,50', numberFormat: 4, numberFormatCode: '#,##0.00' },
           { sheet: 'S', cell: 'C1', value: 12345, text: '12345', spill: 'C1:C2' },
           { sheet: 'S', cell: 'B1', value: 2469, text: '2469' },
         ],

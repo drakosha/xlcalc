@@ -19,7 +19,7 @@ const TAKEN_BY: Record<string, string> = {
   maxNodes: 'explain',
   expand: 'explain',
   errorDepth: 'explain',
-  widen: 'setCellText and previewCellText',
+  widen: 'setCellText, setCellTexts and their previews',
   baseRevision: "a session's calls that change its book",
   table: 'toLocal',
   clock: 'compute and createSession',

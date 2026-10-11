@@ -17,7 +17,7 @@ import { formatSource, lookOf, sheetLines, type SheetLines } from '../layout/lin
 import { parseMerge } from '../layout/merges.js'
 import { toLocal } from '../locale/index.js'
 import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
-import { builtinIn } from '../locale/rules.js'
+import { formatCodeIn } from '../locale/rules.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { cellResult, spilled } from '../result.js'
@@ -145,7 +145,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     styles[i] ??= JSON.parse(JSON.stringify(book.styles![i])) as CellStyle
     return i
   }
-  const builtin = builtinIn(book.locale)
+  const code = formatCodeIn(book.locale)
   // formulas in the book's locale, each text once per table it stands in (a table's column is one formula)
   const loc = o.formulaLocal || o.editText ? LOCALES.get(book.locale ?? DEFAULT_LOCALE)! : null
   const locals = new Map<string, string>()
@@ -190,7 +190,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
       if (own?.style !== undefined) out.style = own.style
       if (shown.style !== undefined) out.effectiveStyle = shows(shown.style)
       if (shown.numberFormat !== undefined) {
-        out.numberFormat = typeof shown.numberFormat === 'number' ? builtin(shown.numberFormat) : shown.numberFormat
+        out.numberFormat = code(shown.numberFormat)
         out.numberFormatSource = formatSource(own, row, col)
       }
       src.appearance(out, r, c, own)
