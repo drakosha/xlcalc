@@ -40,14 +40,14 @@ export const DXF_FILLS = [
 
 /** The placeholder colour of the n-th fill. */
 const stand = (n: number) => `#0A0A${(n + 1).toString(16).padStart(2, '0').toUpperCase()}`
-const STYLES = 'xl/styles.xml'
+export const STYLES = 'xl/styles.xml'
 
 /** A cell format's fill as `writeXlsx` writes it, and a dxf's. */
-const cellFill = (n: number) => `<patternFill patternType="solid"><fgColor rgb="FF${stand(n).slice(1)}"/><bgColor indexed="64"/></patternFill>`
-const dxfFill = (n: number) => `<patternFill><bgColor rgb="FF${stand(n).slice(1)}"/></patternFill>`
+export const cellFill = (n: number) => `<patternFill patternType="solid"><fgColor rgb="FF${stand(n).slice(1)}"/><bgColor indexed="64"/></patternFill>`
+export const dxfFill = (n: number) => `<patternFill><bgColor rgb="FF${stand(n).slice(1)}"/></patternFill>`
 
 /** S with `cells` cell formats on A1 down and `dxfs` rules over B1:C1 down; the yellow of C is the style after them. */
-function book(cells: number, dxfs: number): StoredBook {
+export function book(cells: number, dxfs: number): StoredBook {
   const styles: CellStyle[] = Array.from({ length: cells }, (_, i) => ({ fill: { color: stand(i) } }))
   const yellow = styles.push({ fill: { color: '#FFFF00' } }) - 1
   const at: Record<string, CellInput> = {}
