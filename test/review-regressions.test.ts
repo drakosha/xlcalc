@@ -138,7 +138,7 @@ it('calculated column formulas follow moved tables and are copied relative to ne
 it('reports a calculated column formula that cannot be written to xlsx', async () => {
   const b = book({ A1: { value: 'X' }, A2: { value: 1 } })
   b.sheets[0].tables = [{ name: 'Sales', range: 'A1:A2', columns: [{ name: 'X', formula: 'Missing!A2' }] }]
-  const r = await writeXlsx(b)
+  const r = await writeXlsx({ book: b })
   expect(r.issues).toContainEqual(expect.objectContaining({ code: 'formula', sheet: 'S' }))
 })
 

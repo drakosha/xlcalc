@@ -14,11 +14,11 @@ const rels = (body: string) => `<Relationships xmlns="http://schemas.openxmlform
 
 /** The text of a part of a written book. */
 async function part(book: BookInput, name: string): Promise<string> {
-  return (await openArchive((await writeXlsx(book)).data).text(name))!
+  return (await openArchive((await writeXlsx({ book })).data).text(name))!
 }
 
 const roundTrip = async (book: BookInput) => {
-  const w = await writeXlsx(book)
+  const w = await writeXlsx({ book })
   const r = await readXlsx(w.data)
   return { book: r.book, issues: [...w.issues, ...r.issues] }
 }

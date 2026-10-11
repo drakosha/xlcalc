@@ -5,7 +5,7 @@
  * `compute` and the three kinds of session, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, type BookInput, type ConditionalAppearance, type ConditionalLook } from '../src/index.js'
+import { compute, type BookInput, type ConditionalAppearance } from '../src/index.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
@@ -51,11 +51,5 @@ describe.each(['closures', 'eval'] as const)('diagnostics and appearance, %s', (
     expect((await s.getCells('S', 'D1')).D1).toEqual({ value: 12, text: '12', appearance })
     expect((await s.getViewport('S', 'D1')).cells.D1.appearance).toEqual(appearance)
     await s.close()
-  })
-
-  it('the old name of the appearance type is the type', () => {
-    const look: ConditionalLook = { hideValue: true }
-    const appearance: ConditionalAppearance = look
-    expect(appearance).toBe(look)
   })
 })

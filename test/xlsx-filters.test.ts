@@ -103,7 +103,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
   })
 
   it('a line of size 0 is written as the book has it and read back hidden, as Excel takes it', async () => {
-    const r = await readXlsx((await writeXlsx(sheet({ rows: { 3: { height: 0 } }, columns: { C: { width: 0 } } }))).data)
+    const r = await readXlsx((await writeXlsx({ book: sheet({ rows: { 3: { height: 0 } }, columns: { C: { width: 0 } } }) })).data)
     expect(r.book.sheets[0].rows).toEqual({ 3: { height: 0, hidden: true } })
     expect(r.book.sheets[0].columns).toEqual({ C: { width: 0, hidden: true } })
   })
@@ -147,7 +147,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
   })
 
   it('a filtered sheet without cells or hidden rows gets an autofilter on A1', async () => {
-    const { data } = await writeXlsx({ sheets: [{ name: 'S', cells: {}, filtered: true }] })
+    const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: {}, filtered: true }] } })
     expect(await text(data, 'xl/worksheets/sheet1.xml')).toContain(`<autoFilter ref="A1">${KEEP_ALL}</autoFilter>`)
     expect((await readXlsx(data)).book.sheets[0].filtered).toBe(true)
   })

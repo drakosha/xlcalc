@@ -64,7 +64,7 @@ describe.each(['closures', 'eval'] as const)('cells of a rectangle, execution %s
     const calc = createInlineCalc({ sliceMs: 2 })
     for (const [name, book] of BOOKS_HERE) {
       const s = await calc.createSession(book, { clock: CLOCK, execution })
-      await agree(name, book, s.cells, s.result, s.book)
+      await agree(name, book, s.getCells, s.getResult, s.getBook)
     }
   }, 120_000)
 
@@ -73,7 +73,7 @@ describe.each(['closures', 'eval'] as const)('cells of a rectangle, execution %s
     pools.push(p)
     for (const [name, book] of BOOKS_HERE) {
       const s = await p.createSession(book, { clock: CLOCK, execution })
-      await agree(name, book, s.cells, s.result, s.book)
+      await agree(name, book, s.getCells, s.getResult, s.getBook)
     }
   }, 120_000)
 })
@@ -92,7 +92,7 @@ describe('cells of a rectangle', () => {
       await t.setCells(batch)
     }
     await agree('the synthetic book after edits', synth.book, async (sh, rg) => s.getCells(sh, rg), async () => s.getResult(), async () => s.getBook())
-    await agree('the synthetic book in a thread after edits', synth.book, t.cells, t.result, t.book)
+    await agree('the synthetic book in a thread after edits', synth.book, t.getCells, t.getResult, t.getBook)
     await agree('without the display', synth.book, async (sh, rg) => quiet.getCells(sh, rg), async () => quiet.getResult(), async () => quiet.getBook())
   }, 120_000)
 
