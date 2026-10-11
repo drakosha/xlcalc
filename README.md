@@ -40,7 +40,7 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](#localization)) |
 | types alone | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 254 KB (97 KB gzip), `createSession` 358 KB (135 KB), the whole root 395 KB (148 KB), `xlcalc/xlsx` 169 KB (63 KB), `xlcalc/worker` 287 KB (110 KB) and the thread it starts 368 KB (138 KB), `xlcalc/a1` 7 KB (3 KB), `xlcalc/text` 30 KB (12 KB), the ru-RU module 52 KB (10 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 254 KB (97 KB gzip), `createSession` 387 KB (145 KB), the whole root 421 KB (158 KB), `xlcalc/xlsx` 168 KB (63 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 450 KB (159 KB), `xlcalc/a1` 7 KB (3 KB), `xlcalc/text` 29 KB (12 KB), the ru-RU module 52 KB (10 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 
@@ -1169,7 +1169,7 @@ From `xlcalc`:
 
 `xlcalc/a1` exports the addresses and names of [Addresses and helpers](#addresses-and-helpers) (`parseCell`, `parseRange`, `rangeAddress`, `parseLines`, `patchLines`, `quoteSheetIfNeeded`, `sameName` and the rest), the same functions as the root's, without any engine code.
 
-`xlcalc/text` exports `scanReferences`, `quoteSheetIfNeeded` and `escapeColumn`, the root's functions of formula text, for a browser that colours a formula as it is typed without the engine: 30 KB (12 KB gzip) bundled and minified, the engine's tokenizer and the translation of a locale's formula text without the parser or any computation. Of the locales' data it carries en-US's messages alone, which the tokenizer's errors take: text typed in another locale takes the locale as an object (`ruRU` of `xlcalc/locales/ru-RU`, or its formula text alone). `entryText` and `needsApostrophe` stay in the root: they read text as `parseEntry` does, with the parser and number formats.
+`xlcalc/text` exports `scanReferences`, `quoteSheetIfNeeded` and `escapeColumn`, the root's functions of formula text, for a browser that colours a formula as it is typed without the engine: 29 KB (12 KB gzip) bundled and minified, the engine's tokenizer and the translation of a locale's formula text without the parser or any computation. Of the locales' data it carries en-US's messages alone, which the tokenizer's errors take: text typed in another locale takes the locale as an object (`ruRU` of `xlcalc/locales/ru-RU`, or its formula text alone). `entryText` and `needsApostrophe` stay in the root: they read text as `parseEntry` does, with the parser and number formats.
 
 `xlcalc/worker` exports `createCalcPool(opts?)`, a `Calc` over a pool of threads (`opts`: `threads`, `maxHeapMb`, `hardTimeoutMs`, `timeoutMs`, `maxQueue`, `maxSessions`, `maxSessionsPerThread`, `limits`, `snapshotEvery`, `sliceMs`, `spawn`), and `CalcError`.
 
