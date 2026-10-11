@@ -260,6 +260,32 @@ function Step($xl, $wb, $s) {
       })
     }
     'autoPercent' { Cell $xl.AutoPercentEntry }
+    # text put on the clipboard and pasted at a cell of the active sheet (bench/windows/ui.ts); the clipboard's or
+    # Excel's refusal is the step's error
+    'paste' {
+      try {
+        Set-Clipboard -Value ([string]$s.text)
+        $ws = $wb.Worksheets.Item($s.sheet)
+        [void]$ws.Activate()
+        [void]$ws.Range($s.at).Select()
+        [void]$ws.Paste()
+        'null'
+      } catch { Err $_ }
+    }
+    # the cells of a ui case: what each shows, its format codes and prefix character, its number (Value2), its formulas
+    # (Formula, FormulaLocal, Formula2, Formula2Local), its old-kind array (HasArray, FormulaArray) and its spill (HasSpill,
+    # the address of SpillParent)
+    'cells' {
+      $ws = $wb.Worksheets.Item($s.sheet)
+      List ($s.cells | ForEach-Object {
+        $c = $ws.Range($_)
+        $v = $c.Value2
+        $num = if ($v -is [double]) { Cell $v } else { '""' }
+        $fa = if ($c.HasArray) { Str ([string]$c.FormulaArray) } else { '""' }
+        $sp = if ($c.HasSpill) { Str $c.SpillParent.Address($false, $false) } else { '""' }
+        List @((Str ([string]$c.Text)), (Str $c.NumberFormat), (Str $c.NumberFormatLocal), (Str ([string]$c.PrefixCharacter)), $num, (Str ([string]$c.Formula)), (Str ([string]$c.FormulaLocal)), (Str ([string]$c.Formula2)), (Str ([string]$c.Formula2Local)), (Cell $c.HasArray), $fa, (Cell $c.HasSpill), $sp)
+      })
+    }
     # AutoFit of a range's whole columns; each column's ColumnWidth, Width (points) and UseStandardWidth (bench/windows/fit.ts)
     'autofit' { [void](Rg $wb $s.sheet $s.range).EntireColumn.AutoFit(); 'null' }
     'widths' {

@@ -18,6 +18,7 @@ The books are the Mac harness's own: the measurement, the probes, the case sets,
 - `fit/<set>.json`, `fit/ru-RU/<set>.json`: column widths in the Mac step's books (`bench/coverage/fit/`), each case's column fitted (`EntireColumn.AutoFit`) or its texts set through `Value2` or `Formula2Local` (the keyboard's cases are the Mac's alone), its `ColumnWidth`, `Width` and `UseStandardWidth`, what its cells show and the `<col>` of the saved file.
 - `lines/<set>.json` and `lines/<set>/`: formats of rows and columns in the Mac step's books (`bench/coverage/lines/`), each case's steps through COM (a range's `NumberFormat`, `Font.Bold`, `Font.Italic`, `Interior.Color`, a cell's `Value2`), what the read cells show (`Range.Text`, `NumberFormat`, `DisplayFormat`'s fill and font) and the files Excel saved.
 - `hidden/<set>.json` and `hidden/<set>/`: hidden sheets in the Mac step's books (`bench/coverage/hidden/`), each sheet's `Visible` set through COM, the sheet operation, each sheet's visibility, the active sheet and the read cells' `Value2`, and the files Excel saved.
+- `ui/<set>.json`, `ui/ru-RU/<set>.json`: the Mac step's ui sets (`bench/coverage/ui/`) in its books: text put on the clipboard (`Set-Clipboard`) and pasted with the cell selected (`Worksheet.Paste`), and the cells of a case of `bars` read through the object model alone (`Formula2`, `Formula2Local`, `FormulaArray`, `HasArray`, `HasSpill`, `SpillParent`), as Excel has no formula bar to read over SSH; each cell as on the Mac and the columns' widths. The cases of `fill` (Control+Return) are the Mac keyboard's alone.
 - `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them; `xlsx/formats.json` and `xlsx/ru-RU/formats.json` the codes Excel shows for the built-in number formats 1 to 58 (`NumberFormat` and `NumberFormatLocal`, both in the user's language as COM reads them over SSH).
 
 Each file's `meta` names Excel's version and the settings it computed with: the interface language, the regional format with its decimal, thousands and list separators, the system locale with its code page, and the screen's dpi. A formula Excel for Windows does not take when it opens a book would be listed in `rejected` of its set; none is.
@@ -49,6 +50,7 @@ npx tsx bench/windows/run.ts entry typed ru
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts hidden sheets-held
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts lines files
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts valid files
+npx tsx bench/windows/run.ts ui paste-held ru
 ```
 
 A command takes the machine's lock, puts the machine in the locale it needs, and keeps the stored answers of the cases that did not change (`FCOV_FRESH=1` runs everything again). `XLWIN_HOST` names another machine than `user@windows-host`; `XLWIN_KEEP=1` keeps a job's local files in `bench/windows/out/`. `XLWIN_CODEPAGE=any` sets only the interface language and the regional format and leaves the system locale as it is, with no restart, for a set that reads no code page (no `CHAR`, `CODE`); the answers' `meta` names the code page they were computed with.
@@ -83,16 +85,13 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 - A number is typed into a table through `Formula` (its text with a decimal point): `Value2` with a number into a table's header failed now and then with an invalid cast.
 - A defined name is added with `Names.Add` and the formula `=0`, then given its formula through `RefersTo`: `Names.Add` reads its formula in the user's language (`=0.2` is an error in ru-RU), `RefersTo` in English.
 - Rules of data validation are made with `Validation.Add` with the range's first cell selected, and read with each cell selected, as a rule's formulas are relative to the active cell; `SpecialCells(xlCellTypeAllValidation)` finds the cells. Groups are made with `Group`, collapsed with `ShowDetail`, and read through each line's `OutlineLevel`, `Hidden`, `Summary` and `ShowDetail`. In ru-RU COM gives a rule's formulas in Russian, a literal list with the locale's separator (`a;b;c`), and takes a list typed so.
+- The clipboard works in session 0: `Set-Clipboard` puts text on it in the job's PowerShell, and `Worksheet.Paste` with the cell selected pastes it into the Excel the job started, as Excel reads pasted text.
 - Notes, hyperlinks and frozen panes are made with `AddComment`, `Hyperlinks.Add` and the active window's `FreezePanes`, which works in session 0. Excel 2024 has no object model for threads of comments: `AddCommentThreaded` answers "Excel VBA Object Model for Threaded Comments is not supported in your version of Excel", and `CommentsThreaded` lists none of a file's threads. A saved book goes to the job's `out\`, a folder below the book's, so a relative hyperlink address comes back one folder up (`../other.xlsx`).
 
 ## What is not run here
 
 - The xlsx round trip, the saved books and the colours of `bench/coverage/xlsx.ts`, and the ru-RU formula text snapshot (`bench/locale`): they work through COM (`SaveAs`, `Interior.Color`, `FormulaLocal`) but are not ported; only the filters and the built-in formats are.
 - The spill order runs (`order-runs.json`) record Excel for Mac's varying choice and are no set.
-
-## The first probe
-
-`probe.ps1` is the probe that first showed COM working over SSH, kept as it ran: its Office settings do not change the interface language.
 
 ## How it was checked
 
@@ -109,7 +108,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | tables, 10 sets and 5 | en-US, ru-RU | 138 and 38 | 133 and 34 | all but the 14 the Mac pins too, and `headers-ru-held:tiny` (a number typed as its text takes the format of typed exponents) |
 | spill, 15 sets | en-US | 175 | 162 | all but 3 pinned and 3 that vary between runs |
 | workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
-| structure operations, 18 sets | en-US | 317 | 235 (sizes in other units) | all but 16 pinned |
+| structure operations, 18 sets | en-US | 317 | 239 (sizes in other units) | all but 12 pinned |
 | xlsx filters | en-US | 8 files | | all |
 | conditional formats, 10 sets | en-US, ru-RU | 64 books, 5,598 cells | 5,363 of the 5,394 cells the Mac read (28 `#` counted in pixels, `"b">"в"`, which the Mac takes otherwise, and two short month names of ru-RU) | every cell, but `#` counted in pixels and a colour channel one apart at an exact fraction past a percentile; the rules of every case but the bar lengths and the order the Mac pins too; of the 15 rules Excel made itself (`made`), 203 of 204 cells on the book read from its file |
 | notes, hyperlinks and frozen panes, 4 sets | en-US | 47 | 47 (the notes Excel made have its own user as author) | all but the pinned differences the Mac has, and a relative address saved one folder down |
@@ -119,9 +118,11 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | hidden sheets, 3 sets | en-US | 50 | all, but for the error Excel for Mac does not give when it deletes no sheet | all |
 | formats of rows and columns, 2 sets | en-US | 15 books, 1,087 cells | all | all but 3 cells where Excel merges the styles of lines it formats across each other, pinned as on the Mac |
 | column widths, 4 sets and 3 | en-US, ru-RU | 622 and 290 | the same columns fitted, kept and shown, none widened through the object model; the width of 117 and 83, as Windows fits to its pixels | as the Mac: what becomes of each column, not its width (`test/fit-win.test.ts`) |
+| a paste from the clipboard, 1 set | en-US, ru-RU | 25 and 25 | all: each of the 115 cells as the Mac's, no column widened | all but 14 and 13, pinned in `test/ui-known.ts` as on the Mac (the paste reads text otherwise than typing) |
+| array cells through the object model, 1 set | en-US, ru-RU | 20 and 20 | `Formula2Local` is the text F2 opens on the Mac, in every cell | all but the other cells of an old-kind array's area (`arrayArea`) |
 | xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |
 
-The entry sets (`typed`, `typed-held`, `typed-held-2`, `typed-pct-held`) and the set `pct-text` ran with `XLWIN_CODEPAGE=any` in both locales, the hidden sets, the lines sets and the fit sets in en-US. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. So did `fit-offset-held` and `sortby-one-held` (62), their answers the Mac's bit for bit, and `binom-sumx-held`, `sumx-cell-held`, `sumproduct-held` and `tests-cell-held` (112), all the Mac's. The entry sets `names-held`, `let-grid-held` and `let-cells-held`, the valid set `edge-held` and the cond sets `edge-held` and `formats-ru-held` ran the same way, all as the Mac answered but the month names. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way.
+The entry sets (`typed`, `typed-held`, `typed-held-2`, `typed-pct-held`) and the set `pct-text` ran with `XLWIN_CODEPAGE=any` in both locales, the hidden sets, the lines sets and the fit sets in en-US. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. So did `fit-offset-held` and `sortby-one-held` (62), their answers the Mac's bit for bit, and `binom-sumx-held`, `sumx-cell-held`, `sumproduct-held` and `tests-cell-held` (112), all the Mac's. The entry sets `names-held`, `let-grid-held` and `let-cells-held`, the valid set `edge-held` and the cond sets `edge-held` and `formats-ru-held` ran the same way, all as the Mac answered but the month names. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way. The ui set `paste-held` ran in en-US with `XLWIN_CODEPAGE=any` too, `arrays-held` with code page 1252.
 
 What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 

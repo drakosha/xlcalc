@@ -25,7 +25,7 @@ const canonical = (f: string) => {
 const same = (a: unknown, b: unknown) => a === b
 
 /** The parts of a cell that are compared: its value or formula, and its format as the locale shows it. */
-const held = (c: CellInput | null, tag: string) => ({
+export const held = (c: CellInput | null, tag: string) => ({
   value: c?.formula === undefined ? (c?.value ?? null) : null,
   formula: c?.formula === undefined ? null : canonical(c.formula),
   format: formatKey(numberFormatOf(c), tag),

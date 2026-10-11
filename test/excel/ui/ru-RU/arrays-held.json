@@ -1,0 +1,848 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-11",
+  "seconds": 144
+ },
+ "cases": [
+  {
+   "id": "spill-1",
+   "cells": {
+    "C1": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "C3": {
+     "value": 3
+    },
+    "A1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "B1": {
+     "formula": "C1:C3*2"
+    },
+    "E1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "E3": {
+     "value": "x"
+    },
+    "G1": {
+     "formula": "SUM(C1:C3)",
+     "array": "G1:H2"
+    },
+    "I1": {
+     "formula": "C1:C3*2",
+     "array": "I1:I3"
+    },
+    "K1": {
+     "formula": "SUM(C1:C3*2)",
+     "array": "K1"
+    },
+    "M1": {
+     "formula": "C1*2"
+    },
+    "N1": {
+     "formula": "SUM(C1:C3)"
+    },
+    "O1": {
+     "formula": "SUM(A1#)"
+    },
+    "P1": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "bars",
+    "cells": [
+     "A1",
+     "A2",
+     "A3",
+     "B1",
+     "B2"
+    ]
+   }
+  },
+  {
+   "id": "blocked-1",
+   "cells": {
+    "C1": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "C3": {
+     "value": 3
+    },
+    "A1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "B1": {
+     "formula": "C1:C3*2"
+    },
+    "E1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "E3": {
+     "value": "x"
+    },
+    "G1": {
+     "formula": "SUM(C1:C3)",
+     "array": "G1:H2"
+    },
+    "I1": {
+     "formula": "C1:C3*2",
+     "array": "I1:I3"
+    },
+    "K1": {
+     "formula": "SUM(C1:C3*2)",
+     "array": "K1"
+    },
+    "M1": {
+     "formula": "C1*2"
+    },
+    "N1": {
+     "formula": "SUM(C1:C3)"
+    },
+    "O1": {
+     "formula": "SUM(A1#)"
+    },
+    "P1": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "bars",
+    "cells": [
+     "E1",
+     "E2",
+     "E3"
+    ]
+   }
+  },
+  {
+   "id": "legacy-1",
+   "cells": {
+    "C1": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "C3": {
+     "value": 3
+    },
+    "A1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "B1": {
+     "formula": "C1:C3*2"
+    },
+    "E1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "E3": {
+     "value": "x"
+    },
+    "G1": {
+     "formula": "SUM(C1:C3)",
+     "array": "G1:H2"
+    },
+    "I1": {
+     "formula": "C1:C3*2",
+     "array": "I1:I3"
+    },
+    "K1": {
+     "formula": "SUM(C1:C3*2)",
+     "array": "K1"
+    },
+    "M1": {
+     "formula": "C1*2"
+    },
+    "N1": {
+     "formula": "SUM(C1:C3)"
+    },
+    "O1": {
+     "formula": "SUM(A1#)"
+    },
+    "P1": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "bars",
+    "cells": [
+     "G1",
+     "H1",
+     "G2",
+     "H2",
+     "I1",
+     "I2",
+     "I3",
+     "K1"
+    ]
+   }
+  },
+  {
+   "id": "plain-1",
+   "cells": {
+    "C1": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "C3": {
+     "value": 3
+    },
+    "A1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "B1": {
+     "formula": "C1:C3*2"
+    },
+    "E1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "E3": {
+     "value": "x"
+    },
+    "G1": {
+     "formula": "SUM(C1:C3)",
+     "array": "G1:H2"
+    },
+    "I1": {
+     "formula": "C1:C3*2",
+     "array": "I1:I3"
+    },
+    "K1": {
+     "formula": "SUM(C1:C3*2)",
+     "array": "K1"
+    },
+    "M1": {
+     "formula": "C1*2"
+    },
+    "N1": {
+     "formula": "SUM(C1:C3)"
+    },
+    "O1": {
+     "formula": "SUM(A1#)"
+    },
+    "P1": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "bars",
+    "cells": [
+     "M1",
+     "N1",
+     "O1",
+     "P1"
+    ]
+   }
+  }
+ ],
+ "answers": {
+  "spill-1": {
+   "cells": {
+    "A1": {
+     "cell": {
+      "formula": "SEQUENCE(3)"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1,
+     "formula": "=SEQUENCE(3)",
+     "formulaLocal": "=ПОСЛЕД(3)",
+     "formula2": "=SEQUENCE(3)",
+     "formula2Local": "=ПОСЛЕД(3)",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. A,1 =ПОСЛЕД(3)",
+       ""
+      ],
+      "edit": [
+       "Строка формул. A,1 =ПОСЛЕД(3)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "A2": {
+     "cell": null,
+     "computed": 2,
+     "text": "2",
+     "code": "General",
+     "local": "Основной",
+     "value2": 2,
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. A,2 =ПОСЛЕД(3)",
+       ""
+      ],
+      "edit": [
+       "Строка формул. A,2 ",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "A3": {
+     "cell": null,
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "Основной",
+     "value2": 3,
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. A,3 =ПОСЛЕД(3)",
+       ""
+      ],
+      "edit": [
+       "Строка формул. A,3 ",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "B1": {
+     "cell": {
+      "formula": "C1:C3*2"
+     },
+     "computed": 2,
+     "text": "2",
+     "code": "General",
+     "local": "Основной",
+     "value2": 2,
+     "formula": "=C1:C3*2",
+     "formulaLocal": "=C1:C3*2",
+     "formula2": "=C1:C3*2",
+     "formula2Local": "=C1:C3*2",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,1 =C1:C3*2",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,1 =C1:C3*2",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "B2": {
+     "cell": null,
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 =C1:C3*2",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 ",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    },
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "blocked-1": {
+   "cells": {
+    "E1": {
+     "cell": {
+      "formula": "SEQUENCE(3)"
+     },
+     "computed": {
+      "error": "SPILL"
+     },
+     "text": "#########",
+     "code": "General",
+     "local": "Основной",
+     "formula": "=SEQUENCE(3)",
+     "formulaLocal": "=ПОСЛЕД(3)",
+     "formula2": "=SEQUENCE(3)",
+     "formula2Local": "=ПОСЛЕД(3)",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. E,1 =ПОСЛЕД(3)",
+       ""
+      ],
+      "edit": [
+       "Строка формул. E,1 =ПОСЛЕД(3)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "E2": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. E,2 ",
+       ""
+      ],
+      "edit": [
+       "Строка формул. E,2 ",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "E3": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "Основной",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. E,3 x",
+       ""
+      ],
+      "edit": [
+       "Строка формул. E,3 x",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    }
+   },
+   "columns": {
+    "E": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "legacy-1": {
+   "cells": {
+    "G1": {
+     "cell": {
+      "formula": "SUM(C1:C3)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "Основной",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=СУММ(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=СУММ(C1:C3)",
+     "hasArray": true,
+     "formulaArray": "=СУММ(C1:C3)",
+     "bar": {
+      "selected": [
+       "Строка формул. G,1 {=СУММ(C1:C3)}",
+       ""
+      ],
+      "edit": [
+       "Строка формул. G,1 =СУММ(C1:C3)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "H1": {
+     "cell": null,
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "Основной",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=СУММ(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=СУММ(C1:C3)",
+     "hasArray": true,
+     "formulaArray": "=СУММ(C1:C3)",
+     "bar": {
+      "selected": [
+       "Строка формул. H,1 {=СУММ(C1:C3)}",
+       ""
+      ],
+      "edit": [
+       "Строка формул. H,1 =СУММ(C1:C3)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "G2": {
+     "cell": null,
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "Основной",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=СУММ(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=СУММ(C1:C3)",
+     "hasArray": true,
+     "formulaArray": "=СУММ(C1:C3)",
+     "bar": {
+      "selected": [
+       "Строка формул. G,2 {=СУММ(C1:C3)}",
+       ""
+      ],
+      "edit": [
+       "Строка формул. G,2 =СУММ(C1:C3)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "H2": {
+     "cell": null,
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "Основной",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=СУММ(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=СУММ(C1:C3)",
+     "hasArray": true,
+     "formulaArray": "=СУММ(C1:C3)",
+     "bar": {
+      "selected": [
+       "Строка формул. H,2 {=СУММ(C1:C3)}",
+       ""
+      ],
+      "edit": [
+       "Строка формул. H,2 =СУММ(C1:C3)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "I1": {
+     "cell": {
+      "formula": "C1:C3*2"
+     },
+     "computed": 2,
+     "text": "2",
+     "code": "General",
+     "local": "Основной",
+     "value2": 2,
+     "formula": "=C1:C3*2",
+     "formulaLocal": "=C1:C3*2",
+     "formula2": "=C1:C3*2",
+     "formula2Local": "=C1:C3*2",
+     "hasArray": true,
+     "formulaArray": "=C1:C3*2",
+     "bar": {
+      "selected": [
+       "Строка формул. I,1 {=C1:C3*2}",
+       ""
+      ],
+      "edit": [
+       "Строка формул. I,1 =C1:C3*2",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "I2": {
+     "cell": null,
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "Основной",
+     "value2": 4,
+     "formula": "=C1:C3*2",
+     "formulaLocal": "=C1:C3*2",
+     "formula2": "=C1:C3*2",
+     "formula2Local": "=C1:C3*2",
+     "hasArray": true,
+     "formulaArray": "=C1:C3*2",
+     "bar": {
+      "selected": [
+       "Строка формул. I,2 {=C1:C3*2}",
+       ""
+      ],
+      "edit": [
+       "Строка формул. I,2 =C1:C3*2",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "I3": {
+     "cell": null,
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "Основной",
+     "value2": 6,
+     "formula": "=C1:C3*2",
+     "formulaLocal": "=C1:C3*2",
+     "formula2": "=C1:C3*2",
+     "formula2Local": "=C1:C3*2",
+     "hasArray": true,
+     "formulaArray": "=C1:C3*2",
+     "bar": {
+      "selected": [
+       "Строка формул. I,3 {=C1:C3*2}",
+       ""
+      ],
+      "edit": [
+       "Строка формул. I,3 =C1:C3*2",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "K1": {
+     "cell": {
+      "formula": "SUM(C1:C3*2)"
+     },
+     "computed": 12,
+     "text": "12",
+     "code": "General",
+     "local": "Основной",
+     "value2": 12,
+     "formula": "=SUM(C1:C3*2)",
+     "formulaLocal": "=СУММ(C1:C3*2)",
+     "formula2": "=SUM(C1:C3*2)",
+     "formula2Local": "=СУММ(C1:C3*2)",
+     "hasArray": true,
+     "formulaArray": "=СУММ(C1:C3*2)",
+     "bar": {
+      "selected": [
+       "Строка формул. K,1 {=СУММ(C1:C3*2)}",
+       ""
+      ],
+      "edit": [
+       "Строка формул. K,1 =СУММ(C1:C3*2)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    }
+   },
+   "columns": {
+    "G": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    },
+    "H": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    },
+    "I": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    },
+    "K": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "plain-1": {
+   "cells": {
+    "M1": {
+     "cell": {
+      "formula": "C1*2"
+     },
+     "computed": 2,
+     "text": "2",
+     "code": "General",
+     "local": "Основной",
+     "value2": 2,
+     "formula": "=C1*2",
+     "formulaLocal": "=C1*2",
+     "formula2": "=C1*2",
+     "formula2Local": "=C1*2",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. M,1 =C1*2",
+       ""
+      ],
+      "edit": [
+       "Строка формул. M,1 =C1*2",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "N1": {
+     "cell": {
+      "formula": "SUM(C1:C3)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "Основной",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=СУММ(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=СУММ(C1:C3)",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. N,1 =СУММ(C1:C3)",
+       ""
+      ],
+      "edit": [
+       "Строка формул. N,1 =СУММ(C1:C3)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "O1": {
+     "cell": {
+      "formula": "SUM(A1#)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "Основной",
+     "value2": 6,
+     "formula": "=SUM(A1#)",
+     "formulaLocal": "=СУММ(A1#)",
+     "formula2": "=SUM(A1#)",
+     "formula2Local": "=СУММ(A1#)",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. O,1 =СУММ(A1#)",
+       ""
+      ],
+      "edit": [
+       "Строка формул. O,1 =СУММ(A1#)",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    },
+    "P1": {
+     "cell": {
+      "value": 1234.5
+     },
+     "text": "1234,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234,5",
+     "formula2": "1234.5",
+     "formula2Local": "1234,5",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. P,1 1234,5",
+       ""
+      ],
+      "edit": [
+       "Строка формул. P,1 1234,5",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value."
+     }
+    }
+   },
+   "columns": {
+    "M": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    },
+    "N": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    },
+    "O": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    },
+    "P": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}

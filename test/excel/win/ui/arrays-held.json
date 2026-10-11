@@ -1,0 +1,658 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "date": "2026-10-11",
+  "seconds": 15.6
+ },
+ "cases": [
+  {
+   "id": "spill-1",
+   "cells": {
+    "C1": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "C3": {
+     "value": 3
+    },
+    "A1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "B1": {
+     "formula": "C1:C3*2"
+    },
+    "E1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "E3": {
+     "value": "x"
+    },
+    "G1": {
+     "formula": "SUM(C1:C3)",
+     "array": "G1:H2"
+    },
+    "I1": {
+     "formula": "C1:C3*2",
+     "array": "I1:I3"
+    },
+    "K1": {
+     "formula": "SUM(C1:C3*2)",
+     "array": "K1"
+    },
+    "M1": {
+     "formula": "C1*2"
+    },
+    "N1": {
+     "formula": "SUM(C1:C3)"
+    },
+    "O1": {
+     "formula": "SUM(A1#)"
+    },
+    "P1": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "bars",
+    "cells": [
+     "A1",
+     "A2",
+     "A3",
+     "B1",
+     "B2"
+    ]
+   }
+  },
+  {
+   "id": "blocked-1",
+   "cells": {
+    "C1": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "C3": {
+     "value": 3
+    },
+    "A1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "B1": {
+     "formula": "C1:C3*2"
+    },
+    "E1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "E3": {
+     "value": "x"
+    },
+    "G1": {
+     "formula": "SUM(C1:C3)",
+     "array": "G1:H2"
+    },
+    "I1": {
+     "formula": "C1:C3*2",
+     "array": "I1:I3"
+    },
+    "K1": {
+     "formula": "SUM(C1:C3*2)",
+     "array": "K1"
+    },
+    "M1": {
+     "formula": "C1*2"
+    },
+    "N1": {
+     "formula": "SUM(C1:C3)"
+    },
+    "O1": {
+     "formula": "SUM(A1#)"
+    },
+    "P1": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "bars",
+    "cells": [
+     "E1",
+     "E2",
+     "E3"
+    ]
+   }
+  },
+  {
+   "id": "legacy-1",
+   "cells": {
+    "C1": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "C3": {
+     "value": 3
+    },
+    "A1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "B1": {
+     "formula": "C1:C3*2"
+    },
+    "E1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "E3": {
+     "value": "x"
+    },
+    "G1": {
+     "formula": "SUM(C1:C3)",
+     "array": "G1:H2"
+    },
+    "I1": {
+     "formula": "C1:C3*2",
+     "array": "I1:I3"
+    },
+    "K1": {
+     "formula": "SUM(C1:C3*2)",
+     "array": "K1"
+    },
+    "M1": {
+     "formula": "C1*2"
+    },
+    "N1": {
+     "formula": "SUM(C1:C3)"
+    },
+    "O1": {
+     "formula": "SUM(A1#)"
+    },
+    "P1": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "bars",
+    "cells": [
+     "G1",
+     "H1",
+     "G2",
+     "H2",
+     "I1",
+     "I2",
+     "I3",
+     "K1"
+    ]
+   }
+  },
+  {
+   "id": "plain-1",
+   "cells": {
+    "C1": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "C3": {
+     "value": 3
+    },
+    "A1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "B1": {
+     "formula": "C1:C3*2"
+    },
+    "E1": {
+     "formula": "SEQUENCE(3)"
+    },
+    "E3": {
+     "value": "x"
+    },
+    "G1": {
+     "formula": "SUM(C1:C3)",
+     "array": "G1:H2"
+    },
+    "I1": {
+     "formula": "C1:C3*2",
+     "array": "I1:I3"
+    },
+    "K1": {
+     "formula": "SUM(C1:C3*2)",
+     "array": "K1"
+    },
+    "M1": {
+     "formula": "C1*2"
+    },
+    "N1": {
+     "formula": "SUM(C1:C3)"
+    },
+    "O1": {
+     "formula": "SUM(A1#)"
+    },
+    "P1": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "bars",
+    "cells": [
+     "M1",
+     "N1",
+     "O1",
+     "P1"
+    ]
+   }
+  }
+ ],
+ "answers": {
+  "spill-1": {
+   "cells": {
+    "A1": {
+     "cell": {
+      "formula": "SEQUENCE(3)"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=SEQUENCE(3)",
+     "formulaLocal": "=SEQUENCE(3)",
+     "formula2": "=SEQUENCE(3)",
+     "formula2Local": "=SEQUENCE(3)",
+     "hasArray": false,
+     "hasSpill": true,
+     "spillParent": "A1"
+    },
+    "A2": {
+     "cell": null,
+     "computed": 2,
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": true,
+     "spillParent": "A1"
+    },
+    "A3": {
+     "cell": null,
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": true,
+     "spillParent": "A1"
+    },
+    "B1": {
+     "cell": {
+      "formula": "C1:C3*2"
+     },
+     "computed": 2,
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "=C1:C3*2",
+     "formulaLocal": "=C1:C3*2",
+     "formula2": "=C1:C3*2",
+     "formula2Local": "=C1:C3*2",
+     "hasArray": false,
+     "hasSpill": true,
+     "spillParent": "B1"
+    },
+    "B2": {
+     "cell": null,
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": true,
+     "spillParent": "B1"
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "B": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "blocked-1": {
+   "cells": {
+    "E1": {
+     "cell": {
+      "formula": "SEQUENCE(3)"
+     },
+     "computed": {
+      "error": "SPILL"
+     },
+     "text": "#SPILL!",
+     "code": "General",
+     "local": "General",
+     "formula": "=SEQUENCE(3)",
+     "formulaLocal": "=SEQUENCE(3)",
+     "formula2": "=SEQUENCE(3)",
+     "formula2Local": "=SEQUENCE(3)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "E2": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "E3": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "E": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "legacy-1": {
+   "cells": {
+    "G1": {
+     "cell": {
+      "formula": "SUM(C1:C3)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=SUM(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=SUM(C1:C3)",
+     "hasArray": true,
+     "formulaArray": "=SUM(C1:C3)",
+     "hasSpill": false
+    },
+    "H1": {
+     "cell": null,
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=SUM(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=SUM(C1:C3)",
+     "hasArray": true,
+     "formulaArray": "=SUM(C1:C3)",
+     "hasSpill": false
+    },
+    "G2": {
+     "cell": null,
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=SUM(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=SUM(C1:C3)",
+     "hasArray": true,
+     "formulaArray": "=SUM(C1:C3)",
+     "hasSpill": false
+    },
+    "H2": {
+     "cell": null,
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=SUM(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=SUM(C1:C3)",
+     "hasArray": true,
+     "formulaArray": "=SUM(C1:C3)",
+     "hasSpill": false
+    },
+    "I1": {
+     "cell": {
+      "formula": "C1:C3*2"
+     },
+     "computed": 2,
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "=C1:C3*2",
+     "formulaLocal": "=C1:C3*2",
+     "formula2": "=C1:C3*2",
+     "formula2Local": "=C1:C3*2",
+     "hasArray": true,
+     "formulaArray": "=C1:C3*2",
+     "hasSpill": false
+    },
+    "I2": {
+     "cell": null,
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=C1:C3*2",
+     "formulaLocal": "=C1:C3*2",
+     "formula2": "=C1:C3*2",
+     "formula2Local": "=C1:C3*2",
+     "hasArray": true,
+     "formulaArray": "=C1:C3*2",
+     "hasSpill": false
+    },
+    "I3": {
+     "cell": null,
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=C1:C3*2",
+     "formulaLocal": "=C1:C3*2",
+     "formula2": "=C1:C3*2",
+     "formula2Local": "=C1:C3*2",
+     "hasArray": true,
+     "formulaArray": "=C1:C3*2",
+     "hasSpill": false
+    },
+    "K1": {
+     "cell": {
+      "formula": "SUM(C1:C3*2)"
+     },
+     "computed": 12,
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "=SUM(C1:C3*2)",
+     "formulaLocal": "=SUM(C1:C3*2)",
+     "formula2": "=SUM(C1:C3*2)",
+     "formula2Local": "=SUM(C1:C3*2)",
+     "hasArray": true,
+     "formulaArray": "=SUM(C1:C3*2)",
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "G": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "H": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "I": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "K": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "plain-1": {
+   "cells": {
+    "M1": {
+     "cell": {
+      "formula": "C1*2"
+     },
+     "computed": 2,
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "=C1*2",
+     "formulaLocal": "=C1*2",
+     "formula2": "=C1*2",
+     "formula2Local": "=C1*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "N1": {
+     "cell": {
+      "formula": "SUM(C1:C3)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(C1:C3)",
+     "formulaLocal": "=SUM(C1:C3)",
+     "formula2": "=SUM(C1:C3)",
+     "formula2Local": "=SUM(C1:C3)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "O1": {
+     "cell": {
+      "formula": "SUM(A1#)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(A1#)",
+     "formulaLocal": "=SUM(A1#)",
+     "formula2": "=SUM(A1#)",
+     "formula2Local": "=SUM(A1#)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "P1": {
+     "cell": {
+      "value": 1234.5
+     },
+     "text": "1234.5",
+     "code": "General",
+     "local": "General",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "M": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "N": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "O": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    },
+    "P": {
+     "columnWidth": 8.43,
+     "points": 48,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}

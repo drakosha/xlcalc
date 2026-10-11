@@ -18,6 +18,7 @@
  *   npx tsx bench/windows/run.ts fit <name> [L]        columns fitted and texts typed into them, into fit/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts cond <name>           conditional formats (in the set's locale) into cond/[<tag>/]<name>.json and cond/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts valid <name> [L]      data validation and outlines into valid/[<tag>/]<name>.json and valid/[<tag>/]<name>/
+ *   npx tsx bench/windows/run.ts ui <name> [L]         a paste from the clipboard, and array cells through the object model, into ui/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts functions L           the formula cases the Mac has answers for in that locale
  *   npx tsx bench/windows/run.ts books L               the books the Mac has answers for in that locale (display, spill, ...)
  *   npx tsx bench/windows/run.ts all L                 both
@@ -42,6 +43,7 @@ import { stepFit } from './fit.js'
 import { stepCond } from './cond.js'
 import type { CondSet } from '../coverage/cond/cases.js'
 import { stepValid } from './valid.js'
+import { stepUi } from './ui.js'
 import { env, withWindowsExcel, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
@@ -95,11 +97,12 @@ else if (step === 'cond' && a) {
   await withWindowsExcel(tag, (e) => stepCond(a, tag, e))
 }
 else if (step === 'valid' && a) await withWindowsExcel(parseTag(b), (e) => stepValid(a, parseTag(b), e))
+else if (step === 'ui' && a) await withWindowsExcel(parseTag(b), (e) => stepUi(a, parseTag(b), e))
 else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functions(parseTag(a), e))
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | cond <name> | valid <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
