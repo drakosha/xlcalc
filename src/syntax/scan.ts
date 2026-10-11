@@ -57,8 +57,9 @@ export const IDENT_RULE = `${IDENT_FIRST}${IDENT_NEXT}*`
 export const IDENT_CHAR = /[\p{L}\p{N}_.(\\?]/u
 
 /**
- * A character of a word just before `[` or `_` in a file's formula: before `[` a table's name (Excel's table names take no
- * `?`), before `_` the word goes on and holds no prefix of a newer function (`ab_xlfn.c`). It predates `?` in names: a
- * name `a?_xlfn.b` loses `_xlfn.` there, as before.
+ * A character of a word just before `[` or `_` in a file's formula: before `[` it makes the run a table's (`Sales[Qty]`),
+ * before `_` the word goes on and holds no prefix of a newer function (`ab_xlfn.c`). It is older than `?` in names and
+ * was left without it: `a?_xlfn.b` loses `_xlfn.` and `T?[x]` is a link to another book, where the tokenizer reads a
+ * name and a table.
  */
 export const FILE_WORD_CHAR = /[\p{L}\p{N}_.\\]/u
