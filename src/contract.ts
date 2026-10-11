@@ -28,6 +28,8 @@ export interface CellInput {
    * shown in the book's locale (`CellResult.text`), or a built-in format by its number (`NumberFormat`). Without it
    * a cell shows its row's format, else its column's.
    */
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
   /** A style of the book's `styles`, by index. Without it a cell shows its row's style, else its column's. */
   style?: number
@@ -106,7 +108,7 @@ export interface AlignmentStyle {
 
 /**
  * A cell style of the book's table (`BookInput.styles`), as an xlsx cell format without its number format
- * (that is the cell's `format`). Styles do not take part in computation or in the values hash.
+ * (that is the cell's `numberFormat`). Styles do not take part in computation or in the values hash.
  */
 export interface CellStyle {
   font?: FontStyle
@@ -129,6 +131,8 @@ export interface ColumnInput {
    */
   bestFit?: boolean
   style?: number
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
   /** Hidden (xlsx `hidden`); a column of width 0 is hidden too. SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
   hidden?: boolean
@@ -143,6 +147,8 @@ export interface RowInput {
   /** Points, 0 to 409. */
   height?: number
   style?: number
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
   /**
    * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
@@ -236,6 +242,8 @@ export interface ConditionalStyle {
   fill?: { color: Color }
   border?: CellStyle['border']
   /** The number format the cell shows its value by. */
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
 }
 
@@ -667,6 +675,8 @@ export interface CellDisplay {
 /** `displayValue`'s options: where the value is shown. */
 export interface DisplayOptions {
   /** The number format; General without it. */
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
   /** A loaded locale's tag (`LOCALES`), or a locale object, loaded or not; en-US without one. */
   locale?: string | Locale
@@ -698,11 +708,11 @@ export interface EntryOptions {
   /** The book's date system, as `BookInput.dateSystem`; 1900 without it. */
   dateSystem?: 1900 | 1904
   /**
-   * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.getCells`): its `format` (the one
+   * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.getCells`): its `numberFormat` (the one
    * it shows by: its row's or column's without its own), `style`, `meta`, `note` and `link`; other fields are not read.
    * The new input keeps its style, meta, note and link, and its format where Excel keeps it.
    */
-  cell?: { format?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
+  cell?: { numberFormat?: NumberFormat; /** @deprecated The name is `numberFormat`. */ format?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
   /** The moment whose year completes a date typed without one (`15.3` in ru-RU, `3/15` in en-US), ISO as `Clock.now`; the current moment without it. */
   now?: string
 }
@@ -839,7 +849,8 @@ export interface CellResult extends Partial<CellDisplay> {
    * spelled as the book names them, as Excel shows them (`ставка*2` with the name `Ставка` is `Ставка*2`).
    */
   formula?: string
-  format?: NumberFormat
+  /** The cell's own number format, as its input has it. */
+  numberFormat?: NumberFormat
   meta?: JsonValue
   /**
    * A formula whose array spilled: the range it fills on its sheet (`B2:D9`, this cell at the top-left); for an array
@@ -1445,7 +1456,7 @@ export type CellPatch = { sheet: string; set: PatchFields } & ({ cell: string; r
 export interface PatchFields {
   style?: number | StylePatch | null
   numberFormat?: NumberFormat | null
-  /** @deprecated The number format is `numberFormat`. */
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat | null
   meta?: JsonValue | null
   note?: CellNote | null
@@ -1481,7 +1492,7 @@ export interface Session {
   /**
    * Edits of cells, applied atomically with one recomputation (`CellEdit`): each sets the fields it gives and keeps the
    * cell's others, as Excel keeps a cell's look when a value is typed over it; null clears the content, as Delete. An
-   * edit that keeps the cell's value and formula (a new `style`, `format`, `meta`, `note` or `link`) recomputes nothing.
+   * edit that keeps the cell's value and formula (a new `style`, `numberFormat`, `meta`, `note` or `link`) recomputes nothing.
    * A value or formula put into a spill range stops the array spilling (#SPILL!); clearing it lets the array spill
    * again. Edits that change some cells of an old-kind array formula's area (`CellInput.array`) but not all of them
    * throw `InputError` and change nothing, as Excel refuses to change part of an array; an edit of its top-left cell that
