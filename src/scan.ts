@@ -4,10 +4,11 @@
  * Text in a locale is read through its translation into stored text, whose positions map back to the typed ones.
  */
 import type { FormulaReference, ScanOptions } from './contract.js'
-import { checkLocale, checkString, object, onlyKeys } from './input.js'
+import { checkString, object, onlyKeys } from './input.js'
 import { sidesOf } from './locale/index.js'
-import { LOCALE_FILES } from './locale/registry.js'
+import { checkLocaleArg } from './locale/load.js'
 import { translate } from './locale/translate.js'
+import type { Locale } from './locale/types.js'
 import { FormulaError, tokenize, type Tok } from './syntax.js'
 import { AREA_WORDS } from './syntax/table.js'
 
@@ -25,8 +26,8 @@ function tokensUpTo(text: string): Tok[] {
 }
 
 /** Typed text in a locale as stored text up to the first place it does not translate, with positions back in `text`. */
-function storedUpTo(text: string, offset: number, tag: string): { formula: string; back(at: number): number } {
-  const { local, invariant } = sidesOf(LOCALE_FILES.get(tag)!.text)
+function storedUpTo(text: string, offset: number, locale: Locale): { formula: string; back(at: number): number } {
+  const { local, invariant } = sidesOf(locale)
   let end = text.length - offset
   for (;;) {
     const t = translate(text.slice(offset, offset + end), local, invariant, offset)
@@ -47,9 +48,9 @@ const SPACE = /\s/
 export function scanReferences(formula: string, opts?: ScanOptions): FormulaReference[] {
   const text = checkString(formula, 'formula')
   if (opts !== undefined) onlyKeys(object(opts, 'opts', "options such as { locale: 'ru-RU' }"), 'opts', ['locale'])
-  if (opts?.locale !== undefined) checkLocale(opts.locale, 'opts.locale')
+  const locale = opts?.locale === undefined ? undefined : checkLocaleArg(opts.locale, 'opts.locale')
   const eq = text.startsWith('=') ? 1 : 0
-  const stored = opts?.locale === undefined ? { formula: text.slice(eq), back: (at: number) => at + eq } : storedUpTo(text, eq, opts.locale)
+  const stored = locale === undefined ? { formula: text.slice(eq), back: (at: number) => at + eq } : storedUpTo(text, eq, locale)
   const toks = tokensUpTo(stored.formula)
   const out: FormulaReference[] = []
   for (let k = 0; k < toks.length - 1; k++) {

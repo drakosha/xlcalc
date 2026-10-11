@@ -7,6 +7,7 @@ import { run } from '../src/exec/budget.js'
 import { buildResult } from '../src/result.js'
 import { inputScalar } from '../src/internal.js'
 import { read, sheet } from './xlsx-fixtures.js'
+import './locales.js'
 
 const book = (cells: BookInput['sheets'][number]['cells']): BookInput => ({ sheets: [{ name: 'S', cells }] })
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }

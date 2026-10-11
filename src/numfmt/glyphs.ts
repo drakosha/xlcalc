@@ -2,11 +2,10 @@
  * Widths of shown text as Excel for Mac lays out Calibri 11, the default font of a book: in points of a column, a
  * digit is 6. Measured by fills (`test/excel/display/widths.json`): a column of xlsx width `w` is
  * `trunc(6w + 21·6/256)` points wide, the padding takes 5, and text fits when the sum of its characters' widths
- * is at most the rest. The letters of a locale's script are in its file (`glyphWidths`) and count in books of every
- * locale, as text of any script may stand in any book. Characters not in the table count as a digit (a known
+ * is at most the rest. The letters of other scripts are here too and count in books of every locale, as text of any
+ * script may stand in any book, whatever locales are loaded. Characters not in the table count as a digit (a known
  * difference for other scripts).
  */
-import { LOCALE_FILES } from '../locale/registry.js'
 import { advance } from './advances.js'
 import { BLANK, FILL, PAD } from './style.js'
 
@@ -23,9 +22,18 @@ const WIDTHS: [number, string][] = [
   [10, 'W'],
 ]
 
-const GLYPH = new Map<string, number>(
-  [WIDTHS, ...[...LOCALE_FILES.values()].map((f) => f.glyphWidths ?? [])].flat().flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])),
-)
+/** The Russian alphabet and the ruble sign, measured by fills as the Latin letters (`test/excel/display/widths.json`). */
+const CYRILLIC: [number, string][] = [
+  [4, 'гт'],
+  [5, 'авеёзксучхьэяГЕЁЗТ'],
+  [6, '₽бдийлнпрцъАБВКРСУХЧЬЭЯ'],
+  [7, 'мфыДИЙЛНОПЦЪ'],
+  [8, 'жшщюФЫ'],
+  [9, 'ЖМ'],
+  [10, 'ШЩЮ'],
+]
+
+const GLYPH = new Map<string, number>([...WIDTHS, ...CYRILLIC].flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])))
 
 /** The width of a digit, which a character not in the table takes too. */
 export const DIGIT = 6

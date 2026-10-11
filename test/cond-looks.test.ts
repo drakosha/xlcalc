@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import type { BookInput, CellInput, ConditionalFormat, ConditionalLook } from '../src/contract.js'
 import { openSession } from '../src/index.js'
 import { barOf, between } from '../src/cond/looks.js'
+import './locales.js'
 
 const CLOCK = { now: '2026-10-10T12:00:00Z', seed: 1 }
 const RED = { fill: { color: '#FFC7CE' } }

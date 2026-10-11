@@ -4,7 +4,8 @@
  * any case, one namespace with tables, and a name kept through structure operations and an xlsx file.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, restructure, ruRU, toInvariant, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput } from '../src/index.js'
+import { compute, InputError, openSession, restructure, toInvariant, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput } from '../src/index.js'
+import { ruRU } from './locales.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 
 /** Sheet S with A1 = 100 and the formulas given, and the names. */

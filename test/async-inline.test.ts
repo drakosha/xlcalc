@@ -8,6 +8,7 @@ import { CalcError, compute, createInlineCalc, openSession, type BookInput } fro
 import { synthBook } from '../src/synth.js'
 import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
+import './locales.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
   try {

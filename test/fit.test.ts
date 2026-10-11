@@ -8,6 +8,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, entryWidth, fitColumns, InputError, openSession, parseEntry, type BookInput, type Calc } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { pool } from './fixtures/pool.js'
+import './locales.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 1 }
 

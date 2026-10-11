@@ -34,7 +34,7 @@ Character widths were measured by fills (`0*x` repeats `x` across the column, an
 | 9 | `m M Ж М` |
 | 10 | `W Ш Щ Ю` |
 
-Latin letters, digits and signs are in `src/numfmt/glyphs.ts`, and the letters of another script in its locale's file (`glyphWidths`: the Cyrillic letters and `₽` in ru-RU's). They count in books of every locale. A character that no table has counts as a digit.
+Latin letters, digits and signs are in `src/numfmt/glyphs.ts`, and so are the Cyrillic letters and `₽`. They count in books of every locale, whatever locales are loaded. A character that no table has counts as a digit.
 
 A merged area is as wide as its columns together.
 
@@ -166,7 +166,7 @@ Every cell of the column counts, spilled ones and those of hidden rows too; a ce
 
 ## How the engine does it
 
-`src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths (with the letters of the locale files), `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
+`src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths (Cyrillic too), `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
 
 `src/shown.ts` finds a cell's format and width. `src/layout/fit.ts` fits columns and widens them on entry, by `fitPoints` and `typedPoints` of `src/numfmt.ts`, which lay a value out with `Style.layout` (paddings and blanks marked) and measure it by `fitText` (`glyphs.ts`, `advances.ts`). Sessions compare what cells show before and after an edit that recomputes nothing (`src/session/looks.ts`) and after a structure operation (`src/session/moved.ts`).
 

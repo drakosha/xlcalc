@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { CellValue, NumberFormat } from '../src/contract.js'
 import { entryText, InputError, needsApostrophe, parseEntry, sameValue } from '../src/index.js'
+import './locales.js'
 
 const NOW = '2026-10-10T12:00:00Z'
 

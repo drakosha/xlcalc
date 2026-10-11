@@ -10,6 +10,7 @@ import { compute, InputError } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { codes, storedOf, storedValues } from './xlsx-fixtures.js'
+import './locales.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 7 }
 

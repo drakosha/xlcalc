@@ -12,6 +12,7 @@ import type { StoredEntry } from '../bench/coverage/entry.js'
 import { formulaBar, type EntryAnswer } from '../bench/coverage/entry/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { entryText, parseEntry, sameValue, type CellInput } from '../src/index.js'
+import './locales.js'
 
 /** Excel for Mac's own regional data: its ru-RU long time has a leading zero, where Windows's has none and the engine follows it. */
 const MAC_TIME = "Excel for Mac writes a ru-RU time in the formula bar with a leading zero (01:30:00, 00:00:00); entryText writes the locale's long time without it, as Excel for Windows's regional data have it and the engine follows"

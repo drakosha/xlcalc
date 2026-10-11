@@ -16,6 +16,7 @@ import { CASES, CLOCK, excelBook, matches, REASONS, show, toVal } from './excel-
 import { LOCALE_REASONS } from './excel-locale-cases.js'
 import { caseBook, loadSet } from './excel-sets.js'
 import { WIN_KNOWN_CASES } from './excel-win-known.js'
+import './locales.js'
 
 /** A stored Windows run of formula cases; `rejected` lists the cases whose formula Excel for Windows did not take. */
 export interface WinSet {

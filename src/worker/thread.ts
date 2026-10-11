@@ -13,10 +13,14 @@ import { currentClock } from '../env.js'
 import { CalcError } from '../exec/budget.js'
 import { checkComputeOptions } from '../input.js'
 import { isHiddenRow } from '../layout/hidden.js'
+import { registerLocale } from '../locale/load.js'
+import { LOCALES } from '../locale/registry.js'
+import type { Locale } from '../locale/types.js'
 import { heapCaches } from '../range-cache.js'
 import { GEOMETRY } from '../session/rebook.js'
 import type { HistoryData } from '../session/undo.js'
 import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type Outline, type ToThread } from './protocol.js'
+import { LOCALE_MODULES } from './locales.js'
 import { workerThreads } from './platform.js'
 import { pack, packData, unpack, unpackData } from './pack.js'
 
@@ -38,8 +42,19 @@ interface Held {
 const port = ((workerThreads() as { parentPort?: Port } | undefined)?.parentPort ?? globalThis) as Port
 let d: InlineDefaults = { sliceMs: 50 }
 const held = new Map<number, Held>()
-const waiting: Exclude<ToThread, { t: 'init' | 'cancel' }>[] = []
+const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'cancel' }>[] = []
 let current: { task: number; abort(reason?: unknown): void } | null = null
+/** The locales the pool sent, loaded before the next task. */
+let loading: Promise<void> = Promise.resolve()
+
+/** Loads locales the pool sent: a package's from its own module, with its messages; another, or one whose module did not load, as sent. */
+function load(list: Locale[]) {
+  loading = loading
+    .then(async () => {
+      for (const sent of list) if (!LOCALES.has(sent.tag)) registerLocale((await LOCALE_MODULES[sent.tag]?.().catch(() => undefined)) ?? sent)
+    })
+    .catch(() => {})
+}
 
 /** What `applyOp` reads of a book for `mapCell`: the sheets' names and visibility, their hidden rows and filter mode, their tables (a table deleted takes its cells). */
 function outlineOf(book: BookInput): Outline {
@@ -208,6 +223,7 @@ async function next() {
   const ac = abortable()
   current = { task: m.task, abort: ac.abort }
   try {
+    await loading
     const value = await run(m, ac.signal)
     try {
       port.postMessage({ task: m.task, ok: true, value })
@@ -227,6 +243,9 @@ function receive(m: ToThread) {
     d = { sliceMs: m.sliceMs, limits: m.limits }
     // the thread's sessions and computations share its heap, and so one budget of their caches
     if (m.cacheBytes) heapCaches.cap = m.cacheBytes
+    if (m.locales) load(m.locales)
+  } else if (m.t === 'locales') {
+    load(m.locales)
   } else if (m.t === 'cancel') {
     if (current?.task === m.task) current.abort('cancelled by the pool')
   } else {

@@ -5,7 +5,8 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { FormulaReference } from '../src/contract.js'
-import { InputError, scanReferences, toLocal, ruRU } from '../src/index.js'
+import { InputError, scanReferences, toLocal } from '../src/index.js'
+import { ruRU } from './locales.js'
 
 const brief = (refs: FormulaReference[]) => refs.map((r) => `${r.at}-${r.end} ${r.text}`)
 

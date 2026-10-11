@@ -11,21 +11,23 @@ import type { CellInput, CheckCode, EntryOptions, EntryResult, NumberFormat } fr
 import { checkEntryOptions, checkString } from '../input.js'
 import { validateLocalFormula, toInvariant } from '../locale/index.js'
 import { validate } from '../syntax.js'
-import { DEFAULT_LOCALE, LOCALE_FILES } from '../locale/registry.js'
+import { localeOf } from '../locale/registry.js'
 import type { RulesClock } from '../locale/rules/data.js'
 import { rulesOf, type Rules } from '../locale/rules.js'
+import type { Locale } from '../locale/types.js'
 import { epochOf, ymd } from '../dates.js'
 import { msToSerial } from '../model.js'
 import { formatAfter, shows } from './forms.js'
 import { formulaFormat } from './formula.js'
 import { moneyFormat, readTyped } from './read.js'
 
-/** The rules of each locale and date system, with a clock whose year is set for each entry (entries are synchronous). */
-const RULES = new Map<string, { rules: Rules; clock: RulesClock & { y: number } }>()
+/** The rules of each locale object and date system, with a clock whose year is set for each entry (entries are synchronous). */
+const RULES = new WeakMap<Locale, Map<number, { rules: Rules; clock: RulesClock & { y: number } }>>()
 
-function rulesFor(tag: string, epoch: number, year: number) {
-  const k = `${tag}|${epoch}`
-  let r = RULES.get(k)
+function rulesFor(locale: Locale, epoch: number, year: number) {
+  let byEpoch = RULES.get(locale)
+  if (!byEpoch) RULES.set(locale, (byEpoch = new Map()))
+  let r = byEpoch.get(epoch)
   if (!r) {
     const clock: RulesClock & { y: number } = {
       y: year,
@@ -35,7 +37,7 @@ function rulesFor(tag: string, epoch: number, year: number) {
         return clock.y
       },
     }
-    RULES.set(k, (r = { rules: rulesOf(tag, clock, epoch), clock }))
+    byEpoch.set(epoch, (r = { rules: rulesOf(locale, clock, epoch), clock }))
   }
   r.clock.y = year
   return r
@@ -51,8 +53,7 @@ const STOPS: ReadonlySet<CheckCode> = new Set(['syntax', 'empty', 'too_long', 't
  * A typed formula, `shift` characters into the typed text: its canonical stored text and the format it sets (`formula.ts`),
  * its invariant text where it names what the book may lack (`#NAME?` then), or why Excel stops it, at its place in the text.
  */
-function formulaOf(text: string, shift: number, tag: string): { formula: string; sets?: NumberFormat | 'money' } | Extract<EntryResult, { ok: false }> {
-  const locale = LOCALE_FILES.get(tag)!.text
+function formulaOf(text: string, shift: number, locale: Locale): { formula: string; sets?: NumberFormat | 'money' } | Extract<EntryResult, { ok: false }> {
   const v = validateLocalFormula(text, locale)
   if (v.ok) {
     const p = validate(v.canonical)
@@ -73,7 +74,7 @@ const plusNumber = (text: string, decimal: string) => text.startsWith('+') && /^
 export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   checkString(text, 'text')
   const o = checkEntryOptions(opts)
-  const tag = o.locale ?? DEFAULT_LOCALE
+  const locale = localeOf(o.locale)
   const cell = o.cell ?? {}
   // what goes with the cell, as Excel keeps it whatever is typed
   const kept: CellInput = {}
@@ -81,14 +82,14 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   const input = (body: CellInput, format: NumberFormat | undefined = cell.format): EntryResult => ({ ok: true, input: { ...body, ...(format !== undefined ? { format } : {}), ...kept } })
   const epoch = epochOf(o.dateSystem)
   const year = ymd(Math.floor(msToSerial(o.now === undefined ? Date.now() : Date.parse(o.now)))).y
-  const { rules, clock } = rulesFor(tag, epoch, year)
+  const { rules, clock } = rulesFor(locale, epoch, year)
   // a formula takes the format of what it computes as a typed constant of that kind would (`forms.ts`)
   const formula = (src: string, shift: number): EntryResult => {
-    const f = formulaOf(src, shift, tag)
+    const f = formulaOf(src, shift, locale)
     if (!('formula' in f)) return f
     if (f.sets === undefined) return input({ formula: f.formula })
     const sets = f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets
-    return input({ formula: f.formula }, formatAfter(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets, cell.format, tag))
+    return input({ formula: f.formula }, formatAfter(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets, cell.format, locale))
   }
   if (text === '') return cell.format !== undefined || Object.keys(kept).length ? input({}) : { ok: true, input: null }
   if (text.startsWith("'")) return input({ value: text.slice(1) })
@@ -99,11 +100,11 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   if (/^[-+]./s.test(text) && typed.t === 'text' && typed.format === undefined) return plusNumber(text, rules.decimal) ? formula(text.slice(1), 1) : formula(text, 0)
   switch (typed.t) {
     case 'number':
-      return input({ value: typed.v }, formatAfter(typed.form, typed.format, cell.format, tag))
+      return input({ value: typed.v }, formatAfter(typed.form, typed.format, cell.format, locale))
     case 'boolean':
       return input({ value: typed.v })
     case 'text':
-      return input({ value: typed.v }, typed.format === undefined ? cell.format : formatAfter('scientific', typed.format, cell.format, tag))
+      return input({ value: typed.v }, typed.format === undefined ? cell.format : formatAfter('scientific', typed.format, cell.format, locale))
     case 'error':
       return input({ formula: typed.literal })
   }

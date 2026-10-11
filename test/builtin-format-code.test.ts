@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { builtinFormatCode, displayValue, InputError, LOCALES } from '../src/index.js'
+import './locales.js'
 
 const VALUES = [0, 1234.567, -1234.5, 0.25, 46096.75, -0.5, 'text']
 
@@ -32,6 +33,6 @@ describe('builtinFormatCode', () => {
 
   it('checks its input', () => {
     expect(() => builtinFormatCode('14' as never)).toThrow(new InputError('id', 'expected the number of a built-in format, 0 to 49, got the string "14"'))
-    expect(() => builtinFormatCode(14, 'de-DE')).toThrow(new InputError('locale', `unknown locale "de-DE" (expected ${[...LOCALES.keys()].join(', ')})`))
+    expect(() => builtinFormatCode(14, 'de-DE')).toThrow(new InputError('locale', `unknown locale "de-DE" (loaded: ${[...LOCALES.keys()].join(', ')}; the package's: en-US, ru-RU)`))
   })
 })

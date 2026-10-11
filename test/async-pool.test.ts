@@ -11,6 +11,7 @@ import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1, slowBook } from '.
 import { pool } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
+import './locales.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
   try {

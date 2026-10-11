@@ -8,7 +8,7 @@ import { caseKey } from '../../collate.js'
 import type { BookInput, NameInput, SheetInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
 import { checkBook, InputError, what } from '../../input.js'
-import { LOCALE_FILES } from '../../locale/registry.js'
+import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
@@ -41,7 +41,8 @@ async function locale(archive: Archive, rels: Rel[], issues: Issues): Promise<st
   const p = xml && elements(xml, 'property').find((e) => decodeXml(attributes(e.attrs).name ?? '') === LOCALE_PROPERTY)
   if (!p) return undefined
   const tag = readText(element(p.body ?? '', 'lpwstr')?.body ?? '')
-  if (LOCALE_FILES.has(tag)) return tag
+  // the book's locale is data: a package's locale not loaded stays, and computing the book names its module
+  if (PACKAGE_LOCALES.includes(tag) || LOCALES.has(tag)) return tag
   issues.add('locale', `the locale ${JSON.stringify(tag)} is not one of the package's, left out`)
   return undefined
 }
@@ -203,9 +204,10 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   if (tag) book.locale = tag
   if (dateSystem === 1904) book.dateSystem = 1904
   if (iteration) book.iteration = iteration
-  // the cells are valid as the reader builds them: the rest of the book is checked (the cells' check is most of the time)
+  // the cells are valid as the reader builds them: the rest of the book is checked (the cells' check is most of the time),
+  // by a locale not loaded as by en-US
   try {
-    checkBook({ ...book, sheets: sheets.map((s) => ({ ...s, cells: headerCells(s) })) })
+    checkBook({ ...book, locale: tag && LOCALES.has(tag) ? tag : undefined, sheets: sheets.map((s) => ({ ...s, cells: headerCells(s) })) })
   } catch (e) {
     if (e instanceof InputError) throw new Error(`xlsx: the file's book is not valid: ${e.message}`)
     throw e

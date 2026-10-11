@@ -8,6 +8,7 @@
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, type BookInput, type Execution } from '../src/index.js'
+import './locales.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 afterAll(closeCalcs)

@@ -10,6 +10,7 @@ import type { FitAnswer, FitCase, FitSet } from '../bench/coverage/fit/cases.js'
 import { engineFit, type FitPrediction } from '../bench/coverage/fit/engine.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { compute, entryWidth, fitColumns, parseEntry } from '../src/index.js'
+import './locales.js'
 
 export interface FitSetFile extends StoredFit {
   name: string

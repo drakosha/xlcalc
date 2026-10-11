@@ -7,6 +7,7 @@
 import { describe, expect, it } from 'vitest'
 import { caseKey } from '../src/collate.js'
 import { compute } from '../src/index.js'
+import './locales.js'
 
 /** The characters of the code points from `from`, below `to`, without lone surrogates. */
 function chars(from: number, to: number): string {

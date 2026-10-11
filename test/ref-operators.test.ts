@@ -4,7 +4,8 @@
  * text, and what they answer in both execution modes, in a session and after a structure operation.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, restructure, ruRU, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { compute, openSession, restructure, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { ruRU } from './locales.js'
 
 const canonical = (f: string) => {
   const v = validateFormula(f)

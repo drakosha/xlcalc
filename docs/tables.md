@@ -82,7 +82,8 @@ A formula stores its structured references as an xlsx file does, whatever form w
 `toLocal` shows a formula as Excel shows it: `Sales[@Qty]`, `Sales[@[Unit Price]]`, `Sales[@]`, `Sales` for the table alone. Given the table of the formula's cell, `toLocal(formula, locale, { table: 'Sales' })` drops the name where Excel drops it in a cell of that table: before one column or a span of columns of the data or of the formula's row (`[@Qty]`, `SUM([Qty])`). A reference with another specifier keeps it (`Sales[#Headers]`, `Sales[[#Totals],[Qty]]`).
 
 ```js
-import { toLocal, enUS, ruRU } from 'xlcalc'
+import { toLocal, enUS } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
 const f = 'Sales[[#This Row],[Qty]]*SUM(Sales[[#Totals],[Price]])'
 console.log(toLocal(f, enUS).formula) // → Sales[@Qty]*SUM(Sales[[#Totals],[Price]])

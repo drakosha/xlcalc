@@ -8,6 +8,7 @@
  */
 import type { NumberFormat } from '../contract.js'
 import { builtinIn } from '../locale/rules.js'
+import type { Locale } from '../locale/types.js'
 import { EN_BUILTIN, EN_CODES, isBuiltin } from '../numfmt.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import type { Form } from './read.js'
@@ -41,21 +42,21 @@ const FORM: Partial<Record<Form, Family>> = { date: 'date', time: 'time', percen
 const MONEY: ReadonlySet<number> = new Set([5, 6, 7, 8, 41, 42, 43, 44])
 
 /**
- * The number of the built-in format a cell's format is in the locale `tag`: its number, or the first whose code it is
- * in en-US and in the locale alike (`h:mm` is 20 in both, `m/d/yyyy` is 14 in en-US only, as Excel ru-RU keeps
- * `dd.mm.yyyy` a format of the book's own); undefined for a format of the book's own.
+ * The number of the built-in format a cell's format is in a locale: its number, or the first whose code it is in en-US
+ * and in the locale alike (`h:mm` is 20 in both, `m/d/yyyy` is 14 in en-US only, as Excel ru-RU keeps `dd.mm.yyyy` a
+ * format of the book's own); undefined for a format of the book's own.
  */
-export function builtinOf(format: NumberFormat, tag: string): number | undefined {
+export function builtinOf(format: NumberFormat, locale: Locale): number | undefined {
   if (typeof format === 'number') return format
   if (format.toLowerCase() === 'general') return 0
-  const code = builtinIn(tag)
+  const code = builtinIn(locale)
   for (let id = 0; isBuiltin(id); id++) if (!MONEY.has(id) && EN_BUILTIN[id] === format && code(id) === format) return id
   return undefined
 }
 
-/** The format of a cell with the format `cell` in the locale `tag` after a number of the form typed, with that form's format; undefined: General. */
-export function formatAfter(form: Form, typed: NumberFormat | undefined, cell: NumberFormat | undefined, tag: string): NumberFormat | undefined {
-  const id = cell === undefined ? 0 : builtinOf(cell, tag)
+/** The format of a cell with the format `cell` in a locale after a number of the form typed, with that form's format; undefined: General. */
+export function formatAfter(form: Form, typed: NumberFormat | undefined, cell: NumberFormat | undefined, locale: Locale): NumberFormat | undefined {
+  const id = cell === undefined ? 0 : builtinOf(cell, locale)
   if (id === 0) return typed
   const family = FORM[form]
   const own = id === undefined ? undefined : FAMILY.get(id)

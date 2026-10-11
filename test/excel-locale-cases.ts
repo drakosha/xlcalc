@@ -17,6 +17,7 @@ import { compute } from '../src/index.js'
 import { CASES, CLOCK, excelBook, matches, REASONS, show, toVal, type ExcelCase } from './excel-cases.js'
 import { RU_KNOWN, RU_REASONS } from './excel-ru-known.js'
 import { caseBook, loadSet, type StoredSet } from './excel-sets.js'
+import './locales.js'
 
 /** The locales compared here: the package's, but en-US. */
 export const LOCALE_TAGS: readonly string[] = TAGS.filter((t) => t !== 'en-US')

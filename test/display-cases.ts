@@ -9,6 +9,7 @@ import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import type { BookInput, CellDisplay, CellValue, SheetInput } from '../src/contract.js'
 import { formatAddress, indexToCol } from '../src/model.js'
+import './locales.js'
 
 export const CLOCK = { now: '2026-10-07T12:00:00Z', seed: 1 }
 

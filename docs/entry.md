@@ -24,7 +24,7 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax unexpecte
 
 The options:
 
-- `locale`: the book's locale, a tag of `LOCALES`; en-US without it.
+- `locale`: the book's locale, the tag of a loaded locale (`LOCALES`) or a locale object such as `ruRU` of `xlcalc/locales/ru-RU`, which needs no loading here; en-US without it.
 - `cell`: the cell typed into, as the book holds it: its `format`, `style`, `meta`, `note` and `link` (a `CellInput`, or a `CellView` from `Session.cells`; other fields are not read). Pass the format the cell shows by: its row's or column's when it has none of its own.
 - `now`: the moment whose year completes a date typed without one, ISO as `Clock.now`; the current moment without it.
 - `dateSystem`: the book's date system, 1900 or 1904, for the serial numbers of dates.

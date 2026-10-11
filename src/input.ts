@@ -8,7 +8,7 @@ import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
-import { LOCALE_FILES } from './locale/registry.js'
+import { checkLocaleArg, checkLocaleTag } from './locale/load.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
@@ -291,7 +291,7 @@ function checkFrozen(v: unknown, path: string) {
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
   onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration'])
-  if (book.locale !== undefined) checkLocale(book.locale, `${path}.locale`)
+  if (book.locale !== undefined) checkLocaleTag(book.locale, `${path}.locale`)
   if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (book.iteration !== undefined) {
     const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
@@ -375,11 +375,6 @@ export function checkLimits(v: unknown, path: string): CalcLimits {
   onlyKeys(o, path, ['formulas', 'cells', 'spill'])
   for (const k of ['formulas', 'cells', 'spill']) if (o[k] !== undefined) checkNumber(o[k], `${path}.${k}`, 1, Number.MAX_SAFE_INTEGER, true)
   return o as CalcLimits
-}
-
-/** A tag of the package's locales. */
-export function checkLocale(v: unknown, path: string) {
-  if (!LOCALE_FILES.has(checkString(v, path))) throw new InputError(path, `unknown locale ${JSON.stringify(v)} (expected ${[...LOCALE_FILES.keys()].join(', ')})`)
 }
 
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
@@ -511,7 +506,7 @@ export function checkNameOptions(v: unknown, path = 'opts'): NameOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU' }")
   onlyKeys(o, path, ['locale'])
-  if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
+  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
   return o as NameOptions
 }
 
@@ -522,7 +517,7 @@ export function checkNamesContext(v: unknown, path = 'ctx'): NamesContext {
   if (o.sheets === undefined) throw new InputError(`${path}.sheets`, "expected the book's sheet names, an array of strings")
   const { locale, ...rest } = o
   checkValidateContext(rest, path)
-  if (locale !== undefined) checkLocale(locale, `${path}.locale`)
+  if (locale !== undefined) checkLocaleArg(locale, `${path}.locale`)
   return o as unknown as NamesContext
 }
 
@@ -539,7 +534,7 @@ export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   onlyKeys(o, path, ['format', 'locale', 'width', 'dateSystem'])
   if (o.format !== undefined) checkFormat(o.format, `${path}.format`)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
-  if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
+  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
   return o as DisplayOptions
 }
@@ -567,7 +562,7 @@ export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { format: '0.00' } }")
   onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now'])
-  if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
+  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.now !== undefined && Number.isNaN(Date.parse(checkString(o.now, `${path}.now`)))) throw new InputError(`${path}.now`, `invalid moment ${JSON.stringify(o.now)}: expected ISO 8601 such as "2026-01-31T12:00:00Z"`)
   if (o.cell !== undefined && o.cell !== null) {

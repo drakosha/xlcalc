@@ -9,6 +9,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { InputError, openSession, type BookInput, type Execution } from '../src/index.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import './locales.js'
 
 afterAll(closeCalcs)
 

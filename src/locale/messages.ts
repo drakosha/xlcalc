@@ -1,13 +1,13 @@
 /**
  * Messages for people, in the language of a locale: why a formula does not read, why Excel refuses a structure
- * operation, the words of `explain`. Code makes a message as a key with its parameters (`Message`); the locale file's
+ * operation, the words of `explain`. Code makes a message as a key with its parameters (`Message`); the locale's
  * `messages` write it (`Messages`), en-US's every one of them, and a locale without its own text of a message takes
  * en-US's. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation.
  */
 import type { CellValue } from '../contract.js'
 import { errorIn } from '../syntax/errors.js'
 import { english } from './english.js'
-import { DEFAULT_LOCALE, LOCALE_FILES } from './registry.js'
+import { LOCALES, localeOf } from './registry.js'
 import type { Locale, TableItem } from './types.js'
 
 /** What the parser found where it expected something else: a token's kind, with its text for an operator, a name or a function. */
@@ -167,11 +167,12 @@ function wordsOf(loc: Locale, formula: (text: string) => string): Words {
 }
 
 /**
- * A message in the language of a locale: a tag of the package's locales (en-US without one) or a locale object, whose
- * tag picks its messages. `formula` shows a stored formula in the locale, for the messages that hold one.
+ * A message in the language of a locale: a loaded locale's tag (en-US without one) or a locale object, its own messages
+ * or else those of the loaded locale of its tag. `formula` shows a stored formula in the locale, for the messages that
+ * hold one.
  */
 export function say<K extends MessageKey>(where: string | Locale | undefined, m: { key: K } & MessageParams[K], formula: (text: string) => string = (f) => f): string {
-  const loc = typeof where === 'object' ? where : (LOCALE_FILES.get(where ?? DEFAULT_LOCALE) ?? LOCALE_FILES.get(DEFAULT_LOCALE)!).text
-  const own = LOCALE_FILES.get(loc.tag)?.messages?.[m.key]
+  const loc = localeOf(where)
+  const own = (loc.messages ?? LOCALES.get(loc.tag)?.messages)?.[m.key]
   return own ? own(m, wordsOf(loc, formula)) : english(m)
 }

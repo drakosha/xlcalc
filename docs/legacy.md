@@ -7,7 +7,7 @@ The rules below were measured in Excel 16.113 for Mac (en-US).
 ## fromLegacy
 
 ```js
-import { fromLegacy } from 'xlcalc'
+import { fromLegacy } from 'xlcalc/xlsx'
 
 fromLegacy('A1:A10*2')                // → '@A1:A10*2'
 fromLegacy('SUM(A1:A10*2)')           // → 'SUM(@A1:A10*2)'

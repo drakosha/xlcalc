@@ -6,13 +6,12 @@
  */
 import { describe, expect, it } from 'vitest'
 import { serialOf } from '../src/dates.js'
-import { LOCALE_FILES } from '../src/locale/registry.js'
 import type { RegionalData } from '../src/locale/rules/data.js'
 import { regionalRules } from '../src/locale/rules/regional.js'
+import { ruRU as ru } from '../src/locales/ru-RU.js'
 
-const ru = LOCALE_FILES.get('ru-RU')!
 const clock = () => ({ year: () => 2026, read: false })
-const rulesWith = (change: Partial<RegionalData>) => regionalRules(ru.text, { ...ru.regional!, ...change }, clock(), () => undefined)
+const rulesWith = (change: Partial<RegionalData>) => regionalRules(ru, { ...ru.regional!, ...change }, clock(), () => undefined)
 const read = (change: Partial<RegionalData>, texts: string[]) => texts.map((t) => rulesWith(change).valueText(t))
 
 describe('the order of date text', () => {

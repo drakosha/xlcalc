@@ -21,6 +21,7 @@ import { spillBook, spillEdits } from './session-spill-edits.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
 import type { TableSet } from '../bench/coverage/tables/cases.js'
 import { engineAnswer } from './tables-cases.js'
+import './locales.js'
 
 const BOOKS: [string, BookInput][] = [
   ['the coverage measurement', excelBook(CASES)],

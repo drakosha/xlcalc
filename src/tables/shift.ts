@@ -10,7 +10,7 @@
  */
 import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
 import type { Message } from '../locale/messages.js'
-import { REGIONAL } from '../locale/rules.js'
+import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { rectOf, type Area, type Axis } from '../structure/area.js'
@@ -21,7 +21,7 @@ import { tableKey, tablesOf } from './model.js'
 
 /** The first free name `Column<n>` (n from 1) among `taken`, case-insensitively, with the word of the book's locale (`columnWord`). */
 export function freeColumnName(taken: string[], locale: string | undefined): string {
-  const word = REGIONAL.get(locale ?? '')?.columnWord ?? 'Column'
+  const word = localeOf(locale).regional?.columnWord ?? 'Column'
   const keys = new Set(taken.map(tableKey))
   let n = 1
   while (keys.has(tableKey(`${word}${n}`))) n++
