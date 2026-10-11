@@ -8,13 +8,14 @@
 import type { DataValidation, ValidationOperator, ValidationType } from '../../contract.js'
 import { subtract, type Rect } from '../../structure/area.js'
 import { FILE_TYPES, OPERATORS } from '../../validation/check.js'
-import { areasOf, COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
+import { COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
 import { formulaAt } from '../../validation/structure.js'
 import { sheetKey } from '../../syntax.js'
 import type { Issues } from '../issues.js'
 import { attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula } from './formulas.js'
+import { sqrefRanges } from './refs.js'
 
 /** The model's types by the names a file gives them. */
 const TYPES = Object.fromEntries(Object.entries(FILE_TYPES).map(([model, file]) => [file, model])) as Record<string, ValidationType>
@@ -100,7 +101,8 @@ export function readValidations(tail: string, sheet: string, sheets: string[], i
       issues.add('dataValidation', r, where)
       continue
     }
-    const areas = areasOf(raw.sqref.toUpperCase())
+    const parts = sqrefRanges(raw.sqref)
+    const areas = parts.length && parts.every((x) => x.rect) ? parts.map((x) => x.rect!) : null
     if (!areas) {
       issues.add('dataValidation', 'a rule without a range of the sheet is left out', where)
       continue

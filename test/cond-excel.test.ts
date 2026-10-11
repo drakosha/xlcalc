@@ -30,6 +30,11 @@ export const COND_KNOWN: Known = {
   'formats-ru-held:formats:Лист!A6': 'Excel for Mac ru-RU writes the short month name март; Windows and the engine мар',
   // both Excels save two rules alike but for a format given by number and by its code as one rule over both cells
   'formats-ru-held:formats': "Excel saves a rule of format 14 and one of m/d/yyyy over the cell below as one rule over both, as it reads a rule's format by its code",
+  // what the model has no fill for, each reported by the reader: a gradient (Excel's display format gives it black), a
+  // dxf's none, which takes the cell's own fill away, and a dxf's solid fill without its colour, white on a cell without one
+  ...Object.fromEntries(['A7', 'B7', 'C7'].map((a) => [`fills-held:fills:S!${a}`, 'a gradient fill is not in the model'])),
+  ...Object.fromEntries(['fills-held:fills:S!C1', 'fills-held:fills:S!C2', 'fills-held:fills:S!C3', 'fills-held-2:fills:S!C4'].map((k) => [k, "a conditional format's fill taken away (patternType none) is not in the model"])),
+  ...Object.fromEntries(['B4', 'B6'].map((a) => [`fills-held:fills:S!${a}`, "a conditional format's solid fill without its colour, Excel's white on a cell without a fill, is not in the model"])),
 }
 
 /** The pins of what only Excel for Mac does: its order of text and month names in ru-RU. */
@@ -38,7 +43,7 @@ export const macOnly = (key: string) => key.startsWith('looks-ru:') || key.start
 const SETS = [...condSets('cond/'), ...condSets('cond/ru-RU/').map((s) => ({ ...s, name: s.name }))]
 
 describe('conditional formats against Excel for Mac', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'struct-held']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'fills-held', 'fills-held-2', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'sqref-held', 'struct-held']))
   it('every pinned difference names a case', () => expect(pinnedCases(SETS, COND_KNOWN)).toEqual([]))
 })
 

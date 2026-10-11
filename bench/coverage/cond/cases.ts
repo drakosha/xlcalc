@@ -9,9 +9,11 @@ import type { CellStyle, CellView, Clock, StructureOp } from '../../../src/contr
 import { createSession, editStructure, validateFormula } from '../../../src/index.js'
 import { MAX_COLS, MAX_ROWS } from '../../../src/model.js'
 import { cellCount, parseRange, rectCells } from '../../../src/structure/area.js'
+import { writeXlsx } from '../../../src/xlsx.js'
 import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
 import '../locales.js'
 import { takenBook, type StoredBook, type StoredRule } from '../stored.js'
+import { rawFile, type RawEdit } from '../xlsx/sent.js'
 
 /**
  * A rule Excel makes through its object model (Windows: `FormatConditions.Add` and its kin): `cellIs` with an operator
@@ -45,6 +47,8 @@ export interface CondCase {
   op?: StructureOp
   /** The cells whose look is read: a sheet and a range of it. */
   read: [sheet: string, range: string][]
+  /** The file changed by hand after `writeXlsx`, as another writer leaves it: the engine holds what the reader reads from it. */
+  raw?: RawEdit[]
 }
 
 export interface CondCases {
@@ -134,6 +138,11 @@ export function ruleKey(rule: StoredRule): unknown {
     (k === 'formula' || k === 'value') && typeof v === 'string' ? canonicalText(v) : k === 'formulas' ? (v as string[]).map(canonicalText) : k === 'numberFormat' || k === 'format' ? (typeof v === 'number' ? (v === 0 ? 'General' : BUILTIN[v]) : (v as string).replaceAll('\\ ', ' ')) : v,
   )
   return sorted({ cells: cellSet(rule.ranges).join(' '), ...canon })
+}
+
+/** A case's file: its book as `writeXlsx` writes it, changed by hand for a raw case. */
+export async function condFile(set: CondCases, c: CondCase): Promise<Uint8Array> {
+  return rawFile((await writeXlsx({ book: takenBook(set.books[c.book]) })).data, c.raw)
 }
 
 /** What the engine gives a case: its refusal, or each sheet's rules (`ruleKey`) and the looks of the read cells. */

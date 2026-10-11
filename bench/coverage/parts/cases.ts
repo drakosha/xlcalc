@@ -5,6 +5,7 @@
  * sheet's parts and saves the book. The answer is what Excel read, and the file it saved goes beside it.
  */
 import type { BookInput, CellLink, CellNote, FrozenPanes, StructureOp } from '../../../src/contract.js'
+import type { RawEdit } from '../xlsx/sent.js'
 
 /** What Excel adds through its object model: `AddComment`, `Hyperlinks.Add`, `FreezePanes`. */
 export type PartsMake =
@@ -25,6 +26,8 @@ export interface PartsCase {
   book: string
   make?: PartsMake[]
   op?: StructureOp
+  /** The file changed by hand after `writeXlsx`, as another writer leaves it: the engine holds what the reader reads from it. */
+  raw?: RawEdit[]
 }
 
 export interface PartsCases {
