@@ -6,6 +6,7 @@ import { english } from '../locale/english.js'
 import type { Message, NameRule } from '../locale/messages.js'
 import { FormulaError, type Ast } from './ast.js'
 import { parse } from './parse.js'
+import { IDENT_FIRST, IDENT_NEXT } from './scan.js'
 import { readsAsCell } from './tokens.js'
 import { canonical, mapAst, sheetKey, walk } from './print.js'
 
@@ -167,7 +168,8 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
   return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)], tables: bound.tables }
 }
 
-const NAME = /^[\p{L}_\\][\p{L}\p{N}_.\\?]{0,254}$/u
+/** A name's characters (an identifier's) and its length, 255 at most. */
+const NAME = new RegExp(`^${IDENT_FIRST}${IDENT_NEXT}{0,254}$`, 'u')
 
 /**
  * Why Excel would not take a word that reads as a reference or a boolean as a name (null when it would); `booleans`

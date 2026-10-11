@@ -46,9 +46,12 @@ export const numberSource = (decimal: string) => `(?:[0-9]+(?:${decimal}[0-9]*)?
 /**
  * An identifier, a function's or a defined name's: a letter, `_` or `\`, then letters, digits, `_`, `.`, `\` and `?`, as
  * Excel takes names (the sets `tables/names-more-held`, `names-ru-more-held`). A sheet's name without quotes takes no `\`
- * or `?` (`PLAIN_SHEET` in `sheet-pattern.ts`); the locale lexer reads the same identifiers.
+ * or `?` (`PLAIN_SHEET` in `sheet-pattern.ts`); the locale lexer reads the same identifiers, a name's check the same
+ * characters (`IDENT_FIRST`, `IDENT_NEXT`).
  */
-export const IDENT_RULE = '[\\p{L}_\\\\][\\p{L}\\p{N}_.\\\\?]*'
+export const IDENT_FIRST = '[\\p{L}_\\\\]'
+export const IDENT_NEXT = '[\\p{L}\\p{N}_.\\\\?]'
+export const IDENT_RULE = `${IDENT_FIRST}${IDENT_NEXT}*`
 
 /** A character that goes on with a word past a cell's shape, so the shape is no reference: an identifier's, or a call's `(` (`A1B`, `LOG10(`). */
 export const IDENT_CHAR = /[\p{L}\p{N}_.(\\?]/u
