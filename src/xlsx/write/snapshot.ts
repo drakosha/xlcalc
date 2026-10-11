@@ -28,10 +28,14 @@ export interface WriteArgs {
 
 const RESULT = "a result: compute's, a session's getSnapshot().result or readXlsx's cached, { sheets: [{ name, cells }] }"
 const SESSION = 'a session is not a snapshot: pass session.getSnapshot() (awaited for an asynchronous session)'
+const RESULT_ALONE = 'a result is not a snapshot: pass { book, result } with the book it was computed from'
 const PRESERVE = '(values: "preserve" writes the values it has)'
 
 /** A session or its proxy, which a snapshot is taken of. */
 const isSession = (v: unknown) => typeof (v as { getSnapshot?: unknown } | null)?.getSnapshot === 'function'
+
+/** A result (`compute`'s, a session's `getResult()`), told by its hashes: it has sheets, and a book's old form does too. */
+const isResult = (v: unknown) => typeof (v as { hash?: unknown } | null)?.hash === 'string' && typeof (v as { inputHash?: unknown }).inputHash === 'string'
 
 /** The result's cells by sheet; the result must be of a result's shape and the book's (the same sheets in order). */
 function resultCells(book: BookInput, result: unknown, path: string): Record<string, ResultCell>[] {
@@ -55,6 +59,7 @@ function resultCells(book: BookInput, result: unknown, path: string): Record<str
 /** The arguments of `writeXlsx`, checked: a snapshot and options, or (deprecated) a book and options with its result. */
 export function writeArgs(first: XlsxSnapshot | BookInput, opts: unknown): WriteArgs {
   if (isSession(first)) throw new InputError('snapshot', SESSION)
+  if (isResult(first)) throw new InputError('snapshot', RESULT_ALONE)
   const given = object(first, 'snapshot', 'a snapshot { book, result }')
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
   // the old form: the book first, its result in the options
