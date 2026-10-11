@@ -1,10 +1,20 @@
 /** Helpers shared by the statistical function files. */
-import { pairs, type Grid } from '../../args.js'
-import { E, isErr, type CErr } from '../../values.js'
+import { gridError, pairs, type Arg, type Cx, type Grid } from '../../args.js'
+import { Areas, E, isErr, type CErr, type V } from '../../values.js'
 import { momentValue, stableMean } from './moments.js'
 
 export const mean = stableMean
 export const sorted = (xs: readonly number[]) => [...xs].sort((a, b) => a - b)
+
+/** The mean of the numbers a function selected, #DIV/0! without any (AVERAGEIF, AVERAGEIFS, DAVERAGE). */
+export const meanOrDiv0 = (xs: readonly number[]) => (xs.length ? mean(xs) : E.DIV0)
+
+/** Interpolated order statistic at the 0-based rank h of sorted data (PERCENTILE, QUARTILE, a colour scale's percentile). */
+export function interpolate(s: readonly number[], h: number): number {
+  const i = Math.floor(h)
+  if (i >= s.length - 1) return s[s.length - 1]
+  return s[i] + (h - i) * (s[i + 1] - s[i])
+}
 
 /** Variance and standard deviation share the same degrees-of-freedom check across function families. */
 const varianceValue = (xs: readonly number[], ddof: number, root: boolean) =>
@@ -17,15 +27,30 @@ export function devsq(xs: readonly number[]): number {
   return momentValue(xs, 1)
 }
 
-/** The first error in the referenced part of a grid. */
-export const gridError = (g: Grid): CErr | undefined => g.v.find(isErr) as CErr | undefined
-
-/** The numbers of a grid; an error inside is the answer. */
-export function gridNumbers(g: Grid): number[] | CErr {
+/**
+ * The numbers among values in order, or among those at the positions `at` (a criteria selection): text, booleans and
+ * blanks are skipped, the first error is the answer.
+ */
+export function numbersOf(values: readonly V[], at?: readonly number[]): number[] | CErr {
   const out: number[] = []
-  for (const v of g.v) {
-    if (isErr(v)) return v
+  const n = at ? at.length : values.length
+  for (let i = 0; i < n; i++) {
+    const v = values[at ? at[i] : i]
     if (typeof v === 'number') out.push(v)
+    else if (isErr(v)) return v
+  }
+  return out
+}
+
+/** The numbers of an argument's grid, of each area in turn for several (a union, a reference across sheets); an error is the answer. */
+export function areaNumbers(cx: Cx, x: Arg): number[] | CErr {
+  if (isErr(x)) return x
+  const out: number[] = []
+  for (const g of x instanceof Areas ? x.list : [x]) {
+    const xs = numbersOf(cx.grid(g).v)
+    if (isErr(xs)) return xs
+    // one push per number: a whole column would overflow the call stack
+    for (const n of xs) out.push(n)
   }
   return out
 }

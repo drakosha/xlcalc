@@ -1,13 +1,12 @@
 /** Day-count conventions (DAYS360, YEARFRAC), shared with the financial functions. */
 import type { FnDef } from '../../args.js'
-import { daysInMonth, isLeap, serialOf, ymd } from '../../dates.js'
-import { E } from '../../values.js'
+import { isLeap, lastDayExcel, serialOf, utcDays, ymd } from '../../dates.js'
 import { atp, need, type AtpOrder } from './atp.js'
 
 export type Ymd = { y: number; m: number; d: number }
 
-/** Excel's calendar has 1900-02-29. */
-export const lastDayExcel = (y: number, m: number) => (y === 1900 && m === 2 ? 29 : daysInMonth(y, m))
+/** Days from `a` to `b` on 30/360, their days taken as `d1` and `d2`: each convention moves them by its own rules. */
+export const d360 = (a: Ymd, b: Ymd, d1: number, d2: number) => (b.y - a.y) * 360 + (b.m - a.m) * 30 + (d2 - d1)
 
 /** DAYS360: US moves a start on the 31st or on the last of February (Excel's calendar) to the 30th. */
 export function days360(start: number, end: number, european: boolean): number {
@@ -22,7 +21,7 @@ export function days360(start: number, end: number, european: boolean): number {
     if (d1 === 31 || (a.m === 2 && d1 === lastDayExcel(a.y, 2))) d1 = 30
     if (d2 === 31 && d1 >= 30) d2 = 30
   }
-  return (b.y - a.y) * 360 + (b.m - a.m) * 30 + (d2 - d1)
+  return d360(a, b, d1, d2)
 }
 
 /** By the real calendar: the ToolPak takes 1900 for a common year. */
@@ -37,14 +36,7 @@ export function days30(a: Ymd, b: Ymd): number {
   else if (d1 === 30 && d2 === 31) d2 = 30
   else if (lastOfFeb(a) && lastOfFeb(b)) [d1, d2] = [30, 30]
   else if (lastOfFeb(a)) d1 = 30
-  return (b.y - a.y) * 360 + (b.m - a.m) * 30 + (d2 - d1)
-}
-
-/** Days since 1899-12-30 in the real calendar; an impossible day rolls over (1900-02-29 is 1900-03-01). */
-export function dayNum(x: Ymd): number {
-  const t = new Date(0)
-  t.setUTCFullYear(x.y, x.m - 1, x.d)
-  return Math.round(t.getTime() / 86_400_000) + 25_569
+  return d360(a, b, d1, d2)
 }
 
 /** The actual/actual year between ordered dates: 365 or 366 within a year, else the span's average by the real calendar. */
@@ -60,7 +52,8 @@ export function yearLength(start: number, end: number): number {
         : (isLeap(a.y) && start < mar1a && end >= mar1a) || (isLeap(b.y) && end >= mar1b && start < mar1b)
     return leap || (b.m === 2 && b.d === 29) ? 366 : 365
   }
-  return (dayNum({ y: b.y + 1, m: 1, d: 1 }) - dayNum({ y: a.y, m: 1, d: 1 })) / (b.y - a.y + 1)
+  // by the real calendar, 1900 a common year (`utcDays`, no phantom day)
+  return (utcDays(b.y + 1, 1, 1) - utcDays(a.y, 1, 1)) / (b.y - a.y + 1)
 }
 
 /** Years between two dates (either order) by basis: 0 US 30/360, 1 actual/actual, 2 actual/360, 3 actual/365, 4 European 30/360. */
@@ -79,6 +72,9 @@ export const validFreq = (f: number) => f === 1 || f === 2 || f === 4
 
 /** Excel reads the basis first in YEARFRAC and most securities: an invalid one is #NUM! whatever the other arguments. */
 export const basisFirst = (i: number): AtpOrder => ({ first: [i], check: { [i]: need(validBasis) } })
+
+/** The frequency of a security is checked as it is read, before the basis (DURATION, ACCRINT, ODDFPRICE). */
+export const freqAt = (i: number): AtpOrder => ({ check: { [i]: need(validFreq) } })
 
 export const functions: Record<string, FnDef> = {
   DAYS360: { args: 'd d b?', fn: (start: number, end: number, european = false) => days360(start, end, european) },

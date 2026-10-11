@@ -2,6 +2,7 @@
 import { E, isErr, type CErr, type V } from '../../values.js'
 import type { Cx, FnDef } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
+import { digitsValue } from '../common.js'
 
 /** Excel's limit for the length of text arguments here. */
 const MAX_LEN = 255
@@ -19,13 +20,7 @@ function decimal(text: string, radix: number): number | CErr {
   const r = Math.trunc(radix)
   if (text.length > MAX_LEN) return E.VALUE
   if (r < 2 || r > 36) return E.NUM
-  let n = 0
-  for (const ch of text.replace(/^ +/, '')) {
-    const d = parseInt(ch, 36)
-    if (!(d < r)) return E.NUM
-    n = n * r + d
-  }
-  return n
+  return digitsValue(text.replace(/^ +/, ''), r) ?? E.NUM
 }
 
 const NUMERALS: [string, number][] = [['M', 1000], ['D', 500], ['C', 100], ['L', 50], ['X', 10], ['V', 5], ['I', 1]]

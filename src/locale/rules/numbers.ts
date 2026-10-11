@@ -10,6 +10,9 @@ import { bodyNumber, trimSpaces, unwrap } from '../../dates.js'
 import { literal } from '../../criteria.js'
 import type { RegionalData } from './data.js'
 
+/** A cell's text as a criterion compares it with a number, by `number`: only text with a digit in it is one. */
+export const cellNumberOf = (number: (text: string) => number | null) => (text: string) => (/\d/.test(text) ? number(text) : null)
+
 // `s`: text with a line break is matched whole and read as no number, not left unmatched
 const SIGN = /^([+-]?) *(.*)$/s
 

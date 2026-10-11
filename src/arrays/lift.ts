@@ -12,7 +12,7 @@ import { Arr, broadcastAt } from './value.js'
 export type Val = V | Rng | Arr
 
 /** A reference of more than one cell. */
-const isArea = (x: unknown): x is Rng => x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1)
+export const isArea = (x: unknown): x is Rng => x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1)
 
 /** A reference or an array of more than one value: what one cell cannot show. */
 export const isMany = (x: unknown): x is Rng | Arr => (x instanceof Arr ? x.rows * x.cols > 1 : isArea(x))

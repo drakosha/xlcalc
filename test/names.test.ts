@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, validateFormula, type BookInput, type NameInput } from '../src/index.js'
+import { inputNameFor } from '../src/names.js'
 import { cellIssues, nameIssues } from './diagnostics.js'
 
 /** A sheet S with values A1:A3 = 1, 2, 3 and the formulas given, and the names. */
@@ -68,5 +69,13 @@ describe('names of any formula', () => {
     const [x, y] = [compute(b, { execution: 'eval', display: false }), compute(b, { execution: 'closures', display: false })]
     expect(x.sheets).toEqual(y.sheets)
     expect(x.sheets[0].cells.B1.value).toBe(12 + 4 + 3 + 1)
+  })
+})
+
+describe('the name a sheet sees among a book’s names', () => {
+  it('its own local name in any case, else the global one; another sheet’s local name is not seen', () => {
+    const names: NameInput[] = [{ name: 'Rate', ref: '1' }, { name: 'rate', ref: '2', scope: 'Т' }, { name: 'only', ref: '3', scope: 'U' }]
+    const ref = (sheet: string | undefined, name: string) => inputNameFor(names, sheet, name)?.ref
+    expect([ref('т', 'RATE'), ref('S', 'rate'), ref(undefined, 'rate'), ref('S', 'only'), ref('u', 'ONLY'), ref(undefined, 'only')]).toEqual(['2', '1', '1', undefined, '3', undefined])
   })
 })

@@ -1,15 +1,12 @@
 /** Calendar functions in Excel's 1900 system (serial 0 is 1900-01-00, 60 the phantom 1900-02-29). */
 import { toDate, type Cx, type FnDef } from '../../args.js'
-import { addMonths, dayAt, daysInMonth, MAX_SERIAL, serialOf, trimSpaces, ymd } from '../../dates.js'
+import { addMonths, dayAt, daysInMonth, lastDayExcel, MAX_SERIAL, serialExcel, serialOf, trimSpaces, ymd } from '../../dates.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, WHOLE, type CErr, type V } from '../../values.js'
 import { atp } from './atp.js'
-import { lastDayExcel } from './daycount.js'
 
 /** 0 is Sunday: Excel takes serial 1 (1900-01-01) for a Sunday. */
 export const weekday = (serial: number) => (serial + 6) % 7
-
-const serialExcel = (y: number, m: number, d: number) => (y === 1900 && m === 2 && d === 29 ? 60 : serialOf(y, m, d))
 
 /** DATEVALUE and TIMEVALUE take text only, read by the book's locale after dropping spaces before it (`lead-spaces` set). */
 export function textDate(v: V, rules: Rules): number | CErr {

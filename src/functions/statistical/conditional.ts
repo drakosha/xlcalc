@@ -1,30 +1,19 @@
 /** COUNTIF, COUNTIFS, AVERAGEIF, AVERAGEIFS, MAXIFS and MINIFS, this engine's own, on the criteria index of the runtime. */
 import type { Cx, FnDef } from '../../args.js'
-import { E, isErr, type Rng, type CErr, type V } from '../../values.js'
+import { isErr, type Rng, type V } from '../../values.js'
 import { max, min, NEWER_MAX_ARGS } from '../common.js'
 import { aggregateIf, aggregateIfs, asRng, criteriaPairs } from '../criteria.js'
-import { mean } from './common.js'
-
-/** The numbers at the selected positions; an error there is the answer. */
-function numbersAt(values: readonly V[], sel: number[]): number[] | CErr {
-  const out: number[] = []
-  for (const p of sel) {
-    const v = values[p]
-    if (typeof v === 'number') out.push(v)
-    else if (isErr(v)) return v
-  }
-  return out
-}
+import { meanOrDiv0, numbersOf } from './common.js'
 
 /** A statistical function of the selected numbers, with reference errors kept in selection order. */
 function over(f: (xs: number[]) => V) {
   return (values: readonly V[], selected: number[]): V => {
-    const xs = numbersAt(values, selected)
+    const xs = numbersOf(values, selected)
     return isErr(xs) ? xs : f(xs)
   }
 }
 
-const average = over((xs) => xs.length ? mean(xs) : E.DIV0)
+const average = over(meanOrDiv0)
 
 export const functions: Record<string, FnDef> = {
   AVERAGEIF: {

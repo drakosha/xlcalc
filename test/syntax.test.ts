@@ -72,6 +72,15 @@ describe('formula parsing', () => {
     expect(!r.ok && r.message).toBe('the rows of an array constant must have the same number of values')
   })
 
+  it('error literals: the seven typed into a cell and #SPILL!, in any case; not #CALC! (Excel loads no =#CALC!: the ru-RU snapshot’s `rejected`), nor the engine’s #CYCLE! and #ERROR!', () => {
+    const read = ['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#SPILL!']
+    expect(read.map((e) => canonical(parse(e.toLowerCase())))).toEqual(read)
+    for (const e of ['#CALC!', '#CYCLE!', '#ERROR!', '#GETTING_DATA', '#FIELD!']) {
+      const r = validate(e, ctx)
+      expect(!r.ok && [r.code, r.at, r.message], e).toEqual(['syntax', 0, 'unknown error literal'])
+    }
+  })
+
   it('an error points at the position', () => {
     const r = validate('SUM(A1,,', ctx)
     expect(r.ok).toBe(false)

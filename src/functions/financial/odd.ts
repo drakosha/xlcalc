@@ -2,15 +2,13 @@
 import type { FnDef } from '../../args.js'
 import { ymd } from '../../dates.js'
 import { E, type CErr } from '../../values.js'
-import { atp, need } from '../date/atp.js'
-import { validBasis, validFreq } from '../date/daycount.js'
+import { atp } from '../date/atp.js'
+import { freqAt, validBasis, validFreq } from '../date/daycount.js'
 import { solveDecreasing } from './bond.js'
 import { cmp, couponDate, coupons, daysBetween, normalDays, periodOf, type Ymd } from './coupon.js'
 
 const badFreq = (freq: number, basis: number) => !validFreq(freq) || !validBasis(basis)
 
-/** The frequency is checked as it is read, before the basis. */
-const freqAt = (i: number) => ({ check: { [i]: need(validFreq) } })
 const later = (a: Ymd, b: Ymd) => (cmp(a, b) > 0 ? a : b)
 
 /** A quasi-coupon period's normal length (`actual`: bases 1–3 count actual days, as ODDL* do in Excel). */

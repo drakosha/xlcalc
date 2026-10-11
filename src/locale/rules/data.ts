@@ -56,6 +56,18 @@ export interface RulesClock {
   read: boolean
 }
 
+/** A clock of the rules whose year is `year()`: asking for it marks the clock read. */
+export function markingClock(year: () => number): RulesClock {
+  const clock: RulesClock = {
+    read: false,
+    year: () => {
+      clock.read = true
+      return year()
+    },
+  }
+  return clock
+}
+
 /** `f()`, and whether it read the clock's year; an earlier read stays marked. Without a clock nothing reads it. */
 export function readsClock<T>(clock: RulesClock | undefined, f: () => T): [T, boolean] {
   if (!clock) return [f(), false]

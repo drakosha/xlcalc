@@ -88,6 +88,11 @@ export interface PrintOptions {
   sheetOf?: (s: string) => string
   /** A defined name as spelled where it is defined, seen from its sheet (undefined: the formula's own). */
   nameOf?: (name: string, sheet: string | undefined) => string
+  /**
+   * A node another spelling writes otherwise (a file's, `toFile`): its text, or undefined to print it as usual. `go`
+   * prints a node in that spelling, `usual` prints this one as usual, its children in that spelling.
+   */
+  node?: (n: Ast, go: (n: Ast) => string, usual: (n: Ast) => string) => string | undefined
 }
 
 /** Prints an AST; canonical by default. Adapters for other engines substitute their own literals. */
@@ -96,7 +101,8 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
   const bool = opts.bool ?? ((b: boolean) => (b ? 'TRUE' : 'FALSE'))
   const sheetOf = opts.sheetOf ?? ((s: string) => s)
   const nameOf = opts.nameOf ?? ((name: string) => name)
-  const go = (n: Ast): string => {
+  // every kind of node, so that a new one does not compile until it prints
+  const usual = (n: Ast): string => {
     switch (n.k) {
       case 'num':
         return String(n.v)
@@ -138,6 +144,8 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
         return n.name
     }
   }
+  const node = opts.node
+  const go = node ? (n: Ast): string => node(n, go, usual) ?? usual(n) : usual
   return go(ast)
 }
 

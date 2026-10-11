@@ -2,6 +2,7 @@
  * How the lookups compare, as in Excel: within a type, text in any case by the book's locale (`Compare`,
  * `Rules.compare`), blanks and errors in the data never match.
  */
+import { isArea } from '../../arrays/lift.js'
 import { wildRe } from '../../criteria.js'
 import { E, isErr, Rng, sameType, type CErr, type V } from '../../values.js'
 import type { Cx } from '../../args.js'
@@ -15,7 +16,8 @@ export type Compare = (a: V, b: V) => number
 /** The lookup value: an error is the answer, a blank is looked up as 0. */
 export const keyOf = (key: V): Key | CErr => (key === null ? 0 : key)
 
-const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(v, k)
+/** A value of the data that can match the key: of its type, no blank and no error. */
+export const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(v, k)
 
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
 export function exactMatch(line: Line, k: Key, wild: boolean, compare: Compare, last = false): number {
@@ -107,7 +109,7 @@ export function find(line: Line, k: Key, mode: number, wild: boolean, compare: C
  */
 export function indexArg(cx: Cx, x: V | Rng, range: 'index' | 'type' = 'index'): number | CErr {
   if (!(x instanceof Rng)) return cx.rules.toNum(x)
-  if (x.r2 > x.r1 || x.c2 > x.c1) {
+  if (isArea(x)) {
     if (range === 'index') return E.REF
     x = new Rng(x.s, x.r1, x.c1, x.r1, x.c1)
   }

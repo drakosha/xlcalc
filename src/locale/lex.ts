@@ -5,7 +5,8 @@
  * so text the engine cannot parse translates as well. Every character of the text belongs to exactly one piece.
  */
 import { caseKey } from '../collate.js'
-import { IDENT_RULE } from '../syntax.js'
+import { literal } from '../criteria.js'
+import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_RULE, numberSource } from '../syntax/scan.js'
 import type { Message } from './messages.js'
 
 /** Separators of formula text on one side of a translation. */
@@ -18,9 +19,6 @@ export interface Syntax {
 
 /** The stored (invariant) syntax: Excel's file format. */
 export const INVARIANT: Syntax = { decimal: '.', list: ',', arrayColumn: ',', arrayRow: ';' }
-
-/** Error literals of Excel, invariant spelling. */
-export const ERROR_LITERALS = ['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#GETTING_DATA', '#SPILL!', '#CALC!', '#FIELD!', '#BLOCKED!', '#CONNECT!', '#BUSY!', '#UNKNOWN!', '#PYTHON!']
 
 /** `tbl`: the brackets of a structured reference (`[[#Data],[Qty]]`), whose specifiers and separators a locale changes. */
 export type PieceKind = 'num' | 'fn' | 'word' | 'err' | 'list' | 'col' | 'row' | 'raw' | 'tbl'
@@ -42,24 +40,8 @@ export interface LexFail {
 // the identifier rule of the engine's tokenizer
 const IDENT = new RegExp(IDENT_RULE, 'uy')
 
-const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
 /** The number rule of a syntax: `1.5`, `.5`, `5.`, `1.5E-07` with its decimal separator. */
-export const numberRule = (syn: Syntax) => new RegExp(`(?:[0-9]+(?:${escape(syn.decimal)}[0-9]*)?|${escape(syn.decimal)}[0-9]+)(?:[eE][+-]?[0-9]+)?`, 'y')
-
-/** After a bracketed run, what makes it a reference to another workbook (`[1]Sheet1!A1`, `[1]!name`). */
-const BOOK_SHEET = /^(?:[\p{L}\p{N}_.]+|'(?:[^']|'')+')?!/u
-
-/** The end of the bracketed run that opens at `i`, nested brackets and `'` escapes inside; the text's length when it is not closed. */
-function bracketEnd(src: string, i: number): number {
-  let depth = 0
-  for (let j = i; j < src.length; j++) {
-    if (src[j] === "'") j++
-    else if (src[j] === '[') depth++
-    else if (src[j] === ']' && --depth === 0) return j + 1
-  }
-  return src.length
-}
+export const numberRule = (syn: Syntax) => new RegExp(numberSource(literal(syn.decimal)), 'y')
 
 /**
  * A structured reference's brackets with its specifiers in other words (`#Data` as `#Данные`, `words` mapping upper-case
@@ -94,16 +76,6 @@ export function tableText(run: string, words: ReadonlyMap<string, string>, from:
   return out
 }
 
-/** The end of a quoted run (`"…"` or `'…'`, the quote doubled inside), or -1 if it is not closed. */
-function closing(src: string, i: number, q: string): number {
-  for (let j = i + 1; j < src.length; j++) {
-    if (src[j] !== q) continue
-    if (src[j + 1] === q) j++
-    else return j
-  }
-  return -1
-}
-
 /**
  * The pieces of `src` read with `syn`; `errors` are the error literals of this side (matched in any case,
  * the longest first).
@@ -119,7 +91,7 @@ export function lex(src: string, syn: Syntax, errors: readonly string[], num: Re
   while (i < src.length) {
     const ch = src[i]
     if (ch === '"' || ch === "'") {
-      const j = closing(src, i, ch)
+      const j = closingQuote(src, i)
       if (j < 0) return { at: i, msg: { key: ch === '"' ? 'unterminatedString' : 'unterminatedSheet' } }
       // a quoted sheet name keeps its `!`
       push('raw', j + 1 - i + (ch === "'" && src[j + 1] === '!' ? 1 : 0))
@@ -166,9 +138,7 @@ export function lex(src: string, syn: Syntax, errors: readonly string[], num: Re
         push('raw', id[0].length + 1)
         continue
       }
-      let k = end
-      while (src[k] === ' ') k++
-      push(src[k] === '(' ? 'fn' : 'word', id[0].length)
+      push(callFollows(src, end) ? 'fn' : 'word', id[0].length)
       continue
     }
     push('raw', 1)
