@@ -6,7 +6,7 @@
  * new change forgetting the redo, `setClock` no step, a live session's clock, refused calls, `depth` and `maxMb`.
  */
 import { describe, expect, it } from 'vitest'
-import { CalcError, compute, InputError, createSession, type BookInput, type CellChange, type Execution, type Session } from '../src/index.js'
+import { CalcError, compute, InputError, createSession, type BookInput, type CellChange, type Execution, type Session, type StructureOp } from '../src/index.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
@@ -236,6 +236,73 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
       s.redo()
       same(s, books[k], o)
     }
+  })
+
+  it('a deleted sheet given back as the history keeps it, edited, deleted and given back again: each book as it was', () => {
+    const s = createSession(book(), o)
+    const before = structuredClone(s.getBook())
+    s.editStructure({ op: 'deleteSheet', sheet: 'S' })
+    const deleted = structuredClone(s.getBook())
+    s.undo()
+    same(s, before, o)
+    s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }])
+    const edited = structuredClone(s.getBook())
+    s.editStructure({ op: 'deleteSheet', sheet: 'S' })
+    same(s, deleted, o)
+    s.undo()
+    same(s, edited, o)
+    s.undo()
+    same(s, before, o)
+    expect(s.undo()).toBeNull()
+    s.redo()
+    same(s, edited, o)
+    s.redo()
+    same(s, deleted, o)
+    s.undo()
+    same(s, edited, o)
+  })
+
+  it('structure operations over cells of a look alone under a spill and beside it, new ones from empty cells: each back, and again', () => {
+    const cells = { A1: { formula: 'SEQUENCE(4)' }, A2: { style: 0 }, A3: { style: 0, numberFormat: '0.0' }, B5: { style: 0 }, C1: { value: 7 }, C3: { formula: 'A3*2' } }
+    const s = createSession({ styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells, columns: { F: { style: 0 } } }] }, o)
+    // the empty cells of a bold column moved out of it are bold cells; a table over empty cells writes its header
+    const ops: StructureOp[] = [
+      { op: 'moveRange', from: { sheet: 'S', range: 'F1:F3' }, to: { sheet: 'S', cell: 'B20' } },
+      { op: 'insertRows', sheet: 'S', row: 3 },
+      { op: 'deleteRows', sheet: 'S', row: 2 },
+      { op: 'moveRange', from: { sheet: 'S', range: 'A2:B5' }, to: { sheet: 'S', cell: 'D10' } },
+      { op: 'insertColumns', sheet: 'S', column: 'A' },
+      { op: 'copyRange', from: { sheet: 'S', range: 'B1:D4' }, to: { sheet: 'S', range: 'C2' } },
+      { op: 'deleteColumns', sheet: 'S', column: 'B' },
+      { op: 'addTable', sheet: 'S', table: { name: 'Tab', range: 'H1:I3', columns: [{ name: 'x' }, { name: 'y' }] } },
+    ]
+    const books = [structuredClone(s.getBook())]
+    for (const op of ops) {
+      expect(s.editStructure(op).ok).toBe(true)
+      books.push(structuredClone(s.getBook()))
+    }
+    for (let k = ops.length - 1; k >= 0; k--) {
+      s.undo()
+      same(s, books[k], o)
+    }
+    for (let k = 1; k <= ops.length; k++) {
+      s.redo()
+      same(s, books[k], o)
+    }
+  })
+
+  it('a column of more cells deleted than the way back looks up one by one: the sheet counted, its cells back', () => {
+    const cells: BookInput['sheets'][0]['cells'] = { C1: { formula: 'SUM(A:A)' } }
+    for (let r = 1; r <= 70_000; r++) cells[`A${r}`] = { value: r % 7 }
+    const s = createSession({ sheets: [{ name: 'S', cells }] }, o)
+    const before = structuredClone(s.getBook())
+    expect(s.editStructure({ op: 'deleteColumns', sheet: 'S', column: 'A' }).ok).toBe(true)
+    const after = structuredClone(s.getBook())
+    expect(after.sheets[0].cells).toEqual({ B1: { formula: 'SUM(#REF!)' } })
+    s.undo()
+    same(s, before, o)
+    s.redo()
+    same(s, after, o)
   })
 
   it('a new change forgets the redo; setClock, refused calls and reads are no steps', () => {

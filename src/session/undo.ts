@@ -7,12 +7,12 @@
 import type { BookInput, CellReplace, CellRef, CellStyle, LayoutEdit, SessionHistory, SheetInput, UndoCall, UndoOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import type { Steps } from '../exec/budget.js'
-import { inverse, movesOf, type Geometry } from '../structure/geometry.js'
+import { movesOf, type Geometry } from '../structure/geometry.js'
 import { checkedMapCell, namesOf } from '../structure/index.js'
 import { sheetKey } from '../syntax.js'
 import { joined, nothing, type Outcome } from './answer.js'
 import { layoutCells, snapshot } from './looks.js'
-import { applyDiff, bookDiff, type BookDiff } from './rebook.js'
+import { applyDiff, type BookDiff } from './rebook.js'
 
 /** The fields of a sheet but its cells, and how its lines (`rows`, `columns`) changed entry by entry. */
 export interface SheetBack {
@@ -207,7 +207,7 @@ export function manyStep(call: UndoCall, steps: (Step | null)[]): Step {
 export interface SessionCore {
   ready(): Steps<EngineState>
   putCells(s: EngineState, edits: CellReplace[]): Steps<[Outcome, CellReplace[]]>
-  rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: () => Steps<BookDiff | null>): Steps<[EngineState, Outcome, BookDiff | null]>
+  rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean): Steps<[EngineState, Outcome, BookDiff | null]>
   relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[Outcome, SheetInput[]]>
   display: boolean
   sheetIndex(s: EngineState): (name: string) => number | undefined
@@ -261,7 +261,7 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       const { geometry: g } = step.diff
       const [book, before] = [yield* applyDiff(s.input, step.diff), s.sheetNames]
       const after = namesOf(book)
-      const [, outcome, diff] = yield* core.rebuild(s, book, g, step.call !== 'setNames', () => bookDiff(book, s.input, inverse(g)))
+      const [, outcome, diff] = yield* core.rebuild(s, book, g, step.call !== 'setNames', true)
       const t: Taken = { call: step.call, outcome: { ...outcome, moved: movesOf(g, before, after) } }
       if (step.call === 'editStructure') t.mapCell = checkedMapCell({ geometry: g, before, after })
       return [t, bookStep(step.call, diff!, book)]
