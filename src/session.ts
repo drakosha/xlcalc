@@ -8,12 +8,12 @@
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
-import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
+import { checkAddress, checkBook, checkBoolean, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf } from './session/book.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
@@ -28,7 +28,7 @@ import { checkPatches } from './session/patch.js'
 import { patchPlan, type Plan } from './session/styles.js'
 import { bookDiff, DiffPass, type BookDiff } from './session/rebook.js'
 import { columnWidening, entryCheck, validationAlert } from './session/text.js'
-import { checkActive, checkTextEntries, filledText, pastedText, previewCells, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
+import { alertRefusal, checkActive, checkTextEntries, filledText, pastedText, previewCells, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
 import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
@@ -47,7 +47,7 @@ import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
-import { strictMethods } from './strict-args.js'
+import { FILL_OPTIONS, strictMethods, TEXT_OPTIONS } from './strict-args.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -349,6 +349,22 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const { row, col } = parseAddress(checkAddress(cell, 'cell'))
     return [i, row, col] as const
   }
+  /** A text call's options checked: `baseRevision`, `widen`, `refuseInvalid` and, entering a selection, `active`. */
+  const textOptions = <T extends CellTextOptions>(eo: T | undefined, allowed: readonly string[] = TEXT_OPTIONS): T => {
+    const o = checkBase<T>(eo, revision, allowed)
+    if (o.refuseInvalid !== undefined) checkBoolean(o.refuseInvalid, 'opts.refuseInvalid')
+    return o
+  }
+  /**
+   * With `refuseInvalid`, the first of the cells `checked` whose value its rule of data validation does not take once
+   * the typed cells are written, refused before they are, as Excel's alert holds the entry until it is answered.
+   */
+  function* invalid(s: EngineState, o: CellTextOptions, cells: Typed[], checked = cells): Steps<CellValidationRefusal | null> {
+    // a cell without a rule takes any value: nothing is put in to check it
+    if (!o.refuseInvalid || !checked.some(({ i, r, c }) => hasRule(s, i, r, c))) return null
+    const [first] = yield* previewed(s, cells, () => textAlerts(s, checked))
+    return first ? alertRefusal(first) : null
+  }
   /** A text entered into a range from its active cell (`fillCellText`), its arguments checked: the sheet, the active cell and the cells. */
   const fill = (s: EngineState, sheet: string, range: string, text: string, opts: FillTextOptions) => {
     const i = checkSheet(sheet, sheetIndex(s), 'sheet')
@@ -396,40 +412,48 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *setCellText(sheet: string, cell: string, text: string, eo?: CellTextOptions) {
       const s = yield* ready()
-      const opts = checkBase<CellTextOptions>(eo, revision, ['widen'])
+      const opts = textOptions(eo)
       const [i, r, c] = at(s, sheet, cell)
       const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now)
       if (!typed.ok) return typed.refusal
+      const refused = yield* invalid(s, opts, typed.cells)
+      if (refused) return refused
       const [next, out, widths] = yield* writeTexts(s, typed.cells, 'setCellText', opts.widen !== false)
       const alert = validationAlert(next, i, r, c)
       return { ok: true, ...answer(next, out), ...(widths.length ? { width: widths[0].width } : {}), ...(alert ? { validation: alert } : {}) }
     },
     *previewCellText(sheet: string, cell: string, text: string, eo?: CellTextOptions): Steps<CellTextPreview> {
       const s = yield* ready()
-      checkBase<CellTextOptions>(eo, revision, ['widen'])
+      const opts = textOptions(eo)
       const [i, r, c] = at(s, sheet, cell)
       const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now)
       if (!typed.ok) return typed.refusal
       return yield* previewed(s, typed.cells, () => {
-        const width = columnWidening(s, i, r, c)
         const alert = validationAlert(s, i, r, c)
+        if (alert && opts.refuseInvalid) return alertRefusal({ sheet: s.sheetNames[i], cell: formatAddress(r, c), ...alert })
+        const width = columnWidening(s, i, r, c)
         return { ok: true as const, input: typed.cells[0].edit.input, value: cellValue(s, i, r, c), ...(width !== undefined ? { width } : {}), ...(alert ? { validation: alert } : {}) }
       })
     },
     *setCellTexts(entries: CellTextEntry[], eo?: CellTextOptions) {
       const s = yield* ready()
-      const opts = checkBase<CellTextOptions>(eo, revision, ['widen'])
+      const opts = textOptions(eo)
       const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now)
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
+      const refused = yield* invalid(s, opts, typed.cells)
+      if (refused) return refused
       const [next, out, widths] = yield* writeTexts(s, typed.cells, 'setCellTexts', opts.widen !== false)
       return { ok: true, ...answer(next, out), ...textsFound(widths, textAlerts(next, typed.cells)) }
     },
     *previewCellTexts(entries: CellTextEntry[], eo?: CellTextOptions): Steps<CellTextsPreview> {
       const s = yield* ready()
-      checkBase<CellTextOptions>(eo, revision, ['widen'])
+      const opts = textOptions(eo)
       const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now)
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
-      return yield* previewed(s, typed.cells, () => ({ ok: true as const, cells: previewCells(s, typed.cells), ...textsFound(textWidths(s, typed.cells), textAlerts(s, typed.cells)) }))
+      return yield* previewed(s, typed.cells, () => {
+        const alerts = textAlerts(s, typed.cells)
+        return alerts.length && opts.refuseInvalid ? alertRefusal(alerts[0]) : { ok: true as const, cells: previewCells(s, typed.cells), ...textsFound(textWidths(s, typed.cells), alerts) }
+      })
     },
     *pasteText(sheet: string, cell: string, text: string, eo?: EditOptions) {
       const s = yield* ready()
@@ -450,20 +474,24 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *fillCellText(sheet: string, range: string, text: string, eo?: FillTextOptions) {
       const s = yield* ready()
-      const opts = checkBase<FillTextOptions>(eo, revision, ['widen', 'active'])
+      const opts = textOptions(eo, FILL_OPTIONS)
       const [i, a, filled] = fill(s, sheet, range, text, opts)
       if (!filled.ok) return { ...filled.refusal, ...filled.ref }
-      const [next, out, widths] = yield* writeTexts(s, filled.cells, 'fillCellText', opts.widen !== false)
       // the active cell's rule alone is checked, as Excel checks it
+      const refused = yield* invalid(s, opts, filled.cells, filled.cells.filter((x) => x.r === a.r && x.c === a.c))
+      if (refused) return refused
+      const [next, out, widths] = yield* writeTexts(s, filled.cells, 'fillCellText', opts.widen !== false)
       const alert = validationAlert(next, i, a.r, a.c)
       return { ok: true, ...answer(next, out), ...textsFound(widths, []), ...(alert ? { validation: alert } : {}) }
     },
     *previewFillCellText(sheet: string, range: string, text: string, eo?: FillTextOptions): Steps<FillTextPreview> {
       const s = yield* ready()
-      const [i, a, filled] = fill(s, sheet, range, text, checkBase<FillTextOptions>(eo, revision, ['widen', 'active']))
+      const opts = textOptions(eo, FILL_OPTIONS)
+      const [i, a, filled] = fill(s, sheet, range, text, opts)
       if (!filled.ok) return { ...filled.refusal, ...filled.ref }
       return yield* previewed(s, filled.cells, () => {
         const alert = validationAlert(s, i, a.r, a.c)
+        if (alert && opts.refuseInvalid) return alertRefusal({ sheet: s.sheetNames[i], cell: formatAddress(a.r, a.c), ...alert })
         return { ok: true as const, cells: previewCells(s, filled.cells), ...textsFound(textWidths(s, filled.cells), []), ...(alert ? { validation: alert } : {}) }
       })
     },
