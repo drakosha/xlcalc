@@ -1,0 +1,177 @@
+{
+ "now": "2026-10-11",
+ "locales": {
+  "en-US": {
+   "edge-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "edge-2": {
+    "ok": true,
+    "input": {
+     "formula": "LET(IW1,1,IW1)"
+    }
+   },
+   "edge-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "edge-4": {
+    "ok": true,
+    "input": {
+     "formula": "LET(A65537,1,A65537)"
+    }
+   },
+   "edge-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "edge-6": {
+    "ok": true,
+    "input": {
+     "formula": "LET(IW65537,1,IW65537)"
+    }
+   },
+   "edge-7": {
+    "ok": true,
+    "input": {
+     "formula": "LET(XFD1048576,1,XFD1048576)"
+    }
+   },
+   "edge-8": {
+    "ok": true,
+    "input": {
+     "formula": "LET(AAA1,1,AAA1)"
+    }
+   },
+   "edge-9": {
+    "ok": true,
+    "input": {
+     "formula": "LET(iw1,1,iw1)"
+    }
+   },
+   "dollar-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "dollar-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "scope-1": {
+    "ok": true,
+    "input": {
+     "formula": "LET(IW1,5,IW1*2)"
+    }
+   },
+   "scope-2": {
+    "ok": true,
+    "input": {
+     "formula": "LET(IW1,5,IW1)+IW1"
+    }
+   },
+   "scope-3": {
+    "ok": true,
+    "input": {
+     "formula": "LET(iw1,2,iw1*3)"
+    }
+   }
+  },
+  "ru-RU": {
+   "edge-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "edge-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "edge-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 13
+   },
+   "edge-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 13
+   },
+   "edge-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 14
+   },
+   "edge-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 14
+   },
+   "edge-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 17
+   },
+   "edge-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 11
+   },
+   "edge-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "dollar-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Недопустимый знак «$»",
+    "at": 5
+   },
+   "dollar-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Недопустимый знак «$»",
+    "at": 7
+   },
+   "scope-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "scope-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "scope-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   }
+  }
+ }
+}
