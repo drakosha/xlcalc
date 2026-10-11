@@ -9,7 +9,7 @@ import type { HistoryData } from '../session/undo.js'
 import { callBudget, drive } from './drive.js'
 import { callLimits, checkCall, checkEditCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
-import { strictMethods } from '../strict-args.js'
+import { FILL_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
 
 /** What a calculator gives its sessions. */
 export interface InlineDefaults {
@@ -110,14 +110,14 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     replaceCells: (edits, co) => edit((eo) => core.replaceCells(edits, eo), co),
     clearCells: (ranges, what, co) => edit((eo) => core.clearCells(ranges, what, eo), co),
     patchCells: (patches, co) => edit((eo) => core.patchCells(patches, eo), co),
-    setCellText: (sheet, cell, text, co) => edit((eo) => core.setCellText(sheet, cell, text, eo), co, ['widen']),
-    previewCellText: (sheet, cell, text, co) => edit((eo) => core.previewCellText(sheet, cell, text, eo), co, ['widen']),
-    setCellTexts: (entries, co) => edit((eo) => core.setCellTexts(entries, eo), co, ['widen']),
-    previewCellTexts: (entries, co) => edit((eo) => core.previewCellTexts(entries, eo), co, ['widen']),
+    setCellText: (sheet, cell, text, co) => edit((eo) => core.setCellText(sheet, cell, text, eo), co, TEXT_OPTIONS),
+    previewCellText: (sheet, cell, text, co) => edit((eo) => core.previewCellText(sheet, cell, text, eo), co, TEXT_OPTIONS),
+    setCellTexts: (entries, co) => edit((eo) => core.setCellTexts(entries, eo), co, TEXT_OPTIONS),
+    previewCellTexts: (entries, co) => edit((eo) => core.previewCellTexts(entries, eo), co, TEXT_OPTIONS),
     pasteText: (sheet, cell, text, co) => edit((eo) => core.pasteText(sheet, cell, text, eo), co),
     previewPasteText: (sheet, cell, text, co) => edit((eo) => core.previewPasteText(sheet, cell, text, eo), co),
-    fillCellText: (sheet, range, text, co) => edit((eo) => core.fillCellText(sheet, range, text, eo), co, ['widen', 'active']),
-    previewFillCellText: (sheet, range, text, co) => edit((eo) => core.previewFillCellText(sheet, range, text, eo), co, ['widen', 'active']),
+    fillCellText: (sheet, range, text, co) => edit((eo) => core.fillCellText(sheet, range, text, eo), co, FILL_OPTIONS),
+    previewFillCellText: (sheet, range, text, co) => edit((eo) => core.previewFillCellText(sheet, range, text, eo), co, FILL_OPTIONS),
     setNames: (names, co) => edit((eo) => core.setNames(names, eo), co),
     setClock: (next, co) => edit((eo) => core.setClock(next, eo), co),
     editStructure: (op, co) => edit((eo) => core.editStructure(op, eo), co),
