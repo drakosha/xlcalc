@@ -6,6 +6,7 @@
  */
 import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, FormulaEngine, NameCheck, NameInput, NameIssue, NameOptions, NamesContext, ValidateContext, ValidateResult } from './contract.js'
 import * as sessions from './session.js'
+import * as saved from './session/saved.js'
 import * as structure from './structure/index.js'
 import * as copy from './structure/copy.js'
 import * as inline from './async/inline.js'
@@ -49,6 +50,7 @@ export type { DateSystemOptions } from './date-serial.js'
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses
 export const createSession = /* @__PURE__ */ strict(sessions.createSession)
 export const createInlineCalc = /* @__PURE__ */ strict(inline.createInlineCalc)
+export const viewportOf = /* @__PURE__ */ strict(saved.viewportOf)
 export const toLocal = /* @__PURE__ */ strict(locales.toLocal)
 export const toInvariant = /* @__PURE__ */ strict(locales.toInvariant)
 export const validateLocalFormula = /* @__PURE__ */ strict(locales.validateLocalFormula)

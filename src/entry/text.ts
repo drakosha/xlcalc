@@ -72,8 +72,11 @@ export function needsApostrophe(text: string, opts?: EntryTextOptions): boolean 
  * apostrophe where typing it would read otherwise (`'007`). The value reads back from the text (`parseEntry`).
  */
 export function entryText(value: CellValue, opts?: EntryTextOptions): string {
-  const v = checkCellValue(value, 'value')
-  const o = checkEntryTextOptions(opts)
+  return checkedEntryText(checkCellValue(value, 'value'), checkEntryTextOptions(opts))
+}
+
+/** `entryText` of a value and options already checked (a window's cells, `ViewportCell.editText`). */
+export function checkedEntryText(v: CellValue, o: EntryTextOptions): string {
   if (v === null) return ''
   if (typeof v === 'string') return readsOtherwise(v, o) ? `'${v}` : v
   const r = displayRules(o.locale ?? DEFAULT_LOCALE, epochOf(o.dateSystem))

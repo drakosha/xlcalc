@@ -143,6 +143,8 @@ console.log(needsApostrophe('5', { numberFormat: '0%' }), needsApostrophe('5', {
 
 The options are the cell's `numberFormat` (the one it shows by: its row's or column's without its own), the book's `locale` and `dateSystem`, and `now`, the moment whose year completes text read as a date without one.
 
+A grid without the engine takes the text from its window: `getViewport` and `viewportOf` with `editText: true` give each cell's `editText`, its formula with `=` in the book's locale (`=СУММ(A1:A3)`, `=[@Qty]*2` inside its table), else `entryText` of its value by the format it shows, the session's clock or the result's as `now`, and empty text for a cell without a value or a formula of its own.
+
 - A number is written whole: its 15 significant digits with the locale's decimal separator and no groups, in positional notation up to 21 characters (`100000000000000000000`), in scientific notation past that (`1E+21`, `1E-20`). Money, fractions, scientific and number formats change nothing (`$1,234.50` opens as `1234.5`, `1 1/2` as `1.5`).
 - A number under a percent format is written as a percent: `12%`, `12.5%`, `-5%`.
 - A number under a date or time format is written by the locale's short date (the built-in format 14: `1/31/2025`, `31.01.2025`) and long time (`6:00:00 PM`, `18:00:00`), two spaces between them, as the formula bar writes them: a date alone when its time is midnight, a time alone under a format with no day when it is under one day (`6:30:00 PM`), the date and the time otherwise (`1/1/1900  6:00:00 PM` for 1.75 under `h:mm`). Day 0 is `1/0/1900`; a negative number or one past 9999-12-31 is written as a number.

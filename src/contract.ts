@@ -1164,7 +1164,7 @@ export type CellTextsResult = (EditResult & { ok: true; widths?: ColumnWidth[]; 
 /** What `Session.setCellTexts` would do (`Session.previewCellTexts`): each cell's input and value, the widths and the alerts, with nothing changed. */
 export type CellTextsPreview = { ok: true; cells: (CellRef & { input: CellInput | null; value: CellValue })[]; widths?: ColumnWidth[]; validations?: CellValidationAlert[] } | CellTextsRefusal
 
-/** `Session.getViewport`'s options. */
+/** `Session.getViewport`'s and `viewportOf`'s options. */
 export interface ViewportOptions {
   /** Each formula also as the book's locale shows it (`ViewportCell.formulaLocal`); false by default. */
   formulaLocal?: boolean
@@ -1172,6 +1172,15 @@ export interface ViewportOptions {
   diagnostics?: boolean
   /** The most cells a window gives, 20,000 by default: of a larger one, its first rows that fit (`Viewport.truncated`). */
   maxCells?: number
+  /**
+   * Only these rows of `range` (the rows a filter shows, say): their numbers on the sheet, from 1, in ascending order,
+   * each once. The window gives them in this order, and only the merged areas and tables that meet its cells.
+   */
+  rows?: number[]
+  /** Only these columns of `range`, by number (A is 1), in ascending order, each once, as `rows`. */
+  columns?: number[]
+  /** Each cell also with the text it opens with for editing (`ViewportCell.editText`); false by default. */
+  editText?: boolean
 }
 
 /**
@@ -1208,16 +1217,24 @@ export interface ViewportCell extends Partial<CellDisplay> {
   link?: CellLink
   /** With `diagnostics`, on a cell with an error: as `Session.getCellIssue`. */
   issue?: CellIssueDetail
+  /**
+   * With `editText`: the text the cell opens with for editing, as Excel's formula bar shows it: a formula with `=` in the
+   * book's locale (`formulaLocal`), a value as `entryText` writes it by the cell's number format, and empty for a cell
+   * without a value or formula of its own (an empty one, one an array spilled into).
+   */
+  editText?: string
 }
 
-/** A column of a window: its width as `ColumnInput.width`, Excel's default where it has none. */
+/** A column of a window: its number (A is 1), its width as `ColumnInput.width`, Excel's default where it has none. */
 export interface ViewportColumn {
+  column: number
   width: number
   hidden?: true
 }
 
-/** A row of a window: its height in points, Excel's default (15) where it has none. */
+/** A row of a window: its number on the sheet, from 1, its height in points, Excel's default (15) where it has none. */
 export interface ViewportRow {
+  row: number
   height: number
   hidden?: true
 }
@@ -1235,7 +1252,10 @@ export interface ViewportTable {
 
 /** What a grid needs to draw a window of a sheet (`Session.getViewport`). */
 export interface Viewport {
-  /** The rectangle given (`B2:D9`): the one asked for, or its first rows when it holds more than `maxCells` cells. */
+  /**
+   * The rectangle given (`B2:D9`): the one asked for, or as far as its first rows (of `ViewportOptions.rows`, with them)
+   * that fit when it holds more than `maxCells` cells.
+   */
   range: string
   /** The window asked for held more than `maxCells` cells: `range` is the part given. */
   truncated: boolean
@@ -1243,13 +1263,13 @@ export interface Viewport {
   cells: Record<string, ViewportCell>
   /** The styles the window's cells have or show (`ViewportCell.style`, `effectiveStyle`), by their index in the book's `styles`: copies, the answer's own. */
   styles: Record<number, CellStyle>
-  /** The columns of `range`, left to right. */
+  /** The columns of `range` left to right, or those of `ViewportOptions.columns`. */
   columns: ViewportColumn[]
-  /** The rows of `range`, top to bottom. */
+  /** The rows of `range` top to bottom, or those of `ViewportOptions.rows`. */
   rows: ViewportRow[]
-  /** The merged areas that meet `range`, whole. */
+  /** The merged areas that meet the window's cells, whole. */
   merges: string[]
-  /** The tables that meet `range`, whole, in the sheet's order. */
+  /** The tables that meet the window's cells, whole, in the sheet's order. */
   tables: ViewportTable[]
   /** The sheet's frozen panes (`SheetInput.frozen`): its first `rows` rows and `columns` columns stay in view, 0 for none. */
   frozen: { rows: number; columns: number }
@@ -1257,6 +1277,44 @@ export interface Viewport {
   usedRange: SheetExtent
   /** The session's revision the window is of (`Session.revision`): a host takes the changes of later edits over it (`EditResult.revision`). */
   revision: number
+}
+
+/** A cell of a saved result (`SavedResult`): a `CellResult`, or one with the old name of its number format. */
+export interface SavedCellResult extends CellResult {
+  /** @deprecated The name is `numberFormat`. */
+  format?: NumberFormat
+}
+
+/**
+ * A result a host saved (`compute`, `Session.getResult`, `getSnapshot`), as `viewportOf` reads it: its cells, the reasons
+ * of its errors and its clock. One with the old names of its reasons (`issues`, `nameIssues`) reads alike.
+ */
+export interface SavedResult {
+  sheets: { name: string; cells: Record<string, SavedCellResult> }[]
+  diagnostics?: Diagnostic[]
+  /** @deprecated The name is `diagnostics`, the cells' of kind `cell`. */
+  issues?: CellIssue[]
+  /** @deprecated The name is `diagnostics`, the names' of kind `name`; a window does not read them. */
+  nameIssues?: NameIssue[]
+  clock: Clock
+}
+
+/** A book and its computed result as a host saved them (a version of the book), which `viewportOf` reads. */
+export interface SavedBook {
+  book: BookInput
+  result: SavedResult
+}
+
+/**
+ * A cell of a window over a saved result (`viewportOf`): as `ViewportCell`, its value, `text` and `color` as the result
+ * has them, without the `appearance` of conditional formats, which a result does not hold (its `text` shows the value by
+ * the cell's own format, not a rule's); without `text` and `color` when the result was computed without the display.
+ */
+export type SavedViewportCell = Omit<ViewportCell, 'appearance'>
+
+/** A window over a saved result (`viewportOf`): as `Viewport`, without a session's revision, its cells `SavedViewportCell`. */
+export interface SavedViewport extends Omit<Viewport, 'revision' | 'cells'> {
+  cells: Record<string, SavedViewportCell>
 }
 
 /**
@@ -1682,7 +1740,8 @@ export interface Session {
   /**
    * A window over a sheet for a grid (`B2:D9`, `B:D`, `2:9`): its cells with their styles and number formats resolved,
    * empty ones with a style of their row or column too, the widths and heights of its lines, the merged areas and tables
-   * that meet it and the sheet's frozen panes (`Viewport`). It costs what the window holds, as `getCells`, not the book.
+   * that meet it and the sheet's frozen panes (`Viewport`); only some of its rows and columns with `opts.rows` and
+   * `opts.columns`. It costs what the window holds, as `getCells`, not the book.
    */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
   /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
