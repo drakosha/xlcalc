@@ -9,7 +9,8 @@ import { caseKey } from '../collate.js'
 import { LOCALE_ERRORS } from '../syntax/errors.js'
 import { INVARIANT, lex, numberRule, tableText, type Piece, type Syntax } from './lex.js'
 import type { Message } from './messages.js'
-import type { Locale, TableItem } from './types.js'
+import { TABLE_ITEMS } from '../syntax/table.js'
+import type { Locale } from './types.js'
 
 /** Reading one syntax and translating out of it. */
 interface Side {
@@ -70,8 +71,6 @@ export function sides(loc: Locale): Sides {
     },
   }
 }
-
-const TABLE_ITEMS: TableItem[] = ['#All', '#Data', '#Headers', '#Totals', '#This Row']
 
 const fail = (at: number, msg: Message): Fail => ({ ok: false, msg, at })
 

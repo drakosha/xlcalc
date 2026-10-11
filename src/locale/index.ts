@@ -79,7 +79,7 @@ function shownTables(formula: string, table: string | undefined, list: string): 
     while (end > tok.at && isSpace(formula[end - 1])) end--
     const own = table !== undefined && (tok.table === null || sheetKey(tok.table) === sheetKey(table))
     const name = own && unnamedInTable(tok.spec) ? '' : (tok.table ?? table ?? '')
-    const text = !tok.spec.areas.length && !tok.spec.cols && name ? name : `${name}[${shownSpec(tok.spec, {}, list)}]`
+    const text = !tok.spec.areas.length && !tok.spec.cols && name ? name : `${name}[${shownSpec(tok.spec, list)}]`
     out += formula.slice(pos, tok.at) + text
     pos = end
   }
