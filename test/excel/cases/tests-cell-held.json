@@ -1,0 +1,182 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.688,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "CHISQ.TEST#1",
+   "group": "CHISQ.TEST",
+   "fn": "CHISQ.TEST",
+   "formula": "_xlfn.CHISQ.TEST({#DIV/0!},{1,2})"
+  },
+  {
+   "id": "CHISQ.TEST#2",
+   "group": "CHISQ.TEST",
+   "fn": "CHISQ.TEST",
+   "formula": "_xlfn.CHISQ.TEST(D!A1,D!B1:B2)"
+  },
+  {
+   "id": "CHISQ.TEST#3",
+   "group": "CHISQ.TEST",
+   "fn": "CHISQ.TEST",
+   "formula": "_xlfn.CHISQ.TEST(D!B1:B2,D!A1)"
+  },
+  {
+   "id": "CHISQ.TEST#4",
+   "group": "CHISQ.TEST",
+   "fn": "CHISQ.TEST",
+   "formula": "_xlfn.CHISQ.TEST(D!A1,D!B1)"
+  },
+  {
+   "id": "CHISQ.TEST#5",
+   "group": "CHISQ.TEST",
+   "fn": "CHISQ.TEST",
+   "formula": "_xlfn.CHISQ.TEST({1,2},{#DIV/0!})"
+  },
+  {
+   "id": "T.TEST#1",
+   "group": "T.TEST",
+   "fn": "T.TEST",
+   "formula": "_xlfn.T.TEST(D!A1,D!B1:B3,2,1)"
+  },
+  {
+   "id": "T.TEST#2",
+   "group": "T.TEST",
+   "fn": "T.TEST",
+   "formula": "_xlfn.T.TEST(D!A1,D!B1:B3,2,2)"
+  },
+  {
+   "id": "T.TEST#3",
+   "group": "T.TEST",
+   "fn": "T.TEST",
+   "formula": "_xlfn.T.TEST(D!A1,D!B1:B3,3,1)"
+  },
+  {
+   "id": "T.TEST#4",
+   "group": "T.TEST",
+   "fn": "T.TEST",
+   "formula": "_xlfn.T.TEST({#DIV/0!},D!B1:B3,2,1)"
+  },
+  {
+   "id": "T.TEST#5",
+   "group": "T.TEST",
+   "fn": "T.TEST",
+   "formula": "_xlfn.T.TEST({#DIV/0!},D!B1:B3,2,2)"
+  },
+  {
+   "id": "T.TEST#6",
+   "group": "T.TEST",
+   "fn": "T.TEST",
+   "formula": "_xlfn.T.TEST({#DIV/0!},D!B1:B3,3,2)"
+  },
+  {
+   "id": "FORECAST#1",
+   "group": "FORECAST",
+   "fn": "FORECAST",
+   "formula": "FORECAST(1,D!A1,D!B1:B2)"
+  },
+  {
+   "id": "FORECAST#2",
+   "group": "FORECAST",
+   "fn": "FORECAST",
+   "formula": "FORECAST(1,{#DIV/0!},{1,2})"
+  },
+  {
+   "id": "FORECAST.LINEAR#1",
+   "group": "FORECAST.LINEAR",
+   "fn": "FORECAST.LINEAR",
+   "formula": "_xlfn.FORECAST.LINEAR(1,D!B1:B2,D!A1)"
+  },
+  {
+   "id": "COVARIANCE.S#1",
+   "group": "COVARIANCE.S",
+   "fn": "COVARIANCE.S",
+   "formula": "_xlfn.COVARIANCE.S(D!A1,D!B1)"
+  },
+  {
+   "id": "INTERCEPT#1",
+   "group": "INTERCEPT",
+   "fn": "INTERCEPT",
+   "formula": "INTERCEPT({#DIV/0!},{1,2})"
+  },
+  {
+   "id": "STEYX#1",
+   "group": "STEYX",
+   "fn": "STEYX",
+   "formula": "STEYX(D!A1,D!B1:B3)"
+  }
+ ],
+ "values": {
+  "CHISQ.TEST#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CHISQ.TEST#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHISQ.TEST#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHISQ.TEST#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHISQ.TEST#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "T.TEST#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "T.TEST#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "T.TEST#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "T.TEST#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "T.TEST#5": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "T.TEST#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "FORECAST#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "FORECAST#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "FORECAST.LINEAR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "COVARIANCE.S#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "INTERCEPT#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "STEYX#1": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

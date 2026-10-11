@@ -6,13 +6,20 @@
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH } from '../contract.js'
 import type { Found } from '../locale/messages.js'
 import { bad, type Ast, type BinOp, type Bind, type Lit } from './ast.js'
-import { tokenize, type Tok } from './tokens.js'
+import { readsAsCell, tokenize, type Tok } from './tokens.js'
 
 const LEVELS: string[][] = [['=', '<>', '<', '>', '<=', '>='], ['&'], ['+', '-'], ['*', '/'], ['^']]
 const REF_OPS = [' ', ':'] as const
 
 /** Excel loads a LET of 254 arguments at most (126 names and the calculation, or 127 names). */
 const MAX_LET_ARGS = 254
+
+/**
+ * A word LET does not take as a name: a boolean, or a cell that reads as R1C1's row or column too (`R2`, `C5`, `RC5`).
+ * Any other cell is a name in LET, written without `$` (`A1`, `XFD1`), and so is R1C1's cell (`R1C1`, `RC`): the sets
+ * `entry/names-held`, `let-grid-held` and `let-cells-held`, in Excel for Mac and Windows.
+ */
+export const letNameClash = (word: string) => /^(TRUE|FALSE)$/i.test(word) || (readsAsCell(word) && /^(R|C|RC)[0-9]+$/i.test(word))
 
 /** `union`: a top-level comma joins references (a name's formula: `'S'!A1:A3,'S'!C1:C3`). */
 export function parse(src: string, opts: { union?: boolean } = {}): Ast {
@@ -97,8 +104,13 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
         return { k: 'str', v: t.v }
       case 'err':
         return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}) }
-      case 'ref':
+      case 'ref': {
+        // inside a LET that declares it, a cell's word is the name
+        const word = cellWord(t)
+        const bind = word === undefined ? undefined : scope.get(word.toUpperCase())
+        if (bind) return { k: 'local', name: bind.name, slot: bind.slot }
         return t.last === undefined ? { k: 'ref', sheet: t.sheet, ref: t.ref } : { k: 'ref3d', first: t.sheet!, last: t.last, ref: t.ref }
+      }
       case 'table':
         return { k: 'table', table: t.table, spec: t.spec }
       case 'ident': {
@@ -150,6 +162,12 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
   const arg = (): Ast => (peek().t === ',' || peek().t === ')' ? { k: 'missing' } : binary(0))
   // LET's names in scope by upper-case name: a name is seen from the end of its value to the end of its LET
   const scope = new Map<string, Bind>()
+  // a cell written without `$` that LET takes as a name, as typed; undefined for any other token
+  const cellWord = (t: Tok): string | undefined => {
+    if (t.t !== 'ref' || t.sheet !== null || t.ref.kind !== 'cell' || t.ref.spill) return undefined
+    const word = src.slice(t.at, t.at + t.ref.text.length)
+    return readsAsCell(word) && !letNameClash(word) ? word : undefined
+  }
   let slots = 0
   // LET(name, value, …, calculation); the calculation may be left off (Excel loads `LET(x,1)`: 1)
   const let_ = (at: number): Ast => {
@@ -158,11 +176,12 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
     let body: Ast | undefined
     for (;;) {
       const t = peek()
-      if (t.t === 'ident' && toks[p + 1].t === ',' && !/^(TRUE|FALSE)$/i.test(t.v)) {
-        const up = t.v.toUpperCase()
-        if (binds.some((b) => b.name.toUpperCase() === up)) bad(t.at, { key: 'letTwice', name: t.v })
+      const name = t.t === 'ident' && !/^(TRUE|FALSE)$/i.test(t.v) ? t.v : cellWord(t)
+      if (name !== undefined && toks[p + 1].t === ',') {
+        const up = name.toUpperCase()
+        if (binds.some((b) => b.name.toUpperCase() === up)) bad(t.at, { key: 'letTwice', name })
         p += 2
-        const bind: Bind = { name: t.v, slot: slots++, value: arg() }
+        const bind: Bind = { name, slot: slots++, value: arg() }
         binds.push(bind)
         outer.push([up, scope.get(up)])
         scope.set(up, bind)

@@ -1,0 +1,175 @@
+{
+ "day": "2026-10-11",
+ "formats": {
+  "rules": {
+   "Лист": [
+    {
+     "cells": "A1",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "m/d/yyyy"
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "A2",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "m/d/yyyy"
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "A3",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "m/d/yyyy h:mm"
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "A4",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "m/d/yyyy h:mm"
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "A5",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "d-mmm-yy"
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "A6",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "d-mmm-yy"
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "A7",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "$#,##0_);($#,##0)"
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "A8",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "$#,##0_);($#,##0)"
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "A9",
+     "formulas": [
+      "0"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "format": "0.00%"
+     },
+     "type": "cellIs"
+    }
+   ]
+  },
+  "looks": {
+   "Лист": {
+    "A1": {
+     "text": "15.03.2026",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "3.15.2026",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "15.03.2026 18:00",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "3.15.2026 18:00",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "15.мар.26",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "15-мар-26",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A7": {
+     "text": "1 235 ₽",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A8": {
+     "text": "$1 235 ",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A9": {
+     "text": "50,00%",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ }
+}

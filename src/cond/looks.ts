@@ -9,6 +9,7 @@ import type { BarLook, Color, ConditionalFormat, ConditionalLook, ConditionalSty
 import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { MAX_COLS } from '../model.js'
+import { EN_BUILTIN } from '../numfmt/builtin.js'
 import type { Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
 import { E, isErr, type V } from '../values.js'
@@ -159,6 +160,7 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
         }
         const b = cmp(v, fb(r, c))
         if (Number.isNaN(b)) return false
+        // the ends either way round (the set `cond/looks`, column E), where data validation's take nothing reversed
         const inside = (a >= 0 && b <= 0) || (a <= 0 && b >= 0)
         return rule.operator === 'between' ? inside : !inside
       }
@@ -307,11 +309,15 @@ export function* windowLooks(state: EngineState, s: number, x: Rect, only?: Set<
 /** What shows a value by a format: the view's text and colour by it. */
 type ShownBy = ((format: NonNullable<ConditionalStyle['format']>) => { text: string; color?: Color }) | null | undefined
 
-/** A view's text and colour by its look's number format, when it has one (`display`, the view's text by a format). */
+/**
+ * A view's text and colour by its look's number format, when it has one (`display`, the view's text by a format). A
+ * built-in format given by number shows by its en-US code in every locale, as Excel reads a differential format by the
+ * code it holds (the set `cond/formats-ru-held`: 14 shows `m/d/yyyy` in ru-RU too, `3.15.2026`).
+ */
 export function lookShown(view: { text?: string; color?: Color }, look: ConditionalLook, display: ShownBy) {
   const format = look.style?.format
   if (format === undefined || !display) return
-  const d = display(format)
+  const d = display(typeof format === 'number' ? (EN_BUILTIN[format] ?? format) : format)
   view.text = d.text
   if (d.color === undefined) delete view.color
   else view.color = d.color

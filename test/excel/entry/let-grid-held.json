@@ -1,0 +1,203 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-11",
+  "seconds": 2.9
+ },
+ "cases": [
+  {
+   "id": "edge-1",
+   "text": "=LET(IV1,1,IV1)"
+  },
+  {
+   "id": "edge-2",
+   "text": "=LET(IW1,1,IW1)"
+  },
+  {
+   "id": "edge-3",
+   "text": "=LET(A65536,1,A65536)"
+  },
+  {
+   "id": "edge-4",
+   "text": "=LET(A65537,1,A65537)"
+  },
+  {
+   "id": "edge-5",
+   "text": "=LET(IV65536,1,IV65536)"
+  },
+  {
+   "id": "edge-6",
+   "text": "=LET(IW65537,1,IW65537)"
+  },
+  {
+   "id": "edge-7",
+   "text": "=LET(XFD1048576,1,XFD1048576)"
+  },
+  {
+   "id": "edge-8",
+   "text": "=LET(AAA1,1,AAA1)"
+  },
+  {
+   "id": "edge-9",
+   "text": "=LET(iw1,1,iw1)"
+  },
+  {
+   "id": "dollar-1",
+   "text": "=LET($IW$1,1,1)"
+  },
+  {
+   "id": "dollar-2",
+   "text": "=LET(IW$1,1,1)"
+  },
+  {
+   "id": "scope-1",
+   "text": "=LET(IW1,5,IW1*2)"
+  },
+  {
+   "id": "scope-2",
+   "text": "=LET(IW1,5,IW1)+IW1"
+  },
+  {
+   "id": "scope-3",
+   "text": "=LET(iw1,2,IW1*3)"
+  }
+ ],
+ "answers": {
+  "edge-1": {
+   "cell": {
+    "formula": "LET(IV1,1,IV1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "edge-2": {
+   "cell": {
+    "formula": "LET(IW1,1,IW1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "edge-3": {
+   "cell": {
+    "formula": "LET(A65536,1,A65536)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "edge-4": {
+   "cell": {
+    "formula": "LET(A65537,1,A65537)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "edge-5": {
+   "cell": {
+    "formula": "LET(IV65536,1,IV65536)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "edge-6": {
+   "cell": {
+    "formula": "LET(IW65537,1,IW65537)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "edge-7": {
+   "cell": {
+    "formula": "LET(XFD1048576,1,XFD1048576)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "edge-8": {
+   "cell": {
+    "formula": "LET(AAA1,1,AAA1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "edge-9": {
+   "cell": {
+    "formula": "LET(iw1,1,iw1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "dollar-1": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "dollar-2": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "scope-1": {
+   "cell": {
+    "formula": "LET(IW1,5,IW1*2)"
+   },
+   "computed": 10,
+   "text": "10",
+   "code": "General",
+   "local": "General",
+   "value2": 10
+  },
+  "scope-2": {
+   "cell": {
+    "formula": "LET(IW1,5,IW1)+_xlnm.IW1"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "scope-3": {
+   "cell": {
+    "formula": "LET(iw1,2,iw1*3)"
+   },
+   "computed": 6,
+   "text": "6",
+   "code": "General",
+   "local": "General",
+   "value2": 6
+  }
+ }
+}

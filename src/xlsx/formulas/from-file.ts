@@ -7,7 +7,8 @@
  * a boolean once its prefix goes. Text in quotes is left as it is.
  */
 import { FormulaError } from '../../syntax/ast.js'
-import { parse } from '../../syntax/parse.js'
+import { letNameClash, parse } from '../../syntax/parse.js'
+import { IDENT_RULE } from '../../syntax/tokens.js'
 
 export type Found = 'userFunction' | 'table' | 'externalLink' | 'letName'
 
@@ -18,9 +19,10 @@ export interface Converted {
 
 const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf)\./i
 const IDENT = /[\p{L}\p{N}_.\\]/u
+/** A function's or a LET name's word after its prefix, `?` and `\` inside too (`_xlpm.a?b`, the set `entry/names-held`). */
+const IDENT_START = new RegExp(`^${IDENT_RULE}`, 'u')
 /** A cell or a lost reference, with its sheet or without: what `#` may follow. */
 const ANCHOR = /^(?:(?:'(?:[^']|'')+'|[^\s'!(),]+)!)?(?:\$?[A-Za-z]{1,3}\$?\d+|#REF!)$/
-const LET_NAME_CLASH = /^(?:[A-Za-z]{1,3}\d+|[Rr]\d*[Cc]\d*|TRUE|FALSE)$/
 
 /** The end (past the closing quote) of a quoted run starting at `i`: `""` and `''` inside are kept. */
 function quoted(src: string, i: number): number {
@@ -112,10 +114,10 @@ export function fromFile(src: string): Converted {
       kind = m[0].toLowerCase()
       i += m[0].length
     }
-    const name = /^[\p{L}_\\][\p{L}\p{N}_.]*/u.exec(src.slice(i))?.[0] ?? ''
+    const name = IDENT_START.exec(src.slice(i))?.[0] ?? ''
     const upper = name.toUpperCase()
     if (kind === '_xludf.') found.add('userFunction')
-    if (kind === '_xlpm.' && LET_NAME_CLASH.test(name)) found.add('letName')
+    if (kind === '_xlpm.' && letNameClash(name)) found.add('letName')
     const open = i + name.length
     const close = src[open] === '(' && (upper === 'SINGLE' || upper === 'ANCHORARRAY') ? closing(src, open) : -1
     if (close >= 0) {

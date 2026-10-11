@@ -2,12 +2,13 @@
  * Sums and products. SUM and PRODUCT ported from formula.js 4.6.1 (src/math-trig.js), Copyright (c) 2014
  * Sutoiku, Inc., MIT License (THIRD_PARTY.md); the rest this engine's own.
  */
-import { pairs, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
+import { oneCell, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr, asArray } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { product, sum, sumSquares } from '../common.js'
 import { aggregateIf, aggregateIfs } from '../criteria.js'
+import { numberPairs } from '../statistical/common.js'
 
 /** The sum of the numbers at the selected positions; an error there is the answer. */
 function sumAt(values: readonly V[], sel: number[]): V {
@@ -23,30 +24,23 @@ function sumAt(values: readonly V[], sel: number[]): V {
 /** Positions of a grid that hold cells, row by row in the referenced width; past them everything is blank. */
 const filled = (g: Grid) => (g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
 
-/** The first error of the grids, array by array (Excel: SUMPRODUCT(A,B) shows A's error before B's). */
-function firstError(grids: readonly Grid[]): CErr | undefined {
-  for (const g of grids) {
-    const e = g.v.find(isErr)
-    if (e) return e as CErr
-  }
-}
-
 /**
- * SUMPRODUCT: arrays of one shape; anything but a number counts as 0. Past the occupied parts every array
- * holds its fill (blank for a range), so `SUMPRODUCT((A:A="x")*B:B)` computes the occupied rows only.
+ * SUMPRODUCT: arrays of one shape; anything but a number counts as 0. Each array in turn answers a blank cell given
+ * alone with #VALUE! and its first error, before the shapes are compared (the sets `sumx-cell-held`, `sumproduct-held`:
+ * `SUMPRODUCT(A1:A3,B1:B2)` with an error in A2 is that error). Past the occupied parts every array holds its fill
+ * (blank for a range), so `SUMPRODUCT((A:A="x")*B:B)` computes the occupied rows only.
  */
 function sumproduct(cx: Cx, xs: Arg[]): V {
   const arrs: Arr[] = []
   for (const x of xs) {
     if (isErr(x)) return x
-    arrs.push(asArray(cx.view(x)))
+    const a = asArray(cx.view(x))
+    const e = oneCell(x, cx) ?? a.v.find(isErr) ?? (a.h * a.w < a.rows * a.cols && isErr(a.fill) ? a.fill : undefined)
+    if (e) return e as CErr
+    arrs.push(a)
   }
   const [first] = arrs
   if (arrs.some((a) => a.rows !== first.rows || a.cols !== first.cols)) return E.VALUE
-  for (const a of arrs) {
-    const e = a.v.find(isErr) ?? (a.h * a.w < a.rows * a.cols && isErr(a.fill) ? a.fill : undefined)
-    if (e) return e as CErr
-  }
   const num = (v: V) => (typeof v === 'number' ? v : 0)
   const end = Math.max(...arrs.map(filled))
   let acc = 0
@@ -60,14 +54,11 @@ function sumproduct(cx: Cx, xs: Arg[]): V {
   return rest > 0 ? acc + rest * arrs.reduce((p, a) => p * num(a.fill), 1) : acc
 }
 
-/** SUMX2MY2 and its kin: pairs of numbers (rule 4); no pairs at all is #DIV/0!. */
+/** SUMX2MY2 and its kin: pairs of numbers (rule 4) as CORREL takes them; no pairs at all is #DIV/0!. */
 const sumx = (f: (x: number, y: number) => number): FnDef => ({
-  args: 'G G',
+  args: 'C C',
   fn: (a: Grid, b: Grid) => {
-    if (a.rows * a.cols !== b.rows * b.cols) return E.NA
-    const e = firstError([a, b])
-    if (e) return e
-    const p = pairs(a, b)
+    const p = numberPairs(a, b)
     if (isErr(p)) return p
     const [xs, ys] = p
     return xs.length ? xs.reduce((s, x, i) => s + f(x, ys[i]), 0) : E.DIV0

@@ -22,7 +22,9 @@
  *      boolean argument are #VALUE!: GCD, LCM, MULTINOMIAL);
  *    - `V` values in order, errors included, each range as one segment, so a function can tell a range
  *      from a direct argument (COUNTA counts every direct argument); `G` a range as a grid with its
- *      referenced size, errors inside kept; `M` a numeric grid (an error inside is the answer); `R` the
+ *      referenced size, errors inside kept; `C` the same, but a reference to one cell is read first, its error the
+ *      answer and a blank cell #VALUE!, as Excel reads a function's arrays before comparing them (SUMX2MY2,
+ *      CORREL, CHISQ.TEST; an array of one is an array); `M` a numeric grid (an error inside is the answer); `R` the
  *      argument itself, a reference or a value (criteria functions, which work on the reference through
  *      the function context); `r` one value that may be a reference (the function gets a reference to one
  *      or more cells as it is; an array is lifted); `p` any value, reference or array, passed as it is
@@ -235,11 +237,11 @@ export interface FunctionSpec {
 
 /** Excel's limit on the number of arguments. */
 const MAX_ARGS = 255
-const RANGE_KINDS = 'NAYZVGMRDrP'
+const RANGE_KINDS = 'NAYZVGCMRDrP'
 const LIST_KINDS = 'NAYZD'
-const WHOLE_KINDS = 'NAYZVGMRD'
+const WHOLE_KINDS = 'NAYZVGCMRD'
 /** Kinds of an array or a reference: an argument left out there is #VALUE!. */
-const ARRAY_KINDS = 'GMR'
+const ARRAY_KINDS = 'GCMR'
 
 interface Kind {
   k: string
@@ -378,6 +380,16 @@ function list(direct: (v: V, rules: Rules) => number | CErr, inRange: ListOther,
 const errOrSkip = (v: V) => (isErr(v) ? v : undefined)
 const countOther = (v: V) => isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0
 
+/**
+ * A reference to one cell as Excel reads it before a function compares its arrays: the cell's error, #VALUE! for a
+ * blank cell; undefined for anything else, an array of one too (the sets `sumx-cell-held`, `sumproduct-held`).
+ */
+export function oneCell(x: Arg, cx: Cx): CErr | undefined {
+  if (!(x instanceof Rng) || x.r1 !== x.r2 || x.c1 !== x.c2) return undefined
+  const v = cx.scalar(x)
+  return isErr(v) ? v : v === null ? E.VALUE : undefined
+}
+
 /** Coercion of an argument by kind; a CErr result stops the call, except for the kinds in KEEP_ERRORS. */
 const num = (v: V, rules: Rules) => rules.toNum(v)
 
@@ -409,6 +421,7 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x instanceof Areas ? x.list.flatMap((g) => cx.flat(g)) : x instanceof Arr ? x.values().map((v) => (v === null ? '' : v)) : x),
   // several areas where one rectangle is wanted: #REF! of a union (ROWS), else #VALUE!
   G: (x, cx) => (isErr(x) ? x : cx.grid(x)),
+  C: (x, cx) => (isErr(x) ? x : (oneCell(x, cx) ?? cx.grid(x))),
   M: (x, cx) => {
     if (isErr(x)) return x
     const g = cx.grid(x)
@@ -434,7 +447,7 @@ export interface AreaErrors {
 /**
  * A reference of several areas as an argument of kind `k`: the lists take each area (SUM, COUNT), INDEX and the
  * functions that say so take it whole; elsewhere it is an error, by default #VALUE! for a union, #REF! for one
- * across sheets in an array argument (`G`, `M`) and #VALUE! in the others.
+ * across sheets in an array argument (`G`, `C`, `M`) and #VALUE! in the others.
  */
 function areasArg(own: FnDef['areas'], p: number, k: string, x: Areas, cx: Cx): unknown {
   if (own === true && k === 'R') return x
@@ -443,7 +456,7 @@ function areasArg(own: FnDef['areas'], p: number, k: string, x: Areas, cx: Cx): 
   if (error) return k === 'V' && errors.inside ? [E[error]] : E[error]
   if (LIST_KINDS.includes(k) || k === 'V') return COERCE[k](x, cx)
   if (k === 'p' || k === 'P') return x
-  return x.cube && (k === 'G' || k === 'M') ? E.REF : E.VALUE
+  return x.cube && 'GCM'.includes(k) ? E.REF : E.VALUE
 }
 
 /** An argument coerced by kind inside a function that reads it after others (FVSCHEDULE's schedule after the principal). */

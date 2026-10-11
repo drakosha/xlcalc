@@ -119,14 +119,16 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
   const tables = tablesOf(book)
   const [fs, ts] = [sheetIndex(book, from), sheetIndex(book, to)]
   const [h, w] = [src.r2 - src.r1 + 1, src.c2 - src.c1 + 1]
-  const pasted: Rect = { r1: target.r1, c1: target.c1, r2: Math.max(target.r2, target.r1 + h - 1), c2: Math.max(target.c2, target.c1 + w - 1) }
+  // the tiles of the paste and the area they cover, as copyRange lays them (the set `paste-names-held`: one copy at the
+  // top-left cell of a target that is no multiple of the source, the target's other cells left as they were)
+  const { offsets, area: pasted } = tiles(src, target)
   const renamed = (r: Applied): Applied => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, pasted]], () => true) } : r)
   if (!tables.list.some((t) => t.s === fs && meets(t, src))) return { after: renamed }
-  // the tables copied whole onto each tile of the paste, as copyRange lays them
+  // the tables copied whole onto each tile
   const whole = tables.list.filter((t) => t.s === fs && contains(src, t))
   const taken = tables.list.map((t) => t.name)
   const copies: { t: Table; x: Rect; name: string }[] = []
-  for (const [dr, dc] of tiles(src, target))
+  for (const [dr, dc] of offsets)
     for (const t of whole) {
       const x = shiftRect(t, dr, dc)
       if (tables.list.some((o) => o.s === ts && meets(o, x)) || copies.some((o) => meets(o.x, x))) continue

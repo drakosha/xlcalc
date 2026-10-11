@@ -40,14 +40,17 @@ export function copyTransform(dr: number, dc: number): Transform {
   }
 }
 
-/** The tiles of a paste: offsets of each copy of `src` in `target`. */
-export function tiles(src: Rect, target: Rect): [number, number][] {
+/**
+ * The tiles of a paste, offsets of each copy of `src` in `target`, and the area they cover: the target when it is a
+ * whole multiple of the source, else one copy at its top-left cell.
+ */
+export function tiles(src: Rect, target: Rect): { offsets: [number, number][]; area: Rect } {
   const [h, w] = [src.r2 - src.r1 + 1, src.c2 - src.c1 + 1]
   const [th, tw] = [target.r2 - target.r1 + 1, target.c2 - target.c1 + 1]
-  if (th % h !== 0 || tw % w !== 0) return [[target.r1 - src.r1, target.c1 - src.c1]]
-  const out: [number, number][] = []
-  for (let r = target.r1; r <= target.r2; r += h) for (let c = target.c1; c <= target.c2; c += w) out.push([r - src.r1, c - src.c1])
-  return out
+  if (th % h !== 0 || tw % w !== 0) return { offsets: [[target.r1 - src.r1, target.c1 - src.c1]], area: shiftRect(src, target.r1 - src.r1, target.c1 - src.c1) }
+  const offsets: [number, number][] = []
+  for (let r = target.r1; r <= target.r2; r += h) for (let c = target.c1; c <= target.c2; c += w) offsets.push([r - src.r1, c - src.c1])
+  return { offsets, area: target }
 }
 
 /** A copied cell without its `meta` (rows of a source a host keeps by `meta` are not copied with the cell). */
@@ -62,11 +65,9 @@ const withoutMeta = (cell: CellInput): CellInput => {
  * from `source`, the book as it was copied (the clipboard), when pastes follow one another.
  */
 export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book): Applied {
-  const offsets = tiles(src, target)
+  const { offsets, area: pasted } = tiles(src, target)
   const [dr, dc] = offsets[0]
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
-  // the tiles cover the target, or one copy its top-left part
-  const pasted = offsets.length > 1 ? target : shiftRect(src, dr, dc)
   const paste: Paste = { from, src, to, area: pasted, offsets, move: false }
   const refused = mergeRefusal(book, paste)
   if (refused) return { ok: false, code: 'merged', message: say(book.locale, refused) }
