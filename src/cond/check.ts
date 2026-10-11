@@ -60,6 +60,9 @@ const FIELDS: Record<ConditionalFormat['type'], string[]> = {
   iconSet: ['icons', 'points', 'reverse', 'showValue'],
 }
 
+/** The types of rules with a style (a differential format): all but colour scales, data bars and icon sets. */
+export const STYLED: ReadonlySet<string> = new Set(Object.entries(FIELDS).flatMap(([t, fields]) => (fields.includes('style') ? [t] : [])))
+
 function checkStyle(v: unknown, p: string) {
   const s = object(v, p, 'a style such as { fill: { color: "#FFC7CE" }, font: { color: "#9C0006" } }')
   onlyKeys(s, p, ['font', 'fill', 'border', 'numberFormat', 'format'])

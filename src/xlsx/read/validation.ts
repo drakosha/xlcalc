@@ -7,6 +7,7 @@
  */
 import type { DataValidation, ValidationOperator, ValidationType } from '../../contract.js'
 import { subtract, type Rect } from '../../structure/area.js'
+import { FILE_TYPES, OPERATORS } from '../../validation/check.js'
 import { areasOf, COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
 import { formulaAt } from '../../validation/structure.js'
 import { sheetKey } from '../../syntax.js'
@@ -15,8 +16,8 @@ import { attributes, element, elements, flag, type Element } from '../xml/scan.j
 import { readText } from '../xml/text.js'
 import { readFormula } from './formulas.js'
 
-const TYPES: Record<string, ValidationType> = { none: 'any', whole: 'whole', decimal: 'decimal', date: 'date', time: 'time', textLength: 'textLength', list: 'list', custom: 'custom' }
-const OPERATORS = new Set(['notBetween', 'equal', 'notEqual', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual'])
+/** The model's types by the names a file gives them. */
+const TYPES = Object.fromEntries(Object.entries(FILE_TYPES).map(([model, file]) => [file, model])) as Record<string, ValidationType>
 
 /** A rule as the file holds it: its attributes, its formulas' text and its range. */
 interface RawRule {
@@ -57,7 +58,8 @@ function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | str
   if (!type) return `a rule of an unknown type ${JSON.stringify(a.type)} is left out`
   const out: DataValidation = { range: raw.sqref, type }
   const where = { sheet, cell: raw.sqref }
-  if (COMPARED.has(type) && a.operator && OPERATORS.has(a.operator)) out.operator = a.operator as ValidationOperator
+  // `between` is the default, left out
+  if (COMPARED.has(type) && a.operator !== undefined && a.operator !== 'between' && OPERATORS.includes(a.operator as ValidationOperator)) out.operator = a.operator as ValidationOperator
   const formula = (t: string | undefined) => (t === undefined || t === '' ? undefined : readFormula(t, issues, where).formula)
   if (type !== 'any') {
     const f1 = formula(raw.formula1)

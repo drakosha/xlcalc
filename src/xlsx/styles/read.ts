@@ -5,6 +5,7 @@
  * protection, a font's outline or shadow) is named per cell format, for the reader to report on the cells that use it.
  */
 import type { AlignmentStyle, BorderLine, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
+import { HORIZONTAL, LINES, VERTICAL } from '../../input.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
@@ -73,8 +74,6 @@ export function font(e: Element, p: Palette): Font {
   return { style, lost }
 }
 
-const LINES = new Set(['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot'])
-
 export function border(e: Element, p: Palette): { border?: CellStyle['border']; lost: string[] } {
   const b = e.body ?? ''
   const out: NonNullable<CellStyle['border']> = {}
@@ -84,7 +83,7 @@ export function border(e: Element, p: Palette): { border?: CellStyle['border']; 
       const s = element(b, local)
       const kind = s && attributes(s.attrs).style
       if (!s || !kind || kind === 'none') continue
-      if (!LINES.has(kind)) return void lost.push(`border ${kind}`)
+      if (!LINES.includes(kind as BorderLine['style'])) return void lost.push(`border ${kind}`)
       const color = s.body ? colorOf(element(s.body, 'color'), p) : undefined
       return color ? { style: kind as BorderLine['style'], color } : { style: kind as BorderLine['style'] }
     }
@@ -107,16 +106,16 @@ function fill(e: Element, p: Palette): { fill?: CellStyle['fill']; lost: string[
   return color ? { fill: { color }, lost: [] } : { lost: [] }
 }
 
-const HORIZONTAL = new Set(['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed'])
-const VERTICAL = new Set(['top', 'center', 'bottom', 'justify', 'distributed'])
-
 function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: string[] } {
   if (!e) return { lost: [] }
   const a = attributes(e.attrs)
   const out: AlignmentStyle = {}
   const lost: string[] = []
-  if (a.horizontal && HORIZONTAL.has(a.horizontal) && a.horizontal !== 'general') out.horizontal = a.horizontal as AlignmentStyle['horizontal']
-  if (a.vertical && VERTICAL.has(a.vertical) && a.vertical !== 'bottom') out.vertical = a.vertical as AlignmentStyle['vertical']
+  const horizontal = a.horizontal as AlignmentStyle['horizontal']
+  const vertical = a.vertical as AlignmentStyle['vertical']
+  // the defaults, general and bottom, are left out
+  if (horizontal && HORIZONTAL.includes(horizontal) && horizontal !== 'general') out.horizontal = horizontal
+  if (vertical && VERTICAL.includes(vertical) && vertical !== 'bottom') out.vertical = vertical
   if (flag(a.wrapText)) out.wrap = true
   const indent = Number(a.indent ?? 0)
   if (indent > 0) out.indent = Math.min(250, Math.round(indent))

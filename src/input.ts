@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { AlignmentStyle, BookInput, BorderLine, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { english } from './locale/english.js'
@@ -199,7 +199,12 @@ export function checkNumber(v: unknown, path: string, min: number, max: number, 
     throw new InputError(path, `expected ${integer ? 'an integer' : 'a number'} from ${min} to ${max}, got ${what(v)}`)
 }
 
-export const LINES = ['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
+/** The lines of a border (`BorderLine`), as xlsx names them; the xlsx reader takes these and names any other lost. */
+export const LINES: readonly BorderLine['style'][] = ['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
+
+/** A cell's alignments (`AlignmentStyle`), as xlsx names them. */
+export const HORIZONTAL: readonly NonNullable<AlignmentStyle['horizontal']>[] = ['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed']
+export const VERTICAL: readonly NonNullable<AlignmentStyle['vertical']>[] = ['top', 'center', 'bottom', 'justify', 'distributed']
 
 /** A style, or with `patch` the fields of one to change (`StylePatch`), where null removes a field. */
 export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
@@ -236,8 +241,8 @@ export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
   if (given(s, 'alignment')) {
     const a = object(s.alignment, `${p}.alignment`, 'an alignment such as { horizontal: "center" }')
     onlyKeys(a, `${p}.alignment`, ['horizontal', 'vertical', 'wrap', 'indent'])
-    if (given(a, 'horizontal')) checkOneOf(a.horizontal, `${p}.alignment.horizontal`, ['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed'])
-    if (given(a, 'vertical')) checkOneOf(a.vertical, `${p}.alignment.vertical`, ['top', 'center', 'bottom', 'justify', 'distributed'])
+    if (given(a, 'horizontal')) checkOneOf(a.horizontal, `${p}.alignment.horizontal`, HORIZONTAL)
+    if (given(a, 'vertical')) checkOneOf(a.vertical, `${p}.alignment.vertical`, VERTICAL)
     if (given(a, 'wrap')) checkBoolean(a.wrap, `${p}.alignment.wrap`)
     if (given(a, 'indent')) checkNumber(a.indent, `${p}.alignment.indent`, 0, 250, true)
   }
@@ -305,6 +310,15 @@ function checkFrozen(v: unknown, path: string) {
   if (f.columns !== undefined) checkNumber(f.columns, `${path}.columns`, 1, MAX_COLS - 1, true)
 }
 
+/** Iterative calculation's bounds (`BookInput.iteration`): 1 to 32,767 rounds, as Excel takes them, a change from 0. */
+export const ITERATION = { maxIterations: [1, 32_767], maxChange: [0, Number.MAX_VALUE] } as const
+
+/** A hidden sheet's states (`SheetInput.hidden`) with the names an xlsx file gives them (`<sheet state>`). */
+export const SHEET_STATES = new Map<true | 'very', string>([
+  [true, 'hidden'],
+  ['very', 'veryHidden'],
+])
+
 /**
  * The book: sheets with unique names by Excel's rules (compared case-insensitively), one of them visible at least, cells
  * by A1 address, columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles. It is
@@ -319,8 +333,8 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   if (book.iteration !== undefined) {
     const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
     onlyKeys(it, `${path}.iteration`, ['maxIterations', 'maxChange'])
-    if (it.maxIterations !== undefined) checkNumber(it.maxIterations, `${path}.iteration.maxIterations`, 1, 32_767, true)
-    if (it.maxChange !== undefined) checkNumber(it.maxChange, `${path}.iteration.maxChange`, 0, Number.MAX_VALUE)
+    if (it.maxIterations !== undefined) checkNumber(it.maxIterations, `${path}.iteration.maxIterations`, ...ITERATION.maxIterations, true)
+    if (it.maxChange !== undefined) checkNumber(it.maxChange, `${path}.iteration.maxChange`, ...ITERATION.maxChange)
   }
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
@@ -357,7 +371,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
     if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
     if (sheet.outline !== undefined) checkOutline(sheet.outline, `${p}.outline`)
-    if (sheet.hidden !== undefined && sheet.hidden !== true && sheet.hidden !== false && sheet.hidden !== 'very') throw new InputError(`${p}.hidden`, `expected true, false or "very", got ${what(sheet.hidden)}`)
+    if (sheet.hidden !== undefined && sheet.hidden !== false && !SHEET_STATES.has(sheet.hidden as true)) throw new InputError(`${p}.hidden`, `expected true, false or "very", got ${what(sheet.hidden)}`)
   })
   // Excel keeps one visible sheet at least
   const sheets = book.sheets as { hidden?: unknown }[]

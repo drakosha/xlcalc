@@ -6,7 +6,7 @@
  * come in the engine's spelling; what the model cannot hold is reported.
  */
 import type { Color, ConditionalFormat, ConditionalStyle, ConditionalValue, IconSetName } from '../../contract.js'
-import { CELL_IS, ICON_SETS, PERIODS } from '../../cond/check.js'
+import { CELL_IS, ICON_SETS, PERIODS, STYLED } from '../../cond/check.js'
 import { defaultFormula, originOf } from '../../cond/rules.js'
 import { formatAddress } from '../../model.js'
 import { areaText, parseRange } from '../../structure/area.js'
@@ -27,8 +27,6 @@ interface Read {
   order: number
   id?: string
 }
-
-const SIMPLE = new Set(['expression', 'containsText', 'notContainsText', 'beginsWith', 'endsWith', 'containsBlanks', 'notContainsBlanks', 'containsErrors', 'notContainsErrors', 'timePeriod', 'top10', 'aboveAverage', 'duplicateValues', 'uniqueValues', 'cellIs'])
 
 interface Context {
   sheet: string
@@ -105,7 +103,8 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
     ctx.issues.add('conditionalFormat', why, { sheet: ctx.sheet, cell: where })
     return null
   }
-  if (SIMPLE.has(type)) {
+  // a rule with a style is read from its attributes and formulas
+  if (STYLED.has(type)) {
     const own = fs[0] !== undefined ? { formula: fs[0] } : {}
     switch (type) {
       case 'cellIs': {

@@ -167,9 +167,9 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
   return { main: main.join(''), ext: ext.length ? `<ext uri="${X14_CF}" xmlns:x14="${X14}"><x14:conditionalFormattings>${ext.join('')}</x14:conditionalFormattings></ext>` : '' }
 }
 
-/** A rule with the formula it computes by: a text, blank, error or period rule always has one in a file. */
-function withFormula(rule: ConditionalFormat): ConditionalFormat {
-  if (!('formula' in rule) && (rule.type === 'containsText' || rule.type === 'notContainsText' || rule.type === 'beginsWith' || rule.type === 'endsWith' || rule.type === 'containsBlanks' || rule.type === 'notContainsBlanks' || rule.type === 'containsErrors' || rule.type === 'notContainsErrors' || rule.type === 'timePeriod'))
-    return { ...rule, formula: ruleFormula(rule)! }
-  return rule
+/** A rule with the formula it computes by: a rule Excel computes by one of its own (`defaultFormula`: text, blanks, errors, a period) always has one in a file. */
+export function withFormula(rule: ConditionalFormat): ConditionalFormat {
+  if ('formula' in rule) return rule
+  const formula = ruleFormula(rule)
+  return formula === undefined ? rule : ({ ...rule, formula } as ConditionalFormat)
 }
