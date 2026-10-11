@@ -5,8 +5,9 @@
  * Rules over the numbers of their cells (colour scales, data bars, icon sets, top and bottom, average, duplicates) read
  * the rule's statistics (`stats.ts`); rules with formulas compute them at each cell (`formulas.ts`).
  */
-import type { BarLook, Color, ConditionalFormat, ConditionalAppearance, ConditionalStyle, ConditionalValue, DataBarFormat } from '../contract.js'
+import type { BarLook, CellInput, CellValue, Color, ConditionalFormat, ConditionalAppearance, ConditionalStyle, ConditionalValue, DataBarFormat } from '../contract.js'
 import type { EngineState } from '../engine.js'
+import type { Looks } from '../shown.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { MAX_COLS } from '../model.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
@@ -324,3 +325,14 @@ export function withLook(view: { text?: string; color?: Color; appearance?: Cond
   view.appearance = look
   lookShown(view, look, display)
 }
+
+/**
+ * What a window puts on a cell of sheet `s` (`WindowSource.appearance`): the appearance `cond` holds for it
+ * (`windowLooks`), its value shown by a number format of theirs through `looks` (null without the display).
+ */
+export const appearanceOf =
+  (cond: Map<number, ConditionalAppearance>, looks: Looks | null, s: number) =>
+  (view: { value: CellValue; text?: string; color?: Color; appearance?: ConditionalAppearance }, r: number, c: number, own: CellInput | undefined) => {
+    const look = cond.get(r * MAX_COLS + c)
+    if (look) withLook(view, look, looks && ((format) => looks(s, r, c, view.value, { ...own, numberFormat: format })))
+  }

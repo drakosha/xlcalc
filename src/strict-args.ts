@@ -15,6 +15,7 @@ const TAKEN_BY: Record<string, string> = {
   rows: 'getViewport',
   columns: 'getViewport',
   editText: 'getViewport',
+  appearance: 'viewportOf',
   depth: 'explain',
   maxNodes: 'explain',
   expand: 'explain',
