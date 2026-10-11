@@ -60,28 +60,48 @@ function segments(src: Line<unknown>[], dst: Line<unknown>[], a: number, b: numb
   return bs.slice(0, -1).map((x, i) => [x, bs[i + 1] - 1])
 }
 
+/** The lines of a paste's old source sheet and of its target, and the source's cells with the look each shows there. */
+interface Source {
+  sr: Line<RowInput>[]
+  sc: Line<ColumnInput>[]
+  tr: Line<RowInput>[]
+  tc: Line<ColumnInput>[]
+  cells: { row: number; col: number; look: Look }[]
+  /** The positions of `cells`, as `row * MAX_COLS + col`. */
+  own: Set<number>
+}
+
+/** The cells of `src` on the old sheet `from`, found once for all the offsets of a paste (a fill pastes one row thousands of times). */
+function sourceOf(from: SheetInput, to: SheetInput, src: Rect): Source {
+  const out: Source = { sr: lines(from.rows, 'r'), sc: lines(from.columns, 'c'), tr: lines(to.rows, 'r'), tc: lines(to.columns, 'c'), cells: [], own: new Set() }
+  for (const addr of Object.keys(from.cells)) {
+    spend(1)
+    const p = parseAddress(addr)
+    if (p.row < src.r1 || p.row > src.r2 || p.col < src.c1 || p.col > src.c2) continue
+    const cell = from.cells[addr]
+    const s = lineLook(out.sr, out.sc, p.row, p.col)
+    out.own.add(p.row * MAX_COLS + p.col)
+    out.cells.push({ row: p.row, col: p.col, look: { style: cell.style ?? s.style, format: cell.format ?? s.format } })
+  }
+  return out
+}
+
 /**
- * Each position of `src` on the old sheet `from`, pasted at (dr, dc) of `to`, shows what it showed: where the
+ * Each position of `src` on the old sheet, pasted at (dr, dc) of `to`, shows what it showed: where the
  * rows and columns of `to` would give another style or format, the cell spells out the source's (a style with
  * nothing set, `plain()`, or `General` where the source had none).
  */
-function keepLooks(from: SheetInput, to: SheetInput, src: Rect, dr: number, dc: number, plain: () => number) {
-  const [sr, sc, tr, tc] = [lines(from.rows, 'r'), lines(from.columns, 'c'), lines(to.rows, 'r'), lines(to.columns, 'c')]
+function keepLooks(to: SheetInput, src: Rect, source: Source, dr: number, dc: number, plain: () => number) {
+  const { sr, sc, tr, tc } = source
   const spell = (addr: string, s: Look, t: Look) => {
     const cell = to.cells[addr] ?? {}
     const style = (cell.style ?? t.style) !== s.style ? { style: s.style ?? plain() } : {}
     const format = (cell.format ?? t.format) !== s.format ? { format: s.format ?? 'General' } : {}
     if (Object.keys(style).length || Object.keys(format).length) to.cells[addr] = { ...cell, ...style, ...format }
   }
-  const own = new Set<string>()
-  for (const addr of Object.keys(from.cells)) {
-    const cell = from.cells[addr]
+  for (const { row, col, look } of source.cells) {
     spend(1)
-    const p = parseAddress(addr)
-    if (p.row < src.r1 || p.row > src.r2 || p.col < src.c1 || p.col > src.c2) continue
-    own.add(addr)
-    const s = lineLook(sr, sc, p.row, p.col)
-    spell(formatAddress(p.row + dr, p.col + dc), { style: cell.style ?? s.style, format: cell.format ?? s.format }, lineLook(tr, tc, p.row + dr, p.col + dc))
+    spell(formatAddress(row + dr, col + dc), look, lineLook(tr, tc, row + dr, col + dc))
   }
   for (const [ra, rb] of segments(sr, tr, src.r1, src.r2, dr))
     for (const [ca, cb] of segments(sc, tc, src.c1, src.c2, dc)) {
@@ -90,7 +110,7 @@ function keepLooks(from: SheetInput, to: SheetInput, src: Rect, dr: number, dc: 
       for (let r = ra; r <= rb; r++)
         for (let c = ca; c <= cb; c++) {
           spend(1)
-          if (!own.has(formatAddress(r, c))) spell(formatAddress(r + dr, c + dc), s, t)
+          if (!source.own.has(r * MAX_COLS + c)) spell(formatAddress(r + dr, c + dc), s, t)
         }
     }
 }
@@ -126,5 +146,6 @@ export function pasteLayout(old: BookInput, out: BookInput, p: Paste) {
     }
     return plainStyle
   }
-  for (const [dr, dc] of p.offsets) keepLooks(oldFrom, to, p.src, dr, dc, plain)
+  const source = sourceOf(oldFrom, to, p.src)
+  for (const [dr, dc] of p.offsets) keepLooks(to, p.src, source, dr, dc, plain)
 }
