@@ -17,7 +17,7 @@ const { data } = await writeXlsx({ book, result })
 
 - `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them) and whether they are hidden, columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system and iterative calculation.
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order, in the shape of a result: `cached.sheets[0].cells.B1.value` as `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range `spillOf`, the formula's address, as in a result. These are what Excel computed when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`).
-- `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue.
+- `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue. Each issue has a code for programs and a message for people, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
 A file that is not a zip archive, an encrypted one, a ZIP64 archive and a file without a workbook part are errors. Data that is no bytes, such as the file's path, is an `InputError` that says to pass the bytes.
 
@@ -178,6 +178,21 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 
 View settings such as zoom, gridlines and the selection are not reported. A page setup is reported only when someone made one, for example a landscape page or a fit to width.
 
+### The language of the messages
+
+An issue's `message` is English by default. `readXlsx(data, { locale })` and `writeXlsx(snapshot, { locale })` write it in the language of a locale: the tag of a loaded locale (`'ru-RU'` once `registerLocale(ruRU)` ran) or a locale object (`ruRU`), which needs no loading. A locale object without messages of its own speaks as the loaded locale of its tag, else in English. The code, sheet, cells and name are the same in every language, and so are the issues and their order.
+
+| code | en-US | ru-RU |
+|---|---|---|
+| `richText` | formatted runs of text are read as plain text | Форматированный текст прочитан как простой |
+| `style` | a style's text rotation is not in the model | Поворот текста в стиле не поддерживается |
+| `calculation` | the maximum of iterations "0" is not one of 1 to 32,767: the default, 100, is read | Предельное число итераций «0» вне пределов от 1 до 32 767: прочитано значение по умолчанию, 100 |
+| `noCachedValues` | no result was given: the file stores no values of formulas, and Excel computes them when it opens the file | Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла |
+
+The host passes the language the person reading the messages chose. A file does not say it: Excel keeps no language in xlsx, and the locale the writer keeps in `xlcalc.locale` is the book's, the rules it computes by, which a person working in another language may open too. So neither function takes the language from the book.
+
+The messages are part of the locale's module, beside its other messages ([docs/locale.md](locale.md#messages)), so the subpath carries no locale but en-US: a host that shows Russian loads `xlcalc/locales/ru-RU` as it does for books in ru-RU. One part of one message stays English: why a table is left out, which is the check of tables' own text (`Таблица «Over» не прочитана, модель не может её хранить (B1:C2 overlaps the table T)`).
+
 ## Writing
 
 `writeXlsx(snapshot, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot hold. The same book and result give the same bytes. The snapshot is `{ book, result }`: the book and the values of its formulas and of the cells their arrays spilled into, from `compute`, from a session (`session.getSnapshot()` gives both in one call, so no edit comes between them) or from the `cached` of a file read.
@@ -189,6 +204,7 @@ View settings such as zoom, gridlines and the selection are not reported. A page
 | `values: 'omit'` | the default without a result: no values of formulas, and Excel computes them when it opens the file; reported (`noCachedValues`) when the book has formulas and `values` was not given |
 | `mode: 'formulas'` | the default: formulas, with the values `values` asks for |
 | `mode: 'values'` | values only: a formula's cell gets its value from the result, which is then required |
+| `locale` | the language of the issues' messages, as `readXlsx` takes it: English by default ([The language of the messages](#the-language-of-the-messages)) |
 
 ```js
 const file = await writeXlsx(session.getSnapshot())
@@ -409,7 +425,7 @@ A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx v
 - `formulas/` changes formulas between the file's spelling and the engine's. `prefixes.ts` is generated by `bench/coverage/xlsx/generate.ts`, so the reader needs neither the harness nor the engine's function definitions. Formulas of the old kind go through `fromLegacy` (`src/legacy/`), whose table of argument classes needs no function definitions either.
 - `write/` writes the workbook, the sheets, styles.xml with its differential formats, the notes, hyperlinks and frozen panes (`parts.ts`), conditional formats (`conditional.ts`) and data validation (`validation.ts`).
 
-Reading uses the parser and copy and paste of the structure operations. It does not load the engine's functions or evaluator, and a minified browser bundle of the subpath is about 170 KB.
+Reading uses the parser and copy and paste of the structure operations. It does not load the engine's functions or evaluator, and a minified browser bundle of the subpath is about 175 KB. The issues' messages are kept as a key and parameters (`src/xlsx/issues.ts`) and written in a locale when listed: their text is in the locale files beside the other messages (`src/locales/`).
 
 ## How it was checked
 
@@ -424,7 +440,7 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 | `colors` | 233 fills: theme colours with Excel's tints and the legacy palette | 212 equal to Excel's colour, the rest within 3 of 255 per channel |
 | `formats` | the built-in number formats 1 to 58 | the codes Excel en-US shows equal the engine's for 1 to 49 and the reader's for 50 to 58 |
 
-Without Excel, `test/xlsx-snapshot.test.ts` checks the three kinds of `values`, the refusals, `cached` in the shape of a result and the files written again from it, a file Excel saved among them, and `test/session-snapshot.test.ts` writes the snapshot of a synchronous session, one in the same thread and one in a thread, and reads it back with the session's values.
+Without Excel, `test/xlsx-issue-locale.test.ts` reads a file with 28 issues (26 messages of the catalog) and the 15 files Excel saved that have issues in en-US and in ru-RU, and writes a book with 8 losses in both: each Russian message is the catalog's for the issue, the codes, sheets, cells and names equal the English read's, and without the option the issues are the English ones. `test/messages-catalog.test.ts` checks that every message has its Russian text, which shows each parameter the English one shows. `test/xlsx-snapshot.test.ts` checks the three kinds of `values`, the refusals, `cached` in the shape of a result and the files written again from it, a file Excel saved among them, and `test/session-snapshot.test.ts` writes the snapshot of a synchronous session, one in the same thread and one in a thread, and reads it back with the session's values.
 
 The round trip compares books by what they mean: a style by its fields, a formula by its canonical text, spans of rows and columns line by line, a line of size 0 as hidden, a code that every locale shows as a built-in format as that format's number.
 

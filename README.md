@@ -40,7 +40,7 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](#localization)) |
 | types alone | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 253 KB (96 KB gzip), `createSession` 391 KB (147 KB), the whole root 414 KB (155 KB), `xlcalc/xlsx` 167 KB (63 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 454 KB (161 KB), `xlcalc/a1` 8 KB (3 KB), `xlcalc/text` 30 KB (12 KB), the ru-RU module 52 KB (10 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 263 KB (100 KB gzip), `createSession` 402 KB (150 KB), the whole root 426 KB (159 KB), `xlcalc/xlsx` 174 KB (65 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 505 KB (170 KB), `xlcalc/a1` 8 KB (3 KB), `xlcalc/text` 39 KB (15 KB), the ru-RU module 92 KB (15 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 
@@ -1141,6 +1141,23 @@ console.log(back.cells.A1.note, back.frozen) // → { author: 'Ann', text: 'From
 ```
 
 A thread of comments, as Excel 365 makes them, is read as a note: its first author, and every comment's text with the replies' authors. [docs/xlsx.md](docs/xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
+
+An issue's `message` is for a person, in English by default. `opts.locale` of either function writes it in another language: the tag of a loaded locale or a locale object, as the other functions take a locale. The code, sheet, cells and name of an issue stay as they are, so a program reads them alike in every language.
+
+```js
+import { registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+registerLocale(ruRU)
+const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }] }
+const { data, issues } = await writeXlsx({ book }, { locale: 'ru-RU' })
+console.log(issues[0].code, issues[0].message) // → noCachedValues Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла
+console.log((await writeXlsx({ book })).issues[0].message) // → no result was given: the file stores no values of formulas, and Excel computes them when it opens the file
+console.log((await readXlsx(data, { locale: ruRU })).book.locale) // → ru-RU
+```
+
+Pass the locale the person reading the messages chose. A file does not say it: Excel keeps no language in xlsx, and the locale `xlcalc.locale` that the writer stores, which `readXlsx` gives as `book.locale`, is the book's, the rules it computes by, which a person working in another language may open too. So neither function takes the language from the book.
 
 ### Computing without blocking
 
