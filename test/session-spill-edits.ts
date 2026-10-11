@@ -3,7 +3,7 @@
  * spill ranges and cleared, anchors replaced, two arrays over one cell, a whole column, a cycle through a spill
  * range and breaking it, a size read from the array's own range, several edits at once.
  */
-import type { BookInput, CellEdit, CellInput } from '../src/contract.js'
+import type { BookInput, CellReplace, CellInput } from '../src/contract.js'
 import { mulberry32 } from '../src/synth.js'
 
 const f = (formula: string): CellInput => ({ formula })
@@ -41,10 +41,10 @@ export function spillBook(): BookInput {
 const pick = <T>(rnd: () => number, xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)]
 
 /** Seeded edits of `spillBook`. */
-export function spillEdits(seed: number, count: number): CellEdit[][] {
+export function spillEdits(seed: number, count: number): CellReplace[][] {
   const rnd = mulberry32(seed)
-  const S = (cell: string, input: CellInput | null): CellEdit => ({ sheet: 'S', cell, input })
-  const one = (): CellEdit => {
+  const S = (cell: string, input: CellInput | null): CellReplace => ({ sheet: 'S', cell, input })
+  const one = (): CellReplace => {
     const x = rnd()
     if (x < 0.25) return S(`A${1 + Math.floor(rnd() * 12)}`, pick(rnd, [{ value: Math.floor(rnd() * 13) }, { value: 'x' }, null]))
     if (x < 0.4) return S(pick(rnd, ['B1', 'B2']), { value: Math.floor(rnd() * 6) })

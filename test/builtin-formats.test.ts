@@ -21,8 +21,8 @@ describe('built-in formats by number', () => {
 
   it('a session takes them in edits and layout', () => {
     const s = openSession(book('ru-RU'))
-    expect(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 45688.75, format: 15 } }]).map((c) => c.text)).toEqual(['31.янв.25'])
-    expect(s.setLayout([{ sheet: 'S', columns: 'C', set: { format: 7 } }]).map((c) => c.text)).toEqual(['-1 234,50 ₽'])
+    expect(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 45688.75, format: 15 } }]).changes.map((c) => c.text)).toEqual(['31.янв.25'])
+    expect(s.setLayout([{ sheet: 'S', columns: 'C', set: { format: 7 } }]).changes.map((c) => c.text)).toEqual(['-1 234,50 ₽'])
     s.close()
   })
 

@@ -24,7 +24,7 @@ describe.each(['closures', 'eval'] as const)('lists past the argument limit, %s'
     expect(v[`A${ROWS}`].value).toBe(46299.5)
     expect(r.volatile).toHaveLength(ROWS)
     const s = openSession(book, { clock, execution, display: false })
-    expect(s.setClock(later)).toHaveLength(ROWS)
+    expect(s.setClock(later).changes).toHaveLength(ROWS)
     expect(s.result().sheets[0].cells[`A${ROWS}`].value).toBe(46300.5)
     expect(s.hash()).toBe(compute(book, { clock: later, execution, display: false }).hash)
     s.close()

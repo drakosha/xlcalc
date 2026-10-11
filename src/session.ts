@@ -5,23 +5,30 @@
  *
  * The operations are steps (`openSteps`): `openSession` runs each to its end at once, the asynchronous session in
  * portions. A call that stops (a limit, a deadline, an abort) changes nothing: what it changed in place is put back,
- * and the state is built again from the book on the next call.
+ * and the state is built again from the book on the next call. Each call that changes the book answers an
+ * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { BookInput, BookLayout, BookSnapshot, CellChange, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellStyle, CellValidation, CellView, Clock, ComputeResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
+import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, sortedKeys, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf } from './session/book.js'
+import { checkFieldEdits, resolveEdits } from './session/cells.js'
+import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
 import { checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
-import { applyPatches, checkPatches } from './session/patch.js'
+import { movesOf } from './session/moves.js'
+import { checkPatches } from './session/patch.js'
+import { patchPlan, type Plan } from './session/styles.js'
 import { bookDiff, type BookDiff } from './session/rebook.js'
-import { applyStep, bookStep, cellsStep, History, layoutStep, stylesStep, type HistoryData, type SessionCore } from './session/undo.js'
+import { cellText, columnWidening, entryCheck, textRefusal, validationAlert } from './session/text.js'
+import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
 import { issueDetail } from './issues.js'
@@ -36,8 +43,8 @@ import { parseRange } from './structure/area.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
-import { cellValidation, checkEntry } from './validation/session.js'
-import { cellWithoutEquals, opWithoutEquals } from './equals.js'
+import { cellValidation, hasRule, withInput } from './validation/session.js'
+import { cellWithoutEquals, editsWithoutEquals, opWithoutEquals } from './equals.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -45,23 +52,30 @@ export interface SessionHooks {
   clock?: () => Clock
   /** The history a session restored from a snapshot starts with. */
   history?: HistoryData
+  /** The revision a session restored from a snapshot starts at. */
+  revision?: number
 }
 
 /** A session's operations as steps; `book`, `setStyles` and `close` compute nothing. */
 export interface SessionSteps {
   readonly clock: Clock
-  setCells(edits: CellEdit[]): Steps<CellChange[]>
-  patchCells(patches: CellPatch[]): Steps<CellChange[]>
-  setNames(names: NameInput[]): Steps<CellChange[]>
-  setClock(clock: Clock): Steps<CellChange[]>
-  restructure(op: StructureOp): Steps<SessionRestructureResult>
-  setStyles(styles: CellStyle[]): void
-  setLayout(edits: LayoutEdit[]): Steps<CellChange[]>
+  readonly revision: number
+  setCells(edits: CellEdit[], opts?: EditOptions): Steps<EditResult>
+  replaceCells(edits: CellReplace[], opts?: EditOptions): Steps<EditResult>
+  clearCells(ranges: RangeRef[], what: ClearKind, opts?: EditOptions): Steps<EditResult>
+  patchCells(patches: CellPatch[], opts?: EditOptions): Steps<EditResult>
+  setCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): Steps<CellTextResult>
+  previewCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): Steps<CellTextPreview>
+  setNames(names: NameInput[], opts?: EditOptions): Steps<EditResult>
+  setClock(clock: Clock, opts?: EditOptions): Steps<EditResult>
+  restructure(op: StructureOp, opts?: EditOptions): Steps<SessionRestructureResult>
+  setStyles(styles: CellStyle[], opts?: EditOptions): EditResult
+  setLayout(edits: LayoutEdit[], opts?: EditOptions): Steps<EditResult>
   book(): BookInput
   layout(): BookLayout
   extent(sheet: string): Steps<SheetExtent>
-  undo(): Steps<UndoResult | null>
-  redo(): Steps<UndoResult | null>
+  undo(opts?: EditOptions): Steps<UndoResult | null>
+  redo(opts?: EditOptions): Steps<UndoResult | null>
   readonly history: SessionHistory
   /** What the history holds, for a snapshot. */
   historyData(): HistoryData
@@ -107,6 +121,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   const display = o.display !== false
   const build = (b: BookInput) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution })
   let state: EngineState | null = yield* build(book)
+  let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one
   let stale = false
   const st = () => {
@@ -124,21 +139,26 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const sheetIndex = (s: EngineState) => (name: string) => s.sheetIdx.get(sheetKey(name))
   const styleCount = (s: EngineState) => s.input.styles?.length ?? 0
-  const changes = (s: EngineState, keys: string[]): CellChange[] => {
+  /** The changes of cells `keys` as a host gets them, with the fields that changed of some. */
+  const changes = (s: EngineState, keys: string[], fields: Map<string, FieldChange>) => {
     // the statistics of conditional formats over changed cells are taken again
     dropStats(s, keys)
     const look = display ? cellLooks(s) : null
     return keys.map((k) => {
       const [i, r, c] = k.split(':').map(Number)
       const value = cellValue(s, i, r, c)
-      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c) }
+      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c), ...fields.get(k) }
     })
   }
-  // keys of changed values as the engine orders them, then the other cells whose look changed, by address
-  const merged = (keys: string[], more: string[]) => {
-    const seen = new Set(keys)
-    const extra = more.filter((k) => !seen.has(k)).map((k) => k.split(':').map(Number))
-    return [...keys, ...extra.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).map((k) => k.join(':'))]
+  /** A call that changed the book answered: the revision one more, and what changed. */
+  const answer = (s: EngineState, x: Outcome): EditResult => {
+    const out: EditResult = { revision: ++revision, changes: changes(s, x.keys, x.fields) }
+    if (x.layout.size) out.layout = [...x.layout]
+    if (x.styles) out.styles = s.input.styles ?? []
+    if (x.moved.length) out.moved = x.moved
+    const repaint = repaintOf(s.input, x)
+    if (repaint) out.repaint = repaint
+    return out
   }
   const tick = (s: EngineState) => {
     clock = fresh()
@@ -151,10 +171,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     setNow(s, clockSerial(at), at.seed)
   }
   const history = new History(o.undo, hooks.history)
-  // a step is made only when the history keeps steps (a book's diff costs a pass over its cells)
-  const keep = (step: () => Parameters<History['push']>[0]) => history.on && history.push(step())
+  // a step is made only when the history keeps steps (a book's diff costs a pass over its cells); a call that changed nothing makes none
+  const keep = (step: () => Step | null) => {
+    const x = history.on ? step() : null
+    if (x) history.push(x)
+  }
   /** Edits of cells (checked) applied; the inputs they replaced, which are put back if the call stops. */
-  function* putCells(s: EngineState, edits: CellEdit[]): Steps<[CellChange[], CellEdit[]]> {
+  function* putCells(s: EngineState, edits: CellReplace[]): Steps<[Outcome, CellReplace[]]> {
     const before = display ? snapshot(s, editedCells(s, edits)) : null
     const was = inputsOf(s, edits)
     const at = clock
@@ -163,7 +186,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const loud = contentEdits(s, edits)
       if (loud.length && live) tick(s)
       const keys = loud.length ? yield* applyEdits(s, loud, live) : []
-      return [changes(s, before ? merged(keys, shownChanges(s, before)) : keys), was]
+      const fields = editFields(s, was)
+      return [{ ...nothing(), keys: inOrder(keys, [...(before ? shownChanges(s, before) : []), ...fields.keys()]), fields, valued: keys.length > 0 }, was]
     } catch (e) {
       for (const { sheet, cell, input } of was) {
         const cells = s.input.sheets[sheetIndex(s)(sheet)!].cells
@@ -177,17 +201,19 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /**
    * The state built again from `book`, the session's book changed, with its changes against the old one by `mapCell`
-   * (and the looks of both with `looks`) and the way back from the book before (`back`); nothing changes if it stops.
+   * (none: cells stay where they are; the looks of both with `looks`) and the way back from the book before (`back`);
+   * nothing changes if it stops.
    */
-  function* rebuild(old: EngineState, book: BookInput, mapCell: (ref: CellRef) => CellRef | null, looks: boolean, back: () => Steps<BookDiff | null>): Steps<[EngineState, CellChange[], BookDiff | null]> {
+  function* rebuild(old: EngineState, book: BookInput, mapCell: ((ref: CellRef) => CellRef | null) | null, looks: boolean, back: () => Steps<BookDiff | null>): Steps<[EngineState, Outcome, BookDiff | null]> {
     const at = clock
     if (live) tick(old)
     try {
       const next = yield* build(book)
-      const keys = movedChanges(old, next, mapCell, display && looks ? [cellLooks(old), cellLooks(next)] : undefined)
+      const fields = new Map<string, FieldChange>()
+      const keys = movedChanges(old, next, mapCell ?? ((ref) => ref), display && looks ? [cellLooks(old), cellLooks(next)] : undefined, fields)
       const diff = yield* back()
       state = next
-      return [next, changes(next, keys), diff]
+      return [next, { ...nothing(), keys: sortedKeys([...keys, ...fields.keys()]), fields, valued: true, layout: new Set(layoutChanged(old.input, next.input)) }, diff]
     } catch (e) {
       untick(old, at)
       throw e
@@ -202,10 +228,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
    * Sheets of the book replaced by new ones of another layout: the arrays and SUBTOTALs it concerns computed again; the
    * changes and the sheets before, which are put back if the call stops.
    */
-  function* relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[CellChange[], SheetInput[]]> {
+  function* relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[Outcome, SheetInput[]]> {
     const sheets = s.input.sheets.slice()
     for (const [i, x] of next) s.input.sheets[i] = x
-    if ([...next].some(([i, x]) => x.conditionalFormats !== sheets[i].conditionalFormats)) dropStats(s, [], true)
+    const ruled = [...next].filter(([i, x]) => x.conditionalFormats !== sheets[i].conditionalFormats)
+    if (ruled.length) dropStats(s, [], true)
     try {
       // merged areas added or removed: the arrays whose range they meet spill or stop; hidden rows: SUBTOTAL and AGGREGATE count again
       const keys = new Set<string>()
@@ -215,7 +242,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         if (moved.length) for (const k of yield* applyMerges(s, i, moved.map((m) => parseMerge(m)!))) keys.add(k)
         if (JSON.stringify(hiddenRows(x) ?? null) !== JSON.stringify(hiddenRows(sheets[i]) ?? null)) for (const k of yield* applyHidden(s, i)) keys.add(k)
       }
-      return [changes(s, shown ? merged([...keys], shownChanges(s, shown)) : [...keys]), sheets]
+      const rules = ruled.flatMap(([i, x]) => [...ruleRanges(sheets[i]), ...ruleRanges(x)])
+      return [{ ...nothing(), keys: inOrder([...keys], shown ? shownChanges(s, shown) : []), valued: keys.size > 0, layout: new Set([...next.keys()].map((i) => s.sheetNames[i])), rules }, sheets]
     } catch (e) {
       s.input.sheets.splice(0, sheets.length, ...sheets)
       stale = true
@@ -223,86 +251,204 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     }
   }
   const core: SessionCore = { ready, putCells, rebuild, relayout, display, sheetIndex }
+  /**
+   * Cells' new inputs (checked) written, as `call`: a table's header cell typed over renames its column and the
+   * references to it, which builds the book again; the state after and what changed, and the way back.
+   */
+  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call']): Steps<[EngineState, Outcome, () => Step | null]> {
+    checkArrayEdits(s, edits)
+    const renamed = headerEdits(s.input, edits, (v, format) => headerText(s, v, format))
+    if (renamed) {
+      const [next, out, diff] = yield* rebuild(s, renamed, null, true, diffTo(renamed, s.input, null))
+      return [next, out, () => diff && bookStep(call, diff, renamed)]
+    }
+    const [out, was] = yield* putCells(s, edits)
+    return [s, out, () => (was.length ? cellsStep(call, was) : null)]
+  }
+  /**
+   * A plan of looks applied after the cells it writes (`write`, which alone may recompute and stop): the style table and
+   * the sheets' lines and rules, which compute nothing. The state after, what changed and the steps to take it back.
+   */
+  function* applyPlan(s: EngineState, plan: Plan, call: Step['call'], write: (s: EngineState, edits: CellReplace[]) => Steps<[EngineState, Outcome, () => Step | null]>): Steps<[EngineState, Outcome, (() => Step | null)[]]> {
+    const [next, out, cellsBack] = yield* write(s, plan.edits)
+    let o = out
+    const steps = [cellsBack]
+    if (plan.sheets.size) {
+      const shown = display ? snapshot(next, layoutCells(next, plan.touched)) : null
+      const [lo, before] = yield* relayout(next, plan.sheets, shown)
+      o = joined(o, lo)
+      steps.push(() => layoutStep(call, before, plan.sheets))
+    }
+    if (plan.styles) {
+      const was = next.input.styles
+      next.input.styles = plan.styles
+      o = { ...o, styles: true }
+      steps.push(() => stylesStep(was, call))
+    }
+    return [next, o, steps]
+  }
+  /** Look-only edits (a patch, cleared formats): they keep every cell's content, so nothing is renamed or computed. */
+  function* lookCells(s: EngineState, edits: CellReplace[]): Steps<[EngineState, Outcome, () => Step | null]> {
+    const [out, was] = yield* putCells(s, edits)
+    return [s, out, () => (was.length ? cellsStep('patchCells', was) : null)]
+  }
+  /** A step taken by undo or redo, answered as its call answered. */
+  const taken = (t: Taken | null): UndoResult | null => {
+    if (!t) return null
+    const out: UndoResult = { call: t.call, ...answer(state!, t.outcome) }
+    if (t.cells) out.cells = t.cells
+    if (t.mapCell) out.mapCell = t.mapCell
+    return out
+  }
+  const at = (s: EngineState, sheet: string, cell: string) => {
+    const i = checkSheet(sheet, sheetIndex(s), 'sheet')
+    const { row, col } = parseAddress(checkAddress(cell, 'cell'))
+    return [i, row, col] as const
+  }
   return {
     get clock() {
       return { ...clock }
     },
-    *setCells(edits: CellEdit[]) {
+    get revision() {
+      return revision
+    },
+    *setCells(edits: CellEdit[], eo?: EditOptions) {
       const s = yield* ready()
-      edits = checkEdits(edits, sheetIndex(s), styleCount(s))
-      checkArrayEdits(s, edits)
-      // a table's header cell typed over renames its column and the references to it: the book is built again
-      const renamed = headerEdits(s.input, edits, (v, format) => headerText(s, v, format))
-      if (renamed) {
-        const [, out, diff] = yield* rebuild(s, renamed, (ref) => ref, true, diffTo(renamed, s.input, null))
-        keep(() => diff && bookStep('setCells', diff, renamed))
-        return out
+      checkBase(eo, revision)
+      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsWithoutEquals(checkFieldEdits(edits, sheetIndex(s), styleCount(s)))), 'setCells')
+      keep(back)
+      return answer(next, out)
+    },
+    *replaceCells(edits: CellReplace[], eo?: EditOptions) {
+      const s = yield* ready()
+      checkBase(eo, revision)
+      const [next, out, back] = yield* writeCells(s, checkEdits(edits, sheetIndex(s), styleCount(s)) as CellReplace[], 'replaceCells')
+      keep(back)
+      return answer(next, out)
+    },
+    *clearCells(ranges: RangeRef[], what: ClearKind, eo?: EditOptions) {
+      const s = yield* ready()
+      checkBase(eo, revision)
+      const plan = clearPlan(s, ranges, what)
+      const write = what === 'formats' ? lookCells : (x: EngineState, edits: CellReplace[]) => writeCells(x, edits, 'clearCells')
+      const [next, out, steps] = yield* applyPlan(s, plan, 'clearCells', write)
+      if (ranges.length) keep(() => manyStep('clearCells', steps.map((f) => f())))
+      return answer(next, out)
+    },
+    *patchCells(patches: CellPatch[], eo?: EditOptions) {
+      const s = yield* ready()
+      checkBase(eo, revision)
+      const plan = patchPlan(s, checkPatches(patches, sheetIndex(s), styleCount(s)))
+      const [next, out, steps] = yield* applyPlan(s, plan, 'patchCells', lookCells)
+      if (patches.length) keep(() => manyStep('patchCells', steps.map((f) => f())))
+      return answer(next, out)
+    },
+    *setCellText(sheet: string, cell: string, text: string, eo?: CellTextOptions) {
+      const s = yield* ready()
+      const opts = checkBase<CellTextOptions>(eo, revision, ['widen'])
+      const [i, r, c] = at(s, sheet, cell)
+      const typed = cellText(s, i, r, c, checkString(text, 'text'), clock.now)
+      if (!typed.ok) return typed
+      const edit: CellReplace = { sheet: s.sheetNames[i], cell, input: typed.input }
+      const refused = textRefusal(s, edit)
+      if (refused) return refused
+      const [next, out, back] = yield* writeCells(s, [edit], 'setCellText')
+      let o = out
+      const steps = [back]
+      // a number that does not fit its column widens it, as Excel does, in the same step
+      const width = next === s ? columnWidening(next, i, r, c) : undefined
+      if (width !== undefined && opts.widen !== false) {
+        const sheets = applyLayout({ ...next.input, sheets: next.input.sheets.slice() }, [{ sheet: next.sheetNames[i], columns: formatAddress(0, c).replace(/\d+$/, ''), set: { width, bestFit: true } }], () => i)
+        const touched: LayoutEdit[] = [{ sheet: next.sheetNames[i], columns: formatAddress(0, c).replace(/\d+$/, ''), set: {} }]
+        const [lo, before] = yield* relayout(next, sheets, display ? snapshot(next, layoutCells(next, touched)) : null)
+        o = joined(o, lo)
+        steps.push(() => layoutStep('setCellText', before, sheets))
       }
-      const [out, was] = yield* putCells(s, edits)
-      if (was.length) keep(() => cellsStep('setCells', was))
-      return out
+      keep(() => manyStep('setCellText', steps.map((f) => f())))
+      const alert = validationAlert(next, i, r, c)
+      return { ok: true, ...answer(next, o), ...(width !== undefined ? { width } : {}), ...(alert ? { validation: alert } : {}) }
     },
-    *patchCells(patches: CellPatch[]) {
+    *previewCellText(sheet: string, cell: string, text: string, eo?: CellTextOptions): Steps<CellTextPreview> {
       const s = yield* ready()
-      const checked = checkPatches(patches, sheetIndex(s), styleCount(s))
-      const before = display ? snapshot(s, editedCells(s, checked)) : null
-      const was = inputsOf(s, checked)
-      applyPatches(s, checked, (name) => sheetIndex(s)(name)!)
-      if (was.length) keep(() => cellsStep('patchCells', was))
-      return before ? changes(s, merged([], shownChanges(s, before))) : []
+      checkBase<CellTextOptions>(eo, revision, ['widen'])
+      const [i, r, c] = at(s, sheet, cell)
+      const typed = cellText(s, i, r, c, checkString(text, 'text'), clock.now)
+      if (!typed.ok) return typed
+      const edit: CellReplace = { sheet: s.sheetNames[i], cell, input: typed.input }
+      const refused = textRefusal(s, edit)
+      if (refused) return refused
+      try {
+        return yield* withInput(s, i, r, c, typed.input, () => {
+          const width = columnWidening(s, i, r, c)
+          const alert = validationAlert(s, i, r, c)
+          return { ok: true as const, input: typed.input, value: cellValue(s, i, r, c), ...(width !== undefined ? { width } : {}), ...(alert ? { validation: alert } : {}) }
+        })
+      } catch (e) {
+        // the input put in for the preview may still be there: the state is built again on the next call
+        stale = true
+        throw e
+      }
     },
-    *setNames(names: NameInput[]) {
+    *setNames(names: NameInput[], eo?: EditOptions) {
       const old = yield* ready()
+      checkBase(eo, revision)
       names = checkNames(names, 'names')
       // tables and names share one namespace
       checkTables({ ...old.input, names }, 'book')
       // names change the whole graph: the book is rebuilt, changes are collected over all cells (none moved)
       const book = { ...old.input, names }
-      const [, out, diff] = yield* rebuild(old, book, (ref) => ref, false, diffTo(book, old.input, null))
+      const [next, out, diff] = yield* rebuild(old, book, null, false, diffTo(book, old.input, null))
       keep(() => diff && bookStep('setNames', diff, book))
-      return out
+      return answer(next, out)
     },
-    *setClock(next: Clock) {
+    *setClock(next: Clock, eo?: EditOptions) {
       if (live) throw new Error('a live session takes its clock from the system')
       const s = yield* ready()
-      const at = clock
+      checkBase(eo, revision)
+      const was = clock
       clock = { ...checkClock(next, 'clock') }
       try {
-        return changes(s, yield* applyClock(s, clockSerial(clock), clock.seed))
+        const keys = yield* applyClock(s, clockSerial(clock), clock.seed)
+        return answer(s, { ...nothing(), keys, valued: keys.length > 0 })
       } catch (e) {
-        clock = at
+        clock = was
         stale = true
         throw e
       }
     },
-    *restructure(op: StructureOp) {
+    *restructure(op: StructureOp, eo?: EditOptions) {
       const old = yield* ready()
+      checkBase(eo, revision)
       op = opWithoutEquals(op)
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
       // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
       if (op.op === 'hideSheet' || op.op === 'unhideSheet') {
         const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
-        const [, before] = yield* relayout(old, next, null)
+        const [out, before] = yield* relayout(old, next, null)
         keep(() => layoutStep('restructure', before, next))
-        return { ok: true, book: old.input, mapCell: checkedMapCell(old.input, r.mapCell), changes: [] }
+        return { ok: true, book: old.input, mapCell: checkedMapCell(old.input, r.mapCell), ...answer(old, out) }
       }
       // the operation as it was given, kept for its geometry: the caller's object may change
       const kept = JSON.parse(JSON.stringify(op)) as StructureOp
       // the simple way: the state is built again from the new book
       const [next, out, diff] = yield* rebuild(old, r.book, r.mapCell, true, diffTo(r.book, old.input, kept))
       keep(() => diff && bookStep('restructure', diff, r.book))
-      return { ok: true, book: next.input, mapCell: checkedMapCell(old.input, r.mapCell), changes: out }
+      const moved = movesOf(kept, 'forth', old.sheetNames, next.sheetNames)
+      return { ok: true, book: next.input, mapCell: checkedMapCell(old.input, r.mapCell), ...answer(next, { ...out, moved }) }
     },
-    setStyles(styles: CellStyle[]) {
+    setStyles(styles: CellStyle[], eo?: EditOptions) {
       const s = st()
+      checkBase(eo, revision)
       checkStylesUsed(s.input, checkStyles(styles, 'styles').length)
       const was = s.input.styles
       s.input.styles = styles
       keep(() => stylesStep(was))
+      return answer(s, { ...nothing(), styles: true })
     },
-    *setLayout(edits: LayoutEdit[]) {
+    *setLayout(edits: LayoutEdit[], eo?: EditOptions) {
       const s = yield* ready()
+      checkBase(eo, revision)
       // AutoFit becomes the widths it sets
       const checked = fitEdits(s, checkLayoutEdits(edits, sheetIndex(s), styleCount(s)))
       const shown = display ? snapshot(s, layoutCells(s, checked)) : null
@@ -310,7 +456,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const next = applyLayout({ ...s.input, sheets: s.input.sheets.slice() }, checked, (name) => sheetIndex(s)(name)!)
       const [out, before] = yield* relayout(s, next, shown)
       if (edits.length) keep(() => layoutStep('setLayout', before, next))
-      return out
+      return answer(s, out)
     },
     book() {
       return st().input
@@ -324,8 +470,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *explain(sheet: string, cell: string, o: ExplainOptions = {}) {
       const s = yield* ready()
-      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
-      const { row, col } = parseAddress(checkAddress(cell, 'cell'))
+      const [i, row, col] = at(s, sheet, cell)
       const e = explainCell(s, i, row, col, { depth: o.depth ?? 3, maxNodes: o.maxNodes ?? 200, expand: o.expand ?? false, errorDepth: o.errorDepth ?? 64 })
       return { ...e, text: explainText(e.root, s.input.locale) }
     },
@@ -338,28 +483,25 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *getViewport(sheet: string, range: string, o?: ViewportOptions) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
-      return yield* viewport(s, i, rect(range, 'range'), checkViewportOptions(o), display)
+      // the window of the revision it was read at, for a host to take later edits' changes over
+      return { ...(yield* viewport(s, i, rect(range, 'range'), checkViewportOptions(o), display)), revision }
     },
     *getCellIssue(sheet: string, cell: string) {
       const s = yield* ready()
-      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
-      const { row, col } = parseAddress(checkAddress(cell, 'cell'))
-      return issueDetail(s, i, row, col)
+      return issueDetail(s, ...at(s, sheet, cell))
     },
     *validation(sheet: string, cell: string) {
       const s = yield* ready()
-      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
-      const { row, col } = parseAddress(checkAddress(cell, 'cell'))
-      return cellValidation(s, i, row, col)
+      return cellValidation(s, ...at(s, sheet, cell))
     },
     *validateEntry(sheet: string, cell: string, input: CellInput | null) {
       const s = yield* ready()
-      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
-      const { row, col } = parseAddress(checkAddress(cell, 'cell'))
+      const [i, row, col] = at(s, sheet, cell)
       if (input !== null) input = cellWithoutEquals(checkCell(input, 'input', styleCount(s)))
       checkArrayEdits(s, [{ sheet, cell, input }])
+      if (!hasRule(s, i, row, col)) return { ok: true }
       try {
-        return yield* checkEntry(s, i, row, col, input)
+        return yield* withInput(s, i, row, col, input, () => entryCheck(s, i, row, col))
       } catch (e) {
         // the input put in for the check may still be there: the state is built again on the next call
         stale = true
@@ -378,11 +520,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       return { book: s.input, result: yield* buildResult(s, clock, t0, display) }
     },
-    *undo() {
-      return yield* applyStep(core, history.undo.at(-1), (forth) => history.undone(forth))
+    *undo(eo?: EditOptions) {
+      checkBase(eo, revision)
+      return taken(yield* applyStep(core, history.undo.at(-1), (forth) => history.undone(forth)))
     },
-    *redo() {
-      return yield* applyStep(core, history.redo.at(-1), (back) => history.redone(back))
+    *redo(eo?: EditOptions) {
+      checkBase(eo, revision)
+      return taken(yield* applyStep(core, history.redo.at(-1), (back) => history.redone(back)))
     },
     get history() {
       return history.state
@@ -406,13 +550,20 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     get clock() {
       return core.clock
     },
-    setCells: (edits) => now(() => core.setCells(edits)),
-    patchCells: (patches) => now(() => core.patchCells(patches)),
-    setNames: (names) => now(() => core.setNames(names)),
-    setClock: (clock) => now(() => core.setClock(clock)),
-    restructure: (op) => now(() => core.restructure(op)),
-    setStyles: (styles) => core.setStyles(styles),
-    setLayout: (edits) => now(() => core.setLayout(edits)),
+    get revision() {
+      return core.revision
+    },
+    setCells: (edits, o) => now(() => core.setCells(edits, o)),
+    replaceCells: (edits, o) => now(() => core.replaceCells(edits, o)),
+    clearCells: (ranges, what, o) => now(() => core.clearCells(ranges, what, o)),
+    patchCells: (patches, o) => now(() => core.patchCells(patches, o)),
+    setCellText: (sheet, cell, text, o) => now(() => core.setCellText(sheet, cell, text, o)),
+    previewCellText: (sheet, cell, text, o) => now(() => core.previewCellText(sheet, cell, text, o)),
+    setNames: (names, o) => now(() => core.setNames(names, o)),
+    setClock: (clock, o) => now(() => core.setClock(clock, o)),
+    restructure: (op, o) => now(() => core.restructure(op, o)),
+    setStyles: (styles, o) => core.setStyles(styles, o),
+    setLayout: (edits, o) => now(() => core.setLayout(edits, o)),
     book: () => core.book(),
     layout: () => core.layout(),
     extent: (sheet) => now(() => core.extent(sheet)),
@@ -425,8 +576,8 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     result: () => now(() => core.result()),
     getSnapshot: () => now(() => core.getSnapshot()),
     hash: () => now(() => core.hash()),
-    undo: () => now(() => core.undo()),
-    redo: () => now(() => core.redo()),
+    undo: (o) => now(() => core.undo(o)),
+    redo: (o) => now(() => core.redo(o)),
     get history() {
       return core.history
     },

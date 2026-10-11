@@ -27,7 +27,7 @@ function agrees(s: Session, changes: CellChange[]) {
 }
 
 /** Changes in the order of their cells' addresses (the session reports them in the order it met them). */
-const sorted = (cs: CellChange[]) => [...cs].sort((a, b) => a.sheet.localeCompare(b.sheet) || a.cell.length - b.cell.length || a.cell.localeCompare(b.cell))
+const sorted = (r: { changes: CellChange[] }) => [...r.changes].sort((a, b) => a.sheet.localeCompare(b.sheet) || a.cell.length - b.cell.length || a.cell.localeCompare(b.cell))
 
 const S = (cell: string, value: number | string | null) => ({ sheet: 'S', cell, input: value === null ? null : { value } })
 
@@ -36,7 +36,7 @@ describe('sessions with spilled arrays', () => {
     const s = openSession(spillBook(), { clock })
     let book = spillBook()
     for (const batch of spillEdits(11, 200)) {
-      const changes = s.setCells(batch)
+      const { changes } = s.setCells(batch)
       book = apply(book, batch)
       expect(s.result().hash).toBe(compute(book, { clock }).hash)
       agrees(s, changes)
@@ -67,7 +67,7 @@ describe('sessions with spilled arrays', () => {
       ['B1', null],
       ['C1', null],
     ])
-    expect(s.setLayout([{ sheet: 'S', columns: 'A', set: { width: 20 } }])).toEqual([])
+    expect(s.setLayout([{ sheet: 'S', columns: 'A', set: { width: 20 } }]).changes).toEqual([])
     expect(sorted(s.setLayout([{ sheet: 'S', merges: [] }])).map((c) => [c.cell, c.value])).toEqual([
       ['A1', 1],
       ['B1', 2],

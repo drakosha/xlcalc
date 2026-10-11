@@ -44,7 +44,7 @@ describe('hidden rows and filtered sheets', () => {
       const lo = 1 + Math.floor(rnd() * 12)
       const hi = Math.min(12, lo + Math.floor(rnd() * 3))
       const edit: LayoutEdit = rnd() < 0.2 ? { sheet: 'S', filtered: rnd() < 0.5 } : { sheet: 'S', rows: lo === hi ? `${lo}` : `${lo}:${hi}`, set: { hidden: rnd() < 0.6 ? true : null } }
-      const changes = session.setLayout([edit])
+      const { changes } = session.setLayout([edit])
       const full = compute(session.book(), { clock })
       expect(session.result().sheets[0].cells, `edit ${i}: ${JSON.stringify(edit)}`).toEqual(full.sheets[0].cells)
       expect(session.result().hash).toBe(full.hash)
@@ -55,9 +55,9 @@ describe('hidden rows and filtered sheets', () => {
 
   it('setLayout returns the formulas whose count changed and their dependents', () => {
     const session = openSession(book(), { clock })
-    const changes = session.setLayout([{ sheet: 'S', rows: '1', set: { hidden: true } }])
+    const { changes } = session.setLayout([{ sheet: 'S', rows: '1', set: { hidden: true } }])
     expect(changes.map((c) => `${c.cell}=${c.value}`).sort()).toEqual(['C2=4094', 'C3=4094', 'C5=11', 'D1=8188'])
-    expect(session.setLayout([{ sheet: 'S', filtered: true }]).map((c) => `${c.cell}=${c.value}`)).toEqual(['C1=4094'])
+    expect(session.setLayout([{ sheet: 'S', filtered: true }]).changes.map((c) => `${c.cell}=${c.value}`)).toEqual(['C1=4094'])
     expect(session.book().sheets[0].filtered).toBe(true)
     session.setLayout([{ sheet: 'S', filtered: false }])
     expect(session.book().sheets[0].filtered).toBeUndefined()

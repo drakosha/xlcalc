@@ -5,7 +5,7 @@
  * has no leading `=` is given back as it is, what has one as a copy: the caller's input is not changed, and input
  * without one costs no copy.
  */
-import type { BookInput, CellEdit, CellInput, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, SheetInput, StructureOp, TableInput } from './contract.js'
+import type { BookInput, CellEdit, CellFields, CellInput, CellReplace, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, SheetInput, StructureOp, TableInput } from './contract.js'
 
 /** A formula with a leading `=`. */
 export const leadingEquals = (f: unknown): f is string => typeof f === 'string' && f.charCodeAt(0) === 61
@@ -30,7 +30,7 @@ function each<T>(list: T[], f: (x: T, i: number) => T): T[] {
   return out ?? list
 }
 
-export const cellWithoutEquals = (c: CellInput): CellInput => fields(c, ['formula'])
+export const cellWithoutEquals = <C extends Pick<CellInput, 'formula'> | CellFields>(c: C): C => fields(c, ['formula'] as (keyof C)[])
 
 export const namesWithoutEquals = (names: NameInput[]): NameInput[] => each(names, (n) => fields(n, ['ref']))
 
@@ -80,7 +80,8 @@ export function bookWithoutEquals(book: BookInput, cells: (string[] | undefined)
   return sheets === book.sheets && names === book.names ? book : { ...book, sheets, ...(names ? { names } : {}) }
 }
 
-export const editsWithoutEquals = (edits: CellEdit[]): CellEdit[] =>
+/** Edits of cells (`setCells`'s by fields, `replaceCells`' whole inputs) without a leading `=` in their formulas. */
+export const editsWithoutEquals = <E extends CellEdit | CellReplace>(edits: E[]): E[] =>
   each(edits, (e) => {
     const input = e.input && cellWithoutEquals(e.input)
     return input === e.input ? e : { ...e, input }

@@ -75,7 +75,7 @@ describe.each(['closures', 'eval'] as const)('conditional formats in a session (
 
   it('setLayout replaces the rules; the book keeps them; an empty list removes them', () => {
     const s = openSession(book([GT2]), { clock: CLOCK, execution })
-    expect(s.setLayout([{ sheet: 'S', conditionalFormats: [{ ...GT2, formulas: ['4'] }] }])).toEqual([])
+    expect(s.setLayout([{ sheet: 'S', conditionalFormats: [{ ...GT2, formulas: ['4'] }] }]).changes).toEqual([])
     expect(s.cells('S', 'A3').A3.look).toBeUndefined()
     expect(s.cells('S', 'A5').A5.look).toEqual({ style: RED })
     expect(s.book().sheets[0].conditionalFormats).toEqual([{ ...GT2, formulas: ['4'] }])

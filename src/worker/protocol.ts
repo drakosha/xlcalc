@@ -12,8 +12,11 @@ import type { Sent } from './pack.js'
 export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
-export const CHANGING = ['setCells', 'patchCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
-export type Op = (typeof CHANGING)[number] | 'book' | 'layout' | 'extent' | 'explain' | 'cells' | 'getViewport' | 'getCellIssue' | 'validation' | 'validateEntry' | 'result' | 'getSnapshot' | 'hash'
+export const CHANGING = ['setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
+export type Op = (typeof CHANGING)[number] | 'previewCellText' | 'book' | 'layout' | 'extent' | 'explain' | 'cells' | 'getViewport' | 'getCellIssue' | 'validation' | 'validateEntry' | 'result' | 'getSnapshot' | 'hash'
+
+/** The calls that take edit options (`EditOptions`), by the number of arguments before them: their messages carry the options last. */
+export const EDITS: Partial<Record<Op, number>> = { setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setNames: 1, setClock: 1, restructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {
@@ -33,6 +36,8 @@ export interface Snapshot {
   seq: number
   /** The session's history then (as text when JSON holds it): the replayed `undo` and `redo` calls take its steps. */
   history?: HistoryData | { json: string }
+  /** The session's revision then. */
+  revision?: number
 }
 
 /** The book's outline before a structure operation: enough for `applyOp` to give the same `mapCell`. */
@@ -68,11 +73,12 @@ export interface ErrorData {
 /** From a thread: a task's answer. */
 export type FromThread = { task: number; ok: true; value: unknown } | { task: number; ok: false; error: ErrorData }
 
-/** A call's value and the session's clock and history after it. */
+/** A call's value and the session's clock, history and revision after it. */
 export interface Answer {
   value: unknown
   clock: Clock
   history: SessionHistory
+  revision: number
   /** `restructure`: the book's outline before it. */
   outline?: Outline
 }

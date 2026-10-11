@@ -4,7 +4,7 @@
  * free number), and a name another column has already gives the column further right a number: `Price2`, the first
  * free one. Columns are named from left to right, so a typed name keeps it and the column to its right gives way.
  */
-import type { BookInput, CellEdit, CellInput, NumberFormat, Scalar } from '../contract.js'
+import type { BookInput, CellInput, CellReplace, NumberFormat, Scalar } from '../contract.js'
 import { InputError } from '../input.js'
 import { formatAddress, inputScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -17,7 +17,7 @@ import { tableKey, tablesOf } from './model.js'
  * rewritten, the header cells holding the names; null when no edit touches a header cell. `text` writes a number or a
  * boolean as the book's locale does, by the cell's own number format when it has one.
  */
-export function headerEdits(book: BookInput, edits: CellEdit[], text: (v: Scalar, format?: NumberFormat) => string): BookInput | null {
+export function headerEdits(book: BookInput, edits: CellReplace[], text: (v: Scalar, format?: NumberFormat) => string): BookInput | null {
   const tables = tablesOf(book).list.filter((t) => t.headers)
   if (!tables.length) return null
   const typed = new Map<string, Map<number, string | null>>()

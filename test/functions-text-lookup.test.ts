@@ -39,7 +39,7 @@ describe('lookup and database functions beyond the Excel cases', () => {
     const v = sheet(cells)
     expect([v.E1, v.E2, v.E3, v.E4, v.E5, v.E7]).toEqual(['Z', 'y', 'e', 'i', 'Z', 0])
     const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock })
-    const changed = s.setCells([
+    const { changes: changed } = s.setCells([
       { sheet: 'S', cell: 'B3', input: { value: 'w' } },
       { sheet: 'S', cell: 'I1', input: { value: 'v' } },
     ])
@@ -64,7 +64,7 @@ describe('lookup and database functions beyond the Excel cases', () => {
     expect([v.E1, v.E2, v.E3, v.E4, v.E6, v.E7]).toEqual(['Z', 'Z', 'Z', 'c', 'G', 'i'])
     const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock })
     const edit = (cell: string, value: string | number) =>
-      Object.fromEntries(s.setCells([{ sheet: 'S', cell, input: { value } }]).filter((c) => /^E\d$/.test(c.cell)).map((c) => [c.cell, c.value]))
+      Object.fromEntries(s.setCells([{ sheet: 'S', cell, input: { value } }]).changes.filter((c) => /^E\d$/.test(c.cell)).map((c) => [c.cell, c.value]))
     expect(edit('B3', 'w')).toEqual({ E1: 'w', E2: 'w', E3: 'w' })
     expect(edit('G3', 'h')).toEqual({ E6: 'h' })
     expect(edit('I2', 'j')).toEqual({ E7: 'j' })
@@ -89,7 +89,7 @@ describe('lookup and database functions beyond the Excel cases', () => {
     const v = compute(book, { clock, execution }).sheets[0].cells
     expect([v.C1.value, v.I10.value]).toEqual([0, 'F'])
     const s = openSession(book, { clock, execution })
-    const edit = (cell: string, input: CellInput) => Object.fromEntries(s.setCells([{ sheet: 'S', cell, input }]).filter((c) => c.cell === 'C1' || c.cell === 'I10').map((c) => [c.cell, c.value]))
+    const edit = (cell: string, input: CellInput) => Object.fromEntries(s.setCells([{ sheet: 'S', cell, input }]).changes.filter((c) => c.cell === 'C1' || c.cell === 'I10').map((c) => [c.cell, c.value]))
     expect(edit('D1', { value: 5 })).toEqual({ C1: 50 })
     expect(edit('F10', { value: 'g' })).toEqual({ I10: 'g' })
     expect(edit('D1', { value: 3 })).toEqual({ C1: 0 })
@@ -129,7 +129,7 @@ describe('lookup and database functions beyond the Excel cases', () => {
       F3: { formula: 'INDEX(B:B,MATCH("Apple",A:A,0))' },
     }
     const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock })
-    const changed = s.setCells([
+    const { changes: changed } = s.setCells([
       { sheet: 'S', cell: 'B3', input: { value: 25 } },
       { sheet: 'S', cell: 'B2', input: { value: 11 } },
     ])

@@ -3,7 +3,7 @@
  * computation gives after every edit, both execution modes agree, the settings are checked and hashed.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, type BookInput, type CellEdit, type CellInput } from '../src/index.js'
+import { compute, InputError, openSession, type BookInput, type CellReplace, type CellInput } from '../src/index.js'
 import { mulberry32 } from '../src/synth.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -51,7 +51,7 @@ describe('iterative calculation', () => {
       let b = book()
       const s = openSession(b, { clock, execution })
       for (let i = 0; i < 150; i++) {
-        const e: CellEdit = { sheet: 'S', cell: at[Math.floor(rnd() * at.length)], input: inputs[Math.floor(rnd() * inputs.length)] }
+        const e: CellReplace = { sheet: 'S', cell: at[Math.floor(rnd() * at.length)], input: inputs[Math.floor(rnd() * inputs.length)] }
         s.setCells([e])
         const cells = { ...b.sheets[0].cells }
         if (e.input === null) delete cells[e.cell]
