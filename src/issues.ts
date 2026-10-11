@@ -2,7 +2,7 @@
  * Error reasons: why each cell with an error has it (a formula check, a cycle, an array that cannot spill, an
  * error from another cell or its own, an error element of a spilled array), and the cell an error began in.
  */
-import type { CellIssueDetail, CheckCode, ErrorCode } from './contract.js'
+import type { CellIssueDetail, CellRef, CheckCode, ErrorCode } from './contract.js'
 import { key, valueAt, type EngineState, type Formula } from './engine.js'
 import { formatAddress } from './model.js'
 import { ownerOf } from './spill/place.js'
@@ -57,8 +57,17 @@ function formulaIssue(state: EngineState, f: Formula, code: ErrorCode): Issue {
   return { s: f.s, r: f.r, c: f.c, error: code, reason }
 }
 
+/** The reason of a spilled cell (not its formula's) holding the error `code`, by its formula's reference text. */
+export const spilledReason = (code: ErrorCode, from: string) => `${GENERIC[code]}, in the array spilled from ${from}`
+
 /** The issue of a spilled cell (not its formula's) holding the error `code`. */
-const spilledIssue = (state: EngineState, x: Spill, r: number, c: number, code: ErrorCode): Issue => ({ s: x.s, r, c, error: code, reason: `${GENERIC[code]}, in the array spilled from ${placeText(state, { s: x.s, r: x.r1, c: x.c1 })}` })
+const spilledIssue = (state: EngineState, x: Spill, r: number, c: number, code: ErrorCode): Issue => ({ s: x.s, r, c, error: code, reason: spilledReason(code, placeText(state, { s: x.s, r: x.r1, c: x.c1 })) })
+
+/** The cell a reason names as the one its error came from (`, from 'S'!A2`, `in the array spilled from 'S'!B1`), or null. */
+export function reasonSource(reason: string): CellRef | null {
+  const m = /, (?:in the array spilled )?from '((?:[^']|'')+)'!([A-Z]+[1-9]\d*)$/.exec(reason)
+  return m ? { sheet: m[1].replaceAll("''", "'"), cell: m[2] } : null
+}
 
 /** Cells with an error and the reason. */
 export function issues(state: EngineState): Issue[] {
@@ -128,6 +137,11 @@ export function errorStep(state: EngineState, p: Place, code: ErrorCode): (Place
  * `memo` keeps the origins of ways without a cycle, which every cell on such a way shares, for the next calls.
  */
 export function errorOrigin(state: EngineState, p: Place, code: ErrorCode, memo?: Map<string, Place>): Place {
+  return wayBack(p, code, (at) => errorStep(state, at, code), memo)
+}
+
+/** The last of the steps from `p` (`step`, null where the error began), or in a cycle the first cell the way comes back to; `memo` as `errorOrigin`'s. */
+export function wayBack(p: Place, code: ErrorCode, step: (at: Place) => Place | null, memo?: Map<string, Place>): Place {
   const way = new Set<string>()
   let at = p
   for (;;) {
@@ -135,7 +149,7 @@ export function errorOrigin(state: EngineState, p: Place, code: ErrorCode, memo?
     const known = memo?.get(k)
     if (known) return done(known)
     way.add(k)
-    const next = errorStep(state, at, code)
+    const next = step(at)
     if (!next) return done(at)
     if (way.has(`${code}:${key(next.s, next.r, next.c)}`)) return { s: next.s, r: next.r, c: next.c }
     at = next
@@ -146,10 +160,13 @@ export function errorOrigin(state: EngineState, p: Place, code: ErrorCode, memo?
   }
 }
 
+/** An issue as `Session.getCellIssue` gives it, with the cell its error began in. */
+export const issueWith = (i: Omit<Issue, 's' | 'r' | 'c'>, origin: CellRef): CellIssueDetail => ({ error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}), origin })
+
 /** A cell's issue with the cell its error began in (`Session.getCellIssue`); null for a cell without an error. `memo` as `errorOrigin`'s. */
 export function issueDetail(state: EngineState, s: number, r: number, c: number, memo?: Map<string, Place>): CellIssueDetail | null {
   const i = cellIssue(state, s, r, c)
   if (!i) return null
   const o = errorOrigin(state, { s, r, c }, i.error, memo)
-  return { error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}), origin: { sheet: state.sheetNames[o.s], cell: formatAddress(o.r, o.c) } }
+  return issueWith(i, { sheet: state.sheetNames[o.s], cell: formatAddress(o.r, o.c) })
 }
