@@ -8,7 +8,7 @@
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
@@ -27,7 +27,7 @@ import { checkPatches } from './session/patch.js'
 import { patchPlan, type Plan } from './session/styles.js'
 import { bookDiff, DiffPass, type BookDiff } from './session/rebook.js'
 import { columnWidening, entryCheck, validationAlert } from './session/text.js'
-import { checkTextEntries, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
+import { checkActive, checkTextEntries, filledText, pastedText, previewCells, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
 import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
@@ -70,6 +70,10 @@ export interface SessionSteps {
   previewCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): Steps<CellTextPreview>
   setCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): Steps<CellTextsResult>
   previewCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): Steps<CellTextsPreview>
+  pasteText(sheet: string, cell: string, text: string, opts?: EditOptions): Steps<PasteTextResult>
+  previewPasteText(sheet: string, cell: string, text: string, opts?: EditOptions): Steps<PasteTextPreview>
+  fillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): Steps<FillTextResult>
+  previewFillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): Steps<FillTextPreview>
   setNames(names: NameInput[], opts?: EditOptions): Steps<EditResult>
   setClock(clock: Clock, opts?: EditOptions): Steps<EditResult>
   editStructure(op: StructureOp, opts?: EditOptions): Steps<SessionStructureResult>
@@ -333,6 +337,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const { row, col } = parseAddress(checkAddress(cell, 'cell'))
     return [i, row, col] as const
   }
+  /** A text entered into a range from its active cell (`fillCellText`), its arguments checked: the sheet, the active cell and the cells. */
+  const fill = (s: EngineState, sheet: string, range: string, text: string, opts: FillTextOptions) => {
+    const i = checkSheet(sheet, sheetIndex(s), 'sheet')
+    const x = checkRange(range, 'range')
+    const a = checkActive(opts.active, x)
+    return [i, a, filledText(s, i, x, a, checkString(text, 'text'), clock.now)] as const
+  }
   return {
     get clock() {
       return { ...clock }
@@ -406,9 +417,42 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkBase<CellTextOptions>(eo, revision, ['widen'])
       const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now)
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
-      return yield* previewed(s, typed.cells, () => {
-        const cells = typed.cells.map(({ i, r, c, edit }) => ({ sheet: edit.sheet, cell: edit.cell, input: edit.input, value: cellValue(s, i, r, c) }))
-        return { ok: true as const, cells, ...textsFound(textWidths(s, typed.cells), textAlerts(s, typed.cells)) }
+      return yield* previewed(s, typed.cells, () => ({ ok: true as const, cells: previewCells(s, typed.cells), ...textsFound(textWidths(s, typed.cells), textAlerts(s, typed.cells)) }))
+    },
+    *pasteText(sheet: string, cell: string, text: string, eo?: EditOptions) {
+      const s = yield* ready()
+      checkBase(eo, revision)
+      const pasted = pastedText(s, ...at(s, sheet, cell), checkString(text, 'text'), clock.now)
+      if (!pasted.ok) return pasted.refusal
+      // a paste widens no column and checks no rule of data validation
+      const [next, out, back] = yield* writeCells(s, pasted.cells.map((x) => x.edit), 'pasteText')
+      keep(back)
+      return { ok: true, ...answer(next, out), range: pasted.range }
+    },
+    *previewPasteText(sheet: string, cell: string, text: string, eo?: EditOptions): Steps<PasteTextPreview> {
+      const s = yield* ready()
+      checkBase(eo, revision)
+      const pasted = pastedText(s, ...at(s, sheet, cell), checkString(text, 'text'), clock.now)
+      if (!pasted.ok) return pasted.refusal
+      return yield* previewed(s, pasted.cells, () => ({ ok: true as const, range: pasted.range, cells: previewCells(s, pasted.cells) }))
+    },
+    *fillCellText(sheet: string, range: string, text: string, eo?: FillTextOptions) {
+      const s = yield* ready()
+      const opts = checkBase<FillTextOptions>(eo, revision, ['widen', 'active'])
+      const [i, a, filled] = fill(s, sheet, range, text, opts)
+      if (!filled.ok) return { ...filled.refusal, ...filled.ref }
+      const [next, out, widths] = yield* writeTexts(s, filled.cells, 'fillCellText', opts.widen !== false)
+      // the active cell's rule alone is checked, as Excel checks it
+      const alert = validationAlert(next, i, a.r, a.c)
+      return { ok: true, ...answer(next, out), ...textsFound(widths, []), ...(alert ? { validation: alert } : {}) }
+    },
+    *previewFillCellText(sheet: string, range: string, text: string, eo?: FillTextOptions): Steps<FillTextPreview> {
+      const s = yield* ready()
+      const [i, a, filled] = fill(s, sheet, range, text, checkBase<FillTextOptions>(eo, revision, ['widen', 'active']))
+      if (!filled.ok) return { ...filled.refusal, ...filled.ref }
+      return yield* previewed(s, filled.cells, () => {
+        const alert = validationAlert(s, i, a.r, a.c)
+        return { ok: true as const, cells: previewCells(s, filled.cells), ...textsFound(textWidths(s, filled.cells), []), ...(alert ? { validation: alert } : {}) }
       })
     },
     *setNames(names: NameInput[], eo?: EditOptions) {
@@ -588,6 +632,10 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     previewCellText: (sheet, cell, text, o) => now(() => core.previewCellText(sheet, cell, text, o)),
     setCellTexts: (entries, o) => now(() => core.setCellTexts(entries, o)),
     previewCellTexts: (entries, o) => now(() => core.previewCellTexts(entries, o)),
+    pasteText: (sheet, cell, text, o) => now(() => core.pasteText(sheet, cell, text, o)),
+    previewPasteText: (sheet, cell, text, o) => now(() => core.previewPasteText(sheet, cell, text, o)),
+    fillCellText: (sheet, range, text, o) => now(() => core.fillCellText(sheet, range, text, o)),
+    previewFillCellText: (sheet, range, text, o) => now(() => core.previewFillCellText(sheet, range, text, o)),
     setNames: (names, o) => now(() => core.setNames(names, o)),
     setClock: (clock, o) => now(() => core.setClock(clock, o)),
     editStructure: (op, o) => now(() => core.editStructure(op, o)),
