@@ -254,12 +254,18 @@ function parseKinds(args: string): Kind[] {
     .map((t) => ({ k: t[0], optional: t.endsWith('?') }))
 }
 
+/** The kind of the argument at `i`: past the declared kinds the last `rep` of them repeat. */
+const kindOf = (kinds: readonly string[], rep: number) => {
+  const fixed = kinds.length - rep
+  return (i: number) => (i < kinds.length ? kinds[i] : kinds[fixed + ((i - fixed) % rep)])
+}
+
 export function specOf(name: string, def: FnDef): FunctionSpec {
   const kinds = parseKinds(def.args)
   for (const k of kinds) if (!(k.k in COERCE)) throw new Error(`${name}: unknown argument kind ${k.k}`)
   const rep = def.rep ?? 0
   const fixed = kinds.length - rep
-  const kindAt = (i: number) => (i < kinds.length ? kinds[i].k : kinds[fixed + ((i - fixed) % rep)].k)
+  const kindAt = kindOf(kinds.map((k) => k.k), rep)
   const min = kinds.filter((k) => !k.optional).length
   let max = rep ? (def.max ?? MAX_ARGS) : kinds.length
   // past the declared kinds, repeated groups come whole (an optional one inside the first group may be left out)
@@ -475,7 +481,7 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => Arg {
   const rep = def.rep ?? 0
   const fixed = kinds.length - rep
   const head = (def.cx ? 1 : 0) + (def.cell ? 3 : 0)
-  const kindAt = (p: number) => (p < kinds.length ? kinds[p] : kinds[fixed + ((p - fixed) % rep)])
+  const kindAt = kindOf(kinds, rep)
   return (...a: unknown[]) => {
     const out: unknown[] = []
     if (def.cx) out.push(cx)
@@ -508,12 +514,13 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => Arg {
       const v = vals[p]
       // a repeated argument not given is left out (PRODUCT(2,), LCM(6,,4)); in pairs it keeps its place
       if (v === undefined && rep === 1 && p >= fixed) continue
-      if (LIST_KINDS.includes(k) && v !== undefined) {
+      const list = LIST_KINDS.includes(k) && v !== undefined
+      if (list) {
         lists++
         nums += (v as number[]).length
       }
       if (rep && p >= fixed) {
-        if (LIST_KINDS.includes(k) && v !== undefined) for (const e of v as number[]) tail.push(e)
+        if (list) for (const e of v as number[]) tail.push(e)
         else tail.push(v)
       } else out.push(v)
     }
