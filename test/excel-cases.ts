@@ -125,10 +125,12 @@ export const REASONS = {
     '`VAR`, `STDEV`, `DEVSQ`, `CORREL`, `RSQ`, `SLOPE`, `STEYX` and their kin, the database ones too, are computed here from exact sums; Excel computes them in double precision about a mean it sums plainly, and where the spread is small against the mean, or the residual against the variation, it loses the digits of the answer: of 10,000 values 1E12 + 0, 0.01, 0.02 `VAR.P` is 1.598E-04 in Excel and 6.680E-05 here, as exactly, `CORREL` of them with their steps 0, 1, 2 is 0.647 in Excel and 1 here, and `STEYX` of 1, 2.00000001, 3 on 1, 2, 3 is 0 in Excel and 8.16E-09 here.',
   momentRange:
     'Where the squares or products of the values leave the range of doubles, Excel answers what is left of them and the engine the exact answer: the squares of 1E-200 and 2E-200 are 0 in Excel, so `STDEV.P` of them is 0 (5E-201 here, within the tests\' tolerance) and `CORREL` with 1, 2 and `SLOPE` of 1, 2 on them `#DIV/0!` (1 and 1E+200 here); a sum or a product past 1.8E+308 is `#NUM!` in Excel where the answer fits (`AVERAGE` of 1E+308 three times and its variance 0, the covariance of 1E+308, −1E+308, 1E-200 with 0, 0, 1E+308, 2.2E+107 here).',
-  linestOffset:
-    '`LINEST` over values far from 0 against their spread loses digits here that Excel keeps (its least squares by Householder QR): of 10,000 values 1E12 + 0, 0.01, 0.02 on their steps 0, 1, 2 the slope is 0.0101547 here and 0.0100098 in Excel, 0.010009765625 exactly, as `SLOPE` gives it here.',
   lookupReadZone:
     '`LOOKUP` counts among its references every cell it may read on to, as far as its lookup array is long, whatever the value looked up: a formula among them, the `LOOKUP` itself too, comes first, and the `LOOKUP` in that zone is a cycle here (`#CYCLE!`) where Excel, which follows the cells `LOOKUP` reads in the end, computes it (`E10` = `LOOKUP(5,A1:A6,B10:D10)` reads `F10` in Excel and is `#CYCLE!` here, as `E10` lies in `B10:G10`; so beside a spill that could not spill, and right of a rectangle `INDEX` takes a column from).',
+  linestMean:
+    '`LINEST` and `TREND` over y far from 0 against its spread give Excel\'s coefficients, but Excel\'s intercept and regression sum of squares follow the mean it sums plainly: of 10,000 values 1E12 + 0, 0.01, 0.02 on their steps 0, 1, 2 the slope is 0.0100098 in both (0.010009765625 exactly), the intercept 1E12 − 0.0096 in Excel and 1E12 here, the regression sum of squares 1.598 in Excel and 0.668 here (as exactly, `DEVSQ` of the values), so `TREND` at step 3 is 1E12 + 0.0204 in Excel and 1E12 + 0.0300 here.',
+  growthRange:
+    '`GROWTH` far from 0 in x is `#NUM!` in Excel where the fitted value fits a double: of 100·1.1^k to cents on x = 1E10 + k, k = 0…11, the value at 1E10 + 12 is 313.84 here, where b·m^x has `LOGEST`\'s b 0 and m^x past the largest double.',
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).',
 } as const
@@ -205,7 +207,6 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'stat-edges-held:RSQ#1': { reason: 'momentRounding', engine: { t: 'n', v: 1 } },
   'stat-edges-held:SLOPE#2': { reason: 'momentRounding', engine: { t: 'n', v: 99.9024390243902 } },
   'stat-edges-held:STEYX#1': { reason: 'momentRounding', engine: { t: 'n', v: 0 } },
-  'stat-edges-held:LINEST#1': { reason: 'linestOffset', engine: { t: 'n', v: 0.0101547267909801 } },
   'stat-edges-held:DVAR#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668069581190745 } },
   'stat-edges-held:DVARP#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'stat-edges-held:DSTDEV#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.00817355235617137 } },
@@ -232,6 +233,13 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'stat-edges-held:FORECAST.LINEAR#4': { reason: 'momentRange', engine: { t: 'n', v: 3.33333333333333e+307 } },
   'stat-edges-held:STEYX#2': { reason: 'momentRounding', engine: { t: 'n', v: 8.16496575965492e-9 } },
   'stat-edges-held:STEYX#3': { reason: 'momentRounding', engine: { t: 'n', v: 8.16496575965492e-9 } },
+  'fit-offset-held:LINEST#1': { reason: 'linestMean', engine: { t: 'n', v: 0 } },
+  'fit-offset-held:LINEST#4': { reason: 'linestMean', engine: { t: 'n', v: 0 } },
+  'fit-offset-held:LINEST#11': { reason: 'linestMean', engine: { t: 'n', v: 0.668002774232626 } },
+  'fit-offset-held:TREND#1': { reason: 'linestMean', engine: { t: 'n', v: 0.030029296875 } },
+  'fit-offset-held:TREND#2': { reason: 'linestMean', engine: { t: 'n', v: 0.030029296875 } },
+  'fit-offset-held:GROWTH#2': { reason: 'growthRange', engine: { t: 'n', v: 313.83972099924 } },
+  'fit-offset-held:GROWTH#3': { reason: 'growthRange', engine: { t: 'n', v: 285.309168434641 } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives the pinned answer (`samePin`). */
