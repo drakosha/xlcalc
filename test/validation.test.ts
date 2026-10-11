@@ -86,6 +86,12 @@ describe('data validation under structure operations', () => {
     expect(after({ op: 'deleteRows', sheet: 'S', row: 2, count: 8 }).sheets[0].validations).toBeUndefined()
   })
 
+  it("a rule of one cell on the sheet's last row or column keeps ending there when lines before it are deleted, as a longer one does (the set edge-held)", () => {
+    const edge: BookInput = { sheets: [{ name: 'S', cells: {}, validations: [{ range: 'C1048576', type: 'any', prompt: 'r' }, { range: 'XFD3', type: 'any', prompt: 'c' }] }] }
+    expect(rules(after({ op: 'deleteRows', sheet: 'S', row: 5, count: 2 }, edge))).toEqual(['C1048574:C1048576 undefined', 'XFD3 undefined'])
+    expect(rules(after({ op: 'deleteColumns', sheet: 'S', column: 'B' }, edge))).toEqual(['B1048576 undefined', 'XFC3:XFD3 undefined'])
+  })
+
   it("a move takes rules along and keeps the target's where the moved cells have none; a copy pastes them, a plain copy clears them", () => {
     expect(rules(after({ op: 'moveRange', from: { sheet: 'S', range: 'E2:E3' }, to: { sheet: 'S', cell: 'J5' } }))).toEqual(['C2:C9 "Yes,No"', 'D2:D9 $H$1', 'E4:E9 G2 E4>A4', 'F2:F9 Fruits', 'J5:J6 J5>A2'])
     expect(rules(after({ op: 'moveRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', cell: 'C4' } }))).toEqual(['C2:C9 "Yes,No"', 'D2:D9 $H$1', 'E2:E9 G2 E2>A2', 'F2:F9 Fruits'])
