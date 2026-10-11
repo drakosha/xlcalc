@@ -105,7 +105,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | tables, 10 sets and 5 | en-US, ru-RU | 138 and 38 | 133 and 34 | all but the 14 the Mac pins too, and `headers-ru-held:tiny` (a number typed as its text takes the format of typed exponents) |
 | spill, 15 sets | en-US | 175 | 162 | all but 3 pinned and 3 that vary between runs |
 | workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
-| structure operations, 18 sets | en-US | 317 | 235 (sizes in other units) | all but 16 pinned |
+| structure operations, 18 sets | en-US | 317 | 239 (sizes in other units) | all but 12 pinned |
 | xlsx filters | en-US | 8 files | | all |
 | conditional formats, 10 sets | en-US, ru-RU | 64 books, 5,598 cells | 5,363 of the 5,394 cells the Mac read (28 `#` counted in pixels, `"b">"в"`, which the Mac takes otherwise, and two short month names of ru-RU) | every cell, but `#` counted in pixels and a colour channel one apart at an exact fraction past a percentile; the rules of every case but the bar lengths and the order the Mac pins too; of the 15 rules Excel made itself (`made`), 203 of 204 cells on the book read from its file |
 | notes, hyperlinks and frozen panes, 4 sets | en-US | 47 | 47 (the notes Excel made have its own user as author) | all but the pinned differences the Mac has, and a relative address saved one folder down |
