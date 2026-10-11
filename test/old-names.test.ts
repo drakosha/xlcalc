@@ -88,6 +88,7 @@ describe('old names of a synchronous session', () => {
     const methods = s as unknown as Record<string, unknown>
     for (const [old, name] of [...SESSION, ['restructure', 'editStructure']]) expect(methods[old], old).toBe(methods[name])
     const r: SessionRestructureResult = s.restructure(INSERT)
-    expect(r.ok && r.book).toBe(s.getBook())
+    expect(r).toMatchObject({ ok: true, moved: [{ kind: 'lines' }] })
+    expect(r).not.toHaveProperty('book')
   })
 })

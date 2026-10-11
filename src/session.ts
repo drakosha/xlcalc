@@ -428,14 +428,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
         const [out, before] = yield* relayout(old, next, null)
         keep(() => layoutStep('editStructure', before, next))
-        return { ok: true, book: old.input, mapCell: checkedMapCell({ geometry: [], before: old.sheetNames, after: old.sheetNames }), ...answer(old, out) }
+        return { ok: true, mapCell: checkedMapCell({ geometry: [], before: old.sheetNames, after: old.sheetNames }), ...answer(old, out) }
       }
       // the simple way: the state is built again from the new book
       const before = old.sheetNames
       const [next, out, diff] = yield* rebuild(old, r.book, r.geometry, true, diffTo(r.book, old.input, r.geometry))
       keep(() => diff && bookStep('editStructure', diff, r.book))
       const moved = movesOf(r.geometry, before, next.sheetNames)
-      return { ok: true, book: next.input, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, { ...out, moved }) }
+      return { ok: true, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, { ...out, moved }) }
     },
     setStyles(styles: CellStyle[], eo?: EditOptions) {
       const s = st()

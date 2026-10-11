@@ -133,7 +133,7 @@ describe.each(['closures', 'eval'] as const)('notes, links and frozen panes in a
     expect(s.getBook().sheets.map((x) => x.frozen)).toEqual([undefined, { columns: 2 }])
     expect('frozen' in s.getBook().sheets[0]).toBe(false)
     const r = s.editStructure({ op: 'insertColumns', sheet: 'T', column: 'A' })
-    expect(r.ok && r.book.sheets[1].frozen).toEqual({ columns: 3 })
+    expect(r.ok && s.getBook().sheets[1].frozen).toEqual({ columns: 3 })
     expect(() => s.setLayout([{ sheet: 'S', frozen: { rows: -1 } }])).toThrow(InputError)
     s.close()
   })

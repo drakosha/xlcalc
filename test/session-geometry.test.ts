@@ -1,8 +1,8 @@
 /**
  * A structure operation's geometry through a session, done, undone and redone: `moved` and `mapCell` of an undo and a
  * redo are those of the operation taken back and again, where the operation did more than its arguments say (visible
- * rows of a filtered sheet, a table deleted with its cells). In a synchronous session, in the same thread and in a
- * thread, with closures and eval.
+ * rows of a filtered sheet, a table deleted with its cells); one answer without the book in every kind of session. In a
+ * synchronous session, in the same thread and in a thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import type { AsyncSession, BookInput, CellRef, Execution } from '../src/index.js'
@@ -64,6 +64,18 @@ describe.each(['closures', 'eval'] as const)('the geometry of an operation done,
       expect(where(again.mapCell, ['A1', 'A3', 'C1'], 'T')).toEqual([null, null, 'C1'])
       // the cells the redo took away need no change to be gone
       expect(again.changes.filter((c) => c.sheet === 'T' && c.cell !== 'C1')).toEqual([])
+      await s.close()
+    })
+
+    it('one answer in every kind of session: the edit and mapCell, without the book, a sheet hidden too', async () => {
+      const s = await open()
+      for (const op of [{ op: 'insertRows', sheet: 'S', row: 2 }, { op: 'hideSheet', sheet: 'T' }] as const) {
+        const r = await s.editStructure(op)
+        expect(r).toMatchObject({ ok: true, revision: expect.any(Number), changes: expect.any(Array) })
+        expect(r).not.toHaveProperty('book')
+        expect(typeof (r.ok && r.mapCell)).toBe('function')
+      }
+      expect((await s.getBook()).sheets[0].cells.A3).toEqual({ value: 2 })
       await s.close()
     })
   })

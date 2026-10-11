@@ -63,7 +63,7 @@ describe('the book locale', () => {
     s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 1 } }])
     expect(s.getBook().locale).toBe('ru-RU')
     const r = s.editStructure({ op: 'insertRows', sheet: 'S', row: 1, count: 1 })
-    expect(r.ok && r.book.locale).toBe('ru-RU')
+    expect(r.ok && s.getBook().locale).toBe('ru-RU')
     expect(s.getResult().hash).toBe(compute(s.getBook(), { clock: s.clock }).hash)
   })
 })

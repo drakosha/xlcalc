@@ -59,8 +59,8 @@ describe('session.editStructure', () => {
           continue
         }
         expected = pure.book
-        expect(r.book, `seed ${seed} ${op.op}`).toEqual(pure.book)
-        expect(r.book).toBe(session.getBook())
+        expect(session.getBook(), `seed ${seed} ${op.op}`).toEqual(pure.book)
+        expect(r).not.toHaveProperty('book')
         const full = compute(pure.book, { clock })
         expect(session.getResult().hash, `seed ${seed} ${op.op}`).toBe(full.hash)
         expect(shown(before, r), `seed ${seed} ${op.op}`).toEqual(valuesOf(full))
