@@ -186,7 +186,7 @@ export interface SheetInput {
   conditionalFormats?: ConditionalFormat[]
   /**
    * Data validation (Excel's Data Validation): the rules of the sheet's cells, at most one rule over a cell. Not part of
-   * computation: a session gives a cell's rule and its list (`Session.validation`) and checks a value against it
+   * computation: a session gives a cell's rule and its list (`Session.getValidation`) and checks a value against it
    * (`Session.validateEntry`).
    */
   validations?: DataValidation[]
@@ -698,7 +698,7 @@ export interface EntryOptions {
   /** The book's date system, as `BookInput.dateSystem`; 1900 without it. */
   dateSystem?: 1900 | 1904
   /**
-   * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.cells`): its `format` (the one
+   * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.getCells`): its `format` (the one
    * it shows by: its row's or column's without its own), `style`, `meta`, `note` and `link`; other fields are not read.
    * The new input keeps its style, meta, note and link, and its format where Excel keeps it.
    */
@@ -978,7 +978,7 @@ export interface CellReplace extends CellRef {
  * changed is listed too (a new format, a column's width), with its value.
  */
 /**
- * A cell of `Session.cells`: as `CellResult`, and the cell's own `style` (an index of the book's `styles`), `note` and
+ * A cell of `Session.getCells`: as `CellResult`, and the cell's own `style` (an index of the book's `styles`), `note` and
  * `link`, and the `look` its sheet's conditional formats give it (with a number format of theirs, `text` and `color`
  * show the value by it).
  */
@@ -1017,7 +1017,7 @@ export interface EditResult {
    * the cell that was at their old place (`moved`).
    */
   changes: CellChange[]
-  /** The sheets whose layout changed (rows, columns, merged areas, tables, conditional formats, validation…): a host reads `layout()` again. */
+  /** The sheets whose layout changed (rows, columns, merged areas, tables, conditional formats, validation…): a host reads `getLayout()` again. */
   layout?: string[]
   /** The book's style table, when the call changed it. */
   styles?: CellStyle[]
@@ -1094,7 +1094,7 @@ export interface ViewportOptions {
 }
 
 /**
- * A cell of a window (`Session.getViewport`): its value as `result()` gives it, with the cell's whole look resolved, its
+ * A cell of a window (`Session.getViewport`): its value as `getResult()` gives it, with the cell's whole look resolved, its
  * style and number format as rows and columns give them, what its conditional formats show, its note and link.
  */
 export interface ViewportCell extends Partial<CellDisplay> {
@@ -1151,14 +1151,14 @@ export interface Viewport {
   rows: ViewportRow[]
   /** The merged areas that meet `range`, whole. */
   merges: string[]
-  /** Where the sheet's cells end, as `Session.extent`. */
-  extent: SheetExtent
+  /** Where the sheet's cells end, as `Session.getUsedRange`. */
+  usedRange: SheetExtent
   /** The session's revision the window is of (`Session.revision`): a host takes the changes of later edits over it (`EditResult.revision`). */
   revision: number
 }
 
 /**
- * Why a cell holds an error (`Session.getCellIssue`): its code, reason, check code and position as `result().issues`
+ * Why a cell holds an error (`Session.getCellIssue`): its code, reason, check code and position as `getResult().issues`
  * gives them, and `origin`, the cell where the error began, following the cells its reason names (`from 'S'!A2`) to one
  * whose error is its own; in a cycle, the first cell of the cycle the way reaches.
  */
@@ -1231,7 +1231,7 @@ export interface UndoOptions {
 }
 
 /** The calls a session can undo: those that change its book. `setClock` and a live session's new clock are not steps. */
-export type UndoCall = 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setNames' | 'setStyles' | 'setLayout' | 'restructure'
+export type UndoCall = 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
 
 /** A step of a session undone or done again (`Session.undo`, `Session.redo`): the edit's result, as the call gave it. */
 export interface UndoResult extends EditResult {
@@ -1240,8 +1240,8 @@ export interface UndoResult extends EditResult {
   /** The calls that change cells: the cells whose input changed back, so a host can read their note and link again. */
   cells?: CellRef[]
   /**
-   * `restructure`: where a cell of the book before this call is now, null when no cell of the book has it; an interface
-   * that moves its shown values by it and applies `changes` has the new values, as after `restructure`.
+   * `editStructure`: where a cell of the book before this call is now, null when no cell of the book has it; an interface
+   * that moves its shown values by it and applies `changes` has the new values, as after `editStructure`.
    */
   mapCell?(ref: CellRef): CellRef | null
 }
@@ -1259,7 +1259,7 @@ export interface RangeRef {
 }
 
 /**
- * One structure operation (`restructure`). Rows are 1-based numbers and columns are letters, as in A1
+ * One structure operation (`editStructure`). Rows are 1-based numbers and columns are letters, as in A1
  * addresses; `count` is 1 by default; sheets and tables are matched case-insensitively. Tables move with their cells
  * and grow and shrink with the rows and columns inserted and deleted inside them; an inserted row gets the formulas of
  * the calculated columns, an inserted column a name (`Column1`), and references to a deleted column become #REF!.
@@ -1335,7 +1335,8 @@ export type StructureRefusal =
   /** A table name that breaks the rules of `TableInput.name` or that a table or a defined name of the book has. */
   | 'table_name'
 
-export type RestructureResult =
+/** `editStructure`'s answer. */
+export type StructureResult =
   | {
       ok: true
       /** The new book; the input book is not changed, unchanged sheets and cells are shared. */
@@ -1346,20 +1347,26 @@ export type RestructureResult =
   /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
   | Refusal<StructureRefusal>
 
+/** @deprecated The name is `StructureResult`. */
+export type RestructureResult = StructureResult
+
 /**
- * `Session.restructure`: the operation's result and the edit's. `changes` are the cells whose value or formula differs
+ * `Session.editStructure`: the operation's result and the edit's. `changes` are the cells whose value or formula differs
  * from those of the cell that was at their old place (`mapCell`), by new address, a cell no old cell came to counting as
  * empty before; with `display`, the cells whose shown text or colour differs too. An interface that moves its shown
  * cells by `moved` (or `mapCell`) and applies these has the new ones.
  */
-export type SessionRestructureResult =
+export type SessionStructureResult =
   | (EditResult & {
       ok: true
-      /** The session's book after the operation (as `book()` returns it). */
+      /** The session's book after the operation (as `getBook()` returns it). */
       book: BookInput
       mapCell(ref: CellRef): CellRef | null
     })
   | Refusal<StructureRefusal>
+
+/** @deprecated The name is `SessionStructureResult`. */
+export type SessionRestructureResult = SessionStructureResult
 
 /** Fields to change on columns or rows: a value sets the field, null removes it, a field left out stays. */
 export type LinePatch<T> = { [K in keyof T]?: T[K] | null }
@@ -1397,7 +1404,7 @@ export interface ColumnsFit {
 }
 
 /**
- * A cell's data validation (`Session.validation`): the rule over it, the rule's formulas as at the cell (relative
+ * A cell's data validation (`Session.getValidation`): the rule over it, the rule's formulas as at the cell (relative
  * references moved from the rule's first cell), and for a list the items its dropdown offers.
  */
 export interface CellValidation {
@@ -1445,16 +1452,16 @@ export interface PatchFields {
   link?: CellLink | null
 }
 
-/** Where a sheet's cells end (`Session.extent`): everything lies in its first `rows` rows and `columns` columns; 0 and 0 for an empty sheet. */
+/** Where a sheet's cells end (`Session.getUsedRange`): everything lies in its first `rows` rows and `columns` columns; 0 and 0 for an empty sheet. */
 export interface SheetExtent {
   rows: number
   columns: number
 }
 
-/** A sheet without its cells (`Session.layout`). */
+/** A sheet without its cells (`Session.getLayout`). */
 export type SheetLayout = Omit<SheetInput, 'cells'>
 
-/** A book without the cells of its sheets (`Session.layout`): its styles, names and settings, and each sheet's layout. */
+/** A book without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<BookInput, 'sheets'> & { sheets: SheetLayout[] }
 
 /** A session's book and its result taken at one moment (`Session.getSnapshot`), as `writeXlsx` takes them. */
@@ -1514,8 +1521,8 @@ export interface Session {
   setNames(names: NameInput[], opts?: EditOptions): EditResult
   /** Non-live sessions only. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
-  /** A structure operation on the session's book, recomputed; refused as `restructure` refuses it. A sheet hidden or shown recomputes nothing. */
-  restructure(op: StructureOp, opts?: EditOptions): SessionRestructureResult
+  /** A structure operation on the session's book, recomputed; refused as `editStructure` refuses it. A sheet hidden or shown recomputes nothing. */
+  editStructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
   /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing; the shown text does not depend on styles. */
   setStyles(styles: CellStyle[], opts?: EditOptions): EditResult
   /**
@@ -1531,52 +1538,52 @@ export interface Session {
    * The session's book with every change so far: what a host saves as a version. Its objects are the
    * session's own and later calls change them, so do not modify it; serialize or copy what must stay.
    */
-  book(): BookInput
+  getBook(): BookInput
   /**
    * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells`
    * (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation and the rest). It costs
-   * what the layout holds, not the cells; its objects are the session's own, as `book()`'s are.
+   * what the layout holds, not the cells; its objects are the session's own, as `getBook()`'s are.
    */
-  layout(): BookLayout
+  getLayout(): BookLayout
   /**
    * Where a sheet's cells end: the last row and column that a cell of its input (a value, a formula, or a style, a
    * format, meta, a note or a link alone), a spilled value (the whole spill range), a merged area or a table reaches.
    * Settings of whole rows and columns, conditional formats and data validation do not count. It costs the sheet's
    * columns, spills and cells without a value, not a pass over all its cells.
    */
-  extent(sheet: string): SheetExtent
+  getUsedRange(sheet: string): SheetExtent
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle of a sheet (`B2:D9`, `B2`, whole columns `B:D`, whole rows `2:9`), or of several (a cell in
-   * two of them is listed once), as `result()` gives them, by address: the same cells (spilled ones too, empty ones
+   * two of them is listed once), as `getResult()` gives them, by address: the same cells (spilled ones too, empty ones
    * left out) with the same fields, and each cell's own `style`, `note` and `link`, an old-kind array formula's `array`,
    * and the `look` the sheet's conditional formats give it by the current values (an empty cell with a look is listed
    * with the value null). For a window over a sheet: it costs what the rectangles hold, not the book; the statistics of
    * a rule's cells (lowest, highest, percentiles) are kept until an edit changes them. Edits do not list cells whose
    * conditional look changed: they give the rules' cells as `repaint`, for a host to read again where its window meets them.
    */
-  cells(sheet: string, range: string | string[]): Record<string, CellView>
+  getCells(sheet: string, range: string | string[]): Record<string, CellView>
   /**
    * A window over a sheet for a grid (`B2:D9`, `B:D`, `2:9`): its cells with their styles and number formats resolved,
    * empty ones with a style of their row or column too, the widths and heights of its lines and the merged areas that meet
-   * it (`Viewport`). It costs what the window holds, as `cells`, not the book.
+   * it (`Viewport`). It costs what the window holds, as `getCells`, not the book.
    */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
   /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
   getCellIssue(sheet: string, cell: string): CellIssueDetail | null
   /** The data validation of a cell (`CellValidation`), its list computed now; null when no rule is over the cell. */
-  validation(sheet: string, cell: string): CellValidation | null
+  getValidation(sheet: string, cell: string): CellValidation | null
   /**
    * Whether the cell holding `input` (null: cleared) would meet its rule, as Excel checks a cell's value
    * (`Range.Validation.Value`): the value the input computes to, in the book with it. Changes nothing; a cell without a
    * rule takes anything. Text typed into the cell is `parseEntry`'s input first.
    */
   validateEntry(sheet: string, cell: string, input: CellInput | null): EntryCheck
-  result(): ComputeResult
-  /** The book (as `book()`, the session's own objects) and its result (as `result()`) in one call. */
+  getResult(): ComputeResult
+  /** The book (as `getBook()`, the session's own objects) and its result (as `getResult()`) in one call. */
   getSnapshot(): BookSnapshot
-  /** The values hash `result()` gives, without building the result. */
-  hash(): string
+  /** The values hash `getResult()` gives, without building the result. */
+  getHash(): string
   /**
    * Takes back the last change of the book, as Excel's Undo: the whole of one call that changed it (`UndoCall`),
    * recomputed; null when there is nothing to undo. A change after an undo forgets what `redo` could do again.
@@ -1587,6 +1594,22 @@ export interface Session {
   /** The steps `undo` and `redo` can take now. */
   readonly history: SessionHistory
   close(): void
+  /** @deprecated The name is `editStructure`. */
+  restructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
+  /** @deprecated The name is `getBook`. */
+  book(): BookInput
+  /** @deprecated The name is `getLayout`. */
+  layout(): BookLayout
+  /** @deprecated The name is `getUsedRange`. */
+  extent(sheet: string): SheetExtent
+  /** @deprecated The name is `getCells`. */
+  cells(sheet: string, range: string | string[]): Record<string, CellView>
+  /** @deprecated The name is `getValidation`. */
+  validation(sheet: string, cell: string): CellValidation | null
+  /** @deprecated The name is `getResult`. */
+  result(): ComputeResult
+  /** @deprecated The name is `getHash`. */
+  hash(): string
 }
 
 // ---------- asynchronous and threaded computation (`docs/async.md`) ----------
@@ -1633,8 +1656,11 @@ export type AsyncComputeOptions = ComputeOptions & CalcOptions
 /** `signal` and `timeoutMs` bound the opening (the first computation of the book). */
 export type AsyncSessionOptions = SessionOptions & CalcOptions
 
-/** `AsyncSession.restructure`: as `SessionRestructureResult`, without the book (`AsyncSession.book()` gives it). */
-export type AsyncRestructureResult = (EditResult & { ok: true; mapCell(ref: CellRef): CellRef | null }) | Refusal<StructureRefusal>
+/** `AsyncSession.editStructure`: as `SessionStructureResult`, without the book (`AsyncSession.getBook()` gives it). */
+export type AsyncStructureResult = (EditResult & { ok: true; mapCell(ref: CellRef): CellRef | null }) | Refusal<StructureRefusal>
+
+/** @deprecated The name is `AsyncStructureResult`. */
+export type AsyncRestructureResult = AsyncStructureResult
 
 /** The options of an asynchronous call that changes a session's book. */
 export type AsyncEditOptions = CalcOptions & EditOptions
@@ -1656,37 +1682,55 @@ export interface AsyncSession {
   previewCellText(sheet: string, cell: string, text: string, opts?: CalcOptions & CellTextOptions): Promise<CellTextPreview>
   setNames(names: NameInput[], opts?: AsyncEditOptions): Promise<EditResult>
   setClock(clock: Clock, opts?: AsyncEditOptions): Promise<EditResult>
-  restructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncRestructureResult>
+  editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
   /** The session's book; from a thread, a copy. */
-  book(): Promise<BookInput>
-  /** As `Session.layout`; from a thread, a copy, without the cells. */
-  layout(): Promise<BookLayout>
-  extent(sheet: string): Promise<SheetExtent>
+  getBook(): Promise<BookInput>
+  /** As `Session.getLayout`; from a thread, a copy, without the cells. */
+  getLayout(): Promise<BookLayout>
+  getUsedRange(sheet: string): Promise<SheetExtent>
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
-  /** As `Session.cells`; from a thread only the rectangles come back, in one call. */
-  cells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
+  getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
   /** As `Session.getViewport`; from a thread the window comes back in one call, its equal styles still one object each. */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Promise<Viewport>
   getCellIssue(sheet: string, cell: string): Promise<CellIssueDetail | null>
-  validation(sheet: string, cell: string): Promise<CellValidation | null>
+  getValidation(sheet: string, cell: string): Promise<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null, opts?: CalcOptions): Promise<EntryCheck>
-  result(opts?: CalcOptions): Promise<ComputeResult>
+  getResult(opts?: CalcOptions): Promise<ComputeResult>
   /** As `Session.getSnapshot`, in one call, so no edit comes between the book and its result; from a thread, a copy. */
   getSnapshot(opts?: CalcOptions): Promise<BookSnapshot>
-  /** As `Session.hash`: from a thread only the hash comes back. */
-  hash(opts?: CalcOptions): Promise<string>
+  /** As `Session.getHash`: from a thread only the hash comes back. */
+  getHash(opts?: CalcOptions): Promise<string>
   undo(opts?: AsyncEditOptions): Promise<UndoResult | null>
   redo(opts?: AsyncEditOptions): Promise<UndoResult | null>
   /** The session's history as of its last finished call. */
   readonly history: SessionHistory
   close(): Promise<void>
+  /** @deprecated The name is `editStructure`. */
+  restructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
+  /** @deprecated The name is `getBook`. */
+  book(): Promise<BookInput>
+  /** @deprecated The name is `getLayout`. */
+  layout(): Promise<BookLayout>
+  /** @deprecated The name is `getUsedRange`. */
+  extent(sheet: string): Promise<SheetExtent>
+  /** @deprecated The name is `getCells`. */
+  cells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** @deprecated The name is `getValidation`. */
+  validation(sheet: string, cell: string): Promise<CellValidation | null>
+  /** @deprecated The name is `getResult`. */
+  result(opts?: CalcOptions): Promise<ComputeResult>
+  /** @deprecated The name is `getHash`. */
+  hash(opts?: CalcOptions): Promise<string>
 }
 
 /** A calculator: `createInlineCalc` (the same thread, in portions) or `createCalcPool` (threads). */
 export interface Calc {
   compute(book: BookInput, opts?: AsyncComputeOptions): Promise<ComputeResult>
+  createSession(book: BookInput, opts?: AsyncSessionOptions): Promise<AsyncSession>
+  /** @deprecated The name is `createSession`. */
   openSession(book: BookInput, opts?: AsyncSessionOptions): Promise<AsyncSession>
   /** Refuses further calls (`closed`), the waiting and running ones too, and closes the sessions. */
   close(): Promise<void>
@@ -1738,6 +1782,7 @@ export interface CalcPoolOptions {
   spawn?: () => WorkerLike
 }
 
+/** @deprecated The package's named exports are these functions (`compute`, `createSession` and the rest): import them. */
 export interface FormulaEngine {
   compute(book: BookInput, opts?: ComputeOptions): ComputeResult
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
@@ -1745,8 +1790,12 @@ export interface FormulaEngine {
   validateName(name: string, opts?: NameOptions): NameCheck
   /** The issues of a book's names, as `ComputeResult.nameIssues` gives them for a book with these sheets, tables and locale. */
   validateNames(names: NameInput[], ctx: NamesContext): NameIssue[]
+  createSession(book: BookInput, opts?: SessionOptions): Session
+  editStructure(book: BookInput, op: StructureOp): StructureResult
+  /** @deprecated The name is `createSession`. */
   openSession(book: BookInput, opts?: SessionOptions): Session
-  restructure(book: BookInput, op: StructureOp): RestructureResult
+  /** @deprecated The name is `editStructure`. */
+  restructure(book: BookInput, op: StructureOp): StructureResult
   /** A value as a cell shows it, without a book: by a format, in a locale and a column's width. */
   displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay
   /** Text typed into a cell as Excel takes it, without a book: by the book's locale and the cell's format, style and meta. */
