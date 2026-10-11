@@ -48,6 +48,22 @@ interface Font {
   lost: string[]
 }
 
+/**
+ * A font's underline (`<u>`, single without a `val`); an accounting one is read as its plain kind and named in `lost`,
+ * and so is a dxf's `none`, which takes an underline away (a style cannot say so; a cell's font has none then).
+ */
+export function underlineOf(body: string, lost: string[], dxf = false): FontStyle['underline'] {
+  const u = element(body, 'u')
+  const under = u && (attributes(u.attrs).val ?? 'single')
+  if (under === 'single' || under === 'double') return under
+  if (under === 'singleAccounting' || under === 'doubleAccounting') {
+    lost.push('accounting underline')
+    return under === 'singleAccounting' ? 'single' : 'double'
+  }
+  if (dxf && under === 'none') lost.push('an underline taken away')
+  return undefined
+}
+
 export function font(e: Element, p: Palette): Font {
   const b = e.body ?? ''
   const style: FontStyle = {}
@@ -58,13 +74,8 @@ export function font(e: Element, p: Palette): Font {
   if (size > 0) style.size = size
   if (on(b, 'b')) style.bold = true
   if (on(b, 'i')) style.italic = true
-  const u = element(b, 'u')
-  const under = u && (attributes(u.attrs).val ?? 'single')
-  if (under === 'single' || under === 'double') style.underline = under
-  else if (under === 'singleAccounting' || under === 'doubleAccounting') {
-    style.underline = under === 'singleAccounting' ? 'single' : 'double'
-    lost.push('accounting underline')
-  }
+  const underline = underlineOf(b, lost)
+  if (underline) style.underline = underline
   if (on(b, 'strike')) style.strike = true
   const color = colorOf(element(b, 'color'), p)
   if (color) style.color = color
@@ -102,8 +113,14 @@ function fill(e: Element, p: Palette): { fill?: CellStyle['fill']; lost: string[
   const type = pf ? (attributes(pf.attrs).patternType ?? (pf.body ? 'solid' : 'none')) : 'none'
   if (type === 'none') return { lost: [] }
   if (type !== 'solid') return { lost: ['pattern fill'] }
-  const color = colorOf(element(pf!.body ?? '', 'fgColor'), p) ?? colorOf(element(pf!.body ?? '', 'bgColor'), p)
+  const color = solidColor(pf!, p, 'fgColor')
   return color ? { fill: { color }, lost: [] } : { lost: [] }
+}
+
+/** A solid fill's colour (`<patternFill>`): its `first` colour, else the other; a cell's fill shows its `fgColor`, a dxf's its `bgColor`. */
+export function solidColor(pf: Element, p: Palette, first: 'fgColor' | 'bgColor'): string | undefined {
+  const b = pf.body ?? ''
+  return colorOf(element(b, first), p) ?? colorOf(element(b, first === 'fgColor' ? 'bgColor' : 'fgColor'), p)
 }
 
 function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: string[] } {
