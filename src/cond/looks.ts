@@ -160,6 +160,7 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
         }
         const b = cmp(v, fb(r, c))
         if (Number.isNaN(b)) return false
+        // the ends either way round (the set `cond/looks`, column E), where data validation's take nothing reversed
         const inside = (a >= 0 && b <= 0) || (a <= 0 && b >= 0)
         return rule.operator === 'between' ? inside : !inside
       }

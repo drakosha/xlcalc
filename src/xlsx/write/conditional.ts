@@ -61,6 +61,7 @@ const UNFIT = Symbol('unfit')
 export function conditionalXml(sheet: SheetInput, index: number, ctx: ConditionalContext): ConditionalWritten {
   const main: string[] = []
   const ext: string[] = []
+  // the model's ranges as they are: Excel saves `A:A` as `A1:A1048576` and reads both (the set `cond/files`, case `wide`)
   const block = (ranges: string[], rules: string) => `<conditionalFormatting sqref="${escapeAttr(ranges.join(' '))}">${rules}</conditionalFormatting>`
   const block14 = (ranges: string[], rules: string) => `<x14:conditionalFormatting xmlns:xm="${XM}">${rules}<xm:sqref>${escapeText(ranges.join(' '))}</xm:sqref></x14:conditionalFormatting>`
   ;(sheet.conditionalFormats ?? []).map(withFormula).forEach((rule, i) => {
