@@ -1,0 +1,578 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "day": "2026-10-11",
+  "seconds": 9.4
+ },
+ "books": {
+  "fills": {
+   "styles": [
+    {
+     "fill": {
+      "color": "#0A0A01"
+     }
+    },
+    {
+     "fill": {
+      "color": "#0A0A02"
+     }
+    },
+    {
+     "fill": {
+      "color": "#0A0A03"
+     }
+    },
+    {
+     "fill": {
+      "color": "#0A0A04"
+     }
+    },
+    {
+     "fill": {
+      "color": "#0A0A05"
+     }
+    },
+    {
+     "fill": {
+      "color": "#0A0A06"
+     }
+    },
+    {
+     "fill": {
+      "color": "#0A0A07"
+     }
+    },
+    {
+     "fill": {
+      "color": "#FFFF00"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "style": 0
+      },
+      "B1": {
+       "value": 1
+      },
+      "C1": {
+       "value": 1,
+       "style": 7
+      },
+      "A2": {
+       "value": 2,
+       "style": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "C2": {
+       "value": 2,
+       "style": 7
+      },
+      "A3": {
+       "value": 3,
+       "style": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "C3": {
+       "value": 3,
+       "style": 7
+      },
+      "A4": {
+       "value": 4,
+       "style": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "C4": {
+       "value": 4,
+       "style": 7
+      },
+      "A5": {
+       "value": 5,
+       "style": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "C5": {
+       "value": 5,
+       "style": 7
+      },
+      "A6": {
+       "value": 6,
+       "style": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "C6": {
+       "value": 6,
+       "style": 7
+      },
+      "A7": {
+       "value": 7,
+       "style": 6
+      },
+      "B7": {
+       "value": 7
+      },
+      "C7": {
+       "value": 7,
+       "style": 7
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "expression",
+       "ranges": [
+        "B1:C1"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#0A0A08"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B2:C2"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#0A0A09"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B3:C3"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#0A0A0A"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B4:C4"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#0A0A0B"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B5:C5"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#0A0A0C"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B6:C6"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#0A0A0D"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B7:C7"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#0A0A0E"
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "one": {
+   "styles": [
+    {
+     "fill": {
+      "color": "#0A0A01"
+     }
+    },
+    {
+     "fill": {
+      "color": "#FFFF00"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "style": 0
+      },
+      "B1": {
+       "value": 1
+      },
+      "C1": {
+       "value": 1,
+       "style": 1
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "expression",
+       "ranges": [
+        "B1:C1"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#0A0A02"
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "fills",
+   "book": "fills",
+   "read": [
+    [
+     "S",
+     "A1:C7"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill patternType=\"solid\"><fgColor rgb=\"FF0A0A01\"/><bgColor indexed=\"64\"/></patternFill>",
+     "to": "<patternFill patternType=\"none\"><bgColor rgb=\"FFFF0000\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill patternType=\"solid\"><fgColor rgb=\"FF0A0A02\"/><bgColor indexed=\"64\"/></patternFill>",
+     "to": "<patternFill patternType=\"none\"><fgColor rgb=\"FFFF0000\"/><bgColor rgb=\"FF00B050\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill patternType=\"solid\"><fgColor rgb=\"FF0A0A03\"/><bgColor indexed=\"64\"/></patternFill>",
+     "to": "<patternFill patternType=\"solid\"><bgColor rgb=\"FFFF0000\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill patternType=\"solid\"><fgColor rgb=\"FF0A0A04\"/><bgColor indexed=\"64\"/></patternFill>",
+     "to": "<patternFill patternType=\"solid\"><fgColor rgb=\"FFFF0000\"/><bgColor rgb=\"FF00B050\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill patternType=\"solid\"><fgColor rgb=\"FF0A0A05\"/><bgColor indexed=\"64\"/></patternFill>",
+     "to": "<patternFill><fgColor rgb=\"FFFF0000\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill patternType=\"solid\"><fgColor rgb=\"FF0A0A06\"/><bgColor indexed=\"64\"/></patternFill>",
+     "to": "<patternFill><bgColor rgb=\"FFFF0000\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill patternType=\"solid\"><fgColor rgb=\"FF0A0A07\"/><bgColor indexed=\"64\"/></patternFill>",
+     "to": "<gradientFill degree=\"90\"><stop position=\"0\"><color rgb=\"FFFF0000\"/></stop><stop position=\"1\"><color rgb=\"FF0070C0\"/></stop></gradientFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill><bgColor rgb=\"FF0A0A08\"/></patternFill>",
+     "to": "<patternFill patternType=\"none\"><bgColor rgb=\"FFFF0000\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill><bgColor rgb=\"FF0A0A09\"/></patternFill>",
+     "to": "<patternFill patternType=\"none\"><fgColor rgb=\"FFFF0000\"/><bgColor rgb=\"FF00B050\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill><bgColor rgb=\"FF0A0A0A\"/></patternFill>",
+     "to": "<patternFill patternType=\"none\"/>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill><bgColor rgb=\"FF0A0A0B\"/></patternFill>",
+     "to": "<patternFill patternType=\"solid\"><fgColor rgb=\"FFFF0000\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill><bgColor rgb=\"FF0A0A0C\"/></patternFill>",
+     "to": "<patternFill patternType=\"solid\"><fgColor rgb=\"FFFF0000\"/><bgColor rgb=\"FF00B050\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill><bgColor rgb=\"FF0A0A0D\"/></patternFill>",
+     "to": "<patternFill><fgColor rgb=\"FFFF0000\"/></patternFill>"
+    },
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill><bgColor rgb=\"FF0A0A0E\"/></patternFill>",
+     "to": "<gradientFill degree=\"90\"><stop position=\"0\"><color rgb=\"FFFF0000\"/></stop><stop position=\"1\"><color rgb=\"FF0070C0\"/></stop></gradientFill>"
+    }
+   ]
+  },
+  {
+   "id": "cell-gradient-pattern",
+   "book": "one",
+   "read": [
+    [
+     "S",
+     "A1:C1"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill patternType=\"solid\"><fgColor rgb=\"FF0A0A01\"/><bgColor indexed=\"64\"/></patternFill>",
+     "to": "<gradientFill degree=\"90\"><stop position=\"0\"><color rgb=\"FFFF0000\"/></stop><stop position=\"1\"><color rgb=\"FF0070C0\"/></stop></gradientFill><patternFill patternType=\"solid\"><fgColor rgb=\"FF00B050\"/></patternFill>"
+    }
+   ]
+  },
+  {
+   "id": "dxf-gradient-pattern",
+   "book": "one",
+   "read": [
+    [
+     "S",
+     "A1:C1"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/styles.xml",
+     "from": "<patternFill><bgColor rgb=\"FF0A0A02\"/></patternFill>",
+     "to": "<gradientFill degree=\"90\"><stop position=\"0\"><color rgb=\"FFFF0000\"/></stop><stop position=\"1\"><color rgb=\"FF0070C0\"/></stop></gradientFill><patternFill><bgColor rgb=\"FF00B050\"/></patternFill>"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "fills": "8b375a46fb4dee1dffbc4f99af290ea0a73bece350cad69fdc60da173411ddc2",
+  "cell-gradient-pattern": "68514739e68eb0b97e6db4e25906987f4f5f26983e266626f9bacd90f001fe09",
+  "dxf-gradient-pattern": "6c787af010d4ef3544b12b89dd7c27d3746e0384bb21f7b8644b2686940f99f8"
+ },
+ "answers": {
+  "fills": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": "#FFFFFF",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": "#FF0000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "4",
+      "fill": "#FFFFFF",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "4",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "5",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "5",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "6",
+      "fill": "#FFFFFF",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "6",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A7": {
+      "text": "7",
+      "fill": "#000000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B7": {
+      "text": "7",
+      "fill": "#000000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C7": {
+      "text": "7",
+      "fill": "#000000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "cell-gradient-pattern": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": "#0A0A02",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": "#0A0A02",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  }
+ },
+ "rejected": {
+  "dxf-gradient-pattern": "Excel did not accept the book (repair window declined)"
+ }
+}
