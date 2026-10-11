@@ -50,3 +50,6 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+
+/** The predictions Excel did not confirm, the Mac and Windows alike: none. */
+export const MISSED: readonly string[] = []
