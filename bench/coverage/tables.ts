@@ -10,7 +10,7 @@ import { execFileSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, writeAnswers } from './stored.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, takenBook, took, writeAnswers, type StoredBook } from './stored.js'
 import { answerOf, editOf, mirrorFormulas, MIRRORS, mirrorRanges, refusedOf } from './case-book.js'
 import { columnCells, rowCells } from './struct.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
@@ -89,8 +89,11 @@ export const tableShapes = (raw: RawTable[]): TableShape[] => raw.map(([sheet, n
 /** A case that adds names: its answer lists the names Excel has after the steps. */
 export const addsNames = (c: TableCase): boolean => (c.steps ?? []).some((s) => 'name' in s)
 
-/** The book with the three empty mirror sheets the script writes its mirror formulas into. */
-export const withMirrors = (b: BookInput): BookInput => ({ ...b, sheets: [...b.sheets, ...MIRRORS.map((name) => ({ name, cells: {} }))] })
+/** The book as the engine takes it, with the three empty mirror sheets the script writes its mirror formulas into. */
+export function withMirrors(stored: StoredBook): BookInput {
+  const b = takenBook(stored)
+  return { ...b, sheets: [...b.sheets, ...MIRRORS.map((name) => ({ name, cells: {} }))] }
+}
 
 /**
  * A book Excel did not open: the repair window, declined (activating Excel first: on another Space it is not listed),

@@ -158,7 +158,7 @@ describe('in the same thread and in the pool', () => {
 describe('xlsx', () => {
   it('writes the state of hidden sheets and makes the first visible sheet active; reads them back', async () => {
     const b: BookInput = { sheets: [{ name: 'A', cells: {}, hidden: true }, { name: 'B', cells: {}, hidden: 'very' }, { name: 'C', cells: {} }, { name: 'D', cells: {}, hidden: true }] }
-    const { data, issues } = await writeXlsx(b)
+    const { data, issues } = await writeXlsx({ book: b })
     expect(issues).toEqual([])
     const part = (name: string) => openArchive(data).text(name)
     expect(await part('xl/workbook.xml')).toContain('<bookViews><workbookView activeTab="2"/></bookViews><sheets><sheet name="A" sheetId="1" state="hidden" r:id="rId1"/><sheet name="B" sheetId="2" state="veryHidden" r:id="rId2"/><sheet name="C" sheetId="3" r:id="rId3"/><sheet name="D" sheetId="4" state="hidden" r:id="rId4"/></sheets>')
@@ -167,6 +167,6 @@ describe('xlsx', () => {
     expect(back.book).toEqual(b)
     expect(back.issues).toEqual([])
     // a book whose first sheet is visible keeps Excel's default active tab
-    expect(await openArchive((await writeXlsx(book(true))).data).text('xl/workbook.xml')).toContain('<workbookView/>')
+    expect(await openArchive((await writeXlsx({ book: book(true) })).data).text('xl/workbook.xml')).toContain('<workbookView/>')
   })
 })

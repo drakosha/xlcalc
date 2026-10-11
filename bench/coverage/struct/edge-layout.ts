@@ -3,14 +3,14 @@
  * height and a fill, columns to XFD with a width and bold, merged areas and styled cells on the last row and
  * column. The look of the sheet's last rows and columns is read too.
  */
-import type { BookInput, CellInput } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
+import type { StoredBook, StoredCell } from '../stored.js'
 
 export const STYLES = [{ font: { bold: true } }, { fill: { color: '#FFCC00' } }, { fill: { color: '#99CCFF' } }]
 
 /** S: rows 1,048,570 to the end filled, 30 points high, with a format; columns XFA to XFD bold, 20 wide, with a format; merged areas at both ends. */
-function endBook(): BookInput {
-  const cells: Record<string, CellInput> = {
+function endBook(): StoredBook {
+  const cells: Record<string, StoredCell> = {
     A1: { value: 1 },
     A2: { value: 2 },
     A3: { value: 3 },

@@ -6,10 +6,10 @@
  */
 import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
-import type { CellInput } from '../../../src/contract.js'
 import type { WorkbookCase } from './cases.js'
+import type { StoredCell } from '../stored.js'
 
-const f = (formula: string): CellInput => ({ formula })
+const f = (formula: string): StoredCell => ({ formula })
 
 const SHOWN: [number, string][] = [
   [-100, 'mmm d, yyyy'],
@@ -38,7 +38,7 @@ const FS = [
 const PREDICTED = JSON.parse(readFileSync(new URL('./date1904-held.predicted.json', import.meta.url), 'utf8')) as Record<string, Record<string, Val>[]>
 
 export function buildWorkbookCases(): WorkbookCase[] {
-  const cells: Record<string, CellInput> = {}
+  const cells: Record<string, StoredCell> = {}
   SHOWN.forEach(([value, format], i) => (cells[`A${i + 1}`] = { value, format }))
   const c: WorkbookCase = {
     id: 'held',

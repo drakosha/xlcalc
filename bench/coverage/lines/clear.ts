@@ -5,14 +5,14 @@
  * taken by a session (`sessionCase`, `partsOf`), predicted before Excel ran the set (`clear.predicted.json`): what the
  * read cells show, and the notes, hyperlinks, conditional formats and rules of the book Excel saved.
  */
-import type { BookInput } from '../../../src/contract.js'
 import type { LinesCase, LinesCases, LineStep } from './cases.js'
+import type { StoredBook } from '../stored.js'
 
 /**
  * Cells with a style, a format, a note and a hyperlink in B2:D4; column F filled with a number format, with a cell of its
  * own italic; row 8 bold. A rule over B2:D4 written for B2, one over F:F; rules of data validation over B2:C5 and F2:F10.
  */
-function book(): BookInput {
+function book(): StoredBook {
   return {
     styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }, { font: { italic: true } }, { fill: { color: '#DDEBF7' } }],
     sheets: [

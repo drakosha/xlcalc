@@ -4,13 +4,14 @@
  * inserting under a row with styles and formats, moving and copying ranges, whole rows and columns with
  * their styles and merged areas; last, the moves and copies that cut a merged area (Excel's refusals).
  */
-import type { BookInput, CellInput, RangeRef } from '../../../src/contract.js'
+import type { RangeRef } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
+import type { StoredBook, StoredCell } from '../stored.js'
 
-const f = (formula: string): CellInput => ({ formula })
+const f = (formula: string): StoredCell => ({ formula })
 
 /** Bold, orange, bold on green, blue. */
-export const STYLES: BookInput['styles'] = [{ font: { bold: true } }, { fill: { color: '#FFC000' } }, { font: { bold: true }, fill: { color: '#92D050' } }, { fill: { color: '#00B0F0' } }]
+export const STYLES: StoredBook['styles'] = [{ font: { bold: true } }, { fill: { color: '#FFC000' } }, { font: { bold: true }, fill: { color: '#92D050' } }, { fill: { color: '#00B0F0' } }]
 
 /**
  * S: values in A1:A12 and B1:B12, styled cells in rows 3 and 4 (B3 bold, C3 orange, D3 `0.00`, B4:D4 bold on
@@ -18,8 +19,8 @@ export const STYLES: BookInput['styles'] = [{ font: { bold: true } }, { fill: { 
  * orange with format `0.000`; column C 20 wide, E bold and 14 wide, H orange with `0.0` and 12 wide; merged
  * B10:C11, I2:J2, A14:A16; formulas in F and G. T: empty but for a formula.
  */
-export function styledBook(): BookInput {
-  const s: Record<string, CellInput> = {}
+export function styledBook(): StoredBook {
+  const s: Record<string, StoredCell> = {}
   for (let r = 1; r <= 12; r++) {
     s[`A${r}`] = { value: r }
     if (r !== 10 && r !== 11) s[`B${r}`] = { value: r * 10 }

@@ -4,14 +4,15 @@
  * reference (Excel would show a warning window).
  */
 import type { Val } from '../formulajs.js'
-import type { BookInput, CellInput, RangeRef, SheetInput } from '../../../src/contract.js'
+import type { RangeRef } from '../../../src/contract.js'
+import type { StoredBook, StoredCell, StoredSheet } from '../stored.js'
 
 export interface SpillCase {
   id: string
   /** What the case checks. */
   about: string
   /** Formulas in the engine's spelling (`E2#`, no `_xlfn.`), written as Excel 365 stores them. */
-  book: BookInput
+  book: StoredBook
   /** Rectangles read after the computation. */
   read: RangeRef[]
   /** A volatile case: its numbers are compared by type only. */
@@ -37,12 +38,12 @@ export interface SpillSet {
 }
 
 /** A cell: `=…` a formula, `{ format }` or `{ style }` an empty cell with a look, else a value. */
-export type CellSpec = number | string | boolean | CellInput
+export type CellSpec = number | string | boolean | StoredCell
 
-const cell = (v: CellSpec): CellInput => (typeof v === 'string' && v.startsWith('=') ? { formula: v.slice(1) } : typeof v === 'object' ? v : { value: v })
+const cell = (v: CellSpec): StoredCell => (typeof v === 'string' && v.startsWith('=') ? { formula: v.slice(1) } : typeof v === 'object' ? v : { value: v })
 
 /** A sheet from `{ A1: spec }`, with merged areas. */
-export const sheet = (name: string, cells: Record<string, CellSpec>, merges?: string[]): SheetInput => ({
+export const sheet = (name: string, cells: Record<string, CellSpec>, merges?: string[]): StoredSheet => ({
   name,
   cells: Object.fromEntries(Object.entries(cells).map(([a, v]) => [a, cell(v)])),
   ...(merges ? { merges } : {}),

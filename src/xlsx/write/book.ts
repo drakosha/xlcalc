@@ -5,7 +5,7 @@
  * calculation, and the book's locale as a custom document property (xlsx has no place for it). A formula file asks Excel
  * to compute the book on opening, so Excel shows its own values over the ones written, whichever values it stores.
  */
-import type { BookInput, ComputeResult } from '../../contract.js'
+import type { BookInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
 import { SHEET_STATES } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
@@ -17,7 +17,7 @@ import { caseKey } from '../../collate.js'
 import { toFile } from '../formulas/to-file.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
-import type { WriteXlsxOptions, XlsxCached, XlsxSnapshot, XlsxWritten } from '../types.js'
+import type { WriteXlsxOptions, XlsxSnapshot, XlsxWritten } from '../types.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
@@ -111,11 +111,8 @@ function iterationAttrs(it: BookInput['iteration']): string {
  * Writes a book as an xlsx file: its formulas with the values of `snapshot.result` that `opts.values` asks for, or its
  * values alone (`opts.mode: 'values'`).
  */
-export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten>
-/** @deprecated The book and its result go as one snapshot: `writeXlsx({ book, result }, { mode, values })`. */
-export async function writeXlsx(book: BookInput, opts?: WriteXlsxOptions & { result?: ComputeResult | XlsxCached }): Promise<XlsxWritten>
-export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXlsxOptions & { result?: ComputeResult | XlsxCached }): Promise<XlsxWritten> {
-  const { book, cells, mode, unasked } = writeArgs(first, opts)
+export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
+  const { book, cells, mode, unasked } = writeArgs(snapshot, opts)
   const issues = new Issues()
   const styles = new StyleWriter(book.styles)
   const strings = new Map<string, number>()

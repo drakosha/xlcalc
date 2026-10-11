@@ -9,18 +9,19 @@ const { compute } = (await import(libUrl('index.js'))) as typeof import('../../s
 const { synthBook } = (await import(libUrl('synth.js'))) as typeof import('../../src/synth.js')
 const { readXlsx, writeXlsx } = (await import(libUrl('xlsx.js'))) as typeof import('../../src/xlsx.js')
 const { formatAddress } = (await import(libUrl('model.js'))) as typeof import('../../src/model.js')
-import type { BookInput, CellInput } from '../../src/contract.js'
+import type { CellInput } from '../../src/contract.js'
+import type { XlsxSnapshot } from '../../src/xlsx.js'
 
 const gc = () => (globalThis as { gc?: () => void }).gc?.()
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]
 
-async function measure(book: BookInput, opts: Parameters<typeof writeXlsx>[1]) {
+async function measure(snapshot: XlsxSnapshot) {
   const write: number[] = []
   const read: number[] = []
   let data: Uint8Array = new Uint8Array()
   for (let i = 0; i < 3; i++) {
     const t = performance.now()
-    data = (await writeXlsx(book, opts)).data
+    data = (await writeXlsx(snapshot)).data
     write.push(performance.now() - t)
   }
   gc()
@@ -42,7 +43,7 @@ async function measure(book: BookInput, opts: Parameters<typeof writeXlsx>[1]) {
 const cells: Record<string, CellInput> = {}
 for (let r = 0; r < rows; r++)
   for (let c = 0; c < 40; c++) cells[formatAddress(r, c)] = { value: c % 4 === 0 ? `text ${r % 977} ${c}` : c % 4 === 1 ? r * 1.5 + c : c % 4 === 2 ? r % 2 === 0 : r + c / 1000 }
-const values = await measure({ sheets: [{ name: 'Values', cells }] }, {})
+const values = await measure({ book: { sheets: [{ name: 'Values', cells }] } })
 const synth = synthBook({ seed: 1 }).book
-const synthResult = await measure(synth, { result: compute(synth, { clock: { now: '2026-10-07T12:00:00Z', seed: 7 } }) })
+const synthResult = await measure({ book: synth, result: compute(synth, { clock: { now: '2026-10-07T12:00:00Z', seed: 7 } }) })
 console.log(JSON.stringify({ rows, values, synth: synthResult }))

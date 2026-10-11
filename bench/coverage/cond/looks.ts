@@ -8,6 +8,7 @@
  */
 import type { BookInput, CellInput, ConditionalFormat, ConditionalStyle, ConditionalValue } from '../../../src/contract.js'
 import type { CondCase, CondCases } from './cases.js'
+import type { StoredRule, StoredStyle } from '../stored.js'
 
 const RED: ConditionalStyle = { fill: { color: '#FFC7CE' }, font: { color: '#9C0006' } }
 
@@ -201,7 +202,7 @@ function priorityBook(): BookInput {
   const cells = columns(ten, ['A', 'B', 'C', 'D', 'E', 'F'])
   for (let r = 1; r <= 10; r++) cells[`E${r}`] = { value: r, style: 0 }
   for (let r = 1; r <= 10; r++) cells[`F${r}`] = { value: r * 1.5 }
-  const gt = (col: string, x: number, style: ConditionalStyle, stopIfTrue = false): ConditionalFormat => ({ type: 'cellIs', ranges: [`${col}1:${col}10`], operator: 'greaterThan', formulas: [String(x)], style, ...(stopIfTrue ? { stopIfTrue } : {}) })
+  const gt = (col: string, x: number, style: StoredStyle, stopIfTrue = false): StoredRule => ({ type: 'cellIs', ranges: [`${col}1:${col}10`], operator: 'greaterThan', formulas: [String(x)], style, ...(stopIfTrue ? { stopIfTrue } : {}) })
   const scale = (col: string): ConditionalFormat => ({ type: 'colorScale', ranges: [`${col}1:${col}10`], points: [{ value: { type: 'min' }, color: '#F8696B' }, { value: { type: 'max' }, color: '#63BE7B' }] })
   return {
     styles: [{ fill: { color: '#FFFF00' }, font: { italic: true } }],

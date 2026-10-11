@@ -11,6 +11,7 @@ import type { SpillSet } from '../spill/cases.js'
 import type { StructSet } from '../struct/cases.js'
 import type { TableSet } from '../tables/cases.js'
 import { filterBook, Y_ROWS } from './filters.js'
+import { takenBook } from '../stored.js'
 
 /** The clock the round trip computes its books with. */
 export const XLSX_CLOCK = { now: '2026-10-07T12:00:00Z', seed: 7 }
@@ -42,8 +43,8 @@ const values: BookInput = {
         B1: v('text'), B2: v('  leading and trailing  '), B3: v('line\nbreak'), B4: v('tab\there'), B5: v('cr\r\nlf'), B6: v('quotes " \' and & < >'),
         B7: v('Кириллица и ёлка'), B8: v('emoji 😀 and 中文'), B9: v('=not a formula'), B10: v("'apostrophe first"), B11: v(''),
         C1: v(true), C2: v(false), D1: v({ date: '2025-01-31' }), D2: v({ date: '1900-02-28' }), D3: v({ date: '2025-06-30T18:30:00' }),
-        E1: { value: 1, format: '0.00' }, E2: { value: 0.25, format: '0%' }, E3: { value: 45688, format: 'dd.mm.yyyy' }, E4: { value: 45688.75, format: 'm/d/yyyy h:mm' },
-        E5: { value: 1234.5, format: '#,##0.00 "₽"' }, E6: { value: -5, format: '0;[Red]-0' }, E7: { value: 'x', format: '@' },
+        E1: { value: 1, numberFormat: '0.00' }, E2: { value: 0.25, numberFormat: '0%' }, E3: { value: 45688, numberFormat: 'dd.mm.yyyy' }, E4: { value: 45688.75, numberFormat: 'm/d/yyyy h:mm' },
+        E5: { value: 1234.5, numberFormat: '#,##0.00 "₽"' }, E6: { value: -5, numberFormat: '0;[Red]-0' }, E7: { value: 'x', numberFormat: '@' },
       },
     },
   ],
@@ -106,11 +107,11 @@ const styles: BookInput = {
     {
       name: 'Styles',
       cells: {
-        A1: { value: 'bold red', style: 0 }, A2: { value: 'fill and border', style: 1 }, A3: { value: 'aligned', style: 2 }, A4: { value: 1.5, style: 3, format: '0.000' },
+        A1: { value: 'bold red', style: 0 }, A2: { value: 'fill and border', style: 1 }, A3: { value: 'aligned', style: 2 }, A4: { value: 1.5, style: 3, numberFormat: '0.000' },
         A5: { style: 1 }, A6: { value: 'Arial 14', style: 4 }, A7: { value: 'all borders', style: 5 }, B1: { value: 'merged' }, D5: { value: 'in a styled column' },
       },
-      columns: { A: { width: 24 }, 'B:C': { width: 12.5, style: 1 }, D: { style: 2, format: '0.0' }, F: { width: 0 } },
-      rows: { 2: { height: 30 }, '4:5': { height: 20, style: 0 }, 9: { height: 0 }, 10: { format: '0%' } },
+      columns: { A: { width: 24 }, 'B:C': { width: 12.5, style: 1 }, D: { style: 2, numberFormat: '0.0' }, F: { width: 0 } },
+      rows: { 2: { height: 30 }, '4:5': { height: 20, style: 0 }, 9: { height: 0 }, 10: { numberFormat: '0%' } },
       merges: ['B1:C2', 'E7:F8'],
     },
   ],
@@ -147,7 +148,7 @@ const date1904: BookInput = {
     {
       name: 'Dates',
       cells: {
-        A1: { value: { date: '2025-01-31' }, format: 'yyyy-mm-dd' }, A2: { value: { date: '1904-01-01T06:00:00' }, format: 22 }, A3: { value: 0, format: 14 }, A4: { value: -1.5, format: 'yyyy-mm-dd h:mm' },
+        A1: { value: { date: '2025-01-31' }, numberFormat: 'yyyy-mm-dd' }, A2: { value: { date: '1904-01-01T06:00:00' }, numberFormat: 22 }, A3: { value: 0, numberFormat: 14 }, A4: { value: -1.5, numberFormat: 'yyyy-mm-dd h:mm' },
         B1: f('DATE(2025,1,31)'), B2: f('YEAR(A1)'), B3: f('A1-A2'), B4: f('TEXT(A1,"yyyy-mm-dd")'), B5: f('DATEVALUE("2025-01-31")'), B6: f('WEEKDAY(A3)'),
         B7: f('EDATE(A1,1)'), B8: f('DAY(0)'), B9: f('MONTH(A3)'), B10: f('TEXT(A4,"yyyy-mm-dd h:mm")'), B11: f('TEXT(-0.5,"h:mm")'), B12: f('A1=B1'),
       },
@@ -167,24 +168,24 @@ const builtin = (locale?: string): BookInput => ({
   sheets: [
     {
       name: 'Formats',
-      cells: { ...Object.fromEntries(Array.from({ length: 49 }, (_, i) => [`A${i + 1}`, { value: 45688.75, format: i + 1 }])), B1: { value: -1234.5, format: 38 }, B2: { value: 0, format: 0 } },
-      rows: { 51: { format: 14 } },
-      columns: { C: { format: 44 } },
+      cells: { ...Object.fromEntries(Array.from({ length: 49 }, (_, i) => [`A${i + 1}`, { value: 45688.75, numberFormat: i + 1 }])), B1: { value: -1234.5, numberFormat: 38 }, B2: { value: 0, numberFormat: 0 } },
+      rows: { 51: { numberFormat: 14 } },
+      columns: { C: { numberFormat: 44 } },
     },
   ],
 })
 
-/** The books of the structure and spill sets, each once. */
+/** The books of the structure and spill sets, each once, as the engine takes them. */
 async function setBooks(): Promise<RoundTrip[]> {
   const out: RoundTrip[] = []
   for (const name of STRUCT_SETS) {
     const { books } = ((await import(`../struct/${name}.ts`)) as StructSet).buildStructCases()
-    for (const [key, book] of Object.entries(books)) out.push({ id: `struct-${name}-${key}`, what: `the book ${key} of the structure set ${name}`, book })
+    for (const [key, book] of Object.entries(books)) out.push({ id: `struct-${name}-${key}`, what: `the book ${key} of the structure set ${name}`, book: takenBook(book) })
   }
   for (const name of SPILL_SETS)
     for (const c of ((await import(`../spill/${name}.ts`)) as SpillSet).buildSpillCases())
-      out.push({ id: `spill-${name}-${c.id}`, what: c.about, book: c.book, ...(c.volatile ? { volatile: true as const } : {}) })
-  for (const name of TABLE_SETS) for (const c of ((await import(`../tables/${name}.ts`)) as TableSet).buildTableCases()) out.push({ id: `tables-${name}-${c.id}`, what: c.about, book: c.book })
+      out.push({ id: `spill-${name}-${c.id}`, what: c.about, book: takenBook(c.book), ...(c.volatile ? { volatile: true as const } : {}) })
+  for (const name of TABLE_SETS) for (const c of ((await import(`../tables/${name}.ts`)) as TableSet).buildTableCases()) out.push({ id: `tables-${name}-${c.id}`, what: c.about, book: takenBook(c.book) })
   const seen = new Set<string>()
   // a whole column spilled: Excel saves its million cells, 5.6 MB a file
   const huge = new Set(['spill-base-col-free', 'spill-base-col-format'])
@@ -214,7 +215,7 @@ function ownBooks(): RoundTrip[] {
     {
       id: 'hidden',
       what: 'rows and columns hidden with and without their sizes and looks; SUBTOTAL and AGGREGATE over them',
-      book: filterBook({ rows: { 3: { hidden: true }, 5: { height: 30, hidden: true }, 6: { hidden: true, format: '0.0' } }, columns: { E: { width: 12, hidden: true }, G: { hidden: true } } }),
+      book: filterBook({ rows: { 3: { hidden: true }, 5: { height: 30, hidden: true }, 6: { hidden: true, numberFormat: '0.0' } }, columns: { E: { width: 12, hidden: true }, G: { hidden: true } } }),
     },
     { id: 'zero-sizes', what: 'a row of height 0 and a column of width 0, not marked hidden', book: filterBook({ rows: { 3: { height: 0 } }, columns: { E: { width: 0 } } }) },
     { id: 'filtered', what: 'a filtered sheet: its hidden rows taken as rows a filter hid', book: filterBook({ rows: Y_ROWS, filtered: true }) },

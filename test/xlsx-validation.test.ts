@@ -11,7 +11,7 @@ import { openArchive } from '../src/xlsx/zip/read.js'
 import { codes, read } from './xlsx-fixtures.js'
 
 const roundTrip = async (book: BookInput) => {
-  const w = await writeXlsx(book)
+  const w = await writeXlsx({ book })
   const r = await readXlsx(w.data)
   return { book: r.book, issues: [...w.issues, ...r.issues], data: w.data }
 }
@@ -73,7 +73,7 @@ describe('data validation written and read back', () => {
         },
       ],
     }
-    const w = await writeXlsx(b)
+    const w = await writeXlsx({ book: b })
     expect(codes(w.issues)).toEqual(['textLength A1', 'textLength A1', 'textLength A1', 'textLength A1', 'dataValidation B1 C1'])
     const r = await readXlsx(w.data)
     expect(r.book.sheets[0].validations).toEqual([{ range: 'A1', type: 'any', promptTitle: long(32), prompt: long(255), errorTitle: long(32), error: long(225) }])

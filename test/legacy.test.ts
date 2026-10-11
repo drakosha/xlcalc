@@ -11,7 +11,7 @@ import { describe, expect, it } from 'vitest'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { Probe, SheetCells } from '../bench/coverage/probes.js'
 import { FUNCTIONS } from '../src/functions.js'
-import { compute, fromLegacy as rootFromLegacy } from '../src/index.js'
+import { compute } from '../src/index.js'
 import { fromLegacy } from '../src/xlsx.js'
 import { canonical, parse } from '../src/syntax.js'
 import { CASES, CLOCK, engineFormula, excelBook, matches, show, toVal, verdict } from './excel-cases.js'
@@ -141,10 +141,6 @@ describe('the coverage measurement computed as formulas of the old kind', () => 
 })
 
 describe('fromLegacy', () => {
-  it("is xlcalc/xlsx's, where formulas of files are read; the root's deprecated synonym is the same function", () => {
-    expect(rootFromLegacy).toBe(fromLegacy)
-  })
-
   it('puts @ before a name by what its formula gives, seen from the formula\'s sheet', () => {
     const names = [
       { name: 'r', ref: "'S'!$A$1:$A$9" },

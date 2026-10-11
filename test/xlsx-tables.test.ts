@@ -40,7 +40,7 @@ const book: BookInput = {
 describe('tables in xlsx', () => {
   it('go into table parts and come back as they were', async () => {
     const result = compute(book)
-    const { data, issues } = await writeXlsx(book, { result })
+    const { data, issues } = await writeXlsx({ book, result })
     expect(issues).toEqual([])
     const t1 = await text(data, 'xl/tables/table1.xml')
     expect(t1).toContain('<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Sales" displayName="Sales" ref="A1:D4" totalsRowCount="1">')

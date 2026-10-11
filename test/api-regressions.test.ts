@@ -31,8 +31,8 @@ describe.each(['closures', 'eval'] as const)('API regressions, %s', (execution) 
 
   it('writeXlsx given a session where a result goes refuses it with what to pass, not a TypeError', async () => {
     const s = createSession({ sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }, { clock, execution })
-    await expect(writeXlsx(s.getBook(), { result: s as never })).rejects.toThrow(InputError)
-    await expect(writeXlsx(s.getBook(), { result: s as never })).rejects.toThrow(/pass session\.getSnapshot\(\)/)
+    await expect(writeXlsx({ book: s.getBook(), result: s as never })).rejects.toThrow(InputError)
+    await expect(writeXlsx({ book: s.getBook(), result: s as never })).rejects.toThrow(/pass session\.getSnapshot\(\)/)
     s.close()
   })
 })

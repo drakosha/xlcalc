@@ -42,17 +42,17 @@ async function partOf(data: Uint8Array, name: string): Promise<string> {
 
 describe('conditional formats in xlsx', () => {
   it('every kind and option comes back as written, without issues', async () => {
-    const { data, issues } = await writeXlsx(BOOK)
+    const { data, issues } = await writeXlsx({ book: BOOK })
     expect(issues).toEqual([])
     const back = await readXlsx(data)
     expect(back.issues).toEqual([])
     expect(back.book.sheets[0].conditionalFormats).toEqual(RULES)
     // and again: the file the reader's book writes reads the same
-    expect((await readXlsx((await writeXlsx(back.book)).data)).book).toEqual(back.book)
+    expect((await readXlsx((await writeXlsx({ book: back.book })).data)).book).toEqual(back.book)
   })
 
   it("Excel 2010's rules go into the extension list: a bar's part joined by its id, icon sets 2007 lacks, custom icons, other sheets' references", async () => {
-    const xml = await partOf((await writeXlsx(BOOK)).data, 'xl/worksheets/sheet1.xml')
+    const xml = await partOf((await writeXlsx({ book: BOOK })).data, 'xl/worksheets/sheet1.xml')
     const ext = xml.slice(xml.indexOf('<extLst><ext uri="{78C0D931'))
     expect(ext).toMatch(/<x14:cfRule type="dataBar" id="(\{[0-9A-F-]+\})">/)
     const id = /<x14:cfRule type="dataBar" id="(\{[0-9A-F-]+\})">/.exec(ext)![1]
@@ -61,10 +61,10 @@ describe('conditional formats in xlsx', () => {
     expect(ext).toContain('<x14:cfIcon iconSet="NoIcons" iconId="0"/>')
     expect(ext).toContain("<xm:f>'T T'!$A$1&gt;1</xm:f><x14:dxf><font><i/></font></x14:dxf>")
     expect(xml.indexOf('<conditionalFormatting')).toBeLessThan(xml.indexOf('<extLst>'))
-    expect(await partOf((await writeXlsx(BOOK)).data, 'xl/styles.xml')).toContain('<dxf><font><b val="0"/><color rgb="FF9C0006"/></font><numFmt numFmtId="164" formatCode="0.0%"/><fill><patternFill><bgColor rgb="FFFFC7CE"/></patternFill></fill></dxf>')
+    expect(await partOf((await writeXlsx({ book: BOOK })).data, 'xl/styles.xml')).toContain('<dxf><font><b val="0"/><color rgb="FF9C0006"/></font><numFmt numFmtId="164" formatCode="0.0%"/><fill><patternFill><bgColor rgb="FFFFC7CE"/></patternFill></fill></dxf>')
     // a code every locale shows as a built-in format is written by its number and comes back as that number, as a cell's
     const pct: BookInput = { sheets: [{ name: 'S', cells: {}, conditionalFormats: [{ type: 'expression', ranges: ['A1'], formula: 'TRUE', style: { numberFormat: '0.00%' } }] }] }
-    expect((await readXlsx((await writeXlsx(pct)).data)).book.sheets[0].conditionalFormats![0]).toMatchObject({ style: { numberFormat: 10 } })
+    expect((await readXlsx((await writeXlsx({ book: pct })).data)).book.sheets[0].conditionalFormats![0]).toMatchObject({ style: { numberFormat: 10 } })
   })
 
   it("a sheet with conditional formats and data validation keeps both: the extension list of a data bar is not the sheet's", async () => {
@@ -79,7 +79,7 @@ describe('conditional formats in xlsx', () => {
         { name: 'T T', cells: {} },
       ],
     }
-    const { data, issues } = await writeXlsx(book)
+    const { data, issues } = await writeXlsx({ book })
     expect(issues).toEqual([])
     const xml = await partOf(data, 'xl/worksheets/sheet1.xml')
     expect(xml.indexOf('<conditionalFormatting')).toBeLessThan(xml.indexOf('<dataValidations'))
@@ -137,7 +137,7 @@ describe('conditional formats in xlsx', () => {
 
   it('a rule whose formula the file cannot hold is left out and reported', async () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: {}, conditionalFormats: [{ type: 'expression', ranges: ['A1'], formula: 'SUM(', style: RED }, { type: 'expression', ranges: ['A2'], formula: "'Nope'!A1>1" }] }] }
-    const { data, issues } = await writeXlsx(book)
+    const { data, issues } = await writeXlsx({ book })
     expect(codes(issues)).toEqual(['conditionalFormat A1 A2'])
     expect((await readXlsx(data)).book.sheets[0].conditionalFormats).toBeUndefined()
   })

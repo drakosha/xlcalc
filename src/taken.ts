@@ -2,9 +2,8 @@
  * Input as the engine takes it. A formula's leading `=` is dropped: Excel shows a formula with one in its formula bar
  * and in its boxes of names, conditional formats and data validation, and a host passes what it shows: one `=` goes
  * (`=SUM(A1:A2)` is `SUM(A1:A2)`, the same input and the same `inputHash`), a second stays and is an error of the
- * formula (`==1`). And a field given by its old name takes its new one: a number format `format` is `numberFormat`
- * (of cells, rows, columns and conditional formats' styles). What needs neither is given back as it is, what needs one
- * as a copy: the caller's input is not changed, and input without one costs no copy.
+ * formula (`==1`). What needs none is given back as it is, what needs one as a copy: the caller's input is not changed,
+ * and input without one costs no copy.
  */
 import type { BookInput, CellEdit, CellFields, CellInput, CellReplace, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, SheetInput, StructureOp, TableInput } from './contract.js'
 
@@ -21,16 +20,6 @@ function fields<T extends object>(o: T, keys: readonly (keyof T)[]): T {
   return out
 }
 
-/**
- * A cell, a line, a conditional style or a patch of one with its number format by its name `numberFormat`, where it
- * has the old name `format` (checked: both given are equal); itself without `format`.
- */
-export function numberFormatTaken<T extends object>(o: T): T {
-  if (typeof o !== 'object' || o === null || !('format' in o)) return o
-  const { format, ...rest } = o as { format?: unknown; numberFormat?: unknown }
-  return (format === undefined || rest.numberFormat !== undefined ? rest : { ...rest, numberFormat: format }) as T
-}
-
 /** The items each given by `f`; the list itself when none changed. */
 function each<T>(list: T[], f: (x: T, i: number) => T): T[] {
   let out: T[] | null = null
@@ -41,17 +30,7 @@ function each<T>(list: T[], f: (x: T, i: number) => T): T[] {
   return out ?? list
 }
 
-/** Rows or columns by key, each entry as taken; the map itself when none changed. */
-function linesTaken<T extends object>(map: Record<string, T>): Record<string, T> {
-  let out: Record<string, T> | null = null
-  for (const [k, e] of Object.entries(map)) {
-    const x = numberFormatTaken(e)
-    if (x !== e) (out ??= { ...map })[k] = x
-  }
-  return out ?? map
-}
-
-export const cellTaken = <C extends Pick<CellInput, 'formula'> | CellFields>(c: C): C => numberFormatTaken(fields(c, ['formula'] as (keyof C)[]))
+export const cellTaken = <C extends Pick<CellInput, 'formula'> | CellFields>(c: C): C => fields(c, ['formula'] as (keyof C)[])
 
 export const namesTaken = (names: NameInput[]): NameInput[] => each(names, (n) => fields(n, ['ref']))
 
@@ -64,10 +43,9 @@ const validationsTaken = (rules: DataValidation[]): DataValidation[] => each(rul
 
 const threshold = (v: ConditionalValue): ConditionalValue => fields(v, ['value'])
 
-/** A conditional format's formulas and thresholds without a leading `=`, its style's number format by its new name. */
+/** A conditional format's formulas and thresholds without a leading `=`. */
 function formatTaken(f: ConditionalFormat): ConditionalFormat {
   let out = 'formula' in f ? fields(f, ['formula']) : f
-  if ('style' in out && out.style && 'format' in out.style) out = { ...out, style: numberFormatTaken(out.style) }
   if (out.type === 'cellIs' && out.formulas.some(leadingEquals)) out = { ...out, formulas: out.formulas.map(drop) }
   if (out.type === 'dataBar' && (leadingEquals(out.min.value) || leadingEquals(out.max.value))) out = { ...out, min: threshold(out.min), max: threshold(out.max) }
   if (out.type === 'colorScale' || out.type === 'iconSet') {
@@ -86,10 +64,6 @@ function sheetTaken(s: SheetInput, cells: string[] | undefined): SheetInput {
     out.cells = { ...s.cells }
     for (const a of cells) out.cells[a] = cellTaken(s.cells[a])
   }
-  const columns = s.columns && linesTaken(s.columns)
-  if (columns !== s.columns) out.columns = columns
-  const rows = s.rows && linesTaken(s.rows)
-  if (rows !== s.rows) out.rows = rows
   const tables = s.tables && each(s.tables, tableTaken)
   if (tables !== s.tables) out.tables = tables
   const formats = s.conditionalFormats && formatsTaken(s.conditionalFormats)
@@ -99,7 +73,7 @@ function sheetTaken(s: SheetInput, cells: string[] | undefined): SheetInput {
   return Object.keys(out).length ? { ...s, ...out } : s
 }
 
-/** A checked book as taken; `cells`, by sheet, the addresses of the cells that need it (a formula with `=`, a `format`). */
+/** A checked book as taken; `cells`, by sheet, the addresses of the cells that need it (a formula with `=`). */
 export function bookTaken(book: BookInput, cells: (string[] | undefined)[]): BookInput {
   const sheets = each(book.sheets, (s, i) => sheetTaken(s, cells[i]))
   const names = book.names && namesTaken(book.names)
@@ -113,13 +87,9 @@ export const editsTaken = <E extends CellEdit | CellReplace>(edits: E[]): E[] =>
     return input === e.input ? e : { ...e, input }
   })
 
-/** Layout edits as taken: the fields of lines they set, the conditional formats and the rules of data validation. */
+/** Layout edits as taken: the conditional formats and the rules of data validation. */
 export const layoutTaken = (edits: LayoutEdit[]): LayoutEdit[] =>
   each(edits, (e) => {
-    if ('set' in e) {
-      const set = numberFormatTaken(e.set)
-      return set === e.set ? e : { ...e, set }
-    }
     if ('conditionalFormats' in e) {
       const conditionalFormats = formatsTaken(e.conditionalFormats)
       return conditionalFormats === e.conditionalFormats ? e : { ...e, conditionalFormats }

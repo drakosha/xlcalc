@@ -6,6 +6,7 @@
  * read the data in column C, never column A.
  */
 import type { BookInput, CellInput, CellValue, NumberFormat } from '../../../src/contract.js'
+import type { StoredCell } from '../stored.js'
 
 export interface EntryCase {
   id: string
@@ -20,7 +21,7 @@ export interface EntryAnswer {
   /** Excel did not take the text (a formula it refuses): its error, the cell left as it was. */
   refused?: string
   /** The cell as Excel saved it, read back by `readXlsx`: its value or formula and its format; null when the cell is blank. */
-  cell: CellInput | null
+  cell: StoredCell | null
   /** A formula's value as Excel saved it. */
   computed?: CellValue
   /** What the cell shows (`Range.Text`) in the default column width, and its format codes (`NumberFormat`, `NumberFormatLocal`). */
@@ -53,13 +54,13 @@ export interface EntrySet {
 export const formulaBar = (bar: string): string => bar.replace(/^[^.]*\. [A-Z]{1,3},\d+ ?/, '')
 
 /** The data the typed formulas read: a number and a date with the short date format. */
-export const DATA: Readonly<Record<string, CellInput>> = { C1: { value: 2 }, C2: { value: 46096, format: 14 } }
+export const DATA: Readonly<Record<string, CellInput>> = { C1: { value: 2 }, C2: { value: 46096, numberFormat: 14 } }
 
 /** The book of a part: the cases' cells in A1 down with their formats, and the data. */
 export function entryBook(cases: EntryCase[]): BookInput {
   const cells: Record<string, CellInput> = { ...DATA }
   cases.forEach((c, i) => {
-    if (c.format !== undefined) cells[`A${i + 1}`] = { format: c.format }
+    if (c.format !== undefined) cells[`A${i + 1}`] = { numberFormat: c.format }
   })
   return { sheets: [{ name: 'S', cells }] }
 }

@@ -10,6 +10,7 @@ import { buildTableCases as moreTables } from '../bench/coverage/tables/more.js'
 import { buildTableCases as heldTables } from '../bench/coverage/tables/ops-held.js'
 import { buildTableCases as opsTables } from '../bench/coverage/tables/ops.js'
 import type { TableCase } from '../bench/coverage/tables/cases.js'
+import { takenBook } from '../bench/coverage/stored.js'
 import { copyFormula, InputError, createSession, editStructure, type BookInput, type StructureOp } from '../src/index.js'
 import { hiddenRows } from '../src/layout/hidden.js'
 import { formatAddress, parseAddress } from '../src/model.js'
@@ -68,7 +69,7 @@ function check(label: string, book: BookInput, op: Copy): number {
 describe('copyFormula against copyRange', () => {
   it('every copy of the structure sets', () => {
     let n = 0
-    for (const set of STRUCT_SETS) for (const c of set.cases) if (c.op.op === 'copyRange' && !c.via) n += check(`${set.name} ${c.id}`, set.books[c.book], c.op)
+    for (const set of STRUCT_SETS) for (const c of set.cases) if (c.op.op === 'copyRange' && !c.via) n += check(`${set.name} ${c.id}`, takenBook(set.books[c.book]), c.op)
     expect(n).toBeGreaterThan(100)
   })
 
@@ -76,7 +77,7 @@ describe('copyFormula against copyRange', () => {
     let n = 0
     const cases: TableCase[] = [...opsTables(), ...moreTables(), ...heldTables()]
     for (const c of cases) {
-      const s = createSession(c.book)
+      const s = createSession(takenBook(c.book))
       for (const step of c.steps ?? []) {
         if ('op' in step) {
           if (step.op.op === 'copyRange') n += check(c.id, s.getBook(), step.op)

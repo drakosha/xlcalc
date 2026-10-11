@@ -29,8 +29,6 @@ export interface CellInput {
    * a cell shows its row's format, else its column's.
    */
   numberFormat?: NumberFormat
-  /** @deprecated The name is `numberFormat`. */
-  format?: NumberFormat
   /** A style of the book's `styles`, by index. Without it a cell shows its row's style, else its column's. */
   style?: number
   /** Arbitrary cell data (for example ids of source rows), passed through untouched. */
@@ -132,8 +130,6 @@ export interface ColumnInput {
   bestFit?: boolean
   style?: number
   numberFormat?: NumberFormat
-  /** @deprecated The name is `numberFormat`. */
-  format?: NumberFormat
   /** Hidden (xlsx `hidden`); a column of width 0 is hidden too. SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
   hidden?: boolean
   /** The outline level (Excel's Group, xlsx `outlineLevel`), 1 to 7; a column without one is not grouped. */
@@ -148,8 +144,6 @@ export interface RowInput {
   height?: number
   style?: number
   numberFormat?: NumberFormat
-  /** @deprecated The name is `numberFormat`. */
-  format?: NumberFormat
   /**
    * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
    * and 7 skip the row's cells, and on a `filtered` sheet SUBTOTAL with codes 1–11 too, as Excel does. A row of
@@ -243,8 +237,6 @@ export interface ConditionalStyle {
   border?: CellStyle['border']
   /** The number format the cell shows its value by. */
   numberFormat?: NumberFormat
-  /** @deprecated The name is `numberFormat`. */
-  format?: NumberFormat
 }
 
 /**
@@ -424,15 +416,12 @@ export interface IconSetFormat extends ConditionalBase {
  */
 export interface ConditionalAppearance {
   /** The styles of the rules that hold, merged in their order (the first rule's field wins); a colour scale's colour is `fill`. */
-  style?: Answered<ConditionalStyle>
+  style?: ConditionalStyle
   bar?: BarLook
   icon?: Icon
   /** A data bar or an icon set hides the value: the cell shows its bar or icon alone. */
   hideValue?: true
 }
-
-/** @deprecated The name is `ConditionalAppearance`. */
-export type ConditionalLook = ConditionalAppearance
 
 /** A data bar in a cell: where it is drawn, as fractions of the cell's width from the side its direction starts at. */
 export interface BarLook {
@@ -608,27 +597,16 @@ export interface BookInput {
 }
 
 /**
- * A part of a book as an answer gives it: the input's type without the deprecated field `format`, at any depth, since
- * a book that answers names a number format `numberFormat` alone (`meta` is the host's own and stays as it is).
- */
-type Answered<T> = T extends readonly (infer U)[]
-  ? Answered<U>[]
-  : T extends object
-    ? { [K in keyof T as K extends 'format' ? never : K]: K extends 'meta' ? T[K] : Answered<T[K]> }
-    : T
-
-/**
  * A book as the calls that give one answer it (`Session.getBook`, `getSnapshot`, `getLayout`, `editStructure`,
- * `readXlsx`): `BookInput` without the deprecated `format` of cells, rows, columns and conditional formats' styles, so
- * that reading it does not compile where it would always be undefined. A `Book` is a `BookInput`: it goes back as one.
+ * `readXlsx`): a `BookInput`, which goes back into every call that takes a book.
  */
-export type Book = Answered<BookInput>
+export type Book = BookInput
 
-/** A sheet of a `Book`: `SheetInput` without the deprecated `format`. */
-export type Sheet = Answered<SheetInput>
+/** A sheet of a `Book`. */
+export type Sheet = SheetInput
 
-/** A cell of a `Book`: `CellInput` without the deprecated `format`. */
-export type Cell = Answered<CellInput>
+/** A cell of a `Book`. */
+export type Cell = CellInput
 
 /**
  * `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`).
@@ -702,8 +680,6 @@ export interface CellDisplay {
 export interface DisplayOptions {
   /** The number format; General without it. */
   numberFormat?: NumberFormat
-  /** @deprecated The name is `numberFormat`. */
-  format?: NumberFormat
   /** A loaded locale's tag (`LOCALES`), or a locale object, loaded or not; en-US without one. */
   locale?: string | Locale
   /**
@@ -738,7 +714,7 @@ export interface EntryOptions {
    * it shows by: its row's or column's without its own), `style`, `meta`, `note` and `link`; other fields are not read.
    * The new input keeps its style, meta, note and link, and its format where Excel keeps it.
    */
-  cell?: { numberFormat?: NumberFormat; /** @deprecated The name is `numberFormat`. */ format?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
+  cell?: { numberFormat?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
   /** The moment whose year completes a date typed without one (`15.3` in ru-RU, `3/15` in en-US), ISO as `Clock.now`; the current moment without it. */
   now?: string
 }
@@ -1279,32 +1255,6 @@ export interface Viewport {
   revision: number
 }
 
-/** A cell of a saved result (`SavedResult`): a `CellResult`, or one with the old name of its number format. */
-export interface SavedCellResult extends CellResult {
-  /** @deprecated The name is `numberFormat`. */
-  format?: NumberFormat
-}
-
-/**
- * A result a host saved (`compute`, `Session.getResult`, `getSnapshot`), as `viewportOf` reads it: its cells, the reasons
- * of its errors and its clock. One with the old names of its reasons (`issues`, `nameIssues`) reads alike.
- */
-export interface SavedResult {
-  sheets: { name: string; cells: Record<string, SavedCellResult> }[]
-  diagnostics?: Diagnostic[]
-  /** @deprecated The name is `diagnostics`, the cells' of kind `cell`. */
-  issues?: CellIssue[]
-  /** @deprecated The name is `diagnostics`, the names' of kind `name`; a window does not read them. */
-  nameIssues?: NameIssue[]
-  clock: Clock
-}
-
-/** A book and its computed result as a host saved them (a version of the book), which `viewportOf` reads. */
-export interface SavedBook {
-  book: BookInput
-  result: SavedResult
-}
-
 /**
  * A cell of a window over a saved result (`viewportOf`): as `ViewportCell`, its value, `text` and `color` as the result
  * has them, without the `appearance` of conditional formats, which a result does not hold (its `text` shows the value by
@@ -1508,9 +1458,6 @@ export type StructureResult =
   /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
   | Refusal<StructureRefusal>
 
-/** @deprecated The name is `StructureResult`. */
-export type RestructureResult = StructureResult
-
 /**
  * `Session.editStructure`: the edit's result and where the cells went, without the book (`getBook()` gives it), in
  * every kind of session. `changes` are the cells whose value or formula differs from those of the cell that was at
@@ -1525,9 +1472,6 @@ export type SessionStructureResult =
       mapCell(ref: CellRef): CellRef | null
     })
   | Refusal<StructureRefusal>
-
-/** @deprecated The name is `SessionStructureResult`. */
-export type SessionRestructureResult = SessionStructureResult
 
 /** Fields to change on columns or rows: a value sets the field, null removes it, a field left out stays. */
 export type LinePatch<T> = { [K in keyof T]?: T[K] | null }
@@ -1606,8 +1550,6 @@ export type CellPatch = { sheet: string; set: PatchFields } & ({ cell: string; r
 export interface PatchFields {
   style?: number | StylePatch | null
   numberFormat?: NumberFormat | null
-  /** @deprecated The name is `numberFormat`. */
-  format?: NumberFormat | null
   meta?: JsonValue | null
   note?: CellNote | null
   link?: CellLink | null
@@ -1625,7 +1567,10 @@ export type SheetLayout = Omit<Sheet, 'cells'>
 /** A book without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
 
-/** A session's book and its result taken at one moment (`Session.getSnapshot`), as `writeXlsx` takes them. */
+/**
+ * A book and its result: a session's taken at one moment (`Session.getSnapshot`), or a book and what `compute` gave for
+ * it, as `writeXlsx` takes them and `viewportOf` reads a version a host saved.
+ */
 export interface BookSnapshot {
   book: Book
   result: ComputeResult
@@ -1769,22 +1714,6 @@ export interface Session {
   /** The steps `undo` and `redo` can take now. */
   readonly history: SessionHistory
   close(): void
-  /** @deprecated The name is `editStructure`. */
-  restructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
-  /** @deprecated The name is `getBook`. */
-  book(): Book
-  /** @deprecated The name is `getLayout`. */
-  layout(): BookLayout
-  /** @deprecated The name is `getUsedRange`. */
-  extent(sheet: string): SheetExtent
-  /** @deprecated The name is `getCells`. */
-  cells(sheet: string, range: string | string[]): Record<string, CellView>
-  /** @deprecated The name is `getValidation`. */
-  validation(sheet: string, cell: string): CellValidation | null
-  /** @deprecated The name is `getResult`. */
-  result(): ComputeResult
-  /** @deprecated The name is `getHash`. */
-  hash(): string
 }
 
 // ---------- asynchronous and threaded computation (`docs/async.md`) ----------
@@ -1833,9 +1762,6 @@ export type AsyncSessionOptions = SessionOptions & CalcOptions
 
 /** `AsyncSession.editStructure`: the same answer as `Session.editStructure`'s. */
 export type AsyncStructureResult = SessionStructureResult
-
-/** @deprecated The name is `AsyncStructureResult`. */
-export type AsyncRestructureResult = AsyncStructureResult
 
 /** The options of an asynchronous call that changes a session's book. */
 export type AsyncEditOptions = CalcOptions & EditOptions
@@ -1886,30 +1812,12 @@ export interface AsyncSession {
   /** The session's history as of its last finished call. */
   readonly history: SessionHistory
   close(): Promise<void>
-  /** @deprecated The name is `editStructure`. */
-  restructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
-  /** @deprecated The name is `getBook`. */
-  book(): Promise<Book>
-  /** @deprecated The name is `getLayout`. */
-  layout(): Promise<BookLayout>
-  /** @deprecated The name is `getUsedRange`. */
-  extent(sheet: string): Promise<SheetExtent>
-  /** @deprecated The name is `getCells`. */
-  cells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
-  /** @deprecated The name is `getValidation`. */
-  validation(sheet: string, cell: string): Promise<CellValidation | null>
-  /** @deprecated The name is `getResult`. */
-  result(opts?: CalcOptions): Promise<ComputeResult>
-  /** @deprecated The name is `getHash`. */
-  hash(opts?: CalcOptions): Promise<string>
 }
 
 /** A calculator: `createInlineCalc` (the same thread, in portions) or `createCalcPool` (threads). */
 export interface Calc {
   compute(book: BookInput, opts?: AsyncComputeOptions): Promise<ComputeResult>
   createSession(book: BookInput, opts?: AsyncSessionOptions): Promise<AsyncSession>
-  /** @deprecated The name is `createSession`. */
-  openSession(book: BookInput, opts?: AsyncSessionOptions): Promise<AsyncSession>
   /** Refuses further calls (`closed`), the waiting and running ones too, and closes the sessions. */
   close(): Promise<void>
 }
@@ -1958,37 +1866,6 @@ export interface CalcPoolOptions {
   sliceMs?: number
   /** Starts a thread in a browser, for a bundler that serves the thread's script elsewhere. */
   spawn?: () => WorkerLike
-}
-
-/** @deprecated The package's named exports are these functions (`compute`, `createSession` and the rest): import them. */
-export interface FormulaEngine {
-  compute(book: BookInput, opts?: ComputeOptions): ComputeResult
-  validateFormula(text: string, ctx?: ValidateContext): ValidateResult
-  /** Excel's rules for a name (`NameInput.name`) in a book of `opts.locale` (en-US without one; a locale's words for TRUE and FALSE are refused too, ИСТИНА and ЛОЖЬ in ru-RU). */
-  validateName(name: string, opts?: NameOptions): NameCheck
-  /** The issues of a book's names, as `ComputeResult.diagnostics` of kind `name` give them for a book with these sheets, tables and locale. */
-  validateNames(names: NameInput[], ctx: NamesContext): NameIssue[]
-  createSession(book: BookInput, opts?: SessionOptions): Session
-  editStructure(book: BookInput, op: StructureOp): StructureResult
-  /** @deprecated The name is `createSession`. */
-  openSession(book: BookInput, opts?: SessionOptions): Session
-  /** @deprecated The name is `editStructure`. */
-  restructure(book: BookInput, op: StructureOp): StructureResult
-  /** A value as a cell shows it, without a book: by a format, in a locale and a column's width. */
-  displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay
-  /** Text typed into a cell as Excel takes it, without a book: by the book's locale and the cell's format, style and meta. */
-  parseEntry(text: string, opts?: EntryOptions): EntryResult
-  /**
-   * The widths AutoFit gives columns `C` or `B:D` of a computed book's sheet, from the values of `result`, by column
-   * letter: null for the default width; a column with nothing to show is left out, as it keeps its width.
-   */
-  fitColumns(book: BookInput, result: ComputeResult, sheet: string, columns: string): Record<string, number | null>
-  /**
-   * The width a column takes as a value typed into one of its cells (the value it computes, after `setCells`) widens
-   * it, as Excel widens a column whose width is the default or one it fitted for a number AutoFit would give more room;
-   * undefined when the column keeps its width. A host sets it with `bestFit: true`.
-   */
-  entryWidth(value: CellValue, opts?: EntryWidthOptions): number | undefined
 }
 
 export const MAX_FORMULA_LENGTH = 8_192

@@ -44,7 +44,7 @@ async function stored(data: Uint8Array) {
 describe.each(['closures', 'eval'] as const)('cells in formatted rows and columns (%s)', (execution) => {
   it('a cell without a format of its own is stored with its column\'s cell format, or its row\'s', async () => {
     const b = book()
-    const { data } = await writeXlsx(b, { result: compute(b, { execution }) })
+    const { data } = await writeXlsx({ book: b, result: compute(b, { execution }) })
     const { cells, col, row } = await stored(data)
     expect(col).toBeGreaterThan(0)
     expect(row).toBeGreaterThan(0)
@@ -59,7 +59,7 @@ describe.each(['closures', 'eval'] as const)('cells in formatted rows and column
   it('reads back as written: no cell gets a look its row or column gave it, and every cell shows the same', async () => {
     const b = book()
     const result = compute(b, { execution })
-    const back = (await readXlsx((await writeXlsx(b, { result })).data)).book
+    const back = (await readXlsx((await writeXlsx({ book: b, result })).data)).book
     const styles = back.styles!
     const cells = back.sheets[0].cells
     expect(cells.B2).toEqual({ value: 46096 })
@@ -74,7 +74,7 @@ describe.each(['closures', 'eval'] as const)('cells in formatted rows and column
 
   it('values only: the cells of a spill keep their column\'s look', async () => {
     const b = book()
-    const { data } = await writeXlsx(b, { result: compute(b, { execution }), mode: 'values' })
+    const { data } = await writeXlsx({ book: b, result: compute(b, { execution }) }, { mode: 'values' })
     const { cells, col } = await stored(data)
     expect([cells.B5, cells.B6]).toEqual([col, col])
     expect((await readXlsx(data)).book.sheets[0].cells.B6).toEqual({ value: 46097 })
@@ -114,7 +114,7 @@ describe('where a row crosses a column', () => {
   })
 
   it("the writer writes the empty cells Excel would show by the row's whole format, with the model's", async () => {
-    const { data } = await writeXlsx(crossing())
+    const { data } = await writeXlsx({ book: crossing() })
     const xml = (await openArchive(data).text('xl/worksheets/sheet1.xml'))!
     expect([...xml.matchAll(/<c r="([A-Z]+\d+)" s="\d+"\/>/g)].map((m) => m[1])).toEqual(['G6', 'E8'])
     const back = await readXlsx(data)

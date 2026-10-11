@@ -65,7 +65,7 @@ export const makeOp = (m: HiddenMake): StructureOp => (m.visible === -1 ? { op: 
 
 /** The file of a case: the book as `writeXlsx` writes it, changed by hand for a raw case. */
 export async function hiddenFile(c: HiddenCase, set: HiddenCases): Promise<Uint8Array> {
-  const data = (await writeXlsx(set.books[c.book])).data
+  const data = (await writeXlsx({ book: set.books[c.book] })).data
   if (!c.raw) return data
   if (c.raw === 'allHidden') return editParts(data, (name, x) => (name === 'xl/workbook.xml' ? x.replace(/<sheet name="([^"]*)" sheetId="(\d+)"(?: state="\w+")?/g, '<sheet name="$1" sheetId="$2" state="hidden"') : undefined))
   return editParts(data, (name, x) => {

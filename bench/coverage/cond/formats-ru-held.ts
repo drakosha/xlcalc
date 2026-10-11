@@ -5,9 +5,10 @@
  * as the built-in format, which ru-RU shows by its own regional data (`15.03.2026`); the same code given as text is a
  * code of the book's own (`numFmtId="164"`), shown as written (`3/15/2026`). Dates, a date with a time, money and percent.
  */
-import type { BookInput, CellInput, ConditionalFormat, NumberFormat } from '../../../src/contract.js'
+import type { CellInput, NumberFormat } from '../../../src/contract.js'
 import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
 import type { CondCases } from './cases.js'
+import type { StoredBook, StoredRule } from '../stored.js'
 
 /** Each rule's cell, its value and format: a built-in format by its number, then its code as text. */
 const FORMATS: [cell: string, value: number, format: NumberFormat][] = [
@@ -22,10 +23,10 @@ const FORMATS: [cell: string, value: number, format: NumberFormat][] = [
   ['A9', 0.5, 10],
 ]
 
-function book(): BookInput {
+function book(): StoredBook {
   const cells: Record<string, CellInput> = {}
   for (const [cell, value] of FORMATS) cells[cell] = { value }
-  const conditionalFormats: ConditionalFormat[] = FORMATS.map(([cell, , format]) => ({ type: 'cellIs', ranges: [cell], operator: 'greaterThan', formulas: ['0'], style: { format } }))
+  const conditionalFormats: StoredRule[] = FORMATS.map(([cell, , format]) => ({ type: 'cellIs', ranges: [cell], operator: 'greaterThan', formulas: ['0'], style: { format } }))
   return { locale: 'ru-RU', sheets: [{ name: 'Лист', cells, columns: { A: { width: 30 } }, conditionalFormats }] }
 }
 

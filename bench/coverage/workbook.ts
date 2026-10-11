@@ -8,7 +8,7 @@
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, takenBook, took, unpredicted, writeAnswers } from './stored.js'
 import { answerOf, cellsOf, editOf, fileFormula, MIRRORS, runOnBook } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
@@ -53,7 +53,7 @@ function stepLine(s: Step): string {
  */
 export function checkCycles(c: WorkbookCase) {
   if (c.file?.iterate) return
-  const cycle = compute(c.book, { display: false }).diagnostics.find((i) => i.kind === 'cell' && i.error === 'CYCLE')
+  const cycle = compute(takenBook(c.book), { display: false }).diagnostics.find((i) => i.kind === 'cell' && i.error === 'CYCLE')
   if (cycle?.kind === 'cell') throw new Error(`${c.id}: ${cycle.sheet}!${cycle.cell} is in a circular reference and the case has no iterative calculation (Excel would show a warning window)`)
 }
 

@@ -34,7 +34,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     out.filters[c.id] = { filtered: !!read.book.sheets[0].filtered, values: formulaValues(compute(read.book, { clock: XLSX_CLOCK })) }
   }
   for (const c of (await buildRoundTrips()).filter((x) => PREDICTED.includes(x.id))) {
-    const read = await readXlsx((await writeXlsx(c.book)).data)
+    const read = await readXlsx((await writeXlsx({ book: c.book })).data)
     out.roundtrip[c.id] = { differences: [], values: formulaValues(compute(read.book, { clock: XLSX_CLOCK })) }
   }
   writeFileSync(PREDICTED_FILE, JSON.stringify(out, null, 1) + '\n')

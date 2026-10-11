@@ -9,7 +9,6 @@ import type { HistoryData } from '../session/undo.js'
 import { callBudget, drive } from './drive.js'
 import { callLimits, checkCall, checkEditCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
-import { withOldNames } from '../old-names.js'
 import { strictMethods } from '../strict-args.js'
 
 /** What a calculator gives its sessions. */
@@ -97,7 +96,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     }
   }
   const plain = <T>(f: () => T): Promise<T> => turn(async () => after(f()))
-  return withOldNames<InlineSession>(strictMethods({
+  return strictMethods<InlineSession>({
     get clock() {
       return { ...clock }
     },
@@ -152,5 +151,5 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       if (running) running.halted = why
       core.close()
     },
-  }, true))
+  }, true)
 }
