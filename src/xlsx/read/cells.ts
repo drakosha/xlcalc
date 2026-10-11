@@ -8,7 +8,7 @@
 import type { CellInput, CellValue, ColumnInput, ErrorCode, NumberFormat, RowInput, Scalar } from '../../contract.js'
 import { lookOf, type Look } from '../../layout/lines.js'
 import { entryAt, type Line } from '../../layout/spans.js'
-import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
+import { colToIndex, dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import { CELL_ERRORS, ERROR_CODE, FORMULA_ERRORS } from '../../syntax/errors.js'
 import type { Issues, Where } from '../issues.js'
 import type { XlsxCachedCell } from '../types.js'
@@ -68,11 +68,6 @@ const F = /<(?:[\w.-]+:)?f((?:\s[^>]*?)?)(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?f>)/
 const IS = /<(?:[\w.-]+:)?is(?:\s[^>]*)?>([\s\S]*?)<\/(?:[\w.-]+:)?is>/
 const ADDR = /^([A-Za-z]{1,3})([1-9][0-9]*)$/
 
-const colOf = (letters: string) => {
-  let n = 0
-  for (let i = 0; i < letters.length; i++) n = n * 26 + ((letters.charCodeAt(i) | 32) - 96)
-  return n - 1
-}
 
 /**
  * The cells of `<sheetData>`; `cols`, the sheet's columns. A row with a cell format of its own is read with its cells:
@@ -127,7 +122,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     }
     const ref = a.r && ADDR.exec(a.r)
     if (ref) {
-      col = colOf(ref[1])
+      col = colToIndex(ref[1])
       row = Number(ref[2]) - 1
     } else col++
     let body = ''
