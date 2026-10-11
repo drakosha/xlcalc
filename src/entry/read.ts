@@ -12,7 +12,7 @@ import { literal } from '../criteria.js'
 import { dateTimeParts, trimSpaces, type DateTimeParts } from '../dates.js'
 import { readsClock, type RulesClock } from '../locale/rules/data.js'
 import type { Rules } from '../locale/rules.js'
-import { ERROR_LITERALS } from '../locale/lex.js'
+import { TYPED_ERRORS } from '../syntax/errors.js'
 
 /** What a typed number is by its form: a cell's format follows it (`forms.ts`). */
 export type Form = 'plain' | 'grouped' | 'percent' | 'currency' | 'scientific' | 'fraction' | 'date' | 'time'
@@ -24,9 +24,6 @@ export type Typed =
   | { t: 'error'; literal: string }
   /** Text; `format` where Excel sets one all the same (a number in scientific form out of range). */
   | { t: 'text'; v: string; format?: NumberFormat }
-
-/** The error literals a typed constant can be: those a formula reads (`#SPILL!` and newer are text). */
-const TYPED_ERRORS = ERROR_LITERALS.slice(0, 7)
 
 /** The locale's money format, as Excel sets it for typed money: grouped, two decimals or none, negatives in red. */
 export function moneyFormat(c: Rules['currency'], decimals: boolean): string {

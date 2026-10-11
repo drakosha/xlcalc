@@ -15,7 +15,7 @@ import type { Locale } from '../types.js'
 import type { RegionalData, RulesClock } from './data.js'
 import { regionalDates } from './dates.js'
 import { formatDialects } from './format.js'
-import { numberReader } from './numbers.js'
+import { cellNumberOf, numberReader } from './numbers.js'
 
 export function regionalRules(locale: Locale, data: RegionalData, clock: RulesClock, names: (lcid: string) => Names | undefined, epoch = 0): Rules {
   const { decimal, group, currency } = data
@@ -57,7 +57,7 @@ export function regionalRules(locale: Locale, data: RegionalData, clock: RulesCl
     codePage: data.codePage,
     critNumber: argument,
     critBool: word,
-    cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
+    cellNumber: cellNumberOf(argument),
     critError: errorWords(locale.errors),
     compareText,
   }
