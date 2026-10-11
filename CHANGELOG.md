@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.20.0 (2026-10-11)
+
+Internal release; not published to npm. A snapshot is a copy in every kind of session, and an edit's changes say when a note or a hyperlink changed. Where two copies of one piece of logic answered differently, Excel for Mac and for Windows were asked and the copies made one; undoing the deletion of a large sheet is faster. The synthetic book's values and hashes are as in 0.19.0; values change only where a copy disagreed with Excel.
+
+Added:
+
+- `CellChange.note` and `CellChange.link`: an edit lists a cell whose note or hyperlink changed, with the new one, or null when it was removed, in `setCells`, `replaceCells`, `patchCells`, `clearCells`, `undo` and `redo`, on an otherwise empty cell too; equal notes and links are no change. `meta` stays the host's data and is not listed.
+
+Changed:
+
+- `getSnapshot()` gives an independent copy of the book and its result in every kind of session: later edits do not change it, and changing it does not change the session. A synchronous and an inline session gave their own book, which later edits changed, beside the result of the moment, so a snapshot written later held a book and a result that did not match; a pool gave a copy. Copying takes about 0.27 s on the 34,000-row book (0.94 s to 1.20 s) and the memory of the copy while it is held; it goes in portions, so an inline call gives way and can be stopped. A pool's snapshot costs nothing more: the thread's transport copies it.
+- `EntryOptions.cell` says what to pass for a row's or a column's number format (the cell of `getViewport`, or the format resolved): a cell of `getCell` or `getCells` carries its own format alone. `parseEntry` reads as before.
+- Undoing the deletion of a large sheet takes 35 to 41 % less on the 34,000-row book (1.77 s to 1.05 s without the shown text), inserting and deleting rows and their undo and redo 13 to 22 % less. A state built again copies only the cells `getBook` gave a host and takes the others as they are. Every answer, book and step of history is as before.
+
+Fixed:
+
+- A moment to the second: `DAY`, `MONTH`, `YEAR`, `WEEKDAY`, `HOUR`, `MINUTE`, `SECOND` and a number format's whole seconds split a number as Excel does, half a second added and the sum divided into days and seconds, as both Excels answer 420 cases alike. The date functions and the time functions split it two ways before and disagreed on 318 of 2 million serial numbers tried: 0.4 s before midnight is now the next day in each, and `SECOND(45688+1/256)`, 37.5 s past a minute, is 37.
+- Words of formula text (function names, `TRUE` and `FALSE`, LET's names, a locale's words) compare as Excel for Windows compares them, each letter by its own upper case, the dotless `ı` and the long `ſ` apart: `falſe` is a name, not FALSE, and `gauß` is no `GAUSS`. `falſe` read as FALSE before, and `LET(falſe,1,falſe)` lost its name. Defined names and tables (`nameKey`, `sameName`) compare in any case with `ß` as `SS` and `ﬁ` as `FI`, but `ı` and `ſ` apart from `I` and `S`.
+- A file's formula reads `?` inside a name as typed text does: `a?_xlfn.b` keeps its prefix and `T?[x]` is the table `T?` (they read `a?b` and an external reference).
+- xlsx: a rule's cells (`sqref`) of conditional formats and data validation are read in any case and with `$`, as both Excels read them; a conditional format on `a1:b2` and a rule of data validation on `$A$1:$B$2` were lost.
+- xlsx: a note on `A01`, `$A$1`, `a1` or `A1:A1` is on A1, as both Excels show it (its key `A01` made `createSession` throw on the book read); a note on a range, a file no Excel opens, is left out and reported.
+- xlsx: fills are read as both Excels show them. A cell's fill without a pattern type is none, and its solid fill shows its `fgColor`, white without one. A conditional format's (a dxf's) fill is solid without a pattern type and shows its `bgColor` alone; a colour that names none (`auto`, indexed 64 and 65) is white, and an empty pattern fill changes nothing. What the model cannot hold (a gradient, a dxf's fill that takes the cell's away or keeps the cell's colour) is reported lost.
+- A conditional style's border side given as `undefined` is no side, as in a cell's style and every field of input; it was an `InputError`.
+
+Known differences (README): Excel for Mac reads `ſ` as `s`; Excel compares sheet names letter by letter (a sheet `ß` beside `SS`) and reads a typed function's dotted `İ` as `I`; a cell's shown text of a moment a few millionths of a second from half a second may show another second, as the text is written from the value to 15 digits.
+
+Excel harnesses: the steps `cond`, `valid` and `parts` send a case's file changed by hand (`raw`), and a repair window on another Space is declined after Excel is brought forward. New sets, each predicted before Excel ran it and answered by Excel for Mac and Windows: `seconds-held`, `name-case-held`, `name-case-sheets-held`, `name-case-values-held`, `name-case-ru-held`, `name-question-held`, `cond/sqref-held`, `valid/sqref-held`, `parts/refs-held`, `cond/fills-held`, `cond/fills-held-2`.
+
 ## 0.19.0 (2026-10-11)
 
 Internal release; not published to npm. The old names of the API are gone, so that what our applications forget to move fails at once; a paste and an entry into a selection as Excel takes them; a saved version's conditional formats; structure operations faster. Values and hashes are as in 0.18.0.
