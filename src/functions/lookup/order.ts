@@ -14,15 +14,12 @@ import { NEWER_MAX_ARGS } from '../common.js'
 /** Sort rank of a type: numbers, text, booleans, errors, then blanks. */
 const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : typeof v === 'boolean' ? 2 : v === null ? 4 : 3)
 
-/** Excel's sort order of two values, text by the book's locale; `desc` reverses it, blanks stay last. */
+/** Excel's sort order of two values, one type by the book's (`Rules.compare`), errors equal; `desc` reverses it, blanks stay last. */
 function order(a: V, b: V, desc: boolean, rules: Rules): number {
   const ra = rank(a)
   const rb = rank(b)
   if (ra === 4 || rb === 4) return ra - rb
-  let c = ra - rb
-  if (!c && ra === 0) c = (a as number) - (b as number)
-  else if (!c && ra === 1) c = rules.compareText(a as string, b as string)
-  else if (!c && ra === 2) c = Number(a) - Number(b)
+  const c = ra !== rb ? ra - rb : ra === 3 ? 0 : rules.compare(a, b)
   return desc ? -c : c
 }
 
