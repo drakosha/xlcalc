@@ -1276,7 +1276,7 @@ export interface Viewport {
   range: string
   /** The window asked for held more than `maxCells` cells: `range` is the part given. */
   truncated: boolean
-  /** By address, row by row: every cell with something to show, an empty one with its row's or column's style, an appearance of a conditional format, a note or a link too. */
+  /** By address, row by row: every cell with something to show, an empty one with its row's or column's style or number format, an appearance of a conditional format, a note or a link too. */
   cells: Record<string, ViewportCell>
   /** The styles the window's cells have or show (`ViewportCell.style`, `effectiveStyle`), by their index in the book's `styles`: copies, the answer's own. */
   styles: Record<number, CellStyle>
@@ -1764,9 +1764,9 @@ export interface Session {
   getCell(sheet: string, cell: string): CellView | undefined
   /**
    * A window over a sheet for a grid (`B2:D9`, `B:D`, `2:9`): its cells with their styles and number formats resolved,
-   * empty ones with a style of their row or column too, the widths and heights of its lines, the merged areas and tables
-   * that meet it and the sheet's frozen panes (`Viewport`); only some of its rows and columns with `opts.rows` and
-   * `opts.columns`. It costs what the window holds, as `getCells`, not the book.
+   * empty ones with a style or a number format of their row or column too, the widths and heights of its lines, the
+   * merged areas and tables that meet it and the sheet's frozen panes (`Viewport`); only some of its rows and columns
+   * with `opts.rows` and `opts.columns`. It costs what the window holds, as `getCells`, not the book.
    */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
   /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
