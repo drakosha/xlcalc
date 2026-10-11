@@ -8,7 +8,7 @@ import { canonValue as canonText, outNumber } from './canon.js'
 import { checkCellValue, checkLocale, checkNameOptions, checkString, InputError, sheetNameProblem } from './input.js'
 import { say, type MessageKey } from './locale/messages.js'
 import { DEFAULT_LOCALE, LOCALE_FILES } from './locale/registry.js'
-import { ERROR_TEXT, errorIn } from './syntax/ast.js'
+import { ERROR_TEXT, errorIn } from './syntax/errors.js'
 
 /** The code of each reason the book check gives for a sheet name. */
 const SHEET_CODES: Partial<Record<MessageKey, SheetNameCode>> = { sheetNameEmpty: 'empty', sheetNameLong: 'too_long', sheetNameChar: 'character', sheetNameApostrophe: 'apostrophe', sheetNameHistory: 'reserved' }

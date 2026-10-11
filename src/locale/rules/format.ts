@@ -12,7 +12,7 @@
 import type { ErrorCode } from '../../contract.js'
 import { colorNames } from '../../numfmt/palette.js'
 import { builtinCodes, generalFormat, type Codes, type Dialect, type Names, type Style } from '../../numfmt.js'
-import { errorIn } from '../../syntax/ast.js'
+import { errorIn } from '../../syntax/errors.js'
 import type { Locale } from '../types.js'
 import type { RegionalData } from './data.js'
 

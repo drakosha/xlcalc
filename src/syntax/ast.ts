@@ -86,19 +86,4 @@ export function bad(at: number, msg: Message, code: CheckCode = 'syntax'): never
   throw new FormulaError(code, msg, at)
 }
 
-export const ERROR_TEXT: Record<ErrorCode, string> = {
-  DIV0: '#DIV/0!',
-  NA: '#N/A',
-  NAME: '#NAME?',
-  NUM: '#NUM!',
-  REF: '#REF!',
-  VALUE: '#VALUE!',
-  NULL: '#NULL!',
-  CYCLE: '#CYCLE!',
-  SPILL: '#SPILL!',
-  CALC: '#CALC!',
-  ERROR: '#ERROR!',
-}
-
-/** An error's text in a locale's words (`errors`, by stored text: `#DIV/0!` is `#ДЕЛ/0!` in ru-RU), the stored text where it has none. */
-export const errorIn = (code: ErrorCode, errors?: Readonly<Record<string, string>>): string => errors?.[ERROR_TEXT[code]] ?? ERROR_TEXT[code]
+export { ERROR_TEXT } from './errors.js'

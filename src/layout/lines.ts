@@ -17,6 +17,10 @@ export interface Look {
 /** The format a cell shows by: its own, else its row's, else its column's. */
 export const formatOf = (own: Look | undefined, row: Look | undefined, col: Look | undefined): NumberFormat | undefined => own?.format ?? row?.format ?? col?.format
 
+/** Where the format a cell shows by comes from (`formatOf`); undefined for none (General). */
+export const formatSource = (own: Look | undefined, row: Look | undefined, col: Look | undefined): 'cell' | 'row' | 'column' | undefined =>
+  own?.format !== undefined ? 'cell' : row?.format !== undefined ? 'row' : col?.format !== undefined ? 'column' : undefined
+
 /** The look a cell shows: its own style and format, each else its row's, else its column's (`formatOf`). */
 export const lookOf = (own: Look | undefined, row: Look | undefined, col: Look | undefined): Look => ({ style: own?.style ?? row?.style ?? col?.style, format: formatOf(own, row, col) })
 

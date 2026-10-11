@@ -5,7 +5,7 @@
  * en-US's. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation.
  */
 import type { CellValue } from '../contract.js'
-import { errorIn } from '../syntax/ast.js'
+import { errorIn } from '../syntax/errors.js'
 import { english } from './english.js'
 import { DEFAULT_LOCALE, LOCALE_FILES } from './registry.js'
 import type { Locale, TableItem } from './types.js'
@@ -115,6 +115,8 @@ export interface MessageParams {
   explainSpill: { ref: string }
   explainValue: { value: CellValue | undefined }
   explainFormula: { formula: string }
+  explainErrorFrom: { ref: string }
+  explainErrorHere: object
 }
 
 export type MessageKey = keyof MessageParams
