@@ -1,6 +1,6 @@
 /**
- * What `writeXlsx` is given: a snapshot `{ book, result? }` (or, deprecated, a book and its result in the options), the
- * options, and which values of formulas the file stores (`values`). The result is `compute`'s, a session's
+ * What `writeXlsx` is given: a snapshot `{ book, result? }`, the options, and which values of formulas the file stores
+ * (`values`). The result is `compute`'s, a session's
  * (`getSnapshot`) or the values a file stored (`readXlsx`'s `cached`); with `values: 'require'` every formula and every
  * cell an array fills has its value in it, as a result of the book has.
  */
@@ -29,12 +29,13 @@ export interface WriteArgs {
 const RESULT = "a result: compute's, a session's getSnapshot().result or readXlsx's cached, { sheets: [{ name, cells }] }"
 const SESSION = 'a session is not a snapshot: pass session.getSnapshot() (awaited for an asynchronous session)'
 const RESULT_ALONE = 'a result is not a snapshot: pass { book, result } with the book it was computed from'
+const BOOK_ALONE = ' (a book is not a snapshot: pass { book, result })'
 const PRESERVE = '(values: "preserve" writes the values it has)'
 
 /** A session or its proxy, which a snapshot is taken of. */
 const isSession = (v: unknown) => typeof (v as { getSnapshot?: unknown } | null)?.getSnapshot === 'function'
 
-/** A result (`compute`'s, a session's `getResult()`), told by its hashes: it has sheets, and a book's old form does too. */
+/** A result (`compute`'s, a session's `getResult()`), told by its hashes: it has sheets, and a book does too. */
 const isResult = (v: unknown) => typeof (v as { hash?: unknown } | null)?.hash === 'string' && typeof (v as { inputHash?: unknown }).inputHash === 'string'
 
 /** The result's cells by sheet; the result must be of a result's shape and the book's (the same sheets in order). */
@@ -56,30 +57,25 @@ function resultCells(book: BookInput, result: unknown, path: string): Record<str
   })
 }
 
-/** The arguments of `writeXlsx`, checked: a snapshot and options, or (deprecated) a book and options with its result. */
-export function writeArgs(first: XlsxSnapshot | BookInput, opts: unknown): WriteArgs {
-  if (isSession(first)) throw new InputError('snapshot', SESSION)
-  if (isResult(first)) throw new InputError('snapshot', RESULT_ALONE)
-  const given = object(first, 'snapshot', 'a snapshot { book, result }')
+/** The arguments of `writeXlsx`, checked: a snapshot and options. */
+export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
+  if (isSession(snapshot)) throw new InputError('snapshot', SESSION)
+  if (isResult(snapshot)) throw new InputError('snapshot', RESULT_ALONE)
+  const given = object(snapshot, 'snapshot', 'a snapshot { book, result }')
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
-  // the old form: the book first, its result in the options
-  const legacy = 'sheets' in given
-  if (legacy) onlyKeys(o, 'opts', ['result', 'mode', 'values'])
-  else {
-    onlyKeys(given, 'snapshot', ['book', 'result'], 'cached' in given ? ' (a file read: pass { book: read.book, result: read.cached })' : '')
-    onlyKeys(o, 'opts', ['mode', 'values'], 'result' in o ? ' (the result goes in the snapshot: writeXlsx({ book, result }))' : '')
-  }
-  const book = legacy ? checkBook(given) : checkBook(given.book, 'snapshot.book')
-  const [result, path] = legacy ? [o.result, 'opts.result'] : [given.result, 'snapshot.result']
-  const pass = legacy ? 'pass opts.result' : 'pass { book, result }'
+  onlyKeys(given, 'snapshot', ['book', 'result'], 'cached' in given ? ' (a file read: pass { book: read.book, result: read.cached })' : 'sheets' in given ? BOOK_ALONE : '')
+  onlyKeys(o, 'opts', ['mode', 'values'], 'result' in o ? ' (the result goes in the snapshot: writeXlsx({ book, result }))' : '')
+  const book = checkBook(given.book, 'snapshot.book')
+  const { result } = given
+  const path = 'snapshot.result'
   const mode = o.mode ?? 'formulas'
   if (mode !== 'formulas' && mode !== 'values') throw new InputError('opts.mode', `expected "formulas" or "values", got ${JSON.stringify(mode)}`)
   const has = result !== undefined
   const values = o.values ?? (has ? 'require' : 'omit')
   if (values !== 'require' && values !== 'omit' && values !== 'preserve') throw new InputError('opts.values', `expected "require", "omit" or "preserve", got ${JSON.stringify(values)}`)
-  if (mode === 'values' && !has) throw new InputError(path, `the values mode takes the values from the result: ${pass}`)
+  if (mode === 'values' && !has) throw new InputError(path, `the values mode takes the values from the result: pass { book, result }`)
   if (mode === 'values' && values === 'omit') throw new InputError('opts.values', `the values mode writes values only: "omit" would leave the cells of formulas empty`)
-  if (values !== 'omit' && !has) throw new InputError(path, `values: "${values}" takes the values of formulas from the result: ${pass}`)
+  if (values !== 'omit' && !has) throw new InputError(path, `values: "${values}" takes the values of formulas from the result: pass { book, result }`)
   const cells = has ? resultCells(book, result, path) : undefined
   if (values === 'require') requireValues(book, cells!, path)
   return { book, mode, values, unasked: o.values === undefined && !has, ...(values !== 'omit' ? { cells } : {}) }
