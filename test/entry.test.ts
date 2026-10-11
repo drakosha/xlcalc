@@ -90,6 +90,16 @@ describe('parseEntry', () => {
     expect(input(en('$5', { format: '0%' }))).toEqual({ value: 5, format: '"$"#,##0_);[Red]\\("$"#,##0\\)' })
   })
 
+  it("keeps the cell's note and link, as Excel keeps them whatever is typed", () => {
+    const note = { author: 'Ann', text: 'Checked' }
+    const link = { url: 'https://example.com/', tooltip: 'Open' }
+    expect(input(en('5', { note, link, style: 1 }))).toEqual({ value: 5, style: 1, note, link })
+    expect(input(en('=SUM(1,2)', { link }))).toEqual({ formula: 'SUM(1,2)', link })
+    expect(en('', { note })).toEqual({ ok: true, input: { note } })
+    expect(() => parseEntry('1', { cell: { note: { author: 'Ann' } as never } })).toThrow(new InputError('opts.cell.note.text', 'expected a string, got undefined'))
+    expect(() => parseEntry('1', { cell: { link: { tooltip: 'x' } } })).toThrow(new InputError('opts.cell.link', 'a hyperlink has a url, a location or both'))
+  })
+
   it('clears the value of empty text and keeps the rest of the cell, null when nothing is left', () => {
     expect(en('')).toEqual({ ok: true, input: null })
     expect(en('', { format: '0.00', meta: 1 })).toEqual({ ok: true, input: { format: '0.00', meta: 1 } })

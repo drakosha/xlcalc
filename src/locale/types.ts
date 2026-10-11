@@ -8,6 +8,7 @@
  */
 import type { Messages } from './messages.js'
 import type { RegionalData } from './rules/data.js'
+import type { Refusal } from '../contract.js'
 
 export interface Locale {
   /** BCP 47 tag: `en-US`, `ru-RU`. A locale without messages of its own takes those of the loaded locale of its tag (English for another tag). */
@@ -49,4 +50,4 @@ export interface Locale {
 export type TableItem = '#All' | '#Data' | '#Headers' | '#Totals' | '#This Row'
 
 /** The result of translating formula text: the text, or a check code with a message in the locale's language and the position in the given text. */
-export type Translation = { ok: true; formula: string } | { ok: false; code: 'syntax'; message: string; at: number }
+export type Translation = { ok: true; formula: string } | (Refusal<'syntax'> & { at: number })

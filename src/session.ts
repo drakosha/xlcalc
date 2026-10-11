@@ -7,7 +7,7 @@
  * portions. A call that stops (a limit, a deadline, an abort) changes nothing: what it changed in place is put back,
  * and the state is built again from the book on the next call.
  */
-import type { BookInput, BookLayout, CellChange, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellStyle, CellValidation, CellView, Clock, ComputeResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellChange, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellStyle, CellValidation, CellView, Clock, ComputeResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
@@ -37,6 +37,7 @@ import { applyOp, checkedMapCell } from './structure/index.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, checkEntry } from './validation/session.js'
+import { cellWithoutEquals, opWithoutEquals } from './equals.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -71,6 +72,7 @@ export interface SessionSteps {
   validation(sheet: string, cell: string): Steps<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null): Steps<EntryCheck>
   result(): Steps<ComputeResult>
+  getSnapshot(): Steps<BookSnapshot>
   hash(): Steps<string>
   close(): void
 }
@@ -97,7 +99,7 @@ function rect(text: unknown, path: string) {
 /** Opens a session in steps: the book checked, then computed. */
 export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: SessionHooks = {}): Steps<SessionSteps> {
   const o = checkSessionOptions(opts)
-  checkBook(book)
+  book = checkBook(book)
   const live = o.live === true
   const fresh = hooks.clock ?? currentClock
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
@@ -227,7 +229,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *setCells(edits: CellEdit[]) {
       const s = yield* ready()
-      checkEdits(edits, sheetIndex(s), styleCount(s))
+      edits = checkEdits(edits, sheetIndex(s), styleCount(s))
       checkArrayEdits(s, edits)
       // a table's header cell typed over renames its column and the references to it: the book is built again
       const renamed = headerEdits(s.input, edits, (v, format) => headerText(s, v, format))
@@ -251,7 +253,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *setNames(names: NameInput[]) {
       const old = yield* ready()
-      checkNames(names, 'names')
+      names = checkNames(names, 'names')
       // tables and names share one namespace
       checkTables({ ...old.input, names }, 'book')
       // names change the whole graph: the book is rebuilt, changes are collected over all cells (none moved)
@@ -275,6 +277,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *restructure(op: StructureOp) {
       const old = yield* ready()
+      op = opWithoutEquals(op)
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
       // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
@@ -353,7 +356,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const { row, col } = parseAddress(checkAddress(cell, 'cell'))
-      if (input !== null) checkCell(input, 'input', styleCount(s))
+      if (input !== null) input = cellWithoutEquals(checkCell(input, 'input', styleCount(s)))
       checkArrayEdits(s, [{ sheet, cell, input }])
       try {
         return yield* checkEntry(s, i, row, col, input)
@@ -369,6 +372,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *result() {
       const t0 = nowMs()
       return yield* buildResult(yield* ready(), clock, t0, display)
+    },
+    *getSnapshot() {
+      const t0 = nowMs()
+      const s = yield* ready()
+      return { book: s.input, result: yield* buildResult(s, clock, t0, display) }
     },
     *undo() {
       return yield* applyStep(core, history.undo.at(-1), (forth) => history.undone(forth))
@@ -415,6 +423,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     validation: (sheet, cell) => now(() => core.validation(sheet, cell)),
     validateEntry: (sheet, cell, input) => now(() => core.validateEntry(sheet, cell, input)),
     result: () => now(() => core.result()),
+    getSnapshot: () => now(() => core.getSnapshot()),
     hash: () => now(() => core.hash()),
     undo: () => now(() => core.undo()),
     redo: () => now(() => core.redo()),

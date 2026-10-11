@@ -9,7 +9,7 @@ import { buildResult, clockSerial } from './result.js'
 /** `o` checked already (`checkComputeOptions`). */
 export function* computeSteps(book: BookInput, o: ComputeOptions): Steps<ComputeResult> {
   const t0 = nowMs()
-  checkBook(book)
+  book = checkBook(book)
   const clock = o.clock ?? currentClock()
   const state = yield* buildState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution })
   return yield* buildResult(state, clock, t0, o.display !== false)

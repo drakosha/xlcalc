@@ -15,7 +15,7 @@ import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
 import type { Issues } from '../issues.js'
-import type { XlsxIssueCode } from '../types.js'
+import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has, type Element } from '../xml/scan.js'
 import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
@@ -45,7 +45,7 @@ export interface SheetSource {
 
 export interface SheetRead {
   sheet: SheetInput
-  cached: Record<string, CellValue>
+  cached: Record<string, XlsxCachedCell>
 }
 
 /** Elements of a worksheet the model has no place for, outside `<sheetData>`. */
@@ -124,7 +124,11 @@ function convert(src: SheetSource, read: SheetCells, issues: Issues): Map<string
   return out
 }
 
-/** The cells an array formula spilled into hold stored values: they go to `cached`, keeping their look. */
+/**
+ * The cells an array formula spilled into hold stored values: they go to `cached` with the formula's address, keeping
+ * their look; the formula's value gets the range, as a result has them (an old kind's area always, a dynamic array's
+ * when it spilled).
+ */
 function arrays(read: SheetCells) {
   const keys = () => Object.keys(read.cells)
   for (const a of read.arrays) {
@@ -132,12 +136,15 @@ function arrays(read: SheetCells) {
     if (!r) continue
     const anchor = read.cells[a.anchor]
     if (!a.dynamic && anchor?.formula !== undefined) anchor.array = a.ref
+    const top = read.cached[a.anchor]
+    if (top && (!a.dynamic || r.r2 > r.r1 || r.c2 > r.c1)) top.spill = `${formatAddress(r.r1, r.c1)}:${formatAddress(r.r2, r.c2)}`
     for (const addr of cellsOf(r, keys)) {
       const cell = read.cells[addr]
       // an error the array spilled is stored as the cell's value, which the reader took for a formula of it
       const spilled = read.errors.delete(addr)
       if (addr === a.anchor || !cell || (cell.formula !== undefined && !spilled)) continue
-      if (cell.value !== undefined) read.cached[addr] = cell.value as CellValue
+      const stored = cell.value !== undefined ? { value: cell.value as CellValue } : read.cached[addr]
+      if (stored) read.cached[addr] = { value: stored.value, spillOf: a.anchor }
       const { value: _, formula: __, ...rest } = cell
       if (Object.keys(rest).length) read.cells[addr] = rest
       else delete read.cells[addr]

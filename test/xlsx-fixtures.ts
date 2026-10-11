@@ -2,7 +2,8 @@
  * Hand-made xlsx packages for the reader's tests: parts as text, zipped by the package's own writer. `book()` makes
  * a minimal workbook around sheet bodies; any part can be replaced or left out to test what a file may lack.
  */
-import { readXlsx } from '../src/xlsx.js'
+import type { CellValue, ComputeResult } from '../src/contract.js'
+import { readXlsx, type XlsxCached, type XlsxRead } from '../src/xlsx.js'
 import { zip } from '../src/xlsx/zip/write.js'
 
 const enc = new TextEncoder()
@@ -62,3 +63,16 @@ export const sheet = (rows: string, extra: Omit<Fixture, 'sheets'> = {}) => read
 
 /** The issue codes of a read, with the cells each is about. */
 export const codes = (issues: { code: string; cells?: string[] }[]) => issues.map((i) => (i.cells ? `${i.code} ${i.cells.join(' ')}` : i.code))
+
+/** The values a file stored on one of its sheets (`XlsxRead.cached`), by address. */
+export const storedValues = (r: XlsxRead, sheet = 0): Record<string, CellValue> => Object.fromEntries(Object.entries(r.cached.sheets[sheet].cells).map(([a, c]) => [a, c.value]))
+
+/** What a file written from `result` stores of it: the formulas' values and the cells of their arrays, with `spill` and `spillOf`. */
+export const storedOf = (result: ComputeResult): XlsxCached => ({
+  sheets: result.sheets.map((s) => ({
+    name: s.name,
+    cells: Object.fromEntries(
+      Object.entries(s.cells).flatMap(([a, c]) => (c.formula !== undefined || c.spillOf !== undefined ? [[a, { value: c.value, ...(c.spill !== undefined ? { spill: c.spill } : {}), ...(c.spillOf !== undefined ? { spillOf: c.spillOf } : {}) }]] : [])),
+    ),
+  })),
+})

@@ -64,6 +64,7 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
+    "docs/*.md",
     "CHANGELOG.md",
     "THIRD_PARTY.md"
   ],

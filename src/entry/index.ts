@@ -3,9 +3,9 @@
  * `=`, or after a `+` or `-` that begins no number (typed so, Excel makes `+1+2` the formula `1+2` and `-C1` the formula
  * `-C1`), translated from the locale's formula text; text after an apostrophe, or anything in a cell formatted as text;
  * else a constant (`read.ts`), whose form may set the cell's format (`forms.ts`). A number typed into a percent cell
- * gets the `%` Excel's editor adds as it is typed (`5` is 5%). The cell keeps its style and meta. Only a formula that
- * does not parse stops the entry, as Excel's dialog does; an unknown function or name is taken, and the cell computes
- * `#NAME?`.
+ * gets the `%` Excel's editor adds as it is typed (`5` is 5%). The cell keeps its style, meta, note and link. Only a
+ * formula that does not parse stops the entry, as Excel's dialog does; an unknown function or name is taken, and the
+ * cell computes `#NAME?`.
  */
 import type { CellInput, CheckCode, EntryOptions, EntryResult, NumberFormat } from '../contract.js'
 import { checkEntryOptions, checkString } from '../input.js'
@@ -43,6 +43,9 @@ function rulesFor(locale: Locale, epoch: number, year: number) {
   return r
 }
 
+/** The fields of the cell typed into that its new input keeps. */
+const KEPT = ['style', 'meta', 'note', 'link'] as const
+
 /** The check codes of a formula Excel does not take as typed: its dialog stops the entry. */
 const STOPS: ReadonlySet<CheckCode> = new Set(['syntax', 'empty', 'too_long', 'too_deep'])
 
@@ -65,15 +68,17 @@ function formulaOf(text: string, shift: number, locale: Locale): { formula: stri
 const plusNumber = (text: string, decimal: string) => text.startsWith('+') && /^\+?[\d.]/.test(text.slice(1).replace(decimal, '.'))
 
 /**
- * Text typed into a cell as Excel takes it in the book's locale: the cell's new input, with the cell's style and meta
- * and the format Excel leaves it, or a formula Excel does not take. Empty text clears the value and keeps the rest.
+ * Text typed into a cell as Excel takes it in the book's locale: the cell's new input, with the cell's style, meta, note
+ * and link and the format Excel leaves it, or a formula Excel does not take. Empty text clears the value and keeps the rest.
  */
 export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   checkString(text, 'text')
   const o = checkEntryOptions(opts)
   const locale = localeOf(o.locale)
   const cell = o.cell ?? {}
-  const kept: CellInput = { ...(cell.style !== undefined ? { style: cell.style } : {}), ...(cell.meta !== undefined ? { meta: cell.meta } : {}) }
+  // what goes with the cell, as Excel keeps it whatever is typed
+  const kept: CellInput = {}
+  for (const k of KEPT) if (cell[k] !== undefined) (kept as Record<string, unknown>)[k] = cell[k]
   const input = (body: CellInput, format: NumberFormat | undefined = cell.format): EntryResult => ({ ok: true, input: { ...body, ...(format !== undefined ? { format } : {}), ...kept } })
   const epoch = epochOf(o.dateSystem)
   const year = ymd(Math.floor(msToSerial(o.now === undefined ? Date.now() : Date.parse(o.now)))).y

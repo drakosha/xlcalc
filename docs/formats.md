@@ -8,7 +8,8 @@ The rules below were measured in Excel 16.113 for Mac, en-US and ru-RU.
 
 - `compute(book, { display })` and `openSession(book, { display })`. `display` is `true` by default, and then every cell in `sheets[].cells` has `text` (spilled cells too) and `color` when its section has one. Session edits return these fields for the cells they list, and also list cells whose text or colour changed while their value did not: a new `format` through `setCells`, a width, a row or column format or a merged area through `setLayout`, a moved cell through `restructure`.
 - `display: false` returns values only and spends nothing on formatting.
-- `displayValue(value, { format, locale, width, dateSystem })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`.
+- `displayValue(value, { format, locale, width, dateSystem })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`. Without `width` the width is not limited: General keeps the digits it shows in a wide column, no number turns into `#`, and a fill (`*x`) has no column to fill and drops out, as in `TEXT`. With a width it shows what a cell of that column shows; Excel's default column is `width: 8.83203125`.
+- `builtinFormatCode(id, locale)` gives the code a built-in format shows by in a locale, from the tables below (`builtinFormatCode(14, 'ru-RU')` is `dd.mm.yyyy`), and undefined for a number that is none: `builtinFormatCode(id) !== undefined` tells whether a number is a built-in format.
 - `fitColumns(book, result, sheet, columns)`, the layout edit `{ sheet, columns, fit: true }` and `entryWidth(value, opts)` give the widths Excel gives columns by AutoFit and as numbers are typed ([Fitting columns](#fitting-columns)).
 
 The number always stays in `value`. The text depends on the value, the format, the locale and the column width, so it is not part of the values hash, and a hash does not change when a column gets wider.
@@ -99,7 +100,7 @@ An xlsx file stores some formats by number alone, without a code. A format here 
 | 41 to 44 | the accounting formats with `$` | the accounting formats with `₽` after the amount |
 | 45 to 49 | `mm:ss`, `[h]:mm:ss`, `mm:ss.0`, `##0.0E+0`, `@` | the same |
 
-In en-US, 14 shows 2025-01-31 as `1/31/2025` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`, and 20 shows 6 in the morning as `6:00`. A result keeps the number in `format`. `src/numfmt/builtin.ts` has the en-US codes, ru-RU's locale file (`src/locales/ru-RU.ts`) the ru-RU ones.
+In en-US, 14 shows 2025-01-31 as `1/31/2025` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`, and 20 shows 6 in the morning as `6:00`. A result keeps the number in `format`. `src/numfmt/builtin.ts` has the en-US codes, ru-RU's locale file (`src/locales/ru-RU.ts`) the ru-RU ones, and `builtinFormatCode` gives them; a value shows by the code as by the number in both locales (`test/builtin-format-code.test.ts`).
 
 The codes are those Excel for Windows shows. Excel for Mac shows the short date of en-US as `m/d/yy` (`1/31/25`) and the times of ru-RU with a leading zero (`06:00`); the engine follows Windows there.
 

@@ -5,7 +5,7 @@
  * alone, without rules of computation, translates in its language and reads and shows values as en-US does.
  */
 import { describe, expect, it } from 'vitest'
-import { displayValue, entryWidth, enUS, InputError, parseEntry, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type Locale } from '../src/index.js'
+import { builtinFormatCode, displayValue, entryWidth, enUS, InputError, parseEntry, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type Locale } from '../src/index.js'
 import { ruRU } from './locales.js'
 
 const now = '2026-10-10T12:00:00Z'
@@ -19,6 +19,7 @@ const CALLS: [string, (locale: string | Locale) => unknown][] = [
   ['displayValue', (l) => [displayValue(0.4567, { format: '0.0%', locale: l }), displayValue(46096, { format: 14, locale: l, width: 12 })]],
   ['entryWidth', (l) => [entryWidth(1234567890, { locale: l }), entryWidth(46096, { format: 14, locale: l })]],
   ['validateName', (l) => [validateName('ложь', { locale: l }), validateName('FALSE', { locale: l })]],
+  ['builtinFormatCode', (l) => [builtinFormatCode(14, l), builtinFormatCode(7, l)]],
   ['validateNames', (l) => validateNames([{ name: 'ИСТИНА', ref: '1' }, { name: 'rate', ref: '0.2' }], { sheets: ['S'], locale: l })],
 ]
 

@@ -38,6 +38,8 @@ export { restructure } from './structure/index.js'
 export { copyFormula, type CopyContext } from './structure/copy.js'
 export { parseEntry } from './entry/index.js'
 export { entryWidth, fitColumns } from './layout/fit.js'
+export { builtinFormatCode } from './builtin-format.js'
+export { dateToSerial, serialToDate, type DateSystemOptions } from './date-serial.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
@@ -71,19 +73,19 @@ export function validateNames(names: NameInput[], ctx: NamesContext): NameIssue[
 /** The `eval` mode's generated code of the book in evaluation order, for reading while debugging; not part of the contract. */
 export function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): string {
   const o = checkComputeOptions(opts)
-  checkBook(book)
+  book = checkBook(book)
   const clock = o.clock ?? currentClock()
   return debugSource(createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: 'eval' }))
 }
 
 /**
  * A value as a cell shows it without a book (a cell being edited, say): by `format` (General without one), in
- * `locale` and `dateSystem`, in a column of `width` (the default width without one), as `CellResult.text` and
- * `color` show it.
+ * `locale` and `dateSystem`, in a column of `width` (no limit without one: a value is not narrowed to a column it was
+ * not given), as `CellResult.text` and `color` show it.
  */
 export function displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay {
   const o = checkDisplayOptions(opts)
-  return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.format, room(columnPoints(o.width)))
+  return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.format, o.width === undefined ? Infinity : room(columnPoints(o.width)))
 }
 
 /** @deprecated `fromLegacy` reads formulas of files: `import { fromLegacy } from 'xlcalc/xlsx'`. */

@@ -104,7 +104,7 @@ describe('defined names in letters of any script', () => {
     }
     const copied = restructure(b, { op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'T', range: 'B1' } })
     expect(copied.ok && copied.book.names).toEqual([{ name: 'Ставка', ref: '0.5', scope: 'S' }, { name: 'Ставка', ref: '0.5', scope: 'T' }])
-    const { data, issues } = await writeXlsx({ ...b, names: [...b.names!, { name: 'НДС_2025', ref: "'S'!$A$1" }] })
+    const { data, issues } = await writeXlsx({ book: { ...b, names: [...b.names!, { name: 'НДС_2025', ref: "'S'!$A$1" }] } }, { values: 'omit' })
     expect(issues).toEqual([])
     const read = await readXlsx(data)
     expect(read.book.names).toEqual([{ name: 'Ставка', ref: '0.5', scope: 'S' }, { name: 'НДС_2025', ref: "'S'!$A$1" }])
@@ -122,7 +122,7 @@ describe("Excel's rules for names where it was measured (tables/names-more-held,
     expect([v.cells.B1, v.cells.B2, v.cells.B3]).toEqual([10, 12, 14])
     expect(validateLocalFormula('=Став?ка*2+0,5', ruRU, { names: ['Став?ка'] })).toMatchObject({ ok: true, canonical: 'Став?ка*2+0.5' })
     expect(toLocal('Став\\ка*2+1.5', ruRU)).toEqual({ ok: true, formula: 'Став\\ка*2+1,5' })
-    const { data, issues } = await writeXlsx(b)
+    const { data, issues } = await writeXlsx({ book: b }, { values: 'omit' })
     expect(issues).toEqual([])
     expect((await readXlsx(data)).book.names).toEqual(b.names)
   })
@@ -138,10 +138,10 @@ describe("Excel's rules for names where it was measured (tables/names-more-held,
     s.setNames([...names, { name: 'Ложь', ref: '3' }])
     expect(s.result().nameIssues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь', 'Ложь'])
     s.close()
-    const file = await writeXlsx(ru)
+    const file = await writeXlsx({ book: ru }, { values: 'omit' })
     expect(file.issues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
     expect((await readXlsx(file.data)).book.names).toEqual([{ name: 'ИСТИНА_1', ref: '1' }])
-    expect((await writeXlsx({ ...ru, locale: 'en-US' })).issues).toEqual([])
+    expect((await writeXlsx({ book: { ...ru, locale: 'en-US' } }, { values: 'omit' })).issues).toEqual([])
   })
 
   it('a table takes ? and \\ inside its name, and in a ru-RU book not the name ИСТИНА, as Excel for Windows (tables/names-tables-held, names-ru-tables-held)', () => {

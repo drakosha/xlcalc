@@ -104,6 +104,11 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'result':
       value = await s.result(o)
       break
+    case 'getSnapshot': {
+      const r = await s.getSnapshot(o)
+      value = { book: await pack(r.book), result: r.result }
+      break
+    }
     case 'hash':
       value = await s.hash(o)
       break

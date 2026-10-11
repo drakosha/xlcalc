@@ -8,7 +8,7 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, displayValue, entryWidth, enUS, fitColumns, InputError, LOCALES, openSession, parseEntry, registerLocale, restructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
+import { builtinFormatCode, compute, createInlineCalc, displayValue, entryWidth, enUS, fitColumns, InputError, LOCALES, openSession, parseEntry, registerLocale, restructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
 import { PACKAGE_LOCALES } from '../src/locale/registry.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { LOCALE_MODULES } from '../src/worker/locales.js'
@@ -52,7 +52,7 @@ describe('without ru-RU loaded', () => {
     await expect(calc.compute(ruBook, { clock })).rejects.toThrow(`book.locale: ${HINT}`)
     await expect(calc.openSession(ruBook, { clock })).rejects.toBeInstanceOf(InputError)
     await calc.close()
-    await expect(writeXlsx(ruBook)).rejects.toThrow(`book.locale: ${HINT}`)
+    await expect(writeXlsx({ book: ruBook })).rejects.toThrow(`book.locale: ${HINT}`)
   })
 
   it('the tag ru-RU wherever a locale is taken is the same InputError, at its path', () => {
@@ -65,6 +65,7 @@ describe('without ru-RU loaded', () => {
       ['locale', () => toLocal('1', 'ru-RU')],
       ['locale', () => toInvariant('1', 'ru-RU')],
       ['locale', () => validateLocalFormula('1', 'ru-RU')],
+      ['locale', () => builtinFormatCode(14, 'ru-RU')],
     ]
     for (const [path, call] of calls) expect(refusal(call)).toMatchObject({ path, message: `${path}: ${HINT}` })
   })
@@ -78,6 +79,7 @@ describe('without ru-RU loaded', () => {
     expect(displayValue(0.4567, { format: '0.0%', locale: ruRU })).toEqual({ text: '45,7%' })
     expect(displayValue(46096, { format: 14, locale: ruRU, width: 12 })).toEqual({ text: '15.03.2026' })
     expect(entryWidth(1234567890, { locale: ruRU })).toBe(11.1640625)
+    expect(builtinFormatCode(14, ruRU)).toBe('dd.mm.yyyy')
     expect([validateName('ложь', { locale: ruRU }).ok, validateName('ложь').ok]).toEqual([false, true])
     expect(validateNames([{ name: 'ИСТИНА', ref: '1' }], { sheets: ['S'], locale: ruRU })).toMatchObject([{ name: 'ИСТИНА', dropped: true }])
     expect([...LOCALES.keys()]).toEqual(['en-US'])
