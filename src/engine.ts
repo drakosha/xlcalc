@@ -168,7 +168,7 @@ function prepare(state: EngineState, s: number, row: number, col: number, text: 
   const named = (name: string, sheet: string | undefined) => nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
   const known = (name: string, sheet: string | undefined) => !!named(name, sheet)
   const enclosing = tableAt(state.tables, s, row, col)?.name
-  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { enclosing } : {}) })
+  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { table: enclosing } : {}) })
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   // sheets and names spelled as the book has them, as Excel shows them (`ставка*2` is `Ставка*2`)
   const sheetOf = (sh: string) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]

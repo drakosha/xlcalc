@@ -112,7 +112,7 @@ export function storedText(book: BookInput, sheet: string, addr: string, shown: 
   const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet))
   const { row, col } = parseAddress(addr)
   const enclosing = tableAt(tables, s, row, col)?.name
-  const r = validate(shown.replace(/^=/, ''), { sheets: book.sheets.map((x) => x.name), tables: tables.list.map((t) => ({ name: t.name, columns: t.cols })), ...(enclosing ? { enclosing } : {}) })
+  const r = validate(shown.replace(/^=/, ''), { sheets: book.sheets.map((x) => x.name), tables: tables.list.map((t) => ({ name: t.name, columns: t.cols })), ...(enclosing ? { table: enclosing } : {}) })
   return r.ok ? r.canonical : `(${r.code}) ${shown}`
 }
 

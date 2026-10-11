@@ -18,7 +18,7 @@ const TAKEN_BY: Record<string, string> = {
   errorDepth: 'explain',
   widen: 'setCellText and previewCellText',
   baseRevision: "a session's calls that change its book",
-  table: 'toLocal',
+  table: 'toLocal and toInvariant',
   clock: 'compute and createSession',
   externals: 'compute and createSession',
   execution: 'compute and createSession',

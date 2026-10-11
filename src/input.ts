@@ -536,7 +536,8 @@ export function checkSheet(v: unknown, sheetIndex: (name: string) => number | un
 export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext | undefined {
   if (v === undefined) return undefined
   const o = object(v, path, 'a context such as { sheets: ["Sheet1"], names: [] }')
-  onlyKeys(o, path, ['sheets', 'names', 'externalFunctions', 'tables'])
+  onlyKeys(o, path, ['sheets', 'names', 'externalFunctions', 'tables', 'table'])
+  if (o.table !== undefined) checkString(o.table, `${path}.table`)
   for (const k of ['sheets', 'names', 'externalFunctions'] as const)
     if (o[k] !== undefined) array(o[k], `${path}.${k}`, 'an array of strings').forEach((s, i) => checkString(s, `${path}.${k}[${i}]`))
   if (o.tables !== undefined)

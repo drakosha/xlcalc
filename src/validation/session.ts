@@ -25,7 +25,7 @@ import { formulaAt } from './structure.js'
 function computeAt(state: EngineState, s: number, r: number, c: number, text: string): Arg {
   const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
   const enclosing = tableAt(state.tables, s, r, c)?.name
-  const v = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { enclosing } : {}) })
+  const v = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { table: enclosing } : {}) })
   if (!v.ok) return E[invalidError(v.code)]
   return walk(codegenContext(state, s), v.ast, s, r, c, closureBackend(state.rt)).code()
 }
