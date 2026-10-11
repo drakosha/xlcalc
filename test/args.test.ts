@@ -3,7 +3,7 @@
  * book, empty input, paired arrays, the answer rules (non-finite numbers), and the function specs derived from kinds.
  */
 import { describe, expect, it } from 'vitest'
-import { makeCaller, pairs, specOf, type Arg, type FnDef, type Grid } from '../src/args.js'
+import { gridError, makeCaller, occupied, pairs, specOf, type Arg, type FnDef, type Grid } from '../src/args.js'
 import { Arr } from '../src/arrays/value.js'
 import { createState } from '../src/engine.js'
 import { english } from '../src/locale/english.js'
@@ -113,6 +113,14 @@ describe('argument layer', () => {
     expect(pairs(g(4, 1, [1, 'a', 3, null]), g(4, 1, [10, 20, true, 40]))).toEqual([[1], [10]])
     expect(pairs(g(2, 1, [1, 2]), g(1, 2, [3, 4]))).toEqual([[1, 2], [3, 4]])
     expect(pairs(g(2, 1, [1, 2]), g(3, 1, [1, 2, 3]))).toBe(E.NA)
+  })
+
+  it('the occupied part of a grid and its first error', () => {
+    // 4 × 3 referenced, 2 × 2 occupied: positions 0, 1, 3, 4 hold cells, the rest is blank
+    const g: Grid = { rows: 4, cols: 3, h: 2, w: 2, v: [1, E.DIV0, 'a', E.NA] }
+    expect([occupied(g), occupied({ ...g, h: 0, w: 0, v: [] }), occupied({ ...g, h: 4, w: 3 })]).toEqual([5, 0, 12])
+    expect(gridError(g)).toBe(E.DIV0)
+    expect(gridError({ ...g, v: [1, 'a', null, true] })).toBeUndefined()
   })
 
   it('rule 5: a non-finite answer is #NUM!, an exception #VALUE!', () => {
