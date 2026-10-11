@@ -7,6 +7,7 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, InputError, type BookInput, type Execution } from '../src/index.js'
 import { CLOCK } from './async-books.js'
+import { inside } from './fixtures/pool.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 afterAll(closeCalcs)
@@ -141,4 +142,25 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       await s.close()
     })
   })
+
+  it('a thread lost: the session comes back at its revision, from the journal and from a snapshot, and refuses an edit over another', async () => {
+    for (const snapshotEvery of [64, 2]) {
+      const { calc, crash } = await inside({ threads: 1, snapshotEvery })
+      const s = await calc.openSession(book(), opts)
+      await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }])
+      await s.clearCells([{ sheet: 'S', range: 'A2' }], 'formats')
+      await s.setCellText('S', 'B9', '1234567890')
+      await s.patchCells([{ sheet: 'S', range: 'B1:B2', set: { style: { font: { italic: true } } } }])
+      const [book4, revision] = [await s.book(), s.revision]
+      expect(revision).toBe(4)
+      crash(0)
+      expect(await s.book()).toEqual(book4)
+      await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 9 } }], { baseRevision: 3 })).rejects.toMatchObject({ code: 'stale_revision' })
+      expect((await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 9 } }], { baseRevision: 4 })).revision).toBe(5)
+      // the history came back too: the five calls undone, one step each
+      for (const call of ['setCells', 'patchCells', 'setCellText', 'clearCells', 'setCells']) expect((await s.undo())!.call).toBe(call)
+      expect(await s.book()).toEqual(book())
+      await calc.close()
+    }
+  }, 60_000)
 })
