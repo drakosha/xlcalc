@@ -3,10 +3,17 @@
  * call, a table's header that renamed its column), patches, names, the style table, the layout (heights, merged areas
  * over a spill, hidden rows under SUBTOTAL), structure operations (rows, a moved range, a sheet renamed, deleted, hidden),
  * what the answers carry (the changes with their text, the cells put back, `mapCell` each way); the history's counts, a
- * new change forgetting the redo, `setClock` no step, a live session's clock, refused calls, `depth` and `maxMb`.
+ * new change forgetting the redo, `setClock` no step, a live session's clock, refused calls, `depth` and `maxMb`. The
+ * cells a state built again shares: none with a book a host was given, which stays as it was in every kind of session,
+ * nor with a step of the history.
  */
-import { describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, InputError, createSession, type BookInput, type CellChange, type Execution, type Session, type StructureOp } from '../src/index.js'
+import { run } from '../src/exec/budget.js'
+import { openSteps } from '../src/session.js'
+import { closeCalcs, KINDS, opener } from './session-kinds.js'
+
+afterAll(closeCalcs)
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
@@ -380,5 +387,63 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     s.setCells(big('f'))
     expect(s.history).toEqual({ undo: 0, redo: 0 })
     expect(s.undo()).toBeNull()
+  })
+
+  it('a book never read between calls gives the answers and the book of one read after each: a state built again takes the cells no host was given as they are', () => {
+    const calls: ((s: Session) => unknown)[] = [
+      (s) => s.editStructure({ op: 'deleteSheet', sheet: 'S' }),
+      (s) => s.undo(),
+      (s) => s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 9 } }]),
+      (s) => s.editStructure({ op: 'insertRows', sheet: 'R', row: 1 }),
+      (s) => s.setCells([{ sheet: 'S', cell: 'A2', input: { value: 8 } }]),
+      (s) => s.undo(),
+      (s) => s.undo(),
+      (s) => s.redo(),
+      (s) => s.setNames([{ name: 'rate', ref: '3' }]),
+      (s) => s.setCells([{ sheet: 'R', cell: 'B1', input: { value: 7 } }]),
+      (s) => s.editStructure({ op: 'deleteSheet', sheet: 'S' }),
+      (s) => s.undo(),
+      (s) => s.undo(),
+      (s) => s.redo(),
+    ]
+    const [read, unread] = [createSession(book(), o), createSession(book(), o)]
+    const books = []
+    for (const [k, call] of calls.entries()) {
+      expect(JSON.stringify(call(unread)), `call ${k}`).toBe(JSON.stringify(call(read)))
+      books.push(structuredClone(read.getBook()))
+    }
+    expect(unread.getBook()).toEqual(books.at(-1))
+    same(unread, books.at(-1)!, o)
+    expect(unread.getBook().sheets[0].cells.A1).toEqual({ value: 9 })
+  })
+
+  it("an empty sheet whose cells an operation keeps (a rename), edited after: the operation's step holds its cells as they were, as a thread's snapshot reads them", () => {
+    const s = run(openSteps({ sheets: [{ name: 'A', cells: { A1: { formula: 'SUM(E!A1:A3)' } } }, { name: 'E', cells: {} }] }, o))
+    run(s.editStructure({ op: 'renameSheet', sheet: 'E', name: 'F' }))
+    run(s.setCells([{ sheet: 'F', cell: 'A2', input: { value: 5 } }]))
+    const [rename] = s.historyData().undo
+    expect(rename.kind === 'book' && rename.diff.sheets[1]).toEqual({ rest: { name: 'E' }, put: {} })
+    run(s.undo())
+    run(s.undo())
+    expect(s.getBook().sheets[1]).toEqual({ name: 'E', cells: {} })
+  })
+})
+
+describe.each(['closures', 'eval'] as const)('a book a host was given, %s', (execution) => {
+  describe.each(KINDS)('%s', (kind) => {
+    it('stays as it was through later operations, undos and edits; one read after them has them', async () => {
+      const s = await (await opener(kind))(book(), { clock, execution })
+      const given = await s.getBook()
+      const was = structuredClone(given)
+      await s.editStructure({ op: 'deleteSheet', sheet: 'S' })
+      await s.undo()
+      await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 9 } }, { sheet: 'R', cell: 'B1', input: { value: 8 } }])
+      await s.editStructure({ op: 'insertRows', sheet: 'R', row: 1 })
+      await s.setCells([{ sheet: 'S', cell: 'A2', input: { value: 7 } }])
+      expect(given).toEqual(was)
+      const now = await s.getBook()
+      expect([now.sheets[0].cells.A1, now.sheets[0].cells.A2, now.sheets[1].cells.B2]).toEqual([{ value: 9 }, { value: 7 }, { value: 8 }])
+      await s.close()
+    }, 60_000)
   })
 })

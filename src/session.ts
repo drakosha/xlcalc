@@ -121,7 +121,16 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
   const { externals, execution } = o
   const display = o.display !== false
-  const build = (b: BookInput) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution })
+  // the cells a host was given (`getBook`, `getSnapshot`), which it may keep: a state built later copies them, so they
+  // change no more, and takes the others as they are (an old state's, an operation's new ones, a deleted sheet's put back)
+  const lent = new WeakSet<object>()
+  const lend = (s: EngineState) => {
+    for (const x of s.input.sheets) lent.add(x.cells)
+    return s.input
+  }
+  const unlent = (cells: object) => !lent.has(cells)
+  /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are. */
+  const build = (b: BookInput, own?: (cells: object) => boolean) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution, own })
   let state: EngineState | null = yield* build(book)
   let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one
@@ -134,7 +143,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const s = st()
     if (stale) {
       // what an earlier call left to do does not count in this call's soft deadline
-      state = yield* untimed(build(s.input))
+      state = yield* untimed(build(s.input, unlent))
       stale = false
     }
     return state!
@@ -213,7 +222,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const at = clock
     if (live) tick(old)
     try {
-      const next = yield* build(book)
+      const next = yield* build(book, unlent)
       const fields = new Map<string, FieldChange>()
       const pass = back ? new DiffPass(book, old.input) : undefined
       const keys = movedChanges(old, next, g, fields, display && looks ? [cellLooks(old), cellLooks(next)] : undefined, pass)
@@ -524,7 +533,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return answer(s, out)
     },
     getBook() {
-      return st().input
+      return lend(st())
     },
     getLayout() {
       return bookLayout(st().input)
@@ -589,7 +598,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *getSnapshot() {
       const t0 = nowMs()
       const s = yield* ready()
-      return { book: s.input, result: yield* buildResult(s, clock, t0, display) }
+      return { book: lend(s), result: yield* buildResult(s, clock, t0, display) }
     },
     *undo(eo?: EditOptions) {
       checkBase(eo, revision)
