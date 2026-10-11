@@ -1,8 +1,8 @@
 /**
  * `Session.getViewport`, a window for a grid: empty cells with a style of their row, their column or both; a row with a
  * style alone over a column with a format (the cell shows the column's format); built-in formats as the locale's codes;
- * spills that reach into the window, a large one's unstored rest too; merged areas on its edge; the widths and heights of
- * its lines; formulas in the book's locale inside a table; `maxCells`; styles by number, with the objects of those the
+ * spills that reach into the window, a large one's unstored rest too; merged areas on its edge; the tables that meet it
+ * and the frozen panes; the widths and heights of its lines; formulas in the book's locale inside a table; `maxCells`; styles by number, with the objects of those the
  * window shows; the cells `Session.getCells` gives, each with the same value and look. In a synchronous session, in the same thread
  * and in a thread, with closures and eval.
  */
@@ -130,6 +130,37 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       expect((await s.getViewport('S', 'D6:E9')).merges).toEqual(['C5:D6'])
       expect((await s.getViewport('S', 'G1:H9')).merges).toEqual(['F1:G1'])
       expect((await s.getViewport('S', 'J12:K20')).merges).toEqual([])
+      await s.close()
+    })
+
+    it("the tables that meet the window, whole, in the sheet's order, and the sheet's frozen panes", async () => {
+      const book: BookInput = {
+        sheets: [
+          {
+            name: 'S',
+            cells: { A1: { value: 'Item' }, B1: { value: 'Qty' }, A2: { value: 'tea' }, B2: { value: 2 }, A3: { value: 'Total' }, E5: { value: 1 }, E6: { value: 2 } },
+            tables: [
+              { name: 'T', range: 'A1:B3', totals: true, columns: [{ name: 'Item', totals: { label: 'Total' } }, { name: 'Qty' }] },
+              { name: 'Bare', range: 'E5:E6', headers: false, columns: [{ name: 'Column1' }] },
+            ],
+            frozen: { rows: 1 },
+          },
+          { name: 'Other', cells: {} },
+        ],
+      }
+      const s = await (await opener(kind))(book, { clock: CLOCK, execution })
+      const [t, bare] = [{ name: 'T', range: 'A1:B3', headers: true, totals: true }, { name: 'Bare', range: 'E5:E6', headers: false, totals: false }]
+      expect(await s.getViewport('S', 'B3:C4')).toMatchObject({ tables: [t], frozen: { rows: 1, columns: 0 } })
+      expect((await s.getViewport('S', 'D6:F9')).tables).toEqual([bare])
+      expect((await s.getViewport('S', 'B2:E5')).tables).toEqual([t, bare])
+      expect((await s.getViewport('S', 'C1:D4')).tables).toEqual([])
+      expect(await s.getViewport('Other', 'A1:E6')).toMatchObject({ tables: [], frozen: { rows: 0, columns: 0 } })
+      // a change of the panes and a structure operation: the window as the layout has them now
+      await s.setLayout([{ sheet: 'S', frozen: { rows: 2, columns: 1 } }])
+      await s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 })
+      const [v, layout] = [await s.getViewport('S', 'A1:F9'), (await s.getLayout()).sheets[0]]
+      expect(v.tables).toEqual([{ ...t, range: 'A2:B4' }, { ...bare, range: 'E6:E7' }])
+      expect(v.frozen).toEqual({ rows: layout.frozen?.rows ?? 0, columns: layout.frozen?.columns ?? 0 })
       await s.close()
     })
 

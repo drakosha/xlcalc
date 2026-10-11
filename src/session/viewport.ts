@@ -1,8 +1,9 @@
 /**
  * A window over a sheet for a grid (`Session.getViewport`): the cells of a rectangle as a result gives them, each with
  * its look resolved as it shows it (`layout/lines.ts`), styles by index with the objects of those it shows beside, the
- * number format as a code and where it comes from, an empty cell with a style of its row or column listed too; the widths and heights of the window's lines,
- * the merged areas that meet it and where the sheet's cells end. It reads the window's cells, never the whole sheet.
+ * number format as a code and where it comes from, an empty cell with a style of its row or column listed too; the
+ * widths and heights of the window's lines, the merged areas and tables that meet it, the sheet's frozen panes and where
+ * its cells end. It reads the window's cells, never the whole sheet.
  */
 import type { CellStyle, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
@@ -129,6 +130,8 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
     columns,
     rows,
     merges: (sheet.merges ?? []).filter((m) => meets(parseMerge(m)!, x)),
+    tables: state.tables.list.filter((t) => t.s === s && meets(t, x)).map((t) => ({ name: t.name, range: t.input.range, headers: t.headers, totals: t.totals })),
+    frozen: { rows: sheet.frozen?.rows ?? 0, columns: sheet.frozen?.columns ?? 0 },
     usedRange: sheetExtent(state, s),
   }
 }
