@@ -4,17 +4,18 @@
  * - a cell of an array, selected and in editing (`arrays-held`): `ViewportCell.editText` is what F2 opens it with on the
  *   Mac, and what the object model gives as `Formula2Local` on both; the formula bar of a selected cell shows the same
  *   text, but an old-kind array's formula in braces in every cell of its area and a spilled cell's anchor's formula;
- * - text pasted from the clipboard (`paste-held`, both Excels) and entered into a selection with Control+Return
- *   (`fill-held`, the Mac's keyboard): `setCellTexts` of the same texts, a host taking back a call with a stop alert as
- *   Excel takes no such value. What each cell holds after (its value or formula and its format), the width the columns
- *   took, and the cells whose entry brought a window (a refused formula, a value its rule does not take).
+ * - text pasted from the clipboard (`paste-held`, both Excels): `pasteText` of the clipboard's text; a text entered
+ *   into a selection with Control+Return (`fill-held`, the Mac's keyboard): `fillCellText` from the selection's first
+ *   cell, a host taking back a call with a stop alert as Excel takes no such value. What each cell holds after (its
+ *   value or formula and its format), the width the columns took, and whether the action brought a window (a refused
+ *   formula, a value the active cell's rule does not take), which Excel shows for the active cell.
  * Known differences are in `test/ui-known.ts`; the predictions committed before Excel ran each set
  * (`bench/coverage/ui/<set>.predicted.json`) are kept with how many cases Excel confirmed.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
-import { entriesOf, readCells, readColumns, uiBook, windowOver, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
+import { clipboardText, entriesOf, readCells, readColumns, uiBook, windowOver, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
 import { formulaBar } from '../bench/coverage/entry/cases.js'
 import { held } from '../bench/coverage/entry/compare.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
@@ -39,7 +40,7 @@ const RUNS: Run[] = (['Mac', 'Windows'] as const).flatMap((excel) =>
   }),
 )
 
-/** What a paste or a fill left, as compared: each read cell's value or formula and format, the width typing gave each column (null where it kept its own), the cells whose entry brought a window. */
+/** What a paste or a fill left, as compared: each read cell's value or formula and format, the width typing gave each column (null where it kept its own), the cell a window came up for. */
 interface Outcome {
   cells: Record<string, string>
   widths: Record<string, number | null>
@@ -57,19 +58,22 @@ function excelOutcome(c: UiCase, a: UiAnswer, tag: string): Outcome {
   }
 }
 
-/** `setCellTexts` of the action's texts on the day of the run; a stop alert's call taken back, as the host does. */
+/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`; a stop alert's call taken back, as the host does. */
 function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
   const s = createSession(uiBook(c, tag), { clock: { now: `${date}T12:00:00Z`, seed: 1 } })
   try {
-    const entries = entriesOf(c.act)
-    const r = s.setCellTexts(entries)
-    const undone = r.ok && r.validations?.some((v) => v.severity === 'stop') === true
+    const act = c.act
+    if (act.do === 'bars') throw new Error(`${c.id} is no paste or fill`)
+    const r = act.do === 'paste' ? s.pasteText('S', act.at, clipboardText(act)) : s.fillCellText('S', act.range, act.text)
+    const alert = r.ok && 'validation' in r ? r.validation : undefined
+    const undone = alert?.severity === 'stop'
     if (undone) s.undo()
+    const widths = r.ok && !undone && 'widths' in r ? r.widths : undefined
     const cells = s.getBook().sheets[0].cells
     return {
       cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(cells[x], tag)])),
-      widths: Object.fromEntries(readColumns(c).map((k) => [k, (r.ok && !undone ? r.widths?.find((w) => w.column === k)?.width : undefined) ?? null])),
-      windows: r.ok ? (r.validations ?? []).map((v) => v.cell) : [entries[0].cell],
+      widths: Object.fromEntries(readColumns(c).map((k) => [k, widths?.find((w) => w.column === k)?.width ?? null])),
+      windows: !r.ok || alert ? [entriesOf(act)[0].cell] : [],
     }
   } finally {
     s.close()

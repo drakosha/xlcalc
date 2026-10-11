@@ -3,8 +3,8 @@
  * formula with `=` in the book's locale (inside its table as Excel shows it there), a value as `entryText` writes it by
  * the format the cell shows (its own, its row's or its column's), text that would read as something else with an
  * apostrophe, by the session's clock for a date without a year; empty for an empty cell with a style and a cell an
- * array spilled into. In a synchronous session, in the same thread and in a thread, with closures and eval, and over a
- * saved result (`viewportOf`).
+ * array spilled into; the area's formula in every cell of an old-kind array formula's area. In a synchronous session, in
+ * the same thread and in a thread, with closures and eval, and over a saved result (`viewportOf`).
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { entryText, viewportOf, type BookInput, type Execution, type ViewportCell } from '../src/index.js'
@@ -55,6 +55,16 @@ describe.each(['closures', 'eval'] as const)('the text a cell opens with, execut
       const leap = await open(book(), { clock: { now: '2028-03-01T00:00:00Z', seed: 1 }, execution })
       expect((await leap.getViewport('S', 'A9', { editText: true })).cells.A9.editText).toBe("'29.02")
       await leap.close()
+      await s.close()
+    })
+
+    it("every cell of an old-kind array formula's area opens with its formula, as F2 opens it; a cell a dynamic array spilled into opens empty; a saved result's window alike", async () => {
+      const b = book()
+      Object.assign(b.sheets[0].cells, { G1: { formula: 'B2:B3*2', array: 'G1:G2' }, H1: { formula: 'SUM(B2:B3)', array: 'H1:I2' }, J1: { formula: 'SUM(B2:B3*1.5)', array: 'J1' } })
+      const s = await (await opener(kind))(b, { clock: CLOCK, execution })
+      const want = { D1: '=ПОСЛЕД(2)', D2: '', G1: '=B2:B3*2', G2: '=B2:B3*2', H1: '=СУММ(B2:B3)', I1: '=СУММ(B2:B3)', H2: '=СУММ(B2:B3)', I2: '=СУММ(B2:B3)', J1: '=СУММ(B2:B3*1,5)' }
+      expect(texts((await s.getViewport('S', 'D1:J2', { editText: true })).cells)).toMatchObject(want)
+      expect(texts(viewportOf(await s.getSnapshot(), 'S', 'D1:J2', { editText: true }).cells)).toMatchObject(want)
       await s.close()
     })
 

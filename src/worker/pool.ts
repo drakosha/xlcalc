@@ -70,7 +70,7 @@ interface Rec {
 }
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
-const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setCellTexts: 'entries', previewCellTexts: 'entries', setLayout: 'edits', setNames: 'names', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setCellTexts: 'entries', previewCellTexts: 'entries', pasteText: 'text', previewPasteText: 'text', fillCellText: 'text', previewFillCellText: 'text', setLayout: 'edits', setNames: 'names', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
@@ -402,6 +402,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       previewCellText: (sheet, cell, text, co) => value(edit('previewCellText', [sheet, cell, text], co, ['widen'])),
       setCellTexts: (entries, co) => value(edit('setCellTexts', [entries], co, ['widen'])),
       previewCellTexts: (entries, co) => value(edit('previewCellTexts', [entries], co, ['widen'])),
+      pasteText: (sheet, cell, text, co) => value(edit('pasteText', [sheet, cell, text], co)),
+      previewPasteText: (sheet, cell, text, co) => value(edit('previewPasteText', [sheet, cell, text], co)),
+      fillCellText: (sheet, range, text, co) => value(edit('fillCellText', [sheet, range, text], co, ['widen', 'active'])),
+      previewFillCellText: (sheet, range, text, co) => value(edit('previewFillCellText', [sheet, range, text], co, ['widen', 'active'])),
       setNames: (names, co) => value(edit('setNames', [names], co)),
       setClock: (next, co) => value(edit('setClock', [next], co)),
       editStructure: (op, co) => mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>,

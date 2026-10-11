@@ -33,7 +33,7 @@ The options:
 
 ## In a session
 
-`session.setCellText(sheet, cell, text)` does it in a session: it reads the text in the book's locale and date system, by the session's clock and by the format the cell shows (its own, else its row's or column's, which the cell does not take as its own), keeps the rest of the cell, widens the column as Excel does and gives the rule of data validation the value breaks ([Editing a grid](edits.md#typing-text)). `previewCellText` gives the same without writing, and `setCellTexts` takes several texts at once, a paste or an entry into a selection, in one step of the undo.
+`session.setCellText(sheet, cell, text)` does it in a session: it reads the text in the book's locale and date system, by the session's clock and by the format the cell shows (its own, else its row's or column's, which the cell does not take as its own), keeps the rest of the cell, widens the column as Excel does and gives the rule of data validation the value breaks ([Editing a grid](edits.md#typing-text)). `previewCellText` gives the same without writing, and `setCellTexts` takes several texts at once, each read as typed into its cell, in one step of the undo. `pasteText` pastes text from the clipboard and `fillCellText` enters a text into a selection with Control+Return, each as Excel reads it there ([A paste and Control+Return](#a-paste-and-controlreturn)).
 
 ```js
 import { createSession, registerLocale } from 'xlcalc'
@@ -124,6 +124,27 @@ As a number is typed into a cell whose format shows percent, Excel's editor adds
 
 Empty text clears the value or formula and keeps the format, style, meta, note and link: `{ numberFormat: '0.00', meta: 1 }`, or `null` when nothing is left.
 
+## A paste and Control+Return
+
+`session.pasteText(sheet, cell, text)` pastes text from the clipboard as Excel pastes it, in both Excels and both locales alike:
+
+- The text is a rectangle from the cell (`parseClipboard`): a row at each line break (`\r\n`, `\r` or `\n`), a field at each tab, every row as wide as the longest. An empty field, a short row's missing fields and the row after a line break that ends the text clear their cells, as empty text typed does (the cell keeps its format, style, note and `meta`).
+- Each field is read as typed into its cell, with the cell's format, but for four things. An apostrophe is part of the text: `'007` holds `'007`. A formula Excel does not take is pasted as text (`=1+`, `=SUM(A1,1.5)` in ru-RU), and the other cells are written. A percent cell has no percent editor: `5` is 5, shown 500%, `5%` is 0.05, and `0.5` in ru-RU is text. `€5` is 5 in the format `[$€-2]\ #,##0;[Red]\-[$€-2]\ #,##0`.
+- No column widens: a long number shows in scientific form, a date as `###`. No rule of data validation is checked, and no alert comes back.
+- Part of an old-kind array formula and a formula into a table's header cell are refused, with the cell, as typing refuses them; a paste that covers an array's whole area replaces it. A rectangle past the sheet's last row or column is refused (`off_sheet`). Text pasted into a header cell renames its column.
+
+The answer has the range filled (`B1:D4`); `previewPasteText` gives each of its cells' input and value and changes nothing.
+
+`session.fillCellText(sheet, range, text, { active })` enters a text into every cell of a range, as Control+Return enters it from the selection's active cell, its top-left cell unless `active` names another:
+
+- The text is read once, as typed into the active cell, by the active cell's format: with a percent cell active `5` is 5% (0.05) in every cell, in General too.
+- Every cell takes what the active cell holds after it: the value, or the formula with its relative references moved as a copy from the active cell moves them (`=A1*2` entered into B1:B3 is `=A2*2` in B2 and `=A3*2` in B3, as `copyFormula` writes it), and the active cell's number format where it has one. With the active cell in General a cell keeps its own: `5` with a cell in General active is 5 in a percent cell, shown 500%.
+- The columns widen as typing widens them (`widths`, unless `widen: false`).
+- Only the active cell's rule of data validation is checked, once: its value is written and its alert comes back (`validation`), for the host to take the call back as Excel takes a stop alert's value back from every cell; a rule over another cell of the range gives no alert.
+- A formula Excel does not take is refused with the active cell, as Excel's window refuses it; part of an array and a formula into a header cell are refused with their cell. A range holds 1,048,576 cells at most.
+
+Both are one recomputation, one revision and one step of the undo.
+
 ## The text a cell opens with
 
 `entryText(value, opts)` is the other way round: the text a cell opens with for editing, as Excel's formula bar shows the value it holds, so that the editor shows what Excel shows and the value reads back from it. `needsApostrophe(text, opts)` tells whether text typed into the cell would read as something else than itself.
@@ -143,12 +164,13 @@ console.log(needsApostrophe('5', { numberFormat: '0%' }), needsApostrophe('5', {
 
 The options are the cell's `numberFormat` (the one it shows by: its row's or column's without its own), the book's `locale` and `dateSystem`, and `now`, the moment whose year completes text read as a date without one.
 
-A grid without the engine takes the text from its window: `getViewport` and `viewportOf` with `editText: true` give each cell's `editText`, its formula with `=` in the book's locale (`=СУММ(A1:A3)`, `=[@Qty]*2` inside its table), else `entryText` of its value by the format it shows, the session's clock or the result's as `now`, and empty text for a cell without a value or a formula of its own.
+A grid without the engine takes the text from its window: `getViewport` and `viewportOf` with `editText: true` give each cell's `editText`, its formula with `=` in the book's locale (`=СУММ(A1:A3)`, `=[@Qty]*2` inside its table), else `entryText` of its value by the format it shows, the session's clock or the result's as `now`, and empty text for a cell without a value or a formula of its own or of its old-kind array's area.
 
 - A number is written whole: its 15 significant digits with the locale's decimal separator and no groups, in positional notation up to 21 characters (`100000000000000000000`), in scientific notation past that (`1E+21`, `1E-20`). Money, fractions, scientific and number formats change nothing (`$1,234.50` opens as `1234.5`, `1 1/2` as `1.5`).
 - A number under a percent format is written as a percent: `12%`, `12.5%`, `-5%`.
 - A number under a date or time format is written by the locale's short date (the built-in format 14: `1/31/2025`, `31.01.2025`) and long time (`6:00:00 PM`, `18:00:00`), two spaces between them, as the formula bar writes them: a date alone when its time is midnight, a time alone under a format with no day when it is under one day (`6:30:00 PM`), the date and the time otherwise (`1/1/1900  6:00:00 PM` for 1.75 under `h:mm`). Day 0 is `1/0/1900`; a negative number or one past 9999-12-31 is written as a number.
 - A boolean and an error are written in the locale's words: `TRUE`, `ЛОЖЬ`, `#DIV/0!`, `#Н/Д`.
+- A cell of an old-kind array formula's area opens with the area's formula, every cell of it, as F2 opens it (the formula bar shows it in braces, `{=SUM(C1:C3)}`). A cell a dynamic array spilled into opens empty; selected, Excel's formula bar shows its anchor's formula.
 - Text is written as it is, with an apostrophe before it when typing it would read as something else (`needsApostrophe`, by `parseEntry`): a number, a date, a time, a boolean, an error or a formula in the locale (`'007`, `'1.5` in ru-RU where it is a date, `'=1+2`), text a percent cell's editor would make a number (`'5`), text that begins with an apostrophe (`''x`), empty text. Under the text format nothing reads otherwise (`007`).
 
 ## How it was checked
@@ -178,19 +200,18 @@ The text a cell opens with was measured by the same step on the sets `edit-held`
 
 The object model takes some text otherwise than typing, and the keyboard sets settle these: through `Formula2Local` a text begun by `+` or `-` that is no number is text (`-C1`, `+1+2`), a number goes into a percent cell as it is (`5` is 500%), and empty text makes a cell formatted as text hold empty text. Excel for Windows has `AutoPercentEntry` on, as the answers' `meta` records, but takes `Formula2Local` as the Mac does.
 
-Text pasted from the clipboard and a text entered into a selection with Control+Return were measured by the step `ui` (`bench/coverage/ui.ts`; the sets `paste-held`, 25 pastes on both Excels, and `fill-held`, 18 entries on the Mac's keyboard), and the text a cell of an array opens with by the set `arrays-held` (the formula bar selected and once F2 began the editing, on the Mac; `Formula2Local` on both, which is the text F2 opens). `test/ui-excel.test.ts` compares `setCellTexts` and `editText` with them. A paste reads each text as typing does, but where the known differences below say otherwise, alike in Excel for Mac and for Windows; Control+Return reads the text once, in the active cell.
+Text pasted from the clipboard and a text entered into a selection with Control+Return were measured by the step `ui` (`bench/coverage/ui.ts`; the sets `paste-held`, 25 pastes on both Excels, and `fill-held`, 18 entries on the Mac's keyboard), and the text a cell of an array opens with by the set `arrays-held` (the formula bar selected and once F2 began the editing, on the Mac; `Formula2Local` on both, which is the text F2 opens). The predictions, `setCellTexts` of the texts and `editText`, were committed before Excel ran each set, and the misses became the rules of [A paste and Control+Return](#a-paste-and-controlreturn) and of the cells of an old-kind array's area; Excel for Mac and Excel for Windows pasted alike in every case. `test/ui-excel.test.ts` compares `pasteText`, `fillCellText` (from the selection's first cell, a call with a stop alert taken back) and `editText` with every case: the engine gives Excel's answer to the 100 pastes (25 in each locale on each Excel), to 33 of the 36 entries into a selection and to the 16 cases of `arrays-held`; the other three are known differences below.
 
 ## Known differences
 
 - English function names and TRUE in a formula typed in ru-RU: Excel ru-RU takes them as unknown names (`=SUM(A1;1,5)` and `=TODAY()` compute `#ИМЯ?` and set no format, `=TRUE` is a name); `parseEntry` reads them as `toInvariant` does, as the function and the boolean.
-- A formula's format from a reference: Excel gives `=C2`, `=C2+1`, `=SUM(C2,1)`, `=MAX(C2,C1)` and `=C1+C2` the date format of C2; `parseEntry` has no book, and a reference gives no format.
+- A formula's format from a reference: Excel gives `=C2`, `=C2+1`, `=SUM(C2,1)`, `=MAX(C2,C1)` and `=C1+C2` the date format of C2; `parseEntry` has no book, and a reference gives no format. So does Control+Return, and it widens the column for the date (`=A1+A2` over a date in A2, `fill-held` in both locales).
+- Excel for Mac's own short date in en-US, `m/d/yy`, is narrower than Windows's `m/d/yyyy`, which the engine follows: a date entered into a selection widens the column here and not in Excel for Mac (`fill-held`).
 - `#GETTING_DATA` (`#ОЖИДАНИЕ_ДАННЫХ` in ru-RU) typed is an error in Excel; the engine has no such error and keeps the text.
 - An unknown name typed in another case than before in the book: Excel writes it in its first case (`=Foo*2` after `=foo` is `=foo*2`); `parseEntry` has no book and keeps the case typed.
 - A cell's word used as LET's name and again after the LET in one formula: Excel reads the later one as a defined name (`=LET(IW1,5,IW1)+IW1` holds `_xlnm.IW1` and is `#NAME?`); `parseEntry` reads it as the cell.
 - Typed on the keyboard, `+5%+1` takes the percent format of its first number, and Excel drops a `+` before a number further into a formula begun by `+` (`+-+5` is `+-5`); `parseEntry` gives `+5%+1` no format and drops only the first `+`.
 - Not measured: typing on the keyboard on Windows (Excel over SSH has no screen), so the percent cell's editor and a leading `+` or `-` follow the Mac's keyboard; the ruble sign typed on the keyboard (the layout used has none); the order of entries (Excel's AutoComplete of text from the column above, AutoCorrect).
-- Pasted text, against `setCellTexts` of the same texts (`test/ui-known.ts`): a paste widens no column, checks no rule of data validation, keeps an apostrophe as part of the text (`'007` holds `'007`), takes a text that does not read as a formula as text and writes the other cells (`=1+`; `setCellTexts` refuses the whole call), has no percent editor in a percent cell (`5` is 500%, `5%` is 0.05), gives `€5` the euro money format, and fills the clipboard's rectangle: a missing field of a short row clears its cell, and a line break after the last row clears the cell below.
-- Control+Return (an entry into a selection), against `setCellTexts` with the text in each cell: Excel moves a formula's relative references from the active cell to each cell (`=A1*2` in B2 is `=A2*2`, as `copyFormula` writes it), reads the text by the active cell's format alone (a percent cell active makes `5` 5% in every cell), and checks only the active cell's rule of data validation, once.
-- The text a cell of an old-kind array formula's area opens with: Excel opens every cell of the area with the area's formula (and its formula bar shows it in braces, `{=SUM(C1:C3)}`, in every cell); `editText` gives it in the area's first cell only. A cell an array spilled into opens empty, as `editText` gives it; selected, its formula bar shows its anchor's formula.
+- Not measured for a paste: quoted fields on the clipboard (`parseClipboard` takes a quote as text), a euro sign in a form other than `€5` (decimals, groups, a minus, after the number), which a paste reads as typing does, a paste over a whole array area, past the sheet's edge, over merged cells or into a selection larger than the clipboard's rectangle. For Control+Return: an active cell in a format other than General or percent, and a cell formatted as text in the selection, where every cell taking the active cell's format is the reading of the measured rule; a selection over a whole array area; Control+Return on Windows (no screen over SSH).
 - Excel's formula bar keeps the apostrophe a person typed before text that needed none (`'abc`, `'TRUE` in ru-RU); a book holds no such mark, and `entryText` puts the apostrophe only before text that would read as something else.
 - Excel for Mac's formula bar writes a ru-RU time with a leading zero (`01:30:00`, `00:00:00`), as its own regional data have it; `entryText` writes the locale's long time without it (`1:30:00`), as Excel for Windows's regional data have it and the engine follows. Excel for Windows's formula bar was not read (it has no screen over SSH).

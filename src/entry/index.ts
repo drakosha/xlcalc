@@ -5,7 +5,7 @@
  * else a constant (`read.ts`), whose form may set the cell's format (`forms.ts`). A number typed into a percent cell
  * gets the `%` Excel's editor adds as it is typed (`5` is 5%). The cell keeps its style, meta, note and link. Only a
  * formula that does not parse stops the entry, as Excel's dialog does; an unknown function or name is taken, and the
- * cell computes `#NAME?`.
+ * cell computes `#NAME?`. Text pasted from the clipboard is read so too, but where Excel reads it otherwise (`readEntry`).
  */
 import type { CellInput, CheckCode, EntryOptions, EntryResult, NumberFormat } from '../contract.js'
 import { checkEntryOptions, checkString } from '../input.js'
@@ -60,13 +60,26 @@ function formulaOf(text: string, shift: number, locale: Locale): { formula: stri
 /** Whether typed text begins with a `+` before a number (`+1*2`, `+.5+1`, `++5`): Excel drops it, the formula is `1*2`. */
 const plusNumber = (text: string, decimal: string) => text.startsWith('+') && /^\+?[\d.]/.test(text.slice(1).replace(decimal, '.'))
 
+/** The format Excel gives `€5` pasted, in en-US and ru-RU alike (the set `ui/paste-held`). */
+const PASTED_EURO = '[$€-2]\\ #,##0;[Red]\\-[$€-2]\\ #,##0'
+
 /**
  * Text typed into a cell as Excel takes it in the book's locale: the cell's new input, with the cell's style, meta, note
  * and link and the format Excel leaves it, or a formula Excel does not take. Empty text clears the value and keeps the rest.
  */
 export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   checkString(text, 'text')
-  const o = checkEntryOptions(opts)
+  return readEntry(text, checkEntryOptions(opts))
+}
+
+/**
+ * Text that comes into a cell (options checked), typed or else pasted from the clipboard (`pasted`), as Excel pastes
+ * text (the set `ui/paste-held`, Excel for Mac and Windows): read as typed, but an apostrophe stays part of the text, a
+ * formula Excel does not take is text, a percent cell has no percent editor (`5` is 5, 500%), and a euro sign before a
+ * whole number (`€5`) gives the euro format Excel gives it; the other forms with a euro sign were not measured pasted
+ * and are read as typed.
+ */
+export function readEntry(text: string, o: EntryOptions, pasted = false): EntryResult {
   const locale = localeOf(o.locale)
   const cell = o.cell ?? {}
   // what goes with the cell, as Excel keeps it whatever is typed
@@ -79,20 +92,22 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   // a formula takes the format of what it computes as a typed constant of that kind would (`forms.ts`)
   const formula = (src: string, shift: number): EntryResult => {
     const f = formulaOf(src, shift, locale)
-    if (!('formula' in f)) return f
+    if (!('formula' in f)) return pasted ? input({ value: text }) : f
     if (f.sets === undefined) return input({ formula: f.formula })
     const sets = f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets
     return input({ formula: f.formula }, formatAfter(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets, cell.numberFormat, locale))
   }
   if (text === '') return cell.numberFormat !== undefined || Object.keys(kept).length ? input({}) : { ok: true, input: null }
-  if (text.startsWith("'")) return input({ value: text.slice(1) })
+  if (text.startsWith("'") && !pasted) return input({ value: text.slice(1) })
   if (shows(cell.numberFormat, 'text') || text === '=') return input({ value: text })
   if (text.startsWith('=')) return formula(text, 0)
-  const typed = readTyped(text, rules, clock, shows(cell.numberFormat, 'pct'))
+  const typed = readTyped(text, rules, clock, !pasted && shows(cell.numberFormat, 'pct'))
   // `+` or `-` before what is no constant begins a formula (alone they are text); Excel drops a `+` before a number
   if (/^[-+]./s.test(text) && typed.t === 'text' && typed.format === undefined) return plusNumber(text, rules.decimal) ? formula(text.slice(1), 1) : formula(text, 0)
   switch (typed.t) {
     case 'number':
+      // the sign of a locale whose money is not the euro is dropped as typed (`read.ts`)
+      if (pasted && typed.form === 'plain' && /^€\d+$/.test(text)) return input({ value: typed.v }, formatAfter('currency', PASTED_EURO, cell.numberFormat, locale))
       return input({ value: typed.v }, formatAfter(typed.form, typed.format, cell.numberFormat, locale))
     case 'boolean':
       return input({ value: typed.v })

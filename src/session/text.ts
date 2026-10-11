@@ -1,13 +1,13 @@
 /**
- * Text typed into a session's cell (`Session.setCellText`): read as `parseEntry` reads it in the book's locale, date
- * system and clock, by the number format the cell shows, its own or else its row's or column's. The cell keeps the rest
- * of its input, and a format it shows from its line is not written into it. Beside the cell's input: why Excel would not
+ * Text typed into a session's cell (`Session.setCellText`), or pasted into it: read as `parseEntry` reads it in the book's
+ * locale, date system and clock (pasted, as `readEntry` reads it), by the number format the cell shows, its own or else
+ * its row's or column's. The cell keeps the rest of its input, and a format it shows from its line is not written into it. Beside the cell's input: why Excel would not
  * take the text, the width its column takes as Excel widens it for a typed number, and the rule of data validation the
  * value breaks.
  */
-import type { CellInput, CellReplace, CellTextRefusal, DataValidation, EntryCheck, Refusal, ValidationAlert } from '../contract.js'
+import type { CellInput, CellRef, CellReplace, CellTextRefusal, DataValidation, EntryCheck, EntryResult, Refusal, ValidationAlert } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { parseEntry } from '../entry/index.js'
+import { readEntry } from '../entry/index.js'
 import { entryWidth } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
 import { parseMerge } from '../layout/merges.js'
@@ -22,34 +22,57 @@ import { cellValue } from './looks.js'
 /** The fields an entry replaces: the content and the number format. */
 const TYPED = ['value', 'formula', 'array', 'numberFormat'] as const
 
-/** The input `own` of the cell after `text` is typed into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */
-export function cellText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
+/** The number format the cell's row or column gives it. */
+function lineFormat(s: EngineState, i: number, r: number, c: number) {
   const lines = sheetLines(s.input.sheets[i], s)
-  const inherited = formatOf(undefined, lines.row(r), lines.column(c))
-  const shown = own?.numberFormat ?? inherited
-  const p = parseEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown } })
-  if (!p.ok) return p as Refusal<CellTextRefusal>
-  const typed = p.input ?? {}
-  const out: Record<string, unknown> = { ...own }
-  for (const k of TYPED) delete out[k]
-  if (typed.formula !== undefined) out.formula = typed.formula
-  else if (typed.value !== undefined) out.value = typed.value
-  // a cell in General keeps its own General; a format its row or column gives it stays theirs
-  const format = typed.numberFormat ?? own?.numberFormat
-  if (format !== undefined && (own?.numberFormat !== undefined || format !== inherited)) out.numberFormat = format
-  for (const k in out) if (out[k] !== undefined) return { ok: true, input: out as CellInput }
-  return { ok: true, input: null }
+  return formatOf(undefined, lines.row(r), lines.column(c))
 }
 
-/** Why Excel would not take an entry into the cell: it changes part of an array formula, or puts a formula into a table's header cell; null when it takes it. */
-export function textRefusal(s: EngineState, edit: CellReplace): Refusal<CellTextRefusal> | null {
-  const part = arrayPart(s, [edit])
-  if (part) return { ok: false, code: 'array', message: say(s.input.locale, { key: 'arrayPart', ...part }) }
+/** What `text` typed, or pasted (`pasted`), into the cell at the moment `now` reads as (`readEntry`), by the format the cell shows: `own`'s, else its row's or column's. */
+export function readText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, pasted = false): EntryResult {
+  const shown = own?.numberFormat ?? lineFormat(s, i, r, c)
+  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown } }, pasted)
+}
+
+/** The input `own` of the cell with an entry's content and format (`typed`, `readText`'s input) in place of its own; a format its row or column gives it stays theirs. */
+export function withTyped(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, typed: CellInput | null): CellInput | null {
+  const inherited = lineFormat(s, i, r, c)
+  const out: Record<string, unknown> = { ...own }
+  for (const k of TYPED) delete out[k]
+  if (typed?.formula !== undefined) out.formula = typed.formula
+  else if (typed?.value !== undefined) out.value = typed.value
+  // a cell in General keeps its own General; a format its row or column gives it stays theirs
+  const format = typed?.numberFormat ?? own?.numberFormat
+  if (format !== undefined && (own?.numberFormat !== undefined || format !== inherited)) out.numberFormat = format
+  for (const k in out) if (out[k] !== undefined) return out as CellInput
+  return null
+}
+
+/** The input `own` of the cell after `text` is typed, or pasted (`pasted`), into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */
+export function cellText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, pasted = false): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
+  const p = readText(s, i, r, c, own, text, now, pasted)
+  return p.ok ? { ok: true, input: withTyped(s, i, r, c, own, p.input) } : (p as Refusal<CellTextRefusal>)
+}
+
+/** Why Excel would not take the edits: they change part of an array formula; null when it takes them. */
+export function arrayRefusal(s: EngineState, edits: CellReplace[]): (Refusal<'array'> & CellRef) | null {
+  const part = arrayPart(s, edits)
+  return part && { ok: false, code: 'array', message: say(s.input.locale, { key: 'arrayPart', ...part }), sheet: part.sheet, cell: part.cell }
+}
+
+/** Why Excel would not take an entry into the cell: it puts a formula into a table's header cell; null when it takes it. */
+export function headerRefusal(s: EngineState, edit: CellReplace): Refusal<'header'> | null {
   if (edit.input?.formula === undefined) return null
   const i = s.sheetIdx.get(sheetKey(edit.sheet))!
   const { row, col } = parseAddress(edit.cell)
   const table = s.tables.list.find((t) => t.headers && t.s === i && t.r1 === row && col >= t.c1 && col <= t.c2)
   return table ? { ok: false, code: 'header', message: say(s.input.locale, { key: 'headerFormula', sheet: s.sheetNames[i], cell: edit.cell, table: table.name }) } : null
+}
+
+/** Why Excel would not take an entry into the cell alone: it changes part of an array formula, or puts a formula into a table's header cell; null when it takes it. */
+export function textRefusal(s: EngineState, edit: CellReplace): Refusal<CellTextRefusal> | null {
+  const part = arrayRefusal(s, [edit])
+  return part ? { ok: false, code: 'array', message: part.message } : headerRefusal(s, edit)
 }
 
 /**
