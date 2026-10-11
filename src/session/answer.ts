@@ -1,7 +1,7 @@
 /**
  * What a session's edit answers (`EditResult`): what the call changed, gathered while it runs (`Outcome`), and the
  * session's revision after it. Beside the cells whose value or shown text changed, a cell is listed when its formula,
- * its own style or its own number format changed: those of the edited cells, and after the book was built again (a
+ * its own style, number format, note or hyperlink changed: those of the edited cells, and after the book was built again (a
  * structure operation, a table's column renamed) those that differ from the cell that was at their old place.
  */
 import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, RangeRef, SheetInput } from '../contract.js'
@@ -12,7 +12,7 @@ import { parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 
 /** What changed of a cell beside its value and shown text. */
-export type FieldChange = Pick<CellChange, 'formula' | 'style' | 'numberFormat'>
+export type FieldChange = Pick<CellChange, 'formula' | 'style' | 'numberFormat' | 'note' | 'link'>
 
 /** What a call changed so far: the cells to list (`s:r:c`, in order) and the rest a host reads again. */
 export interface Outcome {
@@ -65,14 +65,16 @@ export function formulaText(s: EngineState, i: number, r: number, c: number, inp
 
 /**
  * What differs of a cell beside its value between the input `was` and the input `now` at its place: its formula as each
- * state shows it (`wasText`, `nowText`), its own style and its own number format; null when nothing does.
+ * state shows it (`wasText`, `nowText`), its own style, number format, note and hyperlink; null when nothing does.
  */
 export function fieldsBetween(was: CellInput | undefined, wasText: string | undefined, now: CellInput | undefined, nowText: string | undefined): FieldChange | null {
   const out: FieldChange = {}
   if (wasText !== nowText) out.formula = nowText ?? null
   if (was?.style !== now?.style) out.style = now?.style ?? null
   if (was?.numberFormat !== now?.numberFormat) out.numberFormat = now?.numberFormat ?? null
-  return 'formula' in out || 'style' in out || 'numberFormat' in out ? out : null
+  if (was?.note?.text !== now?.note?.text || was?.note?.author !== now?.note?.author) out.note = now?.note ? { ...now.note } : null
+  if (was?.link?.url !== now?.link?.url || was?.link?.location !== now?.link?.location || was?.link?.tooltip !== now?.link?.tooltip) out.link = now?.link ? { ...now.link } : null
+  return Object.keys(out).length ? out : null
 }
 
 /** The fields that changed of edited cells, from their inputs before the edits (`was`) to the book's now. */

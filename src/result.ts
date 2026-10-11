@@ -187,7 +187,7 @@ export function* stateHash(state: EngineState): Steps<string> {
  * The result; with `display` each cell's shown text and colour after its value. Sheets are read in the hash's order,
  * listed in the book's. The steps yield between cells, so a large book's result does not hold the thread.
  */
-export function* buildResult(state: EngineState, clock: Clock, t0: number, display: boolean): Steps<ComputeResult> {
+export function* buildResult(state: EngineState, clock: Clock, t0: number, display: boolean, book = state.input): Steps<ComputeResult> {
   const w = hasher(state)
   const fills: FillLine[] = []
   const look = display ? cellLooks(state) : null
@@ -197,6 +197,8 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
     const quoted = JSON.stringify(name)
     yield* eachCell(state, s, (addr, spillOf) => {
       const out = cellResult(state, s, addr, look, spillOf)
+      // A snapshot's result takes its metadata from the detached book, not from the session's live input.
+      if (out.meta !== undefined && book !== state.input) out.meta = book.sheets[s].cells[addr].meta
       fillLines(state, s, addr, out.spillFill, fills)
       cells[addr] = out
       w.cell(quoted, addr, out.value, true)

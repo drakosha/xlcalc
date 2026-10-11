@@ -4,6 +4,8 @@ A grid over a book edits cells the way Excel does: a value typed over a cell kee
 
 The rules of formatting and clearing below were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US.
 
+An edit's `changes` includes `note` and `link` when their fields change, and null when they are removed, including on an otherwise empty cell. `setCells`, `replaceCells`, `patchCells`, `clearCells`, `undo` and `redo` use the same rule. Equal notes or links do not produce these fields. `meta` remains host data: it is saved in the book and restored by history, but its changes are not listed in `CellChange`.
+
 ## Editing a cell
 
 `setCells(edits)` sets the fields an edit gives and keeps the cell's others: a new value keeps the style, the number format, the note, the hyperlink and `meta`.

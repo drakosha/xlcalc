@@ -53,16 +53,16 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     expect(answers.map((a) => a.changes)).toEqual([
       [{ sheet: 'S', cell: 'B5', value: null, text: '', style: 1 }],
       [{ sheet: 'S', cell: 'A1', value: 0.25, text: '25%', numberFormat: '0%', numberFormatCode: '0%' }],
-      [{ sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', color: '#FF0000', numberFormat: '[Red]0.0;[Blue]-0.0', numberFormatCode: '[Red]0.0;[Blue]-0.0' }],
+      [{ sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', color: '#FF0000', numberFormat: '[Red]0.0;[Blue]-0.0', numberFormatCode: '[Red]0.0;[Blue]-0.0', note: { author: 'Ann', text: 'checked' } }],
       [
         { sheet: 'S', cell: 'C1', value: 2.5, text: '2.500', spill: 'C1:C3', style: 0, numberFormat: '0.000', numberFormatCode: '0.000' },
         { sheet: 'S', cell: 'C2', value: 20, text: '20.00', spillOf: 'C1', numberFormat: '0.00', numberFormatCode: '0.00' },
         { sheet: 'S', cell: 'C3', value: { error: 'NA' }, text: '#N/A', spillOf: 'C1', style: 1 },
       ],
-      [{ sheet: 'S', cell: 'E2', value: 2, text: '2.000', spillOf: 'E1', numberFormat: '0.000', numberFormatCode: '0.000' }],
+      [{ sheet: 'S', cell: 'E2', value: 2, text: '2.000', spillOf: 'E1', numberFormat: '0.000', numberFormatCode: '0.000', link: { url: 'https://example.com/' } }],
       [{ sheet: 'S', cell: 'G1', value: 'Qty', text: 'Qty', style: 0 }],
       [
-        { sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', numberFormat: null },
+        { sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', numberFormat: null, note: null },
         { sheet: 'S', cell: 'B5', value: null, text: '', style: null },
       ],
     ])
@@ -95,7 +95,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
   it('a live session keeps its clock and its volatile values: a patch computes nothing', () => {
     const s = createSession({ sheets: [{ name: 'S', cells: { A1: { formula: 'RAND()' }, A2: { formula: 'NOW()' } } }] }, { live: true, execution })
     const [clock, before] = [s.clock, s.getCells('S', 'A1:A2')]
-    expect(s.patchCells([{ sheet: 'S', cell: 'B1', set: { note: { text: 'n' } } }]).changes).toEqual([])
+    expect(s.patchCells([{ sheet: 'S', cell: 'B1', set: { note: { text: 'n' } } }]).changes).toEqual([{ sheet: 'S', cell: 'B1', value: null, text: '', note: { text: 'n' } }])
     // a format whose text no General text has: the cell is listed, with the value it had
     expect(s.patchCells([{ sheet: 'S', cell: 'A1', set: { numberFormat: '0.0000" u"' } }]).changes[0].value).toEqual(before.A1.value)
     expect(s.clock).toEqual(clock)

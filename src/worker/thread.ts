@@ -126,7 +126,7 @@ function heldOf(sid: number): Held {
 
 async function open(sid: number, book: BookInput, opts: object, planned: Clock | null, history?: HistoryData, revision?: number): Promise<Held> {
   const h = { planned, seq: 0 } as Held
-  h.s = await openInlineSession(book, opts, d, { clock: () => h.planned ?? currentClock(), history, revision })
+  h.s = await openInlineSession(book, opts, d, { clock: () => h.planned ?? currentClock(), history, revision, copySnapshot: false })
   held.set(sid, h)
   return h
 }
