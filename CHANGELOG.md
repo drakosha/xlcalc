@@ -1,5 +1,53 @@
 # Changelog
 
+## 0.17.0 (2026-10-11)
+
+Internal release; not published to npm. The API made simpler before publication, in one go so that its users change once: a session for a grid (typing text into a cell, a window with its styles resolved, editing that keeps a cell's look, a style by its fields), one shape of the answer of every edit, xlsx with a snapshot, helpers without the engine, locales as modules, the new names with the old ones as deprecated synonyms. `docs/migration.md` lists every rename and every call that answers otherwise, a line each. Values and hashes are as in 0.16.3; `inputHash` too, whichever name a book gives the number format.
+
+Breaking changes (each a line of `docs/migration.md`):
+
+- `setCells` sets the fields an edit gives and keeps the cell's others (its style, number format, note, link, `meta`), as Excel keeps a cell's look when a value is typed over it; `null` removes a field, and `input: null` clears the content and the hyperlink as Excel's Delete key does. `replaceCells` replaces a cell whole, as `setCells` did.
+- Every call that changes a session's book answers an `EditResult`, `{ revision, changes, layout?, styles?, moved?, repaint? }`, instead of an array of changes (`setStyles` answered nothing): the array is `changes`.
+- A book in ru-RU needs its locale loaded: `import { ruRU } from 'xlcalc/locales/ru-RU'` and `registerLocale(ruRU)` once (a pool's threads get it themselves); a book in a locale not loaded is an `InputError` that says what to import. The root no longer exports `ruRU`.
+- `readXlsx`'s `cached` has the shape of a result (`cached.sheets[0].cells.B1.value`), so it can be written again as a result.
+- Answers name the number format `numberFormat` (it was `format`), a cell's conditional look `appearance` (`look`), and a result's issues `diagnostics`, one list of the cells with an error (`kind: 'cell'`) and the names with a problem (`kind: 'name'`) (`issues`, `nameIssues`). Input takes `format` as before.
+- A session's `editStructure` answers without the book (`getBook()` gives it), as an asynchronous session did; `mapCell` answers null for a sheet it does not know, as for a cell gone; a book in an answer is a `Book`, the input type without the deprecated `format`, so reading `format` from it does not compile.
+- `validateEntry` refuses with `{ ok: false, code: 'validation', message, rule, severity }`; `explain`'s text writes an error as the cells show it in the book's locale (`#DIV/0!`), with the cell it began in, and an empty cell as `empty`; after a structure operation `changes` also list the cells whose formula's text, own style or own number format differ from the cell that was at their old place; `undo` and `redo` answer `call: 'editStructure'` for a structure operation.
+
+Renamed, the old names deprecated synonyms until our applications move (to be removed before publication): `openSession` → `createSession` (and a calculator's), `restructure` → `editStructure`, a session's `book()`, `layout()`, `extent()`, `cells()`, `validation()`, `result()`, `hash()` → `getBook()`, `getLayout()`, `getUsedRange()`, `getCells()`, `getValidation()`, `getResult()`, `getHash()`; the input field `format` → `numberFormat`; the types `RestructureResult` and its kin → `StructureResult`, `ConditionalLook` → `ConditionalAppearance`; `fromLegacy` from `xlcalc/xlsx`. The object `engine` is deprecated whole.
+
+Added:
+
+- `Session.setCellText(sheet, cell, text)` and `previewCellText`: text typed into a cell as Excel reads it in the book's locale, date system and clock, by the number format the cell shows (its row's or column's too, not written into the cell when inherited), keeping its style, `meta`, note and link; the column widened as Excel widens it, in the same step of undo; a broken rule of data validation in the answer (`validation: { valid, rule, severity, message }`); a formula Excel would not take a `Refusal` with its position, in the book's locale.
+- `Session.getViewport(sheet, range, opts?)`: what a grid draws of a window, its cells with their own and shown style by number and the objects of those styles in `styles`, the number format as a code and where it comes from, what conditional formats give them, notes, links, empty cells a row's or column's style shows, the widths and heights of its lines, the merged areas and tables that meet it, the sheet's frozen panes, the used range and the session's revision; formulas in the book's locale (`formulaLocal`, `[@Qty]` inside its table) and errors' causes (`diagnostics`) when asked; `maxCells` (20,000 by default).
+- `Session.getCellIssue(sheet, cell)`: an error's reason and the cell it began in, without the book's result; `explain` follows an error to where it began, through ranges and past its depth, never round a cycle.
+- `Session.clearCells(ranges, 'contents' | 'formats' | 'all')`, as Excel's Clear Contents, Clear Formats and Clear All clear cells, notes, hyperlinks, conditional formats and data validation (measured in Excel for Mac and Windows).
+- `patchCells` over ranges and whole rows and columns, with a style by its fields merged into the look a cell shows (`null` removes a field), no duplicates in the style table; whole lines formatted as Excel formats them, the cells where they cross merged field by field.
+- `Session.revision` and `baseRevision` on every edit: a call on a revision the session has left changes nothing and throws `CalcError` `stale_revision`. `Session.getSnapshot()`: the book and its result in one call.
+- `writeXlsx({ book, result? }, { values: 'require' | 'omit' | 'preserve' })`: a result of `compute`, of a session or a read file's `cached`; without values of formulas the file asks Excel to compute them and `issues` says so (`noCachedValues`). `readXlsx` takes `Uint8Array`, `ArrayBuffer` and `Buffer`; a session, a path or a result of another book is an `InputError` with what to pass.
+- `xlcalc/a1` and the root: `parseCell`, `cellAddress`, `colLetters`, `colNumber`, `parseRange`, `rangeAddress`, `parseLines`, `linesKey`, `MAX_ROWS`, `MAX_COLS`, `rectsMeet`, `rectContains`, `quoteSheetIfNeeded` (Excel's rule for quoting a sheet name, measured), `nameKey`, `sameName`, without the engine (6 KB). From the root: `validateSheetName`, `errorText`, `scanReferences` (the references of a formula being typed), `entryText` and `needsApostrophe` (the text a cell opens with for editing, measured against Excel's formula bar), `sameValue` and `canonValue` (as the values hash compares), `builtinFormatCode`, `dateToSerial` and `serialToDate`, `registerLocale`.
+- A check answers `{ ok: true, … }` or a `Refusal` (`{ ok: false, code, message, at? }`); `validateName` has codes.
+- A locale by its tag or as an object in every function that takes one.
+- A call refuses an option or an argument it does not take, with the call that takes it (`getCells` given `{ formulaLocal: true }` says it is an option of `getViewport`); `writeXlsx` given a result alone says to pass `{ book, result }`.
+- The package holds `docs/`; the README starts with ten recipes, says which call does which edit, and each part of a session is in one place.
+
+Changed:
+
+- A formula's leading `=` is dropped where a book or an edit gives a formula (`==1` stays an error). `displayValue` without a width does not narrow a value to `#`.
+- `compute` alone bundles to 254 KB minified (304 KB before), held under 300 KB by a test: the data of ru-RU is a module of its own (52 KB).
+- Structure operations describe where cells go once, by numbers, and derive `mapCell`, `moved`, the geometry of undo and redo and the comparison with a cell's old place from it; each sheet's cells are read once per operation. On the 34,000-row synthetic book inserting a row takes 1.25 s (1.94 s before), deleting it 1.15 s (1.69 s), copying and moving about 40 % less, their undo and redo about 25 % less. The undo geometry is exact where it was guessed: a delete on a filtered sheet lists one move per run of visible rows, and a redo of `deleteTable` no longer lists the table's cells as changed; `mapCell` answers null for a cell pushed past the last row.
+
+Fixed (measured with the engine's answers committed before each run, in Excel for Mac and Windows):
+
+- `BINOM.DIST.RANGE` past n = 170 (`#NUM!` before), as Excel up to 2^31 − 2.
+- Functions over two arrays (`SUMX2MY2` and its kin, `CORREL`, `PEARSON`, `RSQ`, `SLOPE`, `INTERCEPT`, `STEYX`, `COVARIANCE.P` and `.S`, `FORECAST`, `CHISQ.TEST`, `T.TEST`) and `SUMPRODUCT` read a reference to one cell first, its error the answer and a blank `#VALUE!`, then the sizes, then the errors inside.
+- A rule of data validation of one cell on the sheet's last row or column stretches when lines above it are deleted, as conditional formats do.
+- A copy of tables onto a target that is no multiple of the source pastes one copy at its top-left.
+- Names shaped like cells: `XFE1` and `A0` are names, as LET's names are any cell but those read as R1C1 rows or columns; LET's names with `?` and `\` read from files.
+- A calculated column's formula reports what the engine cannot take of it in `issues`; a conditional format's built-in number format shows by its en-US code in every locale; `{ date: '1900-02-29' }` is 60; a format's fill (`*x`) shown without a width no longer throws.
+
+Known differences (README): a formula pasted into part of a calculated column, which Excel spreads to the whole column; `LET(IW1,5,IW1)+IW1`, whose last `IW1` Excel reads as a defined name.
+
 ## 0.16.3 (2026-10-11)
 
 Internal release; not published to npm. A fill no longer walks the whole sheet for each copy it pastes.
