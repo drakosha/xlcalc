@@ -108,24 +108,26 @@ export function border(e: Element, p: Palette): { border?: CellStyle['border']; 
 
 /**
  * A fill (`<fill>`) of a cell format or, with `dxf`, of a conditional format, as Excel for Mac and for Windows show them
- * (the set `cond/fills-held`). Both read a pattern beside a gradient alone (Excel shows a cell so, and opens no file with
- * a dxf so), and name a gradient or a pattern other than solid lost. They read a pattern fill otherwise, as Excel does:
- * without a pattern type a cell's is none (Excel saves it so) and a dxf's solid (Excel writes its dxfs so); a cell's solid
- * fill shows its `fgColor`, white without one (Excel's automatic colour), and a dxf's its `bgColor` alone, keeping the
- * cell's own colour without one (white on a cell without a fill); a dxf's none takes the cell's fill away. The last two
- * the model cannot say: they are named lost.
+ * (the sets `cond/fills-held`, `cond/fills-held-2`). Both read a pattern beside a gradient alone (Excel shows a cell so,
+ * and opens no file with a dxf so), name a gradient or a pattern other than solid lost, and take a colour that names
+ * none (`auto`, the system's) as Excel's automatic colour, white. They read a pattern fill otherwise, as Excel does:
+ * without a pattern type a cell's is none (Excel saves it so) and a dxf's solid (Excel writes its dxfs so); a cell's
+ * solid fill shows its `fgColor`, white without one, and a dxf's its `bgColor` alone, keeping the cell's own colour
+ * without one (white on a cell without a fill) and changing nothing when it is empty; a dxf's none takes the cell's fill
+ * away. The model cannot say a fill kept or taken away: those are named lost.
  */
 export function readFill(e: Element, p: Palette, dxf = false): { fill?: CellStyle['fill']; lost: string[] } {
   const b = e.body ?? ''
   const pf = element(b, 'patternFill')
   const lost = element(b, 'gradientFill') ? [pf ? 'gradient fill beside its pattern' : 'gradient fill'] : []
   if (!pf) return { lost }
-  const type = attributes(pf.attrs).patternType ?? (dxf ? 'solid' : 'none')
+  const a = attributes(pf.attrs)
+  const type = a.patternType ?? (dxf ? 'solid' : 'none')
   if (type === 'none') return { lost: dxf ? [...lost, 'fill taken away'] : lost }
   if (type !== 'solid') return { lost: [...lost, 'pattern fill'] }
-  const color = colorOf(element(pf.body ?? '', dxf ? 'bgColor' : 'fgColor'), p)
-  if (color) return { fill: { color }, lost }
-  return dxf ? { lost: [...lost, 'fill without its colour'] } : { fill: { color: '#FFFFFF' }, lost }
+  const shown = element(pf.body ?? '', dxf ? 'bgColor' : 'fgColor')
+  if (shown || !dxf) return { fill: { color: colorOf(shown, p) ?? '#FFFFFF' }, lost }
+  return a.patternType !== undefined || element(pf.body ?? '', 'fgColor') ? { lost: [...lost, 'fill without its colour'] } : { lost }
 }
 
 function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: string[] } {

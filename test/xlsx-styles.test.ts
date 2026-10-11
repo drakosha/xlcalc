@@ -120,7 +120,7 @@ describe('xlsx styles: reading', () => {
     expect(under('<b/>', true)).toEqual([undefined, []])
   })
 
-  it("a fill as Excel shows it (cond/fills-held): a cell's solid fgColor, white without one, none without a type; a dxf's bgColor alone, solid without a type, none taking the fill away", () => {
+  it("a fill as Excel shows it (cond/fills-held, fills-held-2): a cell's solid fgColor, white without one, none without a type; a dxf's bgColor alone, solid without a type, none taking the fill away", () => {
     const p = palette(undefined, undefined)
     const fill = (body: string, dxf = false) => readFill(element(`<fill>${body}</fill>`, 'fill')!, p, dxf)
     const both = '<fgColor rgb="FF00FF00"/><bgColor rgb="FFFF0000"/>'
@@ -128,6 +128,9 @@ describe('xlsx styles: reading', () => {
     expect([fill(`<patternFill patternType="solid">${both}</patternFill>`), fill(`<patternFill patternType="solid">${both}</patternFill>`, true)]).toEqual([{ fill: { color: '#00FF00' }, lost: [] }, { fill: { color: '#FF0000' }, lost: [] }])
     expect(fill('<patternFill patternType="solid"><bgColor rgb="FFFF0000"/></patternFill>')).toEqual({ fill: { color: '#FFFFFF' }, lost: [] })
     expect(fill('<patternFill patternType="solid"><fgColor rgb="FFFF0000"/></patternFill>', true)).toEqual({ lost: ['fill without its colour'] })
+    // a colour that names none is white, in either; a dxf's empty pattern fill changes nothing (cond/fills-held-2)
+    expect([fill('<patternFill patternType="solid"><fgColor auto="1"/><bgColor rgb="FFFF0000"/></patternFill>'), fill('<patternFill><bgColor indexed="64"/></patternFill>', true)]).toEqual([{ fill: { color: '#FFFFFF' }, lost: [] }, { fill: { color: '#FFFFFF' }, lost: [] }])
+    expect(fill('<patternFill/>', true)).toEqual({ lost: [] })
     expect([fill('<patternFill><fgColor rgb="FFFF0000"/></patternFill>'), fill('<patternFill><bgColor rgb="FFFF0000"/></patternFill>', true)]).toEqual([{ lost: [] }, { fill: { color: '#FF0000' }, lost: [] }])
     expect([fill('<patternFill patternType="none"><bgColor rgb="FFFF0000"/></patternFill>'), fill('<patternFill patternType="none"><bgColor rgb="FFFF0000"/></patternFill>', true)]).toEqual([{ lost: [] }, { lost: ['fill taken away'] }])
     expect([fill(gradient), fill(gradient, true)]).toEqual([{ lost: ['gradient fill'] }, { lost: ['gradient fill'] }])
