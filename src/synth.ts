@@ -7,6 +7,7 @@
  */
 import type { BookInput, CellReplace, CellInput } from './contract.js'
 import { formatAddress, indexToCol } from './model.js'
+import { quoteSheet } from './syntax/print.js'
 
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0
@@ -51,7 +52,6 @@ const N_PROJ = 15
 const DIRS = ['приход', 'расход'] as const
 const NOTES = ['=1+1', 'TRUE', '25%', '2025-01-01', "'с кавычкой", 'он сказал "да"', 'путь\\к\\файлу', 'обычный текст', '', '  пробелы  ']
 
-const q = (s: string) => `'${s.replaceAll("'", "''")}'`
 const iso = (y: number, m: number, d: number) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`
 
 export function synthBook(opts: SynthOptions): SynthBook {
@@ -94,8 +94,8 @@ export function synthBook(opts: SynthOptions): SynthBook {
     })
   }
   const last = n + 1
-  const col = (c: string) => `${q(S.data)}!$${c}:$${c}`
-  const bounded = (c: string) => `${q(S.data)}!$${c}$2:$${c}$${last}`
+  const col = (c: string) => `${quoteSheet(S.data)}!$${c}:$${c}`
+  const bounded = (c: string) => `${quoteSheet(S.data)}!$${c}$2:$${c}$${last}`
 
   // ---------- item lookup table ----------
   const itemsSheet: Record<string, CellInput> = { A1: { value: 'Статья' }, B1: { value: 'Группа' }, C1: { value: 'Название группы' }, E1: { value: 'Группа' }, F1: { value: 'Название' } }
@@ -110,7 +110,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
   })
 
   // ---------- parameters ----------
-  const P = q(S.params)
+  const P = quoteSheet(S.params)
   const params: Record<string, CellInput> = {
     A1: { value: 'Начало' },
     B1: { value: { date: '2025-01-01' } },
@@ -126,7 +126,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
     A10: { value: 'Чай*' },
     B10: { formula: `COUNTIFS(${col('B')},"Чай*")` },
     B11: { formula: `COUNTIFS(${col('B')},A10,${col('E')},B3)` },
-    B12: { formula: `IFERROR(${q(S.months)}!N3/${q(S.months)}!N4,0)` },
+    B12: { formula: `IFERROR(${quoteSheet(S.months)}!N3/${quoteSheet(S.months)}!N4,0)` },
     B13: { formula: 'ROUND(B12,2)' },
     B14: { formula: 'IF(B12>1,"больше","не больше")' },
     B15: { formula: 'TEXT(B1,"YYYY-MM-DD")' },
@@ -166,7 +166,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
       const first = row
       for (let k = 0; k < PER_GROUP; k++) {
         const i = g * PER_GROUP + k
-        cells[`A${row}`] = { formula: `${q(S.items)}!A${i + 2}` }
+        cells[`A${row}`] = { formula: `${quoteSheet(S.items)}!A${i + 2}` }
         for (let c = 0; c < cols; c++) cells[`${indexToCol(c + 1)}${row}`] = { formula: cell(row, c) }
         cells[`${total}${row}`] = { formula: `SUM(B${row}:${indexToCol(cols)}${row})` }
         row++
