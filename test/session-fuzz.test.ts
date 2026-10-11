@@ -63,8 +63,8 @@ function run(seed: number, execution: Execution, around: <T>(f: () => T) => T = 
         if (!around(() => s.editStructure(st.op)).ok) continue
       } else if (st) around(() => s.setCells(st.edits))
       const p = looks && k ? patch() : []
-      // a patch lists the cells whose own number format it changed, and no value
-      if (p.length) expect(around(() => (kept ? s.patchCells(p).changes.filter((c) => !('numberFormat' in c)) : (s as Session).patchCells(p)))).toEqual([])
+      // a patch lists the cells whose own number format, note or link it changed, and no value
+      if (p.length) expect(around(() => (kept ? s.patchCells(p).changes.filter((c) => !('numberFormat' in c || 'note' in c || 'link' in c)) : (s as Session).patchCells(p)))).toEqual([])
       const e = kept && k ? look() : undefined
       if (e) around(() => lookEdit(s, e))
       const hash = around(() => s.getHash())

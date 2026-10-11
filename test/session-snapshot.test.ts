@@ -41,9 +41,9 @@ describe.each(KINDS)('getSnapshot, %s', (kind) => {
       await Promise.all([edit, later])
       expect(result.sheets[0].cells.C1.value).toBe(18)
       expect(result.sheets[0].cells.B1.spill).toBe('B1:B3')
-      // from a thread the book is a copy; elsewhere the session's own objects, as book() gives them, which later calls change
-      if (kind === 'a thread') expect([b.sheets[0].cells.A1.value, b.sheets[0].cells.A2]).toEqual([3, { value: 3 }])
-      else expect(b).toBe(await s.getBook())
+      // Every kind of session returns an independent book from before the later edit.
+      expect([b.sheets[0].cells.A1.value, b.sheets[0].cells.A2]).toEqual([3, { value: 3 }])
+      expect(b).not.toBe(await s.getBook())
       const now = await s.getSnapshot()
       expect(now.result).toEqual({ ...(await s.getResult()), ms: now.result.ms })
       expect(now.book).toEqual(await s.getBook())

@@ -710,9 +710,11 @@ export interface EntryOptions {
   /** The book's date system, as `BookInput.dateSystem`; 1900 without it. */
   dateSystem?: 1900 | 1904
   /**
-   * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.getCells`): its `numberFormat` (the one
-   * it shows by: its row's or column's without its own), `style`, `meta`, `note` and `link`; other fields are not read.
+   * The cell's entry context: its effective `numberFormat`, `style`, `meta`, `note` and `link`; other fields are not read.
+   * A `CellInput` or `CellView` of `getCell` or `getCells` carries only the cell's own format. To account for a row's or
+   * column's format, pass the resolved cell of `getViewport`, or set `numberFormat` to the effective format yourself.
    * The new input keeps its style, meta, note and link, and its format where Excel keeps it.
+   * The returned input stores that format on the cell; `setCellText` keeps an inherited format on its row or column.
    */
   cell?: { numberFormat?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
   /** The moment whose year completes a date typed without one (`15.3` in ru-RU, `3/15` in en-US), ISO as `Clock.now`; the current moment without it. */
@@ -1031,6 +1033,10 @@ export interface CellChange extends CellRef, Partial<CellDisplay> {
   numberFormat?: NumberFormat | null
   /** A changed `numberFormat` other than null as a code, as `CellView.numberFormatCode`. */
   numberFormatCode?: string
+  /** The cell's note, when its text or author changed; null when it was removed. */
+  note?: CellNote | null
+  /** The cell's hyperlink, when its url, location or tooltip changed; null when it was removed. */
+  link?: CellLink | null
 }
 
 /**
@@ -1041,7 +1047,7 @@ export interface EditResult {
   /** The session's revision after the call: every call that changes the book adds one, `undo` and `redo` too. */
   revision: number
   /**
-   * The cells whose value, shown text, formula or look changed, by `CellChange`; a cell another cell's value changed
+   * The cells whose value, shown text, formula, look, note or hyperlink changed, by `CellChange`; a cell another cell's value changed
    * is listed with its value alone. After a structure operation, the cells whose value or formula differ from those of
    * the cell that was at their old place (`moved`).
    */
@@ -1773,7 +1779,7 @@ export interface Session {
    */
   validateEntry(sheet: string, cell: string, input: CellInput | null): EntryCheck
   getResult(): ComputeResult
-  /** The book (as `getBook()`, the session's own objects) and its result (as `getResult()`) in one call. */
+  /** An independent copy of the book and its result at one moment; later edits and changes to the copy cannot affect each other. */
   getSnapshot(): BookSnapshot
   /** The values hash `getResult()` gives, without building the result. */
   getHash(): string
@@ -1880,7 +1886,7 @@ export interface AsyncSession {
   getValidation(sheet: string, cell: string): Promise<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null, opts?: CalcOptions): Promise<EntryCheck>
   getResult(opts?: CalcOptions): Promise<ComputeResult>
-  /** As `Session.getSnapshot`, in one call, so no edit comes between the book and its result; from a thread, a copy. */
+  /** As `Session.getSnapshot`, an independent copy in one call, so no edit comes between the book and its result. */
   getSnapshot(opts?: CalcOptions): Promise<BookSnapshot>
   /** As `Session.getHash`: from a thread only the hash comes back. */
   getHash(opts?: CalcOptions): Promise<string>

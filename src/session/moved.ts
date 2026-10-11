@@ -4,7 +4,7 @@ import { key, type EngineState } from '../engine.js'
 import { same } from '../evaluate.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, readAddress } from '../model.js'
-import { fieldsBetween, formulaText, type FieldChange } from './answer.js'
+import { fieldsBetween, formulaText, hasFields, type FieldChange } from './answer.js'
 import type { Looks } from '../shown.js'
 import { shownKey } from './looks.js'
 import type { DiffPass } from './rebook.js'
@@ -144,14 +144,13 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
       compare(s, r, c)
     }
   }
-  // the cells of a new sheet met above (with a value or of a look alone) whose input has a formula or a look of its own:
-  // found by the addresses of its inputs, not each cell looked up, as an input of a value alone differs from none in nothing else
+  // the cells of a new sheet met above (with a value or of a look alone) whose input has a field beside its value
+  // (`hasFields`): found by the addresses of its inputs, not each cell looked up
   fresh.forEach((yes, s) => {
     if (!yes) return
     const [cells, cols] = [next.input.sheets[s].cells, next.ctx.sheets[s].cols]
     for (const addr in cells) {
-      const x = cells[addr]
-      if (x.formula === undefined && x.style === undefined && x.numberFormat === undefined) continue
+      if (!hasFields(cells[addr])) continue
       readAddress(addr, p)
       if ((cols[p.c] !== undefined && p.r in cols[p.c]) || bare(next, s, p.r, p.c)) compare(s, p.r, p.c)
     }

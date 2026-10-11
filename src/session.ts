@@ -20,6 +20,7 @@ import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
+import { snapshotBook } from './session/snapshot.js'
 import { checkRange, checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
@@ -56,6 +57,8 @@ export interface SessionHooks {
   history?: HistoryData
   /** The revision a session restored from a snapshot starts at. */
   revision?: number
+  /** False only on a worker: its outgoing snapshot is copied by the transport before another call runs. */
+  copySnapshot?: false
 }
 
 /** A session's operations as steps; `getBook`, `getLayout`, `setStyles` and `close` compute nothing. */
@@ -121,8 +124,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
   const { externals, execution } = o
   const display = o.display !== false
-  // the cells a host was given (`getBook`, `getSnapshot`), which it may keep: a state built later copies them, so they
-  // change no more, and takes the others as they are (an old state's, an operation's new ones, a deleted sheet's put back)
+  // the cells a host was given (`getBook`; `getSnapshot` gives a copy), which it may keep: a state built later copies
+  // them, so they change no more, and takes the others as they are (an old state's, an operation's new ones, a deleted sheet's put back)
   const lent = new WeakSet<object>()
   const lend = (s: EngineState) => {
     for (const x of s.input.sheets) lent.add(x.cells)
@@ -598,7 +601,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *getSnapshot() {
       const t0 = nowMs()
       const s = yield* ready()
-      return { book: lend(s), result: yield* buildResult(s, clock, t0, display) }
+      const book = hooks.copySnapshot === false ? s.input : yield* snapshotBook(s.input)
+      return { book, result: yield* buildResult(s, clock, t0, display, book) }
     },
     *undo(eo?: EditOptions) {
       checkBase(eo, revision)
