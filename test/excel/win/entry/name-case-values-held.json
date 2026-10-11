@@ -1,0 +1,66 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-11",
+  "autoPercentEntry": "true",
+  "seconds": 19.3
+ },
+ "cases": [
+  {
+   "id": "value-1",
+   "text": "falſe"
+  },
+  {
+   "id": "value-2",
+   "text": "FALſE"
+  },
+  {
+   "id": "value-3",
+   "text": "false"
+  },
+  {
+   "id": "value-4",
+   "text": "trUE"
+  }
+ ],
+ "answers": {
+  "value-1": {
+   "cell": {
+    "value": "falſe"
+   },
+   "text": "falſe",
+   "code": "General",
+   "local": "General"
+  },
+  "value-2": {
+   "cell": {
+    "value": "FALſE"
+   },
+   "text": "FALſE",
+   "code": "General",
+   "local": "General"
+  },
+  "value-3": {
+   "cell": {
+    "value": false
+   },
+   "text": "FALSE",
+   "code": "General",
+   "local": "General"
+  },
+  "value-4": {
+   "cell": {
+    "value": true
+   },
+   "text": "TRUE",
+   "code": "General",
+   "local": "General"
+  }
+ }
+}

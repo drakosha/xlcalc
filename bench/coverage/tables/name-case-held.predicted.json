@@ -1,0 +1,279 @@
+{
+ "long-s-word": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "ſ*2",
+   "S!C2": "ſ*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "ſ"
+  ]
+ },
+ "long-s-upper": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "S*2",
+   "S!C2": "S*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "S"
+  ]
+ },
+ "sharp-s-word": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "ß*2",
+   "S!C2": "ß*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "ß"
+  ]
+ },
+ "sharp-s-upper": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "SS*2",
+   "S!C2": "SS*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "SS"
+  ]
+ },
+ "dotless-i-word": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "ı*2",
+   "S!C2": "ı*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "ı"
+  ]
+ },
+ "dotless-i-upper": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "I*2",
+   "S!C2": "I*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "I"
+  ]
+ },
+ "dotted-i-word": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "e",
+    "v": "NAME"
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "i*2",
+   "S!C2": "İ*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "İ"
+  ]
+ },
+ "dotted-i-upper": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "e",
+    "v": "NAME"
+   }
+  },
+  "formulas": {
+   "S!C1": "i*2",
+   "S!C2": "İ*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "i"
+  ]
+ },
+ "ligature-fi-word": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "ﬁ*2",
+   "S!C2": "ﬁ*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "ﬁ"
+  ]
+ },
+ "ligature-fi-upper": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "FI*2",
+   "S!C2": "FI*2"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "FI"
+  ]
+ },
+ "long-s-both": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!C1": "S*2",
+   "S!C2": "S*2"
+  },
+  "tables": [],
+  "refused": [
+   1
+  ],
+  "names": [
+   "S"
+  ]
+ }
+}

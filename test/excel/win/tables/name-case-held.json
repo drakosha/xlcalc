@@ -1,0 +1,815 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 17.4
+ },
+ "cases": [
+  {
+   "id": "long-s-word",
+   "about": "the name ſ added, formulas over S and ſ",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "ſ",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "S*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ſ*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "long-s-upper",
+   "about": "the name S added, formulas over S and ſ",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "S",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "S*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ſ*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "sharp-s-word",
+   "about": "the name ß added, formulas over SS and ß",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "ß",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "SS*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ß*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "sharp-s-upper",
+   "about": "the name SS added, formulas over SS and ß",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "SS",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "SS*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ß*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "dotless-i-word",
+   "about": "the name ı added, formulas over I and ı",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "ı",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "I*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ı*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "dotless-i-upper",
+   "about": "the name I added, formulas over I and ı",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "I",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "I*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ı*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "dotted-i-word",
+   "about": "the name İ added, formulas over i and İ",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "İ",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "i*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "İ*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "dotted-i-upper",
+   "about": "the name i added, formulas over i and İ",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "i",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "i*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "İ*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "ligature-fi-word",
+   "about": "the name ﬁ added, formulas over FI and ﬁ",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "ﬁ",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "FI*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ﬁ*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "ligature-fi-upper",
+   "about": "the name FI added, formulas over FI and ﬁ",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "FI",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "FI*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ﬁ*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "long-s-both",
+   "about": "the names S and ſ added in turn: one name or two",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "S",
+      "ref": "5"
+     }
+    },
+    {
+     "name": {
+      "name": "ſ",
+      "ref": "7"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "S*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ſ*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "long-s-word": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=S*2",
+    "S!C2": "=ſ*2"
+   },
+   "tables": [],
+   "names": [
+    "ſ"
+   ]
+  },
+  "long-s-upper": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "e",
+     "v": "NAME"
+    }
+   },
+   "formulas": {
+    "S!C1": "=S*2",
+    "S!C2": "=ſ*2"
+   },
+   "tables": [],
+   "names": [
+    "S"
+   ]
+  },
+  "sharp-s-word": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=ß*2",
+    "S!C2": "=ß*2"
+   },
+   "tables": [],
+   "names": [
+    "ß"
+   ]
+  },
+  "sharp-s-upper": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=SS*2",
+    "S!C2": "=SS*2"
+   },
+   "tables": [],
+   "names": [
+    "SS"
+   ]
+  },
+  "dotless-i-word": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=I*2",
+    "S!C2": "=ı*2"
+   },
+   "tables": [],
+   "names": [
+    "ı"
+   ]
+  },
+  "dotless-i-upper": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "e",
+     "v": "NAME"
+    }
+   },
+   "formulas": {
+    "S!C1": "=I*2",
+    "S!C2": "=ı*2"
+   },
+   "tables": [],
+   "names": [
+    "I"
+   ]
+  },
+  "dotted-i-word": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=i*2",
+    "S!C2": "=İ*2"
+   },
+   "tables": [],
+   "names": [
+    "İ"
+   ]
+  },
+  "dotted-i-upper": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "e",
+     "v": "NAME"
+    }
+   },
+   "formulas": {
+    "S!C1": "=i*2",
+    "S!C2": "=İ*2"
+   },
+   "tables": [],
+   "names": [
+    "i"
+   ]
+  },
+  "ligature-fi-word": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=ﬁ*2",
+    "S!C2": "=ﬁ*2"
+   },
+   "tables": [],
+   "names": [
+    "ﬁ"
+   ]
+  },
+  "ligature-fi-upper": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=FI*2",
+    "S!C2": "=FI*2"
+   },
+   "tables": [],
+   "names": [
+    "FI"
+   ]
+  },
+  "long-s-both": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 14
+    }
+   },
+   "formulas": {
+    "S!C1": "=S*2",
+    "S!C2": "=ſ*2"
+   },
+   "tables": [],
+   "names": [
+    "S",
+    "ſ"
+   ]
+  }
+ }
+}

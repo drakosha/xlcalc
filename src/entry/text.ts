@@ -30,6 +30,7 @@ function shownAs(n: number, format: NumberFormat | undefined): 'date' | 'time' |
 
 /** A date and time as the formula bar shows it: the short date (built-in format 14) and, past midnight, two spaces and the long time. */
 function dateTime(n: number, time: boolean, r: Rules): string {
+  // the fraction rounded half up, not `momentOf`: the formula bar was not measured at a second's edge (the set `seconds-held`)
   let day = Math.floor(n)
   let secs = Math.round((n - day) * 86_400)
   if (secs === 86_400) [day, secs] = [day + 1, 0]

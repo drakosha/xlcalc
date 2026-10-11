@@ -1,11 +1,13 @@
 /**
- * The case of names (`caseKey`): sheets, tables, the specifiers of structured references and the words of typed formula
- * text compare by Unicode's default upper case, which no locale changes. It was Russian rules' upper case
- * (`toLocaleUpperCase('ru-RU')`); both give the same key for every character, so nothing compares otherwise in ru-RU or
- * en-US books. Turkish rules differ and are not followed (Excel tr-TR not measured).
+ * The case of names and words. Names (`caseKey`: defined names, tables, sheets, the specifiers of structured
+ * references) compare by Unicode's default upper case, which no locale changes, a letter's whole (`straße` is
+ * `STRASSE`), but for the dotless ı and the long ſ, which Excel for Windows keeps apart from I and S (the table sets
+ * `name-case-held`, `name-case-sheets-held`). Words of formula text (`wordKey`: function names, TRUE and FALSE, LET's
+ * names, a locale's words) take each letter's own upper case where it is one letter, ı and ſ kept (`gauß` is no GAUSS).
+ * Turkish rules differ and are not followed (Excel tr-TR not measured).
  */
 import { describe, expect, it } from 'vitest'
-import { caseKey } from '../src/collate.js'
+import { caseKey, wordKey } from '../src/collate.js'
 import { compute } from '../src/index.js'
 import './locales.js'
 
@@ -17,15 +19,28 @@ function chars(from: number, to: number): string {
 }
 
 describe('the case of names', () => {
-  it('is Russian and English rules’ upper case for every code point', () => {
+  it('is Russian and English rules’ upper case for every code point but ı and ſ', () => {
     const off: string[] = []
     // upper case maps a character alone in these rules, so a block of characters at a time is the same check
     for (let from = 0; from < 0x110000; from += 0x1000) {
       const block = chars(from, from + 0x1000)
       const key = caseKey(block)
-      if (key !== block.toLocaleUpperCase('ru-RU') || key !== block.toLocaleUpperCase('en-US')) off.push(from.toString(16))
+      const upper = (tag: string) => block.replace(/[^ıſ]+/g, (run) => run.toLocaleUpperCase(tag))
+      if (key !== upper('ru-RU') || key !== upper('en-US')) off.push(from.toString(16))
     }
     expect(off).toEqual([])
+  })
+
+  it('a word takes the upper case of each letter that has a letter for it, the name key elsewhere', () => {
+    const off: string[] = []
+    for (let cp = 0; cp < 0x110000; cp++) {
+      if (cp >= 0xd800 && cp <= 0xdfff) continue
+      const ch = String.fromCodePoint(cp)
+      const one = [...caseKey(ch)].length === 1
+      if (wordKey(ch) !== (one ? caseKey(ch) : ch)) off.push(cp.toString(16))
+    }
+    expect(off).toEqual([])
+    expect(['gauß', 'ﬁnd', 'falſe', 'ıf', 'İf', 'сумм', 'straße'].map(wordKey)).toEqual(['GAUß', 'ﬁND', 'FALſE', 'ıF', 'İF', 'СУММ', 'STRAßE'])
   })
 
   it('compares Cyrillic and Latin names in any case, ё and й apart from е and и', () => {
@@ -33,8 +48,8 @@ describe('the case of names', () => {
     expect(caseKey('ёлка')).not.toBe(caseKey('елка'))
   })
 
-  it('does not follow Turkish rules: i is I, ı is I, İ stays apart', () => {
-    expect([caseKey('i'), caseKey('ı'), caseKey('İ')]).toEqual(['I', 'I', 'İ'])
+  it('does not follow Turkish rules: i is I, ı and İ stay apart', () => {
+    expect([caseKey('i'), caseKey('ı'), caseKey('İ'), caseKey('ſ'), caseKey('ﬁ')]).toEqual(['I', 'ı', 'İ', 'ſ', 'FI'])
     expect('i'.toLocaleUpperCase('tr-TR')).toBe('İ')
   })
 

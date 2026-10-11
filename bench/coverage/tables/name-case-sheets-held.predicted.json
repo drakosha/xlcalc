@@ -1,0 +1,276 @@
+{
+ "sheet-long-s": {
+  "values": {
+   "Q!A1": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "Q!A1": "'ſ'!A1*2"
+  },
+  "tables": [],
+  "refused": []
+ },
+ "table-long-s": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "x"
+   },
+   "S!C1": {
+    "t": "e",
+    "v": "NAME"
+   },
+   "S!A2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A3": {
+    "t": "n",
+    "v": 3
+   }
+  },
+  "formulas": {
+   "S!C1": "ROWS(TS)",
+   "S!C2": "ROWS(Tſ[])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Tſ",
+    "range": "A1:A3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "x"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "sheet-sharp-s": {
+  "values": {
+   "Q!A1": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "Q!A1": "'X'!A1*2"
+  },
+  "tables": [],
+  "refused": [
+   0
+  ]
+ },
+ "table-sharp-s": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "x"
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A3": {
+    "t": "n",
+    "v": 3
+   }
+  },
+  "formulas": {
+   "S!C1": "ROWS(Tß[])",
+   "S!C2": "ROWS(Tß[])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Tß",
+    "range": "A1:A3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "x"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "sheet-dotless-i": {
+  "values": {
+   "Q!A1": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "Q!A1": "'ı'!A1*2"
+  },
+  "tables": [],
+  "refused": []
+ },
+ "table-dotless-i": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "x"
+   },
+   "S!C1": {
+    "t": "e",
+    "v": "NAME"
+   },
+   "S!A2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A3": {
+    "t": "n",
+    "v": 3
+   }
+  },
+  "formulas": {
+   "S!C1": "ROWS(TI)",
+   "S!C2": "ROWS(Tı[])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Tı",
+    "range": "A1:A3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "x"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "sheet-dotted-i": {
+  "values": {
+   "Q!A1": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "Q!A1": "'İ'!A1*2"
+  },
+  "tables": [],
+  "refused": []
+ },
+ "table-dotted-i": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "x"
+   },
+   "S!C1": {
+    "t": "e",
+    "v": "NAME"
+   },
+   "S!A2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A3": {
+    "t": "n",
+    "v": 3
+   }
+  },
+  "formulas": {
+   "S!C1": "ROWS(Ti)",
+   "S!C2": "ROWS(Tİ[])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Tİ",
+    "range": "A1:A3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "x"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "sheet-ligature-fi": {
+  "values": {
+   "Q!A1": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "Q!A1": "'X'!A1*2"
+  },
+  "tables": [],
+  "refused": [
+   0
+  ]
+ },
+ "table-ligature-fi": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "x"
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A3": {
+    "t": "n",
+    "v": 3
+   }
+  },
+  "formulas": {
+   "S!C1": "ROWS(Tﬁ[])",
+   "S!C2": "ROWS(Tﬁ[])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Tﬁ",
+    "range": "A1:A3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "x"
+    ]
+   }
+  ],
+  "refused": []
+ }
+}

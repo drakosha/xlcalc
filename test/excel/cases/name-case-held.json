@@ -1,0 +1,252 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.815,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "bool#1",
+   "group": "bool",
+   "fn": "IF",
+   "formula": "falſe"
+  },
+  {
+   "id": "bool#2",
+   "group": "bool",
+   "fn": "IF",
+   "formula": "FALſE"
+  },
+  {
+   "id": "bool#3",
+   "group": "bool",
+   "fn": "IF",
+   "formula": "TYPE(falſe)"
+  },
+  {
+   "id": "bool#4",
+   "group": "bool",
+   "fn": "IF",
+   "formula": "IF(falſe,1,2)"
+  },
+  {
+   "id": "bool#5",
+   "group": "bool",
+   "fn": "IF",
+   "formula": "ISLOGICAL({falſe})"
+  },
+  {
+   "id": "bool#6",
+   "group": "bool",
+   "fn": "IF",
+   "formula": "NOT(falſe)"
+  },
+  {
+   "id": "bool#7",
+   "group": "bool",
+   "fn": "IF",
+   "formula": "false"
+  },
+  {
+   "id": "let#1",
+   "group": "let",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.falſe,1,_xlpm.falſe)"
+  },
+  {
+   "id": "let#2",
+   "group": "let",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,falſe)"
+  },
+  {
+   "id": "let#3",
+   "group": "let",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.ſ,1,_xlpm.ſ+1)"
+  },
+  {
+   "id": "text#1",
+   "group": "text",
+   "fn": "IF",
+   "formula": "IF(\"falſe\",1,2)"
+  },
+  {
+   "id": "text#2",
+   "group": "text",
+   "fn": "IF",
+   "formula": "IF(\"false\",1,2)"
+  },
+  {
+   "id": "fn#1",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "ſum(1,2)"
+  },
+  {
+   "id": "fn#2",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "ſUM(1,2)"
+  },
+  {
+   "id": "fn#3",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "ﬁnd(\"a\",\"a\")"
+  },
+  {
+   "id": "fn#4",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "ﬁxed(1)"
+  },
+  {
+   "id": "fn#5",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "gauß(1)"
+  },
+  {
+   "id": "fn#6",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "addreß(1,1)"
+  },
+  {
+   "id": "fn#7",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "ıf(TRUE,1,2)"
+  },
+  {
+   "id": "fn#8",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "İF(TRUE,1,2)"
+  },
+  {
+   "id": "fn#9",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "ısnumber(1)"
+  },
+  {
+   "id": "fn#10",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "İSNUMBER(1)"
+  },
+  {
+   "id": "fn#11",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "if(TRUE,1,2)"
+  },
+  {
+   "id": "fn#12",
+   "group": "fn",
+   "fn": "SUM",
+   "formula": "sum(1,2)"
+  }
+ ],
+ "values": {
+  "bool#1": {
+   "t": "b",
+   "v": false
+  },
+  "bool#2": {
+   "t": "b",
+   "v": false
+  },
+  "bool#3": {
+   "t": "n",
+   "v": 4
+  },
+  "bool#4": {
+   "t": "n",
+   "v": 2
+  },
+  "bool#5": {
+   "t": "b",
+   "v": true
+  },
+  "bool#6": {
+   "t": "b",
+   "v": true
+  },
+  "bool#7": {
+   "t": "b",
+   "v": false
+  },
+  "let#1": {
+   "t": "n",
+   "v": 1
+  },
+  "let#2": {
+   "t": "b",
+   "v": false
+  },
+  "let#3": {
+   "t": "n",
+   "v": 2
+  },
+  "text#1": {
+   "t": "n",
+   "v": 2
+  },
+  "text#2": {
+   "t": "n",
+   "v": 2
+  },
+  "fn#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#3": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#5": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#6": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#7": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#8": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#9": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#10": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "fn#11": {
+   "t": "n",
+   "v": 1
+  },
+  "fn#12": {
+   "t": "n",
+   "v": 3
+  }
+ }
+}

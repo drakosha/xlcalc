@@ -50,6 +50,8 @@ export const WIN_REASONS = {
   winLongDate: '`[$-F800]` in ru-RU is the long date of the system: on Windows `31 января 2025 г.`, without the weekday; on the Mac and here `пятница, 31 января 2025 г.`.',
   winWeeknum: '`WEEKNUM` with return type 22, which Microsoft does not list: Excel for Windows answers a week (`WEEKNUM(45658,22)` is 1), Excel for Mac and the engine `#NUM!`.',
   winWeibull: '`WEIBULL` and `WEIBULL.DIST` with a scale of 1E-300: `#NUM!` in Excel for Windows, `#DIV/0!` in Excel for Mac and here.',
+  winNameValue:
+    'A formula over a name the book does not define is `#NAME?` as a whole, as an invalid formula; Excel gives the name\'s `#NAME?` to the function over it as a value, so `TYPE(falſe)`, a name in Excel for Windows, is 16 there.',
   winMath:
     'Trigonometry where the last bits decide: Excel for Windows computes `TAN(PI()/2)` as 16324552277619072, Excel for Mac and the engine 1.63312393531954E+16; the same for `SEC`, `CSC`, `COT` at their poles and for `IMTAN`, `IMCOS`, `IMSIN`, `IMPOWER` of large arguments, which Windows gives with other digits from the 13th on.',
 } as const

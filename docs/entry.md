@@ -104,7 +104,7 @@ A year of one digit is of the 2000s (`1-2-3` is 2003), in `VALUE` too.
 
 ### Booleans and errors
 
-The locale's words for TRUE and FALSE in any case are booleans: `ИСТИНА`, `истина`, `Ложь` in ru-RU, where `TRUE` is text; `TRUE`, `true` in en-US. The locale's error texts in any case are errors: `#Н/Д`, `#н/д`, `#ДЕЛ/0!` in ru-RU, where `#N/A` is text. An error is stored as the formula of its literal (`{ formula: '#N/A' }`), as the xlsx reader reads an error a file stores as a value.
+The locale's words for TRUE and FALSE in any case are booleans: `ИСТИНА`, `истина`, `Ложь` in ru-RU, where `TRUE` is text; `TRUE`, `true` in en-US. Case goes letter by letter, as in Excel for Windows: `falſe`, with the long s, is text (the entry set `name-case-values-held`; Excel for Mac reads it as FALSE). The locale's error texts in any case are errors: `#Н/Д`, `#н/д`, `#ДЕЛ/0!` in ru-RU, where `#N/A` is text. An error is stored as the formula of its literal (`{ formula: '#N/A' }`), as the xlsx reader reads an error a file stores as a value.
 
 ### A cell with a format
 

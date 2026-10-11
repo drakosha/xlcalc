@@ -1,7 +1,8 @@
 /**
  * The round trip: every formula of the coverage measurement, the Excel case sets and the probes, in the
  * engine's canonical form, shown in each of the package's locales (`LOCALES`) and read back, is the same text. A
- * formula the parser does not take goes round as it is written.
+ * formula the parser does not take goes round as it is written, or is refused by `toLocal` too (a name in an array
+ * constant, `{falſe}`, which Excel for Mac reads as FALSE: the set `name-case-held`).
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
@@ -13,10 +14,14 @@ import { SETS } from './excel-sets.js'
 
 const probes = (JSON.parse(readFileSync(new URL('./excel/probes.json', import.meta.url), 'utf8')) as { cases: { formula: string }[] }).cases
 
+/** Formulas the parser does not take. */
+const refused = new Set<string>()
+
 function canonicalOf(f: string): string {
   try {
     return canonical(parse(f))
   } catch {
+    refused.add(f)
     return f
   }
 }
@@ -32,7 +37,7 @@ describe('round trip through a locale', () => {
     it(`${loc.tag}: toInvariant(toLocal(f)) is f for every formula`, () => {
       const off = FORMULAS.flatMap((f) => {
         const shown = toLocal(f, loc)
-        if (!shown.ok) return [`${f}: ${shown.message} at ${shown.at}`]
+        if (!shown.ok) return refused.has(f) ? [] : [`${f}: ${shown.message} at ${shown.at}`]
         const back = toInvariant(shown.formula, loc)
         return back.ok && back.formula === f ? [] : [`${f} → ${shown.formula} → ${back.ok ? back.formula : back.message}`]
       })

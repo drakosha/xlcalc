@@ -1,0 +1,57 @@
+{
+ "now": "2026-10-11",
+ "locales": {
+  "en-US": {
+   "value-1": {
+    "ok": true,
+    "input": {
+     "value": "falſe"
+    }
+   },
+   "value-2": {
+    "ok": true,
+    "input": {
+     "value": "FALſE"
+    }
+   },
+   "value-3": {
+    "ok": true,
+    "input": {
+     "value": false
+    }
+   },
+   "value-4": {
+    "ok": true,
+    "input": {
+     "value": true
+    }
+   }
+  },
+  "ru-RU": {
+   "value-1": {
+    "ok": true,
+    "input": {
+     "value": "falſe"
+    }
+   },
+   "value-2": {
+    "ok": true,
+    "input": {
+     "value": "FALſE"
+    }
+   },
+   "value-3": {
+    "ok": true,
+    "input": {
+     "value": "false"
+    }
+   },
+   "value-4": {
+    "ok": true,
+    "input": {
+     "value": "trUE"
+    }
+   }
+  }
+ }
+}
