@@ -1,7 +1,7 @@
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
 import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
-import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalLook } from './contract.js'
+import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalAppearance, Diagnostic } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
@@ -86,7 +86,7 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
   const look = display ? cellLooks(state) : null
   const spill = new Map<string, string>()
   const listed = new Set<string>()
-  const cond = new Map<number, ConditionalLook>()
+  const cond = new Map<number, ConditionalAppearance>()
   for (const x of xs) {
     const small = (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL
     const mine: string[] = []
@@ -117,7 +117,7 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
     if (paced(1)) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
     const input = cells[addr]
-    // what the cell shows beside its value: its own style, note and link, an old-kind array's area, and its conditional formats' look
+    // what the cell shows beside its value: its own style, note and link, an old-kind array's area, and its conditional formats' appearance
     if (input?.style !== undefined) view.style = input.style
     if (input?.note !== undefined) view.note = input.note
     if (input?.link !== undefined) view.link = input.link
@@ -208,8 +208,10 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
     .map((f) => ({ sheet: state.sheetNames[f.s], cell: formatAddress(f.r, f.c) }))
   return {
     sheets,
-    issues: issues(state).map((i) => ({ sheet: state.sheetNames[i.s], cell: formatAddress(i.r, i.c), error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}) })),
-    nameIssues: state.nameIssues,
+    diagnostics: [
+      ...issues(state).map((i): Diagnostic => ({ kind: 'cell', sheet: state.sheetNames[i.s], cell: formatAddress(i.r, i.c), error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}) })),
+      ...state.nameIssues.map((n): Diagnostic => ({ kind: 'name', ...n })),
+    ],
     volatile,
     clock: { ...clock },
     hash: w.hex(fills),

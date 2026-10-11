@@ -48,7 +48,7 @@ export { dateToSerial, serialToDate, type DateSystemOptions } from './date-seria
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
  * result records it in `clock`, and passing that clock again reproduces the result. Input of the wrong
- * shape throws `InputError`; invalid formulas do not throw, they give error values with reasons in `issues`.
+ * shape throws `InputError`; invalid formulas do not throw, they give error values with reasons in `diagnostics`.
  */
 export function compute(book: BookInput, opts?: ComputeOptions): ComputeResult {
   const o = checkComputeOptions(opts)
