@@ -4,7 +4,7 @@
  * Excel on every range of a 12-row window under 20 moves (`test/excel/struct/moves.json`, see
  * `docs/structure.md`). Across sheets a range only sheds the moved cells at its end.
  */
-import type { BookInput, CellInput, CellRef, NameInput, RestructureResult } from '../contract.js'
+import type { BookInput, CellInput, CellRef, NameInput, StructureResult } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
@@ -138,7 +138,7 @@ export const within = (x: Rect, addr: string) => {
 }
 
 /** Cut `src` on sheet `from` and paste it with its top-left cell at row `row`, column `col` of `to`. */
-export function moveRange(book: BookInput, from: string, src: Rect, to: string, row: number, col: number): RestructureResult {
+export function moveRange(book: BookInput, from: string, src: Rect, to: string, row: number, col: number): StructureResult {
   const [dr, dc] = [row - src.r1, col - src.c1]
   const dst = shiftRect(src, dr, dc)
   if (dst.r2 >= MAX_ROWS || dst.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'moveOffSheet', sheet: to, cell: formatAddress(row, col) }) }

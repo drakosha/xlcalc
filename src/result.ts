@@ -78,7 +78,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
 const BY_CELL = 65_536
 
 /**
- * The cells of rectangles `xs` of sheet `s` as the result gives them (`Session.cells`), with each cell's own style, once
+ * The cells of rectangles `xs` of sheet `s` as the result gives them (`Session.getCells`), with each cell's own style, once
  * each: a rectangle's cells looked up one by one, or a larger one's found among the sheet's. The steps yield between cells.
  */
 export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boolean): Steps<Record<string, CellView>> {
@@ -165,7 +165,7 @@ function fillLines(state: EngineState, s: number, addr: string, value: CellValue
 /** The values hasher of a state's configuration, locale and date system; cells are written to it as they are read. */
 const hasher = (state: EngineState) => new ValuesHasher(CONFIG_VERSION, state.input.locale, state.input.dateSystem)
 
-/** The values hash of a state, as its result gives it, without the cells' results (`Session.hash`). */
+/** The values hash of a state, as its result gives it, without the cells' results (`Session.getHash`). */
 export function* stateHash(state: EngineState): Steps<string> {
   const w = hasher(state)
   const fills: FillLine[] = []

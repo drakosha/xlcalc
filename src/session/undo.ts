@@ -254,7 +254,7 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       const [outcome, before] = yield* core.relayout(s, next, shown)
       const t: Taken = { call: step.call, outcome }
       // a sheet hidden or shown again: its cells stay where they are
-      if (step.call === 'restructure') t.mapCell = registered(checkedMapCell(s.input, (ref) => ref), { op: null, way: 'back', before: s.sheetNames, after: s.sheetNames })
+      if (step.call === 'editStructure') t.mapCell = registered(checkedMapCell(s.input, (ref) => ref), { op: null, way: 'back', before: s.sheetNames, after: s.sheetNames })
       return [t, layoutStep(step.call, before, next)]
     }
     case 'styles': {
@@ -270,7 +270,7 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       const map = mapCellOf(d.op, d.way, names)
       const [, outcome, diff] = yield* core.rebuild(s, book, d.op ? map : null, step.call !== 'setNames', () => bookDiff(book, s.input, d.op, d.way === 'back' ? 'forth' : 'back'))
       const t: Taken = { call: step.call, outcome: { ...outcome, moved: movesOf(d.op, d.way, s.sheetNames, names) } }
-      if (step.call === 'restructure') t.mapCell = registered(checkedMapCell(s.input, map), { op: d.op, way: d.way, before: s.sheetNames, after: names })
+      if (step.call === 'editStructure') t.mapCell = registered(checkedMapCell(s.input, map), { op: d.op, way: d.way, before: s.sheetNames, after: names })
       return [t, bookStep(step.call, diff!, book)]
     }
     case 'many': {

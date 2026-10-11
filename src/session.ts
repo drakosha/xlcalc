@@ -3,12 +3,12 @@
  * session (`live`) takes a fresh clock and a new seed on every recomputation; its current clock
  * (`clock`) is what a saved result records, and a full computation with it gives the same hash.
  *
- * The operations are steps (`openSteps`): `openSession` runs each to its end at once, the asynchronous session in
+ * The operations are steps (`openSteps`): `createSession` runs each to its end at once, the asynchronous session in
  * portions. A call that stops (a limit, a deadline, an abort) changes nothing: what it changed in place is put back,
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
@@ -45,6 +45,7 @@ import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput } from './validation/session.js'
 import { cellWithoutEquals, editsWithoutEquals, opWithoutEquals } from './equals.js'
+import { withOldNames } from './old-names.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -56,7 +57,7 @@ export interface SessionHooks {
   revision?: number
 }
 
-/** A session's operations as steps; `book`, `setStyles` and `close` compute nothing. */
+/** A session's operations as steps; `getBook`, `getLayout`, `setStyles` and `close` compute nothing. */
 export interface SessionSteps {
   readonly clock: Clock
   readonly revision: number
@@ -68,26 +69,26 @@ export interface SessionSteps {
   previewCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): Steps<CellTextPreview>
   setNames(names: NameInput[], opts?: EditOptions): Steps<EditResult>
   setClock(clock: Clock, opts?: EditOptions): Steps<EditResult>
-  restructure(op: StructureOp, opts?: EditOptions): Steps<SessionRestructureResult>
+  editStructure(op: StructureOp, opts?: EditOptions): Steps<SessionStructureResult>
   setStyles(styles: CellStyle[], opts?: EditOptions): EditResult
   setLayout(edits: LayoutEdit[], opts?: EditOptions): Steps<EditResult>
-  book(): BookInput
-  layout(): BookLayout
-  extent(sheet: string): Steps<SheetExtent>
+  getBook(): BookInput
+  getLayout(): BookLayout
+  getUsedRange(sheet: string): Steps<SheetExtent>
   undo(opts?: EditOptions): Steps<UndoResult | null>
   redo(opts?: EditOptions): Steps<UndoResult | null>
   readonly history: SessionHistory
   /** What the history holds, for a snapshot. */
   historyData(): HistoryData
   explain(sheet: string, cell: string, opts?: ExplainOptions): Steps<Explanation>
-  cells(sheet: string, range: string | string[]): Steps<Record<string, CellView>>
+  getCells(sheet: string, range: string | string[]): Steps<Record<string, CellView>>
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Steps<Viewport>
   getCellIssue(sheet: string, cell: string): Steps<CellIssueDetail | null>
-  validation(sheet: string, cell: string): Steps<CellValidation | null>
+  getValidation(sheet: string, cell: string): Steps<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null): Steps<EntryCheck>
-  result(): Steps<ComputeResult>
+  getResult(): Steps<ComputeResult>
   getSnapshot(): Steps<BookSnapshot>
-  hash(): Steps<string>
+  getHash(): Steps<string>
   close(): void
 }
 
@@ -416,7 +417,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         throw e
       }
     },
-    *restructure(op: StructureOp, eo?: EditOptions) {
+    *editStructure(op: StructureOp, eo?: EditOptions) {
       const old = yield* ready()
       checkBase(eo, revision)
       op = opWithoutEquals(op)
@@ -426,14 +427,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (op.op === 'hideSheet' || op.op === 'unhideSheet') {
         const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
         const [out, before] = yield* relayout(old, next, null)
-        keep(() => layoutStep('restructure', before, next))
+        keep(() => layoutStep('editStructure', before, next))
         return { ok: true, book: old.input, mapCell: checkedMapCell(old.input, r.mapCell), ...answer(old, out) }
       }
       // the operation as it was given, kept for its geometry: the caller's object may change
       const kept = JSON.parse(JSON.stringify(op)) as StructureOp
       // the simple way: the state is built again from the new book
       const [next, out, diff] = yield* rebuild(old, r.book, r.mapCell, true, diffTo(r.book, old.input, kept))
-      keep(() => diff && bookStep('restructure', diff, r.book))
+      keep(() => diff && bookStep('editStructure', diff, r.book))
       const moved = movesOf(kept, 'forth', old.sheetNames, next.sheetNames)
       return { ok: true, book: next.input, mapCell: checkedMapCell(old.input, r.mapCell), ...answer(next, { ...out, moved }) }
     },
@@ -458,13 +459,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (edits.length) keep(() => layoutStep('setLayout', before, next))
       return answer(s, out)
     },
-    book() {
+    getBook() {
       return st().input
     },
-    layout() {
+    getLayout() {
       return bookLayout(st().input)
     },
-    *extent(sheet: string) {
+    *getUsedRange(sheet: string) {
       const s = yield* ready()
       return sheetExtent(s, checkSheet(sheet, sheetIndex(s), 'sheet'))
     },
@@ -474,7 +475,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const e = explainCell(s, i, row, col, { depth: o.depth ?? 3, maxNodes: o.maxNodes ?? 200, expand: o.expand ?? false, errorDepth: o.errorDepth ?? 64 })
       return { ...e, text: explainText(e.root, s.input.locale) }
     },
-    *cells(sheet: string, range: string | string[]) {
+    *getCells(sheet: string, range: string | string[]) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const many = Array.isArray(range)
@@ -490,7 +491,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       return issueDetail(s, ...at(s, sheet, cell))
     },
-    *validation(sheet: string, cell: string) {
+    *getValidation(sheet: string, cell: string) {
       const s = yield* ready()
       return cellValidation(s, ...at(s, sheet, cell))
     },
@@ -508,10 +509,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         throw e
       }
     },
-    *hash() {
+    *getHash() {
       return yield* stateHash(yield* ready())
     },
-    *result() {
+    *getResult() {
       const t0 = nowMs()
       return yield* buildResult(yield* ready(), clock, t0, display)
     },
@@ -542,11 +543,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
  * Opens a session. Without options it keeps the clock of the moment it was opened (with a random seed)
  * until `setClock`; `{ live: true }` takes a fresh clock on every recomputation.
  */
-export function openSession(book: BookInput, opts?: SessionOptions): Session {
+export function createSession(book: BookInput, opts?: SessionOptions): Session {
   const budget = limitsBudget(checkSessionOptions(opts).limits)
   const now = <T>(steps: () => Steps<T>): T => withBudget(budget, () => run(steps()))
   const core = now(() => openSteps(book, opts))
-  return {
+  return withOldNames<Session>({
     get clock() {
       return core.clock
     },
@@ -561,26 +562,26 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     previewCellText: (sheet, cell, text, o) => now(() => core.previewCellText(sheet, cell, text, o)),
     setNames: (names, o) => now(() => core.setNames(names, o)),
     setClock: (clock, o) => now(() => core.setClock(clock, o)),
-    restructure: (op, o) => now(() => core.restructure(op, o)),
+    editStructure: (op, o) => now(() => core.editStructure(op, o)),
     setStyles: (styles, o) => core.setStyles(styles, o),
     setLayout: (edits, o) => now(() => core.setLayout(edits, o)),
-    book: () => core.book(),
-    layout: () => core.layout(),
-    extent: (sheet) => now(() => core.extent(sheet)),
+    getBook: () => core.getBook(),
+    getLayout: () => core.getLayout(),
+    getUsedRange: (sheet) => now(() => core.getUsedRange(sheet)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
-    cells: (sheet, range) => now(() => core.cells(sheet, range)),
+    getCells: (sheet, range) => now(() => core.getCells(sheet, range)),
     getViewport: (sheet, range, o) => now(() => core.getViewport(sheet, range, o)),
     getCellIssue: (sheet, cell) => now(() => core.getCellIssue(sheet, cell)),
-    validation: (sheet, cell) => now(() => core.validation(sheet, cell)),
+    getValidation: (sheet, cell) => now(() => core.getValidation(sheet, cell)),
     validateEntry: (sheet, cell, input) => now(() => core.validateEntry(sheet, cell, input)),
-    result: () => now(() => core.result()),
+    getResult: () => now(() => core.getResult()),
     getSnapshot: () => now(() => core.getSnapshot()),
-    hash: () => now(() => core.hash()),
+    getHash: () => now(() => core.getHash()),
     undo: (o) => now(() => core.undo(o)),
     redo: (o) => now(() => core.redo(o)),
     get history() {
       return core.history
     },
     close: () => core.close(),
-  }
+  })
 }

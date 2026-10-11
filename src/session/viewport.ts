@@ -129,6 +129,6 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
     columns,
     rows,
     merges: (sheet.merges ?? []).filter((m) => meets(parseMerge(m)!, x)),
-    extent: sheetExtent(state, s),
+    usedRange: sheetExtent(state, s),
   }
 }

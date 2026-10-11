@@ -1,8 +1,8 @@
 /**
- * Operations on a book's tables (`restructure`): a table added over cells, renamed, deleted with its cells, or turned
+ * Operations on a book's tables (`editStructure`): a table added over cells, renamed, deleted with its cells, or turned
  * into plain cells, with the structured references to it rewritten as Excel rewrites them (the set `tables/ops`).
  */
-import type { BookInput, RestructureResult, StructureOp, TableInput } from '../contract.js'
+import type { BookInput, StructureResult, StructureOp, TableInput } from '../contract.js'
 import { checkTables } from './check.js'
 import { InputError } from '../input.js'
 import { formatAddress } from '../model.js'
@@ -44,7 +44,7 @@ function nameRefusal(book: BookInput, name: string, own?: string): Message | nul
   return null
 }
 
-export function tableOp(book: BookInput, op: TableOp): RestructureResult {
+export function tableOp(book: BookInput, op: TableOp): StructureResult {
   if (op.op === 'addTable') return addTable(book, op.sheet, op.table)
   const t = tablesOf(book).byName.get(tableKey(op.table))
   if (!t) throw new InputError('op.table', `unknown table ${JSON.stringify(op.table)}`)
@@ -81,7 +81,7 @@ const within = (x: { r1: number; r2: number; c1: number; c2: number }, addr: str
 }
 
 /** A table over cells of `sheet`: its header cells take the columns' names; refused over another table or a merged area. */
-function addTable(book: BookInput, sheet: string, table: TableInput): RestructureResult {
+function addTable(book: BookInput, sheet: string, table: TableInput): StructureResult {
   const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet))
   if (s < 0) throw new InputError('op.sheet', `unknown sheet ${JSON.stringify(sheet)}`)
   if (typeof table !== 'object' || table === null || typeof table.name !== 'string') throw new InputError('op.table', 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')

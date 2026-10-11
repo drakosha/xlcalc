@@ -40,7 +40,7 @@ export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]
   return [...out.values()]
 }
 
-/** The session's book without its cells (`Session.layout`): new objects for the book and its sheets, the rest the book's own. */
+/** The session's book without its cells (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own. */
 export function bookLayout(book: BookInput): BookLayout {
   return { ...book, sheets: book.sheets.map(({ cells: _cells, ...rest }) => rest) }
 }

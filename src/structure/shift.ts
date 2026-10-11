@@ -5,7 +5,7 @@
  * move too. At the sheet's edge a range ending on the last row keeps ending there, a single cell pushed
  * past it is `#REF!`, and a range over every row is not changed by rows inserted or deleted.
  */
-import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
+import type { BookInput, CellInput, CellRef, StructureResult } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { say, type Message } from '../locale/messages.js'
@@ -64,7 +64,7 @@ function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: Sp
  * Inserting refuses when a cell or a merged area would leave the sheet (Excel refuses for cells that are
  * not empty).
  */
-export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n: number): RestructureResult {
+export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n: number): StructureResult {
   const emptied = axis === 'r' && n < 0 ? emptiedTable(input, sheet, at, -n) : null
   if (emptied) return keepFirstRow(input, sheet, at, -n, emptied)
   const tables = tableShift(input, sheet, axis, at, n)
@@ -82,7 +82,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   }
   const target = book.sheets.find((s) => sheetKey(s.name) === sheetKey(sheet))!
   const lines = axis === 'r' ? 'rows' : 'columns'
-  const refuse = (code: 'off_sheet' | 'array', m: Message): RestructureResult => ({ ok: false, code, message: say(input.locale, m) })
+  const refuse = (code: 'off_sheet' | 'array', m: Message): StructureResult => ({ ok: false, code, message: say(input.locale, m) })
   if (n > 0) {
     const off = Object.keys(target.cells).find((a) => {
       spend(1)
@@ -150,7 +150,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
 }
 
 /** Rows deleted over every data row of a table: its first data row stays, its cells in the table cleared; the rest go. */
-function keepFirstRow(book: BookInput, sheet: string, at: number, count: number, cols: { c1: number; c2: number }): RestructureResult {
+function keepFirstRow(book: BookInput, sheet: string, at: number, count: number, cols: { c1: number; c2: number }): StructureResult {
   const r = count > 1 ? shift(book, sheet, 'r', at + 1, 1 - count) : { ok: true as const, book, mapCell: (ref: CellRef): CellRef | null => ref }
   if (!r.ok) return r
   const key = sheetKey(sheet)

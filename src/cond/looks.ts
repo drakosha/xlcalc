@@ -1,5 +1,5 @@
 /**
- * What a sheet's conditional formats give the cells of a window (`Session.cells`), by the values the cells hold now.
+ * What a sheet's conditional formats give the cells of a window (`Session.getCells`), by the values the cells hold now.
  * The rules apply in the sheet's order: a field of a style an earlier rule set stays, the first colour (a style's fill
  * or a colour scale's), bar and icon win, and a rule with `stopIfTrue` that holds leaves out the rules after it.
  * Rules over the numbers of their cells (colour scales, data bars, icon sets, top and bottom, average, duplicates) read

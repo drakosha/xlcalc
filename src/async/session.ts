@@ -9,6 +9,7 @@ import type { HistoryData } from '../session/undo.js'
 import { callBudget, drive } from './drive.js'
 import { callLimits, checkCall, checkEditCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
+import { withOldNames } from '../old-names.js'
 
 /** What a calculator gives its sessions. */
 export interface InlineDefaults {
@@ -95,7 +96,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     }
   }
   const plain = <T>(f: () => T): Promise<T> => turn(async () => after(f()))
-  return {
+  return withOldNames<InlineSession>({
     get clock() {
       return { ...clock }
     },
@@ -113,9 +114,9 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     previewCellText: (sheet, cell, text, co) => edit((eo) => core.previewCellText(sheet, cell, text, eo), co, ['widen']),
     setNames: (names, co) => edit((eo) => core.setNames(names, eo), co),
     setClock: (next, co) => edit((eo) => core.setClock(next, eo), co),
-    restructure: (op, co) =>
+    editStructure: (op, co) =>
       edit(function* (eo) {
-        const r = yield* core.restructure(op, eo)
+        const r = yield* core.editStructure(op, eo)
         if (!r.ok) return r
         const { book: _, ...rest } = r
         return rest
@@ -125,18 +126,18 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       return core.setStyles(styles, eo)
     }, co),
     setLayout: (edits, co) => edit((eo) => core.setLayout(edits, eo), co),
-    book: () => plain(() => core.book()),
-    layout: () => plain(() => core.layout()),
-    extent: (sheet) => call(() => core.extent(sheet)),
+    getBook: () => plain(() => core.getBook()),
+    getLayout: () => plain(() => core.getLayout()),
+    getUsedRange: (sheet) => call(() => core.getUsedRange(sheet)),
     explain: (sheet, cell, eo) => call(() => core.explain(sheet, cell, eo)),
-    cells: (sheet, range) => call(() => core.cells(sheet, range)),
+    getCells: (sheet, range) => call(() => core.getCells(sheet, range)),
     getViewport: (sheet, range, vo) => call(() => core.getViewport(sheet, range, vo)),
     getCellIssue: (sheet, cell) => call(() => core.getCellIssue(sheet, cell)),
-    validation: (sheet, cell) => call(() => core.validation(sheet, cell)),
+    getValidation: (sheet, cell) => call(() => core.getValidation(sheet, cell)),
     validateEntry: (sheet, cell, input, co) => call(() => core.validateEntry(sheet, cell, input), co),
-    result: (co) => call(() => core.result(), co),
+    getResult: (co) => call(() => core.getResult(), co),
     getSnapshot: (co) => call(() => core.getSnapshot(), co),
-    hash: (co) => call(() => core.hash(), co),
+    getHash: (co) => call(() => core.getHash(), co),
     undo: (co) => edit((eo) => core.undo(eo), co),
     redo: (co) => edit((eo) => core.redo(eo), co),
     historyData: () => core.historyData(),
@@ -153,5 +154,5 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       if (running) running.halted = why
       core.close()
     },
-  }
+  })
 }
