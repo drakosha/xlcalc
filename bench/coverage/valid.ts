@@ -1,6 +1,6 @@
 /**
  * Data validation and outlines against Excel: `npx tsx bench/coverage/run.ts valid <set> [ru]` writes each book of
- * `valid/<set>.ts` with `writeXlsx`, Excel opens it, makes what the case makes, applies its operation, reads every
+ * `valid/<set>.ts` with `writeXlsx` (changed by hand for a raw case), Excel opens it, makes what the case makes, applies its operation, reads every
  * sheet's rules, values and outline over the window and saves the book (`excel-valid.applescript`). The answers go to
  * `test/excel/valid/[ru-RU/]<set>.json` and the saved files to `test/excel/valid/[ru-RU/]<set>/<id>.xlsx`;
  * `test/validation-excel.test.ts` compares them with the engine and the reader without Excel. `FVALID_ONLY=id,id` runs
@@ -8,14 +8,13 @@
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { writeXlsx } from '../../src/xlsx.js'
 import { areasOf } from '../../src/validation/rules.js'
 import { formatAddress } from '../../src/model.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { localeDir } from './locales.js'
 import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { opJson } from './struct.js'
-import { lineRange, WINDOW, type ValidAnswer, type ValidCase, type ValidCases, type ValidMake, type ValidSet, type ValidSheetAnswer } from './valid/cases.js'
+import { lineRange, validCaseFile, WINDOW, type ValidAnswer, type ValidCase, type ValidCases, type ValidMake, type ValidSet, type ValidSheetAnswer } from './valid/cases.js'
 import { caseFiles } from './xlsx/sent.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -83,7 +82,7 @@ export const validFile = (set: string, tag: string) => join(ROOT, 'test/excel/va
 /** The set's cases, the file of each case and what identifies it. */
 export async function validSet(set: string): Promise<{ built: ValidCases; files: Map<string, Uint8Array>; sent: Record<string, string> }> {
   const built = (await setModule<ValidSet>('valid', set)).buildValidCases()
-  return { built, ...(await caseFiles(built.cases, async (c) => (await writeXlsx({ book: built.books[c.book] })).data)) }
+  return { built, ...(await caseFiles(built.cases, (c) => validCaseFile(built, c))) }
 }
 
 /** Runs the set's cases that have no stored answer for the same case and book (FCOV_FRESH=1 runs all) and stores the answers. */

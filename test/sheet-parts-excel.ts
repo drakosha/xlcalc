@@ -59,8 +59,14 @@ export function madeAuthor(make: PartsMake[] | undefined, a: PartsAnswer): strin
   return '?'
 }
 
-/** The book of a case with what Excel made (the author Excel's) and the threads of its file, as the engine holds them. */
-export const madeBook = (set: PartsCases, c: PartsCase, a: PartsAnswer): BookInput => made(set.books[c.book], c.make, madeAuthor(c.make, a), set.threads?.[c.book])
+/**
+ * The book of a case with what Excel made (the author Excel's) and the threads of its file, as the engine holds them; a
+ * raw case's as the reader reads the file sent, threads and all.
+ */
+export async function madeBook(set: PartsCases, c: PartsCase, a: PartsAnswer): Promise<BookInput> {
+  if (c.raw) return made((await readXlsx(await partsFile(c, set))).book, c.make, madeAuthor(c.make, a))
+  return made(set.books[c.book], c.make, madeAuthor(c.make, a), set.threads?.[c.book])
+}
 
 const show = (v: unknown) => (v === undefined ? 'none' : JSON.stringify(v))
 
@@ -92,9 +98,9 @@ export const sheetsOf = (book: BookInput) => book.sheets.map((s) => ({ name: s.n
 export const excelSheets = (a: PartsAnswer) => a.sheets.map((s) => ({ name: s.name, parts: excelParts(s) }))
 
 /** The engine's book after a case, or its refusal. */
-function engineAfter(set: PartsSetFile, id: string) {
+async function engineAfter(set: PartsSetFile, id: string) {
   const c = set.cases.find((x) => x.id === id)!
-  const book = madeBook(set, c, set.answers[id])
+  const book = await madeBook(set, c, set.answers[id])
   return c.op ? editStructure(book, c.op) : { ok: true as const, book }
 }
 
@@ -129,9 +135,9 @@ export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, s
         const key = `${set.name}:${c.id}`
         it(`${c.id}: Excel loaded the book`, () => expect(set.rejected?.[c.id]).toBeUndefined())
         if (!set.answers[c.id]) continue
-        it(`${c.id}: Excel read what the engine holds`, () => {
+        it(`${c.id}: Excel read what the engine holds`, async () => {
           const a = set.answers[c.id]
-          const r = engineAfter(set, c.id)
+          const r = await engineAfter(set, c.id)
           if (a.error) return void expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
           const lines = r.ok ? partsDifferences(excelSheets(a), sheetsOf(r.book)) : [`engine refused (${r.code}): ${r.message}`]
           const { placeholders, rest } = apart(a, lines)
@@ -140,7 +146,7 @@ export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, s
         })
         if (set.threads?.[c.book])
           it(`${c.id}: the reader reads the threads of Excel's file as notes`, async () => {
-            const r = engineAfter(set, c.id)
+            const r = await engineAfter(set, c.id)
             expect(r.ok).toBe(true)
             expect(partsDifferences(sheetsOf((await readXlsx(savedFile(set, c.id))).book), r.ok ? sheetsOf(r.book) : [])).toEqual(threadsKnown[key] ?? [])
           })
