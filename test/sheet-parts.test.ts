@@ -118,7 +118,11 @@ describe.each(['closures', 'eval'] as const)('notes, links and frozen panes in a
   it('setCells changes them without recomputing; cells() gives them; the hash stays a full computation of the book', () => {
     const s = createSession(book(), { clock, execution })
     const before = s.getHash()
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1, link: { url: 'mailto:a@example.com' } } }, { sheet: 'S', cell: 'D9', input: { note: { text: 'new' } } }]).changes).toEqual([])
+    // listed with the link and the note they now have, their values as they were
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1, link: { url: 'mailto:a@example.com' } } }, { sheet: 'S', cell: 'D9', input: { note: { text: 'new' } } }]).changes).toEqual([
+      { sheet: 'S', cell: 'A1', value: 1, text: '1', link: { url: 'mailto:a@example.com' } },
+      { sheet: 'S', cell: 'D9', value: null, text: '', note: { text: 'new' } },
+    ])
     expect(s.getCells('S', 'A1:D9')).toMatchObject({ A1: { value: 1, link: { url: 'mailto:a@example.com' } }, C3: { value: null, note: { text: 'alone' }, link: { location: 'S!A1' } }, D9: { value: null, note: { text: 'new' } } })
     // the edit keeps the note it does not name
     expect(s.getCells('S', 'A1').A1.note).toEqual({ author: 'Ann', text: 'first' })
