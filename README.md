@@ -644,9 +644,26 @@ const refused = session.setCellText('S', 'A2', '=СУММ(A1;1.5)')
 console.log(session.previewCellText('S', 'C1', '-2').validation.severity, refused.code, refused.at) // → warning syntax 10
 ```
 
-A value the cell's rule of data validation does not take is written, with `validation`, the rule, its alert's style (`severity`) and message, for the host to show Excel's window and call `undo()` if the person cancels; Excel does not take the value of a rule of the style `stop`, which the host refuses itself. A formula that does not read, a change of part of an old-kind array and a formula in a table's header cell are refused (`{ ok: false, code, message, at? }`, the message in the book's locale); text typed into a header cell renames its column, as `setCells` does.
+A value the cell's rule of data validation does not take is written, with `validation`, the rule, its alert's style (`severity`) and message. A formula that does not read, a change of part of an old-kind array and a formula in a table's header cell are refused (`{ ok: false, code, message, at? }`, the message in the book's locale); text typed into a header cell renames its column, as `setCells` does.
 
-`setCellTexts(entries, opts?)` takes several texts typed at once: each `{ sheet, cell, text }` is read as `setCellText` reads it in its cell, in order, and all are written with one recomputation, one revision and one step of the undo. A cell given twice keeps the later text, read by the format the earlier one gave it. A column widens once, to the largest width a text typed alone into one of its cells would give it (`widths`, unless `widen: false`), and the cells whose values their rules do not take come back with their alerts (`validations`). A text `setCellText` refuses refuses the whole call, with its `sheet` and `cell`, and nothing is written. `previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
+Excel shows the rule's alert before it writes such a value: a `stop` alert never takes it (Retry or Cancel), a `warning` writes it on Yes, an `information` on OK. With `refuseInvalid: true` the call writes nothing and answers `{ ok: false, code: 'validation', sheet, cell, rule, severity, message }`, so the host shows the alert first. Where the person keeps the value, the host makes the same call again without the option, and the value is written with its alert. Without the option the value is written, and a host that refuses it afterwards calls `undo()`, which leaves a step to redo.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{ name: 'S', cells: {}, validations: [{ range: 'A1:A9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning', error: 'Positive only' }] }],
+})
+const asked = session.setCellText('S', 'A1', '-2', { refuseInvalid: true })
+console.log(asked.code, asked.cell, asked.severity, asked.message, session.revision, session.history) // → validation A1 warning Positive only 0 { undo: 0, redo: 0 }
+// the person answers Yes: the same call without the option writes the value
+const kept = session.setCellText('S', 'A1', '-2')
+console.log(kept.validation.severity, session.getBook().sheets[0].cells.A1, session.revision) // → warning { value: -2 } 1
+const many = session.setCellTexts([{ sheet: 'S', cell: 'A2', text: '5' }, { sheet: 'S', cell: 'A3', text: '1.5' }], { refuseInvalid: true })
+console.log(many.code, many.cell, session.revision) // → validation A3 1
+```
+
+`setCellTexts(entries, opts?)` takes several texts typed at once: each `{ sheet, cell, text }` is read as `setCellText` reads it in its cell, in order, and all are written with one recomputation, one revision and one step of the undo. A cell given twice keeps the later text, read by the format the earlier one gave it. A column widens once, to the largest width a text typed alone into one of its cells would give it (`widths`, unless `widen: false`), and the cells whose values their rules do not take come back with their alerts (`validations`). A text `setCellText` refuses refuses the whole call, with its `sheet` and `cell`, and nothing is written; with `refuseInvalid`, so does the first cell whose value its rule does not take once all the texts are written. `previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
 
 ```js
 import { createSession, registerLocale } from 'xlcalc'
@@ -674,7 +691,7 @@ console.log(session.previewCellTexts([{ sheet: 'S', cell: 'A2', text: '5%' }, { 
 
 A paste and Control+Return read text otherwise than typing, and have their own calls. `pasteText(sheet, cell, text, opts?)` pastes text from the clipboard as Excel pastes it: `parseClipboard(text)` makes it a rectangle, rows at line breaks and fields at tabs, every row as wide as the longest, and the rectangle fills the cells from `cell`, an empty field, a short row's missing ones and the row after a last line break clearing theirs. Each field is read as typed into its cell, but an apostrophe stays part of the text, a formula Excel does not take is pasted as text, a percent cell has no percent editor (`5` is 500%) and `€5` takes the euro format; no column widens and no rule is checked. The answer has the `range` filled; part of an array, a formula into a header cell and a rectangle past the sheet's edge are refused with the `sheet` and `cell`.
 
-`fillCellText(sheet, range, text, opts?)` enters a text into every cell of a range, as Control+Return: it reads the text once in the active cell, the range's top-left one or `active`, and every cell takes what the active cell holds after it, a formula moved as a copy from the active cell moves it (`copyFormula`) and the active cell's number format where it has one. The columns widen as typing widens them (`widths`, unless `widen: false`), and only the active cell's rule is checked (`validation`). Both are one step of the undo, and `previewPasteText` and `previewFillCellText` change nothing. The rules, as measured in Excel, are in [docs/entry.md](docs/entry.md#a-paste-and-controlreturn).
+`fillCellText(sheet, range, text, opts?)` enters a text into every cell of a range, as Control+Return: it reads the text once in the active cell, the range's top-left one or `active`, and every cell takes what the active cell holds after it, a formula moved as a copy from the active cell moves it (`copyFormula`) and the active cell's number format where it has one. The columns widen as typing widens them (`widths`, unless `widen: false`), and only the active cell's rule is checked (`validation`, or with `refuseInvalid` the refusal before anything is written). Both are one step of the undo, and `previewPasteText` and `previewFillCellText` change nothing. The rules, as measured in Excel, are in [docs/entry.md](docs/entry.md#a-paste-and-controlreturn).
 
 ```js
 import { createSession, parseClipboard, registerLocale } from 'xlcalc'
