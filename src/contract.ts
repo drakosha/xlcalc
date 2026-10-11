@@ -853,7 +853,8 @@ export type CellFields = { [K in keyof CellInput]?: CellInput[K] | null }
 /**
  * A cell edit (`Session.setCells`): the fields given set the cell's, null removes one, and the fields left out stay, as
  * Excel keeps a cell's look when a value is typed over it. The content is one: a new `value` removes the formula and its
- * `array`, a new `formula` the value. `input: null` clears the content and keeps the rest, as Excel's Delete key.
+ * `array`, a new `formula` the value. `input: null` clears the content and the hyperlink and keeps the rest, as Excel's
+ * Delete key.
  */
 export interface CellEdit extends CellRef {
   input: CellFields | null
@@ -947,7 +948,7 @@ export interface EditOptions {
   baseRevision?: number
 }
 
-/** What `Session.clearCells` clears: the content (Excel's ClearContents), the look (ClearFormats), or both and the rest (Clear). */
+/** What `Session.clearCells` clears: the content and hyperlinks (Excel's ClearContents), the look (ClearFormats), or both and the rest (Clear). */
 export type ClearKind = 'contents' | 'formats' | 'all'
 
 /** `Session.setCellText`'s options. */
@@ -1046,6 +1047,8 @@ export interface Viewport {
   merges: string[]
   /** Where the sheet's cells end, as `Session.extent`. */
   extent: SheetExtent
+  /** The session's revision the window is of (`Session.revision`): a host takes the changes of later edits over it (`EditResult.revision`). */
+  revision: number
 }
 
 /**
@@ -1373,9 +1376,9 @@ export interface Session {
   /** Cells replaced whole, as `setCells` applies edits otherwise: what an input leaves out the cell loses, null removes the cell. */
   replaceCells(edits: CellReplace[], opts?: EditOptions): EditResult
   /**
-   * The cells of rectangles cleared, as Excel's ClearContents (`contents`: values and formulas), ClearFormats (`formats`:
-   * styles and number formats, the conditional formats over them) and Clear (`all`: both, notes, hyperlinks, meta);
-   * whole rows and columns lose their own style and format too (`docs/edits.md`).
+   * The cells of rectangles cleared, as Excel's ClearContents (`contents`: values, formulas and hyperlinks), ClearFormats
+   * (`formats`: styles and number formats, the conditional formats over them) and Clear (`all`: both, notes, meta, the
+   * rules of data validation over them); whole rows and columns lose their own style and format too (`docs/edits.md`).
    */
   clearCells(ranges: RangeRef[], what: ClearKind, opts?: EditOptions): EditResult
   /**
