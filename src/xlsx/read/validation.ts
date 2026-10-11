@@ -12,7 +12,7 @@ import { areasOf, COMPARED, rangeText, twoBounds } from '../../validation/rules.
 import { formulaAt } from '../../validation/structure.js'
 import { sheetKey } from '../../syntax.js'
 import type { Issues } from '../issues.js'
-import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula } from './formulas.js'
 
@@ -54,7 +54,7 @@ function extended(xml: string): RawRule[] {
 /** The model's rule of a rule of the file, or why it cannot be one. */
 function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | string {
   const { a } = raw
-  const type = TYPES[a.type ?? 'none']
+  const type = ownEntry(TYPES, a.type ?? 'none')
   if (!type) return `a rule of an unknown type ${JSON.stringify(a.type)} is left out`
   const out: DataValidation = { range: raw.sqref, type }
   const where = { sheet, cell: raw.sqref }

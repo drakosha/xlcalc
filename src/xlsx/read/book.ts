@@ -15,7 +15,7 @@ import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
 import { readDxfs } from '../styles/dxf.js'
 import type { XlsxRead } from '../types.js'
-import { attr, attributes, element, elements, flag, has } from '../xml/scan.js'
+import { attr, attributes, element, elements, flag, has, ownEntry } from '../xml/scan.js'
 import { decodeXml, readText } from '../xml/text.js'
 import { openArchive, type Archive } from '../zip/read.js'
 import { legacyConverter } from '../../legacy/convert.js'
@@ -103,7 +103,10 @@ function workbookIssues(xml: string, rels: Rel[], issues: Issues) {
   if (has(xml, 'workbookProtection')) issues.add('protection', 'workbook protection is not in the model')
   if (has(xml, 'externalReferences')) issues.add('externalLink', 'links to other workbooks are not in the model')
   if (has(xml, 'pivotCaches') || has(xml, 'slicerCaches')) issues.add('pivotTable', 'pivot tables are not in the model: their cells are read as stored')
-  for (const r of rels) if (LINKED[r.kind]) issues.add(...LINKED[r.kind])
+  for (const r of rels) {
+    const linked = ownEntry(LINKED, r.kind)
+    if (linked) issues.add(...linked)
+  }
 }
 
 /** The file's bytes: a `Uint8Array` (a Node `Buffer` is one), another view of bytes, or an `ArrayBuffer`. */

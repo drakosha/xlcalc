@@ -71,5 +71,8 @@ export function attr(a: Record<string, string>, local: string): string | undefin
   return undefined
 }
 
+/** A file's word looked up in a table by the table's own keys: `toString` or `constructor` is no word of a table. */
+export const ownEntry = <T>(table: Readonly<Record<string, T>>, key: string): T | undefined => (Object.hasOwn(table, key) ? table[key] : undefined)
+
 /** An OOXML boolean attribute (`1`, `true`, `0`, `false`); `fallback` when absent. */
 export const flag = (v: string | undefined, fallback = false): boolean => (v === undefined ? fallback : v === '1' || v === 'true')

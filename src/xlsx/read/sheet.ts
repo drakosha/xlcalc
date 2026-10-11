@@ -16,7 +16,7 @@ import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
 import type { Issues } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
-import { attributes, element, elements, flag, has, type Element } from '../xml/scan.js'
+import { attributes, element, elements, flag, has, ownEntry, type Element } from '../xml/scan.js'
 import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
@@ -234,7 +234,10 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   const setup = element(tail, 'pageSetup')
   const sa = setup ? attributes(setup.attrs) : {}
   if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', 'print settings (headers and footers, page breaks, page setup) are not in the model', where)
-  for (const r of src.rels) if (LINKED[r.kind]) issues.add(...LINKED[r.kind], where)
+  for (const r of src.rels) {
+    const linked = ownEntry(LINKED, r.kind)
+    if (linked) issues.add(...linked, where)
+  }
 }
 
 export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {

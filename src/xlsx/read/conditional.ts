@@ -13,7 +13,7 @@ import { areaText, parseRange } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
-import { ATTRS, attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { ATTRS, attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula } from './formulas.js'
 
@@ -168,7 +168,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
     const is = element(body, 'iconSet')
     const ia = attributes(is?.attrs ?? '')
     const set = (ia.iconSet ?? '3TrafficLights1') as IconSetName
-    if (!(set in ICON_SETS) && set !== ('NoIcons' as string)) return lost(`the icon set ${set} is not in the model`)
+    if (ownEntry(ICON_SETS, set) === undefined && set !== ('NoIcons' as string)) return lost(`the icon set ${set} is not in the model`)
     const ib = is?.body ?? ''
     const vs = elements(ib, 'cfvo')
     const icons = elements(ib, 'cfIcon').map((c) => {
