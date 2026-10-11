@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.18.0 (2026-10-11)
+
+Internal release; not published to npm. What our applications still wrote themselves over 0.17, added: a window over a saved version without a session, typing into many cells at once, helpers for styles, lines and formula text without a session, and `xlcalc/text` for a browser without the engine. Repeated logic of the engine and the Excel harnesses is in shared helpers. Values, hashes and the files written are as in 0.17.0; nothing that worked is called otherwise.
+
+Added:
+
+- `viewportOf({ book, result }, sheet, range, opts?)`: the window `Session.getViewport` gives, over a book and its result saved earlier, without a session and without computing anything again: values, text and errors' causes from the result, styles, formats and the layout from the book. A result saved by 0.11 to 0.16 (`format`, `issues`, `nameIssues`) is read too. A result carries no conditional formats' appearance, so this window has none.
+- `getViewport` and `viewportOf` take `rows` and `columns`, the numbers of the lines to give within the range (rows a filter shows, columns apart): each row and column of a window has its number (`row`, `column`); and `editText`, the text each cell opens with for editing, as Excel's formula bar shows it (a formula with `=` in the book's locale, a value by its format, an apostrophe where it would read otherwise).
+- `Session.setCellTexts(entries)` and `previewCellTexts`: texts typed into many cells as `setCellText` reads each in its cell, in one step of undo and one recalculation, a column widened once to the widest; a formula Excel would not take in one cell changes nothing and names its cell; broken rules of data validation listed by cell. `Session.getCell(sheet, cell)`.
+- `numberFormatCode` beside `numberFormat` in a change and a cell's view: the code the format shows by in the book's locale (14 is `dd.mm.yyyy` in ru-RU).
+- `internStyle(styles, style)`: a style's number in a table of styles, added when it is not there, as `patchCells` finds one; fast along a chain of calls. `patchLines(map, span, patch)`: a map of columns or rows (`SheetInput.columns`, `rows`) with a span patched as `setLayout` patches it; also in `xlcalc/a1`.
+- `toInvariant(text, locale, { table })` and `ValidateContext.table`: a formula typed in a table's cell (`[@Qty]`) translated and checked without the book, as `toLocal` takes `table`. `escapeColumn`, a column's name as a structured reference writes it.
+- `xlcalc/text` (29 KB minified): `scanReferences`, `quoteSheetIfNeeded` and `escapeColumn` without the engine, for a browser that colours references as a formula is typed.
+
+Changed:
+
+- `scanReferences` reads on past a token that does not read: `=A1+)B2` gives `A1` and `B2` (it stopped at `)`); a reference inside an unclosed string is none.
+
+Fixed:
+
+- `readXlsx` looks a file's words up by its tables' own keys: a stored error `toString` was read as a function, and a rule of data validation of type `constructor`, an icon set or a relationship of such a name made the reader throw. They are words the model does not know, read as other unknown ones, with an issue.
+
+Internal: the duplicates a scan found are in shared helpers: numbers with the first error the answer, the 30/360 count, serial numbers, statistics; the scanners of formula text, a formula printed for a file, the error texts from one table, the words of table specifiers; the lists of the xlsx reader, writer and input checks, the cells of a rectangle; one frame for the Excel harnesses of the Mac and Windows. Repeated code by `jscpd` (8 lines, 70 tokens): `src` 2 to 0, `bench` 47 to 29. The dead argument kind `D` is gone. Bundle sizes in the README measured again one way: `createSession` 387 KB, the root 421 KB.
+
 ## 0.17.0 (2026-10-11)
 
 Internal release; not published to npm. The API made simpler before publication, in one go so that its users change once: a session for a grid (typing text into a cell, a window with its styles resolved, editing that keeps a cell's look, a style by its fields), one shape of the answer of every edit, xlsx with a snapshot, helpers without the engine, locales as modules, the new names with the old ones as deprecated synonyms. `docs/migration.md` lists every rename and every call that answers otherwise, a line each. Values and hashes are as in 0.16.3; `inputHash` too, whichever name a book gives the number format.
