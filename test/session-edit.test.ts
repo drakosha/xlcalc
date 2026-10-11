@@ -100,6 +100,8 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       expect((e as CalcError).code).toBe('stale_revision')
       expect(JSON.stringify(await s.book())).toBe(before)
       expect([s.revision, s.history]).toEqual([1, { undo: 1, redo: 0 }])
+      // a window says the revision it is of
+      expect((await s.getViewport('S', 'A1:A2')).revision).toBe(1)
       await expect(Promise.resolve(s.setCells([], { baseRevision: -1 }))).rejects.toThrow(InputError)
       expect((await s.undo({ baseRevision: 1 }))!.revision).toBe(2)
       expect((await s.redo())!.revision).toBe(3)
