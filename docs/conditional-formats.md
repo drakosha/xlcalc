@@ -3,9 +3,9 @@
 A sheet can hold Excel's conditional formatting rules: a fill for numbers over a limit, a bold row where a formula holds, a colour scale, data bars, icon sets. The book keeps the rules, a session tells a grid what each cell of a window shows by them, the xlsx subpath reads and writes them, and structure operations move them as Excel does.
 
 ```js
-import { openSession } from 'xlcalc'
+import { createSession } from 'xlcalc'
 
-const session = openSession({
+const session = createSession({
   sheets: [{
     name: 'Sales',
     cells: { A1: { value: 120 }, A2: { value: 80 }, A3: { value: 45 } },
@@ -15,8 +15,8 @@ const session = openSession({
     ],
   }],
 })
-const cells = session.cells('Sales', 'A1:A3')
-console.log(cells.A1.look, cells.A2.look, cells.A3.look)
+const cells = session.getCells('Sales', 'A1:A3')
+console.log(cells.A1.appearance, cells.A2.appearance, cells.A3.appearance)
 // → { style: { font: { color: '#9C0006' }, fill: { color: '#FFC7CE' } } } { style: { fill: { color: '#B39072' } } } { style: { fill: { color: '#F8696B' } } }
 ```
 
@@ -70,18 +70,18 @@ A number gets the colour of the points around it, each channel moving from the l
 
 ### Data bars and icon sets
 
-A data bar gives `look.bar`: where the bar starts and ends as fractions of the cell's width, its colour, fill and border, and for numbers on both sides of 0 the axis. An Excel 2010 bar (the default) starts at its axis, by default at the numbers' zero, and is from `minLength` to `maxLength` percent long, 0 and 100 by default; an Excel 2007 bar (`excel2007`) starts at the cell's left edge and is from 10 to 90 percent long. An icon set gives `look.icon`, the set and the icon's number in it in Excel's order (for `3Arrows` 0 is the red arrow down, 2 the green arrow up), the last one for the highest numbers, reversed by `reverse`; a threshold's own `icon` replaces it, `null` shows none. `showValue: false` gives `look.hideValue`.
+A data bar gives `appearance.bar`: where the bar starts and ends as fractions of the cell's width, its colour, fill and border, and for numbers on both sides of 0 the axis. An Excel 2010 bar (the default) starts at its axis, by default at the numbers' zero, and is from `minLength` to `maxLength` percent long, 0 and 100 by default; an Excel 2007 bar (`excel2007`) starts at the cell's left edge and is from 10 to 90 percent long. An icon set gives `appearance.icon`, the set and the icon's number in it in Excel's order (for `3Arrows` 0 is the red arrow down, 2 the green arrow up), the last one for the highest numbers, reversed by `reverse`; a threshold's own `icon` replaces it, `null` shows none. `showValue: false` gives `appearance.hideValue`.
 
 ## What a cell shows
 
-`Session.cells(sheet, range)` gives each cell its `look` by the current values:
+`Session.getCells(sheet, range)` gives each cell its `appearance` by the current values (`getViewport` gives the same):
 
 - `style`: the styles of the rules that hold, merged in priority order: a field an earlier rule sets wins (a red fill from the first rule and an italic from the second make a red italic cell); a colour scale's colour is a fill.
 - `bar`, `icon` and `hideValue`, from the first data bar and icon set.
 
-A rule with `stopIfTrue` that holds leaves out the rules after it for that cell. A number format of the look shows the cell's `text` by it, as Excel's `Range.Text` does. An empty cell with a look is listed with the value null, so a grid paints a highlighted empty row; in a rectangle of more than 65,536 cells only the cells the rectangle lists get looks. `compute` and `result()` give no looks.
+A rule with `stopIfTrue` that holds leaves out the rules after it for that cell. A number format of the appearance shows the cell's `text` by it, as Excel's `Range.Text` does. An empty cell with an appearance is listed with the value null, so a grid paints a highlighted empty row; in a rectangle of more than 65,536 cells only the cells the rectangle lists get one. `compute` and `getResult()` give none.
 
-A session's edits do not list cells whose look changed: an edit can recolour a whole colour scale. They give the rules' rectangles as `repaint` after a value or a rule changed, and a host reads its window again where it meets them, which costs what the window holds ([Editing a grid](edits.md#what-an-edit-answers)). The statistics of a rule's cells are kept until an edit changes a cell among them, and the code of a rule's formula is made once per cell along the axes it moves and kept with the session.
+A session's edits do not list cells whose appearance changed: an edit can recolour a whole colour scale. They give the rules' rectangles as `repaint` after a value or a rule changed, and a host reads its window again where it meets them, which costs what the window holds ([Editing a grid](edits.md#what-an-edit-answers)). The statistics of a rule's cells are kept until an edit changes a cell among them, and the code of a rule's formula is made once per cell along the axes it moves and kept with the session.
 
 On a sheet of 34,000 rows with a formula rule over 4 columns, a three-colour scale and a data bar, a window of 20,000 cells takes about 60 ms the first time and 25 ms after (15 ms without the rules), an edit of a cell under 1 ms with the rules or without them, and the window read again after an edit that changes the data bar's numbers 35 ms, on an Apple M5 Pro.
 

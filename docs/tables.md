@@ -130,7 +130,7 @@ A reference written by address into a table's data grows at its edges as the tab
 | the totals row | loses it |
 | the whole table | is deleted; references to it become `#REF!` |
 
-Excel refuses some, and `restructure` returns `{ ok: false, code: 'table' }`: rows inserted at a row inside two tables at once (side by side), rows that meet two tables deleted unless both go whole (one table gone with a single row of another is refused too), a header row deleted without the rest of its table.
+Excel refuses some, and `editStructure` returns `{ ok: false, code: 'table' }`: rows inserted at a row inside two tables at once (side by side), rows that meet two tables deleted unless both go whole (one table gone with a single row of another is refused too), a header row deleted without the rest of its table.
 
 ### Columns
 
@@ -147,12 +147,12 @@ In a ru-RU book a new column is named `Столбец1`.
 Typing over a header cell renames its column, and `Session.setCells` does this: every reference to the column follows, calculated columns too.
 
 ```js
-import { openSession } from 'xlcalc'
+import { createSession } from 'xlcalc'
 
 const book = { sheets: [{ name: 'S', cells: { A1: { value: 'Qty' }, A2: { value: 5 }, C1: { formula: 'SUM(T[Qty])' } }, tables: [{ name: 'T', range: 'A1:A2', columns: [{ name: 'Qty' }] }] }] }
-const s = openSession(book)
+const s = createSession(book)
 s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 'Quantity' } }])
-console.log(s.book().sheets[0].cells.C1.formula, s.book().sheets[0].tables[0].columns[0].name) // → SUM(T[Quantity]) Quantity
+console.log(s.getBook().sheets[0].cells.C1.formula, s.getBook().sheets[0].tables[0].columns[0].name) // → SUM(T[Quantity]) Quantity
 ```
 
 A number or a boolean typed into a header cell becomes its text (`2024`, `1,5` in ru-RU), as the cell's own number format shows it when it has one, whatever the column's width (`1,50` by `0.00`, `31.01.2025` by the short date in ru-RU); where that format shows it as General does, the text is the one `&` writes (`0,000000001`, not `1E-09`). A cleared header cell names the column `Column1`, the first free number. A name another column already has gives a number to the column further right: typing `Price` over `Qty` when the next column is `Price` leaves `Price` and `Price2`. A formula in a header cell is an `InputError`.
@@ -209,7 +209,7 @@ The xlsx round trip (`run.ts xlsx roundtrip`) sends the 29 distinct books of the
 
 ## Known differences
 
-- Excel's AutoCorrect extends a table when a value is typed right below it or right of it, and fills a calculated column when a formula is typed into an empty column of a table. `setCells` leaves the table and the other cells as they are; a host extends a table with `restructure` (`insertRows` inside it fills the calculated columns).
+- Excel's AutoCorrect extends a table when a value is typed right below it or right of it, and fills a calculated column when a formula is typed into an empty column of a table. `setCells` leaves the table and the other cells as they are; a host extends a table with `editStructure` (`insertRows` inside it fills the calculated columns).
 - A table renamed to a name Excel does not take (`AB12`, `1Ставка`, `?Продажи`) or to a defined name: Excel's object model makes the name one it takes (`AB12_`, `_1Ставка`, `_?Продажи`, `Rate_1`), as its name box refuses it; `renameTable` refuses with `table_name`.
 - In ru-RU Excel for Mac keeps a table renamed `ИСТИНА` or `ложь` and makes `TRUE_` of `TRUE`; Excel for Windows makes `ИСТИНА_` and keeps `TRUE`, as both do with a defined name. `renameTable` refuses all three: it follows Windows for `ИСТИНА`, and keeps formulas in en-US text, where `TRUE` is the boolean.
 - Text typed into a cell is read by Excel as a number, a date or a boolean where it can be (`2025-01-31` in ru-RU is a date, shown `31.01.2025`), and a header cell typed so names its column by what it shows; `setCells` takes a value as given, so the column is named `2025-01-31`.

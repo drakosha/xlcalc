@@ -57,7 +57,7 @@ A name's formula is written as a file stores it, without `=` (a leading one is d
 
 A name the book cannot have is left out: one Excel would not take, a second one of the same name and scope, a scope sheet the book lacks, a formula that does not parse or a reference without its sheet. A formula that uses its word finds no name and gives `#NAME?`. A name whose formula refers to a sheet, a table or a function the book lacks stays a name and gives its error where it is used ([Errors and cycles](#errors-and-cycles)).
 
-`ComputeResult.nameIssues` lists both, and `dropped` tells them apart. `validateNames(names, { sheets, tables, locale })` gives the same list without the book, by the same check, so a host can refuse a name before it stores it: whether a name is left out depends only on the names, the sheets' names and the locale.
+A result's `diagnostics` list both, of kind `name`, and `dropped` tells them apart. `validateNames(names, { sheets, tables, locale })` gives the same list without the book, by the same check, so a host can refuse a name before it stores it: whether a name is left out depends only on the names, the sheets' names and the locale.
 
 ## References without `$`
 

@@ -251,7 +251,7 @@ A book gives a cell without a style or a format of its own its row's, else its c
 Excel shows a cell the file stores (a `<c>` element) by the cell's own cell format alone, whatever its row and column have. So the writer writes each cell with the whole look it shows. A value in that column of dates is written with the column's cell format, the one Excel gives a value typed there, and a cell with a bold style of its own in a filled column of dates is written bold, a date and without the fill, as the book shows it.
 
 ```js
-// columns: { B: { format: 'dddd, mmmm d, yyyy', style: 1 } }, cells: { B2: { value: 46096 } }
+// columns: { B: { numberFormat: 'dddd, mmmm d, yyyy', style: 1 } }, cells: { B2: { value: 46096 } }
 // <col min="2" max="2" … style="1"/> and <c r="B2" s="1"><v>46096</v></c>
 ```
 
@@ -265,7 +265,7 @@ Excel never leaves such a crossing empty itself: formatting a column across a fo
 
 ```js
 // <row r="6" s="1" customFormat="1"> (bold), <col min="7" max="7" style="3"/> (0.00%), no <c r="G6">
-rows: { 6: { style: 0, format: 'General' } }
+rows: { 6: { style: 0, numberFormat: 'General' } }
 ```
 
 ### Lines Excel formats

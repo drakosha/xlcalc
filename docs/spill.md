@@ -64,7 +64,7 @@ Spilled cells are not cells of the book, so copying them without their formula p
 
 In `ComputeResult`, spilled cells appear in `sheets[].cells` with `spillOf`, the address of their formula. The formula's cell has `spill`, its range. Spilled values are part of the values hash. A book without spills hashes as it did before spilling existed.
 
-An error inside a spilled array is listed in `issues`, for example "division by zero, in the array spilled from 'S'!B1". Session changes carry the same fields and include a formula whose range changed even when its own value did not. `setLayout` recomputes the arrays whose range meets a merged area that was added or removed. `explain` of a spilled cell leads to its formula.
+An error inside a spilled array is listed in the result's `diagnostics`, for example "division by zero, in the array spilled from 'S'!B1". Session changes carry the same fields and include a formula whose range changed even when its own value did not. `setLayout` recomputes the arrays whose range meets a merged area that was added or removed. `explain` of a spilled cell leads to its formula.
 
 ## Large arrays
 
