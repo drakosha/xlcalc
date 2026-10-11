@@ -315,7 +315,7 @@ export function toDate(v: V, rules: Rules): number | CErr {
  * A time or date-time argument: a serial number with a day fraction, from a number or text, in the book's date
  * system (outside its first day … 9999-12-31 #NUM!), given to the function in the 1900 system its calendar counts in.
  */
-export function toTime(v: V, rules: Rules): number | CErr {
+function toTime(v: V, rules: Rules): number | CErr {
   const n = timeOfDay(v, rules)
   return isErr(n) ? n : n + rules.epoch
 }

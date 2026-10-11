@@ -14,7 +14,7 @@ const FPMIN = 1e-300
 const MAX_ITER = 5_000_000
 
 /** ln Γ(x) − ((x − ½) ln x − x + ln √(2π)), the Stirling remainder. */
-export function stirlerr(x: number): number {
+function stirlerr(x: number): number {
   if (x < 10) return Math.log(gammafn(x)) - (x - 0.5) * Math.log(x) + x - LN_SQRT_2PI
   const v = 1 / (x * x)
   return (1 / 12 - v * (1 / 360 - v * (1 / 1260 - v * (1 / 1680 - v * (1 / 1188 - v * (691 / 360360 - v / 156)))))) / x
@@ -24,7 +24,7 @@ export function stirlerr(x: number): number {
 export const lgamma = (x: number): number => (x < 10 ? Math.log(gammafn(x)) : (x - 0.5) * Math.log(x) - x + LN_SQRT_2PI + stirlerr(x))
 
 /** x ln(x/m) + m − x without cancellation when x is near m (Loader). */
-export function bd0(x: number, m: number): number {
+function bd0(x: number, m: number): number {
   if (Math.abs(x - m) < 0.1 * (x + m)) {
     let v = (x - m) / (x + m)
     let s = (x - m) * v

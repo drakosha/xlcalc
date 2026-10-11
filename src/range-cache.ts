@@ -26,7 +26,7 @@ export const POSITION_BYTES = 16
 export const KEY_BYTES = 80
 
 /** Bytes the range caches of the books in one heap may hold together where the host gives no heap: a quarter of 2 GiB. */
-export const DEFAULT_CACHE_BYTES = 512 * 2 ** 20
+const DEFAULT_CACHE_BYTES = 512 * 2 ** 20
 
 export class CacheBudget {
   /** Bytes the caches hold; caches gone with their books count until the next trim. */
