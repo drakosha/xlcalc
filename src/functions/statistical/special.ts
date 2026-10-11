@@ -4,7 +4,7 @@
  * and beta by series and Lentz continued fractions (Numerical Recipes) with prefactors that keep their
  * precision for large parameters, and a bracketed Newton solver for the inverses.
  */
-import { erfc, gammafn } from '../jstat.js'
+import { deviate, erfc, gammafn } from '../jstat.js'
 
 const LN_SQRT_2PI = 0.9189385332046728
 const SQRT_2PI = 2.5066282746310002
@@ -191,8 +191,7 @@ export function normCdf(z: number): [number, number] {
 export function normInv(p: number, q = 1 - p): number {
   const pp = 2 * Math.min(p, q)
   if (pp <= 0) return NaN
-  const t = Math.sqrt(-2 * Math.log(pp / 2))
-  let x = -0.70711 * ((2.30753 + t * 0.27061) / (1 + t * (0.99229 + t * 0.04481)) - t)
+  let x = 0.70711 * deviate(pp / 2)
   for (let j = 0; j < 50; j++) {
     const err = erfc(x) - pp
     const step = err / (1.1283791670955126 * Math.exp(-x * x) - x * err)
