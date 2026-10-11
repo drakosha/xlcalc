@@ -1096,6 +1096,13 @@ export type ClearKind = 'contents' | 'formats' | 'all'
 export interface CellTextOptions extends EditOptions {
   /** False: the width a typed number widens its column to is given (`width`), not set; true by default, as Excel widens it. */
   widen?: boolean
+  /**
+   * True: a value a cell's rule of data validation does not take, of any style, is refused (`CellValidationRefusal`)
+   * and nothing changes, so that a host shows Excel's alert before the value is written and calls again without the
+   * option where the person keeps it (a warning's Yes, an information's OK). False by default: the value is written,
+   * with its alert.
+   */
+  refuseInvalid?: boolean
 }
 
 /** Why `Session.setCellText` did not take the text: a formula Excel does not take (`CheckCode`), part of an array formula, a formula in a table's header cell. */
@@ -1109,14 +1116,21 @@ export interface ValidationAlert {
   message: string
 }
 
+/** A value a cell's rule of data validation does not take, refused (`Session.validateEntry`): the rule, its alert's style and message. */
+export type ValidationRefusal = Refusal<'validation'> & { rule: DataValidation; severity: ValidationAlert['severity'] }
+
+/** Typed text refused for the value a cell's rule of data validation does not take (`CellTextOptions.refuseInvalid`): the cell, the rule, its alert's style and message. */
+export type CellValidationRefusal = ValidationRefusal & CellRef
+
 /**
  * Text typed into a cell (`Session.setCellText`): the edit's result, with the width the column took (`width`) and the
- * rule of data validation the value breaks (`validation`); or why the text was not taken, with its position in the text.
+ * rule of data validation the value breaks (`validation`); or why the text was not taken, with its position in the text,
+ * or, with `refuseInvalid`, the rule the value breaks.
  */
-export type CellTextResult = (EditResult & { ok: true; width?: number; validation?: ValidationAlert }) | Refusal<CellTextRefusal>
+export type CellTextResult = (EditResult & { ok: true; width?: number; validation?: ValidationAlert }) | Refusal<CellTextRefusal> | CellValidationRefusal
 
 /** What `Session.setCellText` would do (`Session.previewCellText`): the cell's input, its value, the width and the alert, with nothing changed. */
-export type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; width?: number; validation?: ValidationAlert } | Refusal<CellTextRefusal>
+export type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; width?: number; validation?: ValidationAlert } | Refusal<CellTextRefusal> | CellValidationRefusal
 
 /** Text typed into a cell, one of several typed at once (`Session.setCellTexts`). */
 export interface CellTextEntry extends CellRef {
@@ -1133,8 +1147,11 @@ export interface ColumnWidth {
 /** A cell whose value its rule of data validation does not take (`Session.setCellTexts`), with the rule's alert. */
 export type CellValidationAlert = CellRef & ValidationAlert
 
-/** Why `Session.setCellTexts` took none of the texts: the first one refused, as `setCellText` refuses it, with its cell. */
-export type CellTextsRefusal = Refusal<CellTextRefusal> & CellRef
+/**
+ * Why `Session.setCellTexts` took none of the texts: the first one refused, as `setCellText` refuses it, with its cell;
+ * with `refuseInvalid`, the first cell whose value its rule of data validation does not take once all are written.
+ */
+export type CellTextsRefusal = (Refusal<CellTextRefusal> & CellRef) | CellValidationRefusal
 
 /**
  * Texts typed into cells at once (`Session.setCellTexts`): the edit's result, with the widths the columns took
@@ -1582,7 +1599,7 @@ export interface CellValidation {
  * Whether a value meets a cell's rule (`Session.validateEntry`); when it does not, the rule, whose alert Excel shows,
  * its style (`errorStyle`, stop by default) and its message: the rule's `error`, else the library's English text.
  */
-export type EntryCheck = { ok: true } | (Refusal<'validation'> & { rule: DataValidation; severity: 'stop' | 'warning' | 'information' })
+export type EntryCheck = { ok: true } | ValidationRefusal
 
 /** Fields of a style to change (`CellPatch.set.style`): a value sets a field, null removes it, a field left out stays. */
 export interface StylePatch {
@@ -1672,8 +1689,8 @@ export interface Session {
    * (`parseEntry`): the cell keeps its style, meta, note and link, and a format it shows from its row or column is not
    * written into it. A number that does not fit a column of the default width widens it in the same step (`width`), as
    * Excel does, unless `widen` is false; a value the cell's rule of data validation does not take is written, with the
-   * rule (`validation`). A formula Excel does not take, or a change of part of an array, is refused, with a message in
-   * the book's locale.
+   * rule (`validation`), or with `refuseInvalid` refused, with the rule, and nothing written. A formula Excel does not
+   * take, or a change of part of an array, is refused, with a message in the book's locale.
    */
   setCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): CellTextResult
   /** What `setCellText` would do, with nothing changed. */
@@ -1684,7 +1701,8 @@ export interface Session {
    * text, read by what the earlier one wrote. A column widens once, to the largest width a text typed alone into one of
    * its cells gives it (`widths`), unless `widen` is false; the values the cells' rules of data validation do not take
    * after all the texts are written, with the cells (`validations`). A text `setCellText` refuses refuses the whole
-   * call, with its cell, and nothing is written.
+   * call, with its cell, and nothing is written; with `refuseInvalid`, so does the first cell whose value its rule does
+   * not take after all the texts are written.
    */
   setCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): CellTextsResult
   /** What `setCellTexts` would do, with nothing changed. */
@@ -1707,9 +1725,9 @@ export interface Session {
    * gives every cell what the active cell holds after it, a formula with its relative references moved as a copy from
    * the active cell (`copyFormula`), and the active cell's number format, where it has one. The columns widen as typing
    * widens them (`widths`), unless `widen` is false; a value the active cell's rule of data validation does not take is
-   * written, with that rule's alert (`validation`), the only rule checked. One recomputation, one revision and one step
-   * of the undo. A formula Excel does not take, part of an array formula and a formula into a table's header cell are
-   * refused, with the cell, and nothing is written.
+   * written, with that rule's alert (`validation`), the only rule checked, or with `refuseInvalid` refused, with the
+   * active cell. One recomputation, one revision and one step of the undo. A formula Excel does not take, part of an
+   * array formula and a formula into a table's header cell are refused, with the cell, and nothing is written.
    */
   fillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextResult
   /** What `fillCellText` would do, with nothing changed. */

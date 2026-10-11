@@ -7,6 +7,13 @@
  */
 import { InputError, what } from './input-error.js'
 
+/** The calls that type text into cells. */
+const TYPING = 'setCellText, setCellTexts, fillCellText and their previews'
+
+/** The options of the calls that type text beside `baseRevision` (`CellTextOptions`), and of an entry into a selection (`FillTextOptions`). */
+export const TEXT_OPTIONS = ['widen', 'refuseInvalid'] as const
+export const FILL_OPTIONS = ['widen', 'refuseInvalid', 'active'] as const
+
 /** The API's options by name and the calls that take them, for a refusal to say where a stray option goes. */
 const TAKEN_BY: Record<string, string> = {
   formulaLocal: 'getViewport',
@@ -20,7 +27,8 @@ const TAKEN_BY: Record<string, string> = {
   maxNodes: 'explain',
   expand: 'explain',
   errorDepth: 'explain',
-  widen: 'setCellText, setCellTexts, fillCellText and their previews',
+  widen: TYPING,
+  refuseInvalid: TYPING,
   active: 'fillCellText and previewFillCellText',
   baseRevision: "a session's calls that change its book",
   table: 'toLocal and toInvariant',

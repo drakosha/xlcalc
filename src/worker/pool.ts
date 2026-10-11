@@ -12,7 +12,7 @@ import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
 import { splitCall, checkCall, checkEditCall } from '../async/options.js'
 import { checkedMapCell } from '../structure/index.js'
 import type { SentGeometry } from '../structure/geometry.js'
-import { strictMethods } from '../strict-args.js'
+import { FILL_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
 import { pack, unpackSlowly } from './pack.js'
 import { CHANGING, fromData, sentLocale, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
@@ -398,14 +398,14 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       replaceCells: (edits, co) => value(edit('replaceCells', [edits], co)),
       clearCells: (ranges, what, co) => value(edit('clearCells', [ranges, what], co)),
       patchCells: (patches, co) => value(edit('patchCells', [patches], co)),
-      setCellText: (sheet, cell, text, co) => value(edit('setCellText', [sheet, cell, text], co, ['widen'])),
-      previewCellText: (sheet, cell, text, co) => value(edit('previewCellText', [sheet, cell, text], co, ['widen'])),
-      setCellTexts: (entries, co) => value(edit('setCellTexts', [entries], co, ['widen'])),
-      previewCellTexts: (entries, co) => value(edit('previewCellTexts', [entries], co, ['widen'])),
+      setCellText: (sheet, cell, text, co) => value(edit('setCellText', [sheet, cell, text], co, TEXT_OPTIONS)),
+      previewCellText: (sheet, cell, text, co) => value(edit('previewCellText', [sheet, cell, text], co, TEXT_OPTIONS)),
+      setCellTexts: (entries, co) => value(edit('setCellTexts', [entries], co, TEXT_OPTIONS)),
+      previewCellTexts: (entries, co) => value(edit('previewCellTexts', [entries], co, TEXT_OPTIONS)),
       pasteText: (sheet, cell, text, co) => value(edit('pasteText', [sheet, cell, text], co)),
       previewPasteText: (sheet, cell, text, co) => value(edit('previewPasteText', [sheet, cell, text], co)),
-      fillCellText: (sheet, range, text, co) => value(edit('fillCellText', [sheet, range, text], co, ['widen', 'active'])),
-      previewFillCellText: (sheet, range, text, co) => value(edit('previewFillCellText', [sheet, range, text], co, ['widen', 'active'])),
+      fillCellText: (sheet, range, text, co) => value(edit('fillCellText', [sheet, range, text], co, FILL_OPTIONS)),
+      previewFillCellText: (sheet, range, text, co) => value(edit('previewFillCellText', [sheet, range, text], co, FILL_OPTIONS)),
       setNames: (names, co) => value(edit('setNames', [names], co)),
       setClock: (next, co) => value(edit('setClock', [next], co)),
       editStructure: (op, co) => mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>,

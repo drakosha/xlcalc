@@ -50,6 +50,18 @@ console.log(session.getBook().sheets[0].cells.A1) // → { meta: { id: 7 }, valu
 session.close()
 ```
 
+A value the cell's rule of data validation does not take is written, with its alert (`validation`). Excel asks first: its alert holds the entry, a `stop` rule never takes the value (Retry or Cancel), a `warning` takes it on Yes and an `information` on OK. With `{ refuseInvalid: true }`, `setCellText`, `setCellTexts`, `fillCellText` and their previews refuse such a value before anything is written: the answer is `{ ok: false, code: 'validation', sheet, cell, rule, severity, message }`, the book, the revision and the history stay, and the host shows the alert. Where the person keeps the value, the host makes the same call without the option, which writes it.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: {}, validations: [{ range: 'A1:A9', type: 'whole', operator: 'greaterThan', formula1: '0' }] }] })
+const r = session.setCellText('S', 'A1', '-2', { refuseInvalid: true })
+console.log(r.code, r.cell, r.severity, session.revision) // → validation A1 stop 0
+```
+
+Several texts are checked with all of them written, and the first cell whose value its rule does not take refuses them all; an entry into a selection checks its active cell alone. A rule that shows no alert (`showError: false`) refuses nothing, and a paste checks no rule.
+
 Without a session, a host reads the cell (its own copy, or `cells`), calls `parseEntry` with the format the cell shows and sends the input with `setCells`, which keeps the fields the input leaves out.
 
 A number typed into a column too narrow for it widens the column in Excel when nobody set its width by hand. `setCellText` sets it; without it, `entryWidth(value, { format, locale, width, bestFit })` gives that width for the value the entry computes (the cell's change from `setCells`) and the column as it was, and the host sets it with `setLayout([{ sheet, columns: 'B', set: { width, bestFit: true } }])`. Only typing widens a column, the object model does not; the rules are in [Fitting columns](formats.md#fitting-columns).
@@ -140,7 +152,7 @@ The answer has the range filled (`B1:D4`); `previewPasteText` gives each of its 
 - The text is read once, as typed into the active cell, by the active cell's format: with a percent cell active `5` is 5% (0.05) in every cell, in General too.
 - Every cell takes what the active cell holds after it: the value, or the formula with its relative references moved as a copy from the active cell moves them (`=A1*2` entered into B1:B3 is `=A2*2` in B2 and `=A3*2` in B3, as `copyFormula` writes it), and the active cell's number format where it has one. With the active cell in General a cell keeps its own: `5` with a cell in General active is 5 in a percent cell, shown 500%.
 - The columns widen as typing widens them (`widths`, unless `widen: false`).
-- Only the active cell's rule of data validation is checked, once: its value is written and its alert comes back (`validation`), for the host to take the call back as Excel takes a stop alert's value back from every cell; a rule over another cell of the range gives no alert.
+- Only the active cell's rule of data validation is checked, once: its value is written and its alert comes back (`validation`), for the host to take the call back as Excel takes a stop alert's value back from every cell, or with `refuseInvalid` the call is refused with the active cell and nothing is written; a rule over another cell of the range gives no alert.
 - A formula Excel does not take is refused with the active cell, as Excel's window refuses it; part of an array and a formula into a header cell are refused with their cell. A range holds 1,048,576 cells at most.
 
 Both are one recomputation, one revision and one step of the undo.
@@ -201,6 +213,8 @@ The text a cell opens with was measured by the same step on the sets `edit-held`
 The object model takes some text otherwise than typing, and the keyboard sets settle these: through `Formula2Local` a text begun by `+` or `-` that is no number is text (`-C1`, `+1+2`), a number goes into a percent cell as it is (`5` is 500%), and empty text makes a cell formatted as text hold empty text. Excel for Windows has `AutoPercentEntry` on, as the answers' `meta` records, but takes `Formula2Local` as the Mac does.
 
 Text pasted from the clipboard and a text entered into a selection with Control+Return were measured by the step `ui` (`bench/coverage/ui.ts`; the sets `paste-held`, 25 pastes on both Excels, and `fill-held`, 18 entries on the Mac's keyboard), and the text a cell of an array opens with by the set `arrays-held` (the formula bar selected and once F2 began the editing, on the Mac; `Formula2Local` on both, which is the text F2 opens). The predictions, `setCellTexts` of the texts and `editText`, were committed before Excel ran each set, and the misses became the rules of [A paste and Control+Return](#a-paste-and-controlreturn) and of the cells of an old-kind array's area; Excel for Mac and Excel for Windows pasted alike in every case. `test/ui-excel.test.ts` compares `pasteText`, `fillCellText` (from the selection's first cell, a call with a stop alert taken back) and `editText` with every case: the engine gives Excel's answer to the 100 pastes (25 in each locale on each Excel), to 33 of the 36 entries into a selection and to the 16 cases of `arrays-held`; the other three are known differences below.
+
+Refusing a value a rule does not take (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not measure: the alert is a window, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a refused call leaves the book, the revision and the history as they were, and that a value the rules take is written as without the option.
 
 ## Known differences
 

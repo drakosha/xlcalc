@@ -4,9 +4,10 @@
  * text Excel would not take stops them all. Text pasted from the clipboard (`Session.pasteText`): its rectangle's fields,
  * each read as pasted into its cell. A text entered into a selection (`Session.fillCellText`): read once in the active
  * cell, which every cell copies. With the texts written: the width each column takes, the largest a text typed alone
- * into one of its cells gives it, and the cells whose values their rules of data validation do not take.
+ * into one of its cells gives it, and the cells whose values their rules of data validation do not take, the first of
+ * which refuses the texts where the call asks it to (`refuseInvalid`).
  */
-import type { CellRef, CellReplace, CellTextRefusal, CellValidationAlert, ColumnWidth, PasteTextRefusal, PreviewCell, Refusal } from '../contract.js'
+import type { CellRef, CellReplace, CellTextRefusal, CellValidationAlert, CellValidationRefusal, ColumnWidth, PasteTextRefusal, PreviewCell, Refusal } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { clipboardRows } from '../entry/clipboard.js'
 import { spend } from '../exec/budget.js'
@@ -159,6 +160,9 @@ export const textAlerts = (s: EngineState, cells: Typed[]): CellValidationAlert[
     const alert = validationAlert(s, i, r, c)
     return alert ? [{ sheet: edit.sheet, cell: edit.cell, ...alert }] : []
   })
+
+/** A cell's alert as the refusal of its value (`CellTextOptions.refuseInvalid`): the cell, the rule, its style and message. */
+export const alertRefusal = ({ valid: _, ...alert }: CellValidationAlert): CellValidationRefusal => ({ ok: false, code: 'validation', ...alert })
 
 /** An answer's widths and alerts, those there are. */
 export const textsFound = (widths: ColumnWidth[], alerts: CellValidationAlert[]) => ({ ...(widths.length ? { widths } : {}), ...(alerts.length ? { validations: alerts } : {}) })
