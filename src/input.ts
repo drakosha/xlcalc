@@ -17,6 +17,7 @@ import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
+import { bookWithoutEquals, editsWithoutEquals, layoutWithoutEquals, leadingEquals, namesWithoutEquals } from './equals.js'
 
 /** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
 export class InputError extends TypeError {
@@ -29,7 +30,7 @@ export class InputError extends TypeError {
   }
 }
 
-function what(v: unknown): string {
+export function what(v: unknown): string {
   if (v === undefined || v === null) return String(v)
   if (Array.isArray(v)) return 'an array'
   if (typeof v === 'object') return 'an object'
@@ -106,31 +107,39 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
   if (c.format !== undefined && typeof c.format !== 'string') checkFormat(c.format, `${path}.format`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
   if (c.array !== undefined) checkString(c.array, `${path}.array`)
-  if (c.note !== undefined) {
-    const n = object(c.note, `${path}.note`, 'a note such as { author: "Ann", text: "Checked" }')
-    onlyKeys(n, `${path}.note`, ['author', 'text'])
-    checkString(n.text, `${path}.note.text`)
-    if (n.author !== undefined) checkString(n.author, `${path}.note.author`)
-  }
-  if (c.link !== undefined) {
-    const l = object(c.link, `${path}.link`, 'a hyperlink such as { url: "https://example.com/" } or { location: "Sheet2!B12" }')
-    onlyKeys(l, `${path}.link`, ['url', 'location', 'tooltip'])
-    for (const k of ['url', 'location', 'tooltip']) if (l[k] !== undefined) checkString(l[k], `${path}.link.${k}`)
-    if (!l.url && !l.location) throw new InputError(`${path}.link`, 'a hyperlink has a url, a location or both')
-  }
+  if (c.note !== undefined) checkNote(c.note, `${path}.note`)
+  if (c.link !== undefined) checkLink(c.link, `${path}.link`)
   return c as CellInput
 }
 
+/** A cell's note: its text and author. */
+function checkNote(v: unknown, path: string) {
+  const n = object(v, path, 'a note such as { author: "Ann", text: "Checked" }')
+  onlyKeys(n, path, ['author', 'text'])
+  checkString(n.text, `${path}.text`)
+  if (n.author !== undefined) checkString(n.author, `${path}.author`)
+}
+
+/** A cell's hyperlink: a url, a location or both, and a tooltip. */
+function checkLink(v: unknown, path: string) {
+  const l = object(v, path, 'a hyperlink such as { url: "https://example.com/" } or { location: "Sheet2!B12" }')
+  onlyKeys(l, path, ['url', 'location', 'tooltip'])
+  for (const k of ['url', 'location', 'tooltip']) if (l[k] !== undefined) checkString(l[k], `${path}.${k}`)
+  if (!l.url && !l.location) throw new InputError(path, 'a hyperlink has a url, a location or both')
+}
+
+/** Names, their formulas without a leading `=`. */
 export function checkNames(v: unknown, path: string): NameInput[] {
-  return array(v, path, 'an array of names').map((n, i) => {
+  const names = array(v, path, 'an array of names')
+  names.forEach((n, i) => {
     const p = `${path}[${i}]`
     const o = object(n, p, "a name such as { name: 'rate', ref: \"'Data'!$B$1\" }")
     onlyKeys(o, p, ['name', 'ref', 'scope'])
     checkString(o.name, `${p}.name`)
     checkString(o.ref, `${p}.ref`)
     if (o.scope !== undefined) checkString(o.scope, `${p}.scope`)
-    return o as unknown as NameInput
   })
+  return namesWithoutEquals(names as NameInput[])
 }
 
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
@@ -145,7 +154,9 @@ function plainCell(c: unknown, styles: number): boolean {
     const v = c[k]
     if (k === 'meta') continue
     if (k === 'value' && (v === null || v === undefined || typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean')) continue
-    if ((k === 'formula' || k === 'format') && (v === undefined || typeof v === 'string')) continue
+    // a formula with a leading `=` takes the full check, which marks it
+    if (k === 'formula' && (v === undefined || (typeof v === 'string' && !leadingEquals(v)))) continue
+    if (k === 'format' && (v === undefined || typeof v === 'string')) continue
     if (k === 'style' && Number.isInteger(v) && (v as number) >= 0 && (v as number) < styles) continue
     return false
   }
@@ -287,7 +298,8 @@ function checkFrozen(v: unknown, path: string) {
 
 /**
  * The book: sheets with unique names by Excel's rules (compared case-insensitively), one of them visible at least, cells
- * by A1 address, columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles.
+ * by A1 address, columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles. It is
+ * returned as the engine takes it: its formulas without a leading `=` (a copy of what had one, `equals.ts`).
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
@@ -302,6 +314,8 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   }
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
+  // the cells of each sheet whose formula has a leading `=`
+  const equals: string[][] = []
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
@@ -320,7 +334,9 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
       if (SURE_ADDRESS.test(addr) && plainCell(cell, styles)) continue
       const cp = `${p}.cells[${JSON.stringify(addr)}]`
       checkAddress(addr, cp)
-      if (checkCell(cell, cp, styles).array !== undefined) arrays.push(addr)
+      const c = checkCell(cell, cp, styles)
+      if (c.array !== undefined) arrays.push(addr)
+      if (leadingEquals(c.formula)) (equals[i] ??= []).push(addr)
     }
     if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
     if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
@@ -338,7 +354,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   if (sheets.length && sheets.every((s) => s.hidden !== undefined && s.hidden !== false)) throw new InputError(`${path}.sheets`, 'a book keeps one visible sheet at least: every sheet is hidden')
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   checkTables(book as unknown as BookInput, path)
-  return book as unknown as BookInput
+  return bookWithoutEquals(book as unknown as BookInput, equals)
 }
 
 export function checkClock(v: unknown, path: string): Clock {
@@ -375,7 +391,7 @@ export function checkLimits(v: unknown, path: string): CalcLimits {
 }
 
 /** A tag of the package's locales. */
-function checkLocale(v: unknown, path: string) {
+export function checkLocale(v: unknown, path: string) {
   if (!LOCALE_FILES.has(checkString(v, path))) throw new InputError(path, `unknown locale ${JSON.stringify(v)} (expected ${[...LOCALE_FILES.keys()].join(', ')})`)
 }
 
@@ -412,8 +428,9 @@ export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
 }
 
 /** Edits: each names a sheet of the book (`sheetIndex` resolves it) and a valid address; the book has `styles` styles. */
+/** Edits of cells, their formulas without a leading `=`. */
 export function checkEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): CellEdit[] {
-  return array(v, path, 'an array of edits such as [{ sheet: "Sheet1", cell: "A1", input: { value: 1 } }]').map((e, i) => {
+  const edits = array(v, path, 'an array of edits such as [{ sheet: "Sheet1", cell: "A1", input: { value: 1 } }]').map((e, i) => {
     const p = `${path}[${i}]`
     const o = object(e, p, 'an edit such as { sheet: "Sheet1", cell: "A1", input: { value: 1 } }')
     onlyKeys(o, p, ['sheet', 'cell', 'input'])
@@ -423,11 +440,15 @@ export function checkEdits(v: unknown, sheetIndex: (name: string) => number | un
     if (o.input !== null) checkCell(o.input, `${p}.input`, styles)
     return o as unknown as CellEdit
   })
+  return editsWithoutEquals(edits)
 }
 
-/** Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, frozen panes, rules of data validation or outline settings. */
+/**
+ * Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, frozen
+ * panes, rules of data validation or outline settings; the formulas of rules without a leading `=`.
+ */
 export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): LayoutEdit[] {
-  return array(v, path, 'an array of layout edits such as [{ sheet: "Sheet1", columns: "C", set: { width: 20 } }]').map((e, i) => {
+  const edits = array(v, path, 'an array of layout edits such as [{ sheet: "Sheet1", columns: "C", set: { width: 20 } }]').map((e, i) => {
     const p = `${path}[${i}]`
     const o = object(e, p, 'a layout edit such as { sheet: "Sheet1", columns: "C", set: { width: 20 } }')
     checkSheet(o.sheet, sheetIndex, `${p}.sheet`)
@@ -471,6 +492,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit
   })
+  return layoutWithoutEquals(edits)
 }
 
 /** A sheet name known to the book; returns its index. */
@@ -543,7 +565,7 @@ export function checkEntryWidthOptions(v: unknown, path = 'opts'): EntryWidthOpt
   return { ...checkDisplayOptions(rest, path), ...(bestFit !== undefined ? { bestFit: bestFit as boolean } : {}) }
 }
 
-/** `parseEntry`'s options; of the cell only its format, style and meta are read (it may be a `CellView`). */
+/** `parseEntry`'s options; of the cell only its format, style, meta, note and link are read (it may be a `CellView`). */
 export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { format: '0.00' } }")
@@ -555,6 +577,8 @@ export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
     const c = object(o.cell, `${path}.cell`, 'a cell such as { format: "0.00", style: 1 }')
     if (c.format !== undefined) checkFormat(c.format, `${path}.cell.format`)
     if (c.style !== undefined && !(Number.isInteger(c.style) && (c.style as number) >= 0)) throw new InputError(`${path}.cell.style`, `expected the index of a style, got ${what(c.style)}`)
+    if (c.note !== undefined) checkNote(c.note, `${path}.cell.note`)
+    if (c.link !== undefined) checkLink(c.link, `${path}.cell.link`)
   }
   return o as EntryOptions
 }

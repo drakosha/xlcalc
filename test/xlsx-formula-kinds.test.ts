@@ -4,7 +4,8 @@
  * over its area without the dynamic array metadata), and the reader reads them back into the same book.
  */
 import { describe, expect, it } from 'vitest'
-import type { BookInput, ComputeResult } from '../src/contract.js'
+import { storedOf, storedValues } from './xlsx-fixtures.js'
+import type { BookInput } from '../src/contract.js'
 import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
@@ -54,9 +55,8 @@ describe('xlsx: names of any formula, @, references across sheets, old-kind arra
     const r = await readXlsx((await writeXlsx(book, { result })).data)
     expect(r.book).toEqual(book)
     expect(r.issues).toEqual([])
-    const values = (s: ComputeResult['sheets'][number]) => Object.fromEntries(Object.entries(s.cells).flatMap(([a, c]) => (c.formula !== undefined || c.spillOf !== undefined ? [[a, c.value]] : [])))
-    expect(r.cached).toEqual(result.sheets.map((s) => ({ name: s.name, cells: values(s) })))
+    expect(r.cached).toEqual(storedOf(result))
     // `left` used in F1 is E1, the cell to its left
-    expect(r.cached[1].cells).toMatchObject({ B2: 40, F1: 6 + 12 + 66 })
+    expect(storedValues(r, 1)).toMatchObject({ B2: 40, F1: 6 + 12 + 66 })
   })
 })

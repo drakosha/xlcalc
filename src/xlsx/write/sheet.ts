@@ -13,7 +13,7 @@
  * Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows and columns
  * carry their outline levels.
  */
-import type { CellInput, CellLink, CellNote, CellResult, CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
+import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
@@ -29,6 +29,7 @@ import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
 import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { StyleWriter } from './styles.js'
+import type { ResultCell } from './snapshot.js'
 
 /** Excel's limit on a cell's text. */
 export const MAX_TEXT = 32_767
@@ -53,8 +54,8 @@ export interface SheetContext {
   /** Upper-case names (`sheetKey`) of the book's sheets. */
   sheets: Set<string>
   mode: 'formulas' | 'values'
-  /** The sheet's cells of the result, when there is one. */
-  result?: Record<string, CellResult>
+  /** The sheet's cells of the result, when the file stores values of formulas. */
+  result?: Record<string, ResultCell>
   /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!. */
   richError(code: 'SPILL' | 'CALC'): number
   /** The book's tables with their columns, and the one holding a cell of this sheet. */
@@ -186,6 +187,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       put(addr, cellXml(addr, c, v))
       continue
     }
+    // a result without the formula's value (`values: 'preserve'`)
+    if (result && !res) issues.add('noCachedValues', mode === 'formulas' ? 'a formula without a value in the result is written without one: Excel computes it when it opens the file' : 'a formula without a value in the result is written as an empty cell', where(addr))
     const tree = mode === 'formulas' ? fileTree(c.formula, ctx.sheets, ctx.tables, ctx.tableAt(addr)) : null
     if (mode === 'formulas' && !tree) issues.add('formula', 'a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is written as its value', where(addr))
     if (!tree) {

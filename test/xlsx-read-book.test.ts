@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { readXlsx } from '../src/xlsx.js'
-import { codes, pack, parts, read, sheet } from './xlsx-fixtures.js'
+import { codes, pack, parts, read, sheet, storedValues } from './xlsx-fixtures.js'
 
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 const rels = (items: string) => `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${items}</Relationships>`
@@ -66,7 +66,7 @@ describe('xlsx reader: sheets', () => {
       }),
     )
     expect(r.book.sheets).toEqual([{ name: 'Strict', cells: { A1: { value: 45688.5 }, B1: { value: 'строгий' }, C1: { formula: 'A1+1' } } }])
-    expect(r.cached[0].cells).toEqual({ C1: 45689.5 })
+    expect(storedValues(r)).toEqual({ C1: 45689.5 })
   })
 
   it('a sheet whose part is missing is left out and reported', async () => {

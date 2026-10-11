@@ -3,7 +3,7 @@
  * implementation (currently formulas compiled to closures or to JS text) sits behind this contract; the
  * package's behaviour tests are its acceptance suite.
  *
- * A formula is stored in the `formula` field without the leading `=`, separately from the value:
+ * A formula is stored in the `formula` field without the leading `=` (one given is dropped), separately from the value:
  * a string from data never becomes a formula. Function names are English, arguments are separated
  * by commas, the decimal separator is a dot.
  */
@@ -15,7 +15,10 @@ export type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
 /** An input cell. A date is passed explicitly (`{ date: '2025-01-31' }`) and becomes an Excel serial number. */
 export interface CellInput {
   value?: Scalar | { date: string }
-  /** Formula text without `=`. When present, `value` is ignored. */
+  /**
+   * Formula text without `=`; a single leading `=` is dropped as the book is taken (`=SUM(A1:A2)` is `SUM(A1:A2)`, the
+   * same input and `inputHash`; `==1` stays an error). When present, `value` is ignored.
+   */
   formula?: string
   /**
    * Number format, an Excel format code as an xlsx file stores it (en-US syntax: `#,##0.00`, `dd.mm.yyyy`, `[Red]`),
@@ -197,7 +200,7 @@ export interface SheetInput {
 /**
  * A conditional format: the cells it applies to, a condition and what a cell that meets it shows. The rules that hold
  * for a cell apply in the sheet's order: a field of a style an earlier rule sets wins, and `stopIfTrue` leaves out
- * the rules after one that holds.
+ * the rules after one that holds. Its formulas are stored text, as a cell's: a leading `=` is dropped.
  */
 export type ConditionalFormat =
   | CellIsFormat
@@ -457,8 +460,8 @@ export type ValidationOperator = 'between' | 'notBetween' | 'equal' | 'notEqual'
 
 /**
  * A rule of data validation, as xlsx `<dataValidation>`. Its formulas are stored formula text without `=` (en-US, as a
- * cell's), relative to the rule's first cell, the top-left cell of the first range of `range`: a rule over `B2:B9` with
- * `formula1: 'A2>0'` checks `A5>0` for B5. A literal list is a text constant of items separated by commas
+ * cell's; a leading `=` is dropped), relative to the rule's first cell, the top-left cell of the first range of `range`:
+ * a rule over `B2:B9` with `formula1: 'A2>0'` checks `A5>0` for B5. A literal list is a text constant of items separated by commas
  * (`'"Yes,No,Maybe"'`), as a file stores it in every locale; a list from cells is a reference (`'$D$2:$D$9'`,
  * `"'Lists'!$A$1:$A$20"`), a defined name or a formula giving one.
  */
@@ -520,8 +523,8 @@ export interface TableColumn {
   /** 1 to 255 characters, unique in the table in any case; the header cell's text. */
   name: string
   /**
-   * The formula of a calculated column (stored text, `Sales[[#This Row],[Qty]]*2`), which a row inserted into the table
-   * gets in this column, as Excel fills it. The column's cells hold their own formulas.
+   * The formula of a calculated column (stored text, `Sales[[#This Row],[Qty]]*2`; a leading `=` is dropped), which a row
+   * inserted into the table gets in this column, as Excel fills it. The column's cells hold their own formulas.
    */
   formula?: string
   /**
@@ -544,14 +547,14 @@ export interface NameInput {
    */
   name: string
   /**
-   * What the name refers to: a formula without `=`, as Excel's "Refers to" and xlsx `<definedName>` hold it. A
-   * reference with a sheet (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`, `"text"`, `{1,2,3}`), a
-   * formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which is a reference), a union of
-   * references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference has its sheet. A reference
-   * without `$` is relative to A1, as a file stores it: used in a cell it moves by that cell's offset from A1,
-   * wrapping round the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, `'Data'!A1048576` is the row above).
-   * Names in it are the global ones (a sheet's own as `'Sheet'!name`), as a file stores a name's formula. The formula
-   * is computed where the name is used, as part of that formula.
+   * What the name refers to: a formula without `=` (a leading one is dropped), as Excel's "Refers to" and xlsx
+   * `<definedName>` hold it. A reference with a sheet (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`,
+   * `"text"`, `{1,2,3}`), a formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which is a
+   * reference), a union of references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference has its sheet.
+   * A reference without `$` is relative to A1, as a file stores it: used in a cell it moves by that cell's offset from
+   * A1, wrapping round the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, `'Data'!A1048576` is the row above).
+   * Names in it are the global ones (a sheet's own as `'Sheet'!name`), as a file stores a name's formula. The formula is
+   * computed where the name is used, as part of that formula.
    */
   ref: string
   /** The sheet where the name is visible; a local name shadows a global one. Without it the name is global. */
@@ -663,7 +666,10 @@ export interface DisplayOptions {
   format?: NumberFormat
   /** A tag of the package's locales, `LOCALES` (`'en-US'` by default). */
   locale?: string
-  /** The column's width as `ColumnInput.width` (several columns' widths added for a merged area); the default width without it. */
+  /**
+   * The column's width as `ColumnInput.width` (several columns' widths added for a merged area). Without it the width
+   * is not limited: General shows all the digits it would in a wide column and no number turns into `#`.
+   */
   width?: number
   /** The date system a date shows by, as `BookInput.dateSystem`; 1900 without it. */
   dateSystem?: 1900 | 1904
@@ -686,10 +692,10 @@ export interface EntryOptions {
   dateSystem?: 1900 | 1904
   /**
    * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.cells`): its `format` (the one
-   * it shows by: its row's or column's without its own), `style` and `meta`; other fields are not read. The new input
-   * keeps its style and meta, and its format where Excel keeps it.
+   * it shows by: its row's or column's without its own), `style`, `meta`, `note` and `link`; other fields are not read.
+   * The new input keeps its style, meta, note and link, and its format where Excel keeps it.
    */
-  cell?: { format?: NumberFormat; style?: number; meta?: JsonValue } | null
+  cell?: { format?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
   /** The moment whose year completes a date typed without one (`15.3` in ru-RU, `3/15` in en-US), ISO as `Clock.now`; the current moment without it. */
   now?: string
 }
@@ -699,7 +705,7 @@ export interface EntryOptions {
  * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
  * language of `opts.locale` (English for en-US) and the position in the typed text.
  */
-export type EntryResult = { ok: true; input: CellInput | null } | { ok: false; code: CheckCode; message: string; at: number }
+export type EntryResult = { ok: true; input: CellInput | null } | (Refusal<CheckCode> & { at: number })
 
 /**
  * Size limits of a computation. A book over them is not computed: the call throws `CalcError` with code `limit`, so a
@@ -814,7 +820,7 @@ export interface ValidateContext {
 export type ValidateResult =
   /** `tables`: the tables the formula's structured references name (and bare table names, with `ctx.tables`). */
   | { ok: true; canonical: string; functions: string[]; sheets: string[]; names: string[]; externals: string[]; tables: string[] }
-  | { ok: false; code: CheckCode; message: string; at: number }
+  | (Refusal<CheckCode> & { at: number })
 
 /**
  * A check or an edit that did not pass: a code a program reads, a message for people (in the book's locale where the
@@ -828,7 +834,15 @@ export interface Refusal<Code extends string = string> {
   at?: number
 }
 
-export type NameCheck = { ok: true } | { ok: false; message: string }
+/**
+ * Why Excel would not take a name (`validateName`). `chars`: it does not start with a letter of any script, `_` or `\`,
+ * holds a character other than letters, digits, `_`, `.`, `\` and `?`, or is empty or longer than 255 characters.
+ * `reference`: it reads as a cell address or an R1C1 reference (`Q1`, `R`, `R2C3`). `boolean`: TRUE or FALSE, or the
+ * book's locale's word for one, in any case (`ИСТИНА` in ru-RU).
+ */
+export type NameRefusal = 'chars' | 'reference' | 'boolean'
+
+export type NameCheck = { ok: true } | Refusal<NameRefusal>
 
 /** The book whose rules `validateName` checks a name by. */
 export interface NameOptions {
@@ -1140,7 +1154,7 @@ export type RestructureResult =
       mapCell(ref: CellRef): CellRef | null
     }
   /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
-  | { ok: false; code: StructureRefusal; message: string }
+  | Refusal<StructureRefusal>
 
 /** `Session.restructure`: the operation's result and the values it changed. */
 export type SessionRestructureResult =
@@ -1156,7 +1170,7 @@ export type SessionRestructureResult =
        */
       changes: CellChange[]
     }
-  | { ok: false; code: StructureRefusal; message: string }
+  | Refusal<StructureRefusal>
 
 /** Fields to change on columns or rows: a value sets the field, null removes it, a field left out stays. */
 export type LinePatch<T> = { [K in keyof T]?: T[K] | null }
@@ -1231,6 +1245,12 @@ export type SheetLayout = Omit<SheetInput, 'cells'>
 
 /** A book without the cells of its sheets (`Session.layout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<BookInput, 'sheets'> & { sheets: SheetLayout[] }
+
+/** A session's book and its result taken at one moment (`Session.getSnapshot`), as `writeXlsx` takes them. */
+export interface BookSnapshot {
+  book: BookInput
+  result: ComputeResult
+}
 
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
@@ -1320,6 +1340,8 @@ export interface Session {
    */
   validateEntry(sheet: string, cell: string, input: CellInput | null): EntryCheck
   result(): ComputeResult
+  /** The book (as `book()`, the session's own objects) and its result (as `result()`) in one call. */
+  getSnapshot(): BookSnapshot
   /** The values hash `result()` gives, without building the result. */
   hash(): string
   /**
@@ -1380,7 +1402,7 @@ export type AsyncSessionOptions = SessionOptions & CalcOptions
 /** `AsyncSession.restructure`: as `SessionRestructureResult`, without the book (`AsyncSession.book()` gives it). */
 export type AsyncRestructureResult =
   | { ok: true; mapCell(ref: CellRef): CellRef | null; changes: CellChange[] }
-  | { ok: false; code: StructureRefusal; message: string }
+  | Refusal<StructureRefusal>
 
 /**
  * A session computed in portions or in a thread: the methods of `Session`, as promises. Calls are taken in order,
@@ -1410,6 +1432,8 @@ export interface AsyncSession {
   validation(sheet: string, cell: string): Promise<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null, opts?: CalcOptions): Promise<EntryCheck>
   result(opts?: CalcOptions): Promise<ComputeResult>
+  /** As `Session.getSnapshot`, in one call, so no edit comes between the book and its result; from a thread, a copy. */
+  getSnapshot(opts?: CalcOptions): Promise<BookSnapshot>
   /** As `Session.hash`: from a thread only the hash comes back. */
   hash(opts?: CalcOptions): Promise<string>
   undo(opts?: CalcOptions): Promise<UndoResult | null>

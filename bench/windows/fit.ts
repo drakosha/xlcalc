@@ -29,7 +29,7 @@ export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const todo = cases.filter((c) => !answers[c.id])
   const parts = Array.from({ length: Math.ceil(todo.length / PART) }, (_, k) => todo.slice(k * PART, (k + 1) * PART))
   const book = async (part: FitCase[], f: string) => {
-    const { data, issues } = await writeXlsx(fitBook(part))
+    const { data, issues } = await writeXlsx({ book: fitBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`fit ${set}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(f, data)
     const cols = part.map((_, k) => indexToCol(caseColumn(k)))

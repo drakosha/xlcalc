@@ -94,7 +94,7 @@ describe('outlines in xlsx', () => {
     const b = book()
     b.sheets[0].outline = { summaryBelow: false, summaryRight: true }
     b.sheets.push({ name: 'T', cells: {}, columns: { 'C:E': { outlineLevel: 3, hidden: true, width: 5 }, F: { collapsed: true } } })
-    const w = await writeXlsx(b)
+    const w = await writeXlsx({ book: b }, { values: 'omit' })
     expect(w.issues).toEqual([])
     const r = await readXlsx(w.data)
     expect(r.issues).toEqual([])
@@ -109,7 +109,7 @@ describe('outlines in xlsx', () => {
     const b = book()
     b.sheets[0].filtered = true
     b.sheets[0].outline = { summaryRight: false }
-    const w = await writeXlsx(b)
+    const w = await writeXlsx({ book: b }, { values: 'omit' })
     expect((await openArchive(w.data).text('xl/worksheets/sheet1.xml'))!).toContain('<sheetPr filterMode="1"><outlinePr summaryRight="0"/></sheetPr>')
     const r = await readXlsx(w.data)
     expect([r.book.sheets[0].filtered, r.book.sheets[0].outline]).toEqual([true, { summaryRight: false }])

@@ -92,7 +92,8 @@ export function formatWith(value: number | string | boolean, fmt: string, d: Dia
 
 /**
  * A fill repeated across the room the rest leaves, the last fill only (earlier ones drop out); null when the rest
- * does not fit, or the text would pass 255 characters.
+ * does not fit, or the text would pass 255 characters. Without a width (infinite room) a fill has no column to fill and
+ * drops out, as in `TEXT`.
  */
 function filled(text: string, space: number): string | null {
   const at = text.lastIndexOf(FILL)
@@ -102,7 +103,7 @@ function filled(text: string, space: number): string | null {
   const after = text.slice(at + 2)
   const free = space - textWidth(before + after)
   if (free < 0) return null
-  const out = before + (ch ? ch.repeat(Math.floor(free / glyph(ch))) : '') + after
+  const out = before + (ch && free !== Infinity ? ch.repeat(Math.floor(free / glyph(ch))) : '') + after
   return out.length <= MAX_SHOWN ? out : null
 }
 

@@ -10,6 +10,7 @@ import { lookOf, type Look } from '../../layout/lines.js'
 import { entryAt, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Issues, Where } from '../issues.js'
+import type { XlsxCachedCell } from '../types.js'
 import type { Xf } from '../styles/read.js'
 import { attributes, flag } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -44,7 +45,7 @@ export interface ArrayFormula {
 
 export interface SheetCells {
   cells: Record<string, CellInput>
-  cached: Record<string, CellValue>
+  cached: Record<string, XlsxCachedCell>
   rows: Map<number, RowInput>
   shared: Map<string, Shared>
   arrays: ArrayFormula[]
@@ -190,9 +191,9 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     // `<f ca="1"/>` with no text only flags a value Excel recalculates (a cell a volatile array spilled into)
     if (f && fa.t !== 'dataTable' && (text !== '' || fa.t === 'shared')) {
       if (errText !== undefined) {
-        out.cached[addr] = { error: ERRORS[errText] ?? 'ERROR' }
+        out.cached[addr] = { value: { error: ERRORS[errText] ?? 'ERROR' } }
         if (!ERRORS[errText]) issues.add('errorValue', 'a stored error the model has no code for, read as #ERROR!', { sheet, cell: addr })
-      } else if (value !== undefined) out.cached[addr] = value
+      } else if (value !== undefined) out.cached[addr] = { value }
       if (fa.t === 'shared' && fa.si !== undefined) {
         let s = out.shared.get(fa.si)
         if (!s) out.shared.set(fa.si, (s = { copies: [] }))
@@ -212,7 +213,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (errText !== undefined) {
         if (LITERAL.has(errText)) {
           cell.formula = errText
-          out.cached[addr] = { error: ERRORS[errText] }
+          out.cached[addr] = { value: { error: ERRORS[errText] } }
           out.errors.add(addr)
         } else issues.add('errorValue', 'an error stored as a value that a formula cannot spell (#CALC!, #GETTING_DATA and the like), left out', { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
