@@ -6,7 +6,8 @@
  * (`1.5` typed in ru-RU, where the decimal separator is `,`) is a syntax error at its place in the input.
  */
 import { caseKey } from '../collate.js'
-import { ERROR_LITERALS, INVARIANT, lex, numberRule, tableText, type Piece, type Syntax } from './lex.js'
+import { LOCALE_ERRORS } from '../syntax/errors.js'
+import { INVARIANT, lex, numberRule, tableText, type Piece, type Syntax } from './lex.js'
 import type { Message } from './messages.js'
 import type { Locale, TableItem } from './types.js'
 
@@ -40,14 +41,14 @@ export interface Fail {
 }
 
 const upperKeys = (entries: [string, string][]) => new Map(entries.map(([k, v]) => [caseKey(k), v]))
-const byLength = (xs: string[]) => [...new Set(xs)].sort((a, b) => b.length - a.length)
+const byLength = (xs: readonly string[]) => [...new Set(xs)].sort((a, b) => b.length - a.length)
 const swap = (xs: [string, string][]) => xs.map(([a, b]): [string, string] => [b, a])
-const same = (xs: string[]) => xs.map((x): [string, string] => [x, x])
+const same = (xs: readonly string[]) => xs.map((x): [string, string] => [x, x])
 
 /** Both sides of a (checked) locale. Local text also reads English function names, TRUE/FALSE and error texts. */
 export function sides(loc: Locale): Sides {
   const local: Syntax = { decimal: loc.decimalSeparator, list: loc.listSeparator, arrayColumn: loc.arrayColumnSeparator, arrayRow: loc.arrayRowSeparator }
-  const errors = ERROR_LITERALS.map((e): [string, string] => [e, loc.errors[e] ?? e])
+  const errors = LOCALE_ERRORS.map((e): [string, string] => [e, loc.errors[e] ?? e])
   const bools: [string, string][] = [
     ['TRUE', loc.booleans.TRUE],
     ['FALSE', loc.booleans.FALSE],
@@ -55,16 +56,16 @@ export function sides(loc: Locale): Sides {
   const fns = Object.entries(loc.functions)
   const items = TABLE_ITEMS.map((w): [string, string] => [w, loc.tableItems?.[w] ?? w])
   return {
-    invariant: { syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(ERROR_LITERALS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors), item: upperKeys(items) },
+    invariant: { syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(LOCALE_ERRORS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors), item: upperKeys(items) },
     local: {
       tag: loc.tag,
       syn: local,
       num: numberRule(local),
-      errors: byLength([...errors.map((e) => e[1]), ...ERROR_LITERALS]),
+      errors: byLength([...errors.map((e) => e[1]), ...LOCALE_ERRORS]),
       fn: upperKeys(swap(fns)),
       // the locale's own words win over the English ones
       word: upperKeys([...same(['TRUE', 'FALSE']), ...swap(bools)]),
-      err: upperKeys([...same(ERROR_LITERALS), ...swap(errors)]),
+      err: upperKeys([...same(LOCALE_ERRORS), ...swap(errors)]),
       item: upperKeys([...same(TABLE_ITEMS), ...swap(items)]),
     },
   }

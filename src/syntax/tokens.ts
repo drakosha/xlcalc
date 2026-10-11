@@ -7,19 +7,9 @@ import { PLAIN_SHEET } from '../sheet-pattern.js'
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
+import { ERROR_CODE, FORMULA_ERRORS } from './errors.js'
 import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_CHAR, IDENT_RULE, isSpace, numberSource } from './scan.js'
 import { readSpec, type TableSpec } from './table.js'
-
-const ERROR_LITERALS: Record<string, ErrorCode> = {
-  '#DIV/0!': 'DIV0',
-  '#N/A': 'NA',
-  '#NAME?': 'NAME',
-  '#NUM!': 'NUM',
-  '#REF!': 'REF',
-  '#VALUE!': 'VALUE',
-  '#NULL!': 'NULL',
-  '#SPILL!': 'SPILL',
-}
 
 export type Tok =
   | { t: 'num'; v: number; at: number }
@@ -147,12 +137,12 @@ export function tokenize(src: string): Tok[] {
       continue
     }
     if (ch === '#') {
-      const lit = Object.keys(ERROR_LITERALS).find((e) => rest.toUpperCase().startsWith(e))
+      const lit = FORMULA_ERRORS.find((e) => rest.toUpperCase().startsWith(e))
       if (!lit) bad(i, { key: 'unknownErrorLiteral' })
       // a reference whose sheet was deleted: `#REF!A1`, `#REF!#REF!`; a lost spill reference ends in `#`
       let tail = lit === '#REF!' ? (readRef(src.slice(i + 5), i)?.ref.text ?? (rest.slice(5).toUpperCase().startsWith('#REF!') ? '#REF!' : '')) : ''
       if (lit === '#REF!' && src[i + 5 + tail.length] === '#') tail += '#'
-      push({ t: 'err', code: ERROR_LITERALS[lit], at: i, ...(tail ? { ref: tail } : {}) })
+      push({ t: 'err', code: ERROR_CODE[lit], at: i, ...(tail ? { ref: tail } : {}) })
       i += lit.length + tail.length
       continue
     }

@@ -19,9 +19,6 @@ export interface Syntax {
 /** The stored (invariant) syntax: Excel's file format. */
 export const INVARIANT: Syntax = { decimal: '.', list: ',', arrayColumn: ',', arrayRow: ';' }
 
-/** Error literals of Excel, invariant spelling. */
-export const ERROR_LITERALS = ['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#GETTING_DATA', '#SPILL!', '#CALC!', '#FIELD!', '#BLOCKED!', '#CONNECT!', '#BUSY!', '#UNKNOWN!', '#PYTHON!']
-
 /** `tbl`: the brackets of a structured reference (`[[#Data],[Qty]]`), whose specifiers and separators a locale changes. */
 export type PieceKind = 'num' | 'fn' | 'word' | 'err' | 'list' | 'col' | 'row' | 'raw' | 'tbl'
 

@@ -4,7 +4,7 @@
  */
 import { checkString, InputError, object, onlyKeys } from '../input.js'
 import { EN_MESSAGES } from '../locales/en-US.js'
-import { ERROR_LITERALS } from './lex.js'
+import { LOCALE_ERRORS } from '../syntax/errors.js'
 import { addLocale, DEFAULT_LOCALE, LOCALES, PACKAGE_LOCALES } from './registry.js'
 import type { RegionalData } from './rules/data.js'
 import type { Locale } from './types.js'
@@ -43,7 +43,7 @@ function checkText(locale: unknown, path: string): void {
   if (decimal === list || decimal === col || decimal === row || col === row) throw new InputError(path, 'the decimal separator, the list separator and the array separators must differ (the list separator may equal an array separator)')
   words(loc.booleans, `${path}.booleans`, ['TRUE', 'FALSE'], WORD, 'a word')
   if (Object.keys(loc.booleans as object).length !== 2) throw new InputError(`${path}.booleans`, 'expected both TRUE and FALSE')
-  words(loc.errors, `${path}.errors`, ERROR_LITERALS, /^#\S+$/u, 'an error literal starting with #')
+  words(loc.errors, `${path}.errors`, LOCALE_ERRORS, /^#\S+$/u, 'an error literal starting with #')
   words(loc.functions, `${path}.functions`, null, WORD, 'a function name')
   if (loc.tableItems !== undefined) words(loc.tableItems, `${path}.tableItems`, ['#All', '#Data', '#Headers', '#Totals', '#This Row'], /^#[^[\]'@]+$/u, 'a specifier starting with #')
 }
