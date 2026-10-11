@@ -118,19 +118,21 @@ export function explainCell(state: EngineState, s: number, r: number, c: number,
   return { root, nodes, truncated }
 }
 
-/** The tree as indented text in the loaded locale `tag` (en-US without one): its words, values and formulas. */
+/** The tree as indented text in the loaded locale `tag` (en-US without one): its words, values, formulas and references, a sheet in quotes where Excel puts them. */
 export function explainText(root: ExplainTree, tag?: string): string {
   const loc = localeOf(tag)
   const local = (f: string) => {
     const t = toLocal(f, loc)
     return t.ok ? t.formula : f
   }
-  const text = (m: Message) => say(loc, m, local)
+  // the formula shown before its message takes it: en-US's prints it as given
+  const text = (m: Message) => say(loc, m)
   const lines: string[] = []
   const go = (n: ExplainTree, indent: string) => {
-    const head = n.cells !== undefined ? `${n.ref} (${text({ key: 'explainCells', count: n.cells })})` : `${n.ref} = ${text({ key: 'explainValue', value: n.value })}`
-    const from = n.formula ? text({ key: 'explainFormula', formula: n.formula }) : n.spillOf ? text({ key: 'explainSpill', ref: n.spillOf }) : ''
-    const origin = n.origin === undefined ? '' : n.origin === n.ref ? text({ key: 'explainErrorHere' }) : text({ key: 'explainErrorFrom', ref: n.origin })
+    const ref = local(n.ref)
+    const head = n.cells !== undefined ? `${ref} (${text({ key: 'explainCells', count: n.cells })})` : `${ref} = ${text({ key: 'explainValue', value: n.value })}`
+    const from = n.formula ? text({ key: 'explainFormula', formula: local(n.formula) }) : n.spillOf ? text({ key: 'explainSpill', ref: local(n.spillOf) }) : ''
+    const origin = n.origin === undefined ? '' : n.origin === n.ref ? text({ key: 'explainErrorHere' }) : text({ key: 'explainErrorFrom', ref: local(n.origin) })
     lines.push(`${indent}${head}${from ? `  ← ${from}` : ''}${origin ? `  ${origin}` : ''}`)
     for (const ch of n.children) go(ch, indent + '  ')
   }

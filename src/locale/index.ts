@@ -41,7 +41,8 @@ const refusal = (r: Fail, locale: Locale) => ({ ok: false as const, code: 'synta
 
 /**
  * A stored formula as a locale shows it (a loaded locale's tag, or a locale object): `SUM(A1:A3,1.5)` is
- * `СУММ(A1:A3;1,5)` in ru-RU. Structured references are shown as Excel shows them, the formula's row as `@`
+ * `СУММ(A1:A3;1,5)` in ru-RU, and a sheet is in quotes only where Excel puts them (`'Data'!B2` is `Data!B2`, in en-US
+ * too; `quoteSheetIfNeeded` with the locale's booleans). Structured references are shown as Excel shows them, the formula's row as `@`
  * (`Sales[[#This Row],[Qty]]` is `Sales[@Qty]`) and a table alone by its name (`Sales[]` is `Sales`); `opts.table`, the
  * table of the formula's cell, drops its name before a column of its own (`[@Qty]`, `SUM([Qty])`), as Excel shows a
  * formula inside a table.
@@ -101,7 +102,7 @@ function eachTable(formula: string, f: (tok: Extract<Tok, { t: 'table' }>, text:
 /**
  * Text typed in a locale (a loaded locale's tag, or a locale object) as a stored formula: `=СУММ(A1:A3;1,5)` is
  * `SUM(A1:A3,1.5)`. A leading `=` is dropped, as stored formulas have none; English function names, TRUE/FALSE and
- * error texts are read too. Positions of errors are in `text`, their messages in the locale's language. `opts.table`, the
+ * error texts are read too, and a sheet's name with quotes or without, kept as typed. Positions of errors are in `text`, their messages in the locale's language. `opts.table`, the
  * table of the formula's cell, names it before a structured reference without a table name (`[@Qty]` is `Sales[@Qty]`),
  * as `toLocal` drops it, so the formula reads outside the table too.
  */

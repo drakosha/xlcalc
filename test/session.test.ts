@@ -58,7 +58,7 @@ describe('session', () => {
     expect(e.root).toMatchObject({ ref: "'S'!A4", value: 7, formula: "A3*2+A1" })
     expect(e.root.children.map((c) => c.ref)).toEqual(["'S'!A3", "'S'!A1"])
     expect(e.root.children[0].children[0]).toMatchObject({ ref: "'S'!A1:A2", cells: 2, children: [] })
-    expect(e.text).toBe(["'S'!A4 = 7  ← A3*2+A1", "  'S'!A3 = 3  ← SUM(A1:A2)", "    'S'!A1:A2 (2 cells)", "  'S'!A1 = 1"].join('\n'))
+    expect(e.text).toBe(["S!A4 = 7  ← A3*2+A1", "  S!A3 = 3  ← SUM(A1:A2)", "    S!A1:A2 (2 cells)", "  S!A1 = 1"].join('\n'))
     const x = s.explain('S', 'A4', { expand: true })
     expect(x.root.children[0].children[0].children.map((c) => c.ref)).toEqual(["'S'!A1", "'S'!A2"])
     const t = s.explain('S', 'A4', { depth: 1, maxNodes: 2 })

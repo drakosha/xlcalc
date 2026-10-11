@@ -2,7 +2,7 @@
  * A window over a sheet for a grid (`Session.getViewport`, `viewportOf`): the cells of a rectangle, or of the rows and
  * columns asked of it, as a result gives them, each with its look resolved as it shows it (`layout/lines.ts`), styles by
  * index with the objects of those it shows beside, the number format as a code and where it comes from, an empty cell
- * with a style of its row or column listed too; the widths and heights of the window's lines, the merged areas and
+ * with a style or a number format of its row or column listed too; the widths and heights of the window's lines, the merged areas and
  * tables that meet its cells, the sheet's frozen panes and where its cells end. A session's window reads its state
  * (`sessionSource`), a saved one a book and its result (`saved.ts`); either reads the window's cells, never the whole sheet.
  */
@@ -127,7 +127,7 @@ export interface WindowSource {
   tables: Tables
   /** The moment whose year completes text read as a date without one (`ViewportCell.editText`). */
   now: string
-  /** The cell as a result gives it, without its own number format; undefined for one with nothing of its own (no input, no spill, no conditional look) unless `styled`, its line's style shown. */
+  /** The cell as a result gives it, without its own number format; undefined for one with nothing of its own (no input, no spill, no conditional look) unless `styled`, its line's style or number format shown. */
   cell(r: number, c: number, addr: string, own: CellInput | undefined, styled: boolean): ViewportCell | undefined
   /** What the sheet's conditional formats give the cell, put on it: its `appearance` and the text by a format of theirs. */
   appearance(out: ViewportCell, r: number, c: number, own: CellInput | undefined): void
@@ -188,8 +188,8 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
       const own = sheet.cells[addr]
       const col = lines.column(c)
       const shown = lookOf(own, row, col)
-      // an empty cell is listed when it shows something: a style of its row or column, a look, a note or a link
-      const out = src.cell(r, c, addr, own, shown.style !== undefined)
+      // an empty cell is listed when it shows something: a style or a number format of its row or column (a grid's format list shows it), a look, a note or a link
+      const out = src.cell(r, c, addr, own, shown.style !== undefined || shown.numberFormat !== undefined)
       if (!out) continue
       if (o.formulaLocal && out.formula !== undefined) out.formulaLocal = local(out.formula, r, c)
       if (own?.array !== undefined) out.array = own.array

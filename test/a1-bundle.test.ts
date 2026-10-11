@@ -1,7 +1,7 @@
 /**
  * The `./a1` subpath takes none of the engine: bundled by esbuild for the browser from the build under test, it holds
  * only the address modules and the check of its functions' arguments (no parser, locale, number format or computation),
- * stays small, and runs in an empty `node:vm` context.
+ * stays small, holds no `xlcalc` (a host's sign of the engine in its bundle), and runs in an empty `node:vm` context.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -21,6 +21,7 @@ describe('a1 without the engine', () => {
     expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/spans', 'model', 'sheet-pattern', 'strict-args', 'structure/area'])
     // the list above keeps the engine out; this, that the address modules stay small (8,004 with the case of names as Excel compares them)
     expect(code.length).toBeLessThan(8_500)
+    expect(code).not.toContain('xlcalc')
   }, 60_000)
 
   it('runs in an empty context', async () => {
