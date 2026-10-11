@@ -135,6 +135,9 @@ export const operatorOrder =
 /** The comparison operators' order in en-US. */
 export const compareOp = operatorOrder(compareValues)
 
+/** Whether a comparison operator (`=`, `<>`, `<`, `>`, `<=`, `>=`) holds for `c`, the order of its operands. */
+export const holds = (op: string, c: number) => (op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0)
+
 /** Excel's tolerance of a whole-number argument: a number less than 2^-22 short of an integer is that integer. */
 export const WHOLE = 2 ** -22
 
