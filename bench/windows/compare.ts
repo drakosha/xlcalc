@@ -10,6 +10,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Val } from '../coverage/formulajs.js'
 import { localeDir, measurementFile } from '../coverage/locales.js'
+import { esc } from '../coverage/report.js'
 import { KNOWN, matches, show } from '../../test/excel-cases.js'
 import { KNOWN_BY_LOCALE } from '../../test/excel-locale-cases.js'
 import { runWinSet, WIN_KNOWN, WIN_REASONS, WIN_SETS, type WinOutcome, type WinSet } from '../../test/excel-win-cases.js'
@@ -23,8 +24,7 @@ function macValues(set: WinSet): Record<string, Val> | null {
   return existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as { values: Record<string, Val> }).values : null
 }
 
-const cell = (s: string) => s.replaceAll('|', '\\|').replaceAll('\n', '\\n')
-const row = (xs: string[]) => `| ${xs.map(cell).join(' | ')} |`
+const row = (xs: string[]) => `| ${xs.map(esc).join(' | ')} |`
 
 /** Which answer the engine gives. */
 const follows = (o: WinOutcome, mac: Val) => (matches(o.fn, o.win, o.engine) ? 'Windows' : matches(o.fn, mac, o.engine) ? 'Mac' : 'neither')

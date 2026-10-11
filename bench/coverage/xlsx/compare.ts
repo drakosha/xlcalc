@@ -10,6 +10,7 @@ import { entryAt, lines } from '../../../src/layout/spans.js'
 import { epochOf } from '../../../src/dates.js'
 import { dateToSerial, indexToCol, parseAddress } from '../../../src/model.js'
 import { canonical, parse, validate } from '../../../src/syntax.js'
+import { ERROR_TEXT } from '../../../src/syntax/errors.js'
 import { tableAt, tablesOf, type Tables } from '../../../src/tables/model.js'
 import { BUILTIN_ID } from '../../../src/xlsx/styles/numfmt.js'
 import { numberFormatOf } from '../stored.js'
@@ -76,8 +77,8 @@ function formulaText(f: string, union = false, tables?: Tables, enclosing?: stri
   }
 }
 
-/** An error value as a values-only file stores it and a reader reads it back: a formula of that error. */
-const ERROR_FORMULA: Partial<Record<string, string>> = { DIV0: '#DIV/0!', NA: '#N/A', NAME: '#NAME?', NUM: '#NUM!', REF: '#REF!', VALUE: '#VALUE!', ERROR: '#NULL!', SPILL: '#SPILL!' }
+/** An error value as a values-only file stores it (the engine's own `#ERROR!` as `#NULL!`) and a reader reads it back: a formula of that error. */
+const ERROR_FORMULA: Partial<Record<string, string>> = { ...Object.fromEntries((['DIV0', 'NA', 'NAME', 'NUM', 'REF', 'VALUE', 'SPILL'] as const).map((c) => [c, ERROR_TEXT[c]])), ERROR: ERROR_TEXT.NULL }
 
 type Look = { style?: CellStyle; format?: NumberFormat }
 

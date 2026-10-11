@@ -10,18 +10,16 @@
  */
 import ExcelJS from 'exceljs'
 import JSZip from 'jszip'
-import { spawn } from 'node:child_process'
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { anchorArray, markDynamic, READ_COLUMNS } from './book.js'
-import { declineRepair, dialogText, excelDialogs, settleRejected, typedValue } from './excel.js'
+import { runWatched, settleRejected, typedValue } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
 import type { BookInput, NumberFormat, RangeRef } from '../../src/contract.js'
 import { lines, parseSpan } from '../../src/layout/spans.js'
-import { formatAddress, parseAddress } from '../../src/model.js'
+import { formatAddress } from '../../src/model.js'
+import { parseRange, rectCells } from '../../src/structure/area.js'
 import { quoteSheet } from '../../src/syntax.js'
 import { numberFormatOf } from './stored.js'
 
@@ -133,10 +131,8 @@ export function formatCode(format: NumberFormat): string {
 
 /** A rectangle's cells row by row. */
 export function cellsOf(range: string): { rows: number; cols: number; addrs: string[] } {
-  const [a, b = a] = range.split(':').map(parseAddress)
-  const addrs: string[] = []
-  for (let r = a.row; r <= b.row; r++) for (let c = a.col; c <= b.col; c++) addrs.push(formatAddress(r, c))
-  return { rows: b.row - a.row + 1, cols: b.col - a.col + 1, addrs }
+  const x = parseRange(range)!
+  return { rows: x.r2 - x.r1 + 1, cols: x.c2 - x.c1 + 1, addrs: [...rectCells(x)] }
 }
 
 /** Where each rectangle's mirrors are: stacked from row 1 of the mirror sheets. */
@@ -155,6 +151,12 @@ const MIRROR: Record<(typeof MIRRORS)[number], (x: string) => string> = {
   WT: (x) => `IF(ISBLANK(${x}),-5,${READ_COLUMNS.type(x)})`,
   WN: READ_COLUMNS.num,
   WX: READ_COLUMNS.text,
+}
+
+/** The mirror formulas over a rectangle's top-left cell, its sheet's name quoted: the tables step writes them after its steps, over the cells where they are then. */
+export function mirrorFormulas(g: RangeRef): string[] {
+  const at = `'${g.sheet.replaceAll("'", "''")}'!${g.range.split(':')[0]}`
+  return MIRRORS.map((m) => `=${MIRROR[m](at)}`)
 }
 
 /** A formula cell as ExcelJS writes it: an array formula over `ref` (a dynamic one where `markDynamic` marks it), else a plain one. */
@@ -255,9 +257,6 @@ function markRows(xml: string, rows: Set<number>, attrs: string): string {
   return out
 }
 
-const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
 /** Excel did not load a case's book: it showed "We found a problem with some content", which was declined. */
 export class BookRejected extends Error {}
 
@@ -268,47 +267,50 @@ export class BookRejected extends Error {}
  * answering in 120 s.
  */
 export async function runOnBook(id: string, script: string, book: BookInput, read: RangeRef[], more: string[], parts?: FileParts): Promise<string> {
-  const before = dialogText()
-  if (before) throw new Error(`${id}: Excel has a window that is not a book: ${before}`)
-  const dir = join(SANDBOX, `fcase-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
-  try {
-    const file = join(dir, 'book.xlsx')
-    await writeCaseBook(book, read, file, parts)
-    const at = mirrorRanges(read)
-    const child = spawn('osascript', [script, file, read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n'), ...more])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
-    child.stderr.on('data', (d: Buffer) => (err += d.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 120_000
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`${id}: Excel window after the case: ${after}`)
-        if (code !== 0) throw new Error(`${id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        return out
-      }
-      if (declineRepair()) {
-        child.kill()
-        await exited
-        await settleRejected()
-        throw new BookRejected(`${id}: Excel did not load the book (repair window declined)`)
-      }
-      if (excelDialogs().length) {
-        child.kill()
-        throw new Error(`${id}: Excel shows a window, stopped without clicking: ${dialogText()}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        throw new Error(`${id}: Excel did not answer in 120 s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
-  }
+  const at = mirrorRanges(read)
+  return runWatched<string>({
+    script,
+    label: id,
+    folder: 'fcase',
+    book: (file) => writeCaseBook(book, read, file, parts),
+    args: () => [read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n'), ...more],
+    timeout: 120_000,
+    poll: 1000,
+    after: 'case',
+    fatal: true,
+    repair: async (stop) => {
+      await stop()
+      await settleRejected()
+      throw new BookRejected(`${id}: Excel did not load the book (repair window declined)`)
+    },
+    done: (out) => out,
+  })
+}
+
+/**
+ * A value typed into a cell as the scripts take it, a kind and its text: x clears the cell, n a number, s a text, f a
+ * formula as Excel 365 enters it, l a formula in the user's language.
+ */
+export function editOf(v: null | number | string | { formula: string } | { local: string }): [kind: 'x' | 'n' | 's' | 'f' | 'l', value: string] {
+  if (v === null) return ['x', '']
+  if (typeof v === 'number') return ['n', String(v)]
+  if (typeof v === 'string') return ['s', v]
+  return 'local' in v ? ['l', v.local] : ['f', `=${v.formula}`]
+}
+
+/** The steps of a case Excel refused, by their index: their errors (an empty one or none where Excel took the step); undefined when it took all. */
+export function refusedOf(errors: (string | null | undefined)[]): Record<number, string> | undefined {
+  let out: Record<number, string> | undefined
+  errors.forEach((e, i) => e && ((out ??= {})[i] = e))
+  return out
+}
+
+/** Each cell of the rectangles read, row by row: its key (`S!A1`), its rectangle's index, its row and column there. */
+export function eachRectCell(read: RangeRef[], f: (key: string, i: number, r: number, j: number) => void): void {
+  read.forEach((g, i) => {
+    const { cols, addrs } = cellsOf(g.range)
+    addrs.forEach((a, k) => f(`${g.sheet}!${a}`, i, Math.floor(k / cols), k % cols))
+  })
 }
 
 /** A range's `value` or `formula` as AppleScript returns it (a cell alone is not a list) as rows. */
@@ -320,19 +322,15 @@ const grid = (x: unknown): unknown[][] => (Array.isArray(x) ? (Array.isArray(x[0
  */
 export function answerOf(read: RangeRef[], raw: [unknown, unknown, unknown, unknown, unknown?][], withF2 = false): RectsAnswer & { formulas2?: Record<string, string> } {
   const out: RectsAnswer & { formulas2?: Record<string, string> } = { values: {}, formulas: {}, ...(withF2 ? { formulas2: {} } : {}) }
-  read.forEach((g, i) => {
-    const [t, nums, strs, fs, f2s] = raw[i].map(grid)
-    const { cols, addrs } = cellsOf(g.range)
-    addrs.forEach((a, k) => {
-      const [r, j] = [Math.floor(k / cols), k % cols]
-      const key = `${g.sheet}!${a}`
-      const type = Number(t[r][j])
-      const f = String(fs[r][j])
-      if (f.startsWith('=')) out.formulas[key] = f
-      if (out.formulas2 && f.startsWith('=')) out.formulas2[key] = String(f2s[r][j])
-      if (type === -5) return
-      out.values[key] = typedValue(type, nums[r][j], strs[r][j])
-    })
+  const grids = raw.map((x) => x.map(grid))
+  eachRectCell(read, (key, i, r, j) => {
+    const [t, nums, strs, fs, f2s] = grids[i]
+    const type = Number(t[r][j])
+    const f = String(fs[r][j])
+    if (f.startsWith('=')) out.formulas[key] = f
+    if (out.formulas2 && f.startsWith('=')) out.formulas2[key] = String(f2s[r][j])
+    if (type === -5) return
+    out.values[key] = typedValue(type, nums[r][j], strs[r][j])
   })
   return out
 }

@@ -7,6 +7,7 @@
  * `@` where Excel puts it) compute the values Excel stored.
  */
 import { formatAddress } from '../../../src/model.js'
+import { XLFN, XLWS } from '../../../src/xlsx/formulas/prefixes.js'
 import { handBook } from './hand.js'
 
 /** Formulas in row 2 of sheet S from column G on, over data in C1:E10 and the names `span` (C1:C3) and `one` (C1). */
@@ -23,8 +24,8 @@ export const OLD_FORMULAS = [
   'SORT(C1:C3)', 'UNIQUE(C1:C3)', 'FILTER(C1:C3,C1:C3>1)', 'C1:C3 D2:E2',
 ]
 
-const NEWER = /\b(XLOOKUP|SEQUENCE|SORT|UNIQUE|FILTER)\(/g
-const PREFIX: Record<string, string> = { XLOOKUP: '_xlfn.XLOOKUP', SEQUENCE: '_xlfn.SEQUENCE', SORT: '_xlfn._xlws.SORT', UNIQUE: '_xlfn.UNIQUE', FILTER: '_xlfn._xlws.FILTER' }
+/** A function newer than Excel 2007 with the prefix a file writes before it (the reader's and writer's table). */
+const prefixed = (f: string) => f.replace(/\b([A-Z][A-Z0-9.]*)\(/g, (m, n: string) => (XLWS.has(n) ? `_xlfn._xlws.${n}(` : XLFN.has(n) ? `_xlfn.${n}(` : m))
 /** The cell of the formula `i`: row 2, from column G on. */
 export const formulaCell = (i: number) => formatAddress(1, 6 + i)
 
@@ -32,7 +33,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 /** The formulas as a file of the old kind holds them: plain `<f>`, no values, no metadata. */
 export function oldFormulaBook(formulas: string[]): Promise<Uint8Array> {
-  const cells = formulas.map((f, i) => `<c r="${formulaCell(i)}"><f>${esc(f.replace(NEWER, (_m, n: string) => `${PREFIX[n]}(`))}</f></c>`).join('')
+  const cells = formulas.map((f, i) => `<c r="${formulaCell(i)}"><f>${esc(prefixed(f))}</f></c>`).join('')
   const rows = Array.from({ length: 10 }, (_, r) => `<row r="${r + 1}">${['C', 'D', 'E'].map((c, k) => `<c r="${c}${r + 1}"><v>${(r + 1) * (k + 1)}</v></c>`).join('')}${r === 1 ? cells : ''}</row>`)
   return handBook({
     sheet: 'S',

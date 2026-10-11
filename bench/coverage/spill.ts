@@ -6,12 +6,12 @@
  * mirror sheets: `case-book.ts`.
  * `FSPILL_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inCaseOrder } from './stored.js'
-import { answerOf, BookRejected, runOnBook, type FileParts, type RectsAnswer } from './case-book.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
+import { answerOf, BookRejected, editOf, MIRRORS, refusedOf, runOnBook, type FileParts, type RectsAnswer } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
+import { localeMeta } from './locales.js'
 import type { SpillCase, SpillSet } from './spill/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -42,11 +42,10 @@ export function partsOf(c: SpillCase): FileParts | undefined {
 
 /** One case in Excel: its book opened and computed, its edits applied, its rectangles read. */
 async function runCase(c: SpillCase): Promise<SpillAnswer> {
-  const kind = (v: NonNullable<SpillCase['edits']>[number]['value']) => (v === null ? 'x\t' : typeof v === 'number' ? `n\t${v}` : typeof v === 'string' ? `s\t${v}` : `f\t=${v.formula}`)
-  const edits = (c.edits ?? []).map((e) => `${e.sheet}\t${e.cell}\t${kind(e.value)}`).join('\n')
+  const edits = (c.edits ?? []).map((e) => [e.sheet, e.cell, ...editOf(e.value)].join('\t')).join('\n')
   let out: string
   try {
-    out = await runOnBook(c.id, SCRIPT, c.book, c.read, [edits, c.legacy ? '1' : ''], partsOf(c))
+    out = await runOnBook(c.id, SCRIPT, c.book, c.read, [edits, c.legacy ? '1' : '', MIRRORS.join('\t')], partsOf(c))
   } catch (e) {
     if (!(e instanceof BookRejected)) throw e
     console.log(e.message)
@@ -54,37 +53,20 @@ async function runCase(c: SpillCase): Promise<SpillAnswer> {
   }
   const raw = JSON.parse(out) as { rects: [unknown, unknown, unknown, unknown, unknown][]; edits: string[] }
   const answer: SpillAnswer = answerOf(c.read, raw.rects, !!c.legacy)
-  raw.edits.forEach((e, i) => e && ((answer.refused ??= {})[i] = e))
-  return answer
+  const refused = refusedOf(raw.edits)
+  return refused ? { ...answer, refused } : answer
 }
 
 /** Runs the set's cases without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepSpill(set: string): Promise<void> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const mod = (await import(`./spill/${set}.js`)) as SpillSet
-  const cases = mod.buildSpillCases()
+  const cases = (await setModule<SpillSet>('spill', set)).buildSpillCases()
   const target = join(ROOT, `test/excel/spill/${set}.json`)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredSpill) : null
-  const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify({ ...c, predicted: undefined })]) ?? [])
-  const answers: Record<string, SpillAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify({ ...c, predicted: undefined })) answers[c.id] = prev.answers[c.id]
+  const answers = keptSame({ cases }, loadStored<StoredSpill>(target), unpredicted)
   const t0 = Date.now()
-  mkdirSync(join(ROOT, 'test/excel/spill'), { recursive: true })
-  const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
-  }
+  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta('en-US'), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
   await ensureExcel('en-US')
-  let done = 0
-  try {
-    const only = process.env.FSPILL_ONLY?.split(',')
-    for (const c of cases) {
-      if (answers[c.id] || (only && !only.includes(c.id))) continue
-      answers[c.id] = await runCase(c)
-      done++
-    }
-  } finally {
+  await runCases(cases.filter((c) => !answers[c.id]), 'FSPILL_ONLY', async (c) => void (answers[c.id] = await runCase(c)), (done) => {
     save()
-    console.log(`spill ${set}: ${done} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
-  }
+    console.log(`${answeredLine(`spill ${set}`, done, answers, cases)}, ${took(t0)} s`)
+  })
 }

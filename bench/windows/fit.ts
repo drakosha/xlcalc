@@ -5,29 +5,23 @@
  * and what its cells show are read, and the book is saved, its `<col>` elements read back. The answers go to
  * `test/excel/win/fit/[<tag>/]<set>.json`.
  */
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { dirname } from 'node:path'
+import { writeFileSync } from 'node:fs'
 import { writeXlsx } from '../../src/xlsx.js'
 import { indexToCol } from '../../src/model.js'
-import { fitFile, keptAnswers, partAnswers } from '../coverage/fit.js'
+import { inParts } from '../coverage/book.js'
+import { FIT_PART, fitFile, keptAnswers, partAnswers } from '../coverage/fit.js'
 import { caseColumn, caseRows, fitBook, type FitCase, type FitSet } from '../coverage/fit/cases.js'
-import { inCaseOrder } from '../coverage/stored.js'
+import { answeredLine, inCaseOrder, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
 import { inJobs, metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
-const PART = 60
-
 export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const cases = ((await import(`../coverage/fit/${set}.js`)) as FitSet).buildFitCases(tag).filter((c) => c.via !== 'keys')
+  const cases = (await setModule<FitSet>('fit', set)).buildFitCases(tag).filter((c) => c.via !== 'keys')
   const file = fitFile(set, tag, true)
   const { answers } = keptAnswers(file, cases)
   const t0 = Date.now()
-  const save = () => {
-    mkdirSync(dirname(file), { recursive: true })
-    const meta = { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(file, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
-  }
+  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
   const todo = cases.filter((c) => !answers[c.id])
-  const parts = Array.from({ length: Math.ceil(todo.length / PART) }, (_, k) => todo.slice(k * PART, (k + 1) * PART))
+  const parts = inParts(todo, FIT_PART)
   const book = async (part: FitCase[], f: string) => {
     const { data, issues } = await writeXlsx({ book: fitBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`fit ${set}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
@@ -70,5 +64,5 @@ export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
     Object.assign(answers, await partAnswers(part, refused, read, saved))
   }
   save()
-  console.log(`fit ${set} ${tag}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered`)
+  console.log(answeredLine(`fit ${set} ${tag}`, todo.length, answers, cases))
 }

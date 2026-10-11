@@ -6,18 +6,19 @@
  * for a case without steps that writes its book the book the reader is to read from the file Excel saves: the book
  * written.
  */
-import { writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { setModule, writeAnswers } from '../stored.js'
 import { entries } from '../xlsx/compare.js'
 import { caseBook, engineCase, partsOf, sessionBook, sessionCase, type LinesSet } from './cases.js'
 
 const [set, run] = process.argv.slice(2)
-if (!/^[a-z0-9-]+$/.test(set ?? '') || (run !== undefined && !/^[a-z0-9-]+$/.test(run))) throw new Error(`set and run names: [a-z0-9-], not ${set} ${run}`)
-const built = ((await import(`./${set}.js`)) as LinesSet).buildLinesCases()
+if (run !== undefined && !/^[a-z0-9-]+$/.test(run)) throw new Error(`run name: [a-z0-9-], not ${run}`)
+const built = (await setModule<LinesSet>('lines', set)).buildLinesCases()
 const out: Record<string, unknown> = {}
 const engine = built.session ? sessionCase : engineCase
 for (const c of built.cases) {
   const book = await caseBook(built, c)
   out[c.id] = { looks: engine(c, book), ...(c.parts ? { parts: partsOf(sessionBook(c, book)) } : {}), ...(c.steps || c.bare ? {} : { read: Object.fromEntries(entries(built.books[c.book])) }) }
 }
-writeFileSync(new URL(`./${set}${run ? `.${run}` : ''}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')
+writeAnswers(fileURLToPath(new URL(`./${set}${run ? `.${run}` : ''}.predicted.json`, import.meta.url)), out)
 console.log(`${set}: ${built.cases.length} cases predicted`)

@@ -10,7 +10,7 @@ import { LOCALES, createSession, parseEntry, toInvariant, validateFormula } from
 import { isHiddenRow } from '../../../src/layout/hidden.js'
 import { lines, parseSpan, patchLines } from '../../../src/layout/spans.js'
 import { formatAddress, indexToCol } from '../../../src/model.js'
-import { parseRange, type Rect } from '../../../src/structure/area.js'
+import { parseRange } from '../../../src/structure/area.js'
 import { sheetKey } from '../../../src/syntax.js'
 import { anchorOf, areasOf } from '../../../src/validation/rules.js'
 import { formulaAt } from '../../../src/validation/structure.js'
@@ -186,8 +186,6 @@ export function excelView(s: ValidSheetAnswer, locale = 'en-US'): SheetView {
   for (const [k, level, hidden, collapsed] of s.columns) view.columns[String(k)] = [level, hidden, collapsed]
   return view
 }
-
-const within = (w: Rect, r: number, c: number) => r >= w.r1 && r <= w.r2 && c >= w.c1 && c <= w.c2
 
 /**
  * A book's sheets over the window, as the engine holds them: each cell's rule with its formulas as at the cell, whether

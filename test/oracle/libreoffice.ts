@@ -11,6 +11,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { BookInput, CellValue } from '../../src/contract.js'
 import { dateToSerial, serialToUtcMs } from '../../src/model.js'
+import { ERROR_CODE, ERROR_TEXT, TYPED_ERRORS } from '../../src/syntax/errors.js'
 
 const PROFILE = `<?xml version="1.0" encoding="UTF-8"?>
 <oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -30,14 +31,8 @@ export function sofficeVersion(): string | null {
   }
 }
 
-const ERRORS: Record<string, CellValue> = {
-  '#DIV/0!': { error: 'DIV0' },
-  '#N/A': { error: 'NA' },
-  '#NAME?': { error: 'NAME' },
-  '#NUM!': { error: 'NUM' },
-  '#REF!': { error: 'REF' },
-  '#VALUE!': { error: 'VALUE' },
-}
+/** The errors read by their code: those typed into a cell but `#NULL!`; any other is `ERROR`. */
+const ERRORS = new Set(TYPED_ERRORS.filter((t) => t !== ERROR_TEXT.NULL))
 
 const unxml = (t: string) => t.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
 
@@ -52,7 +47,7 @@ function sheetResults(xml: string): Map<string, CellValue> {
     const v = /<v>([\s\S]*?)<\/v>/.exec(m[3] ?? '')?.[1]
     if (v === undefined) continue
     const text = unxml(v)
-    out.set(m[1], t === 'b' ? text === '1' : t === 'e' ? (ERRORS[text] ?? { error: 'ERROR' }) : t === 'str' || t === 'inlineStr' ? text : Number(text))
+    out.set(m[1], t === 'b' ? text === '1' : t === 'e' ? { error: ERRORS.has(text) ? ERROR_CODE[text] : 'ERROR' } : t === 'str' || t === 'inlineStr' ? text : Number(text))
   }
   return out
 }

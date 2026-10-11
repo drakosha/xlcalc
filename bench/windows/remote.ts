@@ -10,6 +10,7 @@ import { homedir, hostname } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { windowsLocale } from '../coverage/locales.js'
+import { alive, sleep } from '../coverage/proc.js'
 
 /** A locale's tag, one of the package's: the machine's language, regional format and code page are set by it. */
 export type Tag = string
@@ -22,8 +23,6 @@ export const OUT = join(HERE, 'out')
 /** One SSH connection shared by the calls of a run: a logon on the machine costs seconds. */
 const OPTS = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', '-o', 'ControlMaster=auto', '-o', `ControlPath=${join(homedir(), '.cache/xlwin-%C')}`, '-o', 'ControlPersist=120']
 const OWNER = `${hostname()}:${process.pid}`
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 const exec = (cmd: string, args: string[], timeout: number) => execFileSync(cmd, args, { encoding: 'utf8', timeout, maxBuffer: 1 << 26 }).trim()
 
@@ -122,15 +121,6 @@ async function lock() {
   }
 }
 
-const alive = (pid: number) => {
-  try {
-    process.kill(pid, 0)
-    return true
-  } catch {
-    return false
-  }
-}
-
 /** The metadata of a run's answers: Excel's version and the settings it computed with. */
 export const metaOf = (e: WinEnv, tag: Tag) => ({
   version: e.version,
@@ -214,6 +204,17 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
     // the machine's copy goes with the next `clean`
     if (!process.env.XLWIN_KEEP) rmSync(local, { recursive: true, force: true })
   }
+}
+
+/**
+ * A part of items whose book got no answer, to run again: whole when its job stopped before it, else halved down to
+ * the item Excel does not take (`refused`).
+ */
+export function again<T>(part: T[], a: Answer, cutShort: boolean, refused: (item: T) => void): T[][] {
+  if (!a && cutShort) return [part]
+  if (part.length > 1) return [part.slice(0, part.length >> 1), part.slice(part.length >> 1)]
+  refused(part[0])
+  return []
 }
 
 /**

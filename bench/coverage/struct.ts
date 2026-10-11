@@ -7,25 +7,24 @@
  * rows, merged areas or number formats is written with them, and the look of `LOOK` (and of the set's `look` rectangles) is read back too.
  * `FSTRUCT_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
-import { execFileSync, spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
-import { inCaseOrder } from './stored.js'
-import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, writeAnswers } from './stored.js'
+import { localeMeta } from './locales.js'
+import { ensureExcel, excelVersion, runWatched } from './excel.js'
 import { markDynamic } from './book.js'
 import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from './case-book.js'
 import type { BookInput, CellStyle, NumberFormat, RowInput, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
-import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
+import { colToIndex, formatAddress, indexToCol, parseAddress } from '../../src/model.js'
+import { parseRange, rectCells } from '../../src/structure/area.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
+import { fromRgb } from './cond/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-struct.applescript')
-const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 
 /** The rectangle read on every sheet after the operation; a case keeps its cells inside it or lists them in `extra`. */
 export const READ = 'A1:Z60'
@@ -167,6 +166,12 @@ export async function writeBook(c: StructCase, book: BookInput, file: string, dy
   if (Object.keys(parts.sheets!).length) await writeParts(file, book, parts)
 }
 
+/** The cells of the first column of the rows an operation inserts or deletes (`A5:A7`). */
+export const rowCells = (row: number, count = 1): string => `A${row}:A${row + count - 1}`
+
+/** The cells of the first row of the columns an operation inserts or deletes (`C1:D1`). */
+export const columnCells = (column: string, count = 1): string => `${column}1:${colAt(column, count - 1)}1`
+
 /**
  * The AppleScript arguments of an operation: sheet, range, target sheet or new name, target range. Excel's
  * `range` takes cell ranges only: whole columns and rows are spelled as cells (`B1:B1048576`), rows and
@@ -178,10 +183,10 @@ export function opArgs(c: StructCase): string[] {
   switch (o.op) {
     case 'insertRows':
     case 'deleteRows':
-      return [o.sheet, `A${o.row}:A${o.row + (o.count ?? 1) - 1}`, '', '']
+      return [o.sheet, rowCells(o.row, o.count), '', '']
     case 'insertColumns':
     case 'deleteColumns':
-      return [o.sheet, `${o.column}1:${colAt(o.column, (o.count ?? 1) - 1)}1`, '', '']
+      return [o.sheet, columnCells(o.column, o.count), '', '']
     case 'moveRange':
       return [o.from.sheet, cells(o.from.range), o.to.sheet, o.to.cell]
     case 'copyRange':
@@ -199,17 +204,11 @@ export function opArgs(c: StructCase): string[] {
   }
 }
 
-function colAt(letters: string, plus: number): string {
-  let n = 0
-  for (const ch of letters) n = n * 26 + (ch.charCodeAt(0) - 64)
-  n += plus
-  let s = ''
-  while (n > 0) {
-    s = String.fromCharCode(65 + ((n - 1) % 26)) + s
-    n = Math.floor((n - 1) / 26)
-  }
-  return s
-}
+/** A case's operation as the scripts of the steps with files take it: JSON of the operation and its arguments, `[]` for none. */
+export const opJson = (c: { id: string; book: string; op?: StructCase['op'] }): string => JSON.stringify(c.op ? [c.op.op, ...opArgs({ id: c.id, book: c.book, op: c.op })] : [])
+
+/** The column `plus` columns right of `letters`. */
+const colAt = (letters: string, plus: number): string => indexToCol(colToIndex(letters) + plus)
 
 /** Formulas of `READ` as Excel returns them (a list of rows) by address, empty cells left out. */
 export function cellsOf(rows: unknown): Record<string, string> {
@@ -229,10 +228,10 @@ export function cellsOf(rows: unknown): Record<string, string> {
 export function lookArgs(look: string): [string, string, string] {
   const [cells, cols, rows] = [new Set<string>(), new Set<string>(), new Set<string>()]
   for (const rect of look.split(',')) {
-    const [a, b] = rect.split(':').map(parseAddress)
-    for (let r = a.row; r <= b.row; r++) for (let c = a.col; c <= b.col; c++) cells.add(formatAddress(r, c))
-    for (let c = a.col; c <= b.col; c++) cols.add(indexToCol(c))
-    for (let r = a.row; r <= b.row; r++) rows.add(String(r + 1))
+    const x = parseRange(rect)!
+    for (const a of rectCells(x)) cells.add(a)
+    for (let c = x.c1; c <= x.c2; c++) cols.add(indexToCol(c))
+    for (let r = x.r1; r <= x.r2; r++) rows.add(String(r + 1))
   }
   return [[...cells].join('\n'), [...cols].join('\n'), [...rows].join('\n')]
 }
@@ -241,10 +240,9 @@ export type RawLook = [[string, boolean, number[], string, string][], [string, b
 
 /** Excel's look of a sheet: a white fill is no fill (cases do not use white), sizes of the standard size are left out. */
 export function lookOf([cells, widths, heights]: RawLook): SheetLook {
-  const hex = (rgb: number[]) => `#${rgb.map((x) => x.toString(16).padStart(2, '0')).join('').toUpperCase()}`
   const out: SheetLook = { cells: {}, widths: {}, heights: {}, merges: [] }
   for (const [addr, bold, rgb, format, merge] of cells) {
-    const fill = hex(rgb)
+    const fill = fromRgb(rgb)
     const look: CellLook = { ...(bold ? { bold: true } : {}), ...(fill !== '#FFFFFF' ? { fill } : {}), ...(format !== 'General' ? { format } : {}) }
     if (Object.keys(look).length) out.cells[addr] = look
     const m = merge.replaceAll('$', '')
@@ -258,91 +256,56 @@ export function lookOf([cells, widths, heights]: RawLook): SheetLook {
   return hidden.length ? { ...out, hidden } : out
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
 async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRects: string, files?: FileParts): Promise<ExcelStructAnswer> {
-  const before = dialogText()
-  if (before) throw new Error(`${c.id}: Excel has a window that is not a book: ${before}`)
-  if (Number(execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to count workbooks'], { encoding: 'utf8' }).trim()) !== 0) throw new Error('Excel has open books')
-  const dir = join(SANDBOX, `fstruct-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
-  try {
-    const file = join(dir, 'book.xlsx')
-    await writeBook(c, book, file, dynamic, files)
-    const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
-    const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
-    const child = spawn('osascript', [SCRIPT, file, c.via ?? c.op.op, ...opArgs(c), READ, extra, ...look])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
-    child.stderr.on('data', (b: Buffer) => (err += b.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 90_000
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
-        if (code !== 0) throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { error: string; sheets: [string, string, unknown, RawLook | ''][]; extra: [string, string, string][]; names: [string, string][] }
-        return {
-          ...(raw.error ? { error: raw.error } : {}),
-          sheets: raw.sheets.map(([name, used, f, look]) => ({ name, used, cells: cellsOf(f), ...(look ? { look: lookOf(look) } : {}) })),
-          extra: raw.extra.map(([sheet, cell, text]) => ({ sheet, cell, text })),
-          names: raw.names.map(([name, ref]) => ({ name, ref })),
-        }
+  const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
+  const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
+  return runWatched<ExcelStructAnswer>({
+    script: SCRIPT,
+    label: c.id,
+    folder: 'fstruct',
+    empty: true,
+    book: (file) => writeBook(c, book, file, dynamic, files),
+    args: () => [c.via ?? c.op.op, ...opArgs(c), READ, extra, ...look],
+    timeout: 90_000,
+    poll: 1000,
+    after: 'case',
+    fatal: true,
+    // the run stops on a book Excel does not load
+    repair: async (stop) => {
+      await stop()
+      throw new Error(`${c.id}: Excel did not accept the book (repair window declined)`)
+    },
+    done: (out) => {
+      const raw = JSON.parse(out) as { error: string; sheets: [string, string, unknown, RawLook | ''][]; extra: [string, string, string][]; names: [string, string][] }
+      return {
+        ...(raw.error ? { error: raw.error } : {}),
+        sheets: raw.sheets.map(([name, used, f, look]) => ({ name, used, cells: cellsOf(f), ...(look ? { look: lookOf(look) } : {}) })),
+        extra: raw.extra.map(([sheet, cell, text]) => ({ sheet, cell, text })),
+        names: raw.names.map(([name, ref]) => ({ name, ref })),
       }
-      if (declineRepair()) {
-        child.kill()
-        await exited
-        throw new Error(`${c.id}: Excel did not accept the book (repair window declined)`)
-      }
-      const open = dialogText()
-      if (open) {
-        child.kill()
-        throw new Error(`${c.id}: Excel shows a window, stopped without clicking: ${open}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        throw new Error(`${c.id}: Excel did not answer in 90 s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
-  }
+    },
+  })
 }
+
+/** A case is the same while it and its book are: its stored key and its current one, by the set each comes from. */
+export const structKey = (c: StructCase, set: Pick<StructCases, 'books' | 'files'>) => JSON.stringify([c, set.books[c.book], set.files?.[c.book]])
 
 /** Runs the set's cases that have no stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepStruct(set: string): Promise<void> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const mod = (await import(`./struct/${set}.js`)) as StructSet
-  const { books, cases, dynamic = false, look = [], widths, files } = mod.buildStructCases()
+  const built = (await setModule<StructSet>('struct', set)).buildStructCases()
+  const { books, cases, dynamic = false, look = [], widths, files } = built
   const lookRects = [LOOK, ...look].join(',')
   const target = join(ROOT, `test/excel/struct/${set}.json`)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredStruct) : null
-  // an answer is kept when its case and the case's book are unchanged
-  const key = (c: StructCase, bs: Record<string, BookInput>, fs?: Record<string, FileParts>) => JSON.stringify([c, bs[c.book], fs?.[c.book]])
-  const same = new Map(prev?.cases.map((c) => [c.id, key(c, prev.books, prev.files)]) ?? [])
-  const answers: Record<string, ExcelStructAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && same.get(c.id) === key(c, books, files)) answers[c.id] = prev.answers[c.id]
+  const answers = keptSame(built, loadStored<StoredStruct>(target), structKey)
   const t0 = Date.now()
-  mkdirSync(join(ROOT, 'test/excel/struct'), { recursive: true })
   const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), ...(files ? { files } : {}), answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
+    const meta = { version: excelVersion(), locale: localeMeta('en-US'), read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: secondsSince(t0) }
+    writeAnswers(target, { meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), ...(files ? { files } : {}), answers: inCaseOrder(cases, answers) })
   }
   await ensureExcel('en-US')
-  let done = 0
-  try {
-    const only = process.env.FSTRUCT_ONLY?.split(',')
-    for (const c of cases) {
-      if (answers[c.id] || (only && !only.includes(c.id))) continue
-      answers[c.id] = await runCase(c, books[c.book], dynamic, lookRects, files?.[c.book])
-      done++
-    }
-  } finally {
+  await runCases(cases.filter((c) => !answers[c.id]), 'FSTRUCT_ONLY', async (c) => void (answers[c.id] = await runCase(c, books[c.book], dynamic, lookRects, files?.[c.book])), (done) => {
     save()
-    console.log(`struct ${set}: ${done} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
-  }
+    console.log(`${answeredLine(`struct ${set}`, done, answers, cases)}, ${took(t0)} s`)
+  })
 }

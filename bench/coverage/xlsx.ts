@@ -19,8 +19,9 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compute } from '../../src/index.js'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
-import { writeBook } from './book.js'
+import { inParts, writeBook } from './book.js'
 import { ensureExcel, excelVersion } from './excel.js'
+import { localeMeta } from './locales.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { buildRoundTrips, XLSX_CLOCK } from './xlsx/books.js'
 import { colorBook, colorCases } from './xlsx/colors.js'
@@ -30,6 +31,7 @@ import { FILTER_FILES, filterFile } from './xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from './xlsx/formats.js'
 import { OLD_FORMULAS, oldFormulaBook } from './xlsx/intersect.js'
 import { partsHash } from './xlsx/sent.js'
+import { loadStored, secondsSince, setModule, writeAnswers } from './stored.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -51,10 +53,7 @@ export interface StoredRun {
 
 const sha = (x: Uint8Array | string) => createHash('sha256').update(x).digest('hex')
 
-function load(step: string): StoredRun {
-  const file = join(DATA, `${step}.json`)
-  return existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredRun) : { meta: {}, books: {} }
-}
+const load = (step: string): StoredRun => loadStored<StoredRun>(join(DATA, `${step}.json`)) ?? { meta: {}, books: {} }
 
 /** Sends the books that changed through Excel in each book's locale (a tag), storing what Excel saved under `dir`. */
 async function send(step: string, books: { id: string; locale: string; bytes: () => Promise<Uint8Array>; hash: string }[], report: (id: string, saved: Uint8Array) => Promise<string>) {
@@ -64,8 +63,8 @@ async function send(step: string, books: { id: string; locale: string; bytes: ()
   mkdirSync(OUT, { recursive: true })
   const t0 = Date.now()
   const save = () => {
-    run.meta = { version: excelVersion(), seconds: Math.round((Date.now() - t0) / 100) / 10, date: new Date().toISOString().slice(0, 10) }
-    writeFileSync(join(DATA, `${step}.json`), JSON.stringify(run, null, 1) + '\n')
+    run.meta = { version: excelVersion(), seconds: secondsSince(t0), date: new Date().toISOString().slice(0, 10) }
+    writeAnswers(join(DATA, `${step}.json`), run)
   }
   // books the step no longer sends (a set that shrank) go with their files
   for (const id of Object.keys(run.books))
@@ -121,10 +120,10 @@ async function caseParts(): Promise<{ id: string; probes: Probe[]; sheets: Sheet
     .sort()
   const sets: { name: string; probes: Probe[]; sheets: SheetCells }[] = [{ name: 'probes', probes: buildProbes(), sheets: PROBE_SHEETS }]
   for (const name of names) {
-    const mod = (await import(`./sets/${name}.js`)) as { buildProbes: () => Probe[]; SHEETS?: SheetCells }
+    const mod = await setModule<{ buildProbes: () => Probe[]; SHEETS?: SheetCells }>('sets', name)
     sets.push({ name, probes: mod.buildProbes(), sheets: mod.SHEETS ?? {} })
   }
-  return sets.flatMap((s) => Array.from({ length: Math.ceil(s.probes.length / 400) }, (_, k) => ({ id: `${s.name}-${k + 1}`, probes: s.probes.slice(k * 400, (k + 1) * 400), sheets: s.sheets })))
+  return sets.flatMap((s) => inParts(s.probes).map((probes, k) => ({ id: `${s.name}-${k + 1}`, probes, sheets: s.sheets })))
 }
 
 async function saved() {
@@ -146,18 +145,16 @@ async function colors() {
   const cases = colorCases()
   await ensureExcel('en-US')
   const shown = await fillColors(await colorBook(cases), cases.map((c) => c.cell))
-  const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', date: new Date().toISOString().slice(0, 10) }
-  mkdirSync(DATA, { recursive: true })
-  writeFileSync(join(DATA, 'colors.json'), JSON.stringify({ meta, colors: Object.fromEntries(cases.map((c, i) => [c.color, shown[i]])) }, null, 1) + '\n')
+  const meta = { version: excelVersion(), locale: localeMeta('en-US'), date: new Date().toISOString().slice(0, 10) }
+  writeAnswers(join(DATA, 'colors.json'), { meta, colors: Object.fromEntries(cases.map((c, i) => [c.color, shown[i]])) })
   console.log(`colors: ${cases.length} fills read`)
 }
 
 async function formats() {
   await ensureExcel('en-US')
   const shown = await numberFormats(await formatBook(), FORMAT_IDS.map((id) => `A${id}`))
-  const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', date: new Date().toISOString().slice(0, 10) }
-  mkdirSync(DATA, { recursive: true })
-  writeFileSync(join(DATA, 'formats.json'), JSON.stringify({ meta, formats: Object.fromEntries(FORMAT_IDS.map((id, i) => [id, shown[i]])) }, null, 1) + '\n')
+  const meta = { version: excelVersion(), locale: localeMeta('en-US'), date: new Date().toISOString().slice(0, 10) }
+  writeAnswers(join(DATA, 'formats.json'), { meta, formats: Object.fromEntries(FORMAT_IDS.map((id, i) => [id, shown[i]])) })
   console.log(`formats: ${shown.length} read`)
 }
 

@@ -6,9 +6,8 @@
 -- Arguments: the book's path and the path to save to (inside Excel's sandbox), the saved file's name, what to make as JSON
 -- ([["rule", sheet, range, first cell, type, alert, operator, formula1, formula2, ignore blank, dropdown, show input,
 -- show error, input title, input message, error title, error message], ["group", sheet, "rows"|"columns", range],
--- ["collapse", sheet, "rows"|"columns", cell], ["levels", sheet, row levels, column levels], ["summary", sheet, below,
--- right]]: flags "1", "0" or "" for Excel's own), the operation as JSON ([op, sheet, range, target sheet or new name,
--- target], or []), the window (`A1:J30`).
+-- ["collapse", sheet, "rows"|"columns", cell], ["summary", sheet, below, right]]: flags "1", "0" or "" for Excel's
+-- own), the operation as JSON ([op, sheet, range, target sheet or new name, target], or []), the window (`A1:J30`).
 -- Output: JSON {"error": text, "sheets": [[name, [[address, type, operator, formula1, formula2, ignore blank, dropdown,
 -- show input, show error, alert style, input title, input message, error title, error message, value]], [[row, level,
 -- hidden, collapsed]], [[column, level, hidden, collapsed]], [summary row, summary column]]]}.
@@ -125,8 +124,6 @@ on run argv
 						else
 							set show detail of (entire column of range (item 4 of m) of ws) to false
 						end if
-					else if mk is "levels" then
-						show levels (outline object of ws) row levels (item 3 of m) column levels (item 4 of m)
 					else if mk is "summary" then
 						if (item 3 of m) is "1" then set summary row of (outline object of ws) to summary below
 						if (item 3 of m) is "0" then set summary row of (outline object of ws) to summary above

@@ -7,8 +7,8 @@
  */
 import type { BookInput, CellStyle, CellView, Clock, ConditionalFormat, StructureOp } from '../../../src/contract.js'
 import { createSession, editStructure, validateFormula } from '../../../src/index.js'
-import { formatAddress, MAX_COLS, MAX_ROWS } from '../../../src/model.js'
-import { parseRange } from '../../../src/structure/area.js'
+import { MAX_COLS, MAX_ROWS } from '../../../src/model.js'
+import { cellCount, parseRange, rectCells } from '../../../src/structure/area.js'
 import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
 import '../locales.js'
 
@@ -86,12 +86,7 @@ export const fromBgr = (n: number) => hexOf([n & 255, (n >> 8) & 255, (n >> 16) 
 export const fromRgb = (rgb: number[]) => hexOf(rgb)
 
 /** The cells of a range, row by row. */
-export function cellsOf(range: string): string[] {
-  const x = parseRange(range)!
-  const out: string[] = []
-  for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) out.push(formatAddress(r, c))
-  return out
-}
+export const cellsOf = (range: string): string[] => [...rectCells(parseRange(range)!)]
 
 /** What a cell of a session window shows by its own style and its conditional formats' look, as Excel's display format gives it. */
 export function viewLook(v: CellView | undefined, styles: CellStyle[] = []): Look {
@@ -111,8 +106,8 @@ function cellSet(ranges: string[]): string[] {
   const out = new Set<string>()
   for (const r of ranges) {
     const x = parseRange(r)!
-    if ((x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) > 10_000 || x.r2 === MAX_ROWS - 1 || x.c2 === MAX_COLS - 1) out.add(r)
-    else for (let row = x.r1; row <= x.r2; row++) for (let c = x.c1; c <= x.c2; c++) out.add(formatAddress(row, c))
+    if (cellCount(x) > 10_000 || x.r2 === MAX_ROWS - 1 || x.c2 === MAX_COLS - 1) out.add(r)
+    else for (const a of rectCells(x)) out.add(a)
   }
   return [...out].sort()
 }

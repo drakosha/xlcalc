@@ -6,20 +6,21 @@
  * into `test/excel/win/xlsx/formats.json`, another locale's into `xlsx/<tag>/formats.json`. `test/xlsx-win.test.ts`
  * reads them.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import type { StoredRun } from '../coverage/xlsx.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
 import { partsHash } from '../coverage/xlsx/sent.js'
 import { localeDir } from '../coverage/locales.js'
+import { loadStored, secondsSince, writeAnswers } from '../coverage/stored.js'
 import { winFile } from './functions.js'
 import { inJobs, metaOf, OUT, runJob, type Tag, type WinEnv } from './remote.js'
 
 export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
   const dir = winFile('xlsx/filters')
   const file = winFile('xlsx/filters.json')
-  const run: StoredRun = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredRun) : { meta: {}, books: {} }
+  const run: StoredRun = loadStored<StoredRun>(file) ?? { meta: {}, books: {} }
   const books = await Promise.all(
     FILTER_FILES.map(async (c) => {
       const data = await filterFile(c)
@@ -31,8 +32,8 @@ export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
   mkdirSync(dir, { recursive: true })
   const t0 = Date.now()
   const save = () => {
-    run.meta = { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(file, JSON.stringify(run, null, 1) + '\n')
+    run.meta = { ...metaOf(e, tag), seconds: secondsSince(t0) }
+    writeAnswers(file, run)
   }
   await inJobs(
     'xlsx-filters',
@@ -67,7 +68,6 @@ export async function stepXlsxFormats(tag: Tag, e: WinEnv): Promise<void> {
   // each cell: its shown text, its colour, NumberFormat, NumberFormatLocal
   const shown = a.answers[0] as [string, number, string, string][]
   const by = (k: 2 | 3) => Object.fromEntries(FORMAT_IDS.map((id, i) => [id, shown[i][k]]))
-  mkdirSync(dirname(file), { recursive: true })
-  writeFileSync(file, JSON.stringify({ meta: { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }, formats: by(2), local: by(3) }, null, 1) + '\n')
+  writeAnswers(file, { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, formats: by(2), local: by(3) })
   console.log(`xlsx formats ${tag}: ${shown.length} read`)
 }
