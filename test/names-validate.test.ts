@@ -1,10 +1,11 @@
 /**
  * `validateName` in a book's locale and `validateNames`, which gives a book's name issues without the book: the
- * same issues as `ComputeResult.nameIssues`, each telling a name left out of the book from one kept with an error.
+ * same issues as `ComputeResult.diagnostics` of kind `name`, each telling a name left out of the book from one kept with an error.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, engine, InputError, createSession, validateName, validateNames, type BookInput, type NameInput } from '../src/index.js'
 import './locales.js'
+import { nameIssues } from './diagnostics.js'
 
 const NAMES: NameInput[] = [
   { name: 'Ставка', ref: '0.2' },
@@ -81,11 +82,11 @@ describe('validateNames', () => {
   it('gives the issues a book of these sheets, tables and locale gives, in compute and in a session', () => {
     for (const locale of [undefined, 'en-US', 'ru-RU']) {
       const issues = validateNames(NAMES, ctx(locale))
-      expect(compute(book(locale), { display: false }).nameIssues, locale).toEqual(issues)
+      expect(nameIssues(compute(book(locale), { display: false })), locale).toEqual(issues)
       const s = createSession(book(locale), { display: false })
       try {
         s.setNames(NAMES.slice(0, 7))
-        expect(s.getResult().nameIssues).toEqual(validateNames(NAMES.slice(0, 7), ctx(locale)))
+        expect(nameIssues(s.getResult())).toEqual(validateNames(NAMES.slice(0, 7), ctx(locale)))
       } finally { s.close() }
     }
   })

@@ -96,7 +96,7 @@ export function cellsOf(range: string): string[] {
 /** What a cell of a session window shows by its own style and its conditional formats' look, as Excel's display format gives it. */
 export function viewLook(v: CellView | undefined, styles: CellStyle[] = []): Look {
   const own = v?.style !== undefined ? styles[v.style] : undefined
-  const cf = v?.look?.style
+  const cf = v?.appearance?.style
   return {
     text: v?.text ?? '',
     fill: cf?.fill?.color ?? own?.fill?.color ?? null,

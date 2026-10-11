@@ -1,6 +1,7 @@
 /** References: Cyrillic sheets, quotes in a criterion, three ways to reference a column, name scopes. */
 import { describe, expect, it } from 'vitest'
 import { compute, type BookInput } from '../src/index.js'
+import { nameIssues } from './diagnostics.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 1 }
 const data = { A1: { value: 'он сказал "да"' }, A2: { value: 'нет' }, A3: { value: 'он сказал "да"' }, B1: { value: 1 }, B2: { value: 2 }, B3: { value: 4 } }
@@ -44,7 +45,7 @@ describe('references', () => {
       names: ['Q1', 'R1C1', 'TRUE', '1x'].map((name) => ({ name, ref: "'D'!$B:$B" })),
     }
     const r = compute(book, { clock })
-    expect(r.nameIssues.map((n) => n.name)).toEqual(['Q1', 'R1C1', 'TRUE', '1x'])
+    expect(nameIssues(r).map((n) => n.name)).toEqual(['Q1', 'R1C1', 'TRUE', '1x'])
     // Q1 is a cell address (empty), _1x an unknown name
     expect(r.sheets[1].cells.A1.value).toBe(0)
     expect(r.sheets[1].cells.A2.value).toEqual({ error: 'NAME' })

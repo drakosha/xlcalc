@@ -67,7 +67,7 @@ function asView(w: ViewportCell, styles: object[], own: CellView['numberFormat']
   const out: CellView = { ...rest }
   if (own !== undefined) out.numberFormat = own
   if (style) out.style = styles.findIndex((x) => JSON.stringify(x) === JSON.stringify(style))
-  if (appearance) out.look = appearance
+  if (appearance) out.appearance = appearance
   return out
 }
 

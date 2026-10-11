@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { compute, debugGeneratedCode, createSession, editStructure, validateFormula, validateLocalFormula, type CellInput, type CellValue } from '../src/index.js'
 import { ruRU } from './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
 
@@ -43,9 +44,9 @@ describe('arrays beyond the Excel cases', () => {
       { sheet: 'S', cell: 'C1', value: { error: 'SPILL' } },
       { sheet: 'S', cell: 'C2', value: { error: 'SPILL' } },
     ])
-    expect(s.getResult().issues.find((i) => i.cell === 'C1')).toMatchObject({ error: 'SPILL', reason: "the array of 2×1 values cannot spill: 'S'!C2 is not empty" })
+    expect(cellIssues(s.getResult()).find((i) => i.cell === 'C1')).toMatchObject({ error: 'SPILL', reason: "the array of 2×1 values cannot spill: 'S'!C2 is not empty" })
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).changes.map((c) => [c.cell, c.value])).toEqual([['A1', 2], ['C1', 6], ['C2', 12]])
-    expect(s.getResult().issues).toEqual([])
+    expect(cellIssues(s.getResult())).toEqual([])
   })
 
   it('array constants: the canonical form, names and validation', () => {

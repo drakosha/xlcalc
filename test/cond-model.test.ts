@@ -67,8 +67,8 @@ describe.each(['closures', 'eval'] as const)('conditional formats in a session (
     const s = createSession(book([GT2, { type: 'expression', ranges: ['B1:B2'], formula: '$A1=1', style: { font: { italic: true } } }]), { clock: CLOCK, execution })
     const w = s.getCells('S', 'A1:B5')
     expect(w.A1).toEqual({ value: 1, text: '1' })
-    expect(w.A3).toEqual({ value: 3, text: '3', look: { style: RED } })
-    expect(w.B1).toEqual({ value: null, text: '', look: { style: { font: { italic: true } } } })
+    expect(w.A3).toEqual({ value: 3, text: '3', appearance: { style: RED } })
+    expect(w.B1).toEqual({ value: null, text: '', appearance: { style: { font: { italic: true } } } })
     expect(w.B2).toBeUndefined()
     expect(s.getResult().sheets[0].cells.A3).toEqual({ value: 3, text: '3' })
   })
@@ -76,8 +76,8 @@ describe.each(['closures', 'eval'] as const)('conditional formats in a session (
   it('setLayout replaces the rules; the book keeps them; an empty list removes them', () => {
     const s = createSession(book([GT2]), { clock: CLOCK, execution })
     expect(s.setLayout([{ sheet: 'S', conditionalFormats: [{ ...GT2, formulas: ['4'] }] }]).changes).toEqual([])
-    expect(s.getCells('S', 'A3').A3.look).toBeUndefined()
-    expect(s.getCells('S', 'A5').A5.look).toEqual({ style: RED })
+    expect(s.getCells('S', 'A3').A3.appearance).toBeUndefined()
+    expect(s.getCells('S', 'A5').A5.appearance).toEqual({ style: RED })
     expect(s.getBook().sheets[0].conditionalFormats).toEqual([{ ...GT2, formulas: ['4'] }])
     s.setLayout([{ sheet: 'S', conditionalFormats: [] }])
     expect(s.getBook().sheets[0].conditionalFormats).toBeUndefined()
@@ -87,20 +87,20 @@ describe.each(['closures', 'eval'] as const)('conditional formats in a session (
   it('an edit changes the looks the next read gives: statistics over the edited cells are taken again', () => {
     const scale: ConditionalFormat = { type: 'colorScale', ranges: ['A1:A5'], points: [{ value: { type: 'min' }, color: '#000000' }, { value: { type: 'max' }, color: '#FF0000' }] }
     const s = createSession(book([scale, { type: 'expression', ranges: ['B1:B5'], formula: '$A1>3', style: RED }]), { clock: CLOCK, execution })
-    expect(s.getCells('S', 'A5').A5.look).toEqual({ style: { fill: { color: '#FF0000' } } })
+    expect(s.getCells('S', 'A5').A5.appearance).toEqual({ style: { fill: { color: '#FF0000' } } })
     s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 9 } }])
     const w = s.getCells('S', 'A1:B5')
-    expect(w.A1.look).toEqual({ style: { fill: { color: '#FF0000' } } })
-    expect(w.A5.look).toEqual({ style: { fill: { color: '#6D0000' } } })
-    expect(w.B1.look).toEqual({ style: RED })
+    expect(w.A1.appearance).toEqual({ style: { fill: { color: '#FF0000' } } })
+    expect(w.A5.appearance).toEqual({ style: { fill: { color: '#6D0000' } } })
+    expect(w.B1.appearance).toEqual({ style: RED })
   })
 
   it('a rule over another sheet and a name computes there', () => {
     const b: BookInput = { ...book([{ type: 'expression', ranges: ['A1:A5'], formula: "$A1>'T'!$A$1+lim", style: RED }]), names: [{ name: 'lim', ref: '1' }] }
     b.sheets.push({ name: 'T', cells: { A1: { value: 2 } } })
     const s = createSession(b, { clock: CLOCK, execution })
-    expect(Object.entries(s.getCells('S', 'A1:A5')).filter(([, v]) => v.look).map(([a]) => a)).toEqual(['A4', 'A5'])
+    expect(Object.entries(s.getCells('S', 'A1:A5')).filter(([, v]) => v.appearance).map(([a]) => a)).toEqual(['A4', 'A5'])
     s.setCells([{ sheet: 'T', cell: 'A1', input: { value: 0 } }])
-    expect(Object.entries(s.getCells('S', 'A1:A5')).filter(([, v]) => v.look).map(([a]) => a)).toEqual(['A2', 'A3', 'A4', 'A5'])
+    expect(Object.entries(s.getCells('S', 'A1:A5')).filter(([, v]) => v.appearance).map(([a]) => a)).toEqual(['A2', 'A3', 'A4', 'A5'])
   })
 })

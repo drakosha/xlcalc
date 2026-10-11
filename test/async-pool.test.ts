@@ -12,6 +12,7 @@ import { pool } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
 import './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
   try {
@@ -41,7 +42,7 @@ describe.each(['closures', 'eval'] as const)('in threads, execution %s', (execut
       const sync = compute(book, { clock: CLOCK, execution })
       expect(results[i].hash, name).toBe(sync.hash)
       expect(results[i].sheets, name).toEqual(sync.sheets)
-      expect(results[i].issues, name).toEqual(sync.issues)
+      expect(cellIssues(results[i]), name).toEqual(cellIssues(sync))
     }
   }, 120_000)
 

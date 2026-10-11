@@ -1,6 +1,6 @@
 /**
  * Why a cell holds an error, without the book's result: `Session.getCellIssue` gives each cell's issue as
- * `getResult().issues` does and the cell the error began in, through ranges, spills, sheets and cycles; `explain` marks
+ * `getResult().diagnostics` does and the cell the error began in, through ranges, spills, sheets and cycles; `explain` marks
  * each error with that cell and leads to it, through a range by the cell the error came from and past its depth, as far
  * as `errorDepth` and never round a cycle. In a synchronous session, in the same thread and in a thread, with closures
  * and eval.
@@ -10,6 +10,7 @@ import { InputError, createSession, type BookInput, type Execution } from '../sr
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 import './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 afterAll(closeCalcs)
 
@@ -43,7 +44,7 @@ describe.each(['closures', 'eval'] as const)('the reason and origin of an error,
   describe.each(KINDS)('%s', (kind) => {
     it("each cell's issue as the result's, with the cell its error began in; null without an error", async () => {
       const s = await (await opener(kind))(errors(), { clock: CLOCK, execution })
-      const { issues } = await s.getResult()
+      const issues = cellIssues(await s.getResult())
       expect(issues.map((i) => `${i.sheet}!${i.cell}`).sort()).toEqual(Object.keys(ORIGINS).sort())
       for (const { sheet, cell, ...rest } of issues) {
         const got = await s.getCellIssue(sheet, cell)

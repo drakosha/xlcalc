@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, validateFormula, type BookInput, type NameInput } from '../src/index.js'
+import { cellIssues, nameIssues } from './diagnostics.js'
 
 /** A sheet S with values A1:A3 = 1, 2, 3 and the formulas given, and the names. */
 function book(cells: Record<string, string>, names: NameInput[], more: BookInput['sheets'] = []): BookInput {
@@ -19,15 +20,15 @@ const values = (b: BookInput, sheet = 'S') => Object.fromEntries(Object.entries(
 describe('names of any formula', () => {
   it('a formula that does not parse, or a reference without its sheet, leaves the name out with its issue', () => {
     const r = compute(book({ B1: 'bad', B2: 'nosheet' }, [{ name: 'bad', ref: "'S'!A1+" }, { name: 'nosheet', ref: 'A1*2' }]), { display: false })
-    expect(r.nameIssues.map((i) => `${i.name}: ${i.reason}`)).toEqual([expect.stringMatching(/^bad: bad formula/), 'nosheet: a reference in a name needs its sheet'])
-    expect(r.issues.map((i) => `${i.cell} ${i.check}`)).toEqual(['B1 unknown_name', 'B2 unknown_name'])
+    expect(nameIssues(r).map((i) => `${i.name}: ${i.reason}`)).toEqual([expect.stringMatching(/^bad: bad formula/), 'nosheet: a reference in a name needs its sheet'])
+    expect(cellIssues(r).map((i) => `${i.cell} ${i.check}`)).toEqual(['B1 unknown_name', 'B2 unknown_name'])
   })
 
   it('a formula over an unknown sheet or function stays a name giving #REF! or #NAME?, with its issue', () => {
     const r = compute(book({ B1: 'gone+1', B2: 'udf' }, [{ name: 'gone', ref: "'X'!A1" }, { name: 'udf', ref: 'FOO(1)' }]), { display: false })
     expect(r.sheets[0].cells.B1.value).toEqual({ error: 'REF' })
     expect(r.sheets[0].cells.B2.value).toEqual({ error: 'NAME' })
-    expect(r.nameIssues.map((i) => i.name)).toEqual(['gone', 'udf'])
+    expect(nameIssues(r).map((i) => i.name)).toEqual(['gone', 'udf'])
   })
 
   it('a name that uses itself, through other names or not, is #CYCLE! where it is used', () => {

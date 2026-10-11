@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest'
 import { compute, InputError, createSession, editStructure, toInvariant, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { nameIssues } from './diagnostics.js'
 
 /** Sheet S with A1 = 100 and the formulas given, and the names. */
 const book = (formulas: Record<string, string>, names: NameInput[]): BookInput => ({
@@ -16,7 +17,7 @@ const book = (formulas: Record<string, string>, names: NameInput[]): BookInput =
 
 const values = (b: BookInput) => {
   const r = compute(b, { display: false })
-  return { issues: r.nameIssues, cells: Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value])) }
+  return { issues: nameIssues(r), cells: Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value])) }
 }
 
 describe('defined names in letters of any script', () => {
@@ -48,7 +49,7 @@ describe('defined names in letters of any script', () => {
       names: [{ name: 'Ставка', ref: '0.2' }, { name: 'Ставка', ref: '0.3', scope: 'Лист' }],
     }
     const r = compute(b, { display: false })
-    expect(r.nameIssues).toEqual([])
+    expect(nameIssues(r)).toEqual([])
     expect([r.sheets[0].cells.A1.value, r.sheets[0].cells.A2.value, r.sheets[1].cells.A1.value]).toEqual([0.6, 0.2, 0.3])
   })
 
@@ -131,12 +132,12 @@ describe("Excel's rules for names where it was measured (tables/names-more-held,
     const names = [{ name: 'ИСТИНА', ref: '11' }, { name: 'ложь', ref: '12' }, { name: 'ИСТИНА_1', ref: '1' }]
     const ru: BookInput = { ...book({ B1: 'ИСТИНА_1+1' }, names), locale: 'ru-RU' }
     const r = compute(ru, { display: false })
-    expect(r.nameIssues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
+    expect(nameIssues(r).map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
     expect(r.sheets[0].cells.B1.value).toBe(2)
-    expect(compute({ ...ru, locale: 'en-US' }, { display: false }).nameIssues).toEqual([])
+    expect(compute({ ...ru, locale: 'en-US' }, { display: false }).diagnostics).toEqual([])
     const s = createSession(ru)
     s.setNames([...names, { name: 'Ложь', ref: '3' }])
-    expect(s.getResult().nameIssues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь', 'Ложь'])
+    expect(nameIssues(s.getResult()).map((x) => x.name)).toEqual(['ИСТИНА', 'ложь', 'Ложь'])
     s.close()
     const file = await writeXlsx({ book: ru }, { values: 'omit' })
     expect(file.issues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])

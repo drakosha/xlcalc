@@ -9,6 +9,7 @@ import { compute, createSession, editStructure, validateNames, type BookInput, t
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { cellIssues } from './diagnostics.js'
 
 /** The book with `=` before each of its formulas, or without (`eq` empty). */
 const book = (eq: string): BookInput => ({
@@ -37,7 +38,7 @@ const book = (eq: string): BookInput => ({
 describe.each(['closures', 'eval'] as Execution[])('a leading = in the input, %s', (execution) => {
   it('is dropped: the book computes as the one without it, with the same input hash and the same values', () => {
     const [plain, eq] = [compute(book(''), { clock: CLOCK, execution }), compute(book('='), { clock: CLOCK, execution })]
-    expect(eq.issues).toEqual([])
+    expect(cellIssues(eq)).toEqual([])
     expect(eq.inputHash).toBe(plain.inputHash)
     expect(eq.hash).toBe(plain.hash)
     expect([eq.sheets[0].cells.C1.value, eq.sheets[0].cells.C2.value, eq.sheets[0].cells.B3.value]).toEqual([7, 3.5, 10])
@@ -57,7 +58,7 @@ describe.each(['closures', 'eval'] as Execution[])('a leading = in the input, %s
   it('a second = stays: an error of the formula', () => {
     const r = compute({ sheets: [{ name: 'S', cells: { A1: { formula: '==1' }, A2: { formula: '=' } } }] }, { clock: CLOCK, execution })
     expect([r.sheets[0].cells.A1.value, r.sheets[0].cells.A2.value]).toEqual([{ error: 'ERROR' }, { error: 'ERROR' }])
-    expect(r.issues.map((i) => `${i.cell} ${i.check}`)).toEqual(['A1 syntax', 'A2 empty'])
+    expect(cellIssues(r).map((i) => `${i.cell} ${i.check}`)).toEqual(['A1 syntax', 'A2 empty'])
     expect(r.sheets[0].cells.A1.formula).toBe('=1')
   })
 

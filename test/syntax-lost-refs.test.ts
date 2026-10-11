@@ -1,6 +1,7 @@
 /** References Excel lost, as it writes them after deleting rows or a sheet: read as #REF!, printed back as written. */
 import { describe, expect, it } from 'vitest'
 import { compute, validateFormula } from '../src/index.js'
+import { nameIssues } from './diagnostics.js'
 
 describe('lost references', () => {
   it('parse to #REF! and keep their sheet or reference in the canonical text', () => {
@@ -36,7 +37,7 @@ describe('lost references', () => {
         { name: 'loc', ref: "'S'!#REF!", scope: 'S' },
       ],
     })
-    expect(r.nameIssues).toEqual([])
+    expect(nameIssues(r)).toEqual([])
     expect(Object.values(r.sheets[0].cells).map((c) => c.value)).toEqual([{ error: 'REF' }, { error: 'REF' }, { error: 'REF' }, 7, { error: 'REF' }, 4])
   })
 })

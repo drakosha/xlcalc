@@ -10,6 +10,7 @@ import { apply } from './session-edits.js'
 import { spillBook, spillEdits } from './session-spill-edits.js'
 import { shownValue } from './spill-shown.js'
 import { toVal } from './excel-cases.js'
+import { cellIssues } from './diagnostics.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 5 }
 
@@ -51,7 +52,7 @@ describe('sessions with spilled arrays', () => {
       { sheet: 'S', cell: 'A3', value: 'x' },
       { sheet: 'S', cell: 'B1', value: { error: 'SPILL' } },
     ])
-    expect(s.getResult().issues[0]).toMatchObject({ cell: 'A1', reason: "the array of 3×1 values cannot spill: 'S'!A3 is not empty" })
+    expect(cellIssues(s.getResult())[0]).toMatchObject({ cell: 'A1', reason: "the array of 3×1 values cannot spill: 'S'!A3 is not empty" })
     expect(sorted(s.setCells([S('A3', null)]))).toEqual([
       { sheet: 'S', cell: 'A1', value: 1, spill: 'A1:A3' },
       { sheet: 'S', cell: 'A2', value: 2, spillOf: 'A1' },

@@ -13,6 +13,7 @@ import { parseAddress } from '../src/model.js'
 import { sheetKey, validate } from '../src/syntax.js'
 import { tableAt, tablesOf } from '../src/tables/model.js'
 import { shownValue } from './spill-shown.js'
+import { nameIssues } from './diagnostics.js'
 
 export const CLOCK = { now: '2026-10-07T12:00:00Z', seed: 1 }
 
@@ -50,7 +51,7 @@ export function engineAnswer(c: TableCase): EngineAnswer {
         refused[i] = e.message
         return
       }
-      const issue = s.getResult().nameIssues.find((x) => x.name === step.name.name && x.scope === step.name.scope)
+      const issue = nameIssues(s.getResult()).find((x) => x.name === step.name.name && x.scope === step.name.scope)
       if (issue) {
         refused[i] = issue.reason
         s.setNames(before)
@@ -93,7 +94,7 @@ export function engineAnswer(c: TableCase): EngineAnswer {
     }
   }
   s.close()
-  const left = new Set(result.nameIssues.map((x) => `${x.scope ?? ''}!${x.name}`))
+  const left = new Set(nameIssues(result).map((x) => `${x.scope ?? ''}!${x.name}`))
   const names = (book.names ?? []).filter((n) => !left.has(`${n.scope ?? ''}!${n.name}`)).map((n) => (n.scope ? `${n.scope}!${n.name}` : n.name))
   return { values, formulas, tables: shapes(book), refused, names, book, result }
 }
@@ -119,7 +120,7 @@ export function storedText(book: BookInput, sheet: string, addr: string, shown: 
 export function differences(c: TableCase, x: TableAnswer, tag?: string): string[] {
   const out: string[] = []
   // Excel did not load the book over a name it does not take: the engine agrees when it leaves a name of the book out
-  if (x.rejected) return compute(c.book, { display: false }).nameIssues.length ? [] : ['Excel did not load the book']
+  if (x.rejected) return nameIssues(compute(c.book, { display: false })).length ? [] : ['Excel did not load the book']
   const got = engineAnswer(c)
   // Excel refuses some steps without an error (rows deleted from two tables): the book stays as it was, which the
   // values, formulas and tables below check; every step it answered with an error the engine refuses too

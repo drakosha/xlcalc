@@ -9,6 +9,7 @@ import { synthBook } from '../src/synth.js'
 import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
 import './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
   try {
@@ -41,7 +42,7 @@ describe.each(['closures', 'eval'] as const)('in the same thread, execution %s',
       const r = await calc.compute(book, { clock: CLOCK, execution })
       expect(r.hash, name).toBe(sync.hash)
       expect(r.sheets, name).toEqual(sync.sheets)
-      expect(r.issues, name).toEqual(sync.issues)
+      expect(cellIssues(r), name).toEqual(cellIssues(sync))
     }
   }, 120_000)
 
