@@ -3,7 +3,7 @@
  * (src/engineering.js), Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); fixed against Excel en-US.
  * Complex text is read and written with the decimal separator of the book's locale (`Cx.rules`).
  */
-import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
+import { gridAt, occupied, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { atp } from '../date/atp.js'
 import { trimSpaces } from '../../dates.js'
@@ -201,7 +201,7 @@ function collect(grids: readonly Grid[], rules: Rules): Complex[] | CErr {
   const out: Complex[] = []
   for (const g of grids) {
     const n = g.rows * g.cols
-    const filled = g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w
+    const filled = occupied(g)
     for (let i = 0; i < Math.min(n, filled); i++) {
       const z = toComplex(gridAt(g, i), rules)
       if (isErr(z)) return z

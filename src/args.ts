@@ -422,7 +422,7 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   M: (x, cx) => {
     if (isErr(x)) return x
     const g = cx.grid(x)
-    return g.v.find(isErr) ?? g
+    return gridError(g) ?? g
   },
   R: (x) => x,
   r: (x) => x,
@@ -555,13 +555,18 @@ export function gridAt(g: Grid, i: number): V {
   return r < g.h && c < g.w ? g.v[r * g.w + c] : null
 }
 
+/** Positions of a grid that hold cells, row by row in the referenced width; past them everything is blank. */
+export const occupied = (g: Grid) => (g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
+
+/** The first error in the occupied part of a grid. */
+export const gridError = (g: Grid): CErr | undefined => g.v.find(isErr) as CErr | undefined
+
 /** Rule 4: number pairs from two arrays; pairs with a non-number are dropped; different sizes are #N/A. */
 export function pairs(a: Grid, b: Grid): [number[], number[]] | CErr {
   const n = a.rows * a.cols
   if (n !== b.rows * b.cols) return E.NA
   // past the occupied parts every pair is blank
-  const extent = (g: Grid) => (g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
-  const end = Math.min(n, Math.max(extent(a), extent(b)))
+  const end = Math.min(n, Math.max(occupied(a), occupied(b)))
   const xs: number[] = []
   const ys: number[] = []
   for (let i = 0; i < end; i++) {

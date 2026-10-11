@@ -1,5 +1,5 @@
 /** Helpers shared by the statistical function files. */
-import { pairs, type Arg, type Cx, type Grid } from '../../args.js'
+import { gridError, pairs, type Arg, type Cx, type Grid } from '../../args.js'
 import { Areas, E, isErr, type CErr, type V } from '../../values.js'
 import { momentValue, stableMean } from './moments.js'
 
@@ -16,9 +16,6 @@ export const stdev = (xs: readonly number[], ddof: number) => varianceValue(xs, 
 export function devsq(xs: readonly number[]): number {
   return momentValue(xs, 1)
 }
-
-/** The first error in the referenced part of a grid. */
-export const gridError = (g: Grid): CErr | undefined => g.v.find(isErr) as CErr | undefined
 
 /**
  * The numbers among values in order, or among those at the positions `at` (a criteria selection): text, booleans and
