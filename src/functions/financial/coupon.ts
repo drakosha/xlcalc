@@ -1,6 +1,6 @@
 /** Coupon schedules and the COUP* functions, on Excel's serial numbers. */
 import type { FnDef } from '../../args.js'
-import { addMonths, daysInMonth, serialOf, ymd } from '../../dates.js'
+import { addMonths, daysInMonth, serialExcel, ymd } from '../../dates.js'
 import { E, type CErr } from '../../values.js'
 import { atp, need } from '../date/atp.js'
 import { d360, days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
@@ -10,7 +10,7 @@ export type { Ymd }
 export const cmp = (a: Ymd, b: Ymd) => a.y - b.y || a.m - b.m || a.d - b.d
 
 /** Excel's serial number of a date, 1900-02-29 included. */
-export const serialOfYmd = (x: Ymd) => (x.y === 1900 && x.m === 2 && x.d === 29 ? 60 : serialOf(x.y, x.m, x.d))
+export const serialOfYmd = (x: Ymd) => serialExcel(x.y, x.m, x.d)
 
 /** Days from `a` to `b` by basis: 0 the ToolPak's 30/360, 4 European 30/360, else actual. */
 export function daysBetween(a: Ymd, b: Ymd, basis: number): number {
