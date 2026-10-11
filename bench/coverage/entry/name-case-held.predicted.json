@@ -1,0 +1,273 @@
+{
+ "now": "2026-10-11",
+ "locales": {
+  "en-US": {
+   "bool-1": {
+    "ok": true,
+    "input": {
+     "formula": "FALSE"
+    }
+   },
+   "bool-2": {
+    "ok": true,
+    "input": {
+     "formula": "FALSE"
+    }
+   },
+   "bool-3": {
+    "ok": true,
+    "input": {
+     "formula": "IF(FALSE,1,2)"
+    }
+   },
+   "bool-4": {
+    "ok": true,
+    "input": {
+     "formula": "{FALSE}"
+    }
+   },
+   "bool-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "bool-6": {
+    "ok": true,
+    "input": {
+     "formula": "LET(x,1,FALSE)"
+    }
+   },
+   "fn-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,2)"
+    }
+   },
+   "fn-2": {
+    "ok": true,
+    "input": {
+     "formula": "FIND(\"a\",\"a\")"
+    }
+   },
+   "fn-3": {
+    "ok": true,
+    "input": {
+     "formula": "GAUSS(1)"
+    }
+   },
+   "fn-4": {
+    "ok": true,
+    "input": {
+     "formula": "ADDRESS(1,1)"
+    }
+   },
+   "fn-5": {
+    "ok": true,
+    "input": {
+     "formula": "IF(TRUE,1,2)"
+    }
+   },
+   "fn-6": {
+    "ok": true,
+    "input": {
+     "formula": "İF(TRUE,1,2)"
+    }
+   },
+   "fn-7": {
+    "ok": true,
+    "input": {
+     "formula": "IF(TRUE,1,2)"
+    }
+   },
+   "let-1": {
+    "ok": true,
+    "input": {
+     "formula": "LET(ſ,1,ſ)"
+    }
+   },
+   "let-2": {
+    "ok": true,
+    "input": {
+     "formula": "LET(S,1,S+1)"
+    }
+   },
+   "let-3": {
+    "ok": true,
+    "input": {
+     "formula": "LET(ß,1,ß)"
+    }
+   },
+   "let-4": {
+    "ok": true,
+    "input": {
+     "formula": "LET(SS,1,SS+1)"
+    }
+   },
+   "let-5": {
+    "ok": true,
+    "input": {
+     "formula": "LET(ı,1,ı)"
+    }
+   },
+   "let-6": {
+    "ok": true,
+    "input": {
+     "formula": "LET(I,1,I+1)"
+    }
+   },
+   "let-7": {
+    "ok": true,
+    "input": {
+     "formula": "LET(İ,1,i)"
+    }
+   },
+   "let-8": {
+    "ok": true,
+    "input": {
+     "formula": "LET(i,1,İ+1)"
+    }
+   },
+   "let-9": {
+    "ok": true,
+    "input": {
+     "formula": "LET(ﬁ,1,ﬁ)"
+    }
+   }
+  },
+  "ru-RU": {
+   "bool-1": {
+    "ok": true,
+    "input": {
+     "formula": "FALSE"
+    }
+   },
+   "bool-2": {
+    "ok": true,
+    "input": {
+     "formula": "FALSE"
+    }
+   },
+   "bool-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «falſe» читается иначе",
+    "at": 4
+   },
+   "bool-4": {
+    "ok": true,
+    "input": {
+     "formula": "{FALSE}"
+    }
+   },
+   "bool-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 12
+   },
+   "bool-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "fn-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1.2)"
+    }
+   },
+   "fn-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "fn-3": {
+    "ok": true,
+    "input": {
+     "formula": "GAUSS(1)"
+    }
+   },
+   "fn-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Функция АДРЕС принимает от 2 до 5 аргументов, а указано 1",
+    "at": 1
+   },
+   "fn-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «TRUE» читается иначе",
+    "at": 4
+   },
+   "fn-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «TRUE» читается иначе",
+    "at": 4
+   },
+   "fn-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «TRUE» читается иначе",
+    "at": 4
+   },
+   "let-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "let-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   }
+  }
+ }
+}
