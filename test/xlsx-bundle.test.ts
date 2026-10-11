@@ -38,7 +38,7 @@ describe('xlsx outside Node', () => {
     expect(engine).toEqual([])
   }, 60_000)
 
-  it('runs in an empty context given the web codecs: writes a book and reads it back', async () => {
+  it('runs in an empty context given the web codecs: writes a book and reads it back, its issues in the locale the host loaded', async () => {
     const { code, used } = await bundle(true)
     expect(used.filter((f) => /\/(functions|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f))).toEqual([])
     const ctx = createContext({ CompressionStream, DecompressionStream, TextEncoder, TextDecoder })
@@ -50,11 +50,15 @@ describe('xlsx outside Node', () => {
         const book = { sheets: [{ name: 'Лист', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }], locale: 'ru-RU' }
         const { data } = await Xlsx.writeXlsx({ book })
         const r = await Xlsx.readXlsx(data)
-        return JSON.stringify(r.book)
+        const issues = (await Xlsx.writeXlsx({ book }, { locale: 'ru-RU' })).issues.map((i) => [i.code, i.message])
+        return JSON.stringify([r.book, issues])
       })()`,
       ctx,
     )) as string
-    expect(JSON.parse(out)).toEqual({ sheets: [{ name: 'Лист', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }], locale: 'ru-RU' })
+    expect(JSON.parse(out)).toEqual([
+      { sheets: [{ name: 'Лист', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }], locale: 'ru-RU' },
+      [['noCachedValues', 'Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла']],
+    ])
   }, 60_000)
 
   it('without the codecs a clear error', async () => {
