@@ -98,11 +98,11 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
   if (typeof v === 'boolean') return { t: ' t="b"', v: v ? '1' : '0' }
   if (typeof v === 'string') {
-    const s = clip(v, MAX_TEXT, ctx.issues, "text over Excel's 32,767 characters is cut", where)
+    const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, where)
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
   if (v.error === 'CYCLE') {
-    ctx.issues.add('errorValue', 'a circular reference (#CYCLE!) is written as 0, as Excel stores it', where)
+    ctx.issues.add('errorValue', { key: 'cycleZero' }, where)
     return { t: '', v: '0' }
   }
   if (v.error === 'SPILL' || v.error === 'CALC') return { t: ` t="e" vm="${ctx.richError(v.error)}"`, v: '#VALUE!' }
@@ -166,7 +166,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const links = new Map<string, CellLink>()
   for (const addr of Object.keys(sheet.cells)) {
     const c = sheet.cells[addr]
-    if (c.meta !== undefined) issues.add('meta', 'cell meta has no place in a file', where(addr))
+    if (c.meta !== undefined) issues.add('meta', { key: 'cellMeta' }, where(addr))
     if (c.note) notes.set(addr, c.note)
     if (c.link) links.set(addr, c.link)
     const res = result?.[addr]
@@ -176,9 +176,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       continue
     }
     // a result without the formula's value (`values: 'preserve'`)
-    if (result && !res) issues.add('noCachedValues', mode === 'formulas' ? 'a formula without a value in the result is written without one: Excel computes it when it opens the file' : 'a formula without a value in the result is written as an empty cell', where(addr))
+    if (result && !res) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
     const tree = mode === 'formulas' ? fileTree(c.formula, ctx.sheets, ctx.tables, ctx.tableAt(addr)) : null
-    if (mode === 'formulas' && !tree) issues.add('formula', 'a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is written as its value', where(addr))
+    if (mode === 'formulas' && !tree) issues.add('formula', { key: 'formulaAsValue' }, where(addr))
     if (!tree) {
       put(addr, cellXml(addr, c, res?.value))
       continue
@@ -234,7 +234,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   // an autofilter of the sheet cannot meet a table: only tables without a header row (no filter of their own) are left
   const area = filter && parseRange(filter)!
   if (area && (sheet.tables ?? []).some((t) => meets(parseRange(t.range)!, area))) {
-    issues.add('autoFilter', "the filter mode of a sheet whose tables have no header row is left out: an autofilter over the sheet's cells would meet them", { sheet: sheet.name })
+    issues.add('autoFilter', { key: 'filterModeOut' }, { sheet: sheet.name })
     filter = undefined
   }
   // relationships past the tables': the notes' comments and drawing, then each address of a hyperlink once

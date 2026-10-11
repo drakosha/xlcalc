@@ -1,8 +1,9 @@
 /**
  * Messages for people, in the language of a locale: why a formula does not read, why Excel refuses a structure
- * operation, the words of `explain`. Code makes a message as a key with its parameters (`Message`); the locale's
+ * operation, the words of `explain`, what an xlsx file read or written lost. Code makes a message as a key with its parameters (`Message`); the locale's
  * `messages` write it (`Messages`), en-US's every one of them, and a locale without its own text of a message takes
- * en-US's. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation.
+ * en-US's. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation, an
+ * issue of xlsx.
  */
 import type { CellValue } from '../contract.js'
 import { errorIn } from '../syntax/errors.js'
@@ -27,8 +28,150 @@ export type NameRule = 'chars' | 'cell' | 'true' | 'boolean'
 /** Rows or columns. */
 export type Lines = 'rows' | 'columns'
 
+/** What a style, or a conditional format's differential format, holds that the model's style does not. */
+export type StylePart =
+  | 'accountingUnderline'
+  | 'underlineRemoved'
+  | 'superscript'
+  | 'subscript'
+  | 'fontName'
+  | 'fontSize'
+  | 'fontVertAlign'
+  | 'fontOutline'
+  | 'fontShadow'
+  | 'fontCondense'
+  | 'fontExtend'
+  | 'diagonalBorder'
+  | 'gradientFill'
+  | 'gradientBesidePattern'
+  | 'patternFill'
+  | 'fillRemoved'
+  | 'fillWithoutColor'
+  | 'textRotation'
+  | 'shrinkToFit'
+  | 'readingOrder'
+  | 'justifyLastLine'
+  | 'alignment'
+  | 'protection'
+
+/** A part of a style the model does not hold, or a border line of a kind it does not have (the file's name of it). */
+export type StyleLoss = StylePart | { border: string }
+
+/** A text of a rule of data validation that Excel limits. */
+export type RuleText = 'promptTitle' | 'prompt' | 'errorTitle' | 'error'
+
+/** The parameters of the messages of `readXlsx`'s and `writeXlsx`'s issues, by key. */
+export interface XlsxMessageParams {
+  // reading: the workbook
+  localeUnknown: { tag: string }
+  builtInName: object
+  nameOfSheetLeftOut: object
+  hiddenName: object
+  manualCalculation: object
+  autoNoTable: object
+  precisionAsDisplayed: object
+  iterationCount: { count: string }
+  iterationChange: { change: string }
+  workbookProtection: object
+  externalLinks: object
+  pivotTables: object
+  macros: object
+  connections: object
+  defaultFont: { name?: string; size?: number }
+  sheetKind: object
+  sheetPartMissing: object
+  allSheetsHidden: object
+  tableNameTwice: { table: string }
+  // reading: a sheet
+  sharedWithoutMaster: object
+  sharedCopy: object
+  outlineStyles: object
+  mergeOverlap: object
+  autoFilterCriteria: object
+  autoFilterPlain: object
+  advancedFilter: object
+  tableFilter: object
+  sheetProtection: object
+  drawings: object
+  sparklines: object
+  printSettings: object
+  defaultWidth: { width: number }
+  errorTyped: object
+  // reading: formulas
+  userFunction: object
+  tableRefWithoutTable: object
+  formulaExternal: object
+  letPrefix: object
+  formulaUnparsed: object
+  // reading: cells
+  cellOutside: object
+  valueMetadata: object
+  richText: object
+  errorUnknown: object
+  errorUnspelled: object
+  dataTable: object
+  styleLost: { part: StyleLoss }
+  eastAsianFormat: object
+  unknownFormat: object
+  // reading: tables
+  tablePartBad: object
+  /** `reason`: the check's own words (`InputError`), which are English. */
+  tableLeftOut: { table: string; reason: string }
+  headerGiven: { name: string }
+  // reading: conditional formats
+  condRangeOutside: object
+  condStyleLost: { part: StyleLoss }
+  condOperator: { operator: string }
+  condNoFormulas: object
+  condNoFormula: object
+  condPeriod: { period: string }
+  condAverage: object
+  condColorScale: object
+  condDataBar: object
+  condIconSet: { set: string }
+  condIcons: object
+  condType: { type: string }
+  condPivot: object
+  // reading: data validation
+  ruleListCommas: object
+  ruleType: { type: string }
+  ruleNoFormula: object
+  ruleNoSecond: object
+  ruleIme: object
+  ruleNoRange: object
+  ruleShared: object
+  // reading: notes, hyperlinks, panes
+  splitPanes: object
+  frozenScrolled: object
+  noteCell: object
+  noteThread: object
+  noteFormatted: object
+  noteShown: object
+  linkAddress: object
+  linkCells: object
+  // writing
+  nameNotTaken: object
+  nameNoSheet: object
+  nameTwice: object
+  nameBadRef: object
+  noResult: object
+  formulaNoValue: object
+  formulaEmpty: object
+  formulaAsValue: object
+  tableFormulaOut: { table: string }
+  cycleZero: object
+  cellMeta: object
+  textCut: object
+  noteCut: object
+  tooltipCut: object
+  ruleTextCut: { field: RuleText; max: number }
+  ruleFormulaOut: object
+  condFormulaOut: object
+  filterModeOut: object
+}
+
 /** The parameters of each message, by key. */
-export interface MessageParams {
+export interface MessageParams extends XlsxMessageParams {
   // reading a formula: the tokens
   rowOutOfRange: { row: string }
   columnOutOfRange: { column: string }

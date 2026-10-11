@@ -49,7 +49,7 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
   for (const xml of parts) {
     const read = tableOf(xml)
     if (!read) {
-      issues.add('table', 'a table part without a name or a range is left out', { sheet })
+      issues.add('table', { key: 'tablePartBad' }, { sheet })
       continue
     }
     const { t, formulas } = read
@@ -68,11 +68,11 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
       checkTables({ sheets: [{ name: sheet, cells: { ...cells, ...Object.fromEntries(fixed) }, merges, tables: [...out, t] }] }, 'file')
     } catch (e) {
       if (!(e instanceof InputError)) throw e
-      issues.add('table', `the table ${t.name} is left out: ${e.message.replace(/^[^:]*: /, '')}`, { sheet })
+      issues.add('table', { key: 'tableLeftOut', table: t.name, reason: e.message.replace(/^[^:]*: /, '') }, { sheet })
       continue
     }
     for (const [addr, cell] of fixed) {
-      issues.add('table', `a header cell that does not hold its column's name as text is read with the name ${JSON.stringify(cell.value)}`, { sheet, cell: addr })
+      issues.add('table', { key: 'headerGiven', name: cell.value as string }, { sheet, cell: addr })
       cells[addr] = cell
     }
     // a calculated column formula reports what the engine cannot take of it as a cell's would, at the column's first cell

@@ -2,14 +2,14 @@
 import { FormulaError, type Ast } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { fromFile, type Found } from '../formulas/from-file.js'
-import type { Issues, Where } from '../issues.js'
+import type { Issues, Where, XlsxMessage } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
 
-const FOUND: Record<Found, [XlsxIssueCode, string]> = {
-  userFunction: ['userFunction', 'a user-defined function (a macro or an add-in) is not in the engine'],
-  table: ['table', 'a structured reference without a table name is not in a file: the formula is read as written and computes to an error'],
-  externalLink: ['externalLink', 'references to other workbooks are not in the engine: the formula is read as written and computes to an error'],
-  letName: ['formula', 'a LET name that reads as a reference or a boolean once its _xlpm. prefix goes: the formula changes its meaning'],
+const FOUND: Record<Found, [XlsxIssueCode, XlsxMessage]> = {
+  userFunction: ['userFunction', { key: 'userFunction' }],
+  table: ['table', { key: 'tableRefWithoutTable' }],
+  externalLink: ['externalLink', { key: 'formulaExternal' }],
+  letName: ['formula', { key: 'letPrefix' }],
 }
 
 /** Found kinds that already say why the engine does not parse the formula. */
@@ -25,7 +25,7 @@ export interface ReadFormula {
 /** Reports what the engine cannot take of a formula read, at `where`: a shared formula's copies report their master's. */
 export function reportFormula(f: ReadFormula, issues: Issues, where: Where): void {
   for (const x of f.found) issues.add(...FOUND[x], where)
-  if (!f.ast && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', 'a formula the engine does not parse is read as written (its cell computes to an error)', where)
+  if (!f.ast && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', { key: 'formulaUnparsed' }, where)
 }
 
 /** A formula of a file in the engine's spelling, parsed when the engine parses it, with nothing reported yet. */

@@ -9,6 +9,8 @@ import { checkBook, InputError, object, onlyKeys, what } from '../../input.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { sheetKey } from '../../syntax/print.js'
+import type { Locale } from '../../locale/types.js'
+import { issueLocale } from '../issues.js'
 import type { WriteXlsxOptions, XlsxSnapshot } from '../types.js'
 
 export type Values = NonNullable<WriteXlsxOptions['values']>
@@ -24,6 +26,8 @@ export interface WriteArgs {
   values: Values
   /** `values` was not given and there is no result: the file stores no values of formulas, which is reported. */
   unasked: boolean
+  /** The language of the issues (`opts.locale`), en-US without one. */
+  locale?: Locale
 }
 
 const RESULT = "a result: compute's, a session's getSnapshot().result or readXlsx's cached, { sheets: [{ name, cells }] }"
@@ -64,7 +68,7 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   const given = object(snapshot, 'snapshot', 'a snapshot { book, result }')
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
   onlyKeys(given, 'snapshot', ['book', 'result'], 'cached' in given ? ' (a file read: pass { book: read.book, result: read.cached })' : 'sheets' in given ? BOOK_ALONE : '')
-  onlyKeys(o, 'opts', ['mode', 'values'], 'result' in o ? ' (the result goes in the snapshot: writeXlsx({ book, result }))' : '')
+  onlyKeys(o, 'opts', ['mode', 'values', 'locale'], 'result' in o ? ' (the result goes in the snapshot: writeXlsx({ book, result }))' : '')
   const book = checkBook(given.book, 'snapshot.book')
   const { result } = given
   const path = 'snapshot.result'
@@ -78,7 +82,8 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   if (values !== 'omit' && !has) throw new InputError(path, `values: "${values}" takes the values of formulas from the result: pass { book, result }`)
   const cells = has ? resultCells(book, result, path) : undefined
   if (values === 'require') requireValues(book, cells!, path)
-  return { book, mode, values, unasked: o.values === undefined && !has, ...(values !== 'omit' ? { cells } : {}) }
+  const locale = issueLocale(o)
+  return { book, mode, values, unasked: o.values === undefined && !has, ...(values !== 'omit' ? { cells } : {}), ...(locale ? { locale } : {}) }
 }
 
 /** Every formula of the book and every cell of an array's range (but past a large array's `spillFill`) has its value. */

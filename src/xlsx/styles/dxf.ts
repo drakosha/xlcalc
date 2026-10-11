@@ -5,6 +5,7 @@
  * to report on the rules that use it.
  */
 import type { ConditionalStyle } from '../../contract.js'
+import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
@@ -14,8 +15,19 @@ import { border, readFill, underlineOf } from './read.js'
 
 export interface Dxf {
   style: ConditionalStyle
-  lost: string[]
+  lost: StyleLoss[]
 }
+
+/** The elements of a dxf's font that a conditional style has no place for. */
+const DXF_FONT: [local: string, part: StyleLoss][] = [
+  ['name', 'fontName'],
+  ['sz', 'fontSize'],
+  ['vertAlign', 'fontVertAlign'],
+  ['outline', 'fontOutline'],
+  ['shadow', 'fontShadow'],
+  ['condense', 'fontCondense'],
+  ['extend', 'fontExtend'],
+]
 
 /** A flag element of a font: true, false (`val="0"`) or absent. */
 function on(body: string, local: string): boolean | undefined {
@@ -27,7 +39,7 @@ function on(body: string, local: string): boolean | undefined {
 export function readDxf(e: Element, p: Palette): Dxf {
   const b = e.body ?? ''
   const style: ConditionalStyle = {}
-  const lost: string[] = []
+  const lost: StyleLoss[] = []
   const f = element(b, 'font')
   if (f?.body) {
     const fb = f.body
@@ -40,7 +52,7 @@ export function readDxf(e: Element, p: Palette): Dxf {
     if (underline) font.underline = underline
     const color = colorOf(element(fb, 'color'), p)
     if (color) font.color = color
-    for (const x of ['name', 'sz', 'vertAlign', 'outline', 'shadow', 'condense', 'extend']) if (element(fb, x)) lost.push(`font ${x}`)
+    for (const [x, part] of DXF_FONT) if (element(fb, x)) lost.push(part)
     if (Object.keys(font).length) style.font = font
   }
   const fill = element(b, 'fill')

@@ -36,7 +36,7 @@ export function readFrozen(head: string, sheet: string, issues: Issues): FrozenP
   const a = attributes(pane.attrs)
   // a pane's state is a split unless it says otherwise
   if (a.state !== 'frozen' && a.state !== 'frozenSplit') {
-    issues.add('frozenPanes', 'split panes that are not frozen are not in the model', { sheet })
+    issues.add('frozenPanes', { key: 'splitPanes' }, { sheet })
     return undefined
   }
   const top = parseAddress(/^[A-Z]{1,3}[1-9]\d*$/.test(attributes(view.attrs).topLeftCell ?? '') ? attributes(view.attrs).topLeftCell! : 'A1')
@@ -44,7 +44,7 @@ export function readFrozen(head: string, sheet: string, issues: Issues): FrozenP
   const out: FrozenPanes = {}
   if (ys > 0) out.rows = Math.min(top.row + ys, MAX_ROWS - 1)
   if (xs > 0) out.columns = Math.min(top.col + xs, MAX_COLS - 1)
-  if ((ys > 0 && top.row > 0) || (xs > 0 && top.col > 0)) issues.add('frozenPanes', 'panes frozen over a sheet scrolled down or right are read from the first row and column', { sheet })
+  if ((ys > 0 && top.row > 0) || (xs > 0 && top.col > 0)) issues.add('frozenPanes', { key: 'frozenScrolled' }, { sheet })
   return out.rows || out.columns ? out : undefined
 }
 
@@ -67,7 +67,7 @@ interface Comment {
 /** The cell of a note or a thread (`ref`), as Excel reads it; one that is no one cell is reported, as Excel does not open such a file (the set `parts/refs-held`). */
 function commentCell(ref: string | undefined, sheet: string, issues: Issues): string | null {
   const cell = ref === undefined ? null : fileCell(ref)
-  if (!cell) issues.add('comment', 'a note or a thread of comments whose cell is no one cell of the sheet is left out', { sheet, cell: ref ?? '' })
+  if (!cell) issues.add('comment', { key: 'noteCell' }, { sheet, cell: ref ?? '' })
   return cell
 }
 
@@ -107,7 +107,7 @@ function threads(src: PartsSource, placed: Map<string, string>, issues: Issues):
     const note = out.get(cell)
     if (!note) {
       out.set(cell, author === undefined ? { text } : { author, text })
-      issues.add('comment', "a thread of comments is read as a note: its first comment's author, every comment's text with the replies' authors; dates, mentions and the thread's state are not kept", { sheet: src.sheet, cell })
+      issues.add('comment', { key: 'noteThread' }, { sheet: src.sheet, cell })
     } else note.text += `\n\n${author ?? ''}: ${text}`
   }
   return out
@@ -121,7 +121,7 @@ function notes(src: PartsSource, list: Comment[], threads: Map<string, CellNote>
   const out = new Map<string, CellNote>()
   for (const c of list) {
     if (threads.has(c.cell) || placeholderOf(c) !== undefined) continue
-    if (c.formatted) issues.add('comment', "a note's formatted text is read as its plain text", { sheet: src.sheet, cell: c.cell })
+    if (c.formatted) issues.add('comment', { key: 'noteFormatted' }, { sheet: src.sheet, cell: c.cell })
     out.set(c.cell, c.author ? { author: c.author, text: c.text } : { text: c.text })
   }
   // the VML drawing shows the notes; one shown all the time is read as one shown on hover
@@ -130,13 +130,13 @@ function notes(src: PartsSource, list: Comment[], threads: Map<string, CellNote>
     if (!data) continue
     const kind = attributes(data.attrs).ObjectType
     if (kind !== 'Note') {
-      issues.add('drawing', 'pictures, charts and shapes are not in the model', { sheet: src.sheet })
+      issues.add('drawing', { key: 'drawings' }, { sheet: src.sheet })
       continue
     }
     if (!has(data.body ?? '', 'Visible')) continue
     const [row, col] = ['Row', 'Column'].map((k) => Number(element(data.body ?? '', k)?.body))
     const cell = Number.isInteger(row) && Number.isInteger(col) && row >= 0 && col >= 0 ? formatAddress(row, col) : undefined
-    if (cell && !threads.has(cell)) issues.add('comment', 'a note shown all the time is read as one shown when the pointer rests on its cell', { sheet: src.sheet, cell })
+    if (cell && !threads.has(cell)) issues.add('comment', { key: 'noteShown' }, { sheet: src.sheet, cell })
   }
   return out
 }
@@ -157,11 +157,11 @@ function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issue
     if (a.location) link.location = readText(a.location)
     if (a.tooltip) link.tooltip = readText(a.tooltip)
     const where = { sheet: src.sheet, cell: a.ref ?? '' }
-    if (id !== undefined && link.url === undefined) issues.add('hyperlink', "a hyperlink's address that is no external relationship of the sheet is left out", where)
+    if (id !== undefined && link.url === undefined) issues.add('hyperlink', { key: 'linkAddress' }, where)
     if (link.url === undefined && link.location === undefined) continue
     const r = parseRange((a.ref ?? '').toUpperCase())
     if (!r) continue
-    if (cellCount(r) > LINK_CELLS) issues.add('hyperlink', 'a hyperlink over more than 4,096 cells is read on the cells of its range that hold something', where)
+    if (cellCount(r) > LINK_CELLS) issues.add('hyperlink', { key: 'linkCells' }, where)
     for (const cell of cellsWithin(r, () => Object.keys(cells), LINK_CELLS)) if (!out.has(cell)) out.set(cell, link)
   }
   return out

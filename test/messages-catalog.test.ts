@@ -8,6 +8,7 @@ import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { toLocal } from '../src/locale/index.js'
 import { ruRU } from './locales.js'
 import { say, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
+import { XLSX_SAMPLES } from './fixtures/xlsx-messages.js'
 
 /** Parameters of each message: a key without samples does not compile. */
 const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
@@ -98,6 +99,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   explainFormula: [{ formula: 'ROUND(B1*1.2,0)' }],
   explainErrorFrom: [{ ref: "'S'!A2" }],
   explainErrorHere: [{}],
+  ...XLSX_SAMPLES,
 }
 
 const messages = (): Message[] => Object.entries(SAMPLES).flatMap(([key, ps]) => (ps as object[]).map((p) => ({ key, ...p }) as Message))
@@ -110,8 +112,8 @@ function forms(v: string | number): string[] {
   return [s, ruRU.functions[s], ruRU.tableItems?.[s as '#Data'], s.replace('.', ','), local.ok ? local.formula : undefined].filter((x): x is string => x !== undefined)
 }
 
-/** The parameters whose value picks the message's words rather than standing in it: rows or columns, a rule of names. */
-const WORDS = new Set(['key', 'lines', 'rule'])
+/** The parameters whose value picks the message's words rather than standing in it: rows or columns, a rule of names, a part of a style, a rule's text. */
+const WORDS = new Set(['key', 'lines', 'rule', 'part', 'field'])
 
 /** The parameters' values that a message's text may show: strings, numbers and the strings of lists. */
 const values = (m: Message): (string | number)[] => Object.entries(m).flatMap(([k, v]) => (WORDS.has(k) ? [] : Array.isArray(v) ? v : typeof v === 'string' || typeof v === 'number' ? [v] : []))

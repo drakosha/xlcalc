@@ -15,7 +15,7 @@ import { localeBooleans } from '../../locale/registry.js'
 import { sheetKey } from '../../syntax/print.js'
 import { caseKey } from '../../collate.js'
 import { toFile } from '../formulas/to-file.js'
-import { Issues } from '../issues.js'
+import { Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import type { WriteXlsxOptions, XlsxSnapshot, XlsxWritten } from '../types.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
@@ -81,18 +81,18 @@ function definedNames(book: BookInput, issues: Issues, tables: { name: string; c
     } catch (e) {
       if (!(e instanceof FormulaError)) throw e
     }
-    const why =
+    const why: XlsxMessage | undefined =
       nameProblem(n.name, booleans) !== null
-        ? 'a name Excel does not take'
+        ? { key: 'nameNotTaken' }
         : n.scope !== undefined && scope === undefined
-          ? 'a name of a sheet the book does not have'
+          ? { key: 'nameNoSheet' }
           : seen.has(key)
-            ? 'a name given twice'
+            ? { key: 'nameTwice' }
             : text === undefined
-              ? 'a name whose reference does not parse or names a table or a column the book does not have'
+              ? { key: 'nameBadRef' }
               : undefined
     if (why) {
-      issues.add('name', `${why} is left out of the file`, { name: n.name })
+      issues.add('name', why, { name: n.name })
       continue
     }
     seen.add(key)
@@ -112,7 +112,7 @@ function iterationAttrs(it: BookInput['iteration']): string {
  * values alone (`opts.mode: 'values'`).
  */
 export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
-  const { book, cells, mode, unasked } = writeArgs(snapshot, opts)
+  const { book, cells, mode, unasked, locale } = writeArgs(snapshot, opts)
   const issues = new Issues()
   const styles = new StyleWriter(book.styles)
   const strings = new Map<string, number>()
@@ -166,7 +166,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     return w
   })
   const dynamic = sheets.some((s) => s.formulas)
-  if (dynamic && unasked) issues.add('noCachedValues', 'no result was given: the file stores no values of formulas, and Excel computes them when it opens the file')
+  if (dynamic && unasked) issues.add('noCachedValues', { key: 'noResult' })
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []
@@ -228,5 +228,5 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     text: `${HEAD}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>${vml ? '<Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>' : ''}${overrides}</Types>`,
   })
   const data = await zip(files.map((f) => ({ name: f.name, data: utf8(f.text) })))
-  return { data, issues: issues.list() }
+  return { data, issues: issues.list(locale) }
 }

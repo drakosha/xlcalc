@@ -133,7 +133,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       TAG.lastIndex = end < 0 ? data.length : end + close.length
     }
     if (row < 0 || row >= MAX_ROWS || col >= MAX_COLS) {
-      issues.add('part', 'a cell outside the sheet (past its last row or column) is left out', { sheet, cell: a.r ?? `${row + 1}:${col + 1}` })
+      issues.add('part', { key: 'cellOutside' }, { sheet, cell: a.r ?? `${row + 1}:${col + 1}` })
       continue
     }
     // the address as written when it is already the model's spelling (upper case), else spelled out
@@ -145,7 +145,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     const cell: CellInput = formatted ? {} : ownLook(own, lookOf(undefined, line, column(col)), ctx)
     // value metadata: the type of an error Excel stores as #VALUE! (#SPILL!, #CALC!), or a rich value the model does not have
     const rich = a.vm === undefined ? undefined : ctx.meta.error(Number(a.vm))
-    if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', "a cell's value metadata (a data type, a picture in the cell) is not in the model", { sheet, cell: addr })
+    if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', { key: 'valueMetadata' }, { sheet, cell: addr })
     const t = a.t ?? 'n'
     // Excel writes an empty text result as `<v/>`
     const v = body.includes('v') ? V.exec(body) : null
@@ -155,14 +155,14 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (raw !== undefined) {
         const k = Number(raw)
         value = ctx.strings.text[k] ?? ''
-        if (ctx.strings.rich.has(k)) issues.add('richText', 'formatted runs of text are read as plain text', { sheet, cell: addr })
+        if (ctx.strings.rich.has(k)) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })
       }
     } else if (t === 'inlineStr') {
       const is = IS.exec(body)
       if (is) {
         const s = stringItem(is[1])
         value = s.text
-        if (s.rich) issues.add('richText', 'formatted runs of text are read as plain text', { sheet, cell: addr })
+        if (s.rich) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })
       }
     } else if (raw !== undefined && t !== 'e') {
       if (t === 'str') value = readText(raw)
@@ -179,7 +179,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (errText !== undefined) {
         const code = ownEntry(ERRORS, errText)
         out.cached[addr] = { value: { error: code ?? 'ERROR' } }
-        if (!code) issues.add('errorValue', 'a stored error the model has no code for, read as #ERROR!', { sheet, cell: addr })
+        if (!code) issues.add('errorValue', { key: 'errorUnknown' }, { sheet, cell: addr })
       } else if (value !== undefined) out.cached[addr] = { value }
       if (fa.t === 'shared' && fa.si !== undefined) {
         let s = out.shared.get(fa.si)
@@ -196,13 +196,13 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
         cell.formula = text
       }
     } else {
-      if (fa.t === 'dataTable') issues.add('dataTable', 'a what-if data table (TABLE) is read as its stored values', { sheet, cell: addr })
+      if (fa.t === 'dataTable') issues.add('dataTable', { key: 'dataTable' }, { sheet, cell: addr })
       if (errText !== undefined) {
         if (LITERAL.has(errText)) {
           cell.formula = errText
           out.cached[addr] = { value: { error: ERRORS[errText] } }
           out.errors.add(addr)
-        } else issues.add('errorValue', 'an error stored as a value that a formula cannot spell (#CALC!, #GETTING_DATA and the like), left out', { sheet, cell: addr })
+        } else issues.add('errorValue', { key: 'errorUnspelled' }, { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
     }
     if (formatted || cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.numberFormat !== undefined) out.cells[addr] = cell
@@ -234,9 +234,9 @@ function ownLook(own: Look, line: Look, ctx: Pick<CellsContext, 'plain' | 'isPla
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */
 export function look(xf: Xf | undefined, issues: Issues, where: Where): { style?: number; numberFormat?: NumberFormat } {
   if (!xf) return {}
-  for (const lost of xf.lost) issues.add('style', `a style's ${lost} is not in the model`, where)
-  if (xf.eastAsian !== undefined) issues.add('numberFormat', 'a built-in East Asian date format the model does not have (50 to 58), read as the code Excel for Mac en-US shows', where)
-  if (xf.unknownFormat !== undefined) issues.add('numberFormat', 'a built-in number format this reader does not know, left out', where)
+  for (const lost of xf.lost) issues.add('style', { key: 'styleLost', part: lost }, where)
+  if (xf.eastAsian !== undefined) issues.add('numberFormat', { key: 'eastAsianFormat' }, where)
+  if (xf.unknownFormat !== undefined) issues.add('numberFormat', { key: 'unknownFormat' }, where)
   const out: { style?: number; numberFormat?: NumberFormat } = {}
   if (xf.style !== undefined) out.style = xf.style
   if (xf.format !== undefined) out.numberFormat = xf.format

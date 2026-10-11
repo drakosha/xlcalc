@@ -9,6 +9,7 @@ import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { palette, tinted } from '../src/xlsx/styles/color.js'
 import { readFill, underlineOf } from '../src/xlsx/styles/read.js'
 import { element } from '../src/xlsx/xml/scan.js'
+import type { StyleLoss } from '../src/locale/messages.js'
 import { codes, read } from './xlsx-fixtures.js'
 
 const THEME =
@@ -108,15 +109,15 @@ describe('xlsx styles: reading', () => {
 
   it("a cell's font and a dxf's: an accounting underline is read as its plain kind, lost; a dxf's none takes the underline away, lost too", () => {
     const under = (xml: string, dxf = false) => {
-      const lost: string[] = []
+      const lost: StyleLoss[] = []
       return [underlineOf(xml, lost, dxf), lost]
     }
     expect(under('<u/>')).toEqual(['single', []])
     expect(under('<u val="double"/>', true)).toEqual(['double', []])
-    expect(under('<u val="singleAccounting"/>')).toEqual(['single', ['accounting underline']])
-    expect(under('<u val="doubleAccounting"/>', true)).toEqual(['double', ['accounting underline']])
+    expect(under('<u val="singleAccounting"/>')).toEqual(['single', ['accountingUnderline']])
+    expect(under('<u val="doubleAccounting"/>', true)).toEqual(['double', ['accountingUnderline']])
     expect(under('<u val="none"/>')).toEqual([undefined, []])
-    expect(under('<u val="none"/>', true)).toEqual([undefined, ['an underline taken away']])
+    expect(under('<u val="none"/>', true)).toEqual([undefined, ['underlineRemoved']])
     expect(under('<b/>', true)).toEqual([undefined, []])
   })
 
@@ -127,15 +128,15 @@ describe('xlsx styles: reading', () => {
     const gradient = '<gradientFill degree="90"><stop position="0"><color rgb="FFFF0000"/></stop></gradientFill>'
     expect([fill(`<patternFill patternType="solid">${both}</patternFill>`), fill(`<patternFill patternType="solid">${both}</patternFill>`, true)]).toEqual([{ fill: { color: '#00FF00' }, lost: [] }, { fill: { color: '#FF0000' }, lost: [] }])
     expect(fill('<patternFill patternType="solid"><bgColor rgb="FFFF0000"/></patternFill>')).toEqual({ fill: { color: '#FFFFFF' }, lost: [] })
-    expect(fill('<patternFill patternType="solid"><fgColor rgb="FFFF0000"/></patternFill>', true)).toEqual({ lost: ['fill without its colour'] })
+    expect(fill('<patternFill patternType="solid"><fgColor rgb="FFFF0000"/></patternFill>', true)).toEqual({ lost: ['fillWithoutColor'] })
     // a colour that names none is white, in either; a dxf's empty pattern fill changes nothing (cond/fills-held-2)
     expect([fill('<patternFill patternType="solid"><fgColor auto="1"/><bgColor rgb="FFFF0000"/></patternFill>'), fill('<patternFill><bgColor indexed="64"/></patternFill>', true)]).toEqual([{ fill: { color: '#FFFFFF' }, lost: [] }, { fill: { color: '#FFFFFF' }, lost: [] }])
     expect(fill('<patternFill/>', true)).toEqual({ lost: [] })
     expect([fill('<patternFill><fgColor rgb="FFFF0000"/></patternFill>'), fill('<patternFill><bgColor rgb="FFFF0000"/></patternFill>', true)]).toEqual([{ lost: [] }, { fill: { color: '#FF0000' }, lost: [] }])
-    expect([fill('<patternFill patternType="none"><bgColor rgb="FFFF0000"/></patternFill>'), fill('<patternFill patternType="none"><bgColor rgb="FFFF0000"/></patternFill>', true)]).toEqual([{ lost: [] }, { lost: ['fill taken away'] }])
-    expect([fill(gradient), fill(gradient, true)]).toEqual([{ lost: ['gradient fill'] }, { lost: ['gradient fill'] }])
-    expect(fill(`${gradient}<patternFill patternType="solid">${both}</patternFill>`)).toEqual({ fill: { color: '#00FF00' }, lost: ['gradient fill beside its pattern'] })
-    expect(fill('<patternFill patternType="darkGray"><fgColor rgb="FF00FF00"/></patternFill>', true)).toEqual({ lost: ['pattern fill'] })
+    expect([fill('<patternFill patternType="none"><bgColor rgb="FFFF0000"/></patternFill>'), fill('<patternFill patternType="none"><bgColor rgb="FFFF0000"/></patternFill>', true)]).toEqual([{ lost: [] }, { lost: ['fillRemoved'] }])
+    expect([fill(gradient), fill(gradient, true)]).toEqual([{ lost: ['gradientFill'] }, { lost: ['gradientFill'] }])
+    expect(fill(`${gradient}<patternFill patternType="solid">${both}</patternFill>`)).toEqual({ fill: { color: '#00FF00' }, lost: ['gradientBesidePattern'] })
+    expect(fill('<patternFill patternType="darkGray"><fgColor rgb="FF00FF00"/></patternFill>', true)).toEqual({ lost: ['patternFill'] })
   })
 })
 
