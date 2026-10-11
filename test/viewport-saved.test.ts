@@ -4,9 +4,10 @@
  * and a column's format, a row's style, a merged area, a table, a note, a link, a conditional format, a small spill and
  * a large one whose error the result leaves out) with its result: each saved window is compared with a live session's
  * over the same book, with every option, whole and by some rows and columns: all a result holds is the same, and only
- * the conditional formats' appearance, which a result does not hold, is missing. The windows of a session's snapshots of
- * other books, a result without the display, a cycle's origin, the objects of the answer and the input checks: a book
- * or a result of an earlier version's form (`format`, `issues`) is refused.
+ * the conditional formats' appearance, which a result does not hold, is missing; with `appearance` the window is the
+ * live one (`viewport-saved-looks.test.ts` for the rules). The windows of a session's snapshots of other books, a result
+ * without the display, a cycle's origin, the objects of the answer and the input checks: a book or a result of an
+ * earlier version's form (`format`, `issues`) is refused.
  */
 import { readFileSync } from 'node:fs'
 import { afterAll, describe, expect, it } from 'vitest'
@@ -26,10 +27,10 @@ const savedBook = (execution?: Execution) => {
   return { book, result: compute(book, { clock: CLOCK, ...(execution ? { execution } : {}) }) }
 }
 
-/** A live window as a saved one gives it: without the session's revision and the conditional formats' appearance. */
-function asSaved(v: Viewport): SavedViewport {
+/** A live window as a saved one gives it: without the session's revision, and without the conditional formats' appearance unless `appearance`. */
+function asSaved(v: Viewport, appearance = false): SavedViewport {
   const { revision: _r, ...rest } = v
-  for (const c of Object.values(rest.cells)) delete c.appearance
+  if (!appearance) for (const c of Object.values(rest.cells)) delete c.appearance
   return rest
 }
 
@@ -49,10 +50,14 @@ const WINDOWS: [string, string, ViewportOptions?][] = [
 
 describe.each(['closures', 'eval'] as const)('a saved window against a live one, execution %s', (execution: Execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    it('all the result holds as the live window has it, without the appearance', async () => {
+    it('all the result holds as the live window has it, without the appearance; with it, the live window', async () => {
       const s = await (await opener(kind))(fixture('book'), { clock: CLOCK, execution })
       const saved = savedBook(execution)
-      for (const [sheet, range, opts] of WINDOWS) expect(viewportOf(saved, sheet, range, opts), `${sheet}!${range}`).toEqual(asSaved(await s.getViewport(sheet, range, opts)))
+      for (const [sheet, range, opts] of WINDOWS) {
+        const live = await s.getViewport(sheet, range, opts)
+        expect(viewportOf(saved, sheet, range, opts), `${sheet}!${range}`).toEqual(asSaved(structuredClone(live)))
+        expect(viewportOf(saved, sheet, range, { ...opts, appearance: true }), `${sheet}!${range} with the appearance`).toEqual(asSaved(live, true))
+      }
       await s.close()
     })
 
@@ -64,7 +69,11 @@ describe.each(['closures', 'eval'] as const)('a saved window against a live one,
           const s = await open(book, { clock: CLOCK, execution, display })
           const snapshot = await s.getSnapshot()
           for (const sheet of snapshot.book.sheets)
-            for (const range of ['A1:J12', 'B2:D4', 'A5:Z40']) expect(viewportOf(snapshot, sheet.name, range, ALL), `${name}: ${sheet.name}!${range}`).toEqual(asSaved(await s.getViewport(sheet.name, range, ALL)))
+            for (const range of ['A1:J12', 'B2:D4', 'A5:Z40']) {
+              const live = await s.getViewport(sheet.name, range, ALL)
+              expect(viewportOf(snapshot, sheet.name, range, ALL), `${name}: ${sheet.name}!${range}`).toEqual(asSaved(structuredClone(live)))
+              expect(viewportOf(snapshot, sheet.name, range, { ...ALL, appearance: true }), `${name}: ${sheet.name}!${range} with the appearance`).toEqual(asSaved(live, true))
+            }
           await s.close()
         }
     })
@@ -80,8 +89,9 @@ describe('a window over a saved book and its result', () => {
     expect(saved.result.sheets[0].cells.A8).toEqual({ value: 46096, text: '#########', numberFormat: 14 })
     const v = viewportOf(saved, 'Данные', 'A1:L8', ALL)
     expect(v.cells.A8).toEqual({ value: 46096, text: '#########', numberFormat: 'dd.mm.yyyy', numberFormatSource: 'cell', editText: '15.03.2026' })
-    // a rule's appearance is not in a result: the cell as the result has it
+    // a rule's appearance is not in a result: the cell as the result has it, and with `appearance` the rule's
     expect(v.cells.C3).toEqual({ value: 20, text: '20', editText: '20' })
+    expect(viewportOf(saved, 'Данные', 'C3', { appearance: true }).cells.C3).toEqual({ value: 20, text: '20', appearance: { style: { fill: { color: '#FFC7CE' } } } })
     expect(v.cells.D2).toMatchObject({ formulaLocal: '[@Кол]*[@Цена]', editText: '=[@Кол]*[@Цена]' })
     expect(v.cells.F3.issue).toEqual({ error: 'DIV0', reason: "division by zero, from 'Данные'!F1", origin: { sheet: 'Данные', cell: 'F1' } })
     // through a cell of a large spill that the result leaves out, to its formula
@@ -134,6 +144,7 @@ describe('a window over a saved book and its result', () => {
     expect(call({ book: book(), result }, 'Нет')).toThrow('sheet: unknown sheet "Нет"')
     expect(call({ book: book(), result }, 'Данные', 'A0')).toThrow('range: expected a range')
     expect(call({ book: book(), result }, 'Данные', 'A1', { maxcells: 5 })).toThrow(InputError)
+    expect(call({ book: book(), result }, 'Данные', 'A1', { appearance: 1 })).toThrow('opts.appearance: expected a boolean')
     expect(call({ book: book(), result }, 'Данные', 'A1:B9', { rows: [2, 2] })).toThrow('opts.rows[1]: expected numbers in ascending order, each once: 2 comes after 2')
   })
 })
