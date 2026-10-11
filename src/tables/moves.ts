@@ -4,19 +4,21 @@
  * pasted outside reads `Sales[@Qty]`). A paste over a table's header cells renames their columns to what lands there,
  * the text of a value or of a formula's value; header cells cut away leave their columns named `Column1` and so on.
  */
-import type { BookInput, CellInput, StructureResult, SheetInput, TableInput } from '../contract.js'
+import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { spend } from '../exec/budget.js'
 import type { Message } from '../locale/messages.js'
-import { formatAddress, parseAddress } from '../model.js'
+import { formatAddress, parseAddress, readAddress } from '../model.js'
 import { clockSerial } from '../result.js'
-import { ERROR_TEXT, sheetKey } from '../syntax.js'
+import { ERROR_TEXT } from '../syntax.js'
 import { isErr } from '../values.js'
 import { headerEdits } from './headers.js'
-import { contains, meets, type Rect } from '../structure/area.js'
+import { contains, cornersText, hasCell, meets, shiftRect, type Rect } from '../structure/area.js'
 import { copyTransform, tiles } from '../structure/copy.js'
-import { rewriteFormula, sheetNames } from '../structure/rewrite.js'
+import type { Applied } from '../structure/geometry.js'
+import { cellsIn, gridOf } from '../structure/grid.js'
+import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteTableRefs } from './rewrite.js'
 import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
 
@@ -54,17 +56,17 @@ const qualified = (formula: string, tables: Tables, t: Table) => rewriteTableRef
 /** Cut `src` of sheet `from` and paste it at `to`, `dr` rows and `dc` columns away: the tables it carries, refusals. */
 export function moveTables(book: BookInput, from: string, src: Rect, to: string, dr: number, dc: number): { refuse?: Message; before(b: BookInput): BookInput; after(b: BookInput): BookInput } {
   const tables = tablesOf(book)
-  const [fs, ts] = [book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(from)), book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(to))]
-  const dst: Rect = { r1: src.r1 + dr, r2: src.r2 + dr, c1: src.c1 + dc, c2: src.c2 + dc }
+  const [fs, ts] = [sheetIndex(book, from), sheetIndex(book, to)]
+  const dst = shiftRect(src, dr, dc)
   const moving = new Set(tables.list.filter((t) => t.s === fs && contains(src, t)))
   const keep = { before: (b: BookInput) => b, after: (b: BookInput) => b }
-  const land = [...moving].map((t) => ({ t, x: { r1: t.r1 + dr, r2: t.r2 + dr, c1: t.c1 + dc, c2: t.c2 + dc } }))
+  const land = [...moving].map((t) => ({ t, x: shiftRect(t, dr, dc) }))
   const onto = land.find(({ x }) => tables.list.some((o) => o.s === ts && !moving.has(o) && meets(o, x)))
   if (onto) return { ...keep, refuse: { key: 'tableLands', table: onto.t.name } }
   if (!moving.size && !tables.list.some((t) => (t.s === fs && meets(t, src)) || (t.s === ts && meets(t, dst)))) return keep
   // the table a moved cell is in after the move: one that moved along, or one that stays
   const after = (r: number, c: number): string | undefined => {
-    const m = land.find(({ x }) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2)
+    const m = land.find(({ x }) => hasCell(x, r, c))
     if (m) return m.t.name
     const t = tableAt(tables, ts, r, c)
     return t && !moving.has(t) ? t.name : undefined
@@ -73,12 +75,10 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
     before(b) {
       const sheet = b.sheets[fs]
       let cells: Record<string, CellInput> | undefined
-      for (const addr of Object.keys(sheet.cells)) {
-        const cell = sheet.cells[addr]
-        spend(1)
+      const g = gridOf(sheet)
+      for (const i of cellsIn(g, src)) {
+        const [addr, cell, row, col] = [g.addr[i], g.cell[i], g.row[i], g.col[i]]
         if (cell.formula === undefined) continue
-        const { row, col } = parseAddress(addr)
-        if (row < src.r1 || row > src.r2 || col < src.c1 || col > src.c2) continue
         const t = tableAt(tables, fs, row, col)
         if (!t || moving.has(t) || after(row + dr, col + dc) === t.name) continue
         const formula = qualified(cell.formula, tables, t)
@@ -102,7 +102,7 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
       })
       // each moved table as the move left it (its calculated columns rewritten with its cells), at its new place
       const own = (t: Table) => b.sheets[fs].tables!.find((ti) => tableKey(ti.name) === tableKey(t.name))!
-      const moved: TableInput[] = land.map(({ t, x }) => ({ ...own(t), range: `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}` }))
+      const moved: TableInput[] = land.map(({ t, x }) => ({ ...own(t), range: cornersText(x) }))
       sheets[ts] = { ...sheets[ts], tables: [...(sheets[ts].tables ?? []), ...moved] }
       return { ...b, sheets }
     },
@@ -115,14 +115,14 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
  * references to the table taken to the new one; the other pasted formulas that leave their source's table name it, and header cells pasted over rename their
  * columns.
  */
-export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect): { after(r: StructureResult): StructureResult } {
+export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect): { after(r: Applied): Applied } {
   const tables = tablesOf(book)
-  const [fs, ts] = [book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(from)), book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(to))]
+  const [fs, ts] = [sheetIndex(book, from), sheetIndex(book, to)]
   const [h, w] = [src.r2 - src.r1 + 1, src.c2 - src.c1 + 1]
   // the tiles of the paste and the area they cover, as copyRange lays them (the set `paste-names-held`: one copy at the
   // top-left cell of a target that is no multiple of the source, the target's other cells left as they were)
   const { offsets, area: pasted } = tiles(src, target)
-  const renamed = (r: StructureResult): StructureResult => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, pasted]], () => true) } : r)
+  const renamed = (r: Applied): Applied => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, pasted]], () => true) } : r)
   if (!tables.list.some((t) => t.s === fs && meets(t, src))) return { after: renamed }
   // the tables copied whole onto each tile
   const whole = tables.list.filter((t) => t.s === fs && contains(src, t))
@@ -130,7 +130,7 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
   const copies: { t: Table; x: Rect; name: string }[] = []
   for (const [dr, dc] of offsets)
     for (const t of whole) {
-      const x = { r1: t.r1 + dr, r2: t.r2 + dr, c1: t.c1 + dc, c2: t.c2 + dc }
+      const x = shiftRect(t, dr, dc)
       if (tables.list.some((o) => o.s === ts && meets(o, x)) || copies.some((o) => meets(o.x, x))) continue
       // Excel numbers a copy by the book's count of tables and two (the set `more`: Sales3 in a book of one table)
       let n = taken.length + 2
@@ -143,16 +143,19 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       if (!r.ok) return r
       const sheet = r.book.sheets[ts]
       let cells: Record<string, CellInput> | undefined
-      for (const addr of Object.keys(sheet.cells)) {
+      // a sheet the paste made: its formulas alone are read for their places, which no other step reads
+      const p = { r: 0, c: 0 }
+      for (const addr in sheet.cells) {
         const cell = sheet.cells[addr]
         spend(1)
         if (cell.formula === undefined) continue
-        const { row, col } = parseAddress(addr)
-        if (row < pasted.r1 || col < pasted.c1 || row > pasted.r2 || col > pasted.c2) continue
+        readAddress(addr, p)
+        const [row, col] = [p.r, p.c]
+        if (!hasCell(pasted, row, col)) continue
         const t = tableAt(tables, fs, src.r1 + ((row - target.r1) % h), src.c1 + ((col - target.c1) % w))
         if (!t || tableAt(tables, ts, row, col) === t) continue
         // inside a copy of its table: the references to the table are to the copy, those without a name stay so
-        const copy = copies.find((c) => c.t === t && row >= c.x.r1 && row <= c.x.r2 && col >= c.x.c1 && col <= c.x.c2)
+        const copy = copies.find((c) => c.t === t && hasCell(c.x, row, col))
         const formula = copy ? rewriteTableRefs(cell.formula, tables, t, null, (x) => (x === t ? { table: copy.name } : undefined)) : qualified(cell.formula, tables, t)
         if (formula !== cell.formula) (cells ??= { ...sheet.cells })[addr] = { ...cell, formula }
       }
@@ -164,7 +167,7 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       if (copies.length)
         sheets[ts] = {
           ...sheets[ts],
-          tables: [...(sheets[ts].tables ?? []), ...copies.map(({ t, x, name }) => ({ ...t.input, name, range: `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`, columns: t.input.columns.map((c) => (c.formula === undefined ? c : { ...c, formula: template(c.formula, t, x, name) })) }))],
+          tables: [...(sheets[ts].tables ?? []), ...copies.map(({ t, x, name }) => ({ ...t.input, name, range: cornersText(x), columns: t.input.columns.map((c) => (c.formula === undefined ? c : { ...c, formula: template(c.formula, t, x, name) })) }))],
         }
       return renamed({ ...r, book: { ...r.book, sheets } })
     },

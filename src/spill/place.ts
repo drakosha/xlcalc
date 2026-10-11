@@ -12,7 +12,7 @@ import { allotSpill, spend } from '../exec/budget.js'
 import { invalidate, put, same, shown, track, type Tracker } from '../evaluate.js'
 import { parseMerge } from '../layout/merges.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
-import { meets, type Rect } from '../structure/area.js'
+import { hasCell, meets, type Rect } from '../structure/area.js'
 import { quoteSheet } from '../syntax.js'
 import { tableAt } from '../tables/model.js'
 import { E, Rng, type CErr, type V } from '../values.js'
@@ -206,6 +206,6 @@ export function spillRef(state: EngineState, s: number, r: number, c: number): R
 
 /** The spill a cell belongs to, but as its formula's own cell. */
 export function ownerOf(state: EngineState, s: number, r: number, c: number): Spill | undefined {
-  for (const x of state.spills.on.values()) if (x.s === s && r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2 && (r !== x.r1 || c !== x.c1)) return x
+  for (const x of state.spills.on.values()) if (x.s === s && hasCell(x, r, c) && (r !== x.r1 || c !== x.c1)) return x
   return undefined
 }

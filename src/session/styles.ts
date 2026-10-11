@@ -12,7 +12,8 @@ import { InputError } from '../input.js'
 import { sheetLines, type SheetLines } from '../layout/lines.js'
 import { lines as spansOf, patchLines, spanKey } from '../layout/spans.js'
 import { formatAddress, parseAddress } from '../model.js'
-import type { Rect } from '../structure/area.js'
+import { hasCell, type Rect } from '../structure/area.js'
+import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
 
 /** The cells a rectangle may give a look to: as many as a whole column has. Past them, whole columns or rows cost what their cells hold. */
@@ -110,6 +111,9 @@ type Line = RowInput & ColumnInput
 /** The patches' work: the cells and sheets as the patches before left them, over the session's. */
 export class Draft {
   private readonly cells = new Map<string, CellInput | null>()
+  /** The addresses of `cells` by sheet, and the session's cells of a sheet with their places, read once for the draft. */
+  private readonly drafted = new Map<number, Set<string>>()
+  private readonly grids = new Map<number, Grid>()
   readonly sheets = new Map<number, SheetInput>()
   readonly touched: LayoutEdit[] = []
   readonly table: StyleTable
@@ -129,6 +133,9 @@ export class Draft {
 
   set(i: number, addr: string, input: CellInput | null) {
     this.cells.set(`${i}!${addr}`, input)
+    let own = this.drafted.get(i)
+    if (!own) this.drafted.set(i, (own = new Set()))
+    own.add(addr)
   }
 
   /** The sheet's lines as the draft holds them. */
@@ -148,13 +155,15 @@ export class Draft {
         }
       return
     }
-    const seen = new Set<string>()
-    const keys = [...Object.keys(this.s.input.sheets[i].cells), ...[...this.cells.keys()].filter((k) => k.startsWith(`${i}!`)).map((k) => k.slice(k.indexOf('!') + 1))]
-    for (const a of keys) {
-      if (seen.has(a)) continue
-      seen.add(a)
+    const sheet = this.s.input.sheets[i]
+    let g = this.grids.get(i)
+    if (!g) this.grids.set(i, (g = gridOf(sheet)))
+    for (const k of cellsIn(g, x)) if (this.input(i, g.addr[k])) yield [g.row[k], g.col[k], g.addr[k]]
+    // the cells the draft added
+    for (const a of this.drafted.get(i) ?? []) {
+      if (a in sheet.cells) continue
       const { row, col } = parseAddress(a)
-      if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2 && this.input(i, a)) yield [row, col, a]
+      if (hasCell(x, row, col) && this.input(i, a)) yield [row, col, a]
     }
   }
 

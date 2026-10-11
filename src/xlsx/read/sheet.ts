@@ -7,10 +7,10 @@
  * and what the sheet has that the model does not, reported.
  */
 import type { CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
-import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
+import { overlapping, parseMerge } from '../../layout/merges.js'
 import { lines, spanKey } from '../../layout/spans.js'
 import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
-import { parseRange, type Rect } from '../../structure/area.js'
+import { cornersText, hasCell, parseRange, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
@@ -75,7 +75,7 @@ function* cellsOf(r: Rect, keys: () => string[]): Generator<string> {
   }
   for (const a of keys()) {
     const { row, col } = parseAddress(a)
-    if (row >= r.r1 && row <= r.r2 && col >= r.c1 && col <= r.c2) yield a
+    if (hasCell(r, row, col)) yield a
   }
 }
 
@@ -96,7 +96,7 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
       box.c2 = Math.max(box.c2, a.col)
     }
     // copies spread thin over a large area are pasted one by one
-    const targets = (box.r2 - box.r1 + 1) * (box.c2 - box.c1 + 1) > 4 * at.length ? s.copies : [`${formatAddress(box.r1, box.c1)}:${formatAddress(box.r2, box.c2)}`]
+    const targets = (box.r2 - box.r1 + 1) * (box.c2 - box.c1 + 1) > 4 * at.length ? s.copies : [cornersText(box)]
     const book = { sheets: src.sheets.map((name) => ({ name, cells: name === src.name ? { [s.master!]: { formula } } : {} })) }
     for (const range of targets) {
       // the pure copy and paste, without editStructure's checks and values (a paste from a filtered sheet computes the book)
@@ -137,7 +137,7 @@ function arrays(read: SheetCells) {
     const anchor = read.cells[a.anchor]
     if (!a.dynamic && anchor?.formula !== undefined) anchor.array = a.ref
     const top = read.cached[a.anchor]
-    if (top && (!a.dynamic || r.r2 > r.r1 || r.c2 > r.c1)) top.spill = `${formatAddress(r.r1, r.c1)}:${formatAddress(r.r2, r.c2)}`
+    if (top && (!a.dynamic || r.r2 > r.r1 || r.c2 > r.c1)) top.spill = cornersText(r)
     for (const addr of cellsOf(r, keys)) {
       const cell = read.cells[addr]
       // an error the array spilled is stored as the cell's value, which the reader took for a formula of it
@@ -210,7 +210,7 @@ function merges(rest: string, sheet: string, issues: Issues): string[] | undefin
       issues.add('part', 'a merged area overlapping another is left out', { sheet, cell: ref })
     }
   }
-  return xs.length ? xs.map(mergeText) : undefined
+  return xs.length ? xs.map(cornersText) : undefined
 }
 
 /** Whether an autofilter, a sheet's or a table's, has criteria: a column with a filter of any kind. */

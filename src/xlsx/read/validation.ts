@@ -6,9 +6,9 @@
  * the valid set `struct-held-2`), an IME mode is not kept, a list's items holding commas are split, and each is reported.
  */
 import type { DataValidation, ValidationOperator, ValidationType } from '../../contract.js'
-import type { Rect } from '../../structure/area.js'
+import { subtract, type Rect } from '../../structure/area.js'
 import { areasOf, COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
-import { formulaAt, minus } from '../../validation/structure.js'
+import { formulaAt } from '../../validation/structure.js'
 import { sheetKey } from '../../syntax.js'
 import type { Issues } from '../issues.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
@@ -103,7 +103,7 @@ export function readValidations(tail: string, sheet: string, sheets: string[], i
       issues.add('dataValidation', 'a rule without a range of the sheet is left out', where)
       continue
     }
-    const own = areas.flatMap((x) => taken.reduce<Rect[]>((xs, t) => xs.flatMap((y) => minus(y, t)), [x]))
+    const own = areas.flatMap((x) => taken.reduce(subtract, [x]))
     if (own.length !== areas.length || own.some((x, i) => x !== areas[i])) issues.add('dataValidation', 'cells of a rule that an earlier rule has keep the earlier one', where)
     if (!own.length) continue
     taken.push(...own)

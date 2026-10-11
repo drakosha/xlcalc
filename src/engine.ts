@@ -24,11 +24,10 @@ import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
 import { AreaIndex } from './area-index.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
-import { blocks } from './spill/occupied.js'
 import { endSpill, spillRef } from './spill/place.js'
 import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
-import { arrayArea } from './array-areas.js'
+import { arrayArea, holds } from './array-areas.js'
 import { printFormula, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
 import { specRect, tableAt, tableKey, tablesOf, type Tables } from './tables/model.js'
 import { CErr, E, isErr, type V } from './values.js'
@@ -118,7 +117,7 @@ export function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
 /** Marks whether a cell's input is one without a value or formula (`EngineState.bare`). */
 function markBare(state: EngineState, s: number, r: number, c: number, input: CellInput | null) {
   let bare = state.bare.get(s)
-  if (input && !blocks(input)) {
+  if (input && !holds(input)) {
     if (!bare) state.bare.set(s, (bare = new Set()))
     bare.add(r * MAX_COLS + c)
   } else bare?.delete(r * MAX_COLS + c)
@@ -255,7 +254,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     const sheet = input.sheets[s]
     for (const [addr, cellIn] of Object.entries(sheet.cells)) {
       const { row, col } = parseAddress(addr)
-      if (blocks(cellIn)) state.spills.occupied.set(s, row, col, true, true)
+      if (holds(cellIn)) state.spills.occupied.set(s, row, col, true, true)
       if (cellIn.formula === undefined) {
         const v = bookScalar(cellIn.value, epoch)
         if (v !== null) put(ctx.sheets[s], row, col, v)
@@ -301,7 +300,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     const { row, col } = parseAddress(e.cell)
     const k = key(s, row, col)
     setInput(state, s, e.cell, row, col, e.input)
-    state.spills.occupied.set(s, row, col, blocks(e.input ?? undefined))
+    state.spills.occupied.set(s, row, col, holds(e.input ?? undefined))
     const old = state.at.get(k)
     if (old !== undefined) {
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)

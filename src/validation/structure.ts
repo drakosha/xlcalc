@@ -8,10 +8,10 @@
  * again for its new first cell.
  */
 import type { BookInput, DataValidation } from '../contract.js'
-import { LIMIT, meets, type Axis, type Rect } from '../structure/area.js'
+import { hi, intersect, LIMIT, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import { copyTransform } from '../structure/copy.js'
 import type { Paste } from '../structure/paste.js'
-import { rewriteFormula, type Transform } from '../structure/rewrite.js'
+import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
 import { deleteSpan, insertSpan } from '../structure/shift.js'
 import { sheetKey } from '../syntax.js'
 import { anchorOf, areasOf, rangeText } from './rules.js'
@@ -70,12 +70,11 @@ export function shiftValidations(rules: DataValidation[] | undefined, sheet: str
   let changed = false
   for (const v of rules) {
     const areas = areasOf(v.range)!.flatMap((x) => {
-      const lo = axis === 'r' ? x.r1 : x.c1
-      const hi = axis === 'r' ? x.r2 : x.c2
-      const one = lo === hi && (axis === 'r' ? x.c1 === x.c2 : x.r1 === x.r2)
+      const [a, b] = [lo(x, axis), hi(x, axis)]
+      const one = a === b && (axis === 'r' ? x.c1 === x.c2 : x.r1 === x.r2)
       // a range whose last line is the one before the inserted lines takes them in, as their cells take that line's look
-      const s = n > 0 ? (hi === at - 1 ? [lo, Math.min(hi + count, LIMIT[axis] - 1)] : insertSpan(lo, hi, at, count, LIMIT[axis], one)) : deleteSpan(lo, hi, at, count, LIMIT[axis], false)
-      return s ? [axis === 'r' ? { ...x, r1: s[0], r2: s[1] } : { ...x, c1: s[0], c2: s[1] }] : []
+      const s = n > 0 ? (b === at - 1 ? [a, Math.min(b + count, LIMIT[axis] - 1)] : insertSpan(a, b, at, count, LIMIT[axis], one)) : deleteSpan(a, b, at, count, LIMIT[axis], false)
+      return s ? [withBounds(x, axis, s[0], s[1])] : []
     })
     const first = areas[0]
     const old = first && (axis === 'r' ? { r: back(first.r1), c: first.c1 } : { r: first.r1, c: back(first.c1) })
@@ -85,24 +84,6 @@ export function shiftValidations(rules: DataValidation[] | undefined, sheet: str
   }
   if (!changed) return rules
   return out.length ? out : undefined
-}
-
-/** `x` without the cells of `y`: up to four rectangles, above, below, left and right of it. */
-export function minus(x: Rect, y: Rect): Rect[] {
-  if (!meets(x, y)) return [x]
-  const out: Rect[] = []
-  if (x.r1 < y.r1) out.push({ ...x, r2: y.r1 - 1 })
-  if (x.r2 > y.r2) out.push({ ...x, r1: y.r2 + 1 })
-  const [r1, r2] = [Math.max(x.r1, y.r1), Math.min(x.r2, y.r2)]
-  if (x.c1 < y.c1) out.push({ r1, r2, c1: x.c1, c2: y.c1 - 1 })
-  if (x.c2 > y.c2) out.push({ r1, r2, c1: y.c2 + 1, c2: x.c2 })
-  return out
-}
-
-const shifted = (x: Rect, dr: number, dc: number): Rect => ({ r1: x.r1 + dr, r2: x.r2 + dr, c1: x.c1 + dc, c2: x.c2 + dc })
-const cut = (x: Rect, y: Rect): Rect | null => {
-  const z = { r1: Math.max(x.r1, y.r1), r2: Math.min(x.r2, y.r2), c1: Math.max(x.c1, y.c1), c2: Math.min(x.c2, y.c2) }
-  return z.r1 <= z.r2 && z.c1 <= z.c2 ? z : null
 }
 
 /** Rectangles side by side over the same rows, or one above the other over the same columns, joined; the first stays first. */
@@ -152,7 +133,7 @@ function joined(rules: DataValidation[], sheet: string, sheets: Map<string, stri
 function withoutAreas(rules: DataValidation[], holes: Rect[], sheet: string, sheets: Map<string, string>): DataValidation[] {
   const kept: DataValidation[] = []
   for (const v of rules) {
-    const areas = areasOf(v.range)!.flatMap((x) => holes.reduce<Rect[]>((xs, h) => xs.flatMap((y) => minus(y, h)), [x]))
+    const areas = areasOf(v.range)!.flatMap((x) => holes.reduce(subtract, [x]))
     const first = areas[0]
     const next = first ? placed(v, areas, sheet, { r: first.r1, c: first.c1 }, sheet, sheet, null, sheets) : null
     if (next) kept.push(next)
@@ -174,15 +155,15 @@ export function clearValidations(rules: DataValidation[] | undefined, holes: Rec
  */
 export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t: Transform | null, sheets: Map<string, string>) {
   const [fk, tk] = [sheetKey(p.from), sheetKey(p.to)]
-  const src = source.sheets.find((s) => sheetKey(s.name) === fk)?.validations ?? []
+  const src = sheetOf(source, p.from)?.validations ?? []
   const pasted: DataValidation[] = []
   // where a move lands, the cells its rules land on
   const landed: Rect[] = []
   for (const [dr, dc] of p.offsets)
     for (const v of src) {
-      const pieces = areasOf(v.range)!.flatMap((x) => cut(x, p.src) ?? [])
+      const pieces = areasOf(v.range)!.flatMap((x) => intersect(x, p.src) ?? [])
       if (!pieces.length) continue
-      const areas = pieces.map((x) => shifted(x, dr, dc))
+      const areas = pieces.map((x) => shiftRect(x, dr, dc))
       landed.push(...areas)
       // a move's formulas as a moved cell's (`t`), a copy's and a move's to another sheet as a copied cell's (the set `struct-held-2`)
       const moved = p.move && fk === tk

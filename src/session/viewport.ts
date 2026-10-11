@@ -11,7 +11,7 @@ import { checkBoolean, checkNumber, object, onlyKeys } from '../input.js'
 import { issueDetail, type Place } from '../issues.js'
 import { isHiddenRow } from '../layout/hidden.js'
 import { formatSource, lookOf, sheetLines } from '../layout/lines.js'
-import { mergeText, parseMerge } from '../layout/merges.js'
+import { parseMerge } from '../layout/merges.js'
 import { toLocal } from '../locale/index.js'
 import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { builtinIn } from '../locale/rules.js'
@@ -19,7 +19,7 @@ import { formatAddress, MAX_COLS } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { cellResult, spilled } from '../result.js'
 import { cellLooks } from '../shown.js'
-import { meets, type Rect } from '../structure/area.js'
+import { cornersText, meets, type Rect } from '../structure/area.js'
 import { tableAt } from '../tables/model.js'
 import { lookShown, windowLooks } from '../cond/looks.js'
 import { sheetExtent } from './extent.js'
@@ -123,7 +123,7 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
   }
   const single = x.r1 === x.r2 && x.c1 === x.c2
   return {
-    range: single ? formatAddress(x.r1, x.c1) : mergeText(x),
+    range: single ? formatAddress(x.r1, x.c1) : cornersText(x),
     truncated: x !== asked,
     cells,
     columns,

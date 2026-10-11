@@ -4,15 +4,17 @@
  * Excel on every range of a 12-row window under 20 moves (`test/excel/struct/moves.json`, see
  * `docs/structure.md`). Across sheets a range only sheds the moved cells at its end.
  */
-import type { BookInput, CellInput, CellRef, NameInput, StructureResult } from '../contract.js'
+import type { BookInput, CellInput, NameInput } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { say } from '../locale/messages.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { parse, sheetKey, walk } from '../syntax.js'
-import { contains, hi, isFull, lo, meets, parseRange, rectOf, withSpan, type Area, type Axis, type Rect } from './area.js'
+import { contains, hasCell, hi, isFull, lo, meets, parseRange, rectOf, shiftRect, withSpan, type Area, type Axis, type Rect } from './area.js'
 import { arrayRefusal, relocated } from './arrays.js'
+import { placer, type Applied, type Geometry, type Place } from './geometry.js'
+import { gridOf } from './grid.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
-import { rewriteCell, rewriteNames, rewriteTemplates, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { rewriteCell, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { moveConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
 
@@ -64,8 +66,6 @@ function endAxis(range: Rect, x: Rect): Axis | null {
   }
   return null
 }
-
-export const shiftRect = (x: Rect, dr: number, dc: number): Rect => ({ r1: x.r1 + dr, r2: x.r2 + dr, c1: x.c1 + dc, c2: x.c2 + dc })
 
 /** The area with `axis` set to `s`: undefined when that changes nothing; a range over the whole axis keeps it. */
 function adjusted(sheet: string, area: Area, axis: Axis, s: Pair | 'ref'): Outcome {
@@ -132,13 +132,8 @@ export function carryNames(names: NameInput[], formulas: string[], from: string,
   return added
 }
 
-export const within = (x: Rect, addr: string) => {
-  const p = parseAddress(addr)
-  return p.row >= x.r1 && p.row <= x.r2 && p.col >= x.c1 && p.col <= x.c2
-}
-
 /** Cut `src` on sheet `from` and paste it with its top-left cell at row `row`, column `col` of `to`. */
-export function moveRange(book: BookInput, from: string, src: Rect, to: string, row: number, col: number): StructureResult {
+export function moveRange(book: BookInput, from: string, src: Rect, to: string, row: number, col: number): Applied {
   const [dr, dc] = [row - src.r1, col - src.c1]
   const dst = shiftRect(src, dr, dc)
   if (dst.r2 >= MAX_ROWS || dst.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'moveOffSheet', sheet: to, cell: formatAddress(row, col) }) }
@@ -148,32 +143,44 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
   const part = arrayRefusal(book, paste)
   if (part) return { ok: false, code: 'array', message: say(book.locale, part) }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
+  const [fi, ti] = [sheetIndex(book, from), sheetIndex(book, to)]
+  const geometry: Geometry = [{ kind: 'range', from: fi, src, to: ti, dr, dc }]
   const t = moveTransform(from, src, to, dr, dc)
   const names = sheetNames(book)
   const moved: Record<string, CellInput> = {}
   const formulas: string[] = []
-  const sheets = book.sheets.map((s) => {
+  const place = placer(geometry)
+  const p: Place = { s: 0, r: 0, c: 0 }
+  const sheets = book.sheets.map((s, si) => {
     const k = sheetKey(s.name)
-    const cells: Record<string, CellInput> = {}
-    let changed = k === fk || k === tk
-    for (const addr of Object.keys(s.cells)) {
-      const cell = s.cells[addr]
-      if (k === fk && within(src, addr)) {
-        const p = parseAddress(addr)
-        const at = formatAddress(p.row + dr, p.col + dc)
-        moved[at] = relocated(rewriteCell(cell, s.name, to, t, names), addr, at)
-        if (cell.formula !== undefined) formulas.push(cell.formula)
-      } else if (k !== tk || !within(dst, addr)) {
-        const next = rewriteCell(cell, s.name, s.name, t, names)
-        changed ||= next !== cell
-        cells[addr] = next
+    let cells: Record<string, CellInput> = {}
+    let changed = si === fi || si === ti
+    if (changed) {
+      // the cells where the geometry takes them: the moved ones to `to`, the rest of the sheet but those landed on stay
+      const g = gridOf(s)
+      for (let i = 0; i < g.addr.length; i++) {
+        const addr = g.addr[i]
+        const cell = g.cell[i]
+        p.s = si
+        p.r = g.row[i]
+        p.c = g.col[i]
+        const moves = si === fi && hasCell(src, p.r, p.c)
+        if (!place(p)) continue
+        if (moves) {
+          const at = formatAddress(p.r, p.c)
+          moved[at] = relocated(rewriteCell(cell, s.name, to, t, names), addr, at)
+          if (cell.formula !== undefined) formulas.push(cell.formula)
+        } else cells[addr] = rewriteCell(cell, s.name, s.name, t, names)
       }
+    } else {
+      cells = rewriteCells(s.cells, s.name, s.name, t, names)
+      changed = cells !== s.cells
     }
-    // a table the move takes whole goes to `to` with its cells (`tables/moves.ts`), the others stay on their sheet
+  // a table the move takes whole goes to `to` with its cells (`tables/moves.ts`), the others stay on their sheet
     const tables = rewriteTemplates(s.tables, s.name, (ti) => (k === fk && contains(src, parseRange(ti.range)!) ? to : s.name), t, names)
     return changed || tables !== s.tables ? { ...s, cells, ...(tables ? { tables } : {}) } : s
   })
-  Object.assign(sheets.find((s) => sheetKey(s.name) === tk)!.cells, moved)
+  Object.assign(sheets[ti].cells, moved)
   const out: BookInput = { ...book, sheets }
   let nm = rewriteNames(book.names, t, names)
   if (nm && fk !== tk) {
@@ -184,13 +191,5 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
   pasteValidations(book, out, paste, t, names)
   pasteLayout(book, out, paste)
   moveConditional(book, out, paste, t, names)
-  const mapCell = (ref: CellRef): CellRef | null => {
-    const k = sheetKey(ref.sheet)
-    if (k === fk && within(src, ref.cell)) {
-      const p = parseAddress(ref.cell)
-      return { sheet: to, cell: formatAddress(p.row + dr, p.col + dc) }
-    }
-    return k === tk && within(dst, ref.cell) ? null : ref
-  }
-  return { ok: true, book: out, mapCell }
+  return { ok: true, book: out, geometry }
 }

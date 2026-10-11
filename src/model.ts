@@ -32,8 +32,22 @@ export function parseAddress(addr: string): { row: number; col: number } {
   return { row: Number(m[2]) - 1, col: colToIndex(m[1]) }
 }
 
+/** Column letters by index, made once each: loops over a sheet's cells write the same columns over and over. */
+const LETTERS: string[] = []
+
 export function formatAddress(row: number, col: number): string {
-  return `${indexToCol(col)}${row + 1}`
+  return (LETTERS[col] ??= indexToCol(col)) + (row + 1)
+}
+
+/** A valid address's zero-based row and column, read into `out` without a pattern or an allocation: for loops over a book's cells. */
+export function readAddress(addr: string, out: { r: number; c: number }): void {
+  let i = 0
+  let col = 0
+  for (let ch = addr.charCodeAt(0); ch >= 65; ch = addr.charCodeAt(++i)) col = col * 26 + ch - 64
+  let row = 0
+  for (; i < addr.length; i++) row = row * 10 + addr.charCodeAt(i) - 48
+  out.r = row - 1
+  out.c = col - 1
 }
 
 /** Cell order by address: row, then column. */

@@ -4,7 +4,7 @@
  * is a whole multiple of the source's size is tiled with copies, any other is pasted once at its top-left
  * cell, as Excel's Range.Copy does. Empty source cells clear the cells they land on.
  */
-import type { BookInput, CellInput, CellRef, StructureResult, TableInput } from '../contract.js'
+import type { BookInput, CellInput, CellRef, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { checkAddress, checkString, InputError } from '../input.js'
 import { say } from '../locale/messages.js'
@@ -12,11 +12,13 @@ import { formatAddress, parseAddress } from '../model.js'
 import { FormulaError, sheetKey, tokenize } from '../syntax.js'
 import { tableAt, tablesOf } from '../tables/model.js'
 import { rewriteTableRefs } from '../tables/rewrite.js'
-import { isFull, LIMIT, span, type Area, type Axis, type Bound, type Rect } from './area.js'
-import { carryNames, shiftRect, within } from './move.js'
+import { isFull, LIMIT, shiftRect, span, type Area, type Axis, type Bound, type Rect } from './area.js'
+import { carryNames } from './move.js'
 import { arrayRefusal, copiedCells, relocated } from './arrays.js'
+import { placer, type Applied, type Geometry } from './geometry.js'
+import { cellsIn, gridOf } from './grid.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
-import { rewriteFormula, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Outcome, type Transform } from './rewrite.js'
 import { copyConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
 
@@ -62,7 +64,7 @@ const withoutMeta = (cell: CellInput): CellInput => {
  * Copy `src` of sheet `from` to `target` of sheet `to`; the copies keep `meta` only `withMeta`. The source is read
  * from `source`, the book as it was copied (the clipboard), when pastes follow one another.
  */
-export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book): StructureResult {
+export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book): Applied {
   const { offsets, area: pasted } = tiles(src, target)
   const [dr, dc] = offsets[0]
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
@@ -72,22 +74,28 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   const part = arrayRefusal(book, paste)
   if (part) return { ok: false, code: 'array', message: say(book.locale, part) }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
+  const ti = sheetIndex(book, to)
+  const geometry: Geometry = [{ kind: 'clear', s: ti, area: pasted }]
   const names = sheetNames(book)
-  const sheet = source.sheets.find((s) => sheetKey(s.name) === fk)!
+  const sheet = sheetOf(source, from)
   // the cells of part of an array formula's area copy as array formulas of their own
   const parts = copiedCells(sheet, src, (f, r, c) => rewriteFormula(f, from, from, copyTransform(r, c), names))
-  const inSrc = Object.keys(sheet.cells).filter((addr) => {
-    spend(1)
-    return within(src, addr) && !parts.some(([a]) => a === addr)
-  })
-  const copied = [...inSrc.map((addr): [string, CellInput] => [addr, sheet.cells[addr]]), ...parts].map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
-  const sheets = book.sheets.map((s) => {
-    if (sheetKey(s.name) !== tk) return s
+  const own = new Set(parts.map(([addr]) => addr))
+  const g = gridOf(sheet)
+  const copied = [
+    ...cellsIn(g, src).flatMap((i) => (own.has(g.addr[i]) ? [] : [{ addr: g.addr[i], at: { row: g.row[i], col: g.col[i] }, cell: g.cell[i] }])),
+    ...parts.map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell })),
+  ].map((x) => (withMeta ? x : { ...x, cell: withoutMeta(x.cell) }))
+  const sheets = book.sheets.map((s, si) => {
+    if (si !== ti) return s
+    // the target's cells but those the geometry takes away, the pasted ones over them
     const cells: Record<string, CellInput> = {}
-    for (const addr of Object.keys(s.cells)) {
-      const cell = s.cells[addr]
+    const [t, place, p] = [gridOf(s), placer(geometry), { s: ti, r: 0, c: 0 }]
+    for (let i = 0; i < t.addr.length; i++) {
       spend(1)
-      if (!within(pasted, addr)) cells[addr] = cell
+      p.r = t.row[i]
+      p.c = t.col[i]
+      if (place(p)) cells[t.addr[i]] = t.cell[i]
     }
     for (const [r, c] of offsets) {
       const t = copyTransform(r, c)
@@ -111,8 +119,7 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   pasteValidations(source, out, paste, null, names)
   pasteLayout(source, out, paste)
   copyConditional(source, out, paste, names)
-  const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === tk && within(pasted, ref.cell) ? null : ref)
-  return { ok: true, book: out, mapCell }
+  return { ok: true, book: out, geometry }
 }
 
 /** What `copyFormula` reads of a book: its sheets' names and their tables; a `BookInput` is one. */
@@ -136,7 +143,7 @@ function place(ref: unknown, path: string, book: CopyContext | undefined): { she
   if (typeof ref !== 'object' || ref === null) throw new InputError(path, 'expected a cell such as { sheet: "Sheet1", cell: "B2" }')
   const { sheet, cell } = ref as CellRef
   const name = checkString(sheet, `${path}.sheet`)
-  const known = book?.sheets.find((s) => sheetKey(s.name) === sheetKey(name))
+  const known = book && sheetOf(book, name)
   if (book && !known) throw new InputError(`${path}.sheet`, `unknown sheet ${JSON.stringify(name)}`)
   return { sheet: known?.name ?? name, ...parseAddress(checkAddress(cell, `${path}.cell`)) }
 }
@@ -154,8 +161,7 @@ export function copyFormula(text: string, from: CellRef, to: CellRef, book?: Cop
   const out = rewriteFormula(formula, b.sheet, b.sheet, copyTransform(b.row - a.row, b.col - a.col), names)
   if (!book) return out
   const tables = tablesOf(book as BookInput)
-  const index = (name: string) => book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name))
-  const t = tableAt(tables, index(a.sheet), a.row, a.col)
+  const t = tableAt(tables, sheetIndex(book, a.sheet), a.row, a.col)
   // out of its table, as copyRange pastes it (`tables/moves.ts`): the references to the table without a name get its name
-  return t && tableAt(tables, index(b.sheet), b.row, b.col) !== t ? rewriteTableRefs(out, tables, t, null, () => undefined, true) : out
+  return t && tableAt(tables, sheetIndex(book, b.sheet), b.row, b.col) !== t ? rewriteTableRefs(out, tables, t, null, () => undefined, true) : out
 }

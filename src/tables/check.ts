@@ -4,7 +4,7 @@
  * table over another, no merged area or array area of several cells in a table.
  */
 import type { BookInput, CellInput, TableColumn, TableInput } from '../contract.js'
-import { InputError } from '../input.js'
+import { InputError, isObject, onlyKeys } from '../input.js'
 import { parseMerge } from '../layout/merges.js'
 import { formatAddress } from '../model.js'
 import { arrayArea } from '../array-areas.js'
@@ -15,15 +15,9 @@ import { tableKey } from './model.js'
 
 const TOTALS = ['sum', 'average', 'count', 'countNums', 'max', 'min', 'stdDev', 'var', 'custom']
 
-const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
-
-function only(o: Record<string, unknown>, path: string, keys: string[]) {
-  for (const k of Object.keys(o)) if (!keys.includes(k)) throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${keys.join(', ')})`)
-}
-
 function column(v: unknown, path: string): TableColumn {
   if (!isObject(v)) throw new InputError(path, 'expected a column such as { name: "Amount" }')
-  only(v, path, ['name', 'formula', 'totals'])
+  onlyKeys(v, path, ['name', 'formula', 'totals'])
   if (typeof v.name !== 'string' || v.name === '' || v.name.length > 255) throw new InputError(`${path}.name`, 'expected a column name of 1 to 255 characters')
   if (v.formula !== undefined && typeof v.formula !== 'string') throw new InputError(`${path}.formula`, 'expected formula text')
   if (v.totals !== undefined) {
@@ -37,7 +31,7 @@ function column(v: unknown, path: string): TableColumn {
 /** One table's own shape: its fields, its rectangle and columns, its header cells; returns the rectangle. */
 function table(v: unknown, path: string, cells: Record<string, CellInput>, booleans: readonly string[]): Rect {
   if (!isObject(v)) throw new InputError(path, 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
-  only(v, path, ['name', 'range', 'headers', 'totals', 'columns'])
+  onlyKeys(v, path, ['name', 'range', 'headers', 'totals', 'columns'])
   if (typeof v.name !== 'string') throw new InputError(`${path}.name`, 'expected a table name')
   const problem = nameProblem(v.name, booleans)
   if (problem) throw new InputError(`${path}.name`, `${JSON.stringify(v.name)}: ${problem}`)

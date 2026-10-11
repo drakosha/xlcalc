@@ -4,8 +4,8 @@
  */
 import type { CellInput } from './contract.js'
 import { InputError } from './input.js'
-import { formatAddress, parseAddress } from './model.js'
-import { parseRange, type Rect } from './structure/area.js'
+import { parseAddress } from './model.js'
+import { cornersText, hasCell, parseRange, type Rect } from './structure/area.js'
 
 /** The area of an array formula on cell `addr`, which is its top-left cell; null when the text is not one. */
 export function arrayArea(addr: string, text: string): Rect | null {
@@ -30,7 +30,7 @@ export function checkArrays(cells: Record<string, CellInput>, tops: string[], pa
     if (!holds(cells[addr])) continue
     const { row, col } = parseAddress(addr)
     for (const [top, x] of areas)
-      if (top !== addr && row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2)
-        throw new InputError(`${path}.cells[${JSON.stringify(addr)}]`, `the cell is in the area of the array formula at ${top} (${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}), which holds nothing else`)
+      if (top !== addr && hasCell(x, row, col))
+        throw new InputError(`${path}.cells[${JSON.stringify(addr)}]`, `the cell is in the area of the array formula at ${top} (${cornersText(x)}), which holds nothing else`)
   }
 }

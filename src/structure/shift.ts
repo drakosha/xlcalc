@@ -5,16 +5,17 @@
  * move too. At the sheet's edge a range ending on the last row keeps ending there, a single cell pushed
  * past it is `#REF!`, and a range over every row is not changed by rows inserted or deleted.
  */
-import type { BookInput, CellInput, CellRef, StructureResult } from '../contract.js'
-import { spend } from '../exec/budget.js'
-import { formatAddress, parseAddress } from '../model.js'
+import type { BookInput, CellInput } from '../contract.js'
+import { formatAddress } from '../model.js'
 import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { copyTransform } from './copy.js'
+import { placer, type Applied, type Geometry, type Place } from './geometry.js'
+import { gridOf } from './grid.js'
 import { relocated, shiftRefusal } from './arrays.js'
 import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
-import { offsetsStay, rewriteCell, rewriteFormula, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
@@ -64,52 +65,50 @@ function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: Sp
  * Inserting refuses when a cell or a merged area would leave the sheet (Excel refuses for cells that are
  * not empty).
  */
-export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n: number): StructureResult {
+export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n: number): Applied {
   const emptied = axis === 'r' && n < 0 ? emptiedTable(input, sheet, at, -n) : null
   if (emptied) return keepFirstRow(input, sheet, at, -n, emptied)
   const tables = tableShift(input, sheet, axis, at, n)
   if (tables.refuse) return { ok: false, code: 'table', message: say(input.locale, tables.refuse) }
   const book = tables.before(input)
   const count = Math.abs(n)
-  const max = LIMIT[axis]
-  const pos = (addr: string) => {
-    const p = parseAddress(addr)
-    return axis === 'r' ? p.row : p.col
-  }
-  const place = (addr: string, i: number) => {
-    const p = parseAddress(addr)
-    return axis === 'r' ? formatAddress(i, p.col) : formatAddress(p.row, i)
-  }
-  const target = book.sheets.find((s) => sheetKey(s.name) === sheetKey(sheet))!
+  const ti = sheetIndex(book, sheet)
+  const target = book.sheets[ti]
+  const grid = gridOf(target)
+  const line = axis === 'r' ? grid.row : grid.col
   const lines = axis === 'r' ? 'rows' : 'columns'
-  const refuse = (code: 'off_sheet' | 'array', m: Message): StructureResult => ({ ok: false, code, message: say(input.locale, m) })
+  const refuse = (code: 'off_sheet' | 'array', m: Message): Applied => ({ ok: false, code, message: say(input.locale, m) })
   if (n > 0) {
-    const off = Object.keys(target.cells).find((a) => {
-      spend(1)
-      return pos(a) >= max - count
-    })
-    if (off) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: off })
+    const off = line.findIndex((i) => i >= LIMIT[axis] - count)
+    if (off >= 0) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: grid.addr[off] })
   }
   const cut = shiftRefusal(target, axis, at, n)
   if (cut) return refuse('array', cut)
   const merges = shiftMerges(target.merges, axis, at, n)
   if (merges === null) return refuse('off_sheet', { key: 'insertMergeOffSheet', count, lines, sheet: target.name })
+  const geometry: Geometry = [{ kind: 'lines', s: ti, axis, at, n }]
   const t = shiftTransform(target.name, axis, at, count, n > 0 ? insertSpan : deleteSpan, tables.edge)
   const names = sheetNames(book)
   const sheets = book.sheets.map((s) => {
     const moving = s === target
-    const cells: Record<string, CellInput> = {}
+    let cells: Record<string, CellInput> = {}
     let changed = moving
-    for (const addr of Object.keys(s.cells)) {
-      const cell = s.cells[addr]
-      const next = rewriteCell(cell, s.name, s.name, t, names)
-      changed ||= next !== cell
-      if (!moving) cells[addr] = next
-      else {
-        const i = pos(addr)
-        const to = n > 0 ? (i >= at ? place(addr, i + count) : addr) : i < at ? addr : i >= at + count ? place(addr, i - count) : null
-        if (to) cells[to] = relocated(next, addr, to)
+    if (moving) {
+      // the cells where the geometry takes them, their formulas rewritten
+      const place = placer(geometry)
+      const p: Place = { s: ti, r: 0, c: 0 }
+      for (let i = 0; i < grid.addr.length; i++) {
+        const addr = grid.addr[i]
+        p.s = ti
+        p.r = grid.row[i]
+        p.c = grid.col[i]
+        if (!place(p)) continue
+        const to = p.r === grid.row[i] && p.c === grid.col[i] ? addr : formatAddress(p.r, p.c)
+        cells[to] = relocated(rewriteCell(grid.cell[i], s.name, s.name, t, names), addr, to)
       }
+    } else {
+      cells = rewriteCells(s.cells, s.name, s.name, t, names)
+      changed = cells !== s.cells
     }
     const list = s.tables?.map((ti) => {
       const first = parseRange(ti.range)!.r1 + (ti.headers !== false ? 1 : 0)
@@ -138,24 +137,16 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const out: BookInput = { ...book, sheets: shiftConditional(sheets, target.name, axis, at, n, t, names) }
   const nm = rewriteNames(book.names, offsetsStay(t), names)
   if (nm) out.names = nm
-  const key = sheetKey(target.name)
-  const mapCell = (ref: CellRef): CellRef | null => {
-    if (sheetKey(ref.sheet) !== key) return ref
-    const i = pos(ref.cell)
-    if (n > 0) return i >= at ? { sheet: ref.sheet, cell: place(ref.cell, i + count) } : ref
-    if (i < at) return ref
-    return i >= at + count ? { sheet: ref.sheet, cell: place(ref.cell, i - count) } : null
-  }
-  return { ok: true, book: tables.after(out), mapCell }
+  return { ok: true, book: tables.after(out), geometry }
 }
 
 /** Rows deleted over every data row of a table: its first data row stays, its cells in the table cleared; the rest go. */
-function keepFirstRow(book: BookInput, sheet: string, at: number, count: number, cols: { c1: number; c2: number }): StructureResult {
-  const r = count > 1 ? shift(book, sheet, 'r', at + 1, 1 - count) : { ok: true as const, book, mapCell: (ref: CellRef): CellRef | null => ref }
+function keepFirstRow(book: BookInput, sheet: string, at: number, count: number, cols: { c1: number; c2: number }): Applied {
+  const r: Applied = count > 1 ? shift(book, sheet, 'r', at + 1, 1 - count) : { ok: true, book, geometry: [] }
   if (!r.ok) return r
-  const key = sheetKey(sheet)
-  const sheets = r.book.sheets.map((s) => {
-    if (sheetKey(s.name) !== key) return s
+  const i = sheetIndex(r.book, sheet)
+  const sheets = r.book.sheets.map((s, j) => {
+    if (j !== i) return s
     const cells = { ...s.cells }
     for (let c = cols.c1; c <= cols.c2; c++) {
       const addr = formatAddress(at, c)
@@ -167,10 +158,5 @@ function keepFirstRow(book: BookInput, sheet: string, at: number, count: number,
     }
     return { ...s, cells }
   })
-  const cleared = (ref: CellRef) => {
-    if (sheetKey(ref.sheet) !== key) return false
-    const p = parseAddress(ref.cell)
-    return p.row === at && p.col >= cols.c1 && p.col <= cols.c2
-  }
-  return { ok: true, book: { ...r.book, sheets }, mapCell: (ref) => (cleared(ref) ? null : r.mapCell(ref)) }
+  return { ok: true, book: { ...r.book, sheets }, geometry: [...r.geometry, { kind: 'clear', s: i, area: { r1: at, r2: at, ...cols } }] }
 }

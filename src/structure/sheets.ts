@@ -7,13 +7,14 @@
  * and moved as any other, a very hidden one renamed alone; the book's last visible sheet is neither deleted nor hidden, as
  * Excel refuses all these (`hidden/sheets-held`).
  */
-import type { BookInput, CellRef, StructureResult } from '../contract.js'
+import type { BookInput } from '../contract.js'
 import { sheetNameProblem } from '../input.js'
 import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
-import { rewriteBook, sheetNames, type Transform } from './rewrite.js'
+import type { Applied } from './geometry.js'
+import { rewriteBook, sheetIndex, sheetNames, type Transform } from './rewrite.js'
 
-export function renameSheet(book: BookInput, sheet: string, name: string): StructureResult {
+export function renameSheet(book: BookInput, sheet: string, name: string): Applied {
   const key = sheetKey(sheet)
   const problem = nameProblem(book, name, sheet)
   if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
@@ -25,8 +26,7 @@ export function renameSheet(book: BookInput, sheet: string, name: string): Struc
   }
   const out = rewriteBook(book, t, sheetNames(book), (s) => (sheetKey(s) === key ? name : s))
   if (out.names) out.names = out.names.map((n) => (n.scope !== undefined && sheetKey(n.scope) === key ? { ...n, scope: name } : n))
-  const mapCell = (ref: CellRef): CellRef => (sheetKey(ref.sheet) === key ? { sheet: name, cell: ref.cell } : ref)
-  return { ok: true, book: out, mapCell }
+  return { ok: true, book: out, geometry: [{ kind: 'renameSheet', s: sheetIndex(book, sheet) }] }
 }
 
 /**
@@ -52,13 +52,13 @@ function nameProblem(book: BookInput, name: string, own?: string): Message | nul
 }
 
 /** A new empty sheet before `before`, else at the end; references across sheets take it in between their ends. */
-export function insertSheet(book: BookInput, name: string, before: string | undefined): StructureResult {
+export function insertSheet(book: BookInput, name: string, before: string | undefined): Applied {
   const problem = nameProblem(book, name)
   if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
-  const at = before === undefined ? book.sheets.length : book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
+  const at = before === undefined ? book.sheets.length : sheetIndex(book, before)
   const sheets = [...book.sheets]
   sheets.splice(at, 0, { name, cells: {} })
-  return { ok: true, book: { ...book, sheets }, mapCell: (ref) => ref }
+  return { ok: true, book: { ...book, sheets }, geometry: [{ kind: 'insertSheet', at }] }
 }
 
 /**
@@ -68,43 +68,45 @@ export function insertSheet(book: BookInput, name: string, before: string | unde
  * end of a reference across sheets that moves stays its end while it does not pass the other end; one that passes it
  * gives way to the next sheet inward.
  */
-export function moveSheet(book: BookInput, sheet: string, before: string | undefined): StructureResult {
+export function moveSheet(book: BookInput, sheet: string, before: string | undefined): Applied {
   const key = sheetKey(sheet)
-  const moving = book.sheets.find((s) => sheetKey(s.name) === key)!
+  const s = sheetIndex(book, sheet)
+  const moving = book.sheets[s]
   if (moving.hidden === 'very') return veryHidden(book, moving.name)
-  if (before !== undefined && sheetKey(before) === key) return { ok: true, book, mapCell: (ref) => ref }
-  const sheets = book.sheets.filter((s) => s !== moving)
-  sheets.splice(movedTo(sheets, before), 0, moving)
+  if (before !== undefined && sheetKey(before) === key) return { ok: true, book, geometry: [{ kind: 'moveSheet', s, at: s }] }
+  const sheets = book.sheets.filter((x) => x !== moving)
+  const at = movedTo(sheets, before)
+  sheets.splice(at, 0, moving)
   const [was, now] = [book.sheets, sheets].map((list) => list.map((s) => sheetKey(s.name)))
   const side = (order: string[], a: string, b: string) => Math.sign(order.indexOf(sheetKey(a)) - order.indexOf(sheetKey(b)))
   const without = endsWithout(book, key)!
   const t: Transform = { ref: () => undefined, ends: (a, b) => (sheetKey(a) === sheetKey(b) || side(was, a, b) === side(now, a, b) ? undefined : without(a, b)) }
-  return { ok: true, book: rewriteBook({ ...book, sheets }, t, sheetNames(book)), mapCell: (ref) => ref }
+  return { ok: true, book: rewriteBook({ ...book, sheets }, t, sheetNames(book)), geometry: [{ kind: 'moveSheet', s, at }] }
 }
 
 /** Where a sheet moved before `before` (else to the end) goes among the other sheets: by the visible ones, as Excel places it. */
 function movedTo(sheets: BookInput['sheets'], before: string | undefined): number {
-  const at = before === undefined ? sheets.length : sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
+  const at = before === undefined ? sheets.length : sheetIndex({ sheets }, before)
   const next = sheets.findIndex((s, i) => i >= at && !s.hidden)
   if (next >= 0) return next
   const last = sheets.findLastIndex((s) => !s.hidden)
   return last >= 0 ? last + 1 : at
 }
 
-export function deleteSheet(book: BookInput, sheet: string): StructureResult {
+export function deleteSheet(book: BookInput, sheet: string): Applied {
   if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastSheet' }) }
   const key = sheetKey(sheet)
-  if (book.sheets.find((s) => sheetKey(s.name) === key)!.hidden === 'very') return veryHidden(book, sheet)
+  const s = sheetIndex(book, sheet)
+  if (book.sheets[s].hidden === 'very') return veryHidden(book, sheet)
   if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const t: Transform = { ref: ({ sheet: s }) => (sheetKey(s) === key ? 'gone' : undefined), sheet: (s) => (sheetKey(s) === key ? null : undefined), ends: endsWithout(book, key) }
-  const rest: BookInput = { ...book, sheets: book.sheets.filter((s) => sheetKey(s.name) !== key) }
+  const rest: BookInput = { ...book, sheets: book.sheets.filter((_, i) => i !== s) }
   if (book.names) rest.names = book.names.filter((n) => n.scope === undefined || sheetKey(n.scope) !== key)
-  const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === key ? null : ref)
-  return { ok: true, book: rewriteBook(rest, t, sheetNames(book)), mapCell }
+  return { ok: true, book: rewriteBook(rest, t, sheetNames(book)), geometry: [{ kind: 'deleteSheet', s }] }
 }
 
 /** Excel deletes and moves no very hidden sheet: its object model answers an error, Excel for Mac at times nothing. */
-const veryHidden = (book: BookInput, sheet: string): StructureResult => ({ ok: false, code: 'very_hidden', message: say(book.locale, { key: 'veryHidden', sheet }) })
+const veryHidden = (book: BookInput, sheet: string): Applied => ({ ok: false, code: 'very_hidden', message: say(book.locale, { key: 'veryHidden', sheet }) })
 
 /** Whether the sheet `key` is the book's only visible sheet. */
 const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (sheetKey(s.name) === key) === !s.hidden)
@@ -113,7 +115,7 @@ const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (
  * The sheet hidden (very hidden with `very`) or shown again (`hidden` false); no formula changes, as formulas read a
  * hidden sheet as any other. The book's last visible sheet is not hidden, as Excel refuses.
  */
-export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'very'): StructureResult {
+export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'very'): Applied {
   const key = sheetKey(sheet)
   if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const sheets = book.sheets.map((s) => {
@@ -121,5 +123,5 @@ export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'ver
     const { hidden: _, ...rest } = s
     return hidden ? { ...rest, hidden } : rest
   })
-  return { ok: true, book: { ...book, sheets }, mapCell: (ref) => ref }
+  return { ok: true, book: { ...book, sheets }, geometry: [] }
 }

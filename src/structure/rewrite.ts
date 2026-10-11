@@ -34,6 +34,15 @@ export interface Transform {
 /** Sheet names of a book by key (sheet names compare case-insensitively). */
 export const sheetNames = (book: BookInput) => new Map(book.sheets.map((s) => [sheetKey(s.name), s.name]))
 
+/** A sheet's index in a book by its name in any case, -1 when it has none. */
+export function sheetIndex(book: { sheets: { name: string }[] }, name: string): number {
+  const k = sheetKey(name)
+  return book.sheets.findIndex((s) => sheetKey(s.name) === k)
+}
+
+/** A sheet of a book by its name in any case (one the book has). */
+export const sheetOf = <S extends { name: string }>(book: { sheets: S[] }, name: string): S => book.sheets[sheetIndex(book, name)]
+
 const same = (a: string | null, b: string | null) => a !== null && b !== null && sheetKey(a) === sheetKey(b)
 
 const SPACE = new Set([' ', '\t', '\n', '\r'])
@@ -120,6 +129,17 @@ export function rewriteCell(cell: CellInput, host: string, moved: string, t: Tra
   return formula === cell.formula ? cell : { ...cell, formula }
 }
 
+/** A sheet's cells with their formulas rewritten (`host` its name before the operation, `moved` after); the same object when none changes. */
+export function rewriteCells(cells: Record<string, CellInput>, host: string, moved: string, t: Transform, sheets: Map<string, string>): Record<string, CellInput> {
+  let out: Record<string, CellInput> | undefined
+  for (const addr in cells) {
+    const cell = cells[addr]
+    const next = rewriteCell(cell, host, moved, t, sheets)
+    if (next !== cell) (out ??= { ...cells })[addr] = next
+  }
+  return out ?? cells
+}
+
 /** A transform for names' formulas under inserted or deleted rows and columns: a reference without `$`, an offset from the cell using the name, stays. */
 export const offsetsStay = (t: Transform): Transform => ({ ...t, ref: (site) => (site.area.r.lo.abs || site.area.r.hi.abs || site.area.c.lo.abs || site.area.c.hi.abs ? t.ref(site) : undefined) })
 
@@ -164,17 +184,12 @@ export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, s
     ...book,
     sheets: book.sheets.map((s) => {
       const name = rename(s.name)
-      let cells: Record<string, CellInput> | undefined
-      for (const addr of Object.keys(s.cells)) {
-        const cell = s.cells[addr]
-        const next = rewriteCell(cell, s.name, name, t, sheets)
-        if (next !== cell) (cells ??= { ...s.cells })[addr] = next
-      }
+      const cells = rewriteCells(s.cells, s.name, name, t, sheets)
       const tables = rewriteTemplates(s.tables, s.name, () => name, t, sheets)
       const cf = rewriteConditional(s.conditionalFormats, s.name, name, t, sheets)
       const validations = rewriteValidations(s.validations, s.name, name, t, sheets)
-      return cells || name !== s.name || tables !== s.tables || cf !== s.conditionalFormats || validations !== s.validations
-        ? { ...s, name, cells: cells ?? s.cells, ...(tables ? { tables } : {}), ...(cf ? { conditionalFormats: cf } : {}), ...(validations ? { validations } : {}) }
+      return cells !== s.cells || name !== s.name || tables !== s.tables || cf !== s.conditionalFormats || validations !== s.validations
+        ? { ...s, name, cells, ...(tables ? { tables } : {}), ...(cf ? { conditionalFormats: cf } : {}), ...(validations ? { validations } : {}) }
         : s
     }),
   }

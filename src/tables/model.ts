@@ -3,7 +3,7 @@
  * and the totals row, its columns by name; and the rectangle a structured reference takes (`docs/tables.md`).
  */
 import type { BookInput, TableInput } from '../contract.js'
-import { parseRange, type Rect } from '../structure/area.js'
+import { hasCell, parseRange, type Rect } from '../structure/area.js'
 import type { TableArea, TableSpec } from '../syntax/table.js'
 import { sheetKey } from '../syntax/print.js'
 
@@ -43,7 +43,7 @@ export function tablesOf(book: BookInput): Tables {
 }
 
 /** The table holding a cell of sheet `s`. */
-export const tableAt = (tables: Tables, s: number, r: number, c: number): Table | undefined => tables.list.find((t) => t.s === s && r >= t.r1 && r <= t.r2 && c >= t.c1 && c <= t.c2)
+export const tableAt = (tables: Tables, s: number, r: number, c: number): Table | undefined => tables.list.find((t) => t.s === s && hasCell(t, r, c))
 
 /** The rows of a table: header row (-1 without one), first and last data rows, totals row (-1 without one). */
 export function rowsOf(t: Table): { head: number; first: number; last: number; foot: number } {

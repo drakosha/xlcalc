@@ -11,6 +11,7 @@ import { parseEntry } from '../entry/index.js'
 import { entryWidth } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
 import { parseMerge } from '../layout/merges.js'
+import { hasCell } from '../structure/area.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -65,7 +66,7 @@ export function columnWidening(s: EngineState, i: number, r: number, c: number):
   if (column?.hidden || column?.width === 0) return undefined
   if ((sh.merges ?? []).some((m) => {
     const x = parseMerge(m)!
-    return x.c2 > x.c1 && r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2
+    return x.c2 > x.c1 && hasCell(x, r, c)
   })) return undefined
   const { locale, dateSystem } = s.input
   return entryWidth(cellValue(s, i, r, c), { numberFormat: lines.format(r, c), locale, dateSystem, width: column?.width, bestFit: column?.bestFit })

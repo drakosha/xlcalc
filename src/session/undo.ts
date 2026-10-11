@@ -7,12 +7,12 @@
 import type { BookInput, CellReplace, CellRef, CellStyle, LayoutEdit, SessionHistory, SheetInput, UndoCall, UndoOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import type { Steps } from '../exec/budget.js'
-import { checkedMapCell } from '../structure/index.js'
+import { inverse, movesOf, type Geometry } from '../structure/geometry.js'
+import { checkedMapCell, namesOf } from '../structure/index.js'
 import { sheetKey } from '../syntax.js'
 import { joined, nothing, type Outcome } from './answer.js'
 import { layoutCells, snapshot } from './looks.js'
-import { movesOf } from './moves.js'
-import { applyDiff, bookDiff, GEOMETRY, mapCellOf, type BookDiff, type Geometry } from './rebook.js'
+import { applyDiff, bookDiff, type BookDiff } from './rebook.js'
 
 /** The fields of a sheet but its cells, and how its lines (`rows`, `columns`) changed entry by entry. */
 export interface SheetBack {
@@ -180,7 +180,7 @@ const own = (a: object, b: object | undefined): number => {
 /** The size of a book's diff from `current`: the fields and cells it keeps that `current` does not share. */
 function diffSize(d: BookDiff, current: BookInput): number {
   const sheets = new Map(current.sheets.map((s) => [sheetKey(s.name), s]))
-  return own(d.head, current) + weigh(d.op) + d.sheets.reduce((n, x) => n + ('rest' in x ? own(x.rest, sheets.get(sheetKey(x.rest.name))) + weigh(x.put) : 32), 0)
+  return own(d.head, current) + weigh(d.geometry) + d.sheets.reduce((n, x) => n + ('rest' in x ? own(x.rest, sheets.get(sheetKey(x.rest.name))) + weigh(x.put) : 32), 0)
 }
 
 /** The steps of each kind with their sizes: cells' inputs to put back, as edits. */
@@ -207,7 +207,7 @@ export function manyStep(call: UndoCall, steps: (Step | null)[]): Step {
 export interface SessionCore {
   ready(): Steps<EngineState>
   putCells(s: EngineState, edits: CellReplace[]): Steps<[Outcome, CellReplace[]]>
-  rebuild(old: EngineState, book: BookInput, mapCell: ((ref: CellRef) => CellRef | null) | null, looks: boolean, back: () => Steps<BookDiff | null>): Steps<[EngineState, Outcome, BookDiff | null]>
+  rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: () => Steps<BookDiff | null>): Steps<[EngineState, Outcome, BookDiff | null]>
   relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[Outcome, SheetInput[]]>
   display: boolean
   sheetIndex(s: EngineState): (name: string) => number | undefined
@@ -233,12 +233,6 @@ function touched(s: EngineState, b: SheetBack): LayoutEdit[] {
   return out
 }
 
-/** A mapCell with its geometry: a pool's thread sends the geometry, the calling side makes the same mapCell. */
-function registered(mapCell: (ref: CellRef) => CellRef | null, g: Geometry) {
-  GEOMETRY.set(mapCell, g)
-  return mapCell
-}
-
 /** One step taken on the session's book (a step of several, each of them from the last): what it changed and the way to undo it. */
 function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
   const s = yield* core.ready()
@@ -254,7 +248,7 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       const [outcome, before] = yield* core.relayout(s, next, shown)
       const t: Taken = { call: step.call, outcome }
       // a sheet hidden or shown again: its cells stay where they are
-      if (step.call === 'editStructure') t.mapCell = registered(checkedMapCell(s.input, (ref) => ref), { op: null, way: 'back', before: s.sheetNames, after: s.sheetNames })
+      if (step.call === 'editStructure') t.mapCell = checkedMapCell({ geometry: [], before: s.sheetNames, after: s.sheetNames })
       return [t, layoutStep(step.call, before, next)]
     }
     case 'styles': {
@@ -264,13 +258,12 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       return [{ call: step.call, outcome: { ...nothing(), styles: true } }, stylesStep(was, step.call)]
     }
     case 'book': {
-      const d = step.diff
-      const book = yield* applyDiff(s.input, d)
-      const names = book.sheets.map((x) => x.name)
-      const map = mapCellOf(d.op, d.way, names)
-      const [, outcome, diff] = yield* core.rebuild(s, book, d.op ? map : null, step.call !== 'setNames', () => bookDiff(book, s.input, d.op, d.way === 'back' ? 'forth' : 'back'))
-      const t: Taken = { call: step.call, outcome: { ...outcome, moved: movesOf(d.op, d.way, s.sheetNames, names) } }
-      if (step.call === 'editStructure') t.mapCell = registered(checkedMapCell(s.input, map), { op: d.op, way: d.way, before: s.sheetNames, after: names })
+      const { geometry: g } = step.diff
+      const [book, before] = [yield* applyDiff(s.input, step.diff), s.sheetNames]
+      const after = namesOf(book)
+      const [, outcome, diff] = yield* core.rebuild(s, book, g, step.call !== 'setNames', () => bookDiff(book, s.input, inverse(g)))
+      const t: Taken = { call: step.call, outcome: { ...outcome, moved: movesOf(g, before, after) } }
+      if (step.call === 'editStructure') t.mapCell = checkedMapCell({ geometry: g, before, after })
       return [t, bookStep(step.call, diff!, book)]
     }
     case 'many': {

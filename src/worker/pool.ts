@@ -5,13 +5,13 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { AbortSignalLike, AsyncStructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, StructureOp, UndoResult } from '../contract.js'
+import type { AbortSignalLike, AsyncStructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
 import { splitCall, checkCall, checkEditCall } from '../async/options.js'
-import { applyOp, checkedMapCell } from '../structure/index.js'
-import { mapCellOf, type Geometry } from '../session/rebook.js'
+import { checkedMapCell } from '../structure/index.js'
+import type { SentGeometry } from '../structure/geometry.js'
 import { calcWithOldNames, withOldNames } from '../old-names.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
 import { pack, unpackSlowly } from './pack.js'
@@ -376,13 +376,14 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       }
     }
     const value = <T>(p: Promise<Answer>) => p.then((a) => a.value as T)
-    // a structure operation undone or redone: its mapCell made here from the geometry the thread sent
-    const step = (op: 'undo' | 'redo', co: unknown) =>
-      value<(Omit<UndoResult, 'mapCell'> & { geometry?: Geometry }) | null>(edit(op, [], co)).then((v): UndoResult | null => {
+    /** A structure operation's answer, done, undone or redone: its mapCell made here from the geometry the thread sent. */
+    const mapped = <T>(p: Promise<Answer>) =>
+      value<(T & { geometry?: SentGeometry }) | null>(p).then((v): T | null => {
         if (!v?.geometry) return v
         const { geometry: g, ...rest } = v
-        return { ...rest, mapCell: checkedMapCell({ sheets: g.before.map((name) => ({ name, cells: {} })) }, mapCellOf(g.op, g.way, g.after)) }
+        return { ...rest, mapCell: checkedMapCell(g) } as T
       })
+    const step = (op: 'undo' | 'redo', co: unknown) => mapped<UndoResult>(edit(op, [], co))
     return withOldNames<AsyncSession>({
       get clock() {
         return { ...r.clock }
@@ -401,15 +402,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       previewCellText: (sheet, cell, text, co) => value(edit('previewCellText', [sheet, cell, text], co, ['widen'])),
       setNames: (names, co) => value(edit('setNames', [names], co)),
       setClock: (next, co) => value(edit('setClock', [next], co)),
-      async editStructure(op, co): Promise<AsyncStructureResult> {
-        const a = await edit('editStructure', [op], co)
-        const v = a.value as AsyncStructureResult
-        if (!v.ok) return v
-        const outline = a.outline!
-        const m = applyOp(outline, op as StructureOp, () => [])
-        if (!m.ok) throw new Error(`the operation applies to the session's book but not to its outline: ${m.message}`)
-        return { ...v, mapCell: checkedMapCell(outline, m.mapCell) }
-      },
+      editStructure: (op, co) => mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>,
       setStyles: (styles, co) => value(edit('setStyles', [styles], co)),
       setLayout: (edits, co) => value(edit('setLayout', [edits], co)),
       getBook: () => value<Sent>(call('getBook', [])).then(unpackSlowly),

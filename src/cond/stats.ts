@@ -7,7 +7,7 @@ import type { ConditionalFormat } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { caseKey } from '../collate.js'
-import { meets, type Rect } from '../structure/area.js'
+import { hasCell, meets, type Rect } from '../structure/area.js'
 import type { Rules } from '../locale/rules.js'
 import { isErr, Rng, type V } from '../values.js'
 import { rectsOf } from './rules.js'
@@ -50,7 +50,7 @@ export function* eachValue(state: EngineState, s: number, rects: Rect[], f: (v: 
       if (before.length) {
         const r = b.r1 + Math.floor(i / b.w)
         const c = b.c1 + (i % b.w)
-        if (before.some((y) => r >= y.r1 && r <= y.r2 && c >= y.c1 && c <= y.c2)) continue
+        if (before.some((y) => hasCell(y, r, c))) continue
       }
       f(flat[i])
     }
@@ -104,6 +104,6 @@ export function dropStats(state: EngineState, keys: string[], all = false) {
   if (all) return m.clear()
   for (const k of keys) {
     const [s, r, c] = k.split(':').map(Number)
-    for (const [rule, x] of m) if (x.s === s && x.rects.some((y) => r >= y.r1 && r <= y.r2 && c >= y.c1 && c <= y.c2)) m.delete(rule)
+    for (const [rule, x] of m) if (x.s === s && x.rects.some((y) => hasCell(y, r, c))) m.delete(rule)
   }
 }

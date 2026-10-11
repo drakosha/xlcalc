@@ -4,12 +4,13 @@
  * from a scratch sheet holding them so; a selection of hidden rows only is copied whole.
  */
 import type { BookInput, CellInput, RowInput, SheetInput } from '../contract.js'
-import { spend } from '../exec/budget.js'
 import { entryAt, lines, toMap, type Line } from '../layout/spans.js'
-import { formatAddress, parseAddress } from '../model.js'
-import { ERROR_TEXT, sheetKey } from '../syntax.js'
+import { formatAddress } from '../model.js'
+import { ERROR_TEXT } from '../syntax.js'
 import type { Rect } from './area.js'
 import { visibleRows } from './filtered.js'
+import { cellsIn, gridOf } from './grid.js'
+import { sheetOf } from './rewrite.js'
 import type { ValuesIn } from './values.js'
 
 /** The scratch sheet's name, which no sheet of a book can have. */
@@ -22,18 +23,16 @@ const pasted = (v: NonNullable<ReturnType<ValuesIn>[number][2]>): CellInput => (
 export function clipped(book: BookInput, from: string, src: Rect, values: ValuesIn): { book: BookInput; src: Rect } | null {
   const visible = visibleRows(book, from, src.r1, src.r2)
   if (!visible?.length) return null
-  const sheet = book.sheets.find((s) => sheetKey(s.name) === sheetKey(from))!
+  const sheet = sheetOf(book, from)
   const row = new Map(visible.map((r, k) => [r, src.r1 + k]))
   const cells: Record<string, CellInput> = {}
   // looks and meta of the cells, then the values over them
-  for (const addr of Object.keys(sheet.cells)) {
-    const cell = sheet.cells[addr]
-    spend(1)
-    const p = parseAddress(addr)
-    const r = row.get(p.row)
-    if (r === undefined || p.col < src.c1 || p.col > src.c2) continue
-    const { value: _v, formula: _f, ...look } = cell
-    if (Object.keys(look).length) cells[formatAddress(r, p.col)] = look
+  const g = gridOf(sheet)
+  for (const i of cellsIn(g, src)) {
+    const r = row.get(g.row[i])
+    if (r === undefined) continue
+    const { value: _v, formula: _f, ...look } = g.cell[i]
+    if (Object.keys(look).length) cells[formatAddress(r, g.col[i])] = look
   }
   for (const [r, c, v] of values(sheet.name, src)) {
     const at = row.get(r)
