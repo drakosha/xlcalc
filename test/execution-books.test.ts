@@ -8,6 +8,7 @@
 import { runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
 import { buildProbes, PROBE_SHEETS } from '../bench/coverage/probes.js'
+import { takenBook } from '../bench/coverage/stored.js'
 import type { BookInput, CellInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { CASES, excelBook } from './excel-cases.js'
@@ -98,7 +99,7 @@ describe('execution modes against each other', () => {
   for (const [name, book] of BOOKS) it(`${name}: the same values, issues and hash`, () => expectSame(byEval(book), byClosures(book)), 60_000)
 
   it(`the ${SPILL_CASES.length} books of the spill cases`, () => {
-    for (const c of SPILL_CASES) expectSame(byEval(c.book), byClosures(c.book))
+    for (const c of SPILL_CASES) expectSame(byEval(takenBook(c.book)), byClosures(takenBook(c.book)))
   })
 
   it(`the ${TABLE_CASES.length} books of the table cases, before and after their steps`, () => {
