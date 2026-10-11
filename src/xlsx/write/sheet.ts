@@ -17,7 +17,7 @@ import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, RowInput, S
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
-import { parseRange, type Rect } from '../../structure/area.js'
+import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT, FormulaError, type Ast } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { sheetKey, walk } from '../../syntax/print.js'
@@ -30,9 +30,7 @@ import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { StyleWriter } from './styles.js'
 import type { ResultCell } from './snapshot.js'
-
-/** Excel's limit on a cell's text. */
-export const MAX_TEXT = 32_767
+import { clip, HEAD, MAIN, MAX_TEXT } from './xml.js'
 
 /**
  * The default width in xlsx units (8 digits and the padding, as Excel for Mac writes it): a column that has a look
@@ -100,11 +98,7 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
   if (typeof v === 'boolean') return { t: ' t="b"', v: v ? '1' : '0' }
   if (typeof v === 'string') {
-    let s = v
-    if (s.length > MAX_TEXT) {
-      s = s.slice(0, MAX_TEXT)
-      ctx.issues.add('textLength', "text over Excel's 32,767 characters is cut", where)
-    }
+    const s = clip(v, MAX_TEXT, ctx.issues, "text over Excel's 32,767 characters is cut", where)
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
   if (v.error === 'CYCLE') {
@@ -136,12 +130,6 @@ export function fileTree(formula: string, sheets: Set<string>, tables: { name: s
     if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
   })
   return ok ? ast : null
-}
-
-/** The cells of a rectangle `A1:C9`, row by row. */
-function* rectCells(range: string): Generator<string> {
-  const r = parseRange(range)!
-  for (let row = r.r1; row <= r.r2; row++) for (let c = r.c1; c <= r.c2; c++) yield formatAddress(row, c)
 }
 
 export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext): SheetWritten {
@@ -209,7 +197,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       const r = result[addr]
       if (r.spillOf !== undefined) put(addr, cellXml(addr, sheet.cells[addr], r.value))
       if (r.spill !== undefined && r.spillFill !== undefined && mode === 'values')
-        for (const a of rectCells(r.spill)) if (!result[a]) put(a, cellXml(a, sheet.cells[a], r.spillFill))
+        for (const a of rectCells(parseRange(r.spill)!)) if (!result[a]) put(a, cellXml(a, sheet.cells[a], r.spillFill))
     }
   const rowLines = lines(sheet.rows, 'r')
   for (const [lo, hi] of rowLines) for (let r = lo; r <= hi; r++) rowsUsed.add(r)
@@ -269,7 +257,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     return n ? ` ${attr}="${n}"` : ''
   }
   const xml =
-    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+    `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
     (filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '') +
     `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${ctx.active ? ' tabSelected="1"' : ''}${pane ? `>${pane}</sheetView>` : '/>'}</sheetViews>` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
@@ -308,8 +296,6 @@ function crossings(rows: Line<RowInput>[], cols: Line<ColumnInput>[], styles: St
     }
   }
 }
-
-const meets = (a: Rect, b: Rect) => a.r1 <= b.r2 && b.r1 <= a.r2 && a.c1 <= b.c2 && b.c1 <= a.c2
 
 /** A row's or a column's outline level and collapsed mark as attributes. */
 const outlineAttrs = (e: { outlineLevel?: number; collapsed?: boolean }) => (e.outlineLevel ? ` outlineLevel="${e.outlineLevel}"` : '') + (e.collapsed ? ' collapsed="1"' : '')

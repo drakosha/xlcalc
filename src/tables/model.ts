@@ -42,6 +42,14 @@ export function tablesOf(book: BookInput): Tables {
   return { list, byName: new Map(list.map((t) => [tableKey(t.name), t])) }
 }
 
+/** Tables as a formula's check sees them (`validate`, `bindTables`): names and columns, made once for a book's tables. */
+const named = new WeakMap<Tables, { name: string; columns: string[] }[]>()
+export function tableNames(tables: Tables): { name: string; columns: string[] }[] {
+  let out = named.get(tables)
+  if (!out) named.set(tables, (out = tables.list.map((t) => ({ name: t.name, columns: t.cols }))))
+  return out
+}
+
 /** The table holding a cell of sheet `s`. */
 export const tableAt = (tables: Tables, s: number, r: number, c: number): Table | undefined => tables.list.find((t) => t.s === s && hasCell(t, r, c))
 

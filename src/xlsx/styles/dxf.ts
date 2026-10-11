@@ -10,7 +10,7 @@ import { attributes, element, elements, flag, type Element } from '../xml/scan.j
 import { decodeXml } from '../xml/text.js'
 import { colorOf, type Palette } from './color.js'
 import { BUILTIN } from './numfmt.js'
-import { border } from './read.js'
+import { border, solidColor, underlineOf } from './read.js'
 
 export interface Dxf {
   style: ConditionalStyle
@@ -36,13 +36,8 @@ export function readDxf(e: Element, p: Palette): Dxf {
       const v = on(fb, local)
       if (v !== undefined) font[key] = v
     }
-    const u = element(fb, 'u')
-    const under = u && (attributes(u.attrs).val ?? 'single')
-    if (under === 'single' || under === 'double') font.underline = under
-    else if (under === 'singleAccounting' || under === 'doubleAccounting') {
-      font.underline = under === 'singleAccounting' ? 'single' : 'double'
-      lost.push('accounting underline')
-    } else if (under === 'none') lost.push('an underline taken away')
+    const underline = underlineOf(fb, lost, true)
+    if (underline) font.underline = underline
     const color = colorOf(element(fb, 'color'), p)
     if (color) font.color = color
     for (const x of ['name', 'sz', 'vertAlign', 'outline', 'shadow', 'condense', 'extend']) if (element(fb, x)) lost.push(`font ${x}`)
@@ -56,7 +51,7 @@ export function readDxf(e: Element, p: Palette): Dxf {
     if (pf && type !== undefined && type !== 'solid' && type !== 'none') lost.push('pattern fill')
     else if (pf?.body) {
       // a dxf's solid fill is its background colour
-      const color = colorOf(element(pf.body, 'bgColor'), p) ?? colorOf(element(pf.body, 'fgColor'), p)
+      const color = solidColor(pf, p, 'bgColor')
       if (color) style.fill = { color }
     }
   }

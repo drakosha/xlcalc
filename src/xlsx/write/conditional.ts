@@ -15,6 +15,7 @@ import { X14_CF } from '../read/conditional.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree } from './sheet.js'
 import type { StyleWriter } from './styles.js'
+import { rgb } from './xml.js'
 
 const X14 = 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main'
 const XM = 'http://schemas.microsoft.com/office/excel/2006/main'
@@ -39,7 +40,6 @@ export interface ConditionalWritten {
   ext: string
 }
 
-const rgb = (c: string) => `FF${c.slice(1).toUpperCase()}`
 const hex = (n: number, w: number) => n.toString(16).toUpperCase().padStart(w, '0')
 
 /** A formula as a file holds it, and whether it names another sheet; null when the file cannot hold it. */
@@ -167,9 +167,9 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
   return { main: main.join(''), ext: ext.length ? `<ext uri="${X14_CF}" xmlns:x14="${X14}"><x14:conditionalFormattings>${ext.join('')}</x14:conditionalFormattings></ext>` : '' }
 }
 
-/** A rule with the formula it computes by: a text, blank, error or period rule always has one in a file. */
-function withFormula(rule: ConditionalFormat): ConditionalFormat {
-  if (!('formula' in rule) && (rule.type === 'containsText' || rule.type === 'notContainsText' || rule.type === 'beginsWith' || rule.type === 'endsWith' || rule.type === 'containsBlanks' || rule.type === 'notContainsBlanks' || rule.type === 'containsErrors' || rule.type === 'notContainsErrors' || rule.type === 'timePeriod'))
-    return { ...rule, formula: ruleFormula(rule)! }
-  return rule
+/** A rule with the formula it computes by: a rule Excel computes by one of its own (`defaultFormula`: text, blanks, errors, a period) always has one in a file. */
+export function withFormula(rule: ConditionalFormat): ConditionalFormat {
+  if ('formula' in rule) return rule
+  const formula = ruleFormula(rule)
+  return formula === undefined ? rule : ({ ...rule, formula } as ConditionalFormat)
 }

@@ -6,7 +6,9 @@
 import { describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/contract.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
-import { tinted } from '../src/xlsx/styles/color.js'
+import { palette, tinted } from '../src/xlsx/styles/color.js'
+import { solidColor, underlineOf } from '../src/xlsx/styles/read.js'
+import { element } from '../src/xlsx/xml/scan.js'
 import { codes, read } from './xlsx-fixtures.js'
 
 const THEME =
@@ -102,6 +104,29 @@ describe('xlsx styles: reading', () => {
       "a style's gradient fill is not in the model",
       "a style's diagonal border is not in the model",
     ])
+  })
+
+  it("a cell's font and a dxf's: an accounting underline is read as its plain kind, lost; a dxf's none takes the underline away, lost too", () => {
+    const under = (xml: string, dxf = false) => {
+      const lost: string[] = []
+      return [underlineOf(xml, lost, dxf), lost]
+    }
+    expect(under('<u/>')).toEqual(['single', []])
+    expect(under('<u val="double"/>', true)).toEqual(['double', []])
+    expect(under('<u val="singleAccounting"/>')).toEqual(['single', ['accounting underline']])
+    expect(under('<u val="doubleAccounting"/>', true)).toEqual(['double', ['accounting underline']])
+    expect(under('<u val="none"/>')).toEqual([undefined, []])
+    expect(under('<u val="none"/>', true)).toEqual([undefined, ['an underline taken away']])
+    expect(under('<b/>', true)).toEqual([undefined, []])
+  })
+
+  it("a solid fill's colour: a cell's shows its fgColor, a dxf's its bgColor, either the other when it has none", () => {
+    const p = palette(undefined, undefined)
+    const fill = (body: string) => element(`<patternFill patternType="solid">${body}</patternFill>`, 'patternFill')!
+    const both = fill('<fgColor rgb="FF00FF00"/><bgColor rgb="FFFF0000"/>')
+    expect([solidColor(both, p, 'fgColor'), solidColor(both, p, 'bgColor')]).toEqual(['#00FF00', '#FF0000'])
+    expect([solidColor(fill('<bgColor rgb="FFFF0000"/>'), p, 'fgColor'), solidColor(fill('<fgColor indexed="2"/><bgColor auto="1"/>'), p, 'bgColor')]).toEqual(['#FF0000', '#FF0000'])
+    expect(solidColor(fill(''), p, 'bgColor')).toBeUndefined()
   })
 })
 

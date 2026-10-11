@@ -5,6 +5,7 @@
  * protection, a font's outline or shadow) is named per cell format, for the reader to report on the cells that use it.
  */
 import type { AlignmentStyle, BorderLine, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
+import { HORIZONTAL, LINES, VERTICAL } from '../../input.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
@@ -47,6 +48,22 @@ interface Font {
   lost: string[]
 }
 
+/**
+ * A font's underline (`<u>`, single without a `val`); an accounting one is read as its plain kind and named in `lost`,
+ * and so is a dxf's `none`, which takes an underline away (a style cannot say so; a cell's font has none then).
+ */
+export function underlineOf(body: string, lost: string[], dxf = false): FontStyle['underline'] {
+  const u = element(body, 'u')
+  const under = u && (attributes(u.attrs).val ?? 'single')
+  if (under === 'single' || under === 'double') return under
+  if (under === 'singleAccounting' || under === 'doubleAccounting') {
+    lost.push('accounting underline')
+    return under === 'singleAccounting' ? 'single' : 'double'
+  }
+  if (dxf && under === 'none') lost.push('an underline taken away')
+  return undefined
+}
+
 export function font(e: Element, p: Palette): Font {
   const b = e.body ?? ''
   const style: FontStyle = {}
@@ -57,13 +74,8 @@ export function font(e: Element, p: Palette): Font {
   if (size > 0) style.size = size
   if (on(b, 'b')) style.bold = true
   if (on(b, 'i')) style.italic = true
-  const u = element(b, 'u')
-  const under = u && (attributes(u.attrs).val ?? 'single')
-  if (under === 'single' || under === 'double') style.underline = under
-  else if (under === 'singleAccounting' || under === 'doubleAccounting') {
-    style.underline = under === 'singleAccounting' ? 'single' : 'double'
-    lost.push('accounting underline')
-  }
+  const underline = underlineOf(b, lost)
+  if (underline) style.underline = underline
   if (on(b, 'strike')) style.strike = true
   const color = colorOf(element(b, 'color'), p)
   if (color) style.color = color
@@ -72,8 +84,6 @@ export function font(e: Element, p: Palette): Font {
   for (const x of ['outline', 'shadow']) if (on(b, x)) lost.push(`font ${x}`)
   return { style, lost }
 }
-
-const LINES = new Set(['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot'])
 
 export function border(e: Element, p: Palette): { border?: CellStyle['border']; lost: string[] } {
   const b = e.body ?? ''
@@ -84,7 +94,7 @@ export function border(e: Element, p: Palette): { border?: CellStyle['border']; 
       const s = element(b, local)
       const kind = s && attributes(s.attrs).style
       if (!s || !kind || kind === 'none') continue
-      if (!LINES.has(kind)) return void lost.push(`border ${kind}`)
+      if (!LINES.includes(kind as BorderLine['style'])) return void lost.push(`border ${kind}`)
       const color = s.body ? colorOf(element(s.body, 'color'), p) : undefined
       return color ? { style: kind as BorderLine['style'], color } : { style: kind as BorderLine['style'] }
     }
@@ -103,20 +113,26 @@ function fill(e: Element, p: Palette): { fill?: CellStyle['fill']; lost: string[
   const type = pf ? (attributes(pf.attrs).patternType ?? (pf.body ? 'solid' : 'none')) : 'none'
   if (type === 'none') return { lost: [] }
   if (type !== 'solid') return { lost: ['pattern fill'] }
-  const color = colorOf(element(pf!.body ?? '', 'fgColor'), p) ?? colorOf(element(pf!.body ?? '', 'bgColor'), p)
+  const color = solidColor(pf!, p, 'fgColor')
   return color ? { fill: { color }, lost: [] } : { lost: [] }
 }
 
-const HORIZONTAL = new Set(['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed'])
-const VERTICAL = new Set(['top', 'center', 'bottom', 'justify', 'distributed'])
+/** A solid fill's colour (`<patternFill>`): its `first` colour, else the other; a cell's fill shows its `fgColor`, a dxf's its `bgColor`. */
+export function solidColor(pf: Element, p: Palette, first: 'fgColor' | 'bgColor'): string | undefined {
+  const b = pf.body ?? ''
+  return colorOf(element(b, first), p) ?? colorOf(element(b, first === 'fgColor' ? 'bgColor' : 'fgColor'), p)
+}
 
 function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: string[] } {
   if (!e) return { lost: [] }
   const a = attributes(e.attrs)
   const out: AlignmentStyle = {}
   const lost: string[] = []
-  if (a.horizontal && HORIZONTAL.has(a.horizontal) && a.horizontal !== 'general') out.horizontal = a.horizontal as AlignmentStyle['horizontal']
-  if (a.vertical && VERTICAL.has(a.vertical) && a.vertical !== 'bottom') out.vertical = a.vertical as AlignmentStyle['vertical']
+  const horizontal = a.horizontal as AlignmentStyle['horizontal']
+  const vertical = a.vertical as AlignmentStyle['vertical']
+  // the defaults, general and bottom, are left out
+  if (horizontal && HORIZONTAL.includes(horizontal) && horizontal !== 'general') out.horizontal = horizontal
+  if (vertical && VERTICAL.includes(vertical) && vertical !== 'bottom') out.vertical = vertical
   if (flag(a.wrapText)) out.wrap = true
   const indent = Number(a.indent ?? 0)
   if (indent > 0) out.indent = Math.min(250, Math.round(indent))

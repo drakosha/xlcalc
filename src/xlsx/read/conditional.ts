@@ -6,14 +6,14 @@
  * come in the engine's spelling; what the model cannot hold is reported.
  */
 import type { Color, ConditionalFormat, ConditionalStyle, ConditionalValue, IconSetName } from '../../contract.js'
-import { CELL_IS, ICON_SETS, PERIODS } from '../../cond/check.js'
+import { CELL_IS, ICON_SETS, PERIODS, STYLED } from '../../cond/check.js'
 import { defaultFormula, originOf } from '../../cond/rules.js'
 import { formatAddress } from '../../model.js'
 import { areaText, parseRange } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
-import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { ATTRS, attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula } from './formulas.js'
 
@@ -28,8 +28,6 @@ interface Read {
   id?: string
 }
 
-const SIMPLE = new Set(['expression', 'containsText', 'notContainsText', 'beginsWith', 'endsWith', 'containsBlanks', 'notContainsBlanks', 'containsErrors', 'notContainsErrors', 'timePeriod', 'top10', 'aboveAverage', 'duplicateValues', 'uniqueValues', 'cellIs'])
-
 interface Context {
   sheet: string
   dxfs: Dxf[]
@@ -37,11 +35,14 @@ interface Context {
   issues: Issues
 }
 
+/** The worksheet's own `<conditionalFormatting>` blocks: without a prefix, as 2010's (`x14:`) are not. */
+const OWN = new RegExp(`<conditionalFormatting(${ATTRS})(?:/>|>([\\s\\S]*?)</conditionalFormatting\\s*>)`, 'g')
+
 /** The worksheet's own `<conditionalFormatting>` blocks (not 2010's), and the rest of the tail. */
 function split(tail: string): { blocks: Element[]; rest: string } {
   const blocks: Element[] = []
-  const rest = tail.replace(/<conditionalFormatting(\s(?:"[^"]*"|'[^']*'|[^>"'])*?)?(?:\/>|>([\s\S]*?)<\/conditionalFormatting\s*>)/g, (_, attrs: string | undefined, body: string | undefined) => {
-    blocks.push({ attrs: attrs ?? '', body: body ?? null })
+  const rest = tail.replace(OWN, (_, attrs: string, body: string | undefined) => {
+    blocks.push({ attrs, body: body ?? null })
     return ''
   })
   return { blocks, rest }
@@ -105,7 +106,8 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
     ctx.issues.add('conditionalFormat', why, { sheet: ctx.sheet, cell: where })
     return null
   }
-  if (SIMPLE.has(type)) {
+  // a rule with a style is read from its attributes and formulas
+  if (STYLED.has(type)) {
     const own = fs[0] !== undefined ? { formula: fs[0] } : {}
     switch (type) {
       case 'cellIs': {
