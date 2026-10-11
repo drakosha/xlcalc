@@ -2,8 +2,8 @@
  * `Session.getViewport`, a window for a grid: empty cells with a style of their row, their column or both; a row with a
  * style alone over a column with a format (the cell shows the column's format); built-in formats as the locale's codes;
  * spills that reach into the window, a large one's unstored rest too; merged areas on its edge; the widths and heights of
- * its lines; formulas in the book's locale inside a table; `maxCells`; equal styles as one object, through a thread
- * too; the cells `Session.getCells` gives, each with the same value and look. In a synchronous session, in the same thread
+ * its lines; formulas in the book's locale inside a table; `maxCells`; styles by number, with the objects of those the
+ * window shows; the cells `Session.getCells` gives, each with the same value and look. In a synchronous session, in the same thread
  * and in a thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -61,12 +61,11 @@ const orders = (locale?: string): BookInput => ({
   ],
 })
 
-/** A window cell as `Session.getCells` gives it: the style by index, the conditional formats' look, the cell's own format. */
-function asView(w: ViewportCell, styles: object[], own: CellView['numberFormat']): CellView {
-  const { style, effectiveStyle: _e, numberFormat: _n, numberFormatSource: _s, appearance, formulaLocal: _f, issue: _i, ...rest } = w
+/** A window cell as `Session.getCells` gives it: the conditional formats' look, the cell's own format. */
+function asView(w: ViewportCell, own: CellView['numberFormat']): CellView {
+  const { effectiveStyle: _e, numberFormat: _n, numberFormatSource: _s, appearance, formulaLocal: _f, issue: _i, ...rest } = w
   const out: CellView = { ...rest }
   if (own !== undefined) out.numberFormat = own
-  if (style) out.style = styles.findIndex((x) => JSON.stringify(x) === JSON.stringify(style))
   if (appearance) out.appearance = appearance
   return out
 }
@@ -76,14 +75,14 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
     it("empty cells with a style of their row, their column or both (the row's); a row's style over a column's format", async () => {
       const s = await (await opener(kind))(lines(), { clock: CLOCK, execution })
       const v = await s.getViewport('S', 'A1:G8')
-      expect(v.cells.A3).toEqual({ value: null, text: '', effectiveStyle: BOLD })
-      expect(v.cells.C1).toEqual({ value: null, text: '', effectiveStyle: FILL })
-      expect(v.cells.C3).toEqual({ value: null, text: '', effectiveStyle: BOLD })
-      expect(v.cells.C4).toEqual({ value: null, text: '', effectiveStyle: BOLD, numberFormat: '0.0', numberFormatSource: 'row' })
+      expect(v.cells.A3).toEqual({ value: null, text: '', effectiveStyle: 0 })
+      expect(v.cells.C1).toEqual({ value: null, text: '', effectiveStyle: 1 })
+      expect(v.cells.C3).toEqual({ value: null, text: '', effectiveStyle: 0 })
+      expect(v.cells.C4).toEqual({ value: null, text: '', effectiveStyle: 0, numberFormat: '0.0', numberFormatSource: 'row' })
       // a row with a style alone: the cell takes its style, and the column's format
-      expect(v.cells.D3).toEqual({ value: 5, text: '5.000', effectiveStyle: BOLD, numberFormat: '0.000', numberFormatSource: 'column' })
-      expect(v.cells.D4).toEqual({ value: 5, text: '5.0', effectiveStyle: BOLD, numberFormat: '0.0', numberFormatSource: 'row' })
-      expect(v.cells.B4).toEqual({ value: 0.5, text: '50%', style: ITALIC, effectiveStyle: ITALIC, numberFormat: '0%', numberFormatSource: 'cell' })
+      expect(v.cells.D3).toEqual({ value: 5, text: '5.000', effectiveStyle: 0, numberFormat: '0.000', numberFormatSource: 'column' })
+      expect(v.cells.D4).toEqual({ value: 5, text: '5.0', effectiveStyle: 0, numberFormat: '0.0', numberFormatSource: 'row' })
+      expect(v.cells.B4).toEqual({ value: 0.5, text: '50%', style: 2, effectiveStyle: 2, numberFormat: '0%', numberFormatSource: 'cell' })
       expect(v.cells.E1).toEqual({ value: 46096, text: '3/15/2026', numberFormat: 'm/d/yyyy', numberFormatSource: 'cell' })
       expect(v.cells.B6).toEqual({ value: null, text: '', note: { text: 'see' } })
       expect(v.cells.B7).toEqual({ value: null, text: '', link: { url: 'https://example.com/' } })
@@ -94,11 +93,12 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       expect(v.rows).toEqual([{ height: 15 }, { height: 15 }, { height: 15 }, { height: 15 }, { height: 15 }, { height: 30 }, { height: 15, hidden: true }, { height: 0, hidden: true }])
       expect(v.merges).toEqual(['C5:D6', 'F1:G1'])
       expect(v).toMatchObject({ range: 'A1:G8', truncated: false, usedRange: { rows: 11, columns: 9 } })
-      // equal styles are one object, and the answer's own
-      expect(v.cells.A3.effectiveStyle).toBe(v.cells.D4.effectiveStyle)
-      expect(v.cells.C1.effectiveStyle).toBe(v.cells.C2.effectiveStyle)
-      v.cells.A3.effectiveStyle!.font!.bold = false
+      // the styles the window shows by index, the answer's own copies; a window without a style has none of it
+      expect(v.styles).toEqual({ 0: BOLD, 1: FILL, 2: ITALIC })
+      v.styles[0].font!.bold = false
       expect((await s.getLayout()).styles![0]).toEqual(BOLD)
+      expect((await s.getViewport('S', 'A1:C2')).styles).toEqual({ 1: FILL })
+      expect((await s.getViewport('S', 'A1:B2')).styles).toEqual({})
       await s.close()
     })
 
@@ -107,7 +107,7 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       const ru = await open(lines('ru-RU'), { clock: CLOCK, execution })
       expect((await ru.getViewport('S', 'E1')).cells.E1).toEqual({ value: 46096, text: '15.03.2026', numberFormat: 'dd.mm.yyyy', numberFormatSource: 'cell' })
       const bare = await open(lines(), { clock: CLOCK, execution, display: false })
-      expect((await bare.getViewport('S', 'C3:D3')).cells).toEqual({ C3: { value: null, effectiveStyle: BOLD }, D3: { value: 5, effectiveStyle: BOLD, numberFormat: '0.000', numberFormatSource: 'column' } })
+      expect((await bare.getViewport('S', 'C3:D3')).cells).toEqual({ C3: { value: null, effectiveStyle: 0 }, D3: { value: 5, effectiveStyle: 0, numberFormat: '0.000', numberFormatSource: 'column' } })
       await ru.close()
       await bare.close()
     })
@@ -180,15 +180,15 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
         for (const sheet of b.sheets)
           for (const range of ['A1:J12', 'B2:D4', 'H1:H3', 'A5:Z40']) {
             const [cells, v] = [await s.getCells(sheet.name, range), await s.getViewport(sheet.name, range)]
-            for (const [a, c] of Object.entries(cells)) expect(asView(v.cells[a], b.styles ?? [], c.numberFormat), `${name}: ${sheet.name}!${a}`).toEqual(c)
+            for (const [a, c] of Object.entries(cells)) expect(asView(v.cells[a], c.numberFormat), `${name}: ${sheet.name}!${a}`).toEqual(c)
             for (const [a, w] of Object.entries(v.cells)) if (!(a in cells)) expect(w.effectiveStyle !== undefined || w.spillOf !== undefined, `${name}: ${sheet.name}!${a}`).toBe(true)
           }
         await s.close()
       }
       const s = await open(cond, { clock: CLOCK, execution })
       const v = await s.getViewport('S', 'D3:H3')
-      expect(v.cells.D3).toEqual({ value: 5, text: '5.0', effectiveStyle: BOLD, numberFormat: '0.000', numberFormatSource: 'column', appearance: { style: { font: { bold: true }, numberFormat: '0.0' } } })
-      expect(v.cells.H3).toEqual({ value: null, text: '', effectiveStyle: BOLD, appearance: { style: { fill: { color: '#FFC7CE' } } } })
+      expect(v.cells.D3).toEqual({ value: 5, text: '5.0', effectiveStyle: 0, numberFormat: '0.000', numberFormatSource: 'column', appearance: { style: { font: { bold: true }, numberFormat: '0.0' } } })
+      expect(v.cells.H3).toEqual({ value: null, text: '', effectiveStyle: 0, appearance: { style: { fill: { color: '#FFC7CE' } } } })
       await s.close()
     }, 60_000)
 

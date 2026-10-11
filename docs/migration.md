@@ -43,6 +43,7 @@ A book hashes as before whichever name it gives the number format: `inputHash` w
 | `validateEntry` refused with `{ ok: false, rule }` | `{ ok: false, code: 'validation', message, rule, severity }`, as every check refuses |
 | after a structure operation `changes` listed the cells whose value changed | they also list the cells whose formula's text, own style or own number format differ from the cell that was at their old place, and `moved` says how addresses moved, so a window moves by `moved` and applies `changes` instead of reading itself again |
 | `patchCells` listed the cells whose shown text changed | it also lists the cells whose own style or number format it set, with `style` and `numberFormat` |
+| `getViewport` gave a cell's `style` and `effectiveStyle` as style objects | as numbers of the book's `styles`, as `getCells`, the changes of edits and the book give a style; `Viewport.styles` has the objects of the styles the window shows, by number |
 | `explain`'s text wrote an error by its code (`#DIV0`) and an empty cell as `null` | the error as the cells show it in the book's locale (`#DIV/0!`, `#ДЕЛ/0!`) with the cell it began in (`(error from 'S'!A2)`), and an empty cell as `empty`; the tree's error nodes have `origin` |
 
 ## How it was checked

@@ -105,7 +105,7 @@ import { createSession } from 'xlcalc'
 
 const session = createSession({ styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 'Total', style: 0 }, B1: { value: 1234.5, numberFormat: '#,##0.00' } }, columns: { B: { width: 12 } } }] })
 const v = session.getViewport('S', 'A1:B2')
-console.log(v.cells.A1.effectiveStyle, v.cells.B1.text, v.columns.map((c) => c.width), v.usedRange) // → { font: { bold: true } } 1,234.50 [ 8.83203125, 12 ] { rows: 1, columns: 2 }
+console.log(v.cells.A1.effectiveStyle, v.styles[v.cells.A1.effectiveStyle], v.cells.B1.text, v.columns.map((c) => c.width), v.usedRange) // → 0 { font: { bold: true } } 1,234.50 [ 8.83203125, 12 ] { rows: 1, columns: 2 }
 ```
 
 ### Make a range bold and set its number format
@@ -246,7 +246,7 @@ const session = createSession({
 })
 const v = session.getViewport('Plan', 'A1:E2', { formulaLocal: true })
 console.log(v.cells.C1, v.cells.B2)
-// → { value: null, text: '', effectiveStyle: { font: { bold: true } } } {
+// → { value: null, text: '', effectiveStyle: 0 } {
 //     value: 3,
 //     text: '3,00',
 //     formula: 'T[[#This Row],[Qty]]*1.5',
@@ -254,8 +254,8 @@ console.log(v.cells.C1, v.cells.B2)
 //     numberFormat: '0.00',
 //     numberFormatSource: 'column'
 //   }
-console.log(v.columns.map((c) => c.width), v.rows, v.merges, v.usedRange)
-// → [ 8.83203125, 12, 8.83203125, 8.83203125, 8.83203125 ] [ { height: 15 }, { height: 15 } ] [ 'E1:F2' ] { rows: 3, columns: 6 }
+console.log(v.styles, v.columns.map((c) => c.width), v.rows, v.merges, v.usedRange)
+// → { '0': { font: { bold: true } } } [ 8.83203125, 12, 8.83203125, 8.83203125, 8.83203125 ] [ { height: 15 }, { height: 15 } ] [ 'E1:F2' ] { rows: 3, columns: 6 }
 console.log(session.getCellIssue('Plan', 'D2'))
 // → {
 //     error: 'DIV0',
@@ -269,7 +269,7 @@ console.log(session.explain('Plan', 'D2').text)
 //         'Plan'!A3 = 0
 ```
 
-A cell of the window carries what `getCells` gives (the value, the shown `text` and `color`, the formula, the spill, `meta`, a note, a link, an old-kind array's area) and its look resolved: its own `style` and the `effectiveStyle` it shows, its own, else its row's, else its column's, as objects of the book's styles; the `numberFormat` it shows by as a code, with `numberFormatSource` saying whether it is the cell's, the row's or the column's (a built-in format by the code of the book's locale: 14 is `dd.mm.yyyy` in ru-RU); and `appearance`, what its conditional formats give it. The style and the format are taken each on its own, so a cell of a bold row in a column formatted `0.00` is bold and shows `0.00`. An empty cell is listed when it shows something: a style of its row or column (`C1` above), an appearance, a note or a link; so are the cells of a spill, a large array's cells past its data too. Cells of one style share one object, through a thread too. `columns` and `rows` give each line's width and height, Excel's default where it has none (8.83203125 and 15 points), with `hidden`; `merges` the merged areas that meet the window, whole; `usedRange` is `getUsedRange(sheet)`. `formulaLocal: true` adds each formula as Excel shows it in the book's locale, inside its table as Excel shows it there (`[@Qty]`), and `diagnostics: true` adds to each cell with an error its `issue`, as `getCellIssue` gives it. A window holds at most `maxCells` cells, 20,000 by default: of a larger one it gives its first rows that fit, with `truncated: true` and the `range` it gave. It costs what the window holds, not the book: on the synthetic book of 34,000 rows a window of 20,000 cells takes 15 ms, as on the book of 3,400 rows and a little less than `getCells` and `getLayout()` together, and 26 ms from a thread.
+A cell of the window carries what `getCells` gives (the value, the shown `text` and `color`, the formula, the spill, `meta`, a note, a link, an old-kind array's area) and its look resolved: its own `style` and the `effectiveStyle` it shows, its own, else its row's, else its column's, as numbers of the book's styles, as `getCells` and the changes of edits give a style, with the objects of the styles the window shows in `styles`, copies by number; the `numberFormat` it shows by as a code, with `numberFormatSource` saying whether it is the cell's, the row's or the column's (a built-in format by the code of the book's locale: 14 is `dd.mm.yyyy` in ru-RU); and `appearance`, what its conditional formats give it. The style and the format are taken each on its own, so a cell of a bold row in a column formatted `0.00` is bold and shows `0.00`. An empty cell is listed when it shows something: a style of its row or column (`C1` above), an appearance, a note or a link; so are the cells of a spill, a large array's cells past its data too. A cell where a styled row crosses a styled column shows the row's style, as Excel shows a file's empty cell there. `columns` and `rows` give each line's width and height, Excel's default where it has none (8.83203125 and 15 points), with `hidden`; `merges` the merged areas that meet the window, whole; `usedRange` is `getUsedRange(sheet)`. `formulaLocal: true` adds each formula as Excel shows it in the book's locale, inside its table as Excel shows it there (`[@Qty]`), and `diagnostics: true` adds to each cell with an error its `issue`, as `getCellIssue` gives it. A window holds at most `maxCells` cells, 20,000 by default: of a larger one it gives its first rows that fit, with `truncated: true` and the `range` it gave. It costs what the window holds, not the book: on the synthetic book of 34,000 rows a window of 20,000 cells takes 15 ms, as on the book of 3,400 rows and a little less than `getCells` and `getLayout()` together, and 26 ms from a thread.
 
 `getCellIssue(sheet, cell)` says why a cell holds an error without building the book's result: the error, the reason, the check code and position of a formula that does not read, as the result's `diagnostics` give them, and `origin`, the cell the error began in, found by following the cells the reasons name (in a cycle, the first cell of the cycle the way comes back to). `explain` marks each cell with an error by that cell and leads to it: through a range by the cell the error came from, and past `depth` for `errorDepth` cells more (64 by default), never round a cycle. Its text writes an error as the book's cells show it and an empty cell as `empty`.
 
