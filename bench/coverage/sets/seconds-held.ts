@@ -69,3 +69,18 @@ export function buildProbes(): Probe[] {
 
 /** The engine's answers by case id, committed before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = JSON.parse(readFileSync(new URL('./seconds-held.predicted.json', import.meta.url), 'utf8'))
+
+const of = (group: string, ns: number[]) => ns.map((n) => `${group}#${n}`)
+const TIMED = [11, 12, 13, 15, 16, 17, 18, 19, 27, 32, 35]
+
+/**
+ * The predictions Excel did not confirm, the Mac and Windows alike: Excel adds half a second and cuts the sum to the
+ * second (an exact half stays below, 37.5 s is 37), where the engine rounded the fraction half up in HOUR and the formats
+ * and the whole number in DAY, which part on the doubles near a half; and a moment that rounds past 9999-12-31 is #NUM!,
+ * in TEXT #VALUE!.
+ */
+export const MISSED: readonly string[] = [
+  ...of('DAY', [29, 30, 32, 34, 35]), ...of('MONTH', [30, 34, 35]), ...of('YEAR', [34, 35]), ...of('HOUR', [27, 32, 34, 35]),
+  ...of('MINUTE', [27, 32, 34, 35]), ...of('SECOND', [11, 12, 13, 15, 16, 17, 18, 19, 27, 32, 34, 35]),
+  ...of('TEXT:moment', TIMED), ...of('TEXT:day', TIMED), ...of('TEXT:elapsed', TIMED),
+]

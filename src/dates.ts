@@ -35,8 +35,23 @@ export const daysInMonth = (y: number, m: number) => [31, isLeap(y) ? 29 : 28, 3
 /** The last day of a month in Excel's calendar, which has 1900-02-29. */
 export const lastDayExcel = (y: number, m: number) => (y === 1900 && m === 2 ? 29 : daysInMonth(y, m))
 
-/** The day of a date-time serial as DAY, MONTH, YEAR and WEEKDAY read it: to the nearest second first (0.4 s before midnight is the next day). */
-export const dayAt = (t: number): number => Math.floor(Math.round(t * 86_400) / 86_400)
+/** A second, in days. */
+const SECOND = 1 / 86_400
+
+/**
+ * A serial number as a day and a second of it, as Excel reads a moment in DAY, HOUR and their kin and in a format's whole
+ * seconds (the set `seconds-held`): half a second is added and the sum split into days and seconds, all in floating
+ * point, so 0.4 s before midnight is the next day, an exact half at a large serial stays below (00:05:37.5 of 2025-01-31
+ * is 00:05:37) and one at a small serial goes up (SECOND(10.5/86400) is 11, the set `findate`, which the division by a
+ * second's length gives where a product by 86400 does not).
+ */
+export function momentOf(t: number): { day: number; second: number } {
+  const u = t + SECOND / 2
+  const day = Math.floor(u)
+  const second = Math.floor((u - day) / SECOND)
+  // a fraction a hair under 1 divides to a whole day
+  return second < 86_400 ? { day, second } : { day: day + 1, second: 0 }
+}
 
 /** Year, month and day of a serial number in Excel's calendar: 0 is 1900-01-00, 60 is 1900-02-29. */
 export function ymd(serial: number): { y: number; m: number; d: number } {
