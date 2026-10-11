@@ -148,6 +148,30 @@ function place(ref: unknown, path: string, book: CopyContext | undefined): { she
   return { sheet: known?.name ?? name, ...parseAddress(checkAddress(cell, `${path}.cell`)) }
 }
 
+/** A cell by its sheet's name, its row and its column, zero-based. */
+interface Place {
+  sheet: string
+  row: number
+  col: number
+}
+
+/** The formula `formula` copied from `a` to `b` on `b`'s sheet, its references read with the sheets `names`. */
+const copied = (formula: string, a: Place, b: Place, names: Map<string, string>) => rewriteFormula(formula, b.sheet, b.sheet, copyTransform(b.row - a.row, b.col - a.col), names)
+
+/**
+ * `copyFormula` over a book for many copies, its sheets' names and its tables (`tables`, those of its session) read once:
+ * the text of a formula copied from `a` to `b`, cells of the book's sheets as it spells them.
+ */
+export function formulaCopier(book: CopyContext, tables = tablesOf(book as BookInput)): (formula: string, a: Place, b: Place) => string {
+  const names = sheetNames(book as BookInput)
+  return (formula, a, b) => {
+    const out = copied(formula, a, b, names)
+    const t = tableAt(tables, sheetIndex(book, a.sheet), a.row, a.col)
+    // out of its table, as copyRange pastes it (`tables/moves.ts`): the references to the table without a name get its name
+    return t && tableAt(tables, sheetIndex(book, b.sheet), b.row, b.col) !== t ? rewriteTableRefs(out, tables, t, null, () => undefined, true) : out
+  }
+}
+
 /**
  * The text of a formula copied from cell `from` to cell `to`, as `copyRange` pastes it: relative parts move by the
  * offset, absolute ones stay, a reference pushed past the sheet's edge is `#REF!`, only the changed references are
@@ -157,11 +181,5 @@ function place(ref: unknown, path: string, book: CopyContext | undefined): { she
 export function copyFormula(text: string, from: CellRef, to: CellRef, book?: CopyContext): string {
   const formula = checkString(text, 'text')
   const [a, b] = [place(from, 'from', book), place(to, 'to', book)]
-  const names = book ? sheetNames(book as BookInput) : namedSheets(formula)
-  const out = rewriteFormula(formula, b.sheet, b.sheet, copyTransform(b.row - a.row, b.col - a.col), names)
-  if (!book) return out
-  const tables = tablesOf(book as BookInput)
-  const t = tableAt(tables, sheetIndex(book, a.sheet), a.row, a.col)
-  // out of its table, as copyRange pastes it (`tables/moves.ts`): the references to the table without a name get its name
-  return t && tableAt(tables, sheetIndex(book, b.sheet), b.row, b.col) !== t ? rewriteTableRefs(out, tables, t, null, () => undefined, true) : out
+  return book ? formulaCopier(book)(formula, a, b) : copied(formula, a, b, namedSheets(formula))
 }

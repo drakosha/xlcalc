@@ -93,11 +93,27 @@ A cell that shows its lines' look without a look of its own takes none: the line
 
 `previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
 
+`pasteText(sheet, cell, text, opts?)` pastes text from the clipboard as Excel pastes it, which reads text otherwise than typing in places ([A paste and Control+Return](entry.md#a-paste-and-controlreturn)):
+
+- The text fills a rectangle from the cell, its rows at line breaks and its fields at tabs (`parseClipboard`); an empty field, a short row's missing ones and the row after a last line break clear their cells. The answer's `range` is the rectangle.
+- Each field is read as typed into its cell, but an apostrophe stays part of the text, a formula Excel does not take is text, a percent cell has no percent editor and `€5` takes the euro format.
+- No column widens and no rule of data validation is checked.
+- Part of an old-kind array, a formula into a table's header cell and a rectangle past the sheet's edge (`off_sheet`) are refused with their `sheet` and `cell`; nothing is written.
+
+`fillCellText(sheet, range, text, opts?)` enters a text into every cell of a range, as Excel's Control+Return:
+
+- The text is read once in the active cell, the range's top-left cell or `active`, by its format, and every cell takes what the active cell holds after it: the value, or the formula moved as a copy from the active cell moves it, and the active cell's number format where it has one.
+- The columns widen as typing widens them (`widths`, `widen: false` to give them without setting them).
+- Only the active cell's rule of data validation is checked: `validation` is its alert, as `setCellText`'s.
+- A formula Excel does not take is refused with the active cell, part of an array and a header's formula with theirs; nothing is written.
+
+`previewPasteText` and `previewFillCellText` answer each cell's input and value (and the fill's widths and alert) and change nothing.
+
 `validateEntry(sheet, cell, input)` answers `{ ok: true }` or `{ ok: false, code: 'validation', message, rule, severity }`.
 
 ## What an edit answers
 
-Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setCellTexts`, `setNames`, `setClock`, `setStyles`, `setLayout`, `editStructure`, `undo`, `redo`) answers an `EditResult`:
+Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setCellTexts`, `pasteText`, `fillCellText`, `setNames`, `setClock`, `setStyles`, `setLayout`, `editStructure`, `undo`, `redo`) answers an `EditResult`:
 
 - `revision`: the session's revision after the call. Each such call adds one, `undo` and `redo` too; a refusal, a failure and an undo with nothing to undo add none.
 - `changes`: the cells whose value or shown text changed, and those whose formula, own style or own number format changed, with `formula`, `style` and `numberFormat` then (null when the cell has none now), and a new format also as a code, `numberFormatCode`, a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU), as a window gives it. After a structure operation, the cells whose value or formula text differ from those of the cell that was at their old place: after a row is inserted, `SUM(A1:A4)` that became `SUM(A1:A5)` is listed with its new text.
@@ -112,7 +128,7 @@ Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `pat
 
 ## Undo
 
-Each call is one step: `clearCells` and `patchCells` whatever their parts (the cells, the lines, the rules, the style table), `setCellText` and `setCellTexts` with the widths they gave the columns. A call given nothing to do (`setCells([])`) is no step; one given cells that changed nothing is. The undo's answer is the call's `EditResult` with `call`, and `cells` for the calls that change cells.
+Each call is one step: `clearCells` and `patchCells` whatever their parts (the cells, the lines, the rules, the style table), `setCellText`, `setCellTexts` and `fillCellText` with the widths they gave the columns, `pasteText` whatever its rectangle. A call given nothing to do (`setCells([])`) is no step; one given cells that changed nothing is. The undo's answer is the call's `EditResult` with `call`, and `cells` for the calls that change cells.
 
 ## How it was checked
 
@@ -129,3 +145,5 @@ The engine's answers to `patch` and `clear` were committed before Excel for Mac 
 The seeded test of sessions against full computations (`test/session-fuzz.test.ts`) replaces, clears, formats and types into cells beside its other edits, compares the session's hash with a full computation's after each, and at the end undoes every step and finds the book it opened. `test/session-edit.test.ts`, `test/session-styles.test.ts` and `test/session-text.test.ts` check each call in a synchronous session, in the same thread and in a thread, with closures and eval.
 
 `setCellTexts` adds no rule of its own: each text is read as `setCellText` reads it, whose rules were measured in Excel ([Typed entry](entry.md)). `test/session-texts.test.ts` types a mixed set (numbers, dates and a formula in ru-RU, text that reads as a number, a column of percents, a cell with a rule, two cells that widen one column to different widths, a cell given twice, a table's header) at once and one by one, and finds the same book, values and changes; one undo takes the whole call back.
+
+`pasteText` and `fillCellText` follow what Excel for Mac and Excel for Windows did with text pasted from the clipboard and Excel for Mac with Control+Return, measured by the step `ui` ([Typed entry](entry.md#how-it-was-checked)); `test/ui-excel.test.ts` compares them with every case. `test/session-paste.test.ts` checks the rectangle, each kind of field, the refusals, the moved formula, the active cell's format and rule, the widths and one undo in a synchronous session, in the same thread and in a thread, with closures and eval.

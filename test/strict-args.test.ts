@@ -22,7 +22,7 @@ const book = (): BookInput => ({ styles: [{ font: { bold: true } }], sheets: [{ 
 
 /** The arguments each method of a synchronous session takes (`Session`). */
 const SESSION: Record<string, number> = {
-  setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setCellTexts: 2, previewCellTexts: 2, setNames: 2, setClock: 2, editStructure: 2, setStyles: 2, setLayout: 2,
+  setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setCellTexts: 2, previewCellTexts: 2, pasteText: 4, previewPasteText: 4, fillCellText: 4, previewFillCellText: 4, setNames: 2, setClock: 2, editStructure: 2, setStyles: 2, setLayout: 2,
   getBook: 0, getLayout: 0, getUsedRange: 1, explain: 3, getCells: 2, getCell: 2, getViewport: 3, getCellIssue: 2, getValidation: 2, validateEntry: 3,
   getResult: 0, getSnapshot: 0, getHash: 0, undo: 1, redo: 1, close: 0,
 }
@@ -89,6 +89,8 @@ describe.each(['closures', 'eval'] as const)('arguments a call does not take, ex
       await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }], { formulaLocal: true } as never)).rejects.toThrow('(formulaLocal is an option of getViewport)')
       await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }], { clock: CLOCK } as never)).rejects.toThrow('(clock is an option of compute and createSession)')
       await expect(s.setCellText('S', 'A1', '3', { widen: false, maxCells: 2 } as never)).rejects.toThrow('(maxCells is an option of getViewport)')
+      await expect(s.pasteText('S', 'A1', '3', { widen: false } as never)).rejects.toThrow('(widen is an option of setCellText, setCellTexts, fillCellText and their previews)')
+      await expect(s.setCellText('S', 'A1', '3', { active: 'A1' } as never)).rejects.toThrow('(active is an option of fillCellText and previewFillCellText)')
       expect((await s.explain('S', 'A2', { depth: 1, errorDepth: 2 })).text).toContain('A1*21')
       expect(s.revision).toBe(0)
       await s.close()
@@ -109,11 +111,11 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc', root, {
       compute: 2, createSession: 2, createInlineCalc: 1, viewportOf: 4, editStructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
       toLocal: 3, toInvariant: 3, registerLocale: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, entryWidth: 2, fitColumns: 4, displayValue: 2, builtinFormatCode: 2, errorText: 2,
-      scanReferences: 2, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, internStyle: 2, escapeColumn: 1,
+      scanReferences: 2, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, internStyle: 2, escapeColumn: 1, parseClipboard: 1,
       parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2,
     }],
     ['xlcalc/a1', a1, { parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2 }],
-    ['xlcalc/text', text, { scanReferences: 2, quoteSheetIfNeeded: 2, escapeColumn: 1 }],
+    ['xlcalc/text', text, { scanReferences: 2, quoteSheetIfNeeded: 2, escapeColumn: 1, parseClipboard: 1 }],
     ['xlcalc/xlsx', xlsx, { readXlsx: 1, writeXlsx: 2, fromLegacy: 2 }],
     ['xlcalc/worker', worker, { createCalcPool: 1 }],
   ]

@@ -18,7 +18,7 @@ import { parseMerge } from '../layout/merges.js'
 import { toLocal } from '../locale/index.js'
 import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { formatCodeIn } from '../locale/rules.js'
-import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { cellResult, spilled } from '../result.js'
 import { cellLooks } from '../shown.js'
@@ -160,11 +160,16 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     }
     return out
   }
-  // the text a cell opens with: its formula, its own value by its format (a text, which is read as typed, once per format), nothing for a cell without either
+  // the text a cell opens with: its formula, an old-kind array's in each cell of its area, its own value by its format (a text, which is read as typed, once per format), nothing for a cell without either
   const entry = { locale: book.locale, dateSystem: book.dateSystem, now: src.now }
   const typed = new Map<string, string>()
   const editText = (out: ViewportCell, own: CellInput | undefined, numberFormat: NumberFormat | undefined, r: number, c: number) => {
     if (out.formula !== undefined) return `=${local(out.formula, r, c)}`
+    const top = out.spillOf === undefined ? undefined : sheet.cells[out.spillOf]
+    if (top?.array !== undefined && top.formula !== undefined) {
+      const p = parseAddress(out.spillOf!)
+      return `=${local(top.formula, p.row, p.col)}`
+    }
     if (!holds(own)) return ''
     if (typeof out.value !== 'string') return checkedEntryText(out.value, { ...entry, numberFormat })
     const k = `${typeof numberFormat}:${numberFormat}\n${out.value}`

@@ -1,11 +1,13 @@
 /**
  * Formula text without the engine (the `./text` subpath, the same functions in the root): the references of text as it
- * is typed, for colouring them, a sheet's name and a table column's name as a reference writes them. The tokenizer and the
+ * is typed, for colouring them, a sheet's name and a table column's name as a reference writes them, and the
+ * clipboard's text as the rectangle Excel pastes. The tokenizer and the
  * translation of a locale's formula text are the engine's own (`scan.ts`, `locale/translate.ts`); they compute nothing,
  * and no locale's data comes with them but en-US's messages, which the tokenizer's errors carry: another locale is given
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
 import { checkString } from './input.js'
+import { clipboardRows } from './entry/clipboard.js'
 import * as scan from './scan.js'
 import { strict } from './strict-args.js'
 import { escapeColumn as escaped } from './syntax/table.js'
@@ -20,4 +22,13 @@ export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
  */
 export const escapeColumn = /* @__PURE__ */ strict(function escapeColumn(name: string): string {
   return escaped(checkString(name, 'name'))
+})
+
+/**
+ * Text from the clipboard as the rectangle Excel pastes (`Session.pasteText`): its rows, at line breaks, of its fields, at
+ * tabs, each row as wide as the longest; an empty field clears its cell, and a line break after the last row is a row
+ * of empty fields.
+ */
+export const parseClipboard = /* @__PURE__ */ strict(function parseClipboard(text: string): string[][] {
+  return clipboardRows(checkString(text, 'text'))
 })

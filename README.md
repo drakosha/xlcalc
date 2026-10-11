@@ -40,7 +40,7 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](#localization)) |
 | types alone | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 253 KB (96 KB gzip), `createSession` 386 KB (145 KB), the whole root 409 KB (153 KB), `xlcalc/xlsx` 167 KB (63 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 449 KB (159 KB), `xlcalc/a1` 7 KB (3 KB), `xlcalc/text` 29 KB (12 KB), the ru-RU module 52 KB (10 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 253 KB (96 KB gzip), `createSession` 391 KB (147 KB), the whole root 414 KB (155 KB), `xlcalc/xlsx` 167 KB (63 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 454 KB (161 KB), `xlcalc/a1` 7 KB (3 KB), `xlcalc/text` 30 KB (12 KB), the ru-RU module 52 KB (10 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 
@@ -99,21 +99,27 @@ session.setCellText('S', 'A2', '1 234,5')
 console.log(Object.values(session.getCells('S', 'A1:A2')).map((c) => [c.value, c.text, c.numberFormat])) // → [ [ 46096, '15.03.2026', 14 ], [ 1234.5, '1 234,50', 4 ] ]
 ```
 
-### Paste several values
+### Paste text from the clipboard
 
 ```js
 import { createSession, registerLocale } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
 
 registerLocale(ruRU)
-const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: {} }] })
-const pasted = session.setCellTexts([
-  { sheet: 'S', cell: 'A1', text: '15.03.2026' },
-  { sheet: 'S', cell: 'B1', text: '1 234,5' },
-  { sheet: 'S', cell: 'C1', text: '=B1*2' },
-])
-console.log(pasted.revision, pasted.changes.map((c) => `${c.cell} ${c.text}`), session.getCell('S', 'A1').numberFormatCode) // → 1 [ 'A1 15.03.2026', 'B1 1 234,50', 'C1 2469' ] dd.mm.yyyy
-console.log(session.undo().call, session.getCell('S', 'A1')) // → setCellTexts undefined
+const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { B2: { value: 'old' } } }] })
+const pasted = session.pasteText('S', 'A1', "15.03.2026\t1 234,5\t=B1*2\r\n'007\r\n")
+console.log(pasted.range, pasted.changes.map((c) => `${c.cell} ${c.text}`)) // → A1:C3 [ 'A1 #########', 'B1 1 234,50', "A2 '007", 'B2 ', 'C1 2469' ]
+console.log(session.undo().call, session.getCell('S', 'A1')) // → pasteText undefined
+```
+
+### Enter a text into a selection (Control+Return)
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { value: 3 }, A3: { value: 4 }, C1: { numberFormat: '0%' } } }] })
+console.log(session.fillCellText('S', 'B1:B3', '=A1*2').changes.map((c) => `${c.cell} ${c.formula} ${c.value}`)) // → [ 'B3 A3*2 8', 'B2 A2*2 6', 'B1 A1*2 4' ]
+console.log(session.fillCellText('S', 'C1:C2', '5').changes.map((c) => `${c.cell} ${c.text}`), session.getBook().sheets[0].cells.C2) // → [ 'C1 5%', 'C2 5%' ] { value: 0.05, numberFormat: '0%' }
 ```
 
 ### Read a window for a grid
@@ -305,7 +311,7 @@ A cell of the window carries what `getCells` gives (the value, the shown `text` 
 
 `getCellIssue(sheet, cell)` says why a cell holds an error without building the book's result: the error, the reason, the check code and position of a formula that does not read, as the result's `diagnostics` give them, and `origin`, the cell the error began in, found by following the cells the reasons name (in a cycle, the first cell of the cycle the way comes back to). `explain` marks each cell with an error by that cell and leads to it: through a range by the cell the error came from, and past `depth` for `errorDepth` cells more (64 by default), never round a cycle. Its text writes an error as the book's cells show it and an empty cell as `empty`.
 
-A grid under a filter draws rows that are not next to each other, and a form some columns of a table. `rows` and `columns` give only those lines of `range`, by their numbers on the sheet (from 1, in ascending order, each once), in that order: `cells` has the cells of the lines given, `merges` and `tables` those that meet them, whole, a merged area that reaches a row left out too, and `maxCells` counts the cells given. `editText: true` adds to each cell the text it opens with for editing, as Excel's formula bar shows it: a formula with `=` in the book's locale, a value as `entryText` writes it by the format the cell shows, with an apostrophe before text that would read as something else, and nothing for a cell without a value or a formula of its own (an empty one, one an array spilled into).
+A grid under a filter draws rows that are not next to each other, and a form some columns of a table. `rows` and `columns` give only those lines of `range`, by their numbers on the sheet (from 1, in ascending order, each once), in that order: `cells` has the cells of the lines given, `merges` and `tables` those that meet them, whole, a merged area that reaches a row left out too, and `maxCells` counts the cells given. `editText: true` adds to each cell the text it opens with for editing, as Excel's formula bar shows it: a formula with `=` in the book's locale, a value as `entryText` writes it by the format the cell shows, with an apostrophe before text that would read as something else, in every cell of an old-kind array formula's area its formula, as F2 opens it, and nothing for a cell without a value or a formula of its own (an empty one, one a dynamic array spilled into).
 
 ```js
 import { createSession } from 'xlcalc'
@@ -359,7 +365,9 @@ A grid edits cells as Excel does: a value typed over a cell keeps the cell's loo
 | set the look, a note or a link of cells, a range, whole rows or columns, without their values (Bold, Fill, a number format) | `patchCells([{ sheet, range, set: { style, numberFormat } }])` |
 | clear the content, the look or both (Delete, Clear Formats, Clear All) | `clearCells([{ sheet, range }], 'contents')`, `'formats'` or `'all'` |
 | take text a person typed into a cell, as Excel reads it in the book's locale | `setCellText(sheet, cell, text)` |
-| take texts pasted or typed into a selection, each read as typed into its cell, in one step | `setCellTexts([{ sheet, cell, text }])` |
+| take texts typed into several cells, each read as typed into its cell, in one step | `setCellTexts([{ sheet, cell, text }])` |
+| paste text from the clipboard at a cell, as Excel pastes it | `pasteText(sheet, cell, text)` |
+| enter a text into every cell of a selection (Control+Return) | `fillCellText(sheet, range, text, { active })` |
 | change widths, heights, hidden lines, a line's style, merged areas, frozen panes, conditional formats, data validation, or AutoFit columns | `setLayout([{ sheet, columns, set: { width } }])` ([Layout](#layout)) |
 | replace the book's table of styles | `setStyles(styles)` |
 | insert or delete rows and columns, move or copy a range, insert, rename, move, hide or delete a sheet, add, rename, convert or delete a table | `editStructure(op)` ([Structure operations](#structure-operations)) |
@@ -489,7 +497,7 @@ console.log(session.undo(), session.history) // → null { undo: 0, redo: 2 }
 console.log(session.redo().changes.length, session.getBook().sheets[0].cells.A1) // → 2 { value: 120 }
 ```
 
-`undo()` takes back the last call that changed the book, whole however many cells it changed: `setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText` and `setCellTexts` (with the widths they gave the columns), `setNames`, `setStyles`, `setLayout` or `editStructure`. Its answer says which call it was and is that call's answer (`EditResult`), its revision one more: the cells whose value, text, formula or look changed, the `layout`, the `styles`, the `moved` addresses. For the calls that change cells it also lists the cells whose input came back (`cells`), whose note or link a host reads again. For a structure operation it has `mapCell`, where a cell of the book before the undo is now (`A4` above is `A3` again once the inserted row is gone): a host moves its values by it and applies the changes, as after `editStructure`, and reads `getLayout()`, `getUsedRange(sheet)` and its window again, as it does after a change of the layout, the names or the styles. `redo()` does the last undone step again; a new change forgets what `redo` could do. With nothing to take back or do again they answer null, and `history` counts the steps each way, for a toolbar's buttons. `setClock` and a live session's new clock are no steps, and neither is a call that fails: an undo stopped by a deadline or an abort changes nothing.
+`undo()` takes back the last call that changed the book, whole however many cells it changed: `setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setCellTexts` and `fillCellText` (with the widths they gave the columns), `pasteText`, `setNames`, `setStyles`, `setLayout` or `editStructure`. Its answer says which call it was and is that call's answer (`EditResult`), its revision one more: the cells whose value, text, formula or look changed, the `layout`, the `styles`, the `moved` addresses. For the calls that change cells it also lists the cells whose input came back (`cells`), whose note or link a host reads again. For a structure operation it has `mapCell`, where a cell of the book before the undo is now (`A4` above is `A3` again once the inserted row is gone): a host moves its values by it and applies the changes, as after `editStructure`, and reads `getLayout()`, `getUsedRange(sheet)` and its window again, as it does after a change of the layout, the names or the styles. `redo()` does the last undone step again; a new change forgets what `redo` could do. With nothing to take back or do again they answer null, and `history` counts the steps each way, for a toolbar's buttons. `setClock` and a live session's new clock are no steps, and neither is a call that fails: an undo stopped by a deadline or an abort changes nothing.
 
 A session keeps 100 steps, as Excel does, in 64 MB at most by the engine's estimate, or in a pool with `maxHeapMb` its share of an eighth of a thread's heap (8 MB for 384 MB and `maxSessionsPerThread: 6`): the option `undo: { depth, maxMb }` sets both, and `depth: 0` keeps none. A step keeps what its call replaced and no more: the inputs of the cells it changed, the layout of the sheets it changed (the widths, `bestFit` and hidden columns of an AutoFit too), the style table or the names. A structure operation keeps the cells it does not carry back as they were (the rows it deleted, the formulas it rewrote) and the layout of the sheets it changed, not a copy of the book, and undoing it builds the book's state again, as the operation did. A deleted sheet comes back with its cells, which Excel cannot do; a step larger than `maxMb` alone is not kept and the steps before it go, as Excel forgets what it cannot undo. On the synthetic book of 34,000 rows, an edit and its undo cost what the edit costs (107 ms for an amount on the data sheet, which its 2,800 SUMIFS read), `insertRows` keeps 0.4 MB and takes 1.5 s where it takes 1.3 s without a history, its undo and its redo 1.4 to 1.5 s each; `deleteRows` takes 1.5 s where it takes 1.4 s. Deleting the sheet of 506,594 cells would keep 59 MB, over the default, so the session forgets its history then; with `maxMb: 100` it is undone in 1.4 to 1.7 s.
 
@@ -627,7 +635,7 @@ console.log(session.previewCellText('S', 'C1', '-2').validation.severity, refuse
 
 A value the cell's rule of data validation does not take is written, with `validation`, the rule, its alert's style (`severity`) and message, for the host to show Excel's window and call `undo()` if the person cancels; Excel does not take the value of a rule of the style `stop`, which the host refuses itself. A formula that does not read, a change of part of an old-kind array and a formula in a table's header cell are refused (`{ ok: false, code, message, at? }`, the message in the book's locale); text typed into a header cell renames its column, as `setCells` does.
 
-`setCellTexts(entries, opts?)` takes several texts at once, a paste of text or an entry into a selection: each `{ sheet, cell, text }` is read as `setCellText` reads it in its cell, in order, and all are written with one recomputation, one revision and one step of the undo. A cell given twice keeps the later text, read by the format the earlier one gave it. A column widens once, to the largest width a text typed alone into one of its cells would give it (`widths`, unless `widen: false`), and the cells whose values their rules do not take come back with their alerts (`validations`). A text `setCellText` refuses refuses the whole call, with its `sheet` and `cell`, and nothing is written. `previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
+`setCellTexts(entries, opts?)` takes several texts typed at once: each `{ sheet, cell, text }` is read as `setCellText` reads it in its cell, in order, and all are written with one recomputation, one revision and one step of the undo. A cell given twice keeps the later text, read by the format the earlier one gave it. A column widens once, to the largest width a text typed alone into one of its cells would give it (`widths`, unless `widen: false`), and the cells whose values their rules do not take come back with their alerts (`validations`). A text `setCellText` refuses refuses the whole call, with its `sheet` and `cell`, and nothing is written. `previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
 
 ```js
 import { createSession, registerLocale } from 'xlcalc'
@@ -651,6 +659,35 @@ console.log(session.previewCellTexts([{ sheet: 'S', cell: 'A2', text: '5%' }, { 
 //     [ 'A2', { value: 0.05, numberFormat: 9 }, 0.05 ],
 //     [ 'A3', { formula: 'A2*2' }, 0.1 ]
 //   ]
+```
+
+A paste and Control+Return read text otherwise than typing, and have their own calls. `pasteText(sheet, cell, text, opts?)` pastes text from the clipboard as Excel pastes it: `parseClipboard(text)` makes it a rectangle, rows at line breaks and fields at tabs, every row as wide as the longest, and the rectangle fills the cells from `cell`, an empty field, a short row's missing ones and the row after a last line break clearing theirs. Each field is read as typed into its cell, but an apostrophe stays part of the text, a formula Excel does not take is pasted as text, a percent cell has no percent editor (`5` is 500%) and `€5` takes the euro format; no column widens and no rule is checked. The answer has the `range` filled; part of an array, a formula into a header cell and a rectangle past the sheet's edge are refused with the `sheet` and `cell`.
+
+`fillCellText(sheet, range, text, opts?)` enters a text into every cell of a range, as Control+Return: it reads the text once in the active cell, the range's top-left one or `active`, and every cell takes what the active cell holds after it, a formula moved as a copy from the active cell moves it (`copyFormula`) and the active cell's number format where it has one. The columns widen as typing widens them (`widths`, unless `widen: false`), and only the active cell's rule is checked (`validation`). Both are one step of the undo, and `previewPasteText` and `previewFillCellText` change nothing. The rules, as measured in Excel, are in [docs/entry.md](docs/entry.md#a-paste-and-controlreturn).
+
+```js
+import { createSession, parseClipboard, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({
+  locale: 'ru-RU',
+  sheets: [{
+    name: 'S',
+    cells: { A1: { value: 2 }, A2: { value: 3 } },
+    columns: { C: { numberFormat: '0%' } },
+    validations: [{ range: 'D1:D9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }],
+  }],
+}, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+const text = "'007\t=СУММ(A1;1.5)\t5\t-2\r\n€5"
+console.log(parseClipboard(text)) // → [ [ "'007", '=СУММ(A1;1.5)', '5', '-2' ], [ '€5', '', '', '' ] ]
+const pasted = session.pasteText('S', 'A4', text)
+console.log(pasted.range, Object.entries(session.getCells('S', pasted.range)).map(([a, c]) => `${a} ${c.text}`), 'validation' in pasted)
+// → A4:D5 [ "A4 '007", 'B4 =СУММ(A1;1.5)', 'C4 500%', 'D4 -2', 'A5 € 5' ] false
+const filled = session.fillCellText('S', 'D1:D2', '=A1-5')
+console.log(filled.changes.map((c) => `${c.cell} ${c.formula} ${c.value}`), filled.validation.severity) // → [ 'D2 A2-5 -2', 'D1 A1-5 -3' ] warning
+const refused = session.fillCellText('S', 'E1:E3', '=СУММ(A1;', { active: 'E2' })
+console.log(refused.code, refused.cell, refused.at, session.revision) // → syntax E2 9 2
 ```
 
 ### Addresses and helpers
@@ -1133,7 +1170,7 @@ From `xlcalc`:
 | export | |
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`, `spill`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `numberFormat`, `meta`), `diagnostics` (each cell with an error, `kind: 'cell'`, then each name with a problem, `kind: 'name'`), `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
-| `createSession(book, opts?)` | a `Session`; each call that changes the book answers an `EditResult` (`{ revision, changes, layout?, styles?, moved?, repaint? }`) and takes `{ baseRevision }`: `setCells(edits)` (the fields given, the cell's look kept), `replaceCells(edits)` (cells whole), `clearCells(ranges, 'contents' \| 'formats' \| 'all')`, `patchCells(patches)` (the `style`, by number or by its fields, `numberFormat`, `meta`, `note`, `link` of a cell or a range, whole rows and columns too, without values), `setCellText(sheet, cell, text, { widen })` and `previewCellText` (typed text, `{ ok, …, width?, validation? }` or a refusal), `setCellTexts(entries, { widen })` and `previewCellTexts` (texts `{ sheet, cell, text }` typed at once, in one step: `{ ok, …, widths?, validations? }` or a refusal with its `sheet` and `cell`), `setNames(names)`, `setClock(clock)`, `editStructure(op)`, `setStyles(styles)`, `setLayout(edits)` (columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings; columns AutoFit with `{ columns, fit: true }`), `revision`, `getBook()`, `getLayout()` (the book without its cells), `getUsedRange(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand, errorDepth })` (an error's `origin` marked and the way to it), `getCells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array`, conditional formats' `appearance` and its own format's `numberFormatCode`), `getCell(sheet, cell)` (one cell of `getCells`, or undefined), `getViewport(sheet, range, { formulaLocal, diagnostics, maxCells, rows, columns, editText })` (a window for a grid: cells with their style, by number, and number format resolved, empty ones with a line's style, the styles they show, the lines' numbers and sizes, merged areas, tables, frozen panes, the used range; only some rows and columns, the text each cell opens with for editing), `getCellIssue(sheet, cell)` (an error's reason and `origin`, or null), `getValidation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok: true }` or `{ ok: false, code, message, rule, severity }`), `getResult()`, `getSnapshot()` (`{ book, result }` in one call, what `writeXlsx` takes), `getHash()` (the values hash without the result), `undo()` and `redo()` (the call's `EditResult` with `call`, `cells?`, `mapCell?`, or null), `history` (`{ undo, redo }`, the steps each way), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display`, `limits` and `undo` (`{ depth, maxMb }`, 100 steps and 64 MB by default); edits are compiled in the session's execution mode. |
+| `createSession(book, opts?)` | a `Session`; each call that changes the book answers an `EditResult` (`{ revision, changes, layout?, styles?, moved?, repaint? }`) and takes `{ baseRevision }`: `setCells(edits)` (the fields given, the cell's look kept), `replaceCells(edits)` (cells whole), `clearCells(ranges, 'contents' \| 'formats' \| 'all')`, `patchCells(patches)` (the `style`, by number or by its fields, `numberFormat`, `meta`, `note`, `link` of a cell or a range, whole rows and columns too, without values), `setCellText(sheet, cell, text, { widen })` and `previewCellText` (typed text, `{ ok, …, width?, validation? }` or a refusal), `setCellTexts(entries, { widen })` and `previewCellTexts` (texts `{ sheet, cell, text }` typed at once, in one step: `{ ok, …, widths?, validations? }` or a refusal with its `sheet` and `cell`), `pasteText(sheet, cell, text)` and `previewPasteText` (text from the clipboard as Excel pastes it: `{ ok, …, range }` or a refusal with its `sheet` and `cell`), `fillCellText(sheet, range, text, { widen, active })` and `previewFillCellText` (Control+Return: `{ ok, …, widths?, validation? }` or a refusal with its `sheet` and `cell`), `setNames(names)`, `setClock(clock)`, `editStructure(op)`, `setStyles(styles)`, `setLayout(edits)` (columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings; columns AutoFit with `{ columns, fit: true }`), `revision`, `getBook()`, `getLayout()` (the book without its cells), `getUsedRange(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand, errorDepth })` (an error's `origin` marked and the way to it), `getCells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array`, conditional formats' `appearance` and its own format's `numberFormatCode`), `getCell(sheet, cell)` (one cell of `getCells`, or undefined), `getViewport(sheet, range, { formulaLocal, diagnostics, maxCells, rows, columns, editText })` (a window for a grid: cells with their style, by number, and number format resolved, empty ones with a line's style, the styles they show, the lines' numbers and sizes, merged areas, tables, frozen panes, the used range; only some rows and columns, the text each cell opens with for editing), `getCellIssue(sheet, cell)` (an error's reason and `origin`, or null), `getValidation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok: true }` or `{ ok: false, code, message, rule, severity }`), `getResult()`, `getSnapshot()` (`{ book, result }` in one call, what `writeXlsx` takes), `getHash()` (the values hash without the result), `undo()` and `redo()` (the call's `EditResult` with `call`, `cells?`, `mapCell?`, or null), `history` (`{ undo, redo }`, the steps each way), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display`, `limits` and `undo` (`{ depth, maxMb }`, 100 steps and 64 MB by default); edits are compiled in the session's execution mode. |
 | `viewportOf(saved, sheet, range, opts?)` | the window `getViewport` gives, over a book and its result as a host saved them (`{ book, result }`), without a session and without computing; no `revision`, and conditional `appearance` only with `appearance: true`, computed over the result's values ([A window for a grid](#a-window-for-a-grid)) |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `numberFormat`, `locale` (a loaded locale's tag or a locale object, as every function's `locale` below), `width` (no limit without it), `dateSystem` ([Showing values](#showing-values)) |
 | `builtinFormatCode(id, locale?)` | the code a built-in number format (0 to 49) shows by in the locale, undefined for a number that is none ([Showing values](#showing-values)) |
@@ -1147,6 +1184,7 @@ From `xlcalc`:
 | `errorText(code, locale?)` | an error as a cell shows it (`#DIV/0!`, `#ДЕЛ/0!` in ru-RU) |
 | `scanReferences(formula, opts?)` | the references of formula text as it is typed, with their places, rectangles, sheets and tables, a token that does not read skipped; `opts.locale` for text typed in a locale; also from `xlcalc/text` |
 | `escapeColumn(name)` | a column's name in a structured reference, `'` before `[`, `]`, `#`, `'` and a leading `@`; also from `xlcalc/text` ([Tables](#tables)) |
+| `parseClipboard(text)` | text from the clipboard as the rectangle Excel pastes: rows at line breaks, fields at tabs, each row as wide as the longest; also from `xlcalc/text` ([Typed entry](#typed-entry)) |
 | `internStyle(styles, style)` | a style's number in a style table, found as `patchCells` finds it: `{ index, styles }`, the same array when an equal style is there, else a new one with the style added ([Editing a grid](#editing-a-grid)) |
 | `sameValue(a, b)`, `canonValue(value)` | values compared as the values hash compares them, and a value's text in the hash |
 | `parseCell`, `cellAddress`, `colLetters`, `colNumber`, `parseRange`, `rangeAddress`, `parseLines`, `linesKey`, `patchLines`, `rectsMeet`, `rectContains`, `MAX_ROWS`, `MAX_COLS`, `quoteSheetIfNeeded`, `nameKey`, `sameName` | addresses and names without the engine, also from `xlcalc/a1` ([Addresses and helpers](#addresses-and-helpers)) |
@@ -1169,7 +1207,7 @@ From `xlcalc`:
 
 `xlcalc/a1` exports the addresses and names of [Addresses and helpers](#addresses-and-helpers) (`parseCell`, `parseRange`, `rangeAddress`, `parseLines`, `patchLines`, `quoteSheetIfNeeded`, `sameName` and the rest), the same functions as the root's, without any engine code.
 
-`xlcalc/text` exports `scanReferences`, `quoteSheetIfNeeded` and `escapeColumn`, the root's functions of formula text, for a browser that colours a formula as it is typed without the engine: 29 KB (12 KB gzip) bundled and minified, the engine's tokenizer and the translation of a locale's formula text without the parser or any computation. Of the locales' data it carries en-US's messages alone, which the tokenizer's errors take: text typed in another locale takes the locale as an object (`ruRU` of `xlcalc/locales/ru-RU`, or its formula text alone). `entryText` and `needsApostrophe` stay in the root: they read text as `parseEntry` does, with the parser and number formats.
+`xlcalc/text` exports `scanReferences`, `quoteSheetIfNeeded` and `escapeColumn`, the root's functions of formula text, for a browser that colours a formula as it is typed without the engine, and `parseClipboard`, the rectangle a paste fills, for a grid to show it before the paste: 30 KB (12 KB gzip) bundled and minified, the engine's tokenizer and the translation of a locale's formula text without the parser or any computation. Of the locales' data it carries en-US's messages alone, which the tokenizer's errors take: text typed in another locale takes the locale as an object (`ruRU` of `xlcalc/locales/ru-RU`, or its formula text alone). `entryText` and `needsApostrophe` stay in the root: they read text as `parseEntry` does, with the parser and number formats.
 
 `xlcalc/worker` exports `createCalcPool(opts?)`, a `Calc` over a pool of threads (`opts`: `threads`, `maxHeapMb`, `hardTimeoutMs`, `timeoutMs`, `maxQueue`, `maxSessions`, `maxSessionsPerThread`, `limits`, `snapshotEvery`, `sliceMs`, `spawn`), and `CalcError`.
 
