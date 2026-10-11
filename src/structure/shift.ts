@@ -15,7 +15,7 @@ import { placer, type Applied, type Geometry, type Place } from './geometry.js'
 import { gridOf } from './grid.js'
 import { relocated, shiftRefusal } from './arrays.js'
 import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
-import { offsetsStay, rewriteCell, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
@@ -91,7 +91,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const names = sheetNames(book)
   const sheets = book.sheets.map((s) => {
     const moving = s === target
-    const cells: Record<string, CellInput> = {}
+    let cells: Record<string, CellInput> = {}
     let changed = moving
     if (moving) {
       // the cells where the geometry takes them, their formulas rewritten
@@ -106,13 +106,10 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
         const to = p.r === grid.row[i] && p.c === grid.col[i] ? addr : formatAddress(p.r, p.c)
         cells[to] = relocated(rewriteCell(grid.cell[i], s.name, s.name, t, names), addr, to)
       }
-    } else
-      for (const addr of Object.keys(s.cells)) {
-        const cell = s.cells[addr]
-        const next = rewriteCell(cell, s.name, s.name, t, names)
-        changed ||= next !== cell
-        cells[addr] = next
-      }
+    } else {
+      cells = rewriteCells(s.cells, s.name, s.name, t, names)
+      changed = cells !== s.cells
+    }
     const list = s.tables?.map((ti) => {
       const first = parseRange(ti.range)!.r1 + (ti.headers !== false ? 1 : 0)
       // If the first data row is deleted, take the calculated formula at the first surviving row.

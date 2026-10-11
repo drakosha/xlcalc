@@ -14,7 +14,7 @@ import { arrayRefusal, relocated } from './arrays.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
 import { gridOf } from './grid.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
-import { rewriteCell, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { rewriteCell, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { moveConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
 
@@ -153,7 +153,7 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
   const p: Place = { s: 0, r: 0, c: 0 }
   const sheets = book.sheets.map((s, si) => {
     const k = sheetKey(s.name)
-    const cells: Record<string, CellInput> = {}
+    let cells: Record<string, CellInput> = {}
     let changed = si === fi || si === ti
     if (changed) {
       // the cells where the geometry takes them: the moved ones to `to`, the rest of the sheet but those landed on stay
@@ -172,13 +172,10 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
           if (cell.formula !== undefined) formulas.push(cell.formula)
         } else cells[addr] = rewriteCell(cell, s.name, s.name, t, names)
       }
-    } else
-      for (const addr of Object.keys(s.cells)) {
-        const cell = s.cells[addr]
-        const next = rewriteCell(cell, s.name, s.name, t, names)
-        changed ||= next !== cell
-        cells[addr] = next
-      }
+    } else {
+      cells = rewriteCells(s.cells, s.name, s.name, t, names)
+      changed = cells !== s.cells
+    }
   // a table the move takes whole goes to `to` with its cells (`tables/moves.ts`), the others stay on their sheet
     const tables = rewriteTemplates(s.tables, s.name, (ti) => (k === fk && contains(src, parseRange(ti.range)!) ? to : s.name), t, names)
     return changed || tables !== s.tables ? { ...s, cells, ...(tables ? { tables } : {}) } : s
