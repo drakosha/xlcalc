@@ -15,6 +15,7 @@ import { X14_CF } from '../read/conditional.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree } from './sheet.js'
 import type { StyleWriter } from './styles.js'
+import { rgb } from './xml.js'
 
 const X14 = 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main'
 const XM = 'http://schemas.microsoft.com/office/excel/2006/main'
@@ -39,7 +40,6 @@ export interface ConditionalWritten {
   ext: string
 }
 
-const rgb = (c: string) => `FF${c.slice(1).toUpperCase()}`
 const hex = (n: number, w: number) => n.toString(16).toUpperCase().padStart(w, '0')
 
 /** A formula as a file holds it, and whether it names another sheet; null when the file cannot hold it. */

@@ -12,6 +12,7 @@ import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree } from './sheet.js'
+import { clip } from './xml.js'
 
 /** Excel's limits on a rule's texts: it does not load a file with longer ones. */
 const LIMITS = { promptTitle: 32, prompt: 255, errorTitle: 32, error: 225 } as const
@@ -50,13 +51,8 @@ export function validationsXml(rules: DataValidation[] | undefined, ctx: Validat
     if (v.showPrompt !== false) attrs += ' showInputMessage="1"'
     if (v.showError !== false) attrs += ' showErrorMessage="1"'
     for (const k of ['errorTitle', 'error', 'promptTitle', 'prompt'] as const) {
-      let t = v[k]
-      if (t === undefined) continue
-      if (t.length > LIMITS[k]) {
-        t = t.slice(0, LIMITS[k])
-        ctx.issues.add('textLength', `a rule's ${k} over Excel's ${LIMITS[k]} characters is cut`, where)
-      }
-      attrs += ` ${k}="${escapeAttr(t)}"`
+      const t = v[k]
+      if (t !== undefined) attrs += ` ${k}="${escapeAttr(clip(t, LIMITS[k], ctx.issues, `a rule's ${k} over Excel's ${LIMITS[k]} characters is cut`, where))}"`
     }
     return [`<dataValidation${attrs} sqref="${sqref(v.range)}">${formulas.join('')}</dataValidation>`]
   })

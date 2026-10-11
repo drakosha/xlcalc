@@ -42,3 +42,6 @@ export const escapeAttr = (s: string): string => escapeText(s).replace(/"/g, '&q
 
 /** Whether element text needs `xml:space="preserve"`: spaces at either end, or line breaks and tabs. */
 export const needsPreserve = (s: string): boolean => /^\s|\s$|[\t\n\r]/.test(s)
+
+/** Text as a text element (`<t>`), its spaces kept where they need it. */
+export const textElement = (s: string): string => `<t${needsPreserve(s) ? ' xml:space="preserve"' : ''}>${escapeText(s)}</t>`

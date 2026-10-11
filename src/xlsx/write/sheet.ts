@@ -30,9 +30,7 @@ import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { StyleWriter } from './styles.js'
 import type { ResultCell } from './snapshot.js'
-
-/** Excel's limit on a cell's text. */
-export const MAX_TEXT = 32_767
+import { clip, HEAD, MAIN, MAX_TEXT } from './xml.js'
 
 /**
  * The default width in xlsx units (8 digits and the padding, as Excel for Mac writes it): a column that has a look
@@ -100,11 +98,7 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
   if (typeof v === 'boolean') return { t: ' t="b"', v: v ? '1' : '0' }
   if (typeof v === 'string') {
-    let s = v
-    if (s.length > MAX_TEXT) {
-      s = s.slice(0, MAX_TEXT)
-      ctx.issues.add('textLength', "text over Excel's 32,767 characters is cut", where)
-    }
+    const s = clip(v, MAX_TEXT, ctx.issues, "text over Excel's 32,767 characters is cut", where)
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
   if (v.error === 'CYCLE') {
@@ -263,7 +257,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     return n ? ` ${attr}="${n}"` : ''
   }
   const xml =
-    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+    `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
     (filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '') +
     `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${ctx.active ? ' tabSelected="1"' : ''}${pane ? `>${pane}</sheetView>` : '/>'}</sheetViews>` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes

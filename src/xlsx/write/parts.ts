@@ -4,14 +4,10 @@
  * with a hidden box for each, which Excel needs to show them).
  */
 import type { CellLink, CellNote, FrozenPanes } from '../../contract.js'
-import { formatAddress, parseAddress } from '../../model.js'
+import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
 import type { Issues } from '../issues.js'
-import { escapeAttr, escapeText, needsPreserve } from '../xml/text.js'
-
-const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
-
-/** Excel's limit on a note's text, as on a cell's. */
-const MAX_NOTE = 32_767
+import { escapeAttr, escapeText, textElement } from '../xml/text.js'
+import { clip, HEAD, MAIN, MAX_TEXT } from './xml.js'
 
 /** The content of a sheet's view with frozen panes: the pane after the frozen rows and columns, active, and its selection. */
 export function paneXml(f: FrozenPanes | undefined): string {
@@ -23,10 +19,7 @@ export function paneXml(f: FrozenPanes | undefined): string {
 }
 
 /** Cells in the order of a sheet (row by row). */
-const inOrder = <T>(m: Map<string, T>): [string, T][] => [...m].sort((a, b) => {
-  const [p, q] = [parseAddress(a[0]), parseAddress(b[0])]
-  return p.row - q.row || p.col - q.col
-})
+const inOrder = <T>(m: Map<string, T>): [string, T][] => sortAddresses(m.keys()).map((a) => [a, m.get(a)!])
 
 /** Excel's limit on a hyperlink's tooltip (ScreenTip): it does not load a file with a longer one (the parts set `files`). */
 const MAX_TIP = 255
@@ -35,11 +28,7 @@ const MAX_TIP = 255
 export function hyperlinksXml(links: Map<string, CellLink>, rel: (url: string) => string, sheet: string, issues: Issues): string {
   if (!links.size) return ''
   const items = inOrder(links).map(([cell, l]) => {
-    let tip = l.tooltip
-    if (tip !== undefined && tip.length > MAX_TIP) {
-      tip = tip.slice(0, MAX_TIP)
-      issues.add('textLength', "a hyperlink's tooltip over Excel's 255 characters is cut", { sheet, cell })
-    }
+    const tip = l.tooltip === undefined ? undefined : clip(l.tooltip, MAX_TIP, issues, "a hyperlink's tooltip over Excel's 255 characters is cut", { sheet, cell })
     const attrs = (l.url !== undefined ? ` r:id="${rel(l.url)}"` : '') + (l.location !== undefined ? ` location="${escapeAttr(l.location)}"` : '') + (tip !== undefined ? ` tooltip="${escapeAttr(tip)}"` : '')
     return `<hyperlink ref="${cell}"${attrs}/>`
   })
@@ -52,15 +41,11 @@ export function commentsXml(notes: Map<string, CellNote>, sheet: string, issues:
   const list = inOrder(notes).map(([cell, n]) => {
     const author = n.author ?? ''
     if (!authors.has(author)) authors.set(author, authors.size)
-    let text = n.text
-    if (text.length > MAX_NOTE) {
-      text = text.slice(0, MAX_NOTE)
-      issues.add('textLength', "a note over Excel's 32,767 characters is cut", { sheet, cell })
-    }
-    return `<comment ref="${cell}" authorId="${authors.get(author)}"><text><t${needsPreserve(text) ? ' xml:space="preserve"' : ''}>${escapeText(text)}</t></text></comment>`
+    const text = clip(n.text, MAX_TEXT, issues, "a note over Excel's 32,767 characters is cut", { sheet, cell })
+    return `<comment ref="${cell}" authorId="${authors.get(author)}"><text>${textElement(text)}</text></comment>`
   })
   const names = [...authors.keys()].map((a) => (a ? `<author>${escapeText(a)}</author>` : '<author/>'))
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<comments xmlns="${MAIN}"><authors>${names.join('')}</authors><commentList>${list.join('')}</commentList></comments>`
+  return `${HEAD}<comments xmlns="${MAIN}"><authors>${names.join('')}</authors><commentList>${list.join('')}</commentList></comments>`
 }
 
 /**

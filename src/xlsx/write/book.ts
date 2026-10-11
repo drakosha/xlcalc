@@ -18,7 +18,7 @@ import { toFile } from '../formulas/to-file.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import type { WriteXlsxOptions, XlsxCached, XlsxSnapshot, XlsxWritten } from '../types.js'
-import { escapeAttr, escapeText, needsPreserve } from '../xml/text.js'
+import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { nextBlock } from './parts.js'
@@ -26,11 +26,10 @@ import { writeSheet } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
+import { HEAD, MAIN } from './xml.js'
 import { tableAt, tablesOf } from '../../tables/model.js'
 import { parseAddress } from '../../model.js'
 
-const HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
-const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
 const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
@@ -194,7 +193,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
   wbRels.push([`${REL}/styles`, 'styles.xml'])
   if (strings.size) {
-    const items = [...strings.keys()].map((s) => `<si><t${needsPreserve(s) ? ' xml:space="preserve"' : ''}>${escapeText(s)}</t></si>`)
+    const items = [...strings.keys()].map((s) => `<si>${textElement(s)}</si>`)
     files.push({ name: 'xl/sharedStrings.xml', text: `${HEAD}<sst xmlns="${MAIN}" count="${refs}" uniqueCount="${strings.size}">${items.join('')}</sst>` })
     contentTypes.push(['/xl/sharedStrings.xml', `${TYPE}.sharedStrings+xml`])
     wbRels.push([`${REL}/sharedStrings`, 'sharedStrings.xml'])
