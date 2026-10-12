@@ -180,7 +180,7 @@ export function groupsOf(map: Map | undefined, axis: Axis, after: boolean): Grou
 }
 
 /** Why Excel refuses an outline command (`StructureRefusal`). */
-export type OutlineRefusal = 'outline_deep' | 'not_grouped' | 'detail'
+export type OutlineRefusal = 'outline_deep' | 'not_grouped' | 'detail' | 'last_column'
 
 /** An outline command on one axis: Group or Ungroup of lines, Show or Hide Detail at a line, a level button. */
 export type OutlineCommand = { kind: 'group' | 'ungroup'; lo: number; hi: number } | { kind: 'show' | 'hide'; at: number } | { kind: 'levels'; level: number }
@@ -216,13 +216,16 @@ function shown<T extends OutlineEntry>(map: Map<T> | undefined, axis: Axis, lo: 
  * have one, refused when none has. Show and Hide Detail act at a summary line on its detail, at another line on the group
  * of its level that holds it, through that group's summary line: refused at a line in no group, at a group with no summary
  * line, and when the detail is already shown (no mark) or hidden (marked). Showing the detail shows its lines but those of
- * the collapsed groups inside it. A level button k hides the lines of level k and deeper and shows the other grouped lines.
+ * the collapsed groups inside it. A level button k hides the lines of level k and deeper and shows the other grouped lines,
+ * but the columns grouped up to the sheet's last column. Group and Ungroup of columns that take in the last one are refused.
  */
 export function outlineCommand<T extends OutlineEntry>(map: Map<T> | undefined, axis: Axis, after: boolean, c: OutlineCommand): Map<T> | undefined | OutlineRefusal {
   const start = normalized(map, axis, after)
   const o = new Outline(start, axis, after)
   let out = start
   if ('lo' in c) {
+    // Excel's object model takes neither command over the sheet's last column (the set rules-held-2)
+    if (axis === 'c' && c.hi === o.last) return 'last_column'
     const ps = pieces(o, c.lo, c.hi)
     if (c.kind === 'group' ? ps.every(([, , l]) => l >= MAX_OUTLINE) : ps.every(([, , l]) => l === 0)) return c.kind === 'group' ? 'outline_deep' : 'not_grouped'
     for (const [a, b, l] of ps) {
@@ -230,8 +233,8 @@ export function outlineCommand<T extends OutlineEntry>(map: Map<T> | undefined, 
       if (next !== l && next >= 0) out = patched(out, axis, a, b, { outlineLevel: next || null })
     }
   } else if (c.kind === 'levels') {
-    // columns grouped up to the sheet's edge, past which their summary column would be, stay as they are (the set rules-held)
-    const edge = axis === 'c' ? o.edge() : null
+    // the grouped columns that reach the sheet's last column stay as they are, wherever their summaries are (the sets rules-held, rules-held-2)
+    const edge = axis === 'c' && o.level(o.last) ? { lo: o.end(o.last, 1, -1), hi: o.last } : null
     for (const [lo, hi, e] of o.ls) {
       const l = e.outlineLevel ?? 0
       for (const [a, b] of edge ? [[lo, Math.min(hi, edge.lo - 1)], [Math.max(lo, edge.hi + 1), hi]] : [[lo, hi]])

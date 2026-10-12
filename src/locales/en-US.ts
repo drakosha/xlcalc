@@ -83,6 +83,7 @@ export const EN_MESSAGES: EnglishMessages = {
   lastVisibleSheet: (p) => `a book keeps at least one visible sheet, and ${JSON.stringify(p.sheet)} is its last`,
   veryHidden: (p) => `the very hidden sheet ${JSON.stringify(p.sheet)} is neither deleted nor moved: show it first`,
   outlineDeep: (p) => `the ${p.lines} ${p.span} are at the deepest outline level, 7, and are not grouped further`,
+  lastColumn: (p) => `the columns ${p.span} take in the sheet's last column, which Excel neither groups nor ungroups`,
   notGrouped: (p) => `the ${p.lines} ${p.span} are in no group`,
   noSummary: (p) => `${p.lines === 'rows' ? 'row' : 'column'} ${p.span} is in no group with a summary ${p.lines === 'rows' ? 'row' : 'column'}`,
   detailShown: (p) => `the detail of ${p.lines === 'rows' ? 'row' : 'column'} ${p.span} is shown already`,
