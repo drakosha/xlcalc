@@ -81,6 +81,13 @@ export const sheetKey = caseKey
 
 export const quoteSheet = (s: string) => `'${s.replaceAll("'", "''")}'`
 
+/** Another workbook's sheet as a reference writes it before `!`, unquoted: `[1]Sheet1` by its link's number, `C:\data\[Book2.xlsx]Sheet1` by its path. */
+export function linkedSheet(book: number | string, sheet: string): string {
+  if (typeof book === 'number') return `[${book}]${sheet}`
+  const k = Math.max(book.lastIndexOf('/'), book.lastIndexOf('\\')) + 1
+  return `${book.slice(0, k)}[${book.slice(k)}]${sheet}`
+}
+
 export interface PrintOptions {
   str?: (s: string) => string
   bool?: (b: boolean) => string
@@ -120,6 +127,10 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
         return `${n.table ?? ''}[${specText(n.spec)}]`
       case 'name':
         return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + nameOf(n.name, n.sheet)
+      case 'xref':
+        return `${quoteSheet(linkedSheet(n.book, n.sheet))}!${n.ref.text}`
+      case 'xname':
+        return `${n.sheet !== undefined ? quoteSheet(linkedSheet(n.book, n.sheet)) : typeof n.book === 'number' ? `[${n.book}]` : quoteSheet(n.book)}!${n.name}`
       case 'at':
         return `@${go(n.a)}`
       case 'union':

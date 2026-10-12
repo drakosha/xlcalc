@@ -127,7 +127,8 @@ export function fileTree(formula: string, sheets: Set<string>, tables: { name: s
   let ok = true
   const known = (sheet: string | null | undefined) => sheet == null || sheets.has(sheetKey(sheet))
   walk(ast, (n) => {
-    if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
+    // a reference to another workbook is not written yet: its link is not in the file
+    if (n.k === 'xref' || n.k === 'xname' || (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet))) ok = false
   })
   return ok ? ast : null
 }
