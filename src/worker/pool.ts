@@ -12,7 +12,7 @@ import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
 import { splitCall, checkCall, checkEditCall } from '../async/options.js'
 import { checkedMapCell } from '../structure/index.js'
 import type { SentGeometry } from '../structure/geometry.js'
-import { FILL_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
+import { FILL_OPTIONS, FIND_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
 import { pack, unpackSlowly } from './pack.js'
 import { CHANGING, fromData, sentLocale, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
@@ -397,7 +397,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       applyChanges: (ops, co) => value(edit('applyChanges', [ops], co, ['clock'])),
       previewChanges: (ops, co) => value(edit('previewChanges', [ops], co, ['clock', 'maxChanges'])),
       readCells: (refs, co) => value(edit('readCells', [refs], co, ['maxCells', 'cursor', 'count', 'fields'])),
-      findCells: (refs, query, co) => value(edit('findCells', [refs, query], co, ['maxCells', 'cursor', 'count', 'fields', 'in', 'caseSensitive'])),
+      findCells: (refs, query, co) => value(edit('findCells', [refs, query], co, ['maxCells', 'cursor', 'count', 'fields', ...FIND_OPTIONS])),
       getDependents: (refs, co) => value(edit('getDependents', [refs], co, ['maxCells', 'cursor', 'count', 'maxReferences'])),
       summarizeRanges: (refs, co) => value(edit('summarizeRanges', [refs], co)),
       setCells: (edits, co) => value(edit('setCells', [edits], co)),

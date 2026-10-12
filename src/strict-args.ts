@@ -13,6 +13,8 @@ const TYPING = 'setCellText, setCellTexts, fillCellText and their previews'
 /** The options of the calls that type text beside `baseRevision` (`CellTextOptions`), and of an entry into a selection (`FillTextOptions`). */
 export const TEXT_OPTIONS = ['widen', 'refuseInvalid', 'inPlace'] as const
 export const FILL_OPTIONS = ['widen', 'refuseInvalid', 'inPlace', 'active'] as const
+/** The options of `findCells` beside a page's and `fields` (`FindCellsOptions`). */
+export const FIND_OPTIONS = ['in', 'caseSensitive', 'wildcards', 'wholeCell', 'byColumns', 'skipHidden'] as const
 
 /** The API's options by name and the calls that take them, for a refusal to say where a stray option goes. */
 const TAKEN_BY: Record<string, string> = {
@@ -31,6 +33,11 @@ const TAKEN_BY: Record<string, string> = {
   refuseInvalid: TYPING,
   inPlace: TYPING,
   active: 'fillCellText and previewFillCellText',
+  caseSensitive: 'findCells',
+  wildcards: 'findCells',
+  wholeCell: 'findCells',
+  byColumns: 'findCells',
+  skipHidden: 'findCells',
   baseRevision: "a session's calls that change its book",
   table: 'toLocal and toInvariant',
   clock: 'compute and createSession',

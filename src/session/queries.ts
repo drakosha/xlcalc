@@ -12,7 +12,8 @@ import { sheetKey } from '../syntax.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
 import { checkRange } from './viewport.js'
-import { FIND_OPTIONS, finderOf } from './find.js'
+import { FIND_OPTIONS } from '../strict-args.js'
+import { finderOf } from './find.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
 const FIELDS: CellReadField[] = ['value', 'text', 'formula', 'style', 'numberFormat', 'note', 'link', 'issue']

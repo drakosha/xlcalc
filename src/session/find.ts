@@ -19,10 +19,8 @@ import { ownerOf } from '../spill/place.js'
 import { hasCell, type Rect } from '../structure/area.js'
 import { paced } from '../exec/budget.js'
 import { lowerBound } from '../sorted.js'
+import { FIND_OPTIONS } from '../strict-args.js'
 import { editTexts } from './viewport.js'
-
-/** `findCells`' own options, beside the page's and `fields`. */
-export const FIND_OPTIONS = ['in', 'caseSensitive', 'wildcards', 'wholeCell', 'byColumns', 'skipHidden'] as const
 
 const WHERE = ['text', 'edit', 'formula', 'value'] as const
 
