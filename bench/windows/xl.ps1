@@ -261,8 +261,9 @@ function Step($xl, $wb, $s) {
     }
     'autoPercent' { Cell $xl.AutoPercentEntry }
     # Find over a range or the whole sheet (bench/windows/find.ts): from after the range's last cell (of its last area),
-    # so its first cell comes first, the cells Find and FindNext give until they come back to the first, at most max, each
-    # [address, Formula, FormulaLocal, Text], whether more were left, and FindNext's error (over a range of one cell)
+    # so its first cell comes first, the cells Find and FindNext give until they come back to one found before, at most
+    # max, each [address, Formula, FormulaLocal, Text]; whether more were left, FindNext's error (over a range of one
+    # cell), and the cell FindNext came back to when it is not the first (by columns on a filtered sheet)
     'find' {
       try {
         $ws = $wb.Worksheets.Item($s.sheet)
@@ -275,15 +276,21 @@ function Step($xl, $wb, $s) {
         $lookAt = if ($s.whole) { 1 } else { 2 }
         $order = if ($s.byColumns) { 2 } else { 1 }
         $f = $rg.Find([string]$s.what, $last, $lookIn, $lookAt, $order, 1, [bool]$s.matchCase, $false, $false)
-        $first = if ($null -ne $f) { $f.Address() } else { '' }
+        $first = if ($null -ne $f) { $f.Address($false, $false) } else { '' }
+        $seen = @{}
         $found = @()
         $next = ''
+        $back = ''
         while ($null -ne $f -and $found.Count -lt [int]$s.max) {
+          $seen[$f.Address($false, $false)] = $true
           $found += List @((Str $f.Address($false, $false)), (Str ([string]$f.Formula)), (Str ([string]$f.FormulaLocal)), (Str ([string]$f.Text)))
           $f = try { $rg.FindNext($f) } catch { $next = "$($_.Exception.HResult) $($_.Exception.Message)"; $null }
-          if ($null -ne $f -and $f.Address() -eq $first) { $f = $null }
+          if ($null -ne $f -and $seen.ContainsKey($f.Address($false, $false))) {
+            if ($f.Address($false, $false) -ne $first) { $back = $f.Address($false, $false) }
+            $f = $null
+          }
         }
-        List @((List $found), (Cell ($null -ne $f)), (Str $next))
+        List @((List $found), (Cell ($null -ne $f)), (Str $next), (Str $back))
       } catch { Err $_ }
     }
     # text put on the clipboard and pasted at a cell of the active sheet (bench/windows/ui.ts); the clipboard's or

@@ -4,7 +4,7 @@
  * texts typed once Excel opened it, and its cases, each a query over one book: what to find, a range or the whole
  * sheet, Look in (formulas or values), Match entire cell contents, Search by columns and Match case. Excel finds from
  * the cell after the range's last one, so its first cell comes first, and goes on with `FindNext` until it comes back
- * to the first: the cells in that order, each with its `Formula`, `FormulaLocal` and `Text`, which show what matched.
+ * to a cell found before: the cells in that order, each with its `Formula`, `FormulaLocal` and `Text`, which show what matched.
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -54,8 +54,12 @@ export interface FoundCell {
   text: string
 }
 
-/** The cells Excel found in its order; `more` when it found more than `MAX_FOUND`, `next` the error `FindNext` answered. Or the error Find answered. */
-export type FindAnswer = { found: FoundCell[]; more?: true; next?: string } | { error: string }
+/**
+ * The cells Excel found in its order; `more` when it found more than `MAX_FOUND`, `next` the error `FindNext` answered,
+ * `back` the cell `FindNext` came back to when it was not the first (it went round again from the second). Or the error
+ * Find answered.
+ */
+export type FindAnswer = { found: FoundCell[]; more?: true; next?: string; back?: string } | { error: string }
 
 export interface FindSet {
   BOOKS: Record<string, FindBook>

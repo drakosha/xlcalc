@@ -1,7 +1,7 @@
 /**
  * Excel's Find in Excel for Windows (`bench/coverage/find/`): each book of a set written by `writeXlsx`, opened, computed,
  * its autofilter applied (`Range.AutoFilter`) and its texts typed (`Formula2Local`); then each case's query through
- * `Range.Find` from after the range's last cell and `FindNext` until Find comes back to the first cell, at most
+ * `Range.Find` from after the range's last cell and `FindNext` until Find comes back to a cell found before, at most
  * `MAX_FOUND` cells, each with its `Formula`, `FormulaLocal` and `Text`. The cases of one book run in one file. The
  * answers go to `test/excel/win/find/[<tag>/]<set>.json`; a case Find refuses keeps its error.
  */
@@ -46,9 +46,9 @@ export async function stepFind(set: string, tag: Tag, e: WinEnv): Promise<void> 
   console.log(answeredLine(`find ${set} ${tag}`, todo.length, answers, cases))
 }
 
-/** A query's answer as `xl.ps1` gives it: `[[address, Formula, FormulaLocal, Text]...], more, FindNext's error`, or Find's error. */
+/** A query's answer as `xl.ps1` gives it: `[[address, Formula, FormulaLocal, Text]...], more, FindNext's error, the cell it came back to`, or Find's error. */
 function answerOf(x: unknown): FindAnswer {
   if (x && typeof x === 'object' && 'error' in x) return { error: String(x.error) }
-  const [found, more, next] = x as [[string, string, string, string][], boolean, string]
-  return { found: found.map(([cell, formula, formulaLocal, text]) => ({ cell, formula, formulaLocal, text })), ...(more ? { more: true as const } : {}), ...(next ? { next } : {}) }
+  const [found, more, next, back] = x as [[string, string, string, string][], boolean, string, string?]
+  return { found: found.map(([cell, formula, formulaLocal, text]) => ({ cell, formula, formulaLocal, text })), ...(more ? { more: true as const } : {}), ...(next ? { next } : {}), ...(back ? { back } : {}) }
 }
