@@ -218,6 +218,9 @@ await pool.close()
 
 ### Sessions
 
+Mixed cell, name and formatting operations can be applied atomically with `applyChanges(operations, { baseRevision, clock })`. `previewChanges` returns bounded before/after value impacts, including dependent cells and errors, without changing the book or its history. Use the preview's revision and clock when applying it. `readCells`, `findCells`, `getDependents` and `summarizeRanges` read at one revision where the book lives, with projection and bounded pages instead of a full snapshot. These methods also work in inline sessions and pools. See [live workbook operations and queries](docs/live-books.md) for the operation shapes, clocks, cursors and limits.
+
+
 A session holds a computed book and recomputes only what an edit changes. `setCells` applies edits atomically and answers the session's revision and the cells whose values changed; `explain` shows where a value comes from, as a tree and as text in the book's locale ([Localization](#localization)).
 
 ```js

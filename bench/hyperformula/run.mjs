@@ -1,5 +1,5 @@
 import { fork, execFileSync } from 'node:child_process'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
 import { cpus, loadavg, platform, arch, totalmem } from 'node:os'
@@ -12,9 +12,11 @@ const requestedEngines = args.includes('--engine') ? args[args.indexOf('--engine
 if (requestedEngines?.some((e) => !['xl-closures', 'xl-eval', 'hf-default', 'hf-index', 'hf-sparse', 'hf-auto'].includes(e))) throw new Error('Unknown --engine')
 const out = resolve(args.includes('--out') ? args[args.indexOf('--out') + 1] : 'bench/hyperformula/results')
 const root = fileURLToPath(new URL('../../', import.meta.url))
+const engineRoot = process.env.XLCALC_BENCH_ROOT ? resolve(process.env.XLCALC_BENCH_ROOT) : root
+const revision = dir => { try { return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: dir, encoding: 'utf8', stdio: ['ignore','pipe','pipe'] }).trim() } catch { return readFileSync(resolve(dir,'revision.txt'),'utf8').trim() } }
 const phaseLimitMs = 30_000, heapLimitMb = 1024
 const report = {
-  engineCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
+  engineCommit: revision(engineRoot), harnessCommit: revision(root),
   started: new Date().toISOString(), node: process.version, hyperformula: '3.5.0',
   machine: { platform: platform(), arch: arch(), cpu: cpus()[0].model, memoryGiB: totalmem() / 2 ** 30 },
   protocol: { warmups: 1, coldSamples: 5, warmupEdits: 2, editSamples: 20, phaseLimitMs, heapLimitMb,

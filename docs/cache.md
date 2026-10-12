@@ -129,3 +129,12 @@ Formula ids are internal storage slots, reused after removal. Trailing holes are
 Range values and metadata share one map. First-read marks stay distinct from stored undefined values, and iteration keeps insertion order. Byte estimates and the cap are unchanged. Short aggregate ranges keep a mark on first use and a fold on repeated use; full-fold storage still uses the 256-cell threshold.
 
 Eval keeps generated text until its functions are linked, then releases it. Diagnostic code is rebuilt on request; executable functions and canonical formula text remain. This reduces retained storage, while the native compiler still needs temporary source during compilation. Detailed controls are in the development benchmark at `bench/hyperformula/README.md`.
+
+
+## Shared formula bodies and lookup key indexes
+
+Formula bodies with the same generated operations can share executable code. Per-formula bindings keep literal values, row positions and immutable range objects. Sheet and column constants stay in the code. The template catalogue keeps at most 128 entries and 64 KiB of source keys per compiler; this is a bound on catalogue text, not on V8 native code. Closure LET formulas keep their own binding trees; an eval parser fallback isolates LET frames by formula.
+
+A scalar formula replacement can keep the existing dependency graph when its references and graph-relevant flags are unchanged. Previous spills, array formulas, spans and clock-dependent marks retain the rebuild path. Independently dirty scalar roots propagate changes separately through the existing graph; dense single-root paths and array/cycle cases keep the full pass.
+
+VLOOKUP and HLOOKUP over references read their key line directly and read only the result cells they need. The key index is invalidated by its key cells, not by edits to the result columns. It uses the shared cache budget, with first-read marks and estimated bytes for positions and keys. No duplicate persistent value column is introduced; arrays that are not references retain their existing immutable-array lookup path.
