@@ -1,7 +1,7 @@
 /**
  * The catalog of messages: every message of en-US has its ru-RU text, which takes the same parameters and shows each
  * one the English shows, in Russian words and the locale's notation, written as an interface writes: no long dash, no
- * straight double quotes of its own (`«»`), no full stop at the end, no lower-case start.
+ * straight double quotes of its own (`«»`), no full stop at the end (but in Excel's own words), no lower-case start.
  */
 import { describe, expect, it } from 'vitest'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
@@ -136,6 +136,9 @@ const WORDS = new Set(['key', 'lines', 'rule', 'part', 'field'])
 const values = (m: Any): (string | number)[] => Object.entries(m).flatMap(([k, v]) => (WORDS.has(k) ? [] : Array.isArray(v) ? v : typeof v === 'string' || typeof v === 'number' ? [v] : []))
 
 /** The pieces of the explanation's lines, which stand inside a line rather than alone. */
+/** Excel's own words, as its window shows them, a full stop kept: the alert of a rule without a message of its own (`ui/fill-held`). */
+const EXCEL_WORDS = new Set<MessageKey>(['validationError'])
+
 const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValue', 'explainFormula', 'explainErrorFrom', 'explainErrorHere', 'explainHeldFrom', 'explainHeldHere'])
 
 describe('the catalog of messages', () => {
@@ -164,7 +167,7 @@ describe('the catalog of messages', () => {
       if (PIECES.has(m.key)) continue
       if (!/\p{Script=Cyrillic}/u.test(text)) bad.push(`${m.key}: no Russian word in ${text}`)
       if (text.includes('"')) bad.push(`${m.key}: straight quotes in ${text}`)
-      if (/^\p{Ll}/u.test(text) || /\.$/.test(text)) bad.push(`${m.key}: a lower-case start or a full stop in ${text}`)
+      if (/^\p{Ll}/u.test(text) || (/\.$/.test(text) && !EXCEL_WORDS.has(m.key))) bad.push(`${m.key}: a lower-case start or a full stop in ${text}`)
     }
     expect(bad).toEqual([])
   })

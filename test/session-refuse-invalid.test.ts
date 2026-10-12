@@ -29,7 +29,7 @@ const book = (): BookInput => ({ sheets: [{ name: 'S', cells: { E1: { formula: '
 const refuse: CellTextOptions = { refuseInvalid: true }
 
 /** The refusal of a value the rule over `cell` does not take. */
-const refusal = (cell: string, rule: DataValidation, severity: string, message = 'The value does not meet the data validation rule of this cell') => ({ ok: false, code: 'validation', message, sheet: 'S', cell, rule, severity })
+const refusal = (cell: string, rule: DataValidation, severity: string, message = "This value doesn't match the data validation restrictions defined for this cell.") => ({ ok: false, code: 'validation', message, sheet: 'S', cell, rule, severity })
 const STOP = refusal('A1', RULES[0], 'stop')
 const WARNING = refusal('B1', RULES[1], 'warning', 'Positive only')
 const INFORMATION = refusal('C1', RULES[2], 'information', 'Usually positive')

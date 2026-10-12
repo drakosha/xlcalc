@@ -135,7 +135,7 @@ describe.each(['closures', 'eval'] as Execution[])('data validation in a session
     expect([ok('E2', { value: 3 }), ok('E2', { value: 1 }), ok('E3', { formula: 'A3' })]).toEqual([true, false, false])
     expect([ok('F2', { value: 'APPLE' }), ok('F2', { value: 1.5 }), ok('F2', { value: 'kiwi' })]).toEqual([true, true, false])
     const r = s.validateEntry('S', 'D2', { value: 11 })
-    expect(r).toEqual({ ok: false, code: 'validation', message: 'The value does not meet the data validation rule of this cell', rule: book().sheets[0].validations![1], severity: 'stop' })
+    expect(r).toEqual({ ok: false, code: 'validation', message: "This value doesn't match the data validation restrictions defined for this cell.", rule: book().sheets[0].validations![1], severity: 'stop' })
     // nothing changed
     expect(s.getHash()).toBe(hash)
     expect(s.getBook().sheets[0].cells.D2).toEqual({ value: 4 })
@@ -177,7 +177,7 @@ describe.each(['closures', 'eval'] as Execution[])('data validation in a session
     const calc = createInlineCalc()
     const s = await calc.createSession(book(), { clock, execution })
     expect((await s.getValidation('S', 'F3'))!.list).toEqual([{ value: 'apple', text: 'apple' }, { value: 1.5, text: '1.50' }, { value: 45658, text: '01.01.2025' }])
-    expect(await s.validateEntry('S', 'D2', { value: 11 })).toEqual({ ok: false, code: 'validation', message: 'The value does not meet the data validation rule of this cell', rule: book().sheets[0].validations![1], severity: 'stop' })
+    expect(await s.validateEntry('S', 'D2', { value: 11 })).toEqual({ ok: false, code: 'validation', message: "This value doesn't match the data validation restrictions defined for this cell.", rule: book().sheets[0].validations![1], severity: 'stop' })
     await calc.close()
   })
 })
