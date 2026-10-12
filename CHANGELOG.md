@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.22.0 (2026-10-12)
+
+Internal release; not published to npm. Links to other workbooks: a book that reads other workbooks computes from the values Excel stores of them in the file, as Excel computes a file it opens without updating its links, and the ribbon's Number Format box without the engine. The synthetic book's values and hashes are as in 0.21.2.
+
+Added:
+
+- `BookInput.externalBooks`: the other workbooks a book's formulas read, each its link's `target`, its sheets with the values stored of them (`null` for a cell stored empty, `refreshError` for the mark of a failed update) and its names; element `i` answers `[i+1]`. It goes into `inputHash` when it is not empty. `readXlsx` reads it from a file's links (`xl/externalLinks`) and `writeXlsx` writes it back as Excel writes links; a DDE or OLE link keeps its number and is reported.
+- References to other workbooks in formulas and names: `[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, the book's own name `[1]!Rate`, a sheet's `[1]Sheet1!Local`, a lost one `[1]Sheet1!#REF!`, stored as `'[1]Sheet1'!A1`. A cell the link stores gives its value; one it does not is blank, or `#REF!` on a sheet marked `refreshError` or of which nothing is stored. Ranges, whole columns and rows, `INDEX`, `MATCH`, `VLOOKUP`, `XLOOKUP`, `SUMPRODUCT` and the rest read the stored values; the criteria functions' ranges, `COUNTBLANK` and the database functions give `#VALUE!` over a link, as Excel gives them over a closed book. Entering or pasting a formula with a link marks that book as Excel marks it, and a session's book takes the mark. A copy moves a link's relative references; inserting rows and renaming sheets leave them.
+- `ValidateContext.externalBooks`, `NamesContext.externalBooks`, `EntryOptions.externalBooks` and the option `externalBooks` of `toLocal` and `toInvariant`: a reference to a link is checked and numbered, shown as Excel shows it (`[Prices.xlsx]Sheet1!A1`, `'../data/[Prices.xlsx]Sheet1'!A1`, `Prices.xlsx!Rate`) and read back by the file it names; one to a workbook the links do not hold is `external_ref`, a new `Translation` code too. A window's `formulaLocal` and `editText`, `explain` and `setCellText` use the book's links.
+- `numberFormatCategory(format, locale?)` and `numberFormatChoices(locale?)` in `xlcalc/text` and the root: the category the ribbon's Number Format box shows for a number format (General, Number, Currency, Accounting, Date, Time, Percentage, Fraction, Scientific, Text, Special, Custom) with its name in the locale, and the box's items with their codes, by Excel for Mac in en-US and ru-RU. Types `NumberFormatCategory`, `FormatCategory`, `FormatChoice`, `FormatChoiceKey`; ru-RU's names in `regional.formats`.
+
+Changed:
+
+- `validateFormula` without `externalBooks` refuses a reference to another workbook as before; a quoted sheet with a book in brackets (`'[1]My Sheet'!A1`) is now such a reference, not a sheet named `[1]My Sheet`.
+
+Bundle sizes: `compute` 262 KB, `xlcalc/text` 36 KB (14.6 KB gzip), `xlcalc/xlsx` 184 KB, `xlcalc/a1` as before.
+
+Measured: the step `links` of the harnesses (Excel for Mac with `update links do not update links`, Excel for Windows with `UpdateLinks` 0), six sets, both Excels alike; the ribbon by the step `ui` on Excel for Mac, 342 formats in each locale. Known differences: a closed workbook's reference is shown with the path its link holds, where Excel shows the absolute path; in ru-RU Excel for Mac's box shows "(все форматы)" for most formats, which the function follows; Windows's box was not measured ([docs/links.md](docs/links.md), [docs/formats.md](docs/formats.md)).
+
 ## 0.21.2 (2026-10-12)
 
 Internal release; not published to npm. Faster incremental edits and less retained engine storage, with the same public API, values and synthetic hashes. The reproducible HyperFormula 3.5.0 comparison and memory controls are in `bench/hyperformula/README.md`.
