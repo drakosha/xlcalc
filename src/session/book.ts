@@ -2,7 +2,7 @@
 import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, SheetInput } from '../contract.js'
 import { setInput, settled, type EngineState } from '../engine.js'
 import { InputError } from '../input.js'
-import { inputIn } from '../looks/sheet.js'
+import { hasLooks, inputIn, layerOf } from '../looks/sheet.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -48,7 +48,7 @@ export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]
 export function inputAt(s: EngineState, i: number, cell: string): CellInput | undefined {
   const sheet = s.input.sheets[i]
   const input = sheet.cells[cell]
-  if (input || !sheet.looks) return input
+  if (input || !hasLooks(sheet)) return input
   const { row, col } = parseAddress(cell)
   return inputIn(sheet, cell, row, col)
 }
@@ -65,7 +65,7 @@ export function checkStylesUsed(book: BookInput, count: number) {
   }
   for (const s of book.sheets) {
     for (const [addr, c] of Object.entries(s.cells)) check(c.style, `${s.name}!${addr}`)
-    for (const x of s.looks ?? []) check(x.style, `looks ${x.range} of ${s.name}`)
+    for (const x of layerOf(s)?.used() ?? []) check(x.style, `the looks of ${s.name}`)
     for (const [k, c] of Object.entries(s.columns ?? {})) check(c.style, `columns ${k} of ${s.name}`)
     for (const [k, r] of Object.entries(s.rows ?? {})) check(r.style, `rows ${k} of ${s.name}`)
   }

@@ -246,6 +246,13 @@ export class Layer {
     }
   }
 
+  /** The looks its cells show, each once. */
+  used(): Look[] {
+    const ids = new Set<number>()
+    for (const k of new Set(this.at)) for (let i = 2; i < this.patterns[k].length; i += 3) ids.add(this.patterns[k][i])
+    return [...ids].map((id) => this.looks.list[id])
+  }
+
   /** The rectangle the looks lie in, or null for none. */
   bounds(): Rect | null {
     if (this.empty) return null

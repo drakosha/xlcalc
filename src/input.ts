@@ -13,7 +13,7 @@ import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
-import { lookAlone, looksTaken } from './looks/sheet.js'
+import { hasLooks, lookAlone, looksTaken } from './looks/sheet.js'
 import { parseRange } from './structure/area.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
@@ -397,7 +397,7 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
   if (book.externalBooks !== undefined) checkExternalBooks(book.externalBooks, `${path}.externalBooks`)
   checkTables(book as unknown as BookInput, path)
   const out = bookTaken(book as unknown as BookInput, taken)
-  const sheetsTaken = out.sheets.map((s, i) => (looked && !s.looks ? s : looksTaken(s, alone[i] ?? [])))
+  const sheetsTaken = out.sheets.map((s, i) => (looked && !hasLooks(s) ? s : looksTaken(s, alone[i] ?? [])))
   return sheetsTaken.every((s, i) => s === out.sheets[i]) ? out : { ...out, sheets: sheetsTaken }
 }
 

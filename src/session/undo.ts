@@ -142,8 +142,9 @@ function sheetBack(i: number, from: SheetInput, to: SheetInput): SheetBack | nul
   const unset: string[] = []
   const lines: SheetBack['lines'] = []
   for (const k of new Set([...Object.keys(from), ...Object.keys(to)])) {
+    if (k === 'cells' || k === 'looks') continue
     const [a, b] = [(from as unknown as Record<string, unknown>)[k], (to as unknown as Record<string, unknown>)[k]]
-    if (k === 'cells' || k === 'looks' || a === b) continue
+    if (a === b) continue
     if ((k === 'rows' || k === 'columns') && a && b) {
       // a line's entries change: the entries that differ, not the whole map
       const [x, y] = [a as Record<string, object>, b as Record<string, object>]

@@ -7,7 +7,8 @@ import type { CellInput, LookRange, SheetInput } from '../contract.js'
 import type { Look } from '../layout/lines.js'
 import { formatAddress, MAX_COLS, readAddress } from '../model.js'
 import type { Rect } from '../structure/area.js'
-import { cellEdits, edited, emptyLayer, LookTable, NONE, type Layer, type RowsEdit } from './layer.js'
+import { cellEdits, edited, emptyLayer, LookTable, NONE, type Layer } from './layer.js'
+import { clearing } from './move.js'
 import { readRanges, writeRanges } from './ranges.js'
 
 /** The layer of each list read; the lists written in the one form (`writeRanges`) are its keys from the start. */
@@ -23,11 +24,65 @@ const TAKEN = new WeakSet<object>()
 /** Looks of a session's cells written and not yet in the sheet's list, by row · MAX_COLS + column (`putInput`). */
 const PENDING = new WeakMap<object, Map<number, Look | undefined>>()
 
+/** The layer a sheet holds whose list is not made yet (`setLayer`): an edit changes the layer, the list is made when read. */
+const CURRENT = new WeakMap<object, Layer>()
+
 /** The layer of a list, read once. */
 function layerOfList(list: readonly LookRange[]): Layer {
   let layer = LAYERS.get(list)
   if (!layer) LAYERS.set(list, (layer = readRanges(list)))
   return layer
+}
+
+/** The sheet's list of looks at last, read or set: a field of its own, the layer no more held beside it. */
+function made(sheet: object, list: LookRange[] | undefined): LookRange[] | undefined {
+  CURRENT.delete(sheet)
+  if (list) Object.defineProperty(sheet, 'looks', { value: list, writable: true, configurable: true, enumerable: true })
+  else delete (sheet as SheetInput).looks
+  return list
+}
+
+/**
+ * Gives a sheet `layer` as its looks: the list in the one form is made when `looks` is first read (a book given back,
+ * a copy, a host), so a session's edit of a cell changes the layer alone; no field for an empty layer.
+ */
+export function setLayer(sheet: SheetInput, layer: Layer): void {
+  if (layer.empty) {
+    made(sheet, undefined)
+    return
+  }
+  CURRENT.set(sheet, layer)
+  Object.defineProperty(sheet, 'looks', {
+    configurable: true,
+    enumerable: true,
+    get(this: SheetInput) {
+      return made(this, listOf(layer))
+    },
+    set(this: SheetInput, list: LookRange[] | undefined) {
+      made(this, list)
+    },
+  })
+}
+
+/** The layer of a sheet's looks as it is, without its cells' writes not yet settled; undefined without looks. */
+function heldLayer(sheet: Pick<SheetInput, 'looks'>): Layer | undefined {
+  return CURRENT.get(sheet) ?? (sheet.looks?.length ? layerOfList(sheet.looks) : undefined)
+}
+
+/** The address of the first cell of the sheet's looks in rectangle `x`, row by row; undefined for none. */
+export function firstLook(sheet: Pick<SheetInput, 'looks'>, x: Rect): string | undefined {
+  const p = layerOf(sheet)?.pieces(x).next()
+  return p && !p.done ? formatAddress(p.value.r1, p.value.c1) : undefined
+}
+
+/** Whether a sheet has looks, or writes of looks to settle: without making its list. */
+export const hasLooks = (sheet: Pick<SheetInput, 'looks'>): boolean => CURRENT.has(sheet) || PENDING.has(sheet) || !!sheet.looks?.length
+
+/** A copy of a sheet without its looks (their list is not made for it). */
+function withoutLooks(sheet: SheetInput): SheetInput {
+  const out: Record<string, unknown> = {}
+  for (const k of Object.keys(sheet)) if (k !== 'looks') out[k] = (sheet as unknown as Record<string, unknown>)[k]
+  return out as unknown as SheetInput
 }
 
 /** A layer's list in the one form, known as written in it (the layer read already). */
@@ -41,7 +96,7 @@ export function listOf(layer: Layer): LookRange[] {
 /** The layer of a sheet's looks (its cells' writes in it), undefined without looks. */
 export function layerOf(sheet: Pick<SheetInput, 'looks'>): Layer | undefined {
   settle(sheet)
-  return sheet.looks?.length ? layerOfList(sheet.looks) : undefined
+  return heldLayer(sheet)
 }
 
 /** The look of a cell from the sheet's looks: what a cell without an entry shows as its own. */
@@ -49,7 +104,7 @@ export const lookIn = (sheet: Pick<SheetInput, 'looks'>, r: number, c: number): 
 
 /** A cell's entry, else its look from the sheet's looks as an entry of a look alone (a frozen object), else undefined. */
 export const inputIn = (sheet: Pick<SheetInput, 'cells' | 'looks'>, addr: string, r: number, c: number): CellInput | undefined =>
-  sheet.cells[addr] ?? (sheet.looks || PENDING.has(sheet) ? lookIn(sheet, r, c) : undefined)
+  sheet.cells[addr] ?? (hasLooks(sheet) ? lookIn(sheet, r, c) : undefined)
 
 /** Whether an entry holds a look alone: a style or a number format and no other field (a field of undefined is none); an empty entry holds none. */
 export function lookAlone(cell: CellInput): boolean {
@@ -57,8 +112,12 @@ export function lookAlone(cell: CellInput): boolean {
   return cell.style !== undefined || cell.numberFormat !== undefined
 }
 
-/** The sheet with `layer` as its looks: a new object, without the field for no looks. */
-const withLayer = (sheet: SheetInput, cells: Record<string, CellInput>, layer: Layer): SheetInput => withLooks({ ...sheet, cells }, layer.empty ? undefined : listOf(layer))
+/** The sheet with `cells` and `layer` as its looks: a new object, without the field for no looks. */
+export function withLayer(sheet: SheetInput, cells: Record<string, CellInput>, layer: Layer): SheetInput {
+  const out = { ...withoutLooks(sheet), cells }
+  setLayer(out, layer)
+  return out
+}
 
 /**
  * A sheet (checked) as the engine takes it: its entries of a look alone moved into its looks, over the rectangles it has,
@@ -67,16 +126,18 @@ const withLayer = (sheet: SheetInput, cells: Record<string, CellInput>, layer: L
  */
 export function looksTaken(sheet: SheetInput, alone?: string[]): SheetInput {
   const cells = sheet.cells
-  if (TAKEN.has(cells) && (!sheet.looks || WRITTEN.has(sheet.looks))) return sheet
+  // looks in the one form: a layer held, or a list written in it
+  const formed = CURRENT.has(sheet) || !sheet.looks || WRITTEN.has(sheet.looks)
+  if (TAKEN.has(cells) && formed) return sheet
   if (!alone) {
     alone = []
     for (const a in cells) if (lookAlone(cells[a])) alone.push(a)
   }
-  if (!alone.length && !sheet.looks) {
+  if (!alone.length && !hasLooks(sheet)) {
     TAKEN.add(cells)
     return sheet
   }
-  const base = sheet.looks?.length ? layerOfList(sheet.looks) : emptyLayer()
+  const base = layerOf(sheet) ?? emptyLayer()
   const looks = new LookTable(base.looks)
   const p = { r: 0, c: 0 }
   const moved = new Set(alone)
@@ -94,7 +155,7 @@ export function looksTaken(sheet: SheetInput, alone?: string[]): SheetInput {
   const layer = edited(base, cellEdits(edits), looks)
   const kept = moved.size ? keptCells(cells, moved) : cells
   TAKEN.add(kept)
-  if (layer === base && sheet.looks && WRITTEN.has(sheet.looks) && kept === cells) return sheet
+  if (layer === base && formed && kept === cells) return sheet
   return withLayer(sheet, kept, layer)
 }
 
@@ -116,7 +177,7 @@ export function putInput(sheet: SheetInput, addr: string, r: number, c: number, 
   let pending = PENDING.get(sheet)
   const k = r * MAX_COLS + c
   // content over a cell: no look under it, which matters only where the layer has one
-  if (!alone && !pending?.has(k) && !(sheet.looks?.length && layerOfList(sheet.looks).idAt(r, c) !== NONE)) return
+  if (!alone && !pending?.has(k) && (heldLayer(sheet)?.idAt(r, c) ?? NONE) === NONE) return
   if (!pending) PENDING.set(sheet, (pending = new Map()))
   pending.set(k, alone && input ? input : undefined)
 }
@@ -126,32 +187,12 @@ export function settle(sheet: Pick<SheetInput, 'looks'>): void {
   const pending = PENDING.get(sheet)
   if (!pending) return
   PENDING.delete(sheet)
-  const base = sheet.looks?.length ? layerOfList(sheet.looks) : emptyLayer()
+  const base = heldLayer(sheet) ?? emptyLayer()
   const looks = new LookTable(base.looks)
   const edits: [number, number, number][] = []
   for (const [k, look] of pending) edits.push([Math.floor(k / MAX_COLS), k % MAX_COLS, looks.of(look)])
   const layer = edited(base, cellEdits(edits), looks)
-  if (layer === base) return
-  if (layer.empty) delete sheet.looks
-  else sheet.looks = listOf(layer)
-}
-
-/** Rectangles as edits of rows that clear them: each band of rows with the columns the rectangles over it cover. */
-function clearing(xs: Rect[]): RowsEdit[] {
-  const cuts = [...new Set(xs.flatMap((x) => [x.r1, x.r2 + 1]))].sort((a, b) => a - b)
-  const out: RowsEdit[] = []
-  for (let k = 0; k + 1 < cuts.length; k++) {
-    const [lo, hi] = [cuts[k], cuts[k + 1] - 1]
-    const cols = xs.filter((x) => x.r1 <= lo && x.r2 >= hi).map((x): [number, number] => [x.c1, x.c2]).sort((a, b) => a[0] - b[0])
-    const top: number[] = []
-    for (const [c1, c2] of cols) {
-      const n = top.length
-      if (n && top[n - 2] >= c1 - 1) top[n - 2] = Math.max(top[n - 2], c2)
-      else top.push(c1, c2, NONE)
-    }
-    if (top.length) out.push({ lo, hi, top })
-  }
-  return out
+  if (layer !== base) setLayer(sheet as SheetInput, layer)
 }
 
 /**
@@ -212,17 +253,15 @@ export function putInputs(sheets: SheetInput[], index: (name: string) => number,
   for (const s of touched) settle(s)
 }
 
-/** The sheet's looks without those of cells `at` (`[row, column]`): a new list, or the sheet's own when none of them has a look. */
-export function looksWithout(sheet: Pick<SheetInput, 'looks'>, at: [number, number][]): LookRange[] | undefined {
+/** The sheet without the looks of cells `at` (`[row, column]`): a new sheet, or the sheet itself when none of them has a look. */
+export function withoutLooksAt(sheet: SheetInput, at: [number, number][]): SheetInput {
   const layer = layerOf(sheet)
-  if (!layer) return sheet.looks
-  const next = edited(layer, cellEdits(at.map(([r, c]): [number, number, number] => [r, c, NONE])))
-  return next === layer ? sheet.looks : next.empty ? undefined : listOf(next)
+  const next = layer && edited(layer, cellEdits(at.map(([r, c]): [number, number, number] => [r, c, NONE])))
+  return !next || next === layer ? sheet : withLayer(sheet, sheet.cells, next)
 }
 
-/** A sheet with the list of looks given: a new object, without the field for none. */
-export function withLooks(sheet: SheetInput, looks: LookRange[] | undefined): SheetInput {
-  const out = { ...sheet, looks }
-  if (!looks) delete out.looks
-  return out
+/** The sheet `sheet` with the looks of `live`, the same sheet as it is now (a layout made before its cells were written). */
+export function withLooksOf(sheet: SheetInput, live: SheetInput): SheetInput {
+  const layer = layerOf(live)
+  return layerOf(sheet) === layer ? sheet : withLayer(sheet, sheet.cells, layer ?? emptyLayer())
 }

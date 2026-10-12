@@ -54,7 +54,7 @@ import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
-import { putInputs, withLooks } from './looks/sheet.js'
+import { putInputs, withLooksOf } from './looks/sheet.js'
 import { FILL_OPTIONS, strictMethods, TEXT_OPTIONS } from './strict-args.js'
 
 /** How a session is run by its host. */
@@ -258,7 +258,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   function* relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[Outcome, SheetInput[]]> {
     const sheets = s.input.sheets.slice()
     // a sheet made before cells were written keeps the cells' looks as they are now: a layout never changes them
-    for (const [i, x] of next) next.set(i, (s.input.sheets[i] = x.looks === sheets[i].looks ? x : withLooks(x, sheets[i].looks)))
+    for (const [i, x] of next) next.set(i, (s.input.sheets[i] = withLooksOf(x, sheets[i])))
     const ruled = [...next].filter(([i, x]) => x.conditionalFormats !== sheets[i].conditionalFormats)
     if (ruled.length) dropStats(s, [], true)
     try {
@@ -418,7 +418,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         outcome = out
         const steps: (() => Step | null)[] = [cellsBack]
         if (plan.layout.size) {
-          const layouts = new Map([...plan.layout].map(([i, sh]): [number, SheetInput] => [i, withLooks({ ...sh, cells: next.input.sheets[i].cells }, next.input.sheets[i].looks)]))
+          const layouts = new Map([...plan.layout].map(([i, sh]): [number, SheetInput] => [i, withLooksOf({ ...sh, cells: next.input.sheets[i].cells }, next.input.sheets[i])]))
           const [lo, before] = yield* relayout(next, layouts, null)
           outcome = joined(outcome, lo)
           steps.push(() => layoutStep('applyChanges', before, layouts))

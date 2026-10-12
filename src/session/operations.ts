@@ -3,7 +3,7 @@ import type { BookInput, CellInput, CellReplace, SessionOperation, SheetInput } 
 import type { EngineState } from '../engine.js'
 import { array, checkEdits, checkLayoutEdits, checkNames, checkStyles, InputError, object, onlyKeys } from '../input.js'
 import { sheetKey } from '../syntax.js'
-import { looksWithout, withLooks } from '../looks/sheet.js'
+import { withoutLooksAt } from '../looks/sheet.js'
 import { parseAddress } from '../model.js'
 import { linksIn, markedLinks } from '../syntax/links.js'
 import { editsTaken } from '../taken.js'
@@ -67,8 +67,7 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
       }
     }
     for (const [i, at] of gone) {
-      const looks = looksWithout(book.sheets[i], at)
-      if (looks !== book.sheets[i].looks) book.sheets[i] = withLooks(book.sheets[i], looks)
+      book.sheets[i] = withoutLooksAt(book.sheets[i], at)
     }
   }
   const looks = (p: Plan) => {
