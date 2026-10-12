@@ -7,6 +7,7 @@
 import { describe, expect, it } from 'vitest'
 import type { LookRange } from '../src/contract.js'
 import { cellEdits, edited, NONE, sameLooks, type Layer } from '../src/looks/layer.js'
+import { carried, differing, shifted } from '../src/looks/move.js'
 import { readRanges, writeRanges } from '../src/looks/ranges.js'
 import { looksTaken } from '../src/looks/sheet.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../src/model.js'
@@ -107,6 +108,52 @@ describe('the layer of a sheet\'s looks', () => {
     expect(out.slice(0, runs).every((x) => /^[A-Z]+20:[A-Z]+197$/.test(x.range))).toBe(true)
     expect(out.length).toBe(runs + 35 + 2)
     expect(sameLooks(readRanges(out), layer)).toBe(true)
+  })
+
+  it('lines inserted and deleted, rectangles cut and pasted move the layer as they move its cells; the cells that differ are found', () => {
+    const rnd = seeded(23)
+    const key = (r: number, c: number) => `${r}:${c}`
+    for (let k = 0; k < 1500; k++) {
+      const layer = readRanges(randomList(rnd).filter((x) => !/^[A-Z]+:[A-Z]+$/.test(x.range)))
+      const was = without(shown(layer))
+      const look = (r: number, c: number) => {
+        const l = layer.lookAt(r, c)
+        return l ? `${l.style ?? ''}|${l.numberFormat ?? ''}` : undefined
+      }
+      const want = new Map<string, string>()
+      const set = (r: number, c: number, v: string | undefined) => v !== undefined && r >= 0 && c >= 0 && want.set(key(r, c), v)
+      let got: Layer | undefined
+      const [axis, at, n] = [rnd(2) ? 'r' : 'c', rnd(ROWS), rnd(2) ? 1 + rnd(3) : -1 - rnd(3)] as const
+      const move = rnd(3)
+      if (move < 2) {
+        // lines: a cell before `at` stays, one after moves by n, one deleted is gone; the new lines copy the line before them
+        const before = move === 1 && n > 0
+        got = shifted(layer, axis, at, n, before)
+        // past the corner too: deleted lines bring cells from there into it
+        for (let r = 0; r <= ROWS + 6; r++)
+          for (let c = 0; c <= COLS + 6; c++) {
+            const i = axis === 'r' ? r : c
+            const to = i < at ? i : n > 0 ? i + n : i >= at - n ? i + n : -1
+            if (to >= 0) set(axis === 'r' ? to : r, axis === 'r' ? c : to, look(r, c))
+            if (before && i === at - 1) for (let j = at; j < at + n; j++) set(axis === 'r' ? j : r, axis === 'r' ? c : j, look(r, c))
+          }
+      } else {
+        // a range cut and pasted on the same sheet: the source emptied, the target the source's
+        const src = { r1: rnd(ROWS), c1: rnd(COLS), r2: 0, c2: 0 }
+        Object.assign(src, { r2: src.r1 + rnd(4), c2: src.c1 + rnd(4) })
+        const [dr, dc] = [rnd(9) - 4, rnd(9) - 4]
+        got = carried([layer], [{ kind: 'range', from: 0, src, to: 0, dr, dc }])[0]
+        for (const [p, v] of was) want.set(p, v)
+        for (let r = src.r1; r <= src.r2; r++) for (let c = src.c1; c <= src.c2; c++) want.delete(key(r, c))
+        for (let r = src.r1 + dr; r <= src.r2 + dr; r++) for (let c = src.c1 + dc; c <= src.c2 + dc; c++) want.delete(key(r, c))
+        for (let r = src.r1; r <= src.r2; r++) for (let c = src.c1; c <= src.c2; c++) set(r + dr, c + dc, look(r, c))
+      }
+      expect(without(shown(got!))).toEqual(new Map([...want].filter(([p]) => Number(p.split(':')[0]) <= ROWS + 2 && Number(p.split(':')[1]) <= COLS + 2)))
+      // the cells whose look differs from the layer before, found by blocks and runs
+      const differs = [...differing(layer, got)].map(([r, c]) => key(r, c)).filter((p) => Number(p.split(':')[0]) <= ROWS + 2 && Number(p.split(':')[1]) <= COLS + 2)
+      const now = without(shown(got!))
+      expect(new Set(differs)).toEqual(new Set([...new Set([...was.keys(), ...now.keys()])].filter((p) => was.get(p) !== now.get(p))))
+    }
   })
 
   it('a sheet is taken with its entries of a look alone over its rectangles, its entries of content holding none under them', () => {
