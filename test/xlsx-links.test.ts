@@ -145,17 +145,18 @@ describe('xlsx links: reading', () => {
     expect(codes(r.issues)).toEqual(['externalLink', 'externalLink A1 B1 C1'])
   })
 
-  // fails until a copy moves references to other workbooks (src/structure/rewrite.ts, the lead's): the copies take the master's text
   it("a shared formula over a link: each copy moves its relative reference into the link's sheet, as a paste does", async () => {
     const real = book2('<sheetNames><sheetName val="Sheet1"/></sheetNames>')
     const body = '<sheetData><row r="1"><c r="A1"><f t="shared" ref="A1:B2" si="0">[1]Sheet1!A1+[1]Sheet1!$B$1</f></c><c r="B1"><f t="shared" si="0"/></c></row><row r="2"><c r="A2"><f t="shared" si="0"/></c><c r="B2"><f t="shared" si="0"/></c></row></sheetData>'
     const r = await readXlsx(await linked([real], [0], { sheets: [{ name: 'S', body }] }))
     expect(r.book.sheets[0].cells).toEqual({
       A1: { formula: '[1]Sheet1!A1+[1]Sheet1!$B$1' },
-      B1: { formula: "'[1]Sheet1'!B1+'[1]Sheet1'!$B$1" },
-      A2: { formula: "'[1]Sheet1'!A2+'[1]Sheet1'!$B$1" },
-      B2: { formula: "'[1]Sheet1'!B2+'[1]Sheet1'!$B$1" },
+      B1: { formula: '[1]Sheet1!B1+[1]Sheet1!$B$1' },
+      A2: { formula: '[1]Sheet1!A2+[1]Sheet1!$B$1' },
+      B2: { formula: '[1]Sheet1!B2+[1]Sheet1!$B$1' },
     })
+    // the copies are the file's, not edits: the link's data keeps no mark of a failed update
+    expect(r.book.externalBooks).toEqual([{ target: 'Book2.xlsx', sheets: [{ name: 'Sheet1' }] }])
     expect(r.issues).toEqual([])
   })
 
