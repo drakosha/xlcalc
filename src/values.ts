@@ -78,6 +78,9 @@ export function nearZero(a: number, r: number): number {
   return y * 2 ** 49 < p ? 0 : r
 }
 
+/** Whether `nearZero` made a remainder of the last addition 0; a sum plain addition leaves at 0 is not one (AVERAGE keeps its stable mean there). */
+export const zeroed = (before: number, sum: number): boolean => sum !== 0 && nearZero(before, sum) === 0
+
 /**
  * The coercions of a locale: `toNum` (operators and numeric arguments; text through `number`), `toText`
  * (`&` and text arguments; booleans by `words`, numbers through `numberText`), `toBool` (text that is one of
