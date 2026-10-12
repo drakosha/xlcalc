@@ -21,8 +21,11 @@ export type CachedValue = Exclude<CellValue, null | { date: string }>
 export interface LinkedBook {
   /** The link's target as the file holds it (`externalLinkN.xml.rels`): a file name, a relative or an absolute path. */
   target: string
-  /** Its sheets in order, with the values of the cells Excel stored. */
-  sheets: { name: string; cells?: Record<string, CachedValue> }[]
+  /**
+   * Its sheets in order, with the values of the cells Excel stored; `refreshError` marks the sheet's data as Excel marks
+   * a failed update, `data: false` leaves its data out (a sheet the link names but holds no values of).
+   */
+  sheets: { name: string; cells?: Record<string, CachedValue>; refreshError?: true; data?: false }[]
   /** Its defined names: `ref` as the file holds it (`=Sheet1!$B$1`), `sheet` the index of a sheet's own name. */
   names?: { name: string; ref: string; sheet?: number }[]
 }
@@ -32,15 +35,28 @@ export interface LinksCase {
   about: string
   /** This book's sheets, with the cells the writer holds. */
   sheets: SheetInput[]
-  /** Formulas with links, as the file holds them (`[1]Sheet1!A1+1`), by sheet and cell. */
-  linked: Record<string, Record<string, string>>
+  /** Formulas with links, as the file holds them (`[1]Sheet1!A1+1`), by sheet and cell; with `array` a dynamic array formula over that range. */
+  linked: Record<string, Record<string, LinkedFormula>>
   /** This book's defined names whose definitions the writer does not hold, as the file holds them (`[1]Sheet1!$A$1`). */
   names?: { name: string; ref: string; sheet?: string }[]
   /** The other books, the first answering `[1]`. */
   links: LinkedBook[]
   /** The rectangles read. */
   read: RangeRef[]
+  /** Operations Excel takes after the first read, before the full calculation and the second read. */
+  ops?: LinksOp[]
+  /**
+   * The values predicted before Excel ran the case, by `Sheet!A1`, for the second read: the rule over the stored values,
+   * and where the rule was not known the other answers thought possible (`alternatives`).
+   */
+  predicted?: Record<string, CachedValue | null>
+  alternatives?: Record<string, (CachedValue | null)[]>
 }
+
+export type LinkedFormula = string | { formula: string; array: string }
+
+/** An operation on this book: a fill down of `to`, a copy of `range` to `to`, rows inserted over `range`, the sheet renamed `to`. */
+export type LinksOp = { op: 'fillDown'; sheet: string; to: string } | { op: 'copyRange'; sheet: string; range: string; to: string } | { op: 'insertRows'; sheet: string; range: string } | { op: 'renameSheet'; sheet: string; to: string }
 
 export interface LinksCases {
   cases: LinksCase[]
@@ -61,7 +77,9 @@ export interface LinksAnswer {
   sources: string[]
   /** The folder of the opened book as Excel names it: a closed book's link is shown with its path from there. */
   folder: string
-  /** After opening, then after a full calculation. */
+  /** The operations Excel refused, by their index: its error. */
+  errors?: Record<number, string>
+  /** After opening, then after the operations and a full calculation. */
   reads: LinksRead[]
 }
 
@@ -81,11 +99,13 @@ function cachedCell(addr: string, v: CachedValue): string {
 
 
 /** A sheet's cached cells by row, as Excel writes them. */
-function sheetData(i: number, cells: Record<string, CachedValue> = {}): string {
+function sheetData(i: number, s: LinkedBook['sheets'][number]): string {
+  if (s.data === false) return ''
+  const cells = s.cells ?? {}
   const rows = new Map<number, string[]>()
   const keys = Object.keys(cells).sort((a, b) => rowOf(a) - rowOf(b) || colOf(a) - colOf(b))
   for (const k of keys) rows.set(rowOf(k), [...(rows.get(rowOf(k)) ?? []), cachedCell(k, cells[k])])
-  return `<sheetData sheetId="${i}">${[...rows].map(([r, cs]) => `<row r="${r}">${cs.join('')}</row>`).join('')}</sheetData>`
+  return `<sheetData sheetId="${i}"${s.refreshError ? ' refreshError="1"' : ''}>${[...rows].map(([r, cs]) => `<row r="${r}">${cs.join('')}</row>`).join('')}</sheetData>`
 }
 
 const rowOf = (a: string) => Number(a.replace(/^[A-Z]+/, ''))
@@ -95,15 +115,15 @@ const colOf = (a: string) => [...a.replace(/\d+$/, '')].reduce((n, ch) => n * 26
 export function externalLinkXml(b: LinkedBook): string {
   const names = b.names?.length ? `<definedNames>${b.names.map((n) => `<definedName name="${escapeAttr(n.name)}" refersTo="${escapeAttr(n.ref)}"${n.sheet === undefined ? '' : ` sheetId="${n.sheet}"`}/>`).join('')}</definedNames>` : ''
   const sheets = `<sheetNames>${b.sheets.map((s) => `<sheetName val="${escapeAttr(s.name)}"/>`).join('')}</sheetNames>`
-  return `${XML_HEAD}<externalLink xmlns="${MAIN}"><externalBook xmlns:r="${REL}" r:id="rId1">${sheets}${names}<sheetDataSet>${b.sheets.map((s, i) => sheetData(i, s.cells)).join('')}</sheetDataSet></externalBook></externalLink>`
+  return `${XML_HEAD}<externalLink xmlns="${MAIN}"><externalBook xmlns:r="${REL}" r:id="rId1">${sheets}${names}<sheetDataSet>${b.sheets.map((s, i) => sheetData(i, s)).join('')}</sheetDataSet></externalBook></externalLink>`
 }
 
 const linkRels = (b: LinkedBook) => `${XML_HEAD}<Relationships xmlns="${PACKAGE_REL}"><Relationship Id="rId1" Type="${REL}/externalLinkPath" Target="${escapeAttr(b.target)}" TargetMode="External"/></Relationships>`
 
-/** A formula cell of the sheet's part put in by hand over what the writer wrote there (the cell's value, or nothing). */
-function withFormula(xml: string, addr: string, formula: string): string {
+/** A formula cell of the sheet's part put in by hand over what the writer wrote there (the cell's value). */
+function withFormula(xml: string, addr: string, f: LinkedFormula): string {
   const cell = new RegExp(`<c r="${addr}"(?: [^>]*?)?(?:/>|>.*?</c>)`)
-  const put = `<c r="${addr}"><f>${escapeText(formula)}</f></c>`
+  const put = typeof f === 'string' ? `<c r="${addr}"><f>${escapeText(f)}</f></c>` : `<c r="${addr}" cm="1"><f t="array" ref="${f.array}">${escapeText(f.formula)}</f></c>`
   if (cell.test(xml)) return xml.replace(cell, put)
   throw new Error(`linkFile: no cell ${addr} written (give it a value in the case's sheet)`)
 }
