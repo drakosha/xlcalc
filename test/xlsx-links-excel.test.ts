@@ -8,8 +8,13 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredLinks } from '../bench/coverage/links.js'
-import type { CachedValue } from '../bench/coverage/links/cases.js'
-import type { ExternalBook } from '../src/contract.js'
+import { linkFile, linksBook, writtenBook, type CachedValue, type LinksAnswer, type LinksRead } from '../bench/coverage/links/cases.js'
+import { buildLinksCases, MISSED } from '../bench/coverage/links/written.js'
+import { partsHash } from '../bench/coverage/xlsx/sent.js'
+import type { BookInput, ExternalBook } from '../src/contract.js'
+import { compute } from '../src/index.js'
+import { canonical } from '../src/syntax/print.js'
+import { parse } from '../src/syntax/parse.js'
 import { readXlsx } from '../src/xlsx.js'
 import { XLSX_EN_MESSAGES } from '../src/xlsx/messages.js'
 
@@ -35,7 +40,7 @@ const fileName = (target: string) => decodeURIComponent(target).replaceAll('\\',
 const NOT_IN_MODEL = XLSX_EN_MESSAGES.externalLinks({})
 
 /** A stored value as Excel keeps it among a link's values: #SPILL! and #CALC! as #VALUE!. */
-const kept = (v: CachedValue | null | undefined) => (v && typeof v === 'object' && (v.error === 'SPILL' || v.error === 'CALC') ? { error: 'VALUE' } : v)
+const kept = <T extends CachedValue | null | undefined>(v: T): T => (v && typeof v === 'object' && (v.error === 'SPILL' || v.error === 'CALC') ? ({ error: 'VALUE' } as T) : v)
 
 /** The targets Excel wrote for the case `targets` of `basics-held`: Excel for Mac keeps a relative path it could not find as an absolute one beside it (`alternateUrls`), Excel for Windows writes every path as an absolute one without the drive. */
 const TARGETS: Record<string, string[]> = {
@@ -106,5 +111,66 @@ describe.each(PLATFORMS)('links in the files %s saved', (_, root) => {
   it("every formula and name over Excel's links reads without an issue", async () => {
     for (const set of stored(root))
       for (const c of set.cases.filter((x) => set.answers[x.id])) expect((await saved(root, set.name, c.id)).issues.filter((i) => i.code === 'externalLink'), `${set.name}/${c.id}`).toEqual([])
+  })
+})
+
+/** A value of an answer as a stored value: an error by its code. */
+const valueOf = (v: { t: string; v: unknown } | undefined) => (v === undefined ? null : v.t === 'e' ? { error: v.v } : v.v)
+
+/** A read of an answer with the folder of the opened book taken out of its formulas, which name it. */
+function unfoldered(a: LinksAnswer, r: LinksRead): LinksRead {
+  const out = (m: Record<string, string>) => Object.fromEntries(Object.entries(m).map(([k, f]) => [k, f.replaceAll(a.folder, '<folder>')]))
+  return { ...r, formulas: out(r.formulas), local: out(r.local) }
+}
+
+const written = buildLinksCases().cases
+
+describe.each(PLATFORMS)('the links writeXlsx wrote against %s', (_, root) => {
+  const set = stored(root).find((s) => s.name === 'written')!
+  const held = stored(root).find((s) => s.name === 'basics-held')!
+
+  it("the stored cases are the set's, sent as the writer writes them now, and every file opened", async () => {
+    expect(set.cases).toEqual(written)
+    for (const c of written) expect(set.sent[c.id], c.id).toBe(await partsHash(await linkFile(c)))
+    expect(set.rejected).toBeUndefined()
+    expect(written.filter((c) => !set.answers[c.id]).map((c) => c.id)).toEqual([])
+  })
+
+  it('Excel showed the predicted values, the missed ones as their alternatives', () => {
+    const missed: string[] = []
+    for (const c of written)
+      for (const [key, p] of Object.entries(c.predicted ?? {})) {
+        const got = valueOf(set.answers[c.id].reads[1].values[key])
+        if (JSON.stringify(got) === JSON.stringify(p)) continue
+        missed.push(`${c.id} ${key}`)
+        expect(c.alternatives?.[key], `${c.id} ${key}`).toContainEqual(got)
+      }
+    expect(missed).toEqual(MISSED)
+  })
+
+  it.each(written.filter((c) => held.answers[c.id]).map((c) => [c.id, c] as const))('%s: Excel read and computed the written file as the file made by hand, before the edits and after', (_, c) => {
+    const [mine, hand] = [set.answers[c.id], held.answers[c.id]]
+    mine.reads.forEach((r, i) => expect(unfoldered(mine, r)).toEqual(unfoldered(hand, hand.reads[i])))
+  })
+})
+
+/** A book with every formula in its canonical text, as the round trip compares formulas. */
+function canonicalBook(b: BookInput): BookInput {
+  const text = (f: string, union = false) => canonical(parse(f, { union }))
+  return { ...b, sheets: b.sheets.map((s) => ({ ...s, cells: Object.fromEntries(Object.entries(s.cells).map(([a, c]) => [a, c.formula === undefined ? c : { ...c, formula: text(c.formula) }])) })), ...(b.names ? { names: b.names.map((n) => ({ ...n, ref: text(n.ref, true) })) } : {}) }
+}
+
+describe('the round trip of the books of the set written', () => {
+  it.each(written.map((c) => [c.id, c] as const))('%s: the file reads back as the book written, with the same input hash', async (_, c) => {
+    // the writer stores a link's #SPILL! and #CALC! as #VALUE!, as Excel keeps them
+    const externalBooks: ExternalBook[] = linksBook(c).externalBooks!.map((b) => ({ ...b, sheets: b.sheets.map((s) => (s.cells ? { ...s, cells: Object.fromEntries(Object.entries(s.cells).map(([a, v]) => [a, kept(v)])) } : s)) }))
+    const book = { ...writtenBook(c), externalBooks }
+    const r = await readXlsx(await linkFile(c))
+    expect(r.issues).toEqual([])
+    expect(r.book.externalBooks).toEqual(externalBooks)
+    expect(r.book.names).toEqual(book.names)
+    // the writer quotes every sheet of this book (`'Sheet1'!A1`): formulas compare by their canonical text
+    expect(canonicalBook(r.book)).toEqual(canonicalBook(book))
+    expect(compute(canonicalBook(r.book)).inputHash).toBe(compute(canonicalBook(book)).inputHash)
   })
 })

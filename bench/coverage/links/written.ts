@@ -87,6 +87,13 @@ const NEW: LinksCase[] = [
   },
 ]
 
+/**
+ * The predictions Excel did not confirm, the same on the Mac and on Windows: a link's stored #SPILL! and #CALC! show
+ * `#VALUE!`, the alternative the case gave. The first file of the case held their text, which both Excels repair; the
+ * writer then stored them as `#VALUE!` with their rich values, which Excel for Mac showed and saved as plain `#VALUE!`.
+ */
+export const MISSED: readonly string[] = ['errors S!A1', 'errors S!A2', 'errors S!A3', 'errors S!A4']
+
 export function buildLinksCases(): LinksCases {
   return { cases: [...HELD, ...NEW] }
 }
