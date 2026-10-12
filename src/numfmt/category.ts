@@ -111,9 +111,9 @@ const SCIENTIFIC = /^0\.0{1,30}E\+00$/
 const FRACTION = /^#\\ (?:\?\/\?|\?\?\/\?\?|\?\?\?\/\?\?\?|\?\/[248]|\?\?\/16|\?\/10|\?\?\/100)$/
 const SPECIAL: ReadonlySet<string> = new Set(['00000', '00000\\-0000', '000\\-00\\-0000', '000000', '[<=9999999]###\\-####;\\(###\\)\\ ###\\-####'])
 
-/** Currency with the symbol `s` (a regular expression) before the digits, or a bracketed one after them with a space; negatives with a minus in red, or in parentheses. */
-const currency = (s: string, after: boolean) => {
-  const p = `(?:${s}(?:\\\\ )?${MONEY_NUM}${after ? `|${MONEY_NUM}\\\\ ${s}` : ''})`
+/** Currency with the symbol `s` (a regular expression) right before the digits, or a bracketed one before them (a space between or none) or after them with a space; negatives with a minus in red, or in parentheses. */
+const currency = (s: string, bracketed: boolean) => {
+  const p = bracketed ? `(?:${s}(?:\\\\ )?${MONEY_NUM}|${MONEY_NUM}\\\\ ${s})` : `${s}${MONEY_NUM}`
   return new RegExp(String.raw`^(${p})(?:;\[Red\]\\-\1|_\);(?:\[Red\])?\\\(\1\\\))?$`, 'i')
 }
 
