@@ -1,0 +1,104 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.1
+ },
+ "cases": [
+  {
+   "id": "one-cell",
+   "about": "[1]Sheet1!A1+1 over A1 = 5 stored in the link",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 1
+      }
+     }
+    }
+   ],
+   "linked": {
+    "S": {
+     "A1": "[1]Sheet1!A1+1"
+    }
+   },
+   "links": [
+    {
+     "target": "Book2.xlsx",
+     "sheets": [
+      {
+       "name": "Sheet1",
+       "cells": {
+        "A1": 5
+       }
+      }
+     ]
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "one-cell": "a923407d184510c11a697ce6e0c023a7a4651ea151e61fa8c883ee7d3cca1da1"
+ },
+ "answers": {
+  "one-cell": {
+   "sources": [
+    "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/Book2.xlsx"
+   ],
+   "folder": "/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668",
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 6
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/[Book2.xlsx]Sheet1'!A1+1"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/[Book2.xlsx]Sheet1'!A1+1"
+     },
+     "shown": {
+      "S!A1": "6",
+      "S!B1": "1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 6
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/[Book2.xlsx]Sheet1'!A1+1"
+     },
+     "local": {
+      "S!A1": "='/Users/user/Library/Containers/com.microsoft.Excel/Data/tmp/fsave-44668/[Book2.xlsx]Sheet1'!A1+1"
+     },
+     "shown": {
+      "S!A1": "6",
+      "S!B1": "1"
+     }
+    }
+   ]
+  }
+ }
+}

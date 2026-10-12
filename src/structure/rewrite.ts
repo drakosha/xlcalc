@@ -69,7 +69,15 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
     while (end > tok.at && SPACE.has(text[end - 1])) end--
     const written = text.slice(tok.at, end)
     const now =
-      tok.t === 'ref' ? (tok.last === undefined ? refText(tok, written, host, moved, t, sheets) : cubeText(tok, tok.last, written, t, sheets)) : tok.t === 'err' && tok.sheet !== undefined ? errText(tok.sheet, tok.ref ?? '', t, sheets) : undefined
+      tok.t === 'ref'
+        ? tok.last === undefined
+          ? refText(tok, written, host, moved, t, sheets)
+          : cubeText(tok, tok.last, written, t, sheets)
+        : tok.t === 'err' && tok.sheet !== undefined && tok.book === undefined
+          ? errText(tok.sheet, tok.ref ?? '', t, sheets)
+          : tok.t === 'xref' && t.copy
+            ? copiedLink(tok, written, t)
+            : undefined
     if (now === undefined) continue
     out += text.slice(pos, tok.at) + now
     pos = end
@@ -94,6 +102,18 @@ function refText(tok: Extract<Tok, { t: 'ref' }>, written: string, host: string 
   if (o === 'lost') return `${prefix(target)}#REF!${spill}`
   const next = prefix(o.sheet) + (sameArea(o.area, area) ? tok.ref.text : encode(o.area)) + spill
   return next === written ? undefined : next
+}
+
+/**
+ * A reference to another workbook copied: its relative bounds moved by the copy's offset, as Excel moves them
+ * (`[1]Sheet1!A1` filled a row down is `[1]Sheet1!A2`); undefined when it stays as written. Nothing else this book does
+ * moves it. Off the sheet it is `#REF!`.
+ */
+function copiedLink(tok: Extract<Tok, { t: 'xref' }>, written: string, t: Transform): string | undefined {
+  const area = decode(tok.ref)
+  const o = t.ref({ sheet: tok.sheet, area })
+  if (o === undefined || (typeof o === 'object' && sameArea(o.area, area))) return undefined
+  return typeof o === 'object' ? written.slice(0, written.length - tok.ref.text.length) + encode(o.area) : '#REF!'
 }
 
 /** The new text of a reference across sheets, undefined when it stays as written. */

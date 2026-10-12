@@ -5,6 +5,7 @@
 import type { CellIssueDetail, CellRef, CheckCode, ErrorCode } from './contract.js'
 import { key, valueAt, type EngineState, type Formula } from './engine.js'
 import { formatAddress } from './model.js'
+import { runtimeSheet } from './links.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
 import { quoteSheet } from './syntax.js'
@@ -42,7 +43,7 @@ export interface Place {
 }
 
 /** A cell's reference text: `'Sheet'!B3`. */
-export const placeText = (state: EngineState, p: Place) => `${quoteSheet(state.sheetNames[p.s])}!${formatAddress(p.r, p.c)}`
+export const placeText = (state: EngineState, p: Place) => `${quoteSheet(runtimeSheet(state.sheetNames, state.links, p.s))}!${formatAddress(p.r, p.c)}`
 
 /** The issue of a formula whose value is the error `code`. */
 function formulaIssue(state: EngineState, f: Formula, code: ErrorCode): Issue {
@@ -129,7 +130,10 @@ export function errorStep(state: EngineState, p: Place, code: ErrorCode): (Place
     return x ? { s: x.s, r: x.r1, c: x.c1 } : null
   }
   const f = state.formulas[id]!
-  return code === 'SPILL' && state.spills.why.has(f.id) ? null : errorSource(state, f, code)
+  if (code === 'SPILL' && state.spills.why.has(f.id)) return null
+  // an error stored of a linked workbook begins at the formula that reads it
+  const from = errorSource(state, f, code)
+  return from && from.s < state.links.first ? from : null
 }
 
 /**

@@ -594,6 +594,53 @@ export interface BookInput {
    * from the values it holds instead.
    */
   iteration?: { maxIterations?: number; maxChange?: number }
+  /**
+   * The other workbooks the book's formulas refer to (`[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`): element `i`
+   * answers `[i+1]`. They are computed from the values stored here, as Excel computes a file it opens without updating
+   * its links; the other book itself is never read. It goes into `inputHash` when it is not empty.
+   */
+  externalBooks?: ExternalBook[]
+}
+
+/**
+ * Another workbook as a book keeps it beside the formulas that read it (xlsx `externalLinkN.xml`): where it is, and
+ * the values Excel stored of it when it last read it.
+ */
+export interface ExternalBook {
+  /** Where the link points, as the file holds it: a file name, a relative or an absolute path, a `file:` or web address. */
+  target: string
+  /** Its sheets in the order the file lists them. */
+  sheets: ExternalSheet[]
+  /** Its defined names the book's formulas use: of the book, or of one of its sheets. */
+  names?: ExternalName[]
+}
+
+/** A sheet of another workbook and the values stored of it. */
+export interface ExternalSheet {
+  name: string
+  /**
+   * The stored values by A1 address, null for a cell stored empty. A cell they do not hold is blank, or `#REF!` with
+   * `refreshError`. Without `cells` nothing of the sheet is stored, and every cell of it is `#REF!`.
+   */
+  cells?: Record<string, ExternalValue | null>
+  /**
+   * Excel's mark that the last update of the sheet's values failed (`refreshError`): a cell they do not hold is `#REF!`
+   * instead of blank. Excel sets it on every sheet of a closed book when a formula referring to that book is entered,
+   * and so does a session.
+   */
+  refreshError?: true
+}
+
+/** A value stored of another workbook's cell. */
+export type ExternalValue = number | string | boolean | { error: ErrorCode }
+
+/** A defined name of another workbook. */
+export interface ExternalName {
+  name: string
+  /** What it refers to, as the file holds it without `=`: a reference into its book (`Sheet1!$B$1`), `#REF!`. */
+  ref: string
+  /** The index in `sheets` of the sheet whose own name it is; a name of the book has none. */
+  sheet?: number
 }
 
 /**
@@ -719,6 +766,13 @@ export interface EntryOptions {
   cell?: { numberFormat?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
   /** The moment whose year completes a date typed without one (`15.3` in ru-RU, `3/15` in en-US), ISO as `Clock.now`; the current moment without it. */
   now?: string
+  /**
+   * The book's links to other workbooks (`BookInput.externalBooks`): a formula's reference to one, typed as Excel shows
+   * it (`=[Book2.xlsx]Sheet1!A1`, `='C:\data\[Book2.xlsx]Sheet1'!A1`, `=Book2.xlsx!Rate`) or by number, is found by the
+   * file name and numbered (`'[1]Sheet1'!A1`); one to a book they do not hold is refused (`external_ref`). Without them
+   * such a formula is kept as typed.
+   */
+  externalBooks?: ExternalBook[]
 }
 
 /**
@@ -934,6 +988,11 @@ export interface ValidateContext {
    * with `tables` (`unknown_name`) and stays without a name otherwise.
    */
   table?: string
+  /**
+   * The book's links to other workbooks (`BookInput.externalBooks`): a reference to one is checked against its sheets
+   * and names. A reference to a book the links do not hold is refused (`external_ref`), with or without them.
+   */
+  externalBooks?: ExternalBook[]
 }
 
 export type ValidateResult =
@@ -975,6 +1034,8 @@ export interface NamesContext {
   sheets: string[]
   /** Tables of the book with their columns, for the structured references of names' formulas. */
   tables?: { name: string; columns: string[] }[]
+  /** The book's links to other workbooks, for the names' references to them (`ValidateContext.externalBooks`). */
+  externalBooks?: ExternalBook[]
   externalFunctions?: string[]
   /** The book's locale (`BookInput.locale`): a loaded locale's tag, or a locale object; en-US without one. */
   locale?: string | Locale

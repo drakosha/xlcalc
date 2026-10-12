@@ -8,6 +8,7 @@ import { FormulaError, type Ast } from './ast.js'
 import { boolWord, parse } from './parse.js'
 import { IDENT_FIRST, IDENT_NEXT } from './scan.js'
 import { readsAsCell } from './tokens.js'
+import { bindLinks } from './links.js'
 import { canonical, mapAst, sheetKey, walk } from './print.js'
 
 /** Where a message points: the first place of `needle` in `text` in any case, the start when it is not there. */
@@ -134,6 +135,11 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
   const bound = ctx.tables?.length || text.includes('[') ? bindTables(ast, text, ctx) : { ok: true as const, ast, tables: [] }
   if (!bound.ok) return bound
   ast = bound.ast
+  if (text.includes('[') || (ctx.externalBooks?.length && text.includes('!'))) {
+    const linked = bindLinks(ast, ctx.externalBooks, ctx.sheets)
+    if (!linked.ok) return { ok: false, code: linked.code, message: say(linked.message), at: positionOf(text, linked.needle) }
+    ast = linked.ast
+  }
   const externalSet = new Set((ctx.externalFunctions ?? []).map(wordKey))
   const functions = new Set<string>()
   const sheets = new Set<string>()
@@ -146,7 +152,7 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
       functions.add(n.name)
       if (externalSet.has(n.name) && !FUNCTIONS[n.name]) externals.push(canonical(n))
     } else if (n.k === 'let') functions.add('LET')
-    else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined)) sheets.add(n.sheet!)
+    else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined && n.book === undefined)) sheets.add(n.sheet!)
     else if (n.k === 'ref3d') sheets.add(n.first).add(n.last)
     else if (n.k === 'name') {
       names.add(n.name)

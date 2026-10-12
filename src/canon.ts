@@ -140,8 +140,8 @@ function lineEntries(tag: string, map: Record<string, object> | undefined, axis:
  * Input hash: sheets by name, cells by address (their notes and links with them), names by (scope, name). Columns,
  * rows, merged areas (in order), the filter mode, tables (in order), frozen panes, conditional formats (in order), rules
  * of data validation, outline settings, a hidden sheet's state, the style table, a locale other than en-US, the 1904 date
- * system and iterative calculation come after their sheet and the names when there are any, so a book without them hashes
- * as before.
+ * system, iterative calculation and the linked workbooks come after their sheet and the names when there are any, so a
+ * book without them hashes as before.
  */
 export const inputHash = (book: BookInput): string => run(inputHashSteps(book))
 
@@ -172,6 +172,7 @@ export function* inputHashSteps(book: BookInput): Steps<string> {
   if (tag !== undefined) h.update(`L ${JSON.stringify(tag)}\n`)
   if (book.dateSystem === 1904) h.update('D 1904\n')
   if (book.iteration) h.update(`I ${stableJson(book.iteration)}\n`)
+  if (book.externalBooks?.length) h.update(`X ${stableJson(book.externalBooks)}\n`)
   return h.hex()
 }
 

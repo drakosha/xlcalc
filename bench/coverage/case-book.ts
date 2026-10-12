@@ -314,7 +314,7 @@ export function eachRectCell(read: RangeRef[], f: (key: string, i: number, r: nu
 }
 
 /** A range's `value` or `formula` as AppleScript returns it (a cell alone is not a list) as rows. */
-const grid = (x: unknown): unknown[][] => (Array.isArray(x) ? (Array.isArray(x[0]) ? (x as unknown[][]) : [x]) : [[x]])
+export const grid = (x: unknown): unknown[][] => (Array.isArray(x) ? (Array.isArray(x[0]) ? (x as unknown[][]) : [x]) : [[x]])
 
 /**
  * The answer from the read of each rectangle: its mirrors' types, numbers and texts, and its formulas; with `withF2`

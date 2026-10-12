@@ -110,7 +110,7 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
       case 'str':
         return { k: 'str', v: t.v }
       case 'err':
-        return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}) }
+        return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}), ...(t.book !== undefined ? { book: t.book } : {}) }
       case 'ref': {
         // inside a LET that declares it, a cell's word is the name
         const word = cellWord(t)
@@ -120,6 +120,10 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
       }
       case 'table':
         return { k: 'table', table: t.table, spec: t.spec }
+      case 'xref':
+        return { k: 'xref', book: t.book, sheet: t.sheet, ref: t.ref }
+      case 'xname':
+        return { k: 'xname', book: t.book, name: t.v, ...(t.sheet === undefined ? {} : { sheet: t.sheet }) }
       case 'ident': {
         if (t.sheet !== undefined) return { k: 'name', name: t.v, sheet: t.sheet }
         const bool = boolWord(t.v)
@@ -251,4 +255,4 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
 }
 
 /** A token for a message: its kind, with its text for an operator, a name or a function. */
-const found = (t: Tok): Found => (t.t === 'op' || t.t === 'ident' || t.t === 'fn' ? { t: t.t, v: t.v } : { t: t.t })
+const found = (t: Tok): Found => (t.t === 'op' || t.t === 'ident' || t.t === 'fn' ? { t: t.t, v: t.v } : t.t === 'xname' ? { t: 'ident', v: t.v } : { t: t.t === 'xref' ? 'ref' : t.t })

@@ -70,6 +70,11 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
       case 'ref':
         // a spill reference has as many cells as its array spilled into
         return n.ref.spill ? { s: 1, ref: true } : isArea(n.ref) ? { s: 2, ref: true } : { s: 0, ref: false }
+      case 'xref':
+        return isArea(n.ref) ? { s: 2, ref: true } : { s: 0, ref: false }
+      // the engine puts another workbook's name's reference in its place before it computes (`links.ts`)
+      case 'xname':
+        return { s: 0, ref: false }
       case 'table': {
         const x = tableRef(n)
         return typeof x !== 'string' && (x.r2 > x.r1 || x.c2 > x.c1) ? { s: 2, ref: true } : { s: 0, ref: false }
@@ -126,7 +131,7 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
     if (!spec) return { s: 0, ref: false }
     if (name === 'ROW' || name === 'COLUMN') {
       const a = nodes[0]
-      const r = a?.k === 'ref' && !a.ref.spill ? a.ref : null
+      const r = (a?.k === 'ref' && !a.ref.spill) || a?.k === 'xref' ? a.ref : null
       const many = r ? (name === 'ROW' ? r.r2 > r.r1 : r.c2 > r.c1) : args.length > 0 && args[0].s > 0
       // in an old-kind array formula ROW() and COLUMN() are its area's rows and columns
       return { s: r ? (many ? 2 : 0) : args.length || inArea ? 1 : 0, ref: false }

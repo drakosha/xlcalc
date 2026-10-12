@@ -102,7 +102,7 @@ export const validateNames = /* @__PURE__ */ strict(function validateNames(names
   const c = checkNamesContext(ctx)
   const sheetIdx = new Map(c.sheets.map((name, i) => [sheetKey(name), i]))
   const externalFunctions = (c.externalFunctions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
-  return prepareNames(sheetIdx, checkNames(names, 'names'), externalFunctions, c.tables ?? [], localeBooleans(c.locale)).issues
+  return prepareNames(sheetIdx, checkNames(names, 'names'), externalFunctions, c.tables ?? [], localeBooleans(c.locale), c.externalBooks).issues
 })
 
 /** The `eval` mode's generated code of the book in evaluation order, for reading while debugging; not part of the contract. */

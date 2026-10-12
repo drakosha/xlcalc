@@ -7,7 +7,7 @@
  * formula that does not parse stops the entry, as Excel's dialog does; an unknown function or name is taken, and the
  * cell computes `#NAME?`. Text pasted from the clipboard is read so too, but where Excel reads it otherwise (`readEntry`).
  */
-import type { CellInput, CheckCode, EntryOptions, EntryResult, NumberFormat } from '../contract.js'
+import type { CellInput, CheckCode, EntryOptions, EntryResult, ExternalBook, NumberFormat } from '../contract.js'
 import { checkEntryOptions, checkString } from '../input.js'
 import { validateLocalFormula, toInvariant } from '../locale/index.js'
 import { validate } from '../syntax.js'
@@ -46,13 +46,14 @@ const STOPS: ReadonlySet<CheckCode> = new Set(['syntax', 'empty', 'too_long', 't
  * A typed formula, `shift` characters into the typed text: its canonical stored text and the format it sets (`formula.ts`),
  * its invariant text where it names what the book may lack (`#NAME?` then), or why Excel stops it, at its place in the text.
  */
-function formulaOf(text: string, shift: number, locale: Locale): { formula: string; sets?: NumberFormat | 'money' } | Extract<EntryResult, { ok: false }> {
-  const v = validateLocalFormula(text, locale)
+function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: ExternalBook[]): { formula: string; sets?: NumberFormat | 'money' } | Extract<EntryResult, { ok: false }> {
+  const v = validateLocalFormula(text, locale, externalBooks ? { externalBooks } : undefined)
   if (v.ok) {
     const p = validate(v.canonical)
     return { formula: v.canonical, ...(p.ok ? { sets: formulaFormat(p.ast) } : {}) }
   }
-  if (STOPS.has(v.code)) return { ok: false, code: v.code, message: v.message, at: v.at + shift }
+  // a book that is not one of its links: Excel would ask for the file, a new link the model does not make
+  if (STOPS.has(v.code) || (externalBooks && v.code === 'external_ref')) return { ok: false, code: v.code, message: v.message, at: v.at + shift }
   const t = toInvariant(text, locale)
   return t.ok ? { formula: t.formula } : { ...t, at: t.at + shift }
 }
@@ -91,7 +92,7 @@ export function readEntry(text: string, o: EntryOptions, pasted = false): EntryR
   const { rules, clock } = rulesFor(locale, epoch, year)
   // a formula takes the format of what it computes as a typed constant of that kind would (`forms.ts`)
   const formula = (src: string, shift: number): EntryResult => {
-    const f = formulaOf(src, shift, locale)
+    const f = formulaOf(src, shift, locale, o.externalBooks)
     if (!('formula' in f)) return pasted ? input({ value: text }) : f
     if (f.sets === undefined) return input({ formula: f.formula })
     const sets = f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets

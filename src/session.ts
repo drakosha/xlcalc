@@ -578,7 +578,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const [i, row, col] = at(s, sheet, cell)
       const o = checkExplainOptions(eo)
       const e = explainCell(s, i, row, col, { depth: o.depth ?? 3, maxNodes: o.maxNodes ?? 200, expand: o.expand ?? false, errorDepth: o.errorDepth ?? 64 })
-      return { ...e, text: explainText(e.root, s.input.locale) }
+      return { ...e, text: explainText(e.root, s.input.locale, s.input.externalBooks) }
     },
     *getCells(sheet: string, range: string | string[]) {
       const s = yield* ready()
