@@ -140,4 +140,23 @@ describe.each(['the same thread', 'a thread'] as const)('a calculator computes w
     expect(r.hash).toBe(compute(book(), { clock, cached: STORED }).hash)
     expect(Object.fromEntries(Object.entries(r.sheets[0].cells).map(([k, c]) => [k, c.value]))).toEqual({ A1: 2, B1: 2, C1: 0, E1: 6, K1: 3 })
   })
+
+  it('a large book and large stored values, written as text between turns, keep the session its clock', async () => {
+    const calc = kind === 'the same thread' ? createInlineCalc() : await keptPool()
+    const rows = Object.fromEntries(Array.from({ length: 20_000 }, (_, i) => [`Z${i + 1}`, { value: i }]))
+    const many: CachedValues = { sheets: [{ name: 'S', cells: { ...STORED.sheets[0].cells, ...Object.fromEntries(Object.keys(rows).map((a) => [a, { value: 0 }])) } }] }
+    const s = await calc.createSession(book({ ...LOOP, ...rows }), { clock, cached: many })
+    expect([s.clock, (await s.getCell('S', 'A1'))!.value]).toEqual([clock, 2])
+    await s.close()
+  })
+})
+
+describe('the input hash', () => {
+  it('counts held in a cell a cycle stops alone: elsewhere the book as the engine takes it leaves it out', () => {
+    const plain = compute(book(), { clock })
+    const outside = compute(book({ ...LOOP, E1: { formula: 'K1*2', held: 9 }, K1: { value: 3, held: 1 } }), { clock })
+    expect([outside.hash, outside.inputHash]).toEqual([plain.hash, plain.inputHash])
+    const inside = compute(book({ ...LOOP, A1: { formula: 'B1/2+1', held: 2 } }), { clock })
+    expect(inside.inputHash).not.toBe(plain.inputHash)
+  })
 })

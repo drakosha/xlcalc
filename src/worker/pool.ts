@@ -485,7 +485,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       delete opts.cached
       // the book and the stored values are taken now and written as text, between turns of the event loop when they are large; the text is the first snapshot
       const [sent, written] = texts(book, cached)
-      const later = written?.then((x) => Object.assign(r.snapshot, x))
+      const later = written?.then((x) => {
+        Object.assign(r.snapshot, x)
+        return x
+      })
       const r: Rec = { sid: ++ids, slot, snapshot: { ...sent, opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, history: { undo: 0, redo: 0 }, revision: 0, used: ++clock, gone: null, snapshotting: false }
       recs.add(r)
       slot.sessions.add(r)
