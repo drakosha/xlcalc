@@ -11,6 +11,7 @@
  *   npx tsx bench/windows/run.ts spill|workbook|struct <name>   a book set (en-US) into <kind>/<name>.json
  *   npx tsx bench/windows/run.ts parts <name>          notes, hyperlinks and frozen panes (en-US) into parts/<name>.json and parts/<name>/
  *   npx tsx bench/windows/run.ts hidden <name>         hidden sheets (en-US) into hidden/<name>.json and hidden/<name>/
+ *   npx tsx bench/windows/run.ts links <name>          links to other workbooks, opened without updating them (en-US), into links/<name>.json and links/<name>/
  *   npx tsx bench/windows/run.ts lines <name>          formats of rows and columns (en-US) into lines/<name>.json and lines/<name>/
  *   npx tsx bench/windows/run.ts xlsx filters        the filter files computed and saved by Excel into xlsx/filters/
  *   npx tsx bench/windows/run.ts xlsx formats [L]    the codes of the built-in number formats into xlsx/[<tag>/]formats.json
@@ -37,6 +38,7 @@ import { stepFunctions } from './functions.js'
 import { stepXlsxFilters, stepXlsxFormats } from './xlsx.js'
 import { stepParts } from './parts.js'
 import { stepHidden } from './hidden.js'
+import { stepLinks } from './links.js'
 import { stepLines } from './lines.js'
 import { stepEntry } from './entry.js'
 import { stepFit } from './fit.js'
@@ -50,7 +52,7 @@ const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 /** The sets with Mac answers, by their files in `test/excel/<dir>`; none where the directory is not there. */
 const macSets = (dir: string) => (existsSync(join(ROOT, 'test/excel', dir)) ? readdirSync(join(ROOT, 'test/excel', dir)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [])
 
-const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts, hidden: stepHidden, lines: stepLines } as const
+const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts, hidden: stepHidden, lines: stepLines, links: stepLinks } as const
 /** The parts sets: every set of `bench/coverage/parts/`, `threads` among them, which Windows alone runs. */
 const PARTS_SETS = readdirSync(join(ROOT, 'bench/coverage/parts')).filter((f) => f.endsWith('.ts') && f !== 'cases.ts' && f !== 'predict.ts').map((f) => f.slice(0, -3))
 
@@ -102,7 +104,7 @@ else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functi
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
