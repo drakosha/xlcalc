@@ -14,6 +14,12 @@ import { readRanges, writeRanges } from './ranges.js'
 const LAYERS = new WeakMap<readonly LookRange[], Layer>()
 const WRITTEN = new WeakSet<readonly LookRange[]>()
 
+/**
+ * The cells taken (`looksTaken`): no entry of a look alone, no look under an entry with content. The writes of a session
+ * (`putInput`) keep them so, and an operation that gives a book again gives new cells, which are taken anew.
+ */
+const TAKEN = new WeakSet<object>()
+
 /** Looks of a session's cells written and not yet in the sheet's list, by row · MAX_COLS + column (`putInput`). */
 const PENDING = new WeakMap<object, Map<number, Look | undefined>>()
 
@@ -61,11 +67,15 @@ const withLayer = (sheet: SheetInput, cells: Record<string, CellInput>, layer: L
  */
 export function looksTaken(sheet: SheetInput, alone?: string[]): SheetInput {
   const cells = sheet.cells
+  if (TAKEN.has(cells) && (!sheet.looks || WRITTEN.has(sheet.looks))) return sheet
   if (!alone) {
     alone = []
     for (const a in cells) if (lookAlone(cells[a])) alone.push(a)
   }
-  if (!alone.length && !sheet.looks) return sheet
+  if (!alone.length && !sheet.looks) {
+    TAKEN.add(cells)
+    return sheet
+  }
   const base = sheet.looks?.length ? layerOfList(sheet.looks) : emptyLayer()
   const looks = new LookTable(base.looks)
   const p = { r: 0, c: 0 }
@@ -83,6 +93,7 @@ export function looksTaken(sheet: SheetInput, alone?: string[]): SheetInput {
     }
   const layer = edited(base, cellEdits(edits), looks)
   const kept = moved.size ? keptCells(cells, moved) : cells
+  TAKEN.add(kept)
   if (layer === base && sheet.looks && WRITTEN.has(sheet.looks) && kept === cells) return sheet
   return withLayer(sheet, kept, layer)
 }
