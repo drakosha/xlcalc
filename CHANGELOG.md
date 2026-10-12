@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.27.0 (2026-10-13)
+
+Internal release; not published to npm. A circular reference without iteration holds its values as Excel does. The synthetic book's values and hashes are as in 0.26.0; a book with a circular reference computes otherwise, and its `inputHash` changes once its cells hold values.
+
+Added:
+
+- `CellInput.held`: the value a formula holds while a circular reference stops it, with iteration off. A formula in a cycle, or reading one, keeps the value it has, as Excel does: an edit of its other inputs and a full recomputation leave it, a formula entered there holds 0, and a value typed into a cell of the cycle breaks it, after which every cell computes. The values are part of the book (`getBook()` gives them), so a session is a full computation of its book after every edit and undo ([docs/cycles.md](docs/cycles.md)).
+- `cached` in the options of `compute` and `createSession` (and the calculators): a file's stored values (`readXlsx().cached`, or a result of the same shape), which the cells of a circular reference and their readers hold when the book opens, as Excel opens a file; a cell the file stores no value for holds empty text.
+- `CachedValues`, the type of those values.
+
+Changed:
+
+- A formula in a circular reference, or reading one, is no longer `#CYCLE!` without iteration: it holds its value, and its issue (`getCellIssue`, `diagnostics`, a window's `diagnostics`, `explain`) says the circular reference and where it runs through. A name that refers to itself is still `#CYCLE!`.
+- `writeXlsx` writes a held value as the formula's value.
+
+Known differences: an array that an edit brings into a cycle keeps its whole spill in Excel and its first value here; `INDIRECT` and `OFFSET` cycles and iteration from a file's stored values stay as before.
+
+Measured: Excel 16 for Windows through COM, the workbook sets `cycles` (21 books: a file's values, `CalculateFull`, edits of predecessors, a value typed into the cycle, cycles through names and arrays, a file asking for iteration) and the held-out `cycles-held` (6 books, 129 reads, predicted before the run, 125 confirmed); the engine gives Excel's answer to all of `cycles` but the three named above.
+
 ## 0.26.0 (2026-10-12)
 
 Internal release; not published to npm. Cells formatted across a sheet without an object per cell, and Excel's grouping commands. The synthetic book's values and hashes are as in 0.25.0; a book read from xlsx whose cells hold a look alone has a new `inputHash`.
