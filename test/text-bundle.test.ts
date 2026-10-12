@@ -43,7 +43,7 @@ describe('text without the engine', () => {
     expect(out(`[TEXT.quoteSheetIfNeeded('Q1 data'), TEXT.quoteSheetIfNeeded('ИСТИНА', part), TEXT.escapeColumn('@x#y')]`)).toEqual(["'Q1 data'", "'ИСТИНА'", "'@x'#y"])
     expect(out(`[TEXT.numberFormatCategory('0.000'), TEXT.numberFormatCategory('0.000', ruRU), TEXT.numberFormatChoices(ruRU)[2]]`)).toEqual([
       { category: 'number', name: 'Number' },
-      { category: 'custom', name: '(все форматы)' },
+      { category: 'number', name: 'Числовой' },
       { key: 'currency', name: 'Денежный', format: '#,##0.00\\ "₽"', code: '#,##0.00\\ "₽"' },
     ])
     expect(out(`(() => { try { TEXT.scanReferences('=A1', { locale: 'ru-RU' }) } catch (e) { return e.message } })()`)).toBe(

@@ -23,7 +23,7 @@ import { formulaBar } from '../bench/coverage/entry/cases.js'
 import { formatKey, held } from '../bench/coverage/entry/compare.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { numberFormatOf } from '../bench/coverage/stored.js'
-import { createSession, type CellInput } from '../src/index.js'
+import { createSession, LOCALES, type CellInput } from '../src/index.js'
 import { UI_KNOWN, UI_REASONS } from './ui-known.js'
 import './locales.js'
 
@@ -118,6 +118,17 @@ function ribbonOff(c: UiCase, a: UiAnswer, tag: string, got: Record<string, Ribb
 
 const ribbonCase = (c: UiCase) => c.act.do === 'ribbon' || c.act.do === 'choose'
 
+/** The cells of a ribbon case where Excel for Mac in a locale other than en-US shows Custom and the function another category, all else the same (`macSyntax` in `test/ui-known.ts`). */
+function macSyntax(run: Run, c: UiCase, a: UiAnswer): Set<string> {
+  const custom = LOCALES.get(run.tag)?.regional?.formats?.categories.custom
+  if (run.excel !== 'Mac' || !custom) return new Set()
+  const got = ribbonOf(c, run.tag)
+  const want = excelRibbon(c, a)
+  const box = (r: RibbonCell) => (typeof r === 'string' ? r : r.box)
+  const withBox = (r: RibbonCell, b: string): RibbonCell => (typeof r === 'string' ? b : { ...r, box: b })
+  return new Set(Object.keys(want).filter((x) => box(want[x]) === custom && box(got[x]) !== custom && ribbonKey(withBox(want[x], box(got[x])), run.tag) === ribbonKey(got[x], run.tag)))
+}
+
 /** What Excel opened each cell of a case of `bars` with: on the Mac its formula bar once F2 began the editing, on Windows `Formula2Local`. */
 const opened = (run: Run, a: UiAnswer, cell: string) => (run.excel === 'Mac' ? formulaBar(a.cells[cell].bar!.edit[0]) : a.cells[cell].formula2Local)
 
@@ -145,7 +156,8 @@ for (const run of RUNS) {
         if (ribbonCase(c)) {
           // a known difference names its cell: the others agree, and each known one still differs
           const off = ribbonOff(c, a, tag)
-          const known = (x: string) => UI_KNOWN.get(`${tag}:${set}:${c.id}:${x}`)
+          const mac = macSyntax(run, c, a)
+          const known = (x: string) => UI_KNOWN.get(`${tag}:${set}:${c.id}:${x}`) ?? (mac.has(x) ? (['macSyntax'] as const) : undefined)
           const fixed = readCells(c).filter((x) => known(x) && !off.some(([y]) => y === x)).map((x) => `${x}: ${known(x)!.map((r) => UI_REASONS[r]).join('; ')}`)
           expect({ unknown: off.filter(([x]) => !known(x)).map(([, line]) => line), fixed }).toEqual({ unknown: [], fixed: [] })
           return
