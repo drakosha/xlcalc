@@ -36,11 +36,11 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | reading and writing xlsx files | `readXlsx`, `writeXlsx` and `fromLegacy` from `xlcalc/xlsx` |
 | computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
 | cell addresses in A1 style, without the engine | `xlcalc/a1` |
-| the references of formula text as it is typed, for colouring them, without the engine | `xlcalc/text` |
+| the references of formula text as it is typed, for colouring them, and a number format's category as the ribbon shows it, without the engine | `xlcalc/text` |
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](#localization)) |
 | types alone | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 254 KB (97 KB gzip), `createSession` 395 KB (148 KB), the whole root 419 KB (157 KB), `xlcalc/xlsx` 174 KB (65 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 499 KB (168 KB), `xlcalc/a1` 8 KB (3 KB), `xlcalc/text` 30 KB (12 KB), the ru-RU module 92 KB (15 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 254 KB (97 KB gzip), `createSession` 395 KB (148 KB), the whole root 419 KB (157 KB), `xlcalc/xlsx` 174 KB (65 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 499 KB (168 KB), `xlcalc/a1` 8 KB (3 KB), `xlcalc/text` 36 KB (14 KB), the ru-RU module 92 KB (15 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 
@@ -583,7 +583,7 @@ console.log(validateNames(names, { sheets: ['Sales', 'Q1 data'] }).map((x) => `$
 
 Every check answers `{ ok: true, … }` or a refusal, the type `Refusal`: `{ ok: false, code, message, at? }`, a code a program reads, a message for people and, for text, the position in it. So do `validateFormula`, `validateLocalFormula`, `toLocal`, `toInvariant`, `parseEntry`, `validateName` and `editStructure`.
 
-Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to another workbook), `unknown_function`, `unknown_sheet`, `unknown_name`, `unsupported` (an external function called with non-literal arguments). In `compute`, an invalid formula gives `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise. A formula whose result is an array is valid: it spills.
+Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to a workbook `ctx.externalBooks` holds no link to, [Links to other workbooks](#links-to-other-workbooks)), `unknown_function`, `unknown_sheet`, `unknown_name`, `unsupported` (an external function called with non-literal arguments). In `compute`, an invalid formula gives `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise. A formula whose result is an array is valid: it spills.
 
 ### Typed entry
 
@@ -846,7 +846,7 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Здес�
 console.log(validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', ruRU, { sheets: ['Данные'] }).canonical) // → ROUND('Данные'!B2*1.2,0)
 ```
 
-`LOCALES` lists the loaded locales by tag. Every function that takes a locale takes the tag of a loaded one or the locale object, and an object needs no loading where no book is needed: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `validateSheetName`, `validateName` and `validateNames`. A book's `locale` is a tag, and a book in a locale that is not loaded is an `InputError` that says what to import, wherever the book goes (`compute`, sessions, `editStructure`, `fitColumns`, `writeXlsx`, a pool); `readXlsx` keeps a file's locale as it reads it. A pool of threads loads in its threads the locales loaded where it runs, and those loaded later too. A locale is a plain object (the `Locale` type), so formula text in another language is another object of the same shape; one without rules of computation reads and shows values as en-US does. Adding a locale to the package is a module ([docs/locale.md](docs/locale.md#adding-a-locale)).
+`LOCALES` lists the loaded locales by tag. Every function that takes a locale takes the tag of a loaded one or the locale object, and an object needs no loading where no book is needed: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `validateSheetName`, `validateName` and `validateNames`. A book's `locale` is a tag, and a book in a locale that is not loaded is an `InputError` that says what to import, wherever the book goes (`compute`, sessions, `editStructure`, `fitColumns`, `writeXlsx`, a pool); `readXlsx` keeps a file's locale as it reads it. A pool of threads loads in its threads the locales loaded where it runs, and those loaded later too. A locale is a plain object (the `Locale` type), so formula text in another language is another object of the same shape; one without rules of computation reads and shows values as en-US does. Adding a locale to the package is a module ([docs/locale.md](docs/locale.md#adding-a-locale)).
 
 ```js
 import { compute } from 'xlcalc'
@@ -937,6 +937,22 @@ import { ruRU } from 'xlcalc/locales/ru-RU'
 
 console.log(builtinFormatCode(14), builtinFormatCode(14, ruRU), builtinFormatCode(7, ruRU)) // → m/d/yyyy dd.mm.yyyy #,##0.00 "₽";-#,##0.00 "₽"
 console.log(builtinFormatCode(3), builtinFormatCode(50), builtinFormatCode(164) !== undefined) // → #,##0 undefined false
+```
+
+The Number Format box on Excel's Home tab names the category of the active cell's format, and its list applies a format of each category. `numberFormatCategory(format, locale?)` gives that category for a code or a built-in format's number, as a stable key and the name the box shows (`Number`, `Числовой`); `numberFormatChoices(locale?)` gives the list's items in order, each with its name, the format it applies and that format's code in the locale. Both come without the engine, in `xlcalc/text` too. The box names the category of Excel's Format Cells window whose formats hold the code as Excel keeps it, and Custom when none does: `0.000` is Number, `0.00;-0.00` and `#,##0%` are Custom, and so is `$#,##0.00`, as Excel keeps a dollar written bare as a literal; the Currency item writes `"$"#,##0.00`. Excel for Mac builds most categories in the locale's own syntax, so in ru-RU only the codes that syntax leaves as they are match: `0`, `0%`, the bracketed currencies (`[$€-407] #,##0.00`) and the special formats, while `0.00` is `(все форматы)`. The rules and how they were measured are in [docs/formats.md](docs/formats.md#the-ribbons-number-format-box).
+
+```js
+import { numberFormatCategory, numberFormatChoices } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+console.log(numberFormatCategory('0.000'), numberFormatCategory('$#,##0.00').name, numberFormatCategory('"$"#,##0.00').name, numberFormatCategory(14).name)
+// → { category: 'number', name: 'Number' } Custom Currency Date
+console.log(numberFormatCategory('0.000', ruRU).name, numberFormatCategory('0%', ruRU).name)
+// → (все форматы) Процентный
+console.log(numberFormatChoices().map((c) => c.name).join(', '))
+// → General, Number, Currency, Accounting, Short Date, Long Date, Time, Percentage, Fraction, Scientific, Text
+const { name, format } = numberFormatChoices(ruRU)[2]
+console.log(name, format) // → Денежный #,##0.00\ "₽"
 ```
 
 `TEXT` uses the same formats, read in the book's locale (`TEXT(x,"# ##0,00")` in ru-RU), without the width: it drops fills, has no colour and answers `#VALUE!` where a cell shows `#`. The rules, as measured in Excel 16.113 for Mac in en-US and ru-RU on 11,649 cells and 771 `TEXT` cases, are in [docs/formats.md](docs/formats.md), with the differences.
@@ -1063,6 +1079,22 @@ console.log(compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells.B3.value
 ```
 
 Cells are computed sheet by sheet in the order of the sheets' names, row by row. A change of text, a boolean or an error into another of them does not count as a change. Every computation starts from 0, so a session gives what a full computation gives. Excel goes on from the values it holds when it recalculates, which the engine does not do (see [Limitations](#limitations)).
+
+### Links to other workbooks
+
+A formula can read another workbook: `[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`. The book holds what Excel stores of that workbook beside the formulas in a file, its `externalBooks`: where it is, its sheets and the values of the cells the formulas read, its names. Element `i` answers `[i+1]`. The engine computes such references from these stored values, as Excel computes a file it opens without updating its links; the other workbook is never read. `readXlsx` reads them from a file's links and `writeXlsx` writes them back.
+
+```js
+import { compute, toLocal } from 'xlcalc'
+
+const externalBooks = [{ target: 'Prices.xlsx', sheets: [{ name: 'Sheet1', cells: { A1: 5, A2: 7, B1: 'pear' } }] }]
+const book = { sheets: [{ name: 'S', cells: { A1: { formula: "[1]Sheet1!A1+1" }, A2: { formula: 'SUM([1]Sheet1!A:A)' }, A3: { formula: "COUNTIF([1]Sheet1!A:A,5)" } } }], externalBooks }
+const cells = compute(book).sheets[0].cells
+console.log(cells.A1.value, cells.A2.value, cells.A3.value, cells.A1.formula) // → 6 12 { error: 'VALUE' } '[1]Sheet1'!A1+1
+console.log(toLocal(cells.A1.formula, 'en-US', { externalBooks })) // → { ok: true, formula: '[Prices.xlsx]Sheet1!A1+1' }
+```
+
+A cell the stored values do not hold is blank, as Excel takes it, unless the sheet's last update failed (`refreshError`) or nothing of the sheet is stored: then it is `#REF!`. The criteria functions' ranges (`SUMIF`, `COUNTIFS` and the others), `COUNTBLANK` and the database functions take only an open book's reference and give `#VALUE!` over a link, as in Excel; `INDEX`, `MATCH`, `VLOOKUP`, `XLOOKUP`, `SUMPRODUCT` and the rest read the stored values. A formula with a link entered in a session makes Excel mark that workbook as it cannot read it, and so does the session: its cells the stored values lack are `#REF!` from then on. Formulas are stored with the link's number; `toLocal`, `toInvariant`, `parseEntry`, a window's `formulaLocal` and `editText` show and read them as Excel does, by the file name (`[Prices.xlsx]Sheet1!A1`), and refuse a workbook the book has no link to. [docs/links.md](docs/links.md) has the rules and how they were measured.
 
 ### Structure operations
 
@@ -1222,11 +1254,13 @@ From `xlcalc`:
 | `viewportOf(saved, sheet, range, opts?)` | the window `getViewport` gives, over a book and its result as a host saved them (`{ book, result }`), without a session and without computing; no `revision`, and conditional `appearance` only with `appearance: true`, computed over the result's values ([A window for a grid](#a-window-for-a-grid)) |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `numberFormat`, `locale` (a loaded locale's tag or a locale object, as every function's `locale` below), `width` (no limit without it), `dateSystem` ([Showing values](#showing-values)) |
 | `builtinFormatCode(id, locale?)` | the code a built-in number format (0 to 49) shows by in the locale, undefined for a number that is none ([Showing values](#showing-values)) |
+| `numberFormatCategory(format, locale?)` | the category of a number format (a code or a built-in format's number) as the ribbon's Number Format box shows it, `{ category, name }` ([Showing values](#showing-values)) |
+| `numberFormatChoices(locale?)` | the items of the ribbon's Number Format list in order, `{ key, name, format, code }` ([Showing values](#showing-values)) |
 | `dateToSerial(text, opts?)`, `serialToDate(serial, opts?)` | a date as `{ date }` takes it and its serial number, in `opts.dateSystem` ([Date systems](#date-systems)) |
-| `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked), `tables`, and `table`, the table of the formula's cell ([Tables](#tables)) |
+| `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked), `tables`, and `table`, the table of the formula's cell ([Tables](#tables)), `externalBooks`, the links a reference to another workbook is checked and numbered by ([Links to other workbooks](#links-to-other-workbooks)) |
 | `validateName(name, opts?)` | `{ ok: true }` or `{ ok: false, code, message }` (`chars`, `reference`, `boolean`) by the rules of a book of `opts.locale` |
-| `validateNames(names, ctx)` | the name issues of a book with `ctx.sheets`, `ctx.tables`, `ctx.externalFunctions` and `ctx.locale`, as `compute` gives them, each with `dropped` |
-| `parseEntry(text, opts?)` | text typed into a cell as Excel takes it: `{ ok: true, input }` (the cell's new `CellInput`, or `null`) or `{ ok: false, code, message, at }`; `opts`: `locale`, `cell`, `now`, `dateSystem` ([Typed entry](#typed-entry)) |
+| `validateNames(names, ctx)` | the name issues of a book with `ctx.sheets`, `ctx.tables`, `ctx.externalFunctions`, `ctx.externalBooks` and `ctx.locale`, as `compute` gives them, each with `dropped` |
+| `parseEntry(text, opts?)` | text typed into a cell as Excel takes it: `{ ok: true, input }` (the cell's new `CellInput`, or `null`) or `{ ok: false, code, message, at }`; `opts`: `locale`, `cell`, `now`, `dateSystem`, `externalBooks` (a typed reference to a link numbered, one to a book the links lack refused) ([Typed entry](#typed-entry)) |
 | `entryText(value, opts?)`, `needsApostrophe(text, opts?)` | the text a cell opens with for editing, as the formula bar shows its value; whether typed text would read as something else than itself; `opts`: `numberFormat`, `locale`, `dateSystem`, `now` ([Addresses and helpers](#addresses-and-helpers)) |
 | `validateSheetName(name, opts?)` | `{ ok: true }` or `{ ok: false, code, message, at? }` by Excel's rules for sheet names; `opts.locale` gives the message's language |
 | `errorText(code, locale?)` | an error as a cell shows it (`#DIV/0!`, `#ДЕЛ/0!` in ru-RU) |
@@ -1238,7 +1272,7 @@ From `xlcalc`:
 | `parseCell`, `cellAddress`, `colLetters`, `colNumber`, `parseRange`, `rangeAddress`, `parseLines`, `linesKey`, `patchLines`, `rectsMeet`, `rectContains`, `MAX_ROWS`, `MAX_COLS`, `quoteSheetIfNeeded`, `nameKey`, `sameName` | addresses and names without the engine, also from `xlcalc/a1` ([Addresses and helpers](#addresses-and-helpers)) |
 | `fitColumns(book, result, sheet, columns)` | the widths AutoFit gives columns `C` or `B:D` of a computed book, by letter (null for the default width; a column with nothing to show left out) ([Showing values](#showing-values)) |
 | `entryWidth(value, opts?)` | the width a column takes as a typed value widens it, or undefined; `opts`: `numberFormat`, `locale`, `dateSystem`, the column's `width` and `bestFit` ([Showing values](#showing-values)) |
-| `toLocal(formula, locale, opts?)`, `toInvariant(text, locale, opts?)` | a stored formula as the locale shows it, typed text as a stored formula: `{ ok: true, formula }` or `{ ok: false, code, message, at }` ([Localization](#localization)); `opts.table`, the table of the formula's cell, shows its references as Excel does inside it (`[@Qty]`) and names it again (`Sales[@Qty]`, [docs/tables.md](docs/tables.md)) |
+| `toLocal(formula, locale, opts?)`, `toInvariant(text, locale, opts?)` | a stored formula as the locale shows it, typed text as a stored formula: `{ ok: true, formula }` or `{ ok: false, code, message, at }` ([Localization](#localization)); `opts.table`, the table of the formula's cell, shows its references as Excel does inside it (`[@Qty]`) and names it again (`Sales[@Qty]`, [docs/tables.md](docs/tables.md)); `opts.externalBooks` shows a link's reference by its file (`[Prices.xlsx]Sheet1!A1`) and reads one back, a book they lack `external_ref` ([Links to other workbooks](#links-to-other-workbooks)) |
 | `validateLocalFormula(text, locale, ctx?)` | `validateFormula` for text typed in the locale, positions in `text` |
 | `registerLocale(locale)` | loads a locale module of the package (`ruRU` of `xlcalc/locales/ru-RU`) for books in it and for its tag ([Localization](#localization)) |
 | `LOCALES` | the loaded locales by tag, en-US and those registered, each a `Locale` (`LOCALES.get('ru-RU')`): the tags `BookInput.locale` takes |
@@ -1366,7 +1400,9 @@ Notes on semantics:
   - Excel compares sheet names letter by letter, so it takes a sheet named `ß` beside `SS` (`ﬁ` beside `FI`), and reads a typed function's name with the dotted `İ` as `I` (`=İF(TRUE,1,2)` is `IF`; Excel for Windows the dotless `ı` too); the engine compares sheets as defined names and tables, where `ß` is `SS`, and refuses the second sheet, and reads a function's name by its letters, as Excel reads a file's (`#NAME?`).
   - `WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).
 - **Shown text.** Widths are those of Excel for Mac with the default font, Calibri 11; a cell's own font, its indent, wrapping and rotation are not taken into account, characters outside Latin, Cyrillic, digits and common signs count as a digit, and Excel for Windows lays text out at other widths, so near the edge of a column it can show `#` where the engine shows the number or the other way round. AutoFit and the widths typing gives are Excel for Mac's: Excel for Windows fits columns to its pixels, to widths that differ from the Mac's in most columns; the Mac shows its own short date (`3/15/26`) and ru-RU month names (`март`) where the engine follows Windows; text outside ASCII is fitted by the advance widths of Carlito, a font metrically compatible with Calibri, a point off Excel's on some long runs. Locale tags other than `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]`, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are not read. [docs/formats.md](docs/formats.md) has the details.
-- **Syntax.** Stored formulas use English function names and separators (no `;` or decimal commas; text typed in another language goes through `toInvariant`), no R1C1 references, no references to other workbooks. Functions outside the whitelist (`INDIRECT`, `OFFSET`, `LAMBDA`, …) give `#NAME?`.
+- **The ribbon's Number Format box.** `numberFormatCategory` and `numberFormatChoices` follow Excel 16.113 for Mac. Excel for Windows was not measured, as its ribbon cannot be read over SSH, and may name some codes otherwise, ru-RU's above all. Excel for Mac names the category of a format the list applied by the list's state as well: in ru-RU an item applied shows its own category (`Числовой`) at some times and `(все форматы)` at others, while the same code read from a file is always `(все форматы)`, as the functions give it. Its Short Date, Long Date and Time items were not the same in two sessions of one day; `numberFormatChoices` gives the first's (built-in 14, the system's long date and long time). The code `m/d/yyyy` is the short date here, as built-in 14 shows by it (Excel for Windows's code); Excel for Mac, whose short date is `m/d/yy`, calls it Custom.
+- **Syntax.** Stored formulas use English function names and separators (no `;` or decimal commas; text typed in another language goes through `toInvariant`), no R1C1 references. A reference to another workbook needs its link in `externalBooks` (a new link is not made); a reference across another workbook's sheets (`[1]Jan:Mar!A1`) and a spill reference into one are refused. Functions outside the whitelist (`INDIRECT`, `OFFSET`, `LAMBDA`, …) give `#NAME?`.
+- **Links to other workbooks.** A closed workbook's reference is shown with the path its link holds (`'../data/[Book3.xlsx]Sheet1'!A1`), where Excel shows the absolute path it resolves from the folder of the opened file. Only entering or pasting a formula with a link marks the link (`refreshError`), as measured; whether moving one or undoing does was not. On a marked sheet a whole column or row is read to one row and column past the stored values, so a count over it (`COUNTA`) counts one `#REF!` where Excel counts every cell the values lack. [docs/links.md](docs/links.md#known-differences) has the rest.
 - **Structure operations and styles.** Whole rows or columns copied onto part of a merged area are refused, where Excel pastes them. Excel's fill handle fills the hidden rows of a filtered sheet, while `copyRange` fills only the visible ones, as Fill Down does. Styles, notes, hyperlinks, frozen panes, rules of data validation and outlines are kept and moved, not computed: `compute` does not return them, `Session.getCells` and `Session.validation` do. A hyperlink's place is not rewritten when its sheet is renamed or rows move, as Excel leaves it.
 - **Output precision.** Values in the result and in the hash are rounded to 15 significant digits, as Excel shows them; inside, computation keeps full double precision.
 - **Conditional formats.** What they show is given by `Session.getCells` and `getViewport` alone: edits do not list the cells whose appearance changed, they give the rules' cells as `repaint`, for a host to read its window again where it meets them. A data bar's length and an icon follow Excel's documented rules, which no object model reports, so they were not measured; borders, underline and strike of a rule's style are kept for a host to draw. After rows are deleted, Excel put one rule whose reference the deletion lost after the others, where the engine keeps its place; Excel drops an Excel 2010 data bar's lengths other than 0 and 100 ([docs/conditional-formats.md](docs/conditional-formats.md)).

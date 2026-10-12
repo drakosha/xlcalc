@@ -2,8 +2,9 @@
  * `writeXlsx`: a book as an xlsx file, with formulas and their values or with values only. The package holds the
  * workbook, its sheets (hidden ones with their state, the first visible one active) with their tables, notes and
  * hyperlinks, styles, shared strings, the dynamic array metadata when there are formulas, the date system and iterative
- * calculation, and the book's locale as a custom document property (xlsx has no place for it). A formula file asks Excel
- * to compute the book on opening, so Excel shows its own values over the ones written, whichever values it stores.
+ * calculation, the links to other workbooks with the values stored of them (`links.ts`), and the book's locale as a
+ * custom document property (xlsx has no place for it). A formula file asks Excel to compute the book on opening, so
+ * Excel shows its own values over the ones written, whichever values it stores.
  */
 import type { BookInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
@@ -11,6 +12,7 @@ import { SHEET_STATES } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { bindTables, nameProblem } from '../../syntax/check.js'
+import { bindLinks } from '../../syntax/links.js'
 import { localeBooleans } from '../../locale/registry.js'
 import { sheetKey } from '../../syntax/print.js'
 import { caseKey } from '../../collate.js'
@@ -21,8 +23,9 @@ import type { WriteXlsxOptions, XlsxSnapshot, XlsxWritten } from '../types.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
+import { externalLinkXml } from './links.js'
 import { nextBlock } from './parts.js'
-import { writeSheet } from './sheet.js'
+import { writeSheet, type FileNames } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
@@ -77,7 +80,9 @@ function definedNames(book: BookInput, issues: Issues, tables: { name: string; c
     try {
       // a table's name alone is its data, which a file writes `Sales[]`
       const bound = bindTables(parse(n.ref, { union: true }), n.ref, { tables })
-      if (bound.ok) text = toFile(bound.ast)
+      // a reference to another workbook names one of the book's links and a sheet that link has
+      const linked = bound.ok ? bindLinks(bound.ast, book.externalBooks, book.sheets.map((s) => s.name)) : bound
+      if (linked.ok) text = toFile(linked.ast)
     } catch (e) {
       if (!(e instanceof FormulaError)) throw e
     }
@@ -123,11 +128,10 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     if (i === undefined) strings.set(s, (i = strings.size))
     return i
   }
-  const sheetKeys = new Set(book.sheets.map((s) => sheetKey(s.name)))
   const rich: (keyof typeof RICH_TYPE)[] = []
   const richError = (code: keyof typeof RICH_TYPE) => (rich.includes(code) ? rich.indexOf(code) : rich.push(code) - 1) + 1
   const tables = tablesOf(book)
-  const tableCols = tableNames(tables)
+  const names: FileNames = { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks }
   // table parts are numbered through the book, each sheet's from rId1 of its own relationships
   let tableId = 0
   const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
@@ -142,11 +146,10 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       styles,
       string,
       issues,
-      sheets: sheetKeys,
+      ...names,
       mode,
       result: cells?.[i],
       richError,
-      tables: tableCols,
       tableAt: (addr) => {
         const { row, col } = parseAddress(addr)
         return tableAt(tables, i, row, col)?.name
@@ -176,7 +179,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {
-      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableCols, issues, t.name === filterTables[i]) })
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, names, issues, t.name === filterTables[i]) })
       contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
     }
     if (s.notes) {
@@ -208,11 +211,18 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     contentTypes.push(['/xl/richData/rdrichvalue.xml', 'application/vnd.ms-excel.rdrichvalue+xml'], ['/xl/richData/rdrichvaluestructure.xml', 'application/vnd.ms-excel.rdrichvaluestructure+xml'])
     wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }
+  // the links to other workbooks, `[1]` the first, each pointing at its book through a relationship of its own
+  const linkRefs = (book.externalBooks ?? []).map((b, i) => {
+    const part = `externalLinks/externalLink${i + 1}.xml`
+    files.push({ name: `xl/${part}`, text: externalLinkXml(b, i + 1, issues) }, { name: `xl/externalLinks/_rels/externalLink${i + 1}.xml.rels`, text: rels([[`${REL}/externalLinkPath`, b.target, true]]) })
+    contentTypes.push([`/xl/${part}`, `${TYPE}.externalLink+xml`])
+    return `<externalReference r:id="rId${wbRels.push([`${REL}/externalLink`, part])}"/>`
+  })
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}"${s.hidden ? ` state="${SHEET_STATES.get(s.hidden)}"` : ''} r:id="rId${i + 1}"/>`).join('')
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableCols)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names.tables)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {

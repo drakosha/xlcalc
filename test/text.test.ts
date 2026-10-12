@@ -1,6 +1,7 @@
 /**
- * `xlcalc/text`: the root's functions of formula text without the engine, the same functions; `escapeColumn` writes a
- * column's name in a structured reference as Excel writes it, which the engine reads back as the name.
+ * `xlcalc/text`: the root's functions of formula text and of number formats' categories without the engine, the same
+ * functions; `escapeColumn` writes a column's name in a structured reference as Excel writes it, which the engine reads
+ * back as the name.
  */
 import { describe, expect, it } from 'vitest'
 import * as root from '../src/index.js'
@@ -9,7 +10,7 @@ import * as text from '../src/text.js'
 
 describe('xlcalc/text', () => {
   it("holds the root's functions themselves", () => {
-    expect(Object.keys(text).sort()).toEqual(['escapeColumn', 'parseClipboard', 'quoteSheetIfNeeded', 'scanReferences'])
+    expect(Object.keys(text).sort()).toEqual(['escapeColumn', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'scanReferences'])
     for (const [k, f] of Object.entries(text)) expect(root[k as keyof typeof root], k).toBe(f)
   })
 })

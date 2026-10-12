@@ -110,12 +110,12 @@ describe('the functions of the package take no options they do not', () => {
   const FUNCTIONS: [string, Record<string, unknown>, Record<string, number>][] = [
     ['xlcalc', root, {
       compute: 2, createSession: 2, createInlineCalc: 1, viewportOf: 4, editStructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
-      toLocal: 3, toInvariant: 3, registerLocale: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, entryWidth: 2, fitColumns: 4, displayValue: 2, builtinFormatCode: 2, errorText: 2,
+      toLocal: 3, toInvariant: 3, registerLocale: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, entryWidth: 2, fitColumns: 4, displayValue: 2, builtinFormatCode: 2, numberFormatCategory: 2, numberFormatChoices: 1, errorText: 2,
       scanReferences: 2, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, internStyle: 2, escapeColumn: 1, parseClipboard: 1,
       parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2,
     }],
     ['xlcalc/a1', a1, { parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2 }],
-    ['xlcalc/text', text, { scanReferences: 2, quoteSheetIfNeeded: 2, escapeColumn: 1, parseClipboard: 1 }],
+    ['xlcalc/text', text, { scanReferences: 2, quoteSheetIfNeeded: 2, escapeColumn: 1, parseClipboard: 1, numberFormatCategory: 2, numberFormatChoices: 1 }],
     ['xlcalc/xlsx', xlsx, { readXlsx: 2, writeXlsx: 2, fromLegacy: 2 }],
     ['xlcalc/worker', worker, { createCalcPool: 1 }],
   ]
@@ -133,9 +133,9 @@ describe('the functions of the package take no options they do not', () => {
     })
 
   it("toLocal, toInvariant and fromLegacy with an unknown option; a callback's index and array pass", () => {
-    expect(() => toInvariant('СУММ(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table)')
+    expect(() => toInvariant('СУММ(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table, externalBooks)')
     expect(() => (toInvariant as (...a: unknown[]) => unknown)('СУММ(A1)', ruRU, { table: 'T' }, { table: 'T' })).toThrow('toInvariant: takes 3 arguments, got an object as argument 4 (table is an option of toLocal and toInvariant)')
-    expect(() => toLocal('SUM(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table)')
+    expect(() => toLocal('SUM(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table, externalBooks)')
     expect(() => toLocal('SUM(A1)', ruRU, 'T' as never)).toThrow(InputError)
     expect(toLocal('T[[#This Row],[Qty]]*2', ruRU, { table: 'T' })).toEqual({ ok: true, formula: '[@Qty]*2' })
     expect(() => xlsx.fromLegacy('A1:A2*2', { sheets: 'S' } as never)).toThrow('ctx: unknown field "sheets" (expected names, sheet)')

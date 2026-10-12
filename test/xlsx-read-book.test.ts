@@ -115,7 +115,7 @@ describe('xlsx reader: names', () => {
       'name _xlnm.Print_Area: a built-in name (a print area or titles, the range of a filter) is not in the model',
       'name _xlnm._FilterDatabase: a built-in name (a print area or titles, the range of a filter) is not in the model',
       'name secret: a hidden name is read as a visible one',
-      'externalLink ext: references to other workbooks are not in the engine',
+      'externalLink ext: a reference to another workbook that is not one of the links the file holds, or that the engine does not parse',
     ])
   })
 })

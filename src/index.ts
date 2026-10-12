@@ -43,7 +43,7 @@ export { enUS, type Locale, type Translation } from './locale/index.js'
 export { LOCALES } from './locale/registry.js'
 export type { CopyContext } from './structure/copy.js'
 export * from './a1.js'
-export { escapeColumn, parseClipboard, scanReferences } from './text.js'
+export { escapeColumn, numberFormatCategory, numberFormatChoices, parseClipboard, scanReferences } from './text.js'
 export type { DateSystemOptions } from './date-serial.js'
 
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses
@@ -102,7 +102,7 @@ export const validateNames = /* @__PURE__ */ strict(function validateNames(names
   const c = checkNamesContext(ctx)
   const sheetIdx = new Map(c.sheets.map((name, i) => [sheetKey(name), i]))
   const externalFunctions = (c.externalFunctions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
-  return prepareNames(sheetIdx, checkNames(names, 'names'), externalFunctions, c.tables ?? [], localeBooleans(c.locale)).issues
+  return prepareNames(sheetIdx, checkNames(names, 'names'), externalFunctions, c.tables ?? [], localeBooleans(c.locale), c.externalBooks).issues
 })
 
 /** The `eval` mode's generated code of the book in evaluation order, for reading while debugging; not part of the contract. */

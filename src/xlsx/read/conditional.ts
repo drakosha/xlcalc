@@ -15,7 +15,7 @@ import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
 import { ATTRS, attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
-import { readFormula } from './formulas.js'
+import { readFormula, type FormulaOptions } from './formulas.js'
 import { sqrefRanges } from './refs.js'
 
 /** The extension of a sheet that holds Excel 2010's conditional formatting. */
@@ -34,6 +34,7 @@ interface Context {
   dxfs: Dxf[]
   palette: Palette
   issues: Issues
+  formulas: FormulaOptions
 }
 
 /** The worksheet's own `<conditionalFormatting>` blocks: without a prefix, as 2010's (`x14:`) are not. */
@@ -64,7 +65,7 @@ function ranges(sqref: string, ctx: Context): string[] {
 
 /** A formula in the engine's spelling, reported where it does not parse. */
 function formula(text: string, where: string, ctx: Context): string {
-  return readFormula(readText(text), ctx.issues, { sheet: ctx.sheet, cell: where }).formula
+  return readFormula(readText(text), ctx.issues, { sheet: ctx.sheet, cell: where }, ctx.formulas).formula
 }
 
 /** A threshold: `val` (2007) or `<xm:f>` (2010) as its formula. */
@@ -225,8 +226,8 @@ function joinBar(base: Extract<ConditionalFormat, { type: 'dataBar' }>, x: Eleme
 }
 
 /** The sheet's conditional formats in priority order, from its tail (the worksheet after `<sheetData>`). */
-export function readConditional(tail: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues): ConditionalFormat[] | undefined {
-  const ctx: Context = { sheet, dxfs, palette, issues }
+export function readConditional(tail: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues, formulas: FormulaOptions): ConditionalFormat[] | undefined {
+  const ctx: Context = { sheet, dxfs, palette, issues, formulas }
   const { blocks, rest } = split(tail)
   const found: Read[] = []
   for (const b of blocks) {

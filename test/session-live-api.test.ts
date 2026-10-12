@@ -97,6 +97,18 @@ describe.each(['closures', 'eval'] as const)('live workbook additions, %s', exec
     await s.applyChanges([{op:'setCells',edits:[{sheet:'S',cell:'A1',input:{value:2}}]}]);await check(s)
    }finally{await s.close();await calc?.close()}
   })
+  it('previews linked formulas without leaking refresh markers or linked values',async()=>{
+   const s=await open({sheets:[{name:'S',cells:{A1:{formula:"'[1]Sheet1'!A9"}}}],externalBooks:[{target:'Other.xlsx',sheets:[{name:'Sheet1',cells:{A1:1}}]}]},{clock,execution,display:false})
+   try{
+    const before=await s.getSnapshot()
+    const ops:SessionOperation[]=[{op:'setCells',edits:[{sheet:'S',cell:'B1',input:{formula:"'[1]Sheet1'!A1"}}]}]
+    const p=await s.previewChanges(ops,{clock})
+    expect(await s.getBook()).toEqual(before.book);expect(await s.getHash()).toBe(before.result.hash)
+    expect(p.impacts.find(c=>c.cell==='A1')!.after).toEqual({error:'REF'})
+    const a=await s.applyChanges(ops,{clock:p.clock,baseRevision:p.revision})
+    expect(a.changes).toEqual(p.changes);await check(s)
+   }finally{await s.close()}
+  })
   it('refuses an invalid later operation without applying the earlier one', async () => {
    const s = await session(), before = await s.getHash()
    try {

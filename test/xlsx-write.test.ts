@@ -117,7 +117,7 @@ describe('xlsx writer', () => {
       'A1: a name Excel does not take is left out of the file',
       'ok: a name given twice is left out of the file',
       'gone: a name of a sheet the book does not have is left out of the file',
-      'bad: a name whose reference does not parse or names a table or a column the book does not have is left out of the file',
+      'bad: a name whose reference does not parse or names a table, a column or a link to another workbook the book does not have is left out of the file',
     ])
     const r = await readXlsx(data)
     expect(r.book.sheets[0].cells).toMatchObject({ A2: { formula: 'A2+1' }, A3: { value: 'x'.repeat(32_767) }, A4: { formula: '#REF!' }, A5: { formula: '#NULL!' } })

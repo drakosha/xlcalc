@@ -31,7 +31,7 @@ function lineFormat(s: EngineState, i: number, r: number, c: number) {
 /** What `text` typed, or pasted (`pasted`), into the cell at the moment `now` reads as (`readEntry`), by the format the cell shows: `own`'s, else its row's or column's. */
 export function readText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, pasted = false): EntryResult {
   const shown = own?.numberFormat ?? lineFormat(s, i, r, c)
-  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown } }, pasted)
+  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown }, externalBooks: s.input.externalBooks ?? [] }, pasted)
 }
 
 /** The input `own` of the cell with an entry's content and format (`typed`, `readText`'s input) in place of its own; a format its row or column gives it stays theirs. */

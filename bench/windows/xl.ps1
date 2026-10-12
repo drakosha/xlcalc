@@ -375,6 +375,8 @@ function Step($xl, $wb, $s) {
       [void]$wb.Worksheets.Item(1).Activate()
       $all
     }
+    # the book's folder and the linked books as Excel lists them (LinkSources of Excel links; none is Empty)
+    'links' { List @((Str $wb.Path), (List @(@($wb.LinkSources(1)) | Where-Object { $null -ne $_ } | ForEach-Object { Str $_ }))) }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     default { throw "unknown step $($s.do)" }

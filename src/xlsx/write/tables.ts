@@ -12,16 +12,16 @@ import { cornersText, parseRange } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { fileTree, KEEP_ALL } from './sheet.js'
+import { fileTree, KEEP_ALL, type FileNames } from './sheet.js'
 import { HEAD, MAIN } from './xml.js'
 
 /** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode. */
-export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: Set<string>, tables: { name: string; columns: string[] }[], issues: Issues, filtered = false): string {
+export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: FileNames, issues: Issues, filtered = false): string {
   const x = parseRange(t.range)!
   const headers = t.headers !== false
   const totals = t.totals === true
   const file = (f: string | undefined, cell: string) => {
-    const tree = f === undefined ? null : fileTree(f, sheets, tables, t.name)
+    const tree = f === undefined ? null : fileTree(f, names, t.name)
     if (f !== undefined && !tree) issues.add('formula', { key: 'tableFormulaOut', table: t.name }, { sheet: sheet.name, cell })
     return tree ? escapeText(toFile(tree)) : undefined
   }

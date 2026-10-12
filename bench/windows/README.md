@@ -17,6 +17,7 @@ The books are the Mac harness's own: the measurement, the probes, the case sets,
 - `entry/<set>.json`, `entry/ru-RU/<set>.json`: text typed into cells through `Formula2Local` in the Mac step's books (`bench/coverage/entry/`), what each cell shows, its format codes and prefix character, its `Value2` (sets run since `typed-pct-held`), and what the book Excel saved holds; `meta` names Excel's `AutoPercentEntry`.
 - `fit/<set>.json`, `fit/ru-RU/<set>.json`: column widths in the Mac step's books (`bench/coverage/fit/`), each case's column fitted (`EntireColumn.AutoFit`) or its texts set through `Value2` or `Formula2Local` (the keyboard's cases are the Mac's alone), its `ColumnWidth`, `Width` and `UseStandardWidth`, what its cells show and the `<col>` of the saved file.
 - `lines/<set>.json` and `lines/<set>/`: formats of rows and columns in the Mac step's books (`bench/coverage/lines/`), each case's steps through COM (a range's `NumberFormat`, `Font.Bold`, `Font.Italic`, `Interior.Color`, a cell's `Value2`), what the read cells show (`Range.Text`, `NumberFormat`, `DisplayFormat`'s fill and font) and the files Excel saved.
+- `links/<set>.json` and `links/<set>/`: links to other workbooks in the Mac step's books (`bench/coverage/links/`), opened with `UpdateLinks` 0 as every book of this harness, the linked books (`LinkSources`) and the book's `Path`, each rectangle's `Value2` and each cell's `Text`, `Formula` and `FormulaLocal` after opening and after the case's operations (`Struct`), and the files Excel saved.
 - `hidden/<set>.json` and `hidden/<set>/`: hidden sheets in the Mac step's books (`bench/coverage/hidden/`), each sheet's `Visible` set through COM, the sheet operation, each sheet's visibility, the active sheet and the read cells' `Value2`, and the files Excel saved.
 - `ui/<set>.json`, `ui/ru-RU/<set>.json`: the Mac step's ui sets (`bench/coverage/ui/`) in its books: text put on the clipboard (`Set-Clipboard`) and pasted with the cell selected (`Worksheet.Paste`), and the cells of a case of `bars` read through the object model alone (`Formula2`, `Formula2Local`, `FormulaArray`, `HasArray`, `HasSpill`, `SpillParent`), as Excel has no formula bar to read over SSH; each cell as on the Mac and the columns' widths. The cases of `fill` (Control+Return) are the Mac keyboard's alone.
 - `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them; `xlsx/formats.json` and `xlsx/ru-RU/formats.json` the codes Excel shows for the built-in number formats 1 to 58 (`NumberFormat` and `NumberFormatLocal`, both in the user's language as COM reads them over SSH).
@@ -48,6 +49,7 @@ npx tsx bench/windows/run.ts xlsx filters
 npx tsx bench/windows/run.ts xlsx formats ru
 npx tsx bench/windows/run.ts entry typed ru
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts hidden sheets-held
+XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts links basics-held
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts lines files
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts valid files
 npx tsx bench/windows/run.ts ui paste-held ru

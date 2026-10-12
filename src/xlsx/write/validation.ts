@@ -11,7 +11,7 @@ import { rectText } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { fileTree } from './sheet.js'
+import { fileTree, type FileNames } from './sheet.js'
 import { clip } from './xml.js'
 
 /** Excel's limits on a rule's texts: it does not load a file with longer ones. */
@@ -20,11 +20,8 @@ const LIMITS = { promptTitle: 32, prompt: 255, errorTitle: 32, error: 225 } as c
 /** `sqref`: each range from its first cell to its last, whole columns and rows too, as Excel saves them (`O1:O1048576`, the set `valid/files`). */
 const sqref = (range: string) => areasOf(range)!.map(rectText).join(' ')
 
-export interface ValidationContext {
+export interface ValidationContext extends FileNames {
   sheet: string
-  /** Upper-case names (`sheetKey`) of the book's sheets. */
-  sheets: Set<string>
-  tables: { name: string; columns: string[] }[]
   issues: Issues
 }
 
@@ -36,7 +33,7 @@ export function validationsXml(rules: DataValidation[] | undefined, ctx: Validat
     for (const k of ['formula1', 'formula2'] as const) {
       const text = v[k]
       if (text === undefined) continue
-      const tree = fileTree(text, ctx.sheets, ctx.tables)
+      const tree = fileTree(text, ctx)
       if (!tree) {
         ctx.issues.add('dataValidation', { key: 'ruleFormulaOut' }, where)
         return []

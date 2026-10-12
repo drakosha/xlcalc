@@ -1,0 +1,8890 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-12",
+  "seconds": 619.1
+ },
+ "cases": [
+  {
+   "id": "builtin-1",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": 0
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 1
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": 2
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": 3
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": 4
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": 5
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": 6
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": 7
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": 8
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": 9
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": 10
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": 11
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": 12
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": 13
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": 14
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": 15
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": 16
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": 17
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": 18
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": 19
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": 20
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": 21
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": 22
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": 23
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": 24
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "builtin-2",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": 25
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 26
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": 27
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": 28
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": 29
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": 30
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": 31
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": 32
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": 33
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": 34
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": 35
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": 36
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": 37
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": 38
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": 39
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": 40
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": 41
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": 42
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": 43
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": 44
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": 45
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": 46
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": 47
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": 48
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": 49
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "code-1",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "General"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "0.00"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "$#,##0_);($#,##0)"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "$#,##0_);[Red]($#,##0)"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00_);($#,##0.00)"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00_);[Red]($#,##0.00)"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "0%"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "0.00%"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "0.00E+00"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "# ?/?"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "# ??/??"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "d-mmm-yy"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "d-mmm"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "mmm-yy"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "h:mm AM/PM"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss AM/PM"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "h:mm"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy h:mm"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "General"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "General"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   },
+   "own": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B9",
+    "B10",
+    "B11",
+    "B12",
+    "B13",
+    "B14",
+    "B15",
+    "B16",
+    "B17",
+    "B18",
+    "B19",
+    "B20",
+    "B21",
+    "B22",
+    "B23",
+    "B24",
+    "B25"
+   ]
+  },
+  {
+   "id": "code-2",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "General"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "General"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "#,##0_);(#,##0)"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "#,##0_);[Red](#,##0)"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00_);(#,##0.00)"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00_);[Red](#,##0.00)"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "mm:ss"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "[h]:mm:ss"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "mm:ss.0"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "##0.0E+0"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "@"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   },
+   "own": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B9",
+    "B10",
+    "B11",
+    "B12",
+    "B13",
+    "B14",
+    "B15",
+    "B16",
+    "B17",
+    "B18",
+    "B19",
+    "B20",
+    "B21",
+    "B22",
+    "B23",
+    "B24",
+    "B25"
+   ]
+  },
+  {
+   "id": "ru-code-1",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "#,##0 \"₽\";-#,##0 \"₽\""
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0 \"₽\";[Red]-#,##0 \"₽\""
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"₽\";-#,##0.00 \"₽\""
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"₽\";[Red]-#,##0.00 \"₽\""
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yyyy"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "dd.mmm.yy"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "dd.mmm"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "mmm.yy"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yyyy h:mm"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "#,##0;-#,##0"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "#,##0;[Red]-#,##0"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00;-#,##0.00"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00;[Red]-#,##0.00"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0_-;-* #,##0_-;_-* \"-\"_-;_-@_-"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0 \"₽\"_-;-* #,##0 \"₽\"_-;_-* \"-\" \"₽\"_-;_-@_-"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00_-;-* #,##0.00_-;_-* \"-\"??_-;_-@_-"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00 \"₽\"_-;-* #,##0.00 \"₽\"_-;_-* \"-\"?? \"₽\"_-;_-@_-"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17"
+    ]
+   },
+   "own": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B9",
+    "B10",
+    "B11",
+    "B12",
+    "B13",
+    "B14",
+    "B15",
+    "B16",
+    "B17"
+   ]
+  },
+  {
+   "id": "variant-1",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "0.000"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.0"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "#,##0.0"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0.000"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "0.0000000000"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "0.000000000000000000000000000000"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "0.00_);(0.00)"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "0.00_);[Red](0.00)"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "0.00;[Red]0.00"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "0.00;[Red]-0.00"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00;[Red]#,##0.00"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00;[Red]-#,##0.00"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "#,##0;-#,##0"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "0;[Red]0"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "[Red]0.00"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "[Blue]0.00"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "0.00;[Blue]-0.00"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "0.00;-0.00"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "0.00;-0.00;0.00"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "0.00;-0.00;\"-\""
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "#.##"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "#,###"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "00.00"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "0.00 \"kg\""
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 "
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-2",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "# ##0.00"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00;(0.00)"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "(0.00)"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "0.0%"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "0.000%"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00%"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "0.00%;[Red]-0.00%"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "0%;-0%"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "0.0000000000%"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "# ???/???"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "?/?"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "??/??"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "# ?/2"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "# ?/4"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "# ?/8"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "# ??/16"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "# ?/10"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "# ??/100"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "0 ?/?"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "# ?/3"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "#\" \"?/?"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "0.000E+00"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "0E+00"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "0.0E+00"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "0.0E+0"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-3",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "0.00E-00"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#.##E+00"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "0.00E+000"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "0.0000000000E+00"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "\"x\"@"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "@\" kg\""
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": ";;;@"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "0;-0;0;@"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "General;[Red]-General"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "[Red]General"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "General\" kg\""
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "0;-0;0;General"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "General;General;General;@"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": ";;;"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": ";;"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "0;;"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "$#,##0"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.000"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00;[Red]$#,##0.00"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00;-$#,##0.00"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00;[Red]-$#,##0.00"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "\"$\"#,##0.00"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "\\$#,##0.00"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-4",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "[$$-409]#,##0.00"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "[$$-en-US]#,##0.00"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "[$$-409]#,##0.00;[Red]-[$$-409]#,##0.00"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "$0.00"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 $"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "$ #,##0.00"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "[$€-x-euro2] #,##0.00"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "[$€-407] #,##0.00"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$€-407]"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "[$€-2] #,##0.00"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$€-1]"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "€#,##0.00"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 €"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "[$£-809]#,##0.00"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "£#,##0.00"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "[$¥-411]#,##0"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "¥#,##0"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "[$USD] #,##0.00"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "[$CHF] #,##0.00"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "[$EUR] #,##0.00"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$₽-419]"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"₽\""
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 ₽"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00\\ \"₽\""
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00\\ [$₽-419]"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-5",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$₽-ru-RU]"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0 \"₽\""
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"₽\";[Red]-#,##0.00 \"₽\""
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00\"р.\""
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"руб.\""
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "[$₽-419]#,##0.00"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$RUB]"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "_($* #,##0.000_);_($* (#,##0.000);_($* \"-\"???_);_(@_)"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "_([$$-409]* #,##0.00_);_([$$-409]* (#,##0.00);_([$$-409]* \"-\"??_);_(@_)"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "_-[$$-409]* #,##0.00_ ;_-[$$-409]* -#,##0.00 ;_-[$$-409]* \"-\"??_ ;_-@_ "
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "_([$€-x-euro2] * #,##0.00_);_([$€-x-euro2] * (#,##0.00);_([$€-x-euro2] * \"-\"??_);_(@_)"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00 [$€-407]_-;-* #,##0.00 [$€-407]_-;_-* \"-\"?? [$€-407]_-;_-@_-"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00 [$₽-419]_-;-* #,##0.00 [$₽-419]_-;_-* \"-\"?? [$₽-419]_-;_-@_-"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00\\ [$₽-419]_-;\\-* #,##0.00\\ [$₽-419]_-;_-* \"-\"??\\ [$₽-419]_-;_-@_-"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "_($* #,##0.00_)"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "$* #,##0.00"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "m/d/yy"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "mm/dd/yyyy"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "mm/dd/yy"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "m/d"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "d/m/yyyy"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "dd/mm/yyyy"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "yyyy-mm-dd"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "d.m.yy"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-6",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yy"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "d.m.yyyy"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "mmmm-yy"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "mmmm d, yyyy"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "mmmmm"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "mmmmm-yy"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "d-mmm-yyyy"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "dddd, mmmm d, yyyy"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "dddd, mmmm dd, yyyy"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "[$-F800]dddd, mmmm dd, yyyy"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "[$-F800]dddd, mmmm d, yyyy"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "[$-F800]dddd\\, mmmm dd\\, yyyy"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "d mmmm yyyy"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "d mmmm yyyy \"г.\""
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "dddd, d mmmm yyyy \"г.\""
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "mmmm yyyy"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "yyyy"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "mmm d"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "dd/mmm/yy"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "[$-409]m/d/yy"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "[$-409]mmmm d, yyyy;@"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "[$-419]dd.mm.yyyy"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "[$-x-sysdate]dddd, mmmm dd, yyyy"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "m/d/yy h:mm"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "m/d/yy h:mm AM/PM"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-7",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yy h:mm"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "yyyy-mm-dd hh:mm:ss"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "dd/mm/yyyy;@"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy;@"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yyyy;@"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "dddd"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "ddd, mmm d"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "m/d/yy;[Red]m/d/yy"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "[Red]m/d/yy"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "yyyy\\-mm\\-dd"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "d/m/yy"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "yy/m/d"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "hh:mm"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "hh:mm:ss"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "hh:mm AM/PM"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "[$-F400]h:mm:ss AM/PM"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "[$-F400]h:mm:ss"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "[h]:mm"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "[mm]:ss"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss.000"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "h\"h\" mm\"m\""
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "[$-409]h:mm:ss AM/PM;@"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "h:mm;@"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "h:mm A/P"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "ss"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-8",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "h"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "[$-419]h:mm"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss;@"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "[$-F400]h:mm:ss AM/PM;@"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "00000"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "00000-0000"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "[<=9999999]###-####;(###) ###-####"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "000-00-0000"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "000000"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "[Color10]0.00"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "[>=100]0.00;[Red]0.00"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "[<0]\"neg\";\"pos\""
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "0.00;[Red]-0.00;\"zero\""
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "[Red][<0]0.00;0.00"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "[>100][Red]0;0"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "\"text\""
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "0\" pcs\""
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "\"$\"0.00"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18"
+    ]
+   }
+  },
+  {
+   "id": "value-1",
+   "cells": {
+    "B1": {
+     "value": "x",
+     "numberFormat": "0.00"
+    },
+    "B2": {
+     "numberFormat": "0.00"
+    },
+    "B3": {
+     "value": -2.5,
+     "numberFormat": "0.00"
+    },
+    "B4": {
+     "value": 45688,
+     "numberFormat": "0.00"
+    },
+    "B5": {
+     "value": "x",
+     "numberFormat": "$#,##0.00"
+    },
+    "B6": {
+     "numberFormat": "$#,##0.00"
+    },
+    "B7": {
+     "value": -2.5,
+     "numberFormat": "$#,##0.00"
+    },
+    "B8": {
+     "value": 45688,
+     "numberFormat": "$#,##0.00"
+    },
+    "B9": {
+     "value": "x",
+     "numberFormat": "m/d/yy"
+    },
+    "B10": {
+     "numberFormat": "m/d/yy"
+    },
+    "B11": {
+     "value": -2.5,
+     "numberFormat": "m/d/yy"
+    },
+    "B12": {
+     "value": 45688,
+     "numberFormat": "m/d/yy"
+    },
+    "B13": {
+     "value": "x",
+     "numberFormat": "h:mm"
+    },
+    "B14": {
+     "numberFormat": "h:mm"
+    },
+    "B15": {
+     "value": -2.5,
+     "numberFormat": "h:mm"
+    },
+    "B16": {
+     "value": 45688,
+     "numberFormat": "h:mm"
+    },
+    "B17": {
+     "value": "x",
+     "numberFormat": "0%"
+    },
+    "B18": {
+     "numberFormat": "0%"
+    },
+    "B19": {
+     "value": -2.5,
+     "numberFormat": "0%"
+    },
+    "B20": {
+     "value": 45688,
+     "numberFormat": "0%"
+    },
+    "B21": {
+     "value": "x",
+     "numberFormat": "@"
+    },
+    "B22": {
+     "numberFormat": "@"
+    },
+    "B23": {
+     "value": -2.5,
+     "numberFormat": "@"
+    },
+    "B24": {
+     "value": 45688,
+     "numberFormat": "@"
+    },
+    "B25": {
+     "value": "x",
+     "numberFormat": "General"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "value-2",
+   "cells": {
+    "B1": {
+     "numberFormat": "General"
+    },
+    "B2": {
+     "value": -2.5,
+     "numberFormat": "General"
+    },
+    "B3": {
+     "value": 45688,
+     "numberFormat": "General"
+    },
+    "B4": {
+     "value": "x",
+     "numberFormat": "0.000"
+    },
+    "B5": {
+     "numberFormat": "0.000"
+    },
+    "B6": {
+     "value": -2.5,
+     "numberFormat": "0.000"
+    },
+    "B7": {
+     "value": 45688,
+     "numberFormat": "0.000"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7"
+    ]
+   }
+  },
+  {
+   "id": "choose-1",
+   "cells": {
+    "B1": {
+     "value": 1.5
+    },
+    "B2": {
+     "value": 1.5
+    },
+    "B3": {
+     "value": 1.5
+    },
+    "B4": {
+     "value": 1.5
+    },
+    "B5": {
+     "value": 1.5
+    },
+    "B6": {
+     "value": 1.5
+    },
+    "B7": {
+     "value": 1.5
+    },
+    "B8": {
+     "value": 1.5
+    },
+    "B9": {
+     "value": 1.5
+    },
+    "B10": {
+     "value": 1.5
+    },
+    "B11": {
+     "value": 1.5
+    }
+   },
+   "act": {
+    "do": "choose",
+    "picks": [
+     [
+      "B1",
+      1
+     ],
+     [
+      "B2",
+      2
+     ],
+     [
+      "B3",
+      3
+     ],
+     [
+      "B4",
+      4
+     ],
+     [
+      "B5",
+      5
+     ],
+     [
+      "B6",
+      6
+     ],
+     [
+      "B7",
+      7
+     ],
+     [
+      "B8",
+      8
+     ],
+     [
+      "B9",
+      9
+     ],
+     [
+      "B10",
+      10
+     ],
+     [
+      "B11",
+      11
+     ]
+    ]
+   }
+  },
+  {
+   "id": "choose-2",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "0.000"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.000"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "[$€-x-euro2] #,##0.00"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$₽-419]"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "_([$€-x-euro2] * #,##0.00_);_([$€-x-euro2] * (#,##0.00);_([$€-x-euro2] * \"-\"??_);_(@_)"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "0.000%"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "dd/mm/yyyy"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "d mmmm yyyy"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "hh:mm"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "0.0E+00"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "# ???/???"
+    },
+    "B12": {
+     "value": "x"
+    },
+    "B13": {},
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "#,##0.0"
+    },
+    "B15": {
+     "value": "x",
+     "numberFormat": "@"
+    }
+   },
+   "act": {
+    "do": "choose",
+    "picks": [
+     [
+      "B1",
+      2
+     ],
+     [
+      "B2",
+      3
+     ],
+     [
+      "B3",
+      3
+     ],
+     [
+      "B4",
+      3
+     ],
+     [
+      "B5",
+      4
+     ],
+     [
+      "B6",
+      8
+     ],
+     [
+      "B7",
+      5
+     ],
+     [
+      "B8",
+      6
+     ],
+     [
+      "B9",
+      7
+     ],
+     [
+      "B10",
+      10
+     ],
+     [
+      "B11",
+      9
+     ],
+     [
+      "B12",
+      2
+     ],
+     [
+      "B13",
+      3
+     ],
+     [
+      "B14",
+      2
+     ],
+     [
+      "B15",
+      2
+     ]
+    ]
+   }
+  }
+ ],
+ "answers": {
+  "builtin-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 1
+     },
+     "text": "2",
+     "code": "0",
+     "local": "0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Числовой"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": 2
+     },
+     "text": "1,50",
+     "code": "0.00",
+     "local": "0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": 3
+     },
+     "text": "2",
+     "code": "#,##0",
+     "local": "# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": 4
+     },
+     "text": "1,50",
+     "code": "#,##0.00",
+     "local": "# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+     },
+     "text": "2 ₽",
+     "code": "$#,##0_);($#,##0)",
+     "local": "# ##0 ₽;-# ##0 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+     },
+     "text": "2 ₽",
+     "code": "$#,##0_);[Red]($#,##0)",
+     "local": "# ##0 ₽;[Красный]-# ##0 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\";\\-#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "$#,##0.00_);($#,##0.00)",
+     "local": "# ##0,00 ₽;-# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\";[Red]\\-#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "$#,##0.00_);[Red]($#,##0.00)",
+     "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": 9
+     },
+     "text": "150%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Процентный"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": 10
+     },
+     "text": "150,00%",
+     "code": "0.00%",
+     "local": "0,00%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": 11
+     },
+     "text": "1,50E+00",
+     "code": "0.00E+00",
+     "local": "0,00E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": 12
+     },
+     "text": "1 1/2",
+     "code": "# ?/?",
+     "local": "#\" \"?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": 13
+     },
+     "text": "1  1/2 ",
+     "code": "# ??/??",
+     "local": "#\" \"??/??",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": 15
+     },
+     "text": "01.янв.00",
+     "code": "d-mmm-yy",
+     "local": "ДД.МММ.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": 16
+     },
+     "text": "01.янв",
+     "code": "d-mmm",
+     "local": "ДД.МММ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": 17
+     },
+     "text": "янв.00",
+     "code": "mmm-yy",
+     "local": "МММ.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": 18
+     },
+     "text": "12:00 PM",
+     "code": "h:mm AM/PM",
+     "local": "ч:мм AM/PM",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": 19
+     },
+     "text": "#########",
+     "code": "h:mm:ss AM/PM",
+     "local": "ч:мм:сс AM/PM",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": 20
+     },
+     "text": "12:00",
+     "code": "h:mm",
+     "local": "чч:мм",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": 21
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "чч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": 22
+     },
+     "text": "#########",
+     "code": "m/d/yy h:mm",
+     "local": "ДД.ММ.ГГГГ чч:мм",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "builtin-2": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": 21
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "чч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": 21
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "чч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": 21
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "чч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": 21
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "чч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": 37
+     },
+     "text": "2",
+     "code": "#,##0_);(#,##0)",
+     "local": "# ##0;-# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": 38
+     },
+     "text": "2",
+     "code": "#,##0_);[Red](#,##0)",
+     "local": "# ##0;[Красный]-# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": 39
+     },
+     "text": "1,50",
+     "code": "#,##0.00_);(#,##0.00)",
+     "local": "# ##0,00;-# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": 40
+     },
+     "text": "1,50",
+     "code": "#,##0.00_);[Red](#,##0.00)",
+     "local": "# ##0,00;[Красный]-# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0_-;\\-* #,##0_-;_-* \"-\"_-;_-@_-"
+     },
+     "text": "                    2 ",
+     "code": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+     "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0\\ \"₽\"_-;\\-* #,##0\\ \"₽\"_-;_-* \"-\"\\ \"₽\"_-;_-@_-"
+     },
+     "text": "                2 ₽ ",
+     "code": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)",
+     "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00_-;\\-* #,##0.00_-;_-* \"-\"??_-;_-@_-"
+     },
+     "text": "            1,50 ",
+     "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+     },
+     "text": "        1,50 ₽ ",
+     "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": 45
+     },
+     "text": "00:00",
+     "code": "mm:ss",
+     "local": "мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": 46
+     },
+     "text": "36:00:00",
+     "code": "[h]:mm:ss",
+     "local": "[ч]:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": 47
+     },
+     "text": "00:00,0",
+     "code": "mm:ss.0",
+     "local": "мм:сс,0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": 48
+     },
+     "text": "1,5E+0",
+     "code": "##0.0E+0",
+     "local": "##0,0E+0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": 49
+     },
+     "text": "1,5",
+     "code": "@",
+     "local": "@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Текстовый"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 1
+     },
+     "text": "2",
+     "code": "0",
+     "local": "0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Числовой"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": 2
+     },
+     "text": "1,50",
+     "code": "0.00",
+     "local": "0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": 3
+     },
+     "text": "2",
+     "code": "#,##0",
+     "local": "# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": 4
+     },
+     "text": "1,50",
+     "code": "#,##0.00",
+     "local": "# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0_);\\(\\$#,##0\\)"
+     },
+     "text": "$2 ",
+     "code": "\\$#,##0_);(\\$#,##0)",
+     "local": "$# ##0_);($# ##0)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0_);[Red]\\(\\$#,##0\\)"
+     },
+     "text": "$2 ",
+     "code": "\\$#,##0_);[Red](\\$#,##0)",
+     "local": "$# ##0_);[Красный]($# ##0)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.00_);\\(\\$#,##0.00\\)"
+     },
+     "text": "$1,50 ",
+     "code": "\\$#,##0.00_);(\\$#,##0.00)",
+     "local": "$# ##0,00_);($# ##0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.00_);[Red]\\(\\$#,##0.00\\)"
+     },
+     "text": "$1,50 ",
+     "code": "\\$#,##0.00_);[Red](\\$#,##0.00)",
+     "local": "$# ##0,00_);[Красный]($# ##0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": 9
+     },
+     "text": "150%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Процентный"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": 10
+     },
+     "text": "150,00%",
+     "code": "0.00%",
+     "local": "0,00%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": 11
+     },
+     "text": "1,50E+00",
+     "code": "0.00E+00",
+     "local": "0,00E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ?/?"
+     },
+     "text": "1 1/2",
+     "code": "# ?/?",
+     "local": "#\\ ?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ??/??"
+     },
+     "text": "1  1/2 ",
+     "code": "# ??/??",
+     "local": "#\\ ??/??",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "m/d/yyyy",
+     "local": "М.Д.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "d\\-mmm\\-yy"
+     },
+     "text": "1-янв-00",
+     "code": "d-mmm-yy",
+     "local": "Д-МММ-ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "d\\-mmm"
+     },
+     "text": "1-янв",
+     "code": "d-mmm",
+     "local": "Д-МММ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "mmm\\-yy"
+     },
+     "text": "янв-00",
+     "code": "mmm-yy",
+     "local": "МММ-ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": 18
+     },
+     "text": "12:00 PM",
+     "code": "h:mm AM/PM",
+     "local": "ч:мм AM/PM",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": 19
+     },
+     "text": "#########",
+     "code": "h:mm:ss AM/PM",
+     "local": "ч:мм:сс AM/PM",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm"
+     },
+     "text": "12:00",
+     "code": "h:mm",
+     "local": "ч:мм",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm:ss"
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "ч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy\\ h:mm"
+     },
+     "text": "#########",
+     "code": "m/d/yyyy h:mm",
+     "local": "М.Д.ГГГГ ч:мм",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-2": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "m/d/yyyy",
+     "local": "М.Д.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "m/d/yyyy",
+     "local": "М.Д.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "m/d/yyyy",
+     "local": "М.Д.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "m/d/yyyy",
+     "local": "М.Д.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "m/d/yyyy",
+     "local": "М.Д.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm:ss"
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "ч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm:ss"
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "ч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm:ss"
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "ч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm:ss"
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "ч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "m/d/yyyy",
+     "local": "М.Д.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0_);\\(#,##0\\)"
+     },
+     "text": "2 ",
+     "code": "#,##0_);(#,##0)",
+     "local": "# ##0_);(# ##0)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0_);[Red]\\(#,##0\\)"
+     },
+     "text": "2 ",
+     "code": "#,##0_);[Red](#,##0)",
+     "local": "# ##0_);[Красный](# ##0)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00_);\\(#,##0.00\\)"
+     },
+     "text": "1,50 ",
+     "code": "#,##0.00_);(#,##0.00)",
+     "local": "# ##0,00_);(# ##0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00_);[Red]\\(#,##0.00\\)"
+     },
+     "text": "1,50 ",
+     "code": "#,##0.00_);[Red](#,##0.00)",
+     "local": "# ##0,00_);[Красный](# ##0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(* #,##0_);_(* \\(#,##0\\);_(* \"-\"_);_(@_)"
+     },
+     "text": "                    2 ",
+     "code": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+     "local": "_(* # ##0_);_(* (# ##0);_(* \"-\"_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(\\$* #,##0_);_(\\$* \\(#,##0\\);_(\\$* \"-\"_);_(@_)"
+     },
+     "text": " $                2 ",
+     "code": "_(\\$* #,##0_);_(\\$* (#,##0);_(\\$* \"-\"_);_(@_)",
+     "local": "_($* # ##0_);_($* (# ##0);_($* \"-\"_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(* #,##0.00_);_(* \\(#,##0.00\\);_(* \"-\"??_);_(@_)"
+     },
+     "text": "            1,50 ",
+     "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "local": "_(* # ##0,00_);_(* (# ##0,00);_(* \"-\"??_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(\\$* #,##0.00_);_(\\$* \\(#,##0.00\\);_(\\$* \"-\"??_);_(@_)"
+     },
+     "text": " $        1,50 ",
+     "code": "_(\\$* #,##0.00_);_(\\$* (#,##0.00);_(\\$* \"-\"??_);_(@_)",
+     "local": "_($* # ##0,00_);_($* (# ##0,00);_($* \"-\"??_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": 45
+     },
+     "text": "00:00",
+     "code": "mm:ss",
+     "local": "мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": 46
+     },
+     "text": "36:00:00",
+     "code": "[h]:mm:ss",
+     "local": "[ч]:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": 47
+     },
+     "text": "00:00,0",
+     "code": "mm:ss.0",
+     "local": "мм:сс,0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": 48
+     },
+     "text": "1,5E+0",
+     "code": "##0.0E+0",
+     "local": "##0,0E+0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": 49
+     },
+     "text": "1,5",
+     "code": "@",
+     "local": "@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Текстовый"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "ru-code-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0\\ \"₽\";\\-#,##0\\ \"₽\""
+     },
+     "text": "2 ₽",
+     "code": "$#,##0_);($#,##0)",
+     "local": "# ##0 ₽;-# ##0 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+     },
+     "text": "2 ₽",
+     "code": "$#,##0_);[Red]($#,##0)",
+     "local": "# ##0 ₽;[Красный]-# ##0 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\";\\-#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "$#,##0.00_);($#,##0.00)",
+     "local": "# ##0,00 ₽;-# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\";[Red]\\-#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "$#,##0.00_);[Red]($#,##0.00)",
+     "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "dd\\.mm\\.yyyy"
+     },
+     "text": "#########",
+     "code": "dd.mm.yyyy",
+     "local": "ДД\\.ММ\\.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "dd\\.mmm\\.yy"
+     },
+     "text": "01.янв.00",
+     "code": "dd.mmm.yy",
+     "local": "ДД\\.МММ\\.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "dd\\.mmm"
+     },
+     "text": "01.янв",
+     "code": "dd.mmm",
+     "local": "ДД\\.МММ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "mmm\\.yy"
+     },
+     "text": "янв.00",
+     "code": "mmm.yy",
+     "local": "МММ\\.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "dd\\.mm\\.yyyy\\ h:mm"
+     },
+     "text": "#########",
+     "code": "dd.mm.yyyy h:mm",
+     "local": "ДД\\.ММ\\.ГГГГ ч:мм",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": 37
+     },
+     "text": "2",
+     "code": "#,##0_);(#,##0)",
+     "local": "# ##0;-# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": 38
+     },
+     "text": "2",
+     "code": "#,##0_);[Red](#,##0)",
+     "local": "# ##0;[Красный]-# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": 39
+     },
+     "text": "1,50",
+     "code": "#,##0.00_);(#,##0.00)",
+     "local": "# ##0,00;-# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": 40
+     },
+     "text": "1,50",
+     "code": "#,##0.00_);[Red](#,##0.00)",
+     "local": "# ##0,00;[Красный]-# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0_-;\\-* #,##0_-;_-* \"-\"_-;_-@_-"
+     },
+     "text": "                    2 ",
+     "code": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+     "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0\\ \"₽\"_-;\\-* #,##0\\ \"₽\"_-;_-* \"-\"\\ \"₽\"_-;_-@_-"
+     },
+     "text": "                2 ₽ ",
+     "code": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)",
+     "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00_-;\\-* #,##0.00_-;_-* \"-\"??_-;_-@_-"
+     },
+     "text": "            1,50 ",
+     "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+     },
+     "text": "        1,50 ₽ ",
+     "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "variant-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000"
+     },
+     "text": "1,500",
+     "code": "0.000",
+     "local": "0,000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0"
+     },
+     "text": "1,5",
+     "code": "0.0",
+     "local": "0,0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.0"
+     },
+     "text": "1,5",
+     "code": "#,##0.0",
+     "local": "# ##0,0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.000"
+     },
+     "text": "1,500",
+     "code": "#,##0.000",
+     "local": "# ##0,000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0000000000"
+     },
+     "text": "#########",
+     "code": "0.0000000000",
+     "local": "0,0000000000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000000000000000000000000000000"
+     },
+     "text": "#########",
+     "code": "0.000000000000000000000000000000",
+     "local": "0,000000000000000000000000000000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00_);\\(0.00\\)"
+     },
+     "text": "1,50 ",
+     "code": "0.00_);(0.00)",
+     "local": "0,00_);(0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00_);[Red]\\(0.00\\)"
+     },
+     "text": "1,50 ",
+     "code": "0.00_);[Red](0.00)",
+     "local": "0,00_);[Красный](0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00;[Red]0.00"
+     },
+     "text": "1,50",
+     "code": "0.00;[Red]0.00",
+     "local": "0,00;[Красный]0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00;[Red]\\-0.00"
+     },
+     "text": "1,50",
+     "code": "0.00;[Red]-0.00",
+     "local": "0,00;[Красный]-0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00;[Red]#,##0.00"
+     },
+     "text": "1,50",
+     "code": "#,##0.00;[Red]#,##0.00",
+     "local": "# ##0,00;[Красный]# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": 40
+     },
+     "text": "1,50",
+     "code": "#,##0.00_);[Red](#,##0.00)",
+     "local": "# ##0,00;[Красный]-# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": 37
+     },
+     "text": "2",
+     "code": "#,##0_);(#,##0)",
+     "local": "# ##0;-# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "0;[Red]0"
+     },
+     "text": "2",
+     "code": "0;[Red]0",
+     "local": "0;[Красный]0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Red]0.00"
+     },
+     "text": "1,50",
+     "code": "[Red]0.00",
+     "local": "[Красный]0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Blue]0.00"
+     },
+     "text": "1,50",
+     "code": "[Blue]0.00",
+     "local": "[Синий]0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00;[Blue]\\-0.00"
+     },
+     "text": "1,50",
+     "code": "0.00;[Blue]-0.00",
+     "local": "0,00;[Синий]-0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00;\\-0.00"
+     },
+     "text": "1,50",
+     "code": "0.00;-0.00",
+     "local": "0,00;-0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00;\\-0.00"
+     },
+     "text": "1,50",
+     "code": "0.00;-0.00",
+     "local": "0,00;-0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00;\\-0.00;\"-\""
+     },
+     "text": "1,50",
+     "code": "0.00;-0.00;\"-\"",
+     "local": "0,00;-0,00;\"-\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": "#.##"
+     },
+     "text": "1,5",
+     "code": "#.##",
+     "local": "#,##",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,###"
+     },
+     "text": "2",
+     "code": "#,###",
+     "local": "# ###",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": "00.00"
+     },
+     "text": "01,50",
+     "code": "00.00",
+     "local": "00,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00\\ \"kg\""
+     },
+     "text": "1,50 kg",
+     "code": "0.00 \"kg\"",
+     "local": "0,00\\ \"kg\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ "
+     },
+     "text": "1,50 ",
+     "code": "#,##0.00 ",
+     "local": "# ##0,00\\ ",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "variant-2": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ##0.00"
+     },
+     "text": " 1,50",
+     "code": "# ##0.00",
+     "local": "#\\ ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00;\\(0.00\\)"
+     },
+     "text": "1,50",
+     "code": "0.00;(0.00)",
+     "local": "0,00;(0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\(0.00\\)"
+     },
+     "text": "(1,50)",
+     "code": "(0.00)",
+     "local": "(0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0%"
+     },
+     "text": "150,0%",
+     "code": "0.0%",
+     "local": "0,0%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000%"
+     },
+     "text": "150,000%",
+     "code": "0.000%",
+     "local": "0,000%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00%"
+     },
+     "text": "150,00%",
+     "code": "#,##0.00%",
+     "local": "# ##0,00%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00%;[Red]\\-0.00%"
+     },
+     "text": "150,00%",
+     "code": "0.00%;[Red]-0.00%",
+     "local": "0,00%;[Красный]-0,00%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "0%;\\-0%"
+     },
+     "text": "150%",
+     "code": "0%;-0%",
+     "local": "0%;-0%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0000000000%"
+     },
+     "text": "#########",
+     "code": "0.0000000000%",
+     "local": "0,0000000000%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ???/???"
+     },
+     "text": "1   1/2  ",
+     "code": "# ???/???",
+     "local": "#\\ ???/???",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "?/?"
+     },
+     "text": "3/2",
+     "code": "?/?",
+     "local": "?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": "??/??"
+     },
+     "text": " 3/2 ",
+     "code": "??/??",
+     "local": "??/??",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ?/2"
+     },
+     "text": "1 1/2",
+     "code": "# ?/2",
+     "local": "#\\ ?/2",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ?/4"
+     },
+     "text": "1 2/4",
+     "code": "# ?/4",
+     "local": "#\\ ?/4",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ?/8"
+     },
+     "text": "1 4/8",
+     "code": "# ?/8",
+     "local": "#\\ ?/8",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ??/16"
+     },
+     "text": "1  8/16",
+     "code": "# ??/16",
+     "local": "#\\ ??/16",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ?/10"
+     },
+     "text": "1 5/10",
+     "code": "# ?/10",
+     "local": "#\\ ?/10",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ??/100"
+     },
+     "text": "1 50/100",
+     "code": "# ??/100",
+     "local": "#\\ ??/100",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": "0\\ ?/?"
+     },
+     "text": "1 1/2",
+     "code": "0 ?/?",
+     "local": "0\\ ?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "#\\ ?/3"
+     },
+     "text": "1 2/3",
+     "code": "# ?/3",
+     "local": "#\\ ?/3",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": 12
+     },
+     "text": "1 1/2",
+     "code": "# ?/?",
+     "local": "#\" \"?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000E+00"
+     },
+     "text": "#########",
+     "code": "0.000E+00",
+     "local": "0,000E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": "0E+00"
+     },
+     "text": "2E+00",
+     "code": "0E+00",
+     "local": "0E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0E+00"
+     },
+     "text": "1,5E+00",
+     "code": "0.0E+00",
+     "local": "0,0E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0E+0"
+     },
+     "text": "1,5E+0",
+     "code": "0.0E+0",
+     "local": "0,0E+0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "variant-3": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00E-00"
+     },
+     "text": "1,50E00",
+     "code": "0.00E-00",
+     "local": "0,00E-00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#.##E+00"
+     },
+     "text": "1,5E+00",
+     "code": "#.##E+00",
+     "local": "#,##E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00E+000"
+     },
+     "text": "#########",
+     "code": "0.00E+000",
+     "local": "0,00E+000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0000000000E+00"
+     },
+     "text": "#########",
+     "code": "0.0000000000E+00",
+     "local": "0,0000000000E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "\"x\"@"
+     },
+     "text": "1,5",
+     "code": "\"x\"@",
+     "local": "\"x\"@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "@\" kg\""
+     },
+     "text": "1,5",
+     "code": "@\" kg\"",
+     "local": "@\" kg\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": ";;;@"
+     },
+     "text": "",
+     "code": ";;;@",
+     "local": ";;;@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "0;\\-0;0;@"
+     },
+     "text": "2",
+     "code": "0;-0;0;@",
+     "local": "0;-0;0;@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "General;[Red]\\-General"
+     },
+     "text": "1,5",
+     "code": "General;[Red]-General",
+     "local": "Основной;[Красный]-Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Red]General"
+     },
+     "text": "1,5",
+     "code": "[Red]General",
+     "local": "[Красный]Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "General\" kg\""
+     },
+     "text": "1,5 kg",
+     "code": "General\" kg\"",
+     "local": "Основной\" kg\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": "0;\\-0;0"
+     },
+     "text": "2",
+     "code": "0;-0;0",
+     "local": "0;-0;0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": "General;General;General;@"
+     },
+     "text": "1,5",
+     "code": "General;General;General;@",
+     "local": "Основной;Основной;Основной;@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": ";;;"
+     },
+     "text": "",
+     "code": ";;;",
+     "local": ";;;",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": ";;"
+     },
+     "text": "",
+     "code": ";;",
+     "local": ";;",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "0;;"
+     },
+     "text": "2",
+     "code": "0;;",
+     "local": "0;;",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "\\$#,##0.00",
+     "local": "$# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0"
+     },
+     "text": "$2",
+     "code": "\\$#,##0",
+     "local": "$# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.000"
+     },
+     "text": "$1,500",
+     "code": "\\$#,##0.000",
+     "local": "$# ##0,000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.00;[Red]\\$#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "\\$#,##0.00;[Red]\\$#,##0.00",
+     "local": "$# ##0,00;[Красный]$# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.00;\\-\\$#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "\\$#,##0.00;-\\$#,##0.00",
+     "local": "$# ##0,00;-$# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.00;[Red]\\-\\$#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "\\$#,##0.00;[Red]-\\$#,##0.00",
+     "local": "$# ##0,00;[Красный]-$# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "\"$\"#,##0.00",
+     "local": "\"$\"# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "\\$#,##0.00",
+     "local": "$# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+     },
+     "text": "$1,50 ",
+     "code": "\"$\"#,##0.00_);[Red](\"$\"#,##0.00)",
+     "local": "\"$\"# ##0,00_);[Красный](\"$\"# ##0,00)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "variant-4": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$$-409]#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "[$$-409]#,##0.00",
+     "local": "[$$-409]# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$$-409]#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "[$$-409]#,##0.00",
+     "local": "[$$-409]# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$$-409]#,##0.00;[Red]\\-[$$-409]#,##0.00"
+     },
+     "text": "$1,50",
+     "code": "[$$-409]#,##0.00;[Red]-[$$-409]#,##0.00",
+     "local": "[$$-409]# ##0,00;[Красный]-[$$-409]# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$0.00"
+     },
+     "text": "$1,50",
+     "code": "\\$0.00",
+     "local": "$0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \\$"
+     },
+     "text": "1,50 $",
+     "code": "#,##0.00 \\$",
+     "local": "# ##0,00\\ $",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$\\ #,##0.00"
+     },
+     "text": "$ 1,50",
+     "code": "\\$ #,##0.00",
+     "local": "$ # ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$€-2]\\ #,##0.00"
+     },
+     "text": "€ 1,50",
+     "code": "[$€-2] #,##0.00",
+     "local": "[$€-2] # ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$€-407]\\ #,##0.00"
+     },
+     "text": "€ 1,50",
+     "code": "[$€-407] #,##0.00",
+     "local": "[$€-407] # ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ [$€-407]"
+     },
+     "text": "1,50 €",
+     "code": "#,##0.00 [$€-407]",
+     "local": "# ##0,00\\ [$€-407]",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$€-2]\\ #,##0.00"
+     },
+     "text": "€ 1,50",
+     "code": "[$€-2] #,##0.00",
+     "local": "[$€-2] # ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ [$€-1]"
+     },
+     "text": "1,50 €",
+     "code": "#,##0.00 [$€-1]",
+     "local": "# ##0,00\\ [$€-1]",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\€#,##0.00"
+     },
+     "text": "€1,50",
+     "code": "€#,##0.00",
+     "local": "€# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \\€"
+     },
+     "text": "1,50 €",
+     "code": "#,##0.00 €",
+     "local": "# ##0,00\\ €",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$£-809]#,##0.00"
+     },
+     "text": "£1,50",
+     "code": "[$£-809]#,##0.00",
+     "local": "[$£-809]# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\£#,##0.00"
+     },
+     "text": "£1,50",
+     "code": "£#,##0.00",
+     "local": "£# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$¥-411]#,##0"
+     },
+     "text": "¥2",
+     "code": "[$¥-411]#,##0",
+     "local": "[$¥-411]# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\¥#,##0"
+     },
+     "text": "¥2",
+     "code": "¥#,##0",
+     "local": "¥# ##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$USD]\\ #,##0.00"
+     },
+     "text": "USD 1,50",
+     "code": "[$USD] #,##0.00",
+     "local": "[$USD] # ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$CHF]\\ #,##0.00"
+     },
+     "text": "CHF 1,50",
+     "code": "[$CHF] #,##0.00",
+     "local": "[$CHF] # ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$EUR]\\ #,##0.00"
+     },
+     "text": "EUR 1,50",
+     "code": "[$EUR] #,##0.00",
+     "local": "[$EUR] # ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ [$₽-419]"
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 [$₽-419]",
+     "local": "# ##0,00\\ [$₽-419]",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 $",
+     "local": "# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \\₽"
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 ₽",
+     "local": "# ##0,00\\ \\₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 $",
+     "local": "# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ [$₽-419]"
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 [$₽-419]",
+     "local": "# ##0,00\\ [$₽-419]",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "variant-5": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ [$₽-419]"
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 [$₽-419]",
+     "local": "# ##0,00\\ [$₽-419]",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0\\ \"₽\""
+     },
+     "text": "2 ₽",
+     "code": "#,##0 $",
+     "local": "# ##0 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\";[Red]\\-#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "$#,##0.00_);[Red]($#,##0.00)",
+     "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\"р.\""
+     },
+     "text": "1,50р.",
+     "code": "#,##0.00\"р.\"",
+     "local": "# ##0,00\"р.\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"руб.\""
+     },
+     "text": "1,50 руб.",
+     "code": "#,##0.00 \"руб.\"",
+     "local": "# ##0,00\\ \"руб.\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$₽-419]#,##0.00"
+     },
+     "text": "₽1,50",
+     "code": "[$₽-419]#,##0.00",
+     "local": "[$₽-419]# ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ [$RUB]"
+     },
+     "text": "1,50 RUB",
+     "code": "#,##0.00 [$RUB]",
+     "local": "# ##0,00\\ [$RUB]",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Денежный"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(\\$* #,##0.000_);_(\\$* \\(#,##0.000\\);_(\\$* \"-\"???_);_(@_)"
+     },
+     "text": " $     1,500 ",
+     "code": "_(\\$* #,##0.000_);_(\\$* (#,##0.000);_(\\$* \"-\"???_);_(@_)",
+     "local": "_($* # ##0,000_);_($* (# ##0,000);_($* \"-\"???_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "_([$$-409]* #,##0.00_);_([$$-409]* \\(#,##0.00\\);_([$$-409]* \"-\"??_);_(@_)"
+     },
+     "text": " $        1,50 ",
+     "code": "_([$$-409]* #,##0.00_);_([$$-409]* (#,##0.00);_([$$-409]* \"-\"??_);_(@_)",
+     "local": "_([$$-409]* # ##0,00_);_([$$-409]* (# ##0,00);_([$$-409]* \"-\"??_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Финансовый"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-[$$-409]* #,##0.00_ ;_-[$$-409]* \\-#,##0.00\\ ;_-[$$-409]* \"-\"??_ ;_-@_ "
+     },
+     "text": " $        1,50 ",
+     "code": "_-[$$-409]* #,##0.00_ ;_-[$$-409]* -#,##0.00 ;_-[$$-409]* \"-\"??_ ;_-@_ ",
+     "local": "_-[$$-409]* # ##0,00_ ;_-[$$-409]* -# ##0,00\\ ;_-[$$-409]* \"-\"??_ ;_-@_ ",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Финансовый"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "_([$€-2]\\ * #,##0.00_);_([$€-2]\\ * \\(#,##0.00\\);_([$€-2]\\ * \"-\"??_);_(@_)"
+     },
+     "text": " €        1,50 ",
+     "code": "_([$€-2] * #,##0.00_);_([$€-2] * (#,##0.00);_([$€-2] * \"-\"??_);_(@_)",
+     "local": "_([$€-2] * # ##0,00_);_([$€-2] * (# ##0,00);_([$€-2] * \"-\"??_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Финансовый"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00\\ [$€-407]_-;\\-* #,##0.00\\ [$€-407]_-;_-* \"-\"??\\ [$€-407]_-;_-@_-"
+     },
+     "text": "        1,50 € ",
+     "code": "_-* #,##0.00 [$€-407]_-;-* #,##0.00 [$€-407]_-;_-* \"-\"?? [$€-407]_-;_-@_-",
+     "local": "_-* # ##0,00\\ [$€-407]_-;-* # ##0,00\\ [$€-407]_-;_-* \"-\"??\\ [$€-407]_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Финансовый"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00\\ [$₽-419]_-;\\-* #,##0.00\\ [$₽-419]_-;_-* \"-\"??\\ [$₽-419]_-;_-@_-"
+     },
+     "text": "        1,50 ₽ ",
+     "code": "_-* #,##0.00 [$₽-419]_-;-* #,##0.00 [$₽-419]_-;_-* \"-\"?? [$₽-419]_-;_-@_-",
+     "local": "_-* # ##0,00\\ [$₽-419]_-;-* # ##0,00\\ [$₽-419]_-;_-* \"-\"??\\ [$₽-419]_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Финансовый"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00\\ [$₽-419]_-;\\-* #,##0.00\\ [$₽-419]_-;_-* \"-\"??\\ [$₽-419]_-;_-@_-"
+     },
+     "text": "        1,50 ₽ ",
+     "code": "_-* #,##0.00 [$₽-419]_-;-* #,##0.00 [$₽-419]_-;_-* \"-\"?? [$₽-419]_-;_-@_-",
+     "local": "_-* # ##0,00\\ [$₽-419]_-;-* # ##0,00\\ [$₽-419]_-;_-* \"-\"??\\ [$₽-419]_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Финансовый"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+     },
+     "text": "        1,50 ₽ ",
+     "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(\\$* #,##0.00_)"
+     },
+     "text": " $        1,50 ",
+     "code": "_(\\$* #,##0.00_)",
+     "local": "_($* # ##0,00_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$* #,##0.00"
+     },
+     "text": "$          1,50",
+     "code": "\\$* #,##0.00",
+     "local": "$* # ##0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yy"
+     },
+     "text": "1.1.00",
+     "code": "m/d/yy",
+     "local": "М.Д.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": "mm/dd/yyyy"
+     },
+     "text": "#########",
+     "code": "mm/dd/yyyy",
+     "local": "ММ.ДД.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "mm/dd/yy"
+     },
+     "text": "01.01.00",
+     "code": "mm/dd/yy",
+     "local": "ММ.ДД.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d"
+     },
+     "text": "1.1",
+     "code": "m/d",
+     "local": "М.Д",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": "d/m/yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "d/m/yyyy",
+     "local": "Д.М.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": "yyyy\\-mm\\-dd"
+     },
+     "text": "#########",
+     "code": "yyyy-mm-dd",
+     "local": "ГГГГ-ММ-ДД",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": "d\\.m\\.yy"
+     },
+     "text": "1.1.00",
+     "code": "d.m.yy",
+     "local": "Д\\.М\\.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "variant-6": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "dd\\.mm\\.yy"
+     },
+     "text": "01.01.00",
+     "code": "dd.mm.yy",
+     "local": "ДД\\.ММ\\.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "d\\.m\\.yyyy"
+     },
+     "text": "1.1.1900",
+     "code": "d.m.yyyy",
+     "local": "Д\\.М\\.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "mmmm\\-yy"
+     },
+     "text": "январь-00",
+     "code": "mmmm-yy",
+     "local": "ММММ-ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "mmmm\\ d\\,\\ yyyy"
+     },
+     "text": "#########",
+     "code": "mmmm d, yyyy",
+     "local": "ММММ Д, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "mmmmm"
+     },
+     "text": "я",
+     "code": "mmmmm",
+     "local": "МММММ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "mmmmm\\-yy"
+     },
+     "text": "я-00",
+     "code": "mmmmm-yy",
+     "local": "МММММ-ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "d\\-mmm\\-yyyy"
+     },
+     "text": "#########",
+     "code": "d-mmm-yyyy",
+     "local": "Д-МММ-ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "dddd\\,\\ mmmm\\ d\\,\\ yyyy"
+     },
+     "text": "#########",
+     "code": "dddd, mmmm d, yyyy",
+     "local": "ДДДД, ММММ Д, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "dddd\\,\\ mmmm\\ dd\\,\\ yyyy"
+     },
+     "text": "#########",
+     "code": "dddd, mmmm dd, yyyy",
+     "local": "ДДДД, ММММ ДД, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F800]dddd\\,\\ mmmm\\ dd\\,\\ yyyy"
+     },
+     "text": "#########",
+     "code": "[$-F800]dddd, mmmm dd, yyyy",
+     "local": "[$-F800]ДДДД, ММММ ДД, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F800]dddd\\,\\ mmmm\\ d\\,\\ yyyy"
+     },
+     "text": "#########",
+     "code": "[$-F800]dddd, mmmm d, yyyy",
+     "local": "[$-F800]ДДДД, ММММ Д, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F800]dddd\\,\\ mmmm\\ dd\\,\\ yyyy"
+     },
+     "text": "#########",
+     "code": "[$-F800]dddd, mmmm dd, yyyy",
+     "local": "[$-F800]ДДДД, ММММ ДД, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": "d\\ mmmm\\ yyyy"
+     },
+     "text": "#########",
+     "code": "d mmmm yyyy",
+     "local": "Д ММММ ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "d\\ mmmm\\ yyyy\\ \"г.\""
+     },
+     "text": "#########",
+     "code": "d mmmm yyyy \"г.\"",
+     "local": "Д ММММ ГГГГ \"г.\"",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "dddd\\,\\ d\\ mmmm\\ yyyy\\ \"г.\""
+     },
+     "text": "#########",
+     "code": "dddd, d mmmm yyyy \"г.\"",
+     "local": "ДДДД, Д ММММ ГГГГ \"г.\"",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "mmmm\\ yyyy"
+     },
+     "text": "#########",
+     "code": "mmmm yyyy",
+     "local": "ММММ ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "yyyy"
+     },
+     "text": "1900",
+     "code": "yyyy",
+     "local": "ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "mmm\\ d"
+     },
+     "text": "янв 1",
+     "code": "mmm d",
+     "local": "МММ Д",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": 15
+     },
+     "text": "01.янв.00",
+     "code": "d-mmm-yy",
+     "local": "ДД.МММ.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-409]m/d/yy"
+     },
+     "text": "1.1.00",
+     "code": "[$-409]m/d/yy",
+     "local": "[$-409]М.Д.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-409]mmmm\\ d\\,\\ yyyy;@"
+     },
+     "text": "#########",
+     "code": "[$-409]mmmm d, yyyy;@",
+     "local": "[$-409]ММММ Д, ГГГГ;@",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-419]dd\\.mm\\.yyyy"
+     },
+     "text": "#########",
+     "code": "[$-419]dd.mm.yyyy",
+     "local": "[$-419]ДД\\.ММ\\.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F800]dddd\\,\\ mmmm\\ dd\\,\\ yyyy"
+     },
+     "text": "#########",
+     "code": "[$-F800]dddd, mmmm dd, yyyy",
+     "local": "[$-F800]ДДДД, ММММ ДД, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yy\\ h:mm"
+     },
+     "text": "#########",
+     "code": "m/d/yy h:mm",
+     "local": "М.Д.ГГ ч:мм",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yy\\ h:mm\\ AM/PM"
+     },
+     "text": "#########",
+     "code": "m/d/yy h:mm AM/PM",
+     "local": "М.Д.ГГ ч:мм AM/PM",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "variant-7": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "dd\\.mm\\.yy\\ h:mm"
+     },
+     "text": "#########",
+     "code": "dd.mm.yy h:mm",
+     "local": "ДД\\.ММ\\.ГГ ч:мм",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "yyyy\\-mm\\-dd\\ hh:mm:ss"
+     },
+     "text": "#########",
+     "code": "yyyy-mm-dd hh:mm:ss",
+     "local": "ГГГГ-ММ-ДД чч:мм:сс",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "dd/mm/yyyy;@"
+     },
+     "text": "#########",
+     "code": "dd/mm/yyyy;@",
+     "local": "ДД.ММ.ГГГГ;@",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy;@"
+     },
+     "text": "1.1.1900",
+     "code": "m/d/yyyy;@",
+     "local": "М.Д.ГГГГ;@",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "dd\\.mm\\.yyyy;@"
+     },
+     "text": "#########",
+     "code": "dd.mm.yyyy;@",
+     "local": "ДД\\.ММ\\.ГГГГ;@",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "dddd"
+     },
+     "text": "#########",
+     "code": "dddd",
+     "local": "ДДДД",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "ddd\\,\\ mmm\\ d"
+     },
+     "text": "Вс, янв 1",
+     "code": "ddd, mmm d",
+     "local": "ДДД, МММ Д",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yy;[Red]m/d/yy"
+     },
+     "text": "1.1.00",
+     "code": "m/d/yy;[Red]m/d/yy",
+     "local": "М.Д.ГГ;[Красный]М.Д.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Red]m/d/yy"
+     },
+     "text": "1.1.00",
+     "code": "[Red]m/d/yy",
+     "local": "[Красный]М.Д.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "yyyy\\-mm\\-dd"
+     },
+     "text": "#########",
+     "code": "yyyy-mm-dd",
+     "local": "ГГГГ-ММ-ДД",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "d/m/yy"
+     },
+     "text": "1.1.00",
+     "code": "d/m/yy",
+     "local": "Д.М.ГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": "yy/m/d"
+     },
+     "text": "00.1.1",
+     "code": "yy/m/d",
+     "local": "ГГ.М.Д",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": 20
+     },
+     "text": "12:00",
+     "code": "h:mm",
+     "local": "чч:мм",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": 21
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "чч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "hh:mm\\ AM/PM"
+     },
+     "text": "12:00 PM",
+     "code": "hh:mm AM/PM",
+     "local": "чч:мм AM/PM",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F400]h:mm:ss\\ AM/PM"
+     },
+     "text": "12:00:00",
+     "code": "[$-F400]h:mm:ss AM/PM",
+     "local": "[$-F400]ч:мм:сс AM/PM",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F400]h:mm:ss"
+     },
+     "text": "12:00:00",
+     "code": "[$-F400]h:mm:ss",
+     "local": "[$-F400]ч:мм:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "[h]:mm"
+     },
+     "text": "36:00",
+     "code": "[h]:mm",
+     "local": "[ч]:мм",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": 1.5,
+      "format": "[mm]:ss"
+     },
+     "text": "2160:00",
+     "code": "[mm]:ss",
+     "local": "[мм]:сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm:ss.000"
+     },
+     "text": "#########",
+     "code": "h:mm:ss.000",
+     "local": "ч:мм:сс,000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": 1.5,
+      "format": "h\"h\"\\ mm\"m\""
+     },
+     "text": "12h 00m",
+     "code": "h\"h\" mm\"m\"",
+     "local": "ч\"h\" мм\"m\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B22": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-409]h:mm:ss\\ AM/PM;@"
+     },
+     "text": "#########",
+     "code": "[$-409]h:mm:ss AM/PM;@",
+     "local": "[$-409]ч:мм:сс AM/PM;@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm;@"
+     },
+     "text": "12:00",
+     "code": "h:mm;@",
+     "local": "ч:мм;@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm\\ A/P"
+     },
+     "text": "12:00 P",
+     "code": "h:mm A/P",
+     "local": "ч:мм A/P",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": 1.5,
+      "format": "ss"
+     },
+     "text": "00",
+     "code": "ss",
+     "local": "сс",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "variant-8": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": "h"
+     },
+     "text": "12",
+     "code": "h",
+     "local": "ч",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-419]h:mm"
+     },
+     "text": "12:00",
+     "code": "[$-419]h:mm",
+     "local": "[$-419]ч:мм",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "h:mm:ss;@"
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss;@",
+     "local": "ч:мм:сс;@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F400]h:mm:ss\\ AM/PM;@"
+     },
+     "text": "12:00:00",
+     "code": "[$-F400]h:mm:ss AM/PM;@",
+     "local": "[$-F400]ч:мм:сс AM/PM;@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "00000"
+     },
+     "text": "00002",
+     "code": "00000",
+     "local": "00000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Дополнительный"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "00000\\-0000"
+     },
+     "text": "#########",
+     "code": "00000-0000",
+     "local": "00000-0000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Дополнительный"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "[<=9999999]###\\-####;\\(###\\)\\ ###\\-####"
+     },
+     "text": "-2",
+     "code": "[<=9999999]###-####;(###) ###-####",
+     "local": "[<=9999999]###-####;(###) ###-####",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Дополнительный"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "000\\-00\\-0000"
+     },
+     "text": "#########",
+     "code": "000-00-0000",
+     "local": "000-00-0000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Дополнительный"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "000000"
+     },
+     "text": "000002",
+     "code": "000000",
+     "local": "000000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Дополнительный"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Color10]0.00"
+     },
+     "text": "1,50",
+     "code": "[Color10]0.00",
+     "local": "[Цвет10]0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": "[>=100]0.00;[Red]0.00"
+     },
+     "text": "1,50",
+     "code": "[>=100]0.00;[Red]0.00",
+     "local": "[>=100]0,00;[Красный]0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 1.5,
+      "format": "[<0]\"neg\";\"pos\""
+     },
+     "text": "pos",
+     "code": "[<0]\"neg\";\"pos\"",
+     "local": "[<0]\"neg\";\"pos\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00;[Red]\\-0.00;\"zero\""
+     },
+     "text": "1,50",
+     "code": "0.00;[Red]-0.00;\"zero\"",
+     "local": "0,00;[Красный]-0,00;\"zero\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Red][<0]0.00;0.00"
+     },
+     "text": "1,50",
+     "code": "[Red][<0]0.00;0.00",
+     "local": "[Красный][<0]0,00;0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Red][>100]0;0"
+     },
+     "text": "2",
+     "code": "[Red][>100]0;0",
+     "local": "[Красный][>100]0;0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 1.5,
+      "format": "\"text\""
+     },
+     "text": "text",
+     "code": "\"text\"",
+     "local": "\"text\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": 1.5,
+      "format": "0\" pcs\""
+     },
+     "text": "2 pcs",
+     "code": "0\" pcs\"",
+     "local": "0\" pcs\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B18": {
+     "cell": {
+      "value": 1.5,
+      "format": "\"$\"0.00"
+     },
+     "text": "$1,50",
+     "code": "\"$\"0.00",
+     "local": "\"$\"0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "value-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": "x",
+      "format": 2
+     },
+     "text": "x",
+     "code": "0.00",
+     "local": "0,00",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B2": {
+     "cell": {
+      "format": 2
+     },
+     "text": "",
+     "code": "0.00",
+     "local": "0,00",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": -2.5,
+      "format": 2
+     },
+     "text": "-2,50",
+     "code": "0.00",
+     "local": "0,00",
+     "value2": -2.5,
+     "formula": "-2.5",
+     "formulaLocal": "-2,5",
+     "formula2": "-2.5",
+     "formula2Local": "-2,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 45688,
+      "format": 2
+     },
+     "text": "45688,00",
+     "code": "0.00",
+     "local": "0,00",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": "x",
+      "format": "\\$#,##0.00"
+     },
+     "text": "x",
+     "code": "\\$#,##0.00",
+     "local": "$# ##0,00",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "format": "\\$#,##0.00"
+     },
+     "text": "",
+     "code": "\\$#,##0.00",
+     "local": "$# ##0,00",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": -2.5,
+      "format": "\\$#,##0.00"
+     },
+     "text": "-$2,50",
+     "code": "\\$#,##0.00",
+     "local": "$# ##0,00",
+     "value2": -2.5,
+     "formula": "-2.5",
+     "formulaLocal": "-2,5",
+     "formula2": "-2.5",
+     "formula2Local": "-2,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 45688,
+      "format": "\\$#,##0.00"
+     },
+     "text": "#########",
+     "code": "\\$#,##0.00",
+     "local": "$# ##0,00",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": "x",
+      "format": "m/d/yy"
+     },
+     "text": "x",
+     "code": "m/d/yy",
+     "local": "М.Д.ГГ",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B10": {
+     "cell": {
+      "format": "m/d/yy"
+     },
+     "text": "",
+     "code": "m/d/yy",
+     "local": "М.Д.ГГ",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": -2.5,
+      "format": "m/d/yy"
+     },
+     "text": "#########",
+     "code": "m/d/yy",
+     "local": "М.Д.ГГ",
+     "formula": "-2.5",
+     "formulaLocal": "-2,5",
+     "formula2": "-2.5",
+     "formula2Local": "-2,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": 45688,
+      "format": "m/d/yy"
+     },
+     "text": "1.31.25",
+     "code": "m/d/yy",
+     "local": "М.Д.ГГ",
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B13": {
+     "cell": {
+      "value": "x",
+      "format": "h:mm"
+     },
+     "text": "x",
+     "code": "h:mm",
+     "local": "ч:мм",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B14": {
+     "cell": {
+      "format": "h:mm"
+     },
+     "text": "",
+     "code": "h:mm",
+     "local": "ч:мм",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": -2.5,
+      "format": "h:mm"
+     },
+     "text": "#########",
+     "code": "h:mm",
+     "local": "ч:мм",
+     "value2": -2.5,
+     "formula": "-2.5",
+     "formulaLocal": "-2,5",
+     "formula2": "-2.5",
+     "formula2Local": "-2,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B16": {
+     "cell": {
+      "value": 45688,
+      "format": "h:mm"
+     },
+     "text": "0:00",
+     "code": "h:mm",
+     "local": "ч:мм",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B17": {
+     "cell": {
+      "value": "x",
+      "format": 9
+     },
+     "text": "x",
+     "code": "0%",
+     "local": "0%",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Процентный"
+     }
+    },
+    "B18": {
+     "cell": {
+      "format": 9
+     },
+     "text": "",
+     "code": "0%",
+     "local": "0%",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Процентный"
+     }
+    },
+    "B19": {
+     "cell": {
+      "value": -2.5,
+      "format": 9
+     },
+     "text": "-250%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -2.5,
+     "formula": "-2.5",
+     "formulaLocal": "-2,5",
+     "formula2": "-2.5",
+     "formula2Local": "-2,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Процентный"
+     }
+    },
+    "B20": {
+     "cell": {
+      "value": 45688,
+      "format": 9
+     },
+     "text": "#########",
+     "code": "0%",
+     "local": "0%",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Процентный"
+     }
+    },
+    "B21": {
+     "cell": {
+      "value": "x",
+      "format": 49
+     },
+     "text": "x",
+     "code": "@",
+     "local": "@",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Текстовый"
+     }
+    },
+    "B22": {
+     "cell": {
+      "format": 49
+     },
+     "text": "",
+     "code": "@",
+     "local": "@",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Текстовый"
+     }
+    },
+    "B23": {
+     "cell": {
+      "value": -2.5,
+      "format": 49
+     },
+     "text": "-2,5",
+     "code": "@",
+     "local": "@",
+     "value2": -2.5,
+     "formula": "-2.5",
+     "formulaLocal": "-2,5",
+     "formula2": "-2.5",
+     "formula2Local": "-2,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Текстовый"
+     }
+    },
+    "B24": {
+     "cell": {
+      "value": 45688,
+      "format": 49
+     },
+     "text": "45688",
+     "code": "@",
+     "local": "@",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Текстовый"
+     }
+    },
+    "B25": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "Основной",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "value-2": {
+   "cells": {
+    "B1": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": -2.5
+     },
+     "text": "-2,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": -2.5,
+     "formula": "-2.5",
+     "formulaLocal": "-2,5",
+     "formula2": "-2.5",
+     "formula2Local": "-2,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 45688
+     },
+     "text": "45688",
+     "code": "General",
+     "local": "Основной",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": "x",
+      "format": "0.000"
+     },
+     "text": "x",
+     "code": "0.000",
+     "local": "0,000",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B5": {
+     "cell": {
+      "format": "0.000"
+     },
+     "text": "",
+     "code": "0.000",
+     "local": "0,000",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": -2.5,
+      "format": "0.000"
+     },
+     "text": "-2,500",
+     "code": "0.000",
+     "local": "0,000",
+     "value2": -2.5,
+     "formula": "-2.5",
+     "formulaLocal": "-2,5",
+     "formula2": "-2.5",
+     "formula2Local": "-2,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 45688,
+      "format": "0.000"
+     },
+     "text": "#########",
+     "code": "0.000",
+     "local": "0,000",
+     "value2": 45688,
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "choose-1": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5
+     },
+     "text": "1,5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Общий",
+      "item": "Общий\nФормат не указан"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 2
+     },
+     "text": "1,50",
+     "code": "0.00",
+     "local": "0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Числовой\n1.50"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 $",
+     "local": "# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Денежный\n$1.50"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+     },
+     "text": "                                                       1,50 ₽ ",
+     "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Финансовый\n $1.50 "
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "01.01.1900",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Краткий формат даты\n1/1/00"
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F800]dddd\\,\\ mmmm\\ dd\\,\\ yyyy"
+     },
+     "text": "воскресенье, 1 января 1900 г.",
+     "code": "[$-F800]dddd, mmmm dd, yyyy",
+     "local": "[$-F800]ДДДД, ММММ ДД, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Длинный формат даты\nвоскресенье, 1 января 1900 г."
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F400]h:mm:ss\\ AM/PM"
+     },
+     "text": "12:00:00",
+     "code": "[$-F400]h:mm:ss AM/PM",
+     "local": "[$-F400]ч:мм:сс AM/PM",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Время\n12:00:00"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": 10
+     },
+     "text": "150,00%",
+     "code": "0.00%",
+     "local": "0,00%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Процентный\n150.00%"
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": 12
+     },
+     "text": "1 1/2",
+     "code": "# ?/?",
+     "local": "#\" \"?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Дробный\n1 1/2"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": 11
+     },
+     "text": "1,50E+00",
+     "code": "0.00E+00",
+     "local": "0,00E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Экспоненциальный\n1.50E+00"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": 49
+     },
+     "text": "1,5",
+     "code": "@",
+     "local": "@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "Текстовый",
+      "item": "Текстовый\n1.5"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 23.67,
+     "points": 147,
+     "standard": false,
+     "saved": {
+      "width": 24.5,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "choose-2": {
+   "cells": {
+    "B1": {
+     "cell": {
+      "value": 1.5,
+      "format": 2
+     },
+     "text": "1,50",
+     "code": "0.00",
+     "local": "0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Числовой\n1.50"
+     }
+    },
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 $",
+     "local": "# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Денежный\n$1.50"
+     }
+    },
+    "B3": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 $",
+     "local": "# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Денежный\n$1.50"
+     }
+    },
+    "B4": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.00\\ \"₽\""
+     },
+     "text": "1,50 ₽",
+     "code": "#,##0.00 $",
+     "local": "# ##0,00 ₽",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Денежный\n$1.50"
+     }
+    },
+    "B5": {
+     "cell": {
+      "value": 1.5,
+      "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+     },
+     "text": "                                                       1,50 ₽ ",
+     "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Финансовый\n $1.50 "
+     }
+    },
+    "B6": {
+     "cell": {
+      "value": 1.5,
+      "format": 10
+     },
+     "text": "150,00%",
+     "code": "0.00%",
+     "local": "0,00%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Процентный\n150.00%"
+     }
+    },
+    "B7": {
+     "cell": {
+      "value": 1.5,
+      "format": 14
+     },
+     "text": "01.01.1900",
+     "code": "m/d/yy",
+     "local": "ДД.ММ.ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Краткий формат даты\n1/1/00"
+     }
+    },
+    "B8": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F800]dddd\\,\\ mmmm\\ dd\\,\\ yyyy"
+     },
+     "text": "воскресенье, 1 января 1900 г.",
+     "code": "[$-F800]dddd, mmmm dd, yyyy",
+     "local": "[$-F800]ДДДД, ММММ ДД, ГГГГ",
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Длинный формат даты\nвоскресенье, 1 января 1900 г."
+     }
+    },
+    "B9": {
+     "cell": {
+      "value": 1.5,
+      "format": "[$-F400]h:mm:ss\\ AM/PM"
+     },
+     "text": "12:00:00",
+     "code": "[$-F400]h:mm:ss AM/PM",
+     "local": "[$-F400]ч:мм:сс AM/PM",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Время\n12:00:00"
+     }
+    },
+    "B10": {
+     "cell": {
+      "value": 1.5,
+      "format": 11
+     },
+     "text": "1,50E+00",
+     "code": "0.00E+00",
+     "local": "0,00E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Экспоненциальный\n1.50E+00"
+     }
+    },
+    "B11": {
+     "cell": {
+      "value": 1.5,
+      "format": 12
+     },
+     "text": "1 1/2",
+     "code": "# ?/?",
+     "local": "#\" \"?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Дробный\n1 1/2"
+     }
+    },
+    "B12": {
+     "cell": {
+      "value": "x",
+      "format": 2
+     },
+     "text": "x",
+     "code": "0.00",
+     "local": "0,00",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Числовой\nx"
+     }
+    },
+    "B13": {
+     "cell": {
+      "format": "#,##0.00\\ \"₽\""
+     },
+     "text": "",
+     "code": "#,##0.00 $",
+     "local": "# ##0,00 ₽",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Денежный"
+     }
+    },
+    "B14": {
+     "cell": {
+      "value": 1.5,
+      "format": 2
+     },
+     "text": "1,50",
+     "code": "0.00",
+     "local": "0,00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1,5",
+     "formula2": "1.5",
+     "formula2Local": "1,5",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Числовой\n1.50"
+     }
+    },
+    "B15": {
+     "cell": {
+      "value": "x",
+      "format": 2
+     },
+     "text": "x",
+     "code": "0.00",
+     "local": "0,00",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "ribbon": {
+      "box": "(все форматы)",
+      "item": "Числовой\nx"
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 23.67,
+     "points": 147,
+     "standard": false,
+     "saved": {
+      "width": 24.5,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  }
+ }
+}

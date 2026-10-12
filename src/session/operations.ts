@@ -3,6 +3,7 @@ import type { BookInput, CellInput, CellReplace, SessionOperation, SheetInput } 
 import type { EngineState } from '../engine.js'
 import { array, checkEdits, checkLayoutEdits, checkNames, checkStyles, InputError, object, onlyKeys } from '../input.js'
 import { sheetKey } from '../syntax.js'
+import { linksIn, markedLinks } from '../syntax/links.js'
 import { editsTaken } from '../taken.js'
 import { hiddenRows } from '../layout/hidden.js'
 import { checkArrayEdits } from '../spill/fixed.js'
@@ -88,6 +89,13 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
   checkTables(book,'book')
   if (styles) checkStylesUsed(book,book.styles?.length??0)
   const final=[...edits.values()]
+  if (book.externalBooks?.length) {
+    const entered = new Set(final.flatMap(e => {
+      const old = s.input.sheets[index(e.sheet)!].cells[e.cell]
+      return e.input?.formula && JSON.stringify([e.input.formula,e.input.array]) !== JSON.stringify([old?.formula,old?.array]) ? linksIn(e.input.formula) : []
+    }))
+    if (entered.size) { book.externalBooks=markedLinks(book.externalBooks,entered); rebuild=true }
+  }
   checkArrayEdits(s,final)
   const layout=new Map<number,SheetInput>()
   book.sheets.forEach((sh,i)=>{

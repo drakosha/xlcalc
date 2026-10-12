@@ -18,7 +18,7 @@ import type { Issues, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has, ownEntry, type Element } from '../xml/scan.js'
 import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
-import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
+import { readFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
 import { readTables } from './tables.js'
@@ -41,6 +41,8 @@ export interface SheetSource {
   parts: Pick<PartsSource, 'comments' | 'vml' | 'threads' | 'persons'>
   /** The book's differential formats and colours, which conditional formats use. */
   cond: { dxfs: Dxf[]; palette: Palette }
+  /** How its formulas are read: the book's links to other workbooks they may refer to. */
+  formulas: FormulaOptions
 }
 
 export interface SheetRead {
@@ -104,7 +106,7 @@ function convert(src: SheetSource, read: SheetCells, issues: Issues): Map<string
   for (const addr of Object.keys(read.cells)) {
     const cell = read.cells[addr]
     if (cell.formula === undefined) continue
-    const f = readFormula(cell.formula, issues, { sheet: src.name, cell: addr })
+    const f = readFormula(cell.formula, issues, { sheet: src.name, cell: addr }, src.formulas)
     const dynamic = f.ast && read.old.has(addr) ? src.legacy(f.ast, src.name) : undefined
     cell.formula = dynamic ? canonical(dynamic) : f.formula
     out.set(addr, f)
@@ -275,14 +277,14 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (rows) sheet.rows = rows
   const m = merges(tail, name, ctx.issues)
   if (m) sheet.merges = m
-  const tables = readTables(src.tables, name, read.cells, m, ctx.issues)
+  const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas)
   if (tables.length) sheet.tables = tables
   readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts }, read.cells, ctx.issues)
   const frozen = readFrozen(head, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
-  const cf = readConditional(tail, name, src.cond.dxfs, src.cond.palette, ctx.issues)
+  const cf = readConditional(tail, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)
   if (cf) sheet.conditionalFormats = cf
-  const validations = readValidations(outsideConditional(tail), name, src.sheets, ctx.issues)
+  const validations = readValidations(outsideConditional(tail), name, src.sheets, ctx.issues, src.formulas)
   if (validations) sheet.validations = validations
   const settings = outline(head, name, ctx.issues)
   if (settings) sheet.outline = settings

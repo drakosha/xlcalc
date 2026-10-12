@@ -100,8 +100,9 @@ export function checkLocaleArg(v: unknown, path: string): Locale {
   return typeof v === 'string' ? LOCALES.get(checkTag(v, path, toLoad))! : checkLocaleObject(v, path)
 }
 
-/** The fields of a locale's rules of computation, every one of them required. */
+/** The fields of a locale's rules of computation, every one of them required, and those it may leave out (en-US's then). */
 const REGIONAL_KEYS: readonly (keyof RegionalData)[] = ['decimal', 'group', 'dateOrder', 'currency', 'months', 'monthsShort', 'days', 'daysShort', 'codes', 'colors', 'dateSeparator', 'lcid', 'longDate', 'longTime', 'longMonths', 'collation', 'builtin', 'codePage', 'columnWord']
+const REGIONAL_OPTIONAL: readonly (keyof RegionalData)[] = ['formats']
 
 /**
  * Loads a locale for books in it (`BookInput.locale`) and for its tag wherever a locale is taken: one of the package's
@@ -114,7 +115,7 @@ export function registerLocale(locale: Locale): void {
   if (had === l) return
   if (had) throw new InputError('locale.tag', `the locale ${l.tag} is loaded already${l.tag === DEFAULT_LOCALE ? ': it is built in' : ', as another object'}`)
   const regional = object(l.regional, 'locale.regional', "the rules a book computes by, as the package's locale modules have them")
-  onlyKeys(regional, 'locale.regional', REGIONAL_KEYS)
+  onlyKeys(regional, 'locale.regional', [...REGIONAL_KEYS, ...REGIONAL_OPTIONAL])
   for (const k of REGIONAL_KEYS) if (regional[k] === undefined) throw new InputError(`locale.regional.${k}`, 'expected a value')
   if (l.messages !== undefined) {
     const messages = object(l.messages, 'locale.messages', 'messages by key, each a function')

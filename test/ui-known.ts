@@ -1,12 +1,16 @@
 /**
  * The cases of the ui sets (`test/excel/ui/`, `test/excel/win/ui/`) where the engine knowingly differs from what Excel did,
- * by `<tag>:<set>:<id>`, with the reasons. A paste is answered by `pasteText`, an entry into a selection (Control+Return)
- * by `fillCellText`, a cell of an array by `editText`; what is left is what typing differs in, which these calls share.
+ * by `<tag>:<set>:<id>`, with the reasons; a cell of the ribbon's sets by `<tag>:<set>:<id>:<cell>`. A paste is answered
+ * by `pasteText`, an entry into a selection (Control+Return) by `fillCellText`, a cell of an array by `editText`; what is
+ * left is what typing differs in, which these calls share. The ribbon's box by `numberFormatCategory`, its list by
+ * `numberFormatChoices`.
  */
 
 export const UI_REASONS = {
   reference: "a formula that refers to a cell with a date format takes that format in Excel (=A1+A2), and widens the column for it; parseEntry has no book and gives a reference no format",
   macShortDate: "Excel for Mac's own short date in en-US is m/d/yy, narrower than Windows's m/d/yyyy that the engine follows: a typed date widens the column in the engine, not in Excel for Mac",
+  shortDateCode: "Excel for Mac's built-in short date (14) is m/d/yy in en-US, so it takes the code m/d/yyyy as one of the book's own (Custom); the package shows 14 by Excel for Windows's m/d/yyyy, and numberFormatCategory takes that code for the short date (Date), as builtinFormatCode(14) gives it",
+  dateItems: "the list's Short Date, Long Date and Time items are not the same in every Excel session: in this run Excel offered Date (yyyy-mm-dd;@), Date (d/m;@) and Time (h:mm;@) whatever the cell held; the same case run in another session that day offered Short Date (built-in 14), Long Date ([$-F800]dddd, mmmm dd, yyyy) and Time ([$-F400]h:mm:ss AM/PM), the items numberFormatChoices gives",
 } as const
 
 export type UiReason = keyof typeof UI_REASONS
@@ -18,6 +22,8 @@ const both = (all: string[], en: string[] = [], ru: string[] = []) => ({ 'en-US'
 const BY_REASON: Record<UiReason, Record<string, Record<string, string[]>>> = {
   reference: { 'fill-held': both(['formula-3']) },
   macShortDate: { 'fill-held': { 'en-US': ['date-1'] } },
+  shortDateCode: { ribbon: { 'en-US': ['code-1:B15', ...['B3', 'B4', 'B5', 'B6', 'B7', 'B12'].map((x) => `code-2:${x}`)] } },
+  dateItems: { ribbon: { 'en-US': [...['B5', 'B6', 'B7'].map((x) => `choose-1:${x}`), ...['B7', 'B8', 'B9'].map((x) => `choose-2:${x}`)] } },
 }
 
 /** `<tag>:<set>:<id>` → the reasons the case differs for. */

@@ -86,8 +86,9 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
     x.c = c
     return x
   }
-  // each old value where the geometry takes it, against the new value there
-  old.ctx.sheets.forEach((sh, s) =>
+  // each old value where the geometry takes it, against the new value there; the linked workbooks' sheets after the
+  // book's own (`links.ts`) move with nothing
+  old.ctx.sheets.slice(0, old.sheetNames.length).forEach((sh, s) =>
     sh.cols.forEach((col, c) =>
       col?.forEach((v, r) => {
         spend(1)
@@ -113,7 +114,7 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
   // a new sheet (one an undo puts back): no old cell comes to it, so its cells are compared with none by their inputs below
   const fresh = next.sheetNames.map((_, s) => newSheet(g, s))
   // the new values no old value came to, against an empty cell
-  next.ctx.sheets.forEach((sh, s) =>
+  next.ctx.sheets.slice(0, next.sheetNames.length).forEach((sh, s) =>
     sh.cols.forEach((col, c) =>
       col?.forEach((v, r) => {
         spend(1)
