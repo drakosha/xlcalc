@@ -92,7 +92,9 @@ describe.each(['closures', 'eval'] as Execution[])('outlines in a session (%s)',
 describe('outlines in xlsx', () => {
   it('levels, collapsed marks and summaries come back as written; the deepest levels are in sheetFormatPr', async () => {
     const b = book()
+    // summaries above: the mark of the group 2:4 is on row 1
     b.sheets[0].outline = { summaryBelow: false, summaryRight: true }
+    b.sheets[0].rows = { 1: { collapsed: true }, 2: { outlineLevel: 1, hidden: true }, 3: { outlineLevel: 2, hidden: true }, 4: { outlineLevel: 1, hidden: true } }
     b.sheets.push({ name: 'T', cells: {}, columns: { 'C:E': { outlineLevel: 3, hidden: true, width: 5 }, F: { collapsed: true } } })
     const w = await writeXlsx({ book: b }, { values: 'omit' })
     expect(w.issues).toEqual([])
@@ -103,6 +105,22 @@ describe('outlines in xlsx', () => {
     expect((await archive.text('xl/worksheets/sheet1.xml'))!).toContain('<sheetPr><outlinePr summaryBelow="0" summaryRight="1"/></sheetPr>')
     expect((await archive.text('xl/worksheets/sheet1.xml'))!).toContain('<sheetFormatPr defaultRowHeight="15" outlineLevelRow="2" outlineLevelCol="1"/>')
     expect((await archive.text('xl/worksheets/sheet2.xml'))!).toContain('<col min="6" max="6" width="8.83203125" collapsed="1"/>')
+  })
+
+  it('the collapsed marks are written as Excel keeps them: on a group whose lines are all hidden, not on one shown', async () => {
+    const sheet = (rows: BookInput['sheets'][0]['rows']): BookInput => ({ sheets: [{ name: 'S', cells: {}, rows, columns: { 'B:C': { outlineLevel: 1, hidden: true } } }] })
+    const written = async (b: BookInput) => {
+      const r = await readXlsx((await writeXlsx({ book: b }, { values: 'omit' })).data)
+      return [r.book.sheets[0].rows, r.book.sheets[0].columns]
+    }
+    // rows hidden through setLayout get the mark; a mark on rows shown is dropped; the mark of an inner group inside a hidden one stays
+    expect(await written(sheet({ '2:4': { outlineLevel: 1, hidden: true }, 9: { collapsed: true }, '7:8': { outlineLevel: 1 } }))).toEqual([
+      { '2:4': { outlineLevel: 1, hidden: true }, 5: { collapsed: true }, '7:8': { outlineLevel: 1 } },
+      { 'B:C': { outlineLevel: 1, hidden: true }, D: { collapsed: true } },
+    ])
+    const inner = { '3:4': { outlineLevel: 1, hidden: true }, '5:7': { outlineLevel: 2, hidden: true }, '9:10': { outlineLevel: 1, hidden: true } }
+    expect((await written(sheet({ ...inner, 8: { outlineLevel: 1, hidden: true, collapsed: true } })))[0]).toEqual({ ...inner, 8: { outlineLevel: 1, hidden: true, collapsed: true }, 11: { collapsed: true } })
+    expect((await written(sheet({ ...inner, 8: { outlineLevel: 1, hidden: true } })))[0]).toEqual({ '3:4': inner['3:4'], '5:7': inner['5:7'], '8:10': { outlineLevel: 1, hidden: true }, 11: { collapsed: true } })
   })
 
   it('a filtered sheet keeps its filter mark beside the outline settings', async () => {

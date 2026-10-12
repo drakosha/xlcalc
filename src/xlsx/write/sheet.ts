@@ -15,6 +15,7 @@
  */
 import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, ExternalBook, RowInput, SheetInput } from '../../contract.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
+import { normalized } from '../../layout/outline.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
@@ -222,7 +223,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       if (r.spill !== undefined && r.spillFill !== undefined && mode === 'values')
         for (const a of rectCells(parseRange(r.spill)!)) if (!result[a]) put(a, cellXml(a, sheet.cells[a], r.spillFill))
     }
-  const rowLines = lines(sheet.rows, 'r')
+  // the collapsed marks as Excel keeps and saves them, whatever marks the book holds
+  const rowLines = lines(normalized(sheet.rows, 'r', sheet.outline?.summaryBelow !== false), 'r')
+  const colLines = lines(normalized(sheet.columns, 'c', sheet.outline?.summaryRight !== false), 'c')
   for (const [lo, hi] of rowLines) for (let r = lo; r <= hi; r++) rowsUsed.add(r)
   const rowAttrs = new Map<number, string>()
   for (const [lo, hi, e] of rowLines) {
@@ -230,7 +233,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const attrs = (e.height !== undefined ? ` ht="${e.height}" customHeight="1"` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '') + outlineAttrs(e)
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
   }
-  crossings(rowLines, lines(sheet.columns, 'c'), styles, (r, c, xf) => {
+  crossings(rowLines, colLines, styles, (r, c, xf) => {
     if (!out.has(r * MAX_COLS + c)) put(formatAddress(r, c), `<c r="${formatAddress(r, c)}" s="${xf}"/>`)
   })
   const keys = [...out.keys()].sort((a, b) => a - b)
@@ -246,7 +249,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const minCol = keys.reduce((m, x) => Math.min(m, x % MAX_COLS), MAX_COLS)
   const maxCol = keys.reduce((m, x) => Math.max(m, x % MAX_COLS), 0)
   const dim = keys.length ? `${indexToCol(minCol)}${Math.floor(first / MAX_COLS) + 1}:${indexToCol(maxCol)}${Math.floor(last / MAX_COLS) + 1}` : 'A1'
-  const cols = lines(sheet.columns, 'c').map(([lo, hi, e]) => {
+  const cols = colLines.map(([lo, hi, e]) => {
     const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
     const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${DEFAULT_WIDTH}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
@@ -285,7 +288,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     (filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '') +
     `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${ctx.active ? ' tabSelected="1"' : ''}${pane ? `>${pane}</sheetView>` : '/>'}</sheetViews>` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
-    `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(lines(sheet.columns, 'c'), 'outlineLevelCol')}/>` +
+    `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>` +
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +
     `<sheetData>${data.join('')}</sheetData>` +
     (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
