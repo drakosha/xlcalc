@@ -1,12 +1,13 @@
 /**
  * The category of a number format as the Number Format box of Excel's Home tab shows it, and the items of that box's
- * list, in a locale (`numberFormatCategory`, `numberFormatChoices`); measured in Excel 16.113 for Mac
- * (`test/excel/ui/ribbon.json`). The box names the category of the Format Cells window whose formats hold the code, as
- * Excel keeps it (`canonical`: a literal written bare is kept escaped, `$` as `\$`, so `$#,##0.00` is not the Currency
- * `"$"#,##0.00`), else Custom. Excel builds most categories' formats in the locale's own syntax and compares them with the
- * en-US code, so in a locale that writes formats otherwise (ru-RU: `0,00`, `[Красный]`, `ДД.ММ.ГГГГ`) only those its
- * syntax leaves as they are match (`0`, `0%`); bracketed currencies, their accounting formats and the special formats
- * are kept in one table for every locale and match in each.
+ * list, in a locale (`numberFormatCategory`, `numberFormatChoices`); measured in Excel 16.113 for Mac in en-US
+ * (`test/excel/ui/ribbon.json`) and in Excel 16.0 for Windows in ru-RU (`test/excel/win/ui/ru-RU/ribbon-box.json`). The
+ * box names the category of the Format Cells window whose formats hold the code, as Excel keeps it (`canonical`: a
+ * literal written bare is kept escaped, `$` as `\$`, so `$#,##0.00` is not the Currency `"$"#,##0.00`), else Custom.
+ * Every locale reads a code by en-US's formats, with the locale's names and its short date; the dollar's currency and
+ * accounting formats are en-US's alone, the bracketed currencies (`[$€-407]`), their accounting formats and the special
+ * formats every locale's. Excel for Mac in another locale than en-US compares the code with its formats written in the
+ * locale's syntax (`0,00`), so it shows Custom for nearly every code: the package follows Excel for Windows there.
  */
 import type { FormatCategory, FormatChoice, FormatChoiceKey, NumberFormat, NumberFormatCategory } from '../contract.js'
 import { checkFormat } from '../input.js'
@@ -142,35 +143,25 @@ function dateOrTime(section: string): FormatCategory | undefined {
 }
 
 /**
- * Whether a code reads the same in a locale's own syntax: Excel builds most categories' formats in it, so a code
- * with a decimal point, a group separator, a space (the group separator of ru-RU), a colour or date letters that the
- * locale writes otherwise matches none of them. en-US and a locale without rules of computation write as xlsx does.
+ * The category of a code as Excel keeps it (`canonical`) in a locale whose short date (built-in 14) has the code `short`:
+ * the date also by that code with `/` for the locale's separator (ru-RU's `dd/mm/yyyy`, which it shows as `ДД.ММ.ГГГГ`).
  */
-function sameIn(code: string, loc: Locale | undefined): boolean {
-  const r = loc?.regional
-  if (!r) return true
-  const bare = code.replace(/"[^"]*"/g, '"').replace(/\\(.)/g, (_, c: string) => (c === ' ' ? ' ' : '\\'))
-  if ((r.decimal !== '.' && bare.includes('.')) || (r.group !== ',' && bare.includes(',')) || (/\s/.test(r.group) && bare.includes(' '))) return false
-  if (r.colors[2] !== 'Red' && /\[(?:Black|White|Red|Green|Blue|Yellow|Magenta|Cyan|Color\d+)\]/i.test(bare)) return false
-  return !(r.codes.day !== 'd' && DATE_LETTER.test(bare.replace(/\[[^\]]*\]|General|AM\/PM|A\/P|E[+-]/gi, '')))
-}
-
-/** The category of a code as Excel keeps it (`canonical`) in a locale whose short date (built-in 14) has the code `short`. */
 function categoryOf(code: string, short: string, loc: Locale | undefined): FormatCategory {
   if (/^General$/i.test(code)) return 'general'
   if (code === '@') return 'text'
   if (SPECIAL.has(code)) return 'special'
   if (BRACKET_CURRENCY.test(code)) return 'currency'
   if (BRACKET_ACCOUNTING.test(code)) return 'accounting'
-  if (!sameIn(code, loc)) return 'custom'
   if (NUMBER.test(code)) return 'number'
   if (PERCENT.test(code)) return 'percentage'
   if (SCIENTIFIC.test(code)) return 'scientific'
   if (FRACTION.test(code)) return 'fraction'
   if (!loc?.regional && EN_CURRENCY.test(code)) return 'currency'
   if (!loc?.regional && EN_ACCOUNTING.test(code)) return 'accounting'
-  // the locale's short date as the package shows built-in 14 (Excel for Windows's), and Excel for Mac's own in en-US
-  if (code === canonical(short) || code === 'm/d/yy' || code === LONG_DATE) return 'date'
+  // built-in 14 by its en-US code in every locale, the locale's short date as the package shows built-in 14 and with
+  // `/`, and Excel for Mac's own in en-US
+  const sep = loc?.regional?.dateSeparator
+  if (code === 'm/d/yyyy' || code === canonical(short) || (sep && code === short.split(sep).join('/')) || (!loc?.regional && code === 'm/d/yy') || code === LONG_DATE) return 'date'
   if (code === LONG_TIME) return 'time'
   const m = WITH_TEXT.exec(code)
   return (m && dateOrTime(m[1])) || 'custom'
