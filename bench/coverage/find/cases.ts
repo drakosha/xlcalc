@@ -54,8 +54,8 @@ export interface FoundCell {
   text: string
 }
 
-/** The cells Excel found in its order; `more` when it found more than `MAX_FOUND`. Or the error Find answered. */
-export type FindAnswer = { found: FoundCell[]; more?: true } | { error: string }
+/** The cells Excel found in its order; `more` when it found more than `MAX_FOUND`, `next` the error `FindNext` answered. Or the error Find answered. */
+export type FindAnswer = { found: FoundCell[]; more?: true; next?: string } | { error: string }
 
 export interface FindSet {
   BOOKS: Record<string, FindBook>

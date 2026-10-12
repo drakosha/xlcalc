@@ -260,26 +260,29 @@ function Step($xl, $wb, $s) {
       })
     }
     'autoPercent' { Cell $xl.AutoPercentEntry }
-    # Find over a range or the whole sheet (bench/windows/find.ts): from after the range's last cell, so its first cell
-    # comes first, the cells Find and FindNext give until they come back to the first, at most max, each [address,
-    # Formula, FormulaLocal, Text], and whether more were left
+    # Find over a range or the whole sheet (bench/windows/find.ts): from after the range's last cell (of its last area),
+    # so its first cell comes first, the cells Find and FindNext give until they come back to the first, at most max, each
+    # [address, Formula, FormulaLocal, Text], whether more were left, and FindNext's error (over a range of one cell)
     'find' {
       try {
         $ws = $wb.Worksheets.Item($s.sheet)
-        $rg = if ($s.range) { $ws.Range($s.range) } else { $ws.Cells }
-        $last = $rg.Cells.Item($rg.Rows.Count, $rg.Columns.Count)
+        # the comma keeps PowerShell from unrolling the range into its cells, the whole sheet's too
+        $rg = if ($s.range) { , $ws.Range($s.range) } else { , $ws.Cells }
+        $a = $rg.Areas.Item($rg.Areas.Count)
+        $last = $a.Item($a.Rows.Count, $a.Columns.Count)
         $lookIn = if ($s.lookIn -eq 'values') { -4163 } else { -4123 }
         $lookAt = if ($s.whole) { 1 } else { 2 }
         $order = if ($s.byColumns) { 2 } else { 1 }
         $f = $rg.Find([string]$s.what, $last, $lookIn, $lookAt, $order, 1, [bool]$s.matchCase, $false, $false)
         $first = if ($null -ne $f) { $f.Address() } else { '' }
         $found = @()
+        $next = ''
         while ($null -ne $f -and $found.Count -lt [int]$s.max) {
           $found += List @((Str $f.Address($false, $false)), (Str ([string]$f.Formula)), (Str ([string]$f.FormulaLocal)), (Str ([string]$f.Text)))
-          $f = $rg.FindNext($f)
+          $f = try { $rg.FindNext($f) } catch { $next = "$($_.Exception.HResult) $($_.Exception.Message)"; $null }
           if ($null -ne $f -and $f.Address() -eq $first) { $f = $null }
         }
-        List @((List $found), (Cell ($null -ne $f)))
+        List @((List $found), (Cell ($null -ne $f)), (Str $next))
       } catch { Err $_ }
     }
     # text put on the clipboard and pasted at a cell of the active sheet (bench/windows/ui.ts); the clipboard's or

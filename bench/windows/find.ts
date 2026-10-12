@@ -46,9 +46,9 @@ export async function stepFind(set: string, tag: Tag, e: WinEnv): Promise<void> 
   console.log(answeredLine(`find ${set} ${tag}`, todo.length, answers, cases))
 }
 
-/** A query's answer as `xl.ps1` gives it: `[[address, Formula, FormulaLocal, Text]...], more`, or its error. */
+/** A query's answer as `xl.ps1` gives it: `[[address, Formula, FormulaLocal, Text]...], more, FindNext's error`, or Find's error. */
 function answerOf(x: unknown): FindAnswer {
   if (x && typeof x === 'object' && 'error' in x) return { error: String(x.error) }
-  const [found, more] = x as [[string, string, string, string][], boolean]
-  return { found: found.map(([cell, formula, formulaLocal, text]) => ({ cell, formula, formulaLocal, text })), ...(more ? { more: true as const } : {}) }
+  const [found, more, next] = x as [[string, string, string, string][], boolean, string]
+  return { found: found.map(([cell, formula, formulaLocal, text]) => ({ cell, formula, formulaLocal, text })), ...(more ? { more: true as const } : {}), ...(next ? { next } : {}) }
 }
