@@ -6,7 +6,7 @@ import { occupied, oneCell, type Arg, type Cx, type FnDef, type Grid, type Segme
 import { Arr, asArray } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
-import { product, sum, sumSquares } from '../common.js'
+import { excelSum, product, sumSquares } from '../common.js'
 import { aggregateIf, aggregateIfs } from '../criteria.js'
 import { numberPairs } from '../statistical/common.js'
 
@@ -116,7 +116,7 @@ export const functions: Record<string, FnDef> = {
   },
   PRODUCT: { args: 'N', rep: 1, fn: product },
   SERIESSUM: { args: 'x x x V', cx: true, fn: seriessum },
-  SUM: { args: 'N', rep: 1, fn: sum },
+  SUM: { args: 'N', rep: 1, fn: excelSum },
   SUMIF: {
     args: 'R a R?',
     cx: true,

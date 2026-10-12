@@ -33,7 +33,8 @@ describe('arrays beyond the Excel cases', () => {
 
   it('a formula without arrays compiles to the same scalar code; lifting appears only where an array can be', () => {
     const code = debugGeneratedCode({ sheets: [{ name: 'S', cells: { A1: { formula: 'B1*2+ROUND(C1,1)' }, A2: { formula: 'SUM(B1:B3*2)' } } }] }, { clock })
-    expect(code).toContain('add(mul(cell(0,0,1),2),F.ROUND(cell(0,0,2),1))')
+    // the formula's last + takes Excel's 0 near its left operand (`nearZero`)
+    expect(code).toContain('addLast(mul(cell(0,0,1),2),F.ROUND(cell(0,0,2),1))')
     expect(code).toContain('F.SUM(L2(mul,h0,2))')
   })
 

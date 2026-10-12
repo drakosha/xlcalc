@@ -37,10 +37,13 @@ export interface CodegenContext {
   link?(book: number, sheet: string): number | undefined
 }
 
-export type Operator = 'add' | 'sub' | 'mul' | 'div' | 'pow' | 'cat'
+export type Operator = 'add' | 'sub' | 'addLast' | 'subLast' | 'mul' | 'div' | 'pow' | 'cat'
 
 /** The runtime's arithmetic and text operators by symbol; comparisons go through `cmp` (lifted: `C`). */
-export const OPERATORS: Partial<Record<BinOp, Operator>> = { '+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '^': 'pow', '&': 'cat' }
+const OPERATORS: Partial<Record<BinOp, Operator>> = { '+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '^': 'pow', '&': 'cat' }
+
+/** The runtime's operator of a symbol, undefined for a comparison; `last`, the formula's last operation, takes Excel's 0 for + and - (`nearZero`). */
+export const operator = (op: BinOp, last: boolean): Operator | undefined => (last && op === '+' ? 'addLast' : last && op === '-' ? 'subLast' : OPERATORS[op])
 
 /**
  * Code of one node in a mode. `lift`: an operand or a one-value argument can be an array, so the node goes
@@ -59,7 +62,8 @@ export interface Backend<T> {
   /** A constant range, built once per compiled formula; `one`: a single cell in a one-value position. */
   range(g: Rng, one: boolean): T
   unary(op: 'neg' | 'pct', a: T, lift: boolean): T
-  binary(op: BinOp, a: T, b: T, lift: boolean): T
+  /** `last`: the formula's last operation, outside parentheses. */
+  binary(op: BinOp, a: T, b: T, lift: boolean, last: boolean): T
   call(name: string, args: T[], lift: boolean): T
   /** A lazy function (IF, IFERROR): each argument computed on demand; `check`, the positions that can lift it. */
   lazy(name: string, args: T[], check: number[]): T
@@ -415,7 +419,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           return value(b.refOp(n.op, go(n.a, true), go(n.b, true)), n, rangeOk)
         }
         const x = go(n.a)
-        return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b))
+        return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b), n === ast)
       }
       case 'fn': {
         if (ctx.area && !n.args.length && (n.name === 'ROW' || n.name === 'COLUMN')) return b.array(lines(ctx.area, n.name === 'ROW'))

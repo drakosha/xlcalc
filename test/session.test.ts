@@ -70,6 +70,6 @@ describe('session', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A2: { formula: 'A1*2' }, A1: { formula: '1+1' } } }] }
     const code = debugGeneratedCode(book, { clock })
     expect(code.indexOf("// 'S'!A1 = 1+1")).toBeLessThan(code.indexOf("// 'S'!A2 = A1*2"))
-    expect(code).toContain('return ()=>add(1,1)')
+    expect(code).toContain('return ()=>addLast(1,1)')
   })
 })
