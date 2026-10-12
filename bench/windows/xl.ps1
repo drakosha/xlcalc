@@ -345,6 +345,17 @@ function Step($xl, $wb, $s) {
         List @((List $found), (Cell ($null -ne $f)), (Str $next), (Str $back))
       } catch { Err $_ }
     }
+    # Replace over a range or the whole sheet (bench/windows/replace.ts), as the dialog's Replace All with Look in
+    # Formulas, a formula put back as a dynamic one (FormulaVersion xlReplaceFormula2, 1): what Range.Replace answers,
+    # or its error; the range kept whole as Find's
+    'replace' {
+      try {
+        $ws = $wb.Worksheets.Item($s.sheet)
+        $rg = if ($s.range) { , $ws.Range(([string]$s.range).Replace(',', $xl.International(5))) } else { , $ws.Cells }
+        $lookAt = if ($s.whole) { 1 } else { 2 }
+        Cell ([bool]$rg.Replace([string]$s.what, [string]$s.by, $lookAt, 1, [bool]$s.matchCase, $false, $false, $false, 1))
+      } catch { Err $_ }
+    }
     # text put on the clipboard and pasted at a cell of the active sheet (bench/windows/ui.ts); the clipboard's or
     # Excel's refusal is the step's error
     'paste' {

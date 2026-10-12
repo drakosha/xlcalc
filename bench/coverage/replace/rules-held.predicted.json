@@ -1,0 +1,1333 @@
+{
+ "model": "modelReplace: a grid Replace All, Find in formulas and setCellTexts",
+ "locales": {
+  "en-US": {
+   "wild-1": {
+    "changed": {
+     "A1": {
+      "value": "x"
+     },
+     "A2": {
+      "value": "x"
+     },
+     "A3": {
+      "value": "x"
+     },
+     "A4": {
+      "value": "x"
+     },
+     "A5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "x"
+     },
+     "A7": {
+      "value": "x"
+     },
+     "A8": {
+      "value": "x"
+     },
+     "A9": {
+      "value": "x"
+     },
+     "A10": {
+      "value": "x"
+     }
+    }
+   },
+   "wild-2": {
+    "changed": {
+     "A1": {
+      "value": "xc"
+     },
+     "A2": {
+      "value": "x"
+     },
+     "A4": {
+      "value": "x"
+     },
+     "A5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "x"
+     },
+     "A7": {
+      "value": "x"
+     }
+    }
+   },
+   "wild-3": {
+    "changed": {
+     "A4": {
+      "value": "y2b"
+     },
+     "A5": {
+      "value": "y"
+     },
+     "A6": {
+      "value": "y"
+     },
+     "A7": {
+      "value": "y"
+     }
+    }
+   },
+   "wild-4": {
+    "changed": {
+     "A2": {
+      "value": "y"
+     }
+    }
+   },
+   "wild-5": {
+    "changed": {
+     "A5": {
+      "value": "a+b"
+     }
+    }
+   },
+   "wild-6": {
+    "changed": {
+     "A6": {
+      "value": "a!b"
+     }
+    }
+   },
+   "wild-7": {
+    "changed": {
+     "A7": {
+      "value": "a-b"
+     }
+    }
+   },
+   "wild-8": {
+    "changed": {
+     "A2": {
+      "value": "xxxx"
+     },
+     "A3": {
+      "value": "xxxxxxxxxxxxxxxxx"
+     }
+    }
+   },
+   "wild-9": {
+    "changed": {
+     "A2": {
+      "value": "x\ude00b"
+     }
+    }
+   },
+   "wild-10": {
+    "changed": {
+     "A9": {
+      "value": "x"
+     }
+    }
+   },
+   "wild-11": {
+    "changed": {
+     "A10": {
+      "value": "x"
+     }
+    }
+   },
+   "put-1": {
+    "changed": {
+     "A1": {
+      "value": "a~*c"
+     },
+     "A2": {
+      "value": "a😀~*"
+     },
+     "A4": {
+      "value": "a1~*2~*"
+     },
+     "A5": {
+      "value": "a*~*"
+     },
+     "A6": {
+      "value": "a?~*"
+     },
+     "A7": {
+      "value": "a~~*"
+     },
+     "A9": {
+      "value": "~*"
+     }
+    }
+   },
+   "put-2": {
+    "changed": {
+     "A1": {
+      "value": "a*?c"
+     },
+     "A2": {
+      "value": "a😀*?"
+     },
+     "A4": {
+      "value": "a1*?2*?"
+     },
+     "A5": {
+      "value": "a**?"
+     },
+     "A6": {
+      "value": "a?*?"
+     },
+     "A7": {
+      "value": "a~*?"
+     },
+     "A9": {
+      "value": "*?"
+     }
+    }
+   },
+   "put-3": {
+    "changed": {
+     "A1": {
+      "value": "a~c"
+     },
+     "A2": {
+      "value": "a😀~"
+     },
+     "A4": {
+      "value": "a1~2~"
+     },
+     "A5": {
+      "value": "a*~"
+     },
+     "A6": {
+      "value": "a?~"
+     },
+     "A7": {
+      "value": "a~~"
+     },
+     "A9": {
+      "value": "~"
+     }
+    }
+   },
+   "whole-1": {
+    "changed": {
+     "A1": {
+      "value": "x"
+     }
+    }
+   },
+   "whole-2": {
+    "changed": {
+     "A1": {
+      "value": "z"
+     },
+     "A2": {
+      "value": "z"
+     },
+     "A4": {
+      "value": "z"
+     },
+     "A5": {
+      "value": "z"
+     },
+     "A6": {
+      "value": "z"
+     },
+     "A7": {
+      "value": "z"
+     }
+    }
+   },
+   "whole-3": {
+    "changed": {
+     "A9": {
+      "value": "x"
+     }
+    }
+   },
+   "case-1": {
+    "changed": {
+     "A3": {
+      "value": "x x x"
+     }
+    }
+   },
+   "case-2": {
+    "changed": {
+     "A3": {
+      "value": "Hello x HELLO"
+     }
+    }
+   },
+   "case-3": {
+    "changed": {}
+   },
+   "many-1": {
+    "changed": {
+     "A1": {
+      "value": "aXYc"
+     },
+     "A2": {
+      "value": "a😀XY"
+     },
+     "A4": {
+      "value": "a1XY2XY"
+     },
+     "A5": {
+      "value": "a*XY"
+     },
+     "A6": {
+      "value": "a?XY"
+     },
+     "A7": {
+      "value": "a~XY"
+     },
+     "A9": {
+      "value": "XY"
+     }
+    }
+   },
+   "many-2": {
+    "changed": {
+     "A1": {
+      "value": "ac"
+     },
+     "A2": {
+      "value": "a😀"
+     },
+     "A4": {
+      "value": "a12"
+     },
+     "A5": {
+      "value": "a*"
+     },
+     "A6": {
+      "value": "a?"
+     },
+     "A7": {
+      "value": "a~"
+     },
+     "A9": null
+    }
+   },
+   "many-3": {
+    "changed": {
+     "A1": null
+    }
+   },
+   "entry-1": {
+    "changed": {
+     "A1": {
+      "value": 1
+     }
+    }
+   },
+   "entry-2": {
+    "changed": {
+     "A2": {
+      "formula": "1+1"
+     }
+    }
+   },
+   "entry-3": {
+    "changed": {
+     "A3": {
+      "value": "008"
+     },
+     "A4": {
+      "value": "008"
+     }
+    }
+   },
+   "entry-4": {
+    "changed": {}
+   },
+   "entry-5": {
+    "changed": {
+     "A5": {
+      "value": 0.05,
+      "format": 9
+     },
+     "A6": {
+      "value": "TRUE "
+     }
+    }
+   },
+   "entry-6": {
+    "changed": {
+     "A6": {
+      "value": true
+     },
+     "A7": {
+      "value": "ИСТИНА"
+     }
+    }
+   },
+   "entry-7": {
+    "changed": {
+     "A8": {
+      "value": 46096,
+      "format": 14
+     },
+     "A9": {
+      "value": "15.03.2026"
+     }
+    }
+   },
+   "entry-8": {
+    "changed": {}
+   },
+   "look-1": {
+    "changed": {
+     "B1": {
+      "formula": "MAX(D1:D2)"
+     }
+    }
+   },
+   "look-2": {
+    "changed": {}
+   },
+   "look-3": {
+    "changed": {
+     "B1": {
+      "formula": "SUMX(D1:D2)"
+     }
+    }
+   },
+   "look-4": {
+    "changed": {}
+   },
+   "look-5": {
+    "refused": "B1 syntax",
+    "changed": {}
+   },
+   "look-6": {
+    "refused": "B1 syntax",
+    "changed": {}
+   },
+   "look-7": {
+    "changed": {
+     "B12": {
+      "formula": "D2+D2"
+     }
+    }
+   },
+   "look-8": {
+    "changed": {}
+   },
+   "look-9": {
+    "changed": {
+     "B2": {
+      "value": "6%%",
+      "format": "0%"
+     },
+     "B3": {
+      "value": 1234.6,
+      "format": "\"$\"#,##0.00"
+     }
+    }
+   },
+   "look-10": {
+    "changed": {}
+   },
+   "look-11": {
+    "changed": {}
+   },
+   "look-12": {
+    "changed": {
+     "B3": {
+      "value": 1239.5,
+      "format": "\"$\"#,##0.00"
+     }
+    }
+   },
+   "look-13": {
+    "changed": {
+     "B3": {
+      "value": "1234,5",
+      "format": "\"$\"#,##0.00"
+     }
+    }
+   },
+   "look-14": {
+    "changed": {
+     "B4": {
+      "value": 46461,
+      "format": 14
+     }
+    }
+   },
+   "look-15": {
+    "changed": {
+     "B4": {
+      "value": 46127,
+      "format": 14
+     },
+     "B5": {
+      "value": 1244567,
+      "format": "#,##0"
+     }
+    }
+   },
+   "look-16": {
+    "changed": {
+     "B7": {
+      "value": false
+     }
+    }
+   },
+   "look-17": {
+    "changed": {}
+   },
+   "look-18": {
+    "changed": {
+     "B7": {
+      "value": "TXXE"
+     }
+    }
+   },
+   "look-19": {
+    "changed": {
+     "B9": {
+      "formula": "1/2"
+     }
+    }
+   },
+   "look-20": {
+    "changed": {
+     "F1": {
+      "formula": "SEQUENCE(3)*8"
+     }
+    }
+   },
+   "look-21": {
+    "refused": "H1 array",
+    "changed": {}
+   },
+   "look-22": {
+    "refused": "H1 array",
+    "changed": {}
+   },
+   "look-23": {
+    "changed": {
+     "J1": {
+      "value": "m2"
+     }
+    }
+   },
+   "look-24": {
+    "changed": {
+     "B20": {
+      "value": "shown row"
+     },
+     "L1": {
+      "value": "shown column"
+     }
+    }
+   },
+   "look-25": {
+    "refused": "H1 array",
+    "changed": {}
+   },
+   "look-26": {
+    "changed": {
+     "B12": {
+      "formula": "D2+D2"
+     }
+    }
+   },
+   "filtered-1": {
+    "changed": {
+     "A1": {
+      "value": "yA1"
+     },
+     "B1": {
+      "value": "yB1"
+     },
+     "D1": {
+      "value": "yD1"
+     },
+     "E1": {
+      "value": "yE1"
+     },
+     "A2": {
+      "value": "yA2"
+     },
+     "B2": {
+      "value": "yB2"
+     },
+     "D2": {
+      "value": "yD2"
+     },
+     "E2": {
+      "value": "yE2"
+     },
+     "A4": {
+      "value": "yA4"
+     },
+     "B4": {
+      "value": "yB4"
+     },
+     "D4": {
+      "value": "yD4"
+     },
+     "E4": {
+      "value": "yE4"
+     },
+     "A5": {
+      "value": "yA5"
+     },
+     "B5": {
+      "value": "yB5"
+     },
+     "D5": {
+      "value": "yD5"
+     },
+     "E5": {
+      "value": "yE5"
+     },
+     "A7": {
+      "value": "yA7"
+     },
+     "B7": {
+      "value": "yB7"
+     },
+     "D7": {
+      "value": "yD7"
+     },
+     "E7": {
+      "value": "yE7"
+     },
+     "A8": {
+      "value": "yA8"
+     },
+     "B8": {
+      "value": "yB8"
+     },
+     "D8": {
+      "value": "yD8"
+     },
+     "E8": {
+      "value": "yE8"
+     }
+    }
+   },
+   "filtered-2": {
+    "changed": {
+     "A1": {
+      "value": "yA1"
+     },
+     "B1": {
+      "value": "yB1"
+     },
+     "D1": {
+      "value": "yD1"
+     },
+     "E1": {
+      "value": "yE1"
+     },
+     "A2": {
+      "value": "yA2"
+     },
+     "B2": {
+      "value": "yB2"
+     },
+     "D2": {
+      "value": "yD2"
+     },
+     "E2": {
+      "value": "yE2"
+     },
+     "A4": {
+      "value": "yA4"
+     },
+     "B4": {
+      "value": "yB4"
+     },
+     "D4": {
+      "value": "yD4"
+     },
+     "E4": {
+      "value": "yE4"
+     },
+     "A5": {
+      "value": "yA5"
+     },
+     "B5": {
+      "value": "yB5"
+     },
+     "D5": {
+      "value": "yD5"
+     },
+     "E5": {
+      "value": "yE5"
+     }
+    }
+   },
+   "filtered-3": {
+    "changed": {}
+   }
+  },
+  "ru-RU": {
+   "wild-1": {
+    "changed": {
+     "A1": {
+      "value": "x"
+     },
+     "A2": {
+      "value": "x"
+     },
+     "A3": {
+      "value": "x"
+     },
+     "A4": {
+      "value": "x"
+     },
+     "A5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "x"
+     },
+     "A7": {
+      "value": "x"
+     },
+     "A8": {
+      "value": "x"
+     },
+     "A9": {
+      "value": "x"
+     },
+     "A10": {
+      "value": "x"
+     }
+    }
+   },
+   "wild-2": {
+    "changed": {
+     "A1": {
+      "value": "xc"
+     },
+     "A2": {
+      "value": "x"
+     },
+     "A4": {
+      "value": "x"
+     },
+     "A5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "x"
+     },
+     "A7": {
+      "value": "x"
+     }
+    }
+   },
+   "wild-3": {
+    "changed": {
+     "A4": {
+      "value": "y2b"
+     },
+     "A5": {
+      "value": "y"
+     },
+     "A6": {
+      "value": "y"
+     },
+     "A7": {
+      "value": "y"
+     }
+    }
+   },
+   "wild-4": {
+    "changed": {
+     "A2": {
+      "value": "y"
+     }
+    }
+   },
+   "wild-5": {
+    "changed": {
+     "A5": {
+      "value": "a+b"
+     }
+    }
+   },
+   "wild-6": {
+    "changed": {
+     "A6": {
+      "value": "a!b"
+     }
+    }
+   },
+   "wild-7": {
+    "changed": {
+     "A7": {
+      "value": "a-b"
+     }
+    }
+   },
+   "wild-8": {
+    "changed": {
+     "A2": {
+      "value": "xxxx"
+     },
+     "A3": {
+      "value": "xxxxxxxxxxxxxxxxx"
+     }
+    }
+   },
+   "wild-9": {
+    "changed": {
+     "A2": {
+      "value": "x\ude00b"
+     }
+    }
+   },
+   "wild-10": {
+    "changed": {
+     "A9": {
+      "value": "x"
+     }
+    }
+   },
+   "wild-11": {
+    "changed": {
+     "A10": {
+      "value": "x"
+     }
+    }
+   },
+   "put-1": {
+    "changed": {
+     "A1": {
+      "value": "a~*c"
+     },
+     "A2": {
+      "value": "a😀~*"
+     },
+     "A4": {
+      "value": "a1~*2~*"
+     },
+     "A5": {
+      "value": "a*~*"
+     },
+     "A6": {
+      "value": "a?~*"
+     },
+     "A7": {
+      "value": "a~~*"
+     },
+     "A9": {
+      "value": "~*"
+     }
+    }
+   },
+   "put-2": {
+    "changed": {
+     "A1": {
+      "value": "a*?c"
+     },
+     "A2": {
+      "value": "a😀*?"
+     },
+     "A4": {
+      "value": "a1*?2*?"
+     },
+     "A5": {
+      "value": "a**?"
+     },
+     "A6": {
+      "value": "a?*?"
+     },
+     "A7": {
+      "value": "a~*?"
+     },
+     "A9": {
+      "value": "*?"
+     }
+    }
+   },
+   "put-3": {
+    "changed": {
+     "A1": {
+      "value": "a~c"
+     },
+     "A2": {
+      "value": "a😀~"
+     },
+     "A4": {
+      "value": "a1~2~"
+     },
+     "A5": {
+      "value": "a*~"
+     },
+     "A6": {
+      "value": "a?~"
+     },
+     "A7": {
+      "value": "a~~"
+     },
+     "A9": {
+      "value": "~"
+     }
+    }
+   },
+   "whole-1": {
+    "changed": {
+     "A1": {
+      "value": "x"
+     }
+    }
+   },
+   "whole-2": {
+    "changed": {
+     "A1": {
+      "value": "z"
+     },
+     "A2": {
+      "value": "z"
+     },
+     "A4": {
+      "value": "z"
+     },
+     "A5": {
+      "value": "z"
+     },
+     "A6": {
+      "value": "z"
+     },
+     "A7": {
+      "value": "z"
+     }
+    }
+   },
+   "whole-3": {
+    "changed": {
+     "A9": {
+      "value": "x"
+     }
+    }
+   },
+   "case-1": {
+    "changed": {
+     "A3": {
+      "value": "x x x"
+     }
+    }
+   },
+   "case-2": {
+    "changed": {
+     "A3": {
+      "value": "Hello x HELLO"
+     }
+    }
+   },
+   "case-3": {
+    "changed": {}
+   },
+   "many-1": {
+    "changed": {
+     "A1": {
+      "value": "aXYc"
+     },
+     "A2": {
+      "value": "a😀XY"
+     },
+     "A4": {
+      "value": "a1XY2XY"
+     },
+     "A5": {
+      "value": "a*XY"
+     },
+     "A6": {
+      "value": "a?XY"
+     },
+     "A7": {
+      "value": "a~XY"
+     },
+     "A9": {
+      "value": "XY"
+     }
+    }
+   },
+   "many-2": {
+    "changed": {
+     "A1": {
+      "value": "ac"
+     },
+     "A2": {
+      "value": "a😀"
+     },
+     "A4": {
+      "value": "a12"
+     },
+     "A5": {
+      "value": "a*"
+     },
+     "A6": {
+      "value": "a?"
+     },
+     "A7": {
+      "value": "a~"
+     },
+     "A9": null
+    }
+   },
+   "many-3": {
+    "changed": {
+     "A1": null
+    }
+   },
+   "entry-1": {
+    "changed": {
+     "A1": {
+      "value": 1
+     }
+    }
+   },
+   "entry-2": {
+    "changed": {
+     "A2": {
+      "formula": "1+1"
+     }
+    }
+   },
+   "entry-3": {
+    "changed": {
+     "A3": {
+      "value": "008"
+     },
+     "A4": {
+      "value": "008"
+     }
+    }
+   },
+   "entry-4": {
+    "changed": {}
+   },
+   "entry-5": {
+    "changed": {
+     "A5": {
+      "value": 0.05,
+      "format": 9
+     },
+     "A6": {
+      "value": "TRUE "
+     }
+    }
+   },
+   "entry-6": {
+    "changed": {
+     "A6": {
+      "value": "TRUE"
+     },
+     "A7": {
+      "value": true
+     }
+    }
+   },
+   "entry-7": {
+    "changed": {
+     "A8": {
+      "value": "3/15/2026"
+     },
+     "A9": {
+      "value": 46096,
+      "format": 14
+     }
+    }
+   },
+   "entry-8": {
+    "changed": {}
+   },
+   "look-1": {
+    "changed": {}
+   },
+   "look-2": {
+    "changed": {
+     "B1": {
+      "formula": "MAX(D1:D2)"
+     }
+    }
+   },
+   "look-3": {
+    "changed": {}
+   },
+   "look-4": {
+    "changed": {
+     "B1": {
+      "formula": "СУММХ(D1:D2)"
+     }
+    }
+   },
+   "look-5": {
+    "refused": "B1 syntax",
+    "changed": {}
+   },
+   "look-6": {
+    "refused": "B1 syntax",
+    "changed": {}
+   },
+   "look-7": {
+    "changed": {
+     "B12": {
+      "formula": "D2+D2"
+     }
+    }
+   },
+   "look-8": {
+    "changed": {}
+   },
+   "look-9": {
+    "changed": {
+     "B2": {
+      "value": "6%%",
+      "format": "0%"
+     },
+     "B3": {
+      "value": 1234.6,
+      "format": "\"$\"#,##0.00"
+     }
+    }
+   },
+   "look-10": {
+    "changed": {}
+   },
+   "look-11": {
+    "changed": {}
+   },
+   "look-12": {
+    "changed": {
+     "B3": {
+      "value": 1239.5,
+      "format": "\"$\"#,##0.00"
+     }
+    }
+   },
+   "look-13": {
+    "changed": {
+     "B4": {
+      "value": "15,03,2026",
+      "format": 14
+     }
+    }
+   },
+   "look-14": {
+    "changed": {
+     "B4": {
+      "value": 46461,
+      "format": 14
+     }
+    }
+   },
+   "look-15": {
+    "changed": {
+     "B4": {
+      "value": 46127,
+      "format": 14
+     },
+     "B5": {
+      "value": 1244567,
+      "format": "#,##0"
+     }
+    }
+   },
+   "look-16": {
+    "changed": {}
+   },
+   "look-17": {
+    "changed": {
+     "B7": {
+      "value": false
+     }
+    }
+   },
+   "look-18": {
+    "changed": {}
+   },
+   "look-19": {
+    "changed": {
+     "B9": {
+      "formula": "1/2"
+     }
+    }
+   },
+   "look-20": {
+    "changed": {
+     "F1": {
+      "formula": "SEQUENCE(3)*8"
+     }
+    }
+   },
+   "look-21": {
+    "refused": "H1 array",
+    "changed": {}
+   },
+   "look-22": {
+    "refused": "H1 array",
+    "changed": {}
+   },
+   "look-23": {
+    "changed": {
+     "J1": {
+      "value": "m2"
+     }
+    }
+   },
+   "look-24": {
+    "changed": {
+     "B20": {
+      "value": "shown row"
+     },
+     "L1": {
+      "value": "shown column"
+     }
+    }
+   },
+   "look-25": {
+    "refused": "H1 array",
+    "changed": {}
+   },
+   "look-26": {
+    "changed": {
+     "B12": {
+      "formula": "D2+D2"
+     }
+    }
+   },
+   "filtered-1": {
+    "changed": {
+     "A1": {
+      "value": "yA1"
+     },
+     "B1": {
+      "value": "yB1"
+     },
+     "D1": {
+      "value": "yD1"
+     },
+     "E1": {
+      "value": "yE1"
+     },
+     "A2": {
+      "value": "yA2"
+     },
+     "B2": {
+      "value": "yB2"
+     },
+     "D2": {
+      "value": "yD2"
+     },
+     "E2": {
+      "value": "yE2"
+     },
+     "A4": {
+      "value": "yA4"
+     },
+     "B4": {
+      "value": "yB4"
+     },
+     "D4": {
+      "value": "yD4"
+     },
+     "E4": {
+      "value": "yE4"
+     },
+     "A5": {
+      "value": "yA5"
+     },
+     "B5": {
+      "value": "yB5"
+     },
+     "D5": {
+      "value": "yD5"
+     },
+     "E5": {
+      "value": "yE5"
+     },
+     "A7": {
+      "value": "yA7"
+     },
+     "B7": {
+      "value": "yB7"
+     },
+     "D7": {
+      "value": "yD7"
+     },
+     "E7": {
+      "value": "yE7"
+     },
+     "A8": {
+      "value": "yA8"
+     },
+     "B8": {
+      "value": "yB8"
+     },
+     "D8": {
+      "value": "yD8"
+     },
+     "E8": {
+      "value": "yE8"
+     }
+    }
+   },
+   "filtered-2": {
+    "changed": {
+     "A1": {
+      "value": "yA1"
+     },
+     "B1": {
+      "value": "yB1"
+     },
+     "D1": {
+      "value": "yD1"
+     },
+     "E1": {
+      "value": "yE1"
+     },
+     "A2": {
+      "value": "yA2"
+     },
+     "B2": {
+      "value": "yB2"
+     },
+     "D2": {
+      "value": "yD2"
+     },
+     "E2": {
+      "value": "yE2"
+     },
+     "A4": {
+      "value": "yA4"
+     },
+     "B4": {
+      "value": "yB4"
+     },
+     "D4": {
+      "value": "yD4"
+     },
+     "E4": {
+      "value": "yE4"
+     },
+     "A5": {
+      "value": "yA5"
+     },
+     "B5": {
+      "value": "yB5"
+     },
+     "D5": {
+      "value": "yD5"
+     },
+     "E5": {
+      "value": "yE5"
+     }
+    }
+   },
+   "filtered-3": {
+    "changed": {}
+   }
+  }
+ }
+}

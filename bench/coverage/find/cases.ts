@@ -114,11 +114,11 @@ export function findInBook(b: FindBook, q: FindQuery, tag: string): string[] {
   }
 }
 
-/** Cases of one group: ids `<group>-<n>`. */
-export function collector() {
-  const out: FindCase[] = []
+/** Cases of one group: ids `<group>-<n>`; a query of Find's by default, of Replace's for its sets. */
+export function collector<Q = FindQuery>() {
+  const out: { id: string; book: string; query: Q }[] = []
   const count = new Map<string, number>()
-  const add = (group: string, book: string, query: FindQuery) => {
+  const add = (group: string, book: string, query: Q) => {
     const n = (count.get(group) ?? 0) + 1
     count.set(group, n)
     out.push({ id: `${group}-${n}`, book, query })
