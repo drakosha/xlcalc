@@ -299,7 +299,12 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       structural = true
     }
     state.invalid.delete(k)
-    touched.push({ s, r1: row, c1: col, r2: row, c2: col })
+    // An atomic column batch touches one contiguous area, without querying all its readers per cell.
+    const last = touched.at(-1)
+    if (last && last.s === s && last.c1 === col && last.c2 === col && row >= last.r1 - 1 && row <= last.r2 + 1) {
+      last.r1 = Math.min(last.r1, row)
+      last.r2 = Math.max(last.r2, row)
+    } else touched.push({ s, r1: row, c1: col, r2: row, c2: col })
     const input: CellInput | null = e.input
     if (input?.formula !== undefined) {
       const p = prepare(state, s, row, col, input.formula)
