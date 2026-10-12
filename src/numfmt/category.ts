@@ -1,13 +1,14 @@
 /**
  * The category of a number format as the Number Format box of Excel's Home tab shows it, and the items of that box's
  * list, in a locale (`numberFormatCategory`, `numberFormatChoices`); measured in Excel 16.113 for Mac in en-US
- * (`test/excel/ui/ribbon.json`) and in Excel 16.0 for Windows in ru-RU (`test/excel/win/ui/ru-RU/ribbon-box.json`). The
- * box names the category of the Format Cells window whose formats hold the code, as Excel keeps it (`canonical`: a
- * literal written bare is kept escaped, `$` as `\$`, so `$#,##0.00` is not the Currency `"$"#,##0.00`), else Custom.
- * Every locale reads a code by en-US's formats, with the locale's names and its short date; the dollar's currency and
- * accounting formats are en-US's alone, the bracketed currencies (`[$€-407]`), their accounting formats and the special
- * formats every locale's. Excel for Mac in another locale than en-US compares the code with its formats written in the
- * locale's syntax (`0,00`), so it shows Custom for nearly every code: the package follows Excel for Windows there.
+ * (`test/excel/ui/ribbon.json`) and in Excel 16.0 for Windows in ru-RU (`test/excel/win/ribbon/ru-RU/`). The box names
+ * the category of the Format Cells window whose formats hold the code, as Excel keeps it (`canonical`: a literal
+ * written bare is kept escaped, `$` as `\$`, so `$#,##0.00` is not the Currency `"$"#,##0.00`), else Custom. Excel for
+ * Windows writes the code in the locale's syntax and compares it with its formats written so: in ru-RU `0.00` is
+ * Числовой, as in en-US, but money is the ruble's quoted after the amount, negatives take a minus, a fraction's space is
+ * quoted. Bracketed currencies (`[$€-407]`), their accounting formats and the special formats are every locale's.
+ * Excel for Mac in a locale other than en-US compares the code, kept in en-US syntax, with its formats in the locale's
+ * (`0,00`), so it shows Custom for nearly every code: the package follows Excel for Windows there.
  */
 import type { FormatCategory, FormatChoice, FormatChoiceKey, NumberFormat, NumberFormatCategory } from '../contract.js'
 import { checkFormat } from '../input.js'
@@ -60,11 +61,7 @@ export function numberFormatCategory(format: NumberFormat, locale?: string | Loc
   const loc = optLocale(locale)
   let category: FormatCategory
   if (!loc?.regional) category = categoryOf(typeof format === 'string' ? canonical(format) : EN_KEPT[format], '', undefined)
-  else {
-    // Excel takes a code equal to a built-in format's en-US code as that format
-    const id = typeof format === 'number' ? format : EN_KEPT.indexOf(canonical(format))
-    category = id >= 0 ? builtinIn(id) : categoryOf(canonical(format as string), codesOf(loc)(14), loc)
-  }
+  else category = typeof format === 'number' ? builtinIn(format) : categoryOf(canonical(format), codesOf(loc)(14), loc)
   return { category, name: namesOf(loc).categories[category] }
 }
 
@@ -115,7 +112,10 @@ const NUMBER = new RegExp(String.raw`^(${NUM})(?:;\[Red\]\1)?$`, 'i')
 const PAREN = new RegExp(String.raw`^(${NUM})_\);(?:\[Red\])?\\\(\1\\\)$`, 'i')
 const PERCENT = /^0(?:\.0{1,30})?%$/
 const SCIENTIFIC = /^0\.0{1,30}E\+00$/
-const FRACTION = /^#\\ (?:\?\/\?|\?\?\/\?\?|\?\?\?\/\?\?\?|\?\/[248]|\?\?\/16|\?\/10|\?\?\/100)$/
+const DENOMINATORS = String.raw`(?:\?\/\?|\?\?\/\?\?|\?\?\?\/\?\?\?|\?\/[248]|\?\?\/16|\?\/10|\?\?\/100)`
+const FRACTION = new RegExp(String.raw`^#\\ ${DENOMINATORS}$`)
+/** Fractions as a locale other than en-US writes them, the space quoted (ru-RU's built-in 12, `#" "?/?`): one escaped is no fraction there. */
+const QUOTED_FRACTION = new RegExp(String.raw`^#" "${DENOMINATORS}$`)
 const SPECIAL: ReadonlySet<string> = new Set(['00000', '00000\\-0000', '000\\-00\\-0000', '000000', '[<=9999999]###\\-####;\\(###\\)\\ ###\\-####'])
 
 /** Currency with the symbol `s` (a regular expression) right before the digits, or a bracketed one before them (a space between or none) or after them with a space; negatives with a minus in red, or in parentheses. */
@@ -137,8 +137,27 @@ const BRACKET_CURRENCY = currency(BRACKET, true)
 const BRACKET_ACCOUNTING = accounting(`${BRACKET}(?:\\\\ )?`, true)
 const EN_CURRENCY = currency('"\\$"', false)
 const EN_ACCOUNTING = accounting('(?:"\\$")?', false)
-/** Accounting without a symbol in the form with minus signs, a locale's own but en-US's (ru-RU's built-in 41 and 43). */
-const PLAIN_ACCOUNTING = new RegExp(String.raw`^_-\* (${MONEY_NUM})_-;\\-\* \1_-;_-\* "-"\?*_-;_-@_-$`)
+/** Negatives with a minus, in red or not, as a locale other than en-US writes them. */
+const MINUS = String.raw`;(?:\[Red\])?\\-\1`
+const BRACKET_MINUS = new RegExp(String.raw`^(${BRACKET}(?:\\ )?${MONEY_NUM}|${MONEY_NUM}\\ ${BRACKET})${MINUS}$`, 'i')
+
+const LOCAL_MONEY = new Map<string, { currency: RegExp; accounting: RegExp }>()
+/**
+ * A locale's own money, its symbol quoted after the digits with a space (ru-RU's built-in 5 to 8 and 41 to 44 and its
+ * Currency item, `#,##0.00\ "₽"`): currency with negatives with a minus, accounting with the symbol or none.
+ */
+function localMoney(symbol: string) {
+  let m = LOCAL_MONEY.get(symbol)
+  if (!m) {
+    const s = String.raw`\\ "${symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`
+    m = {
+      currency: new RegExp(String.raw`^(${MONEY_NUM}${s})(?:${MINUS})?$`, 'i'),
+      accounting: new RegExp(String.raw`^_-\* (${MONEY_NUM})((?:${s})?)_-;\\-\* \1\2_-;_-\* "-"\?*\2_-;_-@_-$`),
+    }
+    LOCAL_MONEY.set(symbol, m)
+  }
+  return m
+}
 
 /** Date and time as Format Cells writes most of them: one date or time section (a locale tag but the system's), then `;@`. */
 const WITH_TEXT = /^(?:\[\$-(?!F[48]00)[0-9A-F]+\])?((?:"[^"]*"|\[[hms]+\]|[^;[\]"])+);@$/i
@@ -161,11 +180,11 @@ const EN_KEPT = EN_BUILTIN.map((code, id) => canonical(MONEY.test(String(id)) ? 
 const builtinIn = (id: number): FormatCategory => (id >= 37 && id <= 40 ? 'custom' : MONEY.test(String(id)) ? (id < 9 ? 'currency' : 'accounting') : categoryOf(EN_KEPT[id], '', undefined))
 
 /**
- * The category of a code as Excel keeps it (`canonical`), in a locale other than en-US one that is no built-in format's
- * en-US code, the locale's short date (built-in 14) having the code `short`. en-US's formats in every locale, but the
- * dollar's money, Number's negatives in parentheses and the fractions that are no built-in format, which a locale
- * other than en-US writes otherwise (measured in ru-RU); the locale's short date with `/` for its separator (ru-RU's
- * `dd/mm/yyyy`, which it shows as `ДД.ММ.ГГГГ`).
+ * The category of a code as Excel keeps it (`canonical`) in a locale whose short date (built-in 14) has the code
+ * `short`. A locale other than en-US (measured in ru-RU) takes en-US's numbers, percents, exponents, text, dates and
+ * times with `;@`, and its own money, fractions with the space quoted and short date with `/` for its separator
+ * (ru-RU's `dd/mm/yyyy`, shown `ДД.ММ.ГГГГ`); en-US's money, Number's negatives in parentheses and fractions with the
+ * space escaped are none of its formats, nor is a built-in format's en-US code written as a code (`m/d/yyyy`).
  */
 function categoryOf(code: string, short: string, loc: Locale | undefined): FormatCategory {
   const r = loc?.regional
@@ -177,9 +196,10 @@ function categoryOf(code: string, short: string, loc: Locale | undefined): Forma
   if (NUMBER.test(code) || (!r && PAREN.test(code))) return 'number'
   if (PERCENT.test(code)) return 'percentage'
   if (SCIENTIFIC.test(code)) return 'scientific'
-  if (!r && FRACTION.test(code)) return 'fraction'
-  if (!r && EN_CURRENCY.test(code)) return 'currency'
-  if (r ? PLAIN_ACCOUNTING.test(code) : EN_ACCOUNTING.test(code)) return 'accounting'
+  if (r ? QUOTED_FRACTION.test(code) : FRACTION.test(code)) return 'fraction'
+  const local = r && localMoney(r.currency.symbol)
+  if (local ? local.currency.test(code) || BRACKET_MINUS.test(code) : EN_CURRENCY.test(code)) return 'currency'
+  if (local ? local.accounting.test(code) : EN_ACCOUNTING.test(code)) return 'accounting'
   // the short date: en-US's built-in 14 and Excel for Mac's own, or the locale's with `/`
   if (code === LONG_DATE || (r ? code === short.split(r.dateSeparator).join('/') : code === 'm/d/yyyy' || code === 'm/d/yy')) return 'date'
   if (code === LONG_TIME) return 'time'
