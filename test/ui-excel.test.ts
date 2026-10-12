@@ -20,7 +20,7 @@ import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
 import { clipboardText, entriesOf, macOnly, readCells, readColumns, ribbonOf, uiBook, windowOver, type RibbonCell, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
 import { formulaBar } from '../bench/coverage/entry/cases.js'
-import { held } from '../bench/coverage/entry/compare.js'
+import { formatKey, held } from '../bench/coverage/entry/compare.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { numberFormatOf } from '../bench/coverage/stored.js'
 import { createSession, type CellInput } from '../src/index.js'
@@ -107,10 +107,13 @@ function excelRibbon(c: UiCase, a: UiAnswer): Record<string, RibbonCell> {
   )
 }
 
-/** The cells whose ribbon differs from Excel's: `numberFormatCategory` and `numberFormatChoices` against what Excel showed and applied, one line each. */
-function ribbonOff(c: UiCase, a: UiAnswer, tag: string, got: Record<string, RibbonCell> = ribbonOf(c, tag)): string[] {
+/** A cell's ribbon as compared: an item's format by what it shows in the locale (`44` and the code Excel writes for it alike). */
+const ribbonKey = (r: RibbonCell, tag: string) => JSON.stringify(typeof r === 'string' ? r : { ...r, format: formatKey(r.format, tag) })
+
+/** The cells whose ribbon differs from Excel's, `numberFormatCategory` and `numberFormatChoices` against what Excel showed and applied: each cell with a line that says how. */
+function ribbonOff(c: UiCase, a: UiAnswer, tag: string, got: Record<string, RibbonCell> = ribbonOf(c, tag)): [string, string][] {
   const want = excelRibbon(c, a)
-  return Object.keys(want).flatMap((x) => (JSON.stringify(got[x]) === JSON.stringify(want[x]) ? [] : [`${x} ${JSON.stringify(c.cells[x]?.numberFormat ?? 0)}: Excel ${JSON.stringify(want[x])}, the functions ${JSON.stringify(got[x])}`]))
+  return Object.keys(want).flatMap((x) => (ribbonKey(got[x], tag) === ribbonKey(want[x], tag) ? [] : [[x, `${x} ${JSON.stringify(c.cells[x]?.numberFormat ?? 0)}: Excel ${JSON.stringify(want[x])}, the functions ${JSON.stringify(got[x])}`] as [string, string]]))
 }
 
 const ribbonCase = (c: UiCase) => c.act.do === 'ribbon' || c.act.do === 'choose'
@@ -140,9 +143,11 @@ for (const run of RUNS) {
         const a = stored.answers[c.id]
         const reasons = UI_KNOWN.get(`${tag}:${set}:${c.id}`)
         if (ribbonCase(c)) {
+          // a known difference names its cell: the others agree, and each known one still differs
           const off = ribbonOff(c, a, tag)
-          if (reasons) expect(off.length, reasons.map((r) => UI_REASONS[r]).join('; ')).toBeGreaterThan(0)
-          else expect(off).toEqual([])
+          const known = (x: string) => UI_KNOWN.get(`${tag}:${set}:${c.id}:${x}`)
+          const fixed = readCells(c).filter((x) => known(x) && !off.some(([y]) => y === x)).map((x) => `${x}: ${known(x)!.map((r) => UI_REASONS[r]).join('; ')}`)
+          expect({ unknown: off.filter(([x]) => !known(x)).map(([, line]) => line), fixed }).toEqual({ unknown: [], fixed: [] })
           return
         }
         if (c.act.do === 'bars') {
@@ -184,6 +189,8 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:paste-held': 12,
   'en-US:fill-held': 8,
   'ru-RU:fill-held': 9,
+  'en-US:ribbon': 1,
+  'ru-RU:ribbon': 0,
 }
 
 interface Predicted {
@@ -195,8 +202,8 @@ interface Predicted {
 
 describe('ui sets (Excel for Mac)', () => {
   const mac = RUNS.filter((r) => r.excel === 'Mac')
-  it('every known difference is a stored case', () => {
-    const stored = new Set(mac.flatMap((r) => r.stored.cases.map((c) => `${r.tag}:${r.set}:${c.id}`)))
+  it('every known difference is a stored case, or a cell read in one', () => {
+    const stored = new Set(mac.flatMap((r) => r.stored.cases.flatMap((c) => [`${r.tag}:${r.set}:${c.id}`, ...readCells(c).map((x) => `${r.tag}:${r.set}:${c.id}:${x}`)])))
     expect([...UI_KNOWN.keys()].filter((k) => !stored.has(k))).toEqual([])
   })
   it.each(mac.map((r) => [`${r.tag}:${r.set}`, r] as const))('%s: the predictions written before Excel ran it', (key, run) => {

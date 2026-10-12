@@ -451,11 +451,12 @@ export const ruRU: Locale = {
       ),
     },
     columnWord: 'Столбец',
-    // the Number Format box of the Home tab, as Excel 16.113 for Mac ru-RU names its categories and items
+    // the Number Format box of the Home tab, as Excel 16.113 for Mac ru-RU names its categories and items, and the code
+    // its Currency item writes to a file
     formats: {
       categories: { general: 'Общий', number: 'Числовой', currency: 'Денежный', accounting: 'Финансовый', date: 'Дата', time: 'Время', percentage: 'Процентный', fraction: 'Дробный', scientific: 'Экспоненциальный', text: 'Текстовый', special: 'Дополнительный', custom: '(все форматы)' },
       choices: { general: 'Общий', number: 'Числовой', currency: 'Денежный', accounting: 'Финансовый', shortDate: 'Краткий формат даты', longDate: 'Длинный формат даты', time: 'Время', percentage: 'Процентный', fraction: 'Дробный', scientific: 'Экспоненциальный', text: 'Текстовый' },
-      currency: '#,##0.00 "₽"',
+      currency: '#,##0.00\\ "₽"',
     },
   },
   messages: MESSAGES,
