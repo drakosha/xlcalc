@@ -31,6 +31,7 @@ import { endSpill, spillRef } from './spill/place.js'
 import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
 import { arrayArea, holds } from './array-areas.js'
+import { lookAlone, looksTaken, putInput, settle } from './looks/sheet.js'
 import { printFormula, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
@@ -162,12 +163,18 @@ function markBare(state: EngineState, s: number, r: number, c: number, input: Ce
   } else bare?.delete(r * MAX_COLS + c)
 }
 
-/** Sets a cell's input (null removes it), and whether it is one without a value or formula. */
+/**
+ * Sets a cell's input (null removes it), and whether it is one without a value or formula; an input of a look alone goes
+ * to the sheet's looks (`putInput`), which take it when the edits are settled (`settled`).
+ */
 export function setInput(state: EngineState, s: number, addr: string, r: number, c: number, input: CellInput | null) {
-  const cells = state.input.sheets[s].cells
-  if (input === null) delete cells[addr]
-  else cells[addr] = input
-  markBare(state, s, r, c, input)
+  putInput(state.input.sheets[s], addr, r, c, input)
+  markBare(state, s, r, c, input && !lookAlone(input) ? input : null)
+}
+
+/** The looks of the sheets edited cells were written to, settled (`settle`): the book is as the engine takes it again. */
+export function settled(state: EngineState, edits: { sheet: string }[]) {
+  for (const i of new Set(edits.map((e) => state.sheetIdx.get(sheetKey(e.sheet))))) if (i !== undefined) settle(state.input.sheets[i])
 }
 
 function emptySheet(name: string): SheetData {
@@ -235,8 +242,9 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const sheetNames = book.sheets.map((s) => s.name)
   const sheetIdx = new Map(sheetNames.map((n, i) => [sheetKey(n), i]))
   if (sheetIdx.size !== sheetNames.length) throw new Error('duplicate sheet name')
-  // the state's own cells (edits change them), copied unless they are its own already; the layout and the styles are shared
-  const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: opts.own?.(s.cells) ? s.cells : { ...s.cells } })) }
+  // the state's own cells (edits change them), copied unless they are its own already, the entries of a look alone in the
+  // sheet's looks (a structure operation over looks gives them back so); the layout and the styles are shared
+  const input: BookInput = { ...book, sheets: book.sheets.map((x) => looksTaken(x)).map((s) => ({ ...s, cells: opts.own?.(s.cells) ? s.cells : { ...s.cells } })) }
   const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
   const tables = tablesOf(input)
   const prepared = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale), book.externalBooks)
@@ -399,6 +407,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
     }
   }
+  settled(state, edits)
   count(state.at.size + state.invalid.size)
   if (structural) {
     const size = state.formulas.length

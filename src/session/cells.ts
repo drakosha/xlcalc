@@ -7,6 +7,7 @@ import type { CellEdit, CellFields, CellInput, CellReplace } from '../contract.j
 import type { EngineState } from '../engine.js'
 import { array, CELL_FIELDS, checkAddress, checkCell, checkSheet, InputError, object, onlyKeys } from '../input.js'
 import { sheetKey } from '../syntax.js'
+import { inputAt } from './book.js'
 
 /** The fields of a cell's content: a formula's value held while a circular reference stops it goes with the formula. */
 export const CONTENT = ['value', 'formula', 'array', 'held'] as const
@@ -64,13 +65,13 @@ export function checkFieldEdits(v: unknown, sheetIndex: (name: string) => number
 export function resolveEdits(s: EngineState, edits: CellEdit[]): CellReplace[] {
   if (edits.length === 1) {
     const [e] = edits
-    return [{ sheet: e.sheet, cell: e.cell, input: withFields(s.input.sheets[s.sheetIdx.get(sheetKey(e.sheet))!].cells[e.cell], e.input) }]
+    return [{ sheet: e.sheet, cell: e.cell, input: withFields(inputAt(s, s.sheetIdx.get(sheetKey(e.sheet))!, e.cell), e.input) }]
   }
   const now = new Map<string, CellInput | null>()
   return edits.map((e) => {
     const i = s.sheetIdx.get(sheetKey(e.sheet))!
     const k = `${i}!${e.cell}`
-    const was = now.has(k) ? now.get(k) : s.input.sheets[i].cells[e.cell]
+    const was = now.has(k) ? now.get(k) : inputAt(s, i, e.cell)
     const input = withFields(was ?? undefined, e.input)
     now.set(k, input)
     return { sheet: e.sheet, cell: e.cell, input }

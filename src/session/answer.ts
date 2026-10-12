@@ -8,6 +8,7 @@ import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOption
 import { key, type EngineState } from '../engine.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError, object, onlyOptions } from '../input.js'
+import { inputIn } from '../looks/sheet.js'
 import { parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 
@@ -88,9 +89,9 @@ export function editFields(s: EngineState, was: { sheet: string; cell: string; i
   const out = new Map<string, FieldChange>()
   for (const { sheet, cell, input } of was) {
     const i = s.sheetIdx.get(sheetKey(sheet))!
-    const now = s.input.sheets[i].cells[cell]
-    if (now === (input ?? undefined)) continue
     const { row, col } = parseAddress(cell)
+    const now = inputIn(s.input.sheets[i], cell, row, col)
+    if (now === (input ?? undefined)) continue
     // a formula's text as written before, as the state shows it now: one that changes is listed
     const f = fieldsBetween(input ?? undefined, input?.formula, now, now?.formula === input?.formula ? input?.formula : now?.formula === undefined ? undefined : formulaText(s, i, row, col, now))
     if (f) out.set(`${i}:${row}:${col}`, f)
@@ -98,10 +99,10 @@ export function editFields(s: EngineState, was: { sheet: string; cell: string; i
   return out
 }
 
-/** Whether two sheets differ in anything but their cells. */
+/** Whether two sheets differ in anything but their cells and their looks. */
 function layoutDiffers(a: SheetInput, b: SheetInput): boolean {
   for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) {
-    if (k === 'cells') continue
+    if (k === 'cells' || k === 'looks') continue
     const [x, y] = [(a as unknown as Record<string, unknown>)[k], (b as unknown as Record<string, unknown>)[k]]
     if (x !== y && JSON.stringify(x) !== JSON.stringify(y)) return true
   }

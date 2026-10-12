@@ -5,7 +5,7 @@
  */
 import type { CellInput, CellLink, CellNote, FrozenPanes } from '../../contract.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../../model.js'
-import { cellCount, cellsWithin, parseRange } from '../../structure/area.js'
+import { cellCount, cellsWithin, parseRange, type Rect } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
 import { attr, attributes, element, elements, has } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -16,6 +16,8 @@ import { stringItem } from './strings.js'
 /** A sheet's parts as the archive holds them: its comments, VML drawing and threaded comments, the book's persons. */
 export interface PartsSource {
   sheet: string
+  /** The cells of a look of the sheet's looks in a rectangle, which a large hyperlink range goes to as to the sheet's cells. */
+  looked?: (x: Rect) => Iterable<string>
   head: string
   tail: string
   rels: Rel[]
@@ -162,7 +164,7 @@ function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issue
     const r = parseRange((a.ref ?? '').toUpperCase())
     if (!r) continue
     if (cellCount(r) > LINK_CELLS) issues.add('hyperlink', { key: 'linkCells' }, where)
-    for (const cell of cellsWithin(r, () => Object.keys(cells), LINK_CELLS)) if (!out.has(cell)) out.set(cell, link)
+    for (const cell of cellsWithin(r, () => [...Object.keys(cells), ...(src.looked?.(r) ?? [])], LINK_CELLS)) if (!out.has(cell)) out.set(cell, link)
   }
   return out
 }

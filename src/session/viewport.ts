@@ -27,6 +27,7 @@ import { parseRange, rectText, type Rect } from '../structure/area.js'
 import { tableAt, type Tables } from '../tables/model.js'
 import { holds } from '../array-areas.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
+import { layerOf } from '../looks/sheet.js'
 import { sheetExtent } from './extent.js'
 
 /** The cells a window gives by default, as many as the window of a sheet a server sends. */
@@ -193,12 +194,14 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
   // the cells errors began in, shared by the cells on one way to them
   const origins = new Map<string, Place>()
   const cells: Record<string, ViewportCell> = {}
+  // a cell without an input shows its look of the sheet's looks as its own
+  const layer = layerOf(sheet)
   for (const r of w.rows) {
     const row = lines.row(r)
     for (const c of w.cols) {
       if (paced(1)) yield
       const addr = formatAddress(r, c)
-      const own = sheet.cells[addr]
+      const own = sheet.cells[addr] ?? layer?.lookAt(r, c)
       const col = lines.column(c)
       const shown = lookOf(own, row, col)
       // an empty cell is listed when it shows something: a style or a number format of its row or column (a grid's format list shows it), a look, a note or a link

@@ -13,6 +13,8 @@ import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
+import { lookAlone, looksTaken } from './looks/sheet.js'
+import { parseRange } from './structure/area.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
@@ -284,7 +286,8 @@ function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boo
 }
 
 /** The lines of a key (`C`, `B:D`; `5`, `5:9`). */
-function checkSpan(key: unknown, path: string, axis: Axis): [number, number] {
+/** The lines of a key of `columns` or `rows` (`C`, `B:D`; `5`, `5:9`), else `InputError` naming `path`. */
+export function checkSpan(key: unknown, path: string, axis: Axis): [number, number] {
   const sp = typeof key === 'string' ? parseSpan(key, axis) : null
   if (!sp) throw new InputError(path, `expected ${LINE[axis].key} within the sheet, got ${what(key)}`)
   return sp
@@ -332,11 +335,12 @@ export const SHEET_STATES = new Map<true | 'very', string>([
 
 /**
  * The book: sheets with unique names by Excel's rules (compared case-insensitively), one of them visible at least, cells
- * by A1 address, columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles. It is
- * returned as the engine takes it: its formulas without a leading `=`, its number formats by the name `numberFormat` (a
- * copy of what needs it, `taken.ts`).
+ * by A1 address, their looks, columns, rows, merged areas, frozen panes, data validation and outline settings, names,
+ * styles. It is returned as the engine takes it: its formulas without a leading `=`, its number formats by the name
+ * `numberFormat` (a copy of what needs it, `taken.ts`), the entries of a look alone in its sheets' looks (`looksTaken`);
+ * with `looked`, those of the sheets that have looks only (a writer keeps a sheet without looks as it is given).
  */
-export function checkBook(v: unknown, path = 'book'): BookInput {
+export function checkBook(v: unknown, path = 'book', looked = false): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
   onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
@@ -349,12 +353,13 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   }
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
-  // the cells of each sheet that the engine takes otherwise: a formula with a leading `=`
+  // the cells of each sheet that the engine takes otherwise: a formula with a leading `=`, a look alone (into the sheet's looks)
   const taken: string[][] = []
+  const alone: string[][] = []
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -366,14 +371,17 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     const arrays: string[] = []
     for (const addr of Object.keys(cells)) {
       const cell = cells[addr]
-      if (SURE_ADDRESS.test(addr) && plainCell(cell, styles)) continue
-      const cp = `${p}.cells[${JSON.stringify(addr)}]`
-      checkAddress(addr, cp)
-      const c = checkCell(cell, cp, styles)
-      if (c.array !== undefined) arrays.push(addr)
-      if (leadingEquals(c.formula)) (taken[i] ??= []).push(addr)
+      if (!(SURE_ADDRESS.test(addr) && plainCell(cell, styles))) {
+        const cp = `${p}.cells[${JSON.stringify(addr)}]`
+        checkAddress(addr, cp)
+        const c = checkCell(cell, cp, styles)
+        if (c.array !== undefined) arrays.push(addr)
+        if (leadingEquals(c.formula)) (taken[i] ??= []).push(addr)
+      }
+      if (lookAlone(cell as CellInput)) (alone[i] ??= []).push(addr)
     }
     if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
+    if (sheet.looks !== undefined) checkLooks(sheet.looks, `${p}.looks`, styles)
     if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
     if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
@@ -390,7 +398,21 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   if (book.externalBooks !== undefined) checkExternalBooks(book.externalBooks, `${path}.externalBooks`)
   checkTables(book as unknown as BookInput, path)
-  return bookTaken(book as unknown as BookInput, taken)
+  const out = bookTaken(book as unknown as BookInput, taken)
+  const sheetsTaken = out.sheets.map((s, i) => (looked && !s.looks ? s : looksTaken(s, alone[i] ?? [])))
+  return sheetsTaken.every((s, i) => s === out.sheets[i]) ? out : { ...out, sheets: sheetsTaken }
+}
+
+/** A sheet's looks: rectangles in A1 style (`B2:D9`, `B:D`, `2:9`, `B2`), each with a style of the book and a number format, both optional. */
+function checkLooks(v: unknown, path: string, styles: number) {
+  array(v, path, 'an array of looks such as [{ range: "A2:XFD9", style: 0 }]').forEach((x, k) => {
+    const p = `${path}[${k}]`
+    const o = object(x, p, 'a look such as { range: "A2:XFD9", style: 0, numberFormat: "0.00" }')
+    onlyKeys(o, p, ['range', 'style', 'numberFormat'])
+    if (typeof o.range !== 'string' || !parseRange(o.range)) throw new InputError(`${p}.range`, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(o.range)}`)
+    if (o.style !== undefined) checkStyleIndex(o.style, `${p}.style`, styles)
+    if (o.numberFormat !== undefined) checkFormat(o.numberFormat, `${p}.numberFormat`)
+  })
 }
 
 /**

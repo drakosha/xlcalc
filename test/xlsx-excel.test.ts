@@ -25,6 +25,7 @@ import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 import { CLOCK, matches, show, toVal } from './excel-cases.js'
+import { cellsOf } from './looks-book.js'
 import './locales.js'
 
 const dir = new URL('./excel/xlsx/', import.meta.url)
@@ -114,7 +115,7 @@ describe.skipIf(!existsSync(new URL('colors.json', dir)))('xlsx fill colours as 
     const off: string[] = []
     let exact = 0
     for (const c of cases) {
-      const cell = r.book.sheets[0].cells[c.cell]
+      const cell = cellsOf(r.book.sheets[0])[c.cell]
       const got = cell?.style === undefined ? 'none' : r.book.styles![cell.style].fill!.color
       const want = stored[c.color]
       if (got === want) exact++

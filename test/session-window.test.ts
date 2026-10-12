@@ -111,7 +111,7 @@ describe.each(['closures', 'eval'] as const)('a window beside the cells, executi
         outline: { summaryBelow: false },
       })
       const s = await open(book, { clock: CLOCK, execution })
-      const without = (b: BookInput) => JSON.parse(JSON.stringify({ ...b, sheets: b.sheets.map(({ cells: _, ...rest }) => rest) }))
+      const without = (b: BookInput) => JSON.parse(JSON.stringify({ ...b, sheets: b.sheets.map(({ cells: _, looks: __, ...rest }) => rest) }))
       expect(await s.getLayout()).toEqual(without(book))
       await s.setLayout([{ sheet: 'S', columns: 'B', set: { width: 20 } }, { sheet: 'Far', frozen: { rows: 2 } }])
       expect((await s.editStructure({ op: 'insertRows', sheet: 'S', row: 5 })).ok).toBe(true)

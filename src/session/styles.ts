@@ -15,6 +15,8 @@ import { formatAddress, parseAddress } from '../model.js'
 import { cellCount, hasCell, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import { StyleTable } from '../style-table.js'
+import { layerOf } from '../looks/sheet.js'
+import { inputAt } from './book.js'
 import { CONTENT } from './cells.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
 
@@ -76,9 +78,10 @@ export class Draft {
     return this.sheets.get(i) ?? this.s.input.sheets[i]
   }
 
+  /** A cell's input as the draft holds it, a look of the sheet's looks as an input of a look alone. */
   input(i: number, addr: string): CellInput | undefined {
     const k = `${i}!${addr}`
-    return this.cells.has(k) ? (this.cells.get(k) ?? undefined) : this.s.input.sheets[i].cells[addr]
+    return this.cells.has(k) ? (this.cells.get(k) ?? undefined) : inputAt(this.s, i, addr)
   }
 
   set(i: number, addr: string, input: CellInput | null) {
@@ -94,7 +97,7 @@ export class Draft {
     return sh === this.s.input.sheets[i] ? sheetLines(sh, this.s) : sheetLines({ cells: {}, rows: sh.rows, columns: sh.columns })
   }
 
-  /** The cells of a rectangle that hold an input, as `[row, column, address]`. */
+  /** The cells of a rectangle that hold an input or a look of the sheet's looks, as `[row, column, address]`. */
   *stored(i: number, x: Rect): Generator<[number, number, string]> {
     const area = cellCount(x)
     if (area <= 65_536) {
@@ -110,11 +113,19 @@ export class Draft {
     if (!g) this.grids.set(i, (g = gridOf(sheet)))
     for (const k of cellsIn(g, x)) if (this.input(i, g.addr[k])) yield [g.row[k], g.col[k], g.addr[k]]
     // the cells the draft added
-    for (const a of this.drafted.get(i) ?? []) {
+    const drafted = this.drafted.get(i)
+    for (const a of drafted ?? []) {
       if (a in sheet.cells) continue
       const { row, col } = parseAddress(a)
       if (hasCell(x, row, col) && this.input(i, a)) yield [row, col, a]
     }
+    // the cells of a look of the sheet's looks alone
+    for (const p of layerOf(sheet)?.pieces(x) ?? [])
+      for (let r = p.r1; r <= p.r2; r++)
+        for (let c = p.c1; c <= p.c2; c++) {
+          const a = formatAddress(r, c)
+          if (!(a in sheet.cells) && !drafted?.has(a)) yield [r, c, a]
+        }
   }
 
   /** The plan: every cell the looks went to, changed or not, as a call's step keeps the cells it was given. */

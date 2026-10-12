@@ -172,7 +172,7 @@ export interface ColumnInput {
   hidden?: boolean
   /** The outline level (Excel's Group, xlsx `outlineLevel`), 1 to 7; a column without one is not grouped. */
   outlineLevel?: number
-  /** The column's button collapses a group (xlsx `collapsed`): the summary column of a group whose columns are hidden. */
+  /** The mark of a collapsed group on its summary column (xlsx `collapsed`), as `RowInput.collapsed`. */
   collapsed?: boolean
 }
 
@@ -190,7 +190,13 @@ export interface RowInput {
   hidden?: boolean
   /** The outline level (Excel's Group, xlsx `outlineLevel`), 1 to 7; a row without one is not grouped. */
   outlineLevel?: number
-  /** The row's button collapses a group (xlsx `collapsed`): the summary row of a group whose rows are hidden. */
+  /**
+   * The mark of a collapsed group on its summary row (xlsx `collapsed`). Excel keeps it on every summary row whose group
+   * has all its rows hidden, however they were hidden, and drops it when one shows; a summary row inside a group whose rows
+   * are all hidden keeps the mark it had, so an inner group stays collapsed when the outer one is shown again. A book may
+   * hold other marks (`setLayout` sets the field as given): `outlineGroups` and the commands read the marks as Excel
+   * keeps them, and `writeXlsx` writes them so.
+   */
   collapsed?: boolean
 }
 
@@ -198,6 +204,18 @@ export interface SheetInput {
   name: string
   /** Cells by A1 address (`B12`). */
   cells: Record<string, CellInput>
+  /**
+   * The look of the cells that have no entry in `cells`, by rectangles, each over those before it: a sheet formatted
+   * across many empty cells (whole rows to XFD) is held without an object per cell. A cell without an entry shows the
+   * style and the number format of the last rectangle that covers it, both from it (a rectangle without a field gives
+   * the cell none of its own); a cell with an entry shows its own fields, whatever the rectangles say. A field a cell
+   * has none of comes from its row, else its column, as for an entry. `[{ range: 'A20:XFD22', style: 0 },
+   * { range: 'R20:R22', style: 1, numberFormat: '0.0%' }]` is the same sheet as an entry `{ style: 0 }` in each cell of
+   * A20:XFD22 but R20:R22, which hold `{ style: 1, numberFormat: '0.0%' }`. A book is taken with every entry that has
+   * only a style or a number format moved here, and the calls that give a book back give this list in a form of their
+   * own (`LookRange`).
+   */
+  looks?: LookRange[]
   /** Columns by letters, one (`C`) or a span (`B:D`) as xlsx `<col min max>`; spans do not overlap. */
   columns?: Record<string, ColumnInput>
   /** Rows by number, one (`5`) or a span (`5:9`); spans do not overlap. */
@@ -236,6 +254,20 @@ export interface SheetInput {
    * hidden sheet as any other. A book keeps one visible sheet at least.
    */
   hidden?: boolean | 'very'
+}
+
+/**
+ * A rectangle of a sheet's looks (`SheetInput.looks`): a cell (`B2`), a range (`B2:D9`), whole columns (`B:D`) or whole
+ * rows (`2:9`), and the style and the number format its cells without an entry show; neither field, and its cells show
+ * none of their own. The books the engine gives back hold the looks in one form for one set of them: rows in blocks, the
+ * runs of a group of rows as rectangles across the group, then the rows of the group that differ, its rows without looks
+ * as rows of none.
+ */
+export interface LookRange {
+  range: string
+  /** A style of the book's `styles`, by index. */
+  style?: number
+  numberFormat?: NumberFormat
 }
 
 /**
@@ -487,6 +519,28 @@ export interface FrozenPanes {
 export interface OutlineSettings {
   summaryBelow?: boolean
   summaryRight?: boolean
+}
+
+/**
+ * A group of rows or columns as Excel draws it (`outlineGroups`): the longest run of lines `first` to `last` (columns by
+ * number) at outline level `level` or deeper, so a group of level 2 lies inside one of level 1.
+ */
+export interface OutlineGroup extends LineSpan {
+  level: number
+  /**
+   * The summary line, which holds the group's button: the line past it, below or right (before it with summaries above or
+   * left, `OutlineSettings`); null where that is past the sheet's edge, where Excel draws no button. Groups that end
+   * together share one.
+   */
+  summary: number | null
+  /** Collapsed, the button showing `+`: its summary line marked as Excel keeps the mark (`RowInput.collapsed`); without a summary line, all its lines hidden. */
+  collapsed: boolean
+}
+
+/** A sheet's groups (`outlineGroups`), each axis by first line, the outer group before the inner where two begin together. */
+export interface SheetOutline {
+  rows: OutlineGroup[]
+  columns: OutlineGroup[]
 }
 
 /**
@@ -1725,6 +1779,30 @@ export type StructureOp =
    * cells with `$` and the sheet (`'S'!$B$2:$B$9`; a reference to the formula's own row keeps its row relative, `'S'!$B2`).
    */
   | { op: 'convertTable'; table: string }
+  /**
+   * Excel's Group and Ungroup of rows `5:7` or columns `B:D` (one line: `5`, `C`). Group puts each line one outline level
+   * deeper, those at the deepest level (7) staying there, and is refused (`outline_deep`) when all of them are; lines next
+   * to each other at a level make one group, so a group added right after another of its level joins it
+   * (`outlineGroups`). Ungroup takes a level off each line that has one, refused (`not_grouped`) when none has. Hidden
+   * lines stay hidden.
+   */
+  | { op: 'group' | 'ungroup'; sheet: string; rows: string }
+  | { op: 'group' | 'ungroup'; sheet: string; columns: string }
+  /**
+   * Excel's Show Detail and Hide Detail, a group's `+` and `−` button: at a summary line (`OutlineGroup.summary`) on the
+   * lines it sums up, at a line of a group on the group of the line's level that holds it, through its summary line. Hiding
+   * hides the lines and marks the summary line `collapsed`; showing shows them but the lines of the collapsed groups inside,
+   * and drops the mark. Refused at a line in no group or in a group with no summary line, past the sheet's edge
+   * (`not_grouped`), and where the detail is shown already, or hidden (`detail`).
+   */
+  | { op: 'showDetail' | 'hideDetail'; sheet: string; row: number }
+  | { op: 'showDetail' | 'hideDetail'; sheet: string; column: string }
+  /**
+   * Excel's level buttons (`Outline.ShowLevels`): the lines of outline level `rows` (or `columns`) and deeper hidden, the
+   * other grouped lines shown, the collapsed marks as Excel keeps them; 8 shows every group. Lines outside groups stay as
+   * they are.
+   */
+  | { op: 'showLevels'; sheet: string; rows?: number; columns?: number }
 
 /** Why Excel would refuse an operation. */
 export type StructureRefusal =
@@ -1749,6 +1827,12 @@ export type StructureRefusal =
   | 'table'
   /** A table name that breaks the rules of `TableInput.name` or that a table or a defined name of the book has. */
   | 'table_name'
+  /** Group of lines that are all at the deepest outline level, 7. */
+  | 'outline_deep'
+  /** Ungroup of lines none of which has an outline level; Show or Hide Detail at a line in no group, or in a group with no summary line. */
+  | 'not_grouped'
+  /** Show Detail of a group shown already, Hide Detail of one hidden already (its summary line marked `collapsed`). */
+  | 'detail'
 
 /** `editStructure`'s answer. */
 export type StructureResult =
@@ -1865,8 +1949,8 @@ export interface SheetExtent {
   columns: number
 }
 
-/** A sheet without its cells (`Session.getLayout`). */
-export type SheetLayout = Omit<Sheet, 'cells'>
+/** A sheet without its cells and their looks (`Session.getLayout`). */
+export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 
 /** A book without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
@@ -1999,7 +2083,7 @@ export interface Session {
    */
   getBook(): Book
   /**
-   * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells`
+   * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells` and `looks`
    * (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation and the rest). It costs
    * what the layout holds, not the cells; its objects are the session's own, as `getBook()`'s are.
    */

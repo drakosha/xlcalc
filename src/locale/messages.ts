@@ -241,6 +241,11 @@ export interface MessageParams extends XlsxMessageParams {
   lastSheet: object
   lastVisibleSheet: { sheet: string }
   veryHidden: { sheet: string }
+  outlineDeep: { lines: Lines; span: string }
+  notGrouped: { lines: Lines; span: string }
+  noSummary: { lines: Lines; span: string }
+  detailShown: { lines: Lines; span: string }
+  detailHidden: { lines: Lines; span: string }
   insertOffSheet: { count: number; lines: Lines; sheet: string; cell: string }
   insertMergeOffSheet: { count: number; lines: Lines; sheet: string }
   arrayPart: { sheet: string; cell: string; area: string }

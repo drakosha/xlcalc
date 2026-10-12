@@ -11,7 +11,10 @@ import { sheetKey } from '../syntax.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockSerial } from '../result.js'
-import { parseRange } from './area.js'
+import { parseRange, shiftRect, type Rect } from './area.js'
+import { tiles } from './copy.js'
+import { expanded, looksTaken } from '../looks/sheet.js'
+import { tableKey, tablesOf } from '../tables/model.js'
 import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry.js'
 import { withGrids } from './grid.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
@@ -20,6 +23,7 @@ import { shift } from './shift.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
 import { tableOp } from '../tables/ops.js'
+import { OUTLINE_FIELDS, outlineOp } from './outline.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
 
@@ -46,6 +50,7 @@ const FIELDS: Record<string, string[]> = {
   renameTable: ['table', 'name'],
   deleteTable: ['table'],
   convertTable: ['table'],
+  ...OUTLINE_FIELDS,
 }
 
 function integer(v: unknown, path: string, min: number, max: number): number {
@@ -61,7 +66,9 @@ export function editStructure(book: BookInput, op: StructureOp): StructureResult
   book = checkBook(book)
   op = opTaken(op)
   const r = applyOp(book, op, lazyValues(book))
-  return r.ok ? { ok: true, book: r.book, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(r.book) }) } : r
+  if (!r.ok) return r
+  const out = { ...r.book, sheets: r.book.sheets.map((s) => looksTaken(s)) }
+  return { ok: true, book: out, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(out) }) }
 }
 
 /** The names of a book's sheets, in order. */
@@ -105,9 +112,68 @@ function lazyValues(book: BookInput): ValuesIn {
 
 /**
  * The operation on a book already checked, with its geometry. `values` gives the computed values a paste of values takes.
- * Its steps read each sheet's cells once (`withGrids`).
+ * Its steps read each sheet's cells once (`withGrids`). The looks of the cells it reads, moves or writes are given to it
+ * as entries (`expanded`), so the book it gives may hold entries of a look alone: the engine takes it as it takes a host's.
  */
-export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn): Applied => withGrids(() => applied(book, op, values))
+export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn): Applied => withGrids(() => applied(overLooks(book, op), op, values))
+
+/** The rectangles of a sheet whose looks an operation reads, moves or writes, by sheet: its lines and tables, its source and target. */
+function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
+  const out = new Map<number, Rect[]>()
+  if (!book.sheets.some((s) => s.looks?.length) || typeof op !== 'object' || op === null) return out
+  const index = (name: unknown) => (typeof name === 'string' ? book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name)) : -1)
+  const add = (s: number, x: Rect | null) => {
+    if (s >= 0 && x && book.sheets[s].looks?.length) out.set(s, [...(out.get(s) ?? []), x])
+  }
+  const tables = (s: number) => {
+    for (const t of tablesOf(book).list) if (t.s === s) add(s, t)
+  }
+  const range = (v: unknown) => (typeof v === 'string' ? parseRange(v) : null)
+  const o = op as unknown as Record<string, unknown>
+  switch (op.op) {
+    case 'insertRows':
+    case 'deleteRows':
+    case 'insertColumns':
+    case 'deleteColumns': {
+      // the lines from the one before the first (inserted lines take its look) to the sheet's end, and the sheet's tables
+      const s = index(o.sheet)
+      const rows = op.op === 'insertRows' || op.op === 'deleteRows'
+      const at = rows ? (typeof o.row === 'number' ? o.row - 1 : 0) : typeof o.column === 'string' && /^[A-Z]{1,3}$/.test(o.column) ? colToIndex(o.column) : 0
+      const lo = Math.max(0, at - 1)
+      add(s, rows ? { r1: lo, r2: MAX_ROWS - 1, c1: 0, c2: MAX_COLS - 1 } : { r1: 0, r2: MAX_ROWS - 1, c1: lo, c2: MAX_COLS - 1 })
+      tables(s)
+      break
+    }
+    case 'moveRange':
+    case 'copyRange': {
+      const from = (o.from ?? {}) as Record<string, unknown>
+      const to = (o.to ?? {}) as Record<string, unknown>
+      const [fs, ts, src] = [index(from.sheet), index(to.sheet), range(from.range)]
+      if (!src) break
+      add(fs, src)
+      const at = op.op === 'copyRange' ? range(to.range) : range(to.cell)
+      if (at) add(ts, op.op === 'copyRange' ? tiles(src, at).area : shiftRect(src, at.r1 - src.r1, at.c1 - src.c1))
+      tables(fs)
+      tables(ts)
+      break
+    }
+    case 'addTable':
+      add(index(o.sheet), range((o.table as Record<string, unknown> | undefined)?.range))
+      break
+    case 'deleteTable': {
+      const t = tablesOf(book).list.find((x) => typeof o.table === 'string' && tableKey(x.name) === tableKey(o.table))
+      if (t) add(t.s, t)
+      break
+    }
+  }
+  return out
+}
+
+/** The book with the looks an operation reads, moves or writes as entries of a look alone (`looksRegions`). */
+function overLooks(book: BookInput, op: StructureOp): BookInput {
+  const regions = looksRegions(book, op)
+  return regions.size ? { ...book, sheets: book.sheets.map((s, i) => (regions.has(i) ? expanded(s, regions.get(i)!) : s)) } : book
+}
 
 function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
   const o = object(op, 'op')
@@ -194,6 +260,13 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
     case 'deleteTable':
     case 'convertTable':
       r = tableOp(book, op as Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>)
+      break
+    case 'group':
+    case 'ungroup':
+    case 'showDetail':
+    case 'hideDetail':
+    case 'showLevels':
+      r = outlineOp(book, named(o.sheet, 'op.sheet'), o)
       break
   }
   return r

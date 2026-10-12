@@ -14,6 +14,8 @@ import { lineAt } from '../layout/spans.js'
 import { nameFor } from '../names.js'
 import { journaled } from '../held.js'
 import { formatAddress } from '../model.js'
+import { inputAt } from '../session/book.js'
+import { inputIn } from '../looks/sheet.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
 import { decode } from '../structure/area.js'
 import { tableAt, tableNames } from '../tables/model.js'
@@ -48,7 +50,7 @@ function formulas(state: EngineState, s: number, r: number, c: number, v: DataVa
 /** The number format a cell shows by (`layout/lines.ts`). */
 function formatOf(state: EngineState, s: number, r: number, c: number): NumberFormat | undefined {
   const sh = state.input.sheets[s]
-  return lineFormat(sh.cells[formatAddress(r, c)], lineAt(sh.rows, 'r', r), lineAt(sh.columns, 'c', c))
+  return lineFormat(inputIn(sh, formatAddress(r, c), r, c), lineAt(sh.rows, 'r', r), lineAt(sh.columns, 'c', c))
 }
 
 /** A literal list (a text constant): its items, split at commas as a file holds them in every locale. */
@@ -221,7 +223,7 @@ export function* withInputs<T>(state: EngineState, edits: CellReplace[], read: (
   const put: CellReplace[] = []
   let back: CellReplace[] = []
   for (const e of edits) {
-    const old = state.input.sheets[state.sheetIdx.get(sheetKey(e.sheet))!].cells[e.cell]
+    const old = inputAt(state, state.sheetIdx.get(sheetKey(e.sheet))!, e.cell)
     if (old === e.input || JSON.stringify(old ?? null) === JSON.stringify(e.input)) continue
     put.push(e)
     back.push({ ...e, input: old ?? null })
