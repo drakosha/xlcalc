@@ -1,23 +1,25 @@
 /**
- * An outline set's predictions, written before Excel runs the set: `npx tsx bench/coverage/outline/predict.ts <set> grid`
- * writes `outline/<set>.predicted.json`, each case's steps as `OutlineView`s. With `grid`, the grid's own model
- * (`xlcalc-sheet/src/local/outline.ts`: `groupsOf` and `outlineEdit`, ported here) for `rules-held`, before the engine
- * had the commands: a group is the longest run of lines at its level or deeper; Group puts each line one level deeper,
- * refused at the seventh; Ungroup takes one off the lines that have one, refused when none has; collapsing hides a group
- * and marks its summary line; expanding shows it but for inner groups whose own summary line keeps a mark; a level
- * button k hides the lines of level k and deeper and marks the summary lines in view of the collapsed groups. What the
- * grid's model does not say is guessed here: `ShowDetail` on a summary line acts on its innermost group, on other lines
- * on the innermost group holding them all (refused without one); a summary line's `ShowDetail` reads False when all the
- * lines of its innermost group are hidden; Excel saves the mark on the summary line of such a group too.
+ * An outline set's predictions, written before Excel runs the set: `npx tsx bench/coverage/outline/predict.ts <set> [grid]`
+ * writes `outline/<set>.predicted.json`, each case's steps as `OutlineView`s. By default they are the engine's of the day
+ * (`engineViews`: the commands as `editStructure`'s outline operations, the lines as `outlineGroups` reads them, the file
+ * as `writeXlsx` writes it), so a set's committed predictions stay what the engine answered before Excel ran it. With
+ * `grid`, the grid's own model (`xlcalc-sheet/src/local/outline.ts`: `groupsOf` and `outlineEdit`, ported here), for
+ * `rules-held` and `ru-held`, before the engine had the commands: a group is the longest run of lines at its level or
+ * deeper; Group puts each line one level deeper, refused at the seventh; Ungroup takes one off the lines that have one,
+ * refused when none has; collapsing hides a group and marks its summary line; expanding shows it but for inner groups whose
+ * own summary line keeps a mark; a level button k hides the lines of level k and deeper and marks the summary lines in
+ * view of the collapsed groups. What the grid's model does not say was guessed: `ShowDetail` on a summary line acts on
+ * its innermost group, on other lines on the innermost group holding them all (refused without one); a summary line's
+ * `ShowDetail` reads False when all the lines of its innermost group are hidden; Excel saves the mark on the summary line
+ * of such a group too.
  */
 import { fileURLToPath } from 'node:url'
 import { lines as spans } from '../../../src/layout/spans.js'
 import { indexToCol, MAX_COLS, MAX_ROWS } from '../../../src/model.js'
 import { setModule, writeAnswers } from '../stored.js'
-import { linesOf, windowOf, type LineView, type OutlineBook, type OutlineCase, type OutlineCommand, type OutlineSet, type OutlineView, type SavedLine } from './cases.js'
+import { engineViews, linesOf, windowOf, type LineView, type OutlineBook, type OutlineCase, type OutlineCommand, type OutlineSet, type OutlineView, type SavedLine } from './cases.js'
 
 const [set, model] = process.argv.slice(2)
-if (model !== 'grid') throw new Error('predict.ts <set> grid: the engine has no outline commands yet')
 const { BOOKS, buildOutlineCases } = await setModule<OutlineSet>('outline', set)
 
 interface Line {
@@ -179,12 +181,14 @@ function view(b: OutlineBook, rows: Axis, columns: Axis, c: OutlineCase, refused
   }
 }
 
-const out: Record<string, OutlineView[]> = {}
-for (const c of buildOutlineCases()) {
-  const b = BOOKS[c.book]
+/** The grid's model of a case. */
+function grid(b: OutlineBook, c: OutlineCase): OutlineView[] {
   const rows = axisOf(b.rows, 'r', b.outline?.summaryBelow !== false)
   const columns = axisOf(b.columns, 'c', b.outline?.summaryRight !== false)
-  out[c.id] = [view(b, rows, columns, c, false), ...c.commands.map((x) => view(b, rows, columns, c, !apply(rows, columns, x)))]
+  return [view(b, rows, columns, c, false), ...c.commands.map((x) => view(b, rows, columns, c, !apply(rows, columns, x)))]
 }
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { model: 'xlcalc-sheet src/local/outline.ts', cases: out })
+
+const out: Record<string, OutlineView[]> = {}
+for (const c of buildOutlineCases()) out[c.id] = model === 'grid' ? grid(BOOKS[c.book], c) : await engineViews(BOOKS[c.book], c)
+writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { model: model === 'grid' ? 'xlcalc-sheet src/local/outline.ts' : 'editStructure', cases: out })
 console.log(`${set}: ${Object.keys(out).length} cases predicted`)

@@ -7,8 +7,11 @@
  * `OutlineLevel`, `Hidden`, `Summary` and a summary line's `ShowDetail`) and saves a copy of the book, whose rows, columns
  * and outline settings are read from the file: the marks Excel keeps (`collapsed`) show only there.
  */
-import type { BookInput, CellInput, ColumnInput, OutlineSettings, RowInput } from '../../../src/contract.js'
+import type { BookInput, CellInput, ColumnInput, OutlineSettings, RowInput, StructureOp } from '../../../src/contract.js'
+import { editStructure, InputError, outlineGroups, patchLines } from '../../../src/index.js'
 import { colToIndex, indexToCol } from '../../../src/model.js'
+import { writeXlsx } from '../../../src/xlsx.js'
+import { openArchive } from '../../../src/xlsx/zip/read.js'
 
 /** A book of a set: the sheet `S`. */
 export interface OutlineBook {
@@ -146,6 +149,73 @@ export const savedTags = (xml: string): string[] => [...xml.matchAll(/<(row|col|
 export function excelView(s: OutlineStep, window?: OutlineWindow): OutlineView {
   const lines = (ls: ComLine[]) => Object.fromEntries(ls.map(([k, level, hidden, detail]): [string, LineView] => [String(k), [level, hidden, detail]]))
   return { ...(s.error ? { refused: true as const } : {}), rows: lines(s.rows), columns: lines(s.columns), saved: savedView(s.saved, window) }
+}
+
+/** A command as the engine takes it: an outline operation, or lines hidden or shown by hand as `setLayout` hides them. */
+export function engineCommand(c: OutlineCommand): StructureOp | { hidden: string; value: boolean } {
+  if ('levels' in c) return { op: 'showLevels', sheet: 'S', ...(c.levels[0] ? { rows: c.levels[0] } : {}), ...(c.levels[1] ? { columns: c.levels[1] } : {}) }
+  const [kind, text] = Object.entries(c)[0] as [string, string]
+  if (kind === 'hidden' || kind === 'shown') return { hidden: text, value: kind === 'hidden' }
+  const rows = /^\d/.test(text)
+  if (kind === 'group' || kind === 'ungroup') return rows ? { op: kind, sheet: 'S', rows: text } : { op: kind, sheet: 'S', columns: text }
+  // Show and Hide Detail take one line, as Excel's object model does (it refuses more)
+  const op = kind === 'show' ? 'showDetail' : 'hideDetail'
+  if (text.includes(':')) return { op, sheet: 'S', ...(rows ? { rows: text } : { columns: text }) } as unknown as StructureOp
+  return rows ? { op, sheet: 'S', row: Number(text) } : { op, sheet: 'S', column: text }
+}
+
+/** What the engine holds of a book as Excel reads and saves it: the window's lines, each summary line's `ShowDetail` the group's collapsed state; the file `writeXlsx` writes. */
+export async function engineView(book: BookInput, window: OutlineWindow | undefined, refused: boolean): Promise<OutlineView> {
+  const sheet = book.sheets[0]
+  const w = windowOf(window)
+  const read = (map: Record<string, RowInput & ColumnInput> | undefined, axis: 'rows' | 'columns', [lo, hi]: [number, number], key: (i: number) => string) => {
+    const detail = new Map(outlineGroups(sheet)[axis].flatMap((g) => (g.summary === null ? [] : [[g.summary - 1, !g.collapsed] as const])))
+    const out: Record<string, LineView> = {}
+    for (let i = lo; i <= hi; i++) {
+      const e = Object.entries(map ?? {}).find(([k]) => {
+        const x = linesOf(k)
+        return i >= x.lo && i <= x.hi
+      })?.[1]
+      const level = e?.outlineLevel ?? 0
+      const hidden = !!e && (e.hidden === true || (axis === 'rows' ? e.height : e.width) === 0)
+      if (level || hidden || detail.has(i)) out[key(i)] = [level, hidden, detail.get(i) ?? null]
+    }
+    return out
+  }
+  const { data } = await writeXlsx({ book }, { values: 'omit' })
+  const xml = (await openArchive(data).text('xl/worksheets/sheet1.xml'))!
+  return {
+    ...(refused ? { refused: true as const } : {}),
+    rows: read(sheet.rows, 'rows', w.rows, (i) => String(i + 1)),
+    columns: read(sheet.columns, 'columns', w.columns, indexToCol),
+    saved: savedView(savedTags(xml), window),
+  }
+}
+
+/** The engine's views of a case: the book Excel gets, then after each command, a refused one leaving the book as it was. */
+export async function engineViews(b: OutlineBook, c: OutlineCase): Promise<OutlineView[]> {
+  let book = sentBook(b)
+  const out = [await engineView(book, c.window, false)]
+  for (const x of c.commands) {
+    const op = engineCommand(x)
+    let refused = false
+    if ('hidden' in op) {
+      const s = book.sheets[0]
+      const key = /^\d/.test(op.hidden) ? 'rows' : 'columns'
+      book = { ...book, sheets: [{ ...s, [key]: patchLines(s[key], op.hidden, { hidden: op.value ? true : null }) }] }
+    } else {
+      try {
+        const r = editStructure(book, op)
+        if (r.ok) book = r.book
+        else refused = true
+      } catch (e) {
+        if (!(e instanceof InputError)) throw e
+        refused = true
+      }
+    }
+    out.push(await engineView(book, c.window, refused))
+  }
+  return out
 }
 
 /** Cases of one group: ids `<group>-<n>`. */
