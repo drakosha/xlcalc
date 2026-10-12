@@ -7,7 +7,7 @@
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { LIMIT, shiftRect, type Axis, type Rect } from '../structure/area.js'
 import type { Geometry } from '../structure/geometry.js'
-import { edited, LayerBuilder, LookTable, NONE, patternOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
+import { edited, LayerBuilder, LookTable, NONE, patternOf, spansOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
 
 /** The run of a pattern holding column `c`: its look, or NONE. */
 function lookAtColumn(p: Pattern, c: number): number {
@@ -169,19 +169,11 @@ const lookKey = (looks: LookTable, id: number) => {
 /** The runs of columns where two patterns (of tables `ta` and `tb`) give a cell other looks. */
 function differingRuns(pa: Pattern, ta: LookTable, pb: Pattern, tb: LookTable): number[] {
   const out: number[] = []
-  let [i, j, c] = [0, 0, 0]
-  while (c < MAX_COLS) {
-    while (i < pa.length && pa[i + 1] < c) i += 3
-    while (j < pb.length && pb[j + 1] < c) j += 3
-    const inA = i < pa.length && pa[i] <= c
-    const inB = j < pb.length && pb[j] <= c
-    const end = Math.min(inA ? pa[i + 1] + 1 : i < pa.length ? pa[i] : MAX_COLS, inB ? pb[j + 1] + 1 : j < pb.length ? pb[j] : MAX_COLS)
-    if (lookKey(ta, inA ? pa[i + 2] : NONE) !== lookKey(tb, inB ? pb[j + 2] : NONE)) {
-      const n = out.length
-      if (n && out[n - 1] === c - 1) out[n - 1] = end - 1
-      else out.push(c, end - 1)
-    }
-    c = end
+  for (const [c1, c2, a, b] of spansOf(pa, pb)) {
+    if (lookKey(ta, a) === lookKey(tb, b)) continue
+    const n = out.length
+    if (n && out[n - 1] === c1 - 1) out[n - 1] = c2
+    else out.push(c1, c2)
   }
   return out
 }

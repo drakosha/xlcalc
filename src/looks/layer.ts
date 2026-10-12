@@ -76,6 +76,21 @@ export function patternOf(runs: ArrayLike<number>): Pattern {
   return out.length ? Int32Array.from(out) : EMPTY
 }
 
+/** The spans of columns where two patterns each give one look (NONE for none), `[c1, c2, look in a, look in b]`, across the sheet. */
+export function* spansOf(a: Pattern, b: Pattern): Generator<[number, number, number, number]> {
+  let [i, j, c] = [0, 0, 0]
+  while (c < MAX_COLS) {
+    while (i < a.length && a[i + 1] < c) i += 3
+    while (j < b.length && b[j + 1] < c) j += 3
+    const inA = i < a.length && a[i] <= c
+    const inB = j < b.length && b[j] <= c
+    // the next column where either pattern changes
+    const end = Math.min(inA ? a[i + 1] + 1 : i < a.length ? a[i] : MAX_COLS, inB ? b[j + 1] + 1 : j < b.length ? b[j] : MAX_COLS)
+    yield [c, end - 1, inA ? a[i + 2] : NONE, inB ? b[j + 2] : NONE]
+    c = end
+  }
+}
+
 /** The index of the run of a pattern holding column `c`, or -1. */
 function runAt(p: Pattern, c: number): number {
   let [lo, hi] = [0, p.length / 3 - 1]

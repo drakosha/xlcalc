@@ -10,28 +10,16 @@ import type { LookRange } from '../contract.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { lowerBound } from '../sorted.js'
 import { areaText, parseRange, type Rect } from '../structure/area.js'
-import { Layer, LayerBuilder, LookTable, NONE, patternOf, type Pattern } from './layer.js'
+import { Layer, LayerBuilder, LookTable, NONE, patternOf, spansOf, type Pattern } from './layer.js'
 
 /** The runs of `q` over the columns where it differs from `base`: `[c1, c2, look]`, NONE where `q` has no look. */
 function difference(base: Pattern, q: Pattern): number[] {
   const out: number[] = []
-  // walk both patterns by the columns where either changes
-  let [i, j, c] = [0, 0, 0]
-  while (c < MAX_COLS) {
-    while (i < base.length && base[i + 1] < c) i += 3
-    while (j < q.length && q[j + 1] < c) j += 3
-    const inBase = i < base.length && base[i] <= c
-    const inQ = j < q.length && q[j] <= c
-    const a = inBase ? base[i + 2] : NONE
-    const b = inQ ? q[j + 2] : NONE
-    // the next column where either pattern changes
-    const end = Math.min(inBase ? base[i + 1] + 1 : i < base.length ? base[i] : MAX_COLS, inQ ? q[j + 1] + 1 : j < q.length ? q[j] : MAX_COLS)
-    if (a !== b) {
-      const n = out.length
-      if (n && out[n - 1] === b && out[n - 2] === c - 1) out[n - 2] = end - 1
-      else out.push(c, end - 1, b)
-    }
-    c = end
+  for (const [c1, c2, a, b] of spansOf(base, q)) {
+    if (a === b) continue
+    const n = out.length
+    if (n && out[n - 1] === b && out[n - 2] === c1 - 1) out[n - 2] = c2
+    else out.push(c1, c2, b)
   }
   return out
 }
