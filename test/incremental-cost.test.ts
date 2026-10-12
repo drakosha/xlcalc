@@ -4,6 +4,32 @@ import { run } from '../src/exec/budget.js'
 import type { CellInput } from '../src/contract.js'
 
 describe.each(['closures', 'eval'] as const)('incremental work, %s', (execution) => {
+  it('prunes an unchanged branch when an independent root changes', () => {
+    const n = 1024, cells: Record<string, CellInput> = { A1: { value: 1.1 }, A2: { formula: 'INT(A1)' } }
+    for (let r = 3; r <= n; r++) cells[`A${r}`] = { formula: `A${r - 1}+1` }
+    cells.C1 = { value: 1 }; cells.C2 = { formula: 'C1+1' }
+    const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1, execution })
+    let evaluated = 0
+    for (const f of state.formulas) {
+      const fn = f!.fn
+      f!.fn = () => { evaluated++; return fn() }
+    }
+    run(applyEdits(state, [{ sheet: 'S', cell: 'A1', input: { value: 1.9 } }, { sheet: 'S', cell: 'C1', input: { value: 2 } }]))
+    expect(state.rt.cell(0, n - 1, 0)).toBe(n - 1)
+    expect(state.rt.cell(0, 1, 2)).toBe(3)
+    expect(evaluated).toBe(2)
+  })
+
+  it('keeps the graph when a scalar formula keeps its dependencies', () => {
+    const state = createState({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: 'A1+1' }, C1: { formula: 'B1*2' } } }] }, { now: 0, seed: 1, execution })
+    const { succ, listeners, topo } = state
+    run(applyEdits(state, [{ sheet: 'S', cell: 'B1', input: { formula: 'A1+2' } }]))
+    expect(state.rt.cell(0, 0, 2)).toBe(6)
+    expect(state.succ).toBe(succ)
+    expect(state.listeners).toBe(listeners)
+    expect(state.topo).toBe(topo)
+  })
+
   it('stops a scalar chain when the first formula keeps its value', () => {
     const n = 1024, cells: Record<string, CellInput> = { A1: { value: 1.1 }, A2: { formula: 'INT(A1)' } }
     for (let r = 3; r <= n; r++) cells[`A${r}`] = { formula: `A${r - 1}+1` }

@@ -8,7 +8,7 @@ import { Arr } from './arrays/value.js'
 import { key, keyParts, type EngineState, type Formula } from './engine.js'
 import { due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress } from './model.js'
-import { descendants, markVolatile, readersOf, rebuildGraph } from './graph.js'
+import { descendants, markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
 import type { Area } from './spill/state.js'
@@ -68,6 +68,7 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
  */
 function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0, active?: Set<number>): Steps<boolean> {
   const { rt, spills } = state
+  const independent = active && active.size > 1
   if (ids.length >= 64) state.ctx.aggregates.invalidateCells(ids.map((id) => state.formulas[id]!))
   // a formula that reads the clock's year joins the volatile ones; one that no longer does leaves them
   const { clock } = state.ctx.rules
@@ -108,8 +109,17 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
     const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
     moved ||= typeof v === 'number' && typeof was === 'number' ? Math.abs(v - was) >= delta : (typeof v === 'number') !== (typeof was === 'number')
     const changed = write(state, f.s, f.r, f.c, v, t)
-    // Once a root changes, the remaining ordered pass already covers every possible dependent.
-    if (active && (changed || array)) active = undefined
+    // One changed root takes the full pass; independent roots activate only the paths whose values changed.
+    if (active && (array || (changed && !independent))) active = undefined
+    else if (active && changed) {
+      const stack = [id]
+      while (stack.length) {
+        for (const next of successors(state, stack.pop()!)) if (!active.has(next)) {
+          active.add(next)
+          if (!state.formulas[next]) stack.push(next)
+        }
+      }
+    }
     state.ctx.cache.fit()
   }
   if (clocked) markVolatile(state)
