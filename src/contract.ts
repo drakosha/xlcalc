@@ -92,13 +92,12 @@ export interface NumberFormatCategory {
 }
 
 /**
- * An item of the Number Format list in a locale: its key, the category the box shows once it is applied, its name in
- * the list (`Short Date`), the format it applies (a built-in format by number, or a code) and that format's code in the
- * locale, in en-US syntax as a cell's `numberFormat` takes it.
+ * An item of the Number Format list in a locale: its key, its name in the list (`Short Date`), the format it applies (a
+ * built-in format by number, or a code as Excel writes it to a file) and that format's code in the locale, in en-US
+ * syntax as a cell's `numberFormat` takes it.
  */
 export interface FormatChoice {
-  choice: FormatChoiceKey
-  category: FormatCategory
+  key: FormatChoiceKey
   name: string
   format: NumberFormat
   code: string
