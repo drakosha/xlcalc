@@ -82,7 +82,6 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   veryHidden: [{ sheet: 'Keys' }],
   outlineDeep: [{ lines: 'rows', span: '3:5' }],
   notGrouped: [{ lines: 'columns', span: 'A' }],
-  lastColumn: [{ lines: 'columns', span: 'XFC:XFD' }],
   noSummary: [{ lines: 'rows', span: '12' }],
   detailShown: [{ lines: 'rows', span: '8' }],
   detailHidden: [{ lines: 'columns', span: 'K' }],

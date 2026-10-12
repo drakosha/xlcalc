@@ -242,7 +242,6 @@ export interface MessageParams extends XlsxMessageParams {
   lastVisibleSheet: { sheet: string }
   veryHidden: { sheet: string }
   outlineDeep: { lines: Lines; span: string }
-  lastColumn: { lines: Lines; span: string }
   notGrouped: { lines: Lines; span: string }
   noSummary: { lines: Lines; span: string }
   detailShown: { lines: Lines; span: string }

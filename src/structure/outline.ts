@@ -79,7 +79,7 @@ export function outlineOp(book: BookInput, sheet: string, o: Record<string, unkn
     const r = outlineCommand(s[key], axis, after, c)
     if (typeof r === 'string') {
       const p = { lines: key, span: named(axis, c) } as const
-      const message = say(book.locale, { key: r === 'outline_deep' ? 'outlineDeep' : r === 'last_column' ? 'lastColumn' : r === 'detail' ? (c.kind === 'show' ? 'detailShown' : 'detailHidden') : c.kind === 'ungroup' ? 'notGrouped' : 'noSummary', ...p })
+      const message = say(book.locale, { key: r === 'outline_deep' ? 'outlineDeep' : r === 'detail' ? (c.kind === 'show' ? 'detailShown' : 'detailHidden') : c.kind === 'ungroup' ? 'notGrouped' : 'noSummary', ...p })
       return { ok: false, code: r, message }
     }
     if (r !== s[key]) {
