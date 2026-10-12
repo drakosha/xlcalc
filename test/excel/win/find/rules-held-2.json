@@ -1,0 +1,3157 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-12",
+  "seconds": 21
+ },
+ "books": {
+  "bands": {
+   "cells": {
+    "A1": {
+     "value": "xA1"
+    },
+    "B1": {
+     "value": "xB1"
+    },
+    "C1": {
+     "value": "xC1"
+    },
+    "D1": {
+     "value": "xD1"
+    },
+    "E1": {
+     "value": "xE1"
+    },
+    "A2": {
+     "value": "xA2"
+    },
+    "B2": {
+     "value": "xB2"
+    },
+    "C2": {
+     "value": "xC2"
+    },
+    "D2": {
+     "value": "xD2"
+    },
+    "E2": {
+     "value": "xE2"
+    },
+    "A3": {
+     "value": "xA3"
+    },
+    "B3": {
+     "value": "xB3"
+    },
+    "C3": {
+     "value": "xC3"
+    },
+    "D3": {
+     "value": "xD3"
+    },
+    "E3": {
+     "value": "xE3"
+    },
+    "A4": {
+     "value": "xA4"
+    },
+    "B4": {
+     "value": "xB4"
+    },
+    "C4": {
+     "value": "xC4"
+    },
+    "D4": {
+     "value": "xD4"
+    },
+    "E4": {
+     "value": "xE4"
+    },
+    "A5": {
+     "value": "xA5"
+    },
+    "B5": {
+     "value": "xB5"
+    },
+    "C5": {
+     "value": "xC5"
+    },
+    "D5": {
+     "value": "xD5"
+    },
+    "E5": {
+     "value": "xE5"
+    },
+    "G2": {
+     "value": "xG2"
+    },
+    "B7": {
+     "value": "xB7"
+    }
+   },
+   "rows": {
+    "3": {
+     "hidden": true
+    }
+   },
+   "columns": {
+    "C": {
+     "hidden": true
+    }
+   }
+  },
+  "areas": {
+   "cells": {
+    "A1": {
+     "value": "x1"
+    },
+    "B1": {
+     "value": "y"
+    },
+    "C1": {
+     "value": "x2"
+    },
+    "A2": {
+     "value": "x3"
+    },
+    "B2": {
+     "value": "x4"
+    },
+    "C2": {
+     "value": "z"
+    },
+    "A3": {
+     "value": "y"
+    },
+    "B3": {
+     "value": "x5"
+    },
+    "C3": {
+     "value": "x6"
+    },
+    "E1": {
+     "value": "x7"
+    },
+    "A5": {
+     "value": "x8"
+    },
+    "E5": {
+     "value": "x9"
+    }
+   }
+  },
+  "look": {
+   "cells": {
+    "D1": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "D2": {
+     "value": 123456.78,
+     "numberFormat": "0.00"
+    },
+    "B3": {
+     "value": "=1+2"
+    },
+    "B4": {
+     "value": 0.7708333333333334,
+     "numberFormat": "h:mm"
+    },
+    "B5": {
+     "value": 0.125,
+     "numberFormat": "0.0%"
+    },
+    "B6": {
+     "value": -5,
+     "numberFormat": "0;(0)"
+    },
+    "B7": {
+     "value": "ΟΣ"
+    },
+    "B8": {
+     "value": "ος"
+    },
+    "B9": {
+     "value": "οσ"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "0.00"
+    },
+    "B11": {
+     "formula": "'S'!B10*2"
+    },
+    "B12": {
+     "value": "a\nb"
+    },
+    "B13": {
+     "formula": "\"abc\"&\"def\""
+    }
+   },
+   "columns": {
+    "B": {
+     "width": 30
+    },
+    "D": {
+     "width": 3
+    }
+   }
+  }
+ },
+ "cases": [
+  {
+   "id": "bands-1",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "bands-2",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "bands-3",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "bands-4",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "values",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "bands-5",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "A1:E5"
+   }
+  },
+  {
+   "id": "bands-6",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "values",
+    "range": "A1:E5"
+   }
+  },
+  {
+   "id": "bands-7",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "A1:E5",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "bands-8",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "values",
+    "range": "A1:E5",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "bands-9",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "B2:E5"
+   }
+  },
+  {
+   "id": "bands-10",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "values",
+    "range": "B2:E5"
+   }
+  },
+  {
+   "id": "bands-11",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "B2:E5",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "bands-12",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "values",
+    "range": "B2:E5",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "bands-13",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "A2:G7"
+   }
+  },
+  {
+   "id": "bands-14",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "values",
+    "range": "A2:G7"
+   }
+  },
+  {
+   "id": "bands-15",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "A2:G7",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "bands-16",
+   "book": "bands",
+   "query": {
+    "what": "x",
+    "lookIn": "values",
+    "range": "A2:G7",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "areas-1",
+   "book": "areas",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "A1:A2,B2:C3"
+   }
+  },
+  {
+   "id": "areas-2",
+   "book": "areas",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "A1:A2,B2:C3",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "areas-3",
+   "book": "areas",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "B2:C3,A1:A2"
+   }
+  },
+  {
+   "id": "areas-4",
+   "book": "areas",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "B2:C3,A1:A2",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "areas-5",
+   "book": "areas",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "A1:B2,B2:C3"
+   }
+  },
+  {
+   "id": "areas-6",
+   "book": "areas",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "A1:B2,B2:C3",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "areas-7",
+   "book": "areas",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "E5,A1:C1"
+   }
+  },
+  {
+   "id": "areas-8",
+   "book": "areas",
+   "query": {
+    "what": "x",
+    "lookIn": "formulas",
+    "range": "E5,A1:C1",
+    "byColumns": true
+   }
+  },
+  {
+   "id": "look-1",
+   "book": "look",
+   "query": {
+    "what": "2026",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-2",
+   "book": "look",
+   "query": {
+    "what": "2026",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-3",
+   "book": "look",
+   "query": {
+    "what": "#",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-4",
+   "book": "look",
+   "query": {
+    "what": "#",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-5",
+   "book": "look",
+   "query": {
+    "what": "123456",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-6",
+   "book": "look",
+   "query": {
+    "what": "123456",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-7",
+   "book": "look",
+   "query": {
+    "what": "=1",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-8",
+   "book": "look",
+   "query": {
+    "what": "=1",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-9",
+   "book": "look",
+   "query": {
+    "what": "PM",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-10",
+   "book": "look",
+   "query": {
+    "what": "PM",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-11",
+   "book": "look",
+   "query": {
+    "what": "30",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-12",
+   "book": "look",
+   "query": {
+    "what": "30",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-13",
+   "book": "look",
+   "query": {
+    "what": "12.5%",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-14",
+   "book": "look",
+   "query": {
+    "what": "12.5%",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-15",
+   "book": "look",
+   "query": {
+    "what": "12,5%",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-16",
+   "book": "look",
+   "query": {
+    "what": "12,5%",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-17",
+   "book": "look",
+   "query": {
+    "what": "0.125",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-18",
+   "book": "look",
+   "query": {
+    "what": "0.125",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-19",
+   "book": "look",
+   "query": {
+    "what": "(5)",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-20",
+   "book": "look",
+   "query": {
+    "what": "(5)",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-21",
+   "book": "look",
+   "query": {
+    "what": "-5",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-22",
+   "book": "look",
+   "query": {
+    "what": "-5",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-23",
+   "book": "look",
+   "query": {
+    "what": "1.5",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-24",
+   "book": "look",
+   "query": {
+    "what": "1.5",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-25",
+   "book": "look",
+   "query": {
+    "what": "1,5",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-26",
+   "book": "look",
+   "query": {
+    "what": "1,5",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-27",
+   "book": "look",
+   "query": {
+    "what": "1.50",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-28",
+   "book": "look",
+   "query": {
+    "what": "1.50",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-29",
+   "book": "look",
+   "query": {
+    "what": "1,50",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-30",
+   "book": "look",
+   "query": {
+    "what": "1,50",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-31",
+   "book": "look",
+   "query": {
+    "what": "S!",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-32",
+   "book": "look",
+   "query": {
+    "what": "S!",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-33",
+   "book": "look",
+   "query": {
+    "what": "cd",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "look-34",
+   "book": "look",
+   "query": {
+    "what": "cd",
+    "lookIn": "values"
+   }
+  },
+  {
+   "id": "look-35",
+   "book": "look",
+   "query": {
+    "what": "a?b",
+    "lookIn": "formulas",
+    "whole": true
+   }
+  },
+  {
+   "id": "look-36",
+   "book": "look",
+   "query": {
+    "what": "a*b",
+    "lookIn": "formulas",
+    "whole": true
+   }
+  },
+  {
+   "id": "sigma-1",
+   "book": "look",
+   "query": {
+    "what": "σ",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "sigma-2",
+   "book": "look",
+   "query": {
+    "what": "ς",
+    "lookIn": "formulas"
+   }
+  },
+  {
+   "id": "sigma-3",
+   "book": "look",
+   "query": {
+    "what": "Σ",
+    "lookIn": "formulas",
+    "matchCase": true
+   }
+  },
+  {
+   "id": "sigma-4",
+   "book": "look",
+   "query": {
+    "what": "ΟΣ",
+    "lookIn": "formulas"
+   }
+  }
+ ],
+ "answers": {
+  "bands-1": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "xA1",
+     "formulaLocal": "xA1",
+     "text": "xA1"
+    },
+    {
+     "cell": "B1",
+     "formula": "xB1",
+     "formulaLocal": "xB1",
+     "text": "xB1"
+    },
+    {
+     "cell": "C1",
+     "formula": "xC1",
+     "formulaLocal": "xC1",
+     "text": "xC1"
+    },
+    {
+     "cell": "D1",
+     "formula": "xD1",
+     "formulaLocal": "xD1",
+     "text": "xD1"
+    },
+    {
+     "cell": "E1",
+     "formula": "xE1",
+     "formulaLocal": "xE1",
+     "text": "xE1"
+    },
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "C2",
+     "formula": "xC2",
+     "formulaLocal": "xC2",
+     "text": "xC2"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "G2",
+     "formula": "xG2",
+     "formulaLocal": "xG2",
+     "text": "xG2"
+    },
+    {
+     "cell": "A3",
+     "formula": "xA3",
+     "formulaLocal": "xA3",
+     "text": "xA3"
+    },
+    {
+     "cell": "B3",
+     "formula": "xB3",
+     "formulaLocal": "xB3",
+     "text": "xB3"
+    },
+    {
+     "cell": "C3",
+     "formula": "xC3",
+     "formulaLocal": "xC3",
+     "text": "xC3"
+    },
+    {
+     "cell": "D3",
+     "formula": "xD3",
+     "formulaLocal": "xD3",
+     "text": "xD3"
+    },
+    {
+     "cell": "E3",
+     "formula": "xE3",
+     "formulaLocal": "xE3",
+     "text": "xE3"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "C4",
+     "formula": "xC4",
+     "formulaLocal": "xC4",
+     "text": "xC4"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "C5",
+     "formula": "xC5",
+     "formulaLocal": "xC5",
+     "text": "xC5"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    },
+    {
+     "cell": "B7",
+     "formula": "xB7",
+     "formulaLocal": "xB7",
+     "text": "xB7"
+    }
+   ]
+  },
+  "bands-2": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "xA1",
+     "formulaLocal": "xA1",
+     "text": "xA1"
+    },
+    {
+     "cell": "B1",
+     "formula": "xB1",
+     "formulaLocal": "xB1",
+     "text": "xB1"
+    },
+    {
+     "cell": "D1",
+     "formula": "xD1",
+     "formulaLocal": "xD1",
+     "text": "xD1"
+    },
+    {
+     "cell": "E1",
+     "formula": "xE1",
+     "formulaLocal": "xE1",
+     "text": "xE1"
+    },
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "G2",
+     "formula": "xG2",
+     "formulaLocal": "xG2",
+     "text": "xG2"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    },
+    {
+     "cell": "B7",
+     "formula": "xB7",
+     "formulaLocal": "xB7",
+     "text": "xB7"
+    }
+   ]
+  },
+  "bands-3": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "xA1",
+     "formulaLocal": "xA1",
+     "text": "xA1"
+    },
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "A3",
+     "formula": "xA3",
+     "formulaLocal": "xA3",
+     "text": "xA3"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B1",
+     "formula": "xB1",
+     "formulaLocal": "xB1",
+     "text": "xB1"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "B3",
+     "formula": "xB3",
+     "formulaLocal": "xB3",
+     "text": "xB3"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "B7",
+     "formula": "xB7",
+     "formulaLocal": "xB7",
+     "text": "xB7"
+    },
+    {
+     "cell": "C1",
+     "formula": "xC1",
+     "formulaLocal": "xC1",
+     "text": "xC1"
+    },
+    {
+     "cell": "C2",
+     "formula": "xC2",
+     "formulaLocal": "xC2",
+     "text": "xC2"
+    },
+    {
+     "cell": "C3",
+     "formula": "xC3",
+     "formulaLocal": "xC3",
+     "text": "xC3"
+    },
+    {
+     "cell": "C4",
+     "formula": "xC4",
+     "formulaLocal": "xC4",
+     "text": "xC4"
+    },
+    {
+     "cell": "C5",
+     "formula": "xC5",
+     "formulaLocal": "xC5",
+     "text": "xC5"
+    },
+    {
+     "cell": "D1",
+     "formula": "xD1",
+     "formulaLocal": "xD1",
+     "text": "xD1"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "D3",
+     "formula": "xD3",
+     "formulaLocal": "xD3",
+     "text": "xD3"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E1",
+     "formula": "xE1",
+     "formulaLocal": "xE1",
+     "text": "xE1"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "E3",
+     "formula": "xE3",
+     "formulaLocal": "xE3",
+     "text": "xE3"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    },
+    {
+     "cell": "G2",
+     "formula": "xG2",
+     "formulaLocal": "xG2",
+     "text": "xG2"
+    }
+   ]
+  },
+  "bands-4": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "xA1",
+     "formulaLocal": "xA1",
+     "text": "xA1"
+    },
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B1",
+     "formula": "xB1",
+     "formulaLocal": "xB1",
+     "text": "xB1"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "B7",
+     "formula": "xB7",
+     "formulaLocal": "xB7",
+     "text": "xB7"
+    },
+    {
+     "cell": "D1",
+     "formula": "xD1",
+     "formulaLocal": "xD1",
+     "text": "xD1"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E1",
+     "formula": "xE1",
+     "formulaLocal": "xE1",
+     "text": "xE1"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    },
+    {
+     "cell": "G2",
+     "formula": "xG2",
+     "formulaLocal": "xG2",
+     "text": "xG2"
+    }
+   ]
+  },
+  "bands-5": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "xA1",
+     "formulaLocal": "xA1",
+     "text": "xA1"
+    },
+    {
+     "cell": "B1",
+     "formula": "xB1",
+     "formulaLocal": "xB1",
+     "text": "xB1"
+    },
+    {
+     "cell": "C1",
+     "formula": "xC1",
+     "formulaLocal": "xC1",
+     "text": "xC1"
+    },
+    {
+     "cell": "D1",
+     "formula": "xD1",
+     "formulaLocal": "xD1",
+     "text": "xD1"
+    },
+    {
+     "cell": "E1",
+     "formula": "xE1",
+     "formulaLocal": "xE1",
+     "text": "xE1"
+    },
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "C2",
+     "formula": "xC2",
+     "formulaLocal": "xC2",
+     "text": "xC2"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "A3",
+     "formula": "xA3",
+     "formulaLocal": "xA3",
+     "text": "xA3"
+    },
+    {
+     "cell": "B3",
+     "formula": "xB3",
+     "formulaLocal": "xB3",
+     "text": "xB3"
+    },
+    {
+     "cell": "C3",
+     "formula": "xC3",
+     "formulaLocal": "xC3",
+     "text": "xC3"
+    },
+    {
+     "cell": "D3",
+     "formula": "xD3",
+     "formulaLocal": "xD3",
+     "text": "xD3"
+    },
+    {
+     "cell": "E3",
+     "formula": "xE3",
+     "formulaLocal": "xE3",
+     "text": "xE3"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "C4",
+     "formula": "xC4",
+     "formulaLocal": "xC4",
+     "text": "xC4"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "C5",
+     "formula": "xC5",
+     "formulaLocal": "xC5",
+     "text": "xC5"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    }
+   ]
+  },
+  "bands-6": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "xA1",
+     "formulaLocal": "xA1",
+     "text": "xA1"
+    },
+    {
+     "cell": "B1",
+     "formula": "xB1",
+     "formulaLocal": "xB1",
+     "text": "xB1"
+    },
+    {
+     "cell": "D1",
+     "formula": "xD1",
+     "formulaLocal": "xD1",
+     "text": "xD1"
+    },
+    {
+     "cell": "E1",
+     "formula": "xE1",
+     "formulaLocal": "xE1",
+     "text": "xE1"
+    },
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    }
+   ]
+  },
+  "bands-7": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "xA1",
+     "formulaLocal": "xA1",
+     "text": "xA1"
+    },
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "A3",
+     "formula": "xA3",
+     "formulaLocal": "xA3",
+     "text": "xA3"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B1",
+     "formula": "xB1",
+     "formulaLocal": "xB1",
+     "text": "xB1"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "B3",
+     "formula": "xB3",
+     "formulaLocal": "xB3",
+     "text": "xB3"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "C1",
+     "formula": "xC1",
+     "formulaLocal": "xC1",
+     "text": "xC1"
+    },
+    {
+     "cell": "C2",
+     "formula": "xC2",
+     "formulaLocal": "xC2",
+     "text": "xC2"
+    },
+    {
+     "cell": "C3",
+     "formula": "xC3",
+     "formulaLocal": "xC3",
+     "text": "xC3"
+    },
+    {
+     "cell": "C4",
+     "formula": "xC4",
+     "formulaLocal": "xC4",
+     "text": "xC4"
+    },
+    {
+     "cell": "C5",
+     "formula": "xC5",
+     "formulaLocal": "xC5",
+     "text": "xC5"
+    },
+    {
+     "cell": "D1",
+     "formula": "xD1",
+     "formulaLocal": "xD1",
+     "text": "xD1"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "D3",
+     "formula": "xD3",
+     "formulaLocal": "xD3",
+     "text": "xD3"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E1",
+     "formula": "xE1",
+     "formulaLocal": "xE1",
+     "text": "xE1"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "E3",
+     "formula": "xE3",
+     "formulaLocal": "xE3",
+     "text": "xE3"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    }
+   ]
+  },
+  "bands-8": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "xA1",
+     "formulaLocal": "xA1",
+     "text": "xA1"
+    },
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B1",
+     "formula": "xB1",
+     "formulaLocal": "xB1",
+     "text": "xB1"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "D1",
+     "formula": "xD1",
+     "formulaLocal": "xD1",
+     "text": "xD1"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E1",
+     "formula": "xE1",
+     "formulaLocal": "xE1",
+     "text": "xE1"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    }
+   ]
+  },
+  "bands-9": {
+   "found": [
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "C2",
+     "formula": "xC2",
+     "formulaLocal": "xC2",
+     "text": "xC2"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "B3",
+     "formula": "xB3",
+     "formulaLocal": "xB3",
+     "text": "xB3"
+    },
+    {
+     "cell": "C3",
+     "formula": "xC3",
+     "formulaLocal": "xC3",
+     "text": "xC3"
+    },
+    {
+     "cell": "D3",
+     "formula": "xD3",
+     "formulaLocal": "xD3",
+     "text": "xD3"
+    },
+    {
+     "cell": "E3",
+     "formula": "xE3",
+     "formulaLocal": "xE3",
+     "text": "xE3"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "C4",
+     "formula": "xC4",
+     "formulaLocal": "xC4",
+     "text": "xC4"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "C5",
+     "formula": "xC5",
+     "formulaLocal": "xC5",
+     "text": "xC5"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    }
+   ]
+  },
+  "bands-10": {
+   "found": [
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    }
+   ]
+  },
+  "bands-11": {
+   "found": [
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "B3",
+     "formula": "xB3",
+     "formulaLocal": "xB3",
+     "text": "xB3"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "C2",
+     "formula": "xC2",
+     "formulaLocal": "xC2",
+     "text": "xC2"
+    },
+    {
+     "cell": "C3",
+     "formula": "xC3",
+     "formulaLocal": "xC3",
+     "text": "xC3"
+    },
+    {
+     "cell": "C4",
+     "formula": "xC4",
+     "formulaLocal": "xC4",
+     "text": "xC4"
+    },
+    {
+     "cell": "C5",
+     "formula": "xC5",
+     "formulaLocal": "xC5",
+     "text": "xC5"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "D3",
+     "formula": "xD3",
+     "formulaLocal": "xD3",
+     "text": "xD3"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "E3",
+     "formula": "xE3",
+     "formulaLocal": "xE3",
+     "text": "xE3"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    }
+   ]
+  },
+  "bands-12": {
+   "found": [
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    }
+   ]
+  },
+  "bands-13": {
+   "found": [
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "C2",
+     "formula": "xC2",
+     "formulaLocal": "xC2",
+     "text": "xC2"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "G2",
+     "formula": "xG2",
+     "formulaLocal": "xG2",
+     "text": "xG2"
+    },
+    {
+     "cell": "A3",
+     "formula": "xA3",
+     "formulaLocal": "xA3",
+     "text": "xA3"
+    },
+    {
+     "cell": "B3",
+     "formula": "xB3",
+     "formulaLocal": "xB3",
+     "text": "xB3"
+    },
+    {
+     "cell": "C3",
+     "formula": "xC3",
+     "formulaLocal": "xC3",
+     "text": "xC3"
+    },
+    {
+     "cell": "D3",
+     "formula": "xD3",
+     "formulaLocal": "xD3",
+     "text": "xD3"
+    },
+    {
+     "cell": "E3",
+     "formula": "xE3",
+     "formulaLocal": "xE3",
+     "text": "xE3"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "C4",
+     "formula": "xC4",
+     "formulaLocal": "xC4",
+     "text": "xC4"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "C5",
+     "formula": "xC5",
+     "formulaLocal": "xC5",
+     "text": "xC5"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    },
+    {
+     "cell": "B7",
+     "formula": "xB7",
+     "formulaLocal": "xB7",
+     "text": "xB7"
+    }
+   ]
+  },
+  "bands-14": {
+   "found": [
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "G2",
+     "formula": "xG2",
+     "formulaLocal": "xG2",
+     "text": "xG2"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    },
+    {
+     "cell": "B7",
+     "formula": "xB7",
+     "formulaLocal": "xB7",
+     "text": "xB7"
+    }
+   ]
+  },
+  "bands-15": {
+   "found": [
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "A3",
+     "formula": "xA3",
+     "formulaLocal": "xA3",
+     "text": "xA3"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "B3",
+     "formula": "xB3",
+     "formulaLocal": "xB3",
+     "text": "xB3"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "B7",
+     "formula": "xB7",
+     "formulaLocal": "xB7",
+     "text": "xB7"
+    },
+    {
+     "cell": "C2",
+     "formula": "xC2",
+     "formulaLocal": "xC2",
+     "text": "xC2"
+    },
+    {
+     "cell": "C3",
+     "formula": "xC3",
+     "formulaLocal": "xC3",
+     "text": "xC3"
+    },
+    {
+     "cell": "C4",
+     "formula": "xC4",
+     "formulaLocal": "xC4",
+     "text": "xC4"
+    },
+    {
+     "cell": "C5",
+     "formula": "xC5",
+     "formulaLocal": "xC5",
+     "text": "xC5"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "D3",
+     "formula": "xD3",
+     "formulaLocal": "xD3",
+     "text": "xD3"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "E3",
+     "formula": "xE3",
+     "formulaLocal": "xE3",
+     "text": "xE3"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    },
+    {
+     "cell": "G2",
+     "formula": "xG2",
+     "formulaLocal": "xG2",
+     "text": "xG2"
+    }
+   ]
+  },
+  "bands-16": {
+   "found": [
+    {
+     "cell": "A2",
+     "formula": "xA2",
+     "formulaLocal": "xA2",
+     "text": "xA2"
+    },
+    {
+     "cell": "A4",
+     "formula": "xA4",
+     "formulaLocal": "xA4",
+     "text": "xA4"
+    },
+    {
+     "cell": "A5",
+     "formula": "xA5",
+     "formulaLocal": "xA5",
+     "text": "xA5"
+    },
+    {
+     "cell": "B2",
+     "formula": "xB2",
+     "formulaLocal": "xB2",
+     "text": "xB2"
+    },
+    {
+     "cell": "B4",
+     "formula": "xB4",
+     "formulaLocal": "xB4",
+     "text": "xB4"
+    },
+    {
+     "cell": "B5",
+     "formula": "xB5",
+     "formulaLocal": "xB5",
+     "text": "xB5"
+    },
+    {
+     "cell": "B7",
+     "formula": "xB7",
+     "formulaLocal": "xB7",
+     "text": "xB7"
+    },
+    {
+     "cell": "D2",
+     "formula": "xD2",
+     "formulaLocal": "xD2",
+     "text": "xD2"
+    },
+    {
+     "cell": "D4",
+     "formula": "xD4",
+     "formulaLocal": "xD4",
+     "text": "xD4"
+    },
+    {
+     "cell": "D5",
+     "formula": "xD5",
+     "formulaLocal": "xD5",
+     "text": "xD5"
+    },
+    {
+     "cell": "E2",
+     "formula": "xE2",
+     "formulaLocal": "xE2",
+     "text": "xE2"
+    },
+    {
+     "cell": "E4",
+     "formula": "xE4",
+     "formulaLocal": "xE4",
+     "text": "xE4"
+    },
+    {
+     "cell": "E5",
+     "formula": "xE5",
+     "formulaLocal": "xE5",
+     "text": "xE5"
+    },
+    {
+     "cell": "G2",
+     "formula": "xG2",
+     "formulaLocal": "xG2",
+     "text": "xG2"
+    }
+   ]
+  },
+  "areas-1": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "x1",
+     "formulaLocal": "x1",
+     "text": "x1"
+    },
+    {
+     "cell": "A2",
+     "formula": "x3",
+     "formulaLocal": "x3",
+     "text": "x3"
+    },
+    {
+     "cell": "B2",
+     "formula": "x4",
+     "formulaLocal": "x4",
+     "text": "x4"
+    },
+    {
+     "cell": "B3",
+     "formula": "x5",
+     "formulaLocal": "x5",
+     "text": "x5"
+    },
+    {
+     "cell": "C3",
+     "formula": "x6",
+     "formulaLocal": "x6",
+     "text": "x6"
+    }
+   ]
+  },
+  "areas-2": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "x1",
+     "formulaLocal": "x1",
+     "text": "x1"
+    },
+    {
+     "cell": "A2",
+     "formula": "x3",
+     "formulaLocal": "x3",
+     "text": "x3"
+    },
+    {
+     "cell": "B2",
+     "formula": "x4",
+     "formulaLocal": "x4",
+     "text": "x4"
+    },
+    {
+     "cell": "B3",
+     "formula": "x5",
+     "formulaLocal": "x5",
+     "text": "x5"
+    },
+    {
+     "cell": "C3",
+     "formula": "x6",
+     "formulaLocal": "x6",
+     "text": "x6"
+    }
+   ]
+  },
+  "areas-3": {
+   "found": [
+    {
+     "cell": "B2",
+     "formula": "x4",
+     "formulaLocal": "x4",
+     "text": "x4"
+    },
+    {
+     "cell": "B3",
+     "formula": "x5",
+     "formulaLocal": "x5",
+     "text": "x5"
+    },
+    {
+     "cell": "C3",
+     "formula": "x6",
+     "formulaLocal": "x6",
+     "text": "x6"
+    },
+    {
+     "cell": "A1",
+     "formula": "x1",
+     "formulaLocal": "x1",
+     "text": "x1"
+    },
+    {
+     "cell": "A2",
+     "formula": "x3",
+     "formulaLocal": "x3",
+     "text": "x3"
+    }
+   ]
+  },
+  "areas-4": {
+   "found": [
+    {
+     "cell": "B2",
+     "formula": "x4",
+     "formulaLocal": "x4",
+     "text": "x4"
+    },
+    {
+     "cell": "B3",
+     "formula": "x5",
+     "formulaLocal": "x5",
+     "text": "x5"
+    },
+    {
+     "cell": "C3",
+     "formula": "x6",
+     "formulaLocal": "x6",
+     "text": "x6"
+    },
+    {
+     "cell": "A1",
+     "formula": "x1",
+     "formulaLocal": "x1",
+     "text": "x1"
+    },
+    {
+     "cell": "A2",
+     "formula": "x3",
+     "formulaLocal": "x3",
+     "text": "x3"
+    }
+   ]
+  },
+  "areas-5": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "x1",
+     "formulaLocal": "x1",
+     "text": "x1"
+    },
+    {
+     "cell": "A2",
+     "formula": "x3",
+     "formulaLocal": "x3",
+     "text": "x3"
+    },
+    {
+     "cell": "B2",
+     "formula": "x4",
+     "formulaLocal": "x4",
+     "text": "x4"
+    },
+    {
+     "cell": "B3",
+     "formula": "x5",
+     "formulaLocal": "x5",
+     "text": "x5"
+    },
+    {
+     "cell": "C3",
+     "formula": "x6",
+     "formulaLocal": "x6",
+     "text": "x6"
+    }
+   ]
+  },
+  "areas-6": {
+   "found": [
+    {
+     "cell": "A1",
+     "formula": "x1",
+     "formulaLocal": "x1",
+     "text": "x1"
+    },
+    {
+     "cell": "A2",
+     "formula": "x3",
+     "formulaLocal": "x3",
+     "text": "x3"
+    },
+    {
+     "cell": "B2",
+     "formula": "x4",
+     "formulaLocal": "x4",
+     "text": "x4"
+    },
+    {
+     "cell": "B3",
+     "formula": "x5",
+     "formulaLocal": "x5",
+     "text": "x5"
+    },
+    {
+     "cell": "C3",
+     "formula": "x6",
+     "formulaLocal": "x6",
+     "text": "x6"
+    }
+   ]
+  },
+  "areas-7": {
+   "found": [
+    {
+     "cell": "E5",
+     "formula": "x9",
+     "formulaLocal": "x9",
+     "text": "x9"
+    },
+    {
+     "cell": "A1",
+     "formula": "x1",
+     "formulaLocal": "x1",
+     "text": "x1"
+    },
+    {
+     "cell": "C1",
+     "formula": "x2",
+     "formulaLocal": "x2",
+     "text": "x2"
+    }
+   ]
+  },
+  "areas-8": {
+   "found": [
+    {
+     "cell": "E5",
+     "formula": "x9",
+     "formulaLocal": "x9",
+     "text": "x9"
+    },
+    {
+     "cell": "A1",
+     "formula": "x1",
+     "formulaLocal": "x1",
+     "text": "x1"
+    },
+    {
+     "cell": "C1",
+     "formula": "x2",
+     "formulaLocal": "x2",
+     "text": "x2"
+    }
+   ]
+  },
+  "look-1": {
+   "found": [
+    {
+     "cell": "D1",
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "text": "##"
+    }
+   ]
+  },
+  "look-2": {
+   "found": []
+  },
+  "look-3": {
+   "found": []
+  },
+  "look-4": {
+   "found": [
+    {
+     "cell": "D1",
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "text": "##"
+    },
+    {
+     "cell": "D2",
+     "formula": "123456.78",
+     "formulaLocal": "123456.78",
+     "text": "##"
+    }
+   ]
+  },
+  "look-5": {
+   "found": [
+    {
+     "cell": "D2",
+     "formula": "123456.78",
+     "formulaLocal": "123456.78",
+     "text": "##"
+    }
+   ]
+  },
+  "look-6": {
+   "found": []
+  },
+  "look-7": {
+   "found": [
+    {
+     "cell": "B3",
+     "formula": "=1+2",
+     "formulaLocal": "=1+2",
+     "text": "=1+2"
+    }
+   ]
+  },
+  "look-8": {
+   "found": [
+    {
+     "cell": "B3",
+     "formula": "=1+2",
+     "formulaLocal": "=1+2",
+     "text": "=1+2"
+    }
+   ]
+  },
+  "look-9": {
+   "found": [
+    {
+     "cell": "B4",
+     "formula": "0.770833333333333",
+     "formulaLocal": "0.770833333333333",
+     "text": "18:30"
+    }
+   ]
+  },
+  "look-10": {
+   "found": []
+  },
+  "look-11": {
+   "found": [
+    {
+     "cell": "B4",
+     "formula": "0.770833333333333",
+     "formulaLocal": "0.770833333333333",
+     "text": "18:30"
+    }
+   ]
+  },
+  "look-12": {
+   "found": [
+    {
+     "cell": "B4",
+     "formula": "0.770833333333333",
+     "formulaLocal": "0.770833333333333",
+     "text": "18:30"
+    }
+   ]
+  },
+  "look-13": {
+   "found": [
+    {
+     "cell": "B5",
+     "formula": "0.125",
+     "formulaLocal": "0.125",
+     "text": "12.5%"
+    }
+   ]
+  },
+  "look-14": {
+   "found": [
+    {
+     "cell": "B5",
+     "formula": "0.125",
+     "formulaLocal": "0.125",
+     "text": "12.5%"
+    }
+   ]
+  },
+  "look-15": {
+   "found": []
+  },
+  "look-16": {
+   "found": []
+  },
+  "look-17": {
+   "found": []
+  },
+  "look-18": {
+   "found": []
+  },
+  "look-19": {
+   "found": []
+  },
+  "look-20": {
+   "found": [
+    {
+     "cell": "B6",
+     "formula": "-5",
+     "formulaLocal": "-5",
+     "text": "(5)"
+    }
+   ]
+  },
+  "look-21": {
+   "found": [
+    {
+     "cell": "B6",
+     "formula": "-5",
+     "formulaLocal": "-5",
+     "text": "(5)"
+    }
+   ]
+  },
+  "look-22": {
+   "found": []
+  },
+  "look-23": {
+   "found": [
+    {
+     "cell": "B10",
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "text": "1.50"
+    }
+   ]
+  },
+  "look-24": {
+   "found": [
+    {
+     "cell": "B10",
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "text": "1.50"
+    }
+   ]
+  },
+  "look-25": {
+   "found": []
+  },
+  "look-26": {
+   "found": []
+  },
+  "look-27": {
+   "found": []
+  },
+  "look-28": {
+   "found": [
+    {
+     "cell": "B10",
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "text": "1.50"
+    }
+   ]
+  },
+  "look-29": {
+   "found": []
+  },
+  "look-30": {
+   "found": []
+  },
+  "look-31": {
+   "found": [
+    {
+     "cell": "B11",
+     "formula": "=S!B10*2",
+     "formulaLocal": "=S!B10*2",
+     "text": "3"
+    }
+   ]
+  },
+  "look-32": {
+   "found": []
+  },
+  "look-33": {
+   "found": []
+  },
+  "look-34": {
+   "found": [
+    {
+     "cell": "B13",
+     "formula": "=\"abc\"&\"def\"",
+     "formulaLocal": "=\"abc\"&\"def\"",
+     "text": "abcdef"
+    }
+   ]
+  },
+  "look-35": {
+   "found": [
+    {
+     "cell": "B12",
+     "formula": "a\nb",
+     "formulaLocal": "a\nb",
+     "text": "a\nb"
+    }
+   ]
+  },
+  "look-36": {
+   "found": [
+    {
+     "cell": "B12",
+     "formula": "a\nb",
+     "formulaLocal": "a\nb",
+     "text": "a\nb"
+    }
+   ]
+  },
+  "sigma-1": {
+   "found": [
+    {
+     "cell": "B7",
+     "formula": "ΟΣ",
+     "formulaLocal": "ΟΣ",
+     "text": "ΟΣ"
+    },
+    {
+     "cell": "B8",
+     "formula": "ος",
+     "formulaLocal": "ος",
+     "text": "ος"
+    },
+    {
+     "cell": "B9",
+     "formula": "οσ",
+     "formulaLocal": "οσ",
+     "text": "οσ"
+    }
+   ]
+  },
+  "sigma-2": {
+   "found": [
+    {
+     "cell": "B7",
+     "formula": "ΟΣ",
+     "formulaLocal": "ΟΣ",
+     "text": "ΟΣ"
+    },
+    {
+     "cell": "B8",
+     "formula": "ος",
+     "formulaLocal": "ος",
+     "text": "ος"
+    },
+    {
+     "cell": "B9",
+     "formula": "οσ",
+     "formulaLocal": "οσ",
+     "text": "οσ"
+    }
+   ]
+  },
+  "sigma-3": {
+   "found": [
+    {
+     "cell": "B7",
+     "formula": "ΟΣ",
+     "formulaLocal": "ΟΣ",
+     "text": "ΟΣ"
+    }
+   ]
+  },
+  "sigma-4": {
+   "found": [
+    {
+     "cell": "B7",
+     "formula": "ΟΣ",
+     "formulaLocal": "ΟΣ",
+     "text": "ΟΣ"
+    },
+    {
+     "cell": "B8",
+     "formula": "ος",
+     "formulaLocal": "ος",
+     "text": "ος"
+    },
+    {
+     "cell": "B9",
+     "formula": "οσ",
+     "formulaLocal": "οσ",
+     "text": "οσ"
+    }
+   ]
+  }
+ }
+}
