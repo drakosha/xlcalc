@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.22.2 (2026-10-12)
+
+Internal release; not published to npm. A window's formula text over links to other workbooks as fast as without them. The synthetic book's values and hashes are as in 0.22.1.
+
+Fixed:
+
+- `getViewport` with `formulaLocal` or `editText`, `toLocal`, `toInvariant`, `validateFormula`, `validateLocalFormula`, `validateNames`, `parseEntry` and the text-entry calls of a session checked every stored value of every linked book in their options, once for each formula: a window of 600 formulas over 100 links of 1,000 stored cells took 8.7 s, over 300 links of 5,000 cells 76 s (0.22.0). Their options now check the links' targets, sheets and names alone, which is all they read; a book's stored values are checked once, as it opens. The same window takes 0.03 s.
+
 ## 0.22.1 (2026-10-12)
 
 Internal release; not published to npm. The ribbon's Number Format box in ru-RU as Excel for Windows shows it. The synthetic book's values and hashes are as in 0.22.0.
