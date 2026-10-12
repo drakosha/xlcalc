@@ -22,6 +22,14 @@ export interface ReadFormula {
   found: Found[]
 }
 
+/** How a formula of the file is read. */
+export interface FormulaOptions {
+  /** A name's formula, which may be a union of references without parentheses. */
+  union?: boolean
+  /** The numbers `[N]` of the book's links to other workbooks (`readLinks`): a formula the engine parses that refers to these alone is in it. */
+  links?: ReadonlySet<number>
+}
+
 /** Reports what the engine cannot take of a formula read, at `where`: a shared formula's copies report their master's. */
 export function reportFormula(f: ReadFormula, issues: Issues, where: Where): void {
   for (const x of f.found) issues.add(...FOUND[x], where)
@@ -29,19 +37,22 @@ export function reportFormula(f: ReadFormula, issues: Issues, where: Where): voi
 }
 
 /** A formula of a file in the engine's spelling, parsed when the engine parses it, with nothing reported yet. */
-export function parseFormula(text: string, union = false): ReadFormula {
-  const c = fromFile(text)
+export function parseFormula(text: string, opts: FormulaOptions = {}): ReadFormula {
+  const { links, ...c } = fromFile(text)
+  let ast: Ast
   try {
-    return { ...c, ast: parse(c.formula, { union }) }
+    ast = parse(c.formula, { union: opts.union })
   } catch (e) {
     if (!(e instanceof FormulaError)) throw e
     return c
   }
+  const linked = links?.every((n) => opts.links?.has(n))
+  return { ...c, ast, ...(linked ? { found: c.found.filter((x) => x !== 'externalLink') } : {}) }
 }
 
-/** A formula read at `where`; `union` for a name's formula, which may be a union of references without parentheses. */
-export function readFormula(text: string, issues: Issues, where: Where, union = false): ReadFormula {
-  const f = parseFormula(text, union)
+/** A formula read at `where`. */
+export function readFormula(text: string, issues: Issues, where: Where, opts?: FormulaOptions): ReadFormula {
+  const f = parseFormula(text, opts)
   reportFormula(f, issues, where)
   return f
 }

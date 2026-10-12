@@ -13,7 +13,7 @@ import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { X14_CF } from '../read/conditional.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { fileTree } from './sheet.js'
+import { fileTree, type FileNames } from './sheet.js'
 import type { StyleWriter } from './styles.js'
 import { rgb } from './xml.js'
 
@@ -25,12 +25,9 @@ const BAR_ID = '{B025F937-C7B1-47D3-B67F-A62EFF666E3E}'
 const NEW_SETS = new Set(['3Stars', '3Triangles', '5Boxes'])
 const TEXT_OPERATOR: Record<string, string> = { containsText: 'containsText', notContainsText: 'notContains', beginsWith: 'beginsWith', endsWith: 'endsWith' }
 
-export interface ConditionalContext {
+export interface ConditionalContext extends FileNames {
   styles: StyleWriter
   issues: Issues
-  /** Upper-case names of the book's sheets. */
-  sheets: Set<string>
-  tables: { name: string; columns: string[] }[]
 }
 
 export interface ConditionalWritten {
@@ -44,7 +41,7 @@ const hex = (n: number, w: number) => n.toString(16).toUpperCase().padStart(w, '
 
 /** A formula as a file holds it, and whether it names another sheet; null when the file cannot hold it. */
 function fileFormula(text: string, own: string, ctx: ConditionalContext): { text: string; other: boolean } | null {
-  const ast = fileTree(text, ctx.sheets, ctx.tables)
+  const ast = fileTree(text, ctx)
   if (!ast) return null
   let other = false
   walk(ast, (n) => {

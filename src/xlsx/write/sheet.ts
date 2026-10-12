@@ -5,15 +5,15 @@
  * (`CellInput.array`) is written over its area without the metadata, as Excel writes one entered with
  * Ctrl+Shift+Enter, and a formula in a table's totals row as a plain one, the only kind Excel takes there. Values
  * come from the result: a formula's value, and the cells its array spilled into. A formula the file cannot hold (it
- * does not parse, or names a sheet, a table or a column the book does not have) is written as its value. A filtered
- * sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row, else on an autofilter of
- * its own over its cells, with Excel's filter mark. Every cell is written with the whole look it shows (its own style
- * and format over its row's or column's, `layout/lines.ts`), as Excel shows a stored cell by its own cell format alone,
- * and so are the empty cells where a row crosses a column that Excel would otherwise show by the row's whole format.
- * Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows and columns
- * carry their outline levels.
+ * does not parse, or names a sheet, a table, a column or a link to another workbook the book does not have) is written
+ * as its value. A filtered sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row,
+ * else on an autofilter of its own over its cells, with Excel's filter mark. Every cell is written with the whole look it
+ * shows (its own style and format over its row's or column's, `layout/lines.ts`), as Excel shows a stored cell by its own
+ * cell format alone, and so are the empty cells where a row crosses a column that Excel would otherwise show by the row's
+ * whole format. Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows
+ * and columns carry their outline levels.
  */
-import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
+import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, ExternalBook, RowInput, SheetInput } from '../../contract.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
@@ -22,6 +22,7 @@ import { ERROR_TEXT, FormulaError, type Ast } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { sheetKey, walk } from '../../syntax/print.js'
 import { bindTables } from '../../syntax/check.js'
+import { bindLinks } from '../../syntax/links.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
@@ -44,20 +45,27 @@ const DEFAULT_WIDTH = '8.83203125'
  */
 export const KEEP_ALL = '<filterColumn colId="0"><customFilters><customFilter val=""/><customFilter operator="notEqual" val=""/></customFilters></filterColumn>'
 
-export interface SheetContext {
+/** What a formula of the book may name in its file. */
+export interface FileNames {
+  /** Upper-case names (`sheetKey`) of the book's sheets. */
+  sheets: Set<string>
+  /** The book's tables with their columns. */
+  tables: { name: string; columns: string[] }[]
+  /** The book's links to other workbooks, which `[1]Sheet1!A1` names. */
+  externalBooks?: ExternalBook[]
+}
+
+export interface SheetContext extends FileNames {
   styles: StyleWriter
   /** The index of a string in the shared strings table. */
   string(s: string): number
   issues: Issues
-  /** Upper-case names (`sheetKey`) of the book's sheets. */
-  sheets: Set<string>
   mode: 'formulas' | 'values'
   /** The sheet's cells of the result, when the file stores values of formulas. */
   result?: Record<string, ResultCell>
   /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!. */
   richError(code: 'SPILL' | 'CALC'): number
-  /** The book's tables with their columns, and the one holding a cell of this sheet. */
-  tables: { name: string; columns: string[] }[]
+  /** The book's table holding a cell of this sheet. */
   tableAt(addr: string): string | undefined
   /** A cell of a table's totals row, where Excel takes only a formula of the old kind (no array formula). */
   totalsAt(addr: string): boolean
@@ -101,19 +109,29 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
     const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, where)
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
-  if (v.error === 'CYCLE') {
-    ctx.issues.add('errorValue', { key: 'cycleZero' }, where)
-    return { t: '', v: '0' }
-  }
-  if (v.error === 'SPILL' || v.error === 'CALC') return { t: ` t="e" vm="${ctx.richError(v.error)}"`, v: '#VALUE!' }
-  return { t: ' t="e"', v: v.error === 'ERROR' ? '#NULL!' : ERROR_TEXT[v.error] }
+  return errorXml(v.error, () => ctx.issues.add('errorValue', { key: 'cycleZero' }, where), ctx.richError)
 }
 
 /**
- * The formula's tree when the file can hold it: it parses, names only the book's sheets, and its structured references
- * name the book's tables and columns (a file names a reference's table always: `[@Qty]` is written `Sales[[#This Row],[Qty]]`).
+ * An error as a file's cell stores it, its attributes and the content of `<v>`: #SPILL! and #CALC! as `#VALUE!`, with a
+ * rich value (`vm`) that names them where `richError` gives one, as Excel 365 stores them in a sheet; the engine's
+ * #CYCLE! as 0, as Excel stores a circular reference, which `cycle` reports.
  */
-export function fileTree(formula: string, sheets: Set<string>, tables: { name: string; columns: string[] }[], enclosing?: string): Ast | null {
+export function errorXml(code: ErrorCode, cycle: () => void, richError?: SheetContext['richError']): { t: string; v: string } {
+  if (code === 'CYCLE') {
+    cycle()
+    return { t: '', v: '0' }
+  }
+  if (code === 'SPILL' || code === 'CALC') return { t: ` t="e"${richError ? ` vm="${richError(code)}"` : ''}`, v: '#VALUE!' }
+  return { t: ' t="e"', v: code === 'ERROR' ? '#NULL!' : ERROR_TEXT[code] }
+}
+
+/**
+ * The formula's tree when the file can hold it: it parses, names only the book's sheets, its structured references name
+ * the book's tables and columns (a file names a reference's table always: `[@Qty]` is written `Sales[[#This Row],[Qty]]`),
+ * and its references to other workbooks the book's links and their sheets.
+ */
+export function fileTree(formula: string, names: FileNames, enclosing?: string): Ast | null {
   let ast: Ast
   try {
     ast = parse(formula)
@@ -121,16 +139,20 @@ export function fileTree(formula: string, sheets: Set<string>, tables: { name: s
     if (e instanceof FormulaError) return null
     throw e
   }
-  const bound = bindTables(ast, formula, { tables, ...(enclosing ? { table: enclosing } : {}) })
+  const bound = bindTables(ast, formula, { tables: names.tables, ...(enclosing ? { table: enclosing } : {}) })
   if (!bound.ok) return null
   ast = bound.ast
   let ok = true
-  const known = (sheet: string | null | undefined) => sheet == null || sheets.has(sheetKey(sheet))
+  let linked = false
+  const known = (sheet: string | null | undefined) => sheet == null || names.sheets.has(sheetKey(sheet))
   walk(ast, (n) => {
-    // a reference to another workbook is not written yet: its link is not in the file
-    if (n.k === 'xref' || n.k === 'xname' || (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet))) ok = false
+    // a reference into another workbook, one Excel lost too (`[1]Sheet1!#REF!`, of any sheet of its link)
+    if (n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined)) linked = true
+    else if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
   })
-  return ok ? ast : null
+  if (!ok || !linked) return ok ? ast : null
+  const links = bindLinks(ast, names.externalBooks, [...names.sheets])
+  return links.ok ? links.ast : null
 }
 
 export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext): SheetWritten {
@@ -178,7 +200,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     }
     // a result without the formula's value (`values: 'preserve'`)
     if (result && !res) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
-    const tree = mode === 'formulas' ? fileTree(c.formula, ctx.sheets, ctx.tables, ctx.tableAt(addr)) : null
+    const tree = mode === 'formulas' ? fileTree(c.formula, ctx, ctx.tableAt(addr)) : null
     if (mode === 'formulas' && !tree) issues.add('formula', { key: 'formulaAsValue' }, where(addr))
     if (!tree) {
       put(addr, cellXml(addr, c, res?.value))
@@ -249,7 +271,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const urls = new Map<string, string>()
   const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
   const pane = paneXml(sheet.frozen)
-  const cond = conditionalXml(sheet, index, { styles, issues, sheets: ctx.sheets, tables: ctx.tables })
+  const names: FileNames = { sheets: ctx.sheets, tables: ctx.tables, externalBooks: ctx.externalBooks }
+  const cond = conditionalXml(sheet, index, { styles, issues, ...names })
   // the outline: where its summaries are, and its deepest levels, which Excel reserves room for
   const o = sheet.outline
   const outlinePr = o && (o.summaryBelow !== undefined || o.summaryRight !== undefined) ? `<outlinePr${o.summaryBelow !== undefined ? ` summaryBelow="${o.summaryBelow ? 1 : 0}"` : ''}${o.summaryRight !== undefined ? ` summaryRight="${o.summaryRight ? 1 : 0}"` : ''}/>` : ''
@@ -268,7 +291,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
     cond.main +
-    validationsXml(sheet.validations, { sheet: sheet.name, sheets: ctx.sheets, tables: ctx.tables, issues }) +
+    validationsXml(sheet.validations, { sheet: sheet.name, ...names, issues }) +
     hyperlinks +
     (drawing ? `<legacyDrawing r:id="${drawing}"/>` : '') +
     (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +

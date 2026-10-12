@@ -15,7 +15,7 @@ const { data } = await writeXlsx({ book, result })
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` (a Node `Buffer` is one, as `readFile` gives it), another view of bytes or an `ArrayBuffer` (`await file.arrayBuffer()` in a browser), and resolves to three things.
 
-- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them) and whether they are hidden, columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system and iterative calculation.
+- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them) and whether they are hidden, columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system, iterative calculation and the links to other workbooks with the values stored of them ([Links to other workbooks](#links-to-other-workbooks)).
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order, in the shape of a result: `cached.sheets[0].cells.B1.value` as `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range `spillOf`, the formula's address, as in a result. These are what Excel computed when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`).
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue. Each issue has a code for programs and a message for people, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
@@ -151,12 +151,12 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | `richText` | formatted runs of text |
 | `userFunction` | a user-defined function (`_xludf.`) |
 | `table` | a table left out (over another table or a merged area, its name taken), a header cell given its column's name, a structured reference without a table name |
-| `externalLink` | links to other workbooks, and formulas that use them |
+| `externalLink` | a DDE or OLE link, or a link whose part is missing, kept as a book without sheets; a formula over a link the file does not hold or over such a link |
 | `formula` | a formula the engine does not parse, kept as written |
 | `errorConstant` | an error stored as a value, read as a formula of it |
 | `errorValue` | an error the model has no code for, such as `#GETTING_DATA` |
 | `dataTable` | a what-if data table, read as its stored values |
-| `name` | built-in names, hidden names, names of a sheet left out |
+| `name` | built-in names, hidden names, names of a sheet left out; a linked book's name of a sheet it does not have |
 | `calculation` | the manual mode, automatic but for data tables, precision as displayed, an iteration count or change out of range |
 | `style` | pattern and gradient fills, diagonal borders, rotation, shrinking, sub- and superscript, protection |
 | `defaultFont` | a default font other than Calibri 11 |
@@ -165,7 +165,7 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | `hidden` | a file whose every worksheet is hidden (beside chart sheets): its first worksheet is read as visible |
 | `autoFilter` | an autofilter's range, criteria and sort, a table's criteria, an advanced filter |
 | `sheetKind` | chart, dialog and macro sheets, left out |
-| `cellMetadata` | a rich value in a cell, such as a data type or a picture |
+| `cellMetadata` | a rich value in a cell, such as a data type or a picture, or among a link's stored values |
 | `comment` | a thread of comments, read as a note; a note of runs with different looks, read as its plain text; a note shown all the time, read as one shown on hover |
 | `hyperlink` | a hyperlink whose address is no external relationship of the sheet; one over more than 4,096 cells, read on its cells that hold something |
 | `frozenPanes` | split panes that are not frozen; panes frozen over a sheet scrolled down or right, read from the first row and column |
@@ -253,12 +253,12 @@ A filtered sheet is written so that Excel takes it as filtered. Its first table 
 | code | what happens |
 |---|---|
 | `meta` | a cell's `meta` is left out |
-| `errorValue` | `#CYCLE!` is written as 0, as Excel stores a circular reference |
+| `errorValue` | `#CYCLE!` is written as 0, as Excel stores a circular reference, among a link's stored values too |
 | `textLength` | text over 32,767 characters is cut, a note's too, a hyperlink's tooltip over 255, a rule's titles over 32, its input message over 255 and its alert's text over 225 |
 | `dataValidation` | a rule whose formula does not parse, or names a sheet, a table or a column the book does not have, is left out |
-| `formula` | a formula that does not parse, or names a sheet, a table or a column the book does not have, is written as its value |
+| `formula` | a formula that does not parse, or names a sheet, a table, a column or a link to another workbook the book does not have, is written as its value |
 | `noCachedValues` | the file stores no values of formulas, as no result was given, or a formula has no value in the result (`values: 'preserve'`) |
-| `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table or a column the book does not have, is left out |
+| `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table, a column or a link the book does not have, is left out |
 | `autoFilter` | the filter mode of a sheet whose tables have no header row and meet its cells is left out |
 | `conditionalFormat` | a rule with a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is left out |
 
@@ -403,6 +403,75 @@ A row or column's `outlineLevel` and `collapsed` are `<row>`'s and `<col>`'s att
 
 The valid sets of `bench/coverage/valid/` were written by `writeXlsx` and opened by Excel for Mac and for Windows: every book loaded, and Excel read the rules, each cell's check and the outlines the engine holds but for texts cut to Excel's limits. Rules and outlines Excel made itself, and the books Excel saved after structure operations, read back as Excel read them ([docs/validation.md](validation.md#how-it-was-checked)).
 
+## Links to other workbooks
+
+A formula may read another workbook: `[1]Sheet1!A1+1`, `SUM('[1]My Sheet'!A1:B9)`, `[1]!Rate`. Excel keeps in the file the values of the other book it read last, and computes such formulas from them when it opens the file without updating its links. The reader gives these links as the book's `externalBooks`, so the engine computes the formulas as Excel does, and the writer writes them back, so a file saved from a grid keeps its links.
+
+```js
+externalBooks: [
+  {
+    target: 'Book2.xlsx',
+    sheets: [
+      { name: 'Sheet1', cells: { A1: 5, A2: 'east', A3: true, A4: { error: 'NA' }, A5: null, A6: '' } },
+      { name: 'Rates', cells: { B1: 0.2 }, refreshError: true },
+      { name: 'Old' },
+    ],
+    names: [{ name: 'Rate', ref: 'Rates!$B$1' }, { name: 'Local', ref: 'Sheet1!$C$2', sheet: 0 }],
+  },
+]
+```
+
+Excel shows a cell the link holds as its stored value, `null` as an empty cell and `''` as empty text. A cell the link does not hold is empty, or `#REF!` on a sheet with `refreshError`, the mark Excel puts on every sheet of a link when a formula over it is entered. Every cell of a sheet without `cells` is `#REF!`. [docs/links.md](links.md) has how the engine computes and shows such formulas.
+
+### Reading
+
+The first link the workbook lists (`<externalReferences>`) is `[1]`, the second `[2]`, whatever its part is named.
+
+| in the file | in the book |
+|---|---|
+| the target of the link's own relationship, of any kind (`xlPathMissing` too): `Book2.xlsx`, `../data/Book3.xlsx`, `/xlcalc/work/Book2.xlsx`, `file:///C:/data/Book4.xlsx`, `https://example.com/Book6.xlsx` | `target`, as the file holds it (`Sub%20Folder/Book7.xlsx` keeps its `%20`) |
+| Excel's other addresses of the book (`xxl21:alternateUrls`) | left out: the target stays the relationship's |
+| `<sheetName val="Sheet1"/>` | a sheet of `sheets`, in the file's order |
+| `<definedName name="Local" refersTo="=Sheet1!$C$2" sheetId="0"/>` | a name of `names`: `ref` without `=`, `sheet` the index of the sheet whose own name it is |
+| `<sheetData sheetId="0" refreshError="1">` | that sheet's `cells` by address, and `refreshError: true` |
+| a sheet without `<sheetData>` | a sheet without `cells` |
+| `<cell r="A1"><v>5</v></cell>` (also `t="n"`) | `5` |
+| `t="str"` (and `t="s"` or `t="inlineStr"`, which another writer may write) | text; `<v/>` is empty text `''`, as Excel writes the value of `=""` |
+| `t="b"`, `t="e"` | a boolean, an error (`{ error: 'NA' }`) |
+| `<cell r="A5"/>` | `null`, a cell stored empty |
+
+A link to another program's data (DDE) or to an object (OLE), and a link whose part is missing, are not in the model. Each keeps its number as a book with an empty target and no sheets, so the links after it keep theirs, and each is reported (`externalLink`). A stored value with a rich value (`vm`, a data type or #SPILL! that Excel 365 stores as `#VALUE!`) is read as the value the cell stores, which is what Excel shows, and reported.
+
+Formulas and names over links come as the file writes them: `[1]Sheet1!A1+1`, `'[1]My Sheet'!A1`, `[1]!Rate` (a name of the book), `[1]Sheet1!Local` (a name of its sheet), `[1]Sheet1!#REF!` (a reference into it that Excel lost); this book's name `Ext` over `[1]Sheet1!$A$2` keeps its reference. A shared formula's copies move their relative references into the link's sheet, as a paste does: `[1]Sheet1!A1` copied one row down is `[1]Sheet1!A2`. Copies the file holds are no edits, so they put no mark on the link. A formula over a link the file does not hold (`[3]Sheet1!A1` in a file of two links), or over a DDE or OLE link, is read as written and reported.
+
+### Writing
+
+Each link of `externalBooks` is written as Excel writes it: a part `xl/externalLinks/externalLinkN.xml` with the sheets' names, the names (`refersTo` with its `=`) and the stored values; its relationship to the other book, external, with the target as the book holds it; the workbook's `<externalReferences>` after its sheets. A number is written without a type, text as `t="str"` (`''` as `<v></v>`), a boolean as `t="b"`, an error as `t="e"`, `null` as `<cell r="A5"/>`, the mark as `refreshError="1"`, and a sheet without `cells` gets no data. A book without links is written as before.
+
+A formula or a name over a link is written in the file's spelling, the sheet in quotes only where its name needs them: `'[1]Sheet1'!A1` of the book is `[1]Sheet1!A1` in the file, `'[1]My Sheet'!A1` stays quoted, `[1]!Rate`, `[1]Sheet1!Local` and `[1]Sheet1!#REF!` as they are. A reference by the other book's file name, as a person types it (`[Book2.xlsx]Sheet1!A1`), is written with its link's number. A formula over a link or a link's sheet the book does not have is written as its value, and a name over one is left out; both are reported.
+
+### What is lost
+
+- Excel's other addresses of a book (`xxl21:alternateUrls`): the writer writes the target alone, which Excel opens.
+- A stored value's rich value (`vm`).
+- #SPILL! and #CALC! among a link's values, written as `#VALUE!`. Excel keeps no other there: it repairs a file that holds their text, and shows and saves `#VALUE!` for them stored with a rich value, as a sheet's cells store them.
+- The mark of a sheet without `cells`, which changes nothing: every cell of such a sheet is `#REF!` with the mark or without.
+- A DDE or OLE link, but for its number.
+
+Excel itself leaves out, when it saves, the values of the other book's cells no formula reads and a link no formula refers to, numbering the links after it anew in the formulas.
+
+### How it was checked
+
+`npx tsx bench/coverage/run.ts links <set>` sends each case of `bench/coverage/links/<set>.ts` to Excel for Mac, which opens the file without updating its links (as a person who answers "Don't Update" does), reads the case's cells, takes its edits, computes the book fully, reads the cells again and saves the book; `npx tsx bench/windows/run.ts links <set>` does the same in Excel for Windows. The sets `first`, `basics-held`, `edits-held`, `refresh-held` and `functions-held` are files put together by hand around what `writeXlsx` writes, so they do not depend on the writer; the set `written` is files `writeXlsx` writes from a book with `externalBooks`.
+
+| set | cases | what |
+|---|---|---|
+| `written` | 7 | the cases of `basics-held` but one (a link with every kind of stored value, its names and this book's names over it, lookups, a dynamic array, fill downs and a copy that mark the link; marked data and a sheet without data; two links; the forms of a target); cells stored empty and empty text, with the mark and without; #SPILL! and #CALC! stored; a link without sheets and with an empty target between two others |
+
+The values of `written` were predicted and committed before Excel ran it. In the first run Excel for Mac opened six of the seven files and showed every predicted value, the same as for the files made by hand; it repaired the file whose link stored #SPILL! and #CALC! as their text. Written as `#VALUE!` with their rich values, the file opened and showed `#VALUE!` for both, the alternative the case gave, and Excel saved them as plain `#VALUE!`; the writer now writes that. In the last run both Excels opened all seven files and showed 72 of the 76 predicted values, the four others as their alternatives. Each case of `basics-held` read and computed as its file made by hand, before the edits and after, on both platforms, with the same formulas and shown text. Excel for Windows answered as Excel for Mac in every read.
+
+`test/xlsx-links-excel.test.ts` checks this without Excel, and that the reader reads every link of the 48 files both Excels saved in the six sets: the targets each wrote (Excel for Mac keeps a relative target, or writes the absolute path it found beside the relative one in `alternateUrls`; Excel for Windows writes an absolute path without the drive), the marks and the stored values Excel kept, and no link reported as one the model does not have. Every book of `written` reads back from its file with the same links, names, formulas by their canonical text and input hash. `test/xlsx-links.test.ts` reads links made by hand in every form above and writes the parts as Excel writes them.
+
 ## Speed
 
 Measured on an Apple Silicon Mac with `test/fixtures/xlsx-bench-child.ts`, the median of three runs. The ranges are over several runs on a busy machine.
@@ -420,10 +489,10 @@ A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx v
 
 - `zip/` reads and writes the archive. Inflating and deflating go through `DecompressionStream` and `CompressionStream`.
 - `xml/` holds the text layer: entities, Excel's escapes, and elements found by regular expressions.
-- `read/` reads the package, the workbook, the sheets and their cells, the cell metadata, the notes, threads, hyperlinks and frozen panes (`parts.ts`), conditional formats (`conditional.ts`) and data validation (`validation.ts`); `refs.ts` reads the references of a rule's cells and a note's cell as Excel reads them.
+- `read/` reads the package, the workbook, the sheets and their cells, the cell metadata, the notes, threads, hyperlinks and frozen panes (`parts.ts`), conditional formats (`conditional.ts`), data validation (`validation.ts`) and the links to other workbooks (`links.ts`); `refs.ts` reads the references of a rule's cells and a note's cell as Excel reads them.
 - `styles/` turns styles.xml into the style table and the differential formats (`dxf.ts`), whose fills one function reads (`readFill`), and holds the codes of the East Asian built-in formats, the codes the writer stores by number, and the colours.
 - `formulas/` changes formulas between the file's spelling and the engine's. `prefixes.ts` is generated by `bench/coverage/xlsx/generate.ts`, so the reader needs neither the harness nor the engine's function definitions. Formulas of the old kind go through `fromLegacy` (`src/legacy/`), whose table of argument classes needs no function definitions either.
-- `write/` writes the workbook, the sheets, styles.xml with its differential formats, the notes, hyperlinks and frozen panes (`parts.ts`), conditional formats (`conditional.ts`) and data validation (`validation.ts`).
+- `write/` writes the workbook, the sheets, styles.xml with its differential formats, the notes, hyperlinks and frozen panes (`parts.ts`), conditional formats (`conditional.ts`), data validation (`validation.ts`) and the links to other workbooks (`links.ts`).
 
 Reading uses the parser and copy and paste of the structure operations. It does not load the engine's functions or evaluator, and a minified browser bundle of the subpath is about 175 KB. The issues' messages are kept as a key and parameters (`src/xlsx/issues.ts`) and written in a locale when listed: a locale's text is in its file beside its other messages (`src/locales/ru-RU.ts`), the English one in the subpath (`src/xlsx/messages.ts`), so that `compute`, the root and `xlcalc/text` do not carry it.
 

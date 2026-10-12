@@ -10,7 +10,9 @@ import type { Locale } from '../locale/types.js'
  *   a visible one, or a name the writer left out.
  * - `table`: a table the model cannot hold (over another table or a merged area, its name taken), left out; a header
  *   cell that does not hold its column's name as text, given it; a structured reference without a table name.
- * - `externalLink`: links to other workbooks, and formulas that reference them (`[1]Sheet!A1`).
+ * - `externalLink`: a link that is no workbook's (DDE, OLE) or whose part is missing, kept as a book without sheets; a
+ *   formula that refers to another workbook the links do not hold (`[3]Sheet!A1` in a file of two), or that the engine
+ *   does not parse.
  * - `userFunction`: a call of a function the file marks as user-defined (`_xludf.`), a macro or add-in function.
  * - `formula`: a formula the engine does not parse, read as written (its cell computes to an error), or a formula
  *   the writer could not write (its value is written instead).

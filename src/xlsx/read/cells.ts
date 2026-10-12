@@ -57,7 +57,7 @@ export interface SheetCells {
 }
 
 /** The model's codes of the errors a cell may hold. */
-const ERRORS: Record<string, ErrorCode> = Object.fromEntries(CELL_ERRORS.map((text) => [text, ERROR_CODE[text]]))
+export const ERRORS: Record<string, ErrorCode> = Object.fromEntries(CELL_ERRORS.map((text) => [text, ERROR_CODE[text]]))
 
 /** Errors the engine reads in a formula: what an error stored as a cell's value is read as. */
 const LITERAL = new Set(FORMULA_ERRORS)

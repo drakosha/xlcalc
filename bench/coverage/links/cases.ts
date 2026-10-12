@@ -3,8 +3,9 @@
  * stores of those books in the file itself (`xl/externalLinks/externalLinkN.xml`: their sheets' names, the values of
  * the cells the formulas read, their defined names). `writeXlsx` writes the book's own cells, then the formulas with
  * links, the link parts and this book's names over them are put in by hand (`linkFile`), as Excel writes them, so the
- * files do not depend on the writer. `npx tsx bench/coverage/run.ts links <set>` has Excel open each file without
- * updating its links, as a person who answers "Don't Update" does, and read what the cells show.
+ * files do not depend on the writer; a case marked `written` is the file `writeXlsx` writes itself from the case's book
+ * with its links (`writtenBook`), to check the writer. `npx tsx bench/coverage/run.ts links <set>` has Excel open each
+ * file without updating its links, as a person who answers "Don't Update" does, and read what the cells show.
  */
 import type { BookInput, CellValue, ExternalBook, RangeRef, SheetInput } from '../../../src/contract.js'
 import { fromFile } from '../../../src/xlsx/formulas/from-file.js'
@@ -23,10 +24,11 @@ export interface LinkedBook {
   /** The link's target as the file holds it (`externalLinkN.xml.rels`): a file name, a relative or an absolute path. */
   target: string
   /**
-   * Its sheets in order, with the values of the cells Excel stored; `refreshError` marks the sheet's data as Excel marks
-   * a failed update, `data: false` leaves its data out (a sheet the link names but holds no values of).
+   * Its sheets in order, with the values of the cells Excel stored (null for a cell stored empty, `<cell r="A4"/>`);
+   * `refreshError` marks the sheet's data as Excel marks a failed update, `data: false` leaves its data out (a sheet the
+   * link names but holds no values of).
    */
-  sheets: { name: string; cells?: Record<string, CachedValue>; refreshError?: true; data?: false }[]
+  sheets: { name: string; cells?: Record<string, CachedValue | null>; refreshError?: true; data?: false }[]
   /** Its defined names: `ref` as the file holds it (`=Sheet1!$B$1`), `sheet` the index of a sheet's own name. */
   names?: { name: string; ref: string; sheet?: number }[]
 }
@@ -46,6 +48,8 @@ export interface LinksCase {
   read: RangeRef[]
   /** Operations Excel takes after the first read, before the full calculation and the second read. */
   ops?: LinksOp[]
+  /** The file is the one `writeXlsx` writes of the case's book with its links (`writtenBook`), not one put together by hand. */
+  written?: true
   /**
    * The values predicted before Excel ran the case, by `Sheet!A1`, for the second read: the rule over the stored values,
    * and where the rule was not known the other answers thought possible (`alternatives`).
@@ -91,7 +95,8 @@ const XML_HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
 
 
 /** A cached cell as `externalLinkN.xml` holds it. */
-function cachedCell(addr: string, v: CachedValue): string {
+function cachedCell(addr: string, v: CachedValue | null): string {
+  if (v === null) return `<cell r="${addr}"/>`
   if (typeof v === 'number') return `<cell r="${addr}"><v>${v}</v></cell>`
   if (typeof v === 'boolean') return `<cell r="${addr}" t="b"><v>${v ? 1 : 0}</v></cell>`
   if (typeof v === 'string') return `<cell r="${addr}" t="str"><v>${escapeText(v)}</v></cell>`
@@ -144,6 +149,7 @@ function caseSheets(c: LinksCase): SheetInput[] {
 
 /** The file of a case: the writer's book, then the formulas with links, the link parts and the names put in by hand. */
 export async function linkFile(c: LinksCase): Promise<Uint8Array> {
+  if (c.written) return (await writeXlsx({ book: writtenBook(c) })).data
   const sheets = caseSheets(c)
   const { data } = await writeXlsx({ book: { sheets } })
   const archive = openArchive(data)
@@ -186,4 +192,10 @@ export function linksBook(c: LinksCase): BookInput {
     ...(b.names?.length ? { names: b.names.map((n) => ({ name: n.name, ref: n.ref.replace(/^=/, ''), ...(n.sheet === undefined ? {} : { sheet: n.sheet }) })) } : {}),
   }))
   return { sheets, ...(c.names?.length ? { names: c.names.map((n) => ({ name: n.name, ref: fromFile(n.ref).formula, ...(n.sheet ? { scope: n.sheet } : {}) })) } : {}), externalBooks }
+}
+
+/** The book `writeXlsx` writes of a case marked `written`: the case's book with its links (`linksBook`) and the mirror sheets. */
+export function writtenBook(c: LinksCase): BookInput {
+  const book = linksBook(c)
+  return { ...book, sheets: [...book.sheets, ...caseSheets(c).slice(c.sheets.length)] }
 }

@@ -1,7 +1,8 @@
 /**
  * `readXlsx`: an xlsx file as a book. The workbook part is found through the package's relationships, its
  * sheets taken in the order the workbook lists them (not by part names), each linked to its part by id; shared
- * strings, styles, the theme and the cell metadata of dynamic arrays come from the workbook's relationships.
+ * strings, styles, the theme, the cell metadata of dynamic arrays and the links to other workbooks (`links.ts`) come from
+ * the workbook's relationships.
  * Everything the book cannot hold is reported in `issues`, nothing is dropped silently.
  */
 import { caseKey } from '../../collate.js'
@@ -20,6 +21,7 @@ import { decodeXml, readText } from '../xml/text.js'
 import { openArchive, type Archive } from '../zip/read.js'
 import { legacyConverter } from '../../legacy/convert.js'
 import { readFormula } from './formulas.js'
+import { readLinks } from './links.js'
 import { cellMetadata } from './metadata.js'
 import { relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
@@ -28,11 +30,10 @@ import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 
 /** Parts the workbook links to that the model has no place for, by relationship kind. */
-const LINKED: Record<string, ['macros' | 'pivotTable' | 'connection' | 'externalLink', XlsxMessage]> = {
+const LINKED: Record<string, ['macros' | 'pivotTable' | 'connection', XlsxMessage]> = {
   vbaProject: ['macros', { key: 'macros' }],
   pivotCacheDefinition: ['pivotTable', { key: 'pivotTables' }],
   connections: ['connection', { key: 'connections' }],
-  externalLink: ['externalLink', { key: 'externalLinks' }],
 }
 
 async function locale(archive: Archive, rels: Rel[], issues: Issues): Promise<string | undefined> {
@@ -58,7 +59,7 @@ interface SheetDecl {
 /** A sheet's `hidden` by its state in the file. */
 const STATES = new Map<string | undefined, true | 'very'>([...SHEET_STATES].map(([hidden, state]) => [state, hidden]))
 
-function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: Issues): NameInput[] {
+function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: Issues, links: Set<number>): NameInput[] {
   const out: NameInput[] = []
   for (const e of elements(element(xml, 'definedNames')?.body ?? '', 'definedName')) {
     const a = attributes(e.attrs)
@@ -74,7 +75,7 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
       issues.add('name', { key: 'nameOfSheetLeftOut' }, { name })
       continue
     }
-    const f = readFormula(readText(e.body ?? ''), issues, { name }, true)
+    const f = readFormula(readText(e.body ?? ''), issues, { name }, { union: true, links })
     if (flag(a.hidden)) issues.add('name', { key: 'hiddenName' }, { name })
     out.push(scope === undefined ? { name, ref: f.formula } : { name, ref: f.formula, scope })
   }
@@ -101,7 +102,6 @@ function calculation(xml: string, issues: Issues): BookInput['iteration'] {
 
 function workbookIssues(xml: string, rels: Rel[], issues: Issues) {
   if (has(xml, 'workbookProtection')) issues.add('protection', { key: 'workbookProtection' })
-  if (has(xml, 'externalReferences')) issues.add('externalLink', { key: 'externalLinks' })
   if (has(xml, 'pivotCaches') || has(xml, 'slicerCaches')) issues.add('pivotTable', { key: 'pivotTables' })
   for (const r of rels) {
     const linked = ownEntry(LINKED, r.kind)
@@ -161,8 +161,9 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   })
   const strings = readStrings(stringsXml)
   const meta = cellMetadata(metaXml, richValues, richStructures)
+  const links = await readLinks(archive, wb, rels, issues)
   const all = decls.filter((d) => d.kind === 'worksheet').map((d) => d.name)
-  const names = readNames(wb, decls, new Set(all), issues)
+  const names = readNames(wb, decls, new Set(all), issues, links.known)
   const legacy = legacyConverter(names)
   const sheets: SheetInput[] = []
   const cached: XlsxRead['cached'] = { sheets: [] }
@@ -186,7 +187,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     }
     const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas: { links: links.known } },
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)
@@ -216,6 +217,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   if (tag) book.locale = tag
   if (dateSystem === 1904) book.dateSystem = 1904
   if (iteration) book.iteration = iteration
+  if (links.books.length) book.externalBooks = links.books
   // the cells are valid as the reader builds them: the rest of the book is checked (the cells' check is most of the time),
   // by a locale not loaded as by en-US
   try {
