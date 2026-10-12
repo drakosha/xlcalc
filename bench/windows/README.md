@@ -112,7 +112,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | cells shown, 6 sets | ru-RU | 3,130 | 2,434 | 2,569, the others by the rules of `WIN_SHOWN` |
 | tables, 10 sets and 5 | en-US, ru-RU | 138 and 38 | 133 and 34 | all but the 14 the Mac pins too, and `headers-ru-held:tiny` (a number typed as its text takes the format of typed exponents) |
 | spill, 15 sets | en-US | 175 | 162 | all but 3 pinned and 3 that vary between runs |
-| workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
+| workbook, 7 sets and `cycles` (Windows alone) | en-US | 98 and 21 | 95 | all but 5 pinned; of `cycles`, the books without a cycle's cells (`control`), the rest pinned: Excel keeps a cycle's cells without iterative calculation, the engine gives `#CYCLE!` |
 | structure operations, 18 sets | en-US | 317 | 239 (sizes in other units) | all but 12 pinned |
 | xlsx filters | en-US | 8 files | | all |
 | conditional formats, 13 sets | en-US, ru-RU | 74 books, 5,778 cells | 5,543 of the 5,574 cells the Mac read (28 `#` counted in pixels, `"b">"в"`, which the Mac takes otherwise, and two short month names of ru-RU); the one book of `fills-held` the Mac does not open neither | every cell, but `#` counted in pixels, a colour channel one apart at an exact fraction past a percentile and the fills the model has no place for, as on the Mac; the rules of every case but the bar lengths and the order the Mac pins too; of the 15 rules Excel made itself (`made`), 203 of 204 cells on the book read from its file |
