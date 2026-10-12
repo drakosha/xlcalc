@@ -21,6 +21,9 @@ use framework "Foundation"
 use framework "AppKit"
 use scripting additions
 
+-- the ribbon's Number Format box, once found (`findBox`)
+global numberBox
+
 on run argv
 	set p to item 1 of argv
 	set q to item 2 of argv
@@ -126,50 +129,59 @@ on bars(ws, cells, bookName, kb)
 	return out
 end bars
 
--- each cell selected in turn (until the name box shows it), an item of the Number Format list applied to it when
--- `picks` gives one (its place in the list): the item's name (empty for none) and what the box shows then
+-- each cell selected in turn, an item of the Number Format list applied to it when `picks` gives one (its place in the
+-- list): the item's name (empty for none) and what the box shows then
 on ribbon(ws, cells, picks, bookName, kb)
-	set {box, nameBox} to my ribbonBoxes(bookName)
+	set numberBox to my findBox(bookName)
+	set shown to my boxNow(bookName)
 	set out to {}
 	repeat with i from 1 to count of cells
 		set a to (item i of cells) as text
 		kb's toFront()
 		tell application "Microsoft Excel" to select range a of ws
-		my selectedIn(nameBox, a)
+		set shown to my boxAfter(shown, bookName)
 		set nm to ""
 		if picks is not {} then
 			set k to (item i of picks) as integer
+			set m to my openList(bookName, a)
 			tell application "System Events"
-				perform action "AXPress" of button 1 of box
-				set m to missing value
-				repeat 20 times
-					delay 0.2
-					try
-						set m to menu 1 of box
-						exit repeat
-					end try
-				end repeat
-				if m is missing value then error "the Number Format list did not open at " & a
-				delay 0.3
 				set nm to name of menu item k of m
 				perform action "AXPress" of menu item k of m
 			end tell
+			set shown to my boxAfter(shown, bookName)
 		end if
-		set end of out to {nm, my boxText(box)}
+		set end of out to {nm, shown}
 	end repeat
 	return out
 end ribbon
 
--- The ribbon's Number Format box and the name box of the window of the book `bookName`, by their descriptions in English
--- or Russian: the window lists them only with Excel in front, so they are looked for again until it does; an element of
--- the window's contents that has gone stale is passed over.
-on ribbonBoxes(bookName)
+-- the box's list opened by its button: its menu, once it is there
+on openList(bookName, a)
+	my boxNow(bookName)
+	tell application "System Events"
+		perform action "AXPress" of button 1 of numberBox
+		repeat 20 times
+			delay 0.2
+			try
+				set m to menu 1 of numberBox
+				delay 0.3
+				return m
+			end try
+		end repeat
+	end tell
+	error "the Number Format list did not open at " & a
+end openList
+
+-- The ribbon's Number Format box of the window of the book `bookName`, by its description in English or Russian: the
+-- window lists it only with Excel in front, so it is looked for again until it does; an element of the window's
+-- contents that has gone stale is passed over. Kept in `numberBox`.
+on findBox(bookName)
+	global numberBox
 	repeat 10 times
 		tell application "System Events" to set frontmost of process "Microsoft Excel" to true
 		tell application "Microsoft Excel" to activate
 		delay 1.5
-		set box to missing value
-		set nameBox to missing value
+		set numberBox to missing value
 		try
 			tell application "System Events" to tell process "Microsoft Excel"
 				repeat with w in windows
@@ -178,10 +190,9 @@ on ribbonBoxes(bookName)
 						set els to entire contents of w
 						repeat with e in els
 							try
-								if role of e is "AXComboBox" then
-									set d to description of e
-									if d is in {"Number Format", "Формат номера"} then set box to contents of e
-									if d is in {"name box", "поле для имени"} then set nameBox to contents of e
+								if role of e is "AXComboBox" and description of e is in {"Number Format", "Формат номера"} then
+									set numberBox to contents of e
+									exit repeat
 								end if
 							end try
 						end repeat
@@ -189,34 +200,39 @@ on ribbonBoxes(bookName)
 				end repeat
 			end tell
 		end try
-		if box is not missing value and nameBox is not missing value then return {box, nameBox}
+		if numberBox is not missing value then return numberBox
 	end repeat
 	error "no Number Format box in the window of " & bookName
-end ribbonBoxes
+end findBox
 
--- the name box shows the cell `a` (for up to 3 seconds): the window has followed the selection
-on selectedIn(nameBox, a)
-	repeat 30 times
-		tell application "System Events" to set v to value of nameBox
-		if v is a then return
+-- What the box shows now; a box that has gone stale (the ribbon laid out again) is looked for again.
+on boxNow(bookName)
+	global numberBox
+	try
+		tell application "System Events" to set v to value of numberBox
+		if v is not missing value then return v as text
+	end try
+	my findBox(bookName)
+	tell application "System Events" to return (value of numberBox) as text
+end boxNow
+
+-- What the box shows once it has followed a selection or an item applied: the box changes from what it showed before
+-- (`was`) within 2 seconds (0.3 s seen), or the cell's category is the same; then two reads agree.
+on boxAfter(was, bookName)
+	set v to was
+	repeat 20 times
 		delay 0.1
+		set v to my boxNow(bookName)
+		if v is not was then exit repeat
 	end repeat
-	error "the name box shows " & v & ", not " & a
-end selectedIn
-
--- What the Number Format box shows, read until two reads agree, as it follows the selection with a lag (0.3 s seen).
-on boxText(box)
-	delay 0.5
-	tell application "System Events" to set v to value of box
 	repeat 10 times
 		delay 0.3
-		tell application "System Events" to set again to value of box
-		if again = v then exit repeat
+		set again to my boxNow(bookName)
+		if again is v then exit repeat
 		set v to again
 	end repeat
-	if v is missing value then return ""
-	return v as text
-end boxText
+	return v
+end boxAfter
 
 -- the text on the general pasteboard as plain text, nothing else with it
 on toClipboard(t)
