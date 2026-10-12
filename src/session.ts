@@ -365,12 +365,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const { row, col } = parseAddress(checkAddress(cell, 'cell'))
     return [i, row, col] as const
   }
-  /** A text call's options checked: `baseRevision`, `widen`, `refuseInvalid` and, entering a selection, `active`. */
+  /** A text call's options checked: `baseRevision`, `widen`, `refuseInvalid`, `inPlace` and, entering a selection, `active`. */
   const textOptions = <T extends CellTextOptions>(eo: T | undefined, allowed: readonly string[] = TEXT_OPTIONS): T => {
     const o = checkBase<T>(eo, revision, allowed)
     if (o.refuseInvalid !== undefined) checkBoolean(o.refuseInvalid, 'opts.refuseInvalid')
+    if (o.inPlace !== undefined) checkBoolean(o.inPlace, 'opts.inPlace')
     return o
   }
+  const wayOf = (o: CellTextOptions) => (o.inPlace ? 'inPlace' : 'typed')
   /**
    * With `refuseInvalid`, the cell of `checked` whose value breaks the strictest rule of data validation once the typed
    * cells are written (`strictestRefusal`), refused before they are, as Excel's alert holds the entry until it is answered.
@@ -385,7 +387,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const i = checkSheet(sheet, sheetIndex(s), 'sheet')
     const x = checkRange(range, 'range')
     const a = checkActive(opts.active, x)
-    return [i, a, filledText(s, i, x, a, checkString(text, 'text'), clock.now)] as const
+    return [i, a, filledText(s, i, x, a, checkString(text, 'text'), clock.now, wayOf(opts))] as const
   }
   /** Executes a staged batch; previews undo their sparse inputs or drop their aside-built state. */
   function* operations(given: SessionOperation[], eo: PreviewChangesOptions | undefined, preview: boolean): Steps<ChangesResult | ChangesPreview> {
@@ -534,7 +536,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const opts = textOptions(eo)
       const [i, r, c] = at(s, sheet, cell)
-      const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now)
+      const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now, wayOf(opts))
       if (!typed.ok) return typed.refusal
       const refused = yield* invalid(s, opts, typed.cells)
       if (refused) return refused
@@ -546,7 +548,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const opts = textOptions(eo)
       const [i, r, c] = at(s, sheet, cell)
-      const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now)
+      const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now, wayOf(opts))
       if (!typed.ok) return typed.refusal
       return yield* previewed(s, typed.cells, () => {
         const alert = validationAlert(s, i, r, c)
@@ -558,7 +560,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setCellTexts(entries: CellTextEntry[], eo?: CellTextOptions) {
       const s = yield* ready()
       const opts = textOptions(eo)
-      const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now)
+      const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now, wayOf(opts))
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       const refused = yield* invalid(s, opts, typed.cells)
       if (refused) return refused
@@ -568,7 +570,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *previewCellTexts(entries: CellTextEntry[], eo?: CellTextOptions): Steps<CellTextsPreview> {
       const s = yield* ready()
       const opts = textOptions(eo)
-      const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now)
+      const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now, wayOf(opts))
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       return yield* previewed(s, typed.cells, () => {
         const alerts = textAlerts(s, typed.cells)
