@@ -20,6 +20,7 @@ import { hasCell, type Rect } from '../structure/area.js'
 import { paced } from '../exec/budget.js'
 import { lowerBound } from '../sorted.js'
 import { FIND_OPTIONS } from '../strict-args.js'
+import { inputIn } from '../looks/sheet.js'
 import { editTexts } from './viewport.js'
 
 const WHERE = ['text', 'edit', 'formula', 'value'] as const
@@ -159,7 +160,8 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
 
   /** The text Find reads in a cell. */
   const textOf = (s: number, r: number, c: number): string => {
-    const own = state.input.sheets[s].cells[formatAddress(r, c)]
+    // a cell of the sheet's looks reads as an entry of its look alone
+    const own = inputIn(state.input.sheets[s], formatAddress(r, c), r, c)
     const id = where === 'text' || where === 'value' || own?.formula === undefined ? undefined : state.at.get(key(s, r, c))
     const formula = id === undefined ? own?.formula : state.formulas[id]!.text
     if (where === 'formula') return formula ?? ''

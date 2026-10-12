@@ -91,9 +91,9 @@ function* requested(s: EngineState, refs: Ref[]): Generator<[number, number, num
       if (hasCell(x, p.r, p.c) && !earlier(n, x.s, p.r, p.c)) yield [x.s, p.r, p.c]
     }
     const layer = layerOf(s.input.sheets[x.s])
-    for (const p of layer?.pieces(x) ?? [])
-      for (let r = p.r1; r <= p.r2; r++)
-        for (let c = p.c1; c <= p.c2; c++) {
+    for (const piece of layer?.pieces(x) ?? [])
+      for (let r = piece.r1; r <= piece.r2; r++)
+        for (let c = piece.c1; c <= piece.c2; c++) {
           if (paced(1)) yield undefined
           if (!(formatAddress(r, c) in s.input.sheets[x.s].cells) && !earlier(n, x.s, r, c)) yield [x.s, r, c]
         }
