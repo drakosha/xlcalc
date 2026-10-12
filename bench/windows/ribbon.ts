@@ -52,6 +52,7 @@ export async function stepRibbon(set: string, tag: Tag, e: WinEnv): Promise<void
   ssh(`Remove-Item -Recurse -Force ${WORK} -ErrorAction SilentlyContinue; New-Item -ItemType Directory ${WORK} | Out-Null`)
   scp(join(HERE, 'ribbon.ps1'), `${HOST}:C:/xlcalc/bin/`)
   scp(...readdirSync(dir).map((f) => join(dir, f)), `${HOST}:C:/xlcalc/ribbon/`)
+  const started = ssh('(Get-Date).ToString("o")').trim()
   ssh(
     `schtasks /Create /TN xlribbon /TR 'powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File C:\\xlcalc\\bin\\ribbon.ps1 -job ${WORK}\\job.json -out ${WORK}\\out.json' /SC ONCE /ST 23:59 /IT /F | Out-Null; schtasks /Run /TN xlribbon | Out-Null`,
   )
@@ -64,6 +65,8 @@ export async function stepRibbon(set: string, tag: Tag, e: WinEnv): Promise<void
     }
   } finally {
     ssh('schtasks /Delete /TN xlribbon /F | Out-Null')
+    // the task's Excel may stay after it quits (it did once in two runs): stopped when it has no window, the user's own left alone
+    ssh(`Start-Sleep 10; Get-Process EXCEL -ErrorAction SilentlyContinue | Where-Object { $_.StartTime -ge [datetime]'${started}' -and $_.SessionId -ne 0 -and -not $_.MainWindowTitle } | Stop-Process -Force`)
   }
   scp(`${HOST}:C:/xlcalc/ribbon/out.json`, join(dir, 'out.json'))
   const raw = JSON.parse(readFileSync(join(dir, 'out.json'), 'utf8').replace(/^\uFEFF/, '')) as { version: string; ui: number; box: string; error?: string; answers: string[][][] }
