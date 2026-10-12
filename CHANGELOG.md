@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.21.2 (2026-10-12)
+
+Internal release; not published to npm. Faster incremental edits and less retained engine storage, with the same public API, values and synthetic hashes. The reproducible HyperFormula 3.5.0 comparison and memory controls are in `bench/hyperformula/README.md`.
+
+Changed:
+
+- Contiguous edits in a column query dependent ranges once for each contiguous span. Address parsing and change tracking allocate less temporary data; sessions without arrays skip spill lookups.
+- Shared aggregate prefixes keep checkpoints every 64 cells instead of 256. Repeated short aggregates can reuse a cached fold; the full-fold threshold and cache budget are unchanged.
+- Small acyclic edits stop an unchanged scalar path until another result changes or an array appears. Structural edits, existing arrays and iterative calculation keep the full pass. An unchanged INT at the start of a 5,000-cell chain evaluates one formula instead of 4,999 in both execution modes.
+- Removed formulas release their storage slots for reuse, trailing holes are trimmed, and spill timestamps are released after the round settles. Range values share their metadata's map. Eval releases generated text after linking its executable functions; diagnostic text is regenerated on request.
+
+Measured in Node 26.7.0, medians of five fresh-process pairs: eval retains 90.99 MiB instead of 105.76 MiB on the fanout book, and 56.22 MiB instead of 58.05 MiB on the 34,000-row synthetic book. A cache of 50,000 small entries retains 10.81 MiB instead of 12.62 MiB. Peak process RSS on the large books changes little because compilation still needs temporary storage. The ordinary edit comparison includes both execution modes; bulk edits and indexed lookups remain slower than HyperFormula.
+
 ## 0.21.1 (2026-10-12)
 
 Internal release; not published to npm.
