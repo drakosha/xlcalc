@@ -136,34 +136,32 @@ export interface WindowSource {
   usedRange(): SheetExtent
 }
 
-/** The window of lines `w` of a sheet from `src` (options checked). The steps yield between cells. */
-export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions): Steps<Omit<Viewport, 'revision'>> {
-  const { book, s, lines, tables } = src
+/** What `editTexts` reads of a cell: its formula, its value, and the formula a spilled cell is part of. */
+export type EditView = Pick<ViewportCell, 'formula' | 'value' | 'spillOf'>
+
+/**
+ * A sheet's formulas in the book's locale (`local`), each text once per table it stands in (a table's column is one
+ * formula), and the text a cell opens with for editing (`editText`): its formula, an old-kind array's in each cell of its
+ * area, its own value by the format it shows (a text, which is read as typed, once per format), nothing for a cell
+ * without either. `now` completes text read as a date without a year.
+ */
+export function editTexts(book: BookInput, s: number, tables: Tables, now: string) {
   const sheet = book.sheets[s]
-  // each style the window's cells show, copied once: the answer's own
-  const styles: Record<number, CellStyle> = {}
-  const shows = (i: number) => {
-    styles[i] ??= JSON.parse(JSON.stringify(book.styles![i])) as CellStyle
-    return i
-  }
-  const code = formatCodeIn(book.locale)
-  // formulas in the book's locale, each text once per table it stands in (a table's column is one formula)
-  const loc = o.formulaLocal || o.editText ? LOCALES.get(book.locale ?? DEFAULT_LOCALE)! : null
+  const loc = LOCALES.get(book.locale ?? DEFAULT_LOCALE)!
   const locals = new Map<string, string>()
   const local = (formula: string, r: number, c: number) => {
     const table = tableAt(tables, s, r, c)?.name
     const k = `${table ?? ''}\n${formula}`
     let out = locals.get(k)
     if (out === undefined) {
-      const t = showFormula(formula, loc!, table, book.externalBooks)
+      const t = showFormula(formula, loc, table, book.externalBooks)
       locals.set(k, (out = t.ok ? t.formula : formula))
     }
     return out
   }
-  // the text a cell opens with: its formula, an old-kind array's in each cell of its area, its own value by its format (a text, which is read as typed, once per format), nothing for a cell without either
-  const entry = { locale: book.locale, dateSystem: book.dateSystem, now: src.now }
+  const entry = { locale: book.locale, dateSystem: book.dateSystem, now }
   const typed = new Map<string, string>()
-  const editText = (out: ViewportCell, own: CellInput | undefined, numberFormat: NumberFormat | undefined, r: number, c: number) => {
+  const editText = (out: EditView, own: CellInput | undefined, numberFormat: NumberFormat | undefined, r: number, c: number) => {
     if (out.formula !== undefined) return `=${local(out.formula, r, c)}`
     const top = out.spillOf === undefined ? undefined : sheet.cells[out.spillOf]
     if (top?.array !== undefined && top.formula !== undefined) {
@@ -177,6 +175,21 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     if (t === undefined) typed.set(k, (t = checkedEntryText(out.value, { ...entry, numberFormat })))
     return t
   }
+  return { local, editText }
+}
+
+/** The window of lines `w` of a sheet from `src` (options checked). The steps yield between cells. */
+export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions): Steps<Omit<Viewport, 'revision'>> {
+  const { book, s, lines, tables } = src
+  const sheet = book.sheets[s]
+  // each style the window's cells show, copied once: the answer's own
+  const styles: Record<number, CellStyle> = {}
+  const shows = (i: number) => {
+    styles[i] ??= JSON.parse(JSON.stringify(book.styles![i])) as CellStyle
+    return i
+  }
+  const code = formatCodeIn(book.locale)
+  const { local, editText } = editTexts(book, s, tables, src.now)
   // the cells errors began in, shared by the cells on one way to them
   const origins = new Map<string, Place>()
   const cells: Record<string, ViewportCell> = {}
