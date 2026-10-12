@@ -130,7 +130,9 @@ A format set on the cell before the entry stays, unless what is typed is of anot
 
 ### A percent cell
 
-As a number is typed into a cell whose format shows percent, Excel's editor adds `%` after it: `5` is 5% (0.05), `0.5` in en-US 0.5%, `1 1/2` 1.5%, `1/2` 0.5%, `-5` -5%. It adds it to text begun by a digit or a sign and a digit, so `5%` becomes the text `5%%` and `15.03.2026` the text `15.03.2026%`; `.5`, `(5)`, ` 5`, `abc` and formulas get none.
+As a number is typed into a cell whose format shows percent, Excel's editor adds `%` after it: `5` is 5% (0.05), `0.5` in en-US 0.5%, `1 1/2` 1.5%, `1/2` 0.5%, `-5` -5%. It adds it to text begun by a digit or a sign and a digit, so `5%` becomes the text `5%%`, `-5%` the formula `-5%%` (a sign before what is no number begins a formula) and `15.03.2026` the text `15.03.2026%`; `.5`, `(5)`, ` 5`, `abc` and formulas get none.
+
+A cell edited in place, after F2, a double click or in the formula bar, opens with its own text (`5%`), and there the editor adds `%` only to a number begun by a sign: `6%` is 0.06, `6` is 6 (shown 600%), `0.5` in en-US is 0.5 (50%), `-5` is -5% and `+5` is 5%. A host that knows the text was edited in place passes `{ inPlace: true }` to `setCellText`, `setCellTexts`, `fillCellText` or their previews; without it the text reads as typed over the cell.
 
 ### Empty text
 
@@ -197,12 +199,13 @@ The rules were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows
 | `typed-keys-held` | 44 | keyboard, Mac | 36 and 36 |
 | `typed-held-2` | 102 | object model, Mac and Windows | 85 and 84 on both |
 | `typed-keys-held-2` | 29 | keyboard, Mac | 25 and 26 |
+| `typed-keys-held-3` | 6 | keyboard, Mac | 3 and 4: `-5%`, `+5%` and `-0.5%` typed over a percent cell are formulas with the editor's second `%` (`-5%%`), where the engine wrote `-5%` |
 | `typed-pct-held` | 47 | object model, Mac and Windows | 45 and 46 on both |
 | `names-held` | 28 (en-US) | object model, Mac and Windows | 21 on both: cells' words as LET's names (`XFD1`, `XFE1`, `A0`) and the words past the sheet alone, refused here and taken by Excel, and an unknown name's case |
 | `let-grid-held` | 14 (en-US) | object model, Mac and Windows | 10 on both: `IV1`, `A65536` and `IV65536` are LET's names too, so the edge predicted, Excel 2003's sheet, is none, and a LET name read after its LET |
 | `let-cells-held` | 25 (en-US) | object model, Mac and Windows | 11 on both: every cell is LET's name but those that read as R1C1's row or column too |
 
-Each set's predictions (`bench/coverage/entry/<set>.predicted.json`) were committed before Excel ran it, and the misses became rules. The engine now gives Excel for Windows's answer on 1,812 of the 1,983 cases of the object model's sets, and the Mac's keyboard answer on 220 of 224; the other cases are the known differences below, pinned in `test/entry-known.ts`.
+Each set's predictions (`bench/coverage/entry/<set>.predicted.json`) were committed before Excel ran it, and the misses became rules. The engine now gives Excel for Windows's answer on 1,812 of the 1,983 cases of the object model's sets, and the Mac's keyboard answer on 232 of 236; the other cases are the known differences below, pinned in `test/entry-known.ts`.
 
 Values are compared exactly, as the saved file holds every digit. `typed-pct-held` types percents with decimals where moving the point and dividing by 100 give different numbers (`1.1%`, `0.7%`, `1.255%`, `99.9%`, with a sign, parentheses, a leading `%`, groups and an exponent), fractions and plain decimals; each cell's value is also read through the object model (`value` on the Mac, `Value2` on Windows), which equals the number the file holds in every case. Both Excels stored every decimal percent as its decimal text reads; the miss was `$1.1%`, which Excel en-US keeps as text, the other the sign difference of the object model.
 
@@ -213,6 +216,8 @@ The text a cell opens with was measured by the same step on the sets `edit-held`
 The object model takes some text otherwise than typing, and the keyboard sets settle these: through `Formula2Local` a text begun by `+` or `-` that is no number is text (`-C1`, `+1+2`), a number goes into a percent cell as it is (`5` is 500%), and empty text makes a cell formatted as text hold empty text. Excel for Windows has `AutoPercentEntry` on, as the answers' `meta` records, but takes `Formula2Local` as the Mac does.
 
 Text pasted from the clipboard and a text entered into a selection with Control+Return were measured by the step `ui` (`bench/coverage/ui.ts`; the sets `paste-held`, 25 pastes on both Excels, and `fill-held`, 18 entries on the Mac's keyboard), and the text a cell of an array opens with by the set `arrays-held` (the formula bar selected and once F2 began the editing, on the Mac; `Formula2Local` on both, which is the text F2 opens). The predictions, `setCellTexts` of the texts and `editText`, were committed before Excel ran each set, and the misses became the rules of [A paste and Control+Return](#a-paste-and-controlreturn) and of the cells of an old-kind array's area; Excel for Mac and Excel for Windows pasted alike in every case. `test/ui-excel.test.ts` compares `pasteText`, `fillCellText` (from the selection's first cell, a call with a stop alert taken back) and `editText` with every case: the engine gives Excel's answer to the 100 pastes (25 in each locale on each Excel), to 33 of the 36 entries into a selection and to the 16 cases of `arrays-held`; the other three are known differences below.
+
+A cell edited in place was measured by the same step on the Mac's keyboard (the set `edit-held`, 20 cases in each locale): the cell selected, F2, what it opened with erased or only its digit changed, the text typed and Return, the formula bar read when F2 began the editing and once more before Return. The prediction, `pasteText` of each text (no percent editor at all), was committed before Excel ran it and came out as predicted on 14 cases in en-US and 13 in ru-RU: the misses were numbers begun by a sign (`-5` is -5%), to which the editor still adds `%`, and in ru-RU a column Excel widened. `test/ui-excel.test.ts` compares `setCellText` with `inPlace` with every case, and the engine gives Excel's answer to all 40.
 
 Refusing a value a rule does not take (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not measure: the alert is a window, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a refused call leaves the book, the revision and the history as they were, and that a value the rules take is written as without the option.
 
