@@ -146,7 +146,8 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string):
   let linked = false
   const known = (sheet: string | null | undefined) => sheet == null || names.sheets.has(sheetKey(sheet))
   walk(ast, (n) => {
-    if (n.k === 'xref' || n.k === 'xname') linked = true
+    // a reference into another workbook, one Excel lost too (`[1]Sheet1!#REF!`, of any sheet of its link)
+    if (n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined)) linked = true
     else if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
   })
   if (!ok || !linked) return ok ? ast : null

@@ -164,11 +164,16 @@ describe('xlsx links: reading', () => {
     expect(r.issues).toEqual([])
   })
 
-  it('formulas and names over the links the file holds read without issues', async () => {
+  it('formulas and names over the links the file holds read without issues, references into them Excel lost too', async () => {
     const real = book2('<sheetNames><sheetName val="Sheet1"/><sheetName val="My Sheet"/></sheetNames><definedNames><definedName name="Rate" refersTo="=Sheet1!$C$1"/></definedNames>')
-    const body = "<sheetData><row r=\"1\"><c r=\"A1\"><f>[1]Sheet1!A1+1</f></c><c r=\"B1\"><f>SUM('[1]My Sheet'!A1:B9)</f></c><c r=\"C1\"><f>[1]!Rate*2</f></c></row></sheetData>"
-    const r = await readXlsx(await linked([real], [0], { sheets: [{ name: 'S', body }], workbook: { after: '<definedNames><definedName name="Ext">[1]Sheet1!$A$2</definedName></definedNames>' } }))
-    expect(r.book.sheets[0].cells).toEqual({ A1: { formula: '[1]Sheet1!A1+1' }, B1: { formula: "SUM('[1]My Sheet'!A1:B9)" }, C1: { formula: '[1]!Rate*2' } })
+    const body = "<sheetData><row r=\"1\"><c r=\"A1\"><f>[1]Sheet1!A1+1</f></c><c r=\"B1\"><f>SUM('[1]My Sheet'!A1:B9)</f></c><c r=\"C1\"><f>[1]!Rate*2</f></c><c r=\"D1\"><f>'[1]My Sheet'!#REF!+1</f></c></row></sheetData>"
+    const names = '<definedNames><definedName name="Ext">[1]Sheet1!$A$2</definedName><definedName name="Lost">[1]Sheet1!#REF!</definedName></definedNames>'
+    const r = await readXlsx(await linked([real], [0], { sheets: [{ name: 'S', body }], workbook: { after: names } }))
+    expect(r.book.sheets[0].cells).toEqual({ A1: { formula: '[1]Sheet1!A1+1' }, B1: { formula: "SUM('[1]My Sheet'!A1:B9)" }, C1: { formula: '[1]!Rate*2' }, D1: { formula: "'[1]My Sheet'!#REF!+1" } })
+    expect(r.book.names).toEqual([
+      { name: 'Ext', ref: '[1]Sheet1!$A$2' },
+      { name: 'Lost', ref: '[1]Sheet1!#REF!' },
+    ])
     expect(r.issues).toEqual([])
   })
 })
@@ -227,7 +232,7 @@ describe('xlsx links: writing', () => {
     expect(await part(empty.data, 'xl/externalLinks/externalLink1.xml')).toContain(`<externalBook xmlns:r="${REL}" r:id="rId1"/>`)
   })
 
-  it("formulas and names over the links in the file's spelling; one over a link or a sheet the links do not have is written as its value, one named by the file a link has by the link's number", async () => {
+  it("formulas and names over the links in the file's spelling, lost references into them too; one over a link or a sheet the links do not have is written as its value, one named by the file a link has by the link's number", async () => {
     const book: BookInput = {
       sheets: [
         {
@@ -240,19 +245,21 @@ describe('xlsx links: writing', () => {
             A5: { formula: '[Book2.xlsx]Sheet1!A2' },
             A6: { formula: '[3]Sheet1!A1' },
             A7: { formula: "'[1]Nope'!A1" },
+            A8: { formula: "'[1]Sheet1'!#REF!+'[1]My Sheet'!#REF!" },
           },
         },
       ],
       names: [
         { name: 'Ext', ref: "'[1]Sheet1'!$A$2" },
         { name: 'Far', ref: "'[3]Sheet1'!$A$2" },
+        { name: 'Lost', ref: "'[1]Sheet1'!#REF!" },
       ],
       externalBooks: [BOOK2],
     }
     const { data, issues } = await writeXlsx({ book })
     const sheet = await part(data, 'xl/worksheets/sheet1.xml')
-    expect([...sheet.matchAll(/<f[^>]*>([^<]*)<\/f>/g)].map((m) => m[1])).toEqual(['[1]Sheet1!A1+1', "SUM('[1]My Sheet'!A1:B9)", '[1]!Rate*2', '[1]Sheet1!Local', '[1]Sheet1!A2'])
-    expect(await part(data, 'xl/workbook.xml')).toContain('<definedNames><definedName name="Ext">[1]Sheet1!$A$2</definedName></definedNames>')
+    expect([...sheet.matchAll(/<f[^>]*>([^<]*)<\/f>/g)].map((m) => m[1])).toEqual(['[1]Sheet1!A1+1', "SUM('[1]My Sheet'!A1:B9)", '[1]!Rate*2', '[1]Sheet1!Local', '[1]Sheet1!A2', "[1]Sheet1!#REF!+'[1]My Sheet'!#REF!"])
+    expect(await part(data, 'xl/workbook.xml')).toContain('<definedNames><definedName name="Ext">[1]Sheet1!$A$2</definedName><definedName name="Lost">[1]Sheet1!#REF!</definedName></definedNames>')
     expect(issues.map((i) => `${i.code} ${i.cells ?? i.name}`)).toEqual(['formula A6,A7', 'noCachedValues undefined', 'name Far'])
   })
 

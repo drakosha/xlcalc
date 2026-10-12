@@ -3,10 +3,11 @@
  * their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.FILTER`), LET as `_xlfn.LET` with its names as `_xlpm.x`, a spill
  * reference `E2#` as `_xlfn.ANCHORARRAY(E2)`, `@x` as `_xlfn.SINGLE(x)`, sheets always quoted, numbers with an upper-case exponent,
  * another workbook's sheet by its link's number in quotes only where its name needs them, as Excel writes it
- * (`[1]Sheet1!A1`, `'[1]My Sheet'!A1`, `[1]Sheet1!Local`). The rest as the engine's canonical text prints it.
+ * (`[1]Sheet1!A1`, `'[1]My Sheet'!A1`, `[1]Sheet1!Local`, `[1]Sheet1!#REF!`). The rest as the engine's canonical text prints it.
  */
 import { PLAIN_SHEET } from '../../sheet-pattern.js'
 import type { Ast } from '../../syntax/ast.js'
+import { ERROR_TEXT } from '../../syntax/errors.js'
 import { linkedSheet, printFormula, quoteSheet } from '../../syntax/print.js'
 import { specText } from '../../syntax/table.js'
 import { readsAsCell } from '../../syntax/tokens.js'
@@ -26,7 +27,8 @@ function fileNode(n: Ast, go: (n: Ast) => string, usual: (n: Ast) => string): st
       return String(n.v).toUpperCase()
     case 'err':
       // a lost spill reference (`#REF!#`) is the anchor of a lost cell
-      return n.ref?.endsWith('#') ? `_xlfn.ANCHORARRAY(${usual({ ...n, ref: n.ref.slice(0, -1) })})` : undefined
+      if (n.ref?.endsWith('#')) return `_xlfn.ANCHORARRAY(${usual({ ...n, ref: n.ref.slice(0, -1) })})`
+      return typeof n.book === 'number' && n.sheet !== undefined ? `${fileLinkSheet(n.book, n.sheet)}!${ERROR_TEXT[n.code]}${n.ref ?? ''}` : undefined
     case 'ref': {
       if (!n.ref.spill) return undefined
       const { spill: _spill, ...ref } = n.ref
