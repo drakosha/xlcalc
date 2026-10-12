@@ -9,7 +9,34 @@ import type { Looks } from '../shown.js'
 import { shownKey } from './looks.js'
 import type { DiffPass } from './rebook.js'
 import { describeAt } from '../spill/place.js'
+import type { Layer } from '../looks/layer.js'
+import { layerOf } from '../looks/sheet.js'
 import { inverse, newSheet, placer, type Geometry, type Place } from '../structure/geometry.js'
+
+/** The cells of a layer, row by row. */
+function* cellsOf(layer: Layer | undefined): Generator<[number, number]> {
+  for (const x of layer?.pieces() ?? []) for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) yield [r, c]
+}
+
+/**
+ * The sheets of the old state (or with `after`, of the new) whose looks may show otherwise after the geometry: one a move
+ * of cells meets, one whose list of looks is another than its sheet's on the other side, a new sheet. Sheets moved,
+ * renamed or left alone keep their lists, which the state built again takes as they are.
+ */
+function changedLooks(old: EngineState, next: EngineState, g: Geometry, fresh: boolean[], after: boolean): number[] {
+  const cellMoves = g.filter((m) => m.kind === 'lines' || m.kind === 'range' || m.kind === 'clear')
+  const met = new Set(cellMoves.flatMap((m) => (m.kind === 'range' ? [m.from, m.to] : [m.s])))
+  // moves of cells among moves of sheets: their sheets by number are of the books between, so every sheet is met
+  const all = cellMoves.length > 0 && cellMoves.length < g.length
+  const [here, there] = after ? [next, old] : [old, next]
+  const to = placer(after ? inverse(g) : g)
+  return here.input.sheets.flatMap((sh, s) => {
+    if (!sh.looks) return []
+    if (all || met.has(s) || (after && fresh[s])) return [s]
+    const p: Place = { s, r: 0, c: 0 }
+    return to(p) && there.input.sheets[p.s]?.looks === sh.looks ? [] : [s]
+  })
+}
 
 /** A cell's place as one number, which orders places as addresses: by sheet, row, then column. */
 const placeOf = (s: number, r: number, c: number) => (s * MAX_ROWS + r) * MAX_COLS + c
@@ -50,16 +77,22 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
   const [place, back] = [placer(g), placer(inverse(g))]
   const p: Place = { s: 0, r: 0, c: 0 }
   const input = (st: EngineState, s: number, r: number, c: number) => st.input.sheets[s].cells[formatAddress(r, c)]
+  const layers = new Map<EngineState, (Layer | undefined)[]>([old, next].map((st) => [st, st.input.sheets.map((x) => layerOf(x))]))
+  /** The look of a cell of the sheet's looks. */
+  const layered = (st: EngineState, s: number, r: number, c: number): CellInput | undefined => layers.get(st)![s]?.lookAt(r, c)
   const textOf = (st: EngineState, s: number, r: number, c: number, x: CellInput | undefined) => (x?.formula === undefined ? undefined : formulaText(st, s, r, c, x))
   /**
    * The fields of the new cell at `j`, `r`, `c` against those of the old cell at `from` that came to it (none: an empty
    * one); with `pair`, the two inputs go to the diff.
    */
   const compare = (j: number, r: number, c: number, from?: Place, pair = false) => {
-    const now = input(next, j, r, c)
+    const entry = input(next, j, r, c)
     const addr = from && formatAddress(from.r, from.c)
-    const was = addr === undefined ? undefined : old.input.sheets[from!.s].cells[addr]
-    if (pair) diff?.pair(from!.s, addr!, was, j, now)
+    const held = addr === undefined ? undefined : old.input.sheets[from!.s].cells[addr]
+    if (pair) diff?.pair(from!.s, addr!, held, j, entry)
+    // a cell of the sheet's looks compares as an input of its look alone; the diff takes the inputs alone, the looks go back whole
+    const now = entry ?? layered(next, j, r, c)
+    const was = held ?? (from && layered(old, from.s, from.r, from.c))
     // the same input without a formula: nothing of it can differ (a formula's text may, with new names)
     if (was === now && was?.formula === undefined) return
     const f = fieldsBetween(was, from && textOf(old, from.s, from.r, from.c, was), now, textOf(next, j, r, c, now))
@@ -68,7 +101,10 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
     out.push(placeOf(j, r, c))
   }
   const valueAt = (st: EngineState, s: number, r: number, c: number) => st.ctx.sheets[s].cols[c]?.[r]
+  /** An input that holds no value (`EngineState.bare`): the diff's. */
   const bare = (st: EngineState, s: number, r: number, c: number) => st.bare.get(s)?.has(r * MAX_COLS + c) === true
+  /** A cell of a look alone: an input of one, or a cell of the sheet's looks. */
+  const alone = (st: EngineState, s: number, r: number, c: number) => bare(st, s, r, c) || layered(st, s, r, c) !== undefined
   /** Whether the old cell at `p` (where `back` took a new one) holds a value. */
   const valued = () => (valueAt(old, p.s, p.r, p.c) ?? null) !== null
   /** The new input at `s`, `r`, `c` and the old one at `p` it came from, a place of neither a value nor a look alone, to the diff. */
@@ -124,11 +160,10 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
         }
         const came = back(at(p, s, r, c))
         if (came && valued()) return
-        // an old cell of a look alone that came to it was compared above
-        const alone = came && bare(old, p.s, p.r, p.c)
         // a new input from a place of no input (one of a look alone goes to the diff below)
-        if (came && !alone && !bare(next, s, r, c)) unmet(s, r, c)
-        if (!alone) compare(s, r, c)
+        if (came && !bare(old, p.s, p.r, p.c) && !bare(next, s, r, c)) unmet(s, r, c)
+        // an old cell of a look alone that came to it was compared above
+        if (!(came && alone(old, p.s, p.r, p.c))) compare(s, r, c)
         if (v !== null) out.push(placeOf(s, r, c))
       }),
     ),
@@ -141,10 +176,21 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
       // a new input of a look alone, a spilled one too, from a place of no input
       if (came && !bare(old, p.s, p.r, p.c) && !valued()) unmet(s, r, c)
       // compared above: an old cell of a look alone came to it, or one with a value where the new state has none
-      if (came && (bare(old, p.s, p.r, p.c) || (valued() && valueAt(next, s, r, c) === undefined))) continue
+      if (came && (alone(old, p.s, p.r, p.c) || (valued() && valueAt(next, s, r, c) === undefined))) continue
       compare(s, r, c)
     }
   }
+  // the cells of the sheets' looks, which hold no value (one a spill covers was met with the values): each old one where
+  // the geometry takes it, each new one no old cell of a look alone or with a value came to, every one of a new sheet
+  for (const s of changedLooks(old, next, g, fresh, false))
+    for (const [r, c] of cellsOf(layers.get(old)![s]))
+      if ((valueAt(old, s, r, c) ?? null) === null && place(at(p, s, r, c))) compare(p.s, p.r, p.c, at(from, s, r, c))
+  for (const s of changedLooks(old, next, g, fresh, true))
+    for (const [r, c] of cellsOf(layers.get(next)![s])) {
+      if ((valueAt(next, s, r, c) ?? null) !== null) continue
+      const came = !fresh[s] && back(at(p, s, r, c))
+      if (!(came && (alone(old, p.s, p.r, p.c) || valued()))) compare(s, r, c)
+    }
   // the cells of a new sheet met above (with a value or of a look alone) whose input has a field beside its value
   // (`hasFields`): found by the addresses of its inputs, not each cell looked up
   fresh.forEach((yes, s) => {
