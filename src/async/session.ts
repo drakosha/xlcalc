@@ -10,7 +10,7 @@ import type { HistoryData } from '../session/undo.js'
 import { callBudget, drive } from './drive.js'
 import { callLimits, checkCall, checkEditCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
-import { FILL_OPTIONS, FIND_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
+import { FILL_OPTIONS, FIND_OPTIONS, READ_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
 
 /** What a calculator gives its sessions. */
 export interface InlineDefaults {
@@ -109,8 +109,8 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     },
     applyChanges: (ops, co) => edit((eo) => core.applyChanges(ops, eo as ChangesOptions), co, ['clock']),
     previewChanges: (ops, co) => edit((eo) => core.previewChanges(ops, eo as PreviewChangesOptions), co, ['clock', 'maxChanges']),
-    readCells: (refs, co) => edit((eo) => core.readCells(refs, eo as ReadCellsOptions), co, ['maxCells', 'cursor', 'count', 'fields']),
-    findCells: (refs, query, co) => edit((eo) => core.findCells(refs, query, eo as FindCellsOptions), co, ['maxCells', 'cursor', 'count', 'fields', ...FIND_OPTIONS]),
+    readCells: (refs, co) => edit((eo) => core.readCells(refs, eo as ReadCellsOptions), co, READ_OPTIONS),
+    findCells: (refs, query, co) => edit((eo) => core.findCells(refs, query, eo as FindCellsOptions), co, [...READ_OPTIONS, ...FIND_OPTIONS]),
     getDependents: (refs, co) => edit((eo) => core.getDependents(refs, eo as DependentsOptions), co, ['maxCells', 'cursor', 'count', 'maxReferences']),
     summarizeRanges: (refs, co) => edit((eo) => core.summarizeRanges(refs, eo), co),
     setCells: (edits, co) => edit((eo) => core.setCells(edits, eo), co),

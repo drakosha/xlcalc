@@ -13,7 +13,9 @@ const TYPING = 'setCellText, setCellTexts, fillCellText and their previews'
 /** The options of the calls that type text beside `baseRevision` (`CellTextOptions`), and of an entry into a selection (`FillTextOptions`). */
 export const TEXT_OPTIONS = ['widen', 'refuseInvalid', 'inPlace'] as const
 export const FILL_OPTIONS = ['widen', 'refuseInvalid', 'inPlace', 'active'] as const
-/** The options of `findCells` beside a page's and `fields` (`FindCellsOptions`). */
+/** The options of `readCells` beside `baseRevision` (`ReadCellsOptions`): a page's, `fields` and `rows`. */
+export const READ_OPTIONS = ['maxCells', 'cursor', 'count', 'fields', 'rows'] as const
+/** The options of `findCells` beside `readCells`' (`FindCellsOptions`). */
 export const FIND_OPTIONS = ['in', 'caseSensitive', 'wildcards', 'wholeCell', 'byColumns', 'skipHidden'] as const
 
 /** The API's options by name and the calls that take them, for a refusal to say where a stray option goes. */
@@ -21,7 +23,7 @@ const TAKEN_BY: Record<string, string> = {
   formulaLocal: 'getViewport',
   diagnostics: 'getViewport',
   maxCells: 'getViewport',
-  rows: 'getViewport',
+  rows: 'getViewport, readCells and findCells',
   columns: 'getViewport',
   editText: 'getViewport',
   appearance: 'viewportOf',

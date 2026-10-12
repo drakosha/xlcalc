@@ -10,7 +10,7 @@
  */
 import type { ChangesOptions, ChangesPreview, ChangesResult, PreviewChangesOptions, SessionOperation, ReadCellsOptions, ReadCellsResult, FindCellsOptions, DependentsOptions, DependentsResult, RangeSummary } from './contract.js'
 import { operationsPlan } from './session/operations.js'
-import { readQuery, dependentsQuery, summaryQuery } from './session/queries.js'
+import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/queries.js'
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outValue } from './result.js'
@@ -27,6 +27,7 @@ import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
+import { textsChanged } from './session/search.js'
 import { snapshotBook } from './session/snapshot.js'
 import { checkRange, checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
@@ -184,6 +185,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /** A call that changed the book answered: the revision one more, and what changed. */
   const answer = (s: EngineState, x: Outcome): EditResult => {
+    textsChanged(s, x)
     const out: EditResult = { revision: ++revision, changes: changes(s, x.keys, x.fields) }
     if (x.layout.size) out.layout = [...x.layout]
     if (x.styles) out.styles = s.input.styles ?? []
@@ -499,7 +501,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return yield* readQuery(yield* ready(), revision, clock, refs, eo)
     },
     *findCells(refs: RangeRef[], query: string, eo?: FindCellsOptions) {
-      return yield* readQuery(yield* ready(), revision, clock, refs, eo, query)
+      return yield* findQuery(yield* ready(), revision, clock, refs, query, eo)
     },
     *getDependents(refs: RangeRef[], eo?: DependentsOptions) {
       return yield* dependentsQuery(yield* ready(), revision, clock, refs, eo)
