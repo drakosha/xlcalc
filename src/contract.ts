@@ -1163,7 +1163,8 @@ export interface RangeSummary {
   cells: number
   numbers: number
   errors: number
-  sum: number
+  /** Compensated sum; NUM when it overflows the finite number range. */
+  sum: number | { error: 'NUM' }
   min: number | null
   max: number | null
 }
