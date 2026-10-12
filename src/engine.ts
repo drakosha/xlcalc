@@ -76,6 +76,8 @@ export interface EngineState {
   compiler: Compiler
   /** id → formula; a hole after deletion. */
   formulas: (Formula | undefined)[]
+  /** Reusable formula slots; helpers are rebuilt after every structural edit. */
+  free: number[]
   /** `s:r:c` → formula id. */
   at: Map<string, number>
   invalid: Map<string, Invalid>
@@ -230,6 +232,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     rt,
     compiler: makeCompiler(rt, opts.execution ?? 'closures'),
     formulas: [],
+    free: [],
     at: new Map(),
     invalid: new Map(),
     succ: [],
@@ -300,6 +303,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
       endSpill(state, state.formulas[old]!, track, false)
       state.formulas[old] = undefined
+      state.free.push(old)
       state.clocked.delete(old)
       state.at.delete(k)
       structural = true
@@ -319,15 +323,20 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
         write(state, s, row, col, E[p.invalid.error], track)
         continue
       }
-      const f = compiled(state, state.formulas.length, s, row, col, input, p)
+      const f = compiled(state, state.free.pop() ?? state.formulas.length, s, row, col, input, p)
       if (f.nested) mark(state.ctx, s, row, col, true)
-      state.formulas.push(f)
+      state.formulas[f.id] = f
       state.at.set(k, f.id)
       fresh.push(f)
       structural = true
     } else write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
   }
   count(state.at.size + state.invalid.size)
+  if (structural) {
+    const size = state.formulas.length
+    while (state.formulas.length && !state.formulas.at(-1)) state.formulas.pop()
+    if (state.formulas.length < size) state.free = state.free.filter((id) => id < state.formulas.length)
+  }
   state.compiler.link(fresh)
   if (structural) rebuildGraph(state)
   // formulas reading the cells, arrays spilled over them or waiting for them
