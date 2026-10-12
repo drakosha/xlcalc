@@ -1,0 +1,357 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 14.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "edge#1",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A1/2^-53"
+  },
+  {
+   "id": "edge#2",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A2/2^-53"
+  },
+  {
+   "id": "edge#3",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A3/2^-53"
+  },
+  {
+   "id": "edge#4",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A4/2^-53"
+  },
+  {
+   "id": "edge#5",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A5/2^-53"
+  },
+  {
+   "id": "edge#6",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A6/2^-53"
+  },
+  {
+   "id": "edge#7",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A7/2^-53"
+  },
+  {
+   "id": "edge#8",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A8/2^-53"
+  },
+  {
+   "id": "edge#9",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A9/2^-53"
+  },
+  {
+   "id": "edge#10",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A10/2^-53"
+  },
+  {
+   "id": "edge#11",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A11/2^-53"
+  },
+  {
+   "id": "edge#12",
+   "group": "edge",
+   "fn": "operators",
+   "formula": "Q!A12/2^-53"
+  },
+  {
+   "id": "sum#1",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(0.1,0.2,-0.3)*2^60"
+  },
+  {
+   "id": "sum#2",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(-0.3,0.1,0.2)*2^60"
+  },
+  {
+   "id": "sum#3",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(0.1,-0.3,0.2)*2^60"
+  },
+  {
+   "id": "sum#4",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(0.1,0.2,-0.3,1E-20)/1E-20"
+  },
+  {
+   "id": "sum#5",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(1E-20,0.1,0.2,-0.3)*2^60"
+  },
+  {
+   "id": "sum#6",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(1,7*2^-52,-1)/2^-52"
+  },
+  {
+   "id": "sum#7",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(1,8*2^-52,-1)/2^-52"
+  },
+  {
+   "id": "sum#8",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(9.5,7*2^-49,-9.5)/2^-49"
+  },
+  {
+   "id": "sum#9",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(9.5,8*2^-49,-9.5)/2^-49"
+  },
+  {
+   "id": "sum#10",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(0.1+0.2,-0.3)*2^60"
+  },
+  {
+   "id": "sum#11",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(Q!B1:B3)*2^60"
+  },
+  {
+   "id": "sum#12",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM({0.1,0.2,-0.3})*2^60"
+  },
+  {
+   "id": "sum#13",
+   "group": "sum",
+   "fn": "SUM",
+   "formula": "SUM(Q!B1:B2,-0.3)*2^60"
+  },
+  {
+   "id": "SUBTOTAL#1",
+   "group": "SUBTOTAL",
+   "fn": "SUBTOTAL",
+   "formula": "SUBTOTAL(9,Q!B1:B3)*2^60"
+  },
+  {
+   "id": "AGGREGATE#1",
+   "group": "AGGREGATE",
+   "fn": "AGGREGATE",
+   "formula": "_xlfn.AGGREGATE(9,0,Q!B1:B3)*2^60"
+  },
+  {
+   "id": "SUMIF#1",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(Q!B1:B3,\"<>0\")*2^60"
+  },
+  {
+   "id": "SUMIFS#1",
+   "group": "SUMIFS",
+   "fn": "SUMIFS",
+   "formula": "SUMIFS(Q!B1:B3,Q!B1:B3,\"<>0\")*2^60"
+  },
+  {
+   "id": "AVERAGE#1",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(0.1,0.2,-0.3)*2^60"
+  },
+  {
+   "id": "AVERAGE#2",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(Q!B1:B3)*2^60"
+  },
+  {
+   "id": "SUMPRODUCT#1",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT({0.1,0.2,-0.3},{1,1,1})*2^60"
+  },
+  {
+   "id": "MMULT#1",
+   "group": "MMULT",
+   "fn": "MMULT",
+   "formula": "MMULT({1,1,1},{0.1;0.2;-0.3})*2^60"
+  },
+  {
+   "id": "NPV#1",
+   "group": "NPV",
+   "fn": "NPV",
+   "formula": "NPV(0,0.1,0.2,-0.3)*2^60"
+  }
+ ],
+ "values": {
+  "edge#1": {
+   "t": "n",
+   "v": 0
+  },
+  "edge#2": {
+   "t": "n",
+   "v": 0
+  },
+  "edge#3": {
+   "t": "n",
+   "v": 0
+  },
+  "edge#4": {
+   "t": "n",
+   "v": 0
+  },
+  "edge#5": {
+   "t": "n",
+   "v": 16
+  },
+  "edge#6": {
+   "t": "n",
+   "v": 17
+  },
+  "edge#7": {
+   "t": "n",
+   "v": 0
+  },
+  "edge#8": {
+   "t": "n",
+   "v": -8
+  },
+  "edge#9": {
+   "t": "n",
+   "v": -12
+  },
+  "edge#10": {
+   "t": "n",
+   "v": -15
+  },
+  "edge#11": {
+   "t": "n",
+   "v": -16
+  },
+  "edge#12": {
+   "t": "n",
+   "v": -17
+  },
+  "sum#1": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#2": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#3": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#4": {
+   "t": "n",
+   "v": 5552.115123125783
+  },
+  "sum#5": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#6": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#7": {
+   "t": "n",
+   "v": 8
+  },
+  "sum#8": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#9": {
+   "t": "n",
+   "v": 8
+  },
+  "sum#10": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#11": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#12": {
+   "t": "n",
+   "v": 0
+  },
+  "sum#13": {
+   "t": "n",
+   "v": 0
+  },
+  "SUBTOTAL#1": {
+   "t": "n",
+   "v": 0
+  },
+  "AGGREGATE#1": {
+   "t": "n",
+   "v": 0
+  },
+  "SUMIF#1": {
+   "t": "n",
+   "v": 64
+  },
+  "SUMIFS#1": {
+   "t": "n",
+   "v": 64
+  },
+  "AVERAGE#1": {
+   "t": "n",
+   "v": 0
+  },
+  "AVERAGE#2": {
+   "t": "n",
+   "v": 0
+  },
+  "SUMPRODUCT#1": {
+   "t": "n",
+   "v": 64
+  },
+  "MMULT#1": {
+   "t": "n",
+   "v": 64
+  },
+  "NPV#1": {
+   "t": "n",
+   "v": 64
+  }
+ }
+}

@@ -8,7 +8,7 @@ import { Arr } from '../arrays/value.js'
 import { PACKAGE_NAME } from '../config.js'
 import type { Runtime } from '../runtime.js'
 import { Areas, isErr, Rng, type V } from '../values.js'
-import { once, OPERATORS, type Backend } from './walk.js'
+import { once, operator, type Backend } from './walk.js'
 
 const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
 
@@ -30,8 +30,8 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
       return one ? `scalar(${h})` : h
     },
     unary: (op, a, lift) => (lift ? `L1(${op},${a})` : `${op}(${a})`),
-    binary: (op, a, b, lift) => {
-      const f = OPERATORS[op]
+    binary: (op, a, b, lift, last) => {
+      const f = operator(op, last)
       if (lift) return `L2(${f ?? `C[${JSON.stringify(op)}]`},${a},${b})`
       return f ? `${f}(${a},${b})` : `cmp(${JSON.stringify(op)},${a},${b})`
     },
@@ -58,7 +58,7 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
 
 const key = (name: string) => (/^[A-Z][A-Z0-9_]*$/.test(name) ? `.${name}` : `[${JSON.stringify(name)}]`)
 
-export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,I,U,RO,E,R,A,X,M}=rt;'
+export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,addLast,subLast,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,I,U,RO,E,R,A,X,M}=rt;'
 
 /** The functions of a batch of formula sources, by one `new Function`. */
 export function compileSources<T = () => Arg>(rt: Runtime, sources: string[]): T[] {

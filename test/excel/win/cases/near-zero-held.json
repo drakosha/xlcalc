@@ -1,0 +1,1907 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 14.7,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "last#1",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.5-0.4-0.1"
+  },
+  {
+   "id": "last#2",
+   "group": "last",
+   "fn": "operators",
+   "formula": "1*(0.5-0.4-0.1)"
+  },
+  {
+   "id": "last#3",
+   "group": "last",
+   "fn": "operators",
+   "formula": "(0.5-0.4-0.1)"
+  },
+  {
+   "id": "last#4",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.1+0.2-P!B1"
+  },
+  {
+   "id": "last#5",
+   "group": "last",
+   "fn": "operators",
+   "formula": "SUM(0.1,0.2)-P!B1"
+  },
+  {
+   "id": "last#6",
+   "group": "last",
+   "fn": "operators",
+   "formula": "-0.1-0.2+P!B1"
+  },
+  {
+   "id": "last#7",
+   "group": "last",
+   "fn": "operators",
+   "formula": "(0.1+0.2-P!B1)/1"
+  },
+  {
+   "id": "last#8",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.1+0.2-P!B1+0"
+  },
+  {
+   "id": "last#9",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0+0.1+0.2-0.3"
+  },
+  {
+   "id": "last#10",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.1+0.2-0.3*1"
+  },
+  {
+   "id": "last#11",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.1+0.2-(0.3)"
+  },
+  {
+   "id": "last#12",
+   "group": "last",
+   "fn": "operators",
+   "formula": "(0.1+0.2)-0.3"
+  },
+  {
+   "id": "last#13",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.1-(0.3-0.2)"
+  },
+  {
+   "id": "last#14",
+   "group": "last",
+   "fn": "operators",
+   "formula": "P!B2+0.2-P!B1"
+  },
+  {
+   "id": "last#15",
+   "group": "last",
+   "fn": "operators",
+   "formula": "1-0.9-0.1"
+  },
+  {
+   "id": "last#16",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.3-0.2-0.1"
+  },
+  {
+   "id": "last#17",
+   "group": "last",
+   "fn": "operators",
+   "formula": "-0.3+0.1+0.2"
+  },
+  {
+   "id": "last#18",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.1*3-0.3"
+  },
+  {
+   "id": "last#19",
+   "group": "last",
+   "fn": "operators",
+   "formula": "TRUE-0.9-0.1"
+  },
+  {
+   "id": "last#20",
+   "group": "last",
+   "fn": "operators",
+   "formula": "\"0.1\"+0.2-0.3"
+  },
+  {
+   "id": "last#21",
+   "group": "last",
+   "fn": "operators",
+   "formula": "50%-0.4-0.1"
+  },
+  {
+   "id": "last#22",
+   "group": "last",
+   "fn": "operators",
+   "formula": "-(0.1+0.2-0.3)"
+  },
+  {
+   "id": "last#23",
+   "group": "last",
+   "fn": "operators",
+   "formula": "+0.1+0.2-0.3"
+  },
+  {
+   "id": "last#24",
+   "group": "last",
+   "fn": "operators",
+   "formula": "+(0.1+0.2-0.3)"
+  },
+  {
+   "id": "last#25",
+   "group": "last",
+   "fn": "operators",
+   "formula": "(0.1+0.2-0.3)+0"
+  },
+  {
+   "id": "last#26",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0-(0.1+0.2-0.3)"
+  },
+  {
+   "id": "last#27",
+   "group": "last",
+   "fn": "operators",
+   "formula": "2E-17-1E-17"
+  },
+  {
+   "id": "last#28",
+   "group": "last",
+   "fn": "operators",
+   "formula": "1E+15+0.3-1E+15"
+  },
+  {
+   "id": "last#29",
+   "group": "last",
+   "fn": "operators",
+   "formula": "SUM(0.1,0.2,-0.3)"
+  },
+  {
+   "id": "last#30",
+   "group": "last",
+   "fn": "operators",
+   "formula": "SUM(0.1,0.2)-0.3"
+  },
+  {
+   "id": "last#31",
+   "group": "last",
+   "fn": "operators",
+   "formula": "ROUND(0.1+0.2-0.3,30)"
+  },
+  {
+   "id": "last#32",
+   "group": "last",
+   "fn": "operators",
+   "formula": "ABS(0.1+0.2-0.3)"
+  },
+  {
+   "id": "last#33",
+   "group": "last",
+   "fn": "operators",
+   "formula": "IF(TRUE,0.1+0.2-0.3)"
+  },
+  {
+   "id": "last#34",
+   "group": "last",
+   "fn": "operators",
+   "formula": "_xlfn.LET(_xlpm.x,0.1,_xlpm.x+0.2-0.3)"
+  },
+  {
+   "id": "last#35",
+   "group": "last",
+   "fn": "operators",
+   "formula": "0.1+0.2-0.3&\"\""
+  },
+  {
+   "id": "stored#1",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A1*2^60"
+  },
+  {
+   "id": "stored#2",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A2*2^60"
+  },
+  {
+   "id": "stored#3",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A3*2^60"
+  },
+  {
+   "id": "stored#4",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A4*2^60"
+  },
+  {
+   "id": "stored#5",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A5*2^60"
+  },
+  {
+   "id": "stored#6",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A6*2^60"
+  },
+  {
+   "id": "stored#7",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A7*2^60"
+  },
+  {
+   "id": "stored#8",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A8*2^60"
+  },
+  {
+   "id": "stored#9",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A9*2^60"
+  },
+  {
+   "id": "stored#10",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A10*2^60"
+  },
+  {
+   "id": "stored#11",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A11*2^60"
+  },
+  {
+   "id": "stored#12",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A12*2^60"
+  },
+  {
+   "id": "stored#13",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A13*2^60"
+  },
+  {
+   "id": "stored#14",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A14*2^60"
+  },
+  {
+   "id": "stored#15",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A15*2^60"
+  },
+  {
+   "id": "stored#16",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A16*2^60"
+  },
+  {
+   "id": "stored#17",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A17*2^60"
+  },
+  {
+   "id": "stored#18",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A18*2^60"
+  },
+  {
+   "id": "stored#19",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A19*2^60"
+  },
+  {
+   "id": "stored#20",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A20*2^60"
+  },
+  {
+   "id": "stored#21",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A21*2^60"
+  },
+  {
+   "id": "stored#22",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A22*2^60"
+  },
+  {
+   "id": "stored#23",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A23*2^60"
+  },
+  {
+   "id": "stored#24",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A24*2^60"
+  },
+  {
+   "id": "stored#25",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A25*2^60"
+  },
+  {
+   "id": "stored#26",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A26*2^60"
+  },
+  {
+   "id": "stored#27",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A27*2^60"
+  },
+  {
+   "id": "stored#28",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A28*2^60"
+  },
+  {
+   "id": "stored#29",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A29*2^60"
+  },
+  {
+   "id": "stored#30",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A30*2^60"
+  },
+  {
+   "id": "stored#31",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A31*2^60"
+  },
+  {
+   "id": "stored#32",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A32*2^60"
+  },
+  {
+   "id": "stored#33",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A33*2^60"
+  },
+  {
+   "id": "stored#34",
+   "group": "stored",
+   "fn": "operators",
+   "formula": "P!A34*2^60"
+  },
+  {
+   "id": "array#1",
+   "group": "array",
+   "fn": "operators",
+   "formula": "P!D1*2^60"
+  },
+  {
+   "id": "array#2",
+   "group": "array",
+   "fn": "operators",
+   "formula": "P!E1*2^60"
+  },
+  {
+   "id": "array#3",
+   "group": "array",
+   "fn": "operators",
+   "formula": "P!D3*2^60"
+  },
+  {
+   "id": "sweep:1#1",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A35/2^-52"
+  },
+  {
+   "id": "sweep:1#2",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A36/2^-52"
+  },
+  {
+   "id": "sweep:1#3",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A37/2^-52"
+  },
+  {
+   "id": "sweep:1#4",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A38/2^-52"
+  },
+  {
+   "id": "sweep:1#5",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A39/2^-52"
+  },
+  {
+   "id": "sweep:1#6",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A40/2^-52"
+  },
+  {
+   "id": "sweep:1#7",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A41/2^-52"
+  },
+  {
+   "id": "sweep:1#8",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A42/2^-52"
+  },
+  {
+   "id": "sweep:1#9",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A43/2^-52"
+  },
+  {
+   "id": "sweep:1#10",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A44/2^-52"
+  },
+  {
+   "id": "sweep:1#11",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A45/2^-52"
+  },
+  {
+   "id": "sweep:1#12",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A46/2^-52"
+  },
+  {
+   "id": "sweep:1#13",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A47/2^-52"
+  },
+  {
+   "id": "sweep:1#14",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A48/2^-52"
+  },
+  {
+   "id": "sweep:1#15",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A49/2^-52"
+  },
+  {
+   "id": "sweep:1#16",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A50/2^-52"
+  },
+  {
+   "id": "sweep:1#17",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A51/2^-52"
+  },
+  {
+   "id": "sweep:1#18",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A52/2^-52"
+  },
+  {
+   "id": "sweep:1#19",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A53/2^-52"
+  },
+  {
+   "id": "sweep:1#20",
+   "group": "sweep:1",
+   "fn": "operators",
+   "formula": "P!A54/2^-52"
+  },
+  {
+   "id": "sweep:1.9#1",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A55/2^-52"
+  },
+  {
+   "id": "sweep:1.9#2",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A56/2^-52"
+  },
+  {
+   "id": "sweep:1.9#3",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A57/2^-52"
+  },
+  {
+   "id": "sweep:1.9#4",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A58/2^-52"
+  },
+  {
+   "id": "sweep:1.9#5",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A59/2^-52"
+  },
+  {
+   "id": "sweep:1.9#6",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A60/2^-52"
+  },
+  {
+   "id": "sweep:1.9#7",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A61/2^-52"
+  },
+  {
+   "id": "sweep:1.9#8",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A62/2^-52"
+  },
+  {
+   "id": "sweep:1.9#9",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A63/2^-52"
+  },
+  {
+   "id": "sweep:1.9#10",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A64/2^-52"
+  },
+  {
+   "id": "sweep:1.9#11",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A65/2^-52"
+  },
+  {
+   "id": "sweep:1.9#12",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A66/2^-52"
+  },
+  {
+   "id": "sweep:1.9#13",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A67/2^-52"
+  },
+  {
+   "id": "sweep:1.9#14",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A68/2^-52"
+  },
+  {
+   "id": "sweep:1.9#15",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A69/2^-52"
+  },
+  {
+   "id": "sweep:1.9#16",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A70/2^-52"
+  },
+  {
+   "id": "sweep:1.9#17",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A71/2^-52"
+  },
+  {
+   "id": "sweep:1.9#18",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A72/2^-52"
+  },
+  {
+   "id": "sweep:1.9#19",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A73/2^-52"
+  },
+  {
+   "id": "sweep:1.9#20",
+   "group": "sweep:1.9",
+   "fn": "operators",
+   "formula": "P!A74/2^-52"
+  },
+  {
+   "id": "sweep:9.5#1",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A75/2^-49"
+  },
+  {
+   "id": "sweep:9.5#2",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A76/2^-49"
+  },
+  {
+   "id": "sweep:9.5#3",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A77/2^-49"
+  },
+  {
+   "id": "sweep:9.5#4",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A78/2^-49"
+  },
+  {
+   "id": "sweep:9.5#5",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A79/2^-49"
+  },
+  {
+   "id": "sweep:9.5#6",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A80/2^-49"
+  },
+  {
+   "id": "sweep:9.5#7",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A81/2^-49"
+  },
+  {
+   "id": "sweep:9.5#8",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A82/2^-49"
+  },
+  {
+   "id": "sweep:9.5#9",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A83/2^-49"
+  },
+  {
+   "id": "sweep:9.5#10",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A84/2^-49"
+  },
+  {
+   "id": "sweep:9.5#11",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A85/2^-49"
+  },
+  {
+   "id": "sweep:9.5#12",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A86/2^-49"
+  },
+  {
+   "id": "sweep:9.5#13",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A87/2^-49"
+  },
+  {
+   "id": "sweep:9.5#14",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A88/2^-49"
+  },
+  {
+   "id": "sweep:9.5#15",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A89/2^-49"
+  },
+  {
+   "id": "sweep:9.5#16",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A90/2^-49"
+  },
+  {
+   "id": "sweep:9.5#17",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A91/2^-49"
+  },
+  {
+   "id": "sweep:9.5#18",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A92/2^-49"
+  },
+  {
+   "id": "sweep:9.5#19",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A93/2^-49"
+  },
+  {
+   "id": "sweep:9.5#20",
+   "group": "sweep:9.5",
+   "fn": "operators",
+   "formula": "P!A94/2^-49"
+  },
+  {
+   "id": "sweep:1E+15#1",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A95/0.125"
+  },
+  {
+   "id": "sweep:1E+15#2",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A96/0.125"
+  },
+  {
+   "id": "sweep:1E+15#3",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A97/0.125"
+  },
+  {
+   "id": "sweep:1E+15#4",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A98/0.125"
+  },
+  {
+   "id": "sweep:1E+15#5",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A99/0.125"
+  },
+  {
+   "id": "sweep:1E+15#6",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A100/0.125"
+  },
+  {
+   "id": "sweep:1E+15#7",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A101/0.125"
+  },
+  {
+   "id": "sweep:1E+15#8",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A102/0.125"
+  },
+  {
+   "id": "sweep:1E+15#9",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A103/0.125"
+  },
+  {
+   "id": "sweep:1E+15#10",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A104/0.125"
+  },
+  {
+   "id": "sweep:1E+15#11",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A105/0.125"
+  },
+  {
+   "id": "sweep:1E+15#12",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A106/0.125"
+  },
+  {
+   "id": "sweep:1E+15#13",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A107/0.125"
+  },
+  {
+   "id": "sweep:1E+15#14",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A108/0.125"
+  },
+  {
+   "id": "sweep:1E+15#15",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A109/0.125"
+  },
+  {
+   "id": "sweep:1E+15#16",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A110/0.125"
+  },
+  {
+   "id": "sweep:1E+15#17",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A111/0.125"
+  },
+  {
+   "id": "sweep:1E+15#18",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A112/0.125"
+  },
+  {
+   "id": "sweep:1E+15#19",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A113/0.125"
+  },
+  {
+   "id": "sweep:1E+15#20",
+   "group": "sweep:1E+15",
+   "fn": "operators",
+   "formula": "P!A114/0.125"
+  },
+  {
+   "id": "sweep:1E-200#1",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A115/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#2",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A116/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#3",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A117/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#4",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A118/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#5",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A119/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#6",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A120/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#7",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A121/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#8",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A122/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#9",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A123/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#10",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A124/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#11",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A125/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#12",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A126/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#13",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A127/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#14",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A128/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#15",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A129/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#16",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A130/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#17",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A131/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#18",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A132/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#19",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A133/2^-717"
+  },
+  {
+   "id": "sweep:1E-200#20",
+   "group": "sweep:1E-200",
+   "fn": "operators",
+   "formula": "P!A134/2^-717"
+  },
+  {
+   "id": "sweep:k#1",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A135/2^-40"
+  },
+  {
+   "id": "sweep:k#2",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A136/2^-41"
+  },
+  {
+   "id": "sweep:k#3",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A137/2^-42"
+  },
+  {
+   "id": "sweep:k#4",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A138/2^-43"
+  },
+  {
+   "id": "sweep:k#5",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A139/2^-44"
+  },
+  {
+   "id": "sweep:k#6",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A140/2^-45"
+  },
+  {
+   "id": "sweep:k#7",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A141/2^-46"
+  },
+  {
+   "id": "sweep:k#8",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A142/2^-47"
+  },
+  {
+   "id": "sweep:k#9",
+   "group": "sweep:k",
+   "fn": "operators",
+   "formula": "P!A143/2^-48"
+  },
+  {
+   "id": "sweep:back#1",
+   "group": "sweep:back",
+   "fn": "operators",
+   "formula": "P!A144/2^-52"
+  },
+  {
+   "id": "sweep:back#2",
+   "group": "sweep:back",
+   "fn": "operators",
+   "formula": "P!A145/2^-52"
+  },
+  {
+   "id": "sweep:back#3",
+   "group": "sweep:back",
+   "fn": "operators",
+   "formula": "P!A146/2^-52"
+  },
+  {
+   "id": "sweep:back#4",
+   "group": "sweep:back",
+   "fn": "operators",
+   "formula": "P!A147/2^-52"
+  },
+  {
+   "id": "sweep:back#5",
+   "group": "sweep:back",
+   "fn": "operators",
+   "formula": "P!A148/2^-52"
+  },
+  {
+   "id": "sweep:back#6",
+   "group": "sweep:back",
+   "fn": "operators",
+   "formula": "P!A149/2^-52"
+  },
+  {
+   "id": "sweep:back#7",
+   "group": "sweep:back",
+   "fn": "operators",
+   "formula": "P!A150/2^-52"
+  },
+  {
+   "id": "sweep:back#8",
+   "group": "sweep:back",
+   "fn": "operators",
+   "formula": "P!A151/2^-52"
+  }
+ ],
+ "values": {
+  "last#1": {
+   "t": "n",
+   "v": 0
+  },
+  "last#2": {
+   "t": "n",
+   "v": -2.7755575615628914e-17
+  },
+  "last#3": {
+   "t": "n",
+   "v": -2.7755575615628914e-17
+  },
+  "last#4": {
+   "t": "n",
+   "v": 0
+  },
+  "last#5": {
+   "t": "n",
+   "v": 0
+  },
+  "last#6": {
+   "t": "n",
+   "v": 0
+  },
+  "last#7": {
+   "t": "n",
+   "v": 5.551115123125783e-17
+  },
+  "last#8": {
+   "t": "n",
+   "v": 5.551115123125783e-17
+  },
+  "last#9": {
+   "t": "n",
+   "v": 0
+  },
+  "last#10": {
+   "t": "n",
+   "v": 0
+  },
+  "last#11": {
+   "t": "n",
+   "v": 0
+  },
+  "last#12": {
+   "t": "n",
+   "v": 0
+  },
+  "last#13": {
+   "t": "n",
+   "v": 0
+  },
+  "last#14": {
+   "t": "n",
+   "v": 0
+  },
+  "last#15": {
+   "t": "n",
+   "v": 0
+  },
+  "last#16": {
+   "t": "n",
+   "v": 0
+  },
+  "last#17": {
+   "t": "n",
+   "v": 0
+  },
+  "last#18": {
+   "t": "n",
+   "v": 0
+  },
+  "last#19": {
+   "t": "n",
+   "v": 0
+  },
+  "last#20": {
+   "t": "n",
+   "v": 0
+  },
+  "last#21": {
+   "t": "n",
+   "v": 0
+  },
+  "last#22": {
+   "t": "n",
+   "v": -5.551115123125783e-17
+  },
+  "last#23": {
+   "t": "n",
+   "v": 0
+  },
+  "last#24": {
+   "t": "n",
+   "v": 5.551115123125783e-17
+  },
+  "last#25": {
+   "t": "n",
+   "v": 5.551115123125783e-17
+  },
+  "last#26": {
+   "t": "n",
+   "v": -5.551115123125783e-17
+  },
+  "last#27": {
+   "t": "n",
+   "v": 1e-17
+  },
+  "last#28": {
+   "t": "n",
+   "v": 0
+  },
+  "last#29": {
+   "t": "n",
+   "v": 0
+  },
+  "last#30": {
+   "t": "n",
+   "v": 0
+  },
+  "last#31": {
+   "t": "n",
+   "v": 5.5511151231258e-17
+  },
+  "last#32": {
+   "t": "n",
+   "v": 5.551115123125783e-17
+  },
+  "last#33": {
+   "t": "n",
+   "v": 5.551115123125783e-17
+  },
+  "last#34": {
+   "t": "n",
+   "v": 5.551115123125783e-17
+  },
+  "last#35": {
+   "t": "s",
+   "v": "5.55111512312578E-17"
+  },
+  "stored#1": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#2": {
+   "t": "n",
+   "v": -32
+  },
+  "stored#3": {
+   "t": "n",
+   "v": -32
+  },
+  "stored#4": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#5": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#6": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#7": {
+   "t": "n",
+   "v": 64
+  },
+  "stored#8": {
+   "t": "n",
+   "v": 64
+  },
+  "stored#9": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#10": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#11": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#12": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#13": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#14": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#15": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#16": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#17": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#18": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#19": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#20": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#21": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#22": {
+   "t": "n",
+   "v": -64
+  },
+  "stored#23": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#24": {
+   "t": "n",
+   "v": 64
+  },
+  "stored#25": {
+   "t": "n",
+   "v": 64
+  },
+  "stored#26": {
+   "t": "n",
+   "v": -64
+  },
+  "stored#27": {
+   "t": "n",
+   "v": 11.52921504606847
+  },
+  "stored#28": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#29": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#30": {
+   "t": "n",
+   "v": 0
+  },
+  "stored#31": {
+   "t": "n",
+   "v": 64.0000000000002
+  },
+  "stored#32": {
+   "t": "n",
+   "v": 64
+  },
+  "stored#33": {
+   "t": "n",
+   "v": 64
+  },
+  "stored#34": {
+   "t": "n",
+   "v": 64
+  },
+  "array#1": {
+   "t": "n",
+   "v": 0
+  },
+  "array#2": {
+   "t": "n",
+   "v": 461168601842738750
+  },
+  "array#3": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1#1": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1#2": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1#3": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1#4": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1#5": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1#6": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1#7": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1#8": {
+   "t": "n",
+   "v": 8
+  },
+  "sweep:1#9": {
+   "t": "n",
+   "v": 9
+  },
+  "sweep:1#10": {
+   "t": "n",
+   "v": 10
+  },
+  "sweep:1#11": {
+   "t": "n",
+   "v": 11
+  },
+  "sweep:1#12": {
+   "t": "n",
+   "v": 12
+  },
+  "sweep:1#13": {
+   "t": "n",
+   "v": 13
+  },
+  "sweep:1#14": {
+   "t": "n",
+   "v": 14
+  },
+  "sweep:1#15": {
+   "t": "n",
+   "v": 15
+  },
+  "sweep:1#16": {
+   "t": "n",
+   "v": 16
+  },
+  "sweep:1#17": {
+   "t": "n",
+   "v": 17
+  },
+  "sweep:1#18": {
+   "t": "n",
+   "v": 18
+  },
+  "sweep:1#19": {
+   "t": "n",
+   "v": 19
+  },
+  "sweep:1#20": {
+   "t": "n",
+   "v": 20
+  },
+  "sweep:1.9#1": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1.9#2": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1.9#3": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1.9#4": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1.9#5": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1.9#6": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1.9#7": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1.9#8": {
+   "t": "n",
+   "v": 8
+  },
+  "sweep:1.9#9": {
+   "t": "n",
+   "v": 9
+  },
+  "sweep:1.9#10": {
+   "t": "n",
+   "v": 10
+  },
+  "sweep:1.9#11": {
+   "t": "n",
+   "v": 11
+  },
+  "sweep:1.9#12": {
+   "t": "n",
+   "v": 12
+  },
+  "sweep:1.9#13": {
+   "t": "n",
+   "v": 13
+  },
+  "sweep:1.9#14": {
+   "t": "n",
+   "v": 14
+  },
+  "sweep:1.9#15": {
+   "t": "n",
+   "v": 15
+  },
+  "sweep:1.9#16": {
+   "t": "n",
+   "v": 16
+  },
+  "sweep:1.9#17": {
+   "t": "n",
+   "v": 17
+  },
+  "sweep:1.9#18": {
+   "t": "n",
+   "v": 18
+  },
+  "sweep:1.9#19": {
+   "t": "n",
+   "v": 19
+  },
+  "sweep:1.9#20": {
+   "t": "n",
+   "v": 20
+  },
+  "sweep:9.5#1": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:9.5#2": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:9.5#3": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:9.5#4": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:9.5#5": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:9.5#6": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:9.5#7": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:9.5#8": {
+   "t": "n",
+   "v": 8
+  },
+  "sweep:9.5#9": {
+   "t": "n",
+   "v": 9
+  },
+  "sweep:9.5#10": {
+   "t": "n",
+   "v": 10
+  },
+  "sweep:9.5#11": {
+   "t": "n",
+   "v": 11
+  },
+  "sweep:9.5#12": {
+   "t": "n",
+   "v": 12
+  },
+  "sweep:9.5#13": {
+   "t": "n",
+   "v": 13
+  },
+  "sweep:9.5#14": {
+   "t": "n",
+   "v": 14
+  },
+  "sweep:9.5#15": {
+   "t": "n",
+   "v": 15
+  },
+  "sweep:9.5#16": {
+   "t": "n",
+   "v": 16
+  },
+  "sweep:9.5#17": {
+   "t": "n",
+   "v": 17
+  },
+  "sweep:9.5#18": {
+   "t": "n",
+   "v": 18
+  },
+  "sweep:9.5#19": {
+   "t": "n",
+   "v": 19
+  },
+  "sweep:9.5#20": {
+   "t": "n",
+   "v": 20
+  },
+  "sweep:1E+15#1": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E+15#2": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E+15#3": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E+15#4": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E+15#5": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E+15#6": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E+15#7": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E+15#8": {
+   "t": "n",
+   "v": 8
+  },
+  "sweep:1E+15#9": {
+   "t": "n",
+   "v": 9
+  },
+  "sweep:1E+15#10": {
+   "t": "n",
+   "v": 10
+  },
+  "sweep:1E+15#11": {
+   "t": "n",
+   "v": 11
+  },
+  "sweep:1E+15#12": {
+   "t": "n",
+   "v": 12
+  },
+  "sweep:1E+15#13": {
+   "t": "n",
+   "v": 13
+  },
+  "sweep:1E+15#14": {
+   "t": "n",
+   "v": 14
+  },
+  "sweep:1E+15#15": {
+   "t": "n",
+   "v": 15
+  },
+  "sweep:1E+15#16": {
+   "t": "n",
+   "v": 16
+  },
+  "sweep:1E+15#17": {
+   "t": "n",
+   "v": 17
+  },
+  "sweep:1E+15#18": {
+   "t": "n",
+   "v": 18
+  },
+  "sweep:1E+15#19": {
+   "t": "n",
+   "v": 19
+  },
+  "sweep:1E+15#20": {
+   "t": "n",
+   "v": 20
+  },
+  "sweep:1E-200#1": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E-200#2": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E-200#3": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E-200#4": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E-200#5": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E-200#6": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E-200#7": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:1E-200#8": {
+   "t": "n",
+   "v": 8
+  },
+  "sweep:1E-200#9": {
+   "t": "n",
+   "v": 9
+  },
+  "sweep:1E-200#10": {
+   "t": "n",
+   "v": 10
+  },
+  "sweep:1E-200#11": {
+   "t": "n",
+   "v": 11
+  },
+  "sweep:1E-200#12": {
+   "t": "n",
+   "v": 12
+  },
+  "sweep:1E-200#13": {
+   "t": "n",
+   "v": 13
+  },
+  "sweep:1E-200#14": {
+   "t": "n",
+   "v": 14
+  },
+  "sweep:1E-200#15": {
+   "t": "n",
+   "v": 15
+  },
+  "sweep:1E-200#16": {
+   "t": "n",
+   "v": 16
+  },
+  "sweep:1E-200#17": {
+   "t": "n",
+   "v": 17
+  },
+  "sweep:1E-200#18": {
+   "t": "n",
+   "v": 18
+  },
+  "sweep:1E-200#19": {
+   "t": "n",
+   "v": 19
+  },
+  "sweep:1E-200#20": {
+   "t": "n",
+   "v": 20
+  },
+  "sweep:k#1": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:k#2": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:k#3": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:k#4": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:k#5": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:k#6": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:k#7": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:k#8": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:k#9": {
+   "t": "n",
+   "v": 1
+  },
+  "sweep:back#1": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:back#2": {
+   "t": "n",
+   "v": -8
+  },
+  "sweep:back#3": {
+   "t": "n",
+   "v": -9
+  },
+  "sweep:back#4": {
+   "t": "n",
+   "v": -16
+  },
+  "sweep:back#5": {
+   "t": "n",
+   "v": 0
+  },
+  "sweep:back#6": {
+   "t": "n",
+   "v": 8
+  },
+  "sweep:back#7": {
+   "t": "n",
+   "v": 9
+  },
+  "sweep:back#8": {
+   "t": "n",
+   "v": 16
+  }
+ }
+}

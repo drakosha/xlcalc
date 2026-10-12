@@ -8,11 +8,13 @@ import { KEY_BYTES, POSITION_BYTES, RangeCache, VALUE_BYTES, type CacheBudget } 
 import { RangePrefixes } from './range-prefix.js'
 import type { Area } from './spill/state.js'
 import { cellCount } from './structure/area.js'
-import { E, fitNumber, isErr, type Rng, type CErr, type V } from './values.js'
+import { E, fitNumber, isErr, nearZero, type Rng, type CErr, type V } from './values.js'
 
 export type AggregateName = 'SUM' | 'COUNT' | 'COUNTA' | 'MIN' | 'MAX' | 'AVERAGE'
 interface Partial {
   sum: number
+  /** The sum before the last number: SUM's last addition takes Excel's 0 near it (`nearZero`). */
+  before: number
   count: number
   filled: number
   min: number
@@ -21,6 +23,9 @@ interface Partial {
 }
 interface Mean {
   sum: CompensatedSum
+  /** The plain sum and the one before the last number: AVERAGE is 0 where SUM is (`excelSum`). */
+  plain: number
+  before: number
   count: number
   first: number
   constant: boolean
@@ -33,6 +38,7 @@ const CRITERIA = 64
 function addNumber(result: Partial, value: V): void {
   if (value !== null) result.filled++
   if (typeof value === 'number') {
+    result.before = result.sum
     result.sum += value
     result.count++
     if (value < result.min) result.min = value
@@ -43,6 +49,8 @@ function addNumber(result: Partial, value: V): void {
 function addMean(result: Mean, value: V): void {
   if (typeof value === 'number') {
     result.sum.add(value)
+    result.before = result.plain
+    result.plain += value
     if (result.count++ === 0) result.first = value
     result.constant &&= value === result.first
   } else if (isErr(value)) result.error ??= value
@@ -58,12 +66,12 @@ export class RangeAggregates {
   constructor(private readonly budget: CacheBudget) {
     this.queried = new RangeCache(budget)
     this.numbers = new RangePrefixes<Partial>({
-      create: () => ({ sum: 0, count: 0, filled: 0, min: Infinity, max: -Infinity }),
-      copy: (value: Partial) => ({ ...value }), bytes: 96,
+      create: () => ({ sum: 0, before: 0, count: 0, filled: 0, min: Infinity, max: -Infinity }),
+      copy: (value: Partial) => ({ ...value }), bytes: 104,
     }, budget)
     this.means = new RangePrefixes<Mean>({
-      create: () => ({ sum: new CompensatedSum(), count: 0, first: 0, constant: true }),
-      copy: (value: Mean) => ({ ...value, sum: value.sum.copy() }), bytes: 128,
+      create: () => ({ sum: new CompensatedSum(), plain: 0, before: 0, count: 0, first: 0, constant: true }),
+      copy: (value: Mean) => ({ ...value, sum: value.sum.copy() }), bytes: 144,
     }, budget)
   }
 
@@ -94,6 +102,7 @@ export class RangeAggregates {
       const result = this.means.read(range, bounds, cell, addMean)
       if (result.error) return result.error
       if (!result.count) return E.DIV0
+      if (nearZero(result.before, result.plain) === 0) return 0
       const value = meanOf(result.sum, result.count, result.first, result.constant)
       return value === undefined ? undefined : fitNumber(value)
     }
@@ -101,7 +110,7 @@ export class RangeAggregates {
     if (name === 'COUNT') return result.count
     if (name === 'COUNTA') return result.filled
     if (result.error) return result.error
-    return fitNumber(name === 'SUM' ? result.sum : result.count === 0 ? 0 : name === 'MIN' ? result.min : result.max)
+    return fitNumber(name === 'SUM' ? nearZero(result.before, result.sum) : result.count === 0 ? 0 : name === 'MIN' ? result.min : result.max)
   }
 
   countIf(range: Rng, value: V, rules: CritRules, bounds: () => Bounds, cell: Cell): number | undefined {

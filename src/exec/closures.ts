@@ -6,7 +6,7 @@
 import type { Arg } from '../args.js'
 import type { Runtime } from '../runtime.js'
 import { Areas, type V } from '../values.js'
-import { once, OPERATORS, type Backend, type Operator } from './walk.js'
+import { once, operator, type Backend, type Operator } from './walk.js'
 
 type Fn = (parameters?: readonly Arg[]) => Arg
 
@@ -45,8 +45,8 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
       const f = op1(op)
       return lift ? (p) => L1(f, a(p)) : (p) => f(a(p))
     },
-    binary: (op, a, b, lift) => {
-      const name = OPERATORS[op]
+    binary: (op, a, b, lift, last) => {
+      const name = operator(op, last)
       const f = name ? op2(name) : undefined
       if (lift) {
         const g = f ?? C[op]

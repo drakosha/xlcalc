@@ -6,7 +6,7 @@
  * in the books, so the files are the Mac's, but are not read.
  */
 import { writeFileSync } from 'node:fs'
-import type { RangeRef } from '../../src/contract.js'
+import type { CellValue, RangeRef } from '../../src/contract.js'
 import { inParts } from '../coverage/book.js'
 import { fromBgr } from '../coverage/cond/cases.js'
 import { cellsOf as rectCells, eachRectCell, editOf, MIRRORS, refusedOf, writeCaseBook, type RectsAnswer } from '../coverage/case-book.js'
@@ -23,7 +23,7 @@ import type { TableAnswer, TableCase, TableSet } from '../coverage/tables/cases.
 import { checkCycles, hideRange, type StoredWorkbook } from '../coverage/workbook.js'
 import type { Step as BookStep, WorkbookAnswer, WorkbookCase, WorkbookSet } from '../coverage/workbook/cases.js'
 import { formatAddress } from '../../src/model.js'
-import { writeXlsx } from '../../src/xlsx.js'
+import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { valOf, winFile, type WinCell } from './functions.js'
 import { again, inJobs, metaOf, type Answer, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -181,6 +181,7 @@ export async function stepSpill(set: string, tag: Tag, e: WinEnv): Promise<void>
 /** A workbook step as steps of `xl.ps1`; a read takes the rectangles and the text of the cells to show. */
 function bookSteps(s: BookStep, c: WorkbookCase, shows: { sheet: string; cell: string }[]): Step[] {
   if (s === 'full' || s === 'calc') return [{ do: s }]
+  if (s === 'save') return [{ do: 'saveAs' }]
   if (s === 'read') return [...readSteps(c.read), ...shows.map((x) => ({ do: 'shown', sheet: x.sheet, cells: [x.cell] }))]
   if ('set' in s) {
     const { sheet, cell, value } = s.set
@@ -194,6 +195,17 @@ function bookSteps(s: BookStep, c: WorkbookCase, shows: { sheet: string; cell: s
   return [{ do: 'filter', ...s.filter }]
 }
 
+/** What a file Excel saved stores for the cells of the rectangles, by `Sheet!A1`. */
+async function savedValues(read: RangeRef[], saved: Uint8Array): Promise<Record<string, CellValue>> {
+  const { cached } = await readXlsx(saved)
+  const out: Record<string, CellValue> = {}
+  for (const g of read) {
+    const cells = cached.sheets.find((x) => x.name === g.sheet)?.cells ?? {}
+    for (const a of rectCells(g.range).addrs) if (a in cells) out[`${g.sheet}!${a}`] = cells[a].value
+  }
+  return out
+}
+
 export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = (await setModule<WorkbookSet>('workbook', set)).buildWorkbookCases()
   const file = winFile(`workbook/${set}.json`)
@@ -202,6 +214,8 @@ export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<vo
   const failed: string[] = []
   const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
   const todo = cases.filter((c) => !answers[c.id])
+  // the files Excel saved at a case's `save` step, read once the jobs are done
+  const saved = new Map<string, Uint8Array>()
   const plan = (c: WorkbookCase) => {
     const shows = (c.show ?? []).flatMap((g) => rectCells(g.range).addrs.map((cell) => ({ sheet: g.sheet, cell })))
     return { shows, steps: (c.steps ?? ['full', 'read']).map((s) => ({ s, xl: bookSteps(s, c, shows) })) }
@@ -210,7 +224,7 @@ export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<vo
     `workbook-${set}`,
     todo,
     async (c, f) => {
-      checkCycles(c)
+      if (!c.cycle) checkCycles(c)
       // the mirror sheets stay, under the case's names: they change a cycle's first computation (`FileParts.mirrors`)
       await writeCaseBook(c.book, c.read, f, c.file)
       return { file: f, steps: [{ do: 'settings' }, ...plan(c).steps.flatMap((x) => x.xl)] }
@@ -229,10 +243,12 @@ export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<vo
         reads.push({ ...rects, ...(shows.length ? { shown: Object.fromEntries(shows.map((x, i) => [`${x.sheet}!${x.cell}`, texts[i]])) } : {}) })
       }
       answers[c.id] = { settings: { iteration, count, delta }, reads }
+      if (a.saved) saved.set(c.id, a.saved)
     },
     (c, why) => failed.push(`${c.id}: ${why}`),
     save,
   )
+  for (const c of todo) if (saved.has(c.id)) answers[c.id].saved = await savedValues(c.read, saved.get(c.id)!)
   save()
   console.log(answeredLine(`workbook ${set}`, todo.length, answers, cases))
   if (failed.length) throw new Error(`workbook ${set}: Excel did not load ${failed.join('; ')}`)

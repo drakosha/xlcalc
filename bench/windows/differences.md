@@ -13,6 +13,7 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | areas | 1137 | 1137 | 1137 | 1137 | 0 |
 | en-US | arity | 62 | 62 | 62 | 62 | 0 |
 | en-US | arrays | 2428 | 2428 | 2428 | 2428 | 0 |
+| en-US | binom-sumx-held | 44 | 44 | 44 | 44 | 0 |
 | en-US | char-code | 305 | 298 | 305 | 298 | 0 |
 | en-US | collation | 174 | 174 | 174 | 174 | 0 |
 | en-US | complex-text | 156 | 156 | 156 | 156 | 0 |
@@ -31,23 +32,33 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | known-held | 37 | 37 | 37 | 37 | 0 |
 | en-US | lead-spaces | 91 | 91 | 91 | 91 | 0 |
 | en-US | let-held | 33 | 33 | 33 | 33 | 0 |
-| en-US | let | 82 | 82 | 80 | 80 | 0 |
+| en-US | let | 82 | 82 | 81 | 81 | 0 |
 | en-US | logical-text | 51 | 51 | 51 | 51 | 0 |
 | en-US | lookup-held | 19 | 19 | 19 | 19 | 0 |
 | en-US | lookup-own-held | 9 | 9 | 5 | 5 | 0 |
 | en-US | lookup-rules | 14 | 14 | 14 | 14 | 0 |
 | en-US | matheng | 3163 | 3151 | 3151 | 3151 | 0 |
+| en-US | name-case-held | 23 | 16 | 22 | 16 | 1 |
 | en-US | near-integer | 4220 | 4220 | 4219 | 4219 | 0 |
+| en-US | near-zero-held | 189 | 189 | 189 | 189 | 0 |
 | en-US | omit-held | 55 | 55 | 55 | 55 | 0 |
 | en-US | omit | 4139 | 4139 | 4139 | 4139 | 0 |
 | en-US | pct-text | 76 | 76 | 76 | 76 | 0 |
+| en-US | power-bound-held | 7 | 7 | 7 | 7 | 0 |
+| en-US | power-edges-held | 28 | 28 | 28 | 28 | 0 |
+| en-US | power-neg-held | 56 | 56 | 56 | 56 | 0 |
 | en-US | ref-deps | 11 | 11 | 11 | 11 | 0 |
+| en-US | seconds-held | 420 | 420 | 420 | 420 | 0 |
 | en-US | sheet-cells | 13 | 13 | 13 | 13 | 0 |
 | en-US | single-values | 66 | 66 | 66 | 66 | 0 |
 | en-US | sortby-one-held | 19 | 19 | 19 | 19 | 0 |
 | en-US | stat-edges-held | 111 | 111 | 72 | 72 | 0 |
 | en-US | stat | 2678 | 2676 | 2663 | 2663 | 0 |
 | en-US | subtotal | 503 | 503 | 503 | 503 | 0 |
+| en-US | sum-zero-held | 34 | 34 | 34 | 34 | 0 |
+| en-US | sumproduct-held | 17 | 17 | 17 | 17 | 0 |
+| en-US | sumx-cell-held | 34 | 34 | 34 | 34 | 0 |
+| en-US | tests-cell-held | 17 | 17 | 17 | 17 | 0 |
 | en-US | text-format-more | 22 | 22 | 22 | 22 | 0 |
 | en-US | text-format | 479 | 474 | 479 | 474 | 0 |
 | en-US | text | 1229 | 1229 | 1229 | 1229 | 0 |
@@ -100,6 +111,13 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | matheng | CSC#9 | CSC | `_xlfn.CSC(-PI())` | -8165619676597685 | -8162276138809536 | -8165619676597690 | Mac | platform: winMath |
 | en-US | matheng | COT#7 | COT | `_xlfn.COT(PI())` | -8165619676597685 | -8162276138809536 | -8165619676597690 | Mac | platform: winMath |
 | en-US | matheng | COT#9 | COT | `_xlfn.COT(-PI())` | 8165619676597685 | 8162276138809536 | 8165619676597690 | Mac | platform: winMath |
+| en-US | name-case-held | bool#1 | IF | `falſe` | false | #NAME | #NAME | Windows | platform: the engine follows Windows |
+| en-US | name-case-held | bool#2 | IF | `FALſE` | false | #NAME | #NAME | Windows | platform: the engine follows Windows |
+| en-US | name-case-held | bool#3 | IF | `TYPE(falſe)` | 4 | 16 | #NAME | neither | platform: winNameValue |
+| en-US | name-case-held | bool#4 | IF | `IF(falſe,1,2)` | 2 | #NAME | #NAME | Windows | platform: the engine follows Windows |
+| en-US | name-case-held | bool#6 | IF | `NOT(falſe)` | true | #NAME | #NAME | Windows | platform: the engine follows Windows |
+| en-US | name-case-held | let#2 | LET | `_xlfn.LET(_xlpm.x,1,falſe)` | false | #NAME | #NAME | Windows | platform: the engine follows Windows |
+| en-US | name-case-held | text#1 | IF | `IF("falſe",1,2)` | 2 | #VALUE | #VALUE | Windows | platform: the engine follows Windows |
 | en-US | stat | WEIBULL#28 | WEIBULL | `WEIBULL(5,2,1E-300,FALSE)` | #DIV0 | #NUM | #DIV0 | Mac | platform: winWeibull |
 | en-US | stat | WEIBULL.DIST#28 | WEIBULL.DIST | `_xlfn.WEIBULL.DIST(5,2,1E-300,FALSE)` | #DIV0 | #NUM | #DIV0 | Mac | platform: winWeibull |
 | en-US | text-format | date#78 | TEXT | `TEXT(45688.75,"[$-419]mmmm")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
@@ -291,7 +309,6 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | fuzz | 1#947 | `_xlfn.TEXTJOIN(";",FALSE,RATE(48,-200,8000,4,D!A15,0.5))` | "0.00803735952148241" | "0.00803735952120296" | textDigits |
 | en-US | fuzz | 1#1327 | `_xlfn.TEXTJOIN(";",FALSE,IRR(D!I1:I5))` | "0.196309310268599" | "0.1963093102686" | textDigits |
 | en-US | fuzz | 2#472 | `_xlfn.TEXTJOIN(";",FALSE,FV(0.005,10,-200,7,TRUE))` | "2048.47532711544" | "2048.47532711546" | textDigits |
-| en-US | let | let:file#1 | `_xlfn.LET(_xlpm.A1,1,_xlpm.A1)` | 1 | #ERROR | letFileName |
 | en-US | let | let:file#5 | `_xlfn.LET(_xlpm.TRUE,1,_xlpm.TRUE)` | 1 | #ERROR | letFileName |
 | en-US | lookup-own-held | LOOKUP#5 | `Lv!C1` | "" | #CYCLE | lookupReadZone |
 | en-US | lookup-own-held | LOOKUP#7 | `Lq!E10` | "F" | #CYCLE | lookupReadZone |
