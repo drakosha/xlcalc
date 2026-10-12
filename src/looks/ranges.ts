@@ -8,13 +8,13 @@
  */
 import type { LookRange } from '../contract.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
+import { lowerBound } from '../sorted.js'
 import { areaText, parseRange, type Rect } from '../structure/area.js'
 import { Layer, LayerBuilder, LookTable, NONE, patternOf, type Pattern } from './layer.js'
 
 /** The runs of `q` over the columns where it differs from `base`: `[c1, c2, look]`, NONE where `q` has no look. */
-export function difference(base: Pattern, q: Pattern): number[] {
+function difference(base: Pattern, q: Pattern): number[] {
   const out: number[] = []
-  const lookAt = (p: Pattern, k: number) => (k < p.length ? p[k + 2] : NONE)
   // walk both patterns by the columns where either changes
   let [i, j, c] = [0, 0, 0]
   while (c < MAX_COLS) {
@@ -22,8 +22,8 @@ export function difference(base: Pattern, q: Pattern): number[] {
     while (j < q.length && q[j + 1] < c) j += 3
     const inBase = i < base.length && base[i] <= c
     const inQ = j < q.length && q[j] <= c
-    const a = inBase ? lookAt(base, i) : NONE
-    const b = inQ ? lookAt(q, j) : NONE
+    const a = inBase ? base[i + 2] : NONE
+    const b = inQ ? q[j + 2] : NONE
     // the next column where either pattern changes
     const end = Math.min(inBase ? base[i + 1] + 1 : i < base.length ? base[i] : MAX_COLS, inQ ? q[j + 1] + 1 : j < q.length ? q[j] : MAX_COLS)
     if (a !== b) {
@@ -143,16 +143,7 @@ function paint(xs: Placed[]): Pattern {
   return patternOf(out)
 }
 
-/** The place in a sorted list where `v` is, or would go. */
-function placeIn(list: number[], v: number): number {
-  let [lo, hi] = [0, list.length]
-  while (lo < hi) {
-    const m = (lo + hi) >> 1
-    if (list[m] < v) lo = m + 1
-    else hi = m
-  }
-  return lo
-}
+const same = (x: number) => x
 
 /** The layer a list of rectangles (checked) gives, each over those before it, with its looks numbered by `looks`. */
 export function readRanges(list: readonly LookRange[], looks = new LookTable()): Layer {
@@ -172,8 +163,8 @@ export function readRanges(list: readonly LookRange[], looks = new LookTable()):
   const painted = new Map<string, Pattern>()
   for (let k = 0; k + 1 < rows.length; k++) {
     const [enter, leave] = edges.get(rows[k])!
-    for (const o of leave) active.splice(placeIn(active, o), 1)
-    for (const o of enter) active.splice(placeIn(active, o), 0, o)
+    for (const o of leave) active.splice(lowerBound(active, o, same), 1)
+    for (const o of enter) active.splice(lowerBound(active, o, same), 0, o)
     if (!active.length) continue
     const last = xs[active[active.length - 1]]
     let p: Pattern

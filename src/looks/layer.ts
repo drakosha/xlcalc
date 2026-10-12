@@ -92,7 +92,7 @@ function runAt(p: Pattern, c: number): number {
  * `top` over `base`: where a run of `top` lies its look (NONE clears), elsewhere `base`'s. `top`'s runs are in order and
  * apart, and may be of no look.
  */
-export function overlay(base: Pattern, top: ArrayLike<number>): Pattern {
+function overlay(base: Pattern, top: ArrayLike<number>): Pattern {
   if (!top.length) return base
   const out: number[] = []
   let i = 0
@@ -244,13 +244,6 @@ export class Layer {
         yield { r1, r2, c1: Math.max(p[k], x.c1), c2: Math.min(p[k + 1], x.c2), look: p[k + 2] }
       }
     }
-  }
-
-  /** The cells with a look in rectangle `x`, as many as there are. */
-  count(x: Rect = FULL): number {
-    let n = 0
-    for (const p of this.pieces(x)) n += (p.r2 - p.r1 + 1) * (p.c2 - p.c1 + 1)
-    return n
   }
 
   /** The rectangle the looks lie in, or null for none. */
