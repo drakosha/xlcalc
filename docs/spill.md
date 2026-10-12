@@ -78,7 +78,7 @@ So `A:A*2` over 1,000 rows of data stores 1,000 cells and computes in about 16 m
 
 A formula that reads a cell of a spilled range has to run after the array's formula. The graph (`src/graph.ts`) adds an edge from each spilled formula to the formulas reading its range, and changes these edges only when a range changes. Evaluation (`src/evaluate.ts`) goes in rounds until nothing changes; a book without spills takes one round.
 
-A formula that reads a range its own array's formula also reads closes a cycle, and both are `#CYCLE!`. What such a cycle holds depends on which arrays spilled first, so a session recomputes the whole book from scratch when a cycle runs through a spill range. This costs as much as a cold computation and happens only in such books.
+A formula that reads a range its own array's formula also reads closes a cycle, and neither is computed: both hold their values ([cycles.md](cycles.md)), and the array spills no more. Which cells such a cycle stops depends on which arrays spilled first, so a session recomputes the whole book from scratch when a cycle runs through a spill range. This costs as much as a cold computation and happens only in such books.
 
 On the synthetic book, which has no spills, cold computation, edits and the hash are unchanged within noise.
 
@@ -100,4 +100,4 @@ Answers are in `test/excel/spill/` and `test/excel/struct/`. Cutting a formula w
 
 - Two independent arrays over the same cells: Excel's choice varies between runs, the engine always lets the lower one spill. Two cases of `base` that Excel ran once show the other choice.
 - An array whose size depends on a random draw spills by the engine's clock. Excel gives `#SPILL!` when the size changes between its passes (three cases of `more`).
-- A cycle through a spill range is `#CYCLE!`. Excel shows its circular reference warning instead (not measured: the warning is a window).
+- A cycle through a spill range stops its cells as any cycle does ([cycles.md](cycles.md)). An array a cycle comes to after an edit spills no more here and holds its first value; Excel for Windows keeps its whole spill.

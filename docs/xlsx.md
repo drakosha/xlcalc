@@ -16,7 +16,7 @@ const { data } = await writeXlsx({ book, result })
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` (a Node `Buffer` is one, as `readFile` gives it), another view of bytes or an `ArrayBuffer` (`await file.arrayBuffer()` in a browser), and resolves to three things.
 
 - `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them) and whether they are hidden, columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system, iterative calculation and the links to other workbooks with the values stored of them ([Links to other workbooks](#links-to-other-workbooks)).
-- `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order, in the shape of a result: `cached.sheets[0].cells.B1.value` as `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range `spillOf`, the formula's address, as in a result. These are what Excel computed when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`).
+- `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order, in the shape of a result: `cached.sheets[0].cells.B1.value` as `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range `spillOf`, the formula's address, as in a result. These are what Excel computed when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`). A book with a circular reference opens with them as Excel opens the file, `compute(book, { cached })` or `createSession(book, { cached })`: the formulas the cycle stops hold the stored values ([cycles.md](cycles.md)).
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue. Each issue has a code for programs and a message for people, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
 A file that is not a zip archive, an encrypted one, a ZIP64 archive and a file without a workbook part are errors. Data that is no bytes, such as the file's path, is an `InputError` that says to pass the bytes.
@@ -224,7 +224,7 @@ Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.
 
 A cell with `array` is written as an array formula of the old kind over its range, without the cell metadata, as Excel writes a formula entered with Ctrl+Shift+Enter. A formula in a table's totals row is written as a plain formula, the only kind Excel opens there. A name's formula is written as the book has it: a constant, a formula or a union. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
 
-A file with formulas asks Excel to compute the book when it opens it, so Excel shows its own values over the stored ones, whichever values the file stores. The stored values are what a reader that does not compute shows, such as a preview or a spreadsheet library, and what `readXlsx` gives as `cached`.
+A file with formulas asks Excel to compute the book when it opens it, so Excel shows its own values over the stored ones, whichever values the file stores, but for the cells a circular reference stops, which keep the stored ones: a formula with `held` stores it where the result gives no value, with `values: 'omit'` too ([cycles.md](cycles.md)). The stored values are what a reader that does not compute shows, such as a preview or a spreadsheet library, and what `readXlsx` gives as `cached`.
 
 ### Tables
 
@@ -253,7 +253,7 @@ A filtered sheet is written so that Excel takes it as filtered. Its first table 
 | code | what happens |
 |---|---|
 | `meta` | a cell's `meta` is left out |
-| `errorValue` | `#CYCLE!` is written as 0, as Excel stores a circular reference, among a link's stored values too |
+| `errorValue` | `#CYCLE!`, which a name that uses itself gives, is written as 0, as Excel stores a circular reference, among a link's stored values too |
 | `textLength` | text over 32,767 characters is cut, a note's too, a hyperlink's tooltip over 255, a rule's titles over 32, its input message over 255 and its alert's text over 225 |
 | `dataValidation` | a rule whose formula does not parse, or names a sheet, a table or a column the book does not have, is left out |
 | `formula` | a formula that does not parse, or names a sheet, a table, a column or a link to another workbook the book does not have, is written as its value |
