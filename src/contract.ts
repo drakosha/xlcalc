@@ -1294,8 +1294,13 @@ export interface ChangesPreview extends ChangesResult {
   truncated: boolean
 }
 
-export type CellReadField = 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link' | 'issue'
-export interface ReadCell extends CellRef, Partial<CellView> { issue?: CellIssueDetail | null }
+/** A field `readCells` and `findCells` give of a cell: `editText` is the text it opens with for editing, as a window's (`ViewportCell.editText`). */
+export type CellReadField = 'value' | 'text' | 'formula' | 'editText' | 'style' | 'numberFormat' | 'note' | 'link' | 'issue'
+export interface ReadCell extends CellRef, Partial<CellView> {
+  issue?: CellIssueDetail | null
+  /** With the field `editText`: the text the cell opens with for editing, as `ViewportCell.editText`; what `findCells` reads in `edit`, but for the apostrophe before a text that reads as something else, which it leaves out. */
+  editText?: string
+}
 export interface PageOptions extends EditOptions {
   /** Maximum results returned, 1000 by default, at most 10000. */
   maxCells?: number
