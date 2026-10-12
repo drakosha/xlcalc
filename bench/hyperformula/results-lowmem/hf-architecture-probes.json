@@ -1,0 +1,73 @@
+{
+  "hyperformula": "3.5.0",
+  "rows": 5000,
+  "results": [
+    {
+      "engine": "xl-closures",
+      "value": 1.9,
+      "evaluated": 1,
+      "lastValue": 4999
+    },
+    {
+      "engine": "xl-closures",
+      "value": 2.1,
+      "evaluated": 4999,
+      "lastValue": 5000
+    },
+    {
+      "engine": "xl-eval",
+      "value": 1.9,
+      "evaluated": 1,
+      "lastValue": 4999
+    },
+    {
+      "engine": "xl-eval",
+      "value": 2.1,
+      "evaluated": 4999,
+      "lastValue": 5000
+    },
+    {
+      "engine": "hf-default",
+      "value": 1.9,
+      "evaluated": 1,
+      "lastValue": 4999
+    },
+    {
+      "engine": "hf-default",
+      "value": 2.1,
+      "evaluated": 4999,
+      "lastValue": 5000
+    }
+  ],
+  "dependencies": {
+    "precedentsOfC1": [
+      {
+        "start": {
+          "sheet": 0,
+          "col": 0,
+          "row": 0
+        },
+        "end": {
+          "sheet": 0,
+          "col": 1,
+          "row": 0
+        }
+      }
+    ],
+    "dependentsOfA1": [
+      {
+        "start": {
+          "sheet": 0,
+          "col": 0,
+          "row": 0
+        },
+        "end": {
+          "sheet": 0,
+          "col": 1,
+          "row": 0
+        }
+      }
+    ]
+  },
+  "instrumentation": "xlcalc Formula.fn and HF 3.5.0 private evaluator method; execution counts only, not public API recommendations or timed benchmark samples"
+}

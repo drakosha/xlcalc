@@ -39,7 +39,7 @@ Eval also improved on the prefix and numeric lookup books, with the same values 
 
 ## Shared aggregate prefixes
 
-Single-range SUM, COUNT, COUNTA, MIN, MAX and AVERAGE, plus COUNTIF and one-pair COUNTIFS, use `src/range-aggregate.ts`. Their geometry and checkpoints are shared in `src/range-prefix.ts`. The ordinary aggregates keep the unrounded running sum, number count, non-blank count, extrema and first reference error; means keep a separate compensated sum. Shorter row-major prefixes can feed longer ones. Checkpoints about every 256 cells also let a shorter range reuse work when the longest range was evaluated first. Each extension copies the state before adding cells, so it cannot alter a cached prefix.
+Single-range SUM, COUNT, COUNTA, MIN, MAX and AVERAGE, plus COUNTIF and one-pair COUNTIFS, use `src/range-aggregate.ts`. Their geometry and checkpoints are shared in `src/range-prefix.ts`. The ordinary aggregates keep the unrounded running sum, number count, non-blank count, extrema and first reference error; means keep a separate compensated sum. Shorter row-major prefixes can feed longer ones. Checkpoints about every 64 cells also let a shorter range reuse work when the longest range was evaluated first. Each extension copies the state before adding cells, so it cannot alter a cached prefix.
 
 AVERAGE shares its compensation and constant-input rules with the statistical functions (`statistical/sum.ts`). An intermediate overflow falls back to the existing exact calculation. COUNTIF uses the same equality keys and scan rules as the criteria index. It retains at most 64 criteria per runtime, with prefix states counted against the heap's cache budget. If matching the criterion or a cell's text reads the clock's year, its states are discarded so every caller keeps that clock dependency. Blank cells beyond the stored part count by the referenced size.
 
@@ -121,3 +121,11 @@ The numeric-equality COUNTIF variant at 34,000 rows also passed in the same 384 
 Ordinary books are not affected: the synthetic book of 34,000 rows keeps 3.6 MiB by the estimate. Two rounds of alternating pairs with the engine without the budget at a load average of 3 to 5, cold full computation, median of five: 185/196 and 184/185 ms with closures, 194/197 and 183/183 ms with eval at 3,400 rows; 1,599/1,581 and 1,589/1,610 ms with closures, 1,591/1,659 and 1,600/1,601 ms with eval at 34,000 rows; hashes `101578a9c6b600b1` and `e64d5f4d0f0ac632` unchanged. A session of the synthetic book of 34,000 rows under the limits of a 384 MB pool opened in 644/674 and 654/662 ms, retained 52/52 MiB and edited at p95 in 3.47/3.62 and 3.56/3.57 ms; 5,000 running sums opened in 39/40 and 40/41 ms with 8.1/8.2 MiB retained.
 
 Lookup indexes over cached arrays (`src/functions/lookup/exact.ts`) are not counted; they go with their array. The ranges one formula reads are counted only between formulas, so a single formula that reads more than the budget holds it while it computes.
+
+## Retained engine storage
+
+Formula ids are internal storage slots, reused after removal. Trailing holes are trimmed after structural edits, so repeated replacements do not grow the graph by the number of past edits. Spill evaluation timestamps live only until their round settles.
+
+Range values and metadata share one map. First-read marks stay distinct from stored undefined values, and iteration keeps insertion order. Byte estimates and the cap are unchanged. Short aggregate ranges keep a mark on first use and a fold on repeated use; full-fold storage still uses the 256-cell threshold.
+
+Eval keeps generated text until its functions are linked, then releases it. Diagnostic code is rebuilt on request; executable functions and canonical formula text remain. This reduces retained storage, while the native compiler still needs temporary source during compilation. Detailed controls are in the development benchmark at `bench/hyperformula/README.md`.

@@ -106,7 +106,7 @@ Both reports completed 29 of 30 variants with matching values; HF timed out open
 
 ### Further work from HyperFormula 3.5.0
 
-The following are proposals, not implemented API additions. Findings combine the published 3.5.0 package with the official documentation.
+The following are further design ideas; API proposals remain unimplemented. The low-memory round below implements a conservative unchanged-result cutoff. Findings combine the published 3.5.0 package with the official documentation.
 
 | Mechanism | Evidence in HF | xlcalc opportunity and cost |
 |---|---|---|
@@ -125,3 +125,69 @@ The unchanged-output and dependency probes are reproducible with `study.mjs`; re
 | [Optional statistics](https://hyperformula.handsontable.com/docs/api/classes/hyperformula.html#getstats) | Timing is in benchmarks; cache accounting is internal | Opt-in phase timings and counts for application diagnostics, with no default timing overhead. HF exposes parser, graph, evaluation and criterion-cache statistics. |
 
 Dependency queries are the first API candidate; unchanged-result propagation is the first algorithm candidate. Existing atomic batches and prefix/range caching already cover parts of HF's approach, so additions should address the gaps above rather than duplicate those features.
+
+## Low-memory round
+
+Measured source: `cb7078f`, including master `671e5e8` (0.21.1). Baseline: `794fade`, the preceding parity report. Public APIs and validation behavior are unchanged. Ordinary workload results are in `results-lowmem/`, retained-memory samples in `results/low-memory-comparison.json`.
+
+Formula slots are reused after removal and trailing holes are trimmed. Replacing one formula 1,000 times previously retained 1,001 slots with one live formula. Spill evaluation timestamps are released after the round settles. The range cache stores values with their metadata in one map; it implements the ordinary Map interface, including order and undefined values, but is no longer a native Map subclass. Its byte estimates and cap are unchanged.
+
+Small-root acyclic value edits can skip unchanged scalar paths. The existing reachability set is reused, with at most 64 root ids copied temporarily. At the first changed value or array result the remaining ordered pass runs normally. Existing arrays, structural edits and iterative calculation retain the full pass. The unchanged INT probe now evaluates one formula in either mode, matching HF; a changed INT still evaluates all 4,999. This conservative cutoff avoids a second edge walk or persistent graph.
+
+Eval releases temporary generated text after linking. Executable functions remain; the private debugSource helper regenerates text from canonical formulas on request, without executing new Function. The helper now also gives code for closure sessions. Three independent probes released 13.01 MiB of text and associated string fragments on fanout, and 1.764 MiB on the large business book.
+
+### Memory
+
+Five sequential alternating pairs in fresh children, with a 512 MiB heap cap and 30-second process deadline. Shared input is excluded from retained heap; history is disabled to isolate engine storage. No same-book warmup precedes the heap baseline. The live session is pinned, with two event-loop turns and two GCs before reading memory. Every non-cache case matches an independent full computation afterward.
+
+| Case | Mode | Heap before, MiB | After | Process peak RSS before, MiB | After |
+|---|---|---:|---:|---:|---:|
+| unchanged | closures | 14.55 | 14.10 | 201.75 | 157.31 |
+| unchanged | eval | 29.40 | 19.62 | 232.56 | 190.28 |
+| churn | closures | 2.13 | 1.83 | 138.53 | 100.19 |
+| churn | eval | 2.18 | 1.86 | 140.19 | 100.47 |
+| cache-only | closures | 12.62 | 10.81 | 102.28 | 94.98 |
+| fanout | closures | 65.03 | 63.26 | 232.56 | 231.17 |
+| fanout | eval | 105.76 | 90.99 | 389.98 | 389.25 |
+| prefix-statistics | closures | 13.85 | 13.20 | 118.33 | 117.31 |
+| prefix-statistics | eval | 19.68 | 16.21 | 149.20 | 148.48 |
+| business-34000 | closures | 52.23 | 52.10 | 362.25 | 361.53 |
+| business-34000 | eval | 58.05 | 56.22 | 380.61 | 379.97 |
+| lookup | closures | 10.99 | 10.97 | 143.06 | 141.56 |
+| lookup | eval | 12.15 | 11.64 | 146.33 | 146.39 |
+
+RSS is the whole-process watermark before the full-compute verifier runs, from [process.resourceUsage](https://nodejs.org/api/process.html#processresourceusage), not peak JavaScript heap. Large-book RSS changes little because compilation still needs temporary text and native compiler storage. These are Node measurements, not browser measurements.
+
+An initial measurement warmed the same book before the heap baseline. Residues produced zero or negative deltas, so those heap figures were rejected. The recorded comparison uses independent cold children; edit timing below includes runtime warmup and is separate from the ordinary editing medians.
+
+| Special probe | Mode | Total edits before, ms | After | Edits |
+|---|---|---:|---:|---:|
+| churn | closures | 329.20 | 45.60 | 5000 |
+| churn | eval | 334.62 | 50.91 | 5000 |
+| unchanged | closures | 91.64 | 52.95 | 50 |
+| unchanged | eval | 111.94 | 52.65 | 50 |
+
+Churn replaces one formula 5,000 times. Unchanged alternates an input 50 times in a 10,000-cell chain whose INT result stays unchanged. Cache-only holds 50,000 small entries. Reproduce with:
+
+```sh
+node bench/hyperformula/memory.mjs --before /path/to/compiled/baseline --after . --out /tmp/xlcalc-memory
+node bench/hyperformula/memory.mjs --before /path/to/compiled/baseline --case cache-only --out /tmp/xlcalc-cache
+node bench/hyperformula/run.mjs --out /tmp/xlcalc-lowmem-speed
+```
+
+### Speed and checks
+
+The original nine-workload protocol still includes normal history and both execution modes. Twenty-nine variants match; HF times out opening the large business book. All workload hashes and input hashes match the previous report, across 80,622,748 repeated cell comparisons. A 160 ms count probe overlapped the initial first child, so that business-3400/closures record was replaced by one isolated repeat after the full run. The discarded record and reason remain in raw.json.
+
+| Edit | closures, ms | eval, ms | HF, ms |
+|---|---:|---:|---:|
+| prefix-sum | 4.66 | 4.30 | 4.86 |
+| prefix-statistics | 10.16 | 9.82 | 10.96 |
+| chain | 5.25 | 5.35 | 5.11 |
+| fanout | 34.50 | 40.37 | 43.60 |
+| bulk | 4.68 | 4.70 | 3.09 |
+| lookup | 3.49 | 3.42 | 2.38 |
+
+The batch and indexed lookup gap remain. More selective pruning after another root changes, persistent key-column indexes and shared relative formula templates are further candidates. None is added here; these patches reduce retained storage without expanding the cache budget.
+
+Full source and dist suites each pass 20,261 tests with 42 skipped. Typecheck, build and jscpd (zero clones) pass. The new conformance checks cover all three session kinds and both modes. Exact synthetic hashes remain unchanged.
