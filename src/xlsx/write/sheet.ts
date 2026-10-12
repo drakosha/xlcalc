@@ -16,7 +16,7 @@
 import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, ExternalBook, RowInput, SheetInput } from '../../contract.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
-import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress, readAddress, sortAddresses } from '../../model.js'
+import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress, readAddress } from '../../model.js'
 import { NONE, type Layer } from '../../looks/layer.js'
 import { inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
@@ -181,11 +181,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     return xf ? ` s="${xf}"` : ''
   }
   // `cm` marks a dynamic array formula
-  // a sheet with looks: its entries in the order of addresses, and the cells of its looks numbered among them, as entries
-  // of theirs would be in that order (as a file read lists them); a sheet without looks: its entries in their order
+  // the cells of the sheet's looks numbered among its entries, as entries of theirs would be (`numberLooks`)
   const layer = layerOf(sheet)
-  const order = layer ? sortAddresses(Object.keys(sheet.cells)) : Object.keys(sheet.cells)
-  const layerXf = layer ? numberLooks(sheet, layer, order, sAttr) : null
+  const layerXf = layer ? numberLooks(sheet, layer, sAttr) : null
   const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
     const cm = dynamic ? ' cm="1"' : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
@@ -194,7 +192,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   }
   const notes = new Map<string, CellNote>()
   const links = new Map<string, CellLink>()
-  for (const addr of order) {
+  for (const addr of Object.keys(sheet.cells)) {
     const c = sheet.cells[addr]
     if (c.meta !== undefined) issues.add('meta', { key: 'cellMeta' }, where(addr))
     if (c.note) notes.set(addr, c.note)
@@ -319,37 +317,42 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
 }
 
 /**
- * The cell format of each look of the sheet's looks (`sAttr` of a cell of it, ` s="n"` or none), numbered in the order of
- * the sheet's cells, row by row, with its entries (`order`, by address), as entries of theirs would number them; by cell
- * where the sheet's rows or columns have a look, which a cell's whole look takes.
+ * The cell format of each look of the sheet's looks (`sAttr` of a cell of it, ` s="n"` or none), numbered with the sheet's
+ * entries as entries of theirs would be: each cell of the looks just before the first entry after it by address, the
+ * entries in their order, as a file read lists them (a cell a note or a link alone made comes last); by cell where the
+ * sheet's rows or columns have a look, which a cell's whole look takes.
  */
-function numberLooks(sheet: SheetInput, layer: Layer, order: string[], sAttr: (addr: string, c: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
+function numberLooks(sheet: SheetInput, layer: Layer, sAttr: (addr: string, c: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
   const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.numberFormat !== undefined))
-  const at = { r: 0, c: 0 }
-  const entries = order.map((a): [number, number, string] => {
-    readAddress(a, at)
-    return [at.r, at.c, a]
-  })
   const byLook: (string | undefined)[] = []
   const attr = (r: number, c: number, look: number) => (lined ? sAttr(formatAddress(r, c), layer.looks.list[look]) : (byLook[look] ??= sAttr(formatAddress(r, c), layer.looks.list[look])))
   // the looks not numbered yet; once none is left, only the entries take new numbers
   const used = new Set<number>()
   for (const k of new Set(layer.at)) for (let i = 2; i < layer.patterns[k].length; i += 3) used.add(layer.patterns[k][i])
   let left = lined ? Infinity : used.size
-  let e = 0
-  for (let b = 0; b < layer.blocks && left > 0; b++) {
-    const p = layer.patterns[layer.at[b]]
-    for (let r = layer.r1[b]; r <= layer.r2[b] && left > 0; r++) {
-      for (; e < entries.length && entries[e][0] < r; e++) sAttr(entries[e][2], sheet.cells[entries[e][2]])
-      for (let k = 0; k < p.length; k += 3)
-        for (let c = p[k]; c <= (lined ? p[k + 1] : p[k]); c++) {
-          for (; e < entries.length && entries[e][0] === r && entries[e][1] < c; e++) sAttr(entries[e][2], sheet.cells[entries[e][2]])
-          if (!lined && byLook[p[k + 2]] === undefined) left--
-          attr(r, c, p[k + 2])
-        }
+  // a cursor through the looks' cells: block, row, run and column; a run's first cell alone without lines
+  let [b, k] = [0, 0]
+  let r = layer.blocks ? layer.r1[0] : 0
+  let c = layer.blocks ? layer.patterns[layer.at[0]][0] : 0
+  const before = (place: number) => {
+    while (left > 0 && b < layer.blocks) {
+      const p = layer.patterns[layer.at[b]]
+      if (r * MAX_COLS + c >= place) return
+      if (!lined && byLook[p[k + 2]] === undefined) left--
+      attr(r, c, p[k + 2])
+      if (lined && c < p[k + 1]) c++
+      else if ((k += 3) < p.length) c = p[k]
+      else if (r < layer.r2[b]) [r, k, c] = [r + 1, 0, p[0]]
+      else if (++b < layer.blocks) [r, k, c] = [layer.r1[b], 0, layer.patterns[layer.at[b]][0]]
     }
   }
-  for (; e < entries.length; e++) sAttr(entries[e][2], sheet.cells[entries[e][2]])
+  const at = { r: 0, c: 0 }
+  for (const a in sheet.cells) {
+    readAddress(a, at)
+    before(at.r * MAX_COLS + at.c)
+    sAttr(a, sheet.cells[a])
+  }
+  before(Infinity)
   return attr
 }
 

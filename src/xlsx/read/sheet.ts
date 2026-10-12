@@ -11,7 +11,7 @@ import { cellEdits, edited, LookTable, NONE, type Layer } from '../../looks/laye
 import { listOf, lookAlone } from '../../looks/sheet.js'
 import { overlapping, parseMerge } from '../../layout/merges.js'
 import { lines, spanKey } from '../../layout/spans.js'
-import { formatAddress, parseAddress, readAddress, sortAddresses } from '../../model.js'
+import { formatAddress, MAX_COLS, parseAddress, readAddress, sortAddresses } from '../../model.js'
 import { cellCount, cellsWithin, cornersText, parseRange, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
@@ -121,8 +121,10 @@ function convert(src: SheetSource, read: SheetCells, issues: Issues): Map<string
  * their look; the formula's value gets the range, as a result has them (an old kind's area always, a dynamic array's
  * when it spilled).
  */
-function arrays(read: SheetCells) {
+function arrays(read: SheetCells): string[] {
   const keys = () => Object.keys(read.cells)
+  // the cells left with their look alone
+  const looked: string[] = []
   for (const a of read.arrays) {
     const r = parseRange(a.ref)
     if (!r) continue
@@ -138,10 +140,13 @@ function arrays(read: SheetCells) {
       const stored = cell.value !== undefined ? { value: cell.value as CellValue } : read.cached[addr]
       if (stored) read.cached[addr] = { value: stored.value, spillOf: a.anchor }
       const { value: _, formula: __, ...rest } = cell
-      if (Object.keys(rest).length) read.cells[addr] = rest
-      else delete read.cells[addr]
+      if (Object.keys(rest).length) {
+        read.cells[addr] = rest
+        looked.push(addr)
+      } else delete read.cells[addr]
     }
   }
+  return looked
 }
 
 /** Where a sheet's summary rows and columns are (`<outlinePr>`), as the file says; automatic outline styles are reported. */
@@ -250,18 +255,24 @@ function* addressesOf(layer: Layer, x: Rect): Generator<string> {
 }
 
 /**
- * The sheet's looks with its cells as the reader left them: a cell left with a look alone (one an array spilled into)
- * goes to the looks, and a cell given content over a look (a shared formula's copy, a note, a link, a table's header)
- * takes the look as its own, as the cell's entry of a look would have.
+ * The sheet's looks with its cells as the reader left them: a cell left with a look alone (one an array spilled into, a
+ * shared formula's copy without its formula) goes to the looks, and a cell given content over a look (a shared formula's
+ * copy, a note, a link, a table's header) takes the look as its own, as the cell's entry of a look would have, and its
+ * place among the cells the file stores (`stored`), as the entry had. Without looks, only the cells that may be left with
+ * a look alone (`maybe`) are looked at. The cells and the looks.
  */
-function withEntries(layer: Layer, cells: Record<string, CellInput>): Layer {
+function withEntries(layer: Layer, cells: Record<string, CellInput>, stored: Set<string> | null, maybe: Iterable<string>): [Record<string, CellInput>, Layer] {
   const looks = new LookTable(layer.looks)
   const edits: [number, number, number][] = []
   const p = { r: 0, c: 0 }
-  for (const a in cells) {
+  const made: [number, string][] = []
+  for (const a of layer.empty ? maybe : Object.keys(cells)) {
     const cell = cells[a]
+    if (!cell) continue
+    const alone = lookAlone(cell)
+    if (!alone && layer.empty) continue
     readAddress(a, p)
-    if (lookAlone(cell)) {
+    if (alone) {
       edits.push([p.r, p.c, looks.of(cell)])
       delete cells[a]
       continue
@@ -270,8 +281,27 @@ function withEntries(layer: Layer, cells: Record<string, CellInput>): Layer {
     if (!look) continue
     cells[a] = { ...look, ...cell }
     edits.push([p.r, p.c, NONE])
+    if (!stored?.has(a)) made.push([p.r * MAX_COLS + p.c, a])
   }
-  return edited(layer, cellEdits(edits), looks)
+  return [made.length ? inFileOrder(cells, stored!, made) : cells, edited(layer, cellEdits(edits), looks)]
+}
+
+/** The cells with those `made` (by place) among the ones the file stores, by place, before the others the reader made. */
+function inFileOrder(cells: Record<string, CellInput>, stored: Set<string>, made: [number, string][]): Record<string, CellInput> {
+  made.sort((a, b) => a[0] - b[0])
+  const gone = new Set(made.map(([, a]) => a))
+  const out: Record<string, CellInput> = {}
+  const p = { r: 0, c: 0 }
+  let i = 0
+  const keys = Object.keys(cells).filter((a) => !gone.has(a))
+  for (const a of keys.filter((x) => stored.has(x))) {
+    readAddress(a, p)
+    for (; i < made.length && made[i][0] < p.r * MAX_COLS + p.c; i++) out[made[i][1]] = cells[made[i][1]]
+    out[a] = cells[a]
+  }
+  for (; i < made.length; i++) out[made[i][1]] = cells[made[i][1]]
+  for (const a of keys) if (!stored.has(a)) out[a] = cells[a]
+  return out
 }
 
 export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
@@ -284,6 +314,9 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const tail = open < 0 ? '' : xml.slice(dataEnd)
   const cols = columns(head, ctx)
   const read = readCells(data, ctx, lines(cols, 'c'))
+  // the looks, and with them the cells the file stores, among which a cell given content over a look takes its place
+  const layer = read.looks.build()
+  const stored = layer.empty ? null : new Set(Object.keys(read.cells))
   for (const s of read.shared.values()) if (s.master !== undefined) read.cells[s.master] = { ...read.cells[s.master], formula: s.text }
   const converted = convert(src, read, ctx.issues)
   // copies are pasted from the converted master and take what it reports
@@ -299,7 +332,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
         reportFormula(master, ctx.issues, { sheet: name, cell })
       }
   }
-  arrays(read)
+  const looked = arrays(read)
   for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', { key: 'errorTyped' }, { sheet: name, cell })
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
@@ -311,9 +344,9 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (m) sheet.merges = m
   const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas)
   if (tables.length) sheet.tables = tables
-  const layer = read.looks.build()
   readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts, looked: (x) => addressesOf(layer, x) }, read.cells, ctx.issues)
-  const looks = withEntries(layer, read.cells)
+  const [cells, looks] = withEntries(layer, read.cells, stored, [...looked, ...[...read.shared.values()].flatMap((s) => s.copies)])
+  sheet.cells = cells
   if (!looks.empty) sheet.looks = listOf(looks)
   const frozen = readFrozen(head, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
