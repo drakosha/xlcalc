@@ -10,7 +10,8 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { CellInput } from '../../../src/contract.js'
 import { createSession } from '../../../src/index.js'
-import { replacer } from '../../../src/session/find.js'
+import { wildSource } from '../../../src/criteria.js'
+import { folded } from '../../../src/session/find.js'
 import { heldOf } from '../entry.js'
 import { findBook, type FindBook } from '../find/cases.js'
 import { localeDir } from '../locales.js'
@@ -40,10 +41,11 @@ export interface ReplaceCase {
   query: ReplaceQuery
 }
 
-/** What Replace answered (true, false, or its error) and the cells after it. */
+/** What Replace answered (true, false, or its error), the cells after it, and their columns' widths (`ColumnWidth`, whether it is the standard one; the sets from `rules-held-2`). */
 export interface ReplaceAnswer {
   replaced: boolean | { error: string }
   cells: Record<string, UiCell>
+  columns?: Record<string, { columnWidth: number; standard: boolean }>
 }
 
 export interface ReplaceSet {
@@ -64,22 +66,44 @@ export const replaceFile = (set: string, tag = 'en-US') => join(ROOT, 'test/exce
 /** The cells read after a case: the book's own and those it names, each once. */
 export const readOf = (b: ReplaceBook): string[] => [...new Set([...Object.keys(b.cells), ...(b.typed ? Object.keys(b.typed) : []), ...(b.read ?? [])])]
 
+/** The columns of the cells read after a case, by their letters, each once. */
+export const columnsOf = (b: ReplaceBook): string[] => [...new Set(readOf(b).map((a) => a.replace(/\d+$/, '')))]
+
 /** The ranges of a query, each area in turn, or the whole sheet. */
 export const rangesOf = (q: ReplaceQuery) => (q.range ?? 'A1:XFD1048576').split(',').map((range) => ({ sheet: 'S', range }))
 
 const clock = { now: '2026-10-13T12:00:00Z', seed: 1 }
 
+/** The engine's answer to a case: `replaceInCells` with Replace's options over the query's range, each of its areas in turn, or the whole sheet; the cells read after it, as the book holds them. */
+export function replaceInBook(b: ReplaceBook, q: ReplaceQuery, tag: string): Record<string, CellInput | null> {
+  const s = createSession(findBook(b, tag), { clock })
+  try {
+    s.replaceInCells(rangesOf(q), q.what, q.by, { wildcards: true, wholeCell: q.whole, caseSensitive: q.matchCase, skipHidden: true })
+    const cells = s.getBook().sheets[0].cells
+    return Object.fromEntries(readOf(b).map((a) => [a, cells[a] ?? null]))
+  } finally {
+    s.close()
+  }
+}
+
 /**
  * The model of a grid's Replace All (`xlcalc-sheet/src/local/find.ts`), with the matches `?` reads as Find does: the
- * cells Find finds in formulas, hidden ones skipped as it skips them, each one's text as Find reads it with the matches
- * replaced, an apostrophe the cell opens with kept, written as typed (`setCellTexts`, no column widened); a text the
- * session refuses refuses all, nothing written. The cells read after it, as the book holds them; or the refusal.
+ * cells Find finds in formulas, hidden ones skipped as it skips them, each one's text as Find reads it with every match
+ * of the query (`*` taking as much as it can) replaced, an apostrophe the cell opens with kept, written as typed
+ * (`setCellTexts`, no column widened); a text the session refuses refuses all, nothing written. The cells read after
+ * it, as the book holds them; or the refusal.
  */
 export function modelReplace(b: ReplaceBook, q: ReplaceQuery, tag: string): { refused?: string; cells: Record<string, CellInput | null> } {
   const s = createSession(findBook(b, tag), { clock })
   try {
     const opts = { wildcards: true, wholeCell: q.whole, caseSensitive: q.matchCase }
-    const replace = replacer(q.what, q.by, opts)!
+    const fold = (t: string) => (q.matchCase ? t : folded(t))
+    const re = new RegExp(q.whole ? `^(?:${wildSource(fold(q.what))})$` : wildSource(fold(q.what)), 'g')
+    const replace = (t: string) => {
+      let [out, last] = ['', 0]
+      for (const m of fold(t).matchAll(re)) if (m[0] !== '') [out, last] = [out + t.slice(last, m.index) + q.by, m.index + m[0].length]
+      return last ? out + t.slice(last) : null
+    }
     const found = s.findCells(rangesOf(q), q.what, { ...opts, in: 'edit', skipHidden: true, fields: ['editText', 'formula', 'value'], maxCells: 10000 })
     const entries = found.cells.flatMap((c) => {
       const text = c.formula === undefined && typeof c.value === 'string' ? c.value : c.editText!

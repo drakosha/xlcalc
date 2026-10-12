@@ -8,7 +8,7 @@
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { BookInput, CellInput, ColumnInput, RowInput } from '../../../src/contract.js'
+import type { BookInput, CellInput, ColumnInput, RowInput, TableInput } from '../../../src/contract.js'
 import { createSession } from '../../../src/index.js'
 import { formatAddress } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
@@ -22,6 +22,7 @@ export interface FindBook {
   columns?: Record<string, ColumnInput>
   rows?: Record<string, RowInput>
   merges?: string[]
+  tables?: TableInput[]
   /** An autofilter over `range` keeping the rows whose `field`-th column holds `keep`: Excel hides the others as it applies it, the engine's book holds them hidden on a filtered sheet. */
   filter?: { range: string; field: number; keep: string }
   /** Texts typed into cells once Excel opened the book (`Formula2Local`), for what a file does not hold (a text typed after an apostrophe); the engine's book holds the cell of `cells`. */
@@ -92,7 +93,7 @@ export function filteredRows(b: FindBook): number[] {
 
 /** The book as Excel gets it, before its filter and its typed texts. */
 export function sentBook(b: FindBook): BookInput {
-  return { sheets: [{ name: 'S', cells: b.cells, ...(b.columns ? { columns: b.columns } : {}), ...(b.rows ? { rows: b.rows } : {}), ...(b.merges ? { merges: b.merges } : {}) }] }
+  return { sheets: [{ name: 'S', cells: b.cells, ...(b.columns ? { columns: b.columns } : {}), ...(b.rows ? { rows: b.rows } : {}), ...(b.merges ? { merges: b.merges } : {}), ...(b.tables ? { tables: b.tables } : {}) }] }
 }
 
 /** The book as the engine takes it in a locale: with a filter, a filtered sheet with the rows it hides hidden. */
