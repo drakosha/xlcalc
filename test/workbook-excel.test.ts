@@ -6,15 +6,8 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
-import type { Val } from '../bench/coverage/formulajs.js'
 import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
-import { differences, engineReads, goesOn } from './workbook-cases.js'
-
-/** A predicted read as Excel's answer: the values, and the shown text of `show:` keys. */
-const predictedRead = (p: Record<string, Val | string>): [Record<string, Val>, Record<string, string>] => [
-  Object.fromEntries(Object.entries(p).filter(([k]) => !k.startsWith('show:'))) as Record<string, Val>,
-  Object.fromEntries(Object.entries(p).flatMap(([k, v]) => (k.startsWith('show:') ? [[k.slice(5), v as string]] : []))),
-]
+import { differences, engineReads, goesOn, predictionCheck } from './workbook-cases.js'
 
 const dir = new URL('./excel/workbook/', import.meta.url)
 const SETS = existsSync(dir)
@@ -65,14 +58,8 @@ for (const set of SETS) {
       })
       if (c.predicted)
         it(`${c.id}: the answers predicted before Excel ran, but the missed ones`, () => {
-          const missed = MISSED[`${set.name}:${c.id}`] ?? {}
-          // a miss is pinned: Excel answered that cell otherwise than predicted
-          const excel = set.answers[c.id].reads
-          expect(Object.keys(missed).filter((k) => !c.predicted!.some((p, i) => JSON.stringify(p[k]) !== JSON.stringify(excel[i].values[k])))).toEqual([])
-          const reads = engineReads(c)
-          // the missed cells hold Excel's answer instead
-          const kept = c.predicted!.map((p, i) => ({ ...p, ...Object.fromEntries(Object.keys(missed).map((k) => [k, excel[i].values[k]])) }))
-          expect(kept.flatMap((p, i) => differences(c, ...predictedRead(p), reads[i]))).toEqual([])
+          // a miss is pinned: Excel answered that cell otherwise than predicted, and it holds Excel's answer instead
+          expect(predictionCheck(c, set.answers[c.id].reads, MISSED[`${set.name}:${c.id}`] ?? {})).toEqual([[], []])
         })
     }
   })

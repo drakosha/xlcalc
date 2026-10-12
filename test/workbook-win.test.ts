@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
 import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
 import { winFiles } from './excel-win-cases.js'
-import { differences, engineReads, goesOn } from './workbook-cases.js'
+import { differences, engineReads, goesOn, predictionCheck } from './workbook-cases.js'
 
 const SETS = winFiles<StoredWorkbook>('workbook/')
 
@@ -21,10 +21,13 @@ const OUTSIDE = {
 /** Excel starts a cycle from what the file stores, on Windows as on the Mac; the engine from 0. */
 const START = 'Excel starts a cycle from what the file stores (50 in counter-cached, the fixed point 2 in cycles:iterate-file), empty text (#VALUE! in arithmetic) where it stores none; the engine starts from 0'
 const UNLISTED = 'INDIRECT and OFFSET are not in the whitelist (#NAME?); Excel keeps the cycle through them as any other'
+/** The one miss of the predictions of `cycles-held`: the engine still answers as predicted there. */
+const ARRAY = 'a spilled array a cycle comes to holds its first value here and spills no more (a held value is one value a cell); Excel keeps its whole spill as it was'
 const WIN_BOOK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   'cycles:indirect': { 'S!A1': UNLISTED, 'S!B1': UNLISTED },
   'cycles:offset': { 'S!A1': UNLISTED, 'S!B1': UNLISTED },
   'cycles:iterate-file': { 'S!A1': START, 'S!B1': START, 'S!C1': START },
+  'cycles-held:array-enters': { 'S!A2': ARRAY, 'S!A3': ARRAY },
   'date1904-held:held': { 'S!A9': PIXELS },
   'date1904:d1900': { ...OUTSIDE, ...Object.fromEntries(['S!A4', 'S!A5', 'S!A7', 'S!A14', 'S!A17', 'S!A18', 'S!A20'].map((k) => [k, PIXELS])) },
   'date1904:d1904': { ...OUTSIDE, 'S!A11': PIXELS },
@@ -50,6 +53,12 @@ for (const set of SETS) {
         const known = WIN_BOOK[`${set.name}:${c.id}`] ?? {}
         expect(Object.keys(known).filter((k) => !diffs.some((d) => d.cell === k))).toEqual([])
         expect(diffs.filter((d) => !known[d.cell] && !goesOn(set.name, win, d.read, d.cell)).map((d) => d.text)).toEqual([])
+      })
+    // the predictions of a held-out case Excel for Windows alone runs (`cycle`; the Mac's test checks the others), written
+    // before Excel ran: the engine gives them all, its misses pinned in WIN_BOOK
+    for (const c of set.cases.filter((x) => x.cycle && x.predicted))
+      it(`${c.id}: the answers predicted before Excel ran`, () => {
+        expect(predictionCheck(c, set.answers[c.id].reads, {})).toEqual([[], []])
       })
   })
 }

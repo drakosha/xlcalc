@@ -91,6 +91,24 @@ export function differences(c: WorkbookCase, excel: Record<string, Val>, shown: 
   return out
 }
 
+/** A predicted read as Excel's answer: the values, and the shown text of `show:` keys. */
+const predictedRead = (p: Record<string, Val | string>): [Record<string, Val>, Record<string, string>] => [
+  Object.fromEntries(Object.entries(p).filter(([k]) => !k.startsWith('show:'))) as Record<string, Val>,
+  Object.fromEntries(Object.entries(p).flatMap(([k, v]) => (k.startsWith('show:') ? [[k.slice(5), v as string]] : []))),
+]
+
+/**
+ * A held-out case's predictions against Excel's answers `excel` and the engine: the cells `missed` pins that Excel answered
+ * as predicted after all (none, as a miss stays pinned), and the differences of the engine from the predictions, the
+ * missed cells holding Excel's answer instead, as the engine gives it since (none).
+ */
+export function predictionCheck(c: WorkbookCase, excel: WorkbookAnswer['reads'], missed: Record<string, string>): [string[], string[]] {
+  const answered = Object.keys(missed).filter((k) => !c.predicted!.some((p, i) => JSON.stringify(p[k]) !== JSON.stringify(excel[i].values[k])))
+  const reads = engineReads(c)
+  const kept = c.predicted!.map((p, i) => ({ ...p, ...Object.fromEntries(Object.keys(missed).map((k) => [k, excel[i].values[k]])) }))
+  return [answered, kept.flatMap((p, i) => differences(c, ...predictedRead(p), reads[i]))]
+}
+
 /**
  * A recalculation, a full calculation or an edit computes Excel's cycles again from the values they hold, the
  * engine's from 0 (`BookInput.iteration`): in the set `iterate`, a cell of a read after the first may differ where
