@@ -1223,9 +1223,25 @@ export interface ReadCellsOptions extends PageOptions {
   fields?: CellReadField[]
 }
 export interface FindCellsOptions extends ReadCellsOptions {
-  /** Literal substring search of the shown text by default; no regular expressions. */
-  in?: 'text' | 'formula' | 'value'
+  /**
+   * What is searched: the text a cell shows (`text`, the default; Excel's Look in Values), the text it opens with for
+   * editing (`edit`: a formula in the book's locale, a number by its format, a text as it is, without an apostrophe;
+   * Excel's Look in Formulas), its stored formula (`formula`) or its value (`value`). No regular expressions.
+   */
+  in?: 'text' | 'edit' | 'formula' | 'value'
+  /** Excel's Match case; any case by default (`straße` is `STRAẞE`, `i` is not `İ`). */
   caseSensitive?: boolean
+  /** The query as Excel's Find reads it: `*` any text, `?` one character (two for one outside the BMP), `~` before a character takes it as it is. Literal without it. */
+  wildcards?: boolean
+  /** Excel's Match entire cell contents: the whole text matches the query, not a part of it. */
+  wholeCell?: boolean
+  /** Excel's Search By Columns: each range's cells column by column; row by row without it. */
+  byColumns?: boolean
+  /**
+   * Cells of hidden rows and columns are not searched, as Excel's Find skips them in both kinds of Look in (rows a filter
+   * hid too); the cells come by the blocks the hidden lines leave, each block in turn (`docs/live-books.md`).
+   */
+  skipHidden?: boolean
 }
 export interface QueryPage {
   revision: number
@@ -1835,7 +1851,7 @@ export interface Session {
   previewChanges(operations: SessionOperation[], opts?: PreviewChangesOptions): ChangesPreview
   /** One revision, multiple ranges, only the fields and number of cells requested. */
   readCells(ranges: RangeRef[], opts?: ReadCellsOptions): ReadCellsResult
-  /** Literal search performed where the book lives; output is paged. */
+  /** Search performed where the book lives, literal or by Excel's Find; output is paged, in Find's order. */
   findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions): ReadCellsResult
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions): DependentsResult
@@ -2063,7 +2079,7 @@ export interface AsyncSession {
   previewChanges(operations: SessionOperation[], opts?: PreviewChangesOptions & CalcOptions): Promise<ChangesPreview>
   /** One revision, multiple ranges, only the fields and number of cells requested. */
   readCells(ranges: RangeRef[], opts?: ReadCellsOptions & CalcOptions): Promise<ReadCellsResult>
-  /** Literal search performed where the book lives; output is paged. */
+  /** Search performed where the book lives, literal or by Excel's Find; output is paged, in Find's order. */
   findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions & CalcOptions): Promise<ReadCellsResult>
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions & CalcOptions): Promise<DependentsResult>
