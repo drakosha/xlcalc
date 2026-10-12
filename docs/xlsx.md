@@ -397,7 +397,7 @@ The writer writes every rule in `<dataValidations>`, references to other sheets 
 
 ### Outlines
 
-A row or column's `outlineLevel` and `collapsed` are `<row>`'s and `<col>`'s attributes, the summary settings `<sheetPr><outlinePr summaryBelow summaryRight>`. The writer writes the deepest levels into `<sheetFormatPr outlineLevelRow outlineLevelCol>`, where Excel reserves room for the outline's buttons, and the reader takes them from the lines. Automatic outline styles (`applyStyles`) are reported.
+A row or column's `outlineLevel` and `collapsed` are `<row>`'s and `<col>`'s attributes, the summary settings `<sheetPr><outlinePr summaryBelow summaryRight>`. The writer writes the deepest levels into `<sheetFormatPr outlineLevelRow outlineLevelCol>`, where Excel reserves room for the outline's buttons, and the reader takes them from the lines. The writer writes `collapsed` as Excel keeps and saves it, on the summary line of a group whose lines are all hidden, whatever marks the book holds; the reader reads a file's marks as they are ([docs/outline.md](outline.md#in-xlsx-files)). Automatic outline styles (`applyStyles`) are reported.
 
 ### How it was checked
 
