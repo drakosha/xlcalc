@@ -164,6 +164,15 @@ export const textAlerts = (s: EngineState, cells: Typed[]): CellValidationAlert[
 /** A cell's alert as the refusal of its value (`CellTextOptions.refuseInvalid`): the cell, the rule, its style and message. */
 export const alertRefusal = ({ valid: _, ...alert }: CellValidationAlert): CellValidationRefusal => ({ ok: false, code: 'validation', ...alert })
 
+const STRICTNESS = { stop: 2, warning: 1, information: 0 }
+
+/**
+ * Texts refused for the strictest rule their values break, the first cell of that style: a host that answers a warning
+ * with Yes calls again without the option, which would write a value a later cell's stop does not take.
+ */
+export const strictestRefusal = (alerts: CellValidationAlert[]): CellValidationRefusal | null =>
+  alerts.length ? alertRefusal(alerts.reduce((a, b) => (STRICTNESS[b.severity] > STRICTNESS[a.severity] ? b : a))) : null
+
 /** An answer's widths and alerts, those there are. */
 export const textsFound = (widths: ColumnWidth[], alerts: CellValidationAlert[]) => ({ ...(widths.length ? { widths } : {}), ...(alerts.length ? { validations: alerts } : {}) })
 

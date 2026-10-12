@@ -60,7 +60,7 @@ const r = session.setCellText('S', 'A1', '-2', { refuseInvalid: true })
 console.log(r.code, r.cell, r.severity, session.revision) // → validation A1 stop 0
 ```
 
-Several texts are checked with all of them written, and the first cell whose value its rule does not take refuses them all; an entry into a selection checks its active cell alone. A rule that shows no alert (`showError: false`) refuses nothing, and a paste checks no rule.
+Several texts are checked with all of them written, and the cell whose value breaks the strictest rule (stop, then warning, then information; the first cell of that style) refuses them all, so that a warning answered with Yes does not write a value a later cell's stop does not take; an entry into a selection checks its active cell alone. A rule that shows no alert (`showError: false`) refuses nothing, and a paste checks no rule.
 
 Without a session, a host reads the cell (its own copy, or `cells`), calls `parseEntry` with the format the cell shows and sends the input with `setCells`, which keeps the fields the input leaves out.
 
