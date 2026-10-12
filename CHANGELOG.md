@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.21.1 (2026-10-12)
+
+Internal release; not published to npm.
+
+Fixed:
+
+- `setCellTexts` and `previewCellTexts` with `refuseInvalid` refuse a batch by the strictest rule its values break (stop, then warning, then information; the first cell of that style), not by its first cell. A batch with a warning before a stop was refused by the warning, and a host that showed it and kept the value called again without the option, writing the value the stop does not take.
+
 ## 0.21.0 (2026-10-12)
 
 Internal release; not published to npm. What the sheet component asked for as it moves to the final API: a typed value a rule of data validation does not take refused before it is written, a formula shown with a sheet in quotes only where Excel puts them, an empty cell of a formatted row or column in a window, the issues of xlsx in the book's language, and no string `xlcalc` in the subpaths without the engine. Values and hashes are as in 0.20.0.

@@ -4,7 +4,7 @@
  * it, with the cell, the rule, its style and message, and the book, the revision and the history stay; a value the rules
  * take, a rule that shows no alert and a cell without a rule are written as without the option, and without it a value
  * is written with its alert as before. Several texts are checked with all of them written and refused whole, with the
- * first cell; an entry into a selection checks its active cell alone. In a synchronous session, in the same thread and
+ * cell of the strictest rule they break; an entry into a selection checks its active cell alone. In a synchronous session, in the same thread and
  * in a thread, with closures and eval; a refused call replayed after its thread is lost.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -88,12 +88,15 @@ describe.each(['closures', 'eval'] as const)('typed text refused by a rule of da
       await s.close()
     })
 
-    it('several texts are checked with all of them written and refused whole, with the first cell whose value its rule does not take', async () => {
+    it('several texts are checked with all of them written and refused whole, with the cell of the strictest rule they break, the first of those', async () => {
       const s = await open()
-      const entries = [{ sheet: 'S', cell: 'F1', text: '7' }, { sheet: 'S', cell: 'B2', text: '-2' }, { sheet: 'S', cell: 'A2', text: '-1' }]
-      const second = { ...WARNING, cell: 'B2' }
-      expect(await s.setCellTexts(entries, refuse)).toEqual(second)
-      expect(await s.previewCellTexts(entries, refuse)).toEqual(second)
+      // a stop after a warning: the host that showed the warning and kept the value would write past the stop
+      const entries = [{ sheet: 'S', cell: 'F1', text: '7' }, { sheet: 'S', cell: 'C2', text: '-3' }, { sheet: 'S', cell: 'B2', text: '-2' }, { sheet: 'S', cell: 'A2', text: '-1' }, { sheet: 'S', cell: 'A3', text: '-1' }]
+      const stop = { ...STOP, cell: 'A2' }
+      expect(await s.setCellTexts(entries, refuse)).toEqual(stop)
+      expect(await s.previewCellTexts(entries, refuse)).toEqual(stop)
+      const softer = [{ sheet: 'S', cell: 'C2', text: '-3' }, { sheet: 'S', cell: 'B2', text: '-2' }, { sheet: 'S', cell: 'B3', text: '-2' }]
+      expect(await s.setCellTexts(softer, refuse)).toEqual({ ...WARNING, cell: 'B2' })
       // G1 takes a number below H1: 5 alone it does not take, and with H1 typed to 10 in the same call it does
       expect(await s.setCellTexts([{ sheet: 'S', cell: 'G1', text: '5' }], refuse)).toEqual(refusal('G1', RULES[4], 'stop'))
       await unchanged(s)

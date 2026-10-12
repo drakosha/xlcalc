@@ -28,7 +28,7 @@ import { checkPatches } from './session/patch.js'
 import { patchPlan, type Plan } from './session/styles.js'
 import { bookDiff, DiffPass, type BookDiff } from './session/rebook.js'
 import { columnWidening, entryCheck, validationAlert } from './session/text.js'
-import { alertRefusal, checkActive, checkTextEntries, filledText, pastedText, previewCells, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
+import { alertRefusal, checkActive, checkTextEntries, filledText, pastedText, previewCells, strictestRefusal, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
 import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
@@ -356,14 +356,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     return o
   }
   /**
-   * With `refuseInvalid`, the first of the cells `checked` whose value its rule of data validation does not take once
-   * the typed cells are written, refused before they are, as Excel's alert holds the entry until it is answered.
+   * With `refuseInvalid`, the cell of `checked` whose value breaks the strictest rule of data validation once the typed
+   * cells are written (`strictestRefusal`), refused before they are, as Excel's alert holds the entry until it is answered.
    */
   function* invalid(s: EngineState, o: CellTextOptions, cells: Typed[], checked = cells): Steps<CellValidationRefusal | null> {
     // a cell without a rule takes any value: nothing is put in to check it
     if (!o.refuseInvalid || !checked.some(({ i, r, c }) => hasRule(s, i, r, c))) return null
-    const [first] = yield* previewed(s, cells, () => textAlerts(s, checked))
-    return first ? alertRefusal(first) : null
+    return strictestRefusal(yield* previewed(s, cells, () => textAlerts(s, checked)))
   }
   /** A text entered into a range from its active cell (`fillCellText`), its arguments checked: the sheet, the active cell and the cells. */
   const fill = (s: EngineState, sheet: string, range: string, text: string, opts: FillTextOptions) => {
@@ -452,7 +451,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       return yield* previewed(s, typed.cells, () => {
         const alerts = textAlerts(s, typed.cells)
-        return alerts.length && opts.refuseInvalid ? alertRefusal(alerts[0]) : { ok: true as const, cells: previewCells(s, typed.cells), ...textsFound(textWidths(s, typed.cells), alerts) }
+        const refused = opts.refuseInvalid ? strictestRefusal(alerts) : null
+        return refused ?? { ok: true as const, cells: previewCells(s, typed.cells), ...textsFound(textWidths(s, typed.cells), alerts) }
       })
     },
     *pasteText(sheet: string, cell: string, text: string, eo?: EditOptions) {

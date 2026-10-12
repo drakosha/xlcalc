@@ -1149,7 +1149,8 @@ export type CellValidationAlert = CellRef & ValidationAlert
 
 /**
  * Why `Session.setCellTexts` took none of the texts: the first one refused, as `setCellText` refuses it, with its cell;
- * with `refuseInvalid`, the first cell whose value its rule of data validation does not take once all are written.
+ * with `refuseInvalid`, the cell whose value breaks the strictest rule of data validation once all are written (stop, then
+ * warning, then information; the first cell of that style).
  */
 export type CellTextsRefusal = (Refusal<CellTextRefusal> & CellRef) | CellValidationRefusal
 
@@ -1702,8 +1703,8 @@ export interface Session {
    * text, read by what the earlier one wrote. A column widens once, to the largest width a text typed alone into one of
    * its cells gives it (`widths`), unless `widen` is false; the values the cells' rules of data validation do not take
    * after all the texts are written, with the cells (`validations`). A text `setCellText` refuses refuses the whole
-   * call, with its cell, and nothing is written; with `refuseInvalid`, so does the first cell whose value its rule does
-   * not take after all the texts are written.
+   * call, with its cell, and nothing is written; with `refuseInvalid`, so does the cell whose value breaks the strictest
+   * rule after all the texts are written, the first of that style.
    */
   setCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): CellTextsResult
   /** What `setCellTexts` would do, with nothing changed. */
