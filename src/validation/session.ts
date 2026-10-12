@@ -13,7 +13,9 @@ import { formatOf as lineFormat } from '../layout/lines.js'
 import { lineAt } from '../layout/spans.js'
 import { nameFor } from '../names.js'
 import { journaled } from '../held.js'
+import { readEntry } from '../entry/index.js'
 import { formatAddress } from '../model.js'
+import { ERROR_TEXT } from '../syntax/ast.js'
 import { inputAt } from '../session/book.js'
 import { inputIn } from '../looks/sheet.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
@@ -86,14 +88,30 @@ function listItems(state: EngineState, s: number, r: number, c: number, text: st
   return out
 }
 
-/** A cell's data validation: its rule, the rule's formulas as at it and a list's items computed now; null without a rule. */
-export function cellValidation(state: EngineState, s: number, r: number, c: number): CellValidation | null {
+/**
+ * What Excel writes into a cell when an item of its dropdown is picked (the set `ui/pick-held`): a cell's value as it is,
+ * the cell keeping its format; a literal list's item read as typed in en-US, the locale a file holds the list in; null
+ * for a blank cell. `now` completes a date read without a year.
+ */
+function picked(state: EngineState, item: Item, isLiteral: boolean, now: string): CellInput | null {
+  if (isLiteral) {
+    const p = readEntry(item.text, { locale: 'en-US', dateSystem: state.input.dateSystem, now, externalBooks: state.input.externalBooks ?? [] })
+    return p.ok ? p.input : { value: item.text }
+  }
+  const v = toCellValue(item.value)
+  if (v === null) return null
+  return typeof v === 'object' ? { formula: ERROR_TEXT[v.error] } : { value: v }
+}
+
+/** A cell's data validation at the moment `now`: its rule, the rule's formulas as at it and a list's items computed now, with what picking each writes; null without a rule. */
+export function cellValidation(state: EngineState, s: number, r: number, c: number, now: string): CellValidation | null {
   const rule = ruleOf(state, s, r, c)
   if (!rule) return null
   const f = formulas(state, s, r, c, rule)
   if (rule.type !== 'list') return { rule, ...f }
   const items = listItems(state, s, r, c, f.formula1!)
-  const list = 'error' in items ? { error: isErr(items.error) ? items.error.code : ('VALUE' as const) } : items.map((i) => ({ value: toCellValue(i.value), text: i.text }))
+  const isLiteral = literal(f.formula1!) !== null
+  const list = 'error' in items ? { error: isErr(items.error) ? items.error.code : ('VALUE' as const) } : items.map((i) => ({ value: toCellValue(i.value), text: i.text, input: picked(state, i, isLiteral, now) }))
   return { rule, ...f, list }
 }
 

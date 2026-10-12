@@ -1,0 +1,953 @@
+{
+ "now": "2026-10-12",
+ "locales": {
+  "en-US": {
+   "plain-1": {
+    "preview": {
+     "cells": {
+      "D2": {
+       "input": {
+        "value": "b"
+       },
+       "value": "b"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "D2": {
+      "input": {
+       "value": "b"
+      },
+      "value": "b"
+     }
+    },
+    "widths": {
+     "D": null
+    }
+   },
+   "cells-1": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      }
+     },
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-2": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": 46024,
+        "numberFormat": 16
+       },
+       "value": 46024
+      }
+     },
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "value": 46024,
+       "numberFormat": 16
+      },
+      "value": 46024
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-3": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": "ИСТИНА"
+       },
+       "value": "ИСТИНА"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "ИСТИНА"
+      },
+      "value": "ИСТИНА"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-4": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": 0.5,
+        "numberFormat": 9
+       },
+       "value": 0.5
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.5,
+       "numberFormat": 9
+      },
+      "value": 0.5
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-5": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": true
+       },
+       "value": true
+      }
+     },
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "value": true
+      },
+      "value": true
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-6": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": "abc"
+       },
+       "value": "abc"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc"
+      },
+      "value": "abc"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-7": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": 0.05,
+        "numberFormat": 9
+       },
+       "value": 0.05
+      }
+     },
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.05,
+       "numberFormat": 9
+      },
+      "value": 0.05
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "text-cell-1": {
+    "preview": {
+     "cells": {
+      "B3": {
+       "input": {
+        "value": "001",
+        "numberFormat": "@"
+       },
+       "value": "001"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B3": {
+      "input": {
+       "value": "001",
+       "numberFormat": "@"
+      },
+      "value": "001"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "text-cell-2": {
+    "preview": {
+     "cells": {
+      "B3": {
+       "input": {
+        "value": "1/2",
+        "numberFormat": "@"
+       },
+       "value": "1/2"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B3": {
+      "input": {
+       "value": "1/2",
+       "numberFormat": "@"
+      },
+      "value": "1/2"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "pct-cell-1": {
+    "preview": {
+     "cells": {
+      "B4": {
+       "input": {
+        "value": "50%%",
+        "numberFormat": "0%"
+       },
+       "value": "50%%"
+      }
+     },
+     "validations": [
+      {
+       "cell": "B4",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B4",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "after": {
+     "B4": {
+      "input": {
+       "value": "50%%",
+       "numberFormat": "0%"
+      },
+      "value": "50%%"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "pct-cell-2": {
+    "preview": {
+     "cells": {
+      "B4": {
+       "input": {
+        "value": 0.01,
+        "numberFormat": "0%"
+       },
+       "value": 0.01
+      }
+     },
+     "validations": [
+      {
+       "cell": "B4",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B4",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "after": {
+     "B4": {
+      "input": {
+       "value": 0.01,
+       "numberFormat": "0%"
+      },
+      "value": 0.01
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "literal-1": {
+    "preview": {
+     "cells": {
+      "C2": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      }
+     },
+     "validations": [
+      {
+       "cell": "C2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "C2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "after": {
+     "C2": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     }
+    },
+    "widths": {
+     "C": null
+    }
+   },
+   "literal-2": {
+    "preview": {
+     "cells": {
+      "C2": {
+       "input": {
+        "value": 46024,
+        "numberFormat": 16
+       },
+       "value": 46024
+      }
+     },
+     "validations": [
+      {
+       "cell": "C2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "C2",
+       "severity": "stop",
+       "message": "This value doesn't match the data validation restrictions defined for this cell."
+      }
+     ]
+    },
+    "after": {
+     "C2": {
+      "input": {
+       "value": 46024,
+       "numberFormat": 16
+      },
+      "value": 46024
+     }
+    },
+    "widths": {
+     "C": null
+    }
+   }
+  },
+  "ru-RU": {
+   "plain-1": {
+    "preview": {
+     "cells": {
+      "D2": {
+       "input": {
+        "value": "b"
+       },
+       "value": "b"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "D2": {
+      "input": {
+       "value": "b"
+      },
+      "value": "b"
+     }
+    },
+    "widths": {
+     "D": null
+    }
+   },
+   "cells-1": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      }
+     },
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-2": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": 46054,
+        "numberFormat": 16
+       },
+       "value": 46054
+      }
+     },
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "value": 46054,
+       "numberFormat": 16
+      },
+      "value": 46054
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-3": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": true
+       },
+       "value": true
+      }
+     },
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "value": true
+      },
+      "value": true
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-4": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": 0.5,
+        "numberFormat": 9
+       },
+       "value": 0.5
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.5,
+       "numberFormat": 9
+      },
+      "value": 0.5
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-5": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": "TRUE"
+       },
+       "value": "TRUE"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "TRUE"
+      },
+      "value": "TRUE"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-6": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": "abc"
+       },
+       "value": "abc"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc"
+      },
+      "value": "abc"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "cells-7": {
+    "preview": {
+     "cells": {
+      "B2": {
+       "input": {
+        "value": 0.05,
+        "numberFormat": 9
+       },
+       "value": 0.05
+      }
+     },
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.05,
+       "numberFormat": 9
+      },
+      "value": 0.05
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "text-cell-1": {
+    "preview": {
+     "cells": {
+      "B3": {
+       "input": {
+        "value": "001",
+        "numberFormat": "@"
+       },
+       "value": "001"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B3": {
+      "input": {
+       "value": "001",
+       "numberFormat": "@"
+      },
+      "value": "001"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "text-cell-2": {
+    "preview": {
+     "cells": {
+      "B3": {
+       "input": {
+        "value": "1/2",
+        "numberFormat": "@"
+       },
+       "value": "1/2"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B3": {
+      "input": {
+       "value": "1/2",
+       "numberFormat": "@"
+      },
+      "value": "1/2"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "pct-cell-1": {
+    "preview": {
+     "cells": {
+      "B4": {
+       "input": {
+        "value": "50%%",
+        "numberFormat": "0%"
+       },
+       "value": "50%%"
+      }
+     },
+     "validations": [
+      {
+       "cell": "B4",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B4",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "after": {
+     "B4": {
+      "input": {
+       "value": "50%%",
+       "numberFormat": "0%"
+      },
+      "value": "50%%"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "pct-cell-2": {
+    "preview": {
+     "cells": {
+      "B4": {
+       "input": {
+        "value": 0.01,
+        "numberFormat": "0%"
+       },
+       "value": 0.01
+      }
+     },
+     "validations": [
+      {
+       "cell": "B4",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B4",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "after": {
+     "B4": {
+      "input": {
+       "value": 0.01,
+       "numberFormat": "0%"
+      },
+      "value": 0.01
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "literal-1": {
+    "preview": {
+     "cells": {
+      "C2": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      }
+     },
+     "validations": [
+      {
+       "cell": "C2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "C2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "after": {
+     "C2": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     }
+    },
+    "widths": {
+     "C": null
+    }
+   },
+   "literal-2": {
+    "preview": {
+     "cells": {
+      "C2": {
+       "input": {
+        "value": 46054,
+        "numberFormat": 16
+       },
+       "value": 46054
+      }
+     },
+     "validations": [
+      {
+       "cell": "C2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "C2",
+       "severity": "stop",
+       "message": "Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки."
+      }
+     ]
+    },
+    "after": {
+     "C2": {
+      "input": {
+       "value": 46054,
+       "numberFormat": 16
+      },
+      "value": 46054
+     }
+    },
+    "widths": {
+     "C": null
+    }
+   }
+  }
+ }
+}

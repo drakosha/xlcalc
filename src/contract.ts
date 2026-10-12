@@ -1907,14 +1907,19 @@ export interface CellValidation {
   /**
    * A list's items in order, computed in the book as it is now: a literal list's items as written (`text`, and `value` the
    * same text), or the cells of the reference its formula gives, each with its value and the text it shows by its number
-   * format (blank cells past the last value left out). An error where the formula gives no reference or list.
+   * format (blank cells past the last value left out). An error where the formula gives no reference or list. `input` is
+   * what Excel writes into the cell when the item is picked from its dropdown, for `setCells`, which keeps the cell's
+   * format: a cell's value as it is (`001` stays text, a number shown `50%` is 0.5), a literal item read as typed in
+   * en-US, the locale a file holds the list in (`1/2` is the 2nd of January, `d-mmm`), null for a blank cell. Excel
+   * checks no rule on a picked item.
    */
-  list?: { value: CellValue; text: string }[] | { error: ErrorCode }
+  list?: { value: CellValue; text: string; input: CellInput | null }[] | { error: ErrorCode }
 }
 
 /**
  * Whether a value meets a cell's rule (`Session.validateEntry`); when it does not, the rule, whose alert Excel shows,
- * its style (`errorStyle`, stop by default) and its message: the rule's `error`, else the library's English text.
+ * its style (`errorStyle`, stop by default) and its message: the rule's `error`, else the text of Excel's alert in the
+ * book's locale.
  */
 export type EntryCheck = { ok: true } | ValidationRefusal
 

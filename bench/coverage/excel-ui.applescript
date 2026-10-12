@@ -4,7 +4,8 @@
 -- text and presses Cmd+V (the V key: any layout) with the cell selected; "fill" selects the range, types the text and presses Control+Return;
 -- "edit" selects the cell, presses F2, then Left `left` times and Backspace `back` times (40 without "keys": all it
 -- opened with), types the text (`type`, or `text` without "keys") and presses Return, reading the bar as "bars" does
--- and once more before Return;
+-- and once more before Return; "pick" selects the cell, opens its dropdown list (Option+Down, the first item marked),
+-- presses Down `item` - 1 times and Return;
 -- "ribbon" selects each cell in turn and reads the ribbon's Number Format box, "choose" applies an item of the box's list
 -- to each cell (Accessibility: the box's button pressed, then the item) and reads the box after; both give A1 the text
 -- format as a control cell, selected before each cell, and a set leaves A1 and A2 empty.
@@ -68,6 +69,8 @@ on run argv
 			set said to kb's typeFill((act's objectForKey:"text") as text)
 		else if todo is "edit" then
 			set barsOut to my edit(ws, act, bookName, kb)
+		else if todo is "pick" then
+			set said to my pick(ws, (act's objectForKey:"at") as text, (act's objectForKey:"item") as integer, kb)
 		else if todo is "ribbon" then
 			set ribbonOut to my ribbon(ws, (act's objectForKey:"cells") as list, {}, bookName, kb)
 		else if todo is "choose" then
@@ -165,6 +168,24 @@ on edit(ws, act, bookName, kb)
 	delay 1
 	return {{onSelect, onEdit, inFocus, kb's answerDialog(), onTyped}}
 end edit
+
+-- the cell selected, its dropdown list opened (Option+Down, key codes: any layout; an empty cell's list opens with its
+-- first item marked), the item reached by Down and taken by Return; the windows Excel shows then are answered
+on pick(ws, a, n, kb)
+	tell application "Microsoft Excel" to select range a of ws
+	kb's toFront()
+	tell application "System Events" to key code 125 using option down
+	delay 0.8
+	tell application "System Events"
+		repeat (n - 1) times
+			key code 125
+			delay 0.15
+		end repeat
+		key code 36
+	end tell
+	delay 1
+	return kb's answerDialog()
+end pick
 
 -- each cell selected in turn, an item of the Number Format list applied to it when `picks` gives one (its place in the
 -- list): the item's name (empty for none) and what the box shows then. Before each cell the control cell A1, given the

@@ -90,6 +90,15 @@ A rule's ranges move as references do: they grow with lines inserted after their
 
 `readXlsx` reads `<dataValidations>`, and the rules Excel writes in the sheet's extension (`x14:dataValidations`) when their formulas refer to another sheet; `writeXlsx` writes every rule in `<dataValidations>`, which Excel opens. [docs/xlsx.md](xlsx.md#data-validation-and-outlines) has what is reported.
 
+### An item picked from the dropdown
+
+Picking an item of a cell's dropdown writes it without checking the rule, and not as typed text: a list of cells gives the cell's value as it is, and a literal list's item is read as typed in en-US, the locale a file holds the list in, whatever the book's locale. With `001`, `1/2` and `0.5` shown as `50%` in the list's cells, a cell in General takes the text `001`, the text `1/2` and the number 0.5, keeping its own format; from the literal list `"001,1/2,x"` it takes the number 1 and the 2nd of January in the format `d-mmm`, in ru-RU too. Each item of `getValidation`'s `list` has that as `input`, which a grid passes to `setCells`:
+
+```js
+const list = session.getValidation('S', 'B2').list
+session.setCells([{ sheet: 'S', cell: 'B2', input: list[0].input }])
+```
+
 ## How it was checked
 
 `npx tsx bench/coverage/run.ts valid <set> [ru]` writes each book of `bench/coverage/valid/<set>.ts` with `writeXlsx`. Excel for Mac opens it, makes what the case makes through its object model (`add data validation` with the range's first cell selected, groups, a collapsed group), applies the case's structure operation, and over a window of each sheet reads, with each cell selected in turn, the cell's rule (type, operator, formulas, settings, texts) and `Validation.Value`, whether the cell's value meets it; it reads the outline too and saves the book. `npx tsx bench/windows/run.ts valid <set> [ru]` does the same in Excel for Windows through COM. `test/validation-excel.test.ts` and `test/validation-win.test.ts` check, without Excel, that Excel read what the engine holds after each case, `validateEntry` with each cell's own input against `Validation.Value`, and that the reader reads the file Excel saved as Excel read it.
@@ -113,6 +122,8 @@ The engine's answers were committed before Excel ran each set (`bench/coverage/v
 In ru-RU both Excels read a file's literal lists as en-US does, split at commas. Typed through the object model in Russian, a list `x;y;z` is three items in Excel for Windows and one in Excel for Mac's AppleScript, which also made no rule of a formula with a Russian function name, and Excel for Mac's object model shows a rule's formulas now in Russian, now in English, so the ru-RU set compares Excel for Mac's values and settings and leaves the formulas to the file it saved.
 
 What Excel does with a picked item of a dropdown, and the text its dropdown shows, was not measured: no object model gives them. Lists of cells were checked by which values they take.
+
+An item picked from a dropdown was measured by the step `ui` on the Mac's keyboard (the set `pick-held`, 14 picks in each locale: the cell selected, its list opened with Option+Down, the item reached with Down and taken with Return): a list of cells holding text that reads as a number, a date, a boolean or a percent when typed, a number shown as a percent, plain text, a literal list, into cells in General, in the text format and a percent. The prediction, each item typed as its text with the rule checked, was committed before Excel ran the set and came out on 5 picks in each locale: Excel took no item as typed from a list of cells and showed no alert. `test/ui-excel.test.ts` compares `setCells` of each item's `input` with every pick.
 
 ## Known differences
 

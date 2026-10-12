@@ -7,7 +7,8 @@
  * - text pasted from the clipboard (`paste-held`, both Excels): `pasteText` of the clipboard's text; a text entered
  *   into a selection with Control+Return (`fill-held`, the Mac's keyboard): `fillCellText` from the selection's first
  *   cell, a host taking back a call with a stop alert as Excel takes no such value; a cell edited in place after F2
- *   (`edit-held`, the Mac's keyboard): `setCellText` with `inPlace`. What each cell holds after (its
+ *   (`edit-held`, the Mac's keyboard): `setCellText` with `inPlace`; an item of a dropdown list picked (`pick-held`):
+ *   `setCells` of the item's `input` from `getValidation`. What each cell holds after (its
  *   value or formula and its format), the width the columns took, and whether the action brought a window (a refused
  *   formula, a value the active cell's rule does not take), which Excel shows for the active cell;
  * - the ribbon's Number Format box (`ribbon-*`, the Mac's screen): what it shows for a cell selected, against
@@ -63,12 +64,20 @@ function excelOutcome(c: UiCase, a: UiAnswer, tag: string): Outcome {
   }
 }
 
-/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`, an edit by `setCellText` in place; a stop alert's call taken back, as the host does. */
+/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`, an edit by `setCellText` in place, a pick by its item's `input` from `getValidation`; a stop alert's call taken back, as the host does. */
 function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
   const s = createSession(uiBook(c, tag), { clock: { now: `${date}T12:00:00Z`, seed: 1 } })
   try {
     const act = c.act
-    if (act.do !== 'paste' && act.do !== 'fill' && act.do !== 'edit') throw new Error(`${c.id} is no paste, fill or edit`)
+    if (act.do === 'pick') {
+      // the item's input from getValidation, written by setCells: Excel checks no rule and widens no column
+      const list = s.getValidation('S', act.at)?.list
+      if (!Array.isArray(list)) throw new Error(`${c.id}: no list at ${act.at}`)
+      s.setCells([{ sheet: 'S', cell: act.at, input: list[act.item - 1].input }])
+      const cells = s.getBook().sheets[0].cells
+      return { cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(cells[x], tag)])), widths: Object.fromEntries(readColumns(c).map((k) => [k, null])), windows: [] }
+    }
+    if (act.do !== 'paste' && act.do !== 'fill' && act.do !== 'edit') throw new Error(`${c.id} is no paste, fill, edit or pick`)
     const r = act.do === 'paste' ? s.pasteText('S', act.at, clipboardText(act)) : act.do === 'fill' ? s.fillCellText('S', act.range, act.text) : s.setCellText('S', act.at, act.text, { inPlace: true })
     const alert = r.ok && 'validation' in r ? r.validation : undefined
     const undone = alert?.severity === 'stop'
@@ -229,6 +238,8 @@ const CONFIRMED: Record<string, number> = {
   'en-US:ribbon': 1,
   'ru-RU:ribbon': 0,
   'en-US:edit-held': 14,
+  'en-US:pick-held': 5,
+  'ru-RU:pick-held': 5,
   'ru-RU:edit-held': 13,
 }
 
