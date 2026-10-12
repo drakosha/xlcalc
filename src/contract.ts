@@ -1230,7 +1230,7 @@ export interface ChangesResult extends EditResult { clock: Clock }
 export interface CellImpact extends CellRef {
   before: CellValue
   after: CellValue
-  /** The error after the operation, when there is one. */
+  /** The error after the operation, or the circular reference that stops the cell then, when there is one. */
   issue?: CellIssueDetail
 }
 /** A complete computation with bounded output; the session, its revision and history are unchanged. */
@@ -1426,7 +1426,10 @@ export type FillTextPreview = { ok: true; cells: PreviewCell[]; widths?: ColumnW
 export interface ViewportOptions {
   /** Each formula also as the book's locale shows it (`ViewportCell.formulaLocal`); false by default. */
   formulaLocal?: boolean
-  /** Each cell with an error also with its reason and the cell it began in (`ViewportCell.issue`); false by default. */
+  /**
+   * Each cell with an error, and each formula a circular reference stops, also with its reason and the cell it began in
+   * (`ViewportCell.issue`); false by default.
+   */
   diagnostics?: boolean
   /** The most cells a window gives, 20,000 by default: of a larger one, its first rows that fit (`Viewport.truncated`). */
   maxCells?: number
@@ -1473,7 +1476,7 @@ export interface ViewportCell extends Partial<CellDisplay> {
   appearance?: ConditionalAppearance
   note?: CellNote
   link?: CellLink
-  /** With `diagnostics`, on a cell with an error: as `Session.getCellIssue`. */
+  /** With `diagnostics`, on a cell with an error or a formula a circular reference stops: as `Session.getCellIssue`. */
   issue?: CellIssueDetail
   /**
    * With `editText`: the text the cell opens with for editing, as Excel's formula bar shows it: a formula with `=` in the
