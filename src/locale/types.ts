@@ -43,7 +43,7 @@ export interface Locale {
   readonly regional?: RegionalData
   /**
    * Messages for people in the locale's language (`messages.ts`): why a formula does not read, why a structure operation
-   * is refused, the words of `explain`. A message the locale lacks is en-US's. They are functions, the one part of a
+   * is refused, the words of `explain`, what an xlsx file lost. A message the locale lacks is English. They are functions, the one part of a
    * locale a structured clone does not carry: a pool's thread imports the package's module of the tag itself.
    */
   readonly messages?: Partial<Messages>

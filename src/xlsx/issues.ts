@@ -3,8 +3,9 @@
  * message is kept as its key and parameters and written in the locale of the call when the issues are listed.
  */
 import { checkLocaleArg } from '../locale/load.js'
-import { say, type Message, type XlsxMessageParams } from '../locale/messages.js'
+import type { Message, XlsxMessageParams } from '../locale/messages.js'
 import type { Locale } from '../locale/types.js'
+import { issueText } from './messages.js'
 import type { XlsxIssue, XlsxIssueCode } from './types.js'
 
 /** A message of an issue. */
@@ -40,7 +41,7 @@ export class Issues {
   list(locale?: Locale): XlsxIssue[] {
     return [...this.byKey.values()].map(({ code, message, where, cells }) => ({
       code,
-      message: say(locale, message),
+      message: issueText(locale, message),
       ...(where.sheet !== undefined ? { sheet: where.sheet } : {}),
       ...(where.name !== undefined ? { name: where.name } : {}),
       ...(cells ? { cells } : {}),

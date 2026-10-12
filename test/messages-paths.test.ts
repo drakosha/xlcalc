@@ -4,8 +4,7 @@
  * (`editStructure`, and a session's, synchronous, in the same thread and in threads, in both execution modes), and the
  * text of `explain`. Each case names the message of the catalog it gives: in ru-RU its Russian text, in a locale
  * without messages of its own (and in an en-US book) the English one, at the same place. Together the cases reach
- * every message of the catalog but the rules of names, which only `validateName` gives, in English, and the issues of
- * xlsx files, which `test/xlsx-issue-locale.test.ts` reaches.
+ * every message of the catalog but the rules of names, which only `validateName` gives, in English.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { createInlineCalc, createSession, parseEntry, editStructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
@@ -13,7 +12,6 @@ import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { say, type Message, type MessageKey } from '../src/locale/messages.js'
 import { pool } from './fixtures/pool.js'
-import { XLSX_SAMPLES } from './fixtures/xlsx-messages.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 const reached = new Set<MessageKey>()
@@ -280,6 +278,6 @@ describe('explain', () => {
   }, 60_000)
 })
 
-it('the cases reach every message of the catalog but the rules of names and the issues of xlsx files', () => {
-  expect(Object.keys(EN_MESSAGES).filter((k) => !reached.has(k as MessageKey) && !Object.hasOwn(XLSX_SAMPLES, k))).toEqual(['nameRule'])
+it('the cases reach every message of the catalog but the rules of names', () => {
+  expect(Object.keys(EN_MESSAGES).filter((k) => !reached.has(k as MessageKey))).toEqual(['nameRule'])
 })

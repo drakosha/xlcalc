@@ -7,10 +7,10 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { registerLocale } from '../src/index.js'
-import { say, type Message } from '../src/locale/messages.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { readXlsx, writeXlsx, type XlsxIssue } from '../src/xlsx.js'
 import type { XlsxMessage } from '../src/xlsx/issues.js'
+import { issueText } from '../src/xlsx/messages.js'
 import { pack, parts } from './xlsx-fixtures.js'
 
 /** An issue without its message: what is the same in every language. */
@@ -94,8 +94,8 @@ const LOST: [XlsxIssue['code'], XlsxMessage][] = [
 ]
 
 /** Each issue's message by its code and English text: the message of `LOST` it says. */
-function expected(issues: XlsxIssue[]): (Message | undefined)[] {
-  return issues.map((i) => LOST.find(([code, m]) => code === i.code && say('en-US', m) === i.message)?.[1])
+function expected(issues: XlsxIssue[]): (XlsxMessage | undefined)[] {
+  return issues.map((i) => LOST.find(([code, m]) => code === i.code && issueText('en-US', m) === i.message)?.[1])
 }
 
 const LONG = 'x'.repeat(32_768)
@@ -133,7 +133,7 @@ describe('the issues of a file read, in the language of opts.locale', () => {
     const said = expected(plain.issues)
     expect(plain.issues.filter((_, k) => !said[k]).map((i) => `${i.code}: ${i.message}`)).toEqual([])
     expect(said.map((m) => m!.key).sort()).toEqual(LOST.map(([, m]) => m.key).sort())
-    expect(ru.issues.map((i) => i.message)).toEqual(said.map((m) => say('ru-RU', m!)))
+    expect(ru.issues.map((i) => i.message)).toEqual(said.map((m) => issueText('ru-RU', m!)))
     expect(ru.issues.find((i) => i.code === 'calculation' && i.message.startsWith('Предельное'))).toEqual({ code: 'calculation', message: 'Предельное число итераций «0» вне пределов от 1 до 32 767: прочитано значение по умолчанию, 100' })
     expect(ru.issues.filter((i) => i.code === 'style').map((i) => [i.message, i.cells])).toEqual([
       ['Надстрочный шрифт в стиле не поддерживается', ['B1']],
@@ -162,7 +162,7 @@ describe('the issues of a file written, in the language of opts.locale', () => {
     const [plain, en, ru] = await Promise.all([writeXlsx({ book: WRITTEN }), writeXlsx({ book: WRITTEN }, { locale: 'en-US' }), writeXlsx({ book: WRITTEN }, { locale: 'ru-RU', values: 'omit' })])
     expect(en).toEqual(plain)
     expect(ru.data).toEqual(plain.data)
-    const said: Message[] = [
+    const said: XlsxMessage[] = [
       { key: 'cellMeta' },
       { key: 'textCut' },
       { key: 'formulaAsValue' },
@@ -172,18 +172,22 @@ describe('the issues of a file written, in the language of opts.locale', () => {
       { key: 'noResult' },
       { key: 'nameBadRef' },
     ]
-    expect(plain.issues.map((i) => i.message)).toEqual(said.map((m) => say('en-US', m)))
+    expect(plain.issues.map((i) => i.message)).toEqual(said.map((m) => issueText('en-US', m)))
     // `values: 'omit'` asked for: no values of formulas, and nothing reported of it
     expect(ru.issues.map(place)).toEqual(plain.issues.filter((i) => i.code !== 'noCachedValues').map(place))
-    expect(ru.issues.map((i) => i.message)).toEqual(said.filter((m) => m.key !== 'noResult').map((m) => say('ru-RU', m)))
+    expect(ru.issues.map((i) => i.message)).toEqual(said.filter((m) => m.key !== 'noResult').map((m) => issueText('ru-RU', m)))
     expect(ru.issues.find((i) => i.cells?.[0] === 'B1')?.message).toBe('Сообщение для ввода правила проверки данных длиннее 255 знаков, предела Excel, обрезано')
     expect((await writeXlsx({ book: WRITTEN }, { locale: ruRU })).issues.find((i) => i.code === 'noCachedValues')?.message).toBe('Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла')
   })
 
-  it('a locale object without messages of its own speaks as the loaded locale of its tag, else in English', async () => {
+  it('a locale object without messages of its own speaks as the loaded locale of its tag, else in English; one without those of xlsx gives the English ones', async () => {
     const book = { sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }
     const message = async (locale: typeof ruRU) => (await writeXlsx({ book }, { locale })).issues[0].message
     expect(await message({ ...ruRU, messages: undefined })).toBe('Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла')
     expect(await message({ ...ruRU, tag: 'xx-YY', messages: undefined })).toBe('no result was given: the file stores no values of formulas, and Excel computes them when it opens the file')
+    const engineOnly = { ...ruRU, tag: 'xx-ZZ', messages: { lastSheet: () => 'Последний лист' } }
+    registerLocale(engineOnly)
+    expect(await message(engineOnly)).toBe('no result was given: the file stores no values of formulas, and Excel computes them when it opens the file')
+    expect((await writeXlsx({ book }, { locale: 'xx-ZZ' })).issues[0].message).toBe('no result was given: the file stores no values of formulas, and Excel computes them when it opens the file')
   })
 })
