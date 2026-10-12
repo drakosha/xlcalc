@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.26.0 (2026-10-12)
+
+Internal release; not published to npm. Cells formatted across a sheet without an object per cell, and Excel's grouping commands. The synthetic book's values and hashes are as in 0.25.0; a book read from xlsx whose cells hold a look alone has a new `inputHash`.
+
+Added:
+
+- `SheetInput.looks`, the look layer of a sheet: rectangles (`LookRange`, `{ range, style?, numberFormat? }`), each over those before it, give their style and number format to the cells without an entry in `cells`; a cell with an entry shows its own fields, as before. A book is taken with every entry that has only a style or a number format moved into the layer, and `getBook`, a snapshot and `readXlsx` give the layer back in one form. `readXlsx` reads such cells into the layer without an object per cell and `writeXlsx` writes them back cell by cell, as Excel stores them: a book of the wide shape (5.6 million formatted cells, 344 rows to XFD) reads in 1.5 s with 2 MB of heap and opens a session in 7 ms, where it took 6 s and 815 MB and 10.5 s and 545 MB ([docs/xlsx.md](docs/xlsx.md)).
+- `outlineGroups(sheet)` (`xlcalc`, `xlcalc/a1`): a sheet's groups of rows and columns as Excel draws them, each `{ first, last, level, summary, collapsed }`.
+- `editStructure` operations `group`, `ungroup` (`rows` or `columns`), `hideDetail`, `showDetail` (`row` or `column`) and `showLevels` (`rows`, `columns`), as Excel's Group, Ungroup, Hide and Show Detail and the level buttons; refusals `outline_deep`, `not_grouped`, `detail` ([docs/outline.md](docs/outline.md)).
+
+Changed:
+
+- `getLayout()` gives each sheet without `looks`, as without `cells`. A result lists no cell of a look alone.
+- `writeXlsx` writes a group's collapsed mark as Excel keeps and saves it: on the summary row of a group whose lines are all hidden, through `setLayout` too, and not on one whose lines show.
+
+Known limits: inserting or deleting rows and columns over a large look layer turns the part of the layer it moves into entries for the operation (correct, slow on a sheet of the wide shape); the next release moves the layer itself.
+
+Measured: the layer by equivalence, a book with looks and the same book with an entry per cell giving the same windows, cells, used ranges, hashes, files and books after each edit, in every kind of session, and by reading all 934 files of `test/excel` alike before and after. Grouping by a new step of the Windows harness (`Group`, `Ungroup`, `ShowDetail`, `Outline.ShowLevels` through COM, the collapsed marks read from a copy of the book after each command), 150 cases in four sets, each predicted before Excel ran it; the engine gives Excel's answer to all but 12, known differences (column groups of a span to XFD, lines hidden and shown by hand).
+
 ## 0.25.0 (2026-10-12)
 
 Internal release; not published to npm. Excel's Find in a session, and two numeric rules of Excel that models depend on. The synthetic book's values and hashes are as in 0.24.0.
