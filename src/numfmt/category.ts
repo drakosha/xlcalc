@@ -14,7 +14,7 @@ import { checkFormat } from '../input.js'
 import { checkLocaleArg } from '../locale/load.js'
 import type { FormatNames } from '../locale/rules/data.js'
 import type { Locale } from '../locale/types.js'
-import { builtinCodes } from './builtin.js'
+import { builtinCodes, EN_BUILTIN } from './builtin.js'
 import { splitSections } from './parse.js'
 
 /** en-US's names of the box's categories and the list's items, and the code of its Currency item. */
@@ -58,9 +58,13 @@ const MONEY = /^(?:[5-8]|4[1-4])$/
 export function numberFormatCategory(format: NumberFormat, locale?: string | Locale): NumberFormatCategory {
   checkFormat(format, 'format')
   const loc = optLocale(locale)
-  const codes = codesOf(loc)
-  const code = typeof format === 'string' ? format : MONEY.test(String(format)) ? codes(format).replace(/\$/g, '"$"') : codes(format)
-  const category = categoryOf(canonical(code), codes(14), loc)
+  let category: FormatCategory
+  if (!loc?.regional) category = categoryOf(typeof format === 'string' ? canonical(format) : EN_KEPT[format], '', undefined)
+  else {
+    // Excel takes a code equal to a built-in format's en-US code as that format
+    const id = typeof format === 'number' ? format : EN_KEPT.indexOf(canonical(format))
+    category = id >= 0 ? builtinIn(id) : categoryOf(canonical(format as string), codesOf(loc)(14), loc)
+  }
   return { category, name: namesOf(loc).categories[category] }
 }
 
@@ -106,7 +110,9 @@ const MONEY_NUM = String.raw`#,##0(?:\.0{1,30})?`
 /** A currency symbol of the table every locale has: `[$€-407]`, `[$USD]`. */
 const BRACKET = String.raw`\[\$[^\]-]+(?:-[^\]]*)?\]`
 
-const NUMBER = new RegExp(String.raw`^(${NUM})(?:;\[Red\]\1|_\);(?:\[Red\])?\\\(\1\\\))?$`, 'i')
+const NUMBER = new RegExp(String.raw`^(${NUM})(?:;\[Red\]\1)?$`, 'i')
+/** Number's negatives in parentheses, en-US's alone. */
+const PAREN = new RegExp(String.raw`^(${NUM})_\);(?:\[Red\])?\\\(\1\\\)$`, 'i')
 const PERCENT = /^0(?:\.0{1,30})?%$/
 const SCIENTIFIC = /^0\.0{1,30}E\+00$/
 const FRACTION = /^#\\ (?:\?\/\?|\?\?\/\?\?|\?\?\?\/\?\?\?|\?\/[248]|\?\?\/16|\?\/10|\?\?\/100)$/
@@ -131,6 +137,8 @@ const BRACKET_CURRENCY = currency(BRACKET, true)
 const BRACKET_ACCOUNTING = accounting(`${BRACKET}(?:\\\\ )?`, true)
 const EN_CURRENCY = currency('"\\$"', false)
 const EN_ACCOUNTING = accounting('(?:"\\$")?', false)
+/** Accounting without a symbol in the form with minus signs, a locale's own but en-US's (ru-RU's built-in 41 and 43). */
+const PLAIN_ACCOUNTING = new RegExp(String.raw`^_-\* (${MONEY_NUM})_-;\\-\* \1_-;_-\* "-"\?*_-;_-@_-$`)
 
 /** Date and time as Format Cells writes most of them: one date or time section (a locale tag but the system's), then `;@`. */
 const WITH_TEXT = /^(?:\[\$-(?!F[48]00)[0-9A-F]+\])?((?:"[^"]*"|\[[hms]+\]|[^;[\]"])+);@$/i
@@ -142,26 +150,38 @@ function dateOrTime(section: string): FormatCategory | undefined {
   return /[dy]/i.test(bare) || !/[hs]|AM\/PM|A\/P/i.test(bare) ? 'date' : 'time'
 }
 
+/** en-US's code of each built-in format as Excel keeps it, the dollar of its money quoted. */
+const EN_KEPT = EN_BUILTIN.map((code, id) => canonical(MONEY.test(String(id)) ? code.replace(/\$/g, '"$"') : code))
+
 /**
- * The category of a code as Excel keeps it (`canonical`) in a locale whose short date (built-in 14) has the code `short`:
- * the date also by that code with `/` for the locale's separator (ru-RU's `dd/mm/yyyy`, which it shows as `ДД.ММ.ГГГГ`).
+ * A built-in format's category in a locale other than en-US, as Excel for Windows shows it by the locale's own code
+ * (measured in ru-RU): its money the locale's currency (5 to 8) and accounting (41 to 44), its numbers with a minus
+ * (37 to 40) none of Format Cells' formats, the others as their en-US codes.
+ */
+const builtinIn = (id: number): FormatCategory => (id >= 37 && id <= 40 ? 'custom' : MONEY.test(String(id)) ? (id < 9 ? 'currency' : 'accounting') : categoryOf(EN_KEPT[id], '', undefined))
+
+/**
+ * The category of a code as Excel keeps it (`canonical`), in a locale other than en-US one that is no built-in format's
+ * en-US code, the locale's short date (built-in 14) having the code `short`. en-US's formats in every locale, but the
+ * dollar's money, Number's negatives in parentheses and the fractions that are no built-in format, which a locale
+ * other than en-US writes otherwise (measured in ru-RU); the locale's short date with `/` for its separator (ru-RU's
+ * `dd/mm/yyyy`, which it shows as `ДД.ММ.ГГГГ`).
  */
 function categoryOf(code: string, short: string, loc: Locale | undefined): FormatCategory {
+  const r = loc?.regional
   if (/^General$/i.test(code)) return 'general'
   if (code === '@') return 'text'
   if (SPECIAL.has(code)) return 'special'
   if (BRACKET_CURRENCY.test(code)) return 'currency'
   if (BRACKET_ACCOUNTING.test(code)) return 'accounting'
-  if (NUMBER.test(code)) return 'number'
+  if (NUMBER.test(code) || (!r && PAREN.test(code))) return 'number'
   if (PERCENT.test(code)) return 'percentage'
   if (SCIENTIFIC.test(code)) return 'scientific'
-  if (FRACTION.test(code)) return 'fraction'
-  if (!loc?.regional && EN_CURRENCY.test(code)) return 'currency'
-  if (!loc?.regional && EN_ACCOUNTING.test(code)) return 'accounting'
-  // built-in 14 by its en-US code in every locale, the locale's short date as the package shows built-in 14 and with
-  // `/`, and Excel for Mac's own in en-US
-  const sep = loc?.regional?.dateSeparator
-  if (code === 'm/d/yyyy' || code === canonical(short) || (sep && code === short.split(sep).join('/')) || (!loc?.regional && code === 'm/d/yy') || code === LONG_DATE) return 'date'
+  if (!r && FRACTION.test(code)) return 'fraction'
+  if (!r && EN_CURRENCY.test(code)) return 'currency'
+  if (r ? PLAIN_ACCOUNTING.test(code) : EN_ACCOUNTING.test(code)) return 'accounting'
+  // the short date: en-US's built-in 14 and Excel for Mac's own, or the locale's with `/`
+  if (code === LONG_DATE || (r ? code === short.split(r.dateSeparator).join('/') : code === 'm/d/yyyy' || code === 'm/d/yy')) return 'date'
   if (code === LONG_TIME) return 'time'
   const m = WITH_TEXT.exec(code)
   return (m && dateOrTime(m[1])) || 'custom'

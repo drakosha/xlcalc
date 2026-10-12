@@ -96,7 +96,7 @@ function actJson(c: UiCase): string {
 const OWN = '"\u00a7own"'
 
 /** A case's file: `writeXlsx`'s, with the codes of its `own` cells as codes of the file's own. */
-async function caseFile(c: UiCase, label: string): Promise<Uint8Array> {
+export async function caseFile(c: UiCase, label: string): Promise<Uint8Array> {
   const own = new Set(c.own)
   const cells = Object.fromEntries(Object.entries(c.cells).map(([a, x]) => [a, own.has(a) ? { ...x, numberFormat: `${x.numberFormat}${OWN}` } : x]))
   const { data, issues } = await writeXlsx({ book: uiBook({ ...c, cells }) }, { values: 'omit' })
