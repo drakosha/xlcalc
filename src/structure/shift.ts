@@ -18,6 +18,7 @@ import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from 
 import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
+import { firstLook } from '../looks/sheet.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
@@ -81,6 +82,9 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   if (n > 0) {
     const off = line.findIndex((i) => i >= LIMIT[axis] - count)
     if (off >= 0) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: grid.addr[off] })
+    // a cell of the sheet's looks in the lines pushed off, as an entry of a look alone
+    const edge = firstLook(target, axis === 'r' ? { r1: LIMIT.r - count, r2: LIMIT.r - 1, c1: 0, c2: LIMIT.c - 1 } : { r1: 0, r2: LIMIT.r - 1, c1: LIMIT.c - count, c2: LIMIT.c - 1 })
+    if (edge) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: edge })
   }
   const cut = shiftRefusal(target, axis, at, n)
   if (cut) return refuse('array', cut)

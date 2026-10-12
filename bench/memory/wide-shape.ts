@@ -6,9 +6,12 @@
  *
  *   npx tsx bench/memory/wide-shape.ts write <out.xlsx>    the file, as writeXlsx writes it
  *   node --expose-gc --import tsx bench/memory/wide-shape.ts measure <file.xlsx>
+ *   node --expose-gc --import tsx bench/memory/wide-shape.ts edits <file.xlsx> [display]
  *
  * `measure` prints the heap a fresh process holds more after a full collection: after `readXlsx`, then with a session
  * over its book, the time each took, and the memory of the process before and after a pool's thread opens the book.
+ * `edits` takes edits of the looks and structure operations over them in a session, each then undone, and prints the
+ * time of each and the heap it left after a full collection.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import type { BookInput, CellInput } from '../../src/contract.js'
@@ -79,11 +82,45 @@ async function measure(file: string) {
   console.log(JSON.stringify({ entries, looks, readMs: round(readMs), readMb: round(h1 - h0), sessionMs: round(sessionMs), sessionMb: round(h2 - h1), poolMs: round(poolMs), poolRssMb: [before, after] }))
 }
 
-const [what, file] = process.argv.slice(2)
-if (what === 'write') {
+/** Each edit and its undo in a session over the book read from the file: the time and the heap grown after a full collection. */
+async function edits(file: string, display: boolean) {
+  const { readXlsx } = (await import(dist('xlsx.js'))) as typeof import('../../src/xlsx.js')
+  const { createSession } = (await import(dist('index.js'))) as typeof import('../../src/index.js')
+  const read = await readXlsx(new Uint8Array(readFileSync(file)))
+  const s = createSession(read.book, { clock: { now: '2026-10-12T12:00:00Z', seed: 1 }, display })
+  const sheet = 'G'
+  const steps: [string, () => unknown][] = [
+    ['insertRows 10', () => s.editStructure({ op: 'insertRows', sheet, row: 10 })],
+    ['deleteRows 10', () => s.editStructure({ op: 'deleteRows', sheet, row: 10 })],
+    ['insertRows 301 (under a row of looks)', () => s.editStructure({ op: 'insertRows', sheet, row: 301 })],
+    ['deleteRows 300 (a row of looks)', () => s.editStructure({ op: 'deleteRows', sheet, row: 300 })],
+    ['insertColumns B (the looks reach XFD: refused)', () => s.editStructure({ op: 'insertColumns', sheet, column: 'B' })],
+    ['deleteColumns B', () => s.editStructure({ op: 'deleteColumns', sheet, column: 'B' })],
+    ['copyRange 344 × 100 of the looks', () => s.editStructure({ op: 'copyRange', from: { sheet, range: 'B20:CW363' }, to: { sheet, range: 'B1000' } })],
+    ['moveRange 344 × 100 of the looks', () => s.editStructure({ op: 'moveRange', from: { sheet, range: 'B20:CW363' }, to: { sheet, cell: 'B2000' } })],
+    ['patchCells A20:XFD20', () => s.patchCells([{ sheet, range: 'A20:XFD20', set: { style: { font: { italic: true } } } }])],
+    ['clearCells formats A25:XFD27', () => s.clearCells([{ sheet, range: 'A25:XFD27' }], 'formats')],
+    ['clearCells all A30:XFD32', () => s.clearCells([{ sheet, range: 'A30:XFD32' }], 'all')],
+    ['setCellText R21', () => s.setCellText(sheet, 'R21', '12')],
+  ]
+  const round = (x: number) => Math.round(x)
+  for (const [name, edit] of steps)
+    for (const [what, f] of [[name, edit], [`${name}, undone`, () => s.undo()]] as const) {
+      const h0 = heap()
+      const t = performance.now()
+      const r = f() as { ok?: boolean; changes?: unknown[] } | null
+      const ms = performance.now() - t
+      console.log(JSON.stringify({ edit: what, ms: round(ms), heapMb: round(heap() - h0), changes: r?.ok === false ? 'refused' : (r?.changes?.length ?? 0) }))
+    }
+  s.close()
+}
+
+const [what, file, display] = process.argv.slice(2)
+if (what === 'edits') await edits(file, display === 'true')
+else if (what === 'write') {
   const { writeXlsx } = (await import(dist('xlsx.js'))) as typeof import('../../src/xlsx.js')
   const { data } = await writeXlsx({ book: wideShape() }, { values: 'omit' })
   writeFileSync(file, data)
   console.log(`${file}: ${data.length} bytes`)
 } else if (what === 'measure') await measure(file)
-else throw new Error('expected write <out.xlsx> or measure <file.xlsx>')
+else throw new Error('expected write <out.xlsx>, measure <file.xlsx> or edits <file.xlsx> [display]')

@@ -160,7 +160,7 @@ A book keeps styles the way an xlsx file does (`BookInput.styles`, `CellInput.st
 
 Excel resolves an empty cell's style and format together: from its row if the row has either, else from its column. The two can differ only where a row with a style but no format (or the other way round) crosses a column with the other; an xlsx reader spells such a case out on the row.
 
-**Inserting and deleting.** Columns and rows keep their settings as they move. A span that holds the line before the inserted ones takes them in. A span that would reach past the sheet's end is cut there, and deleted lines leave their spans. The cells of inserted lines get the style and format of the cells of the line before them.
+**Inserting and deleting.** Columns and rows keep their settings as they move. A span that holds the line before the inserted ones takes them in. A span that would reach past the sheet's end is cut there, and deleted lines leave their spans. The cells of inserted lines get the style and format of the cells of the line before them, a sheet's looks (`SheetInput.looks`) too: they move with their lines, and the new lines take the looks of the line before them, without an entry per cell.
 
 A merged area changes like a range: it grows with lines inserted inside it, moves with lines inserted at or above its first line, stays when lines are inserted right after it (the new line is not merged), loses deleted lines, and disappears when one cell or none is left.
 

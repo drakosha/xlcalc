@@ -1,8 +1,8 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
-import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, SheetInput } from '../contract.js'
+import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, SheetInput, SheetLayout } from '../contract.js'
 import { setInput, settled, type EngineState } from '../engine.js'
 import { InputError } from '../input.js'
-import { inputIn } from '../looks/sheet.js'
+import { hasLooks, inputIn, layerOf } from '../looks/sheet.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -48,14 +48,14 @@ export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]
 export function inputAt(s: EngineState, i: number, cell: string): CellInput | undefined {
   const sheet = s.input.sheets[i]
   const input = sheet.cells[cell]
-  if (input || !sheet.looks) return input
+  if (input || !hasLooks(sheet)) return input
   const { row, col } = parseAddress(cell)
   return inputIn(sheet, cell, row, col)
 }
 
-/** The session's book without its cells and their looks (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own. */
+/** The session's book without its cells and their looks (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own; the looks are not read. */
 export function bookLayout(book: BookInput): BookLayout {
-  return { ...book, sheets: book.sheets.map(({ cells: _cells, looks: _looks, ...rest }) => rest) }
+  return { ...book, sheets: book.sheets.map((s) => Object.fromEntries(Object.keys(s).filter((k) => k !== 'cells' && k !== 'looks').map((k) => [k, s[k as keyof SheetInput]])) as unknown as SheetLayout) }
 }
 
 /** Every style that cells, rows and columns use must be in a table of `count` styles. */
@@ -65,7 +65,7 @@ export function checkStylesUsed(book: BookInput, count: number) {
   }
   for (const s of book.sheets) {
     for (const [addr, c] of Object.entries(s.cells)) check(c.style, `${s.name}!${addr}`)
-    for (const x of s.looks ?? []) check(x.style, `looks ${x.range} of ${s.name}`)
+    for (const x of layerOf(s)?.used() ?? []) check(x.style, `the looks of ${s.name}`)
     for (const [k, c] of Object.entries(s.columns ?? {})) check(c.style, `columns ${k} of ${s.name}`)
     for (const [k, r] of Object.entries(s.rows ?? {})) check(r.style, `rows ${k} of ${s.name}`)
   }

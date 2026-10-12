@@ -333,9 +333,7 @@ function numberLooks(sheet: SheetInput, layer: Layer, sAttr: (addr: string, c: C
   const byLook: (string | undefined)[] = []
   const attr = (r: number, c: number, look: number) => (lined ? sAttr(formatAddress(r, c), layer.looks.list[look]) : (byLook[look] ??= sAttr(formatAddress(r, c), layer.looks.list[look])))
   // the looks not numbered yet; once none is left, only the entries take new numbers
-  const used = new Set<number>()
-  for (const k of new Set(layer.at)) for (let i = 2; i < layer.patterns[k].length; i += 3) used.add(layer.patterns[k][i])
-  let left = lined ? Infinity : used.size
+  let left = lined ? Infinity : layer.used().length
   // a cursor through the looks' cells: block, row, run and column; a run's first cell alone without lines
   let [b, k] = [0, 0]
   let r = layer.blocks ? layer.r1[0] : 0

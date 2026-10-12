@@ -128,6 +128,138 @@ describe.each(['closures', 'eval'] as const)('a book with looks and the same boo
   })
 })
 
+/** What a session answers of a book after an edit, the lighter way: hashes, the book, a window, the used range, cells read. */
+async function after(s: AsyncSession): Promise<unknown> {
+  const book = await s.getBook()
+  const out: Record<string, unknown> = { result: await s.getResult().then((r) => [r.hash, r.inputHash]), book: expandBook(book) }
+  for (const { name } of book.sheets) {
+    out[`used ${name}`] = await s.getUsedRange(name)
+    const { revision: _, ...v } = await s.getViewport(name, 'A1:Z60', { editText: true })
+    out[`window ${name}`] = v
+    out[`read ${name}`] = await s.readCells([{ sheet: name, range: 'A15:Z60' }], { fields: ['value', 'text', 'style', 'numberFormat'], maxCells: 2000 })
+  }
+  return out
+}
+
+/** An answer without what a session gives as a function (`mapCell`). */
+const plain = (x: unknown) => (x && typeof x === 'object' ? Object.fromEntries(Object.entries(x).filter(([k]) => k !== 'mapCell')) : x)
+
+/** Edits of the looks and over them on the book of patterns: each is taken, undone and done again. */
+const EDITS: [string, (s: AsyncSession) => Promise<unknown>][] = [
+  ['a patch of a rectangle over the looks', (s) => s.patchCells([{ sheet: 'G', range: 'C19:T24', set: { style: { font: { italic: true } } } }])],
+  ['a patch of whole rows', (s) => s.patchCells([{ sheet: 'G', range: '25:26', set: { numberFormat: '0.000' } }])],
+  ['a patch of whole columns', (s) => s.patchCells([{ sheet: 'G', range: 'R:S', set: { style: 3 } }])],
+  ['formats cleared', (s) => s.clearCells([{ sheet: 'G', range: 'E20:F31' }], 'formats')],
+  ['everything cleared', (s) => s.clearCells([{ sheet: 'G', range: 'Q19:S22' }], 'all')],
+  ['the style table replaced', async (s) => s.setStyles([...(await s.getBook()).styles!, { font: { color: '#123456' } }])],
+  ['a text typed into a cell of the looks', (s) => s.setCellText('G', 'R25', '12')],
+  ['a value set in a cell of the looks', (s) => s.setCells([{ sheet: 'G', cell: 'D30', input: { value: 5 } }])],
+  ['a cell of the looks deleted', (s) => s.setCells([{ sheet: 'G', cell: 'E25', input: null }])],
+  ['a cell of the looks replaced by nothing', (s) => s.replaceCells([{ sheet: 'G', cell: 'E31', input: null }])],
+  ['rows inserted inside the looks', (s) => s.editStructure({ op: 'insertRows', sheet: 'G', row: 21, count: 2 })],
+  ['rows inserted at their edge', (s) => s.editStructure({ op: 'insertRows', sheet: 'G', row: 20 })],
+  ['rows inserted under a row of looks', (s) => s.editStructure({ op: 'insertRows', sheet: 'G', row: 23 })],
+  ['rows inserted before them', (s) => s.editStructure({ op: 'insertRows', sheet: 'G', row: 5, count: 3 })],
+  ['a row deleted inside', (s) => s.editStructure({ op: 'deleteRows', sheet: 'G', row: 21 })],
+  ['rows deleted through them', (s) => s.editStructure({ op: 'deleteRows', sheet: 'G', row: 18, count: 12 })],
+  ['columns inserted inside', (s) => s.editStructure({ op: 'insertColumns', sheet: 'G', column: 'S', count: 2 })],
+  ['a column inserted before them', (s) => s.editStructure({ op: 'insertColumns', sheet: 'G', column: 'A' })],
+  ['columns deleted through them', (s) => s.editStructure({ op: 'deleteColumns', sheet: 'G', column: 'Q', count: 5 })],
+  ['a rectangle of looks copied', (s) => s.editStructure({ op: 'copyRange', from: { sheet: 'G', range: 'C19:T23' }, to: { sheet: 'G', range: 'C40:T44' } })],
+  ['entries copied over looks', (s) => s.editStructure({ op: 'copyRange', from: { sheet: 'G', range: 'A1:C3' }, to: { sheet: 'G', range: 'Q20' } })],
+  ['a rectangle of looks moved to another sheet', (s) => s.editStructure({ op: 'moveRange', from: { sheet: 'G', range: 'D19:H22' }, to: { sheet: 'Data', cell: 'J50' } })],
+  ['entries moved over looks', (s) => s.editStructure({ op: 'moveRange', from: { sheet: 'G', range: 'A1:B2' }, to: { sheet: 'G', cell: 'R20' } })],
+]
+
+describe.each(['closures', 'eval'] as const)('edits of a book with looks and of the same book with entries, %s', (execution) => {
+  const opts = { clock: CLOCK, execution }
+  describe.each(KINDS)('%s', (kind) => {
+    it('each edit, its undo and its redo: the same answers', async () => {
+      const open = await opener(kind)
+      const book = BOOKS[0][1]
+      const [s, e] = [await open(book, opts), await open(expandBook(book), opts)]
+      for (const [name, edit] of EDITS) {
+        expect(plain(await edit(s)), name).toEqual(plain(await edit(e)))
+        expect(await after(s), name).toEqual(await after(e))
+        expect(plain(await s.undo()), `${name}, undone`).toEqual(plain(await e.undo()))
+        expect(await after(s), `${name}, undone`).toEqual(await after(e))
+        expect(plain(await s.redo()), `${name}, done again`).toEqual(plain(await e.redo()))
+      }
+      expect(await after(s)).toEqual(await after(e))
+      const [fs, fe] = [await writeXlsx(await s.getSnapshot()), await writeXlsx(await e.getSnapshot())]
+      expect(await partsHash(fs.data)).toBe(await partsHash(fe.data))
+      // every edit undone: the book opened
+      while (await s.undo());
+      expect(expandBook(await s.getBook())).toEqual(expandBook(book))
+      await Promise.all([s.close(), e.close()])
+    }, 120_000)
+  })
+})
+
+/** A seeded generator of numbers below `n`. */
+function seeded(seed: number): (n: number) => number {
+  let x = seed
+  return (n) => {
+    x = (Math.imul(x, 1103515245) + 12345) & 0x7fffffff
+    return x % n
+  }
+}
+
+/** A random edit of the book of patterns: of looks, of values over them, of its lines and ranges, an undo or a redo. */
+function randomEdit(rnd: (n: number) => number): [string, (s: AsyncSession) => Promise<unknown>] {
+  const col = () => formatAddress(0, rnd(26)).replace(/\d+$/, '')
+  const cell = () => formatAddress(14 + rnd(30), rnd(26))
+  const rect = () => {
+    const [r, c] = [14 + rnd(30), rnd(24)]
+    return `${formatAddress(r, c)}:${formatAddress(r + rnd(6), c + rnd(5))}`
+  }
+  const sheet = 'G'
+  const kinds: [string, (s: AsyncSession) => Promise<unknown>][] = [
+    ['patch', (s) => s.patchCells([{ sheet, range: rnd(4) ? rect() : `${16 + rnd(20)}:${17 + rnd(20)}`, set: rnd(2) ? { style: { fill: { color: '#C6EFCE' } } } : { numberFormat: '0.00' } }])],
+    ['clear', (s) => s.clearCells([{ sheet, range: rect() }], (['formats', 'all', 'contents'] as const)[rnd(3)])],
+    ['value', (s) => s.setCells([{ sheet, cell: cell(), input: rnd(5) ? { value: rnd(100) } : null }])],
+    ['text', (s) => s.setCellText(sheet, cell(), String(rnd(1000) / 10))],
+    ['nothing', (s) => s.replaceCells([{ sheet, cell: cell(), input: null }])],
+    ['rows', (s) => s.editStructure({ op: rnd(2) ? 'insertRows' : 'deleteRows', sheet, row: 1 + rnd(45), count: 1 + rnd(3) })],
+    ['columns', (s) => s.editStructure({ op: rnd(2) ? 'insertColumns' : 'deleteColumns', sheet, column: col(), count: 1 + rnd(2) })],
+    ['copy', (s) => s.editStructure({ op: 'copyRange', from: { sheet, range: rect() }, to: { sheet, range: cell() } })],
+    ['move', (s) => s.editStructure({ op: 'moveRange', from: { sheet, range: rect() }, to: { sheet, cell: cell() } })],
+    ['undo', (s) => s.undo()],
+    ['redo', (s) => s.redo()],
+  ]
+  return kinds[rnd(kinds.length)]
+}
+
+describe.each(['closures', 'eval'] as const)('a random series of edits of a book with looks, %s', (execution) => {
+  const opts = { clock: CLOCK, execution }
+  describe.each(KINDS)('%s', (kind) => {
+    it('after each step: the session\'s hashes a full computation\'s, its windows those of the book it gives', async () => {
+      const open = await opener(kind)
+      const book = BOOKS[0][1]
+      const s = await open(book, opts)
+      const rnd = seeded(execution === 'eval' ? 17 : 5)
+      for (let k = 0; k < 40; k++) {
+        const [name, edit] = randomEdit(rnd)
+        await edit(s)
+        const now = await s.getBook()
+        const full = compute(now, opts)
+        const at = `step ${k}: ${name}`
+        expect([await s.getHash(), (await s.getResult()).inputHash], at).toEqual([full.hash, full.inputHash])
+        // the book taken again from its entries: the same looks
+        const fresh = createSession(expandBook(now), opts)
+        expect(await s.getUsedRange('G'), at).toEqual(fresh.getUsedRange('G'))
+        const { revision: _a, ...a } = await s.getViewport('G', 'A10:AB50')
+        const { revision: _b, ...b } = fresh.getViewport('G', 'A10:AB50')
+        expect(a, at).toEqual(b)
+        fresh.close()
+      }
+      while (await s.undo());
+      expect(expandBook(await s.getBook())).toEqual(expandBook(book))
+      await s.close()
+    }, 120_000)
+  })
+})
+
 describe('the looks\' cells in a session', () => {
   const book = (): BookInput => ({ styles: STYLES, sheets: [{ name: 'S', cells: { A1: { value: 1 } }, looks: [{ range: 'B2:D4', style: 1, numberFormat: '0.0%' }, { range: '6:6', style: 2 }] }] })
 

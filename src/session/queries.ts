@@ -77,8 +77,12 @@ class Page<T> {
   }
 }
 
-/** Native input order, then the cells of the sheets' looks, then spilled cells, once across overlapping ranges. Stable while the revision is unchanged. */
-function* requested(s: EngineState, refs: Ref[]): Generator<[number, number, number] | undefined> {
+/**
+ * Native input order, then the cells of the sheets' looks, then spilled cells, once across overlapping ranges. Stable while
+ * the revision is unchanged. Without `looks`, the cells of the looks that hold no value are left out (what a search and a
+ * sum read of them is nothing).
+ */
+function* requested(s: EngineState, refs: Ref[], looks = true): Generator<[number, number, number] | undefined> {
   const earlier = (n: number, i: number, r: number, c: number) => {
     for (let j = 0; j < n; j++) if (refs[j].s === i && hasCell(refs[j], r, c)) return true
     return false
@@ -90,7 +94,7 @@ function* requested(s: EngineState, refs: Ref[]): Generator<[number, number, num
       readAddress(addr, p)
       if (hasCell(x, p.r, p.c) && !earlier(n, x.s, p.r, p.c)) yield [x.s, p.r, p.c]
     }
-    const layer = layerOf(s.input.sheets[x.s])
+    const layer = looks ? layerOf(s.input.sheets[x.s]) : undefined
     for (const piece of layer?.pieces(x) ?? [])
       for (let r = piece.r1; r <= piece.r2; r++)
         for (let c = piece.c1; c <= piece.c2; c++) {
@@ -130,7 +134,7 @@ export function* readQuery(s: EngineState, revision: number, clock: Clock, given
   if (fields.some((f) => !FIELDS.includes(f))) throw new InputError('opts.fields', 'unknown cell field')
   const finder = find === undefined ? undefined : finderOf(s, checkString(find, 'query'), o, clock.now)
   const page = new Page<ReadCell>(revision, clock, JSON.stringify([refs, fields, finder?.key]), o)
-  for (const at of finder ? finder.cells(refs, requested(s, refs)) : requested(s, refs)) {
+  for (const at of finder ? finder.cells(refs, requested(s, refs, false)) : requested(s, refs)) {
     if (!at) {
       yield
       continue
@@ -168,7 +172,7 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
   checkBase(eo, revision)
   const out: RangeSummary = { revision, clock: { ...clock }, cells: 0, numbers: 0, errors: 0, sum: 0, min: null, max: null },
     sum = new CompensatedSum()
-  for (const at of requested(s, refsOf(s, given))) {
+  for (const at of requested(s, refsOf(s, given), false)) {
     if (!at) {
       yield
       continue
