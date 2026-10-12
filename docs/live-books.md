@@ -71,7 +71,7 @@ const found = await session.findCells([{ sheet: 'Plan', range: 'A1:XFD1048576' }
 - `skipHidden: true` leaves out hidden cells as Find does. Look in Values never finds a cell of a hidden row or column. Look in Formulas finds them, unless the sheet is filtered (`SheetInput.filtered`: a filter has criteria, even ones that hide nothing). On a filtered sheet both leave out every hidden row and column, rows a filter hid and rows hidden by hand alike, and give the visible cells by the blocks the hidden lines leave: the blocks of the first rows first, left to right, each block by rows or by columns. With row 2 and column B hidden on a filtered sheet, A1, C1, A3 and C3 come in that order by rows and by columns alike.
 - An empty query finds nothing, and so does `~` alone.
 
-`findCells` reads each cell of its ranges once, puts the cells in Find's order and tests them in turn, so every page costs a pass over the ranges' cells: on the synthetic book of 34,000 rows, the data sheet's 510,000 cells searched with Find's options took 0.6 s in a pool's thread, where the 26 windows of 20,000 cells with `editText` a grid reads to search the same cells itself took 1.5 s to 1.9 s (a load average of 9).
+`findCells` reads each cell of its ranges once, puts the cells in Find's order and tests them in turn, so every page costs a pass over the ranges' cells: on the synthetic book of 34,000 rows, a search of the data sheet's 510,000 cells with Find's options and `count` took 0.4 s to 0.5 s in a pool's thread and 0.4 s in a synchronous session, where the 26 windows of 20,000 cells with `editText` a grid reads to search the same cells itself took 1.1 s and 0.7 s (a load average of 6).
 
 ## Known differences
 
