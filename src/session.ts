@@ -389,81 +389,110 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /** Executes a staged batch; previews undo their sparse inputs or drop their aside-built state. */
   function* operations(given: SessionOperation[], eo: PreviewChangesOptions | undefined, preview: boolean): Steps<ChangesResult | ChangesPreview> {
-    const old = yield* ready(), beforeRevision = revision, beforeClock = clock
-    const opts = checkBase<PreviewChangesOptions>(eo, revision, preview ? ['clock','maxChanges'] : ['clock'])
-    if (opts.clock) checkClock(opts.clock,'opts.clock')
+    const old = yield* ready(),
+      beforeRevision = revision,
+      beforeClock = clock
+    const opts = checkBase<PreviewChangesOptions>(eo, revision, preview ? ['clock', 'maxChanges'] : ['clock'])
+    if (opts.clock) checkClock(opts.clock, 'opts.clock')
     const max = opts.maxChanges ?? 1000
-    if (preview) checkNumber(max,'opts.maxChanges',1,10000,true)
-    const plan = operationsPlan(old,given,(v,format)=>headerText(old,v,format))
+    if (preview) checkNumber(max, 'opts.maxChanges', 1, 10000, true)
+    const plan = operationsPlan(old, given, (v, format) => headerText(old, v, format))
     const beforeBook = { ...old.input, sheets: old.input.sheets.slice() }
     const captured = tracker()
     if (preview) old.capture = captured
     controlledClock = opts.clock ?? (preview && live ? fresh() : undefined)
-    let completed = false, next = old, outcome: Outcome, back: (()=>Step|null) | undefined
+    let completed = false,
+      next = old,
+      outcome: Outcome,
+      back: (() => Step | null) | undefined
     try {
       if (plan.rebuild) {
-        const [built,out,diff] = yield* rebuild(old,plan.book,[],true,!preview&&history.on)
-        next=built;outcome={...out,styles:plan.styles}
-        back=()=>diff&&bookStep('applyChanges',diff,plan.book)
+        const [built, out, diff] = yield* rebuild(old, plan.book, [], true, !preview && history.on)
+        next = built
+        outcome = { ...out, styles: plan.styles }
+        back = () => diff && bookStep('applyChanges', diff, plan.book)
       } else {
-        const [built,out,cellsBack] = yield* writeCells(old,plan.edits,'applyChanges')
-        next=built;outcome=out
-        const steps: (()=>Step|null)[]=[cellsBack]
+        const [built, out, cellsBack] = yield* writeCells(old, plan.edits, 'applyChanges')
+        next = built
+        outcome = out
+        const steps: (() => Step | null)[] = [cellsBack]
         if (plan.layout.size) {
-          const layouts=new Map([...plan.layout].map(([i,sh]):[number,SheetInput]=>[i,{...sh,cells:next.input.sheets[i].cells}]))
-          const [lo,before] = yield* relayout(next,layouts,null)
-          outcome=joined(outcome,lo);steps.push(()=>layoutStep('applyChanges',before,layouts))
+          const layouts = new Map([...plan.layout].map(([i, sh]): [number, SheetInput] => [i, { ...sh, cells: next.input.sheets[i].cells }]))
+          const [lo, before] = yield* relayout(next, layouts, null)
+          outcome = joined(outcome, lo)
+          steps.push(() => layoutStep('applyChanges', before, layouts))
         }
         if (plan.styles) {
-          const was=next.input.styles;next.input.styles=plan.book.styles
-          outcome={...outcome,styles:true};steps.push(()=>stylesStep(was,'applyChanges'))
+          const was = next.input.styles
+          next.input.styles = plan.book.styles
+          outcome = { ...outcome, styles: true }
+          steps.push(() => stylesStep(was, 'applyChanges'))
         }
-        back=()=>manyStep('applyChanges',steps.map(f=>f()))
+        back = () => manyStep('applyChanges', steps.map((f) => f()))
       }
-      const used={...clock}
+      const used = { ...clock }
       if (preview) {
         // The old state's lazy fills must be read with its original clock.
-        if (next!==old) setNow(old,clockSerial(beforeClock),beforeClock.seed)
-        const list=changes(next,outcome.keys.slice(0,max),outcome.fields)
-        const impacts=list.map(c=>{
-          const i=old.sheetIdx.get(sheetKey(c.sheet))!,{row,col}=parseAddress(c.cell),k=`${i}:${row}:${col}`
-          const before=captured.cells.has(k)?outValue(toCellValue(captured.cells.get(k)!)):cellValue(old,i,row,col)
-          const issue=issueDetail(next,i,row,col)
-          return {sheet:c.sheet,cell:c.cell,before,after:c.value,...(issue?{issue}:{})}
+        if (next !== old) setNow(old, clockSerial(beforeClock), beforeClock.seed)
+        const list = changes(next, outcome.keys.slice(0, max), outcome.fields)
+        const impacts = list.map((c) => {
+          const i = old.sheetIdx.get(sheetKey(c.sheet))!,
+            { row, col } = parseAddress(c.cell),
+            k = `${i}:${row}:${col}`
+          const before = captured.cells.has(k) ? outValue(toCellValue(captured.cells.get(k)!)) : cellValue(old, i, row, col)
+          const issue = issueDetail(next, i, row, col)
+          return { sheet: c.sheet, cell: c.cell, before, after: c.value, ...(issue ? { issue } : {}) }
         })
-        return {revision:beforeRevision,clock:used,changes:list,impacts,totalChanges:outcome.keys.length,truncated:outcome.keys.length>max,...(outcome.layout.size?{layout:[...outcome.layout]}:{}),...(outcome.styles?{styles:next.input.styles??[]}:{}),...(repaintOf(next.input,outcome)?{repaint:repaintOf(next.input,outcome)}:{})}
+        return { revision: beforeRevision, clock: used, changes: list, impacts, totalChanges: outcome.keys.length, truncated: outcome.keys.length > max, ...(outcome.layout.size ? { layout: [...outcome.layout] } : {}), ...(outcome.styles ? { styles: next.input.styles ?? [] } : {}), ...(repaintOf(next.input, outcome) ? { repaint: repaintOf(next.input, outcome) } : {}) }
       }
-      const result={...answer(next,outcome),clock:used}
-      keep(back);completed=true
+      const result = { ...answer(next, outcome), clock: used }
+      keep(back)
+      completed = true
       return result
     } finally {
-      old.capture=undefined
-      controlledClock=undefined
+      old.capture = undefined
+      controlledClock = undefined
       if (preview || !completed) {
-        revision=beforeRevision;clock=beforeClock;state=old
-        for(const e of plan.back){
-          const cells=beforeBook.sheets[old.sheetIdx.get(sheetKey(e.sheet))!].cells
-          if(e.input===null)delete cells[e.cell];else cells[e.cell]=e.input
+        revision = beforeRevision
+        clock = beforeClock
+        state = old
+        for (const e of plan.back) {
+          const cells = beforeBook.sheets[old.sheetIdx.get(sheetKey(e.sheet))!].cells
+          if (e.input === null) delete cells[e.cell]
+          else cells[e.cell] = e.input
         }
-        old.input=beforeBook;setNow(old,clockSerial(beforeClock),beforeClock.seed)
-        if(next===old){
-          stale=true
-          if(preview){
-            yield* applyEdits(old,plan.back,true)
-            stale=false
+        old.input = beforeBook
+        setNow(old, clockSerial(beforeClock), beforeClock.seed)
+        if (next === old) {
+          stale = true
+          if (preview) {
+            yield* applyEdits(old, plan.back, true)
+            stale = false
           }
         }
       }
-      controlledClock=undefined
+      controlledClock = undefined
     }
   }
   return {
-    *applyChanges(ops: SessionOperation[], eo?: ChangesOptions) { return (yield* operations(ops,eo,false)) as ChangesResult },
-    *previewChanges(ops: SessionOperation[], eo?: PreviewChangesOptions) { return (yield* operations(ops,eo,true)) as ChangesPreview },
-    *readCells(refs: RangeRef[], eo?: ReadCellsOptions) { return yield* readQuery(yield* ready(),revision,clock,refs,eo) },
-    *findCells(refs: RangeRef[], query: string, eo?: FindCellsOptions) { return yield* readQuery(yield* ready(),revision,clock,refs,eo,query) },
-    *getDependents(refs: RangeRef[], eo?: DependentsOptions) { return yield* dependentsQuery(yield* ready(),revision,clock,refs,eo) },
-    *summarizeRanges(refs: RangeRef[], eo?: EditOptions) { return yield* summaryQuery(yield* ready(),revision,clock,refs,eo) },
+    *applyChanges(ops: SessionOperation[], eo?: ChangesOptions) {
+      return (yield* operations(ops, eo, false)) as ChangesResult
+    },
+    *previewChanges(ops: SessionOperation[], eo?: PreviewChangesOptions) {
+      return (yield* operations(ops, eo, true)) as ChangesPreview
+    },
+    *readCells(refs: RangeRef[], eo?: ReadCellsOptions) {
+      return yield* readQuery(yield* ready(), revision, clock, refs, eo)
+    },
+    *findCells(refs: RangeRef[], query: string, eo?: FindCellsOptions) {
+      return yield* readQuery(yield* ready(), revision, clock, refs, eo, query)
+    },
+    *getDependents(refs: RangeRef[], eo?: DependentsOptions) {
+      return yield* dependentsQuery(yield* ready(), revision, clock, refs, eo)
+    },
+    *summarizeRanges(refs: RangeRef[], eo?: EditOptions) {
+      return yield* summaryQuery(yield* ready(), revision, clock, refs, eo)
+    },
     get clock() {
       return { ...clock }
     },
@@ -757,12 +786,12 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     get revision() {
       return core.revision
     },
-    applyChanges: (ops,o) => now(()=>core.applyChanges(ops,o)),
-    previewChanges: (ops,o) => now(()=>core.previewChanges(ops,o)),
-    readCells: (refs,o) => now(()=>core.readCells(refs,o)),
-    findCells: (refs,query,o) => now(()=>core.findCells(refs,query,o)),
-    getDependents: (refs,o) => now(()=>core.getDependents(refs,o)),
-    summarizeRanges: (refs,o) => now(()=>core.summarizeRanges(refs,o)),
+    applyChanges: (ops, o) => now(() => core.applyChanges(ops, o)),
+    previewChanges: (ops, o) => now(() => core.previewChanges(ops, o)),
+    readCells: (refs, o) => now(() => core.readCells(refs, o)),
+    findCells: (refs, query, o) => now(() => core.findCells(refs, query, o)),
+    getDependents: (refs, o) => now(() => core.getDependents(refs, o)),
+    summarizeRanges: (refs, o) => now(() => core.summarizeRanges(refs, o)),
     setCells: (edits, o) => now(() => core.setCells(edits, o)),
     replaceCells: (edits, o) => now(() => core.replaceCells(edits, o)),
     clearCells: (ranges, what, o) => now(() => core.clearCells(ranges, what, o)),

@@ -107,12 +107,12 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     get revision() {
       return revision
     },
-    applyChanges: (ops,co) => edit(eo=>core.applyChanges(ops,eo as ChangesOptions),co,['clock']),
-    previewChanges: (ops,co) => edit(eo=>core.previewChanges(ops,eo as PreviewChangesOptions),co,['clock','maxChanges']),
-    readCells: (refs,co) => edit(eo=>core.readCells(refs,eo as ReadCellsOptions),co,['maxCells','cursor','count','fields']),
-    findCells: (refs,query,co) => edit(eo=>core.findCells(refs,query,eo as FindCellsOptions),co,['maxCells','cursor','count','fields','in','caseSensitive']),
-    getDependents: (refs,co) => edit(eo=>core.getDependents(refs,eo as DependentsOptions),co,['maxCells','cursor','count','maxReferences']),
-    summarizeRanges: (refs,co) => edit(eo=>core.summarizeRanges(refs,eo),co),
+    applyChanges: (ops, co) => edit((eo) => core.applyChanges(ops, eo as ChangesOptions), co, ['clock']),
+    previewChanges: (ops, co) => edit((eo) => core.previewChanges(ops, eo as PreviewChangesOptions), co, ['clock', 'maxChanges']),
+    readCells: (refs, co) => edit((eo) => core.readCells(refs, eo as ReadCellsOptions), co, ['maxCells', 'cursor', 'count', 'fields']),
+    findCells: (refs, query, co) => edit((eo) => core.findCells(refs, query, eo as FindCellsOptions), co, ['maxCells', 'cursor', 'count', 'fields', 'in', 'caseSensitive']),
+    getDependents: (refs, co) => edit((eo) => core.getDependents(refs, eo as DependentsOptions), co, ['maxCells', 'cursor', 'count', 'maxReferences']),
+    summarizeRanges: (refs, co) => edit((eo) => core.summarizeRanges(refs, eo), co),
     setCells: (edits, co) => edit((eo) => core.setCells(edits, eo), co),
     replaceCells: (edits, co) => edit((eo) => core.replaceCells(edits, eo), co),
     clearCells: (ranges, what, co) => edit((eo) => core.clearCells(ranges, what, eo), co),

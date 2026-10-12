@@ -38,8 +38,8 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
     },
     range: (g, one) => {
       if (!parameters) return one ? () => scalar(g) : () => g
-      const i=parameters.push(g)-1
-      return one ? (p)=>scalar(p![i]) : (p)=>p![i]
+      const i = parameters.push(g) - 1
+      return one ? (p) => scalar(p![i]) : (p) => p![i]
     },
     unary: (op, a, lift) => {
       const f = op1(op)
