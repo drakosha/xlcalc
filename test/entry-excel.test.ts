@@ -1,7 +1,7 @@
 /**
  * `parseEntry` against Excel for Mac's answers to the entry sets, en-US and ru-RU: the texts set through
  * `Formula2Local` (`typed`, `typed-held`, `typed-held-2`) and typed on the keyboard (`typed-keys`, `typed-keys-held`,
- * `typed-keys-held-2`). The held-out sets keep the answers the engine predicted before Excel ran them
+ * `typed-keys-held-2`, `typed-keys-held-3`). The held-out sets keep the answers the engine predicted before Excel ran them
  * (`bench/coverage/entry/<set>.predicted.json`). Known differences are in `test/entry-known.ts`.
  */
 import { describe, expect, it } from 'vitest'

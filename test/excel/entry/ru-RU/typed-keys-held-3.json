@@ -1,0 +1,103 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-12",
+  "seconds": 15.2
+ },
+ "cases": [
+  {
+   "id": "key3-pct-1",
+   "text": "-5%",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-2",
+   "text": "+5%",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-3",
+   "text": "-0.5%",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-4",
+   "text": "(5%)",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-5",
+   "text": "-5",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-6",
+   "text": "+5",
+   "format": "0%"
+  }
+ ],
+ "answers": {
+  "key3-pct-1": {
+   "cell": {
+    "formula": "-5%%",
+    "format": 9
+   },
+   "computed": -0.0005,
+   "text": "0%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.0005
+  },
+  "key3-pct-2": {
+   "cell": {
+    "formula": "5%%",
+    "format": 9
+   },
+   "computed": 0.0005,
+   "text": "0%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.0005
+  },
+  "key3-pct-3": {
+   "refused": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | ",
+   "cell": {
+    "format": 9
+   },
+   "text": "",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key3-pct-4": {
+   "cell": {
+    "value": -0.05,
+    "format": 9
+   },
+   "text": "-5%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.05
+  },
+  "key3-pct-5": {
+   "cell": {
+    "value": -0.05,
+    "format": 9
+   },
+   "text": "-5%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.05
+  },
+  "key3-pct-6": {
+   "cell": {
+    "value": 0.05,
+    "format": 9
+   },
+   "text": "5%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.05
+  }
+ }
+}

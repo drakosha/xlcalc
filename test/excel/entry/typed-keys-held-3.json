@@ -1,0 +1,105 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-12",
+  "seconds": 13.4
+ },
+ "cases": [
+  {
+   "id": "key3-pct-1",
+   "text": "-5%",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-2",
+   "text": "+5%",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-3",
+   "text": "-0.5%",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-4",
+   "text": "(5%)",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-5",
+   "text": "-5",
+   "format": "0%"
+  },
+  {
+   "id": "key3-pct-6",
+   "text": "+5",
+   "format": "0%"
+  }
+ ],
+ "answers": {
+  "key3-pct-1": {
+   "cell": {
+    "formula": "-5%%",
+    "format": 9
+   },
+   "computed": -0.0005,
+   "text": "0%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.0005
+  },
+  "key3-pct-2": {
+   "cell": {
+    "formula": "5%%",
+    "format": 9
+   },
+   "computed": 0.0005,
+   "text": "0%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.0005
+  },
+  "key3-pct-3": {
+   "cell": {
+    "formula": "-0.5%%",
+    "format": 9
+   },
+   "computed": -0.00005,
+   "text": "0%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.00005
+  },
+  "key3-pct-4": {
+   "cell": {
+    "value": -0.05,
+    "format": 9
+   },
+   "text": "-5%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.05
+  },
+  "key3-pct-5": {
+   "cell": {
+    "value": -0.05,
+    "format": 9
+   },
+   "text": "-5%",
+   "code": "0%",
+   "local": "0%",
+   "value2": -0.05
+  },
+  "key3-pct-6": {
+   "cell": {
+    "value": 0.05,
+    "format": 9
+   },
+   "text": "5%",
+   "code": "0%",
+   "local": "0%",
+   "value2": 0.05
+  }
+ }
+}

@@ -1,0 +1,1136 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-12",
+  "seconds": 181.6
+ },
+ "cases": [
+  {
+   "id": "percent-1",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "6%"
+   }
+  },
+  {
+   "id": "percent-2",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "6"
+   }
+  },
+  {
+   "id": "percent-3",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "6%",
+    "keys": {
+     "left": 1,
+     "back": 1,
+     "type": "6"
+    }
+   }
+  },
+  {
+   "id": "percent-4",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "0.5"
+   }
+  },
+  {
+   "id": "percent-5",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "-5"
+   }
+  },
+  {
+   "id": "decimal-1",
+   "cells": {
+    "B2": {
+     "value": 0.125,
+     "numberFormat": "0.0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "7.5%"
+   }
+  },
+  {
+   "id": "decimal-2",
+   "cells": {
+    "B2": {
+     "value": 0.125,
+     "numberFormat": "0.0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "7,5%"
+   }
+  },
+  {
+   "id": "decimal-3",
+   "cells": {
+    "B2": {
+     "value": 0.125,
+     "numberFormat": "0.0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "7.5"
+   }
+  },
+  {
+   "id": "decimal-4",
+   "cells": {
+    "B2": {
+     "value": 0.125,
+     "numberFormat": "0.0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "7,5"
+   }
+  },
+  {
+   "id": "empty-1",
+   "cells": {
+    "B2": {
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "6"
+   }
+  },
+  {
+   "id": "formula-1",
+   "cells": {
+    "B2": {
+     "formula": "0.05",
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "6"
+   }
+  },
+  {
+   "id": "text-1",
+   "cells": {
+    "B2": {
+     "value": "abc",
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "6"
+   }
+  },
+  {
+   "id": "general-1",
+   "cells": {
+    "B2": {
+     "value": 5
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "6%"
+   }
+  },
+  {
+   "id": "sign-1",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "-0.5"
+   }
+  },
+  {
+   "id": "sign-2",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "-50"
+   }
+  },
+  {
+   "id": "sign-3",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "+5"
+   }
+  },
+  {
+   "id": "sign-4",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "(5)"
+   }
+  },
+  {
+   "id": "sign-5",
+   "cells": {
+    "B2": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "-5%"
+   }
+  },
+  {
+   "id": "sign-6",
+   "cells": {
+    "B2": {
+     "value": 5
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "-5"
+   }
+  },
+  {
+   "id": "sign-7",
+   "cells": {
+    "B2": {
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "edit",
+    "at": "B2",
+    "text": "-5"
+   }
+  }
+ ],
+ "answers": {
+  "percent-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.06,
+      "format": 9
+     },
+     "text": "6%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.06,
+     "formula": "0.06",
+     "formulaLocal": "0,06",
+     "formula2": "0.06",
+     "formula2Local": "0,06",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 6%",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "percent-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 6,
+      "format": 9
+     },
+     "text": "600%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 6,
+     "formula": "6",
+     "formulaLocal": "6",
+     "formula2": "6",
+     "formula2Local": "6",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 6",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "percent-3": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.06,
+      "format": 9
+     },
+     "text": "6%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.06,
+     "formula": "0.06",
+     "formulaLocal": "0,06",
+     "formula2": "0.06",
+     "formula2Local": "0,06",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 6%",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "percent-4": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": "0.5",
+      "format": 9
+     },
+     "text": "0.5",
+     "code": "0%",
+     "local": "0%",
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 0.5",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "percent-5": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0,05",
+     "formula2": "-0.05",
+     "formula2Local": "-0,05",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 -5",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "decimal-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": "7.5%",
+      "format": "0.0%"
+     },
+     "text": "7.5%",
+     "code": "0.0%",
+     "local": "0,0%",
+     "formula": "7.5%",
+     "formulaLocal": "7.5%",
+     "formula2": "7.5%",
+     "formula2Local": "7.5%",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 12,5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 12,5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 7.5%",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "decimal-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.075,
+      "format": "0.0%"
+     },
+     "text": "7,5%",
+     "code": "0.0%",
+     "local": "0,0%",
+     "value2": 0.075,
+     "formula": "0.075",
+     "formulaLocal": "0,075",
+     "formula2": "0.075",
+     "formula2Local": "0,075",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 12,5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 12,5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 7,5%",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "decimal-3": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 46149,
+      "format": "0.0%"
+     },
+     "text": "4614900,0%",
+     "code": "0.0%",
+     "local": "0,0%",
+     "value2": 46149,
+     "formula": "46149",
+     "formulaLocal": "46149",
+     "formula2": "46149",
+     "formula2Local": "46149",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 12,5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 12,5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 7.5",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 10.17,
+     "points": 66,
+     "standard": false,
+     "saved": {
+      "width": 11,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "decimal-4": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 7.5,
+      "format": "0.0%"
+     },
+     "text": "750,0%",
+     "code": "0.0%",
+     "local": "0,0%",
+     "value2": 7.5,
+     "formula": "7.5",
+     "formulaLocal": "7,5",
+     "formula2": "7.5",
+     "formula2Local": "7,5",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 12,5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 12,5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 7,5",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "empty-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 6,
+      "format": 9
+     },
+     "text": "600%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 6,
+     "formula": "6",
+     "formulaLocal": "6",
+     "formula2": "6",
+     "formula2Local": "6",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 ",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 ",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 6",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "formula-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 6,
+      "format": 9
+     },
+     "text": "600%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 6,
+     "formula": "6",
+     "formulaLocal": "6",
+     "formula2": "6",
+     "formula2Local": "6",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 =0,05",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 =0,05",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 6",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "text-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 6,
+      "format": 9
+     },
+     "text": "600%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 6,
+     "formula": "6",
+     "formulaLocal": "6",
+     "formula2": "6",
+     "formula2Local": "6",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 abc",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 abc",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 6",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.06,
+      "format": 9
+     },
+     "text": "6%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.06,
+     "formula": "0.06",
+     "formulaLocal": "0,06",
+     "formula2": "0.06",
+     "formula2Local": "0,06",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 6%",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sign-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0,05",
+     "formula2": "0.05",
+     "formula2Local": "0,05",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "dialog": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | ",
+      "typed": [
+       "Строка формул. B,2 -0.5",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sign-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -0.5,
+      "format": 9
+     },
+     "text": "-50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.5,
+     "formula": "-0.5",
+     "formulaLocal": "-0,5",
+     "formula2": "-0.5",
+     "formula2Local": "-0,5",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 -50",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sign-3": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0,05",
+     "formula2": "0.05",
+     "formula2Local": "0,05",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 +5",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sign-4": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -5,
+      "format": 9
+     },
+     "text": "-500%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -5,
+     "formula": "-5",
+     "formulaLocal": "-5",
+     "formula2": "-5",
+     "formula2Local": "-5",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 (5)",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sign-5": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "formula": "-5%%",
+      "format": 9
+     },
+     "computed": -0.0005,
+     "text": "0%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.0005,
+     "formula": "=-5%%",
+     "formulaLocal": "=-5%%",
+     "formula2": "=-5%%",
+     "formula2Local": "=-5%%",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5%",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 -5%",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sign-6": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -5
+     },
+     "text": "-5",
+     "code": "General",
+     "local": "Основной",
+     "value2": -5,
+     "formula": "-5",
+     "formulaLocal": "-5",
+     "formula2": "-5",
+     "formula2Local": "-5",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 5",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 5",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 -5",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sign-7": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0,05",
+     "formula2": "-0.05",
+     "formula2Local": "-0,05",
+     "hasArray": false,
+     "bar": {
+      "selected": [
+       "Строка формул. B,2 ",
+       ""
+      ],
+      "edit": [
+       "Строка формул. B,2 ",
+       ""
+      ],
+      "focused": "?: Не удается получить role of missing value.",
+      "typed": [
+       "Строка формул. B,2 -5",
+       ""
+      ]
+     }
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}
