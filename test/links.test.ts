@@ -35,6 +35,7 @@ describe('the text of a reference to another workbook', () => {
     expect(canon('[Other.xlsx]Sheet1!A1')).toBe('external_ref: the book has no link to the workbook Other.xlsx')
     expect(canon('[1]Nope!A1')).toBe('external_ref: the workbook Book2.xlsx has no sheet Nope')
     expect(canon('[1]Sheet1:Sheet2!A1')).toBe('external_ref: a reference across the sheets of another workbook is not supported')
+    expect(canon("[1]Sheet1!#REF!+'[Book2.xlsx]My Sheet'!#REF!")).toBe("'[1]Sheet1'!#REF!+'[1]My Sheet'!#REF!")
     expect(validateFormula('[1]Sheet1!A1').ok).toBe(false)
   })
 
@@ -46,6 +47,7 @@ describe('the text of a reference to another workbook', () => {
     expect(shown("SUM('[1]Sheet1'!A1:A3)+[1]!Rate")).toBe('SUM([Book2.xlsx]Sheet1!A1:A3)+Book2.xlsx!Rate')
     expect(shown("SUM('[1]Sheet1'!A1:A3;1.5)".replace(';', ','), 'ru-RU')).toBe('СУММ([Book2.xlsx]Sheet1!A1:A3;1,5)')
     expect(shown("'[1]My Sheet'!A1*'[2]Data'!A1+'[2]Data'!Rate")).toBe("'[Book2.xlsx]My Sheet'!A1*'../data/[Data.xlsx]Data'!A1+'../data/[Data.xlsx]Data'!Rate")
+    expect(shown("'[1]Sheet1'!#REF!")).toBe('[Book2.xlsx]Sheet1!#REF!')
     expect(toLocal("'[1]Sheet1'!A1", 'en-US')).toEqual({ ok: true, formula: "'[1]Sheet1'!A1" })
     expect(toInvariant('=СУММ([Book2.xlsx]Sheet1!A1:A3;Book2.xlsx!Rate)', ruRU, { externalBooks: LINKS })).toEqual({ ok: true, formula: "SUM('[1]Sheet1'!A1:A3,[1]!Rate)" })
     const r = toInvariant('=1+[Other.xlsx]Sheet1!A1', 'en-US', { externalBooks: LINKS })
@@ -72,6 +74,9 @@ describe('a book’s links', () => {
     expect(values(book({ A1: "'[1]Sheet1'!A2*10", A2: "'[1]Sheet1'!A9", A3: "'[1]Sheet1'!C1", A4: '[1]!Rate', A5: "'[1]Sheet1'!Local", A6: '[1]!Konst', A7: '[1]!Nope', A8: "'[2]Gone'!A1", A9: "SUM('[1]Sheet1'!A:A)", A10: 'Ext*2' }, { names: [{ name: 'Ext', ref: "'[1]Sheet1'!$A$3" }] }))).toEqual({
       A1: 20, A2: 0, A3: { error: 'NA' }, A4: 2, A5: 11, A6: { error: 'REF' }, A7: { error: 'REF' }, A8: { error: 'REF' }, A9: 6, A10: 6,
     })
+    // a name over a reference into a linked book that Excel lost is kept and gives #REF!
+    const lost = compute(book({ A1: 'Lost+1' }, { names: [{ name: 'Lost', ref: "'[1]Sheet1'!#REF!" }] }), { display: false })
+    expect([lost.sheets[0].cells.A1.value, lost.diagnostics.filter((d) => d.kind === 'name')]).toEqual([{ error: 'REF' }, []])
     const marked = LINKS.map((b, i) => (i ? b : { ...b, sheets: b.sheets.map((s) => ({ ...s, refreshError: true as const })) }))
     expect(values(book({ A1: "'[1]Sheet1'!A9", A2: "SUM('[1]Sheet1'!A:A)", A3: "'[1]Sheet1'!A1", A4: "MATCH(3,'[1]Sheet1'!A:A,0)" }, { externalBooks: marked }))).toEqual({ A1: { error: 'REF' }, A2: { error: 'REF' }, A3: 1, A4: 3 })
   })
@@ -94,8 +99,9 @@ describe('structure operations and links', () => {
   it('rows inserted, a sheet named like the link’s renamed or deleted leave a link’s reference as written', () => {
     const ins = editStructure(b, { op: 'insertRows', sheet: 'S', row: 1 })
     expect(ins.ok && formulas(ins.book)).toEqual({ A4: "'[1]Sheet1'!A3+A2", B2: "'[1]Sheet1'!A1" })
-    const ren = editStructure(b, { op: 'renameSheet', sheet: 'Sheet1', name: 'Local' })
+    const ren = editStructure({ ...b, names: [{ name: 'Lost', ref: "'[1]Sheet1'!#REF!" }] }, { op: 'renameSheet', sheet: 'Sheet1', name: 'Local' })
     expect(ren.ok && formulas(ren.book)).toEqual({ A3: "'[1]Sheet1'!A3+A1", B1: "'[1]Sheet1'!A1" })
+    expect(ren.ok && ren.book.names).toEqual([{ name: 'Lost', ref: "'[1]Sheet1'!#REF!" }])
     const del = editStructure(b, { op: 'deleteSheet', sheet: 'Sheet1' })
     expect(del.ok && formulas(del.book)).toEqual({ A3: "'[1]Sheet1'!A3+A1", B1: "'[1]Sheet1'!A1" })
   })

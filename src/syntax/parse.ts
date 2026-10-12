@@ -110,7 +110,7 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
       case 'str':
         return { k: 'str', v: t.v }
       case 'err':
-        return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}) }
+        return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}), ...(t.book !== undefined ? { book: t.book } : {}) }
       case 'ref': {
         // inside a LET that declares it, a cell's word is the name
         const word = cellWord(t)

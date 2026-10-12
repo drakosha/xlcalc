@@ -118,7 +118,7 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
       case 'bool':
         return bool(n.v)
       case 'err':
-        return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + ERROR_TEXT[n.code] + (n.ref ?? '')
+        return (n.sheet === undefined ? '' : `${quoteSheet(n.book === undefined ? sheetOf(n.sheet) : linkedSheet(n.book, n.sheet))}!`) + ERROR_TEXT[n.code] + (n.ref ?? '')
       case 'ref':
         return (n.sheet === null ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + n.ref.text + (n.ref.spill ? '#' : '')
       case 'ref3d':

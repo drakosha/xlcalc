@@ -11,7 +11,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredLinks } from '../bench/coverage/links.js'
 import { linkFile, linksBook, type CachedValue, type LinksCase, type LinksCases, type LinksOp } from '../bench/coverage/links/cases.js'
-import { samePin, type Val } from '../bench/coverage/compare.js'
+import { samePin } from '../bench/coverage/compare.js'
+import type { Val } from '../bench/coverage/formulajs.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { compute, createSession, toLocal, type BookInput, type CellValue, type CellRef, type Session } from '../src/index.js'
 
@@ -48,7 +49,7 @@ function stored(root: string): (StoredLinks & { name: string })[] {
     .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredLinks) }))
 }
 
-const valOf = (v: CellValue | undefined): Val | null => (v === null || v === undefined ? null : typeof v === 'object' ? { t: 'e', v: v.error } : { t: typeof v === 'number' ? 'n' : typeof v === 'string' ? 's' : 'b', v } as Val)
+const valOf = (v: CellValue | undefined): Val | null => (v === null || v === undefined ? null : ((typeof v === 'object' ? { t: 'e', v: v.error } : { t: typeof v === 'number' ? 'n' : typeof v === 'string' ? 's' : 'b', v }) as Val))
 const cachedVal = (v: CachedValue | null): Val | null => valOf(v as CellValue)
 
 /** The engine's value against Excel's: equal, or an empty cell against the 0 a mirror reads of it. */
