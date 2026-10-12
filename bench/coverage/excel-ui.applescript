@@ -4,8 +4,8 @@
 -- text and presses Cmd+V (the V key: any layout) with the cell selected; "fill" selects the range, types the text and presses Control+Return;
 -- "edit" selects the cell, presses F2, then Left `left` times and Backspace `back` times (40 without "keys": all it
 -- opened with), types the text (`type`, or `text` without "keys") and presses Return, reading the bar as "bars" does
--- and once more before Return; "pick" selects the cell, opens its dropdown list (Option+Down), presses Down `item` times
--- and Return;
+-- and once more before Return; "pick" selects the cell, opens its dropdown list (Option+Down, the first item marked),
+-- presses Down `item` - 1 times and Return;
 -- "ribbon" selects each cell in turn and reads the ribbon's Number Format box, "choose" applies an item of the box's list
 -- to each cell (Accessibility: the box's button pressed, then the item) and reads the box after; both give A1 the text
 -- format as a control cell, selected before each cell, and a set leaves A1 and A2 empty.
@@ -169,15 +169,15 @@ on edit(ws, act, bookName, kb)
 	return {{onSelect, onEdit, inFocus, kb's answerDialog(), onTyped}}
 end edit
 
--- the cell selected, its dropdown list opened (Option+Down, key codes: any layout), the item reached by Down and taken by
--- Return; the windows Excel shows then are answered
+-- the cell selected, its dropdown list opened (Option+Down, key codes: any layout; an empty cell's list opens with its
+-- first item marked), the item reached by Down and taken by Return; the windows Excel shows then are answered
 on pick(ws, a, n, kb)
 	tell application "Microsoft Excel" to select range a of ws
 	kb's toFront()
 	tell application "System Events" to key code 125 using option down
 	delay 0.8
 	tell application "System Events"
-		repeat n times
+		repeat (n - 1) times
 			key code 125
 			delay 0.15
 		end repeat

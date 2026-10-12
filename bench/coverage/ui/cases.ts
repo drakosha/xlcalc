@@ -29,7 +29,7 @@ export type UiAction =
    * times and `type` typed; then Return. `text` is what the cell holds then, as a host passes it to `setCellText`.
    */
   | { do: 'edit'; at: string; text: string; keys?: { left: number; back: number; type: string } }
-  /** The `item`th item (from 1) of the cell's dropdown list picked on the keyboard (Option+Down, Down, Return); `text` is the item as the list shows it, as a host passes it on. */
+  /** The `item`th item (from 1) of the cell's dropdown list picked on the keyboard (Option+Down with the first item marked, Down, Return); `text` is the item as the list shows it, as a host passes it on. */
   | { do: 'pick'; at: string; item: number; text: string }
 
 export interface UiCase {
