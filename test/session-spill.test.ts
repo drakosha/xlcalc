@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, type BookInput, type CellChange, type Session } from '../src/index.js'
-import { apply } from './session-edits.js'
+import { apply, withHeld } from './session-edits.js'
 import { spillBook, spillEdits } from './session-spill-edits.js'
 import { shownValue } from './spill-shown.js'
 import { toVal } from './excel-cases.js'
@@ -39,7 +39,9 @@ describe('sessions with spilled arrays', () => {
     for (const batch of spillEdits(11, 200)) {
       const { changes } = s.setCells(batch)
       book = apply(book, batch)
-      expect(s.getResult().hash).toBe(compute(book, { clock }).hash)
+      // the cells a cycle through a spill range came to hold their values
+      expect(s.getResult().hash).toBe(compute(withHeld(book, s.getBook()), { clock }).hash)
+      expect(s.getResult().hash).toBe(compute(s.getBook(), { clock }).hash)
       agrees(s, changes)
     }
   }, 120_000)

@@ -223,14 +223,15 @@ afterAll(() => Promise.all(pools.map((p) => p.close())))
 
 describe('hash and the canonical text', () => {
   it('a book keeps the hash recorded before streaming canonicalization', () => {
-    // Recorded with commit 0b33695 (a Map of values, then one canonical text), before the hash was written as the cells are read.
+    // Recorded with commit 0b33695 (a Map of values, then one canonical text), before the hash was written as the cells are read;
+    // the two books of `values` again when the cycle X1, X2 and its readers C13, C14 came to hold 0 for #CYCLE! (`CellInput.held`).
     const expected: Record<string, string> = {
       'sheet and address order': '97affb292d7cc1d36a463be97956dbdb64951b046d4eaa090f23cac06da1f5de',
-      values: '1de578aaad72b0a2904b65370abb4d351199edd6f785872f6cde267b4323a4ac',
+      values: 'e257ad10fd8bd7345f803b12e315c0934143d67560ec82ce631ab0bdf59f25c4',
       'spills over cells with only a format or a style': '41ff53c81ca86f86b225f911faa3d674ad77b916ad9d0a33d17b5becb117a608',
       'large spills and their fills': 'ac0511d0755ef98688f60baa26d274a83d71ce44dd0f40a2d002b2fa4b969066',
       'empty sheets and empty cells': '0b0116866572d38779b455e47acf9441f54f5486e3215d0e1dc4c9ca86adf17c',
-      'values in ru-RU and the 1904 system': '7c4f769380ac8563651b6335d9d261f17955d43924a37c77785398fb4373e214',
+      'values in ru-RU and the 1904 system': 'afec3551aac6a4ce2463c57449eaf6c454417004e88ba3532d3a9d501b4b9fb5',
       'large spills in ru-RU': '72302c93c6df0fb75e4b654b8d7f131043df8dd0c348820cca76c748c9b56915',
     }
     expect(EDGE.map(([name, book]) => [name, compute(book, { clock: CLOCK }).hash])).toEqual(Object.entries(expected))

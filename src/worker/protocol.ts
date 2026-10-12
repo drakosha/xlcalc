@@ -30,6 +30,8 @@ export interface Entry {
 /** A session's book at sequence number `seq`: what a restore opens before it replays the journal. */
 export interface Snapshot {
   book: Sent
+  /** The values the book's file stores (`SessionOptions.cached`), for the session's first opening: a snapshot of the session holds them as `held`. */
+  cached?: Sent
   /** The session's options without the clock. */
   opts: SessionOptions
   clock: Clock
@@ -46,8 +48,8 @@ export type ToThread =
   | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[] }
   /** Locales loaded since, each without its messages (`sentLocale`). */
   | { t: 'locales'; locales: Locale[] }
-  | { t: 'compute'; task: number; book: Sent; opts: object; timeoutMs?: number }
-  | { t: 'open'; task: number; sid: number; book: Sent; opts: SessionOptions; timeoutMs?: number }
+  | { t: 'compute'; task: number; book: Sent; cached?: Sent; opts: object; timeoutMs?: number }
+  | { t: 'open'; task: number; sid: number; book: Sent; cached?: Sent; opts: SessionOptions; timeoutMs?: number }
   | { t: 'call'; task: number; sid: number; seq?: number; op: Op; args: unknown[]; timeoutMs?: number }
   | { t: 'restore'; task: number; sid: number; snapshot: Snapshot; journal: Entry[] }
   | { t: 'snapshot'; task: number; sid: number }

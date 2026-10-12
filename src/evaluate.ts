@@ -10,6 +10,7 @@ import { due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress } from './model.js'
 import { descendants, markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
+import { heldAt, unhold } from './held.js'
 import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
@@ -63,10 +64,11 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
 }
 
 /**
- * Computes the formulas `ids` in turn and writes their values; a formula in a cycle (or over one) is #CYCLE!, unless
- * `iterating`. Whether any value changed as Excel's iteration counts a change (the workbook set `iterate`): a number
- * by `delta` or more, a number turned into another type or back; text, a boolean or an error changed into another of
- * them does not count. Between two formulas the steps yield when the computation's slice is used up.
+ * Computes the formulas `ids` in turn and writes their values; a formula in a cycle (or over one) holds its value
+ * (`held.ts`), unless `iterating`. Whether any value changed as Excel's iteration counts a change (the workbook set
+ * `iterate`): a number by `delta` or more, a number turned into another type or back; text, a boolean or an error
+ * changed into another of them does not count. Between two formulas the steps yield when the computation's slice is
+ * used up.
  */
 function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0, active?: Set<number>): Steps<boolean> {
   const { rt, spills } = state
@@ -87,10 +89,13 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
     spills.done.set(id, ++spills.step)
     if (clock) clock.read = false
     let v: V, array = false
+    const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
     if (state.topo[id] < 0 && !iterating) {
       endSpill(state, f, t, true)
-      v = E.CYCLE
+      v = heldAt(state, f, shown(was))
     } else {
+      // out of a cycle's way, a formula holding a value drops it once the computation settles (a spill may close the cycle again)
+      if (state.held.size && state.held.has(id)) state.outside.add(id)
       try {
         const x = f.fn()
         if (f.area) { array = true; v = fixed(state, f, x, t) }
@@ -108,7 +113,6 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
       else state.clocked.delete(id)
       clocked = true
     }
-    const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
     moved ||= typeof v === 'number' && typeof was === 'number' ? Math.abs(v - was) >= delta : (typeof v === 'number') !== (typeof was === 'number')
     const changed = write(state, f.s, f.r, f.c, v, t)
     // One changed root takes the full pass; independent roots activate only the paths whose values changed.
@@ -221,22 +225,22 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
     const next = new Set<number>()
     for (const x of sp.touched) concerned(state, x, next, x.step)
     if (sp.claimsChanged) {
+      const was = state.topo
       rebuildGraph(state)
       // formulas that went into a cycle or out of one
       if (state.input.iteration) cyclesMoved(state, next)
-      else for (const f of state.formulas) if (f && (state.topo[f.id] < 0) !== isCycle(state.rt.cell(f.s, f.r, f.c))) next.add(f.id)
+      else for (const f of state.formulas) if (f && (state.topo[f.id] < 0) !== (was[f.id] < 0)) next.add(f.id)
     }
     if (!next.size) {
       sp.touched.length = 0
       sp.done.clear()
+      unhold(state)
       return
     }
     lists = ordered(state, next)
     active = undefined
   }
 }
-
-const isCycle = (v: V) => isErr(v) && v.code === 'CYCLE'
 
 /**
  * Formulas a change of an area's cells concerns: those that read them, arrays waiting for them, arrays spilled

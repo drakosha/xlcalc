@@ -12,6 +12,7 @@ import type { Steps } from '../exec/budget.js'
 import { formatOf as lineFormat } from '../layout/lines.js'
 import { lineAt } from '../layout/spans.js'
 import { nameFor } from '../names.js'
+import { journaled } from '../held.js'
 import { formatAddress } from '../model.js'
 import { inputAt } from '../session/book.js'
 import { inputIn } from '../looks/sheet.js'
@@ -217,20 +218,28 @@ export const hasRule = (state: EngineState, s: number, r: number, c: number): bo
 export const withInput = <T>(state: EngineState, s: number, r: number, c: number, input: CellInput | null, read: () => T): Steps<T> =>
   withInputs(state, [{ sheet: state.sheetNames[s], cell: formatAddress(r, c), input }], read)
 
-/** What `read` gives with the cells holding the inputs of `edits` (each cell once), as `withInput`. */
+/** What `read` gives with the cells holding the inputs of `edits` (each cell once), as `withInput`; the held values the engine changed meanwhile go back too. */
 export function* withInputs<T>(state: EngineState, edits: CellReplace[], read: () => T): Steps<T> {
   const put: CellReplace[] = []
-  const back: CellReplace[] = []
+  let back: CellReplace[] = []
   for (const e of edits) {
     const old = inputAt(state, state.sheetIdx.get(sheetKey(e.sheet))!, e.cell)
     if (old === e.input || JSON.stringify(old ?? null) === JSON.stringify(e.input)) continue
     put.push(e)
     back.push({ ...e, input: old ?? null })
   }
-  if (put.length) yield* applyEdits(state, put)
+  if (put.length) {
+    state.journal = new Map()
+    try {
+      yield* applyEdits(state, put)
+      back = journaled(back, state.journal)
+    } finally {
+      state.journal = undefined
+    }
+  }
   try {
     return read()
   } finally {
-    if (back.length) yield* applyEdits(state, back)
+    if (back.length) yield* applyEdits(state, back, false, true)
   }
 }

@@ -8,7 +8,7 @@ import { compare } from '../bench/coverage/compare.js'
 import type { FileParts } from '../bench/coverage/case-book.js'
 import type { Step, WorkbookAnswer, WorkbookCase } from '../bench/coverage/workbook/cases.js'
 import { takenBook } from '../bench/coverage/stored.js'
-import { createSession, type BookInput, type ComputeResult, type Session, type SheetInput } from '../src/index.js'
+import { createSession, type BookInput, type CachedValues, type ComputeResult, type Session, type SheetInput } from '../src/index.js'
 import { patchLines, parseSpan } from '../src/layout/spans.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 import { shownValue } from './spill-shown.js'
@@ -31,6 +31,12 @@ export function bookOf(c: WorkbookCase): BookInput {
   const iteration = f.iterate && { ...(f.iterate.count !== undefined ? { maxIterations: f.iterate.count } : {}), ...(f.iterate.delta !== undefined ? { maxChange: f.iterate.delta } : {}) }
   const book = takenBook(c.book)
   return { ...book, sheets: book.sheets.map((s) => withParts(s, f.sheets?.[s.name])), ...(f.date1904 ? { dateSystem: 1904 as const } : {}), ...(iteration ? { iteration } : {}) }
+}
+
+/** The values the case's file stores (`Sheet!A1` → value), as `readXlsx` gives them: none where it stores none. */
+export function cachedOf(c: WorkbookCase): CachedValues {
+  const stored = Object.entries(c.file?.cached ?? {})
+  return { sheets: c.book.sheets.map((s) => ({ name: s.name, cells: Object.fromEntries(stored.filter(([k]) => k.startsWith(`${s.name}!`)).map(([k, value]) => [k.slice(s.name.length + 1), { value }])) })) }
 }
 
 /** Excel's autofilter as a host applies it: the rows of `range` below its header shown where `field` is `criterion`, else hidden; the sheet filtered. */
@@ -56,7 +62,7 @@ function apply(session: Session, s: Step, reads: ComputeResult[]) {
 
 /** The engine's result at each `read` step of the case. */
 export function engineReads(c: WorkbookCase): ComputeResult[] {
-  const session = createSession(bookOf(c), { clock: CLOCK })
+  const session = createSession(bookOf(c), { clock: CLOCK, cached: cachedOf(c) })
   const reads: ComputeResult[] = []
   for (const s of c.steps ?? ['full', 'read']) apply(session, s, reads)
   session.close()
@@ -83,6 +89,24 @@ export function differences(c: WorkbookCase, excel: Record<string, Val>, shown: 
       }
   }
   return out
+}
+
+/** A predicted read as Excel's answer: the values, and the shown text of `show:` keys. */
+const predictedRead = (p: Record<string, Val | string>): [Record<string, Val>, Record<string, string>] => [
+  Object.fromEntries(Object.entries(p).filter(([k]) => !k.startsWith('show:'))) as Record<string, Val>,
+  Object.fromEntries(Object.entries(p).flatMap(([k, v]) => (k.startsWith('show:') ? [[k.slice(5), v as string]] : []))),
+]
+
+/**
+ * A held-out case's predictions against Excel's answers `excel` and the engine: the cells `missed` pins that Excel answered
+ * as predicted after all (none, as a miss stays pinned), and the differences of the engine from the predictions, the
+ * missed cells holding Excel's answer instead, as the engine gives it since (none).
+ */
+export function predictionCheck(c: WorkbookCase, excel: WorkbookAnswer['reads'], missed: Record<string, string>): [string[], string[]] {
+  const answered = Object.keys(missed).filter((k) => !c.predicted!.some((p, i) => JSON.stringify(p[k]) !== JSON.stringify(excel[i].values[k])))
+  const reads = engineReads(c)
+  const kept = c.predicted!.map((p, i) => ({ ...p, ...Object.fromEntries(Object.keys(missed).map((k) => [k, excel[i].values[k]])) }))
+  return [answered, kept.flatMap((p, i) => differences(c, ...predictedRead(p), reads[i]))]
 }
 
 /**

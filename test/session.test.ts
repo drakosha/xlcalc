@@ -7,7 +7,7 @@
 import { describe, expect, it } from 'vitest'
 import { compute, debugGeneratedCode, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { apply, edits } from './session-edits.js'
+import { apply, edits, withHeld } from './session-edits.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
@@ -19,7 +19,7 @@ describe('session', () => {
     for (const batch of edits(3, 200, synth)) {
       const { changes } = session.setCells(batch)
       book = apply(book, batch)
-      const full = compute(book, { clock })
+      const full = compute(withHeld(book, session.getBook()), { clock })
       const r = session.getResult()
       expect(r.hash).toBe(full.hash)
       // the reported changes agree with the values

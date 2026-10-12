@@ -49,7 +49,7 @@ describe('input errors', () => {
     fails(() => compute(sheet({ A0: { value: 1 } })), 'invalid cell address "A0"')
     fails(() => compute(sheet({ XFE1: { value: 1 } })), 'cell address "XFE1" is outside the sheet (the last cell is XFD1048576)')
     fails(() => compute(sheet({ A1048577: { value: 1 } })), 'is outside the sheet')
-    fails(() => compute(sheet({ A1: { val: 1 } })), 'book.sheets[0].cells["A1"]: unknown field "val" (expected value, formula, numberFormat, style, meta, array, note, link)')
+    fails(() => compute(sheet({ A1: { val: 1 } })), 'book.sheets[0].cells["A1"]: unknown field "val" (expected value, formula, numberFormat, style, meta, array, note, link, held)')
     fails(() => compute(sheet({ A1: { value: { date: '31.01.2025' } } })), 'book.sheets[0].cells["A1"].value.date: invalid date "31.01.2025"')
     fails(() => compute(sheet({ A1: { value: [1] } })), 'book.sheets[0].cells["A1"].value: expected a number, string, boolean, null or { date: "YYYY-MM-DD" }, got an array')
     fails(() => compute(sheet({ A1: { formula: 1 } })), 'book.sheets[0].cells["A1"].formula: expected a string, got number 1')
@@ -59,7 +59,7 @@ describe('input errors', () => {
 
   it('options and the clock', () => {
     const book = sheet({ A1: { value: 1 } })
-    fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals, execution, display, limits) (pass the clock as { clock: { now, seed } })')
+    fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals, execution, display, limits, cached) (pass the clock as { clock: { now, seed } })')
     fails(() => compute(book, { clock: { now: 'yesterday', seed: 1 } }), 'opts.clock.now: invalid moment "yesterday"')
     fails(() => compute(book, { clock: { now: '2026-01-01T00:00:00Z', seed: '1' } as never }), 'opts.clock.seed: expected a finite number, got the string "1"')
     fails(() => createSession(book, { live: true, clock: { now: '2026-01-01T00:00:00Z', seed: 1 } } as never), 'opts: a live session takes its clock from the system')

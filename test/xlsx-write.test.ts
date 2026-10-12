@@ -93,7 +93,7 @@ describe('xlsx writer', () => {
     expect((await writeXlsx({ book, result })).data).toEqual((await writeXlsx({ book, result })).data)
   })
 
-  it('reports what a file cannot hold: meta, a circular reference, text past 32,767 characters, formulas and names it cannot write', async () => {
+  it('reports what a file cannot hold: meta, a name that uses itself (#CYCLE!), text past 32,767 characters, formulas and names it cannot write; a cycle stores what it holds', async () => {
     const odd: BookInput = {
       sheets: [
         {
@@ -105,14 +105,16 @@ describe('xlsx writer', () => {
             A4: { formula: "'Nope'!A1" },
             A5: { formula: 'SUM(' },
             A6: { formula: '[Book.xlsx]S!A1' },
+            A7: { formula: 'loop' },
+            A8: { formula: 'A8*2', held: 5 },
           },
         },
       ],
-      names: [{ name: 'A1', ref: "'S'!$A$1" }, { name: 'ok', ref: "'S'!$A$1" }, { name: 'ok', ref: "'S'!$A$2" }, { name: 'gone', ref: "'S'!$A$1", scope: 'Nope' }, { name: 'bad', ref: 'SUM(' }],
+      names: [{ name: 'A1', ref: "'S'!$A$1" }, { name: 'ok', ref: "'S'!$A$1" }, { name: 'ok', ref: "'S'!$A$2" }, { name: 'gone', ref: "'S'!$A$1", scope: 'Nope' }, { name: 'bad', ref: 'SUM(' }, { name: 'loop', ref: 'loop+1' }],
     }
     const result = compute(odd, { clock })
     const { data, issues } = await writeXlsx({ book: odd, result })
-    expect(codes(issues)).toEqual(['meta A1', 'errorValue A2', 'textLength A3', 'formula A4 A5 A6', 'name', 'name', 'name', 'name'])
+    expect(codes(issues)).toEqual(['meta A1', 'textLength A3', 'formula A4 A5 A6', 'errorValue A7', 'name', 'name', 'name', 'name'])
     expect(issues.filter((i) => i.code === 'name').map((i) => `${i.name}: ${i.message}`)).toEqual([
       'A1: a name Excel does not take is left out of the file',
       'ok: a name given twice is left out of the file',
@@ -121,7 +123,9 @@ describe('xlsx writer', () => {
     ])
     const r = await readXlsx(data)
     expect(r.book.sheets[0].cells).toMatchObject({ A2: { formula: 'A2+1' }, A3: { value: 'x'.repeat(32_767) }, A4: { formula: '#REF!' }, A5: { formula: '#NULL!' } })
-    expect(storedValues(r).A2).toBe(0)
+    expect([storedValues(r).A2, storedValues(r).A7, storedValues(r).A8]).toEqual([0, 0, 5])
+    // without values the file stores the held values alone
+    expect(storedValues(await readXlsx((await writeXlsx({ book: odd })).data))).toEqual({ A8: 5 })
   })
 
   it('checks its input: the book, the mode, a result of another book', async () => {

@@ -7,8 +7,8 @@ import { parseSpan, patchLines } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 
-/** What a cell computes from: its formula, or its value (a date as its serial number). */
-const content = (c: CellInput | null | undefined, epoch: number) => (c?.formula !== undefined ? `f${JSON.stringify([c.formula, c.array])}` : `v${JSON.stringify(bookScalar(c?.value, epoch))}`)
+/** What a cell computes from: its formula and the value it holds (`held.ts`), or its value (a date as its serial number). */
+const content = (c: CellInput | null | undefined, epoch: number) => (c?.formula !== undefined ? `f${JSON.stringify([c.formula, c.array, c.held])}` : `v${JSON.stringify(bookScalar(c?.value, epoch))}`)
 
 /**
  * The edits that change a cell's value or formula, the last one per cell; the others (a new style, format or

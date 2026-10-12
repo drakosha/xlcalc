@@ -9,6 +9,7 @@ import { indexToCol } from '../src/model.js'
 import { mulberry32, S, synthBook } from '../src/synth.js'
 import { cellsOf } from './looks-book.js'
 import { randomBook, SHEETS } from './seeded-books.js'
+import { withHeld } from './session-edits.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 7 }
 
@@ -59,10 +60,11 @@ describe('session.editStructure', () => {
           expect(r, `seed ${seed} ${op.op}`).toEqual(pure)
           continue
         }
-        expected = pure.book
-        expect(session.getBook(), `seed ${seed} ${op.op}`).toEqual(pure.book)
+        // a cell an operation brings into a cycle's way holds what it showed (`CellInput.held`)
+        expected = withHeld(pure.book, session.getBook())
+        expect(session.getBook(), `seed ${seed} ${op.op}`).toEqual(expected)
         expect(r).not.toHaveProperty('book')
-        const full = compute(pure.book, { clock })
+        const full = compute(expected, { clock })
         expect(session.getResult().hash, `seed ${seed} ${op.op}`).toBe(full.hash)
         expect(shown(before, r), `seed ${seed} ${op.op}`).toEqual(valuesOf(full))
       }

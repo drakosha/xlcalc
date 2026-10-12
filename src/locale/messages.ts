@@ -273,6 +273,8 @@ export interface MessageParams extends XlsxMessageParams {
   explainFormula: { formula: string }
   explainErrorFrom: { ref: string }
   explainErrorHere: object
+  explainHeldFrom: { ref: string }
+  explainHeldHere: object
 }
 
 export type MessageKey = keyof MessageParams

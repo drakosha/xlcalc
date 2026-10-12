@@ -4,7 +4,8 @@
  * every formula by the rules of dynamic arrays, and so does Excel then. An array formula of the old kind
  * (`CellInput.array`) is written over its area without the metadata, as Excel writes one entered with
  * Ctrl+Shift+Enter, and a formula in a table's totals row as a plain one, the only kind Excel takes there. Values
- * come from the result: a formula's value, and the cells its array spilled into. A formula the file cannot hold (it
+ * come from the result: a formula's value, and the cells its array spilled into; a formula a circular reference stops
+ * stores its `held` where the result gives no value for it, as Excel opens it again holding that. A formula the file cannot hold (it
  * does not parse, or names a sheet, a table, a column or a link to another workbook the book does not have) is written
  * as its value. A filtered sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row,
  * else on an autofilter of its own over its cells, with Excel's filter mark. Every cell is written with the whole look it
@@ -204,21 +205,23 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       put(addr, cellXml(addr, c, v))
       continue
     }
+    // a formula a circular reference stops stores the value it holds where the result gives none, or the engine's #CYCLE!
+    const value = c.held !== undefined && (res === undefined || (typeof res.value === 'object' && res.value?.error === 'CYCLE')) ? c.held : res?.value
     // a result without the formula's value (`values: 'preserve'`)
-    if (result && !res) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
+    if (result && !res && c.held === undefined) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
     const tree = mode === 'formulas' ? fileTree(c.formula, ctx, ctx.tableAt(addr)) : null
     if (mode === 'formulas' && !tree) issues.add('formula', { key: 'formulaAsValue' }, where(addr))
     if (!tree) {
-      put(addr, cellXml(addr, c, res?.value))
+      put(addr, cellXml(addr, c, value))
       continue
     }
     formulas = true
     if (ctx.totalsAt(addr) && c.array === undefined) {
-      put(addr, cellXml(addr, c, res?.value, `<f>${escapeText(toFile(tree))}</f>`, false))
+      put(addr, cellXml(addr, c, value, `<f>${escapeText(toFile(tree))}</f>`, false))
       continue
     }
     const ref = c.array ?? res?.spill ?? addr
-    put(addr, cellXml(addr, c, res?.value, `<f t="array" ref="${ref}">${escapeText(toFile(tree))}</f>`, c.array === undefined))
+    put(addr, cellXml(addr, c, value, `<f t="array" ref="${ref}">${escapeText(toFile(tree))}</f>`, c.array === undefined))
   }
   // the cells arrays spilled into, with the look their own cells give them
   const ownAt = (addr: string) => {

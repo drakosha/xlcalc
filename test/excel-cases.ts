@@ -126,7 +126,7 @@ export const REASONS = {
   momentRange:
     'Where the squares or products of the values leave the range of doubles, Excel answers what is left of them and the engine the exact answer: the squares of 1E-200 and 2E-200 are 0 in Excel, so `STDEV.P` of them is 0 (5E-201 here, within the tests\' tolerance) and `CORREL` with 1, 2 and `SLOPE` of 1, 2 on them `#DIV/0!` (1 and 1E+200 here); a sum or a product past 1.8E+308 is `#NUM!` in Excel where the answer fits (`AVERAGE` of 1E+308 three times and its variance 0, the covariance of 1E+308, −1E+308, 1E-200 with 0, 0, 1E+308, 2.2E+107 here).',
   lookupReadZone:
-    '`LOOKUP` counts among its references every cell it may read on to, as far as its lookup array is long, whatever the value looked up: a formula among them, the `LOOKUP` itself too, comes first, and the `LOOKUP` in that zone is a cycle here (`#CYCLE!`) where Excel, which follows the cells `LOOKUP` reads in the end, computes it (`E10` = `LOOKUP(5,A1:A6,B10:D10)` reads `F10` in Excel and is `#CYCLE!` here, as `E10` lies in `B10:G10`; so beside a spill that could not spill, and right of a rectangle `INDEX` takes a column from).',
+    '`LOOKUP` counts among its references every cell it may read on to, as far as its lookup array is long, whatever the value looked up: a formula among them, the `LOOKUP` itself too, comes first, and the `LOOKUP` in that zone is a cycle here, not computed (it holds its value, 0 in a book computed afresh), where Excel, which follows the cells `LOOKUP` reads in the end, computes it (`E10` = `LOOKUP(5,A1:A6,B10:D10)` reads `F10` in Excel and holds 0 here, as `E10` lies in `B10:G10`; so beside a spill that could not spill, and right of a rectangle `INDEX` takes a column from).',
   linestMean:
     '`LINEST` and `TREND` over y far from 0 against its spread give Excel\'s coefficients, but Excel\'s intercept and regression sum of squares follow the mean it sums plainly: of 10,000 values 1E12 + 0, 0.01, 0.02 on their steps 0, 1, 2 the slope is 0.0100098 in both (0.010009765625 exactly), the intercept 1E12 − 0.0096 in Excel and 1E12 here, the regression sum of squares 1.598 in Excel and 0.668 here (as exactly, `DEVSQ` of the values), so `TREND` at step 3 is 1E12 + 0.0204 in Excel and 1E12 + 0.0300 here.',
   growthRange:
@@ -199,10 +199,10 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'text-format:date#82': { reason: 'macMonthCase', engine: { t: 's', v: "Февраль" } },
   'text-format:date#83': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
   'text-format:date#84': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
-  'lookup-own-held:LOOKUP#5': { reason: 'lookupReadZone', engine: { t: 'e', v: 'CYCLE' as never } },
-  'lookup-own-held:LOOKUP#7': { reason: 'lookupReadZone', engine: { t: 'e', v: 'CYCLE' as never } },
-  'lookup-own-held:LOOKUP#8': { reason: 'lookupReadZone', engine: { t: 'e', v: 'CYCLE' as never } },
-  'lookup-own-held:LOOKUP#9': { reason: 'lookupReadZone', engine: { t: 'e', v: 'CYCLE' as never } },
+  'lookup-own-held:LOOKUP#5': { reason: 'lookupReadZone', engine: { t: 'n', v: 0 } },
+  'lookup-own-held:LOOKUP#7': { reason: 'lookupReadZone', engine: { t: 'n', v: 0 } },
+  'lookup-own-held:LOOKUP#8': { reason: 'lookupReadZone', engine: { t: 'n', v: 0 } },
+  'lookup-own-held:LOOKUP#9': { reason: 'lookupReadZone', engine: { t: 'n', v: 0 } },
   'stat-edges-held:VAR.P#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'stat-edges-held:VAR.P#2': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'stat-edges-held:VAR.S#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668069581190745 } },

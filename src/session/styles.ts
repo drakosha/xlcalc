@@ -17,6 +17,7 @@ import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import { StyleTable } from '../style-table.js'
 import { layerOf } from '../looks/sheet.js'
 import { inputAt } from './book.js'
+import { CONTENT } from './cells.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
 
 /** The cells a rectangle may give a look to: as many as a whole column has. Past them, whole columns or rows cost what their cells hold. */
@@ -137,9 +138,6 @@ export class Draft {
     return { edits, sheets: this.sheets, touched: this.touched, ...(this.table.table ? { styles: this.table.table } : {}) }
   }
 }
-
-/** The fields of a cell's content. */
-const CONTENT = ['value', 'formula', 'array'] as const
 
 /**
  * A cell's input with a look over it: `before` and `after` are its sheet's lines before and after the look's change of

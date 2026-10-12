@@ -5,7 +5,7 @@
  * hold as it is (a function, a date object or a non-finite number in it) goes as before, by structured clone.
  */
 import { pause } from '../async/drive.js'
-import type { BookInput, CellInput } from '../contract.js'
+import type { BookInput, CachedValues, CellInput } from '../contract.js'
 
 /** A book as it crosses to or from a thread. */
 export type Sent = BookInput | Packed
@@ -125,6 +125,38 @@ export function pack(book: BookInput): Sent | Promise<Sent> {
     return { packed: 1 as const, head, sheets }
   })()
 }
+
+/**
+ * A file's stored values (`ComputeOptions.cached`) as text, as a book is: they have a book's shape, sheets of cells by
+ * address, and go with their sheets' names alone (a result's other fields are not needed).
+ */
+export function packCached(v: CachedValues): Sent | Promise<Sent> {
+  const sheets = (v as { sheets?: unknown } | null)?.sheets
+  // input of another shape goes as it is: the thread refuses it with InputError
+  if (!Array.isArray(sheets) || !sheets.every((s) => s !== null && typeof s === 'object')) return v as unknown as Sent
+  return pack({ sheets: v.sheets.map(({ name, cells }) => ({ name, cells })) } as unknown as BookInput)
+}
+
+/** A book and the values its file stores as they go to a thread: text, or objects JSON cannot hold. */
+export interface Texts {
+  book: Sent
+  cached?: Sent
+}
+
+/**
+ * A book and its stored values taken now as text: the message's fields (the book itself while its text is written
+ * between turns of the event loop) and, when some text is still being written, the promise of them all.
+ */
+export function texts(book: BookInput, cached: CachedValues | undefined): [Texts, Promise<Texts> | undefined] {
+  const b = pack(book)
+  const c = cached === undefined ? undefined : packCached(cached)
+  const of = (x: Sent, y: Sent | undefined): Texts => ({ book: x, ...(y ? { cached: y } : {}) })
+  if (!(b instanceof Promise) && !(c instanceof Promise)) return [of(b, c), undefined]
+  return [{ book: book as Sent }, Promise.all([b, c]).then(([x, y]) => of(x, y))]
+}
+
+/** Stored values `packCached` gave, as objects again (in a thread). */
+export const unpackCached = (v: Sent): CachedValues => unpack(v) as unknown as CachedValues
 
 /** Data as JSON text when JSON holds it as it is (as a book's cells are checked), else as it is: text the calling side keeps for less than the objects. */
 export const packData = <T>(v: T): T | { json: string } => (isJson(v, true) ? { json: JSON.stringify(v) } : v)

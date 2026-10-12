@@ -21,7 +21,7 @@ import { GEOMETRY } from '../structure/geometry.js'
 import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThread } from './protocol.js'
 import { LOCALE_MODULES } from './locales.js'
 import { workerThreads } from './platform.js'
-import { pack, packData, unpack, unpackData } from './pack.js'
+import { pack, packData, unpack, unpackCached, unpackData, type Sent } from './pack.js'
 
 interface Port {
   postMessage(m: unknown): void
@@ -134,14 +134,17 @@ async function open(sid: number, book: BookInput, opts: object, planned: Clock |
 /** A session as a snapshot takes it: its book and history as text, its clock, its revision and its last changing call. */
 const taken = async (h: Held) => ({ book: await pack(await h.s.getBook()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()), revision: h.s.revision })
 
+/** Options with the stored values a message carries as text (`ComputeOptions.cached`), as objects again. */
+const withCached = <T extends object>(opts: T, cached: Sent | undefined): T => (cached === undefined ? opts : { ...opts, cached: unpackCached(cached) })
+
 async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promise<unknown> {
   switch (m.t) {
     case 'compute': {
-      const c = checkComputeOptions(m.opts)
+      const c = checkComputeOptions(withCached(m.opts, m.cached))
       return budgeted(d, callLimits(d.limits, c.limits))(computeSteps(unpack(m.book), c), { signal, timeoutMs: m.timeoutMs })
     }
     case 'open': {
-      const h = await open(m.sid, unpack(m.book), { ...m.opts, signal, timeoutMs: m.timeoutMs }, null)
+      const h = await open(m.sid, unpack(m.book), withCached({ ...m.opts, signal, timeoutMs: m.timeoutMs }, m.cached), null)
       return { value: null, clock: h.s.clock, history: h.s.history, revision: h.s.revision } satisfies Answer
     }
     case 'call': {
@@ -160,7 +163,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     case 'restore': {
       const { snapshot, journal } = m
       held.get(m.sid)?.s.kill(new CalcError('closed', 'the session is restored'))
-      const h = await open(m.sid, unpack(snapshot.book), { ...snapshot.opts, signal }, snapshot.clock, snapshot.history && unpackData(snapshot.history), snapshot.revision)
+      const h = await open(m.sid, unpack(snapshot.book), withCached({ ...snapshot.opts, signal }, snapshot.cached), snapshot.clock, snapshot.history && unpackData(snapshot.history), snapshot.revision)
       h.seq = snapshot.seq
       try {
         for (const e of journal as Entry[]) {

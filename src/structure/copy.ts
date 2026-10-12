@@ -54,11 +54,14 @@ export function tiles(src: Rect, target: Rect): { offsets: [number, number][]; a
   return { offsets, area: target }
 }
 
-/** A copied cell without its `meta` (rows of a source a host keeps by `meta` are not copied with the cell). */
-const withoutMeta = (cell: CellInput): CellInput => {
-  if (cell.meta === undefined) return cell
-  const { meta: _, ...rest } = cell
-  return rest
+/**
+ * A copied cell without its `held`, as a formula pasted is one entered (`CellInput.held`), and with `meta` only `withMeta`
+ * (rows of a source a host keeps by `meta` are not copied with the cell).
+ */
+const pastedCell = (cell: CellInput, withMeta: boolean): CellInput => {
+  if (cell.held === undefined && (withMeta || cell.meta === undefined)) return cell
+  const { meta, held: _, ...rest } = cell
+  return withMeta && meta !== undefined ? { ...rest, meta } : rest
 }
 
 /**
@@ -86,7 +89,10 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   const copied = [
     ...cellsIn(g, src).flatMap((i) => (own.has(g.addr[i]) ? [] : [{ addr: g.addr[i], at: { row: g.row[i], col: g.col[i] }, cell: g.cell[i] }])),
     ...parts.map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell })),
-  ].map((x) => (withMeta ? x : { ...x, cell: withoutMeta(x.cell) }))
+  ].map((x) => {
+    const cell = pastedCell(x.cell, withMeta)
+    return cell === x.cell ? x : { ...x, cell }
+  })
   const sheets = book.sheets.map((s, si) => {
     if (si !== ti) return s
     // the target's cells but those the geometry takes away, the pasted ones over them

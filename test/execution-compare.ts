@@ -8,7 +8,7 @@ import { expect } from 'vitest'
 import { compute, createSession, type BookInput, type CellValue, type ComputeOptions, type ComputeResult, type Execution } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { bundle } from './fixtures/bundle.js'
-import { apply, edits } from './session-edits.js'
+import { apply, edits, withHeld } from './session-edits.js'
 
 export const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
 
@@ -41,7 +41,7 @@ export function expectSame(evalResult: ComputeResult, closuresResult: ComputeRes
   expect(rest(closuresResult)).toEqual(rest(evalResult))
 }
 
-/** 200 seeded session edits in the mode `session`; after each one the session equals a full computation in the other mode. */
+/** 200 seeded session edits in the mode `session`; after each one the session equals a full computation in the other mode of the edited book with the values its cycles hold. */
 export function sessionAgainstFull(session: Execution) {
   const synth = synthBook({ seed: 1, rows: 340 })
   const s = session === 'closures' ? strict.createSession(synth.book, { clock, execution: 'closures' }) : createSession(synth.book, { clock, execution: 'eval' })
@@ -50,7 +50,8 @@ export function sessionAgainstFull(session: Execution) {
     s.setCells(batch)
     book = apply(book, batch)
     const r = structuredClone(s.getResult())
-    if (session === 'closures') expectSame(byEval(book), r)
-    else expectSame(r, byClosures(book))
+    const full = withHeld(book, s.getBook())
+    if (session === 'closures') expectSame(byEval(full), r)
+    else expectSame(r, byClosures(full))
   }
 }
