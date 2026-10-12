@@ -11,7 +11,7 @@ import { FILE_TYPES, OPERATORS } from '../../validation/check.js'
 import { COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
 import { formulaAt } from '../../validation/structure.js'
 import { sheetKey } from '../../syntax.js'
-import type { Issues } from '../issues.js'
+import type { Issues, XlsxMessage } from '../issues.js'
 import { attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula } from './formulas.js'
@@ -38,7 +38,7 @@ function plain(xml: string, sheet: string, issues: Issues): RawRule[] {
   return elements(element(xml, 'dataValidations')?.body ?? '', 'dataValidation').map((e) => {
     const a = attributes(e.attrs)
     const body = e.body ?? ''
-    if (element(body, 'list')) issues.add('dataValidation', "a list's items holding a comma are read split at it", { sheet, cell: a.sqref ?? '' })
+    if (element(body, 'list')) issues.add('dataValidation', { key: 'ruleListCommas' }, { sheet, cell: a.sqref ?? '' })
     return { a, formula1: text(element(body, 'formula1')), formula2: text(element(body, 'formula2')), sqref: a.sqref ?? '' }
   })
 }
@@ -53,10 +53,10 @@ function extended(xml: string): RawRule[] {
 }
 
 /** The model's rule of a rule of the file, or why it cannot be one. */
-function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | string {
+function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | XlsxMessage {
   const { a } = raw
   const type = ownEntry(TYPES, a.type ?? 'none')
-  if (!type) return `a rule of an unknown type ${JSON.stringify(a.type)} is left out`
+  if (!type) return { key: 'ruleType', type: a.type }
   const out: DataValidation = { range: raw.sqref, type }
   const where = { sheet, cell: raw.sqref }
   // `between` is the default, left out
@@ -64,11 +64,11 @@ function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | str
   const formula = (t: string | undefined) => (t === undefined || t === '' ? undefined : readFormula(t, issues, where).formula)
   if (type !== 'any') {
     const f1 = formula(raw.formula1)
-    if (f1 === undefined) return 'a rule without the formula its type needs is left out'
+    if (f1 === undefined) return { key: 'ruleNoFormula' }
     out.formula1 = f1
     if (twoBounds(out)) {
       const f2 = formula(raw.formula2)
-      if (f2 === undefined) return 'a rule between two bounds without its second formula is left out'
+      if (f2 === undefined) return { key: 'ruleNoSecond' }
       out.formula2 = f2
     }
   }
@@ -80,7 +80,7 @@ function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | str
   if (a.errorStyle === 'warning' || a.errorStyle === 'information') out.errorStyle = a.errorStyle
   for (const k of ['errorTitle', 'error'] as const) if (a[k] !== undefined) out[k] = readText(a[k])
   if (!flag(a.showErrorMessage)) out.showError = false
-  if (a.imeMode !== undefined && a.imeMode !== 'noControl') issues.add('dataValidation', "a rule's IME mode is not kept", where)
+  if (a.imeMode !== undefined && a.imeMode !== 'noControl') issues.add('dataValidation', { key: 'ruleIme' }, where)
   return out
 }
 
@@ -97,18 +97,18 @@ export function readValidations(tail: string, sheet: string, sheets: string[], i
   for (const raw of raws) {
     const where = { sheet, cell: raw.sqref }
     const r = rule(raw, sheet, issues)
-    if (typeof r === 'string') {
+    if ('key' in r) {
       issues.add('dataValidation', r, where)
       continue
     }
     const parts = sqrefRanges(raw.sqref)
     const areas = parts.length && parts.every((x) => x.rect) ? parts.map((x) => x.rect!) : null
     if (!areas) {
-      issues.add('dataValidation', 'a rule without a range of the sheet is left out', where)
+      issues.add('dataValidation', { key: 'ruleNoRange' }, where)
       continue
     }
     const own = areas.flatMap((x) => taken.reduce(subtract, [x]))
-    if (own.length !== areas.length || own.some((x, i) => x !== areas[i])) issues.add('dataValidation', 'cells of a rule that an earlier rule has keep the earlier one', where)
+    if (own.length !== areas.length || own.some((x, i) => x !== areas[i])) issues.add('dataValidation', { key: 'ruleShared' }, where)
     if (!own.length) continue
     taken.push(...own)
     const [from, to] = [{ r: areas[0].r1, c: areas[0].c1 }, { r: own[0].r1, c: own[0].c1 }]

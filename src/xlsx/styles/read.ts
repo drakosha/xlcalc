@@ -6,6 +6,7 @@
  */
 import type { AlignmentStyle, BorderLine, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { HORIZONTAL, LINES, VERTICAL } from '../../input.js'
+import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
@@ -23,7 +24,7 @@ export interface Xf {
   /** A built-in number format this reader does not know. */
   unknownFormat?: number
   /** What the style table cannot hold. */
-  lost: string[]
+  lost: StyleLoss[]
 }
 
 export interface StyleTable {
@@ -45,29 +46,29 @@ const val = (body: string, local: string): string | undefined => {
 
 interface Font {
   style: FontStyle
-  lost: string[]
+  lost: StyleLoss[]
 }
 
 /**
  * A font's underline (`<u>`, single without a `val`); an accounting one is read as its plain kind and named in `lost`,
  * and so is a dxf's `none`, which takes an underline away (a style cannot say so; a cell's font has none then).
  */
-export function underlineOf(body: string, lost: string[], dxf = false): FontStyle['underline'] {
+export function underlineOf(body: string, lost: StyleLoss[], dxf = false): FontStyle['underline'] {
   const u = element(body, 'u')
   const under = u && (attributes(u.attrs).val ?? 'single')
   if (under === 'single' || under === 'double') return under
   if (under === 'singleAccounting' || under === 'doubleAccounting') {
-    lost.push('accounting underline')
+    lost.push('accountingUnderline')
     return under === 'singleAccounting' ? 'single' : 'double'
   }
-  if (dxf && under === 'none') lost.push('an underline taken away')
+  if (dxf && under === 'none') lost.push('underlineRemoved')
   return undefined
 }
 
 export function font(e: Element, p: Palette): Font {
   const b = e.body ?? ''
   const style: FontStyle = {}
-  const lost: string[] = []
+  const lost: StyleLoss[] = []
   const name = val(b, 'name')
   if (name !== undefined) style.name = decodeXml(name)
   const size = Number(val(b, 'sz'))
@@ -81,20 +82,21 @@ export function font(e: Element, p: Palette): Font {
   if (color) style.color = color
   const va = val(b, 'vertAlign')
   if (va === 'superscript' || va === 'subscript') lost.push(va)
-  for (const x of ['outline', 'shadow']) if (on(b, x)) lost.push(`font ${x}`)
+  if (on(b, 'outline')) lost.push('fontOutline')
+  if (on(b, 'shadow')) lost.push('fontShadow')
   return { style, lost }
 }
 
-export function border(e: Element, p: Palette): { border?: CellStyle['border']; lost: string[] } {
+export function border(e: Element, p: Palette): { border?: CellStyle['border']; lost: StyleLoss[] } {
   const b = e.body ?? ''
   const out: NonNullable<CellStyle['border']> = {}
-  const lost: string[] = []
+  const lost: StyleLoss[] = []
   const side = (locals: string[]): BorderLine | undefined => {
     for (const local of locals) {
       const s = element(b, local)
       const kind = s && attributes(s.attrs).style
       if (!s || !kind || kind === 'none') continue
-      if (!LINES.includes(kind as BorderLine['style'])) return void lost.push(`border ${kind}`)
+      if (!LINES.includes(kind as BorderLine['style'])) return void lost.push({ border: kind })
       const color = s.body ? colorOf(element(s.body, 'color'), p) : undefined
       return color ? { style: kind as BorderLine['style'], color } : { style: kind as BorderLine['style'] }
     }
@@ -102,7 +104,7 @@ export function border(e: Element, p: Palette): { border?: CellStyle['border']; 
   }
   const sides = { top: side(['top']), right: side(['right', 'end']), bottom: side(['bottom']), left: side(['left', 'start']) }
   for (const [k, v] of Object.entries(sides)) if (v) out[k as keyof typeof sides] = v
-  if (side(['diagonal'])) lost.push('diagonal border')
+  if (side(['diagonal'])) lost.push('diagonalBorder')
   return Object.keys(out).length ? { border: out, lost } : { lost }
 }
 
@@ -116,25 +118,25 @@ export function border(e: Element, p: Palette): { border?: CellStyle['border']; 
  * without one (white on a cell without a fill) and changing nothing when it is empty; a dxf's none takes the cell's fill
  * away. The model cannot say a fill kept or taken away: those are named lost.
  */
-export function readFill(e: Element, p: Palette, dxf = false): { fill?: CellStyle['fill']; lost: string[] } {
+export function readFill(e: Element, p: Palette, dxf = false): { fill?: CellStyle['fill']; lost: StyleLoss[] } {
   const b = e.body ?? ''
   const pf = element(b, 'patternFill')
-  const lost = element(b, 'gradientFill') ? [pf ? 'gradient fill beside its pattern' : 'gradient fill'] : []
+  const lost: StyleLoss[] = element(b, 'gradientFill') ? [pf ? 'gradientBesidePattern' : 'gradientFill'] : []
   if (!pf) return { lost }
   const a = attributes(pf.attrs)
   const type = a.patternType ?? (dxf ? 'solid' : 'none')
-  if (type === 'none') return { lost: dxf ? [...lost, 'fill taken away'] : lost }
-  if (type !== 'solid') return { lost: [...lost, 'pattern fill'] }
+  if (type === 'none') return { lost: dxf ? [...lost, 'fillRemoved'] : lost }
+  if (type !== 'solid') return { lost: [...lost, 'patternFill'] }
   const shown = element(pf.body ?? '', dxf ? 'bgColor' : 'fgColor')
   if (shown || !dxf) return { fill: { color: colorOf(shown, p) ?? '#FFFFFF' }, lost }
-  return a.patternType !== undefined || element(pf.body ?? '', 'fgColor') ? { lost: [...lost, 'fill without its colour'] } : { lost }
+  return a.patternType !== undefined || element(pf.body ?? '', 'fgColor') ? { lost: [...lost, 'fillWithoutColor'] } : { lost }
 }
 
-function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: string[] } {
+function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: StyleLoss[] } {
   if (!e) return { lost: [] }
   const a = attributes(e.attrs)
   const out: AlignmentStyle = {}
-  const lost: string[] = []
+  const lost: StyleLoss[] = []
   const horizontal = a.horizontal as AlignmentStyle['horizontal']
   const vertical = a.vertical as AlignmentStyle['vertical']
   // the defaults, general and bottom, are left out
@@ -143,10 +145,10 @@ function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: 
   if (flag(a.wrapText)) out.wrap = true
   const indent = Number(a.indent ?? 0)
   if (indent > 0) out.indent = Math.min(250, Math.round(indent))
-  if (Number(a.textRotation ?? 0)) lost.push('text rotation')
-  if (flag(a.shrinkToFit)) lost.push('shrink to fit')
-  if (Number(a.readingOrder ?? 0)) lost.push('reading order')
-  if (flag(a.justifyLastLine)) lost.push('justify last line')
+  if (Number(a.textRotation ?? 0)) lost.push('textRotation')
+  if (flag(a.shrinkToFit)) lost.push('shrinkToFit')
+  if (Number(a.readingOrder ?? 0)) lost.push('readingOrder')
+  if (flag(a.justifyLastLine)) lost.push('justifyLastLine')
   return Object.keys(out).length ? { alignment: out, lost } : { lost }
 }
 
@@ -180,7 +182,7 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
     const al = alignment(e.body ? element(e.body, 'alignment') : undefined)
     const pr = e.body ? element(e.body, 'protection') : undefined
     const pa = pr ? attributes(pr.attrs) : {}
-    const lost = [...(f?.lost ?? []), ...(fi?.lost ?? []), ...(bo?.lost ?? []), ...al.lost, ...(!flag(pa.locked, true) || flag(pa.hidden) ? ['protection'] : [])]
+    const lost: StyleLoss[] = [...(f?.lost ?? []), ...(fi?.lost ?? []), ...(bo?.lost ?? []), ...al.lost, ...(!flag(pa.locked, true) || flag(pa.hidden) ? (['protection'] as const) : [])]
     const style: CellStyle = {}
     const fs = f && relative(f.style, base)
     if (fs) style.font = fs

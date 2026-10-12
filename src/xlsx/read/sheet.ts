@@ -14,7 +14,7 @@ import { cellCount, cellsWithin, cornersText, parseRange, type Rect } from '../.
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
-import type { Issues } from '../issues.js'
+import type { Issues, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has, ownEntry, type Element } from '../xml/scan.js'
 import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
@@ -49,29 +49,29 @@ export interface SheetRead {
 }
 
 /** Elements of a worksheet the model has no place for, outside `<sheetData>`. */
-const FEATURES: [local: string, code: XlsxIssueCode, message: string][] = [
-  ['sheetProtection', 'protection', 'sheet protection is not in the model'],
-  ['protectedRanges', 'protection', 'sheet protection is not in the model'],
-  ['drawing', 'drawing', 'pictures, charts and shapes are not in the model'],
-  ['picture', 'drawing', 'pictures, charts and shapes are not in the model'],
-  ['oleObjects', 'drawing', 'pictures, charts and shapes are not in the model'],
-  ['controls', 'drawing', 'pictures, charts and shapes are not in the model'],
-  ['sparklineGroups', 'sparkline', 'sparklines are not in the model'],
-  ['headerFooter', 'print', 'print settings (headers and footers, page breaks, page setup) are not in the model'],
-  ['rowBreaks', 'print', 'print settings (headers and footers, page breaks, page setup) are not in the model'],
-  ['colBreaks', 'print', 'print settings (headers and footers, page breaks, page setup) are not in the model'],
+const FEATURES: [local: string, code: XlsxIssueCode, message: XlsxMessage][] = [
+  ['sheetProtection', 'protection', { key: 'sheetProtection' }],
+  ['protectedRanges', 'protection', { key: 'sheetProtection' }],
+  ['drawing', 'drawing', { key: 'drawings' }],
+  ['picture', 'drawing', { key: 'drawings' }],
+  ['oleObjects', 'drawing', { key: 'drawings' }],
+  ['controls', 'drawing', { key: 'drawings' }],
+  ['sparklineGroups', 'sparkline', { key: 'sparklines' }],
+  ['headerFooter', 'print', { key: 'printSettings' }],
+  ['rowBreaks', 'print', { key: 'printSettings' }],
+  ['colBreaks', 'print', { key: 'printSettings' }],
 ]
 
 /** Parts a sheet links to that the model has no place for, by relationship kind. */
-const LINKED: Record<string, [XlsxIssueCode, string]> = {
-  pivotTable: ['pivotTable', 'pivot tables are not in the model: their cells are read as stored'],
+const LINKED: Record<string, [XlsxIssueCode, XlsxMessage]> = {
+  pivotTable: ['pivotTable', { key: 'pivotTables' }],
 }
 
 /** Shared formulas in each of their cells: the master's formula copied and pasted over them. */
 function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
   for (const s of read.shared.values()) {
     if (s.master === undefined) {
-      for (const c of s.copies) issues.add('formula', 'a shared formula without its master cell is left out', { sheet: src.name, cell: c })
+      for (const c of s.copies) issues.add('formula', { key: 'sharedWithoutMaster' }, { sheet: src.name, cell: c })
       continue
     }
     const formula = read.cells[s.master]!.formula!
@@ -145,7 +145,7 @@ function outline(head: string, sheet: string, issues: Issues): OutlineSettings |
   const pr = element(element(head, 'sheetPr')?.body ?? '', 'outlinePr')
   if (!pr) return undefined
   const a = attributes(pr.attrs)
-  if (flag(a.applyStyles)) issues.add('outline', 'automatic styles of an outline are not kept', { sheet })
+  if (flag(a.applyStyles)) issues.add('outline', { key: 'outlineStyles' }, { sheet })
   const out: OutlineSettings = {}
   if (a.summaryBelow !== undefined) out.summaryBelow = flag(a.summaryBelow)
   if (a.summaryRight !== undefined) out.summaryRight = flag(a.summaryRight)
@@ -195,7 +195,7 @@ function merges(rest: string, sheet: string, issues: Issues): string[] | undefin
     const o = overlapping(xs)
     if (o) {
       xs.pop()
-      issues.add('part', 'a merged area overlapping another is left out', { sheet, cell: ref })
+      issues.add('part', { key: 'mergeOverlap' }, { sheet, cell: ref })
     }
   }
   return xs.length ? xs.map(cornersText) : undefined
@@ -217,9 +217,9 @@ function filterMode(head: string, tail: string, src: SheetSource, issues: Issues
   const mark = flag(attributes(element(head, 'sheetPr')?.attrs ?? '').filterMode)
   const tables = src.tables.some((x) => hasCriteria(element(x, 'autoFilter')))
   const criteria = hasCriteria(own)
-  if (own) issues.add('autoFilter', criteria ? "an autofilter's range, criteria and sort are not in the model: the sheet is read as filtered, the rows it hid as hidden" : 'an autofilter without criteria (its buttons and sort) is not in the model', where)
-  else if (mark && !tables) issues.add('autoFilter', 'an advanced filter is not in the model: the sheet is read as filtered, the rows it hid as hidden', where)
-  if (tables) issues.add('autoFilter', "a table's filter criteria are not in the model: the sheet is read as filtered, the rows they hid as hidden", where)
+  if (own) issues.add('autoFilter', { key: criteria ? 'autoFilterCriteria' : 'autoFilterPlain' }, where)
+  else if (mark && !tables) issues.add('autoFilter', { key: 'advancedFilter' }, where)
+  if (tables) issues.add('autoFilter', { key: 'tableFilter' }, where)
   return criteria || tables || (mark && !own)
 }
 
@@ -230,10 +230,10 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   // the sheet's default column width: 8 digits and the padding, as the model assumes, or another
   const fp = attributes(element(head, 'sheetFormatPr')?.attrs ?? '')
   const width = fp.defaultColWidth !== undefined ? Number(fp.defaultColWidth) : Number(fp.baseColWidth ?? 8) + 0.84
-  if (!(width >= 8 && width < 9.5)) issues.add('defaultWidth', `the sheet's default column width (${Math.round(width * 100) / 100} in xlsx units) is not in the model, which takes Excel's standard of 8 digits`, where)
+  if (!(width >= 8 && width < 9.5)) issues.add('defaultWidth', { key: 'defaultWidth', width: Math.round(width * 100) / 100 }, where)
   const setup = element(tail, 'pageSetup')
   const sa = setup ? attributes(setup.attrs) : {}
-  if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', 'print settings (headers and footers, page breaks, page setup) are not in the model', where)
+  if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', { key: 'printSettings' }, where)
   for (const r of src.rels) {
     const linked = ownEntry(LINKED, r.kind)
     if (linked) issues.add(...linked, where)
@@ -259,14 +259,14 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
     if (master)
       for (const cell of s.copies) {
         if (read.cells[cell]?.formula === undefined) {
-          ctx.issues.add('formula', 'a copy of a shared formula that a paste could not make is left out', { sheet: name, cell })
+          ctx.issues.add('formula', { key: 'sharedCopy' }, { sheet: name, cell })
           continue
         }
         reportFormula(master, ctx.issues, { sheet: name, cell })
       }
   }
   arrays(read)
-  for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', 'an error typed into a cell is read as a formula of that error', { sheet: name, cell })
+  for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', { key: 'errorTyped' }, { sheet: name, cell })
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
   if (filterMode(head, tail, src, ctx.issues)) sheet.filtered = true

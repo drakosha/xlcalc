@@ -89,7 +89,7 @@ export function conditionalXml(sheet: SheetInput, index: number, ctx: Conditiona
       }
     } catch (e) {
       if (e !== UNFIT) throw e
-      ctx.issues.add('conditionalFormat', 'a conditional format with a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is left out of the file', where)
+      ctx.issues.add('conditionalFormat', { key: 'condFormulaOut' }, where)
       return
     }
     const priority = ` priority="${i + 1}"`

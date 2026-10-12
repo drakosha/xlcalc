@@ -13,4 +13,4 @@ import * as write from './xlsx/write/book.js'
 export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 export const readXlsx = /* @__PURE__ */ strict(read.readXlsx)
 export const writeXlsx = /* @__PURE__ */ strict(write.writeXlsx)
-export type { WriteXlsxOptions, XlsxCached, XlsxCachedCell, XlsxIssue, XlsxIssueCode, XlsxRead, XlsxSnapshot, XlsxWritten } from './xlsx/types.js'
+export type { ReadXlsxOptions, WriteXlsxOptions, XlsxCached, XlsxCachedCell, XlsxIssue, XlsxIssueCode, XlsxRead, XlsxSnapshot, XlsxWritten } from './xlsx/types.js'

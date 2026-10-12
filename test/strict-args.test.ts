@@ -116,7 +116,7 @@ describe('the functions of the package take no options they do not', () => {
     }],
     ['xlcalc/a1', a1, { parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2 }],
     ['xlcalc/text', text, { scanReferences: 2, quoteSheetIfNeeded: 2, escapeColumn: 1, parseClipboard: 1 }],
-    ['xlcalc/xlsx', xlsx, { readXlsx: 1, writeXlsx: 2, fromLegacy: 2 }],
+    ['xlcalc/xlsx', xlsx, { readXlsx: 2, writeXlsx: 2, fromLegacy: 2 }],
     ['xlcalc/worker', worker, { createCalcPool: 1 }],
   ]
 

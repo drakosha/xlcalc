@@ -1,5 +1,6 @@
 /** The types of the `./xlsx` subpath: reading an xlsx file into a book and writing a book with its values. */
 import type { Book, BookInput, CellResult, ComputeResult } from '../contract.js'
+import type { Locale } from '../locale/types.js'
 
 /**
  * What the book cannot hold of a file, or what writing changed. The codes:
@@ -128,7 +129,19 @@ export interface XlsxSnapshot {
   result?: ComputeResult | XlsxCached
 }
 
+/** The options of `readXlsx`. */
+export interface ReadXlsxOptions {
+  /**
+   * The language of the issues' messages: a loaded locale's tag (`'ru-RU'` once `registerLocale(ruRU)` ran) or a locale
+   * object (`ruRU`), en-US by default. Codes and the other fields of an issue are the same in every language. A file
+   * does not say what language its reader reads, so the host passes the locale the person chose.
+   */
+  locale?: string | Locale
+}
+
 export interface WriteXlsxOptions {
+  /** The language of the issues' messages, as `readXlsx` takes it (`ReadXlsxOptions.locale`). */
+  locale?: string | Locale
   /**
    * The values of formulas the file stores. `require`: each formula's and each value of its array, from the result (an
    * `InputError` when one is missing: the result is not the book's). `omit`: none, and Excel computes them when it opens

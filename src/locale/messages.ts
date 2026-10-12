@@ -1,8 +1,10 @@
 /**
  * Messages for people, in the language of a locale: why a formula does not read, why Excel refuses a structure
- * operation, the words of `explain`. Code makes a message as a key with its parameters (`Message`); the locale's
- * `messages` write it (`Messages`), en-US's every one of them, and a locale without its own text of a message takes
- * en-US's. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation.
+ * operation, the words of `explain`, what an xlsx file read or written lost. Code makes a message as a key with its
+ * parameters (`Message`); the locale's `messages` write it (`Messages`), and a locale without its own text of a message
+ * takes the English one: en-US's (`EN_MESSAGES`) for the engine's, the subpath's (`src/xlsx/messages.ts`) for the
+ * issues of xlsx. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation,
+ * an issue of xlsx.
  */
 import type { CellValue } from '../contract.js'
 import { errorIn } from '../syntax/errors.js'
@@ -27,8 +29,150 @@ export type NameRule = 'chars' | 'cell' | 'true' | 'boolean'
 /** Rows or columns. */
 export type Lines = 'rows' | 'columns'
 
+/** What a style, or a conditional format's differential format, holds that the model's style does not. */
+export type StylePart =
+  | 'accountingUnderline'
+  | 'underlineRemoved'
+  | 'superscript'
+  | 'subscript'
+  | 'fontName'
+  | 'fontSize'
+  | 'fontVertAlign'
+  | 'fontOutline'
+  | 'fontShadow'
+  | 'fontCondense'
+  | 'fontExtend'
+  | 'diagonalBorder'
+  | 'gradientFill'
+  | 'gradientBesidePattern'
+  | 'patternFill'
+  | 'fillRemoved'
+  | 'fillWithoutColor'
+  | 'textRotation'
+  | 'shrinkToFit'
+  | 'readingOrder'
+  | 'justifyLastLine'
+  | 'alignment'
+  | 'protection'
+
+/** A part of a style the model does not hold, or a border line of a kind it does not have (the file's name of it). */
+export type StyleLoss = StylePart | { border: string }
+
+/** A text of a rule of data validation that Excel limits. */
+export type RuleText = 'promptTitle' | 'prompt' | 'errorTitle' | 'error'
+
+/** The parameters of the messages of `readXlsx`'s and `writeXlsx`'s issues, by key. */
+export interface XlsxMessageParams {
+  // reading: the workbook
+  localeUnknown: { tag: string }
+  builtInName: object
+  nameOfSheetLeftOut: object
+  hiddenName: object
+  manualCalculation: object
+  autoNoTable: object
+  precisionAsDisplayed: object
+  iterationCount: { count: string }
+  iterationChange: { change: string }
+  workbookProtection: object
+  externalLinks: object
+  pivotTables: object
+  macros: object
+  connections: object
+  defaultFont: { name?: string; size?: number }
+  sheetKind: object
+  sheetPartMissing: object
+  allSheetsHidden: object
+  tableNameTwice: { table: string }
+  // reading: a sheet
+  sharedWithoutMaster: object
+  sharedCopy: object
+  outlineStyles: object
+  mergeOverlap: object
+  autoFilterCriteria: object
+  autoFilterPlain: object
+  advancedFilter: object
+  tableFilter: object
+  sheetProtection: object
+  drawings: object
+  sparklines: object
+  printSettings: object
+  defaultWidth: { width: number }
+  errorTyped: object
+  // reading: formulas
+  userFunction: object
+  tableRefWithoutTable: object
+  formulaExternal: object
+  letPrefix: object
+  formulaUnparsed: object
+  // reading: cells
+  cellOutside: object
+  valueMetadata: object
+  richText: object
+  errorUnknown: object
+  errorUnspelled: object
+  dataTable: object
+  styleLost: { part: StyleLoss }
+  eastAsianFormat: object
+  unknownFormat: object
+  // reading: tables
+  tablePartBad: object
+  /** `reason`: the check's own words (`InputError`), which are English. */
+  tableLeftOut: { table: string; reason: string }
+  headerGiven: { name: string }
+  // reading: conditional formats
+  condRangeOutside: object
+  condStyleLost: { part: StyleLoss }
+  condOperator: { operator: string }
+  condNoFormulas: object
+  condNoFormula: object
+  condPeriod: { period: string }
+  condAverage: object
+  condColorScale: object
+  condDataBar: object
+  condIconSet: { set: string }
+  condIcons: object
+  condType: { type: string }
+  condPivot: object
+  // reading: data validation
+  ruleListCommas: object
+  ruleType: { type: string }
+  ruleNoFormula: object
+  ruleNoSecond: object
+  ruleIme: object
+  ruleNoRange: object
+  ruleShared: object
+  // reading: notes, hyperlinks, panes
+  splitPanes: object
+  frozenScrolled: object
+  noteCell: object
+  noteThread: object
+  noteFormatted: object
+  noteShown: object
+  linkAddress: object
+  linkCells: object
+  // writing
+  nameNotTaken: object
+  nameNoSheet: object
+  nameTwice: object
+  nameBadRef: object
+  noResult: object
+  formulaNoValue: object
+  formulaEmpty: object
+  formulaAsValue: object
+  tableFormulaOut: { table: string }
+  cycleZero: object
+  cellMeta: object
+  textCut: object
+  noteCut: object
+  tooltipCut: object
+  ruleTextCut: { field: RuleText; max: number }
+  ruleFormulaOut: object
+  condFormulaOut: object
+  filterModeOut: object
+}
+
 /** The parameters of each message, by key. */
-export interface MessageParams {
+export interface MessageParams extends XlsxMessageParams {
   // reading a formula: the tokens
   rowOutOfRange: { row: string }
   columnOutOfRange: { column: string }
@@ -124,8 +268,30 @@ export interface MessageParams {
 
 export type MessageKey = keyof MessageParams
 
-/** A message: its key and its parameters. */
-export type Message<K extends MessageKey = MessageKey> = { [P in K]: { key: P } & MessageParams[P] }[K]
+/** The keys of the engine's messages, whose English text is en-US's (`EN_MESSAGES`). */
+export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams>
+
+/**
+ * The keys of the messages of xlsx issues, which a locale's `messages` holds beside the engine's (`registerLocale` takes
+ * both); their English text is the subpath's, out of the bundles that read no files.
+ */
+export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
+  localeUnknown: 0, builtInName: 0, nameOfSheetLeftOut: 0, hiddenName: 0, manualCalculation: 0, autoNoTable: 0, precisionAsDisplayed: 0,
+  iterationCount: 0, iterationChange: 0, workbookProtection: 0, externalLinks: 0, pivotTables: 0, macros: 0, connections: 0, defaultFont: 0,
+  sheetKind: 0, sheetPartMissing: 0, allSheetsHidden: 0, tableNameTwice: 0, sharedWithoutMaster: 0, sharedCopy: 0, outlineStyles: 0,
+  mergeOverlap: 0, autoFilterCriteria: 0, autoFilterPlain: 0, advancedFilter: 0, tableFilter: 0, sheetProtection: 0, drawings: 0, sparklines: 0,
+  printSettings: 0, defaultWidth: 0, errorTyped: 0, userFunction: 0, tableRefWithoutTable: 0, formulaExternal: 0, letPrefix: 0, formulaUnparsed: 0,
+  cellOutside: 0, valueMetadata: 0, richText: 0, errorUnknown: 0, errorUnspelled: 0, dataTable: 0, styleLost: 0, eastAsianFormat: 0, unknownFormat: 0,
+  tablePartBad: 0, tableLeftOut: 0, headerGiven: 0, condRangeOutside: 0, condStyleLost: 0, condOperator: 0, condNoFormulas: 0, condNoFormula: 0,
+  condPeriod: 0, condAverage: 0, condColorScale: 0, condDataBar: 0, condIconSet: 0, condIcons: 0, condType: 0, condPivot: 0, ruleListCommas: 0,
+  ruleType: 0, ruleNoFormula: 0, ruleNoSecond: 0, ruleIme: 0, ruleNoRange: 0, ruleShared: 0, splitPanes: 0, frozenScrolled: 0, noteCell: 0,
+  noteThread: 0, noteFormatted: 0, noteShown: 0, linkAddress: 0, linkCells: 0, nameNotTaken: 0, nameNoSheet: 0, nameTwice: 0, nameBadRef: 0,
+  noResult: 0, formulaNoValue: 0, formulaEmpty: 0, formulaAsValue: 0, tableFormulaOut: 0, cycleZero: 0, cellMeta: 0, textCut: 0, noteCut: 0,
+  tooltipCut: 0, ruleTextCut: 0, ruleFormulaOut: 0, condFormulaOut: 0, filterModeOut: 0,
+}
+
+/** A message: its key and its parameters; the engine's by default (an issue of xlsx is `XlsxMessage`). */
+export type Message<K extends MessageKey = EngineKey> = { [P in K]: { key: P } & MessageParams[P] }[K]
 
 /** What a locale's messages read the locale by: its formula text and the words of formulas in it. */
 export interface Words {
@@ -146,8 +312,8 @@ export interface Words {
 /** A locale's messages: the text of each, in its language. */
 export type Messages = { readonly [K in MessageKey]: (p: MessageParams[K], w: Words) => string }
 
-/** en-US's messages, which read nothing of a locale: what every locale falls back to. */
-export type EnglishMessages = { readonly [K in MessageKey]: (p: MessageParams[K]) => string }
+/** en-US's messages of the engine, which read nothing of a locale: what every locale falls back to. */
+export type EnglishMessages = { readonly [K in EngineKey]: (p: MessageParams[K]) => string }
 
 function wordsOf(loc: Locale, formula: (text: string) => string): Words {
   const num = (n: number) => JSON.stringify(n).replace('.', loc.decimalSeparator)
@@ -167,12 +333,17 @@ function wordsOf(loc: Locale, formula: (text: string) => string): Words {
 }
 
 /**
- * A message in the language of a locale: a loaded locale's tag (en-US without one) or a locale object, its own messages
- * or else those of the loaded locale of its tag. `formula` shows a stored formula in the locale, for the messages that
- * hold one.
+ * A locale's own text of a message: a loaded locale's tag (en-US without one) or a locale object, its own messages or
+ * else those of the loaded locale of its tag; undefined when neither has one. `formula` shows a stored formula in the
+ * locale, for the messages that hold one.
  */
-export function say<K extends MessageKey>(where: string | Locale | undefined, m: { key: K } & MessageParams[K], formula: (text: string) => string = (f) => f): string {
+export function ownText<K extends MessageKey>(where: string | Locale | undefined, m: { key: K } & MessageParams[K], formula: (text: string) => string = (f) => f): string | undefined {
   const loc = localeOf(where)
   const own = (loc.messages ?? LOCALES.get(loc.tag)?.messages)?.[m.key]
-  return own ? own(m, wordsOf(loc, formula)) : english(m)
+  return own?.(m, wordsOf(loc, formula))
+}
+
+/** A message of the engine in the language of a locale (`ownText`), else in English. */
+export function say<K extends EngineKey>(where: string | Locale | undefined, m: { key: K } & MessageParams[K], formula?: (text: string) => string): string {
+  return ownText(where, m, formula) ?? english(m)
 }

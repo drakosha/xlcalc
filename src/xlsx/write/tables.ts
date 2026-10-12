@@ -22,7 +22,7 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: S
   const totals = t.totals === true
   const file = (f: string | undefined, cell: string) => {
     const tree = f === undefined ? null : fileTree(f, sheets, tables, t.name)
-    if (f !== undefined && !tree) issues.add('formula', `a formula of table ${t.name} that the file cannot hold is left out`, { sheet: sheet.name, cell })
+    if (f !== undefined && !tree) issues.add('formula', { key: 'tableFormulaOut', table: t.name }, { sheet: sheet.name, cell })
     return tree ? escapeText(toFile(tree)) : undefined
   }
   const cols = t.columns.map((c, i) => {

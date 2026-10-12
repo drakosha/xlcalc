@@ -7,7 +7,10 @@ import { describe, expect, it } from 'vitest'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { toLocal } from '../src/locale/index.js'
 import { ruRU } from './locales.js'
-import { say, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
+import { ownText, say, XLSX_MESSAGE_KEYS, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
+import type { XlsxMessage } from '../src/xlsx/issues.js'
+import { issueText, XLSX_EN_MESSAGES } from '../src/xlsx/messages.js'
+import { XLSX_SAMPLES } from './fixtures/xlsx-messages.js'
 
 /** Parameters of each message: a key without samples does not compile. */
 const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
@@ -98,10 +101,15 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   explainFormula: [{ formula: 'ROUND(B1*1.2,0)' }],
   explainErrorFrom: [{ ref: "'S'!A2" }],
   explainErrorHere: [{}],
+  ...XLSX_SAMPLES,
 }
 
-const messages = (): Message[] => Object.entries(SAMPLES).flatMap(([key, ps]) => (ps as object[]).map((p) => ({ key, ...p }) as Message))
-const ru = (m: Message) => say('ru-RU', m, (f) => (toLocal(f, ruRU) as { formula: string }).formula)
+type Any = Message<MessageKey>
+const messages = (): Any[] => Object.entries(SAMPLES).flatMap(([key, ps]) => (ps as object[]).map((p) => ({ key, ...p }) as Any))
+const isXlsx = (m: Any): m is XlsxMessage => Object.hasOwn(XLSX_MESSAGE_KEYS, m.key)
+/** A message in English: en-US's of the engine, the xlsx subpath's of an issue. */
+const en = (m: Any) => (isXlsx(m) ? issueText('en-US', m) : say('en-US', m))
+const ru = (m: Any) => ownText('ru-RU', m, (f) => (toLocal(f, ruRU) as { formula: string }).formula)!
 
 /** The ways ru-RU writes a parameter's value: as it is, a function's or a specifier's name, a number, a formula. */
 function forms(v: string | number): string[] {
@@ -110,27 +118,28 @@ function forms(v: string | number): string[] {
   return [s, ruRU.functions[s], ruRU.tableItems?.[s as '#Data'], s.replace('.', ','), local.ok ? local.formula : undefined].filter((x): x is string => x !== undefined)
 }
 
-/** The parameters whose value picks the message's words rather than standing in it: rows or columns, a rule of names. */
-const WORDS = new Set(['key', 'lines', 'rule'])
+/** The parameters whose value picks the message's words rather than standing in it: rows or columns, a rule of names, a part of a style, a rule's text. */
+const WORDS = new Set(['key', 'lines', 'rule', 'part', 'field'])
 
 /** The parameters' values that a message's text may show: strings, numbers and the strings of lists. */
-const values = (m: Message): (string | number)[] => Object.entries(m).flatMap(([k, v]) => (WORDS.has(k) ? [] : Array.isArray(v) ? v : typeof v === 'string' || typeof v === 'number' ? [v] : []))
+const values = (m: Any): (string | number)[] => Object.entries(m).flatMap(([k, v]) => (WORDS.has(k) ? [] : Array.isArray(v) ? v : typeof v === 'string' || typeof v === 'number' ? [v] : []))
 
 /** The pieces of the explanation's lines, which stand inside a line rather than alone. */
 const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValue', 'explainFormula', 'explainErrorFrom', 'explainErrorHere'])
 
 describe('the catalog of messages', () => {
-  it('ru-RU writes every message of en-US', () => {
-    const keys = Object.keys(EN_MESSAGES)
+  it("ru-RU writes every message of en-US and of the xlsx subpath, whose keys registerLocale takes", () => {
+    const keys = [...Object.keys(EN_MESSAGES), ...Object.keys(XLSX_EN_MESSAGES)]
     expect(keys.filter((k) => ruRU.messages?.[k as MessageKey] === undefined)).toEqual([])
     expect(Object.keys(SAMPLES).sort()).toEqual([...keys].sort())
+    expect(Object.keys(XLSX_MESSAGE_KEYS).sort()).toEqual(Object.keys(XLSX_EN_MESSAGES).sort())
   })
 
   it('the Russian text shows every parameter the English one shows, in the locale', () => {
     const missing: string[] = []
     for (const m of messages()) {
-      const [en, text] = [say('en-US', m), ru(m)]
-      for (const v of values(m)) if (en.includes(String(v)) && !forms(v).some((f) => text.includes(f))) missing.push(`${m.key}: ${v} in ${text}`)
+      const [english, text] = [en(m), ru(m)]
+      for (const v of values(m)) if (english.includes(String(v)) && !forms(v).some((f) => text.includes(f))) missing.push(`${m.key}: ${v} in ${text}`)
     }
     expect(missing).toEqual([])
   })
@@ -139,7 +148,7 @@ describe('the catalog of messages', () => {
     const bad: string[] = []
     for (const m of messages()) {
       const text = ru(m)
-      if (text === say('en-US', m)) bad.push(`${m.key}: the English text`)
+      if (text === en(m)) bad.push(`${m.key}: the English text`)
       if (/[—–]|\p{Extended_Pictographic}/u.test(text)) bad.push(`${m.key}: a dash or a pictograph in ${text}`)
       if (PIECES.has(m.key)) continue
       if (!/\p{Script=Cyrillic}/u.test(text)) bad.push(`${m.key}: no Russian word in ${text}`)

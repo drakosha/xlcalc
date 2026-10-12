@@ -10,7 +10,7 @@ import { CELL_IS, ICON_SETS, PERIODS, STYLED } from '../../cond/check.js'
 import { defaultFormula, originOf } from '../../cond/rules.js'
 import { formatAddress } from '../../model.js'
 import { areaText } from '../../structure/area.js'
-import type { Issues } from '../issues.js'
+import type { Issues, XlsxMessage } from '../issues.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
 import { ATTRS, attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
@@ -57,7 +57,7 @@ function ranges(sqref: string, ctx: Context): string[] {
   const out: string[] = []
   for (const { text, rect } of sqrefRanges(sqref)) {
     if (rect) out.push(areaText(rect))
-    else ctx.issues.add('conditionalFormat', 'a range of a conditional format outside the sheet is left out', { sheet: ctx.sheet, cell: text })
+    else ctx.issues.add('conditionalFormat', { key: 'condRangeOutside' }, { sheet: ctx.sheet, cell: text })
   }
   return out
 }
@@ -84,7 +84,7 @@ function styleOf(a: Record<string, string>, body: string, where: string, ctx: Co
   const own = element(body, 'dxf')
   const d = own ? readDxf(own, ctx.palette) : a.dxfId !== undefined ? ctx.dxfs[Number(a.dxfId)] : undefined
   if (!d) return undefined
-  for (const x of d.lost) ctx.issues.add('conditionalFormat', `a conditional format's ${x} is not in the model`, { sheet: ctx.sheet, cell: where })
+  for (const x of d.lost) ctx.issues.add('conditionalFormat', { key: 'condStyleLost', part: x }, { sheet: ctx.sheet, cell: where })
   return Object.keys(d.style).length ? d.style : undefined
 }
 
@@ -102,7 +102,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
   }
   const type = a.type ?? ''
   const read = (r: ConditionalFormat): Read => ({ rule: r, priority: Number(a.priority ?? 0), order: 0, ...(a.id ? { id: a.id } : {}) })
-  const lost = (why: string) => {
+  const lost = (why: XlsxMessage) => {
     ctx.issues.add('conditionalFormat', why, { sheet: ctx.sheet, cell: where })
     return null
   }
@@ -112,13 +112,13 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
     switch (type) {
       case 'cellIs': {
         const op = a.operator ?? 'equal'
-        if (!(CELL_IS as readonly string[]).includes(op)) return lost(`a cell value rule with the operator ${op} is not in the model`)
+        if (!(CELL_IS as readonly string[]).includes(op)) return lost({ key: 'condOperator', operator: op })
         const n = op === 'between' || op === 'notBetween' ? 2 : 1
-        if (fs.length < n) return lost('a cell value rule without its formulas is left out')
+        if (fs.length < n) return lost({ key: 'condNoFormulas' })
         return read(withStyle({ ...base, type: 'cellIs', operator: op as (typeof CELL_IS)[number], formulas: fs.slice(0, n) }))
       }
       case 'expression':
-        return fs.length ? read(withStyle({ ...base, type: 'expression', formula: fs[0] })) : lost('a formula rule without its formula is left out')
+        return fs.length ? read(withStyle({ ...base, type: 'expression', formula: fs[0] })) : lost({ key: 'condNoFormula' })
       case 'containsText':
       case 'notContainsText':
       case 'beginsWith':
@@ -126,7 +126,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
         return read(withStyle({ ...base, type, text: readText(a.text ?? ''), ...own }))
       case 'timePeriod': {
         const period = a.timePeriod ?? 'today'
-        if (!(PERIODS as readonly string[]).includes(period)) return lost(`a time period ${period} is not in the model`)
+        if (!(PERIODS as readonly string[]).includes(period)) return lost({ key: 'condPeriod', period })
         return read(withStyle({ ...base, type, period: period as (typeof PERIODS)[number], ...own }))
       }
       case 'top10': {
@@ -137,7 +137,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
         const sd = Number(a.stdDev ?? 0)
         const equal = flag(a.equalAverage)
         // Excel keeps equal and drops the deviations of a rule with both (the set `cond/files`)
-        if (equal && sd) ctx.issues.add('conditionalFormat', 'an average rule with both equal and standard deviations is read with equal alone, as Excel keeps it', { sheet: ctx.sheet, cell: where })
+        if (equal && sd) ctx.issues.add('conditionalFormat', { key: 'condAverage' }, { sheet: ctx.sheet, cell: where })
         return read(withStyle({ ...base, type, ...(!flag(a.aboveAverage, true) ? { below: true } : {}), ...(equal ? { equal: true } : sd >= 1 && sd <= 3 ? { stdDev: Math.trunc(sd) } : {}) }))
       }
       default:
@@ -148,7 +148,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
     const cs = element(body, 'colorScale')?.body ?? ''
     const vs = elements(cs, 'cfvo').map((v) => value(v, where, ctx))
     const cl = colors(cs, 'color', ctx)
-    if (vs.length < 2 || vs.length > 3 || cl.length !== vs.length || cl.some((c) => !c)) return lost('a colour scale without its points or colours is left out')
+    if (vs.length < 2 || vs.length > 3 || cl.length !== vs.length || cl.some((c) => !c)) return lost({ key: 'condColorScale' })
     return read({ ...base, type, points: vs.map((v, i) => ({ value: v, color: cl[i]! })) })
   }
   if (type === 'dataBar') {
@@ -156,7 +156,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
     const d = db?.body ?? ''
     const vs = elements(d, 'cfvo').map((v) => value(v, where, ctx))
     const color = x14 ? colorOf(element(d, 'fillColor'), ctx.palette) : colors(d, 'color', ctx)[0]
-    if (vs.length !== 2) return lost('a data bar without its thresholds is left out')
+    if (vs.length !== 2) return lost({ key: 'condDataBar' })
     const da = attributes(db?.attrs ?? '')
     const r: Extract<ConditionalFormat, { type: 'dataBar' }> = { ...base, type, min: vs[0], max: vs[1], color: color ?? '#638EC6', ...lengths(da, 10, 90) }
     if (!flag(da.showValue, true)) r.showValue = false
@@ -168,7 +168,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
     const is = element(body, 'iconSet')
     const ia = attributes(is?.attrs ?? '')
     const set = (ia.iconSet ?? '3TrafficLights1') as IconSetName
-    if (ownEntry(ICON_SETS, set) === undefined && set !== ('NoIcons' as string)) return lost(`the icon set ${set} is not in the model`)
+    if (ownEntry(ICON_SETS, set) === undefined && set !== ('NoIcons' as string)) return lost({ key: 'condIconSet', set })
     const ib = is?.body ?? ''
     const vs = elements(ib, 'cfvo')
     const icons = elements(ib, 'cfIcon').map((c) => {
@@ -176,7 +176,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
       return ca.iconSet === 'NoIcons' ? null : { set: ca.iconSet as IconSetName, index: Number(ca.iconId ?? 0) }
     })
     const n = ICON_SETS[set]
-    if (vs.length !== n) return lost('an icon set without a threshold for each icon is left out')
+    if (vs.length !== n) return lost({ key: 'condIcons' })
     const reverse = flag(ia.reverse)
     const points = vs.map((v, i) => {
       const gte = flag(attributes(v.attrs).gte, true)
@@ -190,7 +190,7 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
     if (!flag(ia.showValue, true)) r.showValue = false
     return read(r)
   }
-  return lost(`a conditional format of type ${type || '(none)'} is not in the model`)
+  return lost({ key: 'condType', type })
 }
 
 /** A bar's shortest and longest lengths (10 and 90 when the file has none, as xlsx's defaults), left out where they are the model's default (`lo`, `hi`). */
@@ -233,7 +233,7 @@ export function readConditional(tail: string, sheet: string, dxfs: Dxf[], palett
     const a = attributes(b.attrs)
     const sqref = ranges(a.sqref ?? '', ctx)
     if (flag(a.pivot)) {
-      issues.add('conditionalFormat', "a pivot table's conditional formatting is not in the model", { sheet, ...(sqref[0] ? { cell: sqref[0] } : {}) })
+      issues.add('conditionalFormat', { key: 'condPivot' }, { sheet, ...(sqref[0] ? { cell: sqref[0] } : {}) })
       continue
     }
     if (!sqref.length) continue

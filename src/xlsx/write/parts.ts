@@ -28,7 +28,7 @@ const MAX_TIP = 255
 export function hyperlinksXml(links: Map<string, CellLink>, rel: (url: string) => string, sheet: string, issues: Issues): string {
   if (!links.size) return ''
   const items = inOrder(links).map(([cell, l]) => {
-    const tip = l.tooltip === undefined ? undefined : clip(l.tooltip, MAX_TIP, issues, "a hyperlink's tooltip over Excel's 255 characters is cut", { sheet, cell })
+    const tip = l.tooltip === undefined ? undefined : clip(l.tooltip, MAX_TIP, issues, { key: 'tooltipCut' }, { sheet, cell })
     const attrs = (l.url !== undefined ? ` r:id="${rel(l.url)}"` : '') + (l.location !== undefined ? ` location="${escapeAttr(l.location)}"` : '') + (tip !== undefined ? ` tooltip="${escapeAttr(tip)}"` : '')
     return `<hyperlink ref="${cell}"${attrs}/>`
   })
@@ -41,7 +41,7 @@ export function commentsXml(notes: Map<string, CellNote>, sheet: string, issues:
   const list = inOrder(notes).map(([cell, n]) => {
     const author = n.author ?? ''
     if (!authors.has(author)) authors.set(author, authors.size)
-    const text = clip(n.text, MAX_TEXT, issues, "a note over Excel's 32,767 characters is cut", { sheet, cell })
+    const text = clip(n.text, MAX_TEXT, issues, { key: 'noteCut' }, { sheet, cell })
     return `<comment ref="${cell}" authorId="${authors.get(author)}"><text>${textElement(text)}</text></comment>`
   })
   const names = [...authors.keys()].map((a) => (a ? `<author>${escapeText(a)}</author>` : '<author/>'))

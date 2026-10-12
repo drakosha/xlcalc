@@ -7,14 +7,14 @@
 import { caseKey } from '../../collate.js'
 import type { BookInput, NameInput, SheetInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
-import { checkBook, InputError, ITERATION, SHEET_STATES, what } from '../../input.js'
+import { checkBook, InputError, ITERATION, object, onlyOptions, SHEET_STATES, what } from '../../input.js'
 import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
-import { Issues } from '../issues.js'
+import { issueLocale, Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
 import { readDxfs } from '../styles/dxf.js'
-import type { XlsxRead } from '../types.js'
+import type { ReadXlsxOptions, XlsxRead } from '../types.js'
 import { attr, attributes, element, elements, flag, has, ownEntry } from '../xml/scan.js'
 import { decodeXml, readText } from '../xml/text.js'
 import { openArchive, type Archive } from '../zip/read.js'
@@ -28,11 +28,11 @@ import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 
 /** Parts the workbook links to that the model has no place for, by relationship kind. */
-const LINKED: Record<string, ['macros' | 'pivotTable' | 'connection' | 'externalLink', string]> = {
-  vbaProject: ['macros', 'macros (a VBA project) are not in the model'],
-  pivotCacheDefinition: ['pivotTable', 'pivot tables are not in the model: their cells are read as stored'],
-  connections: ['connection', 'data connections and queries are not in the model'],
-  externalLink: ['externalLink', 'links to other workbooks are not in the model'],
+const LINKED: Record<string, ['macros' | 'pivotTable' | 'connection' | 'externalLink', XlsxMessage]> = {
+  vbaProject: ['macros', { key: 'macros' }],
+  pivotCacheDefinition: ['pivotTable', { key: 'pivotTables' }],
+  connections: ['connection', { key: 'connections' }],
+  externalLink: ['externalLink', { key: 'externalLinks' }],
 }
 
 async function locale(archive: Archive, rels: Rel[], issues: Issues): Promise<string | undefined> {
@@ -43,7 +43,7 @@ async function locale(archive: Archive, rels: Rel[], issues: Issues): Promise<st
   const tag = readText(element(p.body ?? '', 'lpwstr')?.body ?? '')
   // the book's locale is data: a package's locale not loaded stays, and computing the book names its module
   if (PACKAGE_LOCALES.includes(tag) || LOCALES.has(tag)) return tag
-  issues.add('locale', `the locale ${JSON.stringify(tag)} is not one of the package's, left out`)
+  issues.add('locale', { key: 'localeUnknown', tag })
   return undefined
 }
 
@@ -66,16 +66,16 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
     // Excel's placeholders for functions newer than the file's readers: not names of the book
     if (/^_xlfn\./i.test(name)) continue
     if (/^_xlnm\./i.test(name)) {
-      issues.add('name', 'a built-in name (a print area or titles, the range of a filter) is not in the model', { name })
+      issues.add('name', { key: 'builtInName' }, { name })
       continue
     }
     const scope = a.localSheetId === undefined ? undefined : decls[Number(a.localSheetId)]?.name
     if (a.localSheetId !== undefined && (scope === undefined || !read.has(scope))) {
-      issues.add('name', 'a name of a sheet left out is left out', { name })
+      issues.add('name', { key: 'nameOfSheetLeftOut' }, { name })
       continue
     }
     const f = readFormula(readText(e.body ?? ''), issues, { name }, true)
-    if (flag(a.hidden)) issues.add('name', 'a hidden name is read as a visible one', { name })
+    if (flag(a.hidden)) issues.add('name', { key: 'hiddenName' }, { name })
     out.push(scope === undefined ? { name, ref: f.formula } : { name, ref: f.formula, scope })
   }
   return out
@@ -84,25 +84,25 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
 /** The calculation settings the book keeps (iterative calculation), and the others reported. */
 function calculation(xml: string, issues: Issues): BookInput['iteration'] {
   const calc = attributes(element(xml, 'calcPr')?.attrs ?? '')
-  if (calc.calcMode === 'manual') issues.add('calculation', 'the manual calculation mode is not kept')
-  if (calc.calcMode === 'autoNoTable') issues.add('calculation', 'the calculation mode "automatic except for data tables" is not kept')
-  if (!flag(calc.fullPrecision, true)) issues.add('calculation', 'precision as displayed is not in the engine: values keep their full precision')
+  if (calc.calcMode === 'manual') issues.add('calculation', { key: 'manualCalculation' })
+  if (calc.calcMode === 'autoNoTable') issues.add('calculation', { key: 'autoNoTable' })
+  if (!flag(calc.fullPrecision, true)) issues.add('calculation', { key: 'precisionAsDisplayed' })
   if (!flag(calc.iterate)) return undefined
   const out: NonNullable<BookInput['iteration']> = {}
   const count = Number(calc.iterateCount)
   const [least, most] = ITERATION.maxIterations
   if (calc.iterateCount !== undefined && Number.isInteger(count) && count >= least && count <= most) out.maxIterations = count
-  else if (calc.iterateCount !== undefined) issues.add('calculation', `the maximum of iterations ${JSON.stringify(calc.iterateCount)} is not one of 1 to 32,767: the default, 100, is read`)
+  else if (calc.iterateCount !== undefined) issues.add('calculation', { key: 'iterationCount', count: calc.iterateCount })
   const change = Number(calc.iterateDelta)
   if (calc.iterateDelta !== undefined && change >= ITERATION.maxChange[0] && change <= ITERATION.maxChange[1]) out.maxChange = change
-  else if (calc.iterateDelta !== undefined) issues.add('calculation', `the maximum change of iterations ${JSON.stringify(calc.iterateDelta)} is not a number from 0: the default, 0.001, is read`)
+  else if (calc.iterateDelta !== undefined) issues.add('calculation', { key: 'iterationChange', change: calc.iterateDelta })
   return out
 }
 
 function workbookIssues(xml: string, rels: Rel[], issues: Issues) {
-  if (has(xml, 'workbookProtection')) issues.add('protection', 'workbook protection is not in the model')
-  if (has(xml, 'externalReferences')) issues.add('externalLink', 'links to other workbooks are not in the model')
-  if (has(xml, 'pivotCaches') || has(xml, 'slicerCaches')) issues.add('pivotTable', 'pivot tables are not in the model: their cells are read as stored')
+  if (has(xml, 'workbookProtection')) issues.add('protection', { key: 'workbookProtection' })
+  if (has(xml, 'externalReferences')) issues.add('externalLink', { key: 'externalLinks' })
+  if (has(xml, 'pivotCaches') || has(xml, 'slicerCaches')) issues.add('pivotTable', { key: 'pivotTables' })
   for (const r of rels) {
     const linked = ownEntry(LINKED, r.kind)
     if (linked) issues.add(...linked)
@@ -118,9 +118,16 @@ function fileBytes(data: unknown): Uint8Array {
   throw new InputError('data', `expected the file's bytes, got ${what(data)}: pass the file's bytes: Uint8Array, ArrayBuffer or Buffer, e.g. ${hint}`)
 }
 
-/** Reads an xlsx file (bytes of the file) into a book, the values Excel stored and what the book could not hold. */
-export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead> {
-  const archive = openArchive(fileBytes(data))
+/**
+ * Reads an xlsx file (bytes of the file) into a book, the values Excel stored and what the book could not hold, its
+ * messages in `opts.locale` (en-US by default).
+ */
+export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxRead> {
+  const bytes = fileBytes(data)
+  const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
+  onlyOptions(o, 'opts', ['locale'])
+  const language = issueLocale(o)
+  const archive = openArchive(bytes)
   const issues = new Issues()
   const root = await relsOf(archive, '')
   const wbPath = root.find((r) => r.kind === 'officeDocument' && !r.external)?.target ?? 'xl/workbook.xml'
@@ -142,7 +149,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   const isPlain = (style: number) => style === plainStyle
   const cond = { dxfs: readDxfs(stylesXml, colors), palette: colors }
   if (table.font && (table.font.name !== 'Calibri' || table.font.size !== 11))
-    issues.add('defaultFont', `the default font ${table.font.name ?? '(no name)'} ${table.font.size ?? '(no size)'} is read as Calibri 11, the model's default`)
+    issues.add('defaultFont', { key: 'defaultFont', ...table.font })
   const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
   const dateSystem = flag(attributes(element(wb, 'workbookPr')?.attrs ?? '').date1904) ? 1904 : 1900
@@ -161,12 +168,12 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   const cached: XlsxRead['cached'] = { sheets: [] }
   for (const d of decls) {
     if (d.kind !== 'worksheet') {
-      issues.add('sheetKind', 'a chart, dialog or macro sheet is left out', { sheet: d.name })
+      issues.add('sheetKind', { key: 'sheetKind' }, { sheet: d.name })
       continue
     }
     const xml = d.part === undefined ? undefined : await archive.text(d.part)
     if (xml === undefined) {
-      issues.add('part', "a sheet whose part is missing is left out", { sheet: d.name })
+      issues.add('part', { key: 'sheetPartMissing' }, { sheet: d.name })
       continue
     }
     const sheetRels = await relsOf(archive, d.part!)
@@ -187,7 +194,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   }
   // a book keeps one visible sheet: a file whose visible sheets are all charts shows its first worksheet
   if (sheets.length && sheets.every((s) => s.hidden)) {
-    issues.add('hidden', 'every worksheet of the file is hidden: the first is read as a visible one', { sheet: sheets[0].name })
+    issues.add('hidden', { key: 'allSheetsHidden' }, { sheet: sheets[0].name })
     delete sheets[0].hidden
   }
   // table names are unique through the book and apart from the defined names
@@ -197,7 +204,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     sh.tables = sh.tables.filter((t) => {
       const k = caseKey(t.name)
       if (!taken.has(k)) return taken.add(k)
-      issues.add('table', `the table ${t.name} is left out: its name is another table's or a defined name`, { sheet: sh.name })
+      issues.add('table', { key: 'tableNameTwice', table: t.name }, { sheet: sh.name })
       return false
     })
     if (!sh.tables.length) delete sh.tables
@@ -217,7 +224,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     if (e instanceof InputError) throw new Error(`xlsx: the file's book is not valid: ${e.message}`)
     throw e
   }
-  return { book, cached, issues: issues.list() }
+  return { book, cached, issues: issues.list(language) }
 }
 
 /** The header cells of a sheet's tables, which the check of its tables reads. */

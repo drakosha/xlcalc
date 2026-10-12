@@ -5,6 +5,7 @@
 import { wordKey } from '../collate.js'
 import { checkString, InputError, object, onlyKeys } from '../input.js'
 import { EN_MESSAGES } from '../locales/en-US.js'
+import { XLSX_MESSAGE_KEYS } from './messages.js'
 import { LOCALE_ERRORS } from '../syntax/errors.js'
 import { TABLE_ITEMS } from '../syntax/table.js'
 import { addLocale, DEFAULT_LOCALE, LOCALES, PACKAGE_LOCALES } from './registry.js'
@@ -117,7 +118,8 @@ export function registerLocale(locale: Locale): void {
   for (const k of REGIONAL_KEYS) if (regional[k] === undefined) throw new InputError(`locale.regional.${k}`, 'expected a value')
   if (l.messages !== undefined) {
     const messages = object(l.messages, 'locale.messages', 'messages by key, each a function')
-    onlyKeys(messages, 'locale.messages', Object.keys(EN_MESSAGES))
+    // the engine's keys, whose English is en-US's, and the xlsx issues', whose English the subpath carries
+    onlyKeys(messages, 'locale.messages', [...Object.keys(EN_MESSAGES), ...Object.keys(XLSX_MESSAGE_KEYS)])
     for (const [k, f] of Object.entries(messages)) if (typeof f !== 'function') throw new InputError(`locale.messages.${k}`, 'expected a function')
   }
   addLocale(l)

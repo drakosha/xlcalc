@@ -38,7 +38,7 @@ export function validationsXml(rules: DataValidation[] | undefined, ctx: Validat
       if (text === undefined) continue
       const tree = fileTree(text, ctx.sheets, ctx.tables)
       if (!tree) {
-        ctx.issues.add('dataValidation', 'a rule whose formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is left out', where)
+        ctx.issues.add('dataValidation', { key: 'ruleFormulaOut' }, where)
         return []
       }
       formulas.push(`<${k}>${escapeText(toFile(tree))}</${k}>`)
@@ -52,7 +52,7 @@ export function validationsXml(rules: DataValidation[] | undefined, ctx: Validat
     if (v.showError !== false) attrs += ' showErrorMessage="1"'
     for (const k of ['errorTitle', 'error', 'promptTitle', 'prompt'] as const) {
       const t = v[k]
-      if (t !== undefined) attrs += ` ${k}="${escapeAttr(clip(t, LIMITS[k], ctx.issues, `a rule's ${k} over Excel's ${LIMITS[k]} characters is cut`, where))}"`
+      if (t !== undefined) attrs += ` ${k}="${escapeAttr(clip(t, LIMITS[k], ctx.issues, { key: 'ruleTextCut', field: k, max: LIMITS[k] }, where))}"`
     }
     return [`<dataValidation${attrs} sqref="${sqref(v.range)}">${formulas.join('')}</dataValidation>`]
   })
