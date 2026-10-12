@@ -192,10 +192,10 @@ export async function engineView(book: BookInput, window: OutlineWindow | undefi
   }
 }
 
-/** The engine's views of a case: the book Excel gets, then after each command, a refused one leaving the book as it was. */
-export async function engineViews(b: OutlineBook, c: OutlineCase): Promise<OutlineView[]> {
+/** The engine's books of a case: the book Excel gets, then the book after each command, with whether the engine refused it (the book left as it was). */
+export function engineSteps(b: OutlineBook, c: OutlineCase): { book: BookInput; refused: boolean }[] {
   let book = sentBook(b)
-  const out = [await engineView(book, c.window, false)]
+  const out = [{ book, refused: false }]
   for (const x of c.commands) {
     const op = engineCommand(x)
     let refused = false
@@ -213,10 +213,13 @@ export async function engineViews(b: OutlineBook, c: OutlineCase): Promise<Outli
         refused = true
       }
     }
-    out.push(await engineView(book, c.window, refused))
+    out.push({ book, refused })
   }
   return out
 }
+
+/** The engine's views of a case: the book Excel gets, then after each command. */
+export const engineViews = (b: OutlineBook, c: OutlineCase): Promise<OutlineView[]> => Promise.all(engineSteps(b, c).map((s) => engineView(s.book, c.window, s.refused)))
 
 /** Cases of one group: ids `<group>-<n>`. */
 export function collector() {
