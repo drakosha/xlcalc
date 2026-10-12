@@ -10,7 +10,8 @@ interface Fold<T> {
   copy(value: T): T
   bytes: number
 }
-const CHUNK = 256
+const CHUNK = 64
+const MIN_CELLS = 256
 
 export class RangePrefixes<T> {
   private readonly cache: RangeCache<T>
@@ -53,7 +54,8 @@ export class RangePrefixes<T> {
       }
       if ((at - start + 1) % block === 0) this.cache.set(prefix(at).key, fold.copy(result), fold.bytes)
     }
-    if (b.h * b.w >= CHUNK) this.cache.set(range.key, result, fold.bytes)
+    // Short ranges keep only a mark on their first read; shared ones keep the fold on the next.
+    if (b.h * b.w >= MIN_CELLS || this.cache.admits(range.key)) this.cache.set(range.key, result, fold.bytes)
     return result
   }
 }
