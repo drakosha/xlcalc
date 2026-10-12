@@ -1,0 +1,319 @@
+{
+  "revision": "b8d1ea0e3a5dfc9f4565a7803f2ec93e7e904e17",
+  "startedAt": "2026-10-12T09:02:15.237Z",
+  "node": "v26.7.0",
+  "id": "chain",
+  "engine": "xl-eval",
+  "count": 40,
+  "elapsedMs": 205.55666699999995,
+  "checked": {
+    "checked": 10000,
+    "differences": 0,
+    "maxRelativeError": 0,
+    "mismatches": []
+  },
+  "self": [
+    {
+      "fn": "post",
+      "file": "node:inspector",
+      "line": 115,
+      "ms": 41.202
+    },
+    {
+      "fn": "evaluate",
+      "file": "dist/evaluate.js",
+      "line": 59,
+      "ms": 38.41500000000003
+    },
+    {
+      "fn": "track",
+      "file": "dist/evaluate.js",
+      "line": 31,
+      "ms": 36.582
+    },
+    {
+      "fn": "ordered",
+      "file": "dist/evaluate.js",
+      "line": 175,
+      "ms": 17.25700000000001
+    },
+    {
+      "fn": "keyParts",
+      "file": "dist/engine.js",
+      "line": 26,
+      "ms": 7.917
+    },
+    {
+      "fn": "keyParts",
+      "file": "dist/engine.js",
+      "line": 26,
+      "ms": 7.481999999999999
+    },
+    {
+      "fn": "changes",
+      "file": "dist/session.js",
+      "line": 93,
+      "ms": 5.405000000000001
+    },
+    {
+      "fn": "forEach",
+      "file": "dist/area-index.js",
+      "line": 57,
+      "ms": 4.890999999999999
+    },
+    {
+      "fn": "forEach",
+      "file": "dist/area-index.js",
+      "line": 57,
+      "ms": 4.887999999999999
+    },
+    {
+      "fn": "(program)",
+      "file": "",
+      "line": 0,
+      "ms": 4.714
+    },
+    {
+      "fn": "descendants",
+      "file": "dist/graph.js",
+      "line": 79,
+      "ms": 4.666000000000002
+    },
+    {
+      "fn": "(anonymous)",
+      "file": "dist/session.js",
+      "line": 98,
+      "ms": 4.505000000000001
+    },
+    {
+      "fn": "formatAddress",
+      "file": "dist/model.js",
+      "line": 32,
+      "ms": 3.7110000000000007
+    },
+    {
+      "fn": "(garbage collector)",
+      "file": "",
+      "line": 0,
+      "ms": 3.6269999999999993
+    },
+    {
+      "fn": "applyEdits",
+      "file": "dist/engine.js",
+      "line": 208,
+      "ms": 3.212
+    },
+    {
+      "fn": "write",
+      "file": "dist/evaluate.js",
+      "line": 44,
+      "ms": 2.938
+    },
+    {
+      "fn": "forEach",
+      "file": "dist/area-index.js",
+      "line": 57,
+      "ms": 2.5789999999999997
+    },
+    {
+      "fn": "invalidate",
+      "file": "dist/range-cache.js",
+      "line": 137,
+      "ms": 2.55
+    },
+    {
+      "fn": "key",
+      "file": "dist/engine.js",
+      "line": 24,
+      "ms": 2.1870000000000003
+    },
+    {
+      "fn": "endSpill",
+      "file": "dist/spill/place.js",
+      "line": 140,
+      "ms": 2.0480000000000005
+    },
+    {
+      "fn": "invalidateCells",
+      "file": "dist/range-aggregate.js",
+      "line": 61,
+      "ms": 1.6840000000000002
+    },
+    {
+      "fn": "invalidate",
+      "file": "dist/range-cache.js",
+      "line": 137,
+      "ms": 1.6680000000000001
+    },
+    {
+      "fn": "invalidate",
+      "file": "dist/range-cache.js",
+      "line": 137,
+      "ms": 1.4170000000000003
+    },
+    {
+      "fn": "successors",
+      "file": "dist/graph.js",
+      "line": 92,
+      "ms": 1.413
+    },
+    {
+      "fn": "(anonymous)",
+      "file": "dist/evaluate.js",
+      "line": 177,
+      "ms": 1.282
+    }
+  ],
+  "inclusive": [
+    {
+      "fn": "(root)",
+      "file": "",
+      "line": 0,
+      "ms": 247.89199999999633
+    },
+    {
+      "fn": "(anonymous)",
+      "file": "bench/hyperformula/profile.mjs",
+      "line": 0,
+      "ms": 238.65099999999637
+    },
+    {
+      "fn": "run",
+      "file": "dist/exec/budget.js",
+      "line": 155,
+      "ms": 196.15999999999798
+    },
+    {
+      "fn": "(anonymous)",
+      "file": "dist/session.js",
+      "line": 642,
+      "ms": 196.15999999999798
+    },
+    {
+      "fn": "withBudget",
+      "file": "dist/exec/budget.js",
+      "line": 124,
+      "ms": 196.15999999999798
+    },
+    {
+      "fn": "now",
+      "file": "dist/session.js",
+      "line": 642,
+      "ms": 196.15999999999798
+    },
+    {
+      "fn": "setCells",
+      "file": "dist/session.js",
+      "line": 651,
+      "ms": 196.15999999999798
+    },
+    {
+      "fn": "checked",
+      "file": "dist/strict-args.js",
+      "line": 55,
+      "ms": 196.15999999999798
+    },
+    {
+      "fn": "(anonymous)",
+      "file": "bench/hyperformula/shared.mjs",
+      "line": 50,
+      "ms": 196.15999999999798
+    },
+    {
+      "fn": "setCells",
+      "file": "dist/session.js",
+      "line": 344,
+      "ms": 196.030999999998
+    },
+    {
+      "fn": "writeCells",
+      "file": "dist/session.js",
+      "line": 226,
+      "ms": 171.17499999999868
+    },
+    {
+      "fn": "putCells",
+      "file": "dist/session.js",
+      "line": 139,
+      "ms": 169.87199999999868
+    },
+    {
+      "fn": "applyEdits",
+      "file": "dist/engine.js",
+      "line": 208,
+      "ms": 169.4879999999987
+    },
+    {
+      "fn": "recompute",
+      "file": "dist/evaluate.js",
+      "line": 158,
+      "ms": 154.1099999999992
+    },
+    {
+      "fn": "settle",
+      "file": "dist/evaluate.js",
+      "line": 182,
+      "ms": 127.55699999999996
+    },
+    {
+      "fn": "evaluate",
+      "file": "dist/evaluate.js",
+      "line": 59,
+      "ms": 118.42500000000001
+    },
+    {
+      "fn": "write",
+      "file": "dist/evaluate.js",
+      "line": 44,
+      "ms": 63.15400000000009
+    },
+    {
+      "fn": "post",
+      "file": "node:inspector",
+      "line": 115,
+      "ms": 41.388
+    },
+    {
+      "fn": "(anonymous)",
+      "file": "node:internal/util",
+      "line": 478,
+      "ms": 41.388
+    },
+    {
+      "fn": "fn",
+      "file": "node:internal/util",
+      "line": 477,
+      "ms": 41.388
+    },
+    {
+      "fn": "track",
+      "file": "dist/evaluate.js",
+      "line": 31,
+      "ms": 39.15300000000001
+    },
+    {
+      "fn": "ordered",
+      "file": "dist/evaluate.js",
+      "line": 175,
+      "ms": 26.422000000000004
+    },
+    {
+      "fn": "changes",
+      "file": "dist/session.js",
+      "line": 93,
+      "ms": 23.93200000000001
+    },
+    {
+      "fn": "answer",
+      "file": "dist/session.js",
+      "line": 107,
+      "ms": 23.93200000000001
+    },
+    {
+      "fn": "invalidate",
+      "file": "dist/evaluate.js",
+      "line": 24,
+      "ms": 19.780000000000012
+    }
+  ]
+}

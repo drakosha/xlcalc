@@ -1,6 +1,6 @@
 # xlcalc and HyperFormula speed comparison
 
-This optional benchmark compares the calculation engines on deterministic synthetic books. It adds no dependency to the xlcalc package and changes no engine implementation.
+This optional benchmark compares the calculation engines on deterministic synthetic books. It adds no dependency to the xlcalc package. The `perf/hf-parity` branch also contains three engine optimizations measured against master 4d15ecb (xlcalc 0.21.0).
 
 ## Run
 
@@ -18,13 +18,15 @@ Select workloads or engines, or keep output elsewhere:
 ```sh
 node bench/hyperformula/run.mjs --case prefix-sum,lookup --out /tmp/xlcalc-hf-results
 node bench/hyperformula/run.mjs --case sparse --engine hf-sparse,hf-auto
+node --expose-gc bench/hyperformula/profile.mjs chain xl-eval 160 /tmp/xlcalc-cpu-profiles
+node bench/hyperformula/study.mjs
 ```
 
 The output is `results/raw.json` (samples, verification, configuration, machine and revision) and `results/summary.csv`. A timeout or memory limit is recorded separately; mismatches and other errors also cause exit code 1. The benchmark does not assert absolute timing thresholds.
 
 ## Protocol
 
-- HyperFormula is pinned to 3.5.0. xlcalc is compiled from the checkout being measured. The recorded engine revision is `c3733f6`.
+- HyperFormula is pinned to 3.5.0. xlcalc is compiled from the checkout being measured. The baseline engine is master `4d15ecb`, recorded at `364c4f2` after adding the same benchmark. The optimized engine is recorded at `b8d1ea0`. `xl-eval` uses `execution: 'eval'`, which compiles a batch with `new Function` and retains a function per formula.
 - Each workload/engine runs sequentially in its own Node process, with a 1024 MiB V8 heap limit and a 30-second limit on an individual phase. A stopped child cannot take down the runner.
 - Opening means a fresh session, including parsing, compilation, graph construction and calculation. There is one warmup and five measured sessions in the same process: this measures fresh sessions with a warmed JavaScript runtime, not cold process startup.
 - Each editing workload has two warmup edits and twenty measured edits. Median, p95 and the first edit are recorded. Edits alternate between two states; both return shapes are included in the timed calls. A contiguous column is written to HF with one `setCellContents`, not thousands of scalar calls.
@@ -35,29 +37,91 @@ The output is `results/raw.json` (samples, verification, configuration, machine 
 - `hf-default` uses default performance options. The installed HF 3.5.0 defaults to `AlwaysDense`, confirmed from `Config.mjs` and the live configuration. `hf-index` enables `useColumnIndex` for the lookup book. `hf-sparse` and `hf-auto` separately test sparse mapping and automatic selection at threshold 0.5.
 - The 34,000-row HF business case is a single bounded cold probe. It has no warmup or editing samples if opening cannot finish. Do not infer its output parity from a timeout.
 
-The reference preparation runs xlcalc before the measurement, and verification runs between edits. Both can influence runtime warmup and GC. Samples were collected on an active host; load averages are saved. The recorded report combines the initial prefix/lookup run, the remaining workloads and the sparse-policy controls, each without concurrent benchmark children.
+The reference preparation runs xlcalc before the measurement, and verification runs between edits. Both can influence runtime warmup and GC. Samples were collected on an active host; load averages are saved. Baseline and optimized reports are separate complete runs of the same nine workloads, with no overlapping benchmark children or profiling processes. Their raw reports are in `results-baseline/` and `results/`.
+
+`profile.mjs` warms thirty edits, profiles repeated edits alone with the [Node inspector CPU profiler](https://nodejs.org/api/inspector.html), then verifies every cell against a full calculation. Input preparation is included in its diagnostic profile; these durations are not the benchmark's editing samples. It writes a `.cpuprofile` and a JSON summary to the supplied directory.
 
 ## Recorded results
 
-Node 26.7.0, Apple M5 Pro, 48 GiB RAM. Times are milliseconds, medians. xlcalc below is `closures`; `eval`, edit p95, first edits and CPU samples are in the raw report.
+Node 26.7.0, Apple M5 Pro, 48 GiB RAM. Times are milliseconds, medians. Both execution modes are shown explicitly. Opening includes parsing and compilation; editing includes returned changes.
 
-| Workload | xlcalc open | HF open | Edit | xlcalc edit | HF edit |
-|---|---:|---:|---|---:|---:|
-| SUMIFS business book, 3,400 data rows | 180 | 6,062 | one criterion | 0.28 | 2.97 |
-| Same book | 180 | 6,062 | one data amount | 25.6 | 4,523 |
-| 5,000 cumulative SUMs | 34.2 | 46.0 | middle input | 6.63 | 4.19 |
-| 5,000 cumulative AVERAGE + COUNTIF | 92.9 | 114 | middle input | 23.8 | 14.1 |
-| 1,000 VLOOKUPs over 34,000 unsorted rows, HF default | 55.6 | 2,189 | one lookup key | 0.19 | 1.20 |
-| Same book, HF column index | 55.6 | 1,270 | one lookup key | 0.19 | 0.12 |
-| Same book, HF column index | 55.6 | 1,270 | one table value | 3.20 | 2.64 |
-| 10,000-cell dependency chain | 62.0 | 47.5 | root input | 15.1 | 7.29 |
-| 50,000 direct dependents and one SUM | 248 | 527 | root input | 95.1 | 59.3 |
-| 2,000 inputs replaced atomically | 27.7 | 42.9 | all inputs | 22.0 | 4.34 |
-| 2,000 cells in a roughly 97,000 x 311 sheet, HF automatic mapping | 9.74 | 23.7 | one input | 0.116 | 0.035 |
-| SUMIFS business book, 34,000 data rows | 1,010 | >30,000 (probe timeout) | one data amount | 153 | not measured |
+| Workload | xl closures open | xl eval open | HF default open |
+|---|---:|---:|---:|
+| SUMIFS business, 3,400 rows | 114 | 131 | 3843 |
+| 5,000 cumulative SUMs | 33.14 | 37.80 | 45.88 |
+| 5,000 cumulative AVERAGE + COUNTIF | 55.07 | 60.67 | 80.54 |
+| 1,000 VLOOKUPs over 34,000 rows | 55.70 | 57.37 | 2205 |
+| 10,000-cell dependency chain | 41.07 | 49.56 | 32.98 |
+| 50,000 dependents and one SUM | 166 | 232 | 367 |
+| 2,000 inputs replaced atomically | 18.70 | 20.65 | 28.55 |
+| 2,000 sparse cells | 6.83 | 8.57 | 51.04 |
+| SUMIFS business, 34,000 rows | 745 | 724 | >30,000 (timeout) |
 
-The automatic HF mapping selected sparse storage. On that sparse book, retained heap was 1.5 MiB for xlcalc, 235.9 MiB for HF's default dense mapping, and 0.9 MiB for HF's sparse or automatic mapping.
+HF with a column index opens the lookup book in 1239 ms. Automatic sparse mapping opens the sparse book in 19.64 ms.
 
-There were 30 workload/engine variants: 29 completed with matching values and one HF opening timeout. The successful variants made 80,622,748 cell comparisons, including repeated comparisons of the same cells; the largest relative numeric difference was below `5e-15`.
+| Workload and edit | xl closures | xl eval | HF default | HF tuned |
+|---|---:|---:|---:|---:|
+| SUMIFS business, 3,400 rows, criterion | 0.215 | 0.246 | 0.966 |  |
+| SUMIFS business, 3,400 rows, data | 18.21 | 17.67 | 2901 |  |
+| 5,000 cumulative SUMs, middle-input | 4.24 | 4.30 | 4.25 |  |
+| 5,000 cumulative AVERAGE + COUNTIF, middle-input | 9.39 | 9.55 | 9.89 |  |
+| 1,000 VLOOKUPs over 34,000 rows, lookup-key | 0.194 | 0.187 | 1.09 | 0.132 |
+| 1,000 VLOOKUPs over 34,000 rows, lookup-data | 3.24 | 3.31 | 868 | 2.26 |
+| 10,000-cell dependency chain, root | 5.23 | 5.04 | 5.47 |  |
+| 50,000 dependents and one SUM, root | 41.34 | 42.32 | 44.54 |  |
+| 2,000 inputs replaced atomically, 2000-inputs | 6.45 | 5.76 | 3.40 |  |
+| 2,000 sparse cells, one-input | 0.084 | 0.091 | 0.026 | 0.084 |
+| SUMIFS business, 34,000 rows, criterion | 0.467 | 0.470 | not measured |  |
+| SUMIFS business, 34,000 rows, data | 104 | 103 | not measured |  |
 
-These results locate workload-dependent differences. They do not establish a universal winner, browser responsiveness, or Excel compatibility on arbitrary workbooks. The largest remaining editing differences in this set are the batch of 2,000 inputs, the dependency chain and the fanout; no profiler diagnosis or engine fix is part of this benchmark.
+The column index is the tuned lookup case; automatic mapping is the tuned sparse case. The sparse edit is below 0.1 ms and varies substantially between runs.
+
+### Changes against the same benchmark on master
+
+| Editing workload | closures before | closures after | eval before | eval after |
+|---|---:|---:|---:|---:|
+| 5,000 cumulative SUMs | 6.68 | 4.24 | 7.05 | 4.30 |
+| 5,000 cumulative AVERAGE + COUNTIF | 16.07 | 9.39 | 15.67 | 9.55 |
+| 10,000-cell dependency chain | 8.63 | 5.23 | 9.18 | 5.04 |
+| 50,000 dependents and one SUM | 60.41 | 41.34 | 67.25 | 42.32 |
+| 2,000 inputs replaced atomically | 14.33 | 6.45 | 14.57 | 5.76 |
+
+The final paired run reaches median editing parity on prefixes, the chain and fanout. An earlier control still had eval at 5.01 ms versus HF at 4.21 ms on the chain, so the small remaining chain difference is not settled. The 2,000-input batch remains about 1.7 to 1.9 times slower; lookup edits remain about 1.4 to 1.5 times slower than indexed HF. Fresh chain construction also remains slower.
+
+Business data edits did not improve: 3,400 rows changed from 17.35 to 18.21 ms in closures and 16.99 to 17.67 ms in eval; 34,000 rows changed from 100.82 to 104.05 ms and 99.44 to 103.41 ms. These roughly 3 to 5 percent differences are from an active host, and are a reason to review the cache tradeoff on application workbooks.
+
+### Implementation and cost
+
+- Consecutive column edits query their exact combined area once. Ascending and descending batches are covered; gaps and other columns stay separate. The listener probe test failed at 393,472 coordinate reads before the change and passes below its 16,384 limit.
+- Internal cell keys are decoded with slices instead of split/map; edit bookkeeping creates sets only when needed, and books without spills skip spill lookups. Ordinary names uppercase directly; exceptional dotless i and long s preserve their existing treatment.
+- Prefix checkpoints are 64 values apart instead of 256. Full folds still use the 256-cell threshold. Short ranges leave a mark on first use and retain a fold on repeated use. Their tests failed at 132,099 prefix reads and 5,120 shared short-range reads before the change, and pass afterward, including invalidation when the short range changes.
+
+The controlled checkpoint comparison tried 256, 128, 64 and 32 while keeping the full-fold threshold at 256 and excluding short-range memoization. Eval AVERAGE + COUNTIF edits were 14.20, 10.70, 9.00 and 7.70 ms. Choosing 64 reaches the target with fewer checkpoints than 32. A long isolated range can retain about four times as many checkpoint records as before; the existing cache budget still bounds them. See `results/checkpoint-comparison.json` for samples and heap measurements.
+
+On the 34,000-row book retained heap increased from 51.77 to 52.04 MiB in closures and 52.05 to 52.36 MiB in eval, above the shared input and verifier reference. These figures exclude peak RSS. The sparse book retains 1.54 MiB in closures, 235.94 MiB in HF default dense mode, and 0.86 MiB in HF automatic sparse mode.
+
+Both reports completed 29 of 30 variants with matching values; HF timed out opening the 34,000-row business book. The optimized report made 80,622,748 repeated cell comparisons, with maximum relative numeric difference below 5e-15. Every workload hash and input hash match the baseline. The synthetic hash prefixes remain `101578a9c6b600b1` for 3,400 rows and `e64d5f4d0f0ac632` for 34,000.
+
+`npm run typecheck`, build, full source and dist suites passed. Each full suite ran 20,220 passing tests with 42 skipped. The benchmark adapter has seven passing tests; jscpd 4 found zero source clones with the requested 8-line/70-token thresholds. Public contracts, validation behavior and CHANGELOG are unchanged.
+
+### Further work from HyperFormula 3.5.0
+
+The following are proposals, not implemented API additions. Findings combine the published 3.5.0 package with the official documentation.
+
+| Mechanism | Evidence in HF | xlcalc opportunity and cost |
+|---|---|---|
+| Stop propagation at unchanged formula results | `es/Evaluator.mjs: recomputeVertex` and `es/DependencyGraph/TopSort.mjs: postprocess` | Our unchanged-output probe evaluates 4,999 formulas in either mode versus one in HF. Propagation must also account for changed spill areas, cycles, clock dependencies and nested SUBTOTAL marks; scalar equality alone is insufficient. |
+| Shared relative formula templates | [Repetitive ASTs and relative addressing](https://hyperformula.handsontable.com/docs/guide/key-concepts.html#repetitive-asts), `es/parser/ParserWithCaching.mjs` | Our prepare/compile path processes each formula separately. Template kernels could reduce opening time and compiled storage, but must retain cell-specific names, table context, array rules and runtime addresses. Measure both modes before adopting. |
+| Incrementally updated lookup indexes | [Column indexes](https://hyperformula.handsontable.com/docs/guide/performance.html#vlookup-match), `es/Lookup/ColumnIndex.mjs: change` | Our exact lookup index is keyed by immutable flat storage; a changed return column invalidates that storage. A key-column index plus direct payload reads could avoid rebuilding unaffected keys, at the cost of index maintenance and memory. |
+| Deferred reference transformations | [Lazy CRUD](https://hyperformula.handsontable.com/docs/guide/key-concepts.html#laziness-of-crud-operations), `es/LazilyTransformingAstService.mjs` | Could reduce structure-operation rebuilds. Versioned transforms and compaction add complexity to undo, serialization and inspection. This is a separate architectural change. |
+
+The unchanged-output and dependency probes are reproducible with `study.mjs`; results are in `results/hf-architecture-probes.json`. When INT(A1) keeps its value after A1 changes from 1.1 to 1.9, HF evaluates only INT and both engines agree on the final value. When A1 becomes 2.1, both evaluate 4,999 formulas. Instrumentation uses private evaluator hooks for counts and is excluded from the timing benchmark.
+
+| API idea | Current xlcalc coverage | Proposed use |
+|---|---|---|
+| [Immediate precedents and dependents](https://hyperformula.handsontable.com/docs/guide/dependency-graph.html#getting-the-immediate-precedents-of-a-cell-or-a-range) | `explain` supplies a precedent tree and formatted text; no reverse query | Small typed queries for grid dependency arrows. Define semantic cells/ranges rather than exposing compressed graph helpers: HF returns a range node as A1's dependent in the SUM(A1:B1) probe. |
+| [Non-mutating operation checks](https://hyperformula.handsontable.com/docs/guide/basic-operations.html#isitpossibleto-methods) | Text and paste have previews; structure operations return refusals only when called | A structured check for drag/drop and disabled menu actions, with a refusal reason rather than a bare boolean. |
+| [Mixed operation batching](https://hyperformula.handsontable.com/docs/guide/batch-operations.html) | Cell, text and layout batches are individually atomic | A serializable list of mixed operations could give one revision, one undo step and one recomputation. A callback API would not cross a worker boundary. |
+| [Optional statistics](https://hyperformula.handsontable.com/docs/api/classes/hyperformula.html#getstats) | Timing is in benchmarks; cache accounting is internal | Opt-in phase timings and counts for application diagnostics, with no default timing overhead. HF exposes parser, graph, evaluation and criterion-cache statistics. |
+
+Dependency queries are the first API candidate; unchanged-result propagation is the first algorithm candidate. Existing atomic batches and prefix/range caching already cover parts of HF's approach, so additions should address the gaps above rather than duplicate those features.

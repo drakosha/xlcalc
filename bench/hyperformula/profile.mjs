@@ -8,6 +8,7 @@ import { open, close, prepareEdit, reference, verify } from './shared.mjs'
 const [id, engine = 'xl-eval', countText = '100', directory = '/tmp/xlcalc-cpu-profiles'] = process.argv.slice(2)
 const spec = workload(id), operation = spec.operations[0], count = Number(countText)
 if (!['xl-closures', 'xl-eval'].includes(engine) || !Number.isInteger(count) || count < 1 || count > 1000) throw new Error('Expected an xlcalc engine and 1 to 1000 edits')
+if (typeof global.gc !== 'function') throw new Error('Run this profiler with node --expose-gc')
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const revision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim()
 const startedAt = new Date().toISOString()
