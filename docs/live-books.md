@@ -21,7 +21,7 @@ const applied = await session.applyChanges(operations, {
 
 The operations are `setCells`, `replaceCells`, `clearCells`, `patchCells`, `setNames`, `setStyles` and `setLayout`. Their fields and replacement rules are those of the existing methods. In particular, `setNames` replaces the whole name list. Structure operations and AutoFit are separate calls. AutoFit reads calculated values; run it after the batch. For localized typed text and data validation alerts, use the existing text-entry methods. These changes add no new data validation policy.
 
-Cell and look batches use sparse overlays while their input is checked and keep only touched inputs for rollback and history. Changed names, table headers, merges and hidden-row calculation require an aside-built state, as the existing operations do. No complete `BookSnapshot` is required. A style-only application without an explicit clock keeps the existing clock.
+Cell and look batches use sparse overlays while their input is checked and keep only touched inputs for rollback and history. Changed names, table headers, entered linked-book formulas, merges and hidden-row calculation require an aside-built state, as the existing operations do. No complete `BookSnapshot` is required. A style-only application without an explicit clock keeps the existing clock.
 
 ## Preview
 

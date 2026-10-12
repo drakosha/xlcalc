@@ -6,7 +6,7 @@ import { createInlineCalc, type AsyncSession, type BookInput, type Calc } from '
 import { createCalcPool } from 'xlcalc/worker'
 import { parseCell } from 'xlcalc/a1'
 import { localSource } from '../src/local'
-import type { SourceEvent } from '../src/source'
+import type { SourceEvent, FindRequest } from '../src/source'
 import { mountSheet, settle } from './helpers'
 const clock={now:'2026-10-04T12:00:00Z',seed:7}
 describe.each(['closures','eval'] as const)('live API adapter, %s',execution=>{
@@ -28,8 +28,8 @@ describe.each(['closures','eval'] as const)('live API adapter, %s',execution=>{
   const listeners=new Set<(e:SourceEvent)=>void>()
   const source=new Proxy(base,{get(target,key){
    if(key==='subscribe')return (f:(e:SourceEvent)=>void)=>{listeners.add(f);return ()=>listeners.delete(f)}
-   if(key==='find')return async(sheet:string,query:string)=>{
-    const p=await session!.findCells([{sheet,range:'A1:D1'}],query,{maxCells:500,fields:['text'],count:true})
+   if(key==='find')return async({sheet,query,range,matchCase}:FindRequest)=>{
+    const p=await session!.findCells([{sheet,range:range??'A1:D1'}],query,{maxCells:500,fields:['text'],count:true,caseSensitive:matchCase})
     return {hits:p.cells.map(c=>({...parseCell(c.cell)!,text:c.text??''})),total:p.total??p.cells.length}
    }
    return Reflect.get(target,key)
@@ -48,7 +48,7 @@ describe.each(['closures','eval'] as const)('live API adapter, %s',execution=>{
    await settle(12)
    await vi.waitFor(()=>expect(view!.find('[data-cell="1:3"]').text()).toContain('9'))
    expect(view.find('[data-cell="1:2"]').text()).toContain('6.00')
-   expect((await source.find('S','HEL')).hits[0]).toMatchObject({row:1,col:4,text:'hello'})
+   expect((await source.find({sheet:'S',query:'HEL',lookIn:'values'})).hits[0]).toMatchObject({row:1,col:4,text:'hello'})
    expect(await session!.summarizeRanges([{sheet:'S',range:'A1:D1'}])).toMatchObject({cells:4,numbers:3,sum:17})
   }finally{view?.unmount();await base.close();await calc.close();document.body.innerHTML=''}
  })

@@ -15,7 +15,9 @@ for(const entry of readdirSync(join(source,'node_modules'),{withFileTypes:true})
  if(entry.name==='xlcalc'||entry.name.startsWith('.')&&entry.name!=='.bin')continue
  symlinkSync(join(source,'node_modules',entry.name),join(modules,entry.name))
 }
-symlinkSync(root,join(modules,'xlcalc'))
+const library=join(modules,'xlcalc');mkdirSync(library)
+copyFileSync(join(root,'package.json'),join(library,'package.json'))
+cpSync(join(root,'dist'),join(library,'dist'),{recursive:true})
 copyFileSync(new URL('./component-adapter.test.ts.template',import.meta.url),join(target,'test/live-api-adapter.test.ts'))
 for(const script of ['typecheck','build','test']){
  const result=spawnSync('npm',['run',script],{cwd:target,stdio:'inherit'})
