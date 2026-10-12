@@ -47,6 +47,16 @@ export interface CellInput {
   note?: CellNote
   /** A hyperlink on the cell; the cell shows its value. Like a style, it goes with the cell and takes no part in computation. */
   link?: CellLink
+  /**
+   * The value a formula holds while a circular reference stops it. In a book without `iteration` a formula in a cycle,
+   * or one that reads a cycle (through other cells too), is not computed, as Excel computes none of them: it shows
+   * `held`, or 0 without it (a formula entered there shows 0 in Excel). Elsewhere the field has no effect, and the book
+   * as the engine takes it leaves it out, so it counts in `inputHash` in such a cell alone. A session keeps it as Excel
+   * keeps such cells: a cell that another edit brings into a cycle's way holds what it showed, a formula entered there
+   * holds 0, a cell out of the way is computed again and holds nothing; `getBook()` gives it (`docs/cycles.md`). The
+   * values a file stores come in as `held` through `cached` (`ComputeOptions.cached`).
+   */
+  held?: Exclude<CellValue, null>
 }
 
 /** A note: its author and its text, lines separated by `\n`. */
@@ -614,12 +624,13 @@ export interface BookInput {
    */
   dateSystem?: 1900 | 1904
   /**
-   * Iterative calculation of circular references, as Excel's setting and xlsx `calcPr iterate`. Without it a cycle
-   * gives `#CYCLE!`. With it the cells of every cycle and the cells that depend on them are computed from 0, again
-   * and again, sheet by sheet in the order of the sheets' names (in any case), row by row. That stops after
-   * `maxIterations` rounds (100 by default, 1 to 32,767) or when no value changes by `maxChange` or more (0.001 by
-   * default). Each computation starts from 0 again, so a session gives what a full computation gives. Excel goes on
-   * from the values it holds instead.
+   * Iterative calculation of circular references, as Excel's setting and xlsx `calcPr iterate`. Without it the cells of a
+   * cycle and the cells that read it are not computed and hold their values (`CellInput.held`). With it the cells of
+   * every cycle and the cells that depend on them are computed from 0, again and again, sheet by sheet in the order of
+   * the sheets' names (in any case), row by row. That stops after `maxIterations` rounds (100 by default, 1 to 32,767)
+   * or when no value changes by `maxChange` or more (0.001 by default). Each computation starts from 0 again, so a
+   * session gives what a full computation gives, and `held` has no effect. Excel goes on from the values it holds
+   * instead.
    */
   iteration?: { maxIterations?: number; maxChange?: number }
   /**
@@ -911,6 +922,14 @@ export interface CalcLimits {
   spill?: number
 }
 
+/**
+ * The values a file stores for its book's formulas, in the shape of a result: `readXlsx`'s `cached`, or a result of the
+ * book. They are read by sheet name and address, a cell's `value` alone.
+ */
+export interface CachedValues {
+  sheets: { name: string; cells: Record<string, { value: CellValue }> }[]
+}
+
 export interface ComputeOptions {
   /**
    * The clock for TODAY, NOW, RAND and RANDBETWEEN. By default the current moment and a random seed;
@@ -924,6 +943,12 @@ export interface ComputeOptions {
   display?: boolean
   /** None by default. */
   limits?: CalcLimits
+  /**
+   * The values the book's file stores (`readXlsx`'s `cached`), as Excel opens a file with a circular reference: a formula
+   * the cycle stops (`CellInput.held`) without a `held` of its own holds the value stored for it, empty text where the
+   * file stores none. Nothing else is read from them.
+   */
+  cached?: CachedValues
 }
 
 /** A cell's value, and by default (`display`) what the cell shows: `text` and `color`, as `CellDisplay`. */
@@ -956,7 +981,10 @@ export interface CellResult extends Partial<CellDisplay> {
   spillOf?: string
 }
 
-/** A cell with an error and its reason: an invalid formula (with the check code and position) or a computation error. */
+/**
+ * A cell with an error and its reason: an invalid formula (with the check code and position) or a computation error; or
+ * a formula a circular reference stops (`error: 'CYCLE'`), whose value is the one it holds (`CellInput.held`).
+ */
 export interface CellIssue extends CellRef {
   error: ErrorCode
   reason: string
@@ -985,7 +1013,10 @@ export type Diagnostic = ({ kind: 'cell' } & CellIssue) | ({ kind: 'name' } & Na
 
 export interface ComputeResult {
   sheets: { name: string; cells: Record<string, CellResult> }[]
-  /** Every cell with an error, sheet by sheet in the book's order and row by row, then every name with a problem, in the order of the book's names. */
+  /**
+   * Every cell with an error and every formula a circular reference stops (`CellIssue`), sheet by sheet in the book's
+   * order and row by row, then every name with a problem, in the order of the book's names.
+   */
   diagnostics: Diagnostic[]
   /** Cells that depend on volatile functions (directly or through other cells). */
   volatile: CellRef[]
@@ -1074,8 +1105,9 @@ export type CellFields = { [K in keyof CellInput]?: CellInput[K] | null }
 
 /**
  * A cell edit (`Session.setCells`): the fields given set the cell's, null removes one, and the fields left out stay, as
- * Excel keeps a cell's look when a value is typed over it. The content is one: a new `value` removes the formula and its
- * `array`, a new `formula` the value. `input: null` clears the content and the hyperlink and keeps the rest, as Excel's
+ * Excel keeps a cell's look when a value is typed over it. The content is one: a new `value` removes the formula, its
+ * `array` and its `held`, a new `formula` the value and the `held` (a formula entered where a circular reference stops it
+ * holds 0). `input: null` clears the content and the hyperlink and keeps the rest, as Excel's
  * Delete key.
  */
 export interface CellEdit extends CellRef {
@@ -1532,9 +1564,10 @@ export interface SavedViewport extends Omit<Viewport, 'revision' | 'cells'> {
 }
 
 /**
- * Why a cell holds an error (`Session.getCellIssue`): its code, reason, check code and position as the result's `diagnostics`
- * gives them, and `origin`, the cell where the error began, following the cells its reason names (`from 'S'!A2`) to one
- * whose error is its own; in a cycle, the first cell of the cycle the way reaches.
+ * Why a cell holds an error, or a circular reference stops it (`Session.getCellIssue`): its code, reason, check code and
+ * position as the result's `diagnostics` gives them, and `origin`, the cell where the error began, following the cells
+ * its reason names (`from 'S'!A2`) to one whose error is its own; in a cycle, the first cell of the cycle the way
+ * reaches, and so for a formula a cycle stops, through the cells it reads that the cycle stops too.
  */
 export interface CellIssueDetail {
   error: ErrorCode
@@ -1565,8 +1598,9 @@ export interface ExplainNode {
   /** For a range: the number of non-empty cells. */
   cells?: number
   /**
-   * A cell with an error: the cell the error began in (`'Sheet'!A2`, the node's own `ref` when it began there), as
-   * `CellIssueDetail.origin`. The way there is in the tree past `depth` too, and through a range by the cell it came from.
+   * A cell with an error, or a formula a circular reference stops: the cell the error began in (`'Sheet'!A2`, the node's
+   * own `ref` when it began there), as `CellIssueDetail.origin`. The way there is in the tree past `depth` too, and
+   * through a range by the cell it came from.
    */
   origin?: string
   children: ExplainNode[]
@@ -1591,8 +1625,10 @@ export interface Explanation {
  * recomputation instead. Edits are compiled in the `execution` the session was opened with (`closures` by
  * default). With `display` (the default) results and changes carry what the cells show. `limits` bound every call;
  * a call over them throws `CalcError` and leaves the session as it was. `undo` bounds the steps `Session.undo` keeps.
+ * `cached`, as `compute` takes it, gives the formulas a circular reference stops the values the book's file stores; the
+ * session's book holds them as `held` from then on.
  */
-export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits; undo?: UndoOptions }
+export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits; undo?: UndoOptions; cached?: CachedValues }
 
 /**
  * The steps a session keeps for `undo`: `depth` of them, 100 by default as in Excel (0 keeps none), holding `maxMb`
@@ -1992,7 +2028,10 @@ export interface Session {
    * with `opts.rows` and `opts.columns`. It costs what the window holds, as `getCells`, not the book.
    */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
-  /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
+  /**
+   * Why a cell holds an error, or a circular reference stops it, and the cell it began in (`CellIssueDetail`), without the
+   * book's result; null for a cell without one.
+   */
   getCellIssue(sheet: string, cell: string): CellIssueDetail | null
   /** The data validation of a cell (`CellValidation`), its list computed now; null when no rule is over the cell. */
   getValidation(sheet: string, cell: string): CellValidation | null
