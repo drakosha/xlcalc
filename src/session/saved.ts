@@ -27,6 +27,7 @@ import { hasCell, parseRange, type Rect } from '../structure/area.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
 import { tablesOf, type Tables } from '../tables/model.js'
 import { E, fromCellValue, Rng } from '../values.js'
+import { layerOf } from '../looks/sheet.js'
 import { checkRange, checkViewportOptions, windowLines, windowOf, type WindowLines, type WindowSource } from './viewport.js'
 
 /** The cells of a large spill that its result leaves out (`CellResult.spillFill`): the spill's range, its formula's cell and their value. */
@@ -131,6 +132,8 @@ function sheetFound(f: Found, s: number): SheetFound {
     if (x) reach(x.r2, x.c2)
   }
   for (const t of f.tables.list) if (t.s === s) reach(t.r2, t.c2)
+  const looked = layerOf(input)?.bounds()
+  if (looked) reach(looked.r2, looked.c2)
   f.sheets.set(s, (out = { fills, extent: { rows, columns } }))
   return out
 }

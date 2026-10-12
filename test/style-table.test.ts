@@ -7,6 +7,7 @@
  */
 import { performance } from 'node:perf_hooks'
 import { describe, expect, it } from 'vitest'
+import { cellsOf } from './looks-book.js'
 import { createSession, InputError, internStyle, type CellStyle } from '../src/index.js'
 
 /** The answer of a table read anew: the first style with the same fields, else the style added at the end. */
@@ -61,7 +62,7 @@ describe('internStyle', () => {
     const book = session.getBook()
     expect(internStyle(styles, { font: { bold: true }, fill: { color: '#C6EFCE' } }).index).toBe(book.sheets[0].cells.A1.style)
     const added = internStyle(styles, { font: { italic: true } })
-    expect([added.index, added.styles]).toEqual([book.sheets[0].cells.B1.style, book.styles])
+    expect([added.index, added.styles]).toEqual([cellsOf(book.sheets[0]).B1.style, book.styles])
   })
 
   it('a chain of calls, each given the last answer, answers as tables read anew', () => {

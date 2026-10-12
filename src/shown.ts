@@ -8,7 +8,6 @@ import type { EngineState } from './engine.js'
 import { sheetLines, type SheetLines } from './layout/lines.js'
 import type { Rules } from './locale/rules.js'
 import { parseMerge } from './layout/merges.js'
-import { formatAddress } from './model.js'
 import { columnPoints, room } from './numfmt.js'
 
 /** What the cell at sheet `s`, row `r`, column `c` (zero-based) shows when it holds `v`; `own`, its input when the caller has it. */
@@ -30,7 +29,8 @@ export function bookLooks(book: BookInput, rules: Rules, state?: EngineState): L
     }
     return x
   }
-  return (s, r, c, v, own = book.sheets[s].cells[formatAddress(r, c)]) => {
+  // a cell without `own` shows by the sheet's input there, or its look of the sheet's looks (`sheetLines`)
+  return (s, r, c, v, own) => {
     const x = sheetLook(s)
     const format = x.lines.format(r, c, own)
     const last = x.merges.size ? (x.merges.get(`${r}:${c}`) ?? c) : c

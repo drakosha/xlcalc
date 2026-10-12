@@ -7,6 +7,7 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, InputError, createSession, type BookInput, type Calc, type CellPatch, type Execution } from '../src/index.js'
 import { CLOCK } from './async-books.js'
+import { cellsOf } from './looks-book.js'
 import { inside, pool } from './fixtures/pool.js'
 
 const book = (): BookInput => ({
@@ -66,7 +67,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
         { sheet: 'S', cell: 'B5', value: null, text: '', style: null },
       ],
     ])
-    const cells = s.getBook().sheets[0].cells
+    const cells = cellsOf(s.getBook().sheets[0])
     expect(cells).toEqual({
       A1: { value: 0.25, style: 0, numberFormat: '0%' },
       A2: { value: 2 },

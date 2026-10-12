@@ -10,6 +10,7 @@ import { compute, editStructure, type Book, type BookInput, type BookLayout } fr
 import { synthBook } from '../src/synth.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
+import { expandSheet } from './looks-book.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 afterAll(closeCalcs)
@@ -97,7 +98,7 @@ describe.each(['closures', 'eval'] as const)('the number format in sessions, %s'
       await s.replaceCells([{ sheet: 'S', cell: 'C2', input: { value: 3, numberFormat: '0.0' } }])
       await s.patchCells([{ sheet: 'S', cell: 'D1', set: { numberFormat: '0.000' } }])
       await s.setLayout([{ sheet: 'S', rows: '5', set: { numberFormat: '0.0000' } }, { sheet: 'S', conditionalFormats: [{ type: 'expression', ranges: ['E1'], formula: 'TRUE', style: { numberFormat: '0' } }] }])
-      const sh = (await s.getBook()).sheets[0]
+      const sh = expandSheet((await s.getBook()).sheets[0])
       expect([sh.cells.C1, sh.cells.C2, sh.cells.D1, sh.rows?.[5], (sh.conditionalFormats?.[0] as { style?: object }).style]).toEqual([{ value: 0.5, numberFormat: '0.0%' }, { value: 3, numberFormat: '0.0' }, { numberFormat: '0.000' }, { numberFormat: '0.0000' }, { numberFormat: '0' }])
       expect((await s.getCells('S', 'C2')).C2).toEqual({ value: 3, text: '3.0', numberFormat: '0.0', numberFormatCode: '0.0' })
       // null removes the format

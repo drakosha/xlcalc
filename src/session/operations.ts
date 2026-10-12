@@ -3,13 +3,15 @@ import type { BookInput, CellInput, CellReplace, SessionOperation, SheetInput } 
 import type { EngineState } from '../engine.js'
 import { array, checkEdits, checkLayoutEdits, checkNames, checkStyles, InputError, object, onlyKeys } from '../input.js'
 import { sheetKey } from '../syntax.js'
+import { looksWithout, withLooks } from '../looks/sheet.js'
+import { parseAddress } from '../model.js'
 import { linksIn, markedLinks } from '../syntax/links.js'
 import { editsTaken } from '../taken.js'
 import { hiddenRows } from '../layout/hidden.js'
 import { checkArrayEdits } from '../spill/fixed.js'
 import { headerEdits } from '../tables/headers.js'
 import { checkTables } from '../tables/check.js'
-import { checkStylesUsed, applyLayout } from './book.js'
+import { checkStylesUsed, applyLayout, inputAt } from './book.js'
 import { checkFieldEdits, resolveEdits } from './cells.js'
 import { clearPlan } from './clear.js'
 import { checkPatches } from './patch.js'
@@ -51,12 +53,22 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
     return changes
   }
   const put = (items: CellReplace[]) => {
+    // the cells left without an input, which the sheets' looks of the draft give none either
+    const gone = new Map<number, [number, number][]>()
     for (const e of items) {
       const i = index(e.sheet)!,
         k = `${i}:${e.cell}`
-      if (!back.has(k)) back.set(k, { sheet: s.sheetNames[i], cell: e.cell, input: s.input.sheets[i].cells[e.cell] ?? null })
+      if (!back.has(k)) back.set(k, { sheet: s.sheetNames[i], cell: e.cell, input: inputAt(s, i, e.cell) ?? null })
       cells(i).set(e.cell, e.input)
       edits.set(k, { ...e, sheet: s.sheetNames[i] })
+      if (e.input === null) {
+        const { row, col } = parseAddress(e.cell)
+        ;(gone.get(i) ?? gone.set(i, []).get(i)!).push([row, col])
+      }
+    }
+    for (const [i, at] of gone) {
+      const looks = looksWithout(book.sheets[i], at)
+      if (looks !== book.sheets[i].looks) book.sheets[i] = withLooks(book.sheets[i], looks)
     }
   }
   const looks = (p: Plan) => {
@@ -132,8 +144,8 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
   const layout = new Map<number, SheetInput>()
   book.sheets.forEach((sh, i) => {
     const old = s.input.sheets[i]
-    const { cells: _a, ...a } = old,
-      { cells: _b, ...b } = sh
+    const { cells: _a, looks: _c, ...a } = old,
+      { cells: _b, looks: _d, ...b } = sh
     if (JSON.stringify(a) !== JSON.stringify(b)) layout.set(i, sh)
     if (JSON.stringify(old.merges ?? []) !== JSON.stringify(sh.merges ?? []) || JSON.stringify(hiddenRows(old) ?? null) !== JSON.stringify(hiddenRows(sh) ?? null) || old.filtered !== sh.filtered) rebuild = true
   })

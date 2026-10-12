@@ -15,7 +15,7 @@ const { data } = await writeXlsx({ book, result })
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` (a Node `Buffer` is one, as `readFile` gives it), another view of bytes or an `ArrayBuffer` (`await file.arrayBuffer()` in a browser), and resolves to three things.
 
-- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them) and whether they are hidden, columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system, iterative calculation and the links to other workbooks with the values stored of them ([Links to other workbooks](#links-to-other-workbooks)).
+- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them), the looks of their cells of a look alone ([Cells of a look alone](#cells-of-a-look-alone)) and whether they are hidden, columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system, iterative calculation and the links to other workbooks with the values stored of them ([Links to other workbooks](#links-to-other-workbooks)).
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order, in the shape of a result: `cached.sheets[0].cells.B1.value` as `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range `spillOf`, the formula's address, as in a result. These are what Excel computed when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`).
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue. Each issue has a code for programs and a message for people, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
@@ -74,6 +74,17 @@ A fill is read as Excel shows it. A solid fill shows its `fgColor`; without one,
 A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader gives that number, 1 to 49, which the book shows by its locale as Excel does: format 14 shows 2025-01-31 as `1/31/2025` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, the model does not have: they are read as the code Excel for Mac en-US shows, `m/d/yy`, and reported. That code is the Mac's short date, format 14; Excel for Windows shows them as its own 14 too, `m/d/yyyy` in en-US and `ДД.ММ.ГГГГ` in ru-RU, so where the engine shows 2025-01-31 as `1/31/25` (`1.31.25` in ru-RU) Excel for Windows shows `1/31/2025` (`31.01.2025`), as the engine shows format 14 (`test/xlsx-win.test.ts`).
 
 Excel for Mac saves some built-in formats otherwise than by their number: the money and accounting ones (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21. A file Excel saved holds them so.
+
+### Cells of a look alone
+
+Excel stores each cell of a formatted area, a row formatted to column XFD among them, as a cell with a cell format and nothing else (`<c r="B2" s="3"/>`). Such a cell does not become an entry of `cells`: the reader puts its look into its sheet's `looks` ([Looks of many cells](../README.md#looks-of-many-cells)) as it reads the row, by runs of columns of one look, and rows with the same runs share them. A cell with a value or a formula stays an entry with its own look, as before.
+
+```js
+// <row r="20"><c r="A20" s="1"/><c r="B20" s="1"/> … <c r="XFD20" s="1"/></row>, and so rows 21 and 22
+looks: [{ range: 'A20:XFD22', style: 0 }]
+```
+
+So a sheet of the wide shape, 344 rows of such cells from A to XFD in two looks, the second in every 12th column, 5.6 million cells, reads into 5,571 rectangles and about a megabyte of heap, where it took 815 MB as entries. A cell that gets content later in the reading, a shared formula's copy, a note, a hyperlink or a table's header, takes its look of the file as its own, and its place among the stored cells, as an entry of that look would; a cell an array spilled into is left with its look alone, in the looks. A hyperlink over more cells than it is given one by one goes to the cells of the looks in its range as to the stored ones.
 
 ### Columns, rows and merged areas
 
@@ -233,6 +244,8 @@ Each table is written as a table part, as Excel writes one: its name, range, hea
 ### Styles, columns and rows
 
 Styles, number formats, widths, heights, hidden rows and columns, outline levels and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits. Every cell is written with the look it shows, its row's or column's where it has none of its own, as Excel writes it ([The cells of formatted rows and columns](#the-cells-of-formatted-rows-and-columns)).
+
+The cells of a sheet's looks are written as Excel stores them, each a cell with the cell format of the whole look it shows (`<c r="B2" s="3"/>`), row by row with the entries, without an object per cell. The cell formats are numbered as the cells come, the looks' cells among the entries as the entries of a file read come, so a book read from a file and written again gives the file the reader gave when such cells were entries. A sheet without looks is written as it is given, its entries in their order.
 
 A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yyyy` (format 14), is written as a code of the file's own, so every locale shows what `numberFormat` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
 
@@ -480,8 +493,9 @@ Measured on an Apple Silicon Mac with `test/fixtures/xlsx-bench-child.ts`, the m
 |---|---|---|---|
 | 20,000 rows × 40 values | 3.0 MB | 0.7 to 1.05 s | 1.2 to 1.8 s |
 | the synthetic book, 3,400 rows, 3,900 formulas with values | 0.41 MB | 0.1 s | 0.1 to 0.15 s |
+| a book of the wide shape, 5.6 million cells of a look alone (`bench/memory/wide-shape.ts`) | 15 MB | 1.5 s | |
 
-A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx vitest run test/xlsx-budget.test.ts` checks that the large book reads in 2 s at most.
+A read book of 800,000 values holds about 100 MB of heap; the book of the wide shape about 1 MB, and a session over it opens in 7 ms (6.2 s and 815 MB, then 10.5 s and 545 MB, when such cells were entries). `FORMULA_BENCH=1 npx vitest run test/xlsx-budget.test.ts` checks that the large book reads in 2 s at most.
 
 ## How the code is organised
 
@@ -510,6 +524,8 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 | `formats` | the built-in number formats 1 to 58 | the codes Excel en-US shows equal the engine's for 1 to 49 and the reader's for 50 to 58 |
 
 Without Excel, `test/xlsx-issue-locale.test.ts` reads a file with 28 issues (26 messages of the catalog) and the 15 files Excel saved that have issues in en-US and in ru-RU, and writes a book with 8 losses in both: each Russian message is the catalog's for the issue, the codes, sheets, cells and names equal the English read's, and without the option the issues are the English ones. `test/messages-catalog.test.ts` checks that every message has its Russian text, which shows each parameter the English one shows. `test/xlsx-snapshot.test.ts` checks the three kinds of `values`, the refusals, `cached` in the shape of a result and the files written again from it, a file Excel saved among them, and `test/session-snapshot.test.ts` writes the snapshot of a synchronous session, one in the same thread and one in a thread, and reads it back with the session's values.
+
+The 934 files of `test/excel/` were read by the reader of looks and by the one before it (`a0fa646`): every book, its looks as entries, every result of stored values and every issue were the same, and so were the files written again from them, part for part. The book of the wide shape read the same, and its windows, cells and used ranges in a session and the file written of it were those of the book of entries. `test/looks.test.ts` writes books with looks and the same books with entries from every kind of session: the same parts, and the looks read back as the session holds them.
 
 The round trip compares books by what they mean: a style by its fields, a formula by its canonical text, spans of rows and columns line by line, a line of size 0 as hidden, a code that every locale shows as a built-in format as that format's number.
 
