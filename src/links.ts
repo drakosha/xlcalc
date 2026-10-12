@@ -32,8 +32,11 @@ export interface LinkState {
 const sheetAt = (book: number, sheet: string) => `${book}\u0000${sheetKey(sheet)}`
 const nameAt = (book: number, sheet: number | undefined, name: string) => `${book}\u0000${sheet ?? ''}\u0000${caseKey(name)}`
 
-/** A stored value as the runtime holds it. */
-const runtimeValue = (v: ExternalValue): V => (typeof v === 'object' ? (E[v.error] ?? E.REF) : v)
+/** Errors a file cannot store of another workbook (Excel keeps `#SPILL!` and `#CALC!` there as `#VALUE!`), and the engine's own. */
+const UNSTORED = new Set(['SPILL', 'CALC', 'CYCLE', 'ERROR'])
+
+/** A stored value as the runtime holds it: an error a file cannot store as `#VALUE!`, which a written file stores and Excel shows. */
+const runtimeValue = (v: ExternalValue): V => (typeof v === 'object' ? (UNSTORED.has(v.error) ? E.VALUE : (E[v.error] ?? E.REF)) : v)
 
 /** What a linked book's name refers to: a reference into one of its sheets, or null (a constant or a lost reference, `#REF!` in Excel). */
 function nameTarget(book: number, b: ExternalBook, ref: string): Ast | null {
