@@ -1238,8 +1238,9 @@ export interface FindCellsOptions extends ReadCellsOptions {
   /** Excel's Search By Columns: each range's cells column by column; row by row without it. */
   byColumns?: boolean
   /**
-   * Cells of hidden rows and columns are not searched, as Excel's Find skips them in both kinds of Look in (rows a filter
-   * hid too); the cells come by the blocks the hidden lines leave, each block in turn (`docs/live-books.md`).
+   * Cells of hidden rows and columns are skipped as Excel's Find skips them: always where it reads what cells show
+   * (`text`, Look in Values), and in every kind of search on a sheet with a filter, where the cells come by the blocks
+   * the hidden lines leave, each block in turn (`docs/live-books.md`). Without it every cell of the ranges is searched.
    */
   skipHidden?: boolean
 }
