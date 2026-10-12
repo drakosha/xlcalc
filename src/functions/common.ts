@@ -7,7 +7,7 @@
  * representation of any magnitude (formula.js lost the shift for numbers written with an exponent) and
  * leaves a number that is already whole at that many digits unchanged (Excel: ROUND(2.15, 45688) is 2.15).
  */
-import { nearZero } from '../values.js'
+import { nearZero, zeroed } from '../values.js'
 
 /** Excel's largest argument count of a function newer than Excel 2007 (`_xlfn.NAME` in a file): one fewer than its 255, measured by the `arity` set. */
 export const NEWER_MAX_ARGS = 254
@@ -17,12 +17,16 @@ export const MAX_TRIG = 2 ** 27
 
 /** Numeric aggregates in input order, with Excel's empty-list results. */
 export const sum = (xs: readonly number[]) => xs.reduce((s, x) => s + x, 0)
-/** SUM: the numbers added in turn, the last addition taking Excel's 0 near the sum before it (`nearZero`). */
-export function excelSum(xs: readonly number[]): number {
+/** The numbers added in turn: the sum before the last one, and the sum of all. */
+function lastAddition(xs: readonly number[]): [before: number, sum: number] {
   let s = 0
   for (let i = 0; i < xs.length - 1; i++) s += xs[i]
-  return xs.length ? nearZero(s, s + xs[xs.length - 1]) : 0
+  return [s, xs.length ? s + xs[xs.length - 1] : 0]
 }
+/** SUM: the numbers added in turn, the last addition taking Excel's 0 near the sum before it (`nearZero`). */
+export const excelSum = (xs: readonly number[]): number => nearZero(...lastAddition(xs))
+/** Whether SUM's last addition left a remainder Excel makes 0 (`zeroed`): AVERAGE is then 0 too. */
+export const sumZeroed = (xs: readonly number[]): boolean => zeroed(...lastAddition(xs))
 export const sumSquares = (xs: readonly number[]) => xs.reduce((s, x) => s + x * x, 0)
 export const product = (xs: readonly number[]) => xs.length ? xs.reduce((p, x) => p * x, 1) : 0
 // Do not spread the input into Math.max/min: a whole column can exceed the call argument limit.

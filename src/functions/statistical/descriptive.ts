@@ -7,7 +7,7 @@ import { eachValue, type Arg, type Cx, type FnDef, type Grid, type Segment } fro
 import { Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
-import { excelSum, max, min, NEWER_MAX_ARGS, sum } from '../common.js'
+import { max, min, NEWER_MAX_ARGS, sum, sumZeroed } from '../common.js'
 import { functions as trig } from '../math/trig.js'
 import { areaNumbers, devsq, interpolate, mean, sorted, stdev, variance } from './common.js'
 
@@ -17,8 +17,8 @@ function median(xs: number[]): number {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2
 }
 
-/** AVERAGE: 0 where Excel's SUM of the numbers is 0 (the set `sum-zero-held`), else the stable mean. */
-const average = (xs: number[]) => (excelSum(xs) === 0 ? 0 : mean(xs))
+/** AVERAGE: 0 where SUM's last addition leaves a remainder Excel makes 0 (the set `sum-zero-held`), else the stable mean. */
+const average = (xs: number[]) => (sumZeroed(xs) ? 0 : mean(xs))
 
 /** Σ((x − mean)/s)^k with s the sample (ddof 1) or population (ddof 0) deviation; #DIV/0! when s is 0. */
 function moment(xs: number[], k: number, ddof: number): number | undefined {

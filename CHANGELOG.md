@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.25.0 (2026-10-12)
+
+Internal release; not published to npm. Excel's Find in a session, and two numeric rules of Excel that models depend on. The synthetic book's values and hashes are as in 0.24.0.
+
+Added:
+
+- `findCells` searches as Excel's Find ([docs/live-books.md](docs/live-books.md)): `wildcards` (`*`, `?`, `~`; `?` is one UTF-16 unit, so a character outside the BMP takes two), `wholeCell` (Match entire cell contents), `byColumns` (Search By Columns), `skipHidden` (cells of hidden rows and columns skipped as Find skips them: always in Look in Values, in every search on a filtered sheet, where the cells come by the blocks the hidden lines leave), and `in: 'edit'`, the text a cell opens with (Look in Formulas: a formula in the book's locale, a number by its format, a text without its apostrophe). Without Match case `ß` is `ẞ`, `σ`, `ς` and `Σ` are one letter, and `i` is not `İ`. On 34,000 rows a search of the whole data sheet takes 0.4 to 0.5 s, where reading every cell's edit text through windows took 0.7 to 1.2 s.
+
+Changed:
+
+- `findCells` gives the cells in Find's order, range by range, by rows or by columns, and an empty query finds nothing; a page without `count` reads every cell of the ranges.
+
+Fixed:
+
+- A negative number to a fraction is its real root where 1/y, to 15 significant digits, is an odd whole number below 2^31 - 1, computed as Excel computes it: `(-32)^(1/5)` and `POWER(-32,0.2)` are -2, `(-8)^(1/3)` is -1.9999999999999998; `(-8)^(2/3)` and `(-8)^(1/2)` stay `#NUM!`.
+- A formula's last operation, outside parentheses, when it is `+` or `-`, is 0 where its answer is below eight units in the last place of its left operand, as Excel makes it: `=0.5-0.4-0.1` is 0, `=(0.5-0.4-0.1)` stays -2.78E-17. `SUM`, `SUBTOTAL` and `AGGREGATE` take the rule at their last addition, and `AVERAGE` is 0 where that addition is made 0.
+
+Measured: Find by a new step of the Windows harness (`Range.Find` and `FindNext` through COM), three sets of 251 cases in en-US and ru-RU, each predicted before Excel ran it (136 of 155, 45 of 64 and 32 of 32 confirmed); the engine gives Excel's answer to all but seven cases in each locale, known differences (an empty query, `~` alone, a range of one cell). The power and the near-zero rules by five sets on Excel for Mac and Windows (334 cases), predicted before each run; Mac and Windows answer alike but the last digit of three roots. Excel's handling of circular references without iteration was measured on Windows and is not changed here.
+
 ## 0.24.0 (2026-10-12)
 
 Internal release; not published to npm. A cell edited in place, as Excel reads it. The synthetic book's values and hashes are as in 0.23.0.
