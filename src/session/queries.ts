@@ -11,6 +11,8 @@ import { rectText, hasCell, meets, type Rect } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
+import { NONE } from '../looks/layer.js'
+import { inputIn, layerOf } from '../looks/sheet.js'
 import { checkRange } from './viewport.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
@@ -73,7 +75,7 @@ class Page<T> {
   }
 }
 
-/** Native input order followed by spilled cells, once across overlapping ranges. Stable while the revision is unchanged. */
+/** Native input order, then the cells of the sheets' looks, then spilled cells, once across overlapping ranges. Stable while the revision is unchanged. */
 function* requested(s: EngineState, refs: Ref[]): Generator<[number, number, number] | undefined> {
   const earlier = (n: number, i: number, r: number, c: number) => {
     for (let j = 0; j < n; j++) if (refs[j].s === i && hasCell(refs[j], r, c)) return true
@@ -85,12 +87,19 @@ function* requested(s: EngineState, refs: Ref[]): Generator<[number, number, num
       const { row, col } = parseAddress(addr)
       if (hasCell(x, row, col) && !earlier(n, x.s, row, col)) yield [x.s, row, col]
     }
+    const layer = layerOf(s.input.sheets[x.s])
+    for (const p of layer?.pieces(x) ?? [])
+      for (let r = p.r1; r <= p.r2; r++)
+        for (let c = p.c1; c <= p.c2; c++) {
+          if (paced(1)) yield undefined
+          if (!(formatAddress(r, c) in s.input.sheets[x.s].cells) && !earlier(n, x.s, r, c)) yield [x.s, r, c]
+        }
     for (const spill of s.spills.on.values()) {
       if (spill.s !== x.s || !meets(spill, x)) continue
       for (let r = Math.max(spill.r1, x.r1); r <= Math.min(spill.r2, x.r2); r++)
         for (let c = Math.max(spill.c1, x.c1); c <= Math.min(spill.c2, x.c2); c++) {
           if (paced(1)) yield undefined
-          if (!(formatAddress(r, c) in s.input.sheets[x.s].cells) && !earlier(n, x.s, r, c)) yield [x.s, r, c]
+          if (!(formatAddress(r, c) in s.input.sheets[x.s].cells) && (layer?.idAt(r, c) ?? NONE) === NONE && !earlier(n, x.s, r, c)) yield [x.s, r, c]
         }
     }
   }
@@ -100,7 +109,7 @@ function* projected(s: EngineState, i: number, r: number, c: number, fields: Cel
   const addr = formatAddress(r, c),
     out: ReadCell = { sheet: s.sheetNames[i], cell: addr }
   const view = fields.includes('text') ? (yield* cellsIn(s, i, [{ r1: r, c1: c, r2: r, c2: c }], true))[addr] : cellResult(s, i, addr, null, undefined)
-  const input = s.input.sheets[i].cells[addr]
+  const input = inputIn(s.input.sheets[i], addr, r, c)
   for (const f of fields) {
     if (f === 'issue') out.issue = issueDetail(s, i, r, c)
     else if (f === 'style' && input?.style !== undefined) out.style = input.style

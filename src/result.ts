@@ -10,6 +10,8 @@ import { formatAddress, MAX_COLS, msToSerial, parseAddress } from './model.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks, type Looks } from './shown.js'
+import { NONE } from './looks/layer.js'
+import { inputIn, layerOf } from './looks/sheet.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
 import { cellCount, cornersText, meets, type Rect } from './structure/area.js'
@@ -57,10 +59,13 @@ export function* spilled(state: EngineState, s: number, within?: Rect, whole = f
   return out
 }
 
-/** A cell of sheet `s` as a result gives it; `spillOf`, the formula of a spilled cell; `format`, with the cell's own number format. */
+/**
+ * A cell of sheet `s` as a result gives it; `spillOf`, the formula of a spilled cell; `format`, with the cell's own number
+ * format (of its input, or of the sheet's looks for a cell without one).
+ */
 export function cellResult(state: EngineState, s: number, addr: string, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const { row, col } = parseAddress(addr)
-  const inCell = state.input.sheets[s].cells[addr] ?? {}
+  const inCell = inputIn(state.input.sheets[s], addr, row, col) ?? {}
   const value = outValue(toCellValue(valueAt(state, s, row, col)))
   const id = state.at.get(key(s, row, col))
   const out: CellResult = look ? { value, ...look(s, row, col, value, inCell) } : { value }
@@ -79,10 +84,13 @@ const BY_CELL = 65_536
 
 /**
  * The cells of rectangles `xs` of sheet `s` as the result gives them (`Session.getCells`), with each cell's own style, once
- * each: a rectangle's cells looked up one by one, or a larger one's found among the sheet's. The steps yield between cells.
+ * each: a rectangle's cells looked up one by one, or a larger one's found among the sheet's; a cell of a look of the
+ * sheet's looks too, as an input of a look alone would be. The steps yield between cells.
  */
 export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boolean): Steps<Record<string, CellView>> {
-  const cells = state.input.sheets[s].cells
+  const sheet = state.input.sheets[s]
+  const cells = sheet.cells
+  const layer = layerOf(sheet)
   const look = display ? cellLooks(state) : null
   const spill = new Map<string, string>()
   const listed = new Set<string>()
@@ -99,14 +107,22 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
         for (let c = x.c1; c <= x.c2; c++) {
           if (paced(1)) yield
           const a = formatAddress(r, c)
-          if (a in cells) mine.push(a)
+          if (a in cells || (layer && layer.idAt(r, c) !== NONE)) mine.push(a)
         }
-    } else
+    } else {
       for (const a of Object.keys(cells)) {
         if (paced(1)) yield
         const { row, col } = parseAddress(a)
         if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2) mine.push(a)
       }
+      for (const p of layer?.pieces(x) ?? [])
+        for (let r = p.r1; r <= p.r2; r++)
+          for (let c = p.c1; c <= p.c2; c++) {
+            if (paced(1)) yield
+            const a = formatAddress(r, c)
+            if (!(a in cells)) mine.push(a)
+          }
+    }
     for (const a of mine) listed.add(a)
     // what the sheet's conditional formats give the cells: every cell of a window, the listed ones of a larger rectangle
     for (const [k, v] of yield* windowLooks(state, s, x, small ? undefined : new Set(mine.map((a) => cellIndex(a))))) cond.set(k, v)
@@ -117,7 +133,7 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
   for (const addr of yield* sortedSteps([...listed])) {
     if (paced(1)) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
-    const input = cells[addr]
+    const input = cells[addr] ?? (layer && layer.lookAt(...rowCol(addr)))
     // what the cell shows beside its value: its own style, note and link, an old-kind array's area, its format's code, and its conditional formats' appearance
     if (input?.style !== undefined) view.style = input.style
     if (input?.note !== undefined) view.note = input.note
@@ -143,12 +159,21 @@ const rowCol = (addr: string): [number, number] => {
 
 /**
  * The cells of sheet `s` a result lists, in order (input cells and the stored cells of spills), each with the formula it
- * spilled from; the steps yield between cells when the computation's slice is used up.
+ * spilled from; the steps yield between cells when the computation's slice is used up. A cell of the sheet's looks is
+ * listed where an input of a look alone was apart from the spills' stored cells: in the unstored part of a large spill.
  */
 function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined) => void): Steps<void> {
   const spill = yield* spilled(state, s)
+  const layer = state.spills.on.size ? layerOf(state.input.sheets[s]) : undefined
+  const unstored: string[] = []
+  if (layer)
+    for (const x of state.spills.on.values())
+      if (x.s === s)
+        for (const fill of x.fills)
+          for (const p of layer.pieces(fill))
+            for (let r = p.r1; r <= p.r2; r++) for (let c = p.c1; c <= p.c2; c++) unstored.push(formatAddress(r, c))
   let last: string | undefined
-  for (const addr of yield* sortedSteps([...Object.keys(state.input.sheets[s].cells), ...spill.keys()])) {
+  for (const addr of yield* sortedSteps([...Object.keys(state.input.sheets[s].cells), ...spill.keys(), ...unstored])) {
     if (paced(1)) yield
     // once: an input cell that does not block a spill (a format or a style alone) is a spilled one too
     if (addr === last) continue

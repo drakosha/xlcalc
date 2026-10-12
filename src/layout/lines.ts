@@ -5,6 +5,7 @@
  */
 import type { CellInput, ColumnInput, NumberFormat, RowInput, SheetInput } from '../contract.js'
 import type { EngineState } from '../engine.js'
+import { inputIn } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
 import { entryAt, lines, type Line } from './spans.js'
 
@@ -28,7 +29,7 @@ export const lookOf = (own: Look | undefined, row: Look | undefined, col: Look |
 export interface SheetLines {
   row(r: number): RowInput | undefined
   column(c: number): ColumnInput | undefined
-  /** The look a cell shows (`lookOf`): `own`, else the sheet's input at the cell. */
+  /** The look a cell shows (`lookOf`): `own`, else the sheet's input at the cell or its look of the sheet's looks. */
   look(r: number, c: number, own?: CellInput): Look
   /** The format a cell shows by (`formatOf`). */
   format(r: number, c: number, own?: CellInput): NumberFormat | undefined
@@ -49,7 +50,7 @@ function linesOf<T>(state: EngineState, map: Record<string, T> | undefined, axis
 }
 
 /** A sheet's lines; with the session's `state`, read once for it. */
-export function sheetLines(sh: Pick<SheetInput, 'cells' | 'rows' | 'columns'>, state?: EngineState): SheetLines {
+export function sheetLines(sh: Pick<SheetInput, 'cells' | 'looks' | 'rows' | 'columns'>, state?: EngineState): SheetLines {
   const rows = state ? linesOf(state, sh.rows, 'r') : lines(sh.rows, 'r')
   const cols = state ? linesOf(state, sh.columns, 'c') : lines(sh.columns, 'c')
   const lineOf = <T>(cache: Map<number, T | undefined>, ls: Line<T>[], i: number): T | undefined => {
@@ -60,6 +61,6 @@ export function sheetLines(sh: Pick<SheetInput, 'cells' | 'rows' | 'columns'>, s
   const [rowCache, colCache] = [new Map<number, RowInput | undefined>(), new Map<number, ColumnInput | undefined>()]
   const row = (r: number) => lineOf(rowCache, rows, r)
   const column = (c: number) => lineOf(colCache, cols, c)
-  const at = (r: number, c: number) => sh.cells[formatAddress(r, c)]
+  const at = (r: number, c: number) => inputIn(sh, formatAddress(r, c), r, c)
   return { row, column, look: (r, c, own = at(r, c)) => lookOf(own, row(r), column(c)), format: (r, c, own = at(r, c)) => formatOf(own, row(r), column(c)) }
 }
