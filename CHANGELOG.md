@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.22.1 (2026-10-12)
+
+Internal release; not published to npm. The ribbon's Number Format box in ru-RU as Excel for Windows shows it. The synthetic book's values and hashes are as in 0.22.0.
+
+Changed:
+
+- `numberFormatCategory(format, 'ru-RU')` follows Excel 16.0 for Windows, not Excel for Mac, which names nearly every code `(все форматы)` in ru-RU as it compares the code with its formats written in Russian syntax. `0.00`, `#,##0` and `0.0%` are Числовой and Процентный as in en-US; the ruble quoted after the amount (`#,##0.00\ "₽"`, the Currency item's format) is Денежный and ru-RU's accounting form Финансовый, the dollar's forms `(все форматы)`; a fraction needs its space quoted (`#" "?/4`); the short date is `dd/mm/yyyy`; built-in formats by number take the category of ru-RU's own code (5 to 8 Денежный, 41 to 44 Финансовый, 37 to 40 `(все форматы)`). en-US is unchanged.
+
+Measured: a new Windows step, `ribbon`, reads the box by UI Automation in a session logged on through Remote Desktop, over the books of the Mac's ribbon set (342 cells, all named as Excel for Windows) and a held-out set of 50 cells (34; the 16 others are dates and times with `;@` that Windows names by the lists of its Format Cells window, pinned with the reason). Excel for Mac's `(все форматы)` in ru-RU is a known difference by rule ([docs/formats.md](docs/formats.md#the-ribbons-number-format-box)).
+
 ## 0.22.0 (2026-10-12)
 
 Internal release; not published to npm. Links to other workbooks: a book that reads other workbooks computes from the values Excel stores of them in the file, as Excel computes a file it opens without updating its links, and the ribbon's Number Format box without the engine. The synthetic book's values and hashes are as in 0.21.2.
