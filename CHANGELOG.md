@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.28.0 (2026-10-13)
+
+Internal release; not published to npm. Edits over a large look layer as fast as over a few cells, and Excel's own text for a rule's alert. The synthetic book's values and hashes are as in 0.27.0.
+
+Changed:
+
+- Rows and columns inserted and deleted move a sheet's `looks` by their blocks of rows and patterns of columns, the new lines with the look of the line before them, without turning the layer into entries; edits of looks (`patchCells`, `setStyles`, `clearCells` with `formats` and `all`, text and values typed into a cell of the layer) change the layer alone, its list made when it is read. On a sheet of the wide shape (5.6 million cells of the layer) inserting row 10 takes 6 ms and 1 MB of heap, where 0.26.0 took 38 s and 730 MB; deleting rows and undoing either take milliseconds. Copies and moves of ranges turn only their source and target into entries (0.1 s for 344 by 100 cells of that layer).
+- `findCells` and `summarizeRanges` leave out the cells of a layer, which hold no value; `getLayout` does not make the list of looks.
+- A rule's alert without a message of its own (`error`) says what Excel's alert says: `This value doesn't match the data validation restrictions defined for this cell.`, in ru-RU `Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки.` (the dialogs Excel for Mac showed in the set `ui/fill-held`).
+
+Measured: each edit of a book with looks, its undo and redo against the same book with an entry per cell, and random series of 40 steps against full computations, in every kind of session; 120 random series of 60 steps against 0.24.0's entries, without a difference. Books without looks: structure operations, their undo and redo and cell edits within 4% of 0.27.0 in one process.
+
 ## 0.27.0 (2026-10-13)
 
 Internal release; not published to npm. A circular reference without iteration holds its values as Excel does. The synthetic book's values and hashes are as in 0.26.0; a book with a circular reference computes otherwise, and its `inputHash` changes once its cells hold values.
