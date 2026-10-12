@@ -5,7 +5,7 @@
  */
 import type { FileParts } from '../case-book.js'
 import type { Val } from '../formulajs.js'
-import type { RangeRef } from '../../../src/contract.js'
+import type { CellValue, RangeRef } from '../../../src/contract.js'
 import type { StoredBook } from '../stored.js'
 
 /** One step after Excel opens the book (it computes the book on opening, as the file has no values). */
@@ -14,6 +14,8 @@ export type Step =
   | 'full'
   | 'calc'
   | 'read'
+  /** The book saved as xlsx, Excel for Windows alone (`SaveAs`): what the file stores for the read rectangles. One a case. */
+  | 'save'
   /** A number or a text typed into a cell, or null to clear it (a session's `setCells`). */
   | { set: { sheet: string; cell: string; value: number | string | null } }
   /** A formula typed into a cell, in the engine's spelling (a session's `setCells`). */
@@ -35,6 +37,11 @@ export interface WorkbookCase {
   /** `['full', 'read']` when left out. */
   steps?: Step[]
   /**
+   * A circular reference without iterative calculation: Excel for Windows opens such a book through COM without a
+   * window, and its step runs the case; the Mac's step refuses it, as Excel for Mac shows a warning window.
+   */
+  cycle?: true
+  /**
    * A held-out case: the answer of each read predicted before Excel ran it, the values of non-blank cells by
    * `Sheet!A1` and the text of the cells to show by `show:Sheet!A1`.
    */
@@ -49,4 +56,6 @@ export interface WorkbookSet {
 export interface WorkbookAnswer {
   settings: { iteration: boolean; count: number; delta: number }
   reads: { values: Record<string, Val>; formulas: Record<string, string>; shown?: Record<string, string> }[]
+  /** At a `save` step: the values the saved file stores for the cells of the read rectangles, by `Sheet!A1`. */
+  saved?: Record<string, CellValue>
 }

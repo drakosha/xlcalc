@@ -63,6 +63,22 @@ export const MIN_NORMAL = 2.2250738585072014e-308
 export const fitNumber = (x: number): number | CErr => (!Number.isFinite(x) ? E.NUM : Math.abs(x) < MIN_NORMAL ? 0 : x)
 
 /**
+ * Excel's last addition of a formula or of SUM: its answer `r` is 0 below 2^(e-49), e the exponent of the left operand
+ * `a` (2^e ≤ |a| < 2^(e+1)), eight units in the last place of a (the sets `near-zero-held`, `sum-zero-held`).
+ */
+export function nearZero(a: number, r: number): number {
+  const x = Math.abs(a)
+  const y = Math.abs(r)
+  // an answer of 2^-48 of the operand or more is above the bound whatever the operand's mantissa
+  if (y * 2 ** 48 >= x || y === 0) return r
+  // the operand's power of two: log2 can round up to the next whole number just below a power of two
+  let p = 2 ** Math.floor(Math.log2(x))
+  if (p > x) p /= 2
+  else if (p * 2 <= x) p *= 2
+  return y * 2 ** 49 < p ? 0 : r
+}
+
+/**
  * The coercions of a locale: `toNum` (operators and numeric arguments; text through `number`), `toText`
  * (`&` and text arguments; booleans by `words`, numbers through `numberText`), `toBool` (text that is one of
  * `words`, any case).

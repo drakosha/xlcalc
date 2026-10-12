@@ -45,7 +45,7 @@ function filterRows(session: Session, sheet: string, range: string, field: numbe
 /** A step in the session; `read` takes the result. */
 function apply(session: Session, s: Step, reads: ComputeResult[]) {
   if (s === 'read') reads.push(session.getResult())
-  else if (s === 'full' || s === 'calc') return
+  else if (s === 'full' || s === 'calc' || s === 'save') return
   else if ('set' in s) session.setCells([{ sheet: s.set.sheet, cell: s.set.cell, input: s.set.value === null ? null : { value: s.set.value } }])
   else if ('formula' in s) session.setCells([{ sheet: s.formula.sheet, cell: s.formula.cell, input: { formula: s.formula.formula } }])
   else if ('hide' in s) {

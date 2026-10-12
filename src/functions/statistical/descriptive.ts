@@ -7,7 +7,7 @@ import { eachValue, type Arg, type Cx, type FnDef, type Grid, type Segment } fro
 import { Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
-import { max, min, NEWER_MAX_ARGS, sum } from '../common.js'
+import { excelSum, max, min, NEWER_MAX_ARGS, sum } from '../common.js'
 import { functions as trig } from '../math/trig.js'
 import { areaNumbers, devsq, interpolate, mean, sorted, stdev, variance } from './common.js'
 
@@ -16,6 +16,9 @@ function median(xs: number[]): number {
   const m = s.length >> 1
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2
 }
+
+/** AVERAGE: 0 where Excel's SUM of the numbers is 0 (the set `sum-zero-held`), else the stable mean. */
+const average = (xs: number[]) => (excelSum(xs) === 0 ? 0 : mean(xs))
 
 /** Σ((x − mean)/s)^k with s the sample (ddof 1) or population (ddof 0) deviation; #DIV/0! when s is 0. */
 function moment(xs: number[], k: number, ddof: number): number | undefined {
@@ -151,8 +154,8 @@ export const functions: Record<string, FnDef> = {
       return sum(xs.map((x) => Math.abs(x - m))) / xs.length
     },
   },
-  AVERAGE: { args: 'N', rep: 1, empty: 'DIV0', fn: mean },
-  AVERAGEA: { args: 'Y', rep: 1, empty: 'DIV0', fn: mean },
+  AVERAGE: { args: 'N', rep: 1, empty: 'DIV0', fn: average },
+  AVERAGEA: { args: 'Y', rep: 1, empty: 'DIV0', fn: average },
   COUNT: {
     args: 'V',
     rep: 1,

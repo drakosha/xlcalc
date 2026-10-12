@@ -33,6 +33,7 @@ export const hideRange = ({ rows, columns }: { rows?: string; columns?: string }
 
 /** A step as a line of the AppleScript's argument. */
 function stepLine(s: Step): string {
+  if (s === 'save') throw new Error('the workbook step save is Excel for Windows\'s alone')
   if (typeof s === 'string') return s
   if ('set' in s) {
     const { sheet, cell, value } = s.set
@@ -48,10 +49,12 @@ function stepLine(s: Step): string {
 }
 
 /**
- * A book with a circular reference and without iterative calculation makes Excel show a warning window on opening,
- * which stops the run: such a case is refused before Excel sees it (the engine finds the cycle).
+ * A book with a circular reference and without iterative calculation makes Excel for Mac show a warning window on
+ * opening, which stops the run: such a case is refused before Excel sees it (the engine finds the cycle), and so is a
+ * case marked `cycle`, which Excel for Windows alone runs.
  */
 export function checkCycles(c: WorkbookCase) {
+  if (c.cycle) throw new Error(`${c.id}: a circular reference without iterative calculation, run by Excel for Windows alone (Excel for Mac would show a warning window)`)
   if (c.file?.iterate) return
   const cycle = compute(takenBook(c.book), { display: false }).diagnostics.find((i) => i.kind === 'cell' && i.error === 'CYCLE')
   if (cycle?.kind === 'cell') throw new Error(`${c.id}: ${cycle.sheet}!${cycle.cell} is in a circular reference and the case has no iterative calculation (Excel would show a warning window)`)

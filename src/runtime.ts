@@ -23,7 +23,7 @@ import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS, MAX_TEXT } from './model.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
-import { Areas, E, fitNumber, fromCellValue, holds, isErr, Rng, type CErr, type V } from './values.js'
+import { Areas, E, fitNumber, fromCellValue, holds, isErr, nearZero, Rng, type CErr, type V } from './values.js'
 
 export interface SheetData {
   name: string
@@ -170,6 +170,9 @@ export function makeRuntime(ctx: RuntimeContext) {
   }
   const add = (a: V, b: V) => arith(a, b, (x, y) => x + y)
   const sub = (a: V, b: V) => arith(a, b, (x, y) => x - y)
+  // a formula's last + or -, outside parentheses: Excel's 0 near the left operand
+  const addLast = (a: V, b: V) => arith(a, b, (x, y) => nearZero(x, x + y))
+  const subLast = (a: V, b: V) => arith(a, b, (x, y) => nearZero(x, x - y))
   const mul = (a: V, b: V) => arith(a, b, (x, y) => x * y)
   const div = (a: V, b: V) => arith(a, b, (x, y) => (y === 0 ? E.DIV0 : x / y))
   const pow = (a: V, b: V) => arith(a, b, power)
@@ -371,7 +374,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     return !met.length ? E.NULL : met.length === 1 ? met[0] : new Areas(met)
   }
 
-  return { cell, spill, flat, bounds, scalar, view, add, sub, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, I, U, RO, E, cx }
+  return { cell, spill, flat, bounds, scalar, view, add, sub, addLast, subLast, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, I, U, RO, E, cx }
 }
 
 export type Runtime = ReturnType<typeof makeRuntime>
