@@ -4,6 +4,7 @@
  * the app reader's regressions: a self-closing cell between values, cells without `r`, prefixed tags.
  */
 import { describe, expect, it } from 'vitest'
+import { cellsOf } from './looks-book.js'
 import { codes, read, sheet, storedValues } from './xlsx-fixtures.js'
 
 const DATE_STYLES = '<numFmts count="2"><numFmt numFmtId="164" formatCode="0 m"/><numFmt numFmtId="165" formatCode="dd.mm.yyyy"/></numFmts><cellXfs count="4"><xf numFmtId="0"/><xf numFmtId="14"/><xf numFmtId="164"/><xf numFmtId="165"/></cellXfs>'
@@ -110,6 +111,6 @@ describe('xlsx reader: cells', () => {
 
   it('an empty cell with a style keeps its look; one with the default look is no cell', async () => {
     const r = await sheet('<row r="1"><c r="A1" s="1"/><c r="B1" s="0"/><c r="C1"/></row>', { styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="2"/></cellXfs>' })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { numberFormat: 2 } })
+    expect(cellsOf(r.book.sheets[0])).toEqual({ A1: { numberFormat: 2 } })
   })
 })

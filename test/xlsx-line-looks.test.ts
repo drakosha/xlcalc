@@ -8,6 +8,7 @@ import type { BookInput } from '../src/contract.js'
 import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
+import { cellsOf, expandSheet } from './looks-book.js'
 import { read } from './xlsx-fixtures.js'
 
 const DATE = 'dddd, mmmm d, yyyy'
@@ -90,7 +91,7 @@ describe('reading a stored cell over its row and column', () => {
       sheets: [{ name: 'S', body: `${COLS}<sheetData><row r="1"><c r="B1" s="1"><v>46096</v></c><c r="C1"><v>1</v></c></row><row r="2"><c r="B2"><v>46096</v></c><c r="B3" s="2"><v>46096</v></c></row><row r="4"><c r="B4"/></row></sheetData>` }],
       styles: STYLES,
     })
-    const s = r.book.sheets[0]
+    const s = expandSheet(r.book.sheets[0])
     const plain = r.book.styles!.findIndex((x) => Object.keys(x).length === 0)
     expect(plain).toBeGreaterThanOrEqual(0)
     expect(s.cells).toEqual({ B1: { value: 46096 }, C1: { value: 1 }, B2: { value: 46096, style: plain, numberFormat: 'General' }, B3: { value: 46096, style: plain, numberFormat: 4 }, B4: { style: plain, numberFormat: 'General' } })
@@ -130,7 +131,7 @@ describe('where a row crosses a column', () => {
     // row 6: column G has a format and no cell in it, the row none: General; E6 holds its row's look
     // row 8: no cell under the filled column E: the plain style; row 9 has its cell there, with the row's look
     expect(r.book.sheets[0].rows).toEqual({ 6: { style: 0, numberFormat: 'General' }, 8: { numberFormat: 2, style: plain }, 9: { numberFormat: 2 } })
-    expect(r.book.sheets[0].cells).toEqual({ E6: { value: 5 }, E9: { style: plain } })
+    expect(cellsOf(r.book.sheets[0])).toEqual({ E6: { value: 5 }, E9: { style: plain } })
     const shown = compute({ ...r.book, sheets: [{ ...r.book.sheets[0], cells: { ...r.book.sheets[0].cells, G6: { value: 46096 } } }] }).sheets[0].cells
     expect(shown.G6.text).toBe('46096')
   })

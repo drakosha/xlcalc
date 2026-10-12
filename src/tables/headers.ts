@@ -11,6 +11,7 @@ import { sheetKey } from '../syntax.js'
 import { rewriteBookTables } from './rewrite.js'
 import { sheetIndex } from '../structure/rewrite.js'
 import { freeColumnName } from './shift.js'
+import { lookIn } from '../looks/sheet.js'
 import { tableKey, tablesOf } from './model.js'
 
 /**
@@ -74,7 +75,7 @@ export function headerEdits(book: BookInput, edits: CellReplace[], text: (v: Sca
       const t = tables.find((x) => x.s === s && tableKey(x.name) === tableKey(ti.name))!
       names.forEach((n, i) => {
         const addr = formatAddress(t.r1, t.c1 + i)
-        const { value: _, formula: __, ...look } = cells[addr] ?? {}
+        const { value: _, formula: __, ...look } = cells[addr] ?? lookIn(sheet, t.r1, t.c1 + i) ?? {}
         cells[addr] = { ...look, value: n }
       })
       return { ...ti, columns: ti.columns.map((c, i) => ({ ...c, name: names[i] })) }

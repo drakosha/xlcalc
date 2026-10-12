@@ -13,14 +13,22 @@ import { synthBook } from '../src/synth.js'
 import { BOOKS, CLOCK } from './async-books.js'
 import { pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
+import { cellsOf } from './looks-book.js'
+import { holds } from '../src/array-areas.js'
 import './locales.js'
 
-/** The slice of a result over a rectangle, with the cells' own styles, notes, links and old-kind array areas from the book, and their formats' codes. */
+/**
+ * The slice of a result over a rectangle, with the cells' own styles, notes, links and old-kind array areas from the book,
+ * and their formats' codes; a cell of the sheet's looks the result does not list is an empty cell of its look, as an
+ * entry of a look alone would be.
+ */
 function slice(r: ComputeResult, book: BookInput, sheet: string, range: string): Record<string, CellView> {
   const x = parseRange(range)!
-  const input = book.sheets.find((s) => s.name === sheet)!.cells
+  const input = cellsOf(book.sheets.find((s) => s.name === sheet)!)
+  const listed = r.sheets.find((s) => s.name === sheet)!.cells
+  const looked = Object.fromEntries(Object.keys(input).filter((a) => !listed[a] && !holds(input[a])).map((a) => [a, { value: null, text: '', ...(input[a].numberFormat !== undefined ? { numberFormat: input[a].numberFormat } : {}) }]))
   const out: Record<string, CellView> = {}
-  for (const [a, c] of Object.entries(r.sheets.find((s) => s.name === sheet)!.cells)) {
+  for (const [a, c] of Object.entries({ ...listed, ...looked })) {
     const { row, col } = parseAddress(a)
     if (row < x.r1 || row > x.r2 || col < x.c1 || col > x.c2) continue
     const { style, note, link, array } = input[a] ?? {}

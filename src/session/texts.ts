@@ -19,6 +19,7 @@ import { cellCount, hasCell, rectText, type Rect } from '../structure/area.js'
 import { formulaCopier } from '../structure/copy.js'
 import { arrayRefusal, cellText, columnWidening, headerRefusal, readText, textRefusal, validationAlert, withTyped } from './text.js'
 import { cellValue } from './looks.js'
+import { inputAt } from './book.js'
 import { MAX_CELLS } from './styles.js'
 
 /** Text typed into the cell at row `r`, column `c` of sheet `i`. */
@@ -65,7 +66,7 @@ export function typedTexts(s: EngineState, typings: Typing[], now: string, way: 
     const ref = { sheet: s.sheetNames[i], cell: formatAddress(r, c) }
     const k = `${i}:${ref.cell}`
     const earlier = cells.get(k)
-    const typed = cellText(s, i, r, c, earlier ? (earlier.edit.input ?? undefined) : s.input.sheets[i].cells[ref.cell], text, now, way)
+    const typed = cellText(s, i, r, c, earlier ? (earlier.edit.input ?? undefined) : inputAt(s, i, ref.cell), text, now, way)
     if (!typed.ok) return { ok: false, refusal: typed, ref }
     const edit = { ...ref, input: typed.input }
     const refused = pasted ? null : textRefusal(s, edit)
@@ -125,9 +126,8 @@ export function checkActive(v: unknown, x: Rect, path = 'opts.active'): { r: num
  */
 export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c: number }, text: string, now: string, way: EntryWay = 'typed'): TypedTexts {
   if (cellCount(x) > MAX_CELLS) throw new InputError('range', `a range of ${cellCount(x)} cells: an entry goes into ${MAX_CELLS} cells at most`)
-  const cells = s.input.sheets[i].cells
   const sheet = s.sheetNames[i]
-  const typed = readText(s, i, a.r, a.c, cells[formatAddress(a.r, a.c)], text, now, way)
+  const typed = readText(s, i, a.r, a.c, inputAt(s, i, formatAddress(a.r, a.c)), text, now, way)
   if (!typed.ok) return { ok: false, refusal: typed as Refusal<CellTextRefusal>, ref: { sheet, cell: formatAddress(a.r, a.c) } }
   const formula = typed.input?.formula
   const copy = formula === undefined ? null : formulaCopier(s.input, s.tables)
@@ -138,7 +138,7 @@ export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c
       spend(1)
       const cell = formatAddress(r, c)
       const input = copy && (r !== a.r || c !== a.c) ? { ...typed.input, formula: copy(formula!, from, { sheet, row: r, col: c }) } : typed.input
-      out.push({ i, r, c, edit: { sheet, cell, input: withTyped(s, i, r, c, cells[cell], input) } })
+      out.push({ i, r, c, edit: { sheet, cell, input: withTyped(s, i, r, c, inputAt(s, i, cell), input) } })
     }
   return takenTogether(s, out)
 }

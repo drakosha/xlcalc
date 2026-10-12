@@ -69,7 +69,8 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
   onlyKeys(given, 'snapshot', ['book', 'result'], 'cached' in given ? ' (a file read: pass { book: read.book, result: read.cached })' : 'sheets' in given ? BOOK_ALONE : '')
   onlyKeys(o, 'opts', ['mode', 'values', 'locale'], 'result' in o ? ' (the result goes in the snapshot: writeXlsx({ book, result }))' : '')
-  const book = checkBook(given.book, 'snapshot.book')
+  // a sheet without looks is written as given, its entries in their order; one with looks as the engine takes it
+  const book = checkBook(given.book, 'snapshot.book', true)
   const { result } = given
   const path = 'snapshot.result'
   const mode = o.mode ?? 'formulas'

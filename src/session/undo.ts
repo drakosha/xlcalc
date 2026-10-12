@@ -136,14 +136,14 @@ export class History {
   }
 }
 
-/** The way from sheet `from` to sheet `to` (the same sheet before and after a change of its layout), but its cells. */
+/** The way from sheet `from` to sheet `to` (the same sheet before and after a change of its layout), but its cells and their looks. */
 function sheetBack(i: number, from: SheetInput, to: SheetInput): SheetBack | null {
   const set: Record<string, unknown> = {}
   const unset: string[] = []
   const lines: SheetBack['lines'] = []
   for (const k of new Set([...Object.keys(from), ...Object.keys(to)])) {
     const [a, b] = [(from as unknown as Record<string, unknown>)[k], (to as unknown as Record<string, unknown>)[k]]
-    if (k === 'cells' || a === b) continue
+    if (k === 'cells' || k === 'looks' || a === b) continue
     if ((k === 'rows' || k === 'columns') && a && b) {
       // a line's entries change: the entries that differ, not the whole map
       const [x, y] = [a as Record<string, object>, b as Record<string, object>]

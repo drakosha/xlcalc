@@ -13,6 +13,7 @@ import { lineAt } from '../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../src/model.js'
 import { cornersText, decode, encode, meets } from '../src/structure/area.js'
 import { canonical, parse, sheetKey, walk } from '../src/syntax.js'
+import { expandSheet } from './looks-book.js'
 import { numberFormatOf } from '../bench/coverage/stored.js'
 
 const dir = new URL('./excel/struct/', import.meta.url)
@@ -133,8 +134,10 @@ export function differences(book: BookInput, a: ExcelStructAnswer, read: string,
   const names = book.sheets.map((s) => s.name)
   if (JSON.stringify(names) !== JSON.stringify(a.sheets.map((s) => s.name))) out.push(`sheets: Excel ${JSON.stringify(a.sheets.map((s) => s.name))}, engine ${JSON.stringify(names)}`)
   for (const s of a.sheets) {
-    const ours = book.sheets.find((x) => x.name === s.name)
-    if (!ours) continue
+    const found = book.sheets.find((x) => x.name === s.name)
+    if (!found) continue
+    // the cells of the sheet's looks as the entries they stand for
+    const ours = expandSheet(found)
     // every cell of an old-kind array formula's area shows its formula, as Excel shows it
     const arrays = new Map<string, CellInput>()
     for (const c of Object.values(ours.cells)) {

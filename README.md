@@ -355,7 +355,7 @@ console.log(session.getCells('Plan', ['B3', 'D2']))
 console.log(session.getCells('Plan', 'D1').D1.array, session.getLayout().sheets) // → D1:D2 [ { name: 'Plan', merges: [ 'F1:G2' ] } ]
 ```
 
-`getUsedRange(sheet)` says where the sheet's cells end: the last row and column reached by a cell of its input (a value, a formula, or a style, a format, meta, a note or a link alone), a spilled array (its whole range, so `B1` above reaches row 3), a merged area or a table. Settings of whole rows and columns, conditional formats and data validation do not count, as they usually cover whole lines. It costs the sheet's columns, spills and cells without a value, not a pass over all its cells. `getLayout()` is the book without its cells: the styles, names and settings, and every field of each sheet but `cells` (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation, outline settings, whether it is hidden), at a cost that does not depend on the cells. `getCells(sheet, ranges)` reads several rectangles at once, each cell once, and `getCell(sheet, cell)` one cell, undefined where `getCells` leaves it out. A view of an old-kind array formula's top-left cell has its `array`, beside its `spill`. A view with a number format of its own, and a change whose format changed to one, have the format as a code too (`numberFormatCode`), as the window gives it: a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU), a code as it is.
+`getUsedRange(sheet)` says where the sheet's cells end: the last row and column reached by a cell of its input (a value, a formula, or a style, a format, meta, a note or a link alone, a cell of the sheet's looks too), a spilled array (its whole range, so `B1` above reaches row 3), a merged area or a table. Settings of whole rows and columns, conditional formats and data validation do not count, as they usually cover whole lines. It costs the sheet's columns, spills and cells without a value, not a pass over all its cells. `getLayout()` is the book without its cells: the styles, names and settings, and every field of each sheet but `cells` and `looks` (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation, outline settings, whether it is hidden), at a cost that does not depend on the cells. `getCells(sheet, ranges)` reads several rectangles at once, each cell once, and `getCell(sheet, cell)` one cell, undefined where `getCells` leaves it out. A view of an old-kind array formula's top-left cell has its `array`, beside its `spill`. A view with a number format of its own, and a change whose format changed to one, have the format as a code too (`numberFormatCode`), as the window gives it: a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU), a code as it is.
 
 ### Editing a grid
 
@@ -470,6 +470,45 @@ console.log(patchLines({ 'B:F': { width: 10 } }, 'D', { hidden: true }))
 console.log(patchLines({ '5:9': { height: 20, outlineLevel: 1 } }, '7:12', { height: null }))
 // → { '5:6': { height: 20, outlineLevel: 1 }, '7:9': { outlineLevel: 1 } }
 ```
+
+### Looks of many cells
+
+A sheet formatted across many empty cells, such as whole rows to column XFD in a model laid out for printing, keeps that look in `looks`: rectangles, each with a style and a number format, a later one over the earlier ones. The book holds no object per cell for them, so a sheet of six million formatted cells reads, opens a session and goes to a thread in a few megabytes. A cell without an entry in `cells` shows the style and the number format of the last rectangle over it, both from that rectangle (one without a field gives the cell none of its own, one without either clears the look); a field the cell has none of comes from its row, else its column, as for an entry. A cell with an entry shows its own fields, whatever the rectangles say: `B2` below holds a value and no look of its own.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  styles: [{ font: { bold: true } }, { fill: { color: '#FFF2CC' } }],
+  sheets: [{
+    name: 'Plan',
+    cells: { A1: { value: 'Region', style: 0 }, B2: { value: 0.25 } },
+    looks: [{ range: 'A2:XFD4', numberFormat: '#,##0' }, { range: 'B2:B4', style: 1, numberFormat: '0.0%' }, { range: 'XFD4' }],
+  }],
+})
+console.log(session.getCell('Plan', 'B3'), session.getCell('Plan', 'B2'))
+// → {
+//     value: null,
+//     text: '',
+//     numberFormat: '0.0%',
+//     style: 1,
+//     numberFormatCode: '0.0%'
+//   } { value: 0.25, text: '0.25' }
+console.log(session.getUsedRange('Plan'), Object.keys(session.getResult().sheets[0].cells)) // → { rows: 4, columns: 16384 } [ 'A1', 'B2' ]
+console.log(session.getBook().sheets[0].looks)
+// → [
+//     { range: 'A2:A3', numberFormat: '#,##0' },
+//     { range: 'C2:XFD3', numberFormat: '#,##0' },
+//     { range: 'B3', style: 1, numberFormat: '0.0%' },
+//     { range: 'A4', numberFormat: '#,##0' },
+//     { range: 'B4', style: 1, numberFormat: '0.0%' },
+//     { range: 'C4:XFC4', numberFormat: '#,##0' }
+//   ]
+session.setCellText('Plan', 'B3', '12')
+console.log(session.getBook().sheets[0].cells.B3) // → { style: 1, value: 0.12, numberFormat: '0.0%' }
+```
+
+An entry with nothing but a style or a number format is the same thing, and a book is taken with each such entry moved into its sheet's `looks`: a book with looks and the same book with an entry in each of their cells compute, show, hash and write alike. The books the calls give back (`getBook()`, `getSnapshot()`, `editStructure`, `readXlsx`) hold the looks in one form for one set of them, as above: rows in blocks, the runs of a group of rows as rectangles across it, then the rows of the group that differ. A cell of the looks is a cell with a look of its own wherever cells are read: a window, `getCells`, `readCells` and `findCells`, `getUsedRange`, text typed into it, its conditional formats. A result lists no such cell, as it holds no value, but where a large spill's unstored part covers it, as a result listed an entry there. Typed over, a cell keeps its look, as in Excel; `setCells` with null keeps it, `replaceCells` with null takes it away, and `patchCells`, `clearCells`, structure operations and undo change the looks' cells as they change entries. The input hash reads a sheet's looks after its cells, so a book without them hashes as before.
 
 ### Undo and redo
 
@@ -1183,7 +1222,7 @@ console.log((await writeXlsx({ book })).issues.map((i) => i.code)) // → [ 'noC
 
 `values` says which values of formulas the file stores. With a result it is `'require'`: every formula and every cell of an array has its value in the result, else the result is not the book's and `writeXlsx` throws `InputError`. `'preserve'` writes the values the result has and reports the formulas without one (`noCachedValues`). Without a result it is `'omit'`: the file stores no values, reported as `noCachedValues` when the book has formulas, but not when `values: 'omit'` asks for it. A file with formulas asks Excel to compute them when it opens it, whichever values it stores. A session is not a snapshot (an asynchronous one lives in a thread): pass `session.getSnapshot()`, awaited for an asynchronous session. Nor is a result alone, which has no book: `writeXlsx(compute(book))` throws `InputError` with `pass { book, result }`.
 
-Both functions return promises: the archive is inflated and deflated by the platform's streams. Hidden and very hidden sheets (`hidden: true` and `hidden: 'very'`; the writer makes the first visible sheet the active one), styles, number formats (built-in ones by their number), widths, heights, hidden rows and columns, outline levels, merged areas, notes, hyperlinks, frozen panes, conditional formats (Excel 2010's rules too), rules of data validation, names, tables, a sheet's filter mode, the date system, iterative calculation and the book's locale go both ways. A cell without a style or a format of its own is written with its row's, else its column's, as Excel writes a value typed there, so a date in a column of dates shows as a date in Excel, and it reads back without one.
+Both functions return promises: the archive is inflated and deflated by the platform's streams. Hidden and very hidden sheets (`hidden: true` and `hidden: 'very'`; the writer makes the first visible sheet the active one), styles, number formats (built-in ones by their number), widths, heights, hidden rows and columns, outline levels, merged areas, notes, hyperlinks, frozen panes, conditional formats (Excel 2010's rules too), rules of data validation, names, tables, a sheet's filter mode, the date system, iterative calculation and the book's locale go both ways. A cell without a style or a format of its own is written with its row's, else its column's, as Excel writes a value typed there, so a date in a column of dates shows as a date in Excel, and it reads back without one. A cell the file stores with a look alone, as Excel stores each cell of a formatted area, is read into its sheet's `looks` ([Looks of many cells](#looks-of-many-cells)), and the cells of `looks` are written back as such cells.
 
 ```js
 import { readXlsx, writeXlsx } from 'xlcalc/xlsx'

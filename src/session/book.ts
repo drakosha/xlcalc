@@ -1,7 +1,8 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
 import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, SheetInput } from '../contract.js'
-import { setInput, type EngineState } from '../engine.js'
+import { setInput, settled, type EngineState } from '../engine.js'
 import { InputError } from '../input.js'
+import { inputIn } from '../looks/sheet.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -20,29 +21,41 @@ export function contentEdits(s: EngineState, edits: CellReplace[]): CellReplace[
     last.set(`${i}:${e.cell}`, [e, i])
   }
   const out: CellReplace[] = []
+  const quiet: CellReplace[] = []
   for (const [e, i] of last.values()) {
     if (content(s.input.sheets[i].cells[e.cell], s.ctx.rules.epoch) !== content(e.input, s.ctx.rules.epoch)) out.push(e)
     else {
       const { row, col } = parseAddress(e.cell)
       setInput(s, i, e.cell, row, col, e.input)
+      quiet.push(e)
     }
   }
+  settled(s, quiet)
   return out
 }
 
-/** The inputs of cells now (null: none), once per cell: the edits that put them back. */
+/** The inputs of cells now (null: none), a look of the sheet's looks as an input of a look alone, once per cell: the edits that put them back. */
 export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]): CellReplace[] {
   const out = new Map<string, CellReplace>()
   for (const { sheet, cell } of refs) {
     const k = `${sheetKey(sheet)}!${cell}`
-    if (!out.has(k)) out.set(k, { sheet, cell, input: s.input.sheets[s.sheetIdx.get(sheetKey(sheet))!].cells[cell] ?? null })
+    if (!out.has(k)) out.set(k, { sheet, cell, input: inputAt(s, s.sheetIdx.get(sheetKey(sheet))!, cell) ?? null })
   }
   return [...out.values()]
 }
 
-/** The session's book without its cells (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own. */
+/** A cell's input, or its look from the sheet's looks as an input of a look alone (`inputIn`). */
+export function inputAt(s: EngineState, i: number, cell: string): CellInput | undefined {
+  const sheet = s.input.sheets[i]
+  const input = sheet.cells[cell]
+  if (input || !sheet.looks) return input
+  const { row, col } = parseAddress(cell)
+  return inputIn(sheet, cell, row, col)
+}
+
+/** The session's book without its cells and their looks (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own. */
 export function bookLayout(book: BookInput): BookLayout {
-  return { ...book, sheets: book.sheets.map(({ cells: _cells, ...rest }) => rest) }
+  return { ...book, sheets: book.sheets.map(({ cells: _cells, looks: _looks, ...rest }) => rest) }
 }
 
 /** Every style that cells, rows and columns use must be in a table of `count` styles. */
@@ -52,6 +65,7 @@ export function checkStylesUsed(book: BookInput, count: number) {
   }
   for (const s of book.sheets) {
     for (const [addr, c] of Object.entries(s.cells)) check(c.style, `${s.name}!${addr}`)
+    for (const x of s.looks ?? []) check(x.style, `looks ${x.range} of ${s.name}`)
     for (const [k, c] of Object.entries(s.columns ?? {})) check(c.style, `columns ${k} of ${s.name}`)
     for (const [k, r] of Object.entries(s.rows ?? {})) check(r.style, `rows ${k} of ${s.name}`)
   }

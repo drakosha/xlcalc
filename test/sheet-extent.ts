@@ -2,8 +2,9 @@
 import type { BookInput, ComputeResult, SheetExtent } from '../src/contract.js'
 import { parseAddress } from '../src/model.js'
 import { parseRange } from '../src/structure/area.js'
+import { cellsOf } from './looks-book.js'
 
-/** The last row and column of the cells a result lists, the spill ranges, the merged areas and the tables of the book's sheet. */
+/** The last row and column of the cells a result lists, the cells of the sheet's looks, the spill ranges, the merged areas and the tables of the book's sheet. */
 export function extentOf(r: ComputeResult, book: BookInput, sheet: string): SheetExtent {
   let rows = 0
   let columns = 0
@@ -21,6 +22,8 @@ export function extentOf(r: ComputeResult, book: BookInput, sheet: string): Shee
     if (c.spill) area(c.spill)
   }
   const s = book.sheets.find((x) => x.name === sheet)!
+  // a result lists no cell of the looks, which count as cells of a look alone
+  for (const a of Object.keys(cellsOf(s))) area(a)
   for (const m of s.merges ?? []) area(m)
   for (const t of s.tables ?? []) area(t.range)
   return { rows, columns }
