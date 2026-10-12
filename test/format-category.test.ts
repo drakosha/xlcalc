@@ -1,7 +1,7 @@
 /**
  * `numberFormatCategory` and `numberFormatChoices`: the category of a format as the ribbon's Number Format box shows it
  * and the items of its list, in en-US and ru-RU; the code as Excel keeps it (`canonical`); their input checks. Excel's
- * answers are in `test/ui-excel.test.ts` (the ui set `ribbon`).
+ * answers are in `test/ui-excel.test.ts` (the ui set `ribbon`, Excel for Mac) and `test/format-category-win.test.ts` (Excel for Windows).
  */
 import { describe, expect, it } from 'vitest'
 import { canonical } from '../src/numfmt/category.js'
@@ -54,17 +54,34 @@ describe('numberFormatCategory in en-US', () => {
 })
 
 describe('numberFormatCategory in ru-RU', () => {
-  it("a code its syntax writes otherwise (0,00, [Красный], ДД.ММ.ГГГГ) is (все форматы); the table of bracketed currencies and the special formats match", () => {
-    expect(categories(['General', '0', '0%', '@', 1, 9, 49], 'ru-RU')).toEqual(['general', 'number', 'percentage', 'text', 'number', 'percentage', 'text'])
-    expect(categories(['0.00', '#,##0', '0;[Red]0', '0.00%', '0.00E+00', '# ?/?', 14, 'dd.mm.yyyy;@', 'h:mm;@', 7, 44, '"$"#,##0.00'], 'ru-RU')).toEqual(Array(12).fill('custom'))
-    expect(categories(['[$$-409]#,##0.00', '#,##0.00 [$₽-419]', '_-* #,##0.00 [$₽-419]_-;-* #,##0.00 [$₽-419]_-;_-* "-"?? [$₽-419]_-;_-@_-', '000000'], 'ru-RU')).toEqual(['currency', 'currency', 'accounting', 'special'])
-    expect([numberFormatCategory('0.000', ruRU), numberFormatCategory(0, ruRU)]).toEqual([{ category: 'custom', name: '(все форматы)' }, { category: 'general', name: 'Общий' }])
+  it("names a code as Excel for Windows does: en-US's numbers, percents, exponents and text, the locale's money, fractions and short date", () => {
+    expect(categories(['General', '0', '0.00', '#,##0.00', '0.00;[Red]0.00', '0%', '0.00%', '0.00E+00', '@'], 'ru-RU')).toEqual([
+      'general', ...Array(4).fill('number'), 'percentage', 'percentage', 'scientific', 'text',
+    ] satisfies FormatCategory[])
+    expect(categories(['#,##0.00 "₽"', '#,##0.00\\ "₽";[Red]\\-#,##0.00\\ "₽"', '#,##0.00 [$₽-419];-#,##0.00 [$₽-419]', '[$$-409]#,##0.00'], 'ru-RU')).toEqual(Array(4).fill('currency'))
+    expect(categories(['_-* #,##0.00 "₽"_-;-* #,##0.00 "₽"_-;_-* "-"?? "₽"_-;_-@_-', '_-* #,##0_-;-* #,##0_-;_-* "-"_-;_-@_-', '_-* #,##0.00 [$₽-419]_-;-* #,##0.00 [$₽-419]_-;_-* "-"?? [$₽-419]_-;_-@_-'], 'ru-RU')).toEqual(Array(3).fill('accounting'))
+    expect(categories(['#" "?/?', '#" "?/4', 'dd/mm/yyyy', 'dd/mm/yyyy;@', '[$-F800]dddd, mmmm dd, yyyy', '[$-F400]h:mm:ss AM/PM', 'h:mm;@'], 'ru-RU')).toEqual(['fraction', 'fraction', 'date', 'date', 'date', 'time', 'time'])
+  })
+
+  it("is (все форматы) for en-US's own forms: the dollar's money, parentheses, an escaped fraction's space, m/d/yyyy written as a code", () => {
+    const en = ['"$"#,##0.00', '_("$"* #,##0.00_);_("$"* \\(#,##0.00\\);_("$"* "-"??_);_(@_)', '0.00_);(0.00)', '# ?/?', 'm/d/yyyy', 'dd.mm.yyyy', '#,##0.00 ₽', '0.00;[Red]-0.00']
+    expect(categories(en, 'ru-RU')).toEqual(Array(en.length).fill('custom'))
+  })
+
+  it("a built-in format by number by the locale's own code of it: 5 to 8 Денежный, 41 to 44 Финансовый, 37 to 40 none, 14 and 27 to 36 the short date", () => {
+    const ids = [5, 8, 41, 44, 37, 40, 12, 14, 27, 36, 32, 22, 49]
+    expect(categories(ids, 'ru-RU')).toEqual(['currency', 'currency', 'accounting', 'accounting', 'custom', 'custom', 'fraction', 'date', 'date', 'date', 'custom', 'custom', 'text'])
+    expect([numberFormatCategory('0.000', ruRU), numberFormatCategory(0, ruRU), numberFormatCategory('[Red]0.00', ruRU)]).toEqual([
+      { category: 'number', name: 'Числовой' },
+      { category: 'general', name: 'Общий' },
+      { category: 'custom', name: '(все форматы)' },
+    ])
   })
 
   it('a locale object without rules of computation reads codes as en-US does, by en-US names', () => {
     const { decimalSeparator, listSeparator, arrayColumnSeparator, arrayRowSeparator, booleans, errors, functions } = ruRU
     const text = { tag: 'xx-XX', decimalSeparator, listSeparator, arrayColumnSeparator, arrayRowSeparator, booleans, errors, functions }
-    expect(numberFormatCategory('0.000', text)).toEqual({ category: 'number', name: 'Number' })
+    expect([numberFormatCategory('0.000', text), numberFormatCategory('m/d/yy', text)]).toEqual([{ category: 'number', name: 'Number' }, { category: 'date', name: 'Date' }])
   })
 })
 
@@ -88,9 +105,9 @@ describe('numberFormatChoices', () => {
     expect([ru[2].format, ru[3].code, ru[4].code]).toEqual(['#,##0.00\\ "₽"', '_-* #,##0.00 "₽"_-;-* #,##0.00 "₽"_-;_-* "-"?? "₽"_-;_-@_-', 'dd.mm.yyyy'])
   })
 
-  it("in en-US each item's format is in the box's category of the item", () => {
+  it("each item's format is in the box's category of the item, in en-US and ru-RU", () => {
     const want: Record<string, FormatCategory> = { general: 'general', number: 'number', currency: 'currency', accounting: 'accounting', shortDate: 'date', longDate: 'date', time: 'time', percentage: 'percentage', fraction: 'fraction', scientific: 'scientific', text: 'text' }
-    expect(numberFormatChoices().map((c) => numberFormatCategory(c.format).category)).toEqual(Object.values(want))
+    for (const tag of ['en-US', 'ru-RU']) expect(numberFormatChoices(tag).map((c) => numberFormatCategory(c.format, tag).category)).toEqual(Object.values(want))
   })
 })
 

@@ -1,0 +1,3683 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "box": "Числовой формат",
+  "date": "2026-10-12",
+  "seconds": 291.9
+ },
+ "cases": [
+  {
+   "id": "builtin-1",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": 0
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 1
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": 2
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": 3
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": 4
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": 5
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": 6
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": 7
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": 8
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": 9
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": 10
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": 11
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": 12
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": 13
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": 14
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": 15
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": 16
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": 17
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": 18
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": 19
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": 20
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": 21
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": 22
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": 23
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": 24
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "builtin-2",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": 25
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 26
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": 27
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": 28
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": 29
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": 30
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": 31
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": 32
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": 33
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": 34
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": 35
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": 36
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": 37
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": 38
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": 39
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": 40
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": 41
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": 42
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": 43
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": 44
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": 45
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": 46
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": 47
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": 48
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": 49
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "code-1",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "General"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "0.00"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "$#,##0_);($#,##0)"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "$#,##0_);[Red]($#,##0)"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00_);($#,##0.00)"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00_);[Red]($#,##0.00)"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "0%"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "0.00%"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "0.00E+00"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "# ?/?"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "# ??/??"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "d-mmm-yy"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "d-mmm"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "mmm-yy"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "h:mm AM/PM"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss AM/PM"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "h:mm"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy h:mm"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "General"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "General"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   },
+   "own": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B9",
+    "B10",
+    "B11",
+    "B12",
+    "B13",
+    "B14",
+    "B15",
+    "B16",
+    "B17",
+    "B18",
+    "B19",
+    "B20",
+    "B21",
+    "B22",
+    "B23",
+    "B24",
+    "B25"
+   ]
+  },
+  {
+   "id": "code-2",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "General"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "General"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "#,##0_);(#,##0)"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "#,##0_);[Red](#,##0)"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00_);(#,##0.00)"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00_);[Red](#,##0.00)"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "mm:ss"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "[h]:mm:ss"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "mm:ss.0"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "##0.0E+0"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "@"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   },
+   "own": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B9",
+    "B10",
+    "B11",
+    "B12",
+    "B13",
+    "B14",
+    "B15",
+    "B16",
+    "B17",
+    "B18",
+    "B19",
+    "B20",
+    "B21",
+    "B22",
+    "B23",
+    "B24",
+    "B25"
+   ]
+  },
+  {
+   "id": "ru-code-1",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "#,##0 \"₽\";-#,##0 \"₽\""
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0 \"₽\";[Red]-#,##0 \"₽\""
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"₽\";-#,##0.00 \"₽\""
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"₽\";[Red]-#,##0.00 \"₽\""
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yyyy"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "dd.mmm.yy"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "dd.mmm"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "mmm.yy"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yyyy h:mm"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "#,##0;-#,##0"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "#,##0;[Red]-#,##0"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00;-#,##0.00"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00;[Red]-#,##0.00"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0_-;-* #,##0_-;_-* \"-\"_-;_-@_-"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0 \"₽\"_-;-* #,##0 \"₽\"_-;_-* \"-\" \"₽\"_-;_-@_-"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00_-;-* #,##0.00_-;_-* \"-\"??_-;_-@_-"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00 \"₽\"_-;-* #,##0.00 \"₽\"_-;_-* \"-\"?? \"₽\"_-;_-@_-"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17"
+    ]
+   },
+   "own": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "B9",
+    "B10",
+    "B11",
+    "B12",
+    "B13",
+    "B14",
+    "B15",
+    "B16",
+    "B17"
+   ]
+  },
+  {
+   "id": "variant-1",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "0.000"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.0"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "#,##0.0"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0.000"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "0.0000000000"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "0.000000000000000000000000000000"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "0.00_);(0.00)"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "0.00_);[Red](0.00)"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "0.00;[Red]0.00"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "0.00;[Red]-0.00"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00;[Red]#,##0.00"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00;[Red]-#,##0.00"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "#,##0;-#,##0"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "0;[Red]0"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "[Red]0.00"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "[Blue]0.00"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "0.00;[Blue]-0.00"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "0.00;-0.00"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "0.00;-0.00;0.00"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "0.00;-0.00;\"-\""
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "#.##"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "#,###"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "00.00"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "0.00 \"kg\""
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 "
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-2",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "# ##0.00"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00;(0.00)"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "(0.00)"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "0.0%"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "0.000%"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00%"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "0.00%;[Red]-0.00%"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "0%;-0%"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "0.0000000000%"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "# ???/???"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "?/?"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "??/??"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "# ?/2"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "# ?/4"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "# ?/8"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "# ??/16"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "# ?/10"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "# ??/100"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "0 ?/?"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "# ?/3"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "#\" \"?/?"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "0.000E+00"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "0E+00"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "0.0E+00"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "0.0E+0"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-3",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "0.00E-00"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#.##E+00"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "0.00E+000"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "0.0000000000E+00"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "\"x\"@"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "@\" kg\""
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": ";;;@"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "0;-0;0;@"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "General;[Red]-General"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "[Red]General"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "General\" kg\""
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "0;-0;0;General"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "General;General;General;@"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": ";;;"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": ";;"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "0;;"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "$#,##0"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.000"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00;[Red]$#,##0.00"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00;-$#,##0.00"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00;[Red]-$#,##0.00"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "\"$\"#,##0.00"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "\\$#,##0.00"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-4",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "[$$-409]#,##0.00"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "[$$-en-US]#,##0.00"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "[$$-409]#,##0.00;[Red]-[$$-409]#,##0.00"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "$0.00"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 $"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "$ #,##0.00"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "[$€-x-euro2] #,##0.00"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "[$€-407] #,##0.00"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$€-407]"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "[$€-2] #,##0.00"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$€-1]"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "€#,##0.00"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 €"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "[$£-809]#,##0.00"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "£#,##0.00"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "[$¥-411]#,##0"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "¥#,##0"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "[$USD] #,##0.00"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "[$CHF] #,##0.00"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "[$EUR] #,##0.00"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$₽-419]"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"₽\""
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 ₽"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00\\ \"₽\""
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00\\ [$₽-419]"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-5",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$₽-ru-RU]"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0 \"₽\""
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"₽\";[Red]-#,##0.00 \"₽\""
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00\"р.\""
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 \"руб.\""
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "[$₽-419]#,##0.00"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$RUB]"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "_($* #,##0.000_);_($* (#,##0.000);_($* \"-\"???_);_(@_)"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "_([$$-409]* #,##0.00_);_([$$-409]* (#,##0.00);_([$$-409]* \"-\"??_);_(@_)"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "_-[$$-409]* #,##0.00_ ;_-[$$-409]* -#,##0.00 ;_-[$$-409]* \"-\"??_ ;_-@_ "
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "_([$€-x-euro2] * #,##0.00_);_([$€-x-euro2] * (#,##0.00);_([$€-x-euro2] * \"-\"??_);_(@_)"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00 [$€-407]_-;-* #,##0.00 [$€-407]_-;_-* \"-\"?? [$€-407]_-;_-@_-"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00 [$₽-419]_-;-* #,##0.00 [$₽-419]_-;_-* \"-\"?? [$₽-419]_-;_-@_-"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00\\ [$₽-419]_-;\\-* #,##0.00\\ [$₽-419]_-;_-* \"-\"??\\ [$₽-419]_-;_-@_-"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "_($* #,##0.00_)"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "$* #,##0.00"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "m/d/yy"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "mm/dd/yyyy"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "mm/dd/yy"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "m/d"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "d/m/yyyy"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "dd/mm/yyyy"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "yyyy-mm-dd"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "d.m.yy"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-6",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yy"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "d.m.yyyy"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "mmmm-yy"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "mmmm d, yyyy"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "mmmmm"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "mmmmm-yy"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "d-mmm-yyyy"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "dddd, mmmm d, yyyy"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "dddd, mmmm dd, yyyy"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "[$-F800]dddd, mmmm dd, yyyy"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "[$-F800]dddd, mmmm d, yyyy"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "[$-F800]dddd\\, mmmm dd\\, yyyy"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "d mmmm yyyy"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "d mmmm yyyy \"г.\""
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "dddd, d mmmm yyyy \"г.\""
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "mmmm yyyy"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "yyyy"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "mmm d"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "dd/mmm/yy"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "[$-409]m/d/yy"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "[$-409]mmmm d, yyyy;@"
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "[$-419]dd.mm.yyyy"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "[$-x-sysdate]dddd, mmmm dd, yyyy"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "m/d/yy h:mm"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "m/d/yy h:mm AM/PM"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-7",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yy h:mm"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "yyyy-mm-dd hh:mm:ss"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "dd/mm/yyyy;@"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy;@"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "dd.mm.yyyy;@"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "dddd"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "ddd, mmm d"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "m/d/yy;[Red]m/d/yy"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "[Red]m/d/yy"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "yyyy\\-mm\\-dd"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "d/m/yy"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "yy/m/d"
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "hh:mm"
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "hh:mm:ss"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "hh:mm AM/PM"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "[$-F400]h:mm:ss AM/PM"
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "[$-F400]h:mm:ss"
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "[h]:mm"
+    },
+    "B19": {
+     "value": 1.5,
+     "numberFormat": "[mm]:ss"
+    },
+    "B20": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss.000"
+    },
+    "B21": {
+     "value": 1.5,
+     "numberFormat": "h\"h\" mm\"m\""
+    },
+    "B22": {
+     "value": 1.5,
+     "numberFormat": "[$-409]h:mm:ss AM/PM;@"
+    },
+    "B23": {
+     "value": 1.5,
+     "numberFormat": "h:mm;@"
+    },
+    "B24": {
+     "value": 1.5,
+     "numberFormat": "h:mm A/P"
+    },
+    "B25": {
+     "value": 1.5,
+     "numberFormat": "ss"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "variant-8",
+   "cells": {
+    "B1": {
+     "value": 1.5,
+     "numberFormat": "h"
+    },
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "[$-419]h:mm"
+    },
+    "B3": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss;@"
+    },
+    "B4": {
+     "value": 1.5,
+     "numberFormat": "[$-F400]h:mm:ss AM/PM;@"
+    },
+    "B5": {
+     "value": 1.5,
+     "numberFormat": "00000"
+    },
+    "B6": {
+     "value": 1.5,
+     "numberFormat": "00000-0000"
+    },
+    "B7": {
+     "value": 1.5,
+     "numberFormat": "[<=9999999]###-####;(###) ###-####"
+    },
+    "B8": {
+     "value": 1.5,
+     "numberFormat": "000-00-0000"
+    },
+    "B9": {
+     "value": 1.5,
+     "numberFormat": "000000"
+    },
+    "B10": {
+     "value": 1.5,
+     "numberFormat": "[Color10]0.00"
+    },
+    "B11": {
+     "value": 1.5,
+     "numberFormat": "[>=100]0.00;[Red]0.00"
+    },
+    "B12": {
+     "value": 1.5,
+     "numberFormat": "[<0]\"neg\";\"pos\""
+    },
+    "B13": {
+     "value": 1.5,
+     "numberFormat": "0.00;[Red]-0.00;\"zero\""
+    },
+    "B14": {
+     "value": 1.5,
+     "numberFormat": "[Red][<0]0.00;0.00"
+    },
+    "B15": {
+     "value": 1.5,
+     "numberFormat": "[>100][Red]0;0"
+    },
+    "B16": {
+     "value": 1.5,
+     "numberFormat": "\"text\""
+    },
+    "B17": {
+     "value": 1.5,
+     "numberFormat": "0\" pcs\""
+    },
+    "B18": {
+     "value": 1.5,
+     "numberFormat": "\"$\"0.00"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18"
+    ]
+   }
+  },
+  {
+   "id": "value-1",
+   "cells": {
+    "B1": {
+     "value": "x",
+     "numberFormat": "0.00"
+    },
+    "B2": {
+     "numberFormat": "0.00"
+    },
+    "B3": {
+     "value": -2.5,
+     "numberFormat": "0.00"
+    },
+    "B4": {
+     "value": 45688,
+     "numberFormat": "0.00"
+    },
+    "B5": {
+     "value": "x",
+     "numberFormat": "$#,##0.00"
+    },
+    "B6": {
+     "numberFormat": "$#,##0.00"
+    },
+    "B7": {
+     "value": -2.5,
+     "numberFormat": "$#,##0.00"
+    },
+    "B8": {
+     "value": 45688,
+     "numberFormat": "$#,##0.00"
+    },
+    "B9": {
+     "value": "x",
+     "numberFormat": "m/d/yy"
+    },
+    "B10": {
+     "numberFormat": "m/d/yy"
+    },
+    "B11": {
+     "value": -2.5,
+     "numberFormat": "m/d/yy"
+    },
+    "B12": {
+     "value": 45688,
+     "numberFormat": "m/d/yy"
+    },
+    "B13": {
+     "value": "x",
+     "numberFormat": "h:mm"
+    },
+    "B14": {
+     "numberFormat": "h:mm"
+    },
+    "B15": {
+     "value": -2.5,
+     "numberFormat": "h:mm"
+    },
+    "B16": {
+     "value": 45688,
+     "numberFormat": "h:mm"
+    },
+    "B17": {
+     "value": "x",
+     "numberFormat": "0%"
+    },
+    "B18": {
+     "numberFormat": "0%"
+    },
+    "B19": {
+     "value": -2.5,
+     "numberFormat": "0%"
+    },
+    "B20": {
+     "value": 45688,
+     "numberFormat": "0%"
+    },
+    "B21": {
+     "value": "x",
+     "numberFormat": "@"
+    },
+    "B22": {
+     "numberFormat": "@"
+    },
+    "B23": {
+     "value": -2.5,
+     "numberFormat": "@"
+    },
+    "B24": {
+     "value": 45688,
+     "numberFormat": "@"
+    },
+    "B25": {
+     "value": "x",
+     "numberFormat": "General"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7",
+     "B8",
+     "B9",
+     "B10",
+     "B11",
+     "B12",
+     "B13",
+     "B14",
+     "B15",
+     "B16",
+     "B17",
+     "B18",
+     "B19",
+     "B20",
+     "B21",
+     "B22",
+     "B23",
+     "B24",
+     "B25"
+    ]
+   }
+  },
+  {
+   "id": "value-2",
+   "cells": {
+    "B1": {
+     "numberFormat": "General"
+    },
+    "B2": {
+     "value": -2.5,
+     "numberFormat": "General"
+    },
+    "B3": {
+     "value": 45688,
+     "numberFormat": "General"
+    },
+    "B4": {
+     "value": "x",
+     "numberFormat": "0.000"
+    },
+    "B5": {
+     "numberFormat": "0.000"
+    },
+    "B6": {
+     "value": -2.5,
+     "numberFormat": "0.000"
+    },
+    "B7": {
+     "value": 45688,
+     "numberFormat": "0.000"
+    }
+   },
+   "act": {
+    "do": "ribbon",
+    "cells": [
+     "B1",
+     "B2",
+     "B3",
+     "B4",
+     "B5",
+     "B6",
+     "B7"
+    ]
+   }
+  }
+ ],
+ "answers": {
+  "builtin-1": {
+   "B1": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B2": {
+    "box": "Числовой",
+    "code": "0",
+    "local": "0"
+   },
+   "B3": {
+    "box": "Числовой",
+    "code": "0.00",
+    "local": "0,00"
+   },
+   "B4": {
+    "box": "Числовой",
+    "code": "#,##0",
+    "local": "# ##0"
+   },
+   "B5": {
+    "box": "Числовой",
+    "code": "#,##0.00",
+    "local": "# ##0,00"
+   },
+   "B6": {
+    "box": "Денежный",
+    "code": "$#,##0_);($#,##0)",
+    "local": "# ##0 ₽;-# ##0 ₽"
+   },
+   "B7": {
+    "box": "Денежный",
+    "code": "$#,##0_);[Red]($#,##0)",
+    "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+   },
+   "B8": {
+    "box": "Денежный",
+    "code": "$#,##0.00_);($#,##0.00)",
+    "local": "# ##0,00 ₽;-# ##0,00 ₽"
+   },
+   "B9": {
+    "box": "Денежный",
+    "code": "$#,##0.00_);[Red]($#,##0.00)",
+    "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+   },
+   "B10": {
+    "box": "Процентный",
+    "code": "0%",
+    "local": "0%"
+   },
+   "B11": {
+    "box": "Процентный",
+    "code": "0.00%",
+    "local": "0,00%"
+   },
+   "B12": {
+    "box": "Экспоненциальный",
+    "code": "0.00E+00",
+    "local": "0,00E+00"
+   },
+   "B13": {
+    "box": "Дробный",
+    "code": "# ?/?",
+    "local": "#\" \"?/?"
+   },
+   "B14": {
+    "box": "Дробный",
+    "code": "# ??/??",
+    "local": "#\" \"??/??"
+   },
+   "B15": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "d-mmm-yy",
+    "local": "ДД.МММ.ГГ"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "d-mmm",
+    "local": "ДД.МММ"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "mmm-yy",
+    "local": "МММ.ГГ"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "h:mm AM/PM",
+    "local": "ч:мм AM/PM"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss AM/PM",
+    "local": "ч:мм:сс AM/PM"
+   },
+   "B21": {
+    "box": "(все форматы)",
+    "code": "h:mm",
+    "local": "ч:мм"
+   },
+   "B22": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B23": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy h:mm",
+    "local": "ДД.ММ.ГГГГ ч:мм"
+   },
+   "B24": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B25": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   }
+  },
+  "builtin-2": {
+   "B1": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B2": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B3": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B4": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B5": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B6": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B7": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B12": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "#,##0_);(#,##0)",
+    "local": "# ##0;-# ##0"
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": "#,##0_);[Red](#,##0)",
+    "local": "# ##0;[Красный]-# ##0"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "#,##0.00_);(#,##0.00)",
+    "local": "# ##0,00;-# ##0,00"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "#,##0.00_);[Red](#,##0.00)",
+    "local": "# ##0,00;[Красный]-# ##0,00"
+   },
+   "B17": {
+    "box": "Финансовый",
+    "code": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+    "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+   },
+   "B18": {
+    "box": "Финансовый",
+    "code": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)",
+    "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+   },
+   "B19": {
+    "box": "Финансовый",
+    "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+    "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+   },
+   "B20": {
+    "box": "Финансовый",
+    "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+    "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+   },
+   "B21": {
+    "box": "(все форматы)",
+    "code": "mm:ss",
+    "local": "мм:сс"
+   },
+   "B22": {
+    "box": "(все форматы)",
+    "code": "[h]:mm:ss",
+    "local": "[ч]:мм:сс"
+   },
+   "B23": {
+    "box": "(все форматы)",
+    "code": "mm:ss.0",
+    "local": "мм:сс,0"
+   },
+   "B24": {
+    "box": "(все форматы)",
+    "code": "##0.0E+0",
+    "local": "##0,0E+0"
+   },
+   "B25": {
+    "box": "Текстовый",
+    "code": "@",
+    "local": "@"
+   }
+  },
+  "code-1": {
+   "B1": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B2": {
+    "box": "Числовой",
+    "code": "0",
+    "local": "0"
+   },
+   "B3": {
+    "box": "Числовой",
+    "code": "0.00",
+    "local": "0,00"
+   },
+   "B4": {
+    "box": "Числовой",
+    "code": "#,##0",
+    "local": "# ##0"
+   },
+   "B5": {
+    "box": "Числовой",
+    "code": "#,##0.00",
+    "local": "# ##0,00"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0_);(\\$#,##0)",
+    "local": "$# ##0_);($# ##0)"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0_);[Red](\\$#,##0)",
+    "local": "$# ##0_);[Красный]($# ##0)"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00_);(\\$#,##0.00)",
+    "local": "$# ##0,00_);($# ##0,00)"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00_);[Red](\\$#,##0.00)",
+    "local": "$# ##0,00_);[Красный]($# ##0,00)"
+   },
+   "B10": {
+    "box": "Процентный",
+    "code": "0%",
+    "local": "0%"
+   },
+   "B11": {
+    "box": "Процентный",
+    "code": "0.00%",
+    "local": "0,00%"
+   },
+   "B12": {
+    "box": "Экспоненциальный",
+    "code": "0.00E+00",
+    "local": "0,00E+00"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "# ?/?",
+    "local": "#\\ ?/?"
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": "# ??/??",
+    "local": "#\\ ??/??"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy",
+    "local": "М.Д.ГГГГ"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "d-mmm-yy",
+    "local": "Д-МММ-ГГ"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "d-mmm",
+    "local": "Д-МММ"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "mmm-yy",
+    "local": "МММ-ГГ"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "h:mm AM/PM",
+    "local": "ч:мм AM/PM"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss AM/PM",
+    "local": "ч:мм:сс AM/PM"
+   },
+   "B21": {
+    "box": "(все форматы)",
+    "code": "h:mm",
+    "local": "ч:мм"
+   },
+   "B22": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B23": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy h:mm",
+    "local": "М.Д.ГГГГ ч:мм"
+   },
+   "B24": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B25": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   }
+  },
+  "code-2": {
+   "B1": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B2": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B3": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy",
+    "local": "М.Д.ГГГГ"
+   },
+   "B4": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy",
+    "local": "М.Д.ГГГГ"
+   },
+   "B5": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy",
+    "local": "М.Д.ГГГГ"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy",
+    "local": "М.Д.ГГГГ"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy",
+    "local": "М.Д.ГГГГ"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss",
+    "local": "ч:мм:сс"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "m/d/yyyy",
+    "local": "М.Д.ГГГГ"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "#,##0_);(#,##0)",
+    "local": "# ##0_);(# ##0)"
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": "#,##0_);[Red](#,##0)",
+    "local": "# ##0_);[Красный](# ##0)"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "#,##0.00_);(#,##0.00)",
+    "local": "# ##0,00_);(# ##0,00)"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "#,##0.00_);[Red](#,##0.00)",
+    "local": "# ##0,00_);[Красный](# ##0,00)"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+    "local": "_(* # ##0_);_(* (# ##0);_(* \"-\"_);_(@_)"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "_(\\$* #,##0_);_(\\$* (#,##0);_(\\$* \"-\"_);_(@_)",
+    "local": "_($* # ##0_);_($* (# ##0);_($* \"-\"_);_(@_)"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+    "local": "_(* # ##0,00_);_(* (# ##0,00);_(* \"-\"??_);_(@_)"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "_(\\$* #,##0.00_);_(\\$* (#,##0.00);_(\\$* \"-\"??_);_(@_)",
+    "local": "_($* # ##0,00_);_($* (# ##0,00);_($* \"-\"??_);_(@_)"
+   },
+   "B21": {
+    "box": "(все форматы)",
+    "code": "mm:ss",
+    "local": "мм:сс"
+   },
+   "B22": {
+    "box": "(все форматы)",
+    "code": "[h]:mm:ss",
+    "local": "[ч]:мм:сс"
+   },
+   "B23": {
+    "box": "(все форматы)",
+    "code": "mm:ss.0",
+    "local": "мм:сс,0"
+   },
+   "B24": {
+    "box": "(все форматы)",
+    "code": "##0.0E+0",
+    "local": "##0,0E+0"
+   },
+   "B25": {
+    "box": "Текстовый",
+    "code": "@",
+    "local": "@"
+   }
+  },
+  "ru-code-1": {
+   "B1": {
+    "box": "Денежный",
+    "code": "$#,##0_);($#,##0)",
+    "local": "# ##0 ₽;-# ##0 ₽"
+   },
+   "B2": {
+    "box": "Денежный",
+    "code": "$#,##0_);[Red]($#,##0)",
+    "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+   },
+   "B3": {
+    "box": "Денежный",
+    "code": "$#,##0.00_);($#,##0.00)",
+    "local": "# ##0,00 ₽;-# ##0,00 ₽"
+   },
+   "B4": {
+    "box": "Денежный",
+    "code": "$#,##0.00_);[Red]($#,##0.00)",
+    "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+   },
+   "B5": {
+    "box": "(все форматы)",
+    "code": "dd.mm.yyyy",
+    "local": "ДД\\.ММ\\.ГГГГ"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "dd.mmm.yy",
+    "local": "ДД\\.МММ\\.ГГ"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "dd.mmm",
+    "local": "ДД\\.МММ"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "mmm.yy",
+    "local": "МММ\\.ГГ"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "dd.mm.yyyy h:mm",
+    "local": "ДД\\.ММ\\.ГГГГ ч:мм"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "#,##0_);(#,##0)",
+    "local": "# ##0;-# ##0"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "#,##0_);[Red](#,##0)",
+    "local": "# ##0;[Красный]-# ##0"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "#,##0.00_);(#,##0.00)",
+    "local": "# ##0,00;-# ##0,00"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "#,##0.00_);[Red](#,##0.00)",
+    "local": "# ##0,00;[Красный]-# ##0,00"
+   },
+   "B14": {
+    "box": "Финансовый",
+    "code": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+    "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+   },
+   "B15": {
+    "box": "Финансовый",
+    "code": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)",
+    "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+   },
+   "B16": {
+    "box": "Финансовый",
+    "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+    "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+   },
+   "B17": {
+    "box": "Финансовый",
+    "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+    "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+   }
+  },
+  "variant-1": {
+   "B1": {
+    "box": "Числовой",
+    "code": "0.000",
+    "local": "0,000"
+   },
+   "B2": {
+    "box": "Числовой",
+    "code": "0.0",
+    "local": "0,0"
+   },
+   "B3": {
+    "box": "Числовой",
+    "code": "#,##0.0",
+    "local": "# ##0,0"
+   },
+   "B4": {
+    "box": "Числовой",
+    "code": "#,##0.000",
+    "local": "# ##0,000"
+   },
+   "B5": {
+    "box": "Числовой",
+    "code": "0.0000000000",
+    "local": "0,0000000000"
+   },
+   "B6": {
+    "box": "Числовой",
+    "code": "0.000000000000000000000000000000",
+    "local": "0,000000000000000000000000000000"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "0.00_);(0.00)",
+    "local": "0,00_);(0,00)"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "0.00_);[Red](0.00)",
+    "local": "0,00_);[Красный](0,00)"
+   },
+   "B9": {
+    "box": "Числовой",
+    "code": "0.00;[Red]0.00",
+    "local": "0,00;[Красный]0,00"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "0.00;[Red]-0.00",
+    "local": "0,00;[Красный]-0,00"
+   },
+   "B11": {
+    "box": "Числовой",
+    "code": "#,##0.00;[Red]#,##0.00",
+    "local": "# ##0,00;[Красный]# ##0,00"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "#,##0.00_);[Red](#,##0.00)",
+    "local": "# ##0,00;[Красный]-# ##0,00"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "#,##0_);(#,##0)",
+    "local": "# ##0;-# ##0"
+   },
+   "B14": {
+    "box": "Числовой",
+    "code": "0;[Red]0",
+    "local": "0;[Красный]0"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "[Red]0.00",
+    "local": "[Красный]0,00"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "[Blue]0.00",
+    "local": "[Синий]0,00"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "0.00;[Blue]-0.00",
+    "local": "0,00;[Синий]-0,00"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "0.00;-0.00",
+    "local": "0,00;-0,00"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "0.00;-0.00",
+    "local": "0,00;-0,00"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "0.00;-0.00;\"-\"",
+    "local": "0,00;-0,00;\"-\""
+   },
+   "B21": {
+    "box": "(все форматы)",
+    "code": "#.##",
+    "local": "#,##"
+   },
+   "B22": {
+    "box": "(все форматы)",
+    "code": "#,###",
+    "local": "# ###"
+   },
+   "B23": {
+    "box": "(все форматы)",
+    "code": "00.00",
+    "local": "00,00"
+   },
+   "B24": {
+    "box": "(все форматы)",
+    "code": "0.00 \"kg\"",
+    "local": "0,00\\ \"kg\""
+   },
+   "B25": {
+    "box": "(все форматы)",
+    "code": "#,##0.00 ",
+    "local": "# ##0,00\\ "
+   }
+  },
+  "variant-2": {
+   "B1": {
+    "box": "(все форматы)",
+    "code": "# ##0.00",
+    "local": "#\\ ##0,00"
+   },
+   "B2": {
+    "box": "(все форматы)",
+    "code": "0.00;(0.00)",
+    "local": "0,00;(0,00)"
+   },
+   "B3": {
+    "box": "(все форматы)",
+    "code": "(0.00)",
+    "local": "(0,00)"
+   },
+   "B4": {
+    "box": "Процентный",
+    "code": "0.0%",
+    "local": "0,0%"
+   },
+   "B5": {
+    "box": "Процентный",
+    "code": "0.000%",
+    "local": "0,000%"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "#,##0.00%",
+    "local": "# ##0,00%"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "0.00%;[Red]-0.00%",
+    "local": "0,00%;[Красный]-0,00%"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "0%;-0%",
+    "local": "0%;-0%"
+   },
+   "B9": {
+    "box": "Процентный",
+    "code": "0.0000000000%",
+    "local": "0,0000000000%"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "# ???/???",
+    "local": "#\\ ???/???"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "?/?",
+    "local": "?/?"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "??/??",
+    "local": "??/??"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "# ?/2",
+    "local": "#\\ ?/2"
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": "# ?/4",
+    "local": "#\\ ?/4"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "# ?/8",
+    "local": "#\\ ?/8"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "# ??/16",
+    "local": "#\\ ??/16"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "# ?/10",
+    "local": "#\\ ?/10"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "# ??/100",
+    "local": "#\\ ??/100"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "0 ?/?",
+    "local": "0\\ ?/?"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "# ?/3",
+    "local": "#\\ ?/3"
+   },
+   "B21": {
+    "box": "Дробный",
+    "code": "# ?/?",
+    "local": "#\" \"?/?"
+   },
+   "B22": {
+    "box": "Экспоненциальный",
+    "code": "0.000E+00",
+    "local": "0,000E+00"
+   },
+   "B23": {
+    "box": "(все форматы)",
+    "code": "0E+00",
+    "local": "0E+00"
+   },
+   "B24": {
+    "box": "Экспоненциальный",
+    "code": "0.0E+00",
+    "local": "0,0E+00"
+   },
+   "B25": {
+    "box": "(все форматы)",
+    "code": "0.0E+0",
+    "local": "0,0E+0"
+   }
+  },
+  "variant-3": {
+   "B1": {
+    "box": "(все форматы)",
+    "code": "0.00E-00",
+    "local": "0,00E-00"
+   },
+   "B2": {
+    "box": "(все форматы)",
+    "code": "#.##E+00",
+    "local": "#,##E+00"
+   },
+   "B3": {
+    "box": "(все форматы)",
+    "code": "0.00E+000",
+    "local": "0,00E+000"
+   },
+   "B4": {
+    "box": "Экспоненциальный",
+    "code": "0.0000000000E+00",
+    "local": "0,0000000000E+00"
+   },
+   "B5": {
+    "box": "(все форматы)",
+    "code": "\"x\"@",
+    "local": "\"x\"@"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "@\" kg\"",
+    "local": "@\" kg\""
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": ";;;@",
+    "local": ";;;@"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "0;-0;0;@",
+    "local": "0;-0;0;@"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "General;[Red]-General",
+    "local": "Основной;[Красный]-Основной"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "[Red]General",
+    "local": "[Красный]Основной"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "General\" kg\"",
+    "local": "Основной\" kg\""
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "0;-0;0",
+    "local": "0;-0;0"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "General;General;General;@",
+    "local": "Основной;Основной;Основной;@"
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": ";;;",
+    "local": ";;;"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": ";;",
+    "local": ";;"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "0;;",
+    "local": "0;;"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00",
+    "local": "$# ##0,00"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0",
+    "local": "$# ##0"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.000",
+    "local": "$# ##0,000"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00;[Red]\\$#,##0.00",
+    "local": "$# ##0,00;[Красный]$# ##0,00"
+   },
+   "B21": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00;-\\$#,##0.00",
+    "local": "$# ##0,00;-$# ##0,00"
+   },
+   "B22": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00;[Red]-\\$#,##0.00",
+    "local": "$# ##0,00;[Красный]-$# ##0,00"
+   },
+   "B23": {
+    "box": "(все форматы)",
+    "code": "\"$\"#,##0.00",
+    "local": "\"$\"# ##0,00"
+   },
+   "B24": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00",
+    "local": "$# ##0,00"
+   },
+   "B25": {
+    "box": "(все форматы)",
+    "code": "\"$\"#,##0.00_);[Red](\"$\"#,##0.00)",
+    "local": "\"$\"# ##0,00_);[Красный](\"$\"# ##0,00)"
+   }
+  },
+  "variant-4": {
+   "B1": {
+    "box": "Денежный",
+    "code": "[$$-409]#,##0.00",
+    "local": "[$$-409]# ##0,00"
+   },
+   "B2": {
+    "box": "Денежный",
+    "code": "[$$-409]#,##0.00",
+    "local": "[$$-409]# ##0,00"
+   },
+   "B3": {
+    "box": "Денежный",
+    "code": "[$$-409]#,##0.00;[Red]-[$$-409]#,##0.00",
+    "local": "[$$-409]# ##0,00;[Красный]-[$$-409]# ##0,00"
+   },
+   "B4": {
+    "box": "(все форматы)",
+    "code": "\\$0.00",
+    "local": "$0,00"
+   },
+   "B5": {
+    "box": "(все форматы)",
+    "code": "#,##0.00 \\$",
+    "local": "# ##0,00\\ $"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "\\$ #,##0.00",
+    "local": "$ # ##0,00"
+   },
+   "B7": {
+    "box": "Денежный",
+    "code": "[$€-2] #,##0.00",
+    "local": "[$€-2] # ##0,00"
+   },
+   "B8": {
+    "box": "Денежный",
+    "code": "[$€-407] #,##0.00",
+    "local": "[$€-407] # ##0,00"
+   },
+   "B9": {
+    "box": "Денежный",
+    "code": "#,##0.00 [$€-407]",
+    "local": "# ##0,00\\ [$€-407]"
+   },
+   "B10": {
+    "box": "Денежный",
+    "code": "[$€-2] #,##0.00",
+    "local": "[$€-2] # ##0,00"
+   },
+   "B11": {
+    "box": "Денежный",
+    "code": "#,##0.00 [$€-1]",
+    "local": "# ##0,00\\ [$€-1]"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "€#,##0.00",
+    "local": "€# ##0,00"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "#,##0.00 €",
+    "local": "# ##0,00\\ €"
+   },
+   "B14": {
+    "box": "Денежный",
+    "code": "[$£-809]#,##0.00",
+    "local": "[$£-809]# ##0,00"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "£#,##0.00",
+    "local": "£# ##0,00"
+   },
+   "B16": {
+    "box": "Денежный",
+    "code": "[$¥-411]#,##0",
+    "local": "[$¥-411]# ##0"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "¥#,##0",
+    "local": "¥# ##0"
+   },
+   "B18": {
+    "box": "Денежный",
+    "code": "[$USD] #,##0.00",
+    "local": "[$USD] # ##0,00"
+   },
+   "B19": {
+    "box": "Денежный",
+    "code": "[$CHF] #,##0.00",
+    "local": "[$CHF] # ##0,00"
+   },
+   "B20": {
+    "box": "Денежный",
+    "code": "[$EUR] #,##0.00",
+    "local": "[$EUR] # ##0,00"
+   },
+   "B21": {
+    "box": "Денежный",
+    "code": "#,##0.00 [$₽-419]",
+    "local": "# ##0,00\\ [$₽-419]"
+   },
+   "B22": {
+    "box": "Денежный",
+    "code": "#,##0.00 $",
+    "local": "# ##0,00 ₽"
+   },
+   "B23": {
+    "box": "(все форматы)",
+    "code": "#,##0.00 \\₽",
+    "local": "# ##0,00\\ \\₽"
+   },
+   "B24": {
+    "box": "Денежный",
+    "code": "#,##0.00 $",
+    "local": "# ##0,00 ₽"
+   },
+   "B25": {
+    "box": "Денежный",
+    "code": "#,##0.00 [$₽-419]",
+    "local": "# ##0,00\\ [$₽-419]"
+   }
+  },
+  "variant-5": {
+   "B1": {
+    "box": "Денежный",
+    "code": "#,##0.00 [$₽-419]",
+    "local": "# ##0,00\\ [$₽-419]"
+   },
+   "B2": {
+    "box": "Денежный",
+    "code": "#,##0 $",
+    "local": "# ##0 ₽"
+   },
+   "B3": {
+    "box": "Денежный",
+    "code": "$#,##0.00_);[Red]($#,##0.00)",
+    "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+   },
+   "B4": {
+    "box": "(все форматы)",
+    "code": "#,##0.00\"р.\"",
+    "local": "# ##0,00\"р.\""
+   },
+   "B5": {
+    "box": "(все форматы)",
+    "code": "#,##0.00 \"руб.\"",
+    "local": "# ##0,00\\ \"руб.\""
+   },
+   "B6": {
+    "box": "Денежный",
+    "code": "[$₽-419]#,##0.00",
+    "local": "[$₽-419]# ##0,00"
+   },
+   "B7": {
+    "box": "Денежный",
+    "code": "#,##0.00 [$RUB]",
+    "local": "# ##0,00\\ [$RUB]"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "_(\\$* #,##0.000_);_(\\$* (#,##0.000);_(\\$* \"-\"???_);_(@_)",
+    "local": "_($* # ##0,000_);_($* (# ##0,000);_($* \"-\"???_);_(@_)"
+   },
+   "B9": {
+    "box": "Финансовый",
+    "code": "_([$$-409]* #,##0.00_);_([$$-409]* (#,##0.00);_([$$-409]* \"-\"??_);_(@_)",
+    "local": "_([$$-409]* # ##0,00_);_([$$-409]* (# ##0,00);_([$$-409]* \"-\"??_);_(@_)"
+   },
+   "B10": {
+    "box": "Финансовый",
+    "code": "_-[$$-409]* #,##0.00_ ;_-[$$-409]* -#,##0.00 ;_-[$$-409]* \"-\"??_ ;_-@_ ",
+    "local": "_-[$$-409]* # ##0,00_ ;_-[$$-409]* -# ##0,00\\ ;_-[$$-409]* \"-\"??_ ;_-@_ "
+   },
+   "B11": {
+    "box": "Финансовый",
+    "code": "_([$€-2] * #,##0.00_);_([$€-2] * (#,##0.00);_([$€-2] * \"-\"??_);_(@_)",
+    "local": "_([$€-2] * # ##0,00_);_([$€-2] * (# ##0,00);_([$€-2] * \"-\"??_);_(@_)"
+   },
+   "B12": {
+    "box": "Финансовый",
+    "code": "_-* #,##0.00 [$€-407]_-;-* #,##0.00 [$€-407]_-;_-* \"-\"?? [$€-407]_-;_-@_-",
+    "local": "_-* # ##0,00\\ [$€-407]_-;-* # ##0,00\\ [$€-407]_-;_-* \"-\"??\\ [$€-407]_-;_-@_-"
+   },
+   "B13": {
+    "box": "Финансовый",
+    "code": "_-* #,##0.00 [$₽-419]_-;-* #,##0.00 [$₽-419]_-;_-* \"-\"?? [$₽-419]_-;_-@_-",
+    "local": "_-* # ##0,00\\ [$₽-419]_-;-* # ##0,00\\ [$₽-419]_-;_-* \"-\"??\\ [$₽-419]_-;_-@_-"
+   },
+   "B14": {
+    "box": "Финансовый",
+    "code": "_-* #,##0.00 [$₽-419]_-;-* #,##0.00 [$₽-419]_-;_-* \"-\"?? [$₽-419]_-;_-@_-",
+    "local": "_-* # ##0,00\\ [$₽-419]_-;-* # ##0,00\\ [$₽-419]_-;_-* \"-\"??\\ [$₽-419]_-;_-@_-"
+   },
+   "B15": {
+    "box": "Финансовый",
+    "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+    "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "_(\\$* #,##0.00_)",
+    "local": "_($* # ##0,00_)"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "\\$* #,##0.00",
+    "local": "$* # ##0,00"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "m/d/yy",
+    "local": "М.Д.ГГ"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "mm/dd/yyyy",
+    "local": "ММ.ДД.ГГГГ"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "mm/dd/yy",
+    "local": "ММ.ДД.ГГ"
+   },
+   "B21": {
+    "box": "(все форматы)",
+    "code": "m/d",
+    "local": "М.Д"
+   },
+   "B22": {
+    "box": "(все форматы)",
+    "code": "d/m/yyyy",
+    "local": "Д.М.ГГГГ"
+   },
+   "B23": {
+    "box": "Дата",
+    "code": "m/d/yyyy",
+    "local": "ДД.ММ.ГГГГ"
+   },
+   "B24": {
+    "box": "(все форматы)",
+    "code": "yyyy-mm-dd",
+    "local": "ГГГГ-ММ-ДД"
+   },
+   "B25": {
+    "box": "(все форматы)",
+    "code": "d.m.yy",
+    "local": "Д\\.М\\.ГГ"
+   }
+  },
+  "variant-6": {
+   "B1": {
+    "box": "(все форматы)",
+    "code": "dd.mm.yy",
+    "local": "ДД\\.ММ\\.ГГ"
+   },
+   "B2": {
+    "box": "(все форматы)",
+    "code": "d.m.yyyy",
+    "local": "Д\\.М\\.ГГГГ"
+   },
+   "B3": {
+    "box": "(все форматы)",
+    "code": "mmmm-yy",
+    "local": "ММММ-ГГ"
+   },
+   "B4": {
+    "box": "(все форматы)",
+    "code": "mmmm d, yyyy",
+    "local": "ММММ Д, ГГГГ"
+   },
+   "B5": {
+    "box": "(все форматы)",
+    "code": "mmmmm",
+    "local": "МММММ"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "mmmmm-yy",
+    "local": "МММММ-ГГ"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "d-mmm-yyyy",
+    "local": "Д-МММ-ГГГГ"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "dddd, mmmm d, yyyy",
+    "local": "ДДДД, ММММ Д, ГГГГ"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "dddd, mmmm dd, yyyy",
+    "local": "ДДДД, ММММ ДД, ГГГГ"
+   },
+   "B10": {
+    "box": "Дата",
+    "code": "[$-F800]dddd, mmmm dd, yyyy",
+    "local": "[$-F800]ДДДД, ММММ ДД, ГГГГ"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "[$-F800]dddd, mmmm d, yyyy",
+    "local": "[$-F800]ДДДД, ММММ Д, ГГГГ"
+   },
+   "B12": {
+    "box": "Дата",
+    "code": "[$-F800]dddd, mmmm dd, yyyy",
+    "local": "[$-F800]ДДДД, ММММ ДД, ГГГГ"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "d mmmm yyyy",
+    "local": "Д ММММ ГГГГ"
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": "d mmmm yyyy \"г.\"",
+    "local": "Д ММММ ГГГГ \"г.\""
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "dddd, d mmmm yyyy \"г.\"",
+    "local": "ДДДД, Д ММММ ГГГГ \"г.\""
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "mmmm yyyy",
+    "local": "ММММ ГГГГ"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "yyyy",
+    "local": "ГГГГ"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "mmm d",
+    "local": "МММ Д"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "d-mmm-yy",
+    "local": "ДД.МММ.ГГ"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "[$-409]m/d/yy",
+    "local": "[$-409]М.Д.ГГ"
+   },
+   "B21": {
+    "box": "Дата",
+    "code": "[$-409]mmmm d, yyyy;@",
+    "local": "[$-409]ММММ Д, ГГГГ;@"
+   },
+   "B22": {
+    "box": "(все форматы)",
+    "code": "[$-419]dd.mm.yyyy",
+    "local": "[$-419]ДД\\.ММ\\.ГГГГ"
+   },
+   "B23": {
+    "box": "Дата",
+    "code": "[$-F800]dddd, mmmm dd, yyyy",
+    "local": "[$-F800]ДДДД, ММММ ДД, ГГГГ"
+   },
+   "B24": {
+    "box": "(все форматы)",
+    "code": "m/d/yy h:mm",
+    "local": "М.Д.ГГ ч:мм"
+   },
+   "B25": {
+    "box": "(все форматы)",
+    "code": "m/d/yy h:mm AM/PM",
+    "local": "М.Д.ГГ ч:мм AM/PM"
+   }
+  },
+  "variant-7": {
+   "B1": {
+    "box": "(все форматы)",
+    "code": "dd.mm.yy h:mm",
+    "local": "ДД\\.ММ\\.ГГ ч:мм"
+   },
+   "B2": {
+    "box": "(все форматы)",
+    "code": "yyyy-mm-dd hh:mm:ss",
+    "local": "ГГГГ-ММ-ДД чч:мм:сс"
+   },
+   "B3": {
+    "box": "Дата",
+    "code": "dd/mm/yyyy;@",
+    "local": "ДД.ММ.ГГГГ;@"
+   },
+   "B4": {
+    "box": "Дата",
+    "code": "m/d/yyyy;@",
+    "local": "М.Д.ГГГГ;@"
+   },
+   "B5": {
+    "box": "Дата",
+    "code": "dd.mm.yyyy;@",
+    "local": "ДД\\.ММ\\.ГГГГ;@"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "dddd",
+    "local": "ДДДД"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "ddd, mmm d",
+    "local": "ДДД, МММ Д"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "m/d/yy;[Red]m/d/yy",
+    "local": "М.Д.ГГ;[Красный]М.Д.ГГ"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "[Red]m/d/yy",
+    "local": "[Красный]М.Д.ГГ"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "yyyy-mm-dd",
+    "local": "ГГГГ-ММ-ДД"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "d/m/yy",
+    "local": "Д.М.ГГ"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "yy/m/d",
+    "local": "ГГ.М.Д"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "hh:mm",
+    "local": "чч:мм"
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": "hh:mm:ss",
+    "local": "чч:мм:сс"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "hh:mm AM/PM",
+    "local": "чч:мм AM/PM"
+   },
+   "B16": {
+    "box": "Время",
+    "code": "[$-F400]h:mm:ss AM/PM",
+    "local": "[$-F400]ч:мм:сс AM/PM"
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "[$-F400]h:mm:ss",
+    "local": "[$-F400]ч:мм:сс"
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "[h]:mm",
+    "local": "[ч]:мм"
+   },
+   "B19": {
+    "box": "(все форматы)",
+    "code": "[mm]:ss",
+    "local": "[мм]:сс"
+   },
+   "B20": {
+    "box": "(все форматы)",
+    "code": "h:mm:ss.000",
+    "local": "ч:мм:сс,000"
+   },
+   "B21": {
+    "box": "(все форматы)",
+    "code": "h\"h\" mm\"m\"",
+    "local": "ч\"h\" мм\"m\""
+   },
+   "B22": {
+    "box": "Время",
+    "code": "[$-409]h:mm:ss AM/PM;@",
+    "local": "[$-409]ч:мм:сс AM/PM;@"
+   },
+   "B23": {
+    "box": "Время",
+    "code": "h:mm;@",
+    "local": "ч:мм;@"
+   },
+   "B24": {
+    "box": "(все форматы)",
+    "code": "h:mm A/P",
+    "local": "ч:мм A/P"
+   },
+   "B25": {
+    "box": "(все форматы)",
+    "code": "ss",
+    "local": "сс"
+   }
+  },
+  "variant-8": {
+   "B1": {
+    "box": "(все форматы)",
+    "code": "h",
+    "local": "ч"
+   },
+   "B2": {
+    "box": "(все форматы)",
+    "code": "[$-419]h:mm",
+    "local": "[$-419]ч:мм"
+   },
+   "B3": {
+    "box": "Время",
+    "code": "h:mm:ss;@",
+    "local": "ч:мм:сс;@"
+   },
+   "B4": {
+    "box": "(все форматы)",
+    "code": "[$-F400]h:mm:ss AM/PM;@",
+    "local": "[$-F400]ч:мм:сс AM/PM;@"
+   },
+   "B5": {
+    "box": "Дополнительный",
+    "code": "00000",
+    "local": "00000"
+   },
+   "B6": {
+    "box": "Дополнительный",
+    "code": "00000-0000",
+    "local": "00000-0000"
+   },
+   "B7": {
+    "box": "Дополнительный",
+    "code": "[<=9999999]###-####;(###) ###-####",
+    "local": "[<=9999999]###-####;(###) ###-####"
+   },
+   "B8": {
+    "box": "Дополнительный",
+    "code": "000-00-0000",
+    "local": "000-00-0000"
+   },
+   "B9": {
+    "box": "Дополнительный",
+    "code": "000000",
+    "local": "000000"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "[Color10]0.00",
+    "local": "[Цвет10]0,00"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "[>=100]0.00;[Red]0.00",
+    "local": "[>=100]0,00;[Красный]0,00"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "[<0]\"neg\";\"pos\"",
+    "local": "[<0]\"neg\";\"pos\""
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "0.00;[Red]-0.00;\"zero\"",
+    "local": "0,00;[Красный]-0,00;\"zero\""
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": "[Red][<0]0.00;0.00",
+    "local": "[Красный][<0]0,00;0,00"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "[Red][>100]0;0",
+    "local": "[Красный][>100]0;0"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "\"text\"",
+    "local": "\"text\""
+   },
+   "B17": {
+    "box": "(все форматы)",
+    "code": "0\" pcs\"",
+    "local": "0\" pcs\""
+   },
+   "B18": {
+    "box": "(все форматы)",
+    "code": "\"$\"0.00",
+    "local": "\"$\"0,00"
+   }
+  },
+  "value-1": {
+   "B1": {
+    "box": "Числовой",
+    "code": "0.00",
+    "local": "0,00"
+   },
+   "B2": {
+    "box": "Числовой",
+    "code": "0.00",
+    "local": "0,00"
+   },
+   "B3": {
+    "box": "Числовой",
+    "code": "0.00",
+    "local": "0,00"
+   },
+   "B4": {
+    "box": "Числовой",
+    "code": "0.00",
+    "local": "0,00"
+   },
+   "B5": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00",
+    "local": "$# ##0,00"
+   },
+   "B6": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00",
+    "local": "$# ##0,00"
+   },
+   "B7": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00",
+    "local": "$# ##0,00"
+   },
+   "B8": {
+    "box": "(все форматы)",
+    "code": "\\$#,##0.00",
+    "local": "$# ##0,00"
+   },
+   "B9": {
+    "box": "(все форматы)",
+    "code": "m/d/yy",
+    "local": "М.Д.ГГ"
+   },
+   "B10": {
+    "box": "(все форматы)",
+    "code": "m/d/yy",
+    "local": "М.Д.ГГ"
+   },
+   "B11": {
+    "box": "(все форматы)",
+    "code": "m/d/yy",
+    "local": "М.Д.ГГ"
+   },
+   "B12": {
+    "box": "(все форматы)",
+    "code": "m/d/yy",
+    "local": "М.Д.ГГ"
+   },
+   "B13": {
+    "box": "(все форматы)",
+    "code": "h:mm",
+    "local": "ч:мм"
+   },
+   "B14": {
+    "box": "(все форматы)",
+    "code": "h:mm",
+    "local": "ч:мм"
+   },
+   "B15": {
+    "box": "(все форматы)",
+    "code": "h:mm",
+    "local": "ч:мм"
+   },
+   "B16": {
+    "box": "(все форматы)",
+    "code": "h:mm",
+    "local": "ч:мм"
+   },
+   "B17": {
+    "box": "Процентный",
+    "code": "0%",
+    "local": "0%"
+   },
+   "B18": {
+    "box": "Процентный",
+    "code": "0%",
+    "local": "0%"
+   },
+   "B19": {
+    "box": "Процентный",
+    "code": "0%",
+    "local": "0%"
+   },
+   "B20": {
+    "box": "Процентный",
+    "code": "0%",
+    "local": "0%"
+   },
+   "B21": {
+    "box": "Текстовый",
+    "code": "@",
+    "local": "@"
+   },
+   "B22": {
+    "box": "Текстовый",
+    "code": "@",
+    "local": "@"
+   },
+   "B23": {
+    "box": "Текстовый",
+    "code": "@",
+    "local": "@"
+   },
+   "B24": {
+    "box": "Текстовый",
+    "code": "@",
+    "local": "@"
+   },
+   "B25": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   }
+  },
+  "value-2": {
+   "B1": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B2": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B3": {
+    "box": "Общий",
+    "code": "General",
+    "local": "Основной"
+   },
+   "B4": {
+    "box": "Числовой",
+    "code": "0.000",
+    "local": "0,000"
+   },
+   "B5": {
+    "box": "Числовой",
+    "code": "0.000",
+    "local": "0,000"
+   },
+   "B6": {
+    "box": "Числовой",
+    "code": "0.000",
+    "local": "0,000"
+   },
+   "B7": {
+    "box": "Числовой",
+    "code": "0.000",
+    "local": "0,000"
+   }
+  }
+ }
+}
