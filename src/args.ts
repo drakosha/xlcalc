@@ -195,7 +195,7 @@ export interface Positions {
   even?: boolean
 }
 
-function holds(p: Positions | undefined, i: number): boolean {
+export function holds(p: Positions | undefined, i: number): boolean {
   if (!p) return false
   if (p.at?.includes(i)) return true
   if (p.from === undefined || i < p.from) return false

@@ -1,5 +1,5 @@
 /** `explain`: where a cell's value comes from, as a tree of its precedents and as indented text in the book's locale. */
-import type { CellValue, ExplainOptions } from './contract.js'
+import type { CellValue, ExplainOptions, ExternalBook } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { object, onlyOptions } from './input.js'
 import { errorOrigin, errorStep, placeText, type Place } from './issues.js'
@@ -7,6 +7,7 @@ import { toLocal } from './locale/index.js'
 import { say, type Message } from './locale/messages.js'
 import { localeOf } from './locale/registry.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
+import { runtimeSheet } from './links.js'
 import { ownerOf } from './spill/place.js'
 import { quoteSheet } from './syntax.js'
 import { isErr, type Rng } from './values.js'
@@ -19,8 +20,8 @@ export function checkExplainOptions(v: unknown, path = 'opts'): ExplainOptions {
 }
 
 /** Reference text for `explain` and reasons: `'Sheet'!B3`, `'Sheet'!D:D`, `'Sheet'!A1:C9`. */
-export function rngText(sheetNames: string[], g: Rng): string {
-  const sheet = quoteSheet(sheetNames[g.s])
+export function rngText(state: EngineState, g: Rng): string {
+  const sheet = quoteSheet(runtimeSheet(state.sheetNames, state.links, g.s))
   if (g.r1 === 0 && g.r2 === MAX_ROWS - 1) return `${sheet}!${indexToCol(g.c1)}:${indexToCol(g.c2)}`
   if (g.c1 === 0 && g.c2 === MAX_COLS - 1) return `${sheet}!${g.r1 + 1}:${g.r2 + 1}`
   const a = formatAddress(g.r1, g.c1)
@@ -55,7 +56,7 @@ export function explainCell(state: EngineState, s: number, r: number, c: number,
     nodes++
     let filled = 0
     for (const v of state.rt.flat(g)) if (v !== null) filled++
-    return { ref: rngText(state.sheetNames, g), cells: filled, children: [] }
+    return { ref: rngText(state, g), cells: filled, children: [] }
   }
   // `d`: the levels left; `past`: the cells the way to an error's origin may go on past them
   const visit = (s: number, r: number, c: number, d: number, past: number): ExplainTree => {
@@ -119,10 +120,10 @@ export function explainCell(state: EngineState, s: number, r: number, c: number,
 }
 
 /** The tree as indented text in the loaded locale `tag` (en-US without one): its words, values, formulas and references, a sheet in quotes where Excel puts them. */
-export function explainText(root: ExplainTree, tag?: string): string {
+export function explainText(root: ExplainTree, tag?: string, externalBooks?: ExternalBook[]): string {
   const loc = localeOf(tag)
   const local = (f: string) => {
-    const t = toLocal(f, loc)
+    const t = toLocal(f, loc, externalBooks?.length ? { externalBooks } : undefined)
     return t.ok ? t.formula : f
   }
   // the formula shown before its message takes it: en-US's prints it as given

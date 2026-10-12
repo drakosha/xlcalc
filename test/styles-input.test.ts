@@ -78,7 +78,7 @@ describe('styles and layout as input', () => {
     fails(withSheet({ merges: ['D4:C3'] }), 'book.sheets[0].merges[0]: expected a merged area such as "B2:D3" (top-left to bottom-right, two cells or more), got the string "D4:C3"')
     fails(withSheet({ merges: ['C3:D4', 'A1:B2', 'D4:E5'] }), 'book.sheets[0].merges[2]: D4:E5 overlaps C3:D4')
     fails(withSheet({ mergers: [] }), 'book.sheets[0]: unknown field "mergers" (expected name, cells, columns, rows, merges, filtered, tables, frozen, conditionalFormats, validations, outline, hidden)')
-    fails({ ...b, style: [] }, 'book: unknown field "style" (expected sheets, names, styles, locale, dateSystem, iteration)')
+    fails({ ...b, style: [] }, 'book: unknown field "style" (expected sheets, names, styles, locale, dateSystem, iteration, externalBooks)')
     fails(withSheet({ name: 'Q1/Q2' }), 'book.sheets[0].name: a sheet name must not contain "/" (Excel forbids : \\ / ? * [ ])')
     fails(withSheet({ name: 'x'.repeat(32) }), `book.sheets[0].name: a sheet name has at most 31 characters, "${'x'.repeat(32)}" has 32`)
     fails(withSheet({ name: "'Data" }), 'book.sheets[0].name: a sheet name must not begin or end with an apostrophe')

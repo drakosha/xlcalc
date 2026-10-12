@@ -90,3 +90,17 @@ export const NOT_OMITTED: Readonly<Record<string, Positions>> = {
   'RANK.AVG': { at: [1] },
   SUBTOTAL: { from: 1 },
 }
+
+const DATABASE = ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP']
+
+/**
+ * Positions that take a reference of an open book: another workbook's range there is `#VALUE!`, as Excel computes it
+ * over a closed book (the criteria functions' ranges, COUNTBLANK's, a database function's range;
+ * the sets `links/basics-held` and `links/functions-held`). RANK's list, SUBTOTAL's and AGGREGATE's references read
+ * the stored values.
+ */
+export const OPEN_REFERENCE: Readonly<Record<string, Positions>> = {
+  ...Object.fromEntries(Object.entries(NOT_OMITTED).filter(([name]) => !name.startsWith('RANK') && name !== 'SUBTOTAL')),
+  COUNTBLANK: { at: [0] },
+  ...Object.fromEntries(DATABASE.map((name) => [name, { at: [0] }])),
+}
