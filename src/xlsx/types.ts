@@ -101,7 +101,9 @@ export interface XlsxIssue {
  * The values a file stores for formulas and for the cells their arrays spilled into (`XlsxRead.cached`): what Excel
  * computed when it saved the file, by sheet in the book's order, in the shape of a result. `cached.sheets[0].cells.B1.value`
  * reads as `compute(book).sheets[0].cells.B1.value` does, so the two compare cell by cell, and `{ book, result: cached }`
- * writes the file again with Excel's values (`writeXlsx`).
+ * writes the file again with Excel's values (`writeXlsx`). `compute(read.book, { cached: read.cached })` (and
+ * `createSession`) open the book as Excel opens the file: the formulas a circular reference stops hold these values
+ * (`CellInput.held`).
  */
 export interface XlsxCached {
   sheets: { name: string; cells: Record<string, XlsxCachedCell> }[]
