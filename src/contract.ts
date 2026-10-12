@@ -1719,7 +1719,7 @@ export type StructureOp =
    * deeper, those at the deepest level (7) staying there, and is refused (`outline_deep`) when all of them are; lines next
    * to each other at a level make one group, so a group added right after another of its level joins it
    * (`outlineGroups`). Ungroup takes a level off each line that has one, refused (`not_grouped`) when none has. Hidden
-   * lines stay hidden. Columns that take in the sheet's last column, XFD, are refused (`last_column`).
+   * lines stay hidden.
    */
   | { op: 'group' | 'ungroup'; sheet: string; rows: string }
   | { op: 'group' | 'ungroup'; sheet: string; columns: string }
@@ -1735,7 +1735,7 @@ export type StructureOp =
   /**
    * Excel's level buttons (`Outline.ShowLevels`): the lines of outline level `rows` (or `columns`) and deeper hidden, the
    * other grouped lines shown, the collapsed marks as Excel keeps them; 8 shows every group. Lines outside groups stay as
-   * they are, and so do the grouped columns that reach the sheet's last column, XFD, as Excel leaves them.
+   * they are.
    */
   | { op: 'showLevels'; sheet: string; rows?: number; columns?: number }
 
@@ -1768,8 +1768,6 @@ export type StructureRefusal =
   | 'not_grouped'
   /** Show Detail of a group shown already, Hide Detail of one hidden already (its summary line marked `collapsed`). */
   | 'detail'
-  /** Group or Ungroup of columns that take in the sheet's last column, XFD, which Excel's object model refuses. */
-  | 'last_column'
 
 /** `editStructure`'s answer. */
 export type StructureResult =
