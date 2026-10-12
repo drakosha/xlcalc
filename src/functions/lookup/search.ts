@@ -6,7 +6,7 @@ import { isArea } from '../../arrays/lift.js'
 import { wildRe } from '../../criteria.js'
 import { E, isErr, Rng, sameType, type CErr, type V } from '../../values.js'
 import type { Cx } from '../../args.js'
-import { indexedExact, scannedExact } from './exact.js'
+import { indexedExact, scannedExact, type ExactStore } from './exact.js'
 
 export type Key = Exclude<V, null | CErr>
 
@@ -22,19 +22,19 @@ export const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
 export function exactMatch(line: Line, k: Key, wild: boolean, compare: Compare, last = false): number {
   const re = wild && typeof k === 'string' ? wildRe(k, true) : null
-  if (!re && line.values) {
-    const hit = indexedExact(line.values, line.stride ?? 1, line.filled, k, compare, last)
+  if (!re && (line.values || line.store)) {
+    const hit = indexedExact(line, k, compare, last)
     if (hit !== undefined) return hit
   }
   for (let j = 0; j < line.filled; j++) {
     const i = last ? line.filled - 1 - j : j
     const v = line.at(i)
     if (re ? typeof v === 'string' && re.test(v) : comparable(v, k) && compare(v, k) === 0) {
-      if (!re && line.values) scannedExact(line.values, line.stride ?? 1, line.filled, k, compare, j + 1)
+      if (!re && (line.values || line.store)) scannedExact(line, k, compare, j + 1)
       return i
     }
   }
-  if (!re && line.values) scannedExact(line.values, line.stride ?? 1, line.filled, k, compare, line.filled)
+  if (!re && (line.values || line.store)) scannedExact(line, k, compare, line.filled)
   return -1
 }
 
@@ -46,6 +46,8 @@ export interface Line {
   /** Immutable storage for cached exact searches, starting at its first value. */
   values?: readonly V[]
   stride?: number
+  /** A range's index, invalidated by its key cells and accounted against the heap cache budget. */
+  store?: ExactStore
 }
 
 /**

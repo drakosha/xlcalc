@@ -23,6 +23,7 @@ export interface FormulaCode extends FormulaInfo {
 }
 
 export interface Compiler {
+  readonly bodies: number
   /** Walks one formula at sheet `s`, row `r`, column `c`; its function is ready after `link`. */
   formula(ctx: CodegenContext, ast: Ast, s: number, r: number, c: number): FormulaCode
   /** Gives the formulas of a batch their functions (`eval`: one `new Function` for the batch). */
@@ -35,48 +36,71 @@ const unlinked = (): Arg => {
 
 const stackOverflow = (e: unknown) => e instanceof RangeError || (e instanceof Error && e.name === 'InternalError' && /too much recursion/i.test(e.message))
 
+type Factory = (parameters: readonly Arg[]) => () => Arg
+interface Template { source: string; factory?: Factory; fallback?: () => Factory }
+
+/** Share code, never mutable formula storage; cap the retained template catalogue at 128 bodies and 64 KiB of keys. */
 export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
-  if (execution === 'closures') {
-    const b = closureBackend(rt)
-    return {
-      formula(ctx, ast, s, r, c) {
-        const { code, ...info } = walk(ctx, ast, s, r, c, b)
-        return { ...info, fn: code }
-      },
-      link() {},
-    }
+  const templates = new Map<string, Template>()
+  const pending = new WeakMap<() => Arg, { template: Template; parameters: Arg[] }>()
+  let bytes = 0, bodies = 0
+  const closureFactory = (ctx: CodegenContext, ast: Ast, s: number, r: number, c: number): Factory => {
+    const code = walk(ctx, ast, s, r, c, closureBackend(rt, [])).code
+    return (parameters) => () => code(parameters)
   }
-  // Retain the AST only until link, for JS engines whose parser cannot compile a deep expression.
-  const fallbacks = new WeakMap<() => Arg, () => () => Arg>()
   return {
+    get bodies() { return bodies },
     formula(ctx, ast, s, r, c) {
-      const b = jsBackend()
+      const parameters: Arg[] = [], b = jsBackend(parameters)
       const { code, ...info } = walk(ctx, ast, s, r, c, b)
-      const f = { ...info, source: b.source(code), fn: () => unlinked() }
-      fallbacks.set(f.fn, () => walk(ctx, ast, s, r, c, closureBackend(rt)).code)
+      const source = b.source(code)
+      // LET owns mutable bindings; closure LETs retain a separate tree for each formula.
+      if (execution === 'closures' && source.includes('=M(')) {
+        bodies++
+        return { ...info, fn: walk(ctx, ast, s, r, c, closureBackend(rt)).code }
+      }
+      let template = templates.get(source)
+      if (!template) {
+        bodies++
+        template = { source }
+        if (execution === 'closures') template.factory = closureFactory(ctx, ast, s, r, c)
+        else template.fallback = () => closureFactory(ctx, ast, s, r, c)
+        if (source.length * 2 <= 65536) {
+          while (templates.size >= 128 || bytes + source.length * 2 > 65536) {
+            const oldest = templates.keys().next().value!
+            templates.delete(oldest); bytes -= oldest.length * 2
+          }
+          templates.set(source, template); bytes += source.length * 2
+        }
+      }
+      if (template.factory) return { ...info, fn: template.factory(parameters) }
+      const f: FormulaCode = { ...info, fn: () => unlinked() }
+      pending.set(f.fn, { template, parameters })
       return f
     },
     link(batch) {
-      if (!batch.length) return
-      let fns: (() => Arg)[]
-      try {
-        fns = compileSources(rt, batch.map((f) => f.source!))
-      } catch (e) {
-        if (!stackOverflow(e)) throw e
-        fns = batch.map((f) => {
-          try {
-            return compileSources(rt, [f.source!])[0]
-          } catch (e) {
-            if (!stackOverflow(e)) throw e
-            return fallbacks.get(f.fn)?.() ?? f.fn
+      const missing = [...new Set(batch.flatMap((f) => {
+        const p = pending.get(f.fn)
+        return p && !p.template.factory ? [p.template] : []
+      }))]
+      if (missing.length) {
+        try {
+          const factories = compileSources<Factory>(rt, missing.map((t) => t.source))
+          missing.forEach((t, i) => { t.factory = factories[i] })
+        } catch (e) {
+          if (!stackOverflow(e)) throw e
+          for (const t of missing) {
+            try { t.factory = compileSources<Factory>(rt, [t.source])[0] }
+            catch (error) { if (!stackOverflow(error)) throw error; t.factory = t.fallback!() }
           }
-        })
+        }
+        for (const t of missing) t.fallback = undefined
       }
-      batch.forEach((f, i) => {
-        fallbacks.delete(f.fn)
-        f.fn = fns[i]
+      for (const f of batch) {
+        const p = pending.get(f.fn)
+        if (p) { pending.delete(f.fn); f.fn = p.template.factory!(p.parameters) }
         f.source = undefined
-      })
+      }
     },
   }
 }

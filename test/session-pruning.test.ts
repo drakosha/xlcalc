@@ -62,6 +62,17 @@ describe.each(['closures', 'eval'] as const)('pruned recalculation, %s', (execut
       } finally { await s.close() }
     })
 
+    it('rebuilds spill edges when a cyclic array formula becomes scalar with the same references', async()=>{
+      const s=await session({A1:{value:1},B1:{formula:'IF(A1=1,SEQUENCE(2),C1)'},C1:{formula:'B2+1'}})
+      try{
+        expect((await s.getCell('S','B1'))!.value).toEqual({error:'CYCLE'})
+        await s.setCells([{sheet:'S',cell:'B1',input:{formula:'IF(A1=1,1,C1)'}}])
+        expect((await s.getCell('S','B1'))!.value).toBe(1)
+        expect((await s.getCell('S','C1'))!.value).toBe(1)
+        await check(s);await s.undo();await check(s);await s.redo();await check(s)
+      }finally{await s.close()}
+    })
+
     it('propagates a nested summary marker even when the replaced formula keeps its value', async () => {
       const cells: Record<string, CellInput> = { A1: { value: 3 }, A2: { value: 1 }, B1: { formula: 'A1+1' }, B2: { value: 1 }, C1: { formula: 'SUBTOTAL(9,B1:B2)' } }
       for (let r = 2; r <= 96; r++) cells[`C${r}`] = { formula: `C${r - 1}+1` }

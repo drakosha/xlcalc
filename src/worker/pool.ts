@@ -394,6 +394,12 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       get revision() {
         return r.revision
       },
+      applyChanges: (ops, co) => value(edit('applyChanges', [ops], co, ['clock'])),
+      previewChanges: (ops, co) => value(edit('previewChanges', [ops], co, ['clock', 'maxChanges'])),
+      readCells: (refs, co) => value(edit('readCells', [refs], co, ['maxCells', 'cursor', 'count', 'fields'])),
+      findCells: (refs, query, co) => value(edit('findCells', [refs, query], co, ['maxCells', 'cursor', 'count', 'fields', 'in', 'caseSensitive'])),
+      getDependents: (refs, co) => value(edit('getDependents', [refs], co, ['maxCells', 'cursor', 'count', 'maxReferences'])),
+      summarizeRanges: (refs, co) => value(edit('summarizeRanges', [refs], co)),
       setCells: (edits, co) => value(edit('setCells', [edits], co)),
       replaceCells: (edits, co) => value(edit('replaceCells', [edits], co)),
       clearCells: (ranges, what, co) => value(edit('clearCells', [ranges, what], co)),

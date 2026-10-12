@@ -9,7 +9,7 @@
  */
 import type { BookInput, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
-import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
+import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
 import { FUNCTIONS } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
@@ -68,6 +68,8 @@ export interface EngineOptions {
 }
 
 export interface EngineState {
+  /** Temporary value journal of an impact preview. */
+  capture?: Tracker
   input: BookInput
   sheetNames: string[]
   sheetIdx: Map<string, number>
@@ -177,6 +179,15 @@ function compiled(state: EngineState, id: number, s: number, row: number, col: n
   const area = cell.array === undefined ? undefined : (arrayArea(formatAddress(row, col), cell.array) ?? undefined)
   const g = state.compiler.formula(codegenContext(state, s, area), p.ast, s, row, col)
   return { id, s, r: row, c: col, text: p.text, ...g, ...(area ? { area } : {}) }
+}
+
+/** Graph-relevant metadata of a scalar replacement; names, arrays and spans retain the rebuild path. */
+function sameDependencies(a: Formula, b: Formula): boolean {
+  return !a.area && !b.area && !a.spans && !b.spans && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
+    && a.refs.length === b.refs.length && a.refs.every((g, i) => {
+      const h = b.refs[i]
+      return g.s === h.s && g.r1 === h.r1 && g.c1 === h.c1 && g.r2 === h.r2 && g.c2 === h.c2
+    })
 }
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
@@ -303,6 +314,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
   // the edited cells and the ranges of arrays whose formula is gone
   const touched: Area[] = []
   let structural = false
+  let graphChanged = false
   for (const e of edits) {
     const s = state.sheetIdx.get(sheetKey(e.sheet))
     if (s === undefined) throw new Error(`unknown sheet ${e.sheet}`)
@@ -311,6 +323,9 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     setInput(state, s, e.cell, row, col, e.input)
     state.spills.occupied.set(s, row, col, holds(e.input ?? undefined))
     const old = state.at.get(k)
+    const previous = old === undefined ? undefined : state.formulas[old]
+    const clocked = old !== undefined && state.clocked.has(old)
+    const spilled = old !== undefined && (state.spills.claims.has(old) || state.spills.on.has(old) || state.spills.wait.has(old))
     if (old !== undefined) {
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
       endSpill(state, state.formulas[old]!, track, false)
@@ -331,6 +346,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     if (input?.formula !== undefined) {
       const p = prepare(state, s, row, col, input.formula)
       if (!p.ok) {
+        graphChanged ||= !!previous
         state.invalid.set(k, p.invalid)
         write(state, s, row, col, E[p.invalid.error], track)
         continue
@@ -340,8 +356,12 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       state.formulas[f.id] = f
       state.at.set(k, f.id)
       fresh.push(f)
+      graphChanged ||= !previous || previous.id !== f.id || clocked || spilled || state.spills.claims.size > 0 || state.spills.wait.size > 0 || !sameDependencies(previous, f)
       structural = true
-    } else write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
+    } else {
+      graphChanged ||= !!previous
+      write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
+    }
   }
   count(state.at.size + state.invalid.size)
   if (structural) {
@@ -350,7 +370,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     if (state.formulas.length < size) state.free = state.free.filter((id) => id < state.formulas.length)
   }
   state.compiler.link(fresh)
-  if (structural) rebuildGraph(state)
+  if (graphChanged) rebuildGraph(state)
   if (fresh.length && state.links.books.length) touched.push(...enteredLinks(state, fresh))
   // formulas reading the cells, arrays spilled over them or waiting for them
   for (const x of [...touched, ...state.spills.touched.splice(0)]) concerned(state, x, dirty)

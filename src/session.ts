@@ -8,12 +8,18 @@
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
+import type { ChangesOptions, ChangesPreview, ChangesResult, PreviewChangesOptions, SessionOperation, ReadCellsOptions, ReadCellsResult, FindCellsOptions, DependentsOptions, DependentsResult, RangeSummary } from './contract.js'
+import { operationsPlan } from './session/operations.js'
+import { readQuery, dependentsQuery, summaryQuery } from './session/queries.js'
+import { tracker } from './evaluate.js'
+import { toCellValue } from './engine.js'
+import { outValue } from './result.js'
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
-import { checkAddress, checkBook, checkBoolean, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
+import { checkAddress, checkBook, checkBoolean, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkNumber, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf } from './session/book.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
@@ -63,6 +69,12 @@ export interface SessionHooks {
 
 /** A session's operations as steps; `getBook`, `getLayout`, `setStyles` and `close` compute nothing. */
 export interface SessionSteps {
+  applyChanges(operations: SessionOperation[], opts?: ChangesOptions): Steps<ChangesResult>
+  previewChanges(operations: SessionOperation[], opts?: PreviewChangesOptions): Steps<ChangesPreview>
+  readCells(ranges: RangeRef[], opts?: ReadCellsOptions): Steps<ReadCellsResult>
+  findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions): Steps<ReadCellsResult>
+  getDependents(ranges: RangeRef[], opts?: DependentsOptions): Steps<DependentsResult>
+  summarizeRanges(ranges: RangeRef[], opts?: EditOptions): Steps<RangeSummary>
   readonly clock: Clock
   readonly revision: number
   setCells(edits: CellEdit[], opts?: EditOptions): Steps<EditResult>
@@ -177,8 +189,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     if (repaint) out.repaint = repaint
     return out
   }
+  let controlledClock: Clock | undefined
   const tick = (s: EngineState) => {
-    clock = fresh()
+    clock = controlledClock ? { ...controlledClock } : fresh()
     setNow(s, clockSerial(clock), clock.seed)
   }
   // a call that builds a new state aside: when it stops, the old state gets its clock back
@@ -201,8 +214,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     try {
       // edits that keep a cell's value and formula change its input alone
       const loud = contentEdits(s, edits)
-      if (loud.length && live) tick(s)
-      const keys = loud.length ? yield* applyEdits(s, loud, live) : []
+      if (loud.length && (live || controlledClock)) tick(s)
+      let keys: string[]
+      if (loud.length) keys = yield* applyEdits(s, loud, live || controlledClock !== undefined)
+      else if (controlledClock) { tick(s); keys = yield* applyClock(s, clockSerial(clock), clock.seed) }
+      else keys = []
       const fields = editFields(s, was)
       return [{ ...nothing(), keys: inOrder(keys, [...(before ? shownChanges(s, before) : []), ...fields.keys()]), fields, valued: keys.length > 0 }, was]
     } catch (e) {
@@ -223,7 +239,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
    */
   function* rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean): Steps<[EngineState, Outcome, BookDiff | null]> {
     const at = clock
-    if (live) tick(old)
+    if (live || controlledClock) tick(old)
     try {
       const next = yield* build(book, unlent)
       const fields = new Map<string, FieldChange>()
@@ -371,7 +387,112 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const a = checkActive(opts.active, x)
     return [i, a, filledText(s, i, x, a, checkString(text, 'text'), clock.now)] as const
   }
+  /** Executes a staged batch; previews undo their sparse inputs or drop their aside-built state. */
+  function* operations(given: SessionOperation[], eo: PreviewChangesOptions | undefined, preview: boolean): Steps<ChangesResult | ChangesPreview> {
+    const old = yield* ready(),
+      beforeRevision = revision,
+      beforeClock = clock
+    const opts = checkBase<PreviewChangesOptions>(eo, revision, preview ? ['clock', 'maxChanges'] : ['clock'])
+    if (opts.clock) checkClock(opts.clock, 'opts.clock')
+    const max = opts.maxChanges ?? 1000
+    if (preview) checkNumber(max, 'opts.maxChanges', 1, 10000, true)
+    const plan = operationsPlan(old, given, (v, format) => headerText(old, v, format))
+    const beforeBook = { ...old.input, sheets: old.input.sheets.slice() }
+    const captured = tracker()
+    if (preview) old.capture = captured
+    controlledClock = opts.clock ?? (preview && live ? fresh() : undefined)
+    let completed = false,
+      next = old,
+      outcome: Outcome,
+      back: (() => Step | null) | undefined
+    try {
+      if (plan.rebuild) {
+        const [built, out, diff] = yield* rebuild(old, plan.book, [], true, !preview && history.on)
+        next = built
+        outcome = { ...out, styles: plan.styles }
+        back = () => diff && bookStep('applyChanges', diff, plan.book)
+      } else {
+        const [built, out, cellsBack] = yield* writeCells(old, plan.edits, 'applyChanges')
+        next = built
+        outcome = out
+        const steps: (() => Step | null)[] = [cellsBack]
+        if (plan.layout.size) {
+          const layouts = new Map([...plan.layout].map(([i, sh]): [number, SheetInput] => [i, { ...sh, cells: next.input.sheets[i].cells }]))
+          const [lo, before] = yield* relayout(next, layouts, null)
+          outcome = joined(outcome, lo)
+          steps.push(() => layoutStep('applyChanges', before, layouts))
+        }
+        if (plan.styles) {
+          const was = next.input.styles
+          next.input.styles = plan.book.styles
+          outcome = { ...outcome, styles: true }
+          steps.push(() => stylesStep(was, 'applyChanges'))
+        }
+        back = () => manyStep('applyChanges', steps.map((f) => f()))
+      }
+      const used = { ...clock }
+      if (preview) {
+        // The old state's lazy fills must be read with its original clock.
+        if (next !== old) setNow(old, clockSerial(beforeClock), beforeClock.seed)
+        const list = changes(next, outcome.keys.slice(0, max), outcome.fields)
+        const impacts = list.map((c) => {
+          const i = old.sheetIdx.get(sheetKey(c.sheet))!,
+            { row, col } = parseAddress(c.cell),
+            k = `${i}:${row}:${col}`
+          const before = captured.cells.has(k) ? outValue(toCellValue(captured.cells.get(k)!)) : cellValue(old, i, row, col)
+          const issue = issueDetail(next, i, row, col)
+          return { sheet: c.sheet, cell: c.cell, before, after: c.value, ...(issue ? { issue } : {}) }
+        })
+        return { revision: beforeRevision, clock: used, changes: list, impacts, totalChanges: outcome.keys.length, truncated: outcome.keys.length > max, ...(outcome.layout.size ? { layout: [...outcome.layout] } : {}), ...(outcome.styles ? { styles: next.input.styles ?? [] } : {}), ...(repaintOf(next.input, outcome) ? { repaint: repaintOf(next.input, outcome) } : {}) }
+      }
+      const result = { ...answer(next, outcome), clock: used }
+      keep(back)
+      completed = true
+      return result
+    } finally {
+      old.capture = undefined
+      controlledClock = undefined
+      if (preview || !completed) {
+        revision = beforeRevision
+        clock = beforeClock
+        state = old
+        for (const e of plan.back) {
+          const cells = beforeBook.sheets[old.sheetIdx.get(sheetKey(e.sheet))!].cells
+          if (e.input === null) delete cells[e.cell]
+          else cells[e.cell] = e.input
+        }
+        old.input = beforeBook
+        setNow(old, clockSerial(beforeClock), beforeClock.seed)
+        if (next === old) {
+          stale = true
+          if (preview) {
+            yield* applyEdits(old, plan.back, true)
+            stale = false
+          }
+        }
+      }
+      controlledClock = undefined
+    }
+  }
   return {
+    *applyChanges(ops: SessionOperation[], eo?: ChangesOptions) {
+      return (yield* operations(ops, eo, false)) as ChangesResult
+    },
+    *previewChanges(ops: SessionOperation[], eo?: PreviewChangesOptions) {
+      return (yield* operations(ops, eo, true)) as ChangesPreview
+    },
+    *readCells(refs: RangeRef[], eo?: ReadCellsOptions) {
+      return yield* readQuery(yield* ready(), revision, clock, refs, eo)
+    },
+    *findCells(refs: RangeRef[], query: string, eo?: FindCellsOptions) {
+      return yield* readQuery(yield* ready(), revision, clock, refs, eo, query)
+    },
+    *getDependents(refs: RangeRef[], eo?: DependentsOptions) {
+      return yield* dependentsQuery(yield* ready(), revision, clock, refs, eo)
+    },
+    *summarizeRanges(refs: RangeRef[], eo?: EditOptions) {
+      return yield* summaryQuery(yield* ready(), revision, clock, refs, eo)
+    },
     get clock() {
       return { ...clock }
     },
@@ -665,6 +786,12 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     get revision() {
       return core.revision
     },
+    applyChanges: (ops, o) => now(() => core.applyChanges(ops, o)),
+    previewChanges: (ops, o) => now(() => core.previewChanges(ops, o)),
+    readCells: (refs, o) => now(() => core.readCells(refs, o)),
+    findCells: (refs, query, o) => now(() => core.findCells(refs, query, o)),
+    getDependents: (refs, o) => now(() => core.getDependents(refs, o)),
+    summarizeRanges: (refs, o) => now(() => core.summarizeRanges(refs, o)),
     setCells: (edits, o) => now(() => core.setCells(edits, o)),
     replaceCells: (edits, o) => now(() => core.replaceCells(edits, o)),
     clearCells: (ranges, what, o) => now(() => core.clearCells(ranges, what, o)),

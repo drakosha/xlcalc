@@ -191,3 +191,41 @@ The original nine-workload protocol still includes normal history and both execu
 The batch and indexed lookup gap remain. More selective pruning after another root changes, persistent key-column indexes and shared relative formula templates are further candidates. None is added here; these patches reduce retained storage without expanding the cache budget.
 
 Full source and dist suites each pass 20,261 tests with 42 skipped. Typecheck, build and jscpd (zero clones) pass. The new conformance checks cover all three session kinds and both modes. Exact synthetic hashes remain unchanged.
+
+## Live workbook round
+
+Branch `perf/live-book-api`, baseline `75049d2` (0.21.2). This round adds independent unchanged-branch propagation, graph reuse for scalar replacements with equivalent dependencies, a bounded key-line lookup index and shared formula bodies. It also adds mixed operations, impact previews and bounded queries; see `docs/live-books.md`.
+
+The candidate comparison in `results-row-sharing/comparison.json` uses five rotating fresh-process trials per execution mode. Each child uses the same opening/edit protocol and full verification. The variants are the frozen 0.21.2, the first fully parameterized candidate and the selected row-template candidate with sheet and column constants in its code.
+
+| Fanout | 0.21.2 | Fully parameterized | Row templates |
+|---|---:|---:|---:|
+| closures opening, ms | 223.07 | 258.92 | 275.93 |
+| closures edit, ms | 50.04 | 52.79 | 52.02 |
+| eval opening, ms | 323.87 | 309.23 | 305.32 |
+| eval edit, ms | 56.50 | 61.99 | 56.99 |
+
+Row templates retain most of the code-sharing memory benefit while removing the first candidate's eval edit penalty. Closure opening has a measured cost on this simple dense book, and edits cost about 4% more. The change is not a universal speed improvement. The lookup improvement and reduced formula-replacement work are independent of code sharing.
+
+`results-live-api-final/` contains the selected implementation's nine-workload comparison with HyperFormula 3.5.0 and five alternating retained-memory pairs against the frozen release. `results-live-api-before/` contains the release's speed results on the same host. `results-live-api/` preserves the first candidate's measurements, rather than relabeling them as the selected code. Host load differs from the preceding round, so compare these current runs instead of attributing every difference from the earlier report to code.
+
+The first mixed-root execution probe evaluated 5000 formulas when two were sufficient. The conformance test uses 1024 and now evaluates two. The formula-body counter for 512 repeated row formulas falls from 512 to one. Data-only lookup edits no longer reread the key column. These counters explain removed work; they are not wall-time speedup claims.
+
+Verification also covers a last cyclic array replaced by a scalar with the same references: old spill edges must be rebuilt. Dependency cursors use stable input order after a worker restores formula slots. Component acceptance runs from `bench/live-api/component.mjs` in an isolated copy, leaving the component source and its installed dependency unchanged.
+
+The selected-code final run encountered a load average of 32 to 44 during the business-3400 and prefix cases, falling to 10 to 17 for later cases. HF also timed out on business-3400 in this run. Those wall-time results are retained as observations under load, not clean estimates of a code change. The five rotating fanout trials and before/after memory pairs are separate measurements. No synthetic values were changed to get a faster result.
+
+Selected-code memory, medians of five alternating pairs (MiB):
+
+| Case | Mode | Heap before | RSS before | Heap after | RSS after |
+|---|---|---:|---:|---:|---:|
+| fanout | closures | 63.24 | 233.30 | 62.11 | 234.89 |
+| fanout | eval | 90.96 | 391.05 | 62.09 | 252.33 |
+| prefix-statistics | closures | 13.17 | 119.84 | 11.14 | 118.08 |
+| prefix-statistics | eval | 16.21 | 150.75 | 11.13 | 125.16 |
+| business-34000 | closures | 52.07 | 363.88 | 49.42 | 360.84 |
+| business-34000 | eval | 56.20 | 382.50 | 49.42 | 366.42 |
+| lookup | closures | 10.95 | 145.58 | 10.31 | 145.72 |
+| lookup | eval | 11.62 | 148.53 | 10.30 | 145.86 |
+
+All 18 xlcalc speed variants retain the exact value and input hashes of the frozen release. All 130 memory samples match full computation. The final HF run has 28 successful variants and two timeouts under the recorded load.

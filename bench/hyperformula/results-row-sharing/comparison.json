@@ -1,0 +1,3946 @@
+{
+  "node": "v26.7.0",
+  "roots": [
+    "/private/tmp/xlcalc-live-api-baseline",
+    "/private/tmp/xlcalc-live-api-shared-all",
+    "/private/tmp/xlcalc-live-book-api"
+  ],
+  "protocol": {
+    "trials": 5,
+    "rotation": "root order rotates each trial",
+    "child": "same child.mjs, 5 opens and 20 edits, full verification, 1024 MiB cap and phase deadlines"
+  },
+  "samples": [
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 0,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 62.162620544433594,
+      "coldMedianMs": 221.45054099999993,
+      "coldMedianCpuMs": 409.962,
+      "samples": [
+        {
+          "wallMs": 230.83804099999986,
+          "cpuMs": 411.511
+        },
+        {
+          "wallMs": 216.45524999999998,
+          "cpuMs": 409.962
+        },
+        {
+          "wallMs": 224.15220899999986,
+          "cpuMs": 407.599
+        },
+        {
+          "wallMs": 221.45054099999993,
+          "cpuMs": 414.474
+        },
+        {
+          "wallMs": 219.0081250000003,
+          "cpuMs": 398.116
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 59.910041999999976,
+          "medianMs": 50.03633300000001,
+          "p95Ms": 62.00491699999975,
+          "medianCpuMs": 59.554,
+          "samples": [
+            {
+              "wallMs": 46.61970900000006,
+              "cpuMs": 58.842
+            },
+            {
+              "wallMs": 61.56037500000002,
+              "cpuMs": 132.264
+            },
+            {
+              "wallMs": 46.45912500000031,
+              "cpuMs": 54.019
+            },
+            {
+              "wallMs": 47.53408399999989,
+              "cpuMs": 50.348
+            },
+            {
+              "wallMs": 62.00491699999975,
+              "cpuMs": 131.044
+            },
+            {
+              "wallMs": 48.14320800000041,
+              "cpuMs": 54.556
+            },
+            {
+              "wallMs": 45.47791599999982,
+              "cpuMs": 50.653
+            },
+            {
+              "wallMs": 59.6845830000002,
+              "cpuMs": 123.214
+            },
+            {
+              "wallMs": 47.931125000000065,
+              "cpuMs": 52.549
+            },
+            {
+              "wallMs": 47.41770799999995,
+              "cpuMs": 49.881
+            },
+            {
+              "wallMs": 50.42608300000029,
+              "cpuMs": 62.956
+            },
+            {
+              "wallMs": 52.75958300000002,
+              "cpuMs": 73.154
+            },
+            {
+              "wallMs": 55.320332999999664,
+              "cpuMs": 63.165
+            },
+            {
+              "wallMs": 67.20537499999955,
+              "cpuMs": 122.83
+            },
+            {
+              "wallMs": 50.71025000000009,
+              "cpuMs": 66.401
+            },
+            {
+              "wallMs": 50.03633300000001,
+              "cpuMs": 59.554
+            },
+            {
+              "wallMs": 48.6713749999999,
+              "cpuMs": 48.888
+            },
+            {
+              "wallMs": 54.380041999999776,
+              "cpuMs": 62.28
+            },
+            {
+              "wallMs": 45.774625000000015,
+              "cpuMs": 50.606
+            },
+            {
+              "wallMs": 48.482208000000355,
+              "cpuMs": 48.875
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 0,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.02423858642578,
+      "coldMedianMs": 270.3022500000002,
+      "coldMedianCpuMs": 454.162,
+      "samples": [
+        {
+          "wallMs": 270.4568340000001,
+          "cpuMs": 459.049
+        },
+        {
+          "wallMs": 262.7230840000002,
+          "cpuMs": 451.123
+        },
+        {
+          "wallMs": 272.910042,
+          "cpuMs": 452.946
+        },
+        {
+          "wallMs": 267.698167,
+          "cpuMs": 459.135
+        },
+        {
+          "wallMs": 270.3022500000002,
+          "cpuMs": 454.162
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 69.13029199999983,
+          "medianMs": 54.185333999999784,
+          "p95Ms": 67.3407500000003,
+          "medianCpuMs": 58.506,
+          "samples": [
+            {
+              "wallMs": 55.96995800000013,
+              "cpuMs": 67.449
+            },
+            {
+              "wallMs": 50.845582999999806,
+              "cpuMs": 52.042
+            },
+            {
+              "wallMs": 64.22554200000013,
+              "cpuMs": 92.93
+            },
+            {
+              "wallMs": 54.185333999999784,
+              "cpuMs": 57.798
+            },
+            {
+              "wallMs": 52.5542089999999,
+              "cpuMs": 53.572
+            },
+            {
+              "wallMs": 67.52312499999971,
+              "cpuMs": 134.861
+            },
+            {
+              "wallMs": 53.01720800000021,
+              "cpuMs": 58.506
+            },
+            {
+              "wallMs": 50.28654199999983,
+              "cpuMs": 52.609
+            },
+            {
+              "wallMs": 49.90804200000002,
+              "cpuMs": 50.3
+            },
+            {
+              "wallMs": 60.15337499999987,
+              "cpuMs": 81.328
+            },
+            {
+              "wallMs": 51.71616600000016,
+              "cpuMs": 60.808
+            },
+            {
+              "wallMs": 50.608916000000136,
+              "cpuMs": 55.965
+            },
+            {
+              "wallMs": 66.02045799999996,
+              "cpuMs": 126.292
+            },
+            {
+              "wallMs": 54.42454099999941,
+              "cpuMs": 68.455
+            },
+            {
+              "wallMs": 49.811915999999655,
+              "cpuMs": 50.163
+            },
+            {
+              "wallMs": 54.99383399999988,
+              "cpuMs": 55.335
+            },
+            {
+              "wallMs": 59.099709000000075,
+              "cpuMs": 71.044
+            },
+            {
+              "wallMs": 51.683374999999614,
+              "cpuMs": 55.061
+            },
+            {
+              "wallMs": 51.88000000000011,
+              "cpuMs": 55.326
+            },
+            {
+              "wallMs": 67.3407500000003,
+              "cpuMs": 125.3
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 0,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.04289245605469,
+      "coldMedianMs": 264.7255409999998,
+      "coldMedianCpuMs": 453.956,
+      "samples": [
+        {
+          "wallMs": 264.021166,
+          "cpuMs": 458.455
+        },
+        {
+          "wallMs": 249.33904200000006,
+          "cpuMs": 445.792
+        },
+        {
+          "wallMs": 264.7255409999998,
+          "cpuMs": 453.956
+        },
+        {
+          "wallMs": 276.4392499999999,
+          "cpuMs": 482.407
+        },
+        {
+          "wallMs": 270.7885000000001,
+          "cpuMs": 451.648
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 63.62816699999985,
+          "medianMs": 51.71754199999941,
+          "p95Ms": 65.15195800000038,
+          "medianCpuMs": 56.988,
+          "samples": [
+            {
+              "wallMs": 48.95416699999987,
+              "cpuMs": 56.988
+            },
+            {
+              "wallMs": 50.41833399999996,
+              "cpuMs": 51.51
+            },
+            {
+              "wallMs": 60.5136250000005,
+              "cpuMs": 90.194
+            },
+            {
+              "wallMs": 50.51679200000035,
+              "cpuMs": 56.42
+            },
+            {
+              "wallMs": 50.9878749999998,
+              "cpuMs": 51.956
+            },
+            {
+              "wallMs": 65.15195800000038,
+              "cpuMs": 134.635
+            },
+            {
+              "wallMs": 49.64387499999975,
+              "cpuMs": 54.984
+            },
+            {
+              "wallMs": 51.71754199999941,
+              "cpuMs": 53.903
+            },
+            {
+              "wallMs": 48.15037499999926,
+              "cpuMs": 48.581
+            },
+            {
+              "wallMs": 56.12937499999953,
+              "cpuMs": 76.363
+            },
+            {
+              "wallMs": 48.623874999999316,
+              "cpuMs": 59.502
+            },
+            {
+              "wallMs": 52.29912500000046,
+              "cpuMs": 59.232
+            },
+            {
+              "wallMs": 67.24437500000022,
+              "cpuMs": 128.332
+            },
+            {
+              "wallMs": 52.767291000000114,
+              "cpuMs": 66.883
+            },
+            {
+              "wallMs": 51.820582999999715,
+              "cpuMs": 52.142
+            },
+            {
+              "wallMs": 50.32270799999969,
+              "cpuMs": 52.502
+            },
+            {
+              "wallMs": 56.0869589999993,
+              "cpuMs": 62.466
+            },
+            {
+              "wallMs": 47.86762499999986,
+              "cpuMs": 52.318
+            },
+            {
+              "wallMs": 48.571500000000015,
+              "cpuMs": 50.397
+            },
+            {
+              "wallMs": 60.62420800000018,
+              "cpuMs": 70.631
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 1,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.030921936035156,
+      "coldMedianMs": 267.9201250000001,
+      "coldMedianCpuMs": 448.363,
+      "samples": [
+        {
+          "wallMs": 267.9201250000001,
+          "cpuMs": 437.441
+        },
+        {
+          "wallMs": 254.520708,
+          "cpuMs": 448.105
+        },
+        {
+          "wallMs": 257.562459,
+          "cpuMs": 454.14
+        },
+        {
+          "wallMs": 269.24129200000016,
+          "cpuMs": 449.568
+        },
+        {
+          "wallMs": 271.30620899999985,
+          "cpuMs": 448.363
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 67.47312499999998,
+          "medianMs": 52.185583000000406,
+          "p95Ms": 67.87408300000061,
+          "medianCpuMs": 61.655,
+          "samples": [
+            {
+              "wallMs": 51.355749999999716,
+              "cpuMs": 62.275
+            },
+            {
+              "wallMs": 48.77466699999968,
+              "cpuMs": 49.877
+            },
+            {
+              "wallMs": 84.0122080000001,
+              "cpuMs": 141.823
+            },
+            {
+              "wallMs": 52.185583000000406,
+              "cpuMs": 63.385
+            },
+            {
+              "wallMs": 53.42395900000065,
+              "cpuMs": 56.412
+            },
+            {
+              "wallMs": 65.58954100000028,
+              "cpuMs": 133.499
+            },
+            {
+              "wallMs": 50.39558299999953,
+              "cpuMs": 55.923
+            },
+            {
+              "wallMs": 52.005167000000256,
+              "cpuMs": 54.696
+            },
+            {
+              "wallMs": 48.02845900000011,
+              "cpuMs": 48.67
+            },
+            {
+              "wallMs": 53.73924999999963,
+              "cpuMs": 70.623
+            },
+            {
+              "wallMs": 49.71704200000022,
+              "cpuMs": 52.608
+            },
+            {
+              "wallMs": 48.01695899999959,
+              "cpuMs": 52.889
+            },
+            {
+              "wallMs": 67.87408300000061,
+              "cpuMs": 119.663
+            },
+            {
+              "wallMs": 52.31016700000055,
+              "cpuMs": 66.711
+            },
+            {
+              "wallMs": 48.877542000000176,
+              "cpuMs": 52.233
+            },
+            {
+              "wallMs": 50.59599999999955,
+              "cpuMs": 61.655
+            },
+            {
+              "wallMs": 57.66641600000003,
+              "cpuMs": 68.721
+            },
+            {
+              "wallMs": 54.76904100000047,
+              "cpuMs": 56.98
+            },
+            {
+              "wallMs": 49.30745899999965,
+              "cpuMs": 51.743
+            },
+            {
+              "wallMs": 66.61674999999923,
+              "cpuMs": 132.263
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 1,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.05140686035156,
+      "coldMedianMs": 275.9313749999999,
+      "coldMedianCpuMs": 460.986,
+      "samples": [
+        {
+          "wallMs": 289.56954199999996,
+          "cpuMs": 477.022
+        },
+        {
+          "wallMs": 276.0161250000001,
+          "cpuMs": 476.418
+        },
+        {
+          "wallMs": 275.9313749999999,
+          "cpuMs": 460.362
+        },
+        {
+          "wallMs": 259.11816599999975,
+          "cpuMs": 456.549
+        },
+        {
+          "wallMs": 270.4522499999998,
+          "cpuMs": 460.986
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 64.92066699999987,
+          "medianMs": 52.02183299999979,
+          "p95Ms": 63.11158299999988,
+          "medianCpuMs": 55.978,
+          "samples": [
+            {
+              "wallMs": 49.859750000000076,
+              "cpuMs": 53.461
+            },
+            {
+              "wallMs": 49.977667000000565,
+              "cpuMs": 51.572
+            },
+            {
+              "wallMs": 59.41370800000004,
+              "cpuMs": 86.529
+            },
+            {
+              "wallMs": 54.91370900000038,
+              "cpuMs": 66.594
+            },
+            {
+              "wallMs": 55.415250000000015,
+              "cpuMs": 55.978
+            },
+            {
+              "wallMs": 52.02183299999979,
+              "cpuMs": 75.264
+            },
+            {
+              "wallMs": 54.70454100000006,
+              "cpuMs": 72.213
+            },
+            {
+              "wallMs": 49.96366699999999,
+              "cpuMs": 54.328
+            },
+            {
+              "wallMs": 48.38416699999925,
+              "cpuMs": 50.654
+            },
+            {
+              "wallMs": 63.98383299999932,
+              "cpuMs": 123.021
+            },
+            {
+              "wallMs": 52.81229100000019,
+              "cpuMs": 58.057
+            },
+            {
+              "wallMs": 48.385417000000416,
+              "cpuMs": 55.654
+            },
+            {
+              "wallMs": 49.3726659999993,
+              "cpuMs": 53.63
+            },
+            {
+              "wallMs": 56.407500000000255,
+              "cpuMs": 75.115
+            },
+            {
+              "wallMs": 53.68683299999975,
+              "cpuMs": 54.706
+            },
+            {
+              "wallMs": 48.1621669999995,
+              "cpuMs": 48.587
+            },
+            {
+              "wallMs": 63.11158299999988,
+              "cpuMs": 110.83
+            },
+            {
+              "wallMs": 51.97191600000042,
+              "cpuMs": 59.44
+            },
+            {
+              "wallMs": 51.46637499999997,
+              "cpuMs": 54.185
+            },
+            {
+              "wallMs": 49.445708000000195,
+              "cpuMs": 49.88
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 1,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 62.19215393066406,
+      "coldMedianMs": 223.06958399999985,
+      "coldMedianCpuMs": 408.384,
+      "samples": [
+        {
+          "wallMs": 235.26024999999993,
+          "cpuMs": 421.589
+        },
+        {
+          "wallMs": 223.06958399999985,
+          "cpuMs": 408.384
+        },
+        {
+          "wallMs": 238.09283400000004,
+          "cpuMs": 408.119
+        },
+        {
+          "wallMs": 216.87374999999997,
+          "cpuMs": 411.428
+        },
+        {
+          "wallMs": 219.515042,
+          "cpuMs": 393.463
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 57.78075000000035,
+          "medianMs": 46.75837500000034,
+          "p95Ms": 61.07350000000042,
+          "medianCpuMs": 54.292,
+          "samples": [
+            {
+              "wallMs": 47.584249999999884,
+              "cpuMs": 59.902
+            },
+            {
+              "wallMs": 62.40579200000002,
+              "cpuMs": 134.249
+            },
+            {
+              "wallMs": 47.03441699999985,
+              "cpuMs": 54.681
+            },
+            {
+              "wallMs": 46.57183299999997,
+              "cpuMs": 49.437
+            },
+            {
+              "wallMs": 59.801416999999674,
+              "cpuMs": 132.487
+            },
+            {
+              "wallMs": 47.83525000000009,
+              "cpuMs": 54.292
+            },
+            {
+              "wallMs": 45.314790999999786,
+              "cpuMs": 50.197
+            },
+            {
+              "wallMs": 59.217375000000175,
+              "cpuMs": 118.755
+            },
+            {
+              "wallMs": 46.75837500000034,
+              "cpuMs": 51.809
+            },
+            {
+              "wallMs": 45.23508299999958,
+              "cpuMs": 49.006
+            },
+            {
+              "wallMs": 59.00041599999986,
+              "cpuMs": 121.512
+            },
+            {
+              "wallMs": 45.722749999999905,
+              "cpuMs": 54.872
+            },
+            {
+              "wallMs": 45.566749999999956,
+              "cpuMs": 49.944
+            },
+            {
+              "wallMs": 61.07350000000042,
+              "cpuMs": 130.937
+            },
+            {
+              "wallMs": 46.07316699999956,
+              "cpuMs": 49.176
+            },
+            {
+              "wallMs": 45.024750000000495,
+              "cpuMs": 45.581
+            },
+            {
+              "wallMs": 57.78233300000011,
+              "cpuMs": 123.218
+            },
+            {
+              "wallMs": 45.96504199999981,
+              "cpuMs": 51.522
+            },
+            {
+              "wallMs": 44.97312499999953,
+              "cpuMs": 47.422
+            },
+            {
+              "wallMs": 45.70833400000083,
+              "cpuMs": 47.828
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 2,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.051536560058594,
+      "coldMedianMs": 248.51745899999992,
+      "coldMedianCpuMs": 434.027,
+      "samples": [
+        {
+          "wallMs": 261.0725,
+          "cpuMs": 434.027
+        },
+        {
+          "wallMs": 248.51745899999992,
+          "cpuMs": 439.974
+        },
+        {
+          "wallMs": 262.578125,
+          "cpuMs": 443.461
+        },
+        {
+          "wallMs": 244.70366699999977,
+          "cpuMs": 428.513
+        },
+        {
+          "wallMs": 246.0635830000001,
+          "cpuMs": 432.121
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 64.07491699999991,
+          "medianMs": 50.06129200000032,
+          "p95Ms": 59.90020800000002,
+          "medianCpuMs": 55.211,
+          "samples": [
+            {
+              "wallMs": 46.072917000000416,
+              "cpuMs": 48.555
+            },
+            {
+              "wallMs": 57.93437499999982,
+              "cpuMs": 86.95
+            },
+            {
+              "wallMs": 55.835333999999875,
+              "cpuMs": 70.822
+            },
+            {
+              "wallMs": 54.976416999999856,
+              "cpuMs": 56.313
+            },
+            {
+              "wallMs": 57.922709000000395,
+              "cpuMs": 83.569
+            },
+            {
+              "wallMs": 49.73833399999967,
+              "cpuMs": 58.832
+            },
+            {
+              "wallMs": 54.84508300000016,
+              "cpuMs": 54.458
+            },
+            {
+              "wallMs": 50.63054099999954,
+              "cpuMs": 55.703
+            },
+            {
+              "wallMs": 48.19908300000043,
+              "cpuMs": 50.784
+            },
+            {
+              "wallMs": 46.11370799999986,
+              "cpuMs": 46.71
+            },
+            {
+              "wallMs": 50.06129200000032,
+              "cpuMs": 55.211
+            },
+            {
+              "wallMs": 44.72816600000078,
+              "cpuMs": 50.977
+            },
+            {
+              "wallMs": 45.92995900000005,
+              "cpuMs": 47.809
+            },
+            {
+              "wallMs": 59.90020800000002,
+              "cpuMs": 127.117
+            },
+            {
+              "wallMs": 47.89695800000027,
+              "cpuMs": 50.825
+            },
+            {
+              "wallMs": 45.94775000000027,
+              "cpuMs": 46.262
+            },
+            {
+              "wallMs": 61.61120800000026,
+              "cpuMs": 120.305
+            },
+            {
+              "wallMs": 47.01758299999983,
+              "cpuMs": 52.76
+            },
+            {
+              "wallMs": 45.48883300000034,
+              "cpuMs": 49.36
+            },
+            {
+              "wallMs": 50.103541999999834,
+              "cpuMs": 57.415
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 2,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 62.213218688964844,
+      "coldMedianMs": 222.65237500000012,
+      "coldMedianCpuMs": 410.433,
+      "samples": [
+        {
+          "wallMs": 225.96804100000008,
+          "cpuMs": 414.937
+        },
+        {
+          "wallMs": 220.64283299999988,
+          "cpuMs": 410.433
+        },
+        {
+          "wallMs": 222.0969580000001,
+          "cpuMs": 408.446
+        },
+        {
+          "wallMs": 227.3720000000003,
+          "cpuMs": 429.962
+        },
+        {
+          "wallMs": 222.65237500000012,
+          "cpuMs": 399.826
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 59.734791000000314,
+          "medianMs": 48.06108399999994,
+          "p95Ms": 62.56929199999968,
+          "medianCpuMs": 54.593,
+          "samples": [
+            {
+              "wallMs": 47.735375000000204,
+              "cpuMs": 60.227
+            },
+            {
+              "wallMs": 62.56929199999968,
+              "cpuMs": 131.139
+            },
+            {
+              "wallMs": 45.95833300000004,
+              "cpuMs": 53.68
+            },
+            {
+              "wallMs": 45.820000000000164,
+              "cpuMs": 48.652
+            },
+            {
+              "wallMs": 63.32108299999982,
+              "cpuMs": 132.665
+            },
+            {
+              "wallMs": 48.06108399999994,
+              "cpuMs": 54.593
+            },
+            {
+              "wallMs": 43.9083329999994,
+              "cpuMs": 49.218
+            },
+            {
+              "wallMs": 61.99491699999999,
+              "cpuMs": 126.291
+            },
+            {
+              "wallMs": 48.8643749999992,
+              "cpuMs": 53.269
+            },
+            {
+              "wallMs": 45.61149999999998,
+              "cpuMs": 48.05
+            },
+            {
+              "wallMs": 59.50450000000001,
+              "cpuMs": 128.105
+            },
+            {
+              "wallMs": 49.987999999999374,
+              "cpuMs": 59.342
+            },
+            {
+              "wallMs": 49.0615829999997,
+              "cpuMs": 52.216
+            },
+            {
+              "wallMs": 59.75383299999976,
+              "cpuMs": 130.906
+            },
+            {
+              "wallMs": 45.067957999999635,
+              "cpuMs": 50.415
+            },
+            {
+              "wallMs": 44.576624999999694,
+              "cpuMs": 50.209
+            },
+            {
+              "wallMs": 58.668290999999954,
+              "cpuMs": 120.984
+            },
+            {
+              "wallMs": 47.364667000000736,
+              "cpuMs": 52.63
+            },
+            {
+              "wallMs": 46.008332999999766,
+              "cpuMs": 48.564
+            },
+            {
+              "wallMs": 44.84770800000024,
+              "cpuMs": 61.227
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 2,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.04502868652344,
+      "coldMedianMs": 256.50037499999996,
+      "coldMedianCpuMs": 431.997,
+      "samples": [
+        {
+          "wallMs": 256.50037499999996,
+          "cpuMs": 422.892
+        },
+        {
+          "wallMs": 256.5709999999999,
+          "cpuMs": 447.754
+        },
+        {
+          "wallMs": 253.67849999999999,
+          "cpuMs": 431.973
+        },
+        {
+          "wallMs": 251.51133299999992,
+          "cpuMs": 431.997
+        },
+        {
+          "wallMs": 265.64133300000003,
+          "cpuMs": 447.978
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 72.13566599999967,
+          "medianMs": 52.786707999999635,
+          "p95Ms": 64.44525000000067,
+          "medianCpuMs": 60.299,
+          "samples": [
+            {
+              "wallMs": 53.30833299999995,
+              "cpuMs": 64.103
+            },
+            {
+              "wallMs": 51.705167000000074,
+              "cpuMs": 52.858
+            },
+            {
+              "wallMs": 63.56629199999952,
+              "cpuMs": 92.132
+            },
+            {
+              "wallMs": 50.5401669999992,
+              "cpuMs": 53.999
+            },
+            {
+              "wallMs": 51.40229099999942,
+              "cpuMs": 52.558
+            },
+            {
+              "wallMs": 66.89812499999971,
+              "cpuMs": 140.531
+            },
+            {
+              "wallMs": 51.39916699999958,
+              "cpuMs": 56.685
+            },
+            {
+              "wallMs": 50.928750000000036,
+              "cpuMs": 53.005
+            },
+            {
+              "wallMs": 50.168791000000056,
+              "cpuMs": 50.689
+            },
+            {
+              "wallMs": 57.73633299999983,
+              "cpuMs": 78.345
+            },
+            {
+              "wallMs": 51.289332999999715,
+              "cpuMs": 60.524
+            },
+            {
+              "wallMs": 52.786707999999635,
+              "cpuMs": 60.299
+            },
+            {
+              "wallMs": 63.6778749999994,
+              "cpuMs": 130.915
+            },
+            {
+              "wallMs": 53.477625000000444,
+              "cpuMs": 67.819
+            },
+            {
+              "wallMs": 56.32920800000011,
+              "cpuMs": 59.312
+            },
+            {
+              "wallMs": 49.30550000000039,
+              "cpuMs": 51.079
+            },
+            {
+              "wallMs": 58.3577920000007,
+              "cpuMs": 70.909
+            },
+            {
+              "wallMs": 51.541291999999885,
+              "cpuMs": 54.848
+            },
+            {
+              "wallMs": 50.822291999999834,
+              "cpuMs": 54.17
+            },
+            {
+              "wallMs": 64.44525000000067,
+              "cpuMs": 123.201
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 3,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 62.16089630126953,
+      "coldMedianMs": 238.51929100000007,
+      "coldMedianCpuMs": 423.127,
+      "samples": [
+        {
+          "wallMs": 238.51929100000007,
+          "cpuMs": 428.023
+        },
+        {
+          "wallMs": 233.48912500000006,
+          "cpuMs": 431.418
+        },
+        {
+          "wallMs": 243.11120800000003,
+          "cpuMs": 415.014
+        },
+        {
+          "wallMs": 238.8444999999997,
+          "cpuMs": 423.127
+        },
+        {
+          "wallMs": 226.80054100000007,
+          "cpuMs": 414.123
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 60.68279200000006,
+          "medianMs": 51.25329099999999,
+          "p95Ms": 64.89262499999995,
+          "medianCpuMs": 58.333,
+          "samples": [
+            {
+              "wallMs": 49.98112499999979,
+              "cpuMs": 62.492
+            },
+            {
+              "wallMs": 64.89262499999995,
+              "cpuMs": 135.363
+            },
+            {
+              "wallMs": 48.97449999999981,
+              "cpuMs": 56.804
+            },
+            {
+              "wallMs": 55.36729199999991,
+              "cpuMs": 58.333
+            },
+            {
+              "wallMs": 62.736542000000554,
+              "cpuMs": 133.927
+            },
+            {
+              "wallMs": 51.19029200000023,
+              "cpuMs": 57.884
+            },
+            {
+              "wallMs": 48.98316699999941,
+              "cpuMs": 54.885
+            },
+            {
+              "wallMs": 62.15600000000086,
+              "cpuMs": 123.929
+            },
+            {
+              "wallMs": 51.25329099999999,
+              "cpuMs": 55.743
+            },
+            {
+              "wallMs": 49.15391699999964,
+              "cpuMs": 51.643
+            },
+            {
+              "wallMs": 61.189416000000165,
+              "cpuMs": 126.792
+            },
+            {
+              "wallMs": 51.65637499999957,
+              "cpuMs": 61.338
+            },
+            {
+              "wallMs": 51.774500000000444,
+              "cpuMs": 54.458
+            },
+            {
+              "wallMs": 64.14854200000082,
+              "cpuMs": 139.192
+            },
+            {
+              "wallMs": 48.80174999999963,
+              "cpuMs": 54.551
+            },
+            {
+              "wallMs": 48.19487500000014,
+              "cpuMs": 50.708
+            },
+            {
+              "wallMs": 81.08283299999948,
+              "cpuMs": 103.259
+            },
+            {
+              "wallMs": 48.5122080000001,
+              "cpuMs": 63.117
+            },
+            {
+              "wallMs": 46.264250000000175,
+              "cpuMs": 56.043
+            },
+            {
+              "wallMs": 46.96300000000065,
+              "cpuMs": 48.17
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 3,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.025978088378906,
+      "coldMedianMs": 258.916166,
+      "coldMedianCpuMs": 438.174,
+      "samples": [
+        {
+          "wallMs": 257.584875,
+          "cpuMs": 425.783
+        },
+        {
+          "wallMs": 241.73445800000013,
+          "cpuMs": 438.669
+        },
+        {
+          "wallMs": 268.23920799999996,
+          "cpuMs": 453.192
+        },
+        {
+          "wallMs": 260.77716599999985,
+          "cpuMs": 438.174
+        },
+        {
+          "wallMs": 258.916166,
+          "cpuMs": 436.276
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 60.95383300000003,
+          "medianMs": 51.09062500000073,
+          "p95Ms": 62.45287499999995,
+          "medianCpuMs": 57.846,
+          "samples": [
+            {
+              "wallMs": 49.00954199999978,
+              "cpuMs": 65.088
+            },
+            {
+              "wallMs": 46.34637500000008,
+              "cpuMs": 47.072
+            },
+            {
+              "wallMs": 56.859457999999904,
+              "cpuMs": 83.307
+            },
+            {
+              "wallMs": 46.75233300000036,
+              "cpuMs": 58.464
+            },
+            {
+              "wallMs": 51.09062500000073,
+              "cpuMs": 53.124
+            },
+            {
+              "wallMs": 65.3197909999999,
+              "cpuMs": 137.146
+            },
+            {
+              "wallMs": 51.66191699999945,
+              "cpuMs": 57.846
+            },
+            {
+              "wallMs": 47.25116699999944,
+              "cpuMs": 49.494
+            },
+            {
+              "wallMs": 45.98225000000002,
+              "cpuMs": 46.397
+            },
+            {
+              "wallMs": 54.29224999999951,
+              "cpuMs": 73.342
+            },
+            {
+              "wallMs": 46.303499999999985,
+              "cpuMs": 55.265
+            },
+            {
+              "wallMs": 47.998499999999694,
+              "cpuMs": 55.435
+            },
+            {
+              "wallMs": 61.21116699999948,
+              "cpuMs": 120.08
+            },
+            {
+              "wallMs": 49.97345800000039,
+              "cpuMs": 63.371
+            },
+            {
+              "wallMs": 47.862458000000515,
+              "cpuMs": 48.176
+            },
+            {
+              "wallMs": 47.150792000000365,
+              "cpuMs": 47.735
+            },
+            {
+              "wallMs": 57.21962499999972,
+              "cpuMs": 67.72
+            },
+            {
+              "wallMs": 53.03020800000013,
+              "cpuMs": 55.611
+            },
+            {
+              "wallMs": 53.61212499999965,
+              "cpuMs": 54.241
+            },
+            {
+              "wallMs": 62.45287499999995,
+              "cpuMs": 71.741
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 3,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.040260314941406,
+      "coldMedianMs": 278.2027499999999,
+      "coldMedianCpuMs": 466.368,
+      "samples": [
+        {
+          "wallMs": 322.5739580000002,
+          "cpuMs": 525.678
+        },
+        {
+          "wallMs": 257.82558300000005,
+          "cpuMs": 466.368
+        },
+        {
+          "wallMs": 278.2027499999999,
+          "cpuMs": 455.069
+        },
+        {
+          "wallMs": 268.3777919999998,
+          "cpuMs": 461.605
+        },
+        {
+          "wallMs": 281.27975000000015,
+          "cpuMs": 472.847
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 77.36041599999999,
+          "medianMs": 56.50066599999991,
+          "p95Ms": 70.82699999999932,
+          "medianCpuMs": 61.023,
+          "samples": [
+            {
+              "wallMs": 54.934957999999824,
+              "cpuMs": 56.753
+            },
+            {
+              "wallMs": 67.26833399999941,
+              "cpuMs": 94.683
+            },
+            {
+              "wallMs": 56.63916599999993,
+              "cpuMs": 66.306
+            },
+            {
+              "wallMs": 70.82699999999932,
+              "cpuMs": 69.266
+            },
+            {
+              "wallMs": 69.23466600000029,
+              "cpuMs": 136.364
+            },
+            {
+              "wallMs": 48.661042000000634,
+              "cpuMs": 53.543
+            },
+            {
+              "wallMs": 48.80945800000063,
+              "cpuMs": 51.432
+            },
+            {
+              "wallMs": 65.91337500000009,
+              "cpuMs": 128.756
+            },
+            {
+              "wallMs": 46.68145800000002,
+              "cpuMs": 51.288
+            },
+            {
+              "wallMs": 48.83720799999992,
+              "cpuMs": 51.834
+            },
+            {
+              "wallMs": 66.39141600000039,
+              "cpuMs": 130.178
+            },
+            {
+              "wallMs": 50.02620899999965,
+              "cpuMs": 58.928
+            },
+            {
+              "wallMs": 56.50066599999991,
+              "cpuMs": 58.638
+            },
+            {
+              "wallMs": 70.88412499999959,
+              "cpuMs": 149.091
+            },
+            {
+              "wallMs": 52.98158300000068,
+              "cpuMs": 61.023
+            },
+            {
+              "wallMs": 48.45691700000043,
+              "cpuMs": 50.845
+            },
+            {
+              "wallMs": 64.16612499999974,
+              "cpuMs": 129.391
+            },
+            {
+              "wallMs": 49.60404100000051,
+              "cpuMs": 56.819
+            },
+            {
+              "wallMs": 49.467125000000124,
+              "cpuMs": 51.806
+            },
+            {
+              "wallMs": 65.26362499999959,
+              "cpuMs": 136.627
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 4,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.05048370361328,
+      "coldMedianMs": 258.69949999999994,
+      "coldMedianCpuMs": 438.828,
+      "samples": [
+        {
+          "wallMs": 258.69949999999994,
+          "cpuMs": 435.469
+        },
+        {
+          "wallMs": 247.5943749999999,
+          "cpuMs": 438.828
+        },
+        {
+          "wallMs": 257.52987499999995,
+          "cpuMs": 436.432
+        },
+        {
+          "wallMs": 321.56325000000015,
+          "cpuMs": 489.609
+        },
+        {
+          "wallMs": 654.75025,
+          "cpuMs": 723.57
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 279.0327499999994,
+          "medianMs": 60.40650000000096,
+          "p95Ms": 96.07200000000012,
+          "medianCpuMs": 69.277,
+          "samples": [
+            {
+              "wallMs": 89.5674169999993,
+              "cpuMs": 99.535
+            },
+            {
+              "wallMs": 96.07200000000012,
+              "cpuMs": 93.162
+            },
+            {
+              "wallMs": 74.52099999999882,
+              "cpuMs": 103.432
+            },
+            {
+              "wallMs": 68.70124999999825,
+              "cpuMs": 82.273
+            },
+            {
+              "wallMs": 97.0726250000007,
+              "cpuMs": 95.975
+            },
+            {
+              "wallMs": 77.67120799999975,
+              "cpuMs": 100.415
+            },
+            {
+              "wallMs": 62.91729200000009,
+              "cpuMs": 69.277
+            },
+            {
+              "wallMs": 59.54041700000016,
+              "cpuMs": 62.291
+            },
+            {
+              "wallMs": 68.63325000000077,
+              "cpuMs": 127.893
+            },
+            {
+              "wallMs": 60.40650000000096,
+              "cpuMs": 64.491
+            },
+            {
+              "wallMs": 54.560959000000366,
+              "cpuMs": 56.478
+            },
+            {
+              "wallMs": 48.292625000000044,
+              "cpuMs": 52.946
+            },
+            {
+              "wallMs": 58.08204100000148,
+              "cpuMs": 67.31
+            },
+            {
+              "wallMs": 60.01704200000131,
+              "cpuMs": 69.775
+            },
+            {
+              "wallMs": 50.98383299999841,
+              "cpuMs": 51.528
+            },
+            {
+              "wallMs": 56.87416600000142,
+              "cpuMs": 64.727
+            },
+            {
+              "wallMs": 50.135834000000614,
+              "cpuMs": 52.559
+            },
+            {
+              "wallMs": 47.740874999999505,
+              "cpuMs": 48.025
+            },
+            {
+              "wallMs": 48.842625000001135,
+              "cpuMs": 63.693
+            },
+            {
+              "wallMs": 63.294167000000016,
+              "cpuMs": 69.621
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 4,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.05134582519531,
+      "coldMedianMs": 278.76091599999995,
+      "coldMedianCpuMs": 473.556,
+      "samples": [
+        {
+          "wallMs": 276.474459,
+          "cpuMs": 457.684
+        },
+        {
+          "wallMs": 278.76091599999995,
+          "cpuMs": 480.484
+        },
+        {
+          "wallMs": 337.5328749999999,
+          "cpuMs": 499.012
+        },
+        {
+          "wallMs": 282.71854200000007,
+          "cpuMs": 473.556
+        },
+        {
+          "wallMs": 258.1826249999999,
+          "cpuMs": 451.203
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 60.297999999999774,
+          "medianMs": 54.706333000000086,
+          "p95Ms": 70.39058300000033,
+          "medianCpuMs": 62.524,
+          "samples": [
+            {
+              "wallMs": 47.85533299999997,
+              "cpuMs": 57.734
+            },
+            {
+              "wallMs": 50.055709000000206,
+              "cpuMs": 51.234
+            },
+            {
+              "wallMs": 70.39058300000033,
+              "cpuMs": 137.11
+            },
+            {
+              "wallMs": 52.4594589999997,
+              "cpuMs": 63.314
+            },
+            {
+              "wallMs": 54.167875000000095,
+              "cpuMs": 56.903
+            },
+            {
+              "wallMs": 58.65887500000008,
+              "cpuMs": 65.452
+            },
+            {
+              "wallMs": 63.881374999999935,
+              "cpuMs": 87.638
+            },
+            {
+              "wallMs": 52.43841599999996,
+              "cpuMs": 56.465
+            },
+            {
+              "wallMs": 53.19562500000029,
+              "cpuMs": 55.287
+            },
+            {
+              "wallMs": 59.44854200000009,
+              "cpuMs": 79.978
+            },
+            {
+              "wallMs": 52.548125000000255,
+              "cpuMs": 60.557
+            },
+            {
+              "wallMs": 54.706333000000086,
+              "cpuMs": 60.957
+            },
+            {
+              "wallMs": 89.1870829999998,
+              "cpuMs": 125.249
+            },
+            {
+              "wallMs": 56.58258399999977,
+              "cpuMs": 73.708
+            },
+            {
+              "wallMs": 54.09391599999981,
+              "cpuMs": 55.967
+            },
+            {
+              "wallMs": 49.73199999999997,
+              "cpuMs": 51.828
+            },
+            {
+              "wallMs": 57.55662499999926,
+              "cpuMs": 69.075
+            },
+            {
+              "wallMs": 59.96441699999923,
+              "cpuMs": 62.524
+            },
+            {
+              "wallMs": 48.30308299999979,
+              "cpuMs": 51.972
+            },
+            {
+              "wallMs": 60.22200000000066,
+              "cpuMs": 124.209
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-closures",
+      "trial": 4,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 62.17407989501953,
+      "coldMedianMs": 238.47945800000002,
+      "coldMedianCpuMs": 438.207,
+      "samples": [
+        {
+          "wallMs": 244.3074580000001,
+          "cpuMs": 438.207
+        },
+        {
+          "wallMs": 238.47945800000002,
+          "cpuMs": 436.939
+        },
+        {
+          "wallMs": 260.09908299999984,
+          "cpuMs": 439.726
+        },
+        {
+          "wallMs": 234.73316599999998,
+          "cpuMs": 444.037
+        },
+        {
+          "wallMs": 234.01754100000016,
+          "cpuMs": 418.496
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 63.15262500000017,
+          "medianMs": 51.03608299999996,
+          "p95Ms": 64.61979200000042,
+          "medianCpuMs": 59.991,
+          "samples": [
+            {
+              "wallMs": 51.66062499999998,
+              "cpuMs": 64.634
+            },
+            {
+              "wallMs": 64.63641600000028,
+              "cpuMs": 136.993
+            },
+            {
+              "wallMs": 51.707290999999714,
+              "cpuMs": 59.991
+            },
+            {
+              "wallMs": 50.07737500000076,
+              "cpuMs": 53.187
+            },
+            {
+              "wallMs": 64.61979200000042,
+              "cpuMs": 139.368
+            },
+            {
+              "wallMs": 50.33183399999962,
+              "cpuMs": 57.042
+            },
+            {
+              "wallMs": 47.204915999999685,
+              "cpuMs": 52.291
+            },
+            {
+              "wallMs": 61.9517079999996,
+              "cpuMs": 123.921
+            },
+            {
+              "wallMs": 48.70770900000025,
+              "cpuMs": 53.514
+            },
+            {
+              "wallMs": 48.34137499999997,
+              "cpuMs": 50.799
+            },
+            {
+              "wallMs": 61.82145800000035,
+              "cpuMs": 129.544
+            },
+            {
+              "wallMs": 50.8368330000003,
+              "cpuMs": 60.402
+            },
+            {
+              "wallMs": 51.03608299999996,
+              "cpuMs": 54.135
+            },
+            {
+              "wallMs": 62.97862499999974,
+              "cpuMs": 132.89
+            },
+            {
+              "wallMs": 49.65595799999937,
+              "cpuMs": 55.663
+            },
+            {
+              "wallMs": 49.23354199999994,
+              "cpuMs": 51.837
+            },
+            {
+              "wallMs": 49.10450000000037,
+              "cpuMs": 54.005
+            },
+            {
+              "wallMs": 55.7637079999995,
+              "cpuMs": 72.538
+            },
+            {
+              "wallMs": 50.63279199999943,
+              "cpuMs": 60.923
+            },
+            {
+              "wallMs": 53.17670799999996,
+              "cpuMs": 54.18
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 0,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 51.47862243652344,
+      "coldMedianMs": 379.70266600000014,
+      "coldMedianCpuMs": 770.164,
+      "samples": [
+        {
+          "wallMs": 408.77300000000014,
+          "cpuMs": 784.896
+        },
+        {
+          "wallMs": 379.70266600000014,
+          "cpuMs": 770.164
+        },
+        {
+          "wallMs": 341.7345,
+          "cpuMs": 695.299
+        },
+        {
+          "wallMs": 366.4188330000002,
+          "cpuMs": 748.597
+        },
+        {
+          "wallMs": 383.9693749999997,
+          "cpuMs": 774.775
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 69.71062499999971,
+          "medianMs": 59.59129200000007,
+          "p95Ms": 71.86183299999993,
+          "medianCpuMs": 64.475,
+          "samples": [
+            {
+              "wallMs": 52.93512499999997,
+              "cpuMs": 54.093
+            },
+            {
+              "wallMs": 51.22137500000008,
+              "cpuMs": 54.085
+            },
+            {
+              "wallMs": 59.349709000000075,
+              "cpuMs": 86.06
+            },
+            {
+              "wallMs": 51.4379170000002,
+              "cpuMs": 60.789
+            },
+            {
+              "wallMs": 53.59454200000073,
+              "cpuMs": 57.357
+            },
+            {
+              "wallMs": 71.86183299999993,
+              "cpuMs": 156.63
+            },
+            {
+              "wallMs": 57.41187500000069,
+              "cpuMs": 67.746
+            },
+            {
+              "wallMs": 53.13616600000023,
+              "cpuMs": 53.472
+            },
+            {
+              "wallMs": 61.644374999999854,
+              "cpuMs": 72.347
+            },
+            {
+              "wallMs": 53.46858299999985,
+              "cpuMs": 58.845
+            },
+            {
+              "wallMs": 53.361041000000114,
+              "cpuMs": 53.575
+            },
+            {
+              "wallMs": 54.0767079999996,
+              "cpuMs": 58.896
+            },
+            {
+              "wallMs": 64.54908399999931,
+              "cpuMs": 74.354
+            },
+            {
+              "wallMs": 61.78987500000039,
+              "cpuMs": 75.226
+            },
+            {
+              "wallMs": 64.22770899999978,
+              "cpuMs": 62.541
+            },
+            {
+              "wallMs": 64.1255000000001,
+              "cpuMs": 64.475
+            },
+            {
+              "wallMs": 67.17766599999959,
+              "cpuMs": 75.475
+            },
+            {
+              "wallMs": 59.59129200000007,
+              "cpuMs": 65.211
+            },
+            {
+              "wallMs": 59.731958000000304,
+              "cpuMs": 57.094
+            },
+            {
+              "wallMs": 99.89070900000115,
+              "cpuMs": 146.844
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 0,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.013954162597656,
+      "coldMedianMs": 308.62795800000004,
+      "coldMedianCpuMs": 568.868,
+      "samples": [
+        {
+          "wallMs": 310.25862500000017,
+          "cpuMs": 569.165
+        },
+        {
+          "wallMs": 303.722792,
+          "cpuMs": 567.678
+        },
+        {
+          "wallMs": 304.2328749999997,
+          "cpuMs": 551.67
+        },
+        {
+          "wallMs": 308.62795800000004,
+          "cpuMs": 576.613
+        },
+        {
+          "wallMs": 309.81870800000024,
+          "cpuMs": 568.868
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 74.63425000000007,
+          "medianMs": 64.27424999999948,
+          "p95Ms": 86.7186670000001,
+          "medianCpuMs": 81.946,
+          "samples": [
+            {
+              "wallMs": 66.26345800000036,
+              "cpuMs": 99.719
+            },
+            {
+              "wallMs": 65.33258299999943,
+              "cpuMs": 84.098
+            },
+            {
+              "wallMs": 61.20058400000016,
+              "cpuMs": 65.139
+            },
+            {
+              "wallMs": 74.6630839999998,
+              "cpuMs": 155.745
+            },
+            {
+              "wallMs": 61.65074999999979,
+              "cpuMs": 75.813
+            },
+            {
+              "wallMs": 60.252290999999786,
+              "cpuMs": 68.371
+            },
+            {
+              "wallMs": 64.65008399999988,
+              "cpuMs": 111.41
+            },
+            {
+              "wallMs": 64.38733300000058,
+              "cpuMs": 85.958
+            },
+            {
+              "wallMs": 58.0190419999999,
+              "cpuMs": 69.649
+            },
+            {
+              "wallMs": 64.27424999999948,
+              "cpuMs": 83.844
+            },
+            {
+              "wallMs": 62.90454099999988,
+              "cpuMs": 77.741
+            },
+            {
+              "wallMs": 56.31554199999937,
+              "cpuMs": 64.776
+            },
+            {
+              "wallMs": 90.6401249999999,
+              "cpuMs": 119.93
+            },
+            {
+              "wallMs": 62.879415999999765,
+              "cpuMs": 81.946
+            },
+            {
+              "wallMs": 63.59533300000021,
+              "cpuMs": 70.174
+            },
+            {
+              "wallMs": 68.64266700000007,
+              "cpuMs": 74.705
+            },
+            {
+              "wallMs": 69.3355419999998,
+              "cpuMs": 136.462
+            },
+            {
+              "wallMs": 58.46716600000036,
+              "cpuMs": 68.293
+            },
+            {
+              "wallMs": 57.50475000000006,
+              "cpuMs": 66.447
+            },
+            {
+              "wallMs": 86.7186670000001,
+              "cpuMs": 123.609
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 0,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.012542724609375,
+      "coldMedianMs": 309.28779199999985,
+      "coldMedianCpuMs": 568.26,
+      "samples": [
+        {
+          "wallMs": 313.09612500000003,
+          "cpuMs": 572.848
+        },
+        {
+          "wallMs": 294.7593750000001,
+          "cpuMs": 552.438
+        },
+        {
+          "wallMs": 309.28779199999985,
+          "cpuMs": 568.682
+        },
+        {
+          "wallMs": 299.81266600000026,
+          "cpuMs": 562.894
+        },
+        {
+          "wallMs": 311.3174170000002,
+          "cpuMs": 568.26
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 64.41083300000037,
+          "medianMs": 63.24016700000084,
+          "p95Ms": 77.86733300000014,
+          "medianCpuMs": 74.421,
+          "samples": [
+            {
+              "wallMs": 56.98412499999995,
+              "cpuMs": 76.037
+            },
+            {
+              "wallMs": 63.24016700000084,
+              "cpuMs": 93.882
+            },
+            {
+              "wallMs": 53.577040999999554,
+              "cpuMs": 62.266
+            },
+            {
+              "wallMs": 71.1064580000002,
+              "cpuMs": 87.998
+            },
+            {
+              "wallMs": 78.03337499999998,
+              "cpuMs": 102.623
+            },
+            {
+              "wallMs": 70.65837499999998,
+              "cpuMs": 85.396
+            },
+            {
+              "wallMs": 71.43554199999926,
+              "cpuMs": 74.421
+            },
+            {
+              "wallMs": 67.32808300000033,
+              "cpuMs": 76.629
+            },
+            {
+              "wallMs": 53.87933300000077,
+              "cpuMs": 57.412
+            },
+            {
+              "wallMs": 61.079375000000255,
+              "cpuMs": 65.79
+            },
+            {
+              "wallMs": 77.86733300000014,
+              "cpuMs": 154.546
+            },
+            {
+              "wallMs": 58.563083000000006,
+              "cpuMs": 68.174
+            },
+            {
+              "wallMs": 60.142792000000554,
+              "cpuMs": 66.564
+            },
+            {
+              "wallMs": 65.89745799999946,
+              "cpuMs": 79.466
+            },
+            {
+              "wallMs": 64.97004200000083,
+              "cpuMs": 75.54
+            },
+            {
+              "wallMs": 60.52204099999926,
+              "cpuMs": 63.947
+            },
+            {
+              "wallMs": 61.792958,
+              "cpuMs": 62.344
+            },
+            {
+              "wallMs": 64.13641600000028,
+              "cpuMs": 73.663
+            },
+            {
+              "wallMs": 60.263082999999824,
+              "cpuMs": 62.909
+            },
+            {
+              "wallMs": 63.232708999999886,
+              "cpuMs": 63.793
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 1,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.01160430908203,
+      "coldMedianMs": 349.45875,
+      "coldMedianCpuMs": 636.789,
+      "samples": [
+        {
+          "wallMs": 349.45875,
+          "cpuMs": 627.231
+        },
+        {
+          "wallMs": 336.9549999999999,
+          "cpuMs": 636.789
+        },
+        {
+          "wallMs": 344.9985419999998,
+          "cpuMs": 620.091
+        },
+        {
+          "wallMs": 388.4720419999999,
+          "cpuMs": 651.307
+        },
+        {
+          "wallMs": 353.5036250000003,
+          "cpuMs": 637.567
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 85.80720800000017,
+          "medianMs": 66.5316670000002,
+          "p95Ms": 87.03308300000026,
+          "medianCpuMs": 77.384,
+          "samples": [
+            {
+              "wallMs": 87.03308300000026,
+              "cpuMs": 110.737
+            },
+            {
+              "wallMs": 83.66562500000055,
+              "cpuMs": 120.445
+            },
+            {
+              "wallMs": 61.570166999999856,
+              "cpuMs": 66.912
+            },
+            {
+              "wallMs": 60.19945900000039,
+              "cpuMs": 61.177
+            },
+            {
+              "wallMs": 78.57362499999999,
+              "cpuMs": 104.571
+            },
+            {
+              "wallMs": 63.720917000000554,
+              "cpuMs": 73.784
+            },
+            {
+              "wallMs": 62.97108399999979,
+              "cpuMs": 64.542
+            },
+            {
+              "wallMs": 65.71187499999996,
+              "cpuMs": 79.393
+            },
+            {
+              "wallMs": 97.1180000000004,
+              "cpuMs": 98.742
+            },
+            {
+              "wallMs": 58.613791000000674,
+              "cpuMs": 61.197
+            },
+            {
+              "wallMs": 62.089999999999236,
+              "cpuMs": 65.303
+            },
+            {
+              "wallMs": 70.9375829999999,
+              "cpuMs": 145.207
+            },
+            {
+              "wallMs": 56.747457999999824,
+              "cpuMs": 62.767
+            },
+            {
+              "wallMs": 69.29562499999975,
+              "cpuMs": 77.384
+            },
+            {
+              "wallMs": 59.69879200000014,
+              "cpuMs": 60.557
+            },
+            {
+              "wallMs": 80.85520900000029,
+              "cpuMs": 92.036
+            },
+            {
+              "wallMs": 66.5316670000002,
+              "cpuMs": 69.92
+            },
+            {
+              "wallMs": 78.13424999999916,
+              "cpuMs": 79.092
+            },
+            {
+              "wallMs": 71.75379099999918,
+              "cpuMs": 140.935
+            },
+            {
+              "wallMs": 57.74537500000042,
+              "cpuMs": 63.605
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 1,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.01792907714844,
+      "coldMedianMs": 318.910292,
+      "coldMedianCpuMs": 590.272,
+      "samples": [
+        {
+          "wallMs": 345.73633299999983,
+          "cpuMs": 625.732
+        },
+        {
+          "wallMs": 318.910292,
+          "cpuMs": 590.272
+        },
+        {
+          "wallMs": 339.9458330000002,
+          "cpuMs": 608.576
+        },
+        {
+          "wallMs": 313.92720899999995,
+          "cpuMs": 582.019
+        },
+        {
+          "wallMs": 311.68208400000003,
+          "cpuMs": 566.471
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 74.67745900000045,
+          "medianMs": 56.066790999999284,
+          "p95Ms": 68.52208400000018,
+          "medianCpuMs": 65.377,
+          "samples": [
+            {
+              "wallMs": 66.72616599999947,
+              "cpuMs": 103.819
+            },
+            {
+              "wallMs": 61.05004199999985,
+              "cpuMs": 74.377
+            },
+            {
+              "wallMs": 68.52208400000018,
+              "cpuMs": 68.063
+            },
+            {
+              "wallMs": 63.48987500000021,
+              "cpuMs": 93.366
+            },
+            {
+              "wallMs": 53.14104199999929,
+              "cpuMs": 65.377
+            },
+            {
+              "wallMs": 83.45037500000035,
+              "cpuMs": 103.812
+            },
+            {
+              "wallMs": 66.99287499999991,
+              "cpuMs": 70.609
+            },
+            {
+              "wallMs": 53.81712500000049,
+              "cpuMs": 56.508
+            },
+            {
+              "wallMs": 63.14787500000057,
+              "cpuMs": 76.984
+            },
+            {
+              "wallMs": 55.99262499999986,
+              "cpuMs": 61.43
+            },
+            {
+              "wallMs": 52.431916999999885,
+              "cpuMs": 54.491
+            },
+            {
+              "wallMs": 57.47999999999956,
+              "cpuMs": 63.774
+            },
+            {
+              "wallMs": 59.52516699999978,
+              "cpuMs": 66.507
+            },
+            {
+              "wallMs": 56.066790999999284,
+              "cpuMs": 65.832
+            },
+            {
+              "wallMs": 53.171542000000045,
+              "cpuMs": 54.607
+            },
+            {
+              "wallMs": 55.54250000000047,
+              "cpuMs": 61.398
+            },
+            {
+              "wallMs": 51.53616599999987,
+              "cpuMs": 53.922
+            },
+            {
+              "wallMs": 55.62024999999994,
+              "cpuMs": 58.201
+            },
+            {
+              "wallMs": 55.03562500000044,
+              "cpuMs": 60.49
+            },
+            {
+              "wallMs": 52.00983300000007,
+              "cpuMs": 54.623
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 1,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 51.48475646972656,
+      "coldMedianMs": 323.8665000000001,
+      "coldMedianCpuMs": 664.995,
+      "samples": [
+        {
+          "wallMs": 321.44733299999984,
+          "cpuMs": 651.475
+        },
+        {
+          "wallMs": 323.8665000000001,
+          "cpuMs": 671.553
+        },
+        {
+          "wallMs": 327.72649999999976,
+          "cpuMs": 655.814
+        },
+        {
+          "wallMs": 321.445209,
+          "cpuMs": 668.487
+        },
+        {
+          "wallMs": 327.40820799999983,
+          "cpuMs": 664.995
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 63.49841599999991,
+          "medianMs": 54.74845800000003,
+          "p95Ms": 60.85683400000016,
+          "medianCpuMs": 59.163,
+          "samples": [
+            {
+              "wallMs": 50.293250000000626,
+              "cpuMs": 51.349
+            },
+            {
+              "wallMs": 50.41020799999933,
+              "cpuMs": 54.24
+            },
+            {
+              "wallMs": 60.85683400000016,
+              "cpuMs": 87.151
+            },
+            {
+              "wallMs": 52.50574999999935,
+              "cpuMs": 59.18
+            },
+            {
+              "wallMs": 53.078457999999955,
+              "cpuMs": 53.691
+            },
+            {
+              "wallMs": 75.57587499999954,
+              "cpuMs": 162.725
+            },
+            {
+              "wallMs": 59.18825000000015,
+              "cpuMs": 69.539
+            },
+            {
+              "wallMs": 52.01929199999995,
+              "cpuMs": 52.539
+            },
+            {
+              "wallMs": 57.31391699999949,
+              "cpuMs": 66.358
+            },
+            {
+              "wallMs": 54.74845800000003,
+              "cpuMs": 61.22
+            },
+            {
+              "wallMs": 57.04308300000048,
+              "cpuMs": 57.221
+            },
+            {
+              "wallMs": 54.28729099999964,
+              "cpuMs": 59.163
+            },
+            {
+              "wallMs": 59.746375000000626,
+              "cpuMs": 69.275
+            },
+            {
+              "wallMs": 52.90229199999976,
+              "cpuMs": 62.915
+            },
+            {
+              "wallMs": 52.04833299999973,
+              "cpuMs": 52.524
+            },
+            {
+              "wallMs": 57.0785420000002,
+              "cpuMs": 59.068
+            },
+            {
+              "wallMs": 57.52466600000025,
+              "cpuMs": 64.379
+            },
+            {
+              "wallMs": 52.65870799999993,
+              "cpuMs": 55.582
+            },
+            {
+              "wallMs": 52.909583999999995,
+              "cpuMs": 56.323
+            },
+            {
+              "wallMs": 54.826750000000175,
+              "cpuMs": 55.42
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 2,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.019676208496094,
+      "coldMedianMs": 303.7350409999999,
+      "coldMedianCpuMs": 562.291,
+      "samples": [
+        {
+          "wallMs": 316.8984169999999,
+          "cpuMs": 579.417
+        },
+        {
+          "wallMs": 298.78558299999986,
+          "cpuMs": 560.073
+        },
+        {
+          "wallMs": 310.90200000000004,
+          "cpuMs": 568.693
+        },
+        {
+          "wallMs": 297.5071250000001,
+          "cpuMs": 562.291
+        },
+        {
+          "wallMs": 303.7350409999999,
+          "cpuMs": 560.182
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 63.123083999999835,
+          "medianMs": 58.98241700000017,
+          "p95Ms": 86.47462500000074,
+          "medianCpuMs": 64.975,
+          "samples": [
+            {
+              "wallMs": 69.16129199999978,
+              "cpuMs": 112.042
+            },
+            {
+              "wallMs": 53.516209000000345,
+              "cpuMs": 63.998
+            },
+            {
+              "wallMs": 58.758083999999144,
+              "cpuMs": 61.943
+            },
+            {
+              "wallMs": 61.97054200000002,
+              "cpuMs": 86.64
+            },
+            {
+              "wallMs": 57.19604200000049,
+              "cpuMs": 65.007
+            },
+            {
+              "wallMs": 58.98241700000017,
+              "cpuMs": 59.485
+            },
+            {
+              "wallMs": 59.330666999999266,
+              "cpuMs": 64.975
+            },
+            {
+              "wallMs": 56.402625000000626,
+              "cpuMs": 58.556
+            },
+            {
+              "wallMs": 55.03245800000059,
+              "cpuMs": 56.961
+            },
+            {
+              "wallMs": 59.84295800000018,
+              "cpuMs": 67.06
+            },
+            {
+              "wallMs": 57.03758300000027,
+              "cpuMs": 59.158
+            },
+            {
+              "wallMs": 62.20091599999978,
+              "cpuMs": 69.003
+            },
+            {
+              "wallMs": 64.0654169999998,
+              "cpuMs": 75.593
+            },
+            {
+              "wallMs": 65.86512499999935,
+              "cpuMs": 78.156
+            },
+            {
+              "wallMs": 87.65174999999999,
+              "cpuMs": 112.444
+            },
+            {
+              "wallMs": 52.361291999999594,
+              "cpuMs": 57.766
+            },
+            {
+              "wallMs": 52.43341599999985,
+              "cpuMs": 54.928
+            },
+            {
+              "wallMs": 86.47462500000074,
+              "cpuMs": 111.782
+            },
+            {
+              "wallMs": 53.034583000000566,
+              "cpuMs": 58.93
+            },
+            {
+              "wallMs": 52.459375000000364,
+              "cpuMs": 55.153
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 2,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 51.47838592529297,
+      "coldMedianMs": 315.7768329999999,
+      "coldMedianCpuMs": 645.383,
+      "samples": [
+        {
+          "wallMs": 327.60220900000013,
+          "cpuMs": 660.801
+        },
+        {
+          "wallMs": 315.72358299999996,
+          "cpuMs": 651.034
+        },
+        {
+          "wallMs": 318.48333300000013,
+          "cpuMs": 645.383
+        },
+        {
+          "wallMs": 310.431834,
+          "cpuMs": 642.579
+        },
+        {
+          "wallMs": 315.7768329999999,
+          "cpuMs": 642.458
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 64.60370899999998,
+          "medianMs": 56.502958000000035,
+          "p95Ms": 63.72054200000002,
+          "medianCpuMs": 58.808,
+          "samples": [
+            {
+              "wallMs": 49.62758300000041,
+              "cpuMs": 57.565
+            },
+            {
+              "wallMs": 49.71720800000003,
+              "cpuMs": 50.598
+            },
+            {
+              "wallMs": 59.60558399999991,
+              "cpuMs": 82.949
+            },
+            {
+              "wallMs": 50.39995799999997,
+              "cpuMs": 61.536
+            },
+            {
+              "wallMs": 50.36108299999978,
+              "cpuMs": 50.784
+            },
+            {
+              "wallMs": 95.63791700000002,
+              "cpuMs": 261.2
+            },
+            {
+              "wallMs": 56.710540999999466,
+              "cpuMs": 61.505
+            },
+            {
+              "wallMs": 54.96787499999937,
+              "cpuMs": 57.362
+            },
+            {
+              "wallMs": 57.79699999999957,
+              "cpuMs": 58.149
+            },
+            {
+              "wallMs": 63.72054200000002,
+              "cpuMs": 83.224
+            },
+            {
+              "wallMs": 58.51474999999937,
+              "cpuMs": 68.641
+            },
+            {
+              "wallMs": 54.21570899999915,
+              "cpuMs": 58.808
+            },
+            {
+              "wallMs": 56.502958000000035,
+              "cpuMs": 58.01
+            },
+            {
+              "wallMs": 61.07566700000007,
+              "cpuMs": 78.767
+            },
+            {
+              "wallMs": 53.50391599999966,
+              "cpuMs": 53.993
+            },
+            {
+              "wallMs": 52.99399999999969,
+              "cpuMs": 53.38
+            },
+            {
+              "wallMs": 58.36791600000015,
+              "cpuMs": 59.113
+            },
+            {
+              "wallMs": 59.77070900000035,
+              "cpuMs": 68.573
+            },
+            {
+              "wallMs": 54.75004100000024,
+              "cpuMs": 57.367
+            },
+            {
+              "wallMs": 53.5673340000003,
+              "cpuMs": 54.126
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 2,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.011871337890625,
+      "coldMedianMs": 313.0267499999999,
+      "coldMedianCpuMs": 571.664,
+      "samples": [
+        {
+          "wallMs": 313.0267499999999,
+          "cpuMs": 571.664
+        },
+        {
+          "wallMs": 305.0953340000001,
+          "cpuMs": 563.927
+        },
+        {
+          "wallMs": 304.65945799999986,
+          "cpuMs": 561.229
+        },
+        {
+          "wallMs": 345.5504579999997,
+          "cpuMs": 602.057
+        },
+        {
+          "wallMs": 318.38354200000003,
+          "cpuMs": 584.378
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 69.46166600000015,
+          "medianMs": 60.15308300000015,
+          "p95Ms": 69.77983399999994,
+          "medianCpuMs": 67.941,
+          "samples": [
+            {
+              "wallMs": 60.70879199999945,
+              "cpuMs": 77.456
+            },
+            {
+              "wallMs": 68.015625,
+              "cpuMs": 99.578
+            },
+            {
+              "wallMs": 57.15783300000021,
+              "cpuMs": 67.941
+            },
+            {
+              "wallMs": 63.7534999999998,
+              "cpuMs": 71.868
+            },
+            {
+              "wallMs": 63.355125000000044,
+              "cpuMs": 87.393
+            },
+            {
+              "wallMs": 56.41320799999994,
+              "cpuMs": 64.35
+            },
+            {
+              "wallMs": 58.05287500000031,
+              "cpuMs": 61.531
+            },
+            {
+              "wallMs": 60.927999999999884,
+              "cpuMs": 70.556
+            },
+            {
+              "wallMs": 55.03004099999998,
+              "cpuMs": 57.409
+            },
+            {
+              "wallMs": 60.15308300000015,
+              "cpuMs": 63.312
+            },
+            {
+              "wallMs": 81.378917,
+              "cpuMs": 132.832
+            },
+            {
+              "wallMs": 54.29699999999957,
+              "cpuMs": 62.917
+            },
+            {
+              "wallMs": 58.4083329999994,
+              "cpuMs": 64.045
+            },
+            {
+              "wallMs": 62.363540999999714,
+              "cpuMs": 75.655
+            },
+            {
+              "wallMs": 64.34416599999986,
+              "cpuMs": 75.077
+            },
+            {
+              "wallMs": 58.13824999999997,
+              "cpuMs": 61.667
+            },
+            {
+              "wallMs": 54.7749160000003,
+              "cpuMs": 59.889
+            },
+            {
+              "wallMs": 69.77983399999994,
+              "cpuMs": 140.698
+            },
+            {
+              "wallMs": 56.02599999999984,
+              "cpuMs": 61.586
+            },
+            {
+              "wallMs": 55.70841699999983,
+              "cpuMs": 58.273
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 3,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 51.478538513183594,
+      "coldMedianMs": 313.7614999999996,
+      "coldMedianCpuMs": 642.207,
+      "samples": [
+        {
+          "wallMs": 327.0502079999999,
+          "cpuMs": 661.97
+        },
+        {
+          "wallMs": 311.77825000000007,
+          "cpuMs": 642.207
+        },
+        {
+          "wallMs": 318.51304100000016,
+          "cpuMs": 645.503
+        },
+        {
+          "wallMs": 304.789209,
+          "cpuMs": 634.631
+        },
+        {
+          "wallMs": 313.7614999999996,
+          "cpuMs": 640.895
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 65.66479200000003,
+          "medianMs": 53.19612499999948,
+          "p95Ms": 84.95333299999947,
+          "medianCpuMs": 57.49,
+          "samples": [
+            {
+              "wallMs": 51.64375000000018,
+              "cpuMs": 52.545
+            },
+            {
+              "wallMs": 50.97304199999962,
+              "cpuMs": 51.557
+            },
+            {
+              "wallMs": 57.92029100000036,
+              "cpuMs": 84.691
+            },
+            {
+              "wallMs": 50.27275000000009,
+              "cpuMs": 61.666
+            },
+            {
+              "wallMs": 51.93274999999994,
+              "cpuMs": 52.472
+            },
+            {
+              "wallMs": 84.95333299999947,
+              "cpuMs": 240.478
+            },
+            {
+              "wallMs": 56.2001250000003,
+              "cpuMs": 61.74
+            },
+            {
+              "wallMs": 52.03266699999949,
+              "cpuMs": 54.639
+            },
+            {
+              "wallMs": 91.63316699999996,
+              "cpuMs": 142.295
+            },
+            {
+              "wallMs": 53.19612499999948,
+              "cpuMs": 68.48
+            },
+            {
+              "wallMs": 54.32558400000016,
+              "cpuMs": 56.652
+            },
+            {
+              "wallMs": 52.990584000000126,
+              "cpuMs": 57.49
+            },
+            {
+              "wallMs": 53.37054200000057,
+              "cpuMs": 54.938
+            },
+            {
+              "wallMs": 58.24724999999944,
+              "cpuMs": 73.959
+            },
+            {
+              "wallMs": 52.42691599999944,
+              "cpuMs": 52.788
+            },
+            {
+              "wallMs": 52.062041000000136,
+              "cpuMs": 52.886
+            },
+            {
+              "wallMs": 60.07458299999962,
+              "cpuMs": 63.108
+            },
+            {
+              "wallMs": 59.16554200000064,
+              "cpuMs": 68.878
+            },
+            {
+              "wallMs": 52.170790999999554,
+              "cpuMs": 56.772
+            },
+            {
+              "wallMs": 51.10433400000056,
+              "cpuMs": 51.602
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 3,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.012290954589844,
+      "coldMedianMs": 302.76929199999995,
+      "coldMedianCpuMs": 560.373,
+      "samples": [
+        {
+          "wallMs": 313.16141600000014,
+          "cpuMs": 568.581
+        },
+        {
+          "wallMs": 293.5656670000001,
+          "cpuMs": 543.178
+        },
+        {
+          "wallMs": 307.05954199999974,
+          "cpuMs": 561.846
+        },
+        {
+          "wallMs": 302.76929199999995,
+          "cpuMs": 560.373
+        },
+        {
+          "wallMs": 302.33112500000016,
+          "cpuMs": 555.597
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 70.99891700000035,
+          "medianMs": 61.985625000000255,
+          "p95Ms": 89.83629199999996,
+          "medianCpuMs": 74.842,
+          "samples": [
+            {
+              "wallMs": 65.72754199999963,
+              "cpuMs": 98.799
+            },
+            {
+              "wallMs": 61.51299999999992,
+              "cpuMs": 75.912
+            },
+            {
+              "wallMs": 58.68174999999974,
+              "cpuMs": 62.562
+            },
+            {
+              "wallMs": 71.14783299999999,
+              "cpuMs": 150.262
+            },
+            {
+              "wallMs": 60.400542000000314,
+              "cpuMs": 74.855
+            },
+            {
+              "wallMs": 63.52295799999956,
+              "cpuMs": 71.821
+            },
+            {
+              "wallMs": 91.12020800000028,
+              "cpuMs": 122.028
+            },
+            {
+              "wallMs": 62.342125000000124,
+              "cpuMs": 82.712
+            },
+            {
+              "wallMs": 62.12474999999995,
+              "cpuMs": 80.671
+            },
+            {
+              "wallMs": 61.985625000000255,
+              "cpuMs": 68.478
+            },
+            {
+              "wallMs": 67.98366700000042,
+              "cpuMs": 137.498
+            },
+            {
+              "wallMs": 57.80812499999956,
+              "cpuMs": 71.43
+            },
+            {
+              "wallMs": 57.69533300000057,
+              "cpuMs": 63.535
+            },
+            {
+              "wallMs": 89.83629199999996,
+              "cpuMs": 136.76
+            },
+            {
+              "wallMs": 60.12166700000034,
+              "cpuMs": 71.362
+            },
+            {
+              "wallMs": 59.97599999999966,
+              "cpuMs": 68.68
+            },
+            {
+              "wallMs": 61.46354199999951,
+              "cpuMs": 65.367
+            },
+            {
+              "wallMs": 62.97108300000036,
+              "cpuMs": 74.842
+            },
+            {
+              "wallMs": 58.19116599999961,
+              "cpuMs": 67.695
+            },
+            {
+              "wallMs": 60.92145899999923,
+              "cpuMs": 67.182
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 3,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.01946258544922,
+      "coldMedianMs": 302.4413749999999,
+      "coldMedianCpuMs": 560.344,
+      "samples": [
+        {
+          "wallMs": 309.8201250000001,
+          "cpuMs": 568.907
+        },
+        {
+          "wallMs": 300.68491700000004,
+          "cpuMs": 562.555
+        },
+        {
+          "wallMs": 304.477541,
+          "cpuMs": 557.608
+        },
+        {
+          "wallMs": 298.6323749999997,
+          "cpuMs": 560.344
+        },
+        {
+          "wallMs": 302.4413749999999,
+          "cpuMs": 552.088
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 67.06520799999998,
+          "medianMs": 54.89599999999973,
+          "p95Ms": 62.978583000000526,
+          "medianCpuMs": 61.506,
+          "samples": [
+            {
+              "wallMs": 62.978583000000526,
+              "cpuMs": 103.307
+            },
+            {
+              "wallMs": 53.27950000000055,
+              "cpuMs": 62.886
+            },
+            {
+              "wallMs": 55.543249999999716,
+              "cpuMs": 58.088
+            },
+            {
+              "wallMs": 59.693750000000364,
+              "cpuMs": 84.668
+            },
+            {
+              "wallMs": 52.98533300000054,
+              "cpuMs": 63.783
+            },
+            {
+              "wallMs": 57.67000000000007,
+              "cpuMs": 58.068
+            },
+            {
+              "wallMs": 54.67895800000042,
+              "cpuMs": 61.506
+            },
+            {
+              "wallMs": 51.33112500000061,
+              "cpuMs": 53.665
+            },
+            {
+              "wallMs": 52.96674999999959,
+              "cpuMs": 54.964
+            },
+            {
+              "wallMs": 55.3911250000001,
+              "cpuMs": 61.687
+            },
+            {
+              "wallMs": 52.63145900000018,
+              "cpuMs": 54.845
+            },
+            {
+              "wallMs": 56.13462499999969,
+              "cpuMs": 61.548
+            },
+            {
+              "wallMs": 53.75645799999984,
+              "cpuMs": 59.883
+            },
+            {
+              "wallMs": 54.89599999999973,
+              "cpuMs": 64.69
+            },
+            {
+              "wallMs": 56.69262499999968,
+              "cpuMs": 58.911
+            },
+            {
+              "wallMs": 56.70837500000016,
+              "cpuMs": 67.058
+            },
+            {
+              "wallMs": 54.33691699999963,
+              "cpuMs": 59.734
+            },
+            {
+              "wallMs": 83.43004099999962,
+              "cpuMs": 106.425
+            },
+            {
+              "wallMs": 50.52704200000062,
+              "cpuMs": 55.722
+            },
+            {
+              "wallMs": 51.417208000000755,
+              "cpuMs": 54.06
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-shared-all",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 4,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.01386260986328,
+      "coldMedianMs": 309.2313330000002,
+      "coldMedianCpuMs": 564.666,
+      "samples": [
+        {
+          "wallMs": 313.39204200000006,
+          "cpuMs": 575.712
+        },
+        {
+          "wallMs": 293.042958,
+          "cpuMs": 543.243
+        },
+        {
+          "wallMs": 311.5326250000003,
+          "cpuMs": 568.888
+        },
+        {
+          "wallMs": 300.6357499999999,
+          "cpuMs": 551.912
+        },
+        {
+          "wallMs": 309.2313330000002,
+          "cpuMs": 564.666
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 66.27925000000005,
+          "medianMs": 56.88758400000006,
+          "p95Ms": 65.20362499999919,
+          "medianCpuMs": 65.635,
+          "samples": [
+            {
+              "wallMs": 61.87983299999996,
+              "cpuMs": 94.674
+            },
+            {
+              "wallMs": 59.275125000000116,
+              "cpuMs": 73.925
+            },
+            {
+              "wallMs": 56.74945800000023,
+              "cpuMs": 63.743
+            },
+            {
+              "wallMs": 56.421875,
+              "cpuMs": 57.603
+            },
+            {
+              "wallMs": 63.11999999999989,
+              "cpuMs": 88.977
+            },
+            {
+              "wallMs": 54.232458999999835,
+              "cpuMs": 65.159
+            },
+            {
+              "wallMs": 55.21954199999982,
+              "cpuMs": 56.625
+            },
+            {
+              "wallMs": 63.964458999999806,
+              "cpuMs": 131.114
+            },
+            {
+              "wallMs": 54.90491600000041,
+              "cpuMs": 69.37
+            },
+            {
+              "wallMs": 54.09612500000003,
+              "cpuMs": 65.635
+            },
+            {
+              "wallMs": 59.89800000000014,
+              "cpuMs": 60.21
+            },
+            {
+              "wallMs": 65.20362499999919,
+              "cpuMs": 78.102
+            },
+            {
+              "wallMs": 56.52691700000014,
+              "cpuMs": 60.13
+            },
+            {
+              "wallMs": 57.34504099999958,
+              "cpuMs": 67.613
+            },
+            {
+              "wallMs": 59.49541600000066,
+              "cpuMs": 67.384
+            },
+            {
+              "wallMs": 52.79579199999989,
+              "cpuMs": 55.908
+            },
+            {
+              "wallMs": 56.88758400000006,
+              "cpuMs": 57.374
+            },
+            {
+              "wallMs": 67.39504100000067,
+              "cpuMs": 135.909
+            },
+            {
+              "wallMs": 52.73775000000023,
+              "cpuMs": 57.39
+            },
+            {
+              "wallMs": 56.196375000000444,
+              "cpuMs": 62.608
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-book-api",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 4,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 61.033973693847656,
+      "coldMedianMs": 305.31612499999983,
+      "coldMedianCpuMs": 562.493,
+      "samples": [
+        {
+          "wallMs": 303.78099999999995,
+          "cpuMs": 562.493
+        },
+        {
+          "wallMs": 307.1679590000001,
+          "cpuMs": 580.662
+        },
+        {
+          "wallMs": 327.90683300000023,
+          "cpuMs": 596.482
+        },
+        {
+          "wallMs": 296.0962919999997,
+          "cpuMs": 560.906
+        },
+        {
+          "wallMs": 305.31612499999983,
+          "cpuMs": 558.669
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 69.103791,
+          "medianMs": 56.991124999999556,
+          "p95Ms": 68.32537499999944,
+          "medianCpuMs": 64.257,
+          "samples": [
+            {
+              "wallMs": 60.03483300000016,
+              "cpuMs": 90.046
+            },
+            {
+              "wallMs": 52.51258400000006,
+              "cpuMs": 68.761
+            },
+            {
+              "wallMs": 55.53325000000041,
+              "cpuMs": 58.039
+            },
+            {
+              "wallMs": 58.92304200000035,
+              "cpuMs": 83.875
+            },
+            {
+              "wallMs": 51.99045800000022,
+              "cpuMs": 58.036
+            },
+            {
+              "wallMs": 68.32537499999944,
+              "cpuMs": 67.626
+            },
+            {
+              "wallMs": 58.047583999999915,
+              "cpuMs": 64.109
+            },
+            {
+              "wallMs": 56.920875000000706,
+              "cpuMs": 59.303
+            },
+            {
+              "wallMs": 51.78575000000001,
+              "cpuMs": 52.246
+            },
+            {
+              "wallMs": 64.53504199999952,
+              "cpuMs": 129.485
+            },
+            {
+              "wallMs": 53.82750000000033,
+              "cpuMs": 59.21
+            },
+            {
+              "wallMs": 55.57262499999979,
+              "cpuMs": 64.293
+            },
+            {
+              "wallMs": 60.178499999999985,
+              "cpuMs": 67.376
+            },
+            {
+              "wallMs": 54.38475000000017,
+              "cpuMs": 64.257
+            },
+            {
+              "wallMs": 55.12904100000014,
+              "cpuMs": 55.432
+            },
+            {
+              "wallMs": 72.355458,
+              "cpuMs": 144.901
+            },
+            {
+              "wallMs": 56.991124999999556,
+              "cpuMs": 63.087
+            },
+            {
+              "wallMs": 59.37304099999983,
+              "cpuMs": 62.221
+            },
+            {
+              "wallMs": 60.744166999999834,
+              "cpuMs": 69.404
+            },
+            {
+              "wallMs": 55.33391699999993,
+              "cpuMs": 57.979
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    },
+    {
+      "root": "/private/tmp/xlcalc-live-api-baseline",
+      "id": "fanout",
+      "engine": "xl-eval",
+      "trial": 4,
+      "status": "ok",
+      "cells": 50002,
+      "formulas": 50001,
+      "hash": "3ecfb33b4c67e9c19218dd2e144d9968697eaa252abc825e3b8c7c3098f42e8d",
+      "inputHash": "7200127051b4cc2d855ce9bdcd76a2684e9dd2540d74617231a412c00a927af1",
+      "retainedHeapMb": 51.478538513183594,
+      "coldMedianMs": 329.2700420000001,
+      "coldMedianCpuMs": 669.774,
+      "samples": [
+        {
+          "wallMs": 329.2700420000001,
+          "cpuMs": 668.988
+        },
+        {
+          "wallMs": 330.59279200000014,
+          "cpuMs": 682.35
+        },
+        {
+          "wallMs": 322.4071250000002,
+          "cpuMs": 656.009
+        },
+        {
+          "wallMs": 322.12533299999996,
+          "cpuMs": 669.774
+        },
+        {
+          "wallMs": 335.6468749999999,
+          "cpuMs": 683.533
+        }
+      ],
+      "edits": {
+        "root": {
+          "firstEditMs": 69.72037499999988,
+          "medianMs": 57.00891700000011,
+          "p95Ms": 63.98750000000018,
+          "medianCpuMs": 62.725,
+          "samples": [
+            {
+              "wallMs": 54.281458000000384,
+              "cpuMs": 62.725
+            },
+            {
+              "wallMs": 52.9106670000001,
+              "cpuMs": 55.358
+            },
+            {
+              "wallMs": 63.98750000000018,
+              "cpuMs": 92.841
+            },
+            {
+              "wallMs": 56.960541000000376,
+              "cpuMs": 69.958
+            },
+            {
+              "wallMs": 54.40887500000008,
+              "cpuMs": 55.511
+            },
+            {
+              "wallMs": 74.43125000000055,
+              "cpuMs": 158.519
+            },
+            {
+              "wallMs": 59.718292000000474,
+              "cpuMs": 68.312
+            },
+            {
+              "wallMs": 57.00891700000011,
+              "cpuMs": 60.201
+            },
+            {
+              "wallMs": 60.37595800000054,
+              "cpuMs": 66.721
+            },
+            {
+              "wallMs": 55.87837500000023,
+              "cpuMs": 59.224
+            },
+            {
+              "wallMs": 58.61112499999945,
+              "cpuMs": 59.288
+            },
+            {
+              "wallMs": 54.38366600000063,
+              "cpuMs": 59.088
+            },
+            {
+              "wallMs": 61.21129199999996,
+              "cpuMs": 70.206
+            },
+            {
+              "wallMs": 56.01483399999961,
+              "cpuMs": 65.934
+            },
+            {
+              "wallMs": 59.37091700000019,
+              "cpuMs": 59.602
+            },
+            {
+              "wallMs": 63.28575000000001,
+              "cpuMs": 64.079
+            },
+            {
+              "wallMs": 61.31483300000036,
+              "cpuMs": 69.231
+            },
+            {
+              "wallMs": 55.21550000000025,
+              "cpuMs": 58.281
+            },
+            {
+              "wallMs": 54.77220800000032,
+              "cpuMs": 55.438
+            },
+            {
+              "wallMs": 56.56687500000044,
+              "cpuMs": 57.162
+            }
+          ]
+        }
+      },
+      "verification": {
+        "comparisons": 28,
+        "checkedCells": 1400056,
+        "maxRelativeError": 0
+      }
+    }
+  ],
+  "complete": true
+}

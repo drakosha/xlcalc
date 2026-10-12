@@ -16,7 +16,9 @@ import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
-import { KEY_BYTES, POSITION_BYTES, VALUE_BYTES, type CacheBudget, type RangeCache } from './range-cache.js'
+import { KEY_BYTES, POSITION_BYTES, VALUE_BYTES, RangeCache, type CacheBudget } from './range-cache.js'
+import type { Index as LookupIndex } from './functions/lookup/exact.js'
+import type { Line } from './functions/lookup/search.js'
 import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS, MAX_TEXT } from './model.js'
@@ -51,6 +53,7 @@ export interface RuntimeContext {
   /** Hidden rows by sheet, which SUBTOTAL and AGGREGATE skip by their code. */
   hidden: Map<number, HiddenRows>
   index: RangeCache<CritIndex>
+  lookup?: RangeCache<LookupIndex>
   aggregates: RangeAggregates
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
   spillRef: (s: number, r: number, c: number) => Rng | CErr
@@ -77,6 +80,7 @@ export function makeRuntime(ctx: RuntimeContext) {
   const { sheets, rules } = ctx
   const { toNum, toText, compareOp } = rules
   const shapes = new WeakMap<readonly V[], Bounds>()
+  const lookupCache = ctx.lookup ??= new RangeCache<LookupIndex>(ctx.cache)
 
   const bounds = (g: Rng) => {
     // A write outside the range can grow the sheet without changing this snapshot's stored shape.
@@ -268,6 +272,28 @@ export function makeRuntime(ctx: RuntimeContext) {
     bounds,
     scalar,
     grid,
+    lookup: (g, horizontal): Line => {
+      const keys = horizontal ? new Rng(g.s, g.r1, g.c1, g.r1, g.c2) : new Rng(g.s, g.r1, g.c1, g.r2, g.c1)
+      const b = bounds(keys)
+      let local: LookupIndex | undefined, retain: boolean | undefined
+      return {
+        n: horizontal ? g.c2 - g.c1 + 1 : g.r2 - g.r1 + 1,
+        filled: horizontal ? b.w : b.h,
+        at: (i) => {
+          if ((i & 0xffff) === 0) spend(Math.min(65536, (horizontal ? b.w : b.h) - i))
+          return cell(g.s, g.r1 + (horizontal ? 0 : i), g.c1 + (horizontal ? i : 0))
+        },
+        store: {
+          read: () => local ?? (local = lookupCache.get(keys.key)),
+          write: (index, bytes) => {
+            local = index
+            retain ??= lookupCache.admits(keys.key)
+            if (bytes + 256 > ctx.cache.cap) { lookupCache.delete(keys.key); retain = false }
+            else if (retain) lookupCache.set(keys.key, index, bytes)
+          },
+        },
+      }
+    },
     view,
     select: select_,
   }

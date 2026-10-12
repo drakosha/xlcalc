@@ -1,5 +1,8 @@
 import { HyperFormula, AlwaysSparse, DenseSparseChooseBasedOnThreshold } from 'hyperformula'
-import { compute, createSession } from '../../dist/index.js'
+import { pathToFileURL } from 'node:url'
+import { resolve } from 'node:path'
+const library = process.env.XLCALC_BENCH_ROOT ? pathToFileURL(resolve(process.env.XLCALC_BENCH_ROOT, 'dist/index.js')) : new URL('../../dist/index.js', import.meta.url)
+const { compute, createSession } = await import(library)
 import { dateToSerial, parseAddress } from '../../dist/model.js'
 
 export { HyperFormula }

@@ -1178,6 +1178,86 @@ export interface EditOptions {
   baseRevision?: number
 }
 
+/** Serializable operations applied in order, with one final recalculation and one undo step. */
+export type SessionOperation =
+  | { op: 'setCells'; edits: CellEdit[] }
+  | { op: 'replaceCells'; edits: CellReplace[] }
+  | { op: 'clearCells'; ranges: RangeRef[]; what: ClearKind }
+  | { op: 'patchCells'; patches: CellPatch[] }
+  | { op: 'setNames'; names: NameInput[] }
+  | { op: 'setStyles'; styles: CellStyle[] }
+  | { op: 'setLayout'; edits: LayoutEdit[] }
+
+/** An explicit clock makes a preview and its application reproducible, including in a live session. */
+export interface ChangesOptions extends EditOptions { clock?: Clock }
+export interface PreviewChangesOptions extends ChangesOptions {
+  /** Maximum changed cells returned, 1000 by default, at most 10000. The computation itself remains complete. */
+  maxChanges?: number
+}
+export interface ChangesResult extends EditResult { clock: Clock }
+export interface CellImpact extends CellRef {
+  before: CellValue
+  after: CellValue
+  /** The error after the operation, when there is one. */
+  issue?: CellIssueDetail
+}
+/** A complete computation with bounded output; the session, its revision and history are unchanged. */
+export interface ChangesPreview extends ChangesResult {
+  impacts: CellImpact[]
+  totalChanges: number
+  truncated: boolean
+}
+
+export type CellReadField = 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link' | 'issue'
+export interface ReadCell extends CellRef, Partial<CellView> { issue?: CellIssueDetail | null }
+export interface PageOptions extends EditOptions {
+  /** Maximum results returned, 1000 by default, at most 10000. */
+  maxCells?: number
+  /** Opaque continuation of the same query and revision; an edited session refuses it. */
+  cursor?: string
+  /** Count all matching cells, even after the page is full; false by default. */
+  count?: boolean
+}
+export interface ReadCellsOptions extends PageOptions {
+  /** value, text and formula by default. Address and sheet are always returned. */
+  fields?: CellReadField[]
+}
+export interface FindCellsOptions extends ReadCellsOptions {
+  /** Literal substring search of the shown text by default; no regular expressions. */
+  in?: 'text' | 'formula' | 'value'
+  caseSensitive?: boolean
+}
+export interface QueryPage {
+  revision: number
+  clock: Clock
+  truncated: boolean
+  cursor?: string
+  /** With count: the number matched over the complete query, not just this page. */
+  total?: number
+}
+export interface ReadCellsResult extends QueryPage { cells: ReadCell[] }
+export interface DependentCell extends CellRef {
+  /** Matching source references remain rectangles, never expanded into individual cells. */
+  references: RangeRef[]
+  referencesTruncated?: boolean
+}
+export interface DependentsOptions extends PageOptions {
+  /** Maximum matching source references per dependent, 64 by default, at most 1000. */
+  maxReferences?: number
+}
+export interface DependentsResult extends QueryPage { dependents: DependentCell[] }
+export interface RangeSummary {
+  revision: number
+  clock: Clock
+  cells: number
+  numbers: number
+  errors: number
+  /** Compensated sum; NUM when it overflows the finite number range. */
+  sum: number | { error: 'NUM' }
+  min: number | null
+  max: number | null
+}
+
 /** What `Session.clearCells` clears: the content and hyperlinks (Excel's ClearContents), the look (ClearFormats), or both and the rest (Clear). */
 export type ClearKind = 'contents' | 'formats' | 'all'
 
@@ -1503,7 +1583,7 @@ export interface UndoOptions {
 }
 
 /** The calls a session can undo: those that change its book. `setClock` and a live session's new clock are not steps. */
-export type UndoCall = 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
+export type UndoCall = 'applyChanges' | 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
 
 /** A step of a session undone or done again (`Session.undo`, `Session.redo`): the edit's result, as the call gave it. */
 export interface UndoResult extends EditResult {
@@ -1743,6 +1823,18 @@ export interface BookSnapshot {
  * session (`clock`) is what a saved result should record: a full computation with it gives the same hash.
  */
 export interface Session {
+  /** Mixed cells, names and looks applied atomically, with one final recalculation. */
+  applyChanges(operations: SessionOperation[], opts?: ChangesOptions): ChangesResult
+  /** Dependent-value changes and errors without changing the session; use its clock when applying. */
+  previewChanges(operations: SessionOperation[], opts?: PreviewChangesOptions): ChangesPreview
+  /** One revision, multiple ranges, only the fields and number of cells requested. */
+  readCells(ranges: RangeRef[], opts?: ReadCellsOptions): ReadCellsResult
+  /** Literal search performed where the book lives; output is paged. */
+  findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions): ReadCellsResult
+  /** Immediate formula dependents; source ranges stay ranges. */
+  getDependents(ranges: RangeRef[], opts?: DependentsOptions): DependentsResult
+  /** Totals over nonblank stored values and spills, without returning their cells. */
+  summarizeRanges(ranges: RangeRef[], opts?: EditOptions): RangeSummary
   readonly clock: Clock
   /** The book's revision: 0 when opened, one more after each call that changed the book (`EditResult.revision`). */
   readonly revision: number
@@ -1959,6 +2051,18 @@ export type AsyncEditOptions = CalcOptions & EditOptions
  * each after the one before has finished. A call that fails (a deadline, an abort, a limit) changes nothing.
  */
 export interface AsyncSession {
+  /** Mixed cells, names and looks applied atomically, with one final recalculation. */
+  applyChanges(operations: SessionOperation[], opts?: ChangesOptions & CalcOptions): Promise<ChangesResult>
+  /** Dependent-value changes and errors without changing the session; use its clock when applying. */
+  previewChanges(operations: SessionOperation[], opts?: PreviewChangesOptions & CalcOptions): Promise<ChangesPreview>
+  /** One revision, multiple ranges, only the fields and number of cells requested. */
+  readCells(ranges: RangeRef[], opts?: ReadCellsOptions & CalcOptions): Promise<ReadCellsResult>
+  /** Literal search performed where the book lives; output is paged. */
+  findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions & CalcOptions): Promise<ReadCellsResult>
+  /** Immediate formula dependents; source ranges stay ranges. */
+  getDependents(ranges: RangeRef[], opts?: DependentsOptions & CalcOptions): Promise<DependentsResult>
+  /** Totals over nonblank stored values and spills, without returning their cells. */
+  summarizeRanges(ranges: RangeRef[], opts?: EditOptions & CalcOptions): Promise<RangeSummary>
   /** The session's clock as of its last finished call. */
   readonly clock: Clock
   /** The session's revision as of its last finished call. */
