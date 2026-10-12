@@ -17,13 +17,15 @@ export const FILL_OPTIONS = ['widen', 'refuseInvalid', 'inPlace', 'active'] as c
 export const READ_OPTIONS = ['maxCells', 'cursor', 'count', 'fields', 'rows'] as const
 /** The options of `findCells` beside `readCells`' (`FindCellsOptions`). */
 export const FIND_OPTIONS = ['in', 'caseSensitive', 'wildcards', 'wholeCell', 'byColumns', 'skipHidden'] as const
+/** The options of `replaceInCells` beside `baseRevision` (`ReplaceOptions`): Find's but what it reads and the order, and `rows`. */
+export const REPLACE_OPTIONS = ['caseSensitive', 'wildcards', 'wholeCell', 'skipHidden', 'rows'] as const
 
 /** The API's options by name and the calls that take them, for a refusal to say where a stray option goes. */
 const TAKEN_BY: Record<string, string> = {
   formulaLocal: 'getViewport',
   diagnostics: 'getViewport',
   maxCells: 'getViewport',
-  rows: 'getViewport, readCells and findCells',
+  rows: 'getViewport, readCells, findCells and replaceInCells',
   columns: 'getViewport',
   editText: 'getViewport',
   appearance: 'viewportOf',
@@ -35,11 +37,11 @@ const TAKEN_BY: Record<string, string> = {
   refuseInvalid: TYPING,
   inPlace: TYPING,
   active: 'fillCellText and previewFillCellText',
-  caseSensitive: 'findCells',
-  wildcards: 'findCells',
-  wholeCell: 'findCells',
+  caseSensitive: 'findCells and replaceInCells',
+  wildcards: 'findCells and replaceInCells',
+  wholeCell: 'findCells and replaceInCells',
   byColumns: 'findCells',
-  skipHidden: 'findCells',
+  skipHidden: 'findCells and replaceInCells',
   baseRevision: "a session's calls that change its book",
   table: 'toLocal and toInvariant',
   clock: 'compute and createSession',

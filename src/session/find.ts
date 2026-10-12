@@ -27,8 +27,8 @@ const WHERE = ['text', 'edit', 'formula', 'value'] as const
 
 export type Ref = Rect & { s: number }
 
-/** A cell found: its sheet, row and column, and its position in Find's order (its range, its block, its place), which a cursor keeps. */
-export type Found = [s: number, r: number, c: number, position: number[]]
+/** A cell found: its sheet, row and column, its position in Find's order (its range, its block, its place), which a cursor keeps, and the text Find read in it. */
+export type Found = [s: number, r: number, c: number, position: number[], text: string]
 
 const same = (v: number) => v
 
@@ -36,7 +36,7 @@ const same = (v: number) => v
  * Each character's lower case as one UTF-16 unit or two as it was, so `?` keeps its place: `İ` stays (its lower case is
  * two characters), and the final `ς` is `σ`, as `Σ` is (Find takes `σ`, `ς` and `Σ` as one letter without Match case).
  */
-const folded = (t: string) => {
+export const folded = (t: string) => {
   const lower = t.toLowerCase()
   const f = lower.length === t.length ? lower : t.replace(/[^İ]+/g, (m) => m.toLowerCase())
   return f.includes('ς') ? f.replaceAll('ς', 'σ') : f
@@ -58,12 +58,12 @@ function matcher(query: string, o: FindCellsOptions): ((text: string) => boolean
 
 /**
  * Excel's Replace in a text: each match of the query, as `matcher` reads it, put as `by` is, the whole text with Match
- * entire cell contents; null where nothing matches or nothing can (an empty query). An empty match, of `*` at the end,
- * puts nothing.
+ * entire cell contents; null where nothing matches or nothing can (an empty query). A `*` takes as little as it can,
+ * but the query's last one the rest of the text (`a*b` in `a1b2b` is `a1b`); an empty match puts nothing.
  */
 export function replacer(query: string, by: string, o: Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell'>): ((text: string) => string | null) | null {
   const q = o.caseSensitive ? query : folded(query)
-  const source = o.wildcards ? wildSource(q) : [...q].map(literal).join('')
+  const source = o.wildcards ? wildSource(q).replace(/\[\\s\\S\]\*(?!$)/g, '$&?') : [...q].map(literal).join('')
   if (!source) return null
   const re = new RegExp(o.wholeCell ? `^(?:${source})$` : source, 'g')
   return (text) => {
@@ -237,7 +237,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
           if (paced(1)) yield
           if (!test(texts[i]!)) continue
           if (!blocks) {
-            yield [x.s, ...rc(t.at[i]), [n, 0, places[q]]]
+            yield [x.s, ...rc(t.at[i]), [n, 0, places[q]], raw[i]!]
             continue
           }
           const [r, c] = rc(t.at[i])
@@ -246,7 +246,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
         }
       }
       hits.sort((a, b) => a[0] - b[0] || a[1] - b[1])
-      for (const [block, place, i] of hits) yield [x.s, ...rc(t.at[i]), [n, block, place]]
+      for (const [block, place, i] of hits) yield [x.s, ...rc(t.at[i]), [n, block, place], raw[i]!]
     }
   }
 

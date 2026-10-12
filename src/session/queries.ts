@@ -20,7 +20,8 @@ import { lowerBound } from '../sorted.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
 const FIELDS: CellReadField[] = ['value', 'text', 'formula', 'editText', 'style', 'numberFormat', 'note', 'link', 'issue']
-const refsOf = (s: EngineState, refs: RangeRef[]) =>
+/** A query's ranges checked: rectangles of the book's sheets. */
+export const refsOf = (s: EngineState, refs: RangeRef[]) =>
   array(refs, 'ranges', 'an array of sheet/range references').map((v, i): Ref => {
     const p = `ranges[${i}]`,
       o = object(v, p, 'a sheet and range')
