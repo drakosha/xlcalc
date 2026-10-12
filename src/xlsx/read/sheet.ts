@@ -6,10 +6,12 @@
  * the filter mode, notes, hyperlinks and frozen panes (`parts.ts`), data validation (`validation.ts`), outline settings,
  * and what the sheet has that the model does not, reported.
  */
-import type { CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
+import type { CellInput, CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
+import { cellEdits, edited, LookTable, NONE, type Layer } from '../../looks/layer.js'
+import { listOf, lookAlone } from '../../looks/sheet.js'
 import { overlapping, parseMerge } from '../../layout/merges.js'
 import { lines, spanKey } from '../../layout/spans.js'
-import { parseAddress, sortAddresses } from '../../model.js'
+import { formatAddress, parseAddress, readAddress, sortAddresses } from '../../model.js'
 import { cellCount, cellsWithin, cornersText, parseRange, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
@@ -242,6 +244,36 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   }
 }
 
+/** The addresses of the cells of a look of a layer in a rectangle. */
+function* addressesOf(layer: Layer, x: Rect): Generator<string> {
+  for (const p of layer.pieces(x)) for (let r = p.r1; r <= p.r2; r++) for (let c = p.c1; c <= p.c2; c++) yield formatAddress(r, c)
+}
+
+/**
+ * The sheet's looks with its cells as the reader left them: a cell left with a look alone (one an array spilled into)
+ * goes to the looks, and a cell given content over a look (a shared formula's copy, a note, a link, a table's header)
+ * takes the look as its own, as the cell's entry of a look would have.
+ */
+function withEntries(layer: Layer, cells: Record<string, CellInput>): Layer {
+  const looks = new LookTable(layer.looks)
+  const edits: [number, number, number][] = []
+  const p = { r: 0, c: 0 }
+  for (const a in cells) {
+    const cell = cells[a]
+    readAddress(a, p)
+    if (lookAlone(cell)) {
+      edits.push([p.r, p.c, looks.of(cell)])
+      delete cells[a]
+      continue
+    }
+    const look = layer.lookAt(p.r, p.c)
+    if (!look) continue
+    cells[a] = { ...look, ...cell }
+    edits.push([p.r, p.c, NONE])
+  }
+  return edited(layer, cellEdits(edits), looks)
+}
+
 export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const { xml, name } = src
   const open = xml.search(/<(?:[\w.-]+:)?sheetData[\s>/]/)
@@ -279,7 +311,10 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (m) sheet.merges = m
   const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas)
   if (tables.length) sheet.tables = tables
-  readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts }, read.cells, ctx.issues)
+  const layer = read.looks.build()
+  readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts, looked: (x) => addressesOf(layer, x) }, read.cells, ctx.issues)
+  const looks = withEntries(layer, read.cells)
+  if (!looks.empty) sheet.looks = listOf(looks)
   const frozen = readFrozen(head, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
   const cf = readConditional(tail, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)

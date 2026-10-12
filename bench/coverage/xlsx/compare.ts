@@ -15,6 +15,7 @@ import { tableAt, tablesOf, type Tables } from '../../../src/tables/model.js'
 import { BUILTIN_ID } from '../../../src/xlsx/styles/numfmt.js'
 import { numberFormatOf } from '../stored.js'
 import type { XlsxCached } from '../../../src/xlsx/types.js'
+import { expandSheet } from '../../../test/looks-book.js'
 
 export interface Difference {
   place: string
@@ -101,7 +102,9 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
   const out = new Map<string, string>()
   const tables = tablesOf(book)
   const epoch = epochOf(book.dateSystem)
-  book.sheets.forEach((s, i) => {
+  book.sheets.forEach((sheet, i) => {
+    // the cells of a sheet's looks as the entries they stand for
+    const s = expandSheet(sheet)
     out.set(`sheet ${i + 1}`, s.name)
     if (s.filtered) out.set(`filtered ${s.name}`, 'true')
     const res = values?.sheets[i].cells

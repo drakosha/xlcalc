@@ -16,6 +16,7 @@ import type { Xf } from '../styles/read.js'
 import { attributes, flag, ownEntry } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import type { CellMetadata } from './metadata.js'
+import { CellsLayer } from '../../looks/layer.js'
 import { stringItem, type Strings } from './strings.js'
 
 export interface CellsContext {
@@ -45,7 +46,10 @@ export interface ArrayFormula {
 }
 
 export interface SheetCells {
+  /** The cells with content (a value, a formula of any kind, an error), with their own looks. */
   cells: Record<string, CellInput>
+  /** The looks of the cells without content, which take no entry (`SheetInput.looks`). */
+  looks: CellsLayer
   cached: Record<string, XlsxCachedCell>
   rows: Map<number, RowInput>
   shared: Map<string, Shared>
@@ -75,7 +79,8 @@ const ADDR = /^([A-Za-z]{1,3})([1-9][0-9]*)$/
  * style or a format the row has not, the row gets the plain style or General (Excel and the writer write those cells).
  */
 export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInput>[] = []): SheetCells {
-  const out: SheetCells = { cells: {}, cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set() }
+  const out: SheetCells = { cells: {}, looks: new CellsLayer(), cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set() }
+  const { looks } = out
   const { issues, sheet } = ctx
   const looked = cols.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
   const column = (c: number) => (looked.length ? entryAt(looked, c) : undefined)
@@ -93,9 +98,13 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     if (line.numberFormat === undefined && looked.some(([lo, hi, e]) => e.numberFormat !== undefined && missing(lo, hi))) line.numberFormat = 'General'
     if (Object.keys(line).length) out.rows.set(lineRow + 1, line)
     for (const x of formatted) {
-      const cell = { ...ownLook(x.own, lookOf(undefined, line, column(x.col)), ctx), ...out.cells[x.addr] }
-      if (Object.keys(cell).length) out.cells[x.addr] = cell
-      else delete out.cells[x.addr]
+      const look = ownLook(x.own, lookOf(undefined, line, column(x.col)), ctx)
+      const content = out.cells[x.addr]
+      if (Object.keys(content).length) out.cells[x.addr] = { ...look, ...content }
+      else {
+        delete out.cells[x.addr]
+        looks.add(lineRow, x.col, looks.looks.of(look))
+      }
     }
     formatted = undefined
   }
@@ -205,7 +214,9 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
         } else issues.add('errorValue', { key: 'errorUnspelled' }, { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
     }
-    if (formatted || cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.numberFormat !== undefined) out.cells[addr] = cell
+    // a cell of a look alone goes to the sheet's looks, unless a formula is spread to it (a shared one's copy, `<f>` without text)
+    if (formatted || cell.value !== undefined || cell.formula !== undefined || (f && fa.t === 'shared')) out.cells[addr] = cell
+    else looks.add(row, col, looks.looks.of(cell))
   }
   endRow()
   return out

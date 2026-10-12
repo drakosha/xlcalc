@@ -16,7 +16,9 @@
 import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, ExternalBook, RowInput, SheetInput } from '../../contract.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
-import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
+import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress, readAddress, sortAddresses } from '../../model.js'
+import { NONE, type Layer } from '../../looks/layer.js'
+import { inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT, FormulaError, type Ast } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
@@ -179,6 +181,11 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     return xf ? ` s="${xf}"` : ''
   }
   // `cm` marks a dynamic array formula
+  // a sheet with looks: its entries in the order of addresses, and the cells of its looks numbered among them, as entries
+  // of theirs would be in that order (as a file read lists them); a sheet without looks: its entries in their order
+  const layer = layerOf(sheet)
+  const order = layer ? sortAddresses(Object.keys(sheet.cells)) : Object.keys(sheet.cells)
+  const layerXf = layer ? numberLooks(sheet, layer, order, sAttr) : null
   const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
     const cm = dynamic ? ' cm="1"' : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
@@ -187,7 +194,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   }
   const notes = new Map<string, CellNote>()
   const links = new Map<string, CellLink>()
-  for (const addr of Object.keys(sheet.cells)) {
+  for (const addr of order) {
     const c = sheet.cells[addr]
     if (c.meta !== undefined) issues.add('meta', { key: 'cellMeta' }, where(addr))
     if (c.note) notes.set(addr, c.note)
@@ -215,12 +222,17 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     put(addr, cellXml(addr, c, res?.value, `<f t="array" ref="${ref}">${escapeText(toFile(tree))}</f>`, c.array === undefined))
   }
   // the cells arrays spilled into, with the look their own cells give them
+  const ownAt = (addr: string) => {
+    if (!layer) return sheet.cells[addr]
+    const { row, col } = parseAddress(addr)
+    return inputIn(sheet, addr, row, col)
+  }
   if (result)
     for (const addr of Object.keys(result)) {
       const r = result[addr]
-      if (r.spillOf !== undefined) put(addr, cellXml(addr, sheet.cells[addr], r.value))
+      if (r.spillOf !== undefined) put(addr, cellXml(addr, ownAt(addr), r.value))
       if (r.spill !== undefined && r.spillFill !== undefined && mode === 'values')
-        for (const a of rectCells(parseRange(r.spill)!)) if (!result[a]) put(a, cellXml(a, sheet.cells[a], r.spillFill))
+        for (const a of rectCells(parseRange(r.spill)!)) if (!result[a]) put(a, cellXml(a, ownAt(a), r.spillFill))
     }
   const rowLines = lines(sheet.rows, 'r')
   for (const [lo, hi] of rowLines) for (let r = lo; r <= hi; r++) rowsUsed.add(r)
@@ -231,28 +243,34 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
   }
   crossings(rowLines, lines(sheet.columns, 'c'), styles, (r, c, xf) => {
-    if (!out.has(r * MAX_COLS + c)) put(formatAddress(r, c), `<c r="${formatAddress(r, c)}" s="${xf}"/>`)
+    if (!out.has(r * MAX_COLS + c) && !(layer && layer.idAt(r, c) !== NONE)) put(formatAddress(r, c), `<c r="${formatAddress(r, c)}" s="${xf}"/>`)
   })
   const keys = [...out.keys()].sort((a, b) => a - b)
+  // the rows of the looks' blocks too, their cells written as the rows are, not held cell by cell
+  if (layer) for (let b = 0; b < layer.blocks; b++) for (let r = layer.r1[b]; r <= layer.r2[b]; r++) rowsUsed.add(r)
   const data: string[] = []
   let k = 0
   for (const row of [...rowsUsed].sort((a, b) => a - b)) {
-    const cells: string[] = []
-    while (k < keys.length && Math.floor(keys[k] / MAX_COLS) === row) cells.push(out.get(keys[k++])!)
-    data.push(cells.length ? `<row r="${row + 1}"${rowAttrs.get(row) ?? ''}>${cells.join('')}</row>` : `<row r="${row + 1}"${rowAttrs.get(row) ?? ''}/>`)
+    let cells = ''
+    const from = k
+    while (k < keys.length && Math.floor(keys[k] / MAX_COLS) === row) k++
+    if (layer) cells = rowXml(row, layer, layerXf!, keys, from, k, out)
+    else for (let i = from; i < k; i++) cells += out.get(keys[i])!
+    data.push(cells ? `<row r="${row + 1}"${rowAttrs.get(row) ?? ''}>${cells}</row>` : `<row r="${row + 1}"${rowAttrs.get(row) ?? ''}/>`)
   }
-  const first = keys.length ? keys[0] : 0
-  const last = keys.length ? keys[keys.length - 1] : 0
-  const minCol = keys.reduce((m, x) => Math.min(m, x % MAX_COLS), MAX_COLS)
-  const maxCol = keys.reduce((m, x) => Math.max(m, x % MAX_COLS), 0)
-  const dim = keys.length ? `${indexToCol(minCol)}${Math.floor(first / MAX_COLS) + 1}:${indexToCol(maxCol)}${Math.floor(last / MAX_COLS) + 1}` : 'A1'
+  const looked = layer?.bounds()
+  const any = keys.length > 0 || !!looked
+  const [rowLo, rowHi] = [Math.min(keys.length ? Math.floor(keys[0] / MAX_COLS) : Infinity, looked?.r1 ?? Infinity), Math.max(keys.length ? Math.floor(keys[keys.length - 1] / MAX_COLS) : -1, looked?.r2 ?? -1)]
+  const minCol = Math.min(keys.reduce((m, x) => Math.min(m, x % MAX_COLS), MAX_COLS), looked?.c1 ?? MAX_COLS)
+  const maxCol = Math.max(keys.reduce((m, x) => Math.max(m, x % MAX_COLS), 0), looked?.c2 ?? 0)
+  const dim = any ? `${indexToCol(minCol)}${rowLo + 1}:${indexToCol(maxCol)}${rowHi + 1}` : 'A1'
   const cols = lines(sheet.columns, 'c').map(([lo, hi, e]) => {
     const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
     const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${DEFAULT_WIDTH}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
   const merges = sheet.merges ?? []
-  const used = keys.length ? { r1: Math.floor(first / MAX_COLS), r2: Math.floor(last / MAX_COLS), c1: minCol, c2: maxCol } : undefined
+  const used = any ? { r1: rowLo, r2: rowHi, c1: minCol, c2: maxCol } : undefined
   let filter = sheet.filtered && !ctx.filterTable ? filterRange(used, rowLines) : undefined
   // an autofilter of the sheet cannot meet a table: only tables without a header row (no filter of their own) are left
   const area = filter && parseRange(filter)!
@@ -298,6 +316,57 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     (cond.ext ? `<extLst>${cond.ext}</extLst>` : '') +
     '</worksheet>'
   return { xml, formulas, rels, ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}) }
+}
+
+/**
+ * The cell format of each look of the sheet's looks (`sAttr` of a cell of it, ` s="n"` or none), numbered in the order of
+ * the sheet's cells, row by row, with its entries (`order`, by address), as entries of theirs would number them; by cell
+ * where the sheet's rows or columns have a look, which a cell's whole look takes.
+ */
+function numberLooks(sheet: SheetInput, layer: Layer, order: string[], sAttr: (addr: string, c: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
+  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.numberFormat !== undefined))
+  const at = { r: 0, c: 0 }
+  const entries = order.map((a): [number, number, string] => {
+    readAddress(a, at)
+    return [at.r, at.c, a]
+  })
+  const byLook: (string | undefined)[] = []
+  const attr = (r: number, c: number, look: number) => (lined ? sAttr(formatAddress(r, c), layer.looks.list[look]) : (byLook[look] ??= sAttr(formatAddress(r, c), layer.looks.list[look])))
+  // the looks not numbered yet; once none is left, only the entries take new numbers
+  const used = new Set<number>()
+  for (const k of new Set(layer.at)) for (let i = 2; i < layer.patterns[k].length; i += 3) used.add(layer.patterns[k][i])
+  let left = lined ? Infinity : used.size
+  let e = 0
+  for (let b = 0; b < layer.blocks && left > 0; b++) {
+    const p = layer.patterns[layer.at[b]]
+    for (let r = layer.r1[b]; r <= layer.r2[b] && left > 0; r++) {
+      for (; e < entries.length && entries[e][0] < r; e++) sAttr(entries[e][2], sheet.cells[entries[e][2]])
+      for (let k = 0; k < p.length; k += 3)
+        for (let c = p[k]; c <= (lined ? p[k + 1] : p[k]); c++) {
+          for (; e < entries.length && entries[e][0] === r && entries[e][1] < c; e++) sAttr(entries[e][2], sheet.cells[entries[e][2]])
+          if (!lined && byLook[p[k + 2]] === undefined) left--
+          attr(r, c, p[k + 2])
+        }
+    }
+  }
+  for (; e < entries.length; e++) sAttr(entries[e][2], sheet.cells[entries[e][2]])
+  return attr
+}
+
+/** A row's cells: the entries' (`keys` from `from` to `to`, by `out`) and the looks' between them, in order of columns. */
+function rowXml(row: number, layer: Layer, attr: (r: number, c: number, look: number) => string, keys: number[], from: number, to: number, out: Map<number, string>): string {
+  const p = layer.row(row)
+  let xml = ''
+  let i = from
+  for (let k = 0; k < p.length; k += 3)
+    for (let c = p[k]; c <= p[k + 1]; c++) {
+      for (; i < to && keys[i] % MAX_COLS < c; i++) xml += out.get(keys[i])!
+      // an entry's own cell (a spilled one, a crossing) is written as it is
+      if (i < to && keys[i] % MAX_COLS === c) continue
+      xml += `<c r="${formatAddress(row, c)}"${attr(row, c, p[k + 2])}/>`
+    }
+  for (; i < to; i++) xml += out.get(keys[i])!
+  return xml
 }
 
 /**
