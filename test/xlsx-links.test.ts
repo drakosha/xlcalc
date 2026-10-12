@@ -6,6 +6,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ExternalBook } from '../src/contract.js'
+import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { codes, pack, parts, type Fixture } from './xlsx-fixtures.js'
@@ -144,7 +145,20 @@ describe('xlsx links: reading', () => {
     expect(codes(r.issues)).toEqual(['externalLink', 'externalLink A1 B1 C1'])
   })
 
-  // fails until the parse of `[N]` (the lead's branch, xlsx/external-links) is merged: until then no formula with a link parses
+  // fails until a copy moves references to other workbooks (src/structure/rewrite.ts, the lead's): the copies take the master's text
+  it("a shared formula over a link: each copy moves its relative reference into the link's sheet, as a paste does", async () => {
+    const real = book2('<sheetNames><sheetName val="Sheet1"/></sheetNames>')
+    const body = '<sheetData><row r="1"><c r="A1"><f t="shared" ref="A1:B2" si="0">[1]Sheet1!A1+[1]Sheet1!$B$1</f></c><c r="B1"><f t="shared" si="0"/></c></row><row r="2"><c r="A2"><f t="shared" si="0"/></c><c r="B2"><f t="shared" si="0"/></c></row></sheetData>'
+    const r = await readXlsx(await linked([real], [0], { sheets: [{ name: 'S', body }] }))
+    expect(r.book.sheets[0].cells).toEqual({
+      A1: { formula: '[1]Sheet1!A1+[1]Sheet1!$B$1' },
+      B1: { formula: "'[1]Sheet1'!B1+'[1]Sheet1'!$B$1" },
+      A2: { formula: "'[1]Sheet1'!A2+'[1]Sheet1'!$B$1" },
+      B2: { formula: "'[1]Sheet1'!B2+'[1]Sheet1'!$B$1" },
+    })
+    expect(r.issues).toEqual([])
+  })
+
   it('formulas and names over the links the file holds read without issues', async () => {
     const real = book2('<sheetNames><sheetName val="Sheet1"/><sheetName val="My Sheet"/></sheetNames><definedNames><definedName name="Rate" refersTo="=Sheet1!$C$1"/></definedNames>')
     const body = "<sheetData><row r=\"1\"><c r=\"A1\"><f>[1]Sheet1!A1+1</f></c><c r=\"B1\"><f>SUM('[1]My Sheet'!A1:B9)</f></c><c r=\"C1\"><f>[1]!Rate*2</f></c></row></sheetData>"
@@ -198,10 +212,44 @@ describe('xlsx links: writing', () => {
     expect(await part(empty.data, 'xl/externalLinks/externalLink1.xml')).toContain(`<externalBook xmlns:r="${REL}" r:id="rId1"/>`)
   })
 
-  it('the links come back from the file as the book has them', async () => {
-    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }], externalBooks: [BOOK2, { target: '', sheets: [] }, { target: 'file:///C:/data/Book4.xlsx', sheets: [{ name: 'Data', cells: { XFD1048576: 'end' } }] }] }
-    const r = await readXlsx((await writeXlsx({ book })).data)
+  it("formulas and names over the links in the file's spelling; one over a link or a sheet the links do not have is written as its value, one named by the file a link has by the link's number", async () => {
+    const book: BookInput = {
+      sheets: [
+        {
+          name: 'S',
+          cells: {
+            A1: { formula: "'[1]Sheet1'!A1+1" },
+            A2: { formula: "SUM('[1]My Sheet'!A1:B9)" },
+            A3: { formula: '[1]!Rate*2' },
+            A4: { formula: "'[1]Sheet1'!Local" },
+            A5: { formula: '[Book2.xlsx]Sheet1!A2' },
+            A6: { formula: '[3]Sheet1!A1' },
+            A7: { formula: "'[1]Nope'!A1" },
+          },
+        },
+      ],
+      names: [
+        { name: 'Ext', ref: "'[1]Sheet1'!$A$2" },
+        { name: 'Far', ref: "'[3]Sheet1'!$A$2" },
+      ],
+      externalBooks: [BOOK2],
+    }
+    const { data, issues } = await writeXlsx({ book })
+    const sheet = await part(data, 'xl/worksheets/sheet1.xml')
+    expect([...sheet.matchAll(/<f[^>]*>([^<]*)<\/f>/g)].map((m) => m[1])).toEqual(['[1]Sheet1!A1+1', "SUM('[1]My Sheet'!A1:B9)", '[1]!Rate*2', '[1]Sheet1!Local', '[1]Sheet1!A2'])
+    expect(await part(data, 'xl/workbook.xml')).toContain('<definedNames><definedName name="Ext">[1]Sheet1!$A$2</definedName></definedNames>')
+    expect(issues.map((i) => `${i.code} ${i.cells ?? i.name}`)).toEqual(['formula A6,A7', 'noCachedValues undefined', 'name Far'])
+  })
+
+  it('the links, their formulas and names come back from the file as the book has them, with the same input hash', async () => {
+    const book: BookInput = {
+      sheets: [{ name: 'S', cells: { A1: { formula: '[1]Sheet1!A1+[3]Data!XFD1048576' }, A2: { formula: "SUM('[1]Лист 1'!A:A)" }, A3: { formula: '[1]!Rate' }, A4: { formula: 'Ext*2' } } }],
+      names: [{ name: 'Ext', ref: '[1]Sheet1!$A$1:$A$3' }],
+      externalBooks: [BOOK2, { target: '', sheets: [] }, { target: 'file:///C:/data/Book4.xlsx', sheets: [{ name: 'Data', cells: { XFD1048576: 'end' } }] }],
+    }
+    const r = await readXlsx((await writeXlsx({ book }, { values: 'omit' })).data)
     expect(r.book).toEqual(book)
     expect(r.issues).toEqual([])
+    expect(compute(r.book).inputHash).toBe(compute(book).inputHash)
   })
 })

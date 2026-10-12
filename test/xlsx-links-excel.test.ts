@@ -96,7 +96,6 @@ describe.each(PLATFORMS)('links in the files %s saved', (_, root) => {
     expect(r.book.externalBooks).toEqual([{ target: book2(root, 'links-refresh-held-25311-1'), sheets: [{ name: 'Empty', cells: {} }, { name: 'Marked', cells: {}, refreshError: true }, { name: 'None', cells: {}, refreshError: true }] }])
   })
 
-  // fails until the parse of `[N]` (the lead's branch, xlsx/external-links) is merged: until then no formula with a link parses
   it("every formula and name over Excel's links reads without an issue", async () => {
     for (const set of stored(root))
       for (const c of set.cases.filter((x) => set.answers[x.id])) expect((await saved(root, set.name, c.id)).issues.filter((i) => i.code === 'externalLink'), `${set.name}/${c.id}`).toEqual([])
