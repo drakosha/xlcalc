@@ -243,8 +243,9 @@ export interface SheetInput {
 /**
  * A rectangle of a sheet's looks (`SheetInput.looks`): a cell (`B2`), a range (`B2:D9`), whole columns (`B:D`) or whole
  * rows (`2:9`), and the style and the number format its cells without an entry show; neither field, and its cells show
- * none of their own. The books the engine gives back hold the looks in one form for one sheet: rectangles row by row,
- * a rectangle of rows that share their looks over every such row and the rows between them that differ after it.
+ * none of their own. The books the engine gives back hold the looks in one form for one set of them: rows in blocks, the
+ * runs of a group of rows as rectangles across the group, then the rows of the group that differ, its rows without looks
+ * as rows of none.
  */
 export interface LookRange {
   range: string
