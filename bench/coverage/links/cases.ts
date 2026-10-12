@@ -6,7 +6,8 @@
  * files do not depend on the writer. `npx tsx bench/coverage/run.ts links <set>` has Excel open each file without
  * updating its links, as a person who answers "Don't Update" does, and read what the cells show.
  */
-import type { CellValue, RangeRef, SheetInput } from '../../../src/contract.js'
+import type { BookInput, CellValue, ExternalBook, RangeRef, SheetInput } from '../../../src/contract.js'
+import { fromFile } from '../../../src/xlsx/formulas/from-file.js'
 import { ERROR_TEXT } from '../../../src/syntax/errors.js'
 import { writeXlsx } from '../../../src/xlsx.js'
 import { escapeAttr, escapeText } from '../../../src/xlsx/xml/text.js'
@@ -173,4 +174,16 @@ function workbookXml(xml: string, c: LinksCase, sheets: SheetInput[]): string {
   const defs = c.names.map((n) => `<definedName name="${escapeAttr(n.name)}"${n.sheet === undefined ? '' : ` localSheetId="${sheets.findIndex((s) => s.name === n.sheet)}"`}>${escapeText(n.ref)}</definedName>`).join('')
   out = out.includes('</definedNames>') ? out.replace('</definedNames>', `${defs}</definedNames>`) : out.replace(refs, `${refs}<definedNames>${defs}</definedNames>`)
   return out
+}
+
+/** A case's book as the engine takes it: its cells, its formulas with links and names in the engine's spelling, the stored values of its links. */
+export function linksBook(c: LinksCase): BookInput {
+  const formula = (f: LinkedFormula) => fromFile(typeof f === 'string' ? f : f.formula).formula
+  const sheets = c.sheets.map((s) => ({ ...s, cells: { ...s.cells, ...Object.fromEntries(Object.entries(c.linked[s.name] ?? {}).map(([a, f]) => [a, { formula: formula(f) }])) } }))
+  const externalBooks: ExternalBook[] = c.links.map((b) => ({
+    target: b.target,
+    sheets: b.sheets.map((s) => ({ name: s.name, ...(s.data === false ? {} : { cells: s.cells ?? {} }), ...(s.refreshError ? { refreshError: true as const } : {}) })),
+    ...(b.names?.length ? { names: b.names.map((n) => ({ name: n.name, ref: n.ref.replace(/^=/, ''), ...(n.sheet === undefined ? {} : { sheet: n.sheet }) })) } : {}),
+  }))
+  return { sheets, ...(c.names?.length ? { names: c.names.map((n) => ({ name: n.name, ref: fromFile(n.ref).formula, ...(n.sheet ? { scope: n.sheet } : {}) })) } : {}), externalBooks }
 }

@@ -766,6 +766,13 @@ export interface EntryOptions {
   cell?: { numberFormat?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
   /** The moment whose year completes a date typed without one (`15.3` in ru-RU, `3/15` in en-US), ISO as `Clock.now`; the current moment without it. */
   now?: string
+  /**
+   * The book's links to other workbooks (`BookInput.externalBooks`): a formula's reference to one, typed as Excel shows
+   * it (`=[Book2.xlsx]Sheet1!A1`, `='C:\data\[Book2.xlsx]Sheet1'!A1`, `=Book2.xlsx!Rate`) or by number, is found by the
+   * file name and numbered (`'[1]Sheet1'!A1`); one to a book they do not hold is refused (`external_ref`). Without them
+   * such a formula is kept as typed.
+   */
+  externalBooks?: ExternalBook[]
 }
 
 /**

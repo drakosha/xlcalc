@@ -20,6 +20,13 @@ export type Tok =
   | { t: 'ref'; sheet: string | null; last?: string; ref: RangeRef; at: number }
   /** `sheet`: a name seen from that sheet (`Sheet2!rate`). */
   | { t: 'ident'; v: string; at: number; sheet?: string }
+  /**
+   * A reference to another workbook's sheet: `book` the number of its link (`[1]Sheet1!A1`, `'[1]My Sheet'!A1`), or the
+   * path and file name it is shown with (`[Book2.xlsx]Sheet1!A1`, `'C:\data\[Book2.xlsx]Sheet1'!A1`).
+   */
+  | { t: 'xref'; book: number | string; sheet: string; ref: RangeRef; at: number }
+  /** A defined name of another workbook, of the book (`[1]!Rate`) or of one of its sheets (`[1]Sheet1!Local`). */
+  | { t: 'xname'; book: number | string; sheet?: string; v: string; at: number }
   /** A structured reference; `table` null without a table name (`[@Qty]`). */
   | { t: 'table'; table: string | null; spec: TableSpec; at: number }
   | { t: 'fn'; v: string; at: number }
@@ -108,8 +115,14 @@ export function readsAsCell(word: string): boolean {
 }
 
 /** Tokens that end and begin a reference: whitespace between two of them is the intersection operator. */
-const ENDS = new Set(['ref', 'ident', 'table', ')'])
-const BEGINS = new Set(['ref', 'ident', 'table', 'fn', '('])
+const ENDS = new Set(['ref', 'xref', 'ident', 'xname', 'table', ')'])
+const BEGINS = new Set(['ref', 'xref', 'ident', 'xname', 'table', 'fn', '('])
+
+/** A link's number as a file writes it (`1`), else the path and file name it is shown with. */
+const bookOf = (path: string, file: string): number | string => (path === '' && /^[1-9][0-9]*$/.test(file) ? Number(file) : path + file)
+
+/** A quoted sheet with a book in brackets (`'C:\data\[Book2.xlsx]My Sheet'`, `'[1]My Sheet'`): the path, the book, the sheet. */
+const BOOK_IN_QUOTES = /^([^[\]]*)\[([^[\]]+)\]([^[\]]*)$/
 
 export function tokenize(src: string): Tok[] {
   const out: Tok[] = []
@@ -120,6 +133,24 @@ export function tokenize(src: string): Tok[] {
     if (space >= 0 && last && ENDS.has(last.t) && BEGINS.has(t.t)) out.push({ t: 'op', v: ' ', at: space })
     space = -1
     out.push(t)
+  }
+  /**
+   * What follows another workbook's sheet and `!` at `from`: a reference, or a defined name of the book (no sheet) or of
+   * the sheet; the end of what was read. A reference across its sheets is not taken (`[1]Jan:Mar!A1`).
+   */
+  const external = (book: number | string, sheet: string, at: number, from: number): number => {
+    if (sheet.includes(':')) bad(at, { key: 'externalAcrossSheets' }, 'external_ref')
+    const after = src.slice(from)
+    const r = sheet === '' ? null : readRef(after, at)
+    if (r) {
+      if (after[r.len] === '#') bad(at, { key: 'externalSpill' }, 'external_ref')
+      push({ t: 'xref', book, sheet, ref: r.ref, at })
+      return from + r.len
+    }
+    const nm = IDENT.exec(after)
+    if (!nm || after[nm[0].length] === '(' || after[nm[0].length] === '[') bad(from, { key: 'referenceAfterSheet' })
+    push({ t: 'xname', book, ...(sheet === '' ? {} : { sheet }), v: nm[0], at })
+    return from + nm[0].length
   }
   let i = 0
   while (i < src.length) {
@@ -148,7 +179,13 @@ export function tokenize(src: string): Tok[] {
       continue
     }
     if (ch === '[') {
-      if (BOOK_SHEET.test(src.slice(bracketEnd(src, i)))) bad(i, { key: 'externalReference' }, 'external_ref')
+      const close = bracketEnd(src, i)
+      const book = BOOK_SHEET.exec(src.slice(close))
+      if (book) {
+        const sheet = book[0].slice(0, -1)
+        i = external(bookOf('', src.slice(i + 1, close - 1)), sheet.startsWith("'") ? sheet.slice(1, -1).replaceAll("''", "'") : sheet, i, close + book[0].length)
+        continue
+      }
       const { spec, end } = readSpec(src, i, i)
       push({ t: 'table', table: null, spec, at: i })
       i = end
@@ -163,9 +200,15 @@ export function tokenize(src: string): Tok[] {
     let sheet: string | null = null
     let last: string | undefined
     let sm = QUOTED_SHEET.exec(rest)
+    const inQuotes = sm && BOOK_IN_QUOTES.exec(sm[1].replaceAll("''", "'"))
+    if (sm && inQuotes) {
+      i = external(bookOf(inQuotes[1], inQuotes[2]), inQuotes[3], i, i + sm[0].length)
+      continue
+    }
     if (sm) {
       sheet = sm[1].replaceAll("''", "'")
-      const k = sheet.indexOf(':')
+      // a path, which no sheet's name holds, before another workbook's own name (`'C:\\data\\Book2.xlsx'!Rate`) is no range of sheets
+      const k = /[\\/]/.test(sheet) ? -1 : sheet.indexOf(':')
       if (k >= 0) [sheet, last] = [sheet.slice(0, k), sheet.slice(k + 1)]
     } else if (rest.includes('!') && (sm = UNQUOTED_SHEETS.exec(rest)) && !readsAsCell(sm[1])) [sheet, last] = [sm[1], sm[2] ?? sm[3].replaceAll("''", "'")]
     else if ((sm = UNQUOTED_SHEET.exec(rest))) sheet = sm[1]

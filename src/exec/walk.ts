@@ -7,7 +7,9 @@
  */
 import { shapes, type NameRef } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
+import { holds } from '../args.js'
 import { FUNCTIONS } from '../functions.js'
+import { OPEN_REFERENCE } from '../functions/omitted.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { decode, type Area, type Bound, type Rect } from '../structure/area.js'
 import type { ErrorCode } from '../contract.js'
@@ -31,6 +33,8 @@ export interface CodegenContext {
   origin?: { r: number; c: number }
   /** A structured reference in the formula's row `r`: its sheet and rectangle, or the error it gives (`tables/model.ts`). */
   table?(n: Extract<Ast, { k: 'table' }>, r: number): (Rect & { s: number }) | ErrorCode
+  /** The runtime index of a linked workbook's sheet (`links.ts`), undefined for none: the reference is `#REF!`. */
+  link?(book: number, sheet: string): number | undefined
 }
 
 export type Operator = 'add' | 'sub' | 'mul' | 'div' | 'pow' | 'cat'
@@ -178,7 +182,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   let scope = s
   const inside = new Set<NameDef>()
   // a reference's rectangle: in a name's formula, its relative bounds moved by the formula's cell
-  const rect = (n: Extract<Ast, { k: 'ref' | 'ref3d' }>) => {
+  const rect = (n: Extract<Ast, { k: 'ref' | 'ref3d' | 'xref' }>) => {
     const a = inside.size || ctx.origin ? relative(n.ref) : null
     if (!a) return n.ref
     const [dr, dc] = inside.size || !ctx.origin ? [r, c] : [r - ctx.origin.r + MAX_ROWS, c - ctx.origin.c + MAX_COLS]
@@ -210,6 +214,13 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'table': {
         const x = table(n)
         if (typeof x !== 'string') add(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
+        return
+      }
+      case 'xref': {
+        const k = linked(n)
+        if (k === undefined) return
+        const x = rect(n)
+        add(new Rng(k, x.r1, x.c1, x.r2, x.c2))
         return
       }
       case 'paren':
@@ -301,6 +312,21 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   }
   // an argument left out: a value, or not given
   const omitted = (v: V | undefined) => (v === undefined ? b.absent() : b.value(v))
+  const linked = (n: Extract<Ast, { k: 'xref' }>) => (typeof n.book === 'number' ? ctx.link?.(n.book, n.sheet) : undefined)
+  // a linked workbook's range, which a position that takes an open book's reference does not take: directly, in
+  // parentheses, through a name or a LET name
+  const closed = (n: Ast): boolean => {
+    if (n.k === 'xref') return true
+    if (n.k === 'paren') return closed(n.a)
+    if (n.k === 'local') return closed(bound[n.slot])
+    if (n.k !== 'name') return false
+    const d = resolve(n, scope)
+    if (!d || inside.has(d)) return false
+    inside.add(d)
+    const out = closed(d.ast)
+    inside.delete(d)
+    return out
+  }
   // a value that may be a reference, read as a value where one value goes
   const value = (code: T, n: Ast, rangeOk: boolean) => (!rangeOk && !many(n) ? b.read(code) : code)
   // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
@@ -324,6 +350,18 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
       }
+      case 'xref': {
+        const k = linked(n)
+        if (k === undefined) return b.value(E.REF)
+        const x = rect(n)
+        const g = new Rng(k, x.r1, x.c1, x.r2, x.c2)
+        info.refs.push(g)
+        if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
+        return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
+      }
+      // the engine puts a linked workbook's name's reference in its place before it compiles (`links.ts`)
+      case 'xname':
+        return b.value(E.REF)
       case 'table': {
         const x = table(n)
         if (typeof x === 'string') return b.value(E[x])
@@ -388,6 +426,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         }
         if (spec.volatile) info.volatile = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
+        const open = OPEN_REFERENCE[n.name]
+        if (open && n.args.some((a, i) => holds(open, i) && closed(a))) return b.value(E.VALUE)
         const past = n.name === 'LOOKUP' && n.args.length === 3 ? lookupResult(n.args[1], n.args[2]) : undefined
         // a reference across sheets is passed to any argument, which takes it or answers its error
         const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : i === 2 && past ? past : go(a, spec.range(i) || a.k === 'ref3d')))

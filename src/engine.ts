@@ -23,6 +23,7 @@ import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from '
 import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
 import { AreaIndex } from './area-index.js'
+import { expandLinkNames, linkedSheet, linkSheets, strictCells, type LinkState } from './links.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
 import { endSpill, spillRef } from './spill/place.js'
 import { newSpills, type Area, type Spills } from './spill/state.js'
@@ -101,6 +102,8 @@ export interface EngineState {
   spills: Spills
   /** Input cells that hold no value or formula (a style, a format, a note alone), by sheet (row · MAX_COLS + column): a sheet's extent counts them. */
   bare: Map<number, Set<number>>
+  /** The linked workbooks' sheets in the runtime after the book's own, and their names (`links.ts`). */
+  links: LinkState
 }
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
@@ -164,6 +167,7 @@ export const codegenContext = (state: EngineState, s: number, area?: Rect): Code
     const x = t ? specRect(t, n.spec, r) : 'REF'
     return typeof x === 'string' ? x : { ...x, s: t!.s }
   },
+  link: (book, sheet) => linkedSheet(state.links, book, sheet),
   ...(area ? { area } : {}),
 })
 
@@ -180,11 +184,12 @@ function prepare(state: EngineState, s: number, row: number, col: number, text: 
   const named = (name: string, sheet: string | undefined) => nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
   const known = (name: string, sheet: string | undefined) => !!named(name, sheet)
   const enclosing = tableAt(state.tables, s, row, col)?.name
-  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { table: enclosing } : {}) })
+  const books = state.input.externalBooks
+  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: books ?? [], ...(enclosing ? { table: enclosing } : {}) })
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   // sheets and names spelled as the book has them, as Excel shows them (`ставка*2` is `Ставка*2`)
   const sheetOf = (sh: string) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]
-  return { ok: true, text: printFormula(r.ast, { sheetOf, nameOf: (name, sheet) => named(name, sheet)?.name ?? name }), ast: r.ast }
+  return { ok: true, text: printFormula(r.ast, { sheetOf, nameOf: (name, sheet) => named(name, sheet)?.name ?? name }), ast: expandLinkNames(r.ast, state.links, books) }
 }
 
 // ---------- assembly ----------
@@ -201,13 +206,15 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: opts.own?.(s.cells) ? s.cells : { ...s.cells } })) }
   const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
   const tables = tablesOf(input)
-  const { names, issues } = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale))
+  const prepared = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale), book.externalBooks)
+  const linked = linkSheets(book.externalBooks, sheetNames.length)
+  const names = prepared.names.map((n) => ({ ...n, ast: expandLinkNames(n.ast, linked.links, book.externalBooks) }))
   const epoch = epochOf(book.dateSystem)
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
   const clock = markingClock(() => ymd(Math.floor(ctx.now) + epoch).y)
   const cache = opts.cache ?? heapCaches
   const ctx: RuntimeContext = {
-    sheets: sheetNames.map(emptySheet),
+    sheets: [...sheetNames.map(emptySheet), ...linked.data],
     now: opts.now - epoch,
     seed: opts.seed,
     rules: rulesOf(book.locale, clock, epoch),
@@ -227,7 +234,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     sheetNames,
     sheetIdx,
     names,
-    nameIssues: issues,
+    nameIssues: prepared.issues,
     tables,
     externalFunctions,
     ctx,
@@ -247,6 +254,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     iterated: [],
     spills: newSpills(),
     bare: new Map(),
+    links: linked.links,
   }
   const pending: Formula[] = []
   for (let s = 0; s < input.sheets.length; s++) {
@@ -276,6 +284,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   }
   state.compiler.link(pending)
   state.formulas = pending
+  if (state.links.strict.some(Boolean)) for (const [s, r, c] of strictCells(state.links, ctx.sheets, pending.flatMap((f) => f.refs))) put(ctx.sheets[s], r, c, E.REF)
   for (const f of state.formulas) state.at.set(key(f!.s, f!.r, f!.c), f!.id)
   rebuildGraph(state)
   yield* evaluateAll(state)

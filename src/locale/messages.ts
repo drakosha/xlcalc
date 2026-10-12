@@ -181,6 +181,8 @@ export interface MessageParams extends XlsxMessageParams {
   unterminatedString: object
   unknownErrorLiteral: object
   externalReference: object
+  externalAcrossSheets: object
+  externalSpill: object
   referenceAfterSheet: object
   quotedSheetAlone: object
   unexpectedCharacter: { char: string }
@@ -218,6 +220,8 @@ export interface MessageParams extends XlsxMessageParams {
   unknownColumn: { table: string; column: string }
   unknownFunction: { fn: string }
   unknownSheet: { sheet: string }
+  unknownLink: { book: string }
+  unknownLinkSheet: { book: string; sheet: string }
   unknownName: { name: string }
   // translating formula text
   unterminatedSheet: object

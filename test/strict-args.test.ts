@@ -133,9 +133,9 @@ describe('the functions of the package take no options they do not', () => {
     })
 
   it("toLocal, toInvariant and fromLegacy with an unknown option; a callback's index and array pass", () => {
-    expect(() => toInvariant('СУММ(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table)')
+    expect(() => toInvariant('СУММ(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table, externalBooks)')
     expect(() => (toInvariant as (...a: unknown[]) => unknown)('СУММ(A1)', ruRU, { table: 'T' }, { table: 'T' })).toThrow('toInvariant: takes 3 arguments, got an object as argument 4 (table is an option of toLocal and toInvariant)')
-    expect(() => toLocal('SUM(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table)')
+    expect(() => toLocal('SUM(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table, externalBooks)')
     expect(() => toLocal('SUM(A1)', ruRU, 'T' as never)).toThrow(InputError)
     expect(toLocal('T[[#This Row],[Qty]]*2', ruRU, { table: 'T' })).toEqual({ ok: true, formula: '[@Qty]*2' })
     expect(() => xlsx.fromLegacy('A1:A2*2', { sheets: 'S' } as never)).toThrow('ctx: unknown field "sheets" (expected names, sheet)')
