@@ -2,19 +2,20 @@
  * The ui sets in Excel for Windows (`bench/coverage/ui/`), each case in its own book as the Mac step writes it. Over SSH
  * Excel has no screen: a case of `bars` reads its cells' formulas through the object model alone (`Formula2`,
  * `FormulaArray`, `HasArray`, `HasSpill`, `SpillParent`), a paste puts the text on the clipboard (`Set-Clipboard`) and
- * pastes it with the cell selected (`Worksheet.Paste`), and the cases of `fill` (the keyboard's) are the Mac's alone. Then
+ * pastes it with the cell selected (`Worksheet.Paste`), and the cases of `fill` (the keyboard's), `ribbon` and `choose`
+ * (the ribbon's Number Format box, which Excel shows on a screen alone) are the Mac's alone. Then
  * the cells and their columns are read and the book saved, as on the Mac. The answers go to
  * `test/excel/win/ui/[<tag>/]<set>.json`; a paste Excel or the clipboard refuses stops the run with its error.
  */
 import { writeFileSync } from 'node:fs'
 import { writeXlsx } from '../../src/xlsx.js'
 import { caseAnswer, uiFile, type RawCell, type StoredUi } from '../coverage/ui.js'
-import { clipboardText, readCells, readColumns, uiBook, type UiCase, type UiSet } from '../coverage/ui/cases.js'
+import { clipboardText, macOnly, readCells, readColumns, uiBook, type UiCase, type UiSet } from '../coverage/ui/cases.js'
 import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
 import { inJobs, metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepUi(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const cases = (await setModule<UiSet>('ui', set)).buildUiCases().filter((c) => c.act.do !== 'fill')
+  const cases = (await setModule<UiSet>('ui', set)).buildUiCases().filter((c) => !macOnly(c.act))
   const file = uiFile(set, tag, true)
   const answers = keptSame({ cases }, loadStored<StoredUi>(file))
   const t0 = Date.now()

@@ -4,13 +4,14 @@
  * locales, by the session's clock on the day of the prediction. A case of `bars`: each cell's `editText` in a window of
  * `getViewport` (empty for a cell the window does not list). A paste or a fill: `previewCellTexts` and `setCellTexts` of
  * the texts the action puts into cells (`entriesOf`), and after it the cells read as the book holds them, their values
- * and the widths of their columns.
+ * and the widths of their columns. The ribbon's box: `numberFormatCategory` of each cell's format; an item of its list
+ * applied: the item of `numberFormatChoices`, its name, the format it applies and the box's category after.
  */
 import { fileURLToPath } from 'node:url'
 import { setModule, writeAnswers } from '../stored.js'
 import { createSession, type CellInput, type CellValidationAlert, type CellValue } from '../../../src/index.js'
 import { TAGS } from '../locales.js'
-import { entriesOf, readCells, readColumns, uiBook, windowOver, type UiCase, type UiSet } from './cases.js'
+import { entriesOf, readCells, readColumns, ribbonOf, uiBook, windowOver, type UiCase, type UiSet } from './cases.js'
 
 const set = process.argv[2]
 const { buildUiCases } = await setModule<UiSet>('ui', set)
@@ -21,6 +22,7 @@ const clock = { now: `${now}T12:00:00Z`, seed: 1 }
 const alert = (v: CellValidationAlert) => ({ cell: v.cell, severity: v.severity, message: v.message })
 
 function predict(c: UiCase, tag: string) {
+  if (c.act.do === 'ribbon' || c.act.do === 'choose') return { ribbon: ribbonOf(c, tag) }
   const s = createSession(uiBook(c, tag), { clock })
   try {
     const cells = readCells(c)

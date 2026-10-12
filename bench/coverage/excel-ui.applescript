@@ -1,18 +1,21 @@
 -- Open a ui case's book (sheet "S"), compute it fully and take the case's action with Excel in front, on the keyboard
 -- (System Events, the handlers of excel-keys.applescript): "bars" selects each cell in turn and reads the formula bar,
 -- then presses F2 and reads the bar and the element in focus, and Escape; "paste" puts the text on the clipboard as plain
--- text and presses Cmd+V (the V key: any layout) with the cell selected; "fill" selects the range, types the text and presses Control+Return.
+-- text and presses Cmd+V (the V key: any layout) with the cell selected; "fill" selects the range, types the text and presses Control+Return;
+-- "ribbon" selects each cell in turn and reads the ribbon's Number Format box, "choose" applies an item of the box's list
+-- to each cell (Accessibility: the box's button pressed, then the item) and reads the box after.
 -- Windows Excel shows for a paste or a fill are answered (`answerDialog`). Then read each cell: what it shows (`string
 -- value`), its format codes, prefix character, value (a number only, not read from a cell that shows an error), formula
 -- (`formula`, `formula local`, `formula2`, `formula2 local`) and whether it is part of a formula of the old kind (`has
 -- array`, with its `formula array`); each column's `column width`, `width` and `use standard width`; save the book as
 -- xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the action as
--- JSON {"do": "bars" | "paste" | "fill" | "none", "cells": [...], "at": cell, "range": range, "text": text}, the cells to
+-- JSON {"do": "bars" | "paste" | "fill" | "ribbon" | "choose" | "none", "cells": [...], "items": [...], "at": cell, "range":
+-- range, "text": text}, the cells to
 -- read and the columns as JSON arrays, the path of excel-keys.applescript. "none" takes no action: the book is only read.
 -- Output: JSON {"dialog": text, "bars": [[[description, value] selected, [description, value] in editing, focus, dialog],
--- ...], "cells": [[text, code, local, prefix, value, formula, formula local, formula2, formula2 local, has array, formula
--- array], ...], "columns": [[column width, points, standard], ...]}.
+-- ...], "ribbon": [[item, box], ...], "cells": [[text, code, local, prefix, value, formula, formula local, formula2, formula2
+-- local, has array, formula array], ...], "columns": [[column width, points, standard], ...]}.
 use AppleScript version "2.4"
 use framework "Foundation"
 use framework "AppKit"
@@ -31,6 +34,7 @@ on run argv
 	set todo to (act's objectForKey:"do") as text
 	set said to ""
 	set barsOut to {}
+	set ribbonOut to {}
 	set cellsOut to {}
 	set colsOut to {}
 	tell application "Microsoft Excel"
@@ -55,6 +59,10 @@ on run argv
 		else if todo is "fill" then
 			tell application "Microsoft Excel" to select range ((act's objectForKey:"range") as text) of ws
 			set said to kb's typeFill((act's objectForKey:"text") as text)
+		else if todo is "ribbon" then
+			set ribbonOut to my ribbon(ws, (act's objectForKey:"cells") as list, {}, bookName, kb)
+		else if todo is "choose" then
+			set ribbonOut to my ribbon(ws, (act's objectForKey:"cells") as list, (act's objectForKey:"items") as list, bookName, kb)
 		end if
 	on error msg number k
 		-- a step that failed (Excel's window on another desktop) leaves no book open
@@ -92,7 +100,7 @@ on run argv
 			close workbook savedName saving no
 		end timeout
 	end tell
-	set d0 to current application's NSDictionary's dictionaryWithObjects:{said, barsOut, cellsOut, colsOut} forKeys:{"dialog", "bars", "cells", "columns"}
+	set d0 to current application's NSDictionary's dictionaryWithObjects:{said, barsOut, ribbonOut, cellsOut, colsOut} forKeys:{"dialog", "bars", "ribbon", "cells", "columns"}
 	set {d, e} to current application's NSJSONSerialization's dataWithJSONObject:d0 options:0 |error|:(reference)
 	if d is missing value then error "JSON: " & (e's localizedDescription() as text)
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
@@ -117,6 +125,98 @@ on bars(ws, cells, bookName, kb)
 	end repeat
 	return out
 end bars
+
+-- each cell selected in turn (until the name box shows it), an item of the Number Format list applied to it when
+-- `picks` gives one (its place in the list): the item's name (empty for none) and what the box shows then
+on ribbon(ws, cells, picks, bookName, kb)
+	set {box, nameBox} to my ribbonBoxes(bookName)
+	set out to {}
+	repeat with i from 1 to count of cells
+		set a to (item i of cells) as text
+		kb's toFront()
+		tell application "Microsoft Excel" to select range a of ws
+		my selectedIn(nameBox, a)
+		set nm to ""
+		if picks is not {} then
+			set k to (item i of picks) as integer
+			tell application "System Events"
+				perform action "AXPress" of button 1 of box
+				set m to missing value
+				repeat 20 times
+					delay 0.2
+					try
+						set m to menu 1 of box
+						exit repeat
+					end try
+				end repeat
+				if m is missing value then error "the Number Format list did not open at " & a
+				delay 0.3
+				set nm to name of menu item k of m
+				perform action "AXPress" of menu item k of m
+			end tell
+		end if
+		set end of out to {nm, my boxText(box)}
+	end repeat
+	return out
+end ribbon
+
+-- The ribbon's Number Format box and the name box of the window of the book `bookName`, by their descriptions in English
+-- or Russian: the window lists them only with Excel in front, so they are looked for again until it does; an element of
+-- the window's contents that has gone stale is passed over.
+on ribbonBoxes(bookName)
+	repeat 10 times
+		tell application "System Events" to set frontmost of process "Microsoft Excel" to true
+		tell application "Microsoft Excel" to activate
+		delay 1.5
+		set box to missing value
+		set nameBox to missing value
+		try
+			tell application "System Events" to tell process "Microsoft Excel"
+				repeat with w in windows
+					set wn to name of w
+					if wn is bookName or bookName starts with wn then
+						set els to entire contents of w
+						repeat with e in els
+							try
+								if role of e is "AXComboBox" then
+									set d to description of e
+									if d is in {"Number Format", "Формат номера"} then set box to contents of e
+									if d is in {"name box", "поле для имени"} then set nameBox to contents of e
+								end if
+							end try
+						end repeat
+					end if
+				end repeat
+			end tell
+		end try
+		if box is not missing value and nameBox is not missing value then return {box, nameBox}
+	end repeat
+	error "no Number Format box in the window of " & bookName
+end ribbonBoxes
+
+-- the name box shows the cell `a` (for up to 3 seconds): the window has followed the selection
+on selectedIn(nameBox, a)
+	repeat 30 times
+		tell application "System Events" to set v to value of nameBox
+		if v is a then return
+		delay 0.1
+	end repeat
+	error "the name box shows " & v & ", not " & a
+end selectedIn
+
+-- What the Number Format box shows, read until two reads agree, as it follows the selection with a lag (0.3 s seen).
+on boxText(box)
+	delay 0.5
+	tell application "System Events" to set v to value of box
+	repeat 10 times
+		delay 0.3
+		tell application "System Events" to set again to value of box
+		if again = v then exit repeat
+		set v to again
+	end repeat
+	if v is missing value then return ""
+	return v as text
+end boxText
 
 -- the text on the general pasteboard as plain text, nothing else with it
 on toClipboard(t)

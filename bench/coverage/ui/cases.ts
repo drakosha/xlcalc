@@ -3,11 +3,14 @@
  * ui <set> [ru|<tag>]`): each case is a book of one sheet `S` and one action, on the Mac with Excel in front. `bars`
  * selects cells in turn and reads the formula bar, then enters each cell's editing (F2) and reads what it opens with;
  * `paste` puts text on the clipboard (tabs between columns, line breaks between rows) and pastes it into a cell (Cmd+V);
- * `fill` selects a range, types a text and enters it into every cell of the selection (Control+Return). Then the cells the
- * action touched are read (what each holds, shows and its formula), their columns' widths, and the windows Excel showed.
+ * `fill` selects a range, types a text and enters it into every cell of the selection (Control+Return); `ribbon` selects
+ * cells in turn and reads the category the Number Format box of the Home tab shows; `choose` applies items of that box's
+ * list to cells. Then the cells the action touched are read (what each holds, shows and its formula), their columns'
+ * widths, and the windows Excel showed.
  */
-import type { BookInput, CellInput, CellValue, ColumnInput, DataValidation } from '../../../src/contract.js'
+import type { BookInput, CellInput, CellValue, ColumnInput, DataValidation, NumberFormat } from '../../../src/contract.js'
 import { formatAddress, indexToCol, parseAddress } from '../../../src/model.js'
+import { numberFormatCategory, numberFormatChoices } from '../../../src/text.js'
 
 export type UiAction =
   /** The formula bar of each cell, selected and then in editing (F2). */
@@ -16,6 +19,10 @@ export type UiAction =
   | { do: 'paste'; at: string; rows: string[][]; newline?: '\r\n' | '\r'; trailing?: true }
   /** A text typed into the selected range and entered into each of its cells (Control+Return); the range's first cell is the active one. */
   | { do: 'fill'; range: string; text: string }
+  /** The category the ribbon's Number Format box (the Home tab) shows for each cell, selected in turn. */
+  | { do: 'ribbon'; cells: string[] }
+  /** Items of the ribbon's Number Format list applied, each to its cell selected: `[cell, item]`, the item by its place in the list (1 General to 11 Text). */
+  | { do: 'choose'; picks: [string, number][] }
 
 export interface UiCase {
   id: string
@@ -26,6 +33,8 @@ export interface UiCase {
   act: UiAction
   /** Cells read besides those the action selects or writes. */
   read?: string[]
+  /** Cells whose format code is written as a code of the file's own (an id from 164), though the writer stores a built-in format's code by its number. */
+  own?: string[]
 }
 
 /** What Excel's object model and the saved file say of a cell after the action. */
@@ -59,6 +68,8 @@ export interface UiCell {
    * windows Excel showed meanwhile.
    */
   bar?: { selected: [string, string]; edit: [string, string]; focused: string; dialog?: string }
+  /** Excel for Mac, a case of `ribbon` or `choose`: what the Number Format box shows with the cell selected (after the item applied), and the item's name in the list (its title and sample on two lines). */
+  ribbon?: { box: string; item?: string }
 }
 
 /** A column read after the action: `ColumnWidth`, `Width` (points), `UseStandardWidth`, and its `<col>` in the saved file. */
@@ -93,10 +104,19 @@ export function cellsOf(range: string): string[] {
   return out
 }
 
+/** The actions Excel takes only on the Mac's screen: the keyboard's fill, the ribbon's box and list. */
+export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'ribbon' || act.do === 'choose'
+
+/** The cells an action selects in turn without writing: the formula bar's and the ribbon's; a choice's cells by its picks. */
+export function selectedOf(act: UiAction): string[] {
+  if (act.do === 'bars' || act.do === 'ribbon') return act.cells
+  return act.do === 'choose' ? act.picks.map(([cell]) => cell) : []
+}
+
 /** The texts the action puts into cells, as a host passes them to `setCellTexts`: a paste's fields from its cell on, a fill's text in each cell. */
 export function entriesOf(act: UiAction): { sheet: string; cell: string; text: string }[] {
   if (act.do === 'fill') return cellsOf(act.range).map((cell) => ({ sheet: 'S', cell, text: act.text }))
-  if (act.do === 'bars') return []
+  if (act.do !== 'paste') return []
   const at = parseAddress(act.at)
   return act.rows.flatMap((row, r) => row.map((text, c) => ({ sheet: 'S', cell: formatAddress(at.row + r, at.col + c), text })))
 }
@@ -108,7 +128,7 @@ export const clipboardText = (act: Extract<UiAction, { do: 'paste' }>): string =
 }
 
 /** The cells read after a case's action: those it selects or writes, then `read`, each once. */
-export const readCells = (c: UiCase): string[] => [...new Set([...(c.act.do === 'bars' ? c.act.cells : entriesOf(c.act).map((e) => e.cell)), ...(c.read ?? [])])]
+export const readCells = (c: UiCase): string[] => [...new Set([...selectedOf(c.act), ...entriesOf(c.act).map((e) => e.cell), ...(c.read ?? [])])]
 
 /** The columns of the cells read, by letter. */
 export const readColumns = (c: UiCase): string[] => [...new Set(readCells(c).map((a) => indexToCol(parseAddress(a).col)))]
@@ -135,4 +155,16 @@ export function collector() {
     out.push({ id: `${group}-${n}`, ...c })
   }
   return { out, add }
+}
+
+/** What the ribbon shows in a cell of a case: the box's category; for an item applied, the item's name, the format it applies and the box's category after. */
+export type RibbonCell = string | { name: string; format: NumberFormat; box: string }
+
+/** The ribbon of each cell of a case of `ribbon` or `choose` by `numberFormatCategory` (a cell's format, General without one) and `numberFormatChoices`. */
+export function ribbonOf(c: UiCase, tag: string): Record<string, RibbonCell> {
+  const act = c.act
+  if (act.do === 'ribbon') return Object.fromEntries(act.cells.map((a) => [a, numberFormatCategory(c.cells[a]?.numberFormat ?? 0, tag).name]))
+  if (act.do !== 'choose') throw new Error(`${c.id} is no case of the ribbon`)
+  const choices = numberFormatChoices(tag)
+  return Object.fromEntries(act.picks.map(([a, k]) => [a, { name: choices[k - 1].name, format: choices[k - 1].format, box: numberFormatCategory(choices[k - 1].format, tag).name }]))
 }

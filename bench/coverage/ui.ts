@@ -1,8 +1,9 @@
 /**
  * What Excel for Mac does with what a person does in its window: each case of `ui/<set>.ts` is written by `writeXlsx` into
  * a book of its own, and with Excel in front (`excel-ui.applescript`, the keyboard's handlers in `excel-keys.applescript`)
- * Excel reads the formula bar of cells selected and in editing, takes text pasted from the clipboard, or a text entered
- * into a selection with Control+Return; then the cells and their columns are read and the book is saved, its file read
+ * Excel reads the formula bar of cells selected and in editing, takes text pasted from the clipboard, a text entered
+ * into a selection with Control+Return, or reads the ribbon's Number Format box and applies items of its list (through
+ * Accessibility, nothing typed); then the cells and their columns are read and the book is saved, its file read
  * back by `readXlsx` for what each cell holds and its `<col>` elements for the widths Excel stores. `npx tsx
  * bench/coverage/run.ts ui <set> [ru|<tag>]` stores the answers in `test/excel/ui/[<tag>/]<set>.json` with the day of the
  * run; `test/ui-excel.test.ts` compares the engine with them. The clipboard's text is put back after the set. `FUI_ONLY=id,id`
@@ -13,12 +14,14 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
+import { escapeAttr } from '../../src/xlsx/xml/text.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { heldOf } from './entry.js'
 import { savedColumns } from './fit.js'
 import { localeDir, localeMeta } from './locales.js'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, writeAnswers } from './stored.js'
-import { clipboardText, readCells, readColumns, uiBook, type UiAnswer, type UiCase, type UiCell, type UiSet } from './ui/cases.js'
+import { clipboardText, readCells, readColumns, selectedOf, uiBook, type UiAnswer, type UiCase, type UiCell, type UiSet } from './ui/cases.js'
+import { rawFile } from './xlsx/sent.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -39,8 +42,11 @@ export const uiFile = (set: string, tag = 'en-US', win = false) => join(ROOT, 't
 /** A cell as the object models read it: what it shows, its format codes, prefix, number, formulas, its old-kind array; Windows adds its spill. */
 export type RawCell = [string, string, string, string, unknown, string, string, string, string, boolean, string, boolean?, string?]
 
+/** What the ribbon's Number Format box showed for each cell an action selected, and the item applied to it (empty for none). */
+export type RawRibbon = [string, string][]
+
 /** The answer of a case from what Excel read of its cells and columns, the windows it showed and the file it saved. */
-export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], columns: [number, number, boolean][], saved: Uint8Array, bars?: [[string, string], [string, string], string, string][]): Promise<UiAnswer> {
+export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], columns: [number, number, boolean][], saved: Uint8Array, bars?: [[string, string], [string, string], string, string][], ribbon?: RawRibbon): Promise<UiAnswer> {
   const read = await readXlsx(saved)
   const held = read.book.sheets.find((s) => s.name === 'S')!.cells
   const cached = read.cached.sheets.find((s) => s.name === 'S')!.cells
@@ -49,8 +55,9 @@ export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], co
   const out: Record<string, UiCell> = {}
   names.forEach((a, i) => {
     const [text, code, local, prefix, value2, formula, formulaLocal, formula2, formula2Local, hasArray, formulaArray, hasSpill, spillParent] = cells[i]
-    // a case of bars reads its cells first
+    // a case of bars or of the ribbon reads its cells first
     const b = bars?.[i]
+    const r = ribbon?.[i]
     out[a] = {
       cell: heldOf(held[a]),
       ...(a in cached ? { computed: cached[a].value } : {}),
@@ -67,6 +74,7 @@ export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], co
       ...(hasArray ? { formulaArray } : {}),
       ...(hasSpill === undefined ? {} : { hasSpill, ...(hasSpill ? { spillParent } : {}) }),
       ...(b ? { bar: { selected: b[0], edit: b[1], focused: b[2], ...(b[3] ? { dialog: b[3] } : {}) } } : {}),
+      ...(r ? { ribbon: { box: r[1], ...(r[0] ? { item: r[0] } : {}) } } : {}),
     }
   })
   const letters = readColumns(c)
@@ -77,8 +85,25 @@ export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], co
   }
 }
 
-/** The action as the script takes it; a paste with its clipboard's text. */
-const actJson = (c: UiCase) => JSON.stringify(c.act.do === 'paste' ? { do: 'paste', at: c.act.at, text: clipboardText(c.act) } : c.act)
+/** The action as the script takes it; a paste with its clipboard's text, a choice with its cells and items apart. */
+function actJson(c: UiCase): string {
+  const act = c.act
+  if (act.do === 'paste') return JSON.stringify({ do: 'paste', at: act.at, text: clipboardText(act) })
+  return JSON.stringify(act.do === 'choose' ? { do: 'choose', cells: selectedOf(act), items: act.picks.map(([, k]) => k) } : act)
+}
+
+/** A marker the writer stores a code of the file's own with (an id from 164), taken out of the file after. */
+const OWN = '"\u00a7own"'
+
+/** A case's file: `writeXlsx`'s, with the codes of its `own` cells as codes of the file's own. */
+async function caseFile(c: UiCase, label: string): Promise<Uint8Array> {
+  const own = new Set(c.own)
+  const cells = Object.fromEntries(Object.entries(c.cells).map(([a, x]) => [a, own.has(a) ? { ...x, numberFormat: `${x.numberFormat}${OWN}` } : x]))
+  const { data, issues } = await writeXlsx({ book: uiBook({ ...c, cells }) }, { values: 'omit' })
+  if (issues.length) throw new Error(`ui ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
+  const codes = new Set([...own].map((a) => String(c.cells[a].numberFormat)))
+  return rawFile(data, [...codes].map((code) => ({ part: 'xl/styles.xml', from: `formatCode="${escapeAttr(code + OWN)}"`, to: `formatCode="${escapeAttr(code)}"` })))
+}
 
 /** One case in Excel, its action taken (`none` reads the book alone). A book Excel repairs stops the run; a window Excel shows for the action is answered by the script. */
 export async function runCase(c: UiCase, label: string, act = actJson(c)): Promise<UiAnswer> {
@@ -87,11 +112,7 @@ export async function runCase(c: UiCase, label: string, act = actJson(c)): Promi
     script: SCRIPT,
     label: `ui ${label}`,
     folder: 'fui',
-    book: async (file) => {
-      const { data, issues } = await writeXlsx({ book: uiBook(c) }, { values: 'omit' })
-      if (issues.length) throw new Error(`ui ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
-      writeFileSync(file, data)
-    },
+    book: async (file) => writeFileSync(file, await caseFile(c, label)),
     args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', act, JSON.stringify(readCells(c)), JSON.stringify(readColumns(c)), KEYS],
     timeout: 170_000,
     poll: 1000,
@@ -104,8 +125,8 @@ export async function runCase(c: UiCase, label: string, act = actJson(c)): Promi
       throw new Error(`ui ${label}: Excel would repair the book`)
     },
     done: (out, dir) => {
-      const raw = JSON.parse(out) as { dialog: string; bars: [[string, string], [string, string], string, string][]; cells: RawCell[]; columns: [number, number, boolean][] }
-      return caseAnswer(c, raw.dialog, raw.cells, raw.columns, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))), raw.bars.length ? raw.bars : undefined)
+      const raw = JSON.parse(out) as { dialog: string; bars: [[string, string], [string, string], string, string][]; ribbon: RawRibbon; cells: RawCell[]; columns: [number, number, boolean][] }
+      return caseAnswer(c, raw.dialog, raw.cells, raw.columns, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))), raw.bars.length ? raw.bars : undefined, raw.ribbon.length ? raw.ribbon : undefined)
     },
   })
 }
