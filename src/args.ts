@@ -55,6 +55,7 @@ import type { Counts } from './locale/messages.js'
 import type { Rules } from './locale/rules.js'
 import { Areas, E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
 import { CalcError } from './exec/budget.js'
+import type { Line } from './functions/lookup/search.js'
 
 /** A range (or a single value) as a grid. */
 export interface Grid {
@@ -110,6 +111,8 @@ export interface Cx {
   /** A value in a scalar position: the single cell of a range or array, or #VALUE!. */
   scalar(x: Arg): V
   grid(x: Arg): Grid
+  /** A reference's first column or row, read without materializing its result columns. */
+  lookup?(g: Rng, horizontal: boolean): Line
   /** A reference as an array of its referenced size; values and arrays as they are. */
   view(x: Arg): V | Arr
   /**

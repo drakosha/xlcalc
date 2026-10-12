@@ -30,6 +30,25 @@ describe.each(['closures', 'eval'] as const)('incremental work, %s', (execution)
     expect(state.topo).toBe(topo)
   })
 
+  it('does not reread lookup keys when only the result column changes', () => {
+    const cells: Record<string, CellInput> = {}
+    for (let r = 1; r <= 512; r++) {
+      cells[`A${r}`] = { value: r }; cells[`B${r}`] = { value: r * 3 }
+    }
+    for (let r = 1; r <= 16; r++) cells[`D${r}`] = { formula: `VLOOKUP(${512 - r},$A$1:$B$512,2,FALSE)` }
+    const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1, execution })
+    let reads = 0
+    state.ctx.sheets[0].cols[0] = new Proxy(state.ctx.sheets[0].cols[0], {
+      get(target, k, receiver) {
+        if (typeof k === 'string' && /^\d+$/.test(k)) reads++
+        return Reflect.get(target, k, receiver)
+      },
+    })
+    run(applyEdits(state, [{ sheet: 'S', cell: 'B511', input: { value: 9 } }]))
+    expect(state.rt.cell(0, 0, 3)).toBe(9)
+    expect(reads).toBeLessThan(32)
+  })
+
   it('stops a scalar chain when the first formula keeps its value', () => {
     const n = 1024, cells: Record<string, CellInput> = { A1: { value: 1.1 }, A2: { formula: 'INT(A1)' } }
     for (let r = 3; r <= n; r++) cells[`A${r}`] = { formula: `A${r - 1}+1` }

@@ -35,12 +35,15 @@ const tableLookup = (horizontal: boolean): FnDef => ({
     if (isErr(a)) return a
     const one = oneValue(cx, given)
     if (one) return one
-    const table = cx.grid(given)
-    const pos = find(horizontal ? row(table) : column(table), k, a ? 1 : 0, true, cx.rules.compare)
+    const reference = given instanceof Rng && cx.lookup ? given : undefined
+    const table = reference ? undefined : cx.grid(given)
+    const pos = find(reference ? cx.lookup!(reference, horizontal) : horizontal ? row(table!) : column(table!), k, a ? 1 : 0, true, cx.rules.compare)
     if (pos < 0) return E.NA
-    const size = horizontal ? table.rows : table.cols
+    const size = reference ? horizontal ? reference.r2 - reference.r1 + 1 : reference.c2 - reference.c1 + 1 : horizontal ? table!.rows : table!.cols
     const bad = (i: number) => (i < 1 ? E.VALUE : i > size ? E.REF : undefined)
-    const cell = (i: number) => gridAt(table, horizontal ? (i - 1) * table.cols + pos : pos * table.cols + i - 1)
+    const cell = (i: number) => reference
+      ? cx.scalar(new Rng(reference.s, reference.r1 + (horizontal ? i - 1 : pos), reference.c1 + (horizontal ? pos : i - 1), reference.r1 + (horizontal ? i - 1 : pos), reference.c1 + (horizontal ? pos : i - 1)))
+      : gridAt(table!, horizontal ? (i - 1) * table!.cols + pos : pos * table!.cols + i - 1)
     if (many) return lineAt(cx.view(idx) as Arr, bad, cell, cx.rules)
     const i = whole(n)
     return bad(i) ?? cell(i)
