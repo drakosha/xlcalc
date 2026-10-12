@@ -2,8 +2,9 @@
  * `writeXlsx`: a book as an xlsx file, with formulas and their values or with values only. The package holds the
  * workbook, its sheets (hidden ones with their state, the first visible one active) with their tables, notes and
  * hyperlinks, styles, shared strings, the dynamic array metadata when there are formulas, the date system and iterative
- * calculation, and the book's locale as a custom document property (xlsx has no place for it). A formula file asks Excel
- * to compute the book on opening, so Excel shows its own values over the ones written, whichever values it stores.
+ * calculation, the links to other workbooks with the values stored of them (`links.ts`), and the book's locale as a
+ * custom document property (xlsx has no place for it). A formula file asks Excel to compute the book on opening, so
+ * Excel shows its own values over the ones written, whichever values it stores.
  */
 import type { BookInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
@@ -21,6 +22,7 @@ import type { WriteXlsxOptions, XlsxSnapshot, XlsxWritten } from '../types.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
+import { externalLinkXml } from './links.js'
 import { nextBlock } from './parts.js'
 import { writeSheet } from './sheet.js'
 import { writeArgs } from './snapshot.js'
@@ -208,11 +210,18 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     contentTypes.push(['/xl/richData/rdrichvalue.xml', 'application/vnd.ms-excel.rdrichvalue+xml'], ['/xl/richData/rdrichvaluestructure.xml', 'application/vnd.ms-excel.rdrichvaluestructure+xml'])
     wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }
+  // the links to other workbooks, `[1]` the first, each pointing at its book through a relationship of its own
+  const linkRefs = (book.externalBooks ?? []).map((b, i) => {
+    const part = `externalLinks/externalLink${i + 1}.xml`
+    files.push({ name: `xl/${part}`, text: externalLinkXml(b) }, { name: `xl/externalLinks/_rels/externalLink${i + 1}.xml.rels`, text: rels([[`${REL}/externalLinkPath`, b.target, true]]) })
+    contentTypes.push([`/xl/${part}`, `${TYPE}.externalLink+xml`])
+    return `<externalReference r:id="rId${wbRels.push([`${REL}/externalLink`, part])}"/>`
+  })
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}"${s.hidden ? ` state="${SHEET_STATES.get(s.hidden)}"` : ''} r:id="rId${i + 1}"/>`).join('')
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableCols)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, tableCols)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {
