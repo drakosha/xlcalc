@@ -394,9 +394,11 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
 /**
  * Other workbooks a book links to (`BookInput.externalBooks`): each a target, its sheets by name with their stored values
  * by address (a number, text, a boolean, an error, null for a cell stored empty) and the mark of a failed update, its
- * names with what they refer to and the index of the sheet of a sheet's name.
+ * names with what they refer to and the index of the sheet of a sheet's name. Without `values` the stored values are
+ * not read, only that a sheet's `cells` is an object: the options of the calls that show, read or check formula text
+ * use the links' targets, sheets and names alone, and a window or a typed text gives them once for each formula.
  */
-export function checkExternalBooks(v: unknown, path: string): ExternalBook[] {
+export function checkExternalBooks(v: unknown, path: string, values = true): ExternalBook[] {
   return array(v, path, 'an array of linked workbooks such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }').map((b, i) => {
     const p = `${path}[${i}]`
     const book = object(b, p, 'a linked workbook such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }')
@@ -411,11 +413,12 @@ export function checkExternalBooks(v: unknown, path: string): ExternalBook[] {
       if (sheet.refreshError !== undefined && sheet.refreshError !== true) throw new InputError(`${sp}.refreshError`, `expected true, got ${what(sheet.refreshError)}`)
       if (sheet.cells === undefined) return
       const cells = object(sheet.cells, `${sp}.cells`, 'an object of stored values by address such as { A1: 5 }')
-      for (const addr of Object.keys(cells)) {
-        const cp = `${sp}.cells[${JSON.stringify(addr)}]`
-        if (!SURE_ADDRESS.test(addr)) checkAddress(addr, cp)
-        checkCellValue(cells[addr], cp)
-      }
+      if (values)
+        for (const addr of Object.keys(cells)) {
+          const cp = `${sp}.cells[${JSON.stringify(addr)}]`
+          if (!SURE_ADDRESS.test(addr)) checkAddress(addr, cp)
+          checkCellValue(cells[addr], cp)
+        }
     })
     if (book.names !== undefined)
       array(book.names, `${p}.names`, 'an array of names such as { name: "Rate", ref: "Sheet1!$B$1" }').forEach((n, j) => {
@@ -575,7 +578,7 @@ export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext 
   const o = object(v, path, 'a context such as { sheets: ["Sheet1"], names: [] }')
   onlyKeys(o, path, ['sheets', 'names', 'externalFunctions', 'tables', 'table', 'externalBooks'])
   if (o.table !== undefined) checkString(o.table, `${path}.table`)
-  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`)
+  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`, false)
   for (const k of ['sheets', 'names', 'externalFunctions'] as const)
     if (o[k] !== undefined) array(o[k], `${path}.${k}`, 'an array of strings').forEach((s, i) => checkString(s, `${path}.${k}[${i}]`))
   if (o.tables !== undefined)
@@ -655,7 +658,7 @@ export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { numberFormat: '0.00' } }")
   onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now', 'externalBooks'])
   if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
-  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`)
+  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`, false)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.now !== undefined && Number.isNaN(Date.parse(checkString(o.now, `${path}.now`)))) throw new InputError(`${path}.now`, `invalid moment ${JSON.stringify(o.now)}: expected ISO 8601 such as "2026-01-31T12:00:00Z"`)
   if (o.cell !== undefined && o.cell !== null) {
