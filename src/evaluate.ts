@@ -5,7 +5,7 @@
  */
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
-import { key, type EngineState, type Formula } from './engine.js'
+import { key, keyParts, type EngineState, type Formula } from './engine.js'
 import { due, located, step, type Steps } from './exec/budget.js'
 import { formatAddress } from './model.js'
 import { descendants, markVolatile, readersOf, rebuildGraph } from './graph.js'
@@ -41,8 +41,9 @@ export const tracker = (): Tracker => ({ cells: new Map(), spills: new Map() })
 
 /** Records a cell's value before it first changes. */
 export function track(state: EngineState, t: Tracker | undefined, s: number, r: number, c: number) {
+  if (!t) return
   const k = key(s, r, c)
-  if (t && !t.cells.has(k)) t.cells.set(k, state.rt.cell(s, r, c))
+  if (!t.cells.has(k)) t.cells.set(k, state.rt.cell(s, r, c))
 }
 
 export function put(sh: SheetData, r: number, c: number, v: V) {
@@ -222,11 +223,14 @@ export function concerned(state: EngineState, x: Area, out: Set<number>, step = 
 }
 
 export function changed(state: EngineState, t: Tracker): string[] {
-  const out = new Set<string>()
+  const out: string[] = []
   for (const [k, old] of t.cells) {
-    const [s, r, c] = k.split(':').map(Number)
-    if (!same(old, state.rt.cell(s, r, c))) out.add(k)
+    const [s, r, c] = keyParts(k)
+    if (!same(old, state.rt.cell(s, r, c))) out.push(k)
   }
-  for (const [k, old] of t.spills) if (old !== describeAt(state, k)) out.add(k)
-  return [...out]
+  if (t.spills.size) {
+    const seen = new Set(out)
+    for (const [k, old] of t.spills) if (old !== describeAt(state, k) && !seen.has(k)) out.push(k)
+  }
+  return out
 }

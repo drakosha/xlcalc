@@ -32,13 +32,15 @@ export const nothing = (): Outcome => ({ keys: [], fields: new Map(), valued: fa
 
 /** Keys as the engine orders them, then the others in address order. */
 export function inOrder(keys: string[], more: Iterable<string>): string[] {
-  const seen = new Set(keys)
+  let seen: Set<string> | undefined
   const extra: number[][] = []
-  for (const k of more)
+  for (const k of more) {
+    seen ??= new Set(keys)
     if (!seen.has(k)) {
       seen.add(k)
       extra.push(k.split(':').map(Number))
     }
+  }
   return [...keys, ...extra.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).map((k) => k.join(':'))]
 }
 
