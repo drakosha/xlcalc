@@ -1341,6 +1341,18 @@ export interface FindCellsOptions extends ReadCellsOptions {
    */
   skipHidden?: boolean
 }
+/** `Session.replaceInCells`' options: Find's, as `findCells` takes them, but what it reads, which is the text a cell opens with (Look in Formulas), and the order. */
+export interface ReplaceOptions extends EditOptions, Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell' | 'skipHidden' | 'rows'> {}
+
+/**
+ * What `Session.replaceInCells` did: the edit's result, and how many cells' texts it wrote (`replaced`, an array of the
+ * old kind as one); the cells whose new text Excel would not take, left as they were, with why (`refused`).
+ */
+export interface ReplaceResult extends EditResult {
+  replaced: number
+  refused?: (Refusal<CellTextRefusal> & CellRef)[]
+}
+
 export interface QueryPage {
   revision: number
   clock: Clock
@@ -1710,7 +1722,7 @@ export interface UndoOptions {
 }
 
 /** The calls a session can undo: those that change its book. `setClock` and a live session's new clock are not steps. */
-export type UndoCall = 'applyChanges' | 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
+export type UndoCall = 'applyChanges' | 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'replaceInCells' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
 
 /** A step of a session undone or done again (`Session.undo`, `Session.redo`): the edit's result, as the call gave it. */
 export interface UndoResult extends EditResult {
@@ -1993,6 +2005,16 @@ export interface Session {
   readCells(ranges: RangeRef[], opts?: ReadCellsOptions): ReadCellsResult
   /** Search performed where the book lives, literal or by Excel's Find; output is paged, in Find's order. */
   findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions): ReadCellsResult
+  /**
+   * Excel's Replace All (`Range.Replace`): the cells `findCells` finds in the text they open with (Look in Formulas),
+   * each one's text with the query's matches put as `replacement` is, entered back as its own text edited: a formula in
+   * the book's language, a number by its format without the percent editor's `%`, a text that reads as something else
+   * kept a text, an array of the old kind whole, from its first cell, wherever a cell of it was found. A `*` takes as
+   * little as it can, the query's last one the rest. A text Excel would not take (a formula that no longer reads) leaves
+   * its cell as it was (`refused`). No column widens and no rule of data validation is checked. One recomputation, one
+   * revision and one step of the undo; none when nothing is found (`docs/live-books.md`).
+   */
+  replaceInCells(ranges: RangeRef[], query: string, replacement: string, opts?: ReplaceOptions): ReplaceResult
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions): DependentsResult
   /** Totals over nonblank stored values and spills, without returning their cells. */
@@ -2224,6 +2246,8 @@ export interface AsyncSession {
   readCells(ranges: RangeRef[], opts?: ReadCellsOptions & CalcOptions): Promise<ReadCellsResult>
   /** Search performed where the book lives, literal or by Excel's Find; output is paged, in Find's order. */
   findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions & CalcOptions): Promise<ReadCellsResult>
+  /** Excel's Replace All, as `Session.replaceInCells`. */
+  replaceInCells(ranges: RangeRef[], query: string, replacement: string, opts?: ReplaceOptions & CalcOptions): Promise<ReplaceResult>
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions & CalcOptions): Promise<DependentsResult>
   /** Totals over nonblank stored values and spills, without returning their cells. */
