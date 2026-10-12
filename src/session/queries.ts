@@ -5,13 +5,14 @@ import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { referencesOf } from '../graph.js'
 import { array, checkBoolean, checkNumber, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
 import { issueDetail } from '../issues.js'
-import { formatAddress, parseAddress } from '../model.js'
+import { formatAddress, parseAddress, readAddress } from '../model.js'
 import { cellResult, cellsIn, outValue } from '../result.js'
 import { rectText, hasCell, meets, type Rect } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
 import { checkRange } from './viewport.js'
+import { FIND_OPTIONS, finderOf } from './find.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
 const FIELDS: CellReadField[] = ['value', 'text', 'formula', 'style', 'numberFormat', 'note', 'link', 'issue']
@@ -79,11 +80,12 @@ function* requested(s: EngineState, refs: Ref[]): Generator<[number, number, num
     for (let j = 0; j < n; j++) if (refs[j].s === i && hasCell(refs[j], r, c)) return true
     return false
   }
+  const p = { r: 0, c: 0 }
   for (const [n, x] of refs.entries()) {
     for (const addr in s.input.sheets[x.s].cells) {
       if (paced(1)) yield undefined
-      const { row, col } = parseAddress(addr)
-      if (hasCell(x, row, col) && !earlier(n, x.s, row, col)) yield [x.s, row, col]
+      readAddress(addr, p)
+      if (hasCell(x, p.r, p.c) && !earlier(n, x.s, p.r, p.c)) yield [x.s, p.r, p.c]
     }
     for (const spill of s.spills.on.values()) {
       if (spill.s !== x.s || !meets(spill, x)) continue
@@ -112,27 +114,18 @@ function* projected(s: EngineState, i: number, r: number, c: number, fields: Cel
 }
 
 export function* readQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], eo: ReadCellsOptions | FindCellsOptions | undefined, find?: string): Steps<ReadCellsResult> {
-  const o = checkBase<FindCellsOptions>(eo, revision, [...PAGE, 'fields', ...(find === undefined ? [] : ['in', 'caseSensitive'])]),
+  const o = checkBase<FindCellsOptions>(eo, revision, [...PAGE, 'fields', ...(find === undefined ? [] : FIND_OPTIONS)]),
     refs = refsOf(s, given)
   const fields = o.fields === undefined ? (['value', 'text', 'formula'] as CellReadField[]) : (array(o.fields, 'opts.fields', 'an array of cell field names') as CellReadField[])
   if (fields.some((f) => !FIELDS.includes(f))) throw new InputError('opts.fields', 'unknown cell field')
-  const where = o.in ?? 'text'
-  if (find !== undefined && !['text', 'formula', 'value'].includes(where)) throw new InputError('opts.in', 'expected text, formula or value')
-  if (o.caseSensitive !== undefined) checkBoolean(o.caseSensitive, 'opts.caseSensitive')
-  const needle = find === undefined ? undefined : checkString(find, 'query'),
-    lower = o.caseSensitive !== true
-  const page = new Page<ReadCell>(revision, clock, JSON.stringify([refs, fields, needle, where, lower]), o)
-  for (const at of requested(s, refs)) {
+  const finder = find === undefined ? undefined : finderOf(s, checkString(find, 'query'), o, clock.now)
+  const page = new Page<ReadCell>(revision, clock, JSON.stringify([refs, fields, finder?.key]), o)
+  for (const at of finder ? finder.cells(refs, requested(s, refs)) : requested(s, refs)) {
     if (!at) {
       yield
       continue
     }
-    if (needle !== undefined) {
-      const v = yield* projected(s, ...at, [where])
-      const value = v[where],
-        text = typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value ?? '')
-      if (!needle || !(lower ? text.toLowerCase().includes(needle.toLowerCase()) : text.includes(needle))) continue
-    }
+    if (finder && !finder.matches(...at)) continue
     if (page.wanted()) page.items.push(yield* projected(s, ...at, fields))
     if (page.done) break
   }
