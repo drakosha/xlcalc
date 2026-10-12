@@ -266,8 +266,9 @@ function Step($xl, $wb, $s) {
     'find' {
       try {
         $ws = $wb.Worksheets.Item($s.sheet)
-        # the comma keeps PowerShell from unrolling the range into its cells, the whole sheet's too
-        $rg = if ($s.range) { , $ws.Range($s.range) } else { , $ws.Cells }
+        # the comma keeps PowerShell from unrolling the range into its cells, the whole sheet's too; the areas of a range
+        # are parted by the locale's list separator (`;` in ru-RU)
+        $rg = if ($s.range) { , $ws.Range(([string]$s.range).Replace(',', $xl.International(5))) } else { , $ws.Cells }
         $a = $rg.Areas.Item($rg.Areas.Count)
         $last = $a.Item($a.Rows.Count, $a.Columns.Count)
         $lookIn = if ($s.lookIn -eq 'values') { -4163 } else { -4123 }
