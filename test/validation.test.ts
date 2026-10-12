@@ -5,8 +5,9 @@
  * `Session.validateEntry`, in both execution modes.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, InputError, createSession, editStructure, type BookInput, type DataValidation, type Execution, type SheetInput, type StructureOp } from '../src/index.js'
+import { compute, createInlineCalc, InputError, createSession, editStructure, type BookInput, type CellInput, type DataValidation, type Execution, type SheetInput, type StructureOp } from '../src/index.js'
 import { pool } from './fixtures/pool.js'
+import './locales.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 1 }
 
@@ -114,15 +115,27 @@ describe.each(['closures', 'eval'] as Execution[])('data validation in a session
   it("validation gives a cell's rule, its formulas as at the cell, a list's items with their shown text", () => {
     const s = createSession(book(), { clock, execution })
     expect(s.getValidation('S', 'A1')).toBeNull()
-    expect(s.getValidation('S', 'C5')).toEqual({ rule: book().sheets[0].validations![0], formula1: '"Yes,No"', list: [{ value: 'Yes', text: 'Yes' }, { value: 'No', text: 'No' }] })
+    expect(s.getValidation('S', 'C5')).toEqual({ rule: book().sheets[0].validations![0], formula1: '"Yes,No"', list: [{ value: 'Yes', text: 'Yes', input: { value: 'Yes' } }, { value: 'No', text: 'No', input: { value: 'No' } }] })
     expect(s.getValidation('S', 'G2')).toEqual({ rule: book().sheets[0].validations![2], formula1: 'G2>C2' })
     expect(s.getValidation('S', 'E5')!.formula1).toBe('E5>A5')
-    expect(s.getValidation('S', 'F3')!.list).toEqual([{ value: 'apple', text: 'apple' }, { value: 1.5, text: '1.50' }, { value: 45658, text: '01.01.2025' }])
+    expect(s.getValidation('S', 'F3')!.list).toEqual([{ value: 'apple', text: 'apple', input: { value: 'apple' } }, { value: 1.5, text: '1.50', input: { value: 1.5 } }, { value: 45658, text: '01.01.2025', input: { value: 45658 } }])
     // the list follows the book
     s.setCells([{ sheet: 'L', cell: 'A2', input: { value: 'pear' } }])
-    expect(s.getValidation('S', 'F3')!.list).toEqual([{ value: 'apple', text: 'apple' }, { value: 'pear', text: 'pear' }, { value: 45658, text: '01.01.2025' }])
+    expect(s.getValidation('S', 'F3')!.list).toEqual([{ value: 'apple', text: 'apple', input: { value: 'apple' } }, { value: 'pear', text: 'pear', input: { value: 'pear' } }, { value: 45658, text: '01.01.2025', input: { value: 45658 } }])
     s.setNames([{ name: 'Fruits', ref: '#REF!' }])
     expect(s.getValidation('S', 'F3')!.list).toEqual({ error: 'REF' })
+  })
+
+  it("a picked item's input is what Excel writes: a cell's value as it is, a literal item read as typed in en-US, whatever the book's locale", () => {
+    const s = createSession({
+      locale: 'ru-RU',
+      sheets: [{ name: 'S', cells: { E1: { value: '001' }, E2: { value: 0.5, numberFormat: '0%' }, E3: { value: 'ИСТИНА' } }, validations: [{ range: 'B1:B9', type: 'list', formula1: '$E$1:$E$3' }, { range: 'C1:C9', type: 'list', formula1: '"001,1/2,x"' }] }],
+    }, { clock, execution })
+    expect((s.getValidation('S', 'B2')!.list as { input: unknown }[]).map((i) => i.input)).toEqual([{ value: '001' }, { value: 0.5 }, { value: 'ИСТИНА' }])
+    expect((s.getValidation('S', 'C2')!.list as { input: unknown }[]).map((i) => i.input)).toEqual([{ value: 1 }, { value: 46024, numberFormat: 16 }, { value: 'x' }])
+    s.setCells([{ sheet: 'S', cell: 'B2', input: { numberFormat: '0%' } }])
+    s.setCells([{ sheet: 'S', cell: 'B2', input: (s.getValidation('S', 'B2')!.list as { input: CellInput }[])[0].input }])
+    expect(s.getBook().sheets[0].cells.B2).toEqual({ value: '001', numberFormat: '0%' })
   })
 
   it('validateEntry checks a value as Excel does, with the value put in and taken back', () => {
@@ -171,12 +184,12 @@ describe.each(['closures', 'eval'] as Execution[])('data validation in a session
   it('an inline session and a session in a thread give the same', async () => {
     const threads = await pool({ threads: 1 })
     const t = await threads.createSession(book(), { clock, execution })
-    expect((await t.getValidation('S', 'C2'))!.list).toEqual([{ value: 'Yes', text: 'Yes' }, { value: 'No', text: 'No' }])
+    expect((await t.getValidation('S', 'C2'))!.list).toEqual([{ value: 'Yes', text: 'Yes', input: { value: 'Yes' } }, { value: 'No', text: 'No', input: { value: 'No' } }])
     expect(await t.validateEntry('S', 'D2', { value: 9 })).toEqual({ ok: true })
     await threads.close()
     const calc = createInlineCalc()
     const s = await calc.createSession(book(), { clock, execution })
-    expect((await s.getValidation('S', 'F3'))!.list).toEqual([{ value: 'apple', text: 'apple' }, { value: 1.5, text: '1.50' }, { value: 45658, text: '01.01.2025' }])
+    expect((await s.getValidation('S', 'F3'))!.list).toEqual([{ value: 'apple', text: 'apple', input: { value: 'apple' } }, { value: 1.5, text: '1.50', input: { value: 1.5 } }, { value: 45658, text: '01.01.2025', input: { value: 45658 } }])
     expect(await s.validateEntry('S', 'D2', { value: 11 })).toEqual({ ok: false, code: 'validation', message: "This value doesn't match the data validation restrictions defined for this cell.", rule: book().sheets[0].validations![1], severity: 'stop' })
     await calc.close()
   })

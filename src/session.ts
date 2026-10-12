@@ -738,7 +738,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *getValidation(sheet: string, cell: string) {
       const s = yield* ready()
-      return cellValidation(s, ...at(s, sheet, cell))
+      return cellValidation(s, ...at(s, sheet, cell), clock.now)
     },
     *validateEntry(sheet: string, cell: string, input: CellInput | null) {
       const s = yield* ready()
