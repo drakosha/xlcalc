@@ -13,7 +13,7 @@
  * whole format. Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows
  * and columns carry their outline levels.
  */
-import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ExternalBook, RowInput, SheetInput } from '../../contract.js'
+import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, ExternalBook, RowInput, SheetInput } from '../../contract.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
@@ -109,12 +109,21 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
     const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, where)
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
-  if (v.error === 'CYCLE') {
-    ctx.issues.add('errorValue', { key: 'cycleZero' }, where)
+  return errorXml(v.error, ctx.richError, () => ctx.issues.add('errorValue', { key: 'cycleZero' }, where))
+}
+
+/**
+ * An error as a file's cell stores it, its attributes and the content of `<v>`: #SPILL! and #CALC! as `#VALUE!` with a
+ * rich value (`vm`) that names them, as Excel 365 stores them; the engine's #CYCLE! as 0, as Excel stores a circular
+ * reference, which `cycle` reports.
+ */
+export function errorXml(code: ErrorCode, richError: SheetContext['richError'], cycle: () => void): { t: string; v: string } {
+  if (code === 'CYCLE') {
+    cycle()
     return { t: '', v: '0' }
   }
-  if (v.error === 'SPILL' || v.error === 'CALC') return { t: ` t="e" vm="${ctx.richError(v.error)}"`, v: '#VALUE!' }
-  return { t: ' t="e"', v: v.error === 'ERROR' ? '#NULL!' : ERROR_TEXT[v.error] }
+  if (code === 'SPILL' || code === 'CALC') return { t: ` t="e" vm="${richError(code)}"`, v: '#VALUE!' }
+  return { t: ' t="e"', v: code === 'ERROR' ? '#NULL!' : ERROR_TEXT[code] }
 }
 
 /**

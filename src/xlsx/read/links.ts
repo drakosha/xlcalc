@@ -11,6 +11,7 @@ import { attr, attributes, element, elements, flag, ownEntry } from '../xml/scan
 import { readText } from '../xml/text.js'
 import type { Archive } from '../zip/read.js'
 import { ERRORS } from './cells.js'
+import type { CellMetadata } from './metadata.js'
 import { relsOf, type Rel } from './package.js'
 import { fileCell } from './refs.js'
 import { stringItem } from './strings.js'
@@ -24,9 +25,15 @@ export interface ReadLinks {
 /** The place of a link the model has no workbook for. */
 const placeholder = (): ExternalBook => ({ target: '', sheets: [] })
 
-/** A stored value of another book's cell, null for a cell stored empty; an error the model has no code for is reported. */
-function cachedValue(e: { attrs: string; body: string | null }, where: string, issues: Issues): ExternalValue | null {
+/**
+ * A stored value of another book's cell, null for a cell stored empty; an error the model has no code for is reported, and
+ * so is a rich value (`vm`) that is no error's, such as a data type, read as the value the cell stores.
+ */
+function cachedValue(e: { attrs: string; body: string | null }, where: string, meta: CellMetadata, issues: Issues): ExternalValue | null {
   const a = attributes(e.attrs)
+  // #SPILL! and #CALC! are stored as #VALUE! with a rich value that names them, as in a sheet's cells
+  const rich = a.vm === undefined ? undefined : meta.error(Number(a.vm))
+  if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', { key: 'valueMetadata' }, { cell: where })
   const body = e.body ?? ''
   const t = a.t ?? 'n'
   if (t === 'inlineStr' && element(body, 'is')) return stringItem(element(body, 'is')!.body ?? '').text
@@ -38,7 +45,7 @@ function cachedValue(e: { attrs: string; body: string | null }, where: string, i
   if (raw === '') return null
   if (t === 'b') return raw === '1' || raw === 'true'
   if (t === 'e') {
-    const code = ownEntry(ERRORS, readText(raw).trim())
+    const code = ownEntry(ERRORS, rich ?? readText(raw).trim())
     if (!code) issues.add('errorValue', { key: 'errorUnknown' }, { cell: where })
     return { error: code ?? 'ERROR' }
   }
@@ -47,17 +54,17 @@ function cachedValue(e: { attrs: string; body: string | null }, where: string, i
 }
 
 /** The stored values of one sheet's data (`<sheetData>`), by address. */
-function sheetCells(body: string, at: string, issues: Issues): Record<string, ExternalValue | null> {
+function sheetCells(body: string, at: string, meta: CellMetadata, issues: Issues): Record<string, ExternalValue | null> {
   const out: Record<string, ExternalValue | null> = {}
   for (const c of elements(body, 'cell')) {
     const addr = fileCell(attributes(c.attrs).r ?? '')
-    if (addr) out[addr] = cachedValue(c, `${at}${addr}`, issues)
+    if (addr) out[addr] = cachedValue(c, `${at}${addr}`, meta, issues)
   }
   return out
 }
 
 /** A link's `externalBook`: its sheets with their data, and its names; `target` from the part's relationships. */
-function externalBook(xml: string, rels: Rel[], n: number, issues: Issues): ExternalBook {
+function externalBook(xml: string, rels: Rel[], n: number, meta: CellMetadata, issues: Issues): ExternalBook {
   const root = element(xml, 'externalBook')!
   const id = attr(attributes(root.attrs), 'id')
   const body = root.body ?? ''
@@ -66,7 +73,7 @@ function externalBook(xml: string, rels: Rel[], n: number, issues: Issues): Exte
     const a = attributes(d.attrs)
     const sheet = sheets[Number(a.sheetId)]
     if (!sheet) continue
-    sheet.cells = sheetCells(d.body ?? '', `[${n}]${sheet.name}!`, issues)
+    sheet.cells = sheetCells(d.body ?? '', `[${n}]${sheet.name}!`, meta, issues)
     if (flag(a.refreshError)) sheet.refreshError = true
   }
   const names: ExternalName[] = []
@@ -88,8 +95,8 @@ function externalBook(xml: string, rels: Rel[], n: number, issues: Issues): Exte
   return book
 }
 
-/** The links of the workbook `wb`, whose relationships are `rels`. */
-export async function readLinks(archive: Archive, wb: string, rels: Rel[], issues: Issues): Promise<ReadLinks> {
+/** The links of the workbook `wb`, whose relationships are `rels`; `meta` the book's cell metadata, which stored values may point at. */
+export async function readLinks(archive: Archive, wb: string, rels: Rel[], meta: CellMetadata, issues: Issues): Promise<ReadLinks> {
   const out: ReadLinks = { books: [], known: new Set() }
   const byId = new Map(rels.map((r) => [r.id, r]))
   for (const e of elements(element(wb, 'externalReferences')?.body ?? '', 'externalReference')) {
@@ -101,7 +108,7 @@ export async function readLinks(archive: Archive, wb: string, rels: Rel[], issue
       out.books.push(placeholder())
       continue
     }
-    out.books.push(externalBook(xml, await relsOf(archive, r!.target), n, issues))
+    out.books.push(externalBook(xml, await relsOf(archive, r!.target), n, meta, issues))
     out.known.add(n)
   }
   return out

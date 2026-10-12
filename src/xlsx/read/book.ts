@@ -152,7 +152,6 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     issues.add('defaultFont', { key: 'defaultFont', ...table.font })
   const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
-  const links = await readLinks(archive, wb, rels, issues)
   const dateSystem = flag(attributes(element(wb, 'workbookPr')?.attrs ?? '').date1904) ? 1904 : 1900
   const byId = new Map(rels.map((r) => [r.id, r]))
   const decls: SheetDecl[] = elements(element(wb, 'sheets')?.body ?? '', 'sheet').map((e) => {
@@ -162,6 +161,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   })
   const strings = readStrings(stringsXml)
   const meta = cellMetadata(metaXml, richValues, richStructures)
+  const links = await readLinks(archive, wb, rels, meta, issues)
   const all = decls.filter((d) => d.kind === 'worksheet').map((d) => d.name)
   const names = readNames(wb, decls, new Set(all), issues, links.known)
   const legacy = legacyConverter(names)

@@ -2,7 +2,8 @@
  * Links to other workbooks in the files Excel saved (`test/excel/links/`, `test/excel/win/links/`, from the step
  * `links`): the reader reads every link of every file, with the targets Excel for Mac and Excel for Windows wrote,
  * Excel's alternate addresses beside them, the marks of failed updates and the stored values Excel kept (it drops the
- * cells no formula refers to), and no link is reported as one the model does not have.
+ * cells no formula refers to), and no link is reported as one the model does not have. The set `written` is the files
+ * `writeXlsx` wrote: Excel opened them and showed what it showed for the files made by hand.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
@@ -68,9 +69,11 @@ describe.each(PLATFORMS)('links in the files %s saved', (_, root) => {
         const r = await saved(root, set.name, c.id)
         expect(r.issues.filter((i) => i.message === NOT_IN_MODEL)).toEqual([])
         const books = r.book.externalBooks!
-        expect(books.length).toBe(c.links.length)
+        // Excel drops a link no formula refers to when it saves, the one without sheets
+        const links = c.links.filter((l) => l.sheets.length)
+        expect(books.length).toBe(links.length)
         books.forEach((b, i) => {
-          const link = c.links[i]
+          const link = links[i]
           expect(fileName(b.target), b.target).toBe(fileName(link.target))
           // Excel keeps the sheets in order and may add one a formula names
           expect(b.sheets.slice(0, link.sheets.length).map((s) => s.name)).toEqual(link.sheets.map((s) => s.name))
