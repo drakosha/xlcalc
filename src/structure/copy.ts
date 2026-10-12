@@ -19,6 +19,7 @@ import { placer, type Applied, type Geometry } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Outcome, type Transform } from './rewrite.js'
+import { linksIn, markedLinks } from '../syntax/links.js'
 import { copyConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
 
@@ -110,6 +111,9 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
     return { ...s, cells }
   })
   const out: BookInput = { ...book, sheets }
+  // formulas pasted with links: Excel marks their books as it cannot read them (`markedLinks`)
+  const linked = markedLinks(book.externalBooks, copied.flatMap(({ cell }) => (cell.formula === undefined ? [] : linksIn(cell.formula))))
+  if (linked !== book.externalBooks) out.externalBooks = linked
   if (book.names) {
     const repoint: Transform = { ref: ({ sheet, area }) => (sheetKey(sheet) === fk ? { sheet: to, area } : undefined) }
     const formulas = copied.flatMap(({ cell }) => (cell.formula === undefined ? [] : [cell.formula]))

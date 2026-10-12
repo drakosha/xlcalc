@@ -25,6 +25,8 @@ export interface LinkState {
   names: Map<string, Ast | null>
   /** Each linked sheet by its index past `first` as a reference names it, unquoted (`[1]Sheet1`). */
   labels: string[]
+  /** The number of each linked sheet's link, by its index past `first`. */
+  books: number[]
 }
 
 const sheetAt = (book: number, sheet: string) => `${book}\u0000${sheetKey(sheet)}`
@@ -49,7 +51,7 @@ function nameTarget(book: number, b: ExternalBook, ref: string): Ast | null {
 
 /** The linked sheets of a book as runtime sheets after its `first` own, and the links' state. */
 export function linkSheets(books: readonly ExternalBook[] | undefined, first: number): { data: SheetData[]; links: LinkState } {
-  const links: LinkState = { first, sheets: new Map(), strict: [], names: new Map(), labels: [] }
+  const links: LinkState = { first, sheets: new Map(), strict: [], names: new Map(), labels: [], books: [] }
   const data: SheetData[] = []
   ;(books ?? []).forEach((b, i) => {
     const book = i + 1
@@ -65,6 +67,7 @@ export function linkSheets(books: readonly ExternalBook[] | undefined, first: nu
       data.push(sh)
       links.strict.push(stored)
       links.labels.push(linkedSheetText(book, s.name))
+      links.books.push(book)
     }
     for (const n of b.names ?? []) links.names.set(nameAt(book, n.sheet, n.name), nameTarget(book, b, n.ref))
   })
@@ -119,4 +122,25 @@ export function strictCells(links: LinkState, sheets: readonly SheetData[], refs
       }
   }
   return out
+}
+
+/**
+ * The links numbered `ks` marked in `books` (`markedLinks`) taken by the state: their sheets' cells the stored values do
+ * not hold are `#REF!` from now on. The sheets of a link Excel did not mark yet are those that change.
+ */
+export function strictLinks(links: LinkState, books: readonly ExternalBook[], ks: ReadonlySet<number>): void {
+  let i = 0
+  books.forEach((b, j) => {
+    for (const s of b.sheets) {
+      if (ks.has(j + 1) && !links.strict[i]) {
+        const stored = new Set<number>()
+        for (const addr of Object.keys(s.cells ?? {})) {
+          const { row, col } = parseAddress(addr)
+          stored.add(row * MAX_COLS + col)
+        }
+        links.strict[i] = stored
+      }
+      i++
+    }
+  })
 }
