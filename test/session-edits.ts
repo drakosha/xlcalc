@@ -6,6 +6,25 @@ import type { BookInput, CellReplace, CellInput } from '../src/contract.js'
 import { classAEdits, classBEdit, mulberry32, S, type SynthBook } from '../src/synth.js'
 
 /** The book with the edits applied, as a full computation reads it. */
+/** The book with the values its formulas hold (`CellInput.held`) as in `session`'s book: a session takes them as Excel does. */
+export function withHeld(book: BookInput, session: BookInput): BookInput {
+  const same = (a: CellInput, b: CellInput | undefined) => JSON.stringify(a.held) === JSON.stringify(b?.held)
+  return {
+    ...book,
+    sheets: book.sheets.map((s, i) => {
+      const own = session.sheets[i].cells
+      const other = Object.keys(s.cells).filter((a) => !same(s.cells[a], own[a]))
+      if (!other.length) return s
+      const cells = { ...s.cells }
+      for (const a of other) {
+        const { held: _, ...rest } = cells[a]
+        cells[a] = own[a]?.held === undefined ? rest : { ...rest, held: own[a].held }
+      }
+      return { ...s, cells }
+    }),
+  }
+}
+
 export function apply(book: BookInput, edits: CellReplace[]): BookInput {
   return {
     names: book.names,

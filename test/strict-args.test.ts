@@ -143,6 +143,6 @@ describe('the functions of the package take no options they do not', () => {
     expect(xlsx.fromLegacy('A1:A2*2', { sheet: 'S' })).toBe('@A1:A2*2')
     expect(['A1', 'B2'].map(parseCell)).toEqual([{ row: 1, col: 1 }, { row: 2, col: 2 }])
     expect([1, 2].map(root.colLetters)).toEqual(['A', 'B'])
-    expect(() => compute(book(), { clock: CLOCK, formulaLocal: true } as never)).toThrow('opts: unknown field "formulaLocal" (expected clock, externals, execution, display, limits) (formulaLocal is an option of getViewport)')
+    expect(() => compute(book(), { clock: CLOCK, formulaLocal: true } as never)).toThrow('opts: unknown field "formulaLocal" (expected clock, externals, execution, display, limits, cached) (formulaLocal is an option of getViewport)')
   })
 })

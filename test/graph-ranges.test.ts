@@ -61,7 +61,8 @@ describe.each(['closures', 'eval'] as const)('compressed graph, %s', (execution)
     cells.A32 = { formula: 'B1' }; cells.B1 = { formula: 'SUM(A1:A64)' }; cells.B2 = { formula: 'SUM(A1:A16)' }
     const opts = { clock, execution, display: false }, s = createSession({ sheets: [{ name: 'S', cells }] }, opts)
     try {
-      expect(s.getCells('S', 'B1:B2')).toMatchObject({ B1: { value: { error: 'CYCLE' } }, B2: { value: 16 } })
+      expect(s.getCells('S', 'B1:B2')).toMatchObject({ B1: { value: 0 }, B2: { value: 16 } })
+      expect(s.getCellIssue('S', 'B2')).toBeNull()
       s.setCells([{ sheet: 'S', cell: 'A32', input: { value: 2 } }])
       expect(s.getCells('S', 'B1').B1.value).toBe(65)
       expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
