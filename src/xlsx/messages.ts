@@ -48,7 +48,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   iterationCount: (p) => `the maximum of iterations ${JSON.stringify(p.count)} is not one of 1 to 32,767: the default, 100, is read`,
   iterationChange: (p) => `the maximum change of iterations ${JSON.stringify(p.change)} is not a number from 0: the default, 0.001, is read`,
   workbookProtection: () => 'workbook protection is not in the model',
-  externalLinks: () => 'links to other workbooks are not in the model',
+  externalLinks: () => 'a link to the data of another program (DDE, OLE), not to a workbook, or a link whose part is missing, is not in the model: its number is kept by a book without sheets, and formulas that refer to it compute to an error',
   pivotTables: () => 'pivot tables are not in the model: their cells are read as stored',
   macros: () => 'macros (a VBA project) are not in the model',
   connections: () => 'data connections and queries are not in the model',
@@ -75,7 +75,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   // reading: formulas
   userFunction: () => 'a user-defined function (a macro or an add-in) is not in the engine',
   tableRefWithoutTable: () => 'a structured reference without a table name is not in a file: the formula is read as written and computes to an error',
-  formulaExternal: () => 'references to other workbooks are not in the engine: the formula is read as written and computes to an error',
+  formulaExternal: () => 'a reference to another workbook that is not one of the links the file holds, or that the engine does not parse: the formula is read as written and computes to an error',
   letPrefix: () => 'a LET name that reads as a reference or a boolean once its _xlpm. prefix goes: the formula changes its meaning',
   formulaUnparsed: () => 'a formula the engine does not parse is read as written (its cell computes to an error)',
   // reading: cells

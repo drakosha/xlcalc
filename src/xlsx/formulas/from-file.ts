@@ -15,6 +15,8 @@ export type Found = 'userFunction' | 'table' | 'externalLink' | 'letName'
 export interface Converted {
   formula: string
   found: Found[]
+  /** The numbers `[N]` of the links to other workbooks it refers to (`externalLink`), 0 for a book it names otherwise. */
+  links?: number[]
 }
 
 const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf)\./i
@@ -22,6 +24,8 @@ const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf)\./i
 const IDENT_START = new RegExp(`^${IDENT_RULE}`, 'u')
 /** A cell or a lost reference, with its sheet or without: what `#` may follow. */
 const ANCHOR = /^(?:(?:'(?:[^']|'')+'|[^\s'!(),]+)!)?(?:\$?[A-Za-z]{1,3}\$?\d+|#REF!)$/
+/** A link's number at the start of a bracketed run (`[1]`), quoted or not. */
+const LINK = /^'?\[(\d+)\]/
 
 /** The end (past the closing quote) of a quoted run starting at `i`, the text's end when it is not closed: `""` and `''` inside are kept. */
 function quoted(src: string, i: number): number {
@@ -54,13 +58,18 @@ function single(x: string): string {
 export function fromFile(src: string): Converted {
   if (!/[_[:]/.test(src)) return { formula: src, found: [] }
   const found = new Set<Found>()
+  const links: number[] = []
+  const link = (run: string) => {
+    found.add('externalLink')
+    links.push(Number(LINK.exec(run)?.[1] ?? 0))
+  }
   let out = ''
   let i = 0
   while (i < src.length) {
     const c = src[i]
     if (c === '"' || c === "'") {
       const end = quoted(src, i)
-      if (c === "'" && src[i + 1] === '[' && src[end] === '!') found.add('externalLink')
+      if (c === "'" && src[i + 1] === '[' && src[end] === '!') link(src.slice(i, end))
       out += src.slice(i, end)
       i = end
       continue
@@ -76,7 +85,8 @@ export function fromFile(src: string): Converted {
       // a structured reference: a file writes no `@` for the formula's row, so one before a column name is part of it
       if (FILE_WORD_CHAR.test(src[i - 1] ?? '')) out += run.replace(/(^|[^'])\[@/g, "$1['@")
       else {
-        found.add(/[@#[]/.test(src[i + 1] ?? '') ? 'table' : 'externalLink')
+        if (/[@#[]/.test(src[i + 1] ?? '')) found.add('table')
+        else link(run)
         out += run
       }
       i = end
@@ -103,6 +113,7 @@ export function fromFile(src: string): Converted {
     if (close >= 0) {
       const inner = fromFile(src.slice(open + 1, close).trim())
       inner.found.forEach((x) => found.add(x))
+      links.push(...(inner.links ?? []))
       if (upper === 'SINGLE' || ANCHOR.test(inner.formula)) {
         out += upper === 'SINGLE' ? single(inner.formula) : `${inner.formula}#`
         i = close + 1
@@ -112,5 +123,5 @@ export function fromFile(src: string): Converted {
     out += name
     i += name.length
   }
-  return { formula: out, found: [...found] }
+  return { formula: out, found: [...found], ...(links.length ? { links } : {}) }
 }

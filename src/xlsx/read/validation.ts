@@ -14,7 +14,7 @@ import { sheetKey } from '../../syntax.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import { attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
-import { readFormula } from './formulas.js'
+import { readFormula, type FormulaOptions } from './formulas.js'
 import { sqrefRanges } from './refs.js'
 
 /** The model's types by the names a file gives them. */
@@ -53,7 +53,7 @@ function extended(xml: string): RawRule[] {
 }
 
 /** The model's rule of a rule of the file, or why it cannot be one. */
-function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | XlsxMessage {
+function rule(raw: RawRule, sheet: string, issues: Issues, opts: FormulaOptions): DataValidation | XlsxMessage {
   const { a } = raw
   const type = ownEntry(TYPES, a.type ?? 'none')
   if (!type) return { key: 'ruleType', type: a.type }
@@ -61,7 +61,7 @@ function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | Xls
   const where = { sheet, cell: raw.sqref }
   // `between` is the default, left out
   if (COMPARED.has(type) && a.operator !== undefined && a.operator !== 'between' && OPERATORS.includes(a.operator as ValidationOperator)) out.operator = a.operator as ValidationOperator
-  const formula = (t: string | undefined) => (t === undefined || t === '' ? undefined : readFormula(t, issues, where).formula)
+  const formula = (t: string | undefined) => (t === undefined || t === '' ? undefined : readFormula(t, issues, where, opts).formula)
   if (type !== 'any') {
     const f1 = formula(raw.formula1)
     if (f1 === undefined) return { key: 'ruleNoFormula' }
@@ -88,7 +88,7 @@ function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | Xls
  * The sheet's rules (`tail`: the worksheet after its cells), none meeting an earlier one; a rule that loses its first cell
  * so has its formulas written for its new first cell (`sheets`: the book's sheets).
  */
-export function readValidations(tail: string, sheet: string, sheets: string[], issues: Issues): DataValidation[] | undefined {
+export function readValidations(tail: string, sheet: string, sheets: string[], issues: Issues, opts: FormulaOptions): DataValidation[] | undefined {
   const names = new Map(sheets.map((s) => [sheetKey(s), s]))
   const ext = tail.search(/<(?:[\w.-]+:)?extLst[\s>]/)
   const raws = [...plain(ext < 0 ? tail : tail.slice(0, ext), sheet, issues), ...(ext < 0 ? [] : extended(tail.slice(ext)))]
@@ -96,7 +96,7 @@ export function readValidations(tail: string, sheet: string, sheets: string[], i
   const taken: Rect[] = []
   for (const raw of raws) {
     const where = { sheet, cell: raw.sqref }
-    const r = rule(raw, sheet, issues)
+    const r = rule(raw, sheet, issues, opts)
     if ('key' in r) {
       issues.add('dataValidation', r, where)
       continue

@@ -11,12 +11,12 @@ import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { checkTables, TOTALS } from '../../tables/check.js'
 import type { Issues } from '../issues.js'
-import { parseFormula, reportFormula, type ReadFormula } from './formulas.js'
+import { parseFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import { attributes, element, elements } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 
 /** A table part's table with its calculated column formulas as read (by column), or null when it has no name or range. */
-function tableOf(xml: string): { t: TableInput; formulas: (ReadFormula | undefined)[] } | null {
+function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: (ReadFormula | undefined)[] } | null {
   const root = element(xml, 'table')
   if (!root) return null
   const a = attributes(root.attrs)
@@ -28,7 +28,7 @@ function tableOf(xml: string): { t: TableInput; formulas: (ReadFormula | undefin
     const c = attributes(e.attrs)
     const col: TableColumn = { name: readText(c.name ?? '') }
     const calc = element(e.body ?? '', 'calculatedColumnFormula')
-    const f = calc?.body ? parseFormula(readText(calc.body)) : undefined
+    const f = calc?.body ? parseFormula(readText(calc.body), opts) : undefined
     formulas.push(f)
     if (f) col.formula = f.formula
     const fn = c.totalsRowFunction as TotalsFunction | undefined
@@ -43,11 +43,11 @@ function tableOf(xml: string): { t: TableInput; formulas: (ReadFormula | undefin
   return { t, formulas }
 }
 
-/** The tables of a sheet's table parts; `cells` (the sheet's) get the header names they lack. */
-export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues): TableInput[] {
+/** The tables of a sheet's table parts; `cells` (the sheet's) get the header names they lack; `opts` read their formulas. */
+export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions): TableInput[] {
   const out: TableInput[] = []
   for (const xml of parts) {
-    const read = tableOf(xml)
+    const read = tableOf(xml, opts)
     if (!read) {
       issues.add('table', { key: 'tablePartBad' }, { sheet })
       continue
