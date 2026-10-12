@@ -15,7 +15,8 @@ import { readSpec, type TableSpec } from './table.js'
 export type Tok =
   | { t: 'num'; v: number; at: number }
   | { t: 'str'; v: string; at: number }
-  | { t: 'err'; code: ErrorCode; at: number; sheet?: string; ref?: string }
+  /** `book`: a reference another workbook lost (`'[1]Sheet1'!#REF!`), on its `sheet`. */
+  | { t: 'err'; code: ErrorCode; at: number; sheet?: string; ref?: string; book?: number | string }
   /** `last`: the last sheet of a reference across sheets (`Sheet1:Sheet3!A1`). */
   | { t: 'ref'; sheet: string | null; last?: string; ref: RangeRef; at: number }
   /** `sheet`: a name seen from that sheet (`Sheet2!rate`). */
@@ -141,6 +142,11 @@ export function tokenize(src: string): Tok[] {
   const external = (book: number | string, sheet: string, at: number, from: number): number => {
     if (sheet.includes(':')) bad(at, { key: 'externalAcrossSheets' }, 'external_ref')
     const after = src.slice(from)
+    // a reference into it that Excel lost (`[1]Sheet1!#REF!`)
+    if (sheet !== '' && after.slice(0, 5).toUpperCase() === '#REF!') {
+      push({ t: 'err', code: 'REF', sheet, book, at })
+      return from + 5
+    }
     const r = sheet === '' ? null : readRef(after, at)
     if (r) {
       if (after[r.len] === '#') bad(at, { key: 'externalSpill' }, 'external_ref')

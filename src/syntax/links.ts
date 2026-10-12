@@ -56,6 +56,10 @@ export function bindLinks(ast: Ast, books: readonly ExternalBook[] | undefined, 
   const out = mapAst(ast, (n) => {
     if (fail) return undefined
     if (n.k === 'name' && n.sheet !== undefined && books?.length && namesLink(books, n.sheet, own)) return { k: 'xname', book: linkOf(books, n.sheet), name: n.name }
+    if (n.k === 'err' && n.book !== undefined) {
+      const k = number(n.book)
+      return k && k !== n.book ? { ...n, book: k } : undefined
+    }
     if (n.k !== 'xref' && n.k !== 'xname') return undefined
     const k = number(n.book)
     if (!k) return undefined
@@ -120,8 +124,9 @@ export function eachToken(formula: string, f: (tok: Tok, text: string) => string
 export function showLinks(formula: string, books: readonly ExternalBook[]): string {
   if (!books.length || !formula.includes('[')) return formula
   return eachToken(formula, (tok) => {
-    if ((tok.t !== 'xref' && tok.t !== 'xname') || typeof tok.book !== 'number' || !books[tok.book - 1]) return undefined
+    if ((tok.t !== 'xref' && tok.t !== 'xname' && tok.t !== 'err') || typeof tok.book !== 'number' || !books[tok.book - 1]) return undefined
     const target = books[tok.book - 1].target
+    if (tok.t === 'err') return `${shownLinkSheet(target, tok.sheet!)}!#REF!`
     if (tok.t === 'xref') return `${shownLinkSheet(target, tok.sheet)}!${tok.ref.text}`
     return tok.sheet === undefined ? shownLinkName(target, tok.v) : `${shownLinkSheet(target, tok.sheet)}!${tok.v}`
   })
@@ -137,12 +142,13 @@ export function numberLinks(formula: string, books: readonly ExternalBook[], she
   const out = eachToken(formula, (tok) => {
     if (miss) return undefined
     if (tok.t === 'ident' && tok.sheet !== undefined && namesLink(books, tok.sheet, own)) return `[${linkOf(books, tok.sheet)}]!${tok.v}`
-    if ((tok.t !== 'xref' && tok.t !== 'xname') || typeof tok.book === 'number') return undefined
+    if ((tok.t !== 'xref' && tok.t !== 'xname' && tok.t !== 'err') || tok.book === undefined || typeof tok.book === 'number') return undefined
     const k = linkOf(books, tok.book)
     if (!k) {
       miss = { at: tok.at, message: { key: 'unknownLink', book: tok.book } }
       return undefined
     }
+    if (tok.t === 'err') return `${quoteSheet(`[${k}]${tok.sheet}`)}!#REF!`
     if (tok.t === 'xref') return `${quoteSheet(`[${k}]${tok.sheet}`)}!${tok.ref.text}`
     return tok.sheet === undefined ? `[${k}]!${tok.v}` : `${quoteSheet(`[${k}]${tok.sheet}`)}!${tok.v}`
   })

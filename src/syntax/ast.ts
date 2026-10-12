@@ -21,8 +21,8 @@ export type Ast =
   | { k: 'num'; v: number }
   | { k: 'str'; v: string }
   | { k: 'bool'; v: boolean }
-  /** `sheet` and `ref` keep what Excel writes around a reference it lost: `'S'!#REF!`, `#REF!A1`, `#REF!#REF!`, `#REF!#` (a spill reference). */
-  | { k: 'err'; code: ErrorCode; sheet?: string; ref?: string }
+  /** `sheet` and `ref` keep what Excel writes around a reference it lost: `'S'!#REF!`, `#REF!A1`, `#REF!#REF!`, `#REF!#` (a spill reference); `book` another workbook's (`'[1]Sheet1'!#REF!`). */
+  | { k: 'err'; code: ErrorCode; sheet?: string; ref?: string; book?: number | string }
   | { k: 'ref'; sheet: string | null; ref: RangeRef }
   /** A reference across the sheets from `first` to `last` in the book's order (`'Sheet1:Sheet3'!A1:B2`). */
   | { k: 'ref3d'; first: string; last: string; ref: RangeRef }

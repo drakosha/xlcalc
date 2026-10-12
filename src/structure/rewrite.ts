@@ -73,7 +73,7 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
         ? tok.last === undefined
           ? refText(tok, written, host, moved, t, sheets)
           : cubeText(tok, tok.last, written, t, sheets)
-        : tok.t === 'err' && tok.sheet !== undefined
+        : tok.t === 'err' && tok.sheet !== undefined && tok.book === undefined
           ? errText(tok.sheet, tok.ref ?? '', t, sheets)
           : tok.t === 'xref' && t.copy
             ? copiedLink(tok, written, t)

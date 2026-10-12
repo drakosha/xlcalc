@@ -152,7 +152,7 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
       functions.add(n.name)
       if (externalSet.has(n.name) && !FUNCTIONS[n.name]) externals.push(canonical(n))
     } else if (n.k === 'let') functions.add('LET')
-    else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined)) sheets.add(n.sheet!)
+    else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined && n.book === undefined)) sheets.add(n.sheet!)
     else if (n.k === 'ref3d') sheets.add(n.first).add(n.last)
     else if (n.k === 'name') {
       names.add(n.name)
