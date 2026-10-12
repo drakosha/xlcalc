@@ -1,0 +1,2377 @@
+{
+  "protocol": "Compiled master 4d15ecb with changes later committed as f1bdc06 and a6f5b74; only checkpoint size varied. Full fold threshold held at 256; short-range memoization absent. Same five opening and twenty editing samples; processes sequential.",
+  "variants": [
+    {
+      "checkpoint": 256,
+      "report": {
+        "engineCommit": "f1bdc063eaa2efd36bc722d9d421eba3dacf7a5e",
+        "started": "2026-10-12T08:37:02.427Z",
+        "node": "v26.7.0",
+        "hyperformula": "3.5.0",
+        "machine": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "cpu": "Apple M5 Pro",
+          "memoryGiB": 48
+        },
+        "protocol": {
+          "warmups": 1,
+          "coldSamples": 5,
+          "warmupEdits": 2,
+          "editSamples": 20,
+          "phaseLimitMs": 30000,
+          "heapLimitMb": 1024,
+          "numericTolerance": "1e-9 * max(1, abs(a), abs(b)); other types and error codes exact",
+          "timed": "Session construction and synchronous edits including their returned changes. Input generation/conversion, formatting, result extraction, verification and hashes excluded.",
+          "isolation": "One sequential child process per workload and engine; explicit GC before each fresh session. HF 3.5.0 defaults to AlwaysDense. Column index is tested separately on lookup; AlwaysSparse and automatic mapping (threshold 0.5) separately on the sparse book. The 34000-row HF business case is a single bounded cold probe."
+        },
+        "workloads": [
+          {
+            "id": "prefix-sum",
+            "title": "5000 cumulative SUM formulas",
+            "engines": [
+              {
+                "engine": "xl-closures",
+                "loadBefore": [
+                  5.72900390625,
+                  5.052734375,
+                  4.6337890625
+                ],
+                "loadAfter": [
+                  5.72900390625,
+                  5.052734375,
+                  4.6337890625
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "9b399225b091023e2daa7e7d8eca2b38a7999f1f24ac4258f110d5d7b627acb3",
+                "inputHash": "a4acc30fa53e783cc1636f97334f3944b41bb6a1b9e28d7f0c3debe3e3bb5b1e",
+                "retainedHeapMb": 7.727378845214844,
+                "coldMedianMs": 33.06287500000002,
+                "coldMedianCpuMs": 59.906,
+                "samples": [
+                  {
+                    "wallMs": 34.77391699999998,
+                    "cpuMs": 57.635
+                  },
+                  {
+                    "wallMs": 33.06287500000002,
+                    "cpuMs": 84.673
+                  },
+                  {
+                    "wallMs": 33.64987500000001,
+                    "cpuMs": 61.256
+                  },
+                  {
+                    "wallMs": 32.931667000000004,
+                    "cpuMs": 59.906
+                  },
+                  {
+                    "wallMs": 32.077083000000016,
+                    "cpuMs": 56.849
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 10.134833000000071,
+                    "medianMs": 5.394874999999956,
+                    "p95Ms": 6.030500000000075,
+                    "medianCpuMs": 6.079,
+                    "samples": [
+                      {
+                        "wallMs": 5.808667000000014,
+                        "cpuMs": 7.561
+                      },
+                      {
+                        "wallMs": 6.072167000000036,
+                        "cpuMs": 8.767
+                      },
+                      {
+                        "wallMs": 5.740084000000024,
+                        "cpuMs": 6.472
+                      },
+                      {
+                        "wallMs": 5.521749999999997,
+                        "cpuMs": 6.442
+                      },
+                      {
+                        "wallMs": 5.383916999999997,
+                        "cpuMs": 5.644
+                      },
+                      {
+                        "wallMs": 5.538416999999981,
+                        "cpuMs": 7.353
+                      },
+                      {
+                        "wallMs": 5.216583000000014,
+                        "cpuMs": 6.229
+                      },
+                      {
+                        "wallMs": 5.812999999999988,
+                        "cpuMs": 6.176
+                      },
+                      {
+                        "wallMs": 5.178750000000036,
+                        "cpuMs": 5.525
+                      },
+                      {
+                        "wallMs": 5.65204099999994,
+                        "cpuMs": 5.73
+                      },
+                      {
+                        "wallMs": 5.037582999999927,
+                        "cpuMs": 5.039
+                      },
+                      {
+                        "wallMs": 5.156583000000069,
+                        "cpuMs": 5.157
+                      },
+                      {
+                        "wallMs": 5.394874999999956,
+                        "cpuMs": 8.954
+                      },
+                      {
+                        "wallMs": 5.3586669999999685,
+                        "cpuMs": 5.975
+                      },
+                      {
+                        "wallMs": 4.976875000000064,
+                        "cpuMs": 5.581
+                      },
+                      {
+                        "wallMs": 5.245374999999967,
+                        "cpuMs": 5.853
+                      },
+                      {
+                        "wallMs": 4.690166999999974,
+                        "cpuMs": 4.691
+                      },
+                      {
+                        "wallMs": 6.030500000000075,
+                        "cpuMs": 16.863
+                      },
+                      {
+                        "wallMs": 5.469124999999963,
+                        "cpuMs": 6.079
+                      },
+                      {
+                        "wallMs": 5.215792000000079,
+                        "cpuMs": 5.208
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              },
+              {
+                "engine": "xl-eval",
+                "loadBefore": [
+                  5.72900390625,
+                  5.052734375,
+                  4.6337890625
+                ],
+                "loadAfter": [
+                  5.72900390625,
+                  5.052734375,
+                  4.6337890625
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "9b399225b091023e2daa7e7d8eca2b38a7999f1f24ac4258f110d5d7b627acb3",
+                "inputHash": "a4acc30fa53e783cc1636f97334f3944b41bb6a1b9e28d7f0c3debe3e3bb5b1e",
+                "retainedHeapMb": 9.500740051269531,
+                "coldMedianMs": 38.81420800000001,
+                "coldMedianCpuMs": 73.302,
+                "samples": [
+                  {
+                    "wallMs": 41.285540999999995,
+                    "cpuMs": 72.24
+                  },
+                  {
+                    "wallMs": 43.41245799999996,
+                    "cpuMs": 102.048
+                  },
+                  {
+                    "wallMs": 38.81420800000001,
+                    "cpuMs": 73.302
+                  },
+                  {
+                    "wallMs": 38.35300000000001,
+                    "cpuMs": 77.448
+                  },
+                  {
+                    "wallMs": 38.42975000000001,
+                    "cpuMs": 71.067
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 10.088166999999999,
+                    "medianMs": 5.436750000000075,
+                    "p95Ms": 5.918707999999924,
+                    "medianCpuMs": 6.516,
+                    "samples": [
+                      {
+                        "wallMs": 5.918707999999924,
+                        "cpuMs": 8.014
+                      },
+                      {
+                        "wallMs": 5.782791999999972,
+                        "cpuMs": 7.223
+                      },
+                      {
+                        "wallMs": 5.573999999999955,
+                        "cpuMs": 7.652
+                      },
+                      {
+                        "wallMs": 5.576207999999951,
+                        "cpuMs": 7.097
+                      },
+                      {
+                        "wallMs": 5.436750000000075,
+                        "cpuMs": 5.684
+                      },
+                      {
+                        "wallMs": 6.330707999999959,
+                        "cpuMs": 12.308
+                      },
+                      {
+                        "wallMs": 5.833540999999968,
+                        "cpuMs": 6.865
+                      },
+                      {
+                        "wallMs": 5.374791999999957,
+                        "cpuMs": 5.726
+                      },
+                      {
+                        "wallMs": 5.241708000000017,
+                        "cpuMs": 5.594
+                      },
+                      {
+                        "wallMs": 5.083416000000057,
+                        "cpuMs": 5.14
+                      },
+                      {
+                        "wallMs": 5.179124999999999,
+                        "cpuMs": 5.683
+                      },
+                      {
+                        "wallMs": 5.240916999999968,
+                        "cpuMs": 5.794
+                      },
+                      {
+                        "wallMs": 5.237041999999974,
+                        "cpuMs": 8.895
+                      },
+                      {
+                        "wallMs": 5.496499999999969,
+                        "cpuMs": 6.192
+                      },
+                      {
+                        "wallMs": 5.018291999999974,
+                        "cpuMs": 5.019
+                      },
+                      {
+                        "wallMs": 4.946833999999967,
+                        "cpuMs": 4.939
+                      },
+                      {
+                        "wallMs": 5.1496250000000146,
+                        "cpuMs": 5.15
+                      },
+                      {
+                        "wallMs": 5.205375000000004,
+                        "cpuMs": 8.775
+                      },
+                      {
+                        "wallMs": 5.443165999999906,
+                        "cpuMs": 10.208
+                      },
+                      {
+                        "wallMs": 5.8459170000000995,
+                        "cpuMs": 6.516
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              }
+            ]
+          },
+          {
+            "id": "prefix-statistics",
+            "title": "5000 cumulative AVERAGE + COUNTIF formulas",
+            "engines": [
+              {
+                "engine": "xl-eval",
+                "loadBefore": [
+                  5.72900390625,
+                  5.052734375,
+                  4.6337890625
+                ],
+                "loadAfter": [
+                  5.51025390625,
+                  5.0185546875,
+                  4.6240234375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "c233b0507c6f1c05a211a257af009ab17748ebdb4d377b3ebffe0f5bad8d7398",
+                "inputHash": "dcebe03d3eb1efda615abc19bba14c1ffffe2c949ee7e72490a0670337d9ceaf",
+                "retainedHeapMb": 14.390380859375,
+                "coldMedianMs": 67.87383399999999,
+                "coldMedianCpuMs": 118.767,
+                "samples": [
+                  {
+                    "wallMs": 68.41166700000002,
+                    "cpuMs": 110.166
+                  },
+                  {
+                    "wallMs": 67.61279099999996,
+                    "cpuMs": 137.396
+                  },
+                  {
+                    "wallMs": 67.87383399999999,
+                    "cpuMs": 115.818
+                  },
+                  {
+                    "wallMs": 66.62654199999997,
+                    "cpuMs": 118.767
+                  },
+                  {
+                    "wallMs": 69.527917,
+                    "cpuMs": 121.6
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 19.197041999999897,
+                    "medianMs": 14.201999999999998,
+                    "p95Ms": 15.198750000000018,
+                    "medianCpuMs": 17.492,
+                    "samples": [
+                      {
+                        "wallMs": 14.488500000000045,
+                        "cpuMs": 15.225
+                      },
+                      {
+                        "wallMs": 14.68804200000011,
+                        "cpuMs": 21.476
+                      },
+                      {
+                        "wallMs": 13.760625000000005,
+                        "cpuMs": 21.709
+                      },
+                      {
+                        "wallMs": 13.775874999999928,
+                        "cpuMs": 14.922
+                      },
+                      {
+                        "wallMs": 12.98849999999993,
+                        "cpuMs": 13.378
+                      },
+                      {
+                        "wallMs": 15.992874999999913,
+                        "cpuMs": 26.152
+                      },
+                      {
+                        "wallMs": 14.076749999999947,
+                        "cpuMs": 18.011
+                      },
+                      {
+                        "wallMs": 15.198750000000018,
+                        "cpuMs": 17.444
+                      },
+                      {
+                        "wallMs": 14.160499999999956,
+                        "cpuMs": 18.394
+                      },
+                      {
+                        "wallMs": 14.553332999999839,
+                        "cpuMs": 19.184
+                      },
+                      {
+                        "wallMs": 14.411999999999807,
+                        "cpuMs": 17.492
+                      },
+                      {
+                        "wallMs": 14.56337499999995,
+                        "cpuMs": 15.619
+                      },
+                      {
+                        "wallMs": 13.894125000000031,
+                        "cpuMs": 18.81
+                      },
+                      {
+                        "wallMs": 14.298541999999998,
+                        "cpuMs": 17.574
+                      },
+                      {
+                        "wallMs": 13.387207999999873,
+                        "cpuMs": 13.38
+                      },
+                      {
+                        "wallMs": 14.17816700000003,
+                        "cpuMs": 14.293
+                      },
+                      {
+                        "wallMs": 13.085916999999881,
+                        "cpuMs": 16.483
+                      },
+                      {
+                        "wallMs": 12.997624999999971,
+                        "cpuMs": 22.342
+                      },
+                      {
+                        "wallMs": 14.333916000000045,
+                        "cpuMs": 15.593
+                      },
+                      {
+                        "wallMs": 14.201999999999998,
+                        "cpuMs": 15.254
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              },
+              {
+                "engine": "xl-closures",
+                "loadBefore": [
+                  5.51025390625,
+                  5.0185546875,
+                  4.6240234375
+                ],
+                "loadAfter": [
+                  5.51025390625,
+                  5.0185546875,
+                  4.6240234375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "c233b0507c6f1c05a211a257af009ab17748ebdb4d377b3ebffe0f5bad8d7398",
+                "inputHash": "dcebe03d3eb1efda615abc19bba14c1ffffe2c949ee7e72490a0670337d9ceaf",
+                "retainedHeapMb": 13.560737609863281,
+                "coldMedianMs": 61.943667000000005,
+                "coldMedianCpuMs": 105.995,
+                "samples": [
+                  {
+                    "wallMs": 60.979667000000006,
+                    "cpuMs": 97.311
+                  },
+                  {
+                    "wallMs": 59.85508399999998,
+                    "cpuMs": 121.692
+                  },
+                  {
+                    "wallMs": 62.091583000000014,
+                    "cpuMs": 103.27
+                  },
+                  {
+                    "wallMs": 61.943667000000005,
+                    "cpuMs": 105.995
+                  },
+                  {
+                    "wallMs": 64.21124999999995,
+                    "cpuMs": 115.931
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 21.030624999999986,
+                    "medianMs": 14.349332999999888,
+                    "p95Ms": 17.000415999999973,
+                    "medianCpuMs": 17.097,
+                    "samples": [
+                      {
+                        "wallMs": 15.038542000000007,
+                        "cpuMs": 17.379
+                      },
+                      {
+                        "wallMs": 15.278250000000071,
+                        "cpuMs": 22.965
+                      },
+                      {
+                        "wallMs": 16.367457999999942,
+                        "cpuMs": 23.414
+                      },
+                      {
+                        "wallMs": 17.000415999999973,
+                        "cpuMs": 18.268
+                      },
+                      {
+                        "wallMs": 14.200791999999979,
+                        "cpuMs": 14.689
+                      },
+                      {
+                        "wallMs": 14.185124999999971,
+                        "cpuMs": 16.604
+                      },
+                      {
+                        "wallMs": 15.095041999999921,
+                        "cpuMs": 20.251
+                      },
+                      {
+                        "wallMs": 15.678707999999915,
+                        "cpuMs": 17.097
+                      },
+                      {
+                        "wallMs": 14.331458999999995,
+                        "cpuMs": 17.119
+                      },
+                      {
+                        "wallMs": 13.602709000000004,
+                        "cpuMs": 15.074
+                      },
+                      {
+                        "wallMs": 17.343875000000025,
+                        "cpuMs": 48.404
+                      },
+                      {
+                        "wallMs": 14.923541999999998,
+                        "cpuMs": 18.407
+                      },
+                      {
+                        "wallMs": 13.930041000000074,
+                        "cpuMs": 15.361
+                      },
+                      {
+                        "wallMs": 13.649124999999913,
+                        "cpuMs": 13.643
+                      },
+                      {
+                        "wallMs": 13.627750000000106,
+                        "cpuMs": 16.019
+                      },
+                      {
+                        "wallMs": 13.4381249999999,
+                        "cpuMs": 13.421
+                      },
+                      {
+                        "wallMs": 14.430292000000009,
+                        "cpuMs": 15.534
+                      },
+                      {
+                        "wallMs": 14.349332999999888,
+                        "cpuMs": 26.055
+                      },
+                      {
+                        "wallMs": 13.286833000000115,
+                        "cpuMs": 14.126
+                      },
+                      {
+                        "wallMs": 13.568250000000035,
+                        "cpuMs": 14.403
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              }
+            ]
+          }
+        ],
+        "finished": "2026-10-12T08:37:07.320Z"
+      }
+    },
+    {
+      "checkpoint": 128,
+      "report": {
+        "engineCommit": "f1bdc063eaa2efd36bc722d9d421eba3dacf7a5e",
+        "started": "2026-10-12T08:37:07.366Z",
+        "node": "v26.7.0",
+        "hyperformula": "3.5.0",
+        "machine": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "cpu": "Apple M5 Pro",
+          "memoryGiB": 48
+        },
+        "protocol": {
+          "warmups": 1,
+          "coldSamples": 5,
+          "warmupEdits": 2,
+          "editSamples": 20,
+          "phaseLimitMs": 30000,
+          "heapLimitMb": 1024,
+          "numericTolerance": "1e-9 * max(1, abs(a), abs(b)); other types and error codes exact",
+          "timed": "Session construction and synchronous edits including their returned changes. Input generation/conversion, formatting, result extraction, verification and hashes excluded.",
+          "isolation": "One sequential child process per workload and engine; explicit GC before each fresh session. HF 3.5.0 defaults to AlwaysDense. Column index is tested separately on lookup; AlwaysSparse and automatic mapping (threshold 0.5) separately on the sparse book. The 34000-row HF business case is a single bounded cold probe."
+        },
+        "workloads": [
+          {
+            "id": "prefix-sum",
+            "title": "5000 cumulative SUM formulas",
+            "engines": [
+              {
+                "engine": "xl-closures",
+                "loadBefore": [
+                  5.51025390625,
+                  5.0185546875,
+                  4.6240234375
+                ],
+                "loadAfter": [
+                  5.51025390625,
+                  5.0185546875,
+                  4.6240234375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "9b399225b091023e2daa7e7d8eca2b38a7999f1f24ac4258f110d5d7b627acb3",
+                "inputHash": "a4acc30fa53e783cc1636f97334f3944b41bb6a1b9e28d7f0c3debe3e3bb5b1e",
+                "retainedHeapMb": 7.73046875,
+                "coldMedianMs": 32.443375,
+                "coldMedianCpuMs": 59.821,
+                "samples": [
+                  {
+                    "wallMs": 33.018167000000005,
+                    "cpuMs": 57.656
+                  },
+                  {
+                    "wallMs": 31.714499999999987,
+                    "cpuMs": 80.43
+                  },
+                  {
+                    "wallMs": 32.572374999999965,
+                    "cpuMs": 60.737
+                  },
+                  {
+                    "wallMs": 31.489082999999994,
+                    "cpuMs": 59.821
+                  },
+                  {
+                    "wallMs": 32.443375,
+                    "cpuMs": 57.834
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 8.622707999999989,
+                    "medianMs": 4.491167000000019,
+                    "p95Ms": 5.31229200000007,
+                    "medianCpuMs": 5.27,
+                    "samples": [
+                      {
+                        "wallMs": 4.696542000000022,
+                        "cpuMs": 6.79
+                      },
+                      {
+                        "wallMs": 5.056500000000028,
+                        "cpuMs": 7.898
+                      },
+                      {
+                        "wallMs": 5.31229200000007,
+                        "cpuMs": 6.361
+                      },
+                      {
+                        "wallMs": 7.883458000000019,
+                        "cpuMs": 8.992
+                      },
+                      {
+                        "wallMs": 5.230625000000032,
+                        "cpuMs": 5.743
+                      },
+                      {
+                        "wallMs": 4.849375000000009,
+                        "cpuMs": 6.532
+                      },
+                      {
+                        "wallMs": 4.390917000000059,
+                        "cpuMs": 5.432
+                      },
+                      {
+                        "wallMs": 4.6616670000000795,
+                        "cpuMs": 5.042
+                      },
+                      {
+                        "wallMs": 4.147000000000048,
+                        "cpuMs": 4.531
+                      },
+                      {
+                        "wallMs": 4.401041999999961,
+                        "cpuMs": 4.468
+                      },
+                      {
+                        "wallMs": 4.077041000000008,
+                        "cpuMs": 4.297
+                      },
+                      {
+                        "wallMs": 4.491167000000019,
+                        "cpuMs": 4.993
+                      },
+                      {
+                        "wallMs": 4.330291999999986,
+                        "cpuMs": 7.941
+                      },
+                      {
+                        "wallMs": 4.2931670000000395,
+                        "cpuMs": 4.93
+                      },
+                      {
+                        "wallMs": 4.183667000000014,
+                        "cpuMs": 4.784
+                      },
+                      {
+                        "wallMs": 4.052209000000062,
+                        "cpuMs": 4.052
+                      },
+                      {
+                        "wallMs": 3.91045900000006,
+                        "cpuMs": 3.91
+                      },
+                      {
+                        "wallMs": 4.645208000000025,
+                        "cpuMs": 13.465
+                      },
+                      {
+                        "wallMs": 4.576958999999988,
+                        "cpuMs": 5.27
+                      },
+                      {
+                        "wallMs": 4.444707999999991,
+                        "cpuMs": 4.445
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              },
+              {
+                "engine": "xl-eval",
+                "loadBefore": [
+                  5.51025390625,
+                  5.0185546875,
+                  4.6240234375
+                ],
+                "loadAfter": [
+                  5.51025390625,
+                  5.0185546875,
+                  4.6240234375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "9b399225b091023e2daa7e7d8eca2b38a7999f1f24ac4258f110d5d7b627acb3",
+                "inputHash": "a4acc30fa53e783cc1636f97334f3944b41bb6a1b9e28d7f0c3debe3e3bb5b1e",
+                "retainedHeapMb": 9.491386413574219,
+                "coldMedianMs": 37.747041000000024,
+                "coldMedianCpuMs": 73.621,
+                "samples": [
+                  {
+                    "wallMs": 37.747041000000024,
+                    "cpuMs": 67.385
+                  },
+                  {
+                    "wallMs": 40.40445799999998,
+                    "cpuMs": 98.523
+                  },
+                  {
+                    "wallMs": 37.699708000000044,
+                    "cpuMs": 73.621
+                  },
+                  {
+                    "wallMs": 37.94591700000001,
+                    "cpuMs": 77.879
+                  },
+                  {
+                    "wallMs": 36.549958000000004,
+                    "cpuMs": 68.52
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 8.689665999999988,
+                    "medianMs": 4.408916999999974,
+                    "p95Ms": 5.0586660000000165,
+                    "medianCpuMs": 4.97,
+                    "samples": [
+                      {
+                        "wallMs": 4.84070799999995,
+                        "cpuMs": 6.547
+                      },
+                      {
+                        "wallMs": 5.450542000000041,
+                        "cpuMs": 7.432
+                      },
+                      {
+                        "wallMs": 4.739459000000011,
+                        "cpuMs": 6.28
+                      },
+                      {
+                        "wallMs": 4.443916999999942,
+                        "cpuMs": 5.336
+                      },
+                      {
+                        "wallMs": 4.417166999999949,
+                        "cpuMs": 4.684
+                      },
+                      {
+                        "wallMs": 5.028374999999983,
+                        "cpuMs": 10.45
+                      },
+                      {
+                        "wallMs": 4.669375000000059,
+                        "cpuMs": 5.713
+                      },
+                      {
+                        "wallMs": 4.3992920000000595,
+                        "cpuMs": 4.755
+                      },
+                      {
+                        "wallMs": 4.093375000000037,
+                        "cpuMs": 4.472
+                      },
+                      {
+                        "wallMs": 4.115291999999954,
+                        "cpuMs": 4.166
+                      },
+                      {
+                        "wallMs": 4.360374999999976,
+                        "cpuMs": 4.849
+                      },
+                      {
+                        "wallMs": 4.408916999999974,
+                        "cpuMs": 4.97
+                      },
+                      {
+                        "wallMs": 4.6149580000000014,
+                        "cpuMs": 8.4
+                      },
+                      {
+                        "wallMs": 4.180584000000067,
+                        "cpuMs": 4.781
+                      },
+                      {
+                        "wallMs": 3.966000000000008,
+                        "cpuMs": 3.967
+                      },
+                      {
+                        "wallMs": 4.221833000000061,
+                        "cpuMs": 4.22
+                      },
+                      {
+                        "wallMs": 4.0825000000000955,
+                        "cpuMs": 4.083
+                      },
+                      {
+                        "wallMs": 4.280709000000002,
+                        "cpuMs": 10.233
+                      },
+                      {
+                        "wallMs": 4.109291999999982,
+                        "cpuMs": 4.116
+                      },
+                      {
+                        "wallMs": 5.0586660000000165,
+                        "cpuMs": 5.634
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              }
+            ]
+          },
+          {
+            "id": "prefix-statistics",
+            "title": "5000 cumulative AVERAGE + COUNTIF formulas",
+            "engines": [
+              {
+                "engine": "xl-eval",
+                "loadBefore": [
+                  5.51025390625,
+                  5.0185546875,
+                  4.6240234375
+                ],
+                "loadAfter": [
+                  5.38916015625,
+                  5.00146484375,
+                  4.6201171875
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "c233b0507c6f1c05a211a257af009ab17748ebdb4d377b3ebffe0f5bad8d7398",
+                "inputHash": "dcebe03d3eb1efda615abc19bba14c1ffffe2c949ee7e72490a0670337d9ceaf",
+                "retainedHeapMb": 14.398101806640625,
+                "coldMedianMs": 61.41804100000002,
+                "coldMedianCpuMs": 113.185,
+                "samples": [
+                  {
+                    "wallMs": 60.111958999999956,
+                    "cpuMs": 100.666
+                  },
+                  {
+                    "wallMs": 61.41804100000002,
+                    "cpuMs": 132.704
+                  },
+                  {
+                    "wallMs": 61.21491599999996,
+                    "cpuMs": 109.318
+                  },
+                  {
+                    "wallMs": 61.65533299999993,
+                    "cpuMs": 113.185
+                  },
+                  {
+                    "wallMs": 63.39929100000006,
+                    "cpuMs": 114.362
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 16.698000000000093,
+                    "medianMs": 10.701583000000028,
+                    "p95Ms": 11.494707999999946,
+                    "medianCpuMs": 13.882,
+                    "samples": [
+                      {
+                        "wallMs": 10.941542000000027,
+                        "cpuMs": 12.285
+                      },
+                      {
+                        "wallMs": 11.43608299999994,
+                        "cpuMs": 21.005
+                      },
+                      {
+                        "wallMs": 11.003000000000043,
+                        "cpuMs": 17.433
+                      },
+                      {
+                        "wallMs": 11.038167000000044,
+                        "cpuMs": 13.882
+                      },
+                      {
+                        "wallMs": 10.726458999999977,
+                        "cpuMs": 11.054
+                      },
+                      {
+                        "wallMs": 11.668250000000057,
+                        "cpuMs": 20.875
+                      },
+                      {
+                        "wallMs": 11.153790999999956,
+                        "cpuMs": 15.945
+                      },
+                      {
+                        "wallMs": 10.522707999999966,
+                        "cpuMs": 12.138
+                      },
+                      {
+                        "wallMs": 10.129833999999846,
+                        "cpuMs": 13.974
+                      },
+                      {
+                        "wallMs": 10.480499999999893,
+                        "cpuMs": 21.014
+                      },
+                      {
+                        "wallMs": 10.701583000000028,
+                        "cpuMs": 13.814
+                      },
+                      {
+                        "wallMs": 10.342167000000018,
+                        "cpuMs": 11.492
+                      },
+                      {
+                        "wallMs": 11.494707999999946,
+                        "cpuMs": 16.771
+                      },
+                      {
+                        "wallMs": 11.080457999999908,
+                        "cpuMs": 14.427
+                      },
+                      {
+                        "wallMs": 9.690292,
+                        "cpuMs": 9.678
+                      },
+                      {
+                        "wallMs": 9.773209000000179,
+                        "cpuMs": 9.897
+                      },
+                      {
+                        "wallMs": 10.223625000000084,
+                        "cpuMs": 13.595
+                      },
+                      {
+                        "wallMs": 10.124625000000151,
+                        "cpuMs": 19.581
+                      },
+                      {
+                        "wallMs": 9.523457999999891,
+                        "cpuMs": 10.696
+                      },
+                      {
+                        "wallMs": 10.270874999999933,
+                        "cpuMs": 11.385
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              },
+              {
+                "engine": "xl-closures",
+                "loadBefore": [
+                  5.38916015625,
+                  5.00146484375,
+                  4.6201171875
+                ],
+                "loadAfter": [
+                  5.38916015625,
+                  5.00146484375,
+                  4.6201171875
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "c233b0507c6f1c05a211a257af009ab17748ebdb4d377b3ebffe0f5bad8d7398",
+                "inputHash": "dcebe03d3eb1efda615abc19bba14c1ffffe2c949ee7e72490a0670337d9ceaf",
+                "retainedHeapMb": 13.556350708007812,
+                "coldMedianMs": 54.084374999999966,
+                "coldMedianCpuMs": 99.006,
+                "samples": [
+                  {
+                    "wallMs": 54.084374999999966,
+                    "cpuMs": 89.931
+                  },
+                  {
+                    "wallMs": 52.87812500000001,
+                    "cpuMs": 114.542
+                  },
+                  {
+                    "wallMs": 53.719749999999976,
+                    "cpuMs": 94.72
+                  },
+                  {
+                    "wallMs": 54.442791,
+                    "cpuMs": 99.006
+                  },
+                  {
+                    "wallMs": 57.360459000000105,
+                    "cpuMs": 108.021
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 16.88499999999999,
+                    "medianMs": 11.068041999999991,
+                    "p95Ms": 11.956957999999986,
+                    "medianCpuMs": 13.169,
+                    "samples": [
+                      {
+                        "wallMs": 11.068041999999991,
+                        "cpuMs": 13.754
+                      },
+                      {
+                        "wallMs": 11.834666000000084,
+                        "cpuMs": 18.84
+                      },
+                      {
+                        "wallMs": 11.956957999999986,
+                        "cpuMs": 18.596
+                      },
+                      {
+                        "wallMs": 11.03374999999994,
+                        "cpuMs": 12.032
+                      },
+                      {
+                        "wallMs": 10.70637499999998,
+                        "cpuMs": 12.604
+                      },
+                      {
+                        "wallMs": 10.847125000000005,
+                        "cpuMs": 14.442
+                      },
+                      {
+                        "wallMs": 10.933209000000033,
+                        "cpuMs": 12.926
+                      },
+                      {
+                        "wallMs": 11.804041999999981,
+                        "cpuMs": 13.169
+                      },
+                      {
+                        "wallMs": 11.91816700000004,
+                        "cpuMs": 14.965
+                      },
+                      {
+                        "wallMs": 11.104583999999932,
+                        "cpuMs": 12.596
+                      },
+                      {
+                        "wallMs": 11.916500000000042,
+                        "cpuMs": 38.651
+                      },
+                      {
+                        "wallMs": 12.256665999999996,
+                        "cpuMs": 16.133
+                      },
+                      {
+                        "wallMs": 11.01670799999988,
+                        "cpuMs": 12.579
+                      },
+                      {
+                        "wallMs": 11.601458000000093,
+                        "cpuMs": 12.313
+                      },
+                      {
+                        "wallMs": 11.642082999999957,
+                        "cpuMs": 14.101
+                      },
+                      {
+                        "wallMs": 10.683334000000059,
+                        "cpuMs": 10.675
+                      },
+                      {
+                        "wallMs": 9.622000000000071,
+                        "cpuMs": 9.613
+                      },
+                      {
+                        "wallMs": 10.86570800000004,
+                        "cpuMs": 24.632
+                      },
+                      {
+                        "wallMs": 10.802707999999939,
+                        "cpuMs": 11.822
+                      },
+                      {
+                        "wallMs": 11.046207999999979,
+                        "cpuMs": 11.829
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              }
+            ]
+          }
+        ],
+        "finished": "2026-10-12T08:37:11.913Z"
+      }
+    },
+    {
+      "checkpoint": 64,
+      "report": {
+        "engineCommit": "f1bdc063eaa2efd36bc722d9d421eba3dacf7a5e",
+        "started": "2026-10-12T08:37:11.958Z",
+        "node": "v26.7.0",
+        "hyperformula": "3.5.0",
+        "machine": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "cpu": "Apple M5 Pro",
+          "memoryGiB": 48
+        },
+        "protocol": {
+          "warmups": 1,
+          "coldSamples": 5,
+          "warmupEdits": 2,
+          "editSamples": 20,
+          "phaseLimitMs": 30000,
+          "heapLimitMb": 1024,
+          "numericTolerance": "1e-9 * max(1, abs(a), abs(b)); other types and error codes exact",
+          "timed": "Session construction and synchronous edits including their returned changes. Input generation/conversion, formatting, result extraction, verification and hashes excluded.",
+          "isolation": "One sequential child process per workload and engine; explicit GC before each fresh session. HF 3.5.0 defaults to AlwaysDense. Column index is tested separately on lookup; AlwaysSparse and automatic mapping (threshold 0.5) separately on the sparse book. The 34000-row HF business case is a single bounded cold probe."
+        },
+        "workloads": [
+          {
+            "id": "prefix-sum",
+            "title": "5000 cumulative SUM formulas",
+            "engines": [
+              {
+                "engine": "xl-closures",
+                "loadBefore": [
+                  5.38916015625,
+                  5.00146484375,
+                  4.6201171875
+                ],
+                "loadAfter": [
+                  5.38916015625,
+                  5.00146484375,
+                  4.6201171875
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "9b399225b091023e2daa7e7d8eca2b38a7999f1f24ac4258f110d5d7b627acb3",
+                "inputHash": "a4acc30fa53e783cc1636f97334f3944b41bb6a1b9e28d7f0c3debe3e3bb5b1e",
+                "retainedHeapMb": 7.754119873046875,
+                "coldMedianMs": 30.641040999999973,
+                "coldMedianCpuMs": 57,
+                "samples": [
+                  {
+                    "wallMs": 30.67295899999999,
+                    "cpuMs": 55.004
+                  },
+                  {
+                    "wallMs": 30.366916000000003,
+                    "cpuMs": 78.938
+                  },
+                  {
+                    "wallMs": 31.545333000000028,
+                    "cpuMs": 57
+                  },
+                  {
+                    "wallMs": 30.641040999999973,
+                    "cpuMs": 57.487
+                  },
+                  {
+                    "wallMs": 30.541499999999985,
+                    "cpuMs": 54.776
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 7.4703340000000935,
+                    "medianMs": 3.9982499999999845,
+                    "p95Ms": 4.554082999999991,
+                    "medianCpuMs": 4.777,
+                    "samples": [
+                      {
+                        "wallMs": 4.243832999999995,
+                        "cpuMs": 5.976
+                      },
+                      {
+                        "wallMs": 4.554082999999991,
+                        "cpuMs": 6.752
+                      },
+                      {
+                        "wallMs": 3.8556670000000395,
+                        "cpuMs": 4.121
+                      },
+                      {
+                        "wallMs": 3.9321670000000495,
+                        "cpuMs": 5.147
+                      },
+                      {
+                        "wallMs": 3.677915999999982,
+                        "cpuMs": 3.727
+                      },
+                      {
+                        "wallMs": 4.084082999999964,
+                        "cpuMs": 5.854
+                      },
+                      {
+                        "wallMs": 3.810958000000028,
+                        "cpuMs": 4.872
+                      },
+                      {
+                        "wallMs": 3.9775419999999713,
+                        "cpuMs": 3.978
+                      },
+                      {
+                        "wallMs": 4.019665999999916,
+                        "cpuMs": 4.02
+                      },
+                      {
+                        "wallMs": 3.8764999999999645,
+                        "cpuMs": 3.946
+                      },
+                      {
+                        "wallMs": 3.7859170000000404,
+                        "cpuMs": 3.949
+                      },
+                      {
+                        "wallMs": 4.093583000000081,
+                        "cpuMs": 4.777
+                      },
+                      {
+                        "wallMs": 4.100541000000021,
+                        "cpuMs": 8.075
+                      },
+                      {
+                        "wallMs": 3.9982499999999845,
+                        "cpuMs": 4.614
+                      },
+                      {
+                        "wallMs": 4.311749999999961,
+                        "cpuMs": 4.971
+                      },
+                      {
+                        "wallMs": 3.9196660000000065,
+                        "cpuMs": 3.92
+                      },
+                      {
+                        "wallMs": 3.550875000000019,
+                        "cpuMs": 3.543
+                      },
+                      {
+                        "wallMs": 4.721000000000004,
+                        "cpuMs": 12.163
+                      },
+                      {
+                        "wallMs": 4.1983750000000555,
+                        "cpuMs": 4.962
+                      },
+                      {
+                        "wallMs": 3.7852499999999054,
+                        "cpuMs": 3.786
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              },
+              {
+                "engine": "xl-eval",
+                "loadBefore": [
+                  5.38916015625,
+                  5.00146484375,
+                  4.6201171875
+                ],
+                "loadAfter": [
+                  5.38916015625,
+                  5.00146484375,
+                  4.6201171875
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "9b399225b091023e2daa7e7d8eca2b38a7999f1f24ac4258f110d5d7b627acb3",
+                "inputHash": "a4acc30fa53e783cc1636f97334f3944b41bb6a1b9e28d7f0c3debe3e3bb5b1e",
+                "retainedHeapMb": 9.509819030761719,
+                "coldMedianMs": 36.51324999999997,
+                "coldMedianCpuMs": 69.929,
+                "samples": [
+                  {
+                    "wallMs": 37.09349999999998,
+                    "cpuMs": 64.636
+                  },
+                  {
+                    "wallMs": 37.088167,
+                    "cpuMs": 91.315
+                  },
+                  {
+                    "wallMs": 35.72479099999998,
+                    "cpuMs": 69.929
+                  },
+                  {
+                    "wallMs": 36.51324999999997,
+                    "cpuMs": 75.795
+                  },
+                  {
+                    "wallMs": 36.39279200000004,
+                    "cpuMs": 66.84
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 8.405832999999916,
+                    "medianMs": 4.193583000000103,
+                    "p95Ms": 4.847167000000013,
+                    "medianCpuMs": 4.96,
+                    "samples": [
+                      {
+                        "wallMs": 4.55295799999999,
+                        "cpuMs": 6.613
+                      },
+                      {
+                        "wallMs": 4.596041000000014,
+                        "cpuMs": 6.101
+                      },
+                      {
+                        "wallMs": 4.304457999999954,
+                        "cpuMs": 6.01
+                      },
+                      {
+                        "wallMs": 4.083750000000009,
+                        "cpuMs": 4.914
+                      },
+                      {
+                        "wallMs": 3.994000000000028,
+                        "cpuMs": 4.431
+                      },
+                      {
+                        "wallMs": 4.847167000000013,
+                        "cpuMs": 10.545
+                      },
+                      {
+                        "wallMs": 4.169083999999998,
+                        "cpuMs": 5.194
+                      },
+                      {
+                        "wallMs": 3.9750419999999167,
+                        "cpuMs": 4.314
+                      },
+                      {
+                        "wallMs": 3.608082999999965,
+                        "cpuMs": 3.987
+                      },
+                      {
+                        "wallMs": 3.9721250000000055,
+                        "cpuMs": 4.035
+                      },
+                      {
+                        "wallMs": 4.269542000000001,
+                        "cpuMs": 4.96
+                      },
+                      {
+                        "wallMs": 4.275709000000006,
+                        "cpuMs": 4.859
+                      },
+                      {
+                        "wallMs": 4.937541999999894,
+                        "cpuMs": 8.894
+                      },
+                      {
+                        "wallMs": 4.295458000000053,
+                        "cpuMs": 4.908
+                      },
+                      {
+                        "wallMs": 3.8362919999999576,
+                        "cpuMs": 3.837
+                      },
+                      {
+                        "wallMs": 3.7636660000000575,
+                        "cpuMs": 3.764
+                      },
+                      {
+                        "wallMs": 3.775292000000036,
+                        "cpuMs": 3.776
+                      },
+                      {
+                        "wallMs": 3.860458000000108,
+                        "cpuMs": 7.669
+                      },
+                      {
+                        "wallMs": 4.193583000000103,
+                        "cpuMs": 8.637
+                      },
+                      {
+                        "wallMs": 4.561417000000006,
+                        "cpuMs": 5.293
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              }
+            ]
+          },
+          {
+            "id": "prefix-statistics",
+            "title": "5000 cumulative AVERAGE + COUNTIF formulas",
+            "engines": [
+              {
+                "engine": "xl-eval",
+                "loadBefore": [
+                  5.38916015625,
+                  5.00146484375,
+                  4.6201171875
+                ],
+                "loadAfter": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "c233b0507c6f1c05a211a257af009ab17748ebdb4d377b3ebffe0f5bad8d7398",
+                "inputHash": "dcebe03d3eb1efda615abc19bba14c1ffffe2c949ee7e72490a0670337d9ceaf",
+                "retainedHeapMb": 14.415451049804688,
+                "coldMedianMs": 57.27995900000002,
+                "coldMedianCpuMs": 108.24,
+                "samples": [
+                  {
+                    "wallMs": 57.27995900000002,
+                    "cpuMs": 95.396
+                  },
+                  {
+                    "wallMs": 57.00074999999998,
+                    "cpuMs": 125.752
+                  },
+                  {
+                    "wallMs": 57.83491700000002,
+                    "cpuMs": 105.993
+                  },
+                  {
+                    "wallMs": 57.27766699999995,
+                    "cpuMs": 108.24
+                  },
+                  {
+                    "wallMs": 61.065833,
+                    "cpuMs": 112.469
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 14.063541999999984,
+                    "medianMs": 8.996208000000024,
+                    "p95Ms": 10.415041999999971,
+                    "medianCpuMs": 10.993,
+                    "samples": [
+                      {
+                        "wallMs": 9.091708999999923,
+                        "cpuMs": 10.071
+                      },
+                      {
+                        "wallMs": 10.812833000000069,
+                        "cpuMs": 17.62
+                      },
+                      {
+                        "wallMs": 9.524875000000065,
+                        "cpuMs": 16.78
+                      },
+                      {
+                        "wallMs": 8.841499999999996,
+                        "cpuMs": 9.133
+                      },
+                      {
+                        "wallMs": 8.608749999999986,
+                        "cpuMs": 8.947
+                      },
+                      {
+                        "wallMs": 10.415041999999971,
+                        "cpuMs": 22.442
+                      },
+                      {
+                        "wallMs": 9.182000000000016,
+                        "cpuMs": 10.993
+                      },
+                      {
+                        "wallMs": 8.685041999999953,
+                        "cpuMs": 9.975
+                      },
+                      {
+                        "wallMs": 8.542208000000073,
+                        "cpuMs": 12.435
+                      },
+                      {
+                        "wallMs": 9.386582999999973,
+                        "cpuMs": 16.134
+                      },
+                      {
+                        "wallMs": 9.176750000000084,
+                        "cpuMs": 12.609
+                      },
+                      {
+                        "wallMs": 8.767624999999953,
+                        "cpuMs": 9.74
+                      },
+                      {
+                        "wallMs": 9.123957999999902,
+                        "cpuMs": 14.177
+                      },
+                      {
+                        "wallMs": 9.130333999999948,
+                        "cpuMs": 12.359
+                      },
+                      {
+                        "wallMs": 8.996208000000024,
+                        "cpuMs": 9.863
+                      },
+                      {
+                        "wallMs": 8.090916000000107,
+                        "cpuMs": 8.213
+                      },
+                      {
+                        "wallMs": 7.693207999999913,
+                        "cpuMs": 8.219
+                      },
+                      {
+                        "wallMs": 8.603667000000087,
+                        "cpuMs": 18.201
+                      },
+                      {
+                        "wallMs": 7.84395799999993,
+                        "cpuMs": 9.104
+                      },
+                      {
+                        "wallMs": 8.296291999999994,
+                        "cpuMs": 9.369
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              },
+              {
+                "engine": "xl-closures",
+                "loadBefore": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "loadAfter": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "c233b0507c6f1c05a211a257af009ab17748ebdb4d377b3ebffe0f5bad8d7398",
+                "inputHash": "dcebe03d3eb1efda615abc19bba14c1ffffe2c949ee7e72490a0670337d9ceaf",
+                "retainedHeapMb": 13.567214965820312,
+                "coldMedianMs": 50.895208000000025,
+                "coldMedianCpuMs": 96.617,
+                "samples": [
+                  {
+                    "wallMs": 49.904167,
+                    "cpuMs": 86.438
+                  },
+                  {
+                    "wallMs": 49.054708000000005,
+                    "cpuMs": 110.931
+                  },
+                  {
+                    "wallMs": 50.895208000000025,
+                    "cpuMs": 92.477
+                  },
+                  {
+                    "wallMs": 51.24683299999998,
+                    "cpuMs": 96.617
+                  },
+                  {
+                    "wallMs": 56.193250000000035,
+                    "cpuMs": 105.974
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 15.05941699999994,
+                    "medianMs": 8.821332999999981,
+                    "p95Ms": 9.919291999999928,
+                    "medianCpuMs": 11.495,
+                    "samples": [
+                      {
+                        "wallMs": 9.36545799999999,
+                        "cpuMs": 12.513
+                      },
+                      {
+                        "wallMs": 9.631833000000029,
+                        "cpuMs": 16.687
+                      },
+                      {
+                        "wallMs": 9.501583000000096,
+                        "cpuMs": 14.728
+                      },
+                      {
+                        "wallMs": 10.099165999999968,
+                        "cpuMs": 12.989
+                      },
+                      {
+                        "wallMs": 8.434333000000038,
+                        "cpuMs": 8.745
+                      },
+                      {
+                        "wallMs": 8.821332999999981,
+                        "cpuMs": 12.777
+                      },
+                      {
+                        "wallMs": 9.539458999999965,
+                        "cpuMs": 11.495
+                      },
+                      {
+                        "wallMs": 9.226750000000038,
+                        "cpuMs": 10.541
+                      },
+                      {
+                        "wallMs": 9.01679200000001,
+                        "cpuMs": 13.078
+                      },
+                      {
+                        "wallMs": 8.28891699999997,
+                        "cpuMs": 8.356
+                      },
+                      {
+                        "wallMs": 9.808042,
+                        "cpuMs": 34.368
+                      },
+                      {
+                        "wallMs": 9.919291999999928,
+                        "cpuMs": 14.073
+                      },
+                      {
+                        "wallMs": 8.306084000000055,
+                        "cpuMs": 9.989
+                      },
+                      {
+                        "wallMs": 8.222584000000097,
+                        "cpuMs": 8.909
+                      },
+                      {
+                        "wallMs": 7.65645799999993,
+                        "cpuMs": 9.987
+                      },
+                      {
+                        "wallMs": 7.936958000000004,
+                        "cpuMs": 7.937
+                      },
+                      {
+                        "wallMs": 7.365208000000166,
+                        "cpuMs": 7.36
+                      },
+                      {
+                        "wallMs": 8.581083000000035,
+                        "cpuMs": 21.509
+                      },
+                      {
+                        "wallMs": 7.619374999999991,
+                        "cpuMs": 8.457
+                      },
+                      {
+                        "wallMs": 8.62241599999993,
+                        "cpuMs": 9.419
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              }
+            ]
+          }
+        ],
+        "finished": "2026-10-12T08:37:16.302Z"
+      }
+    },
+    {
+      "checkpoint": 32,
+      "report": {
+        "engineCommit": "f1bdc063eaa2efd36bc722d9d421eba3dacf7a5e",
+        "started": "2026-10-12T08:37:16.348Z",
+        "node": "v26.7.0",
+        "hyperformula": "3.5.0",
+        "machine": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "cpu": "Apple M5 Pro",
+          "memoryGiB": 48
+        },
+        "protocol": {
+          "warmups": 1,
+          "coldSamples": 5,
+          "warmupEdits": 2,
+          "editSamples": 20,
+          "phaseLimitMs": 30000,
+          "heapLimitMb": 1024,
+          "numericTolerance": "1e-9 * max(1, abs(a), abs(b)); other types and error codes exact",
+          "timed": "Session construction and synchronous edits including their returned changes. Input generation/conversion, formatting, result extraction, verification and hashes excluded.",
+          "isolation": "One sequential child process per workload and engine; explicit GC before each fresh session. HF 3.5.0 defaults to AlwaysDense. Column index is tested separately on lookup; AlwaysSparse and automatic mapping (threshold 0.5) separately on the sparse book. The 34000-row HF business case is a single bounded cold probe."
+        },
+        "workloads": [
+          {
+            "id": "prefix-sum",
+            "title": "5000 cumulative SUM formulas",
+            "engines": [
+              {
+                "engine": "xl-closures",
+                "loadBefore": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "loadAfter": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "9b399225b091023e2daa7e7d8eca2b38a7999f1f24ac4258f110d5d7b627acb3",
+                "inputHash": "a4acc30fa53e783cc1636f97334f3944b41bb6a1b9e28d7f0c3debe3e3bb5b1e",
+                "retainedHeapMb": 7.705543518066406,
+                "coldMedianMs": 29.96025000000003,
+                "coldMedianCpuMs": 54.134,
+                "samples": [
+                  {
+                    "wallMs": 30.62937500000001,
+                    "cpuMs": 50.967
+                  },
+                  {
+                    "wallMs": 29.96025000000003,
+                    "cpuMs": 71.027
+                  },
+                  {
+                    "wallMs": 31.264499999999998,
+                    "cpuMs": 55.329
+                  },
+                  {
+                    "wallMs": 29.552374999999984,
+                    "cpuMs": 53.083
+                  },
+                  {
+                    "wallMs": 28.889499999999998,
+                    "cpuMs": 54.134
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 7.623207999999977,
+                    "medianMs": 3.6545830000000024,
+                    "p95Ms": 4.236041,
+                    "medianCpuMs": 4.46,
+                    "samples": [
+                      {
+                        "wallMs": 4.348875000000021,
+                        "cpuMs": 6.287
+                      },
+                      {
+                        "wallMs": 4.008082999999942,
+                        "cpuMs": 6.202
+                      },
+                      {
+                        "wallMs": 3.74512500000003,
+                        "cpuMs": 5.244
+                      },
+                      {
+                        "wallMs": 3.932125000000042,
+                        "cpuMs": 5.197
+                      },
+                      {
+                        "wallMs": 3.732582999999977,
+                        "cpuMs": 4.011
+                      },
+                      {
+                        "wallMs": 3.7285000000000537,
+                        "cpuMs": 5.375
+                      },
+                      {
+                        "wallMs": 3.531541000000061,
+                        "cpuMs": 4.527
+                      },
+                      {
+                        "wallMs": 3.6545830000000024,
+                        "cpuMs": 3.994
+                      },
+                      {
+                        "wallMs": 3.499500000000012,
+                        "cpuMs": 3.844
+                      },
+                      {
+                        "wallMs": 3.497833000000014,
+                        "cpuMs": 3.542
+                      },
+                      {
+                        "wallMs": 3.2111249999999245,
+                        "cpuMs": 3.347
+                      },
+                      {
+                        "wallMs": 3.477540999999974,
+                        "cpuMs": 3.998
+                      },
+                      {
+                        "wallMs": 4.135916000000066,
+                        "cpuMs": 7.854
+                      },
+                      {
+                        "wallMs": 4.236041,
+                        "cpuMs": 4.887
+                      },
+                      {
+                        "wallMs": 3.54849999999999,
+                        "cpuMs": 4.138
+                      },
+                      {
+                        "wallMs": 3.206291999999962,
+                        "cpuMs": 3.206
+                      },
+                      {
+                        "wallMs": 3.160624999999982,
+                        "cpuMs": 3.152
+                      },
+                      {
+                        "wallMs": 3.62175000000002,
+                        "cpuMs": 9.662
+                      },
+                      {
+                        "wallMs": 3.7607079999999087,
+                        "cpuMs": 4.46
+                      },
+                      {
+                        "wallMs": 3.507249999999999,
+                        "cpuMs": 3.507
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              },
+              {
+                "engine": "xl-eval",
+                "loadBefore": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "loadAfter": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "9b399225b091023e2daa7e7d8eca2b38a7999f1f24ac4258f110d5d7b627acb3",
+                "inputHash": "a4acc30fa53e783cc1636f97334f3944b41bb6a1b9e28d7f0c3debe3e3bb5b1e",
+                "retainedHeapMb": 9.473663330078125,
+                "coldMedianMs": 36.88425000000001,
+                "coldMedianCpuMs": 69.654,
+                "samples": [
+                  {
+                    "wallMs": 36.64666699999998,
+                    "cpuMs": 63.016
+                  },
+                  {
+                    "wallMs": 36.498875,
+                    "cpuMs": 88.782
+                  },
+                  {
+                    "wallMs": 36.88741699999997,
+                    "cpuMs": 69.654
+                  },
+                  {
+                    "wallMs": 36.88425000000001,
+                    "cpuMs": 74.217
+                  },
+                  {
+                    "wallMs": 36.90454199999999,
+                    "cpuMs": 69.422
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 8.336583000000019,
+                    "medianMs": 4.048999999999978,
+                    "p95Ms": 4.354000000000042,
+                    "medianCpuMs": 4.944,
+                    "samples": [
+                      {
+                        "wallMs": 4.286917000000017,
+                        "cpuMs": 6.116
+                      },
+                      {
+                        "wallMs": 4.2309999999999945,
+                        "cpuMs": 5.804
+                      },
+                      {
+                        "wallMs": 4.057165999999938,
+                        "cpuMs": 6.911
+                      },
+                      {
+                        "wallMs": 3.9329999999999927,
+                        "cpuMs": 5.224
+                      },
+                      {
+                        "wallMs": 3.738207999999986,
+                        "cpuMs": 3.986
+                      },
+                      {
+                        "wallMs": 4.514291999999955,
+                        "cpuMs": 9.972
+                      },
+                      {
+                        "wallMs": 4.048999999999978,
+                        "cpuMs": 4.975
+                      },
+                      {
+                        "wallMs": 3.931542000000036,
+                        "cpuMs": 4.293
+                      },
+                      {
+                        "wallMs": 3.4974580000000515,
+                        "cpuMs": 3.869
+                      },
+                      {
+                        "wallMs": 3.5820420000000013,
+                        "cpuMs": 3.648
+                      },
+                      {
+                        "wallMs": 4.090832999999975,
+                        "cpuMs": 4.669
+                      },
+                      {
+                        "wallMs": 4.00162499999999,
+                        "cpuMs": 4.582
+                      },
+                      {
+                        "wallMs": 4.225999999999999,
+                        "cpuMs": 8.068
+                      },
+                      {
+                        "wallMs": 4.267624999999953,
+                        "cpuMs": 4.944
+                      },
+                      {
+                        "wallMs": 3.8694169999999986,
+                        "cpuMs": 3.871
+                      },
+                      {
+                        "wallMs": 3.842624999999998,
+                        "cpuMs": 3.842
+                      },
+                      {
+                        "wallMs": 3.489791000000082,
+                        "cpuMs": 3.482
+                      },
+                      {
+                        "wallMs": 3.6945409999999583,
+                        "cpuMs": 7.055
+                      },
+                      {
+                        "wallMs": 4.354000000000042,
+                        "cpuMs": 14.357
+                      },
+                      {
+                        "wallMs": 4.084666000000084,
+                        "cpuMs": 4.783
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              }
+            ]
+          },
+          {
+            "id": "prefix-statistics",
+            "title": "5000 cumulative AVERAGE + COUNTIF formulas",
+            "engines": [
+              {
+                "engine": "xl-eval",
+                "loadBefore": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "loadAfter": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "c233b0507c6f1c05a211a257af009ab17748ebdb4d377b3ebffe0f5bad8d7398",
+                "inputHash": "dcebe03d3eb1efda615abc19bba14c1ffffe2c949ee7e72490a0670337d9ceaf",
+                "retainedHeapMb": 14.420196533203125,
+                "coldMedianMs": 56.301874999999995,
+                "coldMedianCpuMs": 109.483,
+                "samples": [
+                  {
+                    "wallMs": 55.88620800000001,
+                    "cpuMs": 99.719
+                  },
+                  {
+                    "wallMs": 54.27524999999997,
+                    "cpuMs": 124.045
+                  },
+                  {
+                    "wallMs": 57.240583000000015,
+                    "cpuMs": 105.35
+                  },
+                  {
+                    "wallMs": 56.301874999999995,
+                    "cpuMs": 109.483
+                  },
+                  {
+                    "wallMs": 58.70979199999999,
+                    "cpuMs": 109.866
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 13.09216600000002,
+                    "medianMs": 7.695500000000038,
+                    "p95Ms": 8.316958,
+                    "medianCpuMs": 9.977,
+                    "samples": [
+                      {
+                        "wallMs": 8.007875000000013,
+                        "cpuMs": 9.281
+                      },
+                      {
+                        "wallMs": 8.316958,
+                        "cpuMs": 18.167
+                      },
+                      {
+                        "wallMs": 7.911916999999903,
+                        "cpuMs": 14.392
+                      },
+                      {
+                        "wallMs": 7.732708000000002,
+                        "cpuMs": 10.037
+                      },
+                      {
+                        "wallMs": 7.20962499999996,
+                        "cpuMs": 7.48
+                      },
+                      {
+                        "wallMs": 8.514707999999928,
+                        "cpuMs": 19.494
+                      },
+                      {
+                        "wallMs": 8.060041999999953,
+                        "cpuMs": 10.262
+                      },
+                      {
+                        "wallMs": 7.695500000000038,
+                        "cpuMs": 9.113
+                      },
+                      {
+                        "wallMs": 7.212790999999925,
+                        "cpuMs": 9.74
+                      },
+                      {
+                        "wallMs": 8.020624999999995,
+                        "cpuMs": 20.58
+                      },
+                      {
+                        "wallMs": 7.990332999999964,
+                        "cpuMs": 10.908
+                      },
+                      {
+                        "wallMs": 7.775957999999946,
+                        "cpuMs": 9.275
+                      },
+                      {
+                        "wallMs": 7.38474999999994,
+                        "cpuMs": 8.944
+                      },
+                      {
+                        "wallMs": 7.314957999999933,
+                        "cpuMs": 10.416
+                      },
+                      {
+                        "wallMs": 6.78129100000001,
+                        "cpuMs": 7.509
+                      },
+                      {
+                        "wallMs": 7.258833999999979,
+                        "cpuMs": 7.369
+                      },
+                      {
+                        "wallMs": 7.0909999999998945,
+                        "cpuMs": 9.977
+                      },
+                      {
+                        "wallMs": 7.085708000000068,
+                        "cpuMs": 16.496
+                      },
+                      {
+                        "wallMs": 6.963874999999916,
+                        "cpuMs": 8.083
+                      },
+                      {
+                        "wallMs": 7.078292000000147,
+                        "cpuMs": 8.143
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              },
+              {
+                "engine": "xl-closures",
+                "loadBefore": [
+                  5.27783203125,
+                  4.984375,
+                  4.6162109375
+                ],
+                "loadAfter": [
+                  4.93505859375,
+                  4.91796875,
+                  4.5947265625
+                ],
+                "status": "ok",
+                "cells": 10000,
+                "formulas": 5000,
+                "hash": "c233b0507c6f1c05a211a257af009ab17748ebdb4d377b3ebffe0f5bad8d7398",
+                "inputHash": "dcebe03d3eb1efda615abc19bba14c1ffffe2c949ee7e72490a0670337d9ceaf",
+                "retainedHeapMb": 13.610038757324219,
+                "coldMedianMs": 48.629291999999964,
+                "coldMedianCpuMs": 93.271,
+                "samples": [
+                  {
+                    "wallMs": 50.959790999999996,
+                    "cpuMs": 90.703
+                  },
+                  {
+                    "wallMs": 48.174375,
+                    "cpuMs": 110.36
+                  },
+                  {
+                    "wallMs": 48.629291999999964,
+                    "cpuMs": 90.112
+                  },
+                  {
+                    "wallMs": 47.386416000000054,
+                    "cpuMs": 93.271
+                  },
+                  {
+                    "wallMs": 51.775499999999965,
+                    "cpuMs": 101.508
+                  }
+                ],
+                "edits": {
+                  "middle-input": {
+                    "firstEditMs": 14.230457999999999,
+                    "medianMs": 7.913540999999896,
+                    "p95Ms": 9.469749999999976,
+                    "medianCpuMs": 9.775,
+                    "samples": [
+                      {
+                        "wallMs": 8.447499999999991,
+                        "cpuMs": 11.811
+                      },
+                      {
+                        "wallMs": 8.505458999999973,
+                        "cpuMs": 15.86
+                      },
+                      {
+                        "wallMs": 8.391583999999966,
+                        "cpuMs": 13.129
+                      },
+                      {
+                        "wallMs": 8.720125000000053,
+                        "cpuMs": 12.881
+                      },
+                      {
+                        "wallMs": 7.82325000000003,
+                        "cpuMs": 8.683
+                      },
+                      {
+                        "wallMs": 7.771292000000017,
+                        "cpuMs": 8.516
+                      },
+                      {
+                        "wallMs": 8.392000000000053,
+                        "cpuMs": 10.567
+                      },
+                      {
+                        "wallMs": 7.988624999999956,
+                        "cpuMs": 9.775
+                      },
+                      {
+                        "wallMs": 7.726916999999958,
+                        "cpuMs": 10.398
+                      },
+                      {
+                        "wallMs": 7.3474579999999605,
+                        "cpuMs": 8.836
+                      },
+                      {
+                        "wallMs": 11.875750000000039,
+                        "cpuMs": 42.319
+                      },
+                      {
+                        "wallMs": 9.469749999999976,
+                        "cpuMs": 14.033
+                      },
+                      {
+                        "wallMs": 7.892500000000041,
+                        "cpuMs": 9.357
+                      },
+                      {
+                        "wallMs": 7.377374999999802,
+                        "cpuMs": 7.378
+                      },
+                      {
+                        "wallMs": 7.024499999999989,
+                        "cpuMs": 9.331
+                      },
+                      {
+                        "wallMs": 6.9887079999998605,
+                        "cpuMs": 6.981
+                      },
+                      {
+                        "wallMs": 6.639167000000043,
+                        "cpuMs": 6.633
+                      },
+                      {
+                        "wallMs": 8.384708000000046,
+                        "cpuMs": 17.499
+                      },
+                      {
+                        "wallMs": 7.44458399999985,
+                        "cpuMs": 8.419
+                      },
+                      {
+                        "wallMs": 7.913540999999896,
+                        "cpuMs": 8.883
+                      }
+                    ]
+                  }
+                },
+                "verification": {
+                  "comparisons": 28,
+                  "checkedCells": 280000,
+                  "maxRelativeError": 0
+                }
+              }
+            ]
+          }
+        ],
+        "finished": "2026-10-12T08:37:20.612Z"
+      }
+    }
+  ]
+}

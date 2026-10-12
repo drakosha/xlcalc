@@ -5,8 +5,8 @@
  */
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
-import { key, type EngineState, type Formula } from './engine.js'
-import { due, located, step, type Steps } from './exec/budget.js'
+import { key, keyParts, type EngineState, type Formula } from './engine.js'
+import { due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress } from './model.js'
 import { descendants, markVolatile, readersOf, rebuildGraph } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
@@ -41,8 +41,9 @@ export const tracker = (): Tracker => ({ cells: new Map(), spills: new Map() })
 
 /** Records a cell's value before it first changes. */
 export function track(state: EngineState, t: Tracker | undefined, s: number, r: number, c: number) {
+  if (!t) return
   const k = key(s, r, c)
-  if (t && !t.cells.has(k)) t.cells.set(k, state.rt.cell(s, r, c))
+  if (!t.cells.has(k)) t.cells.set(k, state.rt.cell(s, r, c))
 }
 
 export function put(sh: SheetData, r: number, c: number, v: V) {
@@ -65,7 +66,7 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
  * by `delta` or more, a number turned into another type or back; text, a boolean or an error changed into another of
  * them does not count. Between two formulas the steps yield when the computation's slice is used up.
  */
-function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0): Steps<boolean> {
+function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0, active?: Set<number>): Steps<boolean> {
   const { rt, spills } = state
   if (ids.length >= 64) state.ctx.aggregates.invalidateCells(ids.map((id) => state.formulas[id]!))
   // a formula that reads the clock's year joins the volatile ones; one that no longer does leaves them
@@ -73,20 +74,24 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
   let clocked = false
   let moved = false
   for (const id of ids) {
+    if (active && !active.has(id)) {
+      if (paced(1)) yield
+      continue
+    }
     if (due()) yield
     step()
     const f = state.formulas[id]!
     spills.done.set(id, ++spills.step)
     if (clock) clock.read = false
-    let v: V
+    let v: V, array = false
     if (state.topo[id] < 0 && !iterating) {
       endSpill(state, f, t, true)
       v = E.CYCLE
     } else {
       try {
         const x = f.fn()
-        if (f.area) v = fixed(state, f, x, t)
-        else if (isMany(x)) v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t)
+        if (f.area) { array = true; v = fixed(state, f, x, t) }
+        else if (isMany(x)) { array = true; v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t) }
         else {
           endSpill(state, f, t, false)
           v = shown(rt.scalar(x))
@@ -102,7 +107,9 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
     }
     const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
     moved ||= typeof v === 'number' && typeof was === 'number' ? Math.abs(v - was) >= delta : (typeof v === 'number') !== (typeof was === 'number')
-    write(state, f.s, f.r, f.c, v, t)
+    const changed = write(state, f.s, f.r, f.c, v, t)
+    // Once a root changes, the remaining ordered pass already covers every possible dependent.
+    if (active && (changed || array)) active = undefined
     state.ctx.cache.fit()
   }
   if (clocked) markVolatile(state)
@@ -155,10 +162,19 @@ export function* evaluateAll(state: EngineState, t?: Tracker): Steps<void> {
  * through a spill range, before or after, everything is computed again from no spills, as a new state is: what
  * such a cycle holds depends on which arrays spilled first.
  */
-export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker): Steps<void> {
+export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, prune = false): Steps<void> {
   if (state.input.iteration) cyclesMoved(state, dirty)
   const before = spillCycle(state)
-  yield* settle(state, ordered(state, dirty), t)
+  // Reuse the reachability set as the active set. Large root batches and existing arrays keep the full pass.
+  const roots = prune && dirty.size <= 64 && !state.input.iteration && !state.spills.claims.size && !state.spills.wait.size ? [...dirty] : undefined
+  const lists = ordered(state, dirty)
+  let active: Set<number> | undefined
+  if (roots && !lists[1].length && lists[0].length >= 64) {
+    dirty.clear()
+    for (const id of roots) dirty.add(id)
+    active = dirty
+  }
+  yield* settle(state, lists, t, active)
   if (!before && !spillCycle(state)) return
   for (const id of [...state.spills.on.keys()]) release(state, id, t)
   for (const m of [state.spills.claims, state.spills.wait, state.spills.why]) m.clear()
@@ -179,14 +195,14 @@ function ordered(state: EngineState, dirty: Set<number>): [number[], number[]] {
 const ROUNDS = 100_000
 
 /** Rounds of evaluation until no spill changes cells already read or frees cells an array waits for. */
-function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker): Steps<void> {
+function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, active?: Set<number>): Steps<void> {
   const sp = state.spills
   for (let round = 0; ; round++) {
     if (round === ROUNDS) throw new Error('spilled arrays did not settle')
     sp.touched = []
     sp.done.clear()
     sp.claimsChanged = false
-    yield* evaluate(state, lists[0], t)
+    yield* evaluate(state, lists[0], t, false, 0, active)
     // iterative calculation computes every cycle again when any is to be computed: the cycles share their iterations
     if (state.input.iteration && lists[1].length) yield* iterate(state, t)
     else yield* evaluate(state, lists[1], t)
@@ -200,9 +216,11 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker): 
     }
     if (!next.size) {
       sp.touched.length = 0
+      sp.done.clear()
       return
     }
     lists = ordered(state, next)
+    active = undefined
   }
 }
 
@@ -214,7 +232,7 @@ const isCycle = (v: V) => isErr(v) && v.code === 'CYCLE'
  */
 export function concerned(state: EngineState, x: Area, out: Set<number>, step = Infinity) {
   const sp = state.spills
-  const add = (id: number) => (sp.done.get(id) ?? -1) < step && out.add(id)
+  const add = (id: number) => (step === Infinity || (sp.done.get(id) ?? -1) < step) && out.add(id)
   const readers = new Set<number>()
   readersOf(state, x, readers)
   readers.forEach(add)
@@ -222,11 +240,14 @@ export function concerned(state: EngineState, x: Area, out: Set<number>, step = 
 }
 
 export function changed(state: EngineState, t: Tracker): string[] {
-  const out = new Set<string>()
+  const out: string[] = []
   for (const [k, old] of t.cells) {
-    const [s, r, c] = k.split(':').map(Number)
-    if (!same(old, state.rt.cell(s, r, c))) out.add(k)
+    const [s, r, c] = keyParts(k)
+    if (!same(old, state.rt.cell(s, r, c))) out.push(k)
   }
-  for (const [k, old] of t.spills) if (old !== describeAt(state, k)) out.add(k)
-  return [...out]
+  if (t.spills.size) {
+    const seen = new Set(out)
+    for (const [k, old] of t.spills) if (old !== describeAt(state, k) && !seen.has(k)) out.push(k)
+  }
+  return out
 }

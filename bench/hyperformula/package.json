@@ -1,0 +1,13 @@
+{
+  "name": "xlcalc-hyperformula-benchmark",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test shared.spec.mjs",
+    "bench": "node run.mjs"
+  },
+  "dependencies": {
+    "hyperformula": "3.5.0"
+  }
+}

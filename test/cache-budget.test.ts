@@ -75,6 +75,31 @@ it('a range read once fills no cache, a range read twice is kept', () => {
   expect(createState({ sheets: [{ name: 'S', cells: twice }] }, { now: 0, seed: 1, cache }).ctx.flat.size).toBe(600 - 255)
 })
 
+it('stored values preserve Map order and undefined while first-read marks stay out of iteration', () => {
+  const c = new RangeCache<number | undefined>()
+  const [a, b, mark] = ['0:0:0:9:0', '0:0:1:9:1', '0:0:2:9:2']
+  const expected = new Map<string, number | undefined>()
+  c.admits(a); c.admits(mark)
+  expect(c.size).toBe(0)
+  expect(c.has(a)).toBe(false)
+  for (const [k, value] of [[b, undefined], [a, 3], [b, 4]] as const) { c.set(k, value); expected.set(k, value) }
+  expect(c.size).toBe(expected.size)
+  expect(c.has(b)).toBe(true)
+  expect([...c]).toEqual([...expected])
+  expect([...c.keys()]).toEqual([...expected.keys()])
+  expect([...c.values()]).toEqual([...expected.values()])
+  const visits: [string, number | undefined][] = []
+  c.forEach((value, key, cache) => { expect(cache).toBe(c); visits.push([key, value]) })
+  expect(visits).toEqual([...expected])
+  expect(c.delete(mark)).toBe(false)
+  expect(c.delete(b)).toBe(true)
+  expected.delete(b)
+  expect([...c]).toEqual([...expected])
+  c.clear()
+  expect(c.size).toBe(0)
+  expect(c.held).toBe(0)
+})
+
 describe.each(['closures', 'eval'] as const)('cache budget, %s', (execution) => {
   const opts = { clock, execution, display: false }
   const same = (s: Session) => expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)

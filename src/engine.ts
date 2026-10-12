@@ -29,6 +29,8 @@ import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
 import { arrayArea, holds } from './array-areas.js'
 import { printFormula, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
+import { jsBackend } from './exec/js.js'
+import { walk } from './exec/walk.js'
 import { specRect, tableAt, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
 import { CErr, E, isErr, type V } from './values.js'
 
@@ -76,6 +78,8 @@ export interface EngineState {
   compiler: Compiler
   /** id → formula; a hole after deletion. */
   formulas: (Formula | undefined)[]
+  /** Reusable formula slots; helpers are rebuilt after every structural edit. */
+  free: number[]
   /** `s:r:c` → formula id. */
   at: Map<string, number>
   invalid: Map<string, Invalid>
@@ -100,6 +104,12 @@ export interface EngineState {
 }
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
+
+/** Coordinates of an internal cell key, without a split array and a map callback per changed cell. */
+export function keyParts(k: string): [number, number, number] {
+  const a = k.indexOf(':'), b = k.indexOf(':', a + 1)
+  return [+k.slice(0, a), +k.slice(a + 1, b), +k.slice(b + 1)]
+}
 
 /** Marks or unmarks a cell whose formula calls SUBTOTAL or AGGREGATE. */
 function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean) {
@@ -224,6 +234,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     rt,
     compiler: makeCompiler(rt, opts.execution ?? 'closures'),
     formulas: [],
+    free: [],
     at: new Map(),
     invalid: new Map(),
     succ: [],
@@ -294,12 +305,18 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
       endSpill(state, state.formulas[old]!, track, false)
       state.formulas[old] = undefined
+      state.free.push(old)
       state.clocked.delete(old)
       state.at.delete(k)
       structural = true
     }
     state.invalid.delete(k)
-    touched.push({ s, r1: row, c1: col, r2: row, c2: col })
+    // An atomic column batch touches one contiguous area, without querying all its readers per cell.
+    const last = touched.at(-1)
+    if (last && last.s === s && last.c1 === col && last.c2 === col && row >= last.r1 - 1 && row <= last.r2 + 1) {
+      last.r1 = Math.min(last.r1, row)
+      last.r2 = Math.max(last.r2, row)
+    } else touched.push({ s, r1: row, c1: col, r2: row, c2: col })
     const input: CellInput | null = e.input
     if (input?.formula !== undefined) {
       const p = prepare(state, s, row, col, input.formula)
@@ -308,15 +325,20 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
         write(state, s, row, col, E[p.invalid.error], track)
         continue
       }
-      const f = compiled(state, state.formulas.length, s, row, col, input, p)
+      const f = compiled(state, state.free.pop() ?? state.formulas.length, s, row, col, input, p)
       if (f.nested) mark(state.ctx, s, row, col, true)
-      state.formulas.push(f)
+      state.formulas[f.id] = f
       state.at.set(k, f.id)
       fresh.push(f)
       structural = true
     } else write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
   }
   count(state.at.size + state.invalid.size)
+  if (structural) {
+    const size = state.formulas.length
+    while (state.formulas.length && !state.formulas.at(-1)) state.formulas.pop()
+    if (state.formulas.length < size) state.free = state.free.filter((id) => id < state.formulas.length)
+  }
   state.compiler.link(fresh)
   if (structural) rebuildGraph(state)
   // formulas reading the cells, arrays spilled over them or waiting for them
@@ -325,7 +347,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
   if (withVolatile) for (const id of state.volatile) dirty.add(id)
   // cells that were in a cycle are recomputed in case the cycle is broken
   if (structural) for (const f of state.formulas) if (f && isErr(state.ctx.sheets[f.s].cols[f.c]?.[f.r]) && (state.ctx.sheets[f.s].cols[f.c]![f.r] as CErr).code === 'CYCLE') dirty.add(f.id)
-  yield* recompute(state, dirty, track)
+  yield* recompute(state, dirty, track, !structural)
   return changed(state, track)
 }
 
@@ -384,7 +406,15 @@ export function debugSource(state: EngineState): string {
   const ids = [...state.order, ...state.formulas.filter((f) => f && state.topo[f.id] < 0).map((f) => f!.id)]
   for (const id of ids) {
     const f = state.formulas[id]!
-    lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (cycle)' : ''}`, f.source!)
+    let source = f.source
+    if (source === undefined) {
+      const p = prepare(state, f.s, f.r, f.c, f.text)
+      if (p.ok) {
+        const b = jsBackend()
+        source = b.source(walk(codegenContext(state, f.s, f.area), p.ast, f.s, f.r, f.c, b).code)
+      }
+    }
+    lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (cycle)' : ''}`, source ?? '')
   }
   return lines.join('\n')
 }

@@ -31,6 +31,7 @@ const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.f
 
 /** A formula's spill (`spill`, `spillFill`) or a spilled cell's formula (`spillOf`), as results and changes show them. */
 export function spillFields(state: EngineState, s: number, r: number, c: number): Pick<CellResult, 'spill' | 'spillFill' | 'spillOf'> {
+  if (!state.spills.on.size) return {}
   const id = state.at.get(key(s, r, c))
   const x = id === undefined ? undefined : state.spills.on.get(id)
   if (x) return anchorFields(x)

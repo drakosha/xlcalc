@@ -20,7 +20,7 @@ const APART = /[ıſ]/
  * `name-case-sheets-held`; Excel for Mac takes `ſ` for `S`). Excel compares sheets letter by letter (`ß` beside `SS`),
  * a known difference. Turkish rules pair `i` with `İ` instead, and how Excel tr-TR compares such names is not measured.
  */
-export const caseKey = (s: string): string => s.replace(/[^ıſ]+/g, (run) => run.toUpperCase())
+export const caseKey = (s: string): string => APART.test(s) ? s.replace(/[^ıſ]+/g, (run) => run.toUpperCase()) : s.toUpperCase()
 
 /**
  * The key a word of formula text compares by (a function's name, TRUE and FALSE, LET's names, a locale's words): each

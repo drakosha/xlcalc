@@ -9,7 +9,7 @@
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
-import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
@@ -160,7 +160,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const look = display ? cellLooks(s) : null
     const code = formatCodeIn(s.input.locale)
     return keys.map((k) => {
-      const [i, r, c] = k.split(':').map(Number)
+      const [i, r, c] = keyParts(k)
       const value = cellValue(s, i, r, c)
       const f = fields.get(k)
       const format = f?.numberFormat
