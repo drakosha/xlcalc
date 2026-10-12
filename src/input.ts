@@ -284,7 +284,8 @@ function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boo
 }
 
 /** The lines of a key (`C`, `B:D`; `5`, `5:9`). */
-function checkSpan(key: unknown, path: string, axis: Axis): [number, number] {
+/** The lines of a key of `columns` or `rows` (`C`, `B:D`; `5`, `5:9`), else `InputError` naming `path`. */
+export function checkSpan(key: unknown, path: string, axis: Axis): [number, number] {
   const sp = typeof key === 'string' ? parseSpan(key, axis) : null
   if (!sp) throw new InputError(path, `expected ${LINE[axis].key} within the sheet, got ${what(key)}`)
   return sp

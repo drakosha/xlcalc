@@ -215,6 +215,8 @@ An outline is the outline levels of rows and columns (`outlineLevel`, 1 to 7) wi
 - Inserted lines take the outline level of the line before them, as they take its height, and are shown. Lines inserted into a collapsed group after one of its hidden lines open it: its summary line, past the group (before it with summaries above or left), loses its collapsed mark. Lines inserted at the summary line, or above the group, leave it collapsed.
 - Deleted lines take their levels and marks along; moved and copied whole rows and columns carry them, as they carry their other settings.
 
+Excel's outline commands, Group, Ungroup, Show and Hide Detail and the level buttons, are structure operations too, which move no cell: [docs/outline.md](outline.md) has them.
+
 The valid sets `struct-held` and `struct-held-2` measured these rules in Excel for Mac and for Windows, with the engine's answers committed before Excel ran them ([docs/validation.md](validation.md#how-it-was-checked)).
 
 ## Hidden rows and filtered sheets

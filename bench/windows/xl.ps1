@@ -10,6 +10,8 @@ $inv =[Globalization.CultureInfo]::InvariantCulture
 $job = Get-Content -Raw -Encoding UTF8 (Join-Path $dir 'job.json') | ConvertFrom-Json
 $out = Join-Path $dir 'out'
 New-Item -ItemType Directory -Force $out | Out-Null
+# the outline step reads the copies Excel saves
+Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 # JSON text: everything outside printable ASCII escaped, so the file is ASCII and lone surrogates survive
 function Str([string]$s) { '"' + [regex]::Replace($s, '[^\x20\x21\x23-\x5b\x5d-\x7e]', { param($m) '\u{0:x4}' -f [int][char]$m.Value }) + '"' }
@@ -197,6 +199,56 @@ function VMake($wb, $s) {
     }
     default { throw "unknown valid make $($s.kind)" }
   }
+}
+
+# an outline command (bench/windows/outline.ts) on lines `5:7` or `B:D` taken whole; Excel's refusal is the step's error
+function OCommand($ws, $s) {
+  $lines = if ($s.lines) { if ($s.lines -match '^\d') { , $ws.Range($s.lines).EntireRow } else { , $ws.Range($s.lines).EntireColumn } } else { $null }
+  $m = [Type]::Missing
+  switch ($s.kind) {
+    'group' { [void]$lines.Group() }
+    'ungroup' { [void]$lines.Ungroup() }
+    'show' { $lines.ShowDetail = $true }
+    'hide' { $lines.ShowDetail = $false }
+    'hidden' { $lines.Hidden = $true }
+    'shown' { $lines.Hidden = $false }
+    'levels' { [void]$ws.Outline.ShowLevels($(if ($s.rows) { [int]$s.rows } else { $m }), $(if ($s.columns) { [int]$s.columns } else { $m })) }
+    default { throw "unknown outline command $($s.kind)" }
+  }
+}
+
+# the window's rows and columns that are grouped, hidden or summary lines, each [row or letters, level (0 for none),
+# hidden, ShowDetail of a summary line or null]; and the tags of a copy of the book as Excel saves it: the first
+# sheet's <row> tags with an outline level, hidden or collapsed, its <col>, <outlinePr> and <sheetFormatPr>
+function ORead($wb, $s) {
+  $ws = $wb.Worksheets.Item('S')
+  $axes = foreach ($axis in 'rows', 'columns') {
+    $span = $s.$axis
+    $read = foreach ($k in [int]$span[0]..[int]$span[1]) {
+      $e = if ($axis -eq 'rows') { $ws.Rows.Item($k) } else { $ws.Columns.Item($k) }
+      $level = [int]$e.OutlineLevel - 1
+      $summary = [bool]$e.Summary
+      if ($level -gt 0 -or $e.Hidden -or $summary) {
+        $key = if ($axis -eq 'rows') { Cell ([double]$k) } else { Str (($e.Address($false, $false) -split ':')[0]) }
+        $detail = if ($summary) { try { Cell ([bool]$e.ShowDetail) } catch { 'null' } } else { 'null' }
+        List @($key, (Cell ([double]$level)), (Cell ([bool]$e.Hidden)), $detail)
+      }
+    }
+    , (List $read)
+  }
+  $copy = Join-Path $out 'copy.xlsx'
+  if (Test-Path $copy) { Remove-Item -Force $copy }
+  $wb.SaveCopyAs($copy)
+  $zip = [IO.Compression.ZipFile]::OpenRead($copy)
+  try {
+    $r = New-Object IO.StreamReader($zip.GetEntry('xl/worksheets/sheet1.xml').Open(), [Text.Encoding]::UTF8)
+    $xml = $r.ReadToEnd()
+    $r.Close()
+  } finally { $zip.Dispose() }
+  $tags = foreach ($t in [regex]::Matches($xml, '<(row|col|outlinePr|sheetFormatPr)\b[^>]*>')) {
+    if ($t.Groups[1].Value -ne 'row' -or $t.Value -match '\b(hidden|outlineLevel|collapsed)=') { Str $t.Value }
+  }
+  List @($axes[0], $axes[1], (List $tags))
 }
 
 # a property of a rule, or "" where COM has none for its type
@@ -393,6 +445,8 @@ function Step($xl, $wb, $s) {
     'make' { try { Make $xl $wb $s; 'null' } catch { Err $_ } }
     'cond' { Cond $wb $s }
     'vmake' { try { VMake $wb $s; 'null' } catch { Err $_ } }
+    'ocmd' { try { OCommand $wb.Worksheets.Item('S') $s; 'null' } catch { Err $_ } }
+    'oread' { ORead $wb $s }
     'valid' {
       $all = List ($wb.Worksheets | ForEach-Object { VRead $_ $s.window })
       [void]$wb.Worksheets.Item(1).Activate()

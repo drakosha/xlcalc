@@ -1,0 +1,2326 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-12",
+  "seconds": 27.7
+ },
+ "books": {
+  "empty": {},
+  "nested": {
+   "rows": {
+    "3:4": {
+     "outlineLevel": 1
+    },
+    "5:7": {
+     "outlineLevel": 2
+    },
+    "8:10": {
+     "outlineLevel": 1
+    }
+   }
+  },
+  "right": {
+   "columns": {
+    "XFB:XFD": {
+     "outlineLevel": 1
+    }
+   }
+  },
+  "bottom": {
+   "rows": {
+    "1048574:1048576": {
+     "outlineLevel": 1
+    }
+   }
+  },
+  "xfdInner": {
+   "columns": {
+    "XFA:XFB": {
+     "outlineLevel": 2
+    },
+    "XFC:XFD": {
+     "outlineLevel": 1
+    }
+   }
+  },
+  "xfdApart": {
+   "columns": {
+    "XEY:XFB": {
+     "outlineLevel": 1
+    },
+    "XFD": {
+     "outlineLevel": 1
+    }
+   }
+  },
+  "leftNested": {
+   "columns": {
+    "A:B": {
+     "outlineLevel": 2
+    },
+    "C:D": {
+     "outlineLevel": 1
+    }
+   },
+   "outline": {
+    "summaryRight": false
+   }
+  },
+  "shownSummary": {
+   "rows": {
+    "8": {
+     "outlineLevel": 1
+    },
+    "3:4": {
+     "outlineLevel": 1,
+     "hidden": true
+    },
+    "5:7": {
+     "outlineLevel": 2,
+     "hidden": true
+    },
+    "9:10": {
+     "outlineLevel": 1,
+     "hidden": true
+    }
+   }
+  }
+ },
+ "cases": [
+  {
+   "id": "xfd-1",
+   "book": "empty",
+   "commands": [
+    {
+     "group": "XFD"
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "xfd-2",
+   "book": "empty",
+   "commands": [
+    {
+     "group": "XFC:XFD"
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "xfd-3",
+   "book": "empty",
+   "commands": [
+    {
+     "group": "XFC"
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "xfd-4",
+   "book": "right",
+   "commands": [
+    {
+     "ungroup": "XFC:XFD"
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "xfd-5",
+   "book": "right",
+   "commands": [
+    {
+     "ungroup": "XFC"
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "xfd-6",
+   "book": "right",
+   "commands": [
+    {
+     "ungroup": "XFB:XFC"
+    },
+    {
+     "levels": [
+      0,
+      1
+     ]
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "xfd-7",
+   "book": "bottom",
+   "commands": [
+    {
+     "ungroup": "1048576"
+    }
+   ],
+   "window": {
+    "rows": "1048570:1048576",
+    "columns": "A:C"
+   }
+  },
+  {
+   "id": "xfd-8",
+   "book": "bottom",
+   "commands": [
+    {
+     "group": "1048575:1048576"
+    },
+    {
+     "levels": [
+      2,
+      0
+     ]
+    }
+   ],
+   "window": {
+    "rows": "1048570:1048576",
+    "columns": "A:C"
+   }
+  },
+  {
+   "id": "levels-1",
+   "book": "xfdInner",
+   "commands": [
+    {
+     "levels": [
+      0,
+      2
+     ]
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "levels-2",
+   "book": "xfdInner",
+   "commands": [
+    {
+     "levels": [
+      0,
+      1
+     ]
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "levels-3",
+   "book": "xfdApart",
+   "commands": [
+    {
+     "levels": [
+      0,
+      1
+     ]
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "levels-4",
+   "book": "xfdApart",
+   "commands": [
+    {
+     "hide": "XFC"
+    },
+    {
+     "levels": [
+      0,
+      2
+     ]
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "XEX:XFD"
+   }
+  },
+  {
+   "id": "levels-5",
+   "book": "leftNested",
+   "commands": [
+    {
+     "levels": [
+      0,
+      1
+     ]
+    },
+    {
+     "levels": [
+      0,
+      2
+     ]
+    }
+   ],
+   "window": {
+    "rows": "1:3",
+    "columns": "A:F"
+   }
+  },
+  {
+   "id": "hand-1",
+   "book": "shownSummary",
+   "commands": []
+  },
+  {
+   "id": "hand-2",
+   "book": "shownSummary",
+   "commands": [
+    {
+     "show": "11"
+    }
+   ]
+  },
+  {
+   "id": "hand-3",
+   "book": "nested",
+   "commands": [
+    {
+     "hidden": "3:10"
+    },
+    {
+     "shown": "3:4"
+    }
+   ]
+  },
+  {
+   "id": "hand-4",
+   "book": "nested",
+   "commands": [
+    {
+     "hidden": "5:7"
+    },
+    {
+     "hidden": "8"
+    }
+   ]
+  },
+  {
+   "id": "hand-5",
+   "book": "nested",
+   "commands": [
+    {
+     "hidden": "3:10"
+    },
+    {
+     "shown": "8"
+    },
+    {
+     "hide": "11"
+    },
+    {
+     "show": "11"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "xfd-1": "c3f8e726eab44cf468b0293f14fc79ed7276217ff31a0cacaccd325d68efbf52",
+  "xfd-2": "c3f8e726eab44cf468b0293f14fc79ed7276217ff31a0cacaccd325d68efbf52",
+  "xfd-3": "c3f8e726eab44cf468b0293f14fc79ed7276217ff31a0cacaccd325d68efbf52",
+  "xfd-4": "874c06e9c8538745a42720408c91f204f137d086bd67c6422f5c2e0d914bcff3",
+  "xfd-5": "874c06e9c8538745a42720408c91f204f137d086bd67c6422f5c2e0d914bcff3",
+  "xfd-6": "874c06e9c8538745a42720408c91f204f137d086bd67c6422f5c2e0d914bcff3",
+  "xfd-7": "0dcd55c45d0aef006eb5895d25fc36a16a88cbfdcf34a361e3b7cd8d878a74fc",
+  "xfd-8": "0dcd55c45d0aef006eb5895d25fc36a16a88cbfdcf34a361e3b7cd8d878a74fc",
+  "levels-1": "e291bc5f285d29c603047804e3628e11669fcac6c840fda4f0ea14e076a31f79",
+  "levels-2": "e291bc5f285d29c603047804e3628e11669fcac6c840fda4f0ea14e076a31f79",
+  "levels-3": "6c28dd7ccd9fefe8be574054d88b26473f51a065a6077e6f03bcd64584b508cb",
+  "levels-4": "6c28dd7ccd9fefe8be574054d88b26473f51a065a6077e6f03bcd64584b508cb",
+  "levels-5": "c2c61a9607ee0a0a07a39a5a4dfbbcb9b880ad7e900bb11cffcd1e1a890d0a25",
+  "hand-1": "1b176a1948f3585ed7db1fda9ef268b0e1f7675d13eeeef39591c18ac9a2aeca",
+  "hand-2": "1b176a1948f3585ed7db1fda9ef268b0e1f7675d13eeeef39591c18ac9a2aeca",
+  "hand-3": "a983f9911e049f04b06306cbe6a1d5055d6e7f33e32b2e1b14dcfdaed4aa4585",
+  "hand-4": "a983f9911e049f04b06306cbe6a1d5055d6e7f33e32b2e1b14dcfdaed4aa4585",
+  "hand-5": "a983f9911e049f04b06306cbe6a1d5055d6e7f33e32b2e1b14dcfdaed4aa4585"
+ },
+ "answers": {
+  "xfd-1": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16384\" max=\"16384\" width=\"9.140625\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "xfd-2": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16383\" max=\"16384\" width=\"9.140625\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "xfd-3": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       0,
+       false,
+       true
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16383\" max=\"16383\" width=\"9.140625\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "xfd-4": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16382\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "error": "-2146827284 Unable to get the Ungroup property of the Range class",
+     "rows": [],
+     "columns": [
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16382\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "xfd-5": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16382\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "error": "-2146827284 Unable to get the Ungroup property of the Range class",
+     "rows": [],
+     "columns": [
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16382\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "xfd-6": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16382\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "error": "-2146827284 Unable to get the Ungroup property of the Range class",
+     "rows": [],
+     "columns": [
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16382\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16382\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "xfd-7": {
+   "steps": [
+    {
+     "rows": [
+      [
+       1048574,
+       1,
+       false,
+       null
+      ],
+      [
+       1048575,
+       1,
+       false,
+       null
+      ],
+      [
+       1048576,
+       1,
+       false,
+       null
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048574\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048575\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048576\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       1048574,
+       1,
+       false,
+       null
+      ],
+      [
+       1048575,
+       1,
+       false,
+       null
+      ],
+      [
+       1048576,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048574\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048575\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    }
+   ]
+  },
+  "xfd-8": {
+   "steps": [
+    {
+     "rows": [
+      [
+       1048574,
+       1,
+       false,
+       null
+      ],
+      [
+       1048575,
+       1,
+       false,
+       null
+      ],
+      [
+       1048576,
+       1,
+       false,
+       null
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048574\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048575\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048576\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       1048574,
+       1,
+       false,
+       null
+      ],
+      [
+       1048575,
+       2,
+       false,
+       null
+      ],
+      [
+       1048576,
+       2,
+       false,
+       null
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048574\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048575\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048576\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       1048574,
+       1,
+       false,
+       null
+      ],
+      [
+       1048575,
+       2,
+       true,
+       null
+      ],
+      [
+       1048576,
+       2,
+       true,
+       null
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048574\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048575\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"1048576\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    }
+   ]
+  },
+  "levels-1": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFA",
+       2,
+       false,
+       null
+      ],
+      [
+       "XFB",
+       2,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       true
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16381\" max=\"16382\" width=\"8.85546875\" outlineLevel=\"2\"/>",
+      "<col min=\"16383\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFA",
+       2,
+       true,
+       null
+      ],
+      [
+       "XFB",
+       2,
+       true,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       false
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16381\" max=\"16382\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"2\"/>",
+      "<col min=\"16383\" max=\"16383\" width=\"8.85546875\" outlineLevel=\"1\" collapsed=\"1\"/>",
+      "<col min=\"16384\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "levels-2": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFA",
+       2,
+       false,
+       null
+      ],
+      [
+       "XFB",
+       2,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       true
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16381\" max=\"16382\" width=\"8.85546875\" outlineLevel=\"2\"/>",
+      "<col min=\"16383\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XFA",
+       2,
+       true,
+       null
+      ],
+      [
+       "XFB",
+       2,
+       true,
+       null
+      ],
+      [
+       "XFC",
+       1,
+       false,
+       false
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16381\" max=\"16382\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"2\"/>",
+      "<col min=\"16383\" max=\"16383\" width=\"8.85546875\" outlineLevel=\"1\" collapsed=\"1\"/>",
+      "<col min=\"16384\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "levels-3": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XEY",
+       1,
+       false,
+       null
+      ],
+      [
+       "XEZ",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFA",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       0,
+       false,
+       true
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16379\" max=\"16382\" width=\"8.85546875\" outlineLevel=\"1\"/>",
+      "<col min=\"16384\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XEY",
+       1,
+       true,
+       null
+      ],
+      [
+       "XEZ",
+       1,
+       true,
+       null
+      ],
+      [
+       "XFA",
+       1,
+       true,
+       null
+      ],
+      [
+       "XFB",
+       1,
+       true,
+       null
+      ],
+      [
+       "XFC",
+       0,
+       false,
+       false
+      ],
+      [
+       "XFD",
+       1,
+       true,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16379\" max=\"16382\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"1\"/>",
+      "<col min=\"16383\" max=\"16383\" width=\"9.140625\" collapsed=\"1\"/>",
+      "<col min=\"16384\" max=\"16384\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"1\" collapsed=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "levels-4": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XEY",
+       1,
+       false,
+       null
+      ],
+      [
+       "XEZ",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFA",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       0,
+       false,
+       true
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16379\" max=\"16382\" width=\"8.85546875\" outlineLevel=\"1\"/>",
+      "<col min=\"16384\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XEY",
+       1,
+       true,
+       null
+      ],
+      [
+       "XEZ",
+       1,
+       true,
+       null
+      ],
+      [
+       "XFA",
+       1,
+       true,
+       null
+      ],
+      [
+       "XFB",
+       1,
+       true,
+       null
+      ],
+      [
+       "XFC",
+       0,
+       false,
+       false
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16379\" max=\"16382\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"1\"/>",
+      "<col min=\"16383\" max=\"16383\" width=\"9.140625\" collapsed=\"1\"/>",
+      "<col min=\"16384\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "XEY",
+       1,
+       false,
+       null
+      ],
+      [
+       "XEZ",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFA",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFB",
+       1,
+       false,
+       null
+      ],
+      [
+       "XFC",
+       0,
+       false,
+       true
+      ],
+      [
+       "XFD",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"16379\" max=\"16382\" width=\"9.140625\" customWidth=\"1\" outlineLevel=\"1\"/>",
+      "<col min=\"16384\" max=\"16384\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "levels-5": {
+   "steps": [
+    {
+     "rows": [],
+     "columns": [
+      [
+       "A",
+       2,
+       false,
+       null
+      ],
+      [
+       "B",
+       2,
+       false,
+       null
+      ],
+      [
+       "C",
+       1,
+       false,
+       null
+      ],
+      [
+       "D",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<outlinePr summaryRight=\"0\"/>",
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"1\" max=\"2\" width=\"8.85546875\" outlineLevel=\"2\"/>",
+      "<col min=\"3\" max=\"4\" width=\"8.85546875\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "A",
+       2,
+       true,
+       null
+      ],
+      [
+       "B",
+       2,
+       true,
+       null
+      ],
+      [
+       "C",
+       1,
+       true,
+       null
+      ],
+      [
+       "D",
+       1,
+       true,
+       null
+      ]
+     ],
+     "saved": [
+      "<outlinePr summaryRight=\"0\"/>",
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"1\" max=\"1\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"2\" collapsed=\"1\"/>",
+      "<col min=\"2\" max=\"2\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"2\"/>",
+      "<col min=\"3\" max=\"4\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"1\"/>"
+     ]
+    },
+    {
+     "rows": [],
+     "columns": [
+      [
+       "A",
+       2,
+       true,
+       null
+      ],
+      [
+       "B",
+       2,
+       true,
+       null
+      ],
+      [
+       "C",
+       1,
+       false,
+       null
+      ],
+      [
+       "D",
+       1,
+       false,
+       null
+      ]
+     ],
+     "saved": [
+      "<outlinePr summaryRight=\"0\"/>",
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelCol=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<col min=\"1\" max=\"2\" width=\"0\" hidden=\"1\" customWidth=\"1\" outlineLevel=\"2\"/>",
+      "<col min=\"3\" max=\"4\" width=\"9.140625\" customWidth=\"1\" outlineLevel=\"1\"/>"
+     ]
+    }
+   ]
+  },
+  "hand-1": {
+   "steps": [
+    {
+     "rows": [
+      [
+       3,
+       1,
+       true,
+       null
+      ],
+      [
+       4,
+       1,
+       true,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       null
+      ],
+      [
+       10,
+       1,
+       true,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" collapsed=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    }
+   ]
+  },
+  "hand-2": {
+   "steps": [
+    {
+     "rows": [
+      [
+       3,
+       1,
+       true,
+       null
+      ],
+      [
+       4,
+       1,
+       true,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       null
+      ],
+      [
+       10,
+       1,
+       true,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" collapsed=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "error": "-2146827284 Unable to set the ShowDetail property of the Range class",
+     "rows": [
+      [
+       3,
+       1,
+       true,
+       null
+      ],
+      [
+       4,
+       1,
+       true,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       null
+      ],
+      [
+       10,
+       1,
+       true,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" collapsed=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    }
+   ]
+  },
+  "hand-3": {
+   "steps": [
+    {
+     "rows": [
+      [
+       3,
+       1,
+       false,
+       null
+      ],
+      [
+       4,
+       1,
+       false,
+       null
+      ],
+      [
+       5,
+       2,
+       false,
+       null
+      ],
+      [
+       6,
+       2,
+       false,
+       null
+      ],
+      [
+       7,
+       2,
+       false,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       true
+      ],
+      [
+       9,
+       1,
+       false,
+       null
+      ],
+      [
+       10,
+       1,
+       false,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       3,
+       1,
+       true,
+       null
+      ],
+      [
+       4,
+       1,
+       true,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       true,
+       true
+      ],
+      [
+       9,
+       1,
+       true,
+       null
+      ],
+      [
+       10,
+       1,
+       true,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       false
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"11\" spans=\"1:1\" collapsed=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       3,
+       1,
+       false,
+       null
+      ],
+      [
+       4,
+       1,
+       false,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       true,
+       true
+      ],
+      [
+       9,
+       1,
+       true,
+       null
+      ],
+      [
+       10,
+       1,
+       true,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    }
+   ]
+  },
+  "hand-4": {
+   "steps": [
+    {
+     "rows": [
+      [
+       3,
+       1,
+       false,
+       null
+      ],
+      [
+       4,
+       1,
+       false,
+       null
+      ],
+      [
+       5,
+       2,
+       false,
+       null
+      ],
+      [
+       6,
+       2,
+       false,
+       null
+      ],
+      [
+       7,
+       2,
+       false,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       true
+      ],
+      [
+       9,
+       1,
+       false,
+       null
+      ],
+      [
+       10,
+       1,
+       false,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       3,
+       1,
+       false,
+       null
+      ],
+      [
+       4,
+       1,
+       false,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       false
+      ],
+      [
+       9,
+       1,
+       false,
+       null
+      ],
+      [
+       10,
+       1,
+       false,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" collapsed=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       3,
+       1,
+       false,
+       null
+      ],
+      [
+       4,
+       1,
+       false,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       false,
+       null
+      ],
+      [
+       10,
+       1,
+       false,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" collapsed=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    }
+   ]
+  },
+  "hand-5": {
+   "steps": [
+    {
+     "rows": [
+      [
+       3,
+       1,
+       false,
+       null
+      ],
+      [
+       4,
+       1,
+       false,
+       null
+      ],
+      [
+       5,
+       2,
+       false,
+       null
+      ],
+      [
+       6,
+       2,
+       false,
+       null
+      ],
+      [
+       7,
+       2,
+       false,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       true
+      ],
+      [
+       9,
+       1,
+       false,
+       null
+      ],
+      [
+       10,
+       1,
+       false,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       3,
+       1,
+       true,
+       null
+      ],
+      [
+       4,
+       1,
+       true,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       true,
+       true
+      ],
+      [
+       9,
+       1,
+       true,
+       null
+      ],
+      [
+       10,
+       1,
+       true,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       false
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"11\" spans=\"1:1\" collapsed=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       3,
+       1,
+       true,
+       null
+      ],
+      [
+       4,
+       1,
+       true,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       true
+      ],
+      [
+       9,
+       1,
+       true,
+       null
+      ],
+      [
+       10,
+       1,
+       true,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       3,
+       1,
+       true,
+       null
+      ],
+      [
+       4,
+       1,
+       true,
+       null
+      ],
+      [
+       5,
+       2,
+       true,
+       null
+      ],
+      [
+       6,
+       2,
+       true,
+       null
+      ],
+      [
+       7,
+       2,
+       true,
+       null
+      ],
+      [
+       8,
+       1,
+       true,
+       true
+      ],
+      [
+       9,
+       1,
+       true,
+       null
+      ],
+      [
+       10,
+       1,
+       true,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       false
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" hidden=\"1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"11\" spans=\"1:1\" collapsed=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    },
+    {
+     "rows": [
+      [
+       3,
+       1,
+       false,
+       null
+      ],
+      [
+       4,
+       1,
+       false,
+       null
+      ],
+      [
+       5,
+       2,
+       false,
+       null
+      ],
+      [
+       6,
+       2,
+       false,
+       null
+      ],
+      [
+       7,
+       2,
+       false,
+       null
+      ],
+      [
+       8,
+       1,
+       false,
+       true
+      ],
+      [
+       9,
+       1,
+       false,
+       null
+      ],
+      [
+       10,
+       1,
+       false,
+       null
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [],
+     "saved": [
+      "<sheetFormatPr defaultRowHeight=\"15\" outlineLevelRow=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"3\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"4\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"5\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"6\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"7\" spans=\"1:1\" outlineLevel=\"2\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"8\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"9\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>",
+      "<row r=\"10\" spans=\"1:1\" outlineLevel=\"1\" x14ac:dyDescent=\"0.25\"/>"
+     ]
+    }
+   ]
+  }
+ }
+}
