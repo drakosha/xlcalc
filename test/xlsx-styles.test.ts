@@ -10,6 +10,7 @@ import { palette, tinted } from '../src/xlsx/styles/color.js'
 import { readFill, underlineOf } from '../src/xlsx/styles/read.js'
 import { element } from '../src/xlsx/xml/scan.js'
 import type { StyleLoss } from '../src/locale/messages.js'
+import { expandBook } from './looks-book.js'
 import { codes, read } from './xlsx-fixtures.js'
 
 const THEME =
@@ -165,7 +166,7 @@ describe('xlsx styles: writing and reading back', () => {
     expect(issues).toEqual([])
     const r = await readXlsx(data)
     const cells = { ...book.sheets[0].cells, A1: { ...book.sheets[0].cells.A1, numberFormat: 2 }, A5: { value: 5, numberFormat: 9 } }
-    expect(r.book).toEqual({ ...book, sheets: [{ ...book.sheets[0], cells }] })
+    expect(expandBook(r.book)).toEqual({ ...book, sheets: [{ ...book.sheets[0], cells }] })
     expect(r.issues).toEqual([])
   })
 })

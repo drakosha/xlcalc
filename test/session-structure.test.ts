@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest'
 import { compute, InputError, createSession, editStructure, type BookInput, type CellValue, type ComputeResult, type StructureOp } from '../src/index.js'
 import { indexToCol } from '../src/model.js'
 import { mulberry32, S, synthBook } from '../src/synth.js'
+import { cellsOf } from './looks-book.js'
 import { randomBook, SHEETS } from './seeded-books.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 7 }
@@ -125,12 +126,12 @@ describe('styles and layout in a session', () => {
       { sheet: 'S', cell: 'B9', value: null, style: 0 },
     ])
     expect(s.clock).toEqual(c)
-    expect(s.getBook().sheets[0].cells).toEqual({ A1: { value: 2 }, A2: { formula: 'A1*2', numberFormat: '0.0' }, B9: { style: 0 } })
+    expect(cellsOf(s.getBook().sheets[0])).toEqual({ A1: { value: 2 }, A2: { formula: 'A1*2', numberFormat: '0.0' }, B9: { style: 0 } })
     // a cell cleared keeps its look; replaced by nothing, it is gone
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3, style: 0 } }, { sheet: 'S', cell: 'B9', input: null }]).changes.map((x) => x.cell)).toEqual(['A1', 'A2'])
-    expect(s.getBook().sheets[0].cells.B9).toEqual({ style: 0 })
+    expect(cellsOf(s.getBook().sheets[0]).B9).toEqual({ style: 0 })
     s.replaceCells([{ sheet: 'S', cell: 'B9', input: null }])
-    expect(s.getBook().sheets[0].cells.B9).toBeUndefined()
+    expect(cellsOf(s.getBook().sheets[0]).B9).toBeUndefined()
   })
 
   it('setStyles and setLayout change the book, not the values; spans are split where an edit cuts them', () => {
