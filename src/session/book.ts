@@ -1,5 +1,5 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
-import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, SheetInput } from '../contract.js'
+import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, SheetInput, SheetLayout } from '../contract.js'
 import { setInput, settled, type EngineState } from '../engine.js'
 import { InputError } from '../input.js'
 import { hasLooks, inputIn, layerOf } from '../looks/sheet.js'
@@ -53,9 +53,9 @@ export function inputAt(s: EngineState, i: number, cell: string): CellInput | un
   return inputIn(sheet, cell, row, col)
 }
 
-/** The session's book without its cells and their looks (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own. */
+/** The session's book without its cells and their looks (`Session.getLayout`): new objects for the book and its sheets, the rest the book's own; the looks are not read. */
 export function bookLayout(book: BookInput): BookLayout {
-  return { ...book, sheets: book.sheets.map(({ cells: _cells, looks: _looks, ...rest }) => rest) }
+  return { ...book, sheets: book.sheets.map((s) => Object.fromEntries(Object.keys(s).filter((k) => k !== 'cells' && k !== 'looks').map((k) => [k, s[k as keyof SheetInput]])) as unknown as SheetLayout) }
 }
 
 /** Every style that cells, rows and columns use must be in a table of `count` styles. */
