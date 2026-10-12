@@ -6,7 +6,7 @@
  * and kept with the session's state (`search.ts`), so another search of the same sheet only matches them.
  */
 import type { CellValue, FindCellsOptions } from '../contract.js'
-import { wildSource } from '../criteria.js'
+import { literal, wildSource } from '../criteria.js'
 import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { checkBoolean, InputError } from '../input.js'
 import { isHiddenRow } from '../layout/hidden.js'
@@ -54,6 +54,28 @@ function matcher(query: string, o: FindCellsOptions): ((text: string) => boolean
   if (!source) return null
   const re = new RegExp(o.wholeCell ? `^(?:${source})$` : source)
   return (t) => t !== '' && re.test(t)
+}
+
+/**
+ * Excel's Replace in a text: each match of the query, as `matcher` reads it, put as `by` is, the whole text with Match
+ * entire cell contents; null where nothing matches or nothing can (an empty query). An empty match, of `*` at the end,
+ * puts nothing.
+ */
+export function replacer(query: string, by: string, o: Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell'>): ((text: string) => string | null) | null {
+  const q = o.caseSensitive ? query : folded(query)
+  const source = o.wildcards ? wildSource(q) : [...q].map(literal).join('')
+  if (!source) return null
+  const re = new RegExp(o.wholeCell ? `^(?:${source})$` : source, 'g')
+  return (text) => {
+    let out = ''
+    let last = 0
+    for (const m of (o.caseSensitive ? text : folded(text)).matchAll(re)) {
+      if (m[0] === '') continue
+      out += text.slice(last, m.index) + by
+      last = m.index + m[0].length
+    }
+    return last ? out + text.slice(last) : null
+  }
 }
 
 /** A sheet's hidden rows or columns: whether there are any; whether a line is hidden, and how many lines are hidden before it, the band of lines it is in. */
