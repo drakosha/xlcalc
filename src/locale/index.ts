@@ -48,9 +48,19 @@ const refusal = (r: Fail, locale: Locale) => ({ ok: false as const, code: 'synta
  * formula inside a table.
  */
 export function toLocal(formula: string, where: string | Locale, opts?: TranslateOptions): Translation {
-  const [locale, s] = localeSides(where)
+  const sides = localeSides(where)
   const { table, externalBooks } = checkTranslateOptions(opts)
-  const shown = showLinks(shownTables(checkString(formula, 'formula'), table, s.local.syn.list), externalBooks ?? [])
+  return localText(checkString(formula, 'formula'), sides, table, externalBooks)
+}
+
+/**
+ * `toLocal` for the package's own calls, which give it a checked book's table and links, without checking them: a
+ * window and an explanation show each formula of a book whose links can hold thousands of sheets.
+ */
+export const showFormula = (formula: string, where: string | Locale, table?: string, externalBooks?: ExternalBook[]): Translation => localText(formula, localeSides(where), table, externalBooks)
+
+function localText(formula: string, [locale, s]: [Locale, Sides], table: string | undefined, externalBooks: ExternalBook[] | undefined): Translation {
+  const shown = showLinks(shownTables(formula, table, s.local.syn.list), externalBooks ?? [])
   return result(translate(shown, s.invariant, s.local), locale)
 }
 
@@ -117,9 +127,16 @@ export function toInvariant(text: string, where: string | Locale, opts?: Transla
  * canonical stored text, positions of errors in `text` (a leading `=` is allowed) and messages in the locale's language.
  */
 export function validateLocalFormula(text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult {
-  const [locale, s] = localeSides(where)
-  const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
-  const c = checkValidateContext(ctx)
+  const sides = localeSides(where)
+  checkString(text, 'text')
+  return validatedText(text, sides, checkValidateContext(ctx))
+}
+
+/** `validateLocalFormula` for the package's own calls, which give it a checked context: typed text checks a book's links for each formula. */
+export const validateTyped = (text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult => validatedText(text, localeSides(where), ctx)
+
+function validatedText(text: string, [locale, s]: [Locale, Sides], c: ValidateContext | undefined): ValidateResult {
+  const eq = text.startsWith('=') ? 1 : 0
   const t = translate(text.slice(eq), s.local, s.invariant, eq)
   if (!t.ok) return refusal(t, locale)
   const r = validate(t.formula, { ...c, say: (m) => say(locale, m) })
