@@ -1,6 +1,6 @@
 /** Bounded queries executed in the session: no whole-sheet value copy or additional retained index. */
 import type { CellReadField, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
-import { toCellValue, valueAt, type EngineState } from '../engine.js'
+import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { referencesOf } from '../graph.js'
 import { array, checkBoolean, checkNumber, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
@@ -113,13 +113,15 @@ export function* dependentsQuery(s:EngineState,revision:number,clock:Clock,given
  const o=checkBase<DependentsOptions>(eo,revision,[...PAGE,'maxReferences']),refs=refsOf(s,given)
  const max=o.maxReferences??64;checkNumber(max,'opts.maxReferences',1,1000,true)
  const page=new Page<DependentCell>(revision,clock,JSON.stringify(['dependents',refs,max]),o)
- for(const f of s.formulas){
+ scan: for(let i=0;i<s.input.sheets.length;i++)for(const addr in s.input.sheets[i].cells){
   if(paced(1))yield
+  if(s.input.sheets[i].cells[addr].formula===undefined)continue
+  const {row,col}=parseAddress(addr),id=s.at.get(key(i,row,col)),f=id===undefined?undefined:s.formulas[id]
   if(!f)continue
   const matches=referencesOf(s,f).filter(g=>refs.some(x=>x.s===g.s&&meets(x,g)))
   if(!matches.length)continue
   if(page.wanted())page.items.push({sheet:s.sheetNames[f.s],cell:formatAddress(f.r,f.c),references:matches.slice(0,max).map(g=>({sheet:s.sheetNames[g.s],range:rectText(g)})),...(matches.length>max?{referencesTruncated:true}: {})})
-  if(page.done)break
+  if(page.done)break scan
  }
  return {...page.result(),dependents:page.items}
 }

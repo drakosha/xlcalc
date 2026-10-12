@@ -27,14 +27,14 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
     cell: (s, r, c) => {
       if (!parameters) return () => cell(s, r, c)
       const i = parameters.length
-      parameters.push(s, r, c)
-      return (p) => cell(p![i] as number, p![i + 1] as number, p![i + 2] as number)
+      parameters.push(r)
+      return (p) => cell(s, p![i] as number, c)
     },
     spill: (s, r, c) => {
       if (!parameters) return () => spill(s, r, c)
       const i = parameters.length
-      parameters.push(s, r, c)
-      return (p) => spill(p![i] as number, p![i + 1] as number, p![i + 2] as number)
+      parameters.push(r)
+      return (p) => spill(s, p![i] as number, c)
     },
     range: (g, one) => {
       if (!parameters) return one ? () => scalar(g) : () => g

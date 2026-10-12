@@ -23,8 +23,8 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
     value: bound,
     absent: () => 'undefined',
     array: (a) => hoist(`A(${a.rows},${a.cols},[${a.v.map(lit).join(',')}])`),
-    cell: (s, r, c) => `cell(${bound(s)},${bound(r)},${bound(c)})`,
-    spill: (s, r, c) => `spill(${bound(s)},${bound(r)},${bound(c)})`,
+    cell: (s, r, c) => `cell(${s},${bound(r)},${c})`,
+    spill: (s, r, c) => `spill(${s},${bound(r)},${c})`,
     range: (g, one) => {
       const h = parameters ? bound(g) : hoist(`R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`)
       return one ? `scalar(${h})` : h
