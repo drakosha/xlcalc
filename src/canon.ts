@@ -8,6 +8,7 @@
 import type { BookInput, CellValue } from './contract.js'
 import { paced, run, type Steps } from './exec/budget.js'
 import { lines, spanKey } from './layout/spans.js'
+import { layerLines, layerOf } from './looks/sheet.js'
 import { DEFAULT_LOCALE } from './locale/registry.js'
 import { addressOrder, compareAddress, sortAddresses } from './model.js'
 import type { Axis } from './structure/area.js'
@@ -137,7 +138,8 @@ function lineEntries(tag: string, map: Record<string, object> | undefined, axis:
 }
 
 /**
- * Input hash: sheets by name, cells by address (their notes and links with them), names by (scope, name). Columns,
+ * Input hash: sheets by name, cells by address (their notes and links with them) and the looks of the cells without an
+ * entry by rows (`layerLines`), names by (scope, name). Columns,
  * rows, merged areas (in order), the filter mode, tables (in order), frozen panes, conditional formats (in order), rules
  * of data validation, outline settings, a hidden sheet's state, the style table, a locale other than en-US, the 1904 date
  * system, iterative calculation and the linked workbooks come after their sheet and the names when there are any, so a
@@ -154,6 +156,9 @@ export function* inputHashSteps(book: BookInput): Steps<string> {
       if (paced(1)) yield
       h.update(`${addr} ${stableJson(hashed(s.cells[addr]))}\n`)
     }
+    // the looks of the cells without an entry, by rows (none without looks, so a book without them hashes as before)
+    const layer = layerOf(s)
+    if (layer) for (const line of layerLines(layer, (look) => stableJson(hashed(look)))) h.update(line)
     for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
     for (const m of [...(s.merges ?? [])].sort(compareMerges)) h.update(`M ${m}\n`)
     if (s.filtered) h.update('F\n')
