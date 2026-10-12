@@ -36,8 +36,8 @@ export interface StoredRibbon {
   answers: Record<string, Record<string, RibbonBox>>
 }
 
-/** The cases of a ui set that read the box. */
-export const ribbonCases = async (set: string): Promise<UiCase[]> => (await setModule<UiSet>('ui', set)).buildUiCases().filter((c) => c.act.do === 'ribbon')
+/** The cases of a ui set's module that read the box. */
+export const ribbonCases = (set: UiSet): UiCase[] => set.buildUiCases().filter((c) => c.act.do === 'ribbon')
 
 const scp = (...args: string[]) => execFileSync('scp', ['-q', '-o', 'BatchMode=yes', ...args])
 
@@ -45,7 +45,7 @@ export async function stepRibbon(set: string, tag: Tag, e: WinEnv): Promise<void
   const t0 = Date.now()
   // quser names a session's state in English when its output is UTF-8: Active for one on a screen, Disc for one left
   if (!/\bActive\b/.test(ssh('[Console]::OutputEncoding = [Text.Encoding]::UTF8; quser 2>&1 | Out-String'))) throw new Error('ribbon: no session on a screen on the machine (log on through Remote Desktop first)')
-  const cases = await ribbonCases(set)
+  const cases = ribbonCases(await setModule<UiSet>('ui', set))
   const dir = mkdtempSync(join(tmpdir(), 'xlwin-ribbon-'))
   for (const c of cases) writeFileSync(join(dir, `${c.id}.xlsx`), await caseFile(c, `${set} ${c.id}`))
   writeFileSync(join(dir, 'job.json'), JSON.stringify(cases.map((c) => ({ file: `${c.id}.xlsx`, cells: readCells(c) }))))

@@ -7,15 +7,15 @@
 # Output: a JSON object { version, ui, box, answers: [per book [[box, code, local] per cell]] } written as UTF-8 to $out.
 param([Parameter(Mandatory = $true)][string]$job, [Parameter(Mandatory = $true)][string]$out)
 Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes
-$A = [System.Windows.Automation.AutomationElement]
+$UIA = [System.Windows.Automation.AutomationElement]
 $en = [Globalization.CultureInfo]'en-US'
 $books = [IO.File]::ReadAllText($job, [Text.Encoding]::UTF8) | ConvertFrom-Json
 $dir = Split-Path $job
 function Code($cell) { [System.__ComObject].InvokeMember('NumberFormat', [Reflection.BindingFlags]::GetProperty, $null, $cell, $null, $null, $en, $null) }
 # the window's Number Format box: its combo box of that name
 function FindBox($hwnd) {
-  $byType = New-Object System.Windows.Automation.PropertyCondition($A::ControlTypeProperty, [System.Windows.Automation.ControlType]::ComboBox)
-  $script:box = @($A::FromHandle([IntPtr]$hwnd).FindAll([System.Windows.Automation.TreeScope]::Descendants, $byType)) | Where-Object { $_.Current.Name -match 'Number Format|Числовой формат' } | Select-Object -First 1
+  $byType = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, [System.Windows.Automation.ControlType]::ComboBox)
+  $script:box = @($UIA::FromHandle([IntPtr]$hwnd).FindAll([System.Windows.Automation.TreeScope]::Descendants, $byType)) | Where-Object { $_.Current.Name -match 'Number Format|Числовой формат' } | Select-Object -First 1
   if (-not $script:box) { throw 'no Number Format box in the window' }
 }
 function Now { [string]$script:box.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value }
@@ -60,9 +60,10 @@ try {
     $ctl = After $was
     if ($ctl -eq $was) { throw "the Number Format box does not follow the selection: A1 and A2 show $ctl" }
     $cells = New-Object System.Collections.ArrayList
-    foreach ($a in @($b.cells)) {
+    # PowerShell's names know no case: a cell's address is $at, not $a
+    foreach ($at in @($b.cells)) {
       Control $ws $ctl $hwnd
-      $cell = $ws.Range($a)
+      $cell = $ws.Range($at)
       [void]$cell.Select()
       [void]$cells.Add(@((After $ctl), [string](Code $cell), [string]$cell.NumberFormatLocal))
     }
