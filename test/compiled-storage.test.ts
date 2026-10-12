@@ -1,0 +1,22 @@
+import { describe, expect, it } from 'vitest'
+import { applyEdits, createState, debugSource } from '../src/engine.js'
+import { run } from '../src/exec/budget.js'
+
+describe.each(['closures', 'eval'] as const)('compiled storage, %s', (execution) => {
+  it('retains executable functions without a second copy of their generated text', () => {
+    const state = createState({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, B1: { formula: 'SUM(A1:A2)' }, C1: { formula: 'LET(x,B1,x*2)' } } }] }, { now: 0, seed: 1, execution })
+    expect(state.formulas.every((f) => f?.source === undefined)).toBe(true)
+    const source = debugSource(state)
+    expect(source).toContain("// 'S'!B1 = SUM(A1:A2)")
+    expect(source).toContain('R(0,0,0,1,0)')
+    expect(source).toContain('F.SUM(')
+    expect(source).toContain('v0=')
+    run(applyEdits(state, [{ sheet: 'S', cell: 'A1', input: { value: 3 } }]))
+    expect(state.rt.cell(0, 0, 2)).toBe(10)
+    expect(state.formulas.every((f) => f?.source === undefined)).toBe(true)
+    run(applyEdits(state, [{ sheet: 'S', cell: 'B1', input: { formula: 'A1*2' } }]))
+    expect(state.rt.cell(0, 0, 2)).toBe(12)
+    expect(debugSource(state)).toContain('mul(cell(0,0,0),2)')
+    expect(state.formulas.every((f) => f?.source === undefined)).toBe(true)
+  })
+})

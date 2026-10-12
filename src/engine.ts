@@ -29,6 +29,8 @@ import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
 import { arrayArea, holds } from './array-areas.js'
 import { printFormula, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
+import { jsBackend } from './exec/js.js'
+import { walk } from './exec/walk.js'
 import { specRect, tableAt, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
 import { CErr, E, isErr, type V } from './values.js'
 
@@ -345,7 +347,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
   if (withVolatile) for (const id of state.volatile) dirty.add(id)
   // cells that were in a cycle are recomputed in case the cycle is broken
   if (structural) for (const f of state.formulas) if (f && isErr(state.ctx.sheets[f.s].cols[f.c]?.[f.r]) && (state.ctx.sheets[f.s].cols[f.c]![f.r] as CErr).code === 'CYCLE') dirty.add(f.id)
-  yield* recompute(state, dirty, track)
+  yield* recompute(state, dirty, track, !structural)
   return changed(state, track)
 }
 
@@ -404,7 +406,15 @@ export function debugSource(state: EngineState): string {
   const ids = [...state.order, ...state.formulas.filter((f) => f && state.topo[f.id] < 0).map((f) => f!.id)]
   for (const id of ids) {
     const f = state.formulas[id]!
-    lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (cycle)' : ''}`, f.source!)
+    let source = f.source
+    if (source === undefined) {
+      const p = prepare(state, f.s, f.r, f.c, f.text)
+      if (p.ok) {
+        const b = jsBackend()
+        source = b.source(walk(codegenContext(state, f.s, f.area), p.ast, f.s, f.r, f.c, b).code)
+      }
+    }
+    lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (cycle)' : ''}`, source ?? '')
   }
   return lines.join('\n')
 }

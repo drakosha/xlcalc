@@ -17,7 +17,7 @@ export type { CodegenContext } from './exec/walk.js'
 
 /** A compiled formula: what it reads, its flags and its function. */
 export interface FormulaCode extends FormulaInfo {
-  /** The generated JS text (`eval`), for `link` and for reading. */
+  /** Temporary generated JS text (`eval`), released after `link`. Diagnostics regenerate it on demand. */
   source?: string
   fn: () => Arg
 }
@@ -75,6 +75,7 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
       batch.forEach((f, i) => {
         fallbacks.delete(f.fn)
         f.fn = fns[i]
+        f.source = undefined
       })
     },
   }
