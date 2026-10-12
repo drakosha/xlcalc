@@ -127,3 +127,20 @@ export const buildProbes = (): Probe[] => build().out
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = (({ out, predicted }) => Object.fromEntries(out.map((p, i) => [p.id, predicted[i]])))(build())
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): the bound is eight units in the last place of the
+ * operand, 2^(e-49) for an operand in [2^e, 2^(e+1)), not 2^-49 of its magnitude, so 1.9 + 8 units - 1.9 keeps its 8
+ * units at every x; and SUM(0.1,0.2,-0.3) in a cell is 0 too (`sum-zero-held` measured SUM).
+ */
+export const MISSED: readonly string[] = [
+  'stored#29',
+  'sweep:1#8',
+  ...[8, 9, 10, 11, 12, 13, 14, 15].map((m) => `sweep:1.9#${m}`),
+  'sweep:9.5#8',
+  'sweep:9.5#9',
+  ...[8, 9, 10, 11, 12, 13, 14].map((m) => `sweep:1E+15#${m}`),
+  ...[8, 9, 10, 11, 12].map((m) => `sweep:1E-200#${m}`),
+  'sweep:back#2',
+  'sweep:back#6',
+]

@@ -35,3 +35,9 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, predict(CASES[i][2], CASES[i][3])]))
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): 1/y is taken to 15 significant digits, not within
+ * 2^-48 (3 + 6E-15 and 9 + 1E-14 are no longer whole, 101 + 4E-13 still is), and 2^31-1 is already too large.
+ */
+export const MISSED: readonly string[] = ['tolerance#4', 'tolerance#5', 'tolerance#6', 'tolerance#10', 'tolerance#11', 'tolerance#14', 'tolerance#15', 'tolerance#16', 'tolerance#20', 'size#3', 'size#7']

@@ -1,8 +1,8 @@
 {
  "meta": {
   "version": "16.113.4",
-  "seconds": 1.4,
-  "date": "2026-10-09"
+  "seconds": 5.2,
+  "date": "2026-10-12"
  },
  "books": {
   "probes-1": {
@@ -340,6 +340,21 @@
   },
   "seconds-held-2": {
    "sent": "764308f4c2af00dc1713dd4c1c2d335488fe3e207c3e4a6692210b2d9120e779"
+  },
+  "near-zero-held-1": {
+   "sent": "8975e09ed013fe585e0c55b1edf303f31c73741dd6932d0e5283dd780bfc39f9"
+  },
+  "power-bound-held-1": {
+   "sent": "78a12da5e174cf80702dee1c906cb9108e4274a21332e30a63eb8c895fbd6094"
+  },
+  "power-edges-held-1": {
+   "sent": "814aa2c2bdca3e20daee11d2cb5fb4ef2448befdf1ce6be7b8b36071f7a41d3a"
+  },
+  "power-neg-held-1": {
+   "sent": "6011cf1a8a1549a8fc22820932267a06c3dc128deef393bf193840da3eaa9b7c"
+  },
+  "sum-zero-held-1": {
+   "sent": "192cfefe8aa4d1ebfb3d8c758a794a7fcf21124a9bd3addcf99bfe191185920a"
   }
  }
 }

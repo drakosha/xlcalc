@@ -71,3 +71,10 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, n(CASES[i][3])]))
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): the exponent is the left operand's, not the larger
+ * one's (`(1-8*2^-53)-1` keeps its 8 units, the bound 2^-50 of 1-8*2^-53); SUM takes the rule at its last addition
+ * alone (`SUM(0.1,0.2,-0.3,1E-20)` is 5.55E-17 + 1E-20); SUMIF, SUMIFS and SUMPRODUCT keep the double.
+ */
+export const MISSED: readonly string[] = ['edge#8', 'edge#9', 'edge#10', 'sum#4', 'SUMIF#1', 'SUMIFS#1', 'SUMPRODUCT#1']

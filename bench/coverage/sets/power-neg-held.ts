@@ -97,3 +97,10 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][3]]))
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): 1/y of 999999999999999 is too large for a root,
+ * `#NUM!` (`power-edges-held` and `power-bound-held` found the bound below 2^31-1). The roots themselves are Excel's
+ * -exp(y·ln(-x)), whose last digit the prediction's -(-x)^y missed within the tolerance (`(-8)^(1/3)` -1.9999999999999998).
+ */
+export const MISSED: readonly string[] = ['caret#26', 'POWER#9']
