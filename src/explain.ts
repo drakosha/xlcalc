@@ -3,7 +3,7 @@ import type { CellValue, ExplainOptions, ExternalBook } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { object, onlyOptions } from './input.js'
 import { errorOrigin, errorStep, placeText, type Place } from './issues.js'
-import { toLocal } from './locale/index.js'
+import { showFormula } from './locale/index.js'
 import { say, type Message } from './locale/messages.js'
 import { localeOf } from './locale/registry.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
@@ -123,7 +123,7 @@ export function explainCell(state: EngineState, s: number, r: number, c: number,
 export function explainText(root: ExplainTree, tag?: string, externalBooks?: ExternalBook[]): string {
   const loc = localeOf(tag)
   const local = (f: string) => {
-    const t = toLocal(f, loc, externalBooks?.length ? { externalBooks } : undefined)
+    const t = showFormula(f, loc, undefined, externalBooks)
     return t.ok ? t.formula : f
   }
   // the formula shown before its message takes it: en-US's prints it as given

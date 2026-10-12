@@ -396,7 +396,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
  * by address (a number, text, a boolean, an error, null for a cell stored empty) and the mark of a failed update, its
  * names with what they refer to and the index of the sheet of a sheet's name. Without `values` the stored values are
  * not read, only that a sheet's `cells` is an object: the options of the calls that show, read or check formula text
- * use the links' targets, sheets and names alone, and a window or a typed text gives them once for each formula.
+ * use the links' targets, sheets and names alone (the package's own calls over a checked book skip the check).
  */
 export function checkExternalBooks(v: unknown, path: string, values = true): ExternalBook[] {
   return array(v, path, 'an array of linked workbooks such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }').map((b, i) => {

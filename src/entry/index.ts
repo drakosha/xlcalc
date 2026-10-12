@@ -9,7 +9,7 @@
  */
 import type { CellInput, CheckCode, EntryOptions, EntryResult, ExternalBook, NumberFormat } from '../contract.js'
 import { checkEntryOptions, checkString } from '../input.js'
-import { validateLocalFormula, toInvariant } from '../locale/index.js'
+import { validateTyped, toInvariant } from '../locale/index.js'
 import { validate } from '../syntax.js'
 import { localeOf } from '../locale/registry.js'
 import { markingClock, type RulesClock } from '../locale/rules/data.js'
@@ -47,7 +47,7 @@ const STOPS: ReadonlySet<CheckCode> = new Set(['syntax', 'empty', 'too_long', 't
  * its invariant text where it names what the book may lack (`#NAME?` then), or why Excel stops it, at its place in the text.
  */
 function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: ExternalBook[]): { formula: string; sets?: NumberFormat | 'money' } | Extract<EntryResult, { ok: false }> {
-  const v = validateLocalFormula(text, locale, externalBooks ? { externalBooks } : undefined)
+  const v = validateTyped(text, locale, externalBooks ? { externalBooks } : undefined)
   if (v.ok) {
     const p = validate(v.canonical)
     return { formula: v.canonical, ...(p.ok ? { sets: formulaFormat(p.ast) } : {}) }
