@@ -4,6 +4,34 @@ import { run } from '../src/exec/budget.js'
 import type { CellInput } from '../src/contract.js'
 
 describe.each(['closures', 'eval'] as const)('incremental work, %s', (execution) => {
+  it('stops a scalar chain when the first formula keeps its value', () => {
+    const n = 1024, cells: Record<string, CellInput> = { A1: { value: 1.1 }, A2: { formula: 'INT(A1)' } }
+    for (let r = 3; r <= n; r++) cells[`A${r}`] = { formula: `A${r - 1}+1` }
+    const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1, execution })
+    let evaluated = 0
+    for (const f of state.formulas) {
+      const fn = f!.fn
+      f!.fn = () => { evaluated++; return fn() }
+    }
+    run(applyEdits(state, [{ sheet: 'S', cell: 'A1', input: { value: 1.9 } }]))
+    expect(state.rt.cell(0, n - 1, 0)).toBe(n - 1)
+    expect(evaluated).toBeLessThan(4)
+    evaluated = 0
+    run(applyEdits(state, [{ sheet: 'S', cell: 'A1', input: { value: 2.1 } }]))
+    expect(state.rt.cell(0, n - 1, 0)).toBe(n)
+    expect(evaluated).toBe(n - 1)
+  })
+
+  it('releases spill round bookkeeping after a calculation', () => {
+    const cells: Record<string, CellInput> = { A1: { value: 1 } }
+    for (let r = 2; r <= 1024; r++) cells[`A${r}`] = { formula: `A${r - 1}+1` }
+    const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1, execution })
+    expect(state.spills.done.size).toBe(0)
+    run(applyEdits(state, [{ sheet: 'S', cell: 'A1', input: { value: 2 } }]))
+    expect(state.rt.cell(0, 1023, 0)).toBe(1025)
+    expect(state.spills.done.size).toBe(0)
+  })
+
   it('does not reread a shared unchanged short range for every recomputed formula', () => {
     const n = 256, cells: Record<string, CellInput> = {}
     for (let r = 1; r <= 20; r++) cells[`D${r}`] = { value: r }
