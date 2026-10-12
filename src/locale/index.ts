@@ -69,7 +69,7 @@ function checkTranslateOptions(v: unknown): TranslateOptions {
   const o = object(v, 'opts', "options such as { table: 'Sales' }")
   onlyOptions(o, 'opts', ['table', 'externalBooks'])
   if (o.table !== undefined) checkString(o.table, 'opts.table')
-  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, 'opts.externalBooks')
+  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, 'opts.externalBooks', false)
   return o as TranslateOptions
 }
 
