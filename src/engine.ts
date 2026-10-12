@@ -23,7 +23,8 @@ import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from '
 import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
 import { AreaIndex } from './area-index.js'
-import { expandLinkNames, linkedSheet, linkSheets, strictCells, type LinkState } from './links.js'
+import { expandLinkNames, linkedSheet, linkSheets, strictCells, strictLinks, type LinkState } from './links.js'
+import { linksIn, markedLinks } from './syntax/links.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
 import { endSpill, spillRef } from './spill/place.js'
 import { newSpills, type Area, type Spills } from './spill/state.js'
@@ -350,6 +351,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
   }
   state.compiler.link(fresh)
   if (structural) rebuildGraph(state)
+  if (fresh.length && state.links.books.length) touched.push(...enteredLinks(state, fresh))
   // formulas reading the cells, arrays spilled over them or waiting for them
   for (const x of [...touched, ...state.spills.touched.splice(0)]) concerned(state, x, dirty)
   for (const f of fresh) dirty.add(f.id)
@@ -358,6 +360,26 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
   if (structural) for (const f of state.formulas) if (f && isErr(state.ctx.sheets[f.s].cols[f.c]?.[f.r]) && (state.ctx.sheets[f.s].cols[f.c]![f.r] as CErr).code === 'CYCLE') dirty.add(f.id)
   yield* recompute(state, dirty, track, !structural)
   return changed(state, track)
+}
+
+/**
+ * Formulas entered that refer to linked books: Excel cannot read those books and marks every sheet of them
+ * (`markedLinks`), so the cells their stored values do not hold become `#REF!` where formulas read them. They are
+ * written without a change for the host (a linked sheet is none of the book's); the areas written, whose readers compute again.
+ */
+function enteredLinks(state: EngineState, fresh: Formula[]): Area[] {
+  const ks = new Set(fresh.flatMap((f) => linksIn(f.text)))
+  if (!ks.size) return []
+  const books = markedLinks(state.input.externalBooks, ks)
+  const marked = books !== state.input.externalBooks
+  if (marked) {
+    state.input.externalBooks = books
+    strictLinks(state.links, books!, ks)
+  }
+  const refs = (marked ? state.formulas.filter((f): f is Formula => !!f) : fresh).flatMap((f) => f.refs)
+  const out: Area[] = []
+  for (const [s, r, c] of strictCells(state.links, state.ctx.sheets, refs)) if (write(state, s, r, c, E.REF)) out.push({ s, r1: r, c1: c, r2: r, c2: c })
+  return out
 }
 
 /** The clock's moment (a serial number of the 1900 date system) in the book's date system. */
