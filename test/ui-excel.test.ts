@@ -176,6 +176,17 @@ for (const run of RUNS) {
         else expect(got).toEqual(want)
       })
 
+    // a rule without a message of its own: the alert's text is Excel's (fill-held's stop and information rules)
+    const alerts = stored.cases.filter((c) => c.act.do === 'fill' && stored.answers[c.id].dialog && c.validations?.some((v) => v.error === undefined))
+    if (excel === 'Mac' && alerts.length)
+      it("a rule's alert without a message of its own says what Excel's says", () => {
+        for (const c of alerts) {
+          const act = c.act as Extract<UiCase['act'], { do: 'fill' }>
+          const r = createSession(uiBook(c, tag), { clock: { now: `${date}T12:00:00Z`, seed: 1 } }).fillCellText('S', act.range, act.text)
+          expect(stored.answers[c.id].dialog).toContain(r.ok && 'validation' in r ? r.validation!.message : 'no alert')
+        }
+      })
+
     const edits = stored.cases.filter((c) => c.act.do === 'edit')
     if (edits.length)
       it('an edit in place: F2 opens what editText gives, and the bar holds the case\'s text once its keys are typed', () => {
