@@ -1,13 +1,14 @@
 /**
  * A1 addresses without the engine (the `./a1` subpath, the same functions in the root): cells, ranges, the keys of layout
- * lines and their maps patched, rectangles, a sheet's name in a reference as Excel writes it and the rule names compare
- * by. Rows and columns are numbered from 1, as A1 numbers them; the parts reused are the engine's own (`model.ts`,
- * `structure/area.ts`, `layout/spans.ts`, `collate.ts`), which compute nothing. Each function refuses options it does not
- * take (`strict-args.ts`).
+ * lines and their maps patched, a sheet's outline groups, rectangles, a sheet's name in a reference as Excel writes it
+ * and the rule names compare by. Rows and columns are numbered from 1, as A1 numbers them; the parts reused are the
+ * engine's own (`model.ts`, `structure/area.ts`, `layout/spans.ts`, `layout/outline.ts`, `collate.ts`), which compute
+ * nothing. Each function refuses options it does not take (`strict-args.ts`).
  */
-import type { CellPosition, CellRect, LinePatch, LineSpan, RangeRect } from './contract.js'
+import type { CellPosition, CellRect, LinePatch, LineSpan, OutlineGroup, RangeRect, SheetInput, SheetOutline } from './contract.js'
 import { caseKey } from './collate.js'
 import { InputError, what } from './input-error.js'
+import { groupsOf, type OutlineEntry } from './layout/outline.js'
 import { lines, parseSpan, patchLines as patchSpans, spanKey } from './layout/spans.js'
 import type { Locale } from './locale/types.js'
 import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
@@ -131,11 +132,32 @@ export const patchLines = /* @__PURE__ */ strict(function patchLines<T extends o
   const axis: Axis = /^[A-Z]/.test(text(span, 'span')) ? 'c' : 'r'
   const s = parseSpan(span, axis)
   if (!s) throw new InputError('span', `expected columns or rows ("B:D", "5:9"), got ${what(span)}`)
-  if (map !== undefined && !isObject(map)) throw new InputError('map', `expected lines by span, got ${what(map)}`)
-  for (const [k, v] of Object.entries(map ?? {})) if (!parseSpan(k, axis) || !isObject(v)) throw new InputError(`map[${JSON.stringify(k)}]`, `expected an object under a span of the axis of "${span}"`)
-  if (lines(map, axis).some(([lo], i, ls) => i > 0 && lo <= ls[i - 1][1])) throw new InputError('map', 'two spans overlap')
+  checkMap(map, axis, 'map', `a span of the axis of "${span}"`)
   if (!isObject(patch)) throw new InputError('patch', `expected fields, got ${what(patch)}`)
   return patchSpans(map, axis, s[0], s[1], patch)
+})
+
+/** A map of `columns` or `rows` checked as a book's: an object under each span of the axis, no two spans overlapping. */
+function checkMap(map: unknown, axis: Axis, path: string, key: string): asserts map is Record<string, object> | undefined {
+  if (map !== undefined && !isObject(map)) throw new InputError(path, `expected lines by span, got ${what(map)}`)
+  for (const [k, v] of Object.entries(map ?? {})) if (!parseSpan(k, axis) || !isObject(v)) throw new InputError(`${path}[${JSON.stringify(k)}]`, `expected an object under ${key}`)
+  if (lines(map as Record<string, object> | undefined, axis).some(([lo], i, ls) => i > 0 && lo <= ls[i - 1][1])) throw new InputError(path, 'two spans overlap')
+}
+
+/**
+ * A sheet's groups of rows and columns as Excel draws them (`SheetOutline`), from its lines' outline levels, hidden
+ * state and collapsed marks and its summary settings: a `SheetInput`, or a `SheetLayout` as `getLayout()` gives it. Each
+ * axis's groups by first line, the outer before the inner where two begin together; a group is collapsed when Excel
+ * keeps the mark on its summary line (`RowInput.collapsed`), whatever marks the sheet holds.
+ */
+export const outlineGroups = /* @__PURE__ */ strict(function outlineGroups(sheet: Pick<SheetInput, 'rows' | 'columns' | 'outline'>): SheetOutline {
+  if (!isObject(sheet)) throw new InputError('sheet', `expected a sheet or its layout, got ${what(sheet)}`)
+  checkMap(sheet.rows, 'r', 'sheet.rows', 'a span of rows ("5", "5:9")')
+  checkMap(sheet.columns, 'c', 'sheet.columns', 'a span of columns ("C", "B:D")')
+  const o = sheet.outline
+  const groups = (map: Record<string, OutlineEntry> | undefined, axis: Axis, after: boolean): OutlineGroup[] =>
+    groupsOf(map, axis, after).map((g) => ({ first: g.lo + 1, last: g.hi + 1, level: g.level, summary: g.summary === null ? null : g.summary + 1, collapsed: g.collapsed }))
+  return { rows: groups(sheet.rows, 'r', o?.summaryBelow !== false), columns: groups(sheet.columns, 'c', o?.summaryRight !== false) }
 })
 
 const PLAIN = new RegExp(`^${PLAIN_SHEET}$`, 'u')

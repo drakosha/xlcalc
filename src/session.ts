@@ -48,6 +48,7 @@ import { buildResult, cellsIn, clockSerial, spillFields, stateHash } from './res
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
+import { OUTLINE_FIELDS } from './structure/outline.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
@@ -651,8 +652,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       op = opTaken(op)
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
-      // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
-      if (op.op === 'hideSheet' || op.op === 'unhideSheet') {
+      // a sheet hidden or shown, and an outline command, move no cell: the book takes its sheets, nothing is built again
+      if (op.op === 'hideSheet' || op.op === 'unhideSheet' || op.op in OUTLINE_FIELDS) {
         const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
         const [out, before] = yield* relayout(old, next, null)
         keep(() => layoutStep('editStructure', before, next))

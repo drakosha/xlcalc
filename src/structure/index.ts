@@ -20,6 +20,7 @@ import { shift } from './shift.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
 import { tableOp } from '../tables/ops.js'
+import { OUTLINE_FIELDS, outlineOp } from './outline.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
 
@@ -46,6 +47,7 @@ const FIELDS: Record<string, string[]> = {
   renameTable: ['table', 'name'],
   deleteTable: ['table'],
   convertTable: ['table'],
+  ...OUTLINE_FIELDS,
 }
 
 function integer(v: unknown, path: string, min: number, max: number): number {
@@ -194,6 +196,13 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
     case 'deleteTable':
     case 'convertTable':
       r = tableOp(book, op as Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>)
+      break
+    case 'group':
+    case 'ungroup':
+    case 'showDetail':
+    case 'hideDetail':
+    case 'showLevels':
+      r = outlineOp(book, named(o.sheet, 'op.sheet'), o)
       break
   }
   return r

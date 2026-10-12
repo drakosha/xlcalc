@@ -18,9 +18,10 @@ async function bundle() {
 describe('a1 without the engine', () => {
   it('the bundle holds the address modules alone, in a few kilobytes', async () => {
     const { code, used } = await bundle()
-    expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/spans', 'model', 'sheet-pattern', 'strict-args', 'structure/area'])
-    // the list above keeps the engine out; this, that the address modules stay small (8,004 with the case of names as Excel compares them)
-    expect(code.length).toBeLessThan(8_500)
+    expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/outline', 'layout/spans', 'model', 'sheet-pattern', 'strict-args', 'structure/area'])
+    // the list above keeps the engine out; this, that the address modules stay small (8,182 with the case of names as
+    // Excel compares them, 10,957 with a sheet's outline groups)
+    expect(code.length).toBeLessThan(11_500)
     expect(code).not.toContain('xlcalc')
   }, 60_000)
 
