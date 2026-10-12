@@ -109,20 +109,20 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
     const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, where)
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
-  return errorXml(v.error, ctx.richError, () => ctx.issues.add('errorValue', { key: 'cycleZero' }, where))
+  return errorXml(v.error, () => ctx.issues.add('errorValue', { key: 'cycleZero' }, where), ctx.richError)
 }
 
 /**
- * An error as a file's cell stores it, its attributes and the content of `<v>`: #SPILL! and #CALC! as `#VALUE!` with a
- * rich value (`vm`) that names them, as Excel 365 stores them; the engine's #CYCLE! as 0, as Excel stores a circular
- * reference, which `cycle` reports.
+ * An error as a file's cell stores it, its attributes and the content of `<v>`: #SPILL! and #CALC! as `#VALUE!`, with a
+ * rich value (`vm`) that names them where `richError` gives one, as Excel 365 stores them in a sheet; the engine's
+ * #CYCLE! as 0, as Excel stores a circular reference, which `cycle` reports.
  */
-export function errorXml(code: ErrorCode, richError: SheetContext['richError'], cycle: () => void): { t: string; v: string } {
+export function errorXml(code: ErrorCode, cycle: () => void, richError?: SheetContext['richError']): { t: string; v: string } {
   if (code === 'CYCLE') {
     cycle()
     return { t: '', v: '0' }
   }
-  if (code === 'SPILL' || code === 'CALC') return { t: ` t="e" vm="${richError(code)}"`, v: '#VALUE!' }
+  if (code === 'SPILL' || code === 'CALC') return { t: ` t="e"${richError ? ` vm="${richError(code)}"` : ''}`, v: '#VALUE!' }
   return { t: ' t="e"', v: code === 'ERROR' ? '#NULL!' : ERROR_TEXT[code] }
 }
 

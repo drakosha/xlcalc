@@ -161,7 +161,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   })
   const strings = readStrings(stringsXml)
   const meta = cellMetadata(metaXml, richValues, richStructures)
-  const links = await readLinks(archive, wb, rels, meta, issues)
+  const links = await readLinks(archive, wb, rels, issues)
   const all = decls.filter((d) => d.kind === 'worksheet').map((d) => d.name)
   const names = readNames(wb, decls, new Set(all), issues, links.known)
   const legacy = legacyConverter(names)

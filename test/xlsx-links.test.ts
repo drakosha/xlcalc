@@ -68,10 +68,10 @@ describe('xlsx links: reading', () => {
       D4: 4,
     })
     expect(r.issues.map((i) => `${i.code} ${i.cells}`)).toEqual(['errorValue [1]Sheet1!E2'])
-    // a rich value that is no error's (a data type) is read as the value the cell stores, reported
-    const typed = await readXlsx(await linked([book2('<sheetNames><sheetName val="Sheet1"/></sheetNames><sheetDataSet><sheetData sheetId="0"><row r="1"><cell r="A1" t="str" vm="1"><v>Paris</v></cell></row></sheetData></sheetDataSet>')]))
-    expect(typed.book.externalBooks![0].sheets[0].cells).toEqual({ A1: 'Paris' })
-    expect(typed.issues.map((i) => `${i.code} ${i.cells}`)).toEqual(['cellMetadata [1]Sheet1!A1'])
+    // a rich value (a data type, an error's) is read as the value the cell stores, which Excel shows, reported
+    const typed = await readXlsx(await linked([book2('<sheetNames><sheetName val="Sheet1"/></sheetNames><sheetDataSet><sheetData sheetId="0"><row r="1"><cell r="A1" t="str" vm="1"><v>Paris</v></cell><cell r="B1" t="e" vm="2"><v>#VALUE!</v></cell></row></sheetData></sheetDataSet>')]))
+    expect(typed.book.externalBooks![0].sheets[0].cells).toEqual({ A1: 'Paris', B1: { error: 'VALUE' } })
+    expect(typed.issues.map((i) => `${i.code} ${i.cells}`)).toEqual(['cellMetadata [1]Sheet1!A1,[1]Sheet1!B1'])
   })
 
   it("the mark of a failed update; a sheet without data has no cells, one with empty data no values", async () => {
@@ -209,14 +209,14 @@ describe('xlsx links: writing', () => {
     expect(await part(data, '[Content_Types].xml')).toContain('<Override PartName="/xl/externalLinks/externalLink2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml"/>')
   })
 
-  it("#SPILL! and #CALC! stored as #VALUE! with their rich values, as Excel 365 stores them; the engine's #CYCLE! as 0, reported", async () => {
+  it("#SPILL! and #CALC! stored as #VALUE!, which Excel shows for them there; the engine's #CYCLE! as 0, reported", async () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: {} }], externalBooks: [{ target: 'Book2.xlsx', sheets: [{ name: 'Sheet1', cells: { A1: { error: 'SPILL' }, A2: { error: 'CALC' }, A3: { error: 'CYCLE' }, A4: { error: 'NA' } } }] }] }
     const { data, issues } = await writeXlsx({ book })
-    expect(await part(data, 'xl/externalLinks/externalLink1.xml')).toContain('<row r="1"><cell r="A1" t="e" vm="1"><v>#VALUE!</v></cell></row><row r="2"><cell r="A2" t="e" vm="2"><v>#VALUE!</v></cell></row><row r="3"><cell r="A3"><v>0</v></cell></row><row r="4"><cell r="A4" t="e"><v>#N/A</v></cell></row>')
+    expect(await part(data, 'xl/externalLinks/externalLink1.xml')).toContain('<row r="1"><cell r="A1" t="e"><v>#VALUE!</v></cell></row><row r="2"><cell r="A2" t="e"><v>#VALUE!</v></cell></row><row r="3"><cell r="A3"><v>0</v></cell></row><row r="4"><cell r="A4" t="e"><v>#N/A</v></cell></row>')
     expect(issues.map((i) => `${i.code} ${i.cells}`)).toEqual(['errorValue [1]Sheet1!A3'])
     const r = await readXlsx(data)
-    expect(r.book.externalBooks![0].sheets[0].cells).toEqual({ A1: { error: 'SPILL' }, A2: { error: 'CALC' }, A3: 0, A4: { error: 'NA' } })
-    expect(r.issues).toEqual([])
+    expect(r.book.externalBooks![0].sheets[0].cells).toEqual({ A1: { error: 'VALUE' }, A2: { error: 'VALUE' }, A3: 0, A4: { error: 'NA' } })
+    expect(await openArchive(data).text('xl/metadata.xml')).toBeUndefined()
   })
 
   it('a book without links writes no part of them; a link without sheets an empty book', async () => {

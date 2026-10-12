@@ -8,6 +8,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredLinks } from '../bench/coverage/links.js'
+import type { CachedValue } from '../bench/coverage/links/cases.js'
 import type { ExternalBook } from '../src/contract.js'
 import { readXlsx } from '../src/xlsx.js'
 import { XLSX_EN_MESSAGES } from '../src/xlsx/messages.js'
@@ -32,6 +33,9 @@ const saved = (root: string, set: string, id: string) => readXlsx(new Uint8Array
 const fileName = (target: string) => decodeURIComponent(target).replaceAll('\\', '/').split('/').at(-1)
 
 const NOT_IN_MODEL = XLSX_EN_MESSAGES.externalLinks({})
+
+/** A stored value as Excel keeps it among a link's values: #SPILL! and #CALC! as #VALUE!. */
+const kept = (v: CachedValue | null | undefined) => (v && typeof v === 'object' && (v.error === 'SPILL' || v.error === 'CALC') ? { error: 'VALUE' } : v)
 
 /** The targets Excel wrote for the case `targets` of `basics-held`: Excel for Mac keeps a relative path it could not find as an absolute one beside it (`alternateUrls`), Excel for Windows writes every path as an absolute one without the drive. */
 const TARGETS: Record<string, string[]> = {
@@ -78,7 +82,7 @@ describe.each(PLATFORMS)('links in the files %s saved', (_, root) => {
           // Excel keeps the sheets in order and may add one a formula names
           expect(b.sheets.slice(0, link.sheets.length).map((s) => s.name)).toEqual(link.sheets.map((s) => s.name))
           link.sheets.forEach((s, k) => {
-            for (const [addr, v] of Object.entries(b.sheets[k].cells ?? {})) expect(v, `[${i + 1}]${s.name}!${addr}`).toEqual(s.cells?.[addr])
+            for (const [addr, v] of Object.entries(b.sheets[k].cells ?? {})) expect(v, `[${i + 1}]${s.name}!${addr}`).toEqual(kept(s.cells?.[addr]))
           })
           expect((b.names ?? []).map((n) => n.name)).toEqual((link.names ?? []).map((n) => n.name))
         })

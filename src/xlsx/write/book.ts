@@ -199,14 +199,6 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     contentTypes.push(['/xl/sharedStrings.xml', `${TYPE}.sharedStrings+xml`])
     wbRels.push([`${REL}/sharedStrings`, 'sharedStrings.xml'])
   }
-  // the links to other workbooks, `[1]` the first, each pointing at its book through a relationship of its own; before
-  // the metadata, which holds the rich values of the errors they store
-  const linkRefs = (book.externalBooks ?? []).map((b, i) => {
-    const part = `externalLinks/externalLink${i + 1}.xml`
-    files.push({ name: `xl/${part}`, text: externalLinkXml(b, i + 1, { richError, issues }) }, { name: `xl/externalLinks/_rels/externalLink${i + 1}.xml.rels`, text: rels([[`${REL}/externalLinkPath`, b.target, true]]) })
-    contentTypes.push([`/xl/${part}`, `${TYPE}.externalLink+xml`])
-    return `<externalReference r:id="rId${wbRels.push([`${REL}/externalLink`, part])}"/>`
-  })
   if (dynamic || rich.length) {
     files.push({ name: 'xl/metadata.xml', text: metadata(dynamic, rich) })
     contentTypes.push(['/xl/metadata.xml', `${TYPE}.sheetMetadata+xml`])
@@ -219,6 +211,13 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     contentTypes.push(['/xl/richData/rdrichvalue.xml', 'application/vnd.ms-excel.rdrichvalue+xml'], ['/xl/richData/rdrichvaluestructure.xml', 'application/vnd.ms-excel.rdrichvaluestructure+xml'])
     wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }
+  // the links to other workbooks, `[1]` the first, each pointing at its book through a relationship of its own
+  const linkRefs = (book.externalBooks ?? []).map((b, i) => {
+    const part = `externalLinks/externalLink${i + 1}.xml`
+    files.push({ name: `xl/${part}`, text: externalLinkXml(b, i + 1, issues) }, { name: `xl/externalLinks/_rels/externalLink${i + 1}.xml.rels`, text: rels([[`${REL}/externalLinkPath`, b.target, true]]) })
+    contentTypes.push([`/xl/${part}`, `${TYPE}.externalLink+xml`])
+    return `<externalReference r:id="rId${wbRels.push([`${REL}/externalLink`, part])}"/>`
+  })
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}"${s.hidden ? ` state="${SHEET_STATES.get(s.hidden)}"` : ''} r:id="rId${i + 1}"/>`).join('')
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
