@@ -133,7 +133,9 @@ Eval keeps generated text until its functions are linked, then releases it. Diag
 
 ## Shared formula bodies and lookup key indexes
 
-Formula bodies with the same generated operations can share executable code. Per-formula bindings keep literal values, row positions and immutable range objects. Sheet and column constants stay in the code. The template catalogue keeps at most 128 entries and 64 KiB of source keys per compiler; this is a bound on catalogue text, not on V8 native code. Closure LET formulas keep their own binding trees; an eval parser fallback isolates LET frames by formula.
+In `eval` mode, formula bodies with the same generated operations share executable code. Per-formula bindings keep literal values, row positions and immutable range objects. Sheet and column constants stay in the code. The template catalogue keeps at most 128 entries and 64 KiB of source keys per compiler; this is a bound on catalogue text, not on V8 native code. A formula too deep for the JS parser falls back to closures over the same bindings, with its LET frames kept by formula.
+
+`closures` mode compiles each formula its own tree, as before. Shared bodies cost it more than they saved: on the fanout book (50,000 formulas `$A$1*r`) they opened the book 24% slower in fresh processes (223 to 276 ms) for about 2% of the heap, while in `eval` they take the heap from 91 to 62 MiB and open faster (`bench/hyperformula/README.md`). Without them, closures opened the same book 8.7% faster in one process (237 to 216 ms) for 3.4% more heap.
 
 A scalar formula replacement can keep the existing dependency graph when its references and graph-relevant flags are unchanged. Previous spills, array formulas, spans and clock-dependent marks retain the rebuild path. Independently dirty scalar roots propagate changes separately through the existing graph; dense single-root paths and array/cycle cases keep the full pass.
 

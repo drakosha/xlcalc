@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.23.0 (2026-10-12)
+
+Internal release; not published to npm. Calls for a grid or an agent working on a live session, cheaper incremental edits, and formula text over many linked sheets. The synthetic book's values and hashes are as in 0.22.2.
+
+Added, in every kind of session (synchronous, `createInlineCalc`, the pool) and both execution modes ([docs/live-books.md](docs/live-books.md)):
+
+- `applyChanges(operations, opts?)`: `setCells`, `replaceCells`, `clearCells`, `patchCells`, `setNames`, `setStyles` and `setLayout` operations applied in order, atomically, with one recalculation, one revision and one undo step (`UndoCall` `applyChanges`); `opts.clock` fixes the clock.
+- `previewChanges(operations, opts?)`: their complete effects (`changes`, `impacts` with each cell's value before and after and its error, `totalChanges`, `truncated`, the clock used), the session, its revision and history left as they were. Applying it with `preview.revision` and `preview.clock` gives the same changes.
+- `readCells(ranges, opts?)`, `findCells(ranges, query, opts?)` (a literal substring of the shown text, the formula or the value), `getDependents(ranges, opts?)` (immediate formula readers, their references as rectangles) and `summarizeRanges(ranges, opts?)` (cells, numbers, errors, a compensated sum, min and max): bounded pages with `maxCells`, a cursor of the same query and revision, and `count`.
+- Types `SessionOperation`, `ChangesOptions`, `PreviewChangesOptions`, `ChangesResult`, `ChangesPreview`, `CellImpact`, `CellReadField`, `ReadCell`, `PageOptions`, `ReadCellsOptions`, `FindCellsOptions`, `QueryPage`, `ReadCellsResult`, `DependentCell`, `DependentsOptions`, `DependentsResult`, `RangeSummary`.
+
+Changed:
+
+- A session recomputes less after an edit: independent formulas the edit reaches compute on only where a value changed; a formula replaced with one of the same references keeps the dependency graph; `VLOOKUP` and `HLOOKUP` over a reference read their key column alone and keep its index across edits of the result columns ([docs/cache.md](docs/cache.md#shared-formula-bodies-and-lookup-key-indexes)).
+- `eval` shares one compiled body among formulas of one shape: on 50,000 formulas `$A$1*r` the heap is 62 MiB instead of 91 and RSS 252 MiB instead of 391. `closures` keeps a tree for each formula, which opens such a book faster than a shared body did.
+
+Fixed:
+
+- A session's window with formula text (`formulaLocal`, `editText`), its explanations and its typed text checked the book's links again for each formula: with 300 links of 80 sheets a window of 600 formulas took 0.26 s, now 0.006 s (the rest of 0.22.2's fix).
+
+Measured: the new calls by their tests in every kind of session, and a random series of edits, mixed batches, previews and undos (60 steps in each kind and mode) with the session's hash equal to a full computation after each step and every preview leaving the book, hash and revision as they were. Speed on the synthetic book against 0.22.2, both in one process: cold computation and a cell's edit within 2.6 % either way at 3,400 and 34,000 rows, a fill of 2,000 rows within 6 %.
+
 ## 0.22.2 (2026-10-12)
 
 Internal release; not published to npm. A window's formula text over links to other workbooks as fast as without them. The synthetic book's values and hashes are as in 0.22.1.
