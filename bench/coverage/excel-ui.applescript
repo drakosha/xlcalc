@@ -3,7 +3,8 @@
 -- then presses F2 and reads the bar and the element in focus, and Escape; "paste" puts the text on the clipboard as plain
 -- text and presses Cmd+V (the V key: any layout) with the cell selected; "fill" selects the range, types the text and presses Control+Return;
 -- "ribbon" selects each cell in turn and reads the ribbon's Number Format box, "choose" applies an item of the box's list
--- to each cell (Accessibility: the box's button pressed, then the item) and reads the box after.
+-- to each cell (Accessibility: the box's button pressed, then the item) and reads the box after; both give A1 the text
+-- format as a control cell, selected before each cell, and a set leaves A1 and A2 empty.
 -- Windows Excel shows for a paste or a fill are answered (`answerDialog`). Then read each cell: what it shows (`string
 -- value`), its format codes, prefix character, value (a number only, not read from a cell that shows an error), formula
 -- (`formula`, `formula local`, `formula2`, `formula2 local`) and whether it is part of a formula of the old kind (`has
@@ -130,16 +131,19 @@ on bars(ws, cells, bookName, kb)
 end bars
 
 -- each cell selected in turn, an item of the Number Format list applied to it when `picks` gives one (its place in the
--- list): the item's name (empty for none) and what the box shows then
+-- list): the item's name (empty for none) and what the box shows then. Before each cell the control cell A1, given the
+-- text format, is selected and the box must show the control's category (`control`): a box that does not follow the
+-- selection is looked for again, then stops the case.
 on ribbon(ws, cells, picks, bookName, kb)
-	set numberBox to my findBox(bookName)
-	set shown to my boxNow(bookName)
+	tell application "Microsoft Excel" to set number format of range "A1" of ws to "@"
+	my findBox(bookName)
+	set ctl to my control(ws, "", bookName, kb)
 	set out to {}
 	repeat with i from 1 to count of cells
 		set a to (item i of cells) as text
-		kb's toFront()
+		set ctl to my control(ws, ctl, bookName, kb)
 		tell application "Microsoft Excel" to select range a of ws
-		set shown to my boxAfter(shown, bookName)
+		set shown to my boxAfter(ctl, bookName)
 		set nm to ""
 		if picks is not {} then
 			set k to (item i of picks) as integer
@@ -154,6 +158,30 @@ on ribbon(ws, cells, picks, bookName, kb)
 	end repeat
 	return out
 end ribbon
+
+-- The control cell A1 selected, until the box shows `ctl` (the text category): its category. Empty `ctl`, at the start:
+-- the empty A2 selected first, A1's category is what the box changes to from A2's. A box that keeps another value for 3
+-- seconds is looked for again, three times at most.
+on control(ws, ctl, bookName, kb)
+	if ctl is "" then
+		kb's toFront()
+		tell application "Microsoft Excel" to select range "A2" of ws
+		delay 1
+		set was to my boxNow(bookName)
+		tell application "Microsoft Excel" to select range "A1" of ws
+		return my boxAfter(was, bookName)
+	end if
+	repeat 3 times
+		kb's toFront()
+		tell application "Microsoft Excel" to select range "A1" of ws
+		repeat 30 times
+			delay 0.1
+			if my boxNow(bookName) is ctl then return ctl
+		end repeat
+		my findBox(bookName)
+	end repeat
+	error "the Number Format box does not follow the selection: it shows " & my boxNow(bookName) & ", not " & ctl
+end control
 
 -- the box's list opened by its button: its menu, once it is there
 on openList(bookName, a)
@@ -217,7 +245,7 @@ on boxNow(bookName)
 end boxNow
 
 -- What the box shows once it has followed a selection or an item applied: the box changes from what it showed before
--- (`was`) within 2 seconds (0.3 s seen), or the cell's category is the same; then two reads agree.
+-- (`was`) within 2 seconds (0.3 s seen; the control shows it follows), or the cell's category is the same; then two reads agree.
 on boxAfter(was, bookName)
 	set v to was
 	repeat 20 times

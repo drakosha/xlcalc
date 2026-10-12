@@ -19,9 +19,9 @@ export type UiAction =
   | { do: 'paste'; at: string; rows: string[][]; newline?: '\r\n' | '\r'; trailing?: true }
   /** A text typed into the selected range and entered into each of its cells (Control+Return); the range's first cell is the active one. */
   | { do: 'fill'; range: string; text: string }
-  /** The category the ribbon's Number Format box (the Home tab) shows for each cell, selected in turn. */
+  /** The category the ribbon's Number Format box (the Home tab) shows for each cell, selected in turn; A1 and A2 stay empty, the script's control cells. */
   | { do: 'ribbon'; cells: string[] }
-  /** Items of the ribbon's Number Format list applied, each to its cell selected: `[cell, item]`, the item by its place in the list (1 General to 11 Text). */
+  /** Items of the ribbon's Number Format list applied, each to its cell selected: `[cell, item]`, the item by its place in the list (1 General to 11 Text); A1 and A2 stay empty. */
   | { do: 'choose'; picks: [string, number][] }
 
 export interface UiCase {
