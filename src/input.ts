@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { AlignmentStyle, BookInput, BorderLine, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { AlignmentStyle, BookInput, BorderLine, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, ExternalBook, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { english } from './locale/english.js'
@@ -336,7 +336,7 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
   if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (book.iteration !== undefined) {
@@ -386,8 +386,48 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   const sheets = book.sheets as { hidden?: unknown }[]
   if (sheets.length && sheets.every((s) => s.hidden !== undefined && s.hidden !== false)) throw new InputError(`${path}.sheets`, 'a book keeps one visible sheet at least: every sheet is hidden')
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
+  if (book.externalBooks !== undefined) checkExternalBooks(book.externalBooks, `${path}.externalBooks`)
   checkTables(book as unknown as BookInput, path)
   return bookTaken(book as unknown as BookInput, taken)
+}
+
+/**
+ * Other workbooks a book links to (`BookInput.externalBooks`): each a target, its sheets by name with their stored values
+ * by address (a number, text, a boolean, an error, null for a cell stored empty) and the mark of a failed update, its
+ * names with what they refer to and the index of the sheet of a sheet's name.
+ */
+export function checkExternalBooks(v: unknown, path: string): ExternalBook[] {
+  return array(v, path, 'an array of linked workbooks such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }').map((b, i) => {
+    const p = `${path}[${i}]`
+    const book = object(b, p, 'a linked workbook such as { target: "Book2.xlsx", sheets: [{ name: "Sheet1", cells: { A1: 5 } }] }')
+    onlyKeys(book, p, ['target', 'sheets', 'names'])
+    checkString(book.target, `${p}.target`)
+    const sheets = array(book.sheets, `${p}.sheets`, 'an array of sheets such as { name: "Sheet1", cells: { A1: 5 } }')
+    sheets.forEach((s, j) => {
+      const sp = `${p}.sheets[${j}]`
+      const sheet = object(s, sp, 'a sheet such as { name: "Sheet1", cells: { A1: 5 } }')
+      onlyKeys(sheet, sp, ['name', 'cells', 'refreshError'])
+      checkString(sheet.name, `${sp}.name`)
+      if (sheet.refreshError !== undefined && sheet.refreshError !== true) throw new InputError(`${sp}.refreshError`, `expected true, got ${what(sheet.refreshError)}`)
+      if (sheet.cells === undefined) return
+      const cells = object(sheet.cells, `${sp}.cells`, 'an object of stored values by address such as { A1: 5 }')
+      for (const addr of Object.keys(cells)) {
+        const cp = `${sp}.cells[${JSON.stringify(addr)}]`
+        if (!SURE_ADDRESS.test(addr)) checkAddress(addr, cp)
+        checkCellValue(cells[addr], cp)
+      }
+    })
+    if (book.names !== undefined)
+      array(book.names, `${p}.names`, 'an array of names such as { name: "Rate", ref: "Sheet1!$B$1" }').forEach((n, j) => {
+        const np = `${p}.names[${j}]`
+        const name = object(n, np, 'a name such as { name: "Rate", ref: "Sheet1!$B$1" }')
+        onlyKeys(name, np, ['name', 'ref', 'sheet'])
+        checkString(name.name, `${np}.name`)
+        checkString(name.ref, `${np}.ref`)
+        if (name.sheet !== undefined) checkNumber(name.sheet, `${np}.sheet`, 0, sheets.length - 1, true)
+      })
+    return book as unknown as ExternalBook
+  })
 }
 
 export function checkClock(v: unknown, path: string): Clock {
@@ -533,8 +573,9 @@ export function checkSheet(v: unknown, sheetIndex: (name: string) => number | un
 export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext | undefined {
   if (v === undefined) return undefined
   const o = object(v, path, 'a context such as { sheets: ["Sheet1"], names: [] }')
-  onlyKeys(o, path, ['sheets', 'names', 'externalFunctions', 'tables', 'table'])
+  onlyKeys(o, path, ['sheets', 'names', 'externalFunctions', 'tables', 'table', 'externalBooks'])
   if (o.table !== undefined) checkString(o.table, `${path}.table`)
+  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`)
   for (const k of ['sheets', 'names', 'externalFunctions'] as const)
     if (o[k] !== undefined) array(o[k], `${path}.${k}`, 'an array of strings').forEach((s, i) => checkString(s, `${path}.${k}[${i}]`))
   if (o.tables !== undefined)
@@ -560,7 +601,7 @@ export function checkNameOptions(v: unknown, path = 'opts'): NameOptions {
 /** `validateNames`'s context: the book's sheets, which a name's scope needs, its tables, external functions and locale. */
 export function checkNamesContext(v: unknown, path = 'ctx'): NamesContext {
   const o = object(v, path, "a context such as { sheets: ['Data'], locale: 'ru-RU' }")
-  onlyKeys(o, path, ['sheets', 'tables', 'externalFunctions', 'locale'])
+  onlyKeys(o, path, ['sheets', 'tables', 'externalFunctions', 'locale', 'externalBooks'])
   if (o.sheets === undefined) throw new InputError(`${path}.sheets`, "expected the book's sheet names, an array of strings")
   const { locale, ...rest } = o
   checkValidateContext(rest, path)
