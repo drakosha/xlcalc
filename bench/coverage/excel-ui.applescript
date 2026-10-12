@@ -2,6 +2,9 @@
 -- (System Events, the handlers of excel-keys.applescript): "bars" selects each cell in turn and reads the formula bar,
 -- then presses F2 and reads the bar and the element in focus, and Escape; "paste" puts the text on the clipboard as plain
 -- text and presses Cmd+V (the V key: any layout) with the cell selected; "fill" selects the range, types the text and presses Control+Return;
+-- "edit" selects the cell, presses F2, then Left `left` times and Backspace `back` times (40 without "keys": all it
+-- opened with), types the text (`type`, or `text` without "keys") and presses Return, reading the bar as "bars" does
+-- and once more before Return;
 -- "ribbon" selects each cell in turn and reads the ribbon's Number Format box, "choose" applies an item of the box's list
 -- to each cell (Accessibility: the box's button pressed, then the item) and reads the box after; both give A1 the text
 -- format as a control cell, selected before each cell, and a set leaves A1 and A2 empty.
@@ -11,11 +14,11 @@
 -- array`, with its `formula array`); each column's `column width`, `width` and `use standard width`; save the book as
 -- xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the action as
--- JSON {"do": "bars" | "paste" | "fill" | "ribbon" | "choose" | "none", "cells": [...], "items": [...], "at": cell, "range":
--- range, "text": text}, the cells to
+-- JSON {"do": "bars" | "paste" | "fill" | "edit" | "ribbon" | "choose" | "none", "cells": [...], "items": [...], "at": cell,
+-- "range": range, "text": text, "keys": {"left", "back", "type"}}, the cells to
 -- read and the columns as JSON arrays, the path of excel-keys.applescript. "none" takes no action: the book is only read.
--- Output: JSON {"dialog": text, "bars": [[[description, value] selected, [description, value] in editing, focus, dialog],
--- ...], "ribbon": [[item, box], ...], "cells": [[text, code, local, prefix, value, formula, formula local, formula2, formula2
+-- Output: JSON {"dialog": text, "bars": [[[description, value] selected, [description, value] in editing, focus, dialog,
+-- [description, value] typed (an edit's)], ...], "ribbon": [[item, box], ...], "cells": [[text, code, local, prefix, value, formula, formula local, formula2, formula2
 -- local, has array, formula array], ...], "columns": [[column width, points, standard], ...]}.
 use AppleScript version "2.4"
 use framework "Foundation"
@@ -63,6 +66,8 @@ on run argv
 		else if todo is "fill" then
 			tell application "Microsoft Excel" to select range ((act's objectForKey:"range") as text) of ws
 			set said to kb's typeFill((act's objectForKey:"text") as text)
+		else if todo is "edit" then
+			set barsOut to my edit(ws, act, bookName, kb)
 		else if todo is "ribbon" then
 			set ribbonOut to my ribbon(ws, (act's objectForKey:"cells") as list, {}, bookName, kb)
 		else if todo is "choose" then
@@ -129,6 +134,37 @@ on bars(ws, cells, bookName, kb)
 	end repeat
 	return out
 end bars
+
+-- the cell selected and its editing begun with F2, the cursor at the end of what it opens with: Left and Backspace
+-- pressed, the text typed, Return; the formula bar as `bars` reads it, and once the keys were typed
+on edit(ws, act, bookName, kb)
+	set k to act's objectForKey:"keys"
+	set {l, b, t} to {0, 40, (act's objectForKey:"text") as text}
+	if k is not missing value then set {l, b, t} to {(k's objectForKey:"left") as integer, (k's objectForKey:"back") as integer, (k's objectForKey:"type") as text}
+	set bar to kb's formulaBar(bookName)
+	tell application "Microsoft Excel" to select range ((act's objectForKey:"at") as text) of ws
+	set onSelect to kb's barText(bar)
+	kb's toFront()
+	tell application "System Events" to key code 120
+	delay 0.5
+	set onEdit to kb's barText(bar)
+	set inFocus to kb's focusedText()
+	kb's toFront()
+	tell application "System Events"
+		repeat l times
+			key code 123
+		end repeat
+		repeat b times
+			key code 51
+		end repeat
+		keystroke t
+	end tell
+	set onTyped to kb's barText(bar)
+	kb's toFront()
+	tell application "System Events" to keystroke return
+	delay 1
+	return {{onSelect, onEdit, inFocus, kb's answerDialog(), onTyped}}
+end edit
 
 -- each cell selected in turn, an item of the Number Format list applied to it when `picks` gives one (its place in the
 -- list): the item's name (empty for none) and what the box shows then. Before each cell the control cell A1, given the

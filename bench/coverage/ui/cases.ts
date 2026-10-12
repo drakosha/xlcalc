@@ -23,6 +23,12 @@ export type UiAction =
   | { do: 'ribbon'; cells: string[] }
   /** Items of the ribbon's Number Format list applied, each to its cell selected: `[cell, item]`, the item by its place in the list (1 General to 11 Text); A1 and A2 stay empty. */
   | { do: 'choose'; picks: [string, number][] }
+  /**
+   * The cell's editing begun with F2, as a person edits a cell in place (the cursor at the end of what it opens with):
+   * by default all it opened with erased and `text` typed, or with `keys` Left pressed `left` times, Backspace `back`
+   * times and `type` typed; then Return. `text` is what the cell holds then, as a host passes it to `setCellText`.
+   */
+  | { do: 'edit'; at: string; text: string; keys?: { left: number; back: number; type: string } }
 
 export interface UiCase {
   id: string
@@ -65,9 +71,9 @@ export interface UiCell {
   /**
    * Excel for Mac, a case of `bars`: the formula bar with the cell selected, and once its editing began (F2), each as
    * its description (`Formula Bar. A,1 <text>`) and its value; the element in focus then, its role and value; the
-   * windows Excel showed meanwhile.
+   * windows Excel showed meanwhile; a case of `edit` reads them too, and the bar once its keys were typed (`typed`).
    */
-  bar?: { selected: [string, string]; edit: [string, string]; focused: string; dialog?: string }
+  bar?: { selected: [string, string]; edit: [string, string]; focused: string; dialog?: string; typed?: [string, string] }
   /** Excel for Mac, a case of `ribbon` or `choose`: what the Number Format box shows with the cell selected (after the item applied), and the item's name in the list (its title and sample on two lines). */
   ribbon?: { box: string; item?: string }
 }
@@ -104,8 +110,8 @@ export function cellsOf(range: string): string[] {
   return out
 }
 
-/** The actions Excel takes only on the Mac's screen: the keyboard's fill, the ribbon's box and list. */
-export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'ribbon' || act.do === 'choose'
+/** The actions Excel takes only on the Mac's screen: the keyboard's fill and edit, the ribbon's box and list. */
+export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'edit' || act.do === 'ribbon' || act.do === 'choose'
 
 /** The cells an action selects in turn without writing: the formula bar's and the ribbon's; a choice's cells by its picks. */
 export function selectedOf(act: UiAction): string[] {
@@ -113,9 +119,10 @@ export function selectedOf(act: UiAction): string[] {
   return act.do === 'choose' ? act.picks.map(([cell]) => cell) : []
 }
 
-/** The texts the action puts into cells, as a host passes them to `setCellTexts`: a paste's fields from its cell on, a fill's text in each cell. */
+/** The texts the action puts into cells, as a host passes them to `setCellTexts`: a paste's fields from its cell on, a fill's text in each cell, an edit's text. */
 export function entriesOf(act: UiAction): { sheet: string; cell: string; text: string }[] {
   if (act.do === 'fill') return cellsOf(act.range).map((cell) => ({ sheet: 'S', cell, text: act.text }))
+  if (act.do === 'edit') return [{ sheet: 'S', cell: act.at, text: act.text }]
   if (act.do !== 'paste') return []
   const at = parseAddress(act.at)
   return act.rows.flatMap((row, r) => row.map((text, c) => ({ sheet: 'S', cell: formatAddress(at.row + r, at.col + c), text })))
