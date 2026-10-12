@@ -75,6 +75,34 @@ export interface CellLink {
  */
 export type NumberFormat = string | number
 
+/**
+ * A category of number formats as the Number Format box of Excel's Home tab shows it for the active cell
+ * (`numberFormatCategory`): the category of Excel's Format Cells window that makes the format, or `custom` for a format
+ * none of them makes.
+ */
+export type FormatCategory = 'general' | 'number' | 'currency' | 'accounting' | 'date' | 'time' | 'percentage' | 'fraction' | 'scientific' | 'text' | 'special' | 'custom'
+
+/** An item of the Number Format box's list on the Home tab, in its order (`numberFormatChoices`). */
+export type FormatChoiceKey = 'general' | 'number' | 'currency' | 'accounting' | 'shortDate' | 'longDate' | 'time' | 'percentage' | 'fraction' | 'scientific' | 'text'
+
+/** What the Number Format box shows for a format: its category and the category's name in the locale (`Number`, `Числовой`). */
+export interface NumberFormatCategory {
+  category: FormatCategory
+  name: string
+}
+
+/**
+ * An item of the Number Format list in a locale: its key, its name in the list (`Short Date`), the format it applies (a
+ * built-in format by number, or a code as Excel writes it to a file) and that format's code in the locale, in en-US
+ * syntax as a cell's `numberFormat` takes it.
+ */
+export interface FormatChoice {
+  key: FormatChoiceKey
+  name: string
+  format: NumberFormat
+  code: string
+}
+
 /** A colour, `#RRGGBB`. */
 export type Color = string
 

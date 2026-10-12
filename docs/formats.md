@@ -10,6 +10,7 @@ The rules below were measured in Excel 16.113 for Mac, en-US and ru-RU.
 - `display: false` returns values only and spends nothing on formatting.
 - `displayValue(value, { format, locale, width, dateSystem })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`. Without `width` the width is not limited: General keeps the digits it shows in a wide column, no number turns into `#`, and a fill (`*x`) has no column to fill and drops out, as in `TEXT`. With a width it shows what a cell of that column shows; Excel's default column is `width: 8.83203125`.
 - `builtinFormatCode(id, locale)` gives the code a built-in format shows by in a locale, from the tables below (`builtinFormatCode(14, 'ru-RU')` is `dd.mm.yyyy`), and undefined for a number that is none: `builtinFormatCode(id) !== undefined` tells whether a number is a built-in format.
+- `numberFormatCategory(format, locale)` gives the category of a format as the ribbon's Number Format box shows it, and `numberFormatChoices(locale)` the items of that box's list ([The ribbon's Number Format box](#the-ribbons-number-format-box)).
 - `fitColumns(book, result, sheet, columns)`, the layout edit `{ sheet, columns, fit: true }` and `entryWidth(value, opts)` give the widths Excel gives columns by AutoFit and as numbers are typed ([Fitting columns](#fitting-columns)).
 
 The number always stays in `value`. The text depends on the value, the format, the locale and the column width, so it is not part of the values hash, and a hash does not change when a column gets wider.
@@ -164,6 +165,33 @@ Every cell of the column counts, spilled ones and those of hidden rows too; a ce
 - Text, booleans and errors widen nothing (text runs over the next cells), nor does a width set by hand, and a column never narrows. A fitted width equal to the default stays a width (8.83203125 with `bestFit`).
 - Only typing widens a column: text set through the object model (`Value`, `Formula2Local`) widens nothing, in Excel for Mac and Excel for Windows. So a host calls `entryWidth` for text a user typed, with the value it computed (from `setCells`) and the cell's format after the entry; `setCellText` does this itself, in the same step of the undo ([Editing a grid](edits.md#typing-text)).
 
+## The ribbon's Number Format box
+
+The Number Format box on Excel's Home tab names the category of the active cell's format, and its list applies a format of each category. A host that draws Excel's ribbon needs both: `numberFormatCategory(format, locale)` gives the category as a key (`number`, `currency`, `custom`) and the name the box shows (`Number`, `Числовой`), and `numberFormatChoices(locale)` gives the list's eleven items in order, each with its key, its name, the format it applies and that format's code in the locale. Both take a code or a built-in format's number, and come in `xlcalc/text`, without the engine. The rules below were measured in Excel 16.113 for Mac.
+
+```js
+import { numberFormatCategory, numberFormatChoices } from 'xlcalc/text'
+
+numberFormatCategory('0.000') // { category: 'number', name: 'Number' }
+numberFormatCategory('0.00;-0.00').name // 'Custom'
+numberFormatChoices()[2] // { key: 'currency', name: 'Currency', format: '"$"#,##0.00', code: '"$"#,##0.00' }
+```
+
+The box names the category of Excel's Format Cells window whose formats hold the code, and Custom when none does. The keys are `general`, `number`, `currency`, `accounting`, `date`, `time`, `percentage`, `fraction`, `scientific`, `text`, `special` and `custom`. In en-US:
+
+- The code is compared as Excel keeps it, a literal written bare kept escaped. So `$#,##0.00` is Custom: Excel keeps it as `\$#,##0.00`, and Currency's dollar is quoted, `"$"#,##0.00`. A parenthesis or a space counts the same bare or escaped.
+- Number is digits with up to 30 decimals, with groups or without (`0`, `0.000`, `#,##0.0`), and Excel's negatives: red without a minus (`0.00;[Red]0.00`), in parentheses (`0.00_);(0.00)`) and red in parentheses. A minus of the code's own (`0.00;-0.00`), a red one, another colour, literals and `#.##` make it Custom.
+- Percentage is `0%` with up to 30 decimals, Scientific `0.0E+00` with 1 to 30 (`0E+00` is Custom), Fraction the nine of Format Cells: `# ?/?`, `# ??/??`, `# ???/???`, and halves, quarters, eighths, sixteenths, tenths and hundredths (`# ?/2` to `# ??/100`).
+- Currency is the quoted dollar before grouped digits, or a currency in brackets (`[$€-407]`, `[$USD]`) before them, with a space or without, or after them with a space; negatives red with a minus, or in parentheses. Accounting is Excel's form `_("$"* #,##0.00_);_("$"* (#,##0.00);_("$"* "-"??_);_(@_)` with the dollar, a bracketed currency or none, and with a bracketed currency also Excel for Mac's forms with minus signs (`_-* #,##0.00 [$€-407]_-;…`).
+- A date is the short date (built-in 14: `m/d/yyyy` as the package shows it, or the Mac's own `m/d/yy`), the system's long date `[$-F800]dddd, mmmm dd, yyyy` exactly, or a date followed by `;@`, as Format Cells writes its other dates (`m/d/yyyy;@`, `[$-409]mmmm d, yyyy;@`, `dd.mm.yyyy;@`). A time is the system's long time `[$-F400]h:mm:ss AM/PM` exactly, or a time followed by `;@` (`h:mm;@`). A date or time without `;@` is Custom (`h:mm`, `d-mmm-yy`, `yyyy-mm-dd`), and so are built-in 15 to 22 and 45 to 48.
+- Text is `@` alone, General `General` alone. Special is `00000`, `00000-0000`, `000-00-0000`, the phone `[<=9999999]###-####;(###) ###-####` and `000000`.
+- A built-in format by number is its code as Excel keeps it: 5 to 8 and 41 to 44 have the dollar quoted, so 5 is Currency, while the code the package writes for it, `$#,##0_);($#,##0)`, is Custom, as Excel calls that code.
+- The value does not count: a format shows its category on a number, text, a date or a blank.
+
+Excel for Mac builds the categories of numbers, dates and times and the locale's own currency in the locale's syntax and compares the code with them. In ru-RU that syntax writes `0,00`, `# ##0`, `[Красный]`, `ДД.ММ.ГГГГ` and `#" "?/?`, so only a code it writes the same matches: `0` is Числовой and `0%` Процентный, but `0.00`, `#,##0`, `0;[Red]0`, `0.00%`, the fractions and every date and time are `(все форматы)`. Bracketed currencies, their accounting forms and the special formats are one table for every locale, and match in ru-RU too, as General and `@` do.
+
+The list's items in en-US are General (0), Number (2), Currency (`"$"#,##0.00`), Accounting (44), Short Date (14), Long Date (`[$-F800]dddd\,\ mmmm\ dd\,\ yyyy`), Time (`[$-F400]h:mm:ss\ AM/PM`), Percentage (10), Fraction (12), Scientific (11) and Text (49); in ru-RU the same, by their Russian names, with Currency `#,##0.00\ "₽"`. An item applies the same format whatever the cell held: Number gives `0.000` the code `0.00`, Currency gives a euro amount the dollar. The codes are written as Excel writes them to a file. Another locale gives its names and its Currency item's code in `regional.formats` ([docs/locale.md](locale.md)), en-US's without it.
+
 ## How the engine does it
 
 `src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths (Cyrillic too), `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
@@ -211,9 +239,23 @@ The first sets showed the rules: the predictions of `autofit` and `typed` came f
 
 Excel 16.0.20430 for Windows fitted the same books and typed the same texts through `Value2` and `Formula2Local` (`bench/windows/run.ts fit <set>`, `test/excel/win/fit/`, `test/fit-win.test.ts`; 912 columns, the keyboard's cases being the Mac's alone). It does what the Mac does: it fits a column with something to show and marks it `bestFit`, shows a hidden column, leaves a column with nothing to show, and widens nothing for text set through the object model. Its widths are its own: it lays text out in pixels, a digit 7 at 96 dpi, and saves the width in sevenths of a digit, so of the columns it fitted only 16 of 161 (`autofit`, either locale), 34 of 332 (`glyphs`) and 15 of 71 (`held`) have the Mac's width. 1234567890 gets 11 on Windows and 11.1640625 on the Mac, a long date 21.7109375 and 19.6640625, 300 points of `b` 59.85546875 and 52.5.
 
+The ribbon was read by `npx tsx bench/coverage/run.ts ui ribbon [ru]`, the step `ui` with Excel in front (`bench/coverage/README.md`). Excel selects each cell of a book and reads the Number Format box through Accessibility, after selecting a control cell in the text format that the box must follow; then it applies each item of the list to a cell of its own and reads the item's name, the box after and the format the saved file holds. The answers are in `test/excel/ui/ribbon.json` and `test/excel/ui/ru-RU/ribbon.json`, and `test/ui-excel.test.ts` compares the functions with them, a format by what it shows (44 and the code Excel writes for it alike).
+
+| cells, en-US and ru-RU | what |
+|---|---|
+| 50 | the built-in formats 0 to 49 by number, as an xlsx file stores them |
+| 50 | the same formats by their en-US codes as codes of the file's own; Excel takes a code equal to a built-in format's as that format (`0.00` saves as 2) |
+| 17 | ru-RU's codes of the built-in formats |
+| 193 | variants: decimals, groups and negatives, currencies of each place and form, accounting, dates and times with and without `;@` and locale tags, fractions, exponents, text, General with text, hidden formats, colours and conditions, the special formats |
+| 32 | eight formats on text, a blank, a negative number and a date |
+| 26 | the list's items applied, to cells in General and in other formats |
+
+The first rule, committed before Excel ran the set, named the box right for 179 of 342 en-US cells and 110 ru-RU ones; it guessed the categories by the shape of a code. The rule above came from the answers and gives Excel's box for every cell but the 7 en-US cells of `m/d/yyyy`, and Excel's items but the date and time items of the en-US run (below).
+
 ## Known differences
 
 - **Fonts.** Widths are those of Calibri 11 in Excel for Mac. A cell's own font (another font or size, bold), indent, wrapping, shrinking and rotation are ignored, and characters outside the measured table count as a digit. Excel for Windows lays out text in pixels, with a digit 7 pixels wide at 96 dpi, so near the edge of a column it can show `#` where the engine shows the number, or the other way round.
 - **Locale tags.** Only `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]` change names or formats. Other locale codes, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are read and ignored.
 - **Fitting columns.** Widths are Excel for Mac's; Excel for Windows fits to its pixels (above). A cell's own font is not taken into account (bold text that the engine fits to 115 points gets 117 in Excel), nor characters outside the tables (`中文字符` counts as four digits). Text outside ASCII is measured by the advance widths of Carlito, metrically Calibri's, which give Excel's width on short text but a point off on some long runs (19 of 70 runs of one Cyrillic letter 600 points wide, `Итого по разделу 1`, ru-RU's long date). Where Excel for Mac shows its own short date (`3/15/26`) or ru-RU month names (`март`), the engine fits the text Excel for Windows shows (`3/15/2026`, `Март`). The widest column is 255 here and 255.83 in Excel.
+- **The ribbon's Number Format box.** The rules are Excel for Mac's. Excel for Windows was not measured, as its ribbon cannot be read over SSH, and may name some codes otherwise, ru-RU's above all. The code `m/d/yyyy` is the short date here, as built-in 14 shows by it (Excel for Windows's code); Excel for Mac, whose short date is `m/d/yy`, calls it Custom. Excel for Mac names the category of a format its list applied by the list's state as well: in ru-RU an item applied showed its own category (`Числовой`) in some runs and `(все форматы)` in others, while the same code read from a file is always `(все форматы)`, as the functions give it. Its Short Date, Long Date and Time items were not the same in two sessions of one day: one offered built-in 14, the long date and the long time, which `numberFormatChoices` gives, the other `yyyy-mm-dd;@`, `d/m;@` and `h:mm;@`.
 - **A second decimal separator** among the decimals of a format (`#,##0,00` in ru-RU's `TEXT`) is a literal between digits; Excel shows one digit fewer before it for some numbers.

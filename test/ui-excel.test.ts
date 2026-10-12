@@ -8,17 +8,21 @@
  *   into a selection with Control+Return (`fill-held`, the Mac's keyboard): `fillCellText` from the selection's first
  *   cell, a host taking back a call with a stop alert as Excel takes no such value. What each cell holds after (its
  *   value or formula and its format), the width the columns took, and whether the action brought a window (a refused
- *   formula, a value the active cell's rule does not take), which Excel shows for the active cell.
+ *   formula, a value the active cell's rule does not take), which Excel shows for the active cell;
+ * - the ribbon's Number Format box (`ribbon-*`, the Mac's screen): what it shows for a cell selected, against
+ *   `numberFormatCategory` of the cell's format; an item of its list applied (`choose`), against `numberFormatChoices`:
+ *   the item's name, the format the saved file holds, what the box shows after.
  * Known differences are in `test/ui-known.ts`; the predictions committed before Excel ran each set
  * (`bench/coverage/ui/<set>.predicted.json`) are kept with how many cases Excel confirmed.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
-import { clipboardText, entriesOf, readCells, readColumns, uiBook, windowOver, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
+import { clipboardText, entriesOf, macOnly, readCells, readColumns, ribbonOf, uiBook, windowOver, type RibbonCell, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
 import { formulaBar } from '../bench/coverage/entry/cases.js'
-import { held } from '../bench/coverage/entry/compare.js'
+import { formatKey, held } from '../bench/coverage/entry/compare.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
+import { numberFormatOf } from '../bench/coverage/stored.js'
 import { createSession, type CellInput } from '../src/index.js'
 import { UI_KNOWN, UI_REASONS } from './ui-known.js'
 import './locales.js'
@@ -63,7 +67,7 @@ function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
   const s = createSession(uiBook(c, tag), { clock: { now: `${date}T12:00:00Z`, seed: 1 } })
   try {
     const act = c.act
-    if (act.do === 'bars') throw new Error(`${c.id} is no paste or fill`)
+    if (act.do !== 'paste' && act.do !== 'fill') throw new Error(`${c.id} is no paste or fill`)
     const r = act.do === 'paste' ? s.pasteText('S', act.at, clipboardText(act)) : s.fillCellText('S', act.range, act.text)
     const alert = r.ok && 'validation' in r ? r.validation : undefined
     const undone = alert?.severity === 'stop'
@@ -92,6 +96,28 @@ function engineCells(c: UiCase, tag: string, date: string): Record<string, { edi
   }
 }
 
+/** What the ribbon showed in each cell of a case in Excel: the box; for an item applied, its name (the first of its two lines), the format the saved file holds and the box after. */
+function excelRibbon(c: UiCase, a: UiAnswer): Record<string, RibbonCell> {
+  return Object.fromEntries(
+    readCells(c).map((x) => {
+      const cell = a.cells[x]
+      const { box, item } = cell.ribbon!
+      return [x, c.act.do === 'choose' ? { name: item!.split('\n')[0], format: numberFormatOf(cell.cell) ?? 0, box } : box]
+    }),
+  )
+}
+
+/** A cell's ribbon as compared: an item's format by what it shows in the locale (`44` and the code Excel writes for it alike). */
+const ribbonKey = (r: RibbonCell, tag: string) => JSON.stringify(typeof r === 'string' ? r : { ...r, format: formatKey(r.format, tag) })
+
+/** The cells whose ribbon differs from Excel's, `numberFormatCategory` and `numberFormatChoices` against what Excel showed and applied: each cell with a line that says how. */
+function ribbonOff(c: UiCase, a: UiAnswer, tag: string, got: Record<string, RibbonCell> = ribbonOf(c, tag)): [string, string][] {
+  const want = excelRibbon(c, a)
+  return Object.keys(want).flatMap((x) => (ribbonKey(got[x], tag) === ribbonKey(want[x], tag) ? [] : [[x, `${x} ${JSON.stringify(c.cells[x]?.numberFormat ?? 0)}: Excel ${JSON.stringify(want[x])}, the functions ${JSON.stringify(got[x])}`] as [string, string]]))
+}
+
+const ribbonCase = (c: UiCase) => c.act.do === 'ribbon' || c.act.do === 'choose'
+
 /** What Excel opened each cell of a case of `bars` with: on the Mac its formula bar once F2 began the editing, on Windows `Formula2Local`. */
 const opened = (run: Run, a: UiAnswer, cell: string) => (run.excel === 'Mac' ? formulaBar(a.cells[cell].bar!.edit[0]) : a.cells[cell].formula2Local)
 
@@ -107,7 +133,7 @@ for (const run of RUNS) {
   const date = String(stored.meta.date)
   describe(`ui ${tag} ${set} (Excel for ${excel})`, () => {
     it('the stored cases are the generator\'s current ones, each answered', async () => {
-      const cases = (await current(set)).filter((c) => excel === 'Mac' || c.act.do !== 'fill')
+      const cases = (await current(set)).filter((c) => excel === 'Mac' || !macOnly(c.act))
       expect(stored.cases).toEqual(cases)
       expect(cases.filter((c) => !stored.answers[c.id])).toEqual([])
     })
@@ -116,6 +142,14 @@ for (const run of RUNS) {
       it(c.id, () => {
         const a = stored.answers[c.id]
         const reasons = UI_KNOWN.get(`${tag}:${set}:${c.id}`)
+        if (ribbonCase(c)) {
+          // a known difference names its cell: the others agree, and each known one still differs
+          const off = ribbonOff(c, a, tag)
+          const known = (x: string) => UI_KNOWN.get(`${tag}:${set}:${c.id}:${x}`)
+          const fixed = readCells(c).filter((x) => known(x) && !off.some(([y]) => y === x)).map((x) => `${x}: ${known(x)!.map((r) => UI_REASONS[r]).join('; ')}`)
+          expect({ unknown: off.filter(([x]) => !known(x)).map(([, line]) => line), fixed }).toEqual({ unknown: [], fixed: [] })
+          return
+        }
         if (c.act.do === 'bars') {
           const engine = engineCells(c, tag, date)
           const off = c.act.cells.filter((x) => engine[x].editText !== opened(run, a, x)).map((x) => `${x}: Excel ${JSON.stringify(opened(run, a, x))}, editText ${JSON.stringify(engine[x].editText)}`)
@@ -155,18 +189,21 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:paste-held': 12,
   'en-US:fill-held': 8,
   'ru-RU:fill-held': 9,
+  'en-US:ribbon': 1,
+  'ru-RU:ribbon': 0,
 }
 
 interface Predicted {
   editText?: Record<string, string>
+  ribbon?: Record<string, RibbonCell>
   after?: Record<string, { input: CellInput | null }>
   set?: { refused?: unknown; widths?: { column: string; width: number }[]; validations?: { cell: string }[] }
 }
 
 describe('ui sets (Excel for Mac)', () => {
   const mac = RUNS.filter((r) => r.excel === 'Mac')
-  it('every known difference is a stored case', () => {
-    const stored = new Set(mac.flatMap((r) => r.stored.cases.map((c) => `${r.tag}:${r.set}:${c.id}`)))
+  it('every known difference is a stored case, or a cell read in one', () => {
+    const stored = new Set(mac.flatMap((r) => r.stored.cases.flatMap((c) => [`${r.tag}:${r.set}:${c.id}`, ...readCells(c).map((x) => `${r.tag}:${r.set}:${c.id}:${x}`)])))
     expect([...UI_KNOWN.keys()].filter((k) => !stored.has(k))).toEqual([])
   })
   it.each(mac.map((r) => [`${r.tag}:${r.set}`, r] as const))('%s: the predictions written before Excel ran it', (key, run) => {
@@ -174,6 +211,7 @@ describe('ui sets (Excel for Mac)', () => {
     const confirmed = run.stored.cases.filter((c) => {
       const p = predicted[c.id]
       const a = run.stored.answers[c.id]
+      if (ribbonCase(c)) return ribbonOff(c, a, run.tag, p.ribbon).length === 0
       if (c.act.do === 'bars') return c.act.cells.every((x) => p.editText![x] === opened(run, a, x))
       const got: Outcome = {
         cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(p.after![x].input, run.tag)])),

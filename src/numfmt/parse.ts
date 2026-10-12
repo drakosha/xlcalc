@@ -77,7 +77,7 @@ export const EN_CODES: Codes = {
 }
 
 /** A code split at `;` outside quotes and escapes. */
-function splitSections(fmt: string): string[] {
+export function splitSections(fmt: string): string[] {
   const out: string[] = []
   let cur = ''
   let quoted = false

@@ -4,11 +4,19 @@
  * codes, the text order, the code page of CHAR and CODE, the word of new table columns' names; and the clock that
  * completes a date written without a year, whose reads make a formula depend on the clock.
  */
+import type { FormatCategory, FormatChoiceKey } from '../../contract.js'
 
 /** A code page of CHAR and CODE: its name as Unicode publishes its table (`windows-1251`), and its characters of codes 128–255, an undefined byte the C1 control of its value. */
 export interface CodePage {
   readonly name: string
   readonly chars: string
+}
+
+/** The Number Format box of the Home tab in a locale: the names of the categories it shows and of its list's items, and the code its Currency item applies. */
+export interface FormatNames {
+  readonly categories: Readonly<Record<FormatCategory, string>>
+  readonly choices: Readonly<Record<FormatChoiceKey, string>>
+  readonly currency: string
 }
 
 /** The order of day, month and year in date text (`dates.ts`). */
@@ -48,6 +56,8 @@ export interface RegionalData {
   readonly codePage: CodePage
   /** The word of a new table column's name (`Столбец1`), as Excel names a column inserted into a table or a cleared header. */
   readonly columnWord: string
+  /** The names of the Number Format box (`numberFormatCategory`, `numberFormatChoices`); en-US's without them. */
+  readonly formats?: FormatNames
 }
 
 /** The clock as the rules read it: date text without a year takes the clock's year, and reading it sets `read`. */
