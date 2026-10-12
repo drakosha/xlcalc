@@ -7,13 +7,14 @@
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookInput, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
+import type { BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
 import { FUNCTIONS } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
+import { builtAnew, heldValue, putHeld } from './held.js'
 import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
@@ -34,7 +35,7 @@ import { printFormula, quoteSheet, sheetKey, validate, type Ast } from './syntax
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
 import { specRect, tableAt, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
-import { CErr, E, isErr, type V } from './values.js'
+import { E, isErr, type V } from './values.js'
 
 export interface Formula extends FormulaCode {
   id: number
@@ -65,6 +66,12 @@ export interface EngineOptions {
   cache?: CacheBudget
   /** Whether the state may take a sheet's cells as they are, no one else reading or changing them after: else it takes a copy. */
   own?: (cells: Record<string, CellInput>) => boolean
+  /** The values the book's file stores (`ComputeOptions.cached`), for the formulas a circular reference stops that hold none. */
+  cached?: CachedValues
+  /** What a formula showed before a session's book was built again, for one a circular reference stops now that holds none (`held.ts`). */
+  prior?: (f: Formula) => V | undefined
+  /** Gets the sheets whose cells the state copied to change a held value: the book given holds other inputs there. */
+  rewritten?: Set<number>
 }
 
 export interface EngineState {
@@ -102,6 +109,20 @@ export interface EngineState {
   clocked: Set<number>
   /** The formulas in cycles the last iterative calculation computed (`BookInput.iteration`). */
   iterated: number[]
+  /** The values of the formulas a circular reference stops that hold one (`CellInput.held`, `held.ts`), by formula. */
+  held: Map<number, V>
+  /**
+   * What a formula a circular reference stops takes when the cycle comes into its way and it holds no value (`held.ts`):
+   * what a function gives while the state is built or a book is put back (0 where it gives none); 0 for the formulas the
+   * edits being applied entered, what the others show; what it shows when none is set.
+   */
+  anew?: Set<number> | ((f: Formula) => V | undefined)
+  /** Formulas computed this time that hold a value: out of a cycle's way once the computation settles, they drop it. */
+  outside: Set<number>
+  /** Where a caller of `applyEdits` gets the inputs the engine changed besides the edits (a held value taken or dropped), each cell's first, by `s!A1`. */
+  journal?: Map<string, CellReplace>
+  /** While the state is built: the sheets whose cells it copied to change a held value (`EngineOptions.rewritten`). */
+  cow?: Set<number>
   spills: Spills
   /** Input cells that hold no value or formula (a style, a format, a note alone), by sheet (row · MAX_COLS + column): a sheet's extent counts them. */
   bare: Map<number, Set<number>>
@@ -264,6 +285,9 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     volatile: new Set(),
     clocked: new Set(),
     iterated: [],
+    held: new Map(),
+    outside: new Set(),
+    cow: opts.rewritten ?? new Set(),
     spills: newSpills(),
     bare: new Map(),
     links: linked.links,
@@ -274,7 +298,9 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     for (const [addr, cellIn] of Object.entries(sheet.cells)) {
       const { row, col } = parseAddress(addr)
       if (holds(cellIn)) state.spills.occupied.set(s, row, col, true, true)
+      // a held value means nothing but in a formula's cell
       if (cellIn.formula === undefined) {
+        if (cellIn.held !== undefined) putHeld(state, s, addr, undefined)
         const v = bookScalar(cellIn.value, epoch)
         if (v !== null) put(ctx.sheets[s], row, col, v)
         else markBare(state, s, row, col, cellIn)
@@ -287,9 +313,11 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       if (!p.ok) {
         state.invalid.set(key(s, row, col), p.invalid)
         put(ctx.sheets[s], row, col, E[p.invalid.error])
+        if (cellIn.held !== undefined) putHeld(state, s, addr, undefined)
         continue
       }
       const f = compiled(state, pending.length, s, row, col, cellIn, p)
+      if (cellIn.held !== undefined) state.held.set(f.id, heldValue(cellIn.held))
       pending.push(f)
       if (f.nested) mark(ctx, s, row, col, true)
     }
@@ -299,15 +327,19 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   if (state.links.strict.some(Boolean)) for (const [s, r, c] of strictCells(state.links, ctx.sheets, pending.flatMap((f) => f.refs))) put(ctx.sheets[s], r, c, E.REF)
   for (const f of state.formulas) state.at.set(key(f!.s, f!.r, f!.c), f!.id)
   rebuildGraph(state)
+  state.anew = builtAnew(state, opts.cached, opts.prior)
   yield* evaluateAll(state)
+  state.anew = state.cow = undefined
   return state
 }
 
 /**
  * Edits applied atomically, one recomputation of dependents; returns the changed cells (`s:r:c`).
- * `withVolatile`: the clock has changed (live session), volatile cells are recomputed in the same pass.
+ * `withVolatile`: the clock has changed (live session), volatile cells are recomputed in the same pass. `restore`: the
+ * edits put inputs back (an undo, a preview taken back), so a formula a circular reference stops holds what its input
+ * gives, as a full computation of the book gives (`held.ts`).
  */
-export function* applyEdits(state: EngineState, edits: CellReplace[], withVolatile = false): Steps<string[]> {
+export function* applyEdits(state: EngineState, edits: CellReplace[], withVolatile = false, restore = false): Steps<string[]> {
   const track = tracker()
   const dirty = new Set<number>()
   const fresh: Formula[] = []
@@ -329,6 +361,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     if (old !== undefined) {
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
       endSpill(state, state.formulas[old]!, track, false)
+      state.held.delete(old)
       state.formulas[old] = undefined
       state.free.push(old)
       state.clocked.delete(old)
@@ -349,9 +382,11 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
         graphChanged ||= !!previous
         state.invalid.set(k, p.invalid)
         write(state, s, row, col, E[p.invalid.error], track)
+        if (input.held !== undefined) putHeld(state, s, e.cell, undefined)
         continue
       }
       const f = compiled(state, state.free.pop() ?? state.formulas.length, s, row, col, input, p)
+      if (input.held !== undefined) state.held.set(f.id, heldValue(input.held))
       if (f.nested) mark(state.ctx, s, row, col, true)
       state.formulas[f.id] = f
       state.at.set(k, f.id)
@@ -360,6 +395,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       structural = true
     } else {
       graphChanged ||= !!previous
+      if (input?.held !== undefined) putHeld(state, s, e.cell, undefined)
       write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
     }
   }
@@ -370,15 +406,20 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     if (state.formulas.length < size) state.free = state.free.filter((id) => id < state.formulas.length)
   }
   state.compiler.link(fresh)
+  // the formulas a cycle stopped are computed again, in case it is broken
+  if (structural && !state.input.iteration) for (const f of state.formulas) if (f && state.topo[f.id] < 0) dirty.add(f.id)
   if (graphChanged) rebuildGraph(state)
   if (fresh.length && state.links.books.length) touched.push(...enteredLinks(state, fresh))
   // formulas reading the cells, arrays spilled over them or waiting for them
   for (const x of [...touched, ...state.spills.touched.splice(0)]) concerned(state, x, dirty)
   for (const f of fresh) dirty.add(f.id)
   if (withVolatile) for (const id of state.volatile) dirty.add(id)
-  // cells that were in a cycle are recomputed in case the cycle is broken
-  if (structural) for (const f of state.formulas) if (f && isErr(state.ctx.sheets[f.s].cols[f.c]?.[f.r]) && (state.ctx.sheets[f.s].cols[f.c]![f.r] as CErr).code === 'CYCLE') dirty.add(f.id)
-  yield* recompute(state, dirty, track, !structural)
+  state.anew = restore ? () => undefined : fresh.length ? new Set(fresh.map((f) => f.id)) : undefined
+  try {
+    yield* recompute(state, dirty, track, !structural)
+  } finally {
+    state.anew = undefined
+  }
   return changed(state, track)
 }
 

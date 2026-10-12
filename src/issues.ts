@@ -1,9 +1,11 @@
 /**
- * Error reasons: why each cell with an error has it (a formula check, a cycle, an array that cannot spill, an
- * error from another cell or its own, an error element of a spilled array), and the cell an error began in.
+ * Error reasons: why each cell with an error has it (a formula check, an array that cannot spill, an error from
+ * another cell or its own, an error element of a spilled array) or a circular reference stops it (`held.ts`), and the
+ * cell an error began in.
  */
 import type { CellIssueDetail, CellRef, CheckCode, ErrorCode } from './contract.js'
 import { key, valueAt, type EngineState, type Formula } from './engine.js'
+import { stopped } from './held.js'
 import { formatAddress } from './model.js'
 import { runtimeSheet } from './links.js'
 import { ownerOf } from './spill/place.js'
@@ -45,6 +47,12 @@ export interface Place {
 /** A cell's reference text: `'Sheet'!B3`. */
 export const placeText = (state: EngineState, p: Place) => `${quoteSheet(runtimeSheet(state.sheetNames, state.links, p.s))}!${formatAddress(p.r, p.c)}`
 
+/** The reason of a formula a circular reference stops: it is not computed and holds its value (`held.ts`). */
+const HELD = 'circular reference: not computed, the value is held'
+
+/** The issue of a formula a circular reference stops, whatever value it holds. */
+const heldIssue = (f: Formula): Issue => ({ s: f.s, r: f.r, c: f.c, error: 'CYCLE', reason: HELD })
+
 /** The issue of a formula whose value is the error `code`. */
 function formulaIssue(state: EngineState, f: Formula, code: ErrorCode): Issue {
   const why = state.spills.why.get(f.id)
@@ -79,6 +87,10 @@ export function issues(state: EngineState): Issue[] {
   }
   for (const f of state.formulas) {
     if (!f) continue
+    if (stopped(state, f.id)) {
+      out.push(heldIssue(f))
+      continue
+    }
     const v = valueAt(state, f.s, f.r, f.c)
     if (isErr(v)) out.push(formulaIssue(state, f, v.code))
   }
@@ -96,9 +108,10 @@ export function issues(state: EngineState): Issue[] {
 export function cellIssue(state: EngineState, s: number, r: number, c: number): Issue | null {
   const inv = state.invalid.get(key(s, r, c))
   if (inv) return { s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at }
+  const id = state.at.get(key(s, r, c))
+  if (id !== undefined && stopped(state, id)) return heldIssue(state.formulas[id]!)
   const v = valueAt(state, s, r, c)
   if (!isErr(v)) return null
-  const id = state.at.get(key(s, r, c))
   if (id !== undefined) return formulaIssue(state, state.formulas[id]!, v.code)
   const x = ownerOf(state, s, r, c)
   return x ? spilledIssue(state, x, r, c, v.code) : null
@@ -118,9 +131,34 @@ function errorSource(state: EngineState, f: Formula, code: ErrorCode): (Place & 
   return null
 }
 
+/** The first formula a circular reference stops among the cells `f` reads, row by row, with the index of its reference. */
+function stoppedSource(state: EngineState, f: Formula): (Place & { ref: number }) | null {
+  for (let k = 0; k < f.refs.length; k++) {
+    const g = f.refs[k]
+    if (g.s >= state.links.first) continue
+    const b = state.rt.bounds(g)
+    const cols = state.ctx.sheets[g.s].cols
+    for (let r = b.r1; r <= b.r2; r++)
+      for (let c = b.c1; c <= b.c2; c++) {
+        const id = cols[c]?.[r] === undefined ? undefined : state.at.get(key(g.s, r, c))
+        if (id !== undefined && stopped(state, id)) return { s: g.s, r, c, ref: k }
+      }
+  }
+  return null
+}
+
+/** The code of the issue of a cell (`cellIssue`): `CYCLE` for a formula a circular reference stops, else its error's, or null. */
+export function issueCode(state: EngineState, s: number, r: number, c: number): ErrorCode | null {
+  const id = state.at.get(key(s, r, c))
+  if (id !== undefined && stopped(state, id)) return 'CYCLE'
+  const v = valueAt(state, s, r, c)
+  return isErr(v) ? v.code : null
+}
+
 /**
  * The next cell on the way back from a cell holding the error `code` to the cell it began in: for a formula, the cell its
- * reason names (with the index of the reference it is in); for a spilled cell, its array's formula; null where it began.
+ * reason names (with the index of the reference it is in), for one a circular reference stops the first such formula it
+ * reads; for a spilled cell, its array's formula; null where it began.
  */
 export function errorStep(state: EngineState, p: Place, code: ErrorCode): (Place & { ref?: number }) | null {
   if (state.invalid.has(key(p.s, p.r, p.c))) return null
@@ -130,6 +168,7 @@ export function errorStep(state: EngineState, p: Place, code: ErrorCode): (Place
     return x ? { s: x.s, r: x.r1, c: x.c1 } : null
   }
   const f = state.formulas[id]!
+  if (code === 'CYCLE' && stopped(state, id)) return stoppedSource(state, f)
   if (code === 'SPILL' && state.spills.why.has(f.id)) return null
   // an error stored of a linked workbook begins at the formula that reads it
   const from = errorSource(state, f, code)

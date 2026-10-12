@@ -108,6 +108,8 @@ export const EN_MESSAGES: EnglishMessages = {
   explainFormula: (p) => p.formula,
   explainErrorFrom: (p) => `(error from ${p.ref})`,
   explainErrorHere: () => '(the error begins here)',
+  explainHeldFrom: (p) => `(held: a circular reference through ${p.ref})`,
+  explainHeldHere: () => '(held: a circular reference)',
 }
 
 /** en-US's formula text, the invariant syntax; its messages are `EN_MESSAGES`, which every locale falls back to. */

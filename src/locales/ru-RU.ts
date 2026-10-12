@@ -309,6 +309,8 @@ const MESSAGES: Messages = {
   explainFormula: (p, w) => w.formula(p.formula),
   explainErrorFrom: (p) => `(ошибка из ${p.ref})`,
   explainErrorHere: () => '(ошибка возникает здесь)',
+  explainHeldFrom: (p) => `(значение удержано: циклическая ссылка через ${p.ref})`,
+  explainHeldHere: () => '(значение удержано: циклическая ссылка)',
   // reading xlsx: the workbook
   localeUnknown: (p) => `Локаль ${q(p.tag)} не поддерживается и не прочитана`,
   builtInName: () => 'Встроенное имя (область печати, печатаемые заголовки, диапазон фильтра) не поддерживается',

@@ -17,10 +17,11 @@ import { parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { arrayPart } from '../spill/fixed.js'
 import { brokenRule } from '../validation/session.js'
+import { CONTENT } from './cells.js'
 import { cellValue } from './looks.js'
 
 /** The fields an entry replaces: the content and the number format. */
-const TYPED = ['value', 'formula', 'array', 'numberFormat'] as const
+const TYPED = [...CONTENT, 'numberFormat'] as const
 
 /** The number format the cell's row or column gives it. */
 function lineFormat(s: EngineState, i: number, r: number, c: number) {

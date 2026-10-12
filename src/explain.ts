@@ -2,7 +2,7 @@
 import type { CellValue, ExplainOptions, ExternalBook } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { object, onlyOptions } from './input.js'
-import { errorOrigin, errorStep, placeText, type Place } from './issues.js'
+import { errorOrigin, errorStep, issueCode, placeText, type Place } from './issues.js'
 import { showFormula } from './locale/index.js'
 import { say, type Message } from './locale/messages.js'
 import { localeOf } from './locale/registry.js'
@@ -10,7 +10,7 @@ import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
 import { runtimeSheet } from './links.js'
 import { ownerOf } from './spill/place.js'
 import { quoteSheet } from './syntax.js'
-import { isErr, type Rng } from './values.js'
+import type { Rng } from './values.js'
 
 /** `explain`'s options, checked: an unknown one is refused, as another call's with the call that takes it. */
 export function checkExplainOptions(v: unknown, path = 'opts'): ExplainOptions {
@@ -35,7 +35,7 @@ export interface ExplainTree {
   cells?: number
   /** A cell an array spilled into: the array's formula cell, which is the node's child. */
   spillOf?: string
-  /** A cell with an error: the cell it began in. */
+  /** A cell with an error, or a formula a circular reference stops: the cell it began in. */
   origin?: string
   children: ExplainTree[]
 }
@@ -68,8 +68,9 @@ export function explainCell(state: EngineState, s: number, r: number, c: number,
     const node: ExplainTree = { ref: placeText(state, { s, r, c }), value: toCellValue(v), children: [] }
     if (state.invalid.has(k)) node.formula = state.input.sheets[s].cells[formatAddress(r, c)]?.formula
     if (f) node.formula = f.text
-    const step = isErr(v) ? errorStep(state, { s, r, c }, v.code) : null
-    if (isErr(v)) node.origin = placeText(state, errorOrigin(state, { s, r, c }, v.code, origins))
+    const code = issueCode(state, s, r, c)
+    const step = code ? errorStep(state, { s, r, c }, code) : null
+    if (code) node.origin = placeText(state, errorOrigin(state, { s, r, c }, code, origins))
     // past the depth only the way to the origin goes on, while it does not come back to a cell above
     const onward = step && past > 0 && !above.has(key(step.s, step.r, step.c)) ? step : null
     above.set(k, (above.get(k) ?? 0) + 1)
@@ -133,7 +134,9 @@ export function explainText(root: ExplainTree, tag?: string, externalBooks?: Ext
     const ref = local(n.ref)
     const head = n.cells !== undefined ? `${ref} (${text({ key: 'explainCells', count: n.cells })})` : `${ref} = ${text({ key: 'explainValue', value: n.value })}`
     const from = n.formula ? text({ key: 'explainFormula', formula: local(n.formula) }) : n.spillOf ? text({ key: 'explainSpill', ref: local(n.spillOf) }) : ''
-    const origin = n.origin === undefined ? '' : n.origin === n.ref ? text({ key: 'explainErrorHere' }) : text({ key: 'explainErrorFrom', ref: local(n.origin) })
+    // a node with an origin and a value other than an error is a formula a circular reference stops, which holds its value
+    const held = n.value === null || typeof n.value !== 'object'
+    const origin = n.origin === undefined ? '' : n.origin === n.ref ? text({ key: held ? 'explainHeldHere' : 'explainErrorHere' }) : text(held ? { key: 'explainHeldFrom', ref: local(n.origin) } : { key: 'explainErrorFrom', ref: local(n.origin) })
     lines.push(`${indent}${head}${from ? `  ← ${from}` : ''}${origin ? `  ${origin}` : ''}`)
     for (const ch of n.children) go(ch, indent + '  ')
   }

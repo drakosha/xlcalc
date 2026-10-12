@@ -8,8 +8,8 @@ import type { EngineState } from '../engine.js'
 import { array, CELL_FIELDS, checkAddress, checkCell, checkSheet, InputError, object, onlyKeys } from '../input.js'
 import { sheetKey } from '../syntax.js'
 
-/** The fields of a cell's content. */
-const CONTENT = ['value', 'formula', 'array'] as const
+/** The fields of a cell's content: a formula's value held while a circular reference stops it goes with the formula. */
+export const CONTENT = ['value', 'formula', 'array', 'held'] as const
 
 /**
  * A cell's input with an edit's fields over it; null when nothing is left of the cell. An edit of null clears the content
@@ -20,7 +20,10 @@ export function withFields(input: CellInput | undefined, fields: CellFields | nu
   // a new value or formula, or none, replaces the content whole; a formula removed takes its area along
   if (fields === null || fields.value !== undefined || typeof fields.formula === 'string') for (const k of CONTENT) delete out[k]
   if (fields === null) delete out.link
-  if (fields?.formula === null) delete out.array
+  if (fields?.formula === null) {
+    delete out.array
+    delete out.held
+  }
   if (fields)
     for (const k in fields) {
       const v = fields[k as keyof CellFields]
