@@ -26,6 +26,9 @@ const UNSUPPORTED: Record<string, string> = {
   'basics-held/cache/S!A22': 'INDIRECT into a closed book is #REF!',
   'basics-held/cache/S!A23': 'OFFSET over a closed book is #VALUE!',
   'basics-held/cache/S!A37': 'INDIRECT into a closed book is #REF!',
+  'written/cache/S!A22': 'INDIRECT into a closed book is #REF!',
+  'written/cache/S!A23': 'OFFSET over a closed book is #VALUE!',
+  'written/cache/S!A37': 'INDIRECT into a closed book is #REF!',
   'functions-held/functions/S!A11': 'CELL over a closed book gives no text',
 }
 
@@ -38,6 +41,11 @@ const MISSED: Record<string, string> = {
   'basics-held/cache/S!A24': 'SUM over a whole row of a link marked by the fill down: #REF!',
   'basics-held/cache/S!A28': 'COUNTA counts the #REF! of a cell the marked link does not store',
   'basics-held/cache/S!A35': 'AVERAGE over a whole column of a link marked by the fill down: #REF!',
+  'written/cache/S!A3': 'SUM over a whole column of a link marked by the fill down: #REF!',
+  'written/cache/S!A24': 'SUM over a whole row of a link marked by the fill down: #REF!',
+  'written/cache/S!A28': 'COUNTA counts the #REF! of a cell the marked link does not store',
+  'written/cache/S!A35': 'AVERAGE over a whole column of a link marked by the fill down: #REF!',
+  ...Object.fromEntries(['A1', 'A2', 'A3', 'A4'].map((a) => [`written/errors/S!${a}`, 'a stored #SPILL! or #CALC! a file holds as #VALUE!, which Excel shows'])),
 }
 
 /** The stored sets of a platform. */
@@ -81,7 +89,7 @@ function applyOps(s: Session, ops: readonly LinksOp[] = []): ((ref: CellRef) => 
 const inFolder = (book: BookInput, folder: string, sep: string): BookInput => ({ ...book, externalBooks: book.externalBooks!.map((b) => ({ ...b, target: `${folder}${sep}${b.target}` })) })
 
 describe.each(PLATFORMS)('links against %s', (_, root) => {
-  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'first', 'functions-held', 'refresh-held']))
+  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['basics-held', 'edits-held', 'first', 'functions-held', 'refresh-held', 'written']))
   for (const set of stored(root)) {
     describe(set.name, async () => {
       const built = ((await import(`../bench/coverage/links/${set.name}.ts`)) as { buildLinksCases(): LinksCases }).buildLinksCases()

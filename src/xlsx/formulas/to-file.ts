@@ -5,18 +5,16 @@
  * another workbook's sheet by its link's number in quotes only where its name needs them, as Excel writes it
  * (`[1]Sheet1!A1`, `'[1]My Sheet'!A1`, `[1]Sheet1!Local`, `[1]Sheet1!#REF!`). The rest as the engine's canonical text prints it.
  */
-import { PLAIN_SHEET } from '../../sheet-pattern.js'
 import type { Ast } from '../../syntax/ast.js'
 import { ERROR_TEXT } from '../../syntax/errors.js'
+import { plain } from '../../syntax/links.js'
 import { linkedSheet, printFormula, quoteSheet } from '../../syntax/print.js'
 import { specText } from '../../syntax/table.js'
-import { readsAsCell } from '../../syntax/tokens.js'
 import { XLFN, XLWS } from './prefixes.js'
 
-const PLAIN = new RegExp(`^${PLAIN_SHEET}$`, 'u')
 
 /** Another workbook's sheet before `!`: quoted unless its name is a plain one that reads as no cell. */
-const fileLinkSheet = (book: number | string, sheet: string) => (PLAIN.test(sheet) && !readsAsCell(sheet) ? linkedSheet(book, sheet) : quoteSheet(linkedSheet(book, sheet)))
+const fileLinkSheet = (book: number | string, sheet: string) => (plain(sheet) ? linkedSheet(book, sheet) : quoteSheet(linkedSheet(book, sheet)))
 
 const fn = (name: string) => (XLWS.has(name) ? `_xlfn._xlws.${name}` : XLFN.has(name) ? `_xlfn.${name}` : name)
 

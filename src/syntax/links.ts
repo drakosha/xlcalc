@@ -82,7 +82,7 @@ export function readsLinks(ast: Ast): boolean {
 }
 
 /** A name of a sheet or a file in a reference as Excel writes it: in quotes unless it is a plain name (`Book2.xlsx`, `Sheet1`). */
-const plain = (s: string) => PLAIN.test(s) && !readsAsCell(s)
+export const plain = (s: string) => PLAIN.test(s) && !readsAsCell(s)
 
 /** Another workbook's sheet before `!` as Excel shows it, by the link's target: `[Book2.xlsx]Sheet1`, `'C:\data\[Book2.xlsx]My Sheet'`. */
 export function shownLinkSheet(target: string, sheet: string): string {
