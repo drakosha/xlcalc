@@ -70,6 +70,34 @@ describe('a book’s links', () => {
     expect(() => compute({ ...plain, externalBooks: [{ target: 'a', sheets: [{ name: 'S', cells: { A1: [1] } }] }] } as never)).toThrow('book.externalBooks[0].sheets[0].cells["A1"]: expected a number, text, a boolean, null or { error: code }')
   })
 
+  it('are not read again, their stored values, by the calls that show, read or check formula text: a book checks them once', () => {
+    let reads = 0
+    const counted = (cells: Record<string, unknown>) =>
+      new Proxy(cells, {
+        ownKeys: (t) => (reads++, Reflect.ownKeys(t)),
+        get: (t, k) => (reads++, Reflect.get(t, k)),
+      })
+    const links: ExternalBook[] = LINKS.map((b) => ({ ...b, sheets: b.sheets.map((sh) => (sh.cells ? { ...sh, cells: counted(sh.cells) as never } : sh)) }))
+    const ctx = { sheets: ['S'], externalBooks: links }
+    expect(toLocal("'[1]Sheet1'!A1*2", 'en-US', { externalBooks: links }).ok).toBe(true)
+    expect(toInvariant('[Book2.xlsx]Sheet1!A1*2', ruRU, { externalBooks: links }).ok).toBe(true)
+    expect(validateFormula("'[1]Sheet1'!A1*2", ctx).ok).toBe(true)
+    expect(parseEntry('=[Book2.xlsx]Sheet1!A1*2', { externalBooks: links }).ok).toBe(true)
+    expect(validateNames([{ name: 'Ext', ref: "'[1]Sheet1'!$A$1" }], ctx)).toEqual([])
+    expect(reads).toBe(0)
+  })
+
+  it("a window's formula text over many links: as fast as over a few (each formula's text once checked the links' stored values)", () => {
+    const data = Object.fromEntries(Array.from({ length: 2000 }, (_, i) => [`A${i + 1}`, i]))
+    const links = Array.from({ length: 200 }, (_, k) => ({ target: `book${k + 1}.xlsx`, sheets: [{ name: 'Data', cells: data }] }))
+    const cells = Object.fromEntries(Array.from({ length: 600 }, (_, i) => [`${String.fromCharCode(65 + (i % 10))}${1 + Math.floor(i / 10)}`, { formula: `'[${1 + (i % 200)}]Data'!A${1 + i}*2` }]))
+    const s = createSession({ sheets: [{ name: 'S', cells }], externalBooks: links })
+    const t0 = performance.now()
+    s.getViewport('S', 'A1:J60', { formulaLocal: true, editText: true })
+    // 0.05 s here; 35 s before
+    expect(performance.now() - t0).toBeLessThan(2000)
+  }, 60_000)
+
   it('compute: a stored value, a cell not stored blank and #REF! on a sheet marked or not stored, names, the book’s own names over links', () => {
     expect(values(book({ A1: "'[1]Sheet1'!A2*10", A2: "'[1]Sheet1'!A9", A3: "'[1]Sheet1'!C1", A4: '[1]!Rate', A5: "'[1]Sheet1'!Local", A6: '[1]!Konst', A7: '[1]!Nope', A8: "'[2]Gone'!A1", A9: "SUM('[1]Sheet1'!A:A)", A10: 'Ext*2' }, { names: [{ name: 'Ext', ref: "'[1]Sheet1'!$A$3" }] }))).toEqual({
       A1: 20, A2: 0, A3: { error: 'NA' }, A4: 2, A5: 11, A6: { error: 'REF' }, A7: { error: 'REF' }, A8: { error: 'REF' }, A9: 6, A10: 6,
