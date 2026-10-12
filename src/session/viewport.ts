@@ -155,7 +155,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     const k = `${table ?? ''}\n${formula}`
     let out = locals.get(k)
     if (out === undefined) {
-      const t = toLocal(formula, loc!, table === undefined ? {} : { table })
+      const t = toLocal(formula, loc!, { ...(table === undefined ? {} : { table }), ...(book.externalBooks?.length ? { externalBooks: book.externalBooks } : {}) })
       locals.set(k, (out = t.ok ? t.formula : formula))
     }
     return out

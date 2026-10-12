@@ -49,5 +49,8 @@ export interface Locale {
   readonly messages?: Partial<Messages>
 }
 
-/** The result of translating formula text: the text, or a check code with a message in the locale's language and the position in the given text. */
-export type Translation = { ok: true; formula: string } | (Refusal<'syntax'> & { at: number })
+/**
+ * The result of translating formula text: the text, or a check code with a message in the locale's language and the
+ * position in the given text: `syntax`, or `external_ref` for a reference to a workbook the given links do not hold.
+ */
+export type Translation = { ok: true; formula: string } | (Refusal<'syntax' | 'external_ref'> & { at: number })

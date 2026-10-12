@@ -4,10 +4,10 @@
  * `validateLocalFormula` checks typed text with positions in it; their messages are in the locale's language. Each
  * takes the tag of a loaded locale or a locale object, which needs no loading.
  */
-import type { ValidateContext, ValidateResult } from '../contract.js'
-import { checkString, checkValidateContext, object, onlyOptions } from '../input.js'
-import { FormulaError, parse, sheetKey, tokenize, validate, type Tok } from '../syntax.js'
-import { isSpace } from '../syntax/scan.js'
+import type { ExternalBook, ValidateContext, ValidateResult } from '../contract.js'
+import { checkExternalBooks, checkString, checkValidateContext, object, onlyOptions } from '../input.js'
+import { FormulaError, parse, sheetKey, validate, type Tok } from '../syntax.js'
+import { eachToken, numberLinks, showLinks } from '../syntax/links.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
 import { checkLocaleArg } from './load.js'
@@ -47,17 +47,30 @@ const refusal = (r: Fail, locale: Locale) => ({ ok: false as const, code: 'synta
  * table of the formula's cell, drops its name before a column of its own (`[@Qty]`, `SUM([Qty])`), as Excel shows a
  * formula inside a table.
  */
-export function toLocal(formula: string, where: string | Locale, opts?: { table?: string }): Translation {
+export function toLocal(formula: string, where: string | Locale, opts?: TranslateOptions): Translation {
   const [locale, s] = localeSides(where)
-  const table = opts === undefined ? undefined : checkTranslateOptions(opts)
-  return result(translate(shownTables(checkString(formula, 'formula'), table, s.local.syn.list), s.invariant, s.local), locale)
+  const { table, externalBooks } = checkTranslateOptions(opts)
+  const shown = showLinks(shownTables(checkString(formula, 'formula'), table, s.local.syn.list), externalBooks ?? [])
+  return result(translate(shown, s.invariant, s.local), locale)
 }
 
-/** `toLocal`'s and `toInvariant`'s options: `table`, a table's name, alone; the table it gives. */
-function checkTranslateOptions(v: unknown): string | undefined {
+/**
+ * `toLocal`'s and `toInvariant`'s options: `table`, the table of the formula's cell; `externalBooks`, the book's links to
+ * other workbooks, by which a reference to one is shown as Excel shows it (`'[1]Sheet1'!A1` is `[Book2.xlsx]Sheet1!A1`,
+ * `'../data/[Book3.xlsx]Sheet1'!A1` with the path the link holds) and read back by its file name.
+ */
+export interface TranslateOptions {
+  table?: string
+  externalBooks?: ExternalBook[]
+}
+
+function checkTranslateOptions(v: unknown): TranslateOptions {
+  if (v === undefined) return {}
   const o = object(v, 'opts', "options such as { table: 'Sales' }")
-  onlyOptions(o, 'opts', ['table'])
-  return o.table === undefined ? undefined : checkString(o.table, 'opts.table')
+  onlyOptions(o, 'opts', ['table', 'externalBooks'])
+  if (o.table !== undefined) checkString(o.table, 'opts.table')
+  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, 'opts.externalBooks')
+  return o as TranslateOptions
 }
 
 /** The structured references of a formula as Excel shows them in a locale with the list separator `list` (`toLocal`); a formula that does not parse as it is. */
@@ -77,27 +90,8 @@ function shownTables(formula: string, table: string | undefined, list: string): 
 }
 
 /** `formula` with the text of each structured reference as `f` writes it; a formula that does not read as it is. */
-function eachTable(formula: string, f: (tok: Extract<Tok, { t: 'table' }>, text: string) => string): string {
-  if (!formula.includes('[')) return formula
-  let toks: Tok[]
-  try {
-    toks = tokenize(formula)
-  } catch (e) {
-    if (e instanceof FormulaError) return formula
-    throw e
-  }
-  let out = ''
-  let pos = 0
-  for (let k = 0; k < toks.length - 1; k++) {
-    const tok = toks[k]
-    if (tok.t !== 'table') continue
-    let end = toks[k + 1].at
-    while (end > tok.at && isSpace(formula[end - 1])) end--
-    out += formula.slice(pos, tok.at) + f(tok, formula.slice(tok.at, end))
-    pos = end
-  }
-  return pos === 0 ? formula : out + formula.slice(pos)
-}
+const eachTable = (formula: string, f: (tok: Extract<Tok, { t: 'table' }>, text: string) => string): string =>
+  formula.includes('[') ? eachToken(formula, (tok, text) => (tok.t === 'table' ? f(tok, text) : undefined)) : formula
 
 /**
  * Text typed in a locale (a loaded locale's tag, or a locale object) as a stored formula: `=СУММ(A1:A3;1,5)` is
@@ -106,12 +100,16 @@ function eachTable(formula: string, f: (tok: Extract<Tok, { t: 'table' }>, text:
  * table of the formula's cell, names it before a structured reference without a table name (`[@Qty]` is `Sales[@Qty]`),
  * as `toLocal` drops it, so the formula reads outside the table too.
  */
-export function toInvariant(text: string, where: string | Locale, opts?: { table?: string }): Translation {
+export function toInvariant(text: string, where: string | Locale, opts?: TranslateOptions): Translation {
   const [locale, s] = localeSides(where)
-  const table = opts === undefined ? undefined : checkTranslateOptions(opts)
+  const { table, externalBooks } = checkTranslateOptions(opts)
   const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
-  const r = result(translate(text.slice(eq), s.local, s.invariant, eq), locale)
-  return r.ok && table !== undefined ? { ok: true, formula: eachTable(r.formula, (tok, t) => (tok.table === null ? table + t : t)) } : r
+  const t = translate(text.slice(eq), s.local, s.invariant, eq)
+  if (!t.ok) return refusal(t, locale)
+  const formula = table === undefined ? t.formula : eachTable(t.formula, (tok, x) => (tok.table === null ? table + x : x))
+  if (!externalBooks) return { ok: true, formula }
+  const n = numberLinks(formula, externalBooks)
+  return n.ok ? n : { ok: false, code: 'external_ref', message: say(locale, n.message), at: t.back(n.at) }
 }
 
 /**

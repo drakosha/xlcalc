@@ -653,8 +653,9 @@ export function checkEntryTextOptions(v: unknown, path = 'opts'): EntryTextOptio
 export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { numberFormat: '0.00' } }")
-  onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now'])
+  onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now', 'externalBooks'])
   if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
+  if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.now !== undefined && Number.isNaN(Date.parse(checkString(o.now, `${path}.now`)))) throw new InputError(`${path}.now`, `invalid moment ${JSON.stringify(o.now)}: expected ISO 8601 such as "2026-01-31T12:00:00Z"`)
   if (o.cell !== undefined && o.cell !== null) {
