@@ -13,17 +13,18 @@ import { once, OPERATORS, type Backend } from './walk.js'
 const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
 
 /** A backend for one formula: constants are hoisted into its factory, `source` wraps the root expression. */
-export function jsBackend(): Backend<string> & { source(root: string): string } {
+export function jsBackend(parameters?: V[]): Backend<string> & { source(root: string): string } {
   const hoisted: string[] = []
   const hoist = (code: string) => `h${hoisted.push(code) - 1}`
   // LET's names of the formula: v0, v1, …
   let names = 0
+  const bound = (v: V) => parameters ? `p[${parameters.push(v) - 1}]` : lit(v)
   return {
-    value: lit,
+    value: bound,
     absent: () => 'undefined',
     array: (a) => hoist(`A(${a.rows},${a.cols},[${a.v.map(lit).join(',')}])`),
-    cell: (s, r, c) => `cell(${s},${r},${c})`,
-    spill: (s, r, c) => `spill(${s},${r},${c})`,
+    cell: (s, r, c) => `cell(${bound(s)},${bound(r)},${bound(c)})`,
+    spill: (s, r, c) => `spill(${bound(s)},${bound(r)},${bound(c)})`,
     range: (g, one) => {
       const h = hoist(`R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`)
       return one ? `scalar(${h})` : h
@@ -44,14 +45,14 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
     areas: (list) => hoist(`X([${list.map((g) => `R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`).join(',')}])`),
     union: (items) => `U(${items.join(',')})`,
     refOp: (op, a, b) => `RO(${JSON.stringify(op)},${a},${b})`,
-    at: (a, r, c) => `I(${a},${r},${c})`,
+    at: (a, r, c) => `I(${a},${bound(r)},${bound(c)})`,
     let: (count, build) => {
       const first = names
       names += count
       const { values, body } = build((i) => `v${first + i}()`)
       return `(()=>{const ${values.map((v, i) => `v${first + i}=M(()=>${v})`).join(',')};return ${body}})()`
     },
-    source: (root) => `(()=>{${hoisted.length ? `const ${hoisted.map((h, i) => `h${i}=${h}`).join(',')};` : ''}return ()=>${root}})()`,
+    source: (root) => `${parameters ? '(p)=>' : '(()=>'}{${hoisted.length ? `const ${hoisted.map((h, i) => `h${i}=${h}`).join(',')};` : ''}return ()=>${root}}${parameters ? '' : ')()'}`,
   }
 }
 
@@ -60,7 +61,7 @@ const key = (name: string) => (/^[A-Z][A-Z0-9_]*$/.test(name) ? `.${name}` : `[$
 export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,I,U,RO,E,R,A,X,M}=rt;'
 
 /** The functions of a batch of formula sources, by one `new Function`. */
-export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {
+export function compileSources<T = () => Arg>(rt: Runtime, sources: string[]): T[] {
   const R = (s: number, r1: number, c1: number, r2: number, c2: number) => new Rng(s, r1, c1, r2, c2)
   const A = (rows: number, cols: number, v: V[]) => new Arr(rows, cols, rows, cols, v)
   const X = (list: Rng[]) => new Areas(list, true)
@@ -72,5 +73,5 @@ export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {
     if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function for execution 'eval', and this environment blocks it (a Content Security Policy without 'unsafe-eval'?); execution 'closures' does not need it`, { cause: e })
     throw e
   }
-  return make({ ...rt, R, A, X, M: once }) as (() => Arg)[]
+  return make({ ...rt, R, A, X, M: once }) as T[]
 }
