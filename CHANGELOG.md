@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.29.0 (2026-10-13)
+
+Internal release; not published to npm. What Excel writes for an item picked from a dropdown list. The synthetic book's values and hashes are as in 0.28.0.
+
+Added:
+
+- Each item of a list in `getValidation(sheet, cell).list` has `input`: what Excel writes into the cell when the item is picked from its dropdown, for `setCells`, which keeps the cell's format. A list of cells gives the cell's value as it is (`001` stays text, a number shown `50%` is 0.5); a literal list's item is read as typed in en-US, the locale a file holds the list in, in every locale (`"001,1/2,x"` gives 1 and the 2nd of January, `d-mmm`); a blank cell null. Excel checks no rule on a picked item ([docs/validation.md](docs/validation.md#an-item-picked-from-the-dropdown)).
+
+Measured: Excel for Mac 16.113 on the keyboard, the new action `pick` of the harness's step `ui` (the cell selected, its list opened with Option+Down, the item reached with Down and taken with Return), the set `ui/pick-held`, 14 picks in en-US and ru-RU; its prediction, each item typed as its text with the rule checked, was committed before the run and came out on 5 in each locale. The engine gives Excel's answer to every pick.
+
 ## 0.28.0 (2026-10-13)
 
 Internal release; not published to npm. Edits over a large look layer as fast as over a few cells, and Excel's own text for a rule's alert. The synthetic book's values and hashes are as in 0.27.0.
