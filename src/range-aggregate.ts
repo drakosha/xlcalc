@@ -8,7 +8,7 @@ import { KEY_BYTES, POSITION_BYTES, RangeCache, VALUE_BYTES, type CacheBudget } 
 import { RangePrefixes } from './range-prefix.js'
 import type { Area } from './spill/state.js'
 import { cellCount } from './structure/area.js'
-import { E, fitNumber, isErr, nearZero, type Rng, type CErr, type V } from './values.js'
+import { E, fitNumber, isErr, nearZero, zeroed, type Rng, type CErr, type V } from './values.js'
 
 export type AggregateName = 'SUM' | 'COUNT' | 'COUNTA' | 'MIN' | 'MAX' | 'AVERAGE'
 interface Partial {
@@ -23,7 +23,7 @@ interface Partial {
 }
 interface Mean {
   sum: CompensatedSum
-  /** The plain sum and the one before the last number: AVERAGE is 0 where SUM is (`excelSum`). */
+  /** The plain sum and the one before the last number: AVERAGE is 0 where SUM's last addition is made 0 (`zeroed`). */
   plain: number
   before: number
   count: number
@@ -102,7 +102,7 @@ export class RangeAggregates {
       const result = this.means.read(range, bounds, cell, addMean)
       if (result.error) return result.error
       if (!result.count) return E.DIV0
-      if (nearZero(result.before, result.plain) === 0) return 0
+      if (zeroed(result.before, result.plain)) return 0
       const value = meanOf(result.sum, result.count, result.first, result.constant)
       return value === undefined ? undefined : fitNumber(value)
     }
