@@ -421,7 +421,7 @@ externalBooks: [
 ]
 ```
 
-Excel shows a cell the link holds as its stored value, `null` as an empty cell and `''` as empty text. A cell the link does not hold is empty, or `#REF!` on a sheet with `refreshError`, the mark Excel puts on every sheet of a link when a formula over it is entered. Every cell of a sheet without `cells` is `#REF!`.
+Excel shows a cell the link holds as its stored value, `null` as an empty cell and `''` as empty text. A cell the link does not hold is empty, or `#REF!` on a sheet with `refreshError`, the mark Excel puts on every sheet of a link when a formula over it is entered. Every cell of a sheet without `cells` is `#REF!`. [docs/links.md](links.md) has how the engine computes and shows such formulas.
 
 ### Reading
 
