@@ -39,8 +39,29 @@ const stackOverflow = (e: unknown) => e instanceof RangeError || (e instanceof E
 type Factory = (parameters: readonly Arg[]) => () => Arg
 interface Template { source: string; factory?: Factory; fallback?: () => Factory }
 
-/** Share code, never mutable formula storage; cap the retained template catalogue at 128 bodies and 64 KiB of keys. */
+/**
+ * `closures`: each formula its own tree of closures. `eval`: formulas of one shape share their compiled body, each with
+ * its own parameters (coordinates and literals); code is shared, never mutable formula storage, and the retained
+ * catalogue of bodies is capped at 128 bodies and 64 KiB of keys. Closures do not share them: on a book of 50,000
+ * formulas of one shape a shared body opened it 24% slower (223 to 276 ms) for 2% of the heap, while eval's bodies
+ * take a third of its heap off (91 to 62 MiB) and open it faster (`bench/hyperformula/README.md`).
+ */
 export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
+  if (execution === 'closures') {
+    const b = closureBackend(rt)
+    let bodies = 0
+    return {
+      get bodies() {
+        return bodies
+      },
+      formula(ctx, ast, s, r, c) {
+        bodies++
+        const { code, ...info } = walk(ctx, ast, s, r, c, b)
+        return { ...info, fn: code }
+      },
+      link() {},
+    }
+  }
   const templates = new Map<string, Template>()
   const pending = new WeakMap<() => Arg, { template: Template; parameters: Arg[] }>()
   let bytes = 0, bodies = 0
@@ -54,17 +75,11 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
       const parameters: Arg[] = [], b = jsBackend(parameters)
       const { code, ...info } = walk(ctx, ast, s, r, c, b)
       const source = b.source(code)
-      // LET owns mutable bindings; closure LETs retain a separate tree for each formula.
-      if (execution === 'closures' && source.includes('=M(')) {
-        bodies++
-        return { ...info, fn: walk(ctx, ast, s, r, c, closureBackend(rt)).code }
-      }
       let template = templates.get(source)
       if (!template) {
         bodies++
-        template = { source }
-        if (execution === 'closures') template.factory = closureFactory(ctx, ast, s, r, c)
-        else template.fallback = () => closureFactory(ctx, ast, s, r, c)
+        // the closures of a formula whose code is too deep for the JS engine's parser
+        template = { source, fallback: () => closureFactory(ctx, ast, s, r, c) }
         if (source.length * 2 <= 65536) {
           while (templates.size >= 128 || bytes + source.length * 2 > 65536) {
             const oldest = templates.keys().next().value!
