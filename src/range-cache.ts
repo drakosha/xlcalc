@@ -9,13 +9,15 @@ import type { Area } from './spill/state.js'
 
 interface Entry<T> extends Area {
   key: string
-  /** None for a mark (`admits`). */
-  value: T | undefined
+  /** A mark (`admits`) is distinct from a stored undefined. */
+  value: T | typeof MARK
   /** Bytes by the budget's estimate, the entry's own with its value's. */
   size: number
   /** The budget's read count when it was last read. */
   used: number
 }
+
+const MARK = Symbol('range first read')
 
 /** Bytes of an entry besides its value, a mark's too: its key, its bounds and its places in the maps, as measured on Node. */
 const ENTRY_BYTES = 256
@@ -79,28 +81,49 @@ export class CacheBudget {
 /** The budget of the books computed in this heap (this thread): a pool's thread sets its cap by `maxHeapMb`. */
 export const heapCaches = new CacheBudget()
 
-export class RangeCache<T> extends Map<string, T> {
+export class RangeCache<T> implements Map<string, T> {
+  readonly [Symbol.toStringTag] = 'RangeCache'
   private readonly ranges = new Map<string, Entry<T>>()
   private readonly index = new AreaIndex<Entry<T>>()
   /** Bytes this cache holds, by the budget's estimate. */
   held = 0
+  private stored = 0
+
+  get size(): number { return this.stored }
+  has(key: string): boolean {
+    const entry = this.ranges.get(key)
+    return entry !== undefined && entry.value !== MARK
+  }
+
+  *entries(): MapIterator<[string, T]> {
+    for (const entry of this.ranges.values()) if (entry.value !== MARK) yield [entry.key, entry.value]
+  }
+  *keys(): MapIterator<string> {
+    for (const [key] of this.entries()) yield key
+  }
+  *values(): MapIterator<T> {
+    for (const [, value] of this.entries()) yield value
+  }
+  [Symbol.iterator](): MapIterator<[string, T]> { return this.entries() }
+  forEach(visit: (value: T, key: string, map: Map<string, T>) => void, thisArg?: unknown): void {
+    for (const [key, value] of this.entries()) visit.call(thisArg, value, key, this)
+  }
 
   constructor(private readonly budget?: CacheBudget) {
-    super()
     budget?.join(this as RangeCache<unknown>)
   }
 
-  override get(key: string): T | undefined {
+  get(key: string): T | undefined {
     const entry = this.ranges.get(key)
     if (!entry) return undefined
     if (this.budget) entry.used = ++this.budget.reads
-    return entry.value
+    return entry.value === MARK ? undefined : entry.value
   }
 
   /** `size`: bytes the value holds, which a budget counts. */
-  override set(key: string, value: T, size = 0): this {
+  set(key: string, value: T, size = 0): this {
     this.put(key, value, size)
-    return super.set(key, value)
+    return this
   }
 
   /**
@@ -109,36 +132,45 @@ export class RangeCache<T> extends Map<string, T> {
    */
   admits(key: string): boolean {
     if (this.ranges.has(key)) return true
-    this.put(key, undefined, 0)
+    this.put(key, MARK, 0)
     return false
   }
 
-  private put(key: string, value: T | undefined, size: number): void {
+  private put(key: string, value: T | typeof MARK, size: number): void {
     let entry = this.ranges.get(key)
-    if (entry) this.count(-entry.size)
-    else {
+    if (entry) {
+      this.count(-entry.size)
+      if (entry.value === MARK && value !== MARK) {
+        // A promoted mark joins stored values at the end, as Map.set did in the former value map.
+        this.ranges.delete(key)
+        this.ranges.set(key, entry)
+      }
+    } else {
       const [s, r1, c1, r2, c2] = key.split(':').map(Number)
-      entry = { key, s, r1, c1, r2, c2, value, size: 0, used: 0 }
+      entry = { key, s, r1, c1, r2, c2, value: MARK, size: 0, used: 0 }
       this.ranges.set(key, entry)
       this.index.add(entry)
     }
+    if (value !== MARK && entry.value === MARK) this.stored++
     entry.value = value
     entry.size = ENTRY_BYTES + size
     if (this.budget) entry.used = ++this.budget.reads
     this.count(entry.size)
   }
 
-  override delete(key: string): boolean {
+  delete(key: string): boolean {
     const entry = this.ranges.get(key)
     if (!entry) return false
     this.index.delete(entry)
     this.ranges.delete(key)
     this.count(-entry.size)
-    return super.delete(key)
+    if (entry.value === MARK) return false
+    this.stored--
+    return true
   }
 
-  override clear(): void {
-    super.clear()
+  clear(): void {
+    this.stored = 0
     this.ranges.clear()
     this.index.clear()
     this.count(-this.held)
