@@ -6,7 +6,8 @@
  *   text, but an old-kind array's formula in braces in every cell of its area and a spilled cell's anchor's formula;
  * - text pasted from the clipboard (`paste-held`, both Excels): `pasteText` of the clipboard's text; a text entered
  *   into a selection with Control+Return (`fill-held`, the Mac's keyboard): `fillCellText` from the selection's first
- *   cell, a host taking back a call with a stop alert as Excel takes no such value. What each cell holds after (its
+ *   cell, a host taking back a call with a stop alert as Excel takes no such value; a cell edited in place after F2
+ *   (`edit-held`, the Mac's keyboard): `setCellText` with `inPlace`. What each cell holds after (its
  *   value or formula and its format), the width the columns took, and whether the action brought a window (a refused
  *   formula, a value the active cell's rule does not take), which Excel shows for the active cell;
  * - the ribbon's Number Format box (`ribbon-*`, the Mac's screen): what it shows for a cell selected, against
@@ -57,22 +58,23 @@ function excelOutcome(c: UiCase, a: UiAnswer, tag: string): Outcome {
   return {
     cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(a.cells[x].cell, tag)])),
     widths: Object.fromEntries(readColumns(c).map((k) => [k, a.columns[k].saved?.bestFit ? a.columns[k].saved.width : null])),
-    // a window comes up for the entry of the active cell, the action's first
-    windows: a.dialog ? [entriesOf(c.act)[0].cell] : [],
+    // a window comes up for the entry of the active cell, the action's first; an edit's is read with its bar
+    windows: (a.dialog ?? (c.act.do === 'edit' ? a.cells[c.act.at].bar?.dialog : undefined)) ? [entriesOf(c.act)[0].cell] : [],
   }
 }
 
-/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`; a stop alert's call taken back, as the host does. */
+/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`, an edit by `setCellText` in place; a stop alert's call taken back, as the host does. */
 function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
   const s = createSession(uiBook(c, tag), { clock: { now: `${date}T12:00:00Z`, seed: 1 } })
   try {
     const act = c.act
-    if (act.do !== 'paste' && act.do !== 'fill') throw new Error(`${c.id} is no paste or fill`)
-    const r = act.do === 'paste' ? s.pasteText('S', act.at, clipboardText(act)) : s.fillCellText('S', act.range, act.text)
+    if (act.do !== 'paste' && act.do !== 'fill' && act.do !== 'edit') throw new Error(`${c.id} is no paste, fill or edit`)
+    const r = act.do === 'paste' ? s.pasteText('S', act.at, clipboardText(act)) : act.do === 'fill' ? s.fillCellText('S', act.range, act.text) : s.setCellText('S', act.at, act.text, { inPlace: true })
     const alert = r.ok && 'validation' in r ? r.validation : undefined
     const undone = alert?.severity === 'stop'
     if (undone) s.undo()
-    const widths = r.ok && !undone && 'widths' in r ? r.widths : undefined
+    const width = r.ok && !undone && 'width' in r && r.width !== undefined ? [{ column: readColumns(c)[0], width: r.width }] : undefined
+    const widths = r.ok && !undone && 'widths' in r ? r.widths : width
     const cells = s.getBook().sheets[0].cells
     return {
       cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(cells[x], tag)])),
@@ -174,6 +176,18 @@ for (const run of RUNS) {
         else expect(got).toEqual(want)
       })
 
+    const edits = stored.cases.filter((c) => c.act.do === 'edit')
+    if (edits.length)
+      it('an edit in place: F2 opens what editText gives, and the bar holds the case\'s text once its keys are typed', () => {
+        const off = edits.flatMap((c) => {
+          const act = c.act as Extract<UiCase['act'], { do: 'edit' }>
+          const bar = stored.answers[c.id].cells[act.at].bar!
+          const engine = engineCells(c, tag, date)[act.at].editText
+          return [...(formulaBar(bar.edit[0]) === engine ? [] : [`${c.id} opened ${bar.edit[0]}, editText ${engine}`]), ...(formulaBar(bar.typed![0]) === act.text ? [] : [`${c.id} typed ${bar.typed![0]}, text ${act.text}`])]
+        })
+        expect(off).toEqual([])
+      })
+
     const bars = stored.cases.filter((c) => c.act.do === 'bars')
     if (excel === 'Mac' && bars.length)
       it('the formula bar of a selected cell: what F2 opens, an old-kind array in braces, a spilled cell its anchor\'s formula; the object model\'s Formula2Local is what F2 opens', () => {
@@ -203,6 +217,8 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:fill-held': 9,
   'en-US:ribbon': 1,
   'ru-RU:ribbon': 0,
+  'en-US:edit-held': 14,
+  'ru-RU:edit-held': 13,
 }
 
 interface Predicted {

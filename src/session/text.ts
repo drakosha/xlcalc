@@ -7,7 +7,7 @@
  */
 import type { CellInput, CellRef, CellReplace, CellTextRefusal, DataValidation, EntryCheck, EntryResult, Refusal, ValidationAlert } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { readEntry } from '../entry/index.js'
+import { readEntry, type EntryWay } from '../entry/index.js'
 import { entryWidth } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
 import { parseMerge } from '../layout/merges.js'
@@ -28,10 +28,10 @@ function lineFormat(s: EngineState, i: number, r: number, c: number) {
   return formatOf(undefined, lines.row(r), lines.column(c))
 }
 
-/** What `text` typed, or pasted (`pasted`), into the cell at the moment `now` reads as (`readEntry`), by the format the cell shows: `own`'s, else its row's or column's. */
-export function readText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, pasted = false): EntryResult {
+/** What `text` typed, edited in place or pasted (`way`) into the cell at the moment `now` reads as (`readEntry`), by the format the cell shows: `own`'s, else its row's or column's. */
+export function readText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, way: EntryWay = 'typed'): EntryResult {
   const shown = own?.numberFormat ?? lineFormat(s, i, r, c)
-  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown }, externalBooks: s.input.externalBooks ?? [] }, pasted)
+  return readEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown }, externalBooks: s.input.externalBooks ?? [] }, way)
 }
 
 /** The input `own` of the cell with an entry's content and format (`typed`, `readText`'s input) in place of its own; a format its row or column gives it stays theirs. */
@@ -48,9 +48,9 @@ export function withTyped(s: EngineState, i: number, r: number, c: number, own: 
   return null
 }
 
-/** The input `own` of the cell after `text` is typed, or pasted (`pasted`), into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */
-export function cellText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, pasted = false): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
-  const p = readText(s, i, r, c, own, text, now, pasted)
+/** The input `own` of the cell after `text` is typed, edited in place or pasted (`way`) into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */
+export function cellText(s: EngineState, i: number, r: number, c: number, own: CellInput | undefined, text: string, now: string, way: EntryWay = 'typed'): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
+  const p = readText(s, i, r, c, own, text, now, way)
   return p.ok ? { ok: true, input: withTyped(s, i, r, c, own, p.input) } : (p as Refusal<CellTextRefusal>)
 }
 

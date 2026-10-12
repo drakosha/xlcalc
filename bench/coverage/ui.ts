@@ -42,11 +42,14 @@ export const uiFile = (set: string, tag = 'en-US', win = false) => join(ROOT, 't
 /** A cell as the object models read it: what it shows, its format codes, prefix, number, formulas, its old-kind array; Windows adds its spill. */
 export type RawCell = [string, string, string, string, unknown, string, string, string, string, boolean, string, boolean?, string?]
 
+/** The formula bar of a cell of `bars` or `edit`: selected, in editing, the element in focus, the windows Excel showed; an edit's bar once its keys were typed. */
+export type RawBar = [[string, string], [string, string], string, string, [string, string]?]
+
 /** What the ribbon's Number Format box showed for each cell an action selected, and the item applied to it (empty for none). */
 export type RawRibbon = [string, string][]
 
 /** The answer of a case from what Excel read of its cells and columns, the windows it showed and the file it saved. */
-export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], columns: [number, number, boolean][], saved: Uint8Array, bars?: [[string, string], [string, string], string, string][], ribbon?: RawRibbon): Promise<UiAnswer> {
+export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], columns: [number, number, boolean][], saved: Uint8Array, bars?: RawBar[], ribbon?: RawRibbon): Promise<UiAnswer> {
   const read = await readXlsx(saved)
   const held = read.book.sheets.find((s) => s.name === 'S')!.cells
   const cached = read.cached.sheets.find((s) => s.name === 'S')!.cells
@@ -55,7 +58,7 @@ export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], co
   const out: Record<string, UiCell> = {}
   names.forEach((a, i) => {
     const [text, code, local, prefix, value2, formula, formulaLocal, formula2, formula2Local, hasArray, formulaArray, hasSpill, spillParent] = cells[i]
-    // a case of bars or of the ribbon reads its cells first
+    // a case of bars, of an edit or of the ribbon reads its cells first
     const b = bars?.[i]
     const r = ribbon?.[i]
     out[a] = {
@@ -73,7 +76,7 @@ export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], co
       hasArray,
       ...(hasArray ? { formulaArray } : {}),
       ...(hasSpill === undefined ? {} : { hasSpill, ...(hasSpill ? { spillParent } : {}) }),
-      ...(b ? { bar: { selected: b[0], edit: b[1], focused: b[2], ...(b[3] ? { dialog: b[3] } : {}) } } : {}),
+      ...(b ? { bar: { selected: b[0], edit: b[1], focused: b[2], ...(b[3] ? { dialog: b[3] } : {}), ...(b[4] ? { typed: b[4] } : {}) } } : {}),
       ...(r ? { ribbon: { box: r[1], ...(r[0] ? { item: r[0] } : {}) } } : {}),
     }
   })
@@ -125,7 +128,7 @@ export async function runCase(c: UiCase, label: string, act = actJson(c)): Promi
       throw new Error(`ui ${label}: Excel would repair the book`)
     },
     done: (out, dir) => {
-      const raw = JSON.parse(out) as { dialog: string; bars: [[string, string], [string, string], string, string][]; ribbon: RawRibbon; cells: RawCell[]; columns: [number, number, boolean][] }
+      const raw = JSON.parse(out) as { dialog: string; bars: RawBar[]; ribbon: RawRibbon; cells: RawCell[]; columns: [number, number, boolean][] }
       return caseAnswer(c, raw.dialog, raw.cells, raw.columns, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))), raw.bars.length ? raw.bars : undefined, raw.ribbon.length ? raw.ribbon : undefined)
     },
   })

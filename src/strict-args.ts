@@ -11,8 +11,8 @@ import { InputError, what } from './input-error.js'
 const TYPING = 'setCellText, setCellTexts, fillCellText and their previews'
 
 /** The options of the calls that type text beside `baseRevision` (`CellTextOptions`), and of an entry into a selection (`FillTextOptions`). */
-export const TEXT_OPTIONS = ['widen', 'refuseInvalid'] as const
-export const FILL_OPTIONS = ['widen', 'refuseInvalid', 'active'] as const
+export const TEXT_OPTIONS = ['widen', 'refuseInvalid', 'inPlace'] as const
+export const FILL_OPTIONS = ['widen', 'refuseInvalid', 'inPlace', 'active'] as const
 
 /** The API's options by name and the calls that take them, for a refusal to say where a stray option goes. */
 const TAKEN_BY: Record<string, string> = {
@@ -29,6 +29,7 @@ const TAKEN_BY: Record<string, string> = {
   errorDepth: 'explain',
   widen: TYPING,
   refuseInvalid: TYPING,
+  inPlace: TYPING,
   active: 'fillCellText and previewFillCellText',
   baseRevision: "a session's calls that change its book",
   table: 'toLocal and toInvariant',

@@ -1,0 +1,487 @@
+{
+ "now": "2026-10-12",
+ "locales": {
+  "en-US": {
+   "percent-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.06,
+       "numberFormat": "0%"
+      },
+      "value": 0.06
+     }
+    }
+   },
+   "percent-2": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 6,
+       "numberFormat": "0%"
+      },
+      "value": 6
+     }
+    }
+   },
+   "percent-3": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.06,
+       "numberFormat": "0%"
+      },
+      "value": 0.06
+     }
+    }
+   },
+   "percent-4": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.5,
+       "numberFormat": "0%"
+      },
+      "value": 0.5
+     }
+    }
+   },
+   "percent-5": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -5,
+       "numberFormat": "0%"
+      },
+      "value": -5
+     }
+    }
+   },
+   "decimal-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.075,
+       "numberFormat": "0.0%"
+      },
+      "value": 0.075
+     }
+    }
+   },
+   "decimal-2": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "7,5%",
+       "numberFormat": "0.0%"
+      },
+      "value": "7,5%"
+     }
+    }
+   },
+   "decimal-3": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 7.5,
+       "numberFormat": "0.0%"
+      },
+      "value": 7.5
+     }
+    }
+   },
+   "decimal-4": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "7,5",
+       "numberFormat": "0.0%"
+      },
+      "value": "7,5"
+     }
+    }
+   },
+   "empty-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 6,
+       "numberFormat": "0%"
+      },
+      "value": 6
+     }
+    }
+   },
+   "formula-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 6,
+       "numberFormat": "0%"
+      },
+      "value": 6
+     }
+    }
+   },
+   "text-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 6,
+       "numberFormat": "0%"
+      },
+      "value": 6
+     }
+    }
+   },
+   "general-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.06,
+       "numberFormat": 9
+      },
+      "value": 0.06
+     }
+    }
+   },
+   "sign-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -0.5,
+       "numberFormat": "0%"
+      },
+      "value": -0.5
+     }
+    }
+   },
+   "sign-2": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -50,
+       "numberFormat": "0%"
+      },
+      "value": -50
+     }
+    }
+   },
+   "sign-3": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 5,
+       "numberFormat": "0%"
+      },
+      "value": 5
+     }
+    }
+   },
+   "sign-4": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -5,
+       "numberFormat": "0%"
+      },
+      "value": -5
+     }
+    }
+   },
+   "sign-5": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -0.05,
+       "numberFormat": "0%"
+      },
+      "value": -0.05
+     }
+    }
+   },
+   "sign-6": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -5
+      },
+      "value": -5
+     }
+    }
+   },
+   "sign-7": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -5,
+       "numberFormat": "0%"
+      },
+      "value": -5
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "percent-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.06,
+       "numberFormat": "0%"
+      },
+      "value": 0.06
+     }
+    }
+   },
+   "percent-2": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 6,
+       "numberFormat": "0%"
+      },
+      "value": 6
+     }
+    }
+   },
+   "percent-3": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.06,
+       "numberFormat": "0%"
+      },
+      "value": 0.06
+     }
+    }
+   },
+   "percent-4": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "0.5",
+       "numberFormat": "0%"
+      },
+      "value": "0.5"
+     }
+    }
+   },
+   "percent-5": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -5,
+       "numberFormat": "0%"
+      },
+      "value": -5
+     }
+    }
+   },
+   "decimal-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "7.5%",
+       "numberFormat": "0.0%"
+      },
+      "value": "7.5%"
+     }
+    }
+   },
+   "decimal-2": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.075,
+       "numberFormat": "0.0%"
+      },
+      "value": 0.075
+     }
+    }
+   },
+   "decimal-3": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 46149,
+       "numberFormat": "0.0%"
+      },
+      "value": 46149
+     }
+    }
+   },
+   "decimal-4": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 7.5,
+       "numberFormat": "0.0%"
+      },
+      "value": 7.5
+     }
+    }
+   },
+   "empty-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 6,
+       "numberFormat": "0%"
+      },
+      "value": 6
+     }
+    }
+   },
+   "formula-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 6,
+       "numberFormat": "0%"
+      },
+      "value": 6
+     }
+    }
+   },
+   "text-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 6,
+       "numberFormat": "0%"
+      },
+      "value": 6
+     }
+    }
+   },
+   "general-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.06,
+       "numberFormat": 9
+      },
+      "value": 0.06
+     }
+    }
+   },
+   "sign-1": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": "-0.5",
+       "numberFormat": "0%"
+      },
+      "value": "-0.5"
+     }
+    }
+   },
+   "sign-2": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -50,
+       "numberFormat": "0%"
+      },
+      "value": -50
+     }
+    }
+   },
+   "sign-3": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": 5,
+       "numberFormat": "0%"
+      },
+      "value": 5
+     }
+    }
+   },
+   "sign-4": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -5,
+       "numberFormat": "0%"
+      },
+      "value": -5
+     }
+    }
+   },
+   "sign-5": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -0.05,
+       "numberFormat": "0%"
+      },
+      "value": -0.05
+     }
+    }
+   },
+   "sign-6": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -5
+      },
+      "value": -5
+     }
+    }
+   },
+   "sign-7": {
+    "set": {},
+    "after": {
+     "B2": {
+      "input": {
+       "value": -5,
+       "numberFormat": "0%"
+      },
+      "value": -5
+     }
+    }
+   }
+  }
+ }
+}

@@ -692,6 +692,16 @@ console.log(session.previewCellTexts([{ sheet: 'S', cell: 'A2', text: '5%' }, { 
 //   ]
 ```
 
+A cell edited in place, after F2, a double click or in the formula bar, opens with its own text, and Excel reads what comes back otherwise than text typed over the cell: its percent editor adds `%` only to a number begun by a sign. With `inPlace: true`, `setCellText`, `setCellTexts`, `fillCellText` and their previews read the text so: in a percent cell `6%` is 0.06 and `6` is 6 (600%), where typed over the cell `6%` is the text `6%%` and `6` is 6%.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 0.05, numberFormat: '0%' } } }] })
+console.log(session.previewCellText('S', 'A1', '6%').input, session.previewCellText('S', 'A1', '6%', { inPlace: true }).input)
+// → { value: '6%%', numberFormat: '0%' } { value: 0.06, numberFormat: '0%' }
+```
+
 A paste and Control+Return read text otherwise than typing, and have their own calls. `pasteText(sheet, cell, text, opts?)` pastes text from the clipboard as Excel pastes it: `parseClipboard(text)` makes it a rectangle, rows at line breaks and fields at tabs, every row as wide as the longest, and the rectangle fills the cells from `cell`, an empty field, a short row's missing ones and the row after a last line break clearing theirs. Each field is read as typed into its cell, but an apostrophe stays part of the text, a formula Excel does not take is pasted as text, a percent cell has no percent editor (`5` is 500%) and `€5` takes the euro format; no column widens and no rule is checked. The answer has the `range` filled; part of an array, a formula into a header cell and a rectangle past the sheet's edge are refused with the `sheet` and `cell`.
 
 `fillCellText(sheet, range, text, opts?)` enters a text into every cell of a range, as Control+Return: it reads the text once in the active cell, the range's top-left one or `active`, and every cell takes what the active cell holds after it, a formula moved as a copy from the active cell moves it (`copyFormula`) and the active cell's number format where it has one. The columns widen as typing widens them (`widths`, unless `widen: false`), and only the active cell's rule is checked (`validation`, or with `refuseInvalid` the refusal before anything is written). Both are one step of the undo, and `previewPasteText` and `previewFillCellText` change nothing. The rules, as measured in Excel, are in [docs/entry.md](docs/entry.md#a-paste-and-controlreturn).

@@ -1272,6 +1272,12 @@ export interface CellTextOptions extends EditOptions {
    * with its alert.
    */
   refuseInvalid?: boolean
+  /**
+   * True: the text was edited in the cell's own text (F2, a double click, the formula bar), not typed over the cell.
+   * Excel's percent editor then adds `%` only to a number begun by a sign: in a cell of `0%`, `6%` is 0.06, `6` is 6
+   * (shown 600%) and `-5` is -0.05. False by default.
+   */
+  inPlace?: boolean
 }
 
 /** Why `Session.setCellText` did not take the text: a formula Excel does not take (`CheckCode`), part of an array formula, a formula in a table's header cell. */

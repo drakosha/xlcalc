@@ -4,7 +4,8 @@
  * locales, by the session's clock on the day of the prediction. A case of `bars`: each cell's `editText` in a window of
  * `getViewport` (empty for a cell the window does not list). A paste or a fill: `previewCellTexts` and `setCellTexts` of
  * the texts the action puts into cells (`entriesOf`), and after it the cells read as the book holds them, their values
- * and the widths of their columns. The ribbon's box: `numberFormatCategory` of each cell's format; an item of its list
+ * and the widths of their columns. An edit in place (F2): `pasteText` of its text, which reads it with no percent
+ * editor, and the cells after it. The ribbon's box: `numberFormatCategory` of each cell's format; an item of its list
  * applied: the item of `numberFormatChoices`, its name, the format it applies and the box's category after.
  */
 import { fileURLToPath } from 'node:url'
@@ -30,14 +31,21 @@ function predict(c: UiCase, tag: string) {
       const v = s.getViewport('S', windowOver(cells), { editText: true })
       return { editText: Object.fromEntries(cells.map((a) => [a, v.cells[a]?.editText ?? ''])) }
     }
+    const after = () => {
+      const book = s.getBook().sheets[0]
+      return Object.fromEntries(cells.map((a) => [a, { input: book.cells[a] ?? null, value: s.getCell('S', a)?.value ?? null }])) as Record<string, { input: CellInput | null; value: CellValue }>
+    }
+    if (c.act.do === 'edit') {
+      const r = s.pasteText('S', c.act.at, c.act.text)
+      return { set: r.ok ? {} : { refused: { cell: r.cell, code: r.code } }, after: after() }
+    }
     const entries = entriesOf(c.act)
     const p = s.previewCellTexts(entries)
     const preview = p.ok ? { cells: Object.fromEntries(p.cells.map((x) => [x.cell, { input: x.input, value: x.value }])), ...(p.widths ? { widths: p.widths } : {}), ...(p.validations ? { validations: p.validations.map(alert) } : {}) } : { refused: { cell: p.cell, code: p.code, at: p.at } }
     const r = s.setCellTexts(entries)
     const book = s.getBook().sheets[0]
-    const after: Record<string, { input: CellInput | null; value: CellValue }> = Object.fromEntries(cells.map((a) => [a, { input: book.cells[a] ?? null, value: s.getCell('S', a)?.value ?? null }]))
     const widths = Object.fromEntries(readColumns(c).map((k) => [k, book.columns?.[k]?.width ?? null]))
-    return { preview, set: r.ok ? { ...(r.widths ? { widths: r.widths } : {}), ...(r.validations ? { validations: r.validations.map(alert) } : {}) } : { refused: { cell: r.cell, code: r.code, at: r.at } }, after, widths }
+    return { preview, set: r.ok ? { ...(r.widths ? { widths: r.widths } : {}), ...(r.validations ? { validations: r.validations.map(alert) } : {}) } : { refused: { cell: r.cell, code: r.code, at: r.at } }, after: after(), widths }
   } finally {
     s.close()
   }

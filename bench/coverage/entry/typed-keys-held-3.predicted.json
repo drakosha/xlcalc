@@ -1,0 +1,92 @@
+{
+ "now": "2026-10-12",
+ "locales": {
+  "en-US": {
+   "key3-pct-1": {
+    "ok": true,
+    "input": {
+     "formula": "-5%",
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-2": {
+    "ok": true,
+    "input": {
+     "formula": "5%",
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-3": {
+    "ok": true,
+    "input": {
+     "formula": "-0.5%",
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-4": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-5": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   }
+  },
+  "ru-RU": {
+   "key3-pct-1": {
+    "ok": true,
+    "input": {
+     "formula": "-5%",
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-2": {
+    "ok": true,
+    "input": {
+     "formula": "5%",
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "key3-pct-4": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-5": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "numberFormat": "0%"
+    }
+   },
+   "key3-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    }
+   }
+  }
+ }
+}

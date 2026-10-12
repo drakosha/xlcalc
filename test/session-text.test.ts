@@ -3,7 +3,8 @@
  * the format the cell shows, a format its line gives it not written into it, its look kept; the column widened in the
  * same step as Excel widens it, or the width only told; a value its rule of data validation does not take written with
  * the rule; a formula that does not read, part of an array and a formula in a table's header refused with a message in
- * the book's locale; a header typed over renamed. In a synchronous session, in the same thread and in a thread, with
+ * the book's locale; a header typed over renamed; text edited in place (`inPlace`) without the percent editor's `%` on a
+ * number begun by a digit. In a synchronous session, in the same thread and in a thread, with
  * closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -65,6 +66,26 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
       // empty text clears the value and keeps the rest
       await s.setCellText('S', 'A1', '')
       expect((await cells()).A1).toEqual({ numberFormat: 4, style: 0, meta: 'm', note: { text: 'n' } })
+      expect(await s.getHash()).toBe(compute(await s.getBook(), { clock, execution }).hash)
+      await s.close()
+    })
+
+    it('edited in place (inPlace), the percent editor adds % only to a number begun by a sign; typed over, to one begun by a digit too', async () => {
+      const s = await (await opener(kind))(book(), { clock, execution })
+      const cells = () => s.getBook().then((b) => b.sheets[0].cells)
+      // the column D shows percent: typed over its cells, `6` is 6% and `6%` the text `6%%`; edited in place, as Excel keeps them after F2
+      expect(await s.previewCellText('S', 'D2', '6', { inPlace: true })).toEqual({ ok: true, input: { value: 6 }, value: 6 })
+      expect(await s.previewCellText('S', 'D2', '6')).toEqual({ ok: true, input: { value: 0.06 }, value: 0.06 })
+      await s.setCellText('S', 'D2', '6%', { inPlace: true })
+      await s.setCellText('S', 'D3', '6%')
+      await s.setCellTexts([{ sheet: 'S', cell: 'D4', text: '-5' }, { sheet: 'S', cell: 'D5', text: '0.5' }], { inPlace: true })
+      // a sign and `%`: the editor's `%` makes `-5%%`, a formula
+      await s.setCellText('S', 'D6', '-5%', { inPlace: true })
+      expect(await s.fillCellText('S', 'D7:D8', '6', { inPlace: true })).toMatchObject({ ok: true })
+      expect(await s.previewFillCellText('S', 'D9:D9', '+5', { inPlace: true })).toMatchObject({ ok: true, cells: [{ cell: 'D9', input: { value: 0.05 }, value: 0.05 }] })
+      const c = await cells()
+      expect([c.D2, c.D3, c.D4, c.D5, c.D6, c.D7, c.D8]).toEqual([{ value: 0.06 }, { value: '6%%' }, { value: -0.05 }, { value: 0.5 }, { formula: '-5%%' }, { value: 6 }, { value: 6 }])
+      await expect(s.setCellText('S', 'D2', '6', { inPlace: 'yes' } as never)).rejects.toThrow('opts.inPlace')
       expect(await s.getHash()).toBe(compute(await s.getBook(), { clock, execution }).hash)
       await s.close()
     })

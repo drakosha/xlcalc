@@ -10,6 +10,7 @@
 import type { CellRef, CellReplace, CellTextRefusal, CellValidationAlert, CellValidationRefusal, ColumnWidth, PasteTextRefusal, PreviewCell, Refusal } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { clipboardRows } from '../entry/clipboard.js'
+import type { EntryWay } from '../entry/index.js'
 import { spend } from '../exec/budget.js'
 import { array, checkAddress, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
 import { say } from '../locale/messages.js'
@@ -53,17 +54,18 @@ export type TypedTexts = { ok: true; cells: Typed[] } | { ok: false; refusal: Re
 
 /**
  * The cells after the texts are typed in order at the moment `now`, each cell once, in the order first given; or the
- * first text Excel stops, and its cell. Pasted (`pasted`), each is read as pasted and the cells are taken together
- * (`takenTogether`).
+ * first text Excel stops, and its cell. Edited in place (`way`), each is read so; pasted, each is read as pasted and the
+ * cells are taken together (`takenTogether`).
  */
-export function typedTexts(s: EngineState, typings: Typing[], now: string, pasted = false): TypedTexts {
+export function typedTexts(s: EngineState, typings: Typing[], now: string, way: EntryWay = 'typed'): TypedTexts {
+  const pasted = way === 'pasted'
   const cells = new Map<string, Typed>()
   for (const { i, r, c, text } of typings) {
     spend(1)
     const ref = { sheet: s.sheetNames[i], cell: formatAddress(r, c) }
     const k = `${i}:${ref.cell}`
     const earlier = cells.get(k)
-    const typed = cellText(s, i, r, c, earlier ? (earlier.edit.input ?? undefined) : s.input.sheets[i].cells[ref.cell], text, now, pasted)
+    const typed = cellText(s, i, r, c, earlier ? (earlier.edit.input ?? undefined) : s.input.sheets[i].cells[ref.cell], text, now, way)
     if (!typed.ok) return { ok: false, refusal: typed, ref }
     const edit = { ...ref, input: typed.input }
     const refused = pasted ? null : textRefusal(s, edit)
@@ -101,7 +103,7 @@ export function pastedText(s: EngineState, i: number, r: number, c: number, text
   const sheet = s.sheetNames[i]
   const cell = formatAddress(r, c)
   if (x.r2 >= MAX_ROWS || x.c2 >= MAX_COLS) return { ok: false, refusal: { ok: false, code: 'off_sheet', message: say(s.input.locale, { key: 'copyOffSheet', sheet, cell }), sheet, cell } }
-  const typed = typedTexts(s, rows.flatMap((row, dr) => row.map((field, dc) => ({ i, r: r + dr, c: c + dc, text: field }))), now, true)
+  const typed = typedTexts(s, rows.flatMap((row, dr) => row.map((field, dc) => ({ i, r: r + dr, c: c + dc, text: field }))), now, 'pasted')
   // read as pasted, a text Excel does not take as a formula is text: what refuses a paste is its cells together
   return typed.ok ? { ...typed, range: rectText(x) } : { ok: false, refusal: { ...typed.refusal, ...typed.ref } as PasteTextRefusal }
 }
@@ -121,11 +123,11 @@ export function checkActive(v: unknown, x: Rect, path = 'opts.active'): { r: num
  * where it has one; a cell keeps its own format where the active cell shows General. The cells row by row, or why Excel
  * stops the entry, with the cell.
  */
-export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c: number }, text: string, now: string): TypedTexts {
+export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c: number }, text: string, now: string, way: EntryWay = 'typed'): TypedTexts {
   if (cellCount(x) > MAX_CELLS) throw new InputError('range', `a range of ${cellCount(x)} cells: an entry goes into ${MAX_CELLS} cells at most`)
   const cells = s.input.sheets[i].cells
   const sheet = s.sheetNames[i]
-  const typed = readText(s, i, a.r, a.c, cells[formatAddress(a.r, a.c)], text, now)
+  const typed = readText(s, i, a.r, a.c, cells[formatAddress(a.r, a.c)], text, now, way)
   if (!typed.ok) return { ok: false, refusal: typed as Refusal<CellTextRefusal>, ref: { sheet, cell: formatAddress(a.r, a.c) } }
   const formula = typed.input?.formula
   const copy = formula === undefined ? null : formulaCopier(s.input, s.tables)
