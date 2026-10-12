@@ -1,0 +1,1181 @@
+{
+ "model": "xlcalc-sheet src/local/outline.ts",
+ "cases": {
+  "ru-1": [
+   {
+    "rows": {
+     "3": [
+      1,
+      false,
+      null
+     ],
+     "4": [
+      1,
+      false,
+      null
+     ],
+     "5": [
+      2,
+      false,
+      null
+     ],
+     "6": [
+      2,
+      false,
+      null
+     ],
+     "7": [
+      2,
+      false,
+      null
+     ],
+     "8": [
+      1,
+      false,
+      true
+     ],
+     "9": [
+      1,
+      false,
+      null
+     ],
+     "10": [
+      1,
+      false,
+      null
+     ],
+     "11": [
+      0,
+      false,
+      true
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       false,
+       false
+      ],
+      "4": [
+       1,
+       false,
+       false
+      ],
+      "5": [
+       2,
+       false,
+       false
+      ],
+      "6": [
+       2,
+       false,
+       false
+      ],
+      "7": [
+       2,
+       false,
+       false
+      ],
+      "8": [
+       1,
+       false,
+       false
+      ],
+      "9": [
+       1,
+       false,
+       false
+      ],
+      "10": [
+       1,
+       false,
+       false
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      2,
+      0
+     ]
+    }
+   },
+   {
+    "rows": {
+     "3": [
+      1,
+      false,
+      null
+     ],
+     "4": [
+      1,
+      false,
+      null
+     ],
+     "5": [
+      2,
+      true,
+      null
+     ],
+     "6": [
+      2,
+      true,
+      null
+     ],
+     "7": [
+      2,
+      true,
+      null
+     ],
+     "8": [
+      1,
+      false,
+      false
+     ],
+     "9": [
+      1,
+      false,
+      null
+     ],
+     "10": [
+      1,
+      false,
+      null
+     ],
+     "11": [
+      0,
+      false,
+      true
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       false,
+       false
+      ],
+      "4": [
+       1,
+       false,
+       false
+      ],
+      "5": [
+       2,
+       true,
+       false
+      ],
+      "6": [
+       2,
+       true,
+       false
+      ],
+      "7": [
+       2,
+       true,
+       false
+      ],
+      "8": [
+       1,
+       false,
+       true
+      ],
+      "9": [
+       1,
+       false,
+       false
+      ],
+      "10": [
+       1,
+       false,
+       false
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      2,
+      0
+     ]
+    }
+   },
+   {
+    "rows": {
+     "3": [
+      1,
+      true,
+      null
+     ],
+     "4": [
+      1,
+      true,
+      null
+     ],
+     "5": [
+      2,
+      true,
+      null
+     ],
+     "6": [
+      2,
+      true,
+      null
+     ],
+     "7": [
+      2,
+      true,
+      null
+     ],
+     "8": [
+      1,
+      true,
+      false
+     ],
+     "9": [
+      1,
+      true,
+      null
+     ],
+     "10": [
+      1,
+      true,
+      null
+     ],
+     "11": [
+      0,
+      false,
+      false
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       true,
+       false
+      ],
+      "4": [
+       1,
+       true,
+       false
+      ],
+      "5": [
+       2,
+       true,
+       false
+      ],
+      "6": [
+       2,
+       true,
+       false
+      ],
+      "7": [
+       2,
+       true,
+       false
+      ],
+      "8": [
+       1,
+       true,
+       true
+      ],
+      "9": [
+       1,
+       true,
+       false
+      ],
+      "10": [
+       1,
+       true,
+       false
+      ],
+      "11": [
+       0,
+       false,
+       true
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      2,
+      0
+     ]
+    }
+   },
+   {
+    "rows": {
+     "3": [
+      1,
+      false,
+      null
+     ],
+     "4": [
+      1,
+      false,
+      null
+     ],
+     "5": [
+      2,
+      true,
+      null
+     ],
+     "6": [
+      2,
+      true,
+      null
+     ],
+     "7": [
+      2,
+      true,
+      null
+     ],
+     "8": [
+      1,
+      false,
+      false
+     ],
+     "9": [
+      1,
+      false,
+      null
+     ],
+     "10": [
+      1,
+      false,
+      null
+     ],
+     "11": [
+      0,
+      false,
+      true
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       false,
+       false
+      ],
+      "4": [
+       1,
+       false,
+       false
+      ],
+      "5": [
+       2,
+       true,
+       false
+      ],
+      "6": [
+       2,
+       true,
+       false
+      ],
+      "7": [
+       2,
+       true,
+       false
+      ],
+      "8": [
+       1,
+       false,
+       true
+      ],
+      "9": [
+       1,
+       false,
+       false
+      ],
+      "10": [
+       1,
+       false,
+       false
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      2,
+      0
+     ]
+    }
+   }
+  ],
+  "ru-2": [
+   {
+    "rows": {
+     "3": [
+      1,
+      false,
+      null
+     ],
+     "4": [
+      1,
+      false,
+      null
+     ],
+     "5": [
+      2,
+      false,
+      null
+     ],
+     "6": [
+      2,
+      false,
+      null
+     ],
+     "7": [
+      2,
+      false,
+      null
+     ],
+     "8": [
+      1,
+      false,
+      true
+     ],
+     "9": [
+      1,
+      false,
+      null
+     ],
+     "10": [
+      1,
+      false,
+      null
+     ],
+     "11": [
+      0,
+      false,
+      true
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       false,
+       false
+      ],
+      "4": [
+       1,
+       false,
+       false
+      ],
+      "5": [
+       2,
+       false,
+       false
+      ],
+      "6": [
+       2,
+       false,
+       false
+      ],
+      "7": [
+       2,
+       false,
+       false
+      ],
+      "8": [
+       1,
+       false,
+       false
+      ],
+      "9": [
+       1,
+       false,
+       false
+      ],
+      "10": [
+       1,
+       false,
+       false
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      2,
+      0
+     ]
+    }
+   },
+   {
+    "rows": {
+     "3": [
+      1,
+      true,
+      null
+     ],
+     "4": [
+      1,
+      true,
+      null
+     ],
+     "5": [
+      2,
+      true,
+      null
+     ],
+     "6": [
+      2,
+      true,
+      null
+     ],
+     "7": [
+      2,
+      true,
+      null
+     ],
+     "8": [
+      1,
+      true,
+      false
+     ],
+     "9": [
+      1,
+      true,
+      null
+     ],
+     "10": [
+      1,
+      true,
+      null
+     ],
+     "11": [
+      0,
+      false,
+      false
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       true,
+       false
+      ],
+      "4": [
+       1,
+       true,
+       false
+      ],
+      "5": [
+       2,
+       true,
+       false
+      ],
+      "6": [
+       2,
+       true,
+       false
+      ],
+      "7": [
+       2,
+       true,
+       false
+      ],
+      "8": [
+       1,
+       true,
+       true
+      ],
+      "9": [
+       1,
+       true,
+       false
+      ],
+      "10": [
+       1,
+       true,
+       false
+      ],
+      "11": [
+       0,
+       false,
+       true
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      2,
+      0
+     ]
+    }
+   },
+   {
+    "rows": {
+     "3": [
+      1,
+      false,
+      null
+     ],
+     "4": [
+      1,
+      false,
+      null
+     ],
+     "5": [
+      2,
+      true,
+      null
+     ],
+     "6": [
+      2,
+      true,
+      null
+     ],
+     "7": [
+      2,
+      true,
+      null
+     ],
+     "8": [
+      1,
+      false,
+      false
+     ],
+     "9": [
+      1,
+      false,
+      null
+     ],
+     "10": [
+      1,
+      false,
+      null
+     ],
+     "11": [
+      0,
+      false,
+      true
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       false,
+       false
+      ],
+      "4": [
+       1,
+       false,
+       false
+      ],
+      "5": [
+       2,
+       true,
+       false
+      ],
+      "6": [
+       2,
+       true,
+       false
+      ],
+      "7": [
+       2,
+       true,
+       false
+      ],
+      "8": [
+       1,
+       false,
+       true
+      ],
+      "9": [
+       1,
+       false,
+       false
+      ],
+      "10": [
+       1,
+       false,
+       false
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      2,
+      0
+     ]
+    }
+   }
+  ],
+  "ru-3": [
+   {
+    "rows": {},
+    "columns": {},
+    "saved": {
+     "rows": {},
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      0,
+      0
+     ]
+    }
+   },
+   {
+    "rows": {
+     "3": [
+      1,
+      false,
+      null
+     ],
+     "4": [
+      1,
+      false,
+      null
+     ],
+     "5": [
+      1,
+      false,
+      null
+     ],
+     "6": [
+      0,
+      false,
+      true
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       false,
+       false
+      ],
+      "4": [
+       1,
+       false,
+       false
+      ],
+      "5": [
+       1,
+       false,
+       false
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      1,
+      0
+     ]
+    }
+   },
+   {
+    "rows": {
+     "3": [
+      1,
+      false,
+      null
+     ],
+     "4": [
+      0,
+      false,
+      true
+     ],
+     "5": [
+      1,
+      false,
+      null
+     ],
+     "6": [
+      0,
+      false,
+      true
+     ]
+    },
+    "columns": {},
+    "saved": {
+     "rows": {
+      "3": [
+       1,
+       false,
+       false
+      ],
+      "5": [
+       1,
+       false,
+       false
+      ]
+     },
+     "columns": {},
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      1,
+      0
+     ]
+    }
+   }
+  ],
+  "ru-4": [
+   {
+    "rows": {},
+    "columns": {
+     "C": [
+      1,
+      false,
+      null
+     ],
+     "D": [
+      1,
+      false,
+      null
+     ],
+     "E": [
+      2,
+      false,
+      null
+     ],
+     "F": [
+      2,
+      false,
+      null
+     ],
+     "G": [
+      2,
+      false,
+      null
+     ],
+     "H": [
+      1,
+      false,
+      true
+     ],
+     "I": [
+      1,
+      false,
+      null
+     ],
+     "J": [
+      1,
+      false,
+      null
+     ],
+     "K": [
+      0,
+      false,
+      true
+     ]
+    },
+    "saved": {
+     "rows": {},
+     "columns": {
+      "C": [
+       1,
+       false,
+       false
+      ],
+      "D": [
+       1,
+       false,
+       false
+      ],
+      "E": [
+       2,
+       false,
+       false
+      ],
+      "F": [
+       2,
+       false,
+       false
+      ],
+      "G": [
+       2,
+       false,
+       false
+      ],
+      "H": [
+       1,
+       false,
+       false
+      ],
+      "I": [
+       1,
+       false,
+       false
+      ],
+      "J": [
+       1,
+       false,
+       false
+      ]
+     },
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      0,
+      2
+     ]
+    }
+   },
+   {
+    "rows": {},
+    "columns": {
+     "C": [
+      1,
+      true,
+      null
+     ],
+     "D": [
+      1,
+      true,
+      null
+     ],
+     "E": [
+      2,
+      true,
+      null
+     ],
+     "F": [
+      2,
+      true,
+      null
+     ],
+     "G": [
+      2,
+      true,
+      null
+     ],
+     "H": [
+      1,
+      true,
+      false
+     ],
+     "I": [
+      1,
+      true,
+      null
+     ],
+     "J": [
+      1,
+      true,
+      null
+     ],
+     "K": [
+      0,
+      false,
+      false
+     ]
+    },
+    "saved": {
+     "rows": {},
+     "columns": {
+      "C": [
+       1,
+       true,
+       false
+      ],
+      "D": [
+       1,
+       true,
+       false
+      ],
+      "E": [
+       2,
+       true,
+       false
+      ],
+      "F": [
+       2,
+       true,
+       false
+      ],
+      "G": [
+       2,
+       true,
+       false
+      ],
+      "H": [
+       1,
+       true,
+       true
+      ],
+      "I": [
+       1,
+       true,
+       false
+      ],
+      "J": [
+       1,
+       true,
+       false
+      ],
+      "K": [
+       0,
+       false,
+       true
+      ]
+     },
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      0,
+      2
+     ]
+    }
+   },
+   {
+    "refused": true,
+    "rows": {},
+    "columns": {
+     "C": [
+      1,
+      true,
+      null
+     ],
+     "D": [
+      1,
+      true,
+      null
+     ],
+     "E": [
+      2,
+      true,
+      null
+     ],
+     "F": [
+      2,
+      true,
+      null
+     ],
+     "G": [
+      2,
+      true,
+      null
+     ],
+     "H": [
+      1,
+      true,
+      false
+     ],
+     "I": [
+      1,
+      true,
+      null
+     ],
+     "J": [
+      1,
+      true,
+      null
+     ],
+     "K": [
+      0,
+      false,
+      false
+     ]
+    },
+    "saved": {
+     "rows": {},
+     "columns": {
+      "C": [
+       1,
+       true,
+       false
+      ],
+      "D": [
+       1,
+       true,
+       false
+      ],
+      "E": [
+       2,
+       true,
+       false
+      ],
+      "F": [
+       2,
+       true,
+       false
+      ],
+      "G": [
+       2,
+       true,
+       false
+      ],
+      "H": [
+       1,
+       true,
+       true
+      ],
+      "I": [
+       1,
+       true,
+       false
+      ],
+      "J": [
+       1,
+       true,
+       false
+      ],
+      "K": [
+       0,
+       false,
+       true
+      ]
+     },
+     "summary": {
+      "below": true,
+      "right": true
+     },
+     "levels": [
+      0,
+      2
+     ]
+    }
+   }
+  ]
+ }
+}
