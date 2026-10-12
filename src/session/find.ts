@@ -29,8 +29,15 @@ const WHERE = ['text', 'edit', 'formula', 'value'] as const
 type At = [s: number, r: number, c: number]
 type Ref = Rect & { s: number }
 
-/** Each character's lower case as one UTF-16 unit or two as it was, so `?` keeps its place: `İ` stays (its lower case is two characters), `Σ` is `σ` anywhere. */
-const folded = (t: string) => (/[İΣ]/.test(t) ? t.replace(/[^İΣ]+/g, (m) => m.toLowerCase()).replaceAll('Σ', 'σ') : t.toLowerCase())
+/**
+ * Each character's lower case as one UTF-16 unit or two as it was, so `?` keeps its place: `İ` stays (its lower case is
+ * two characters), and the final `ς` is `σ`, as `Σ` is (Find takes `σ`, `ς` and `Σ` as one letter without Match case).
+ */
+const folded = (t: string) => {
+  const lower = t.toLowerCase()
+  const f = lower.length === t.length ? lower : t.replace(/[^İ]+/g, (m) => m.toLowerCase())
+  return f.includes('ς') ? f.replaceAll('ς', 'σ') : f
+}
 
 /**
  * The test of a cell's text, null when nothing can match (an empty query, or `~` alone). Wildcards as the lookup
@@ -108,11 +115,15 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
   const place = (r: number, c: number) => (o.byColumns ? c * MAX_ROWS + r : r * MAX_COLS + c)
   const cell = (m: number): [number, number] => (o.byColumns ? [m % MAX_ROWS, Math.floor(m / MAX_ROWS)] : [Math.floor(m / MAX_COLS), m % MAX_COLS])
 
-  /** A range's cells in Find's order: by their places, after the blocks hidden lines leave (by rows of blocks, then by columns) when hidden cells are skipped. */
+  // Find skips hidden cells in Look in Values, and on a filtered sheet in every kind of search, where it takes the cells by blocks
+  const filtered = (s: number) => o.skipHidden === true && state.input.sheets[s].filtered === true
+  const skips = (s: number) => filtered(s) || (o.skipHidden === true && where === 'text')
+
+  /** A range's cells in Find's order: by their places, on a filtered sheet after the blocks its hidden lines leave, rows of blocks first. */
   const ordered = (s: number, places: number[]): Float64Array => {
     const xs = Float64Array.from(places).sort()
     const { rows, cols } = sheet(s)
-    if (!o.skipHidden || (!rows.any && !cols.any)) return xs
+    if (!filtered(s) || (!rows.any && !cols.any)) return xs
     const block = xs.map((m) => {
       const [r, c] = cell(m)
       return rows.at(r)[1] * MAX_COLS + cols.at(c)[1]
@@ -130,7 +141,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
         continue
       }
       const [s, r, c] = at
-      if (o.skipHidden && (sheet(s).rows.at(r)[0] || sheet(s).cols.at(c)[0])) continue
+      if (skips(s) && (sheet(s).rows.at(r)[0] || sheet(s).cols.at(c)[0])) continue
       groups[refs.findIndex((x) => x.s === s && hasCell(x, r, c))].push(place(r, c))
     }
     for (const [n, group] of groups.entries()) {
