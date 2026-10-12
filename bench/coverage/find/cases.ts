@@ -90,12 +90,11 @@ export function sentBook(b: FindBook): BookInput {
   return { sheets: [{ name: 'S', cells: b.cells, ...(b.columns ? { columns: b.columns } : {}), ...(b.rows ? { rows: b.rows } : {}), ...(b.merges ? { merges: b.merges } : {}) }] }
 }
 
-/** The book as the engine takes it in a locale: the rows its filter hides hidden on a filtered sheet. */
+/** The book as the engine takes it in a locale: with a filter, a filtered sheet with the rows it hides hidden. */
 export function findBook(b: FindBook, locale?: string): BookInput {
   const sheet = sentBook(b).sheets[0]
-  const hidden = filteredRows(b)
-  const rows = { ...sheet.rows, ...Object.fromEntries(hidden.map((r) => [String(r), { hidden: true }])) }
-  return { ...(locale ? { locale } : {}), sheets: [{ ...sheet, ...(hidden.length ? { rows, filtered: true } : {}) }] }
+  const rows = { ...sheet.rows, ...Object.fromEntries(filteredRows(b).map((r) => [String(r), { hidden: true }])) }
+  return { ...(locale ? { locale } : {}), sheets: [{ ...sheet, ...(b.filter ? { rows, filtered: true } : {}) }] }
 }
 
 /** Cases of one group: ids `<group>-<n>`. */
