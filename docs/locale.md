@@ -105,6 +105,7 @@ A person working in a book's locale reads the engine's messages in its language:
 
 - `parseEntry` writes in `opts.locale`, and `toLocal`, `toInvariant` and `validateLocalFormula` in the locale they are given. A locale object speaks by its own `messages`; without them, as the loaded locale of its tag, and in English for another tag.
 - `editStructure`, and a session's `editStructure` alike in the same thread, in a thread of the pool or synchronously, write in the book's `locale`.
+- `readXlsx` and `writeXlsx` write their issues in `opts.locale`, English without it, never in the book's locale: a file does not say what language the person reading it uses ([docs/xlsx.md](xlsx.md#the-language-of-the-messages)). A locale's `messages` hold their texts beside the engine's; one without them gives the English ones, which the subpath `xlcalc/xlsx` carries, so a bundle that reads no files does not.
 - `explain`'s `text` is written in the book's locale: its words (`(2 ячейки)`, `перенос из`, `(ошибка из План!A2)`), numbers with the locale's decimal separator, formulas as `toLocal` shows them, references with a sheet in quotes only where Excel puts them, booleans in the locale's words (`ИСТИНА`), errors as the book's cells show them (`#Н/Д`), and an empty cell as `пусто`. The tree's `ref`, `value`, `formula` and `origin` stay as the book stores them, for programs.
 
 Codes (`code`) and positions (`at`) are the same in every language, so a host that chose its own words by the code may go on doing so, or show `message` as it is.
