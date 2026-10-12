@@ -5,7 +5,7 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { AbortSignalLike, AsyncStructureResult, AsyncSession, BookInput, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
+import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
@@ -14,7 +14,7 @@ import { checkedMapCell } from '../structure/index.js'
 import type { SentGeometry } from '../structure/geometry.js'
 import { FILL_OPTIONS, FIND_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
-import { pack, packCached, unpackSlowly } from './pack.js'
+import { texts, unpackSlowly, type Texts } from './pack.js'
 import { CHANGING, fromData, sentLocale, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
 
 interface Timers {
@@ -71,24 +71,6 @@ interface Rec {
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
 const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setCellTexts: 'entries', previewCellTexts: 'entries', pasteText: 'text', previewPasteText: 'text', fillCellText: 'text', previewFillCellText: 'text', setLayout: 'edits', setNames: 'names', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
-
-/** A book and the values its file stores as they go to a thread: text (`pack.ts`), or objects JSON cannot hold. */
-interface Texts {
-  book: Sent
-  cached?: Sent
-}
-
-/**
- * A book and its stored values taken now as text: the message's fields (the book itself while its text is written
- * between turns of the event loop) and, when some text is still being written, the promise of them all.
- */
-function texts(book: BookInput, cached: CachedValues | undefined): [Texts, Promise<Texts> | undefined] {
-  const b = pack(book)
-  const c = cached === undefined ? undefined : packCached(cached)
-  const of = (x: Sent, y: Sent | undefined): Texts => ({ book: x, ...(y ? { cached: y } : {}) })
-  if (!(b instanceof Promise) && !(c instanceof Promise)) return [of(b, c), undefined]
-  return [{ book: book as Sent }, Promise.all([b, c]).then(([x, y]) => of(x, y))]
-}
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
