@@ -1307,6 +1307,12 @@ export interface PageOptions extends EditOptions {
 export interface ReadCellsOptions extends PageOptions {
   /** value, text and formula by default. Address and sheet are always returned. */
   fields?: CellReadField[]
+  /**
+   * Only the cells of these rows (the rows a host's filter shows, say), as `ViewportOptions.rows`: their numbers on the
+   * sheet, from 1, in ascending order, each once; the cells of each range in them, `total` counting those alone. A row
+   * outside a range leaves that range nothing of it.
+   */
+  rows?: number[]
 }
 export interface FindCellsOptions extends ReadCellsOptions {
   /**
