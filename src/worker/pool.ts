@@ -5,7 +5,7 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { AbortSignalLike, AsyncStructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
+import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
@@ -14,7 +14,7 @@ import { checkedMapCell } from '../structure/index.js'
 import type { SentGeometry } from '../structure/geometry.js'
 import { FILL_OPTIONS, FIND_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
-import { pack, unpackSlowly } from './pack.js'
+import { texts, unpackSlowly, type Texts } from './pack.js'
 import { CHANGING, fromData, sentLocale, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
 
 interface Timers {
@@ -304,8 +304,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     pump(slot)
   }
 
-  /** A task in the queue of `slot` (a session's) or in the shared one. */
-  function submit(msg: Message, at?: { slot: Slot; session: Rec }, signal?: AbortSignalLike, internal = false, book?: Promise<Sent>): Promise<unknown> {
+  /** A task in the queue of `slot` (a session's) or in the shared one; `book`, its book and stored values while they are written as text. */
+  function submit(msg: Message, at?: { slot: Slot; session: Rec }, signal?: AbortSignalLike, internal = false, book?: Promise<Texts>): Promise<unknown> {
     if (closed) return Promise.reject(closed)
     if (at?.session.gone) return Promise.reject(at.session.gone)
     if (signal?.aborted) return Promise.reject(abortError(signal))
@@ -320,7 +320,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         task.pending = true
         void book.then((sent) => {
           task.pending = false
-          ;(task.msg as { book: Sent }).book = sent
+          Object.assign(task.msg, sent)
           if (at) pump(at.slot)
           else for (const s of slots) pump(s)
         })
@@ -447,10 +447,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
 
   return strictMethods<Calc>({
     async compute(book, copts) {
-      const { signal, timeoutMs, rest } = splitCall<object>(copts)
-      const sent = pack(book)
-      const later = sent instanceof Promise ? sent : undefined
-      return (await submit({ t: 'compute', book: later ? book : (sent as Sent), opts: rest ?? {}, timeoutMs: timeoutMs ?? o.timeoutMs }, undefined, signal, false, later)) as never
+      const { signal, timeoutMs, rest } = splitCall<{ cached?: CachedValues }>(copts)
+      const { cached, ...opts } = rest ?? {}
+      const [sent, later] = texts(book, cached)
+      return (await submit({ t: 'compute', ...sent, opts, timeoutMs: timeoutMs ?? o.timeoutMs }, undefined, signal, false, later)) as never
     },
     async createSession(book, sopts) {
       if (closed) throw closed
@@ -463,13 +463,18 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       const slot = [...slots].sort((a, b) => a.sessions.size - b.sessions.size || a.queue.length - b.queue.length)[0]
       const given = opts.clock
       delete opts.clock
-      // the book is taken now and written as text, between turns of the event loop when it is large; the text is the first snapshot
-      const sent = pack(book)
-      const later = sent instanceof Promise ? sent.then((x) => (r.snapshot.book = x)) : undefined
-      const r: Rec = { sid: ++ids, slot, snapshot: { book: later ? book : (sent as Sent), opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, history: { undo: 0, redo: 0 }, revision: 0, used: ++clock, gone: null, snapshotting: false }
+      const { cached } = opts
+      delete opts.cached
+      // the book and the stored values are taken now and written as text, between turns of the event loop when they are large; the text is the first snapshot
+      const [sent, written] = texts(book, cached)
+      const later = written?.then((x) => {
+        Object.assign(r.snapshot, x)
+        return x
+      })
+      const r: Rec = { sid: ++ids, slot, snapshot: { ...sent, opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, history: { undo: 0, redo: 0 }, revision: 0, used: ++clock, gone: null, snapshotting: false }
       recs.add(r)
       slot.sessions.add(r)
-      await submit({ t: 'open', sid: r.sid, book: r.snapshot.book, opts: { ...opts, ...(given ? { clock: given } : {}) }, timeoutMs: timeoutMs ?? o.timeoutMs }, { slot, session: r }, signal, false, later).catch((e) => {
+      await submit({ t: 'open', sid: r.sid, book: r.snapshot.book, ...(sent.cached ? { cached: sent.cached } : {}), opts: { ...opts, ...(given ? { clock: given } : {}) }, timeoutMs: timeoutMs ?? o.timeoutMs }, { slot, session: r }, signal, false, later).catch((e) => {
         bury(r, new CalcError('closed', 'the session did not open'))
         throw e
       })

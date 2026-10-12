@@ -15,7 +15,8 @@ import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outValue } from './result.js'
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
-import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, type EngineOptions, type EngineState } from './engine.js'
+import { journaled, priorOf } from './held.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
@@ -146,9 +147,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     return s.input
   }
   const unlent = (cells: object) => !lent.has(cells)
-  /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are. */
-  const build = (b: BookInput, own?: (cells: object) => boolean) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution, own })
-  let state: EngineState | null = yield* build(book)
+  /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are; `more`, the options of its held values. */
+  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution, own, ...more })
+  let state: EngineState | null = yield* build(book, undefined, { cached: o.cached })
   let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one
   let stale = false
@@ -203,45 +204,59 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     setNow(s, clockSerial(at), at.seed)
   }
   const history = new History(o.undo, hooks.history)
+  // the inputs the last `putCells` changed besides its edits (held values), which a preview puts back too
+  let besides: CellReplace[] = []
   // a step is made only when the history keeps steps (a book's diff costs a pass over its cells); a call that changed nothing makes none
   const keep = (step: () => Step | null) => {
     const x = history.on ? step() : null
     if (x) history.push(x)
   }
-  /** Edits of cells (checked) applied; the inputs they replaced, which are put back if the call stops. */
-  function* putCells(s: EngineState, edits: CellReplace[]): Steps<[Outcome, CellReplace[]]> {
+  /**
+   * Edits of cells (checked) applied, `restore` when they put inputs back (`applyEdits`); the inputs they replaced, and
+   * those of the cells whose held value the engine took or dropped (`held.ts`), which are put back if the call stops.
+   */
+  function* putCells(s: EngineState, edits: CellReplace[], restore = false): Steps<[Outcome, CellReplace[]]> {
     const before = display ? snapshot(s, editedCells(s, edits)) : null
     const was = inputsOf(s, edits)
     const at = clock
+    s.journal = new Map()
     try {
       // edits that keep a cell's value and formula change its input alone
       const loud = contentEdits(s, edits)
       if (loud.length && (live || controlledClock)) tick(s)
       let keys: string[]
-      if (loud.length) keys = yield* applyEdits(s, loud, live || controlledClock !== undefined)
+      if (loud.length) keys = yield* applyEdits(s, loud, live || controlledClock !== undefined, restore)
       else if (controlledClock) { tick(s); keys = yield* applyClock(s, clockSerial(clock), clock.seed) }
       else keys = []
       const fields = editFields(s, was)
-      return [{ ...nothing(), keys: inOrder(keys, [...(before ? shownChanges(s, before) : []), ...fields.keys()]), fields, valued: keys.length > 0 }, was]
+      const back = journaled(was, s.journal)
+      besides = back.slice(was.length)
+      return [{ ...nothing(), keys: inOrder(keys, [...(before ? shownChanges(s, before) : []), ...fields.keys()]), fields, valued: keys.length > 0 }, back]
     } catch (e) {
-      putInputs(s.input.sheets, (name) => sheetIndex(s)(name)!, was)
+      putInputs(s.input.sheets, (name) => sheetIndex(s)(name)!, journaled(was, s.journal))
       clock = at
       stale = true
       throw e
+    } finally {
+      s.journal = undefined
     }
   }
   /**
    * The state built again from `book`, the session's book changed, with its changes against the old one by the geometry
    * `g` (where the old cells went; the looks of both with `looks`) and, with `back`, the way back to the old book, taken
-   * in the same pass over the cells; nothing changes if it stops.
+   * in the same pass over the cells; nothing changes if it stops. `restore`: the book is one put back (an undo), whose
+   * formulas a cycle stops hold what their inputs give (`held.ts`).
    */
-  function* rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean): Steps<[EngineState, Outcome, BookDiff | null]> {
+  function* rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean, restore = false): Steps<[EngineState, Outcome, BookDiff | null]> {
     const at = clock
     if (live || controlledClock) tick(old)
     try {
-      const next = yield* build(book, unlent)
+      // a formula a cycle stops now holds what it showed (`held.ts`): the sheets so changed are the new book's in the diff
+      const rewritten = new Set<number>()
+      const next = yield* build(book, unlent, { ...(restore ? {} : { prior: priorOf(old, g) }), rewritten })
       const fields = new Map<string, FieldChange>()
-      const pass = back ? new DiffPass(book, old.input) : undefined
+      const current = rewritten.size ? { ...book, sheets: book.sheets.map((x, i) => (rewritten.has(i) ? next.input.sheets[i] : x)) } : book
+      const pass = back ? new DiffPass(current, old.input) : undefined
       const keys = movedChanges(old, next, g, fields, display && looks ? [cellLooks(old), cellLooks(next)] : undefined, pass)
       const diff = pass ? yield* bookDiff(pass, inverse(g)) : null
       state = next
@@ -399,6 +414,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     if (preview) checkNumber(max, 'opts.maxChanges', 1, 10000, true)
     const plan = operationsPlan(old, given, (v, format) => headerText(old, v, format))
     const beforeBook = { ...old.input, sheets: old.input.sheets.slice() }
+    besides = []
     const captured = tracker()
     if (preview) old.capture = captured
     controlledClock = opts.clock ?? (preview && live ? fresh() : undefined)
@@ -457,13 +473,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         revision = beforeRevision
         clock = beforeClock
         state = old
-        putInputs(beforeBook.sheets, (name) => old.sheetIdx.get(sheetKey(name))!, plan.back)
+        const back = [...plan.back, ...besides]
+        putInputs(beforeBook.sheets, (name) => old.sheetIdx.get(sheetKey(name))!, back)
         old.input = beforeBook
         setNow(old, clockSerial(beforeClock), beforeClock.seed)
         if (next === old) {
           stale = true
           if (preview) {
-            yield* applyEdits(old, plan.back, true)
+            yield* applyEdits(old, back, true, true)
             stale = false
           }
         }

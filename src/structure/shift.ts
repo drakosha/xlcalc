@@ -152,7 +152,7 @@ function keepFirstRow(book: BookInput, sheet: string, at: number, count: number,
       const addr = formatAddress(at, c)
       const cell = cells[addr]
       if (!cell) continue
-      const { value: _, formula: __, array: ___, ...look } = cell
+      const { value: _, formula: __, array: ___, held: ____, ...look } = cell
       if (Object.keys(look).length) cells[addr] = look
       else delete cells[addr]
     }

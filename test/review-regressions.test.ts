@@ -95,8 +95,8 @@ describe.each(['closures', 'eval'] as const)('review regressions, %s', (executio
   it('both spilled ends contribute to the whole range, including the diagonal corner', () => {
     const b = book({ A1: { formula: 'SEQUENCE(5)' }, C1: { formula: 'SEQUENCE(1,5)' }, D4: { formula: 'I1+1' }, I1: { formula: 'SUM(A1#:C1#)' } })
     const r = compute(b, { execution })
-    expect(r.sheets[0].cells.I1.value).toEqual({ error: 'CYCLE' })
-    expect(r.sheets[0].cells.D4.value).toEqual({ error: 'CYCLE' })
+    expect([r.sheets[0].cells.I1.value, r.sheets[0].cells.D4.value]).toEqual([0, 0])
+    expect(r.diagnostics.map((d) => (d.kind === 'cell' ? `${d.cell} ${d.error}` : ''))).toEqual(['I1 CYCLE', 'D4 CYCLE'])
   })
 
   it('a long flat formula keeps the evaluation order and the execution modes agree', () => {

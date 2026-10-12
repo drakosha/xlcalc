@@ -114,7 +114,7 @@ describe('a window over a saved book and its result', () => {
   it("a cycle's reasons name no cell: its cells' errors begin where they are", () => {
     const b: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'B1' }, B1: { formula: 'A1' }, C1: { formula: 'A1+1' } } }] }
     const v = viewportOf({ book: b, result: compute(b, { clock: CLOCK }) }, 'S', 'A1:C1', { diagnostics: true })
-    expect(Object.values(v.cells).map((c) => [c.issue?.reason, c.issue?.origin.cell])).toEqual([['circular reference', 'A1'], ['circular reference', 'B1'], ['circular reference', 'C1']])
+    expect(Object.values(v.cells).map((c) => [c.issue?.reason, c.issue?.origin.cell])).toEqual(['A1', 'B1', 'C1'].map((a) => ['circular reference: not computed, the value is held', a]))
   })
 
   it('the objects are read once and kept with them; the answer has its own', () => {
@@ -138,7 +138,7 @@ describe('a window over a saved book and its result', () => {
     // a book or a result in an earlier version's form: the number format by its old name, the reasons by theirs
     const old = book()
     old.sheets[0].cells.D5 = { value: 4, format: '0%' } as never
-    expect(call({ book: old, result })).toThrow('saved.book.sheets[0].cells["D5"]: unknown field "format" (expected value, formula, numberFormat, style, meta, array, note, link) (format is the old name of numberFormat)')
+    expect(call({ book: old, result })).toThrow('saved.book.sheets[0].cells["D5"]: unknown field "format" (expected value, formula, numberFormat, style, meta, array, note, link, held) (format is the old name of numberFormat)')
     const { diagnostics, ...rest } = result
     expect(call({ book: book(), result: { ...rest, issues: diagnostics } })).toThrow(/^saved\.result\.diagnostics: expected an array of reasons/)
     expect(call({ book: book(), result }, 'Нет')).toThrow('sheet: unknown sheet "Нет"')

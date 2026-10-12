@@ -16,7 +16,7 @@ Element `i` of `externalBooks` answers `[i+1]`. `target` is where the link point
 
 ## Values
 
-- A cell the link stores gives its value: `[1]Sheet1!A1+1` is 6. Excel stores `#SPILL!` and `#CALC!` of another workbook as `#VALUE!`, and so does the engine compute them (and its own `#CYCLE!` and `#ERROR!`).
+- A cell the link stores gives its value: `[1]Sheet1!A1+1` is 6. Excel stores `#SPILL!` and `#CALC!` of another workbook as `#VALUE!`, and so does the engine compute them (and its own `#CYCLE!`, which a name that uses itself gives, and `#ERROR!`).
 - A cell the link does not store is blank, as Excel takes it: `[1]Sheet1!A9` is 0, `[1]Sheet1!A9&"|"` is `|`, and `SUM([1]Sheet1!A:A)` sums the stored cells of the column. Excel stores the non-empty cells of the part of a sheet the formulas read, so the cells it leaves out were empty.
 - On a sheet whose last update failed, which Excel marks `refreshError` (`ExternalSheet.refreshError`), a cell the link does not store is `#REF!`: `SUM([1]Sheet1!A:A)` is `#REF!`, `MATCH(3,[1]Sheet1!A:A,0)` still finds a stored 3. A sheet the link names but stores nothing of (no `cells`) is `#REF!` everywhere.
 - A range is read cell by cell, so `INDEX`, `MATCH`, `VLOOKUP`, `HLOOKUP`, `XLOOKUP`, `LOOKUP`, `SUMPRODUCT`, `COUNT`, `COUNTA`, `AVERAGE`, `RANK`, `SUBTOTAL`, `AGGREGATE`, `ROWS`, `ROW`, `ISREF` and a dynamic array such as `[1]Sheet1!A1:A3*2` work over a link as over a sheet of the book.

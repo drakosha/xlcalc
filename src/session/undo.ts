@@ -206,8 +206,8 @@ export function manyStep(call: UndoCall, steps: (Step | null)[]): Step {
 /** What a step needs of its session (`session.ts`): the ways it changes the book, which forward calls take too. */
 export interface SessionCore {
   ready(): Steps<EngineState>
-  putCells(s: EngineState, edits: CellReplace[]): Steps<[Outcome, CellReplace[]]>
-  rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean): Steps<[EngineState, Outcome, BookDiff | null]>
+  putCells(s: EngineState, edits: CellReplace[], restore?: boolean): Steps<[Outcome, CellReplace[]]>
+  rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean, restore?: boolean): Steps<[EngineState, Outcome, BookDiff | null]>
   relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[Outcome, SheetInput[]]>
   display: boolean
   sheetIndex(s: EngineState): (name: string) => number | undefined
@@ -238,7 +238,7 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
   const s = yield* core.ready()
   switch (step.kind) {
     case 'cells': {
-      const [outcome, was] = yield* core.putCells(s, step.edits)
+      const [outcome, was] = yield* core.putCells(s, step.edits, true)
       const cells = step.edits.map((e) => ({ sheet: s.sheetNames[core.sheetIndex(s)(e.sheet)!], cell: e.cell }))
       return [{ call: step.call, outcome, cells }, cellsStep(step.call, was)]
     }
@@ -261,7 +261,7 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       const { geometry: g } = step.diff
       const [book, before] = [yield* applyDiff(s.input, step.diff), s.sheetNames]
       const after = namesOf(book)
-      const [, outcome, diff] = yield* core.rebuild(s, book, g, step.call !== 'setNames', true)
+      const [, outcome, diff] = yield* core.rebuild(s, book, g, step.call !== 'setNames', true, true)
       const t: Taken = { call: step.call, outcome: { ...outcome, moved: movesOf(g, before, after) } }
       if (step.call === 'editStructure') t.mapCell = checkedMapCell({ geometry: g, before, after })
       return [t, bookStep(step.call, diff!, book)]

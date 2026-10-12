@@ -44,6 +44,7 @@ const TAKEN_BY: Record<string, string> = {
   externals: 'compute and createSession',
   execution: 'compute and createSession',
   display: 'compute and createSession',
+  cached: 'compute and createSession',
   limits: 'compute, createSession and the calculators',
   live: 'createSession',
   undo: 'createSession',

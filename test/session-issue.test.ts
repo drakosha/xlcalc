@@ -81,7 +81,7 @@ describe.each(['closures', 'eval'] as const)('the reason and origin of an error,
       expect([short.nodes, short.truncated, short.text.split('\n').at(-1)]).toEqual([6, true, "          S!J5 = #DIV/0!  ← J4+1  (error from S!J1)"])
       expect((await s.explain('S', 'J10', { depth: 1, maxNodes: 4 })).nodes).toBe(4)
       const cycle = await s.explain('S', 'E3', { depth: 0, errorDepth: 1000 })
-      expect([cycle.nodes, cycle.text]).toEqual([3, ["S!E3 = #CYCLE!  ← E1*2  (error from S!E1)", "  S!E1 = #CYCLE!  ← E2+1  (the error begins here)", "    S!E2 = #CYCLE!  ← E1+1  (the error begins here)"].join('\n')])
+      expect([cycle.nodes, cycle.text]).toEqual([3, ["S!E3 = 0  ← E1*2  (held: a circular reference through S!E1)", "  S!E1 = 0  ← E2+1  (held: a circular reference)", "    S!E2 = 0  ← E1+1  (held: a circular reference)"].join('\n')])
       expect((await s.explain('S', 'I1')).text).toBe("S!I1 = #DIV/0!  ← Other!A1+1  (error from Other!A1)\n  Other!A1 = #DIV/0!  ← 1/0  (the error begins here)")
       expect((await s.explain('S', 'C2')).text).toBe("S!C2 = #DIV/0!  ← spilled from S!C1  (error from S!C1)\n  S!C1 = 1  ← SEQUENCE(3)/{1;0;1}")
       // an empty cell, and errors as cells show them

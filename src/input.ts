@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { AlignmentStyle, BookInput, BorderLine, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, ExternalBook, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { AlignmentStyle, BookInput, BorderLine, CachedValues, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, ExternalBook, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { english } from './locale/english.js'
@@ -112,6 +112,8 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
   if (c.array !== undefined) checkString(c.array, `${path}.array`)
   if (c.note !== undefined) checkNote(c.note, `${path}.note`)
   if (c.link !== undefined) checkLink(c.link, `${path}.link`)
+  if (c.held === null) throw new InputError(`${path}.held`, 'expected a number, text, a boolean or { error: code }, got null')
+  if (c.held !== undefined) checkCellValue(c.held, `${path}.held`)
   return c as CellInput
 }
 
@@ -149,7 +151,7 @@ export function checkNames(v: unknown, path: string): NameInput[] {
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
 /** The fields of a cell (`CellInput`). */
-export const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'style', 'meta', 'array', 'note', 'link']
+export const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'style', 'meta', 'array', 'note', 'link', 'held']
 
 /** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
 function plainCell(c: unknown, styles: number): boolean {
@@ -488,10 +490,27 @@ export function checkLimits(v: unknown, path: string): CalcLimits {
   return o as CalcLimits
 }
 
+/** `cached`: a file's stored values in the shape of a result, each a cell value. */
+function checkCached(v: unknown, path: string): CachedValues {
+  const o = object(v, path, "stored values such as readXlsx's cached, { sheets: [{ name, cells: { B1: { value: 2 } } }] }")
+  array(o.sheets, `${path}.sheets`, 'an array of sheets such as { name: "Sheet1", cells: { B1: { value: 2 } } }').forEach((x, i) => {
+    const p = `${path}.sheets[${i}]`
+    const sheet = object(x, p, 'a sheet such as { name: "Sheet1", cells: { B1: { value: 2 } } }')
+    checkString(sheet.name, `${p}.name`)
+    const cells = object(sheet.cells, `${p}.cells`, 'stored values by address such as { B1: { value: 2 } }')
+    for (const addr in cells) {
+      const cp = `${p}.cells[${JSON.stringify(addr)}]`
+      checkCellValue(object(cells[addr], cp, 'a stored value such as { value: 2 }').value, `${cp}.value`)
+    }
+  })
+  return o as unknown as CachedValues
+}
+
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
-  onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits', 'cached'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  if (o.cached !== undefined) checkCached(o.cached, `${path}.cached`)
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
   if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
   if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
@@ -503,8 +522,9 @@ export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
 export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
-  onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo', 'cached'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
+  if (o.cached !== undefined) checkCached(o.cached, `${path}.cached`)
   if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
   if (o.undo !== undefined) {
     const u = object(o.undo, `${path}.undo`, 'undo options such as { depth: 100, maxMb: 64 }')

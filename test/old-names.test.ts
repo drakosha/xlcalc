@@ -105,7 +105,7 @@ describe('the number format by its old name is refused, naming numberFormat', ()
   const sheet = (x: object) => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 } }, ...x }] }) as BookInput
 
   it('in a book: a cell, rows, columns, a conditional format\'s style', () => {
-    expect(() => compute(sheet({ cells: { A1: { value: 1, format: '0.00' } } }))).toThrow(new InputError('book.sheets[0].cells["A1"]', `unknown field "format" (expected value, formula, numberFormat, style, meta, array, note, link) ${HINT}`))
+    expect(() => compute(sheet({ cells: { A1: { value: 1, format: '0.00' } } }))).toThrow(new InputError('book.sheets[0].cells["A1"]', `unknown field "format" (expected value, formula, numberFormat, style, meta, array, note, link, held) ${HINT}`))
     expect(() => compute(sheet({ rows: { 2: { format: '0.00' } } }))).toThrow(new InputError('book.sheets[0].rows["2"]', `unknown field "format" (expected height, style, numberFormat, hidden, outlineLevel, collapsed) ${HINT}`))
     expect(() => compute(sheet({ columns: { B: { format: '0.00' } } }))).toThrow(new InputError('book.sheets[0].columns["B"]', `unknown field "format" (expected width, bestFit, style, numberFormat, hidden, outlineLevel, collapsed) ${HINT}`))
     expect(() => compute(sheet({ conditionalFormats: [{ type: 'expression', ranges: ['A1'], formula: 'TRUE', style: { format: '0.0' } }] }))).toThrow(new InputError('book.sheets[0].conditionalFormats[0].style', `unknown field "format" (expected font, fill, border, numberFormat) ${HINT}`))

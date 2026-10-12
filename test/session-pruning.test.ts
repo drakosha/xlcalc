@@ -65,7 +65,7 @@ describe.each(['closures', 'eval'] as const)('pruned recalculation, %s', (execut
     it('rebuilds spill edges when a cyclic array formula becomes scalar with the same references', async()=>{
       const s=await session({A1:{value:1},B1:{formula:'IF(A1=1,SEQUENCE(2),C1)'},C1:{formula:'B2+1'}})
       try{
-        expect((await s.getCell('S','B1'))!.value).toEqual({error:'CYCLE'})
+        expect((await s.getCell('S','B1'))!.value).toBe(0)
         await s.setCells([{sheet:'S',cell:'B1',input:{formula:'IF(A1=1,1,C1)'}}])
         expect((await s.getCell('S','B1'))!.value).toBe(1)
         expect((await s.getCell('S','C1'))!.value).toBe(1)

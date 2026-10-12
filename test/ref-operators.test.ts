@@ -100,9 +100,9 @@ describe('what the range operator reads: every cell between its ends', () => {
 
   it('a range around its own cell is a cycle', () => {
     const own = both({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, C1: { value: 7 }, B1: { formula: 'SUM(A1:A1:C1)' } } }] })
-    expect(own.sheets[0].cells.B1.value).toEqual({ error: 'CYCLE' })
+    expect([own.sheets[0].cells.B1.value, own.diagnostics]).toEqual([0, [expect.objectContaining({ cell: 'B1', error: 'CYCLE' })]])
     const sheets = both({ sheets: [{ name: 'S1', cells: {} }, { name: 'S3', cells: { A1: { value: 7 }, B1: { formula: 'SUM(S1:S3!A1)' } } }] })
-    expect(sheets.sheets[1].cells.B1.value).toEqual({ error: 'CYCLE' })
+    expect([sheets.sheets[1].cells.B1.value, sheets.diagnostics]).toEqual([0, [expect.objectContaining({ sheet: 'S3', cell: 'B1', error: 'CYCLE' })]])
   })
 
   it('ends from INDEX: the cells between the references it can answer, not those it only reads', () => {

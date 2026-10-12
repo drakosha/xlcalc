@@ -110,6 +110,8 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   explainFormula: [{ formula: 'ROUND(B1*1.2,0)' }],
   explainErrorFrom: [{ ref: "'S'!A2" }],
   explainErrorHere: [{}],
+  explainHeldFrom: [{ ref: "'S'!A2" }],
+  explainHeldHere: [{}],
   ...XLSX_SAMPLES,
 }
 
@@ -134,7 +136,7 @@ const WORDS = new Set(['key', 'lines', 'rule', 'part', 'field'])
 const values = (m: Any): (string | number)[] => Object.entries(m).flatMap(([k, v]) => (WORDS.has(k) ? [] : Array.isArray(v) ? v : typeof v === 'string' || typeof v === 'number' ? [v] : []))
 
 /** The pieces of the explanation's lines, which stand inside a line rather than alone. */
-const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValue', 'explainFormula', 'explainErrorFrom', 'explainErrorHere'])
+const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValue', 'explainFormula', 'explainErrorFrom', 'explainErrorHere', 'explainHeldFrom', 'explainHeldHere'])
 
 describe('the catalog of messages', () => {
   it("ru-RU writes every message of en-US and of the xlsx subpath, whose keys registerLocale takes", () => {

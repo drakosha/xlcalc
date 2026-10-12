@@ -26,11 +26,11 @@ function book(iteration: BookInput['iteration'] | null = {}): BookInput {
 const values = (b: BookInput) => Object.fromEntries(Object.entries(compute(b, { clock, display: false }).sheets[0].cells).map(([k, c]) => [k, c.value]))
 
 describe('iterative calculation', () => {
-  it('computes cycles by iterations, and without the setting they are #CYCLE!', () => {
+  it('computes cycles by iterations, and without the setting they hold their values (0 without held)', () => {
     const v = values(book({ maxIterations: 10 }))
     expect(v.D1).toBeCloseTo(1, 12)
     expect(v.B3 as number).toBeCloseTo(100, 6)
-    expect(values(book(null)).B3).toEqual({ error: 'CYCLE' })
+    expect(values(book(null)).B3).toBe(0)
   })
 
   it('stops when no value changes by the maximum change', () => {

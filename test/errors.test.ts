@@ -37,11 +37,12 @@ describe('errors', () => {
     expect(issue('A2')!.check).toBe('unknown_name')
   })
 
-  it('cycle: #CYCLE! for cells in the cycle and their dependents, the rest is computed', () => {
-    const { v, issue } = run({ A1: { formula: 'A2+1' }, A2: { formula: 'A1+1' }, A3: { formula: 'A1*2' }, A4: { formula: '5' }, B1: { formula: 'B1' } })
-    expect([v('A1'), v('A2'), v('A3'), v('B1')]).toEqual(Array(4).fill({ error: 'CYCLE' }))
+  it('cycle: the cells in the cycle and their dependents hold their values, 0 without held, each with its reason; the rest is computed', () => {
+    const { v, issue } = run({ A1: { formula: 'A2+1', held: 4 }, A2: { formula: 'A1+1' }, A3: { formula: 'A1*2', held: 'x' }, A4: { formula: '5' }, B1: { formula: 'B1' } })
+    expect([v('A1'), v('A2'), v('A3'), v('B1')]).toEqual([4, 0, 'x', 0])
     expect(v('A4')).toBe(5)
-    expect(issue('A1')!.reason).toBe('circular reference')
+    for (const a of ['A1', 'A2', 'A3', 'B1']) expect(issue(a)).toMatchObject({ error: 'CYCLE', reason: 'circular reference: not computed, the value is held' })
+    expect(issue('A4')).toBeUndefined()
   })
 
   it('an array that cannot spill: #SPILL! with the cell in its way', () => {

@@ -1,0 +1,1424 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 17.8
+ },
+ "cases": [
+  {
+   "id": "array-enters",
+   "about": "A1 = SEQUENCE(3)+D1 spilling over A1:A3 with D1 = 0, F1 = SUM(A1:A3); then D1 = A3*0 typed, a cycle through the spill",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)+D1"
+       },
+       "D1": {
+        "value": 0
+       },
+       "F1": {
+        "formula": "SUM(A1:A3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F3"
+    }
+   ],
+   "show": [
+    {
+     "sheet": "S",
+     "range": "A1:F3"
+    }
+   ],
+   "file": {
+    "plain": {
+     "arrays": [
+      "S!A1"
+     ]
+    },
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "D1",
+      "formula": "A3*0"
+     }
+    },
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!F1": {
+      "t": "n",
+      "v": 6
+     },
+     "S!A2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!A3": {
+      "t": "n",
+      "v": 3
+     },
+     "show:S!A1": "1",
+     "show:S!B1": "",
+     "show:S!C1": "",
+     "show:S!D1": "0",
+     "show:S!E1": "",
+     "show:S!F1": "6",
+     "show:S!A2": "2",
+     "show:S!B2": "",
+     "show:S!C2": "",
+     "show:S!D2": "",
+     "show:S!E2": "",
+     "show:S!F2": "",
+     "show:S!A3": "3",
+     "show:S!B3": "",
+     "show:S!C3": "",
+     "show:S!D3": "",
+     "show:S!E3": "",
+     "show:S!F3": ""
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!F1": {
+      "t": "n",
+      "v": 6
+     },
+     "show:S!A1": "1",
+     "show:S!B1": "",
+     "show:S!C1": "",
+     "show:S!D1": "0",
+     "show:S!E1": "",
+     "show:S!F1": "6",
+     "show:S!A2": "",
+     "show:S!B2": "",
+     "show:S!C2": "",
+     "show:S!D2": "",
+     "show:S!E2": "",
+     "show:S!F2": "",
+     "show:S!A3": "",
+     "show:S!B3": "",
+     "show:S!C3": "",
+     "show:S!D3": "",
+     "show:S!E3": "",
+     "show:S!F3": ""
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!F1": {
+      "t": "n",
+      "v": 6
+     },
+     "show:S!A1": "1",
+     "show:S!B1": "",
+     "show:S!C1": "",
+     "show:S!D1": "0",
+     "show:S!E1": "",
+     "show:S!F1": "6",
+     "show:S!A2": "",
+     "show:S!B2": "",
+     "show:S!C2": "",
+     "show:S!D2": "",
+     "show:S!E2": "",
+     "show:S!F2": "",
+     "show:S!A3": "",
+     "show:S!B3": "",
+     "show:S!C3": "",
+     "show:S!D3": "",
+     "show:S!E3": "",
+     "show:S!F3": ""
+    }
+   ]
+  },
+  {
+   "id": "same-again",
+   "about": "the cycle A1 = B1/2+1, B1 = A1, C1 = A1*10 storing 2, 2 and 20; then B1 = A1 typed again as it was",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "B1/2+1"
+       },
+       "B1": {
+        "formula": "A1"
+       },
+       "C1": {
+        "formula": "A1*10"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C1"
+    }
+   ],
+   "show": [
+    {
+     "sheet": "S",
+     "range": "A1:C1"
+    }
+   ],
+   "file": {
+    "cached": {
+     "S!A1": 2,
+     "S!B1": 2,
+     "S!C1": 20
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "B1",
+      "formula": "A1"
+     }
+    },
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 20
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "2",
+     "show:S!C1": "20"
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 20
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "0",
+     "show:S!C1": "20"
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 20
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "0",
+     "show:S!C1": "20"
+    }
+   ]
+  },
+  {
+   "id": "cleared",
+   "about": "the same cycle; then B1 cleared",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "B1/2+1"
+       },
+       "B1": {
+        "formula": "A1"
+       },
+       "C1": {
+        "formula": "A1*10"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C1"
+    }
+   ],
+   "show": [
+    {
+     "sheet": "S",
+     "range": "A1:C1"
+    }
+   ],
+   "file": {
+    "cached": {
+     "S!A1": 2,
+     "S!B1": 2,
+     "S!C1": 20
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    {
+     "set": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": null
+     }
+    },
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 20
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "2",
+     "show:S!C1": "20"
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 10
+     },
+     "show:S!A1": "1",
+     "show:S!B1": "",
+     "show:S!C1": "10"
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 10
+     },
+     "show:S!A1": "1",
+     "show:S!B1": "",
+     "show:S!C1": "10"
+    }
+   ]
+  },
+  {
+   "id": "out-of-way",
+   "about": "the same cycle and K1 = 3; then C1 = K1*2 typed, which reads the cycle no more",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "B1/2+1"
+       },
+       "B1": {
+        "formula": "A1"
+       },
+       "C1": {
+        "formula": "A1*10"
+       },
+       "K1": {
+        "value": 3
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K1"
+    }
+   ],
+   "show": [
+    {
+     "sheet": "S",
+     "range": "A1:K1"
+    }
+   ],
+   "file": {
+    "cached": {
+     "S!A1": 2,
+     "S!B1": 2,
+     "S!C1": 20
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C1",
+      "formula": "K1*2"
+     }
+    },
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 20
+     },
+     "S!K1": {
+      "t": "n",
+      "v": 3
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "2",
+     "show:S!C1": "20",
+     "show:S!D1": "",
+     "show:S!E1": "",
+     "show:S!F1": "",
+     "show:S!G1": "",
+     "show:S!H1": "",
+     "show:S!I1": "",
+     "show:S!J1": "",
+     "show:S!K1": "3"
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 6
+     },
+     "S!K1": {
+      "t": "n",
+      "v": 3
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "2",
+     "show:S!C1": "6",
+     "show:S!D1": "",
+     "show:S!E1": "",
+     "show:S!F1": "",
+     "show:S!G1": "",
+     "show:S!H1": "",
+     "show:S!I1": "",
+     "show:S!J1": "",
+     "show:S!K1": "3"
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 6
+     },
+     "S!K1": {
+      "t": "n",
+      "v": 3
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "2",
+     "show:S!C1": "6",
+     "show:S!D1": "",
+     "show:S!E1": "",
+     "show:S!F1": "",
+     "show:S!G1": "",
+     "show:S!H1": "",
+     "show:S!I1": "",
+     "show:S!J1": "",
+     "show:S!K1": "3"
+    }
+   ]
+  },
+  {
+   "id": "two-cycles",
+   "about": "A1 = B1/2+1, B1 = A1 storing 2 and 2, D1 = E1+1, E1 = D1 storing 5 and 4, F1 = A1+D1 storing 0; then 4 typed into B1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "B1/2+1"
+       },
+       "B1": {
+        "formula": "A1"
+       },
+       "D1": {
+        "formula": "E1+1"
+       },
+       "E1": {
+        "formula": "D1"
+       },
+       "F1": {
+        "formula": "A1+D1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F1"
+    }
+   ],
+   "show": [
+    {
+     "sheet": "S",
+     "range": "A1:F1"
+    }
+   ],
+   "file": {
+    "cached": {
+     "S!A1": 2,
+     "S!B1": 2,
+     "S!D1": 5,
+     "S!E1": 4,
+     "S!F1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    {
+     "set": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": 4
+     }
+    },
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!D1": {
+      "t": "n",
+      "v": 5
+     },
+     "S!E1": {
+      "t": "n",
+      "v": 4
+     },
+     "S!F1": {
+      "t": "n",
+      "v": 0
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "2",
+     "show:S!C1": "",
+     "show:S!D1": "5",
+     "show:S!E1": "4",
+     "show:S!F1": "0"
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 3
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 4
+     },
+     "S!D1": {
+      "t": "n",
+      "v": 5
+     },
+     "S!E1": {
+      "t": "n",
+      "v": 4
+     },
+     "S!F1": {
+      "t": "n",
+      "v": 0
+     },
+     "show:S!A1": "3",
+     "show:S!B1": "4",
+     "show:S!C1": "",
+     "show:S!D1": "5",
+     "show:S!E1": "4",
+     "show:S!F1": "0"
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 3
+     },
+     "S!B1": {
+      "t": "n",
+      "v": 4
+     },
+     "S!D1": {
+      "t": "n",
+      "v": 5
+     },
+     "S!E1": {
+      "t": "n",
+      "v": 4
+     },
+     "S!F1": {
+      "t": "n",
+      "v": 0
+     },
+     "show:S!A1": "3",
+     "show:S!B1": "4",
+     "show:S!C1": "",
+     "show:S!D1": "5",
+     "show:S!E1": "4",
+     "show:S!F1": "0"
+    }
+   ]
+  },
+  {
+   "id": "partly-stored",
+   "about": "the cycle of `same-again`, the file storing 2 for A1 and nothing for B1 and C1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "B1/2+1"
+       },
+       "B1": {
+        "formula": "A1"
+       },
+       "C1": {
+        "formula": "A1*10"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C1"
+    }
+   ],
+   "show": [
+    {
+     "sheet": "S",
+     "range": "A1:C1"
+    }
+   ],
+   "file": {
+    "cached": {
+     "S!A1": 2
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "full",
+    "read"
+   ],
+   "cycle": true,
+   "predicted": [
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "s",
+      "v": ""
+     },
+     "S!C1": {
+      "t": "s",
+      "v": ""
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "",
+     "show:S!C1": ""
+    },
+    {
+     "S!A1": {
+      "t": "n",
+      "v": 2
+     },
+     "S!B1": {
+      "t": "s",
+      "v": ""
+     },
+     "S!C1": {
+      "t": "s",
+      "v": ""
+     },
+     "show:S!A1": "2",
+     "show:S!B1": "",
+     "show:S!C1": ""
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "array-enters": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!F1": {
+       "t": "n",
+       "v": 6
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!A3": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=SEQUENCE(3)+D1",
+      "S!F1": "=SUM(A1:A3)"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!B1": "",
+      "S!C1": "",
+      "S!D1": "0",
+      "S!E1": "",
+      "S!F1": "6",
+      "S!A2": "2",
+      "S!B2": "",
+      "S!C2": "",
+      "S!D2": "",
+      "S!E2": "",
+      "S!F2": "",
+      "S!A3": "3",
+      "S!B3": "",
+      "S!C3": "",
+      "S!D3": "",
+      "S!E3": "",
+      "S!F3": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!F1": {
+       "t": "n",
+       "v": 6
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!A3": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=SEQUENCE(3)+D1",
+      "S!D1": "=A3*0",
+      "S!F1": "=SUM(A1:A3)"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!B1": "",
+      "S!C1": "",
+      "S!D1": "0",
+      "S!E1": "",
+      "S!F1": "6",
+      "S!A2": "2",
+      "S!B2": "",
+      "S!C2": "",
+      "S!D2": "",
+      "S!E2": "",
+      "S!F2": "",
+      "S!A3": "3",
+      "S!B3": "",
+      "S!C3": "",
+      "S!D3": "",
+      "S!E3": "",
+      "S!F3": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!F1": {
+       "t": "n",
+       "v": 6
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!A3": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=SEQUENCE(3)+D1",
+      "S!D1": "=A3*0",
+      "S!F1": "=SUM(A1:A3)"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!B1": "",
+      "S!C1": "",
+      "S!D1": "0",
+      "S!E1": "",
+      "S!F1": "6",
+      "S!A2": "2",
+      "S!B2": "",
+      "S!C2": "",
+      "S!D2": "",
+      "S!E2": "",
+      "S!F2": "",
+      "S!A3": "3",
+      "S!B3": "",
+      "S!C3": "",
+      "S!D3": "",
+      "S!E3": "",
+      "S!F3": ""
+     }
+    }
+   ]
+  },
+  "same-again": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 20
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "2",
+      "S!C1": "20"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 20
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "0",
+      "S!C1": "20"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 20
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "0",
+      "S!C1": "20"
+     }
+    }
+   ]
+  },
+  "cleared": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 20
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "2",
+      "S!C1": "20"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!B1": "",
+      "S!C1": "10"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "1",
+      "S!B1": "",
+      "S!C1": "10"
+     }
+    }
+   ]
+  },
+  "out-of-way": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 20
+      },
+      "S!K1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "2",
+      "S!C1": "20",
+      "S!D1": "",
+      "S!E1": "",
+      "S!F1": "",
+      "S!G1": "",
+      "S!H1": "",
+      "S!I1": "",
+      "S!J1": "",
+      "S!K1": "3"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 6
+      },
+      "S!K1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=K1*2"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "2",
+      "S!C1": "6",
+      "S!D1": "",
+      "S!E1": "",
+      "S!F1": "",
+      "S!G1": "",
+      "S!H1": "",
+      "S!I1": "",
+      "S!J1": "",
+      "S!K1": "3"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 6
+      },
+      "S!K1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=K1*2"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "2",
+      "S!C1": "6",
+      "S!D1": "",
+      "S!E1": "",
+      "S!F1": "",
+      "S!G1": "",
+      "S!H1": "",
+      "S!I1": "",
+      "S!J1": "",
+      "S!K1": "3"
+     }
+    }
+   ]
+  },
+  "two-cycles": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!E1": {
+       "t": "n",
+       "v": 4
+      },
+      "S!F1": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!D1": "=E1+1",
+      "S!E1": "=D1",
+      "S!F1": "=A1+D1"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "2",
+      "S!C1": "",
+      "S!D1": "5",
+      "S!E1": "4",
+      "S!F1": "0"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 4
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!E1": {
+       "t": "n",
+       "v": 4
+      },
+      "S!F1": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!D1": "=E1+1",
+      "S!E1": "=D1",
+      "S!F1": "=A1+D1"
+     },
+     "shown": {
+      "S!A1": "3",
+      "S!B1": "4",
+      "S!C1": "",
+      "S!D1": "5",
+      "S!E1": "4",
+      "S!F1": "0"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 4
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!E1": {
+       "t": "n",
+       "v": 4
+      },
+      "S!F1": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!D1": "=E1+1",
+      "S!E1": "=D1",
+      "S!F1": "=A1+D1"
+     },
+     "shown": {
+      "S!A1": "3",
+      "S!B1": "4",
+      "S!C1": "",
+      "S!D1": "5",
+      "S!E1": "4",
+      "S!F1": "0"
+     }
+    }
+   ]
+  },
+  "partly-stored": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "s",
+       "v": ""
+      },
+      "S!C1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "",
+      "S!C1": ""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "S!B1": {
+       "t": "s",
+       "v": ""
+      },
+      "S!C1": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2+1",
+      "S!B1": "=A1",
+      "S!C1": "=A1*10"
+     },
+     "shown": {
+      "S!A1": "2",
+      "S!B1": "",
+      "S!C1": ""
+     }
+    }
+   ]
+  }
+ }
+}

@@ -218,7 +218,11 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
       src.appearance(out, r, c, own)
       if (own?.note !== undefined) out.note = own.note
       if (own?.link !== undefined) out.link = own.link
-      if (o.diagnostics && out.value !== null && typeof out.value === 'object') out.issue = src.issue(r, c, origins)!
+      // a cell with an error, or a formula a circular reference stops, whatever value it holds
+      if (o.diagnostics && ((out.value !== null && typeof out.value === 'object') || out.formula !== undefined)) {
+        const issue = src.issue(r, c, origins)
+        if (issue) out.issue = issue
+      }
       if (o.editText) out.editText = editText(out, own, shown.numberFormat, r, c)
       cells[addr] = out
     }
