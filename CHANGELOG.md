@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.21.0 (2026-10-12)
+
+Internal release; not published to npm. What the sheet component asked for as it moves to the final API: a typed value a rule of data validation does not take refused before it is written, a formula shown with a sheet in quotes only where Excel puts them, an empty cell of a formatted row or column in a window, the issues of xlsx in the book's language, and no string `xlcalc` in the subpaths without the engine. Values and hashes are as in 0.20.0.
+
+Added:
+
+- `refuseInvalid: true` for `setCellText`, `setCellTexts`, `fillCellText` and their previews: a value a cell's rule of data validation does not take, of any style, is refused (`code: 'validation'`, the cell, the rule, its style and message; the types `ValidationRefusal` and `CellValidationRefusal`) and nothing changes, no revision and no step of history. A host shows Excel's alert first and calls again without the option where the person keeps the value (a warning's Yes, an information's OK). A batch is refused whole, with the first cell whose value breaks its rule. Without the option a value is written with its alert, as before.
+- `readXlsx(data, { locale })` and `writeXlsx(snapshot, { locale })`: each issue's message in the locale, a loaded one's tag or a locale object, its code and other fields as in en-US; ru-RU has all 95 messages. Without the option the issues are as before. A file does not say its language: a host gives the locale the person chose.
+
+Changed:
+
+- A formula shown to a person (`toLocal`, a window's `formulaLocal` and `editText`, `explain`'s text) writes a sheet in quotes only where Excel puts them, by `quoteSheetIfNeeded`: `=Data!B2*2`, `='Q 4'!A1`, and `'ИСТИНА'!A1` in ru-RU. The stored canonical form quotes every sheet as before, and `toInvariant` reads both.
+- A window (`getViewport`, `viewportOf`) lists an empty cell with a number format of its row or column alone, with `numberFormat`, as it lists one with their style, so a grid shows the format Excel shows for it.
+- Without the root, a locale not loaded is refused asking for the locale as an object; the root names its module and `registerLocale` as before. So `xlcalc/text` and `xlcalc/a1` bundle no string `xlcalc`, which a host may look for as the engine's sign.
+
+Bundle sizes (README): the root 1.5 KB more for the keys of messages a locale may give, `xlcalc/xlsx` 174 KB, the ru-RU module 92 KB (15 KB gzip), the pool's thread 499 KB; `compute` and `xlcalc/text` as before.
+
+Known differences: a reference across sheets where one end needs quotes (`'S1:S3'!A1`) is shown as Excel's grammar writes it, not measured; the reason a table of a file is left out stays in English in ru-RU.
+
 ## 0.20.0 (2026-10-11)
 
 Internal release; not published to npm. A snapshot is a copy in every kind of session, and an edit's changes say when a note or a hyperlink changed. Where two copies of one piece of logic answered differently, Excel for Mac and for Windows were asked and the copies made one; undoing the deletion of a large sheet is faster. The synthetic book's values and hashes are as in 0.19.0; values change only where a copy disagreed with Excel.
