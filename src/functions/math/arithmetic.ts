@@ -5,11 +5,20 @@
 import { E, type CErr } from '../../values.js'
 import type { Cx, FnDef } from '../../args.js'
 
-/** Excel's power: 0^0 is #NUM!, 0 to a negative power #DIV/0!. */
+/** The largest 1/y Excel takes as a whole number below 2^31 - 1 when it rounds it (the set `power-bound-held`). */
+const MAX_ROOT = 2 ** 31 - 1.5
+
+/**
+ * Excel's power: 0^0 is #NUM!, 0 to a negative power #DIV/0!. A negative number to a fraction is its real root where
+ * 1/y, to 15 significant digits, is an odd whole number below 2^31 - 1, computed as -exp(y·ln(-x)) as Excel does
+ * (`(-8)^(1/3)` is -1.9999999999999998), else #NUM! (the sets `power-neg-held`, `power-edges-held`).
+ */
 export function power(x: number, y: number): number | CErr {
   if (x === 0 && y === 0) return E.NUM
   if (x === 0 && y < 0) return E.DIV0
-  return Math.pow(x, y)
+  if (x >= 0 || Number.isInteger(y)) return Math.pow(x, y)
+  const n = Number((1 / y).toPrecision(15))
+  return Math.abs(1 / y) < MAX_ROOT && n % 2 !== 0 && Number.isInteger(n) ? -Math.exp(y * Math.log(-x)) : E.NUM
 }
 
 /** Excel: MOD is #NUM! once the quotient reaches 2^50 / 1000 (MOD(1.1258E12,1) is 0, MOD(1.1259E12,1) #NUM!). */
