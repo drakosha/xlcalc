@@ -3,12 +3,14 @@ import { applyEdits, createState, debugSource } from '../src/engine.js'
 import { run } from '../src/exec/budget.js'
 
 describe.each(['closures', 'eval'] as const)('compiled storage, %s', (execution) => {
-  it('shares executable bodies while keeping each formula coordinates and literals', () => {
+  it('eval shares executable bodies, closures keep one each; each formula keeps its coordinates and literals', () => {
     const cells = Object.fromEntries(Array.from({ length: 512 }, (_, i) => [`A${i + 1}`, { value: i + 1 }])) as Record<string, { value?: number; formula?: string }>
     for (let r = 1; r <= 512; r++) cells[`B${r}`] = { formula: `A${r}+${r}` }
     const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1, execution })
     expect(state.rt.cell(0, 511, 1)).toBe(1024)
-    expect((state.compiler as typeof state.compiler & { bodies: number }).bodies).toBeLessThan(8)
+    const { bodies } = state.compiler as typeof state.compiler & { bodies: number }
+    if (execution === 'eval') expect(bodies).toBeLessThan(8)
+    else expect(bodies).toBe(512)
     run(applyEdits(state, [{ sheet: 'S', cell: 'A1', input: { value: 9 } }]))
     expect(state.rt.cell(0, 0, 1)).toBe(10)
     expect(state.rt.cell(0, 511, 1)).toBe(1024)
