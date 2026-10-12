@@ -188,6 +188,18 @@ export interface SheetInput {
   name: string
   /** Cells by A1 address (`B12`). */
   cells: Record<string, CellInput>
+  /**
+   * The look of the cells that have no entry in `cells`, by rectangles, each over those before it: a sheet formatted
+   * across many empty cells (whole rows to XFD) is held without an object per cell. A cell without an entry shows the
+   * style and the number format of the last rectangle that covers it, both from it (a rectangle without a field gives
+   * the cell none of its own); a cell with an entry shows its own fields, whatever the rectangles say. A field a cell
+   * has none of comes from its row, else its column, as for an entry. `[{ range: 'A20:XFD22', style: 0 },
+   * { range: 'R20:R22', style: 1, numberFormat: '0.0%' }]` is the same sheet as an entry `{ style: 0 }` in each cell of
+   * A20:XFD22 but R20:R22, which hold `{ style: 1, numberFormat: '0.0%' }`. A book is taken with every entry that has
+   * only a style or a number format moved here, and the calls that give a book back give this list in a form of their
+   * own (`LookRange`).
+   */
+  looks?: LookRange[]
   /** Columns by letters, one (`C`) or a span (`B:D`) as xlsx `<col min max>`; spans do not overlap. */
   columns?: Record<string, ColumnInput>
   /** Rows by number, one (`5`) or a span (`5:9`); spans do not overlap. */
@@ -226,6 +238,19 @@ export interface SheetInput {
    * hidden sheet as any other. A book keeps one visible sheet at least.
    */
   hidden?: boolean | 'very'
+}
+
+/**
+ * A rectangle of a sheet's looks (`SheetInput.looks`): a cell (`B2`), a range (`B2:D9`), whole columns (`B:D`) or whole
+ * rows (`2:9`), and the style and the number format its cells without an entry show; neither field, and its cells show
+ * none of their own. The books the engine gives back hold the looks in one form for one sheet: rectangles row by row,
+ * a rectangle of rows that share their looks over every such row and the rows between them that differ after it.
+ */
+export interface LookRange {
+  range: string
+  /** A style of the book's `styles`, by index. */
+  style?: number
+  numberFormat?: NumberFormat
 }
 
 /**
@@ -1809,8 +1834,8 @@ export interface SheetExtent {
   columns: number
 }
 
-/** A sheet without its cells (`Session.getLayout`). */
-export type SheetLayout = Omit<Sheet, 'cells'>
+/** A sheet without its cells and their looks (`Session.getLayout`). */
+export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 
 /** A book without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
@@ -1943,7 +1968,7 @@ export interface Session {
    */
   getBook(): Book
   /**
-   * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells`
+   * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells` and `looks`
    * (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation and the rest). It costs
    * what the layout holds, not the cells; its objects are the session's own, as `getBook()`'s are.
    */
