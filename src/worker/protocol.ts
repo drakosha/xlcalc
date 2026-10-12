@@ -12,11 +12,11 @@ import type { Sent } from './pack.js'
 export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
-export const CHANGING = ['setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setCellTexts', 'pasteText', 'fillCellText', 'setNames', 'setClock', 'editStructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
-export type Op = (typeof CHANGING)[number] | 'previewCellText' | 'previewCellTexts' | 'previewPasteText' | 'previewFillCellText' | 'getBook' | 'getLayout' | 'getUsedRange' | 'explain' | 'getCells' | 'getCell' | 'getViewport' | 'getCellIssue' | 'getValidation' | 'validateEntry' | 'getResult' | 'getSnapshot' | 'getHash'
+export const CHANGING = ['applyChanges', 'setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setCellTexts', 'pasteText', 'fillCellText', 'setNames', 'setClock', 'editStructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
+export type Op = (typeof CHANGING)[number] | 'previewChanges' | 'readCells' | 'findCells' | 'getDependents' | 'summarizeRanges' | 'previewCellText' | 'previewCellTexts' | 'previewPasteText' | 'previewFillCellText' | 'getBook' | 'getLayout' | 'getUsedRange' | 'explain' | 'getCells' | 'getCell' | 'getViewport' | 'getCellIssue' | 'getValidation' | 'validateEntry' | 'getResult' | 'getSnapshot' | 'getHash'
 
 /** The calls that take edit options (`EditOptions`), by the number of arguments before them: their messages carry the options last. */
-export const EDITS: Partial<Record<Op, number>> = { setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setCellTexts: 1, previewCellTexts: 1, pasteText: 3, previewPasteText: 3, fillCellText: 3, previewFillCellText: 3, setNames: 1, setClock: 1, editStructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
+export const EDITS: Partial<Record<Op, number>> = { applyChanges: 1, previewChanges: 1, readCells: 1, findCells: 2, getDependents: 1, summarizeRanges: 1, setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setCellTexts: 1, previewCellTexts: 1, pasteText: 3, previewPasteText: 3, fillCellText: 3, previewFillCellText: 3, setNames: 1, setClock: 1, editStructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {

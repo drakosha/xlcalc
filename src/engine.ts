@@ -9,7 +9,7 @@
  */
 import type { BookInput, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
-import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
+import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
 import { FUNCTIONS } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
@@ -66,6 +66,8 @@ export interface EngineOptions {
 }
 
 export interface EngineState {
+  /** Temporary value journal of an impact preview. */
+  capture?: Tracker
   input: BookInput
   sheetNames: string[]
   sheetIdx: Map<string, number>
@@ -313,6 +315,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     const old = state.at.get(k)
     const previous = old === undefined ? undefined : state.formulas[old]
     const clocked = old !== undefined && state.clocked.has(old)
+    const spilled = old !== undefined && (state.spills.claims.has(old) || state.spills.on.has(old) || state.spills.wait.has(old))
     if (old !== undefined) {
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
       endSpill(state, state.formulas[old]!, track, false)
@@ -343,7 +346,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       state.formulas[f.id] = f
       state.at.set(k, f.id)
       fresh.push(f)
-      graphChanged ||= !previous || previous.id !== f.id || clocked || state.spills.claims.size > 0 || state.spills.wait.size > 0 || !sameDependencies(previous, f)
+      graphChanged ||= !previous || previous.id !== f.id || clocked || spilled || state.spills.claims.size > 0 || state.spills.wait.size > 0 || !sameDependencies(previous, f)
       structural = true
     } else {
       graphChanged ||= !!previous

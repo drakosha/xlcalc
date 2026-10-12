@@ -275,15 +275,21 @@ export function makeRuntime(ctx: RuntimeContext) {
     lookup: (g, horizontal): Line => {
       const keys = horizontal ? new Rng(g.s, g.r1, g.c1, g.r1, g.c2) : new Rng(g.s, g.r1, g.c1, g.r2, g.c1)
       const b = bounds(keys)
+      let local: LookupIndex | undefined, retain: boolean | undefined
       return {
         n: horizontal ? g.c2 - g.c1 + 1 : g.r2 - g.r1 + 1,
         filled: horizontal ? b.w : b.h,
-        at: (i) => cell(g.s, g.r1 + (horizontal ? 0 : i), g.c1 + (horizontal ? i : 0)),
+        at: (i) => {
+          if ((i & 0xffff) === 0) spend(Math.min(65536, (horizontal ? b.w : b.h) - i))
+          return cell(g.s, g.r1 + (horizontal ? 0 : i), g.c1 + (horizontal ? i : 0))
+        },
         store: {
-          read: () => lookupCache.get(keys.key),
+          read: () => local ?? (local = lookupCache.get(keys.key)),
           write: (index, bytes) => {
-            if (bytes + 256 > ctx.cache.cap) lookupCache.delete(keys.key)
-            else lookupCache.set(keys.key, index, bytes)
+            local = index
+            retain ??= lookupCache.admits(keys.key)
+            if (bytes + 256 > ctx.cache.cap) { lookupCache.delete(keys.key); retain = false }
+            else if (retain) lookupCache.set(keys.key, index, bytes)
           },
         },
       }

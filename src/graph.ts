@@ -11,33 +11,34 @@ import { AreaIndex } from './area-index.js'
 import { RangeDependencies } from './graph/ranges.js'
 import { indegrees, releaseReady } from './graph/order.js'
 
+// a range operator reaching a spilled array reads as far as the array claims, around its other ends; LOOKUP past it
+export function referencesOf(state: EngineState, f: Formula): readonly Rng[] {
+  if (!f.spans) return f.refs
+  const more: Rng[] = []
+  for (const span of f.spans) {
+    const reached = [...span.boxes]
+    for (const a of span.anchors) {
+      const id = state.at.get(`${a.s}:${a.r1}:${a.c1}`)
+      const x = id === undefined ? undefined : state.spills.claims.get(id)
+      if (x) reached.push(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
+      // LOOKUP reads on past the array in its direction, or past the cell when it has not spilled
+      if (span.past) more.push(...pastEnd(x ? new Rng(x.s, x.r1, x.c1, x.r2, x.c2) : a, span.past, span.part))
+    }
+    if (!span.past && reached.length > span.boxes.length) more.push(...bySheet(reached).values())
+  }
+  return more.length ? [...f.refs, ...more] : f.refs
+}
+
 /** The reference graph of the formulas: successors, the topological order, listeners of ranges, volatile formulas. */
 export function rebuildGraph(state: EngineState) {
   const { formulas } = state
   const graph = new RangeDependencies(formulas)
-  // a range operator reaching a spilled array reads as far as the array claims, around its other ends; LOOKUP past it
-  const spanned = (f: Formula): readonly Rng[] => {
-    if (!f.spans) return f.refs
-    const more: Rng[] = []
-    for (const span of f.spans) {
-      const reached = [...span.boxes]
-      for (const a of span.anchors) {
-        const id = graph.at(a.s, a.r1, a.c1)
-        const x = id === undefined ? undefined : state.spills.claims.get(id)
-        if (x) reached.push(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
-        // LOOKUP reads on past the array in its direction, or past the cell when it has not spilled
-        if (span.past) more.push(...pastEnd(x ? new Rng(x.s, x.r1, x.c1, x.r2, x.c2) : a, span.past, span.part))
-      }
-      if (!span.past && reached.length > span.boxes.length) more.push(...bySheet(reached).values())
-    }
-    return more.length ? [...f.refs, ...more] : f.refs
-  }
   const { succ } = graph
   const listeners: EngineState['listeners'] = new AreaIndex()
   for (const f of formulas) {
     if (!f) continue
     spend(1)
-    for (const g of spanned(f)) {
+    for (const g of referencesOf(state, f)) {
       listeners.add({ s: g.s, r1: g.r1, r2: g.r2, c1: g.c1, c2: g.c2, id: f.id })
       graph.add(g, f.id)
     }

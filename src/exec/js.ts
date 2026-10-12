@@ -13,12 +13,12 @@ import { once, OPERATORS, type Backend } from './walk.js'
 const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
 
 /** A backend for one formula: constants are hoisted into its factory, `source` wraps the root expression. */
-export function jsBackend(parameters?: V[]): Backend<string> & { source(root: string): string } {
+export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: string): string } {
   const hoisted: string[] = []
   const hoist = (code: string) => `h${hoisted.push(code) - 1}`
   // LET's names of the formula: v0, v1, …
   let names = 0
-  const bound = (v: V) => parameters ? `p[${parameters.push(v) - 1}]` : lit(v)
+  const bound = (v: Arg) => parameters ? `p[${parameters.push(v) - 1}]` : lit(v as V)
   return {
     value: bound,
     absent: () => 'undefined',
@@ -26,7 +26,7 @@ export function jsBackend(parameters?: V[]): Backend<string> & { source(root: st
     cell: (s, r, c) => `cell(${bound(s)},${bound(r)},${bound(c)})`,
     spill: (s, r, c) => `spill(${bound(s)},${bound(r)},${bound(c)})`,
     range: (g, one) => {
-      const h = hoist(`R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`)
+      const h = parameters ? bound(g) : hoist(`R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`)
       return one ? `scalar(${h})` : h
     },
     unary: (op, a, lift) => (lift ? `L1(${op},${a})` : `${op}(${a})`),

@@ -11,7 +11,6 @@ import { compileSources, jsBackend } from './exec/js.js'
 import { walk, type CodegenContext, type FormulaInfo } from './exec/walk.js'
 import type { Runtime } from './runtime.js'
 import type { Ast } from './syntax.js'
-import type { V } from './values.js'
 
 export { PRELUDE } from './exec/js.js'
 export type { CodegenContext } from './exec/walk.js'
@@ -37,13 +36,13 @@ const unlinked = (): Arg => {
 
 const stackOverflow = (e: unknown) => e instanceof RangeError || (e instanceof Error && e.name === 'InternalError' && /too much recursion/i.test(e.message))
 
-type Factory = (parameters: readonly V[]) => () => Arg
+type Factory = (parameters: readonly Arg[]) => () => Arg
 interface Template { source: string; factory?: Factory; fallback?: () => Factory }
 
 /** Share code, never mutable formula storage; cap the retained template catalogue at 128 bodies and 64 KiB of keys. */
 export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
   const templates = new Map<string, Template>()
-  const pending = new WeakMap<() => Arg, { template: Template; parameters: V[] }>()
+  const pending = new WeakMap<() => Arg, { template: Template; parameters: Arg[] }>()
   let bytes = 0, bodies = 0
   const closureFactory = (ctx: CodegenContext, ast: Ast, s: number, r: number, c: number): Factory => {
     const code = walk(ctx, ast, s, r, c, closureBackend(rt, [])).code
@@ -52,7 +51,7 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
   return {
     get bodies() { return bodies },
     formula(ctx, ast, s, r, c) {
-      const parameters: V[] = [], b = jsBackend(parameters)
+      const parameters: Arg[] = [], b = jsBackend(parameters)
       const { code, ...info } = walk(ctx, ast, s, r, c, b)
       const source = b.source(code)
       // LET owns mutable bindings; closure LETs retain a separate tree for each formula.

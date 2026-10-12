@@ -56,6 +56,7 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
   const sh = state.ctx.sheets[s]
   if (same(sh.cols[c]?.[r] ?? null, v)) return false
   track(state, t, s, r, c)
+  if (state.capture) track(state, state.capture, s, r, c)
   put(sh, r, c, v)
   invalidate(state.ctx, { s, r1: r, c1: c, r2: r, c2: c })
   return true
