@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.24.0 (2026-10-12)
+
+Internal release; not published to npm. A cell edited in place, as Excel reads it. The synthetic book's values and hashes are as in 0.23.0.
+
+Added:
+
+- `inPlace` in the options of `setCellText`, `setCellTexts`, `fillCellText` and their previews (`CellTextOptions`, `FillTextOptions`): the text was edited in the cell's own text (F2, a double click, the formula bar), not typed over the cell. Excel's percent editor then adds `%` only to a number begun by a sign: in a cell of `0%`, `6%` is 0.06 and `6` is 6 (shown 600%), where typed over the cell `6%` is the text `6%%` and `6` is 6%; `-5` is -5% either way ([docs/entry.md](docs/entry.md#a-percent-cell)).
+
+Fixed:
+
+- Typed over a percent cell, `-5%` and `+5%` are the formulas `-5%%` and `5%%`, as Excel makes them with its editor's second `%`; the engine wrote `-5%` and `5%`.
+
+Measured: Excel for Mac 16.113 in en-US and ru-RU, on the keyboard. The new step `edit` of the harness's `ui` (the cell selected, F2, its text erased or a digit changed, the text typed, Return) ran the set `ui/edit-held`, 20 cases in each locale; its prediction, a paste's reading with no percent editor, was committed before the run and came out on 14 and 13 cases, the misses being numbers begun by a sign and a column Excel widened. The set `entry/typed-keys-held-3` (6 signed percents typed over a percent cell in each locale) found the fix above; its prediction came out on 3 and 4. The engine now gives Excel's answer to every case of both sets. `bench/coverage/input-source.swift` switches the keyboard's layout for such runs.
+
 ## 0.23.0 (2026-10-12)
 
 Internal release; not published to npm. Calls for a grid or an agent working on a live session, cheaper incremental edits, and formula text over many linked sheets. The synthetic book's values and hashes are as in 0.22.2.
