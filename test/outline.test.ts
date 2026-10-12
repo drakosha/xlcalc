@@ -1,11 +1,11 @@
 /**
  * Outlines in the model: outline levels and collapsed marks of rows and columns, and where summaries are; checked as
- * input, in `inputHash` only when a book has them, moved by structure operations (the rules measured in
- * `test/excel/valid/`), a collapsed group's hidden rows counted out by SUBTOTAL 109, set through a session's layout, and
- * written and read in xlsx, in both execution modes.
+ * input, in `inputHash` only when a book has them, the groups Excel draws (`outlineGroups`), moved by structure
+ * operations (the rules measured in `test/excel/valid/`), a collapsed group's hidden rows counted out by SUBTOTAL 109,
+ * set through a session's layout, and written and read in xlsx with the marks Excel keeps, in both execution modes.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, createSession, editStructure, type BookInput, type Execution, type StructureOp } from '../src/index.js'
+import { compute, InputError, createSession, editStructure, outlineGroups, type BookInput, type Execution, type StructureOp } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 
@@ -48,6 +48,33 @@ describe('outlines as input', () => {
     expect(compute(plain, { clock }).hash).toBe(r.hash)
     expect(compute(plain, { clock }).inputHash).not.toBe(r.inputHash)
     expect(compute({ ...book(), sheets: [{ ...book().sheets[0], outline: { summaryBelow: false } }] }, { clock }).inputHash).not.toBe(r.inputHash)
+  })
+})
+
+describe('outlineGroups', () => {
+  it("the groups Excel draws: the longest runs at each level, their summary lines, collapsed as Excel keeps the marks", () => {
+    // the grid's example: 2:10 of level 1, 2:4 and the collapsed 6:9 of level 2
+    const rows = { '2:4': { outlineLevel: 2 }, 5: { outlineLevel: 1 }, '6:9': { outlineLevel: 2, hidden: true }, 10: { outlineLevel: 1, collapsed: true } }
+    expect(outlineGroups({ rows })).toEqual({
+      rows: [
+        { first: 2, last: 10, level: 1, summary: 11, collapsed: false },
+        { first: 2, last: 4, level: 2, summary: 5, collapsed: false },
+        { first: 6, last: 9, level: 2, summary: 10, collapsed: true },
+      ],
+      columns: [],
+    })
+    // summaries above: 6:9's summary row 5 holds no mark, but Excel marks it, its rows all hidden; 2:10 has none, past row 1
+    expect(outlineGroups({ rows, outline: { summaryBelow: false } }).rows.map((g) => [g.first, g.summary, g.collapsed])).toEqual([[2, 1, false], [2, 1, false], [6, 5, true]])
+    // rows hidden with no mark (setLayout), a mark over rows shown; columns at the sheet's right edge have no summary column
+    expect(outlineGroups({ rows: { '3:4': { outlineLevel: 1, hidden: true }, 6: { outlineLevel: 1 }, 7: { collapsed: true } }, columns: { 'XFC:XFD': { outlineLevel: 1, width: 0 } } })).toEqual({
+      rows: [
+        { first: 3, last: 4, level: 1, summary: 5, collapsed: true },
+        { first: 6, last: 6, level: 1, summary: 7, collapsed: false },
+      ],
+      columns: [{ first: 16_383, last: 16_384, level: 1, summary: null, collapsed: true }],
+    })
+    expect(() => outlineGroups({ rows: { '5:3': {} } })).toThrow(new InputError('sheet.rows["5:3"]', 'expected an object under a span of rows ("5", "5:9")'))
+    expect(() => outlineGroups({ columns: { 'B:D': {}, C: {} } })).toThrow(new InputError('sheet.columns', 'two spans overlap'))
   })
 })
 
