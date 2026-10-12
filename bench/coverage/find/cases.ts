@@ -9,6 +9,7 @@
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { BookInput, CellInput, ColumnInput, RowInput } from '../../../src/contract.js'
+import { createSession } from '../../../src/index.js'
 import { formatAddress } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { localeDir } from '../locales.js'
@@ -99,6 +100,18 @@ export function findBook(b: FindBook, locale?: string): BookInput {
   const sheet = sentBook(b).sheets[0]
   const rows = { ...sheet.rows, ...Object.fromEntries(filteredRows(b).map((r) => [String(r), { hidden: true }])) }
   return { ...(locale ? { locale } : {}), sheets: [{ ...sheet, ...(b.filter ? { rows, filtered: true } : {}) }] }
+}
+
+/** The engine's answer to a query over a book in a locale: `findCells` with Find's options over the query's range, each of its areas in turn, or the whole sheet. */
+export function findInBook(b: FindBook, q: FindQuery, tag: string): string[] {
+  const s = createSession(findBook(b, tag), { clock: { now: '2026-10-12T12:00:00Z', seed: 1 } })
+  try {
+    const ranges = (q.range ?? 'A1:XFD1048576').split(',').map((range) => ({ sheet: 'S', range }))
+    const found = s.findCells(ranges, q.what, { in: q.lookIn === 'formulas' ? 'edit' : 'text', wildcards: true, wholeCell: q.whole, byColumns: q.byColumns, caseSensitive: q.matchCase, skipHidden: true, fields: [] })
+    return found.cells.map((c) => c.cell)
+  } finally {
+    s.close()
+  }
 }
 
 /** Cases of one group: ids `<group>-<n>`. */

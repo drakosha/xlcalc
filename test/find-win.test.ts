@@ -8,9 +8,8 @@
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { findBook, type FindCase, type StoredFind } from '../bench/coverage/find/cases.js'
+import { findInBook, type FindCase, type StoredFind } from '../bench/coverage/find/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
-import { createSession } from '../src/index.js'
 import './locales.js'
 
 const FIND_REASONS = {
@@ -54,20 +53,6 @@ function excelCells(run: (typeof RUNS)[number], c: FindCase): string[] | null {
   return 'found' in a && !a.more ? a.found.map((x) => x.cell) : null
 }
 
-const clock = { now: '2026-10-12T12:00:00Z', seed: 1 }
-
-function engineCells(run: (typeof RUNS)[number], c: FindCase): string[] {
-  const s = createSession(findBook(run.stored.books[c.book], run.tag), { clock })
-  try {
-    const q = c.query
-    const ranges = (q.range ?? 'A1:XFD1048576').split(',').map((range) => ({ sheet: 'S', range }))
-    const found = s.findCells(ranges, q.what, { in: q.lookIn === 'formulas' ? 'edit' : 'text', wildcards: true, wholeCell: q.whole, byColumns: q.byColumns, caseSensitive: q.matchCase, skipHidden: true, fields: [] })
-    return found.cells.map((x) => x.cell)
-  } finally {
-    s.close()
-  }
-}
-
 describe('Find (Excel for Windows)', () => {
   it('runs in both locales, and every known difference is a stored case', () => {
     expect(new Set(RUNS.map((r) => r.tag))).toEqual(new Set(['en-US', 'ru-RU']))
@@ -77,7 +62,7 @@ describe('Find (Excel for Windows)', () => {
   it.each(RUNS.map((r) => [`${r.tag}:${r.set}`, r] as const))('%s: the cells Excel found, in its order, but the known differences', (_, run) => {
     const off = run.stored.cases.flatMap((c) => {
       const want = excelCells(run, c)
-      const got = engineCells(run, c)
+      const got = findInBook(run.stored.books[c.book], c.query, run.tag)
       const same = JSON.stringify(got) === JSON.stringify(want)
       const known = FIND_KNOWN[`${run.set}:${c.id}`]
       // a known difference is still one, and every other case is Excel's
