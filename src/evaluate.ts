@@ -65,9 +65,10 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
 
 /**
  * Computes the formulas `ids` in turn and writes their values; a formula in a cycle (or over one) holds its value
- * (`held.ts`), unless `iterating`. Whether any value changed as Excel's iteration counts a change (the workbook set `iterate`): a number
- * by `delta` or more, a number turned into another type or back; text, a boolean or an error changed into another of
- * them does not count. Between two formulas the steps yield when the computation's slice is used up.
+ * (`held.ts`), unless `iterating`. Whether any value changed as Excel's iteration counts a change (the workbook set
+ * `iterate`): a number by `delta` or more, a number turned into another type or back; text, a boolean or an error
+ * changed into another of them does not count. Between two formulas the steps yield when the computation's slice is
+ * used up.
  */
 function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0, active?: Set<number>): Steps<boolean> {
   const { rt, spills } = state
@@ -228,7 +229,7 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
       rebuildGraph(state)
       // formulas that went into a cycle or out of one
       if (state.input.iteration) cyclesMoved(state, next)
-      else for (const f of state.formulas) if (f && state.topo[f.id] < 0 !== was[f.id] < 0) next.add(f.id)
+      else for (const f of state.formulas) if (f && (state.topo[f.id] < 0) !== (was[f.id] < 0)) next.add(f.id)
     }
     if (!next.size) {
       sp.touched.length = 0

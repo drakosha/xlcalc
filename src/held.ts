@@ -1,11 +1,11 @@
 /**
  * Formulas a circular reference stops (`CellInput.held`, `docs/cycles.md`): without iterative calculation a formula in a
  * cycle, or one that reads a cycle, is not computed, as Excel computes none of them, and holds a value: the one its input
- * gives, 0 for a formula the edit being applied entered, else what it showed when the cycle came into its way, which its
- * input holds from then on. A formula out of a cycle's way is computed and its input holds nothing. The state keeps the
- * held values by formula (`EngineState.held`) and writes each change into the formula's input, so a session's book
- * gives a full computation what the session shows; a book put back (an undo) holds what its inputs give, as a full
- * computation of it does.
+ * gives; else, in a book computed afresh, the one its file stores (`cached`) or 0; 0 for a formula the edits being
+ * applied entered; else what it showed when the cycle came into its way. A formula out of a cycle's way is computed and
+ * holds nothing. The state keeps the held values by formula (`EngineState.held`) and writes each change into the
+ * formula's input, so a session's book gives a full computation what the session shows; a book put back (an undo) holds
+ * what its inputs give, as a full computation of it does.
  */
 import type { CachedValues, CellReplace, CellValue } from './contract.js'
 import { key, toCellValue, type EngineState, type Formula } from './engine.js'
