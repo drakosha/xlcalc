@@ -1281,6 +1281,35 @@ export type AddressMove =
   | { kind: 'insertSheet'; sheet: string; index: number }
   | { kind: 'moveSheet'; sheet: string; index: number }
 
+/** The calls of a session that change its book, by name (`SessionChange.method`). */
+export type ChangingMethod =
+  | 'applyChanges'
+  | 'replaceInCells'
+  | 'setCells'
+  | 'replaceCells'
+  | 'clearCells'
+  | 'patchCells'
+  | 'setCellText'
+  | 'setCellTexts'
+  | 'pasteText'
+  | 'fillCellText'
+  | 'setNames'
+  | 'setClock'
+  | 'editStructure'
+  | 'setStyles'
+  | 'setLayout'
+  | 'undo'
+  | 'redo'
+
+/**
+ * A change of a session's book as its subscribers get it (`Session.subscribe`): the `EditResult` of the call that made
+ * it (the revision after it, the cells it changed, the sheets whose layout changed, the style table, how addresses
+ * moved, where to repaint) and the call's name.
+ */
+export interface SessionChange extends EditResult {
+  method: ChangingMethod
+}
+
 /** Options of a call that changes a session's book. */
 export interface EditOptions {
   /**
@@ -2262,6 +2291,16 @@ export interface Session {
   redo(opts?: EditOptions): UndoResult | null
   /** The steps `undo` and `redo` can take now. */
   readonly history: SessionHistory
+  /**
+   * Calls `listener` after each call that changes the book, whoever makes it: an edit, a structure operation, `undo`,
+   * `redo` (`SessionChange`: what the call answered of `EditResult`, and its name). Not after a preview, a read, a
+   * refusal or a call that changed nothing. A listener runs when the call is done, before it returns, so the session it
+   * reads is the one after the change; listeners run in the order they subscribed, and changes reach them in the order
+   * of their revisions: a change a listener makes reaches every listener after the one it answers. A listener that
+   * throws stops neither the call nor the other listeners; its error is thrown again in a microtask. Answers the
+   * function that unsubscribes; `close()` unsubscribes every listener.
+   */
+  subscribe(listener: (change: SessionChange) => void): () => void
   close(): void
 }
 
@@ -2381,6 +2420,12 @@ export interface AsyncSession {
   redo(opts?: AsyncEditOptions): Promise<UndoResult | null>
   /** The session's history as of its last finished call. */
   readonly history: SessionHistory
+  /**
+   * As `Session.subscribe`, synchronously: a listener runs when a call's answer has come, before the call's promise
+   * settles. From a thread of the pool a change comes with the call's answer, so it reaches the listeners of the
+   * session that made the call.
+   */
+  subscribe(listener: (change: SessionChange) => void): () => void
   close(): Promise<void>
 }
 
