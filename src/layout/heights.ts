@@ -10,7 +10,7 @@ import { layerOf } from '../looks/sheet.js'
 import { MAX_COLS, parseAddress } from '../model.js'
 import { columnPoints } from '../numfmt.js'
 import { outValue } from '../result.js'
-import { textWidth } from '../numfmt/glyphs.js'
+import { advance } from '../numfmt/advances.js'
 import { resultSheet, type Placed } from './fit.js'
 import { sheetLines } from './lines.js'
 import { mergesOf } from './merges.js'
@@ -28,14 +28,21 @@ const DEFAULT_SIZE = 11
 /** The points a wrapped text's column keeps beside its lines: two more than the padding of shown text. */
 const WRAP_PADDING = 7
 
-/** The height of one line of Calibri of `size` points, as Excel for Mac fits a row to it (`test/excel/rows/autofit.json`). */
-export const lineHeight = (size: number): number => Math.round(size * 1.27 + 0.96)
+/** The height of one line of Calibri of `size` points, as Excel for Mac fits a row to it (`test/excel/rows/autofit.json`); a size of a half point counts as the next whole one (`held.json`). */
+export const lineHeight = (size: number): number => Math.round(Math.round(size) * 1.27 + 0.96)
 
 /** The height of each line of a wrapped text: a point more than a line alone. */
 const wrappedLine = (size: number): number => lineHeight(size) + 1
 
-/** The width of text in Calibri of `size` points: the widths Excel shows Calibri 11 in, scaled. */
-const widthIn = (s: string, size: number): number => (textWidth(s) * size) / DEFAULT_SIZE
+/**
+ * The width of text in Calibri of `size` points as Excel for Mac wraps it: each character the font's advance rounded to
+ * a point, as Excel shows Calibri 11 (`glyphs.ts`), at its size (`test/excel/rows/held.json`, the set `scale`).
+ */
+function widthIn(s: string, size: number): number {
+  let w = 0
+  for (const ch of s) w += Math.round((advance(ch) * size) / 2048)
+  return w
+}
 
 /**
  * The lines a text takes wrapped in `space` points of Calibri of `size` points: a line at each line break, and within
@@ -44,7 +51,8 @@ const widthIn = (s: string, size: number): number => (textWidth(s) * size) / DEF
 export function wrappedLines(text: string, size: number, space: number): number {
   let n = 0
   const gap = widthIn(' ', size)
-  for (const para of text.split('\n')) {
+  // spaces at the end of a line hang past the room
+  for (const para of text.split('\n').map((x) => x.replace(/ +$/, ''))) {
     n++
     let line = -1
     for (const word of para.split(' ')) {
