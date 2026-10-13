@@ -31,8 +31,12 @@ const book = (): BookInput => ({
   styles: [{ font: { size: 16 } }, WRAP, { font: { size: 24 } }],
 })
 
-/** The heights AutoFit gives rows 1 to 7: 16 points one line, three wrapped lines of Calibri 11 beside 24 points, the default for an empty row and a cell merged down, five lines of a sentence in 46 points. */
-const FITTED = { 1: 21, 2: 48, 3: 32, '4:6': null, 7: 80 }
+/**
+ * The heights AutoFit gives rows 1 to 7: a line of 16 points; three wrapped lines of Calibri 11 (44 points above the
+ * line, 4 below) beside a line of 24 points (24 above, 7 below); two wrapped lines; the default for an empty row and a
+ * cell merged down; five lines of a sentence in 46 points.
+ */
+const FITTED = { 1: 21, 2: 51, 3: 32, '4:6': null, 7: 80 }
 
 describe('fitRows', () => {
   it('fits the rows of a computed book by their cells, fonts and wrapping, in spans of one height', () => {
@@ -58,7 +62,7 @@ describe.each(['closures', 'eval'] as const)('rows in a session, execution %s', 
     const s = createSession(book(), { clock, execution })
     const r = s.setLayout([{ sheet: 'S', rows: '1:7', fit: true }])
     expect(r.layout).toEqual(['S'])
-    expect(s.getLayout().sheets[0].rows).toEqual({ 1: { height: 21, bestFit: true }, 2: { height: 48, bestFit: true }, 3: { height: 32, bestFit: true }, 7: { height: 80, bestFit: true } })
+    expect(s.getLayout().sheets[0].rows).toEqual({ 1: { height: 21, bestFit: true }, 2: { height: 51, bestFit: true }, 3: { height: 32, bestFit: true }, 7: { height: 80, bestFit: true } })
     expect(s.history).toEqual({ undo: 1, redo: 0 })
     s.undo()
     expect(s.getLayout().sheets[0].rows).toEqual(book().sheets[0].rows)
@@ -79,7 +83,8 @@ describe.each(['closures', 'eval'] as const)('rows in a session, execution %s', 
     // the table has the style that wraps
     expect(b.styles).toEqual(book().styles)
     expect(b.sheets[0].cells.C1).toEqual({ value: 'x\ny', style: 1 })
-    expect(b.sheets[0].rows?.[1]).toEqual({ height: 32, bestFit: true })
+    // two wrapped lines of Calibri 11 (28 points above the line) beside a line of 16 points (5 below)
+    expect(b.sheets[0].rows?.[1]).toEqual({ height: 33, bestFit: true })
     s.undo()
     expect(s.getBook().sheets[0].cells.C1).toBeUndefined()
     expect(s.getBook().sheets[0].rows?.[1]).toBeUndefined()
@@ -138,7 +143,7 @@ describe.each([
     calcs.push(calc)
     const s = await calc.createSession(book(), { clock })
     await s.setLayout([{ sheet: 'S', rows: '1:3', fit: true }])
-    expect((await s.getLayout()).sheets[0].rows).toEqual({ 1: { height: 21, bestFit: true }, 2: { height: 48, bestFit: true }, 3: { height: 32, bestFit: true }, 4: { hidden: true, height: 40 } })
+    expect((await s.getLayout()).sheets[0].rows).toEqual({ 1: { height: 21, bestFit: true }, 2: { height: 51, bestFit: true }, 3: { height: 32, bestFit: true }, 4: { hidden: true, height: 40 } })
     await s.setCellText('S', 'C12', 'a\nb')
     expect((await s.getLayout()).sheets[0].rows?.[12]).toEqual({ height: 32, bestFit: true })
     await s.undo()

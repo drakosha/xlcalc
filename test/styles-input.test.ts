@@ -72,7 +72,7 @@ describe('styles and layout as input', () => {
     fails(withSheet({ columns: { B: { width: 300 } } }), 'book.sheets[0].columns["B"].width: expected a number from 0 to 255, got number 300')
     fails(withSheet({ columns: { 'B:D': {}, C: {} } }), 'book.sheets[0].columns: "C" overlaps "B:D"')
     fails(withSheet({ rows: { 0: { height: 1 } } }), 'book.sheets[0].rows["0"]: expected a row number such as "5" or a span such as "5:9" within the sheet, got the string "0"')
-    fails(withSheet({ rows: { 5: { outline: 1 } } }), 'book.sheets[0].rows["5"]: unknown field "outline" (expected height, style, numberFormat, hidden, outlineLevel, collapsed)')
+    fails(withSheet({ rows: { 5: { outline: 1 } } }), 'book.sheets[0].rows["5"]: unknown field "outline" (expected height, bestFit, style, numberFormat, hidden, outlineLevel, collapsed)')
     fails(withSheet({ rows: { 5: { hidden: 'yes' } } }), 'book.sheets[0].rows["5"].hidden: expected a boolean, got the string "yes"')
     fails(withSheet({ merges: ['C3'] }), 'book.sheets[0].merges[0]: expected a merged area such as "B2:D3" (top-left to bottom-right, two cells or more), got the string "C3"')
     fails(withSheet({ merges: ['D4:C3'] }), 'book.sheets[0].merges[0]: expected a merged area such as "B2:D3" (top-left to bottom-right, two cells or more), got the string "D4:C3"')
