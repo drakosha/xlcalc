@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- `Session.copyText(sheet, range, opts?)`, also in inline and pooled sessions: a selection's plain-text copy prepared from computed values and effective formats without column clipping. Hidden rows and columns are skipped, merges and spills are handled, and the book's locale and date system are respected. Options: `trailingNewline` (false for Mac), `maxCells` (20,000 by default), `maxChars` (16 Mi characters); oversized copies are refused rather than truncated. Asynchronous calls also take `signal` and `timeoutMs`. Before, a host that fed screen text to `formatClipboard` copied narrow dates as `##` and rounded narrow numbers ([Copying plain text](docs/entry.md#copying-plain-text)).
+
+Fixed:
+
+- A height assigned through `setLayout` without `bestFit` now clears the row's old fitted mark. A manually set height stays on the next text entry, including when assigned the same height; undo and redo restore the mark with the height. `height: null` returns to the default, and an explicitly given `bestFit` is honored. Before, a height set after AutoFit kept `bestFit: true` and wrapped text changed it again ([Fitting rows](docs/formats.md#fitting-rows)).
+
 ## 0.33.0 (2026-10-13)
 
 Internal release; not published to npm. Row heights as Excel fits them, wrapped text on entry, the clipboard's plain text, the saved active sheet and view. The synthetic book's values and hashes are as in 0.32.1.

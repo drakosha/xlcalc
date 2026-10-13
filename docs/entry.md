@@ -166,6 +166,19 @@ Both are one recomputation, one revision and one step of the undo.
 
 ## Copying plain text
 
+`session.copyText(sheet, range, opts?)` prepares a selection's text in the library, from its computed values and effective number formats, including conditional formats. It works in synchronous, inline and pooled sessions, even with `display: false`, and changes no cells, revision or undo history. The host writes the returned string to its clipboard.
+
+```js
+const session = createSession({ sheets: [{ name: 'S', columns: { A: { width: 3 } }, cells: { A1: { value: 46096, numberFormat: 'yyyy-mm-dd' }, A2: { value: 1.23456789 } } }] })
+session.copyText('S', 'A1:A2', { trailingNewline: false }) // '2026-03-15\r\n1.23456789'
+```
+
+Copy text uses the format without the column's clipping: a narrow date showing `##` copies `2026-03-15`; a narrow General cell showing `1` copies `1.23456789`. The book's locale and date system control the formatting; `trailingNewline` controls only the terminal CRLF (true by default, false for Mac). A General number still uses General's rounding, not the formula bar's full precision.
+
+Rows and columns hidden by hand, by zero height or width, or by a filter are skipped. A merged area's value is in its first cell and its other cells are empty. A spill copies its computed values. Explicit rectangles keep selected blank cells, including trailing blank rows and columns. Whole rows and columns stop at the sheet's used extent. An empty sheet copies one empty field; a selection with no visible rows or columns gives an empty string.
+
+`maxCells` bounds the visible selection (20,000 by default), and `maxChars` bounds its encoded text, including tabs, CRLF and quoted controls (16 Mi characters by default). A larger copy throws `CalcError` with code `limit`, before the cells or oversized output are allocated; it is never silently truncated. An asynchronous call also takes `signal` and `timeoutMs` and prepares the text in one read in the session's thread.
+
 `formatClipboard(rows, opts?)` from `xlcalc/text` writes a rectangle of cell texts for the clipboard. Rows use CRLF and fields use tabs. A field containing a tab, CR or LF is wrapped in quotes, and quotes inside it are doubled. A quote without a control character stays as text. Windows ends the text with CRLF; pass `{ trailingNewline: false }` for Mac.
 
 ```js
@@ -173,15 +186,13 @@ import { formatClipboard } from 'xlcalc/text'
 formatClipboard([['a\nb', 'c"d']]) // '"a\nb"\tc"d\r\n'
 ```
 
-The host supplies the texts and the visible rectangle. Excel skips rows and columns hidden by hand as well as rows hidden by a filter. A merged area's value is in its first cell and its other cells are empty. A spill copies its computed values. A wholly empty selection on an empty sheet copies one empty field. Keep the selected blank rows and columns when the sheet has cells beyond them.
-
-Copy text uses the format without the column's clipping: a narrow date showing `##` copies `2026-03-15`; a narrow General cell showing `1` copies `1.23456789`. A grid with only shown texts cannot recover these. Give `displayValue` the value, effective number format and locale, with enough `width` to fit, before formatting the rectangle. The measurement's Mac copy used dot decimals in both interfaces, Windows used its regional decimal separator.
+Use `formatClipboard` when the host already has the complete rectangle of formatted texts, without column clipping. It only encodes those strings: it cannot recover a value from `##`. A host with a library session uses `copyText` to select and format the cells. The measurement's Mac copy used dot decimals in both interfaces, Windows used its regional decimal separator; the book's locale models those regional settings, not just the interface language.
 
 `parseClipboard` reads a quoted field as a text paste does ([A paste and Control+Return](#a-paste-and-controlreturn)), but plain text is not a reversible encoding of every grid: the two cells `"first` and `last"` copy as `"first\r\nlast"`, which a text paste reads as one cell `first`, line break, `last`. Excel pasting its own copy kept the two cells, as it did the sentinel below a copied terminal CRLF. Carry the rectangle separately when an exact roundtrip matters.
 
 ### How it was checked
 
-`bench/coverage/clipboard` commits the predictions before the copies run. The copy set has ten cases in each locale on each platform: grid, controls and quotes, one cell, an empty sheet, narrow numbers and dates, hidden rows and columns, filtering, merges and a spill. `copy range` and `pbpaste` on Mac and `Range.Copy` with `Get-Clipboard -Raw` on Windows read text without bringing Excel forward. The Windows `quotes-held` set copies three rectangles, replaces the rich clipboard with their plain text and pastes them, checking the sentinel below too. `test/clipboard-excel.test.ts` checks the stored text and pins the ambiguity.
+`bench/coverage/clipboard` commits the predictions before the copies run. The copy set has ten cases in each locale on each platform: grid, controls and quotes, one cell, an empty sheet, narrow numbers and dates, hidden rows and columns, filtering, merges and a spill. `copy range` and `pbpaste` on Mac and `Range.Copy` with `Get-Clipboard -Raw` on Windows read text without bringing Excel forward. The Windows `quotes-held` set copies three rectangles, replaces the rich clipboard with their plain text and pastes them, checking the sentinel below too. `test/clipboard-excel.test.ts` checks the stored text and pins the ambiguity; `test/session-copy-text.test.ts` checks `copyText` from the books against the same stored copies in all three session kinds and both execution modes.
 
 ## The text a cell opens with
 
