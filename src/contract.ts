@@ -2113,8 +2113,9 @@ export interface Session {
   previewCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): CellTextsPreview
   /**
    * Text pasted from the clipboard at a cell, as Excel pastes it: the rows at its line breaks and the fields at its tabs
-   * (`parseClipboard`) fill a rectangle from the cell, a short row's missing fields and a line break after the last row
-   * clearing their cells. Each field is read as `setCellText` reads it, but an apostrophe stays part of the text, a
+   * (`parseClipboard`, a field begun by a quote running to its closing quote) fill a rectangle from the cell, a short
+   * row's missing fields and a line break after the last row clearing their cells; a field with a line break wraps its
+   * cell, as `setCellText` wraps it, and fits no row. Each field is read as `setCellText` reads it, but an apostrophe stays part of the text, a
    * formula Excel does not take is pasted as text, a percent cell has no percent editor (`5` is 500%) and `€5` takes the
    * euro format; no column widens and no rule of data validation is checked. One recomputation, one revision and one
    * step of the undo. Refused, with the cell, where Excel does not paste: part of an array formula, a formula into a
