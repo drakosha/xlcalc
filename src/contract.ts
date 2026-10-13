@@ -1515,6 +1515,16 @@ export type PasteTextResult = (EditResult & { ok: true; range: string }) | Paste
 /** What `Session.pasteText` would do (`Session.previewPasteText`): the range and each of its cells' input and value, with nothing changed. */
 export type PasteTextPreview = { ok: true; range: string; cells: PreviewCell[] } | PasteTextRefusal
 
+/** Options of `Session.copyText`, the selection's plain-text copy. */
+export interface CopyTextOptions {
+  /** A terminal CRLF, as on Windows; false for Mac. True by default. */
+  trailingNewline?: boolean
+  /** Maximum visible cells to copy, 20,000 by default. A larger copy is refused, never truncated. */
+  maxCells?: number
+  /** Maximum characters of the encoded text, 16 Mi characters by default, checked before assembling its rows. */
+  maxChars?: number
+}
+
 /** `Session.fillCellText`'s options. */
 export interface FillTextOptions extends CellTextOptions {
   /** The selection's active cell, which the text is typed into: a cell of the range (`B2`); its top-left cell by default. */
@@ -2209,6 +2219,12 @@ export interface Session {
    * conditional appearance changed: they give the rules' cells as `repaint`, for a host to read again where its window meets them.
    */
   getCells(sheet: string, range: string | string[]): Record<string, CellView>
+  /**
+   * Plain-text clipboard data for a range: computed values by their effective formats and the book's locale,
+   * without column clipping, skipping hidden rows and columns. Explicit rectangles keep selected blanks;
+   * whole rows/columns stop at the used extent, and an empty sheet gives one empty field. Changes nothing.
+   */
+  copyText(sheet: string, range: string, opts?: CopyTextOptions): string
   /** One cell as `getCells(sheet, cell)` gives it; undefined for a cell `getCells` leaves out. */
   getCell(sheet: string, cell: string): CellView | undefined
   /**
@@ -2347,6 +2363,8 @@ export interface AsyncSession {
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
   getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** As `Session.copyText`; the text is prepared in one read in the session's thread. */
+  copyText(sheet: string, range: string, opts?: CopyTextOptions & CalcOptions): Promise<string>
   getCell(sheet: string, cell: string): Promise<CellView | undefined>
   /** As `Session.getViewport`; from a thread the window comes back in one call. */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Promise<Viewport>

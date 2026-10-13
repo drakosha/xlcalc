@@ -10,6 +10,8 @@
  */
 import type { ChangesOptions, ChangesPreview, ChangesResult, PreviewChangesOptions, SessionOperation, ReadCellsOptions, ReadCellsResult, FindCellsOptions, DependentsOptions, DependentsResult, RangeSummary, ReplaceOptions, ReplaceResult } from './contract.js'
 import { operationsPlan } from './session/operations.js'
+import { checkCopyOptions, copyText } from './session/clipboard.js'
+import type { CopyTextOptions } from './contract.js'
 import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/queries.js'
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
@@ -113,6 +115,7 @@ export interface SessionSteps {
   historyData(): HistoryData
   explain(sheet: string, cell: string, opts?: ExplainOptions): Steps<Explanation>
   getCells(sheet: string, range: string | string[]): Steps<Record<string, CellView>>
+  copyText(sheet: string, range: string, opts?: CopyTextOptions): Steps<string>
   getCell(sheet: string, cell: string): Steps<CellView | undefined>
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Steps<Viewport>
   getCellIssue(sheet: string, cell: string): Steps<CellIssueDetail | null>
@@ -761,6 +764,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const [i, r, c] = at(s, sheet, cell)
       return (yield* cellsIn(s, i, [{ r1: r, c1: c, r2: r, c2: c }], display))[cell]
     },
+    *copyText(sheet: string, range: string, o?: CopyTextOptions) {
+      const s = yield* ready()
+      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
+      return yield* copyText(s, i, checkRange(range, 'range'), checkCopyOptions(o))
+    },
     *getViewport(sheet: string, range: string, o?: ViewportOptions) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
@@ -865,6 +873,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     getEnd: (sheet, cell, direction) => now(() => core.getEnd(sheet, cell, direction)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     getCells: (sheet, range) => now(() => core.getCells(sheet, range)),
+    copyText: (sheet, range, o) => now(() => core.copyText(sheet, range, o)),
     getCell: (sheet, cell) => now(() => core.getCell(sheet, cell)),
     getViewport: (sheet, range, o) => now(() => core.getViewport(sheet, range, o)),
     getCellIssue: (sheet, cell) => now(() => core.getCellIssue(sheet, cell)),

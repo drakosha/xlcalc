@@ -3,6 +3,7 @@
  * one after another. A thread of the pool holds its sessions the same way.
  */
 import type { ChangesOptions, PreviewChangesOptions, ReadCellsOptions, FindCellsOptions, DependentsOptions, ReplaceOptions, ExplainOptions } from '../contract.js'
+import type { CopyTextOptions } from '../contract.js'
 import type { AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, Clock, EditOptions, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError, type Budget, type Steps } from '../exec/budget.js'
 import { openSteps, type SessionHooks } from '../session.js'
@@ -147,6 +148,14 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       }
     },
     getCells: (sheet, range) => call(() => core.getCells(sheet, range)),
+    copyText: (sheet, range, o) => {
+      try {
+        const { signal, timeoutMs, rest } = splitCall<CopyTextOptions>(o)
+        return call(() => core.copyText(sheet, range, rest), { signal, timeoutMs })
+      } catch (e) {
+        return Promise.reject(e)
+      }
+    },
     getCell: (sheet, cell) => call(() => core.getCell(sheet, cell)),
     getViewport: (sheet, range, vo) => call(() => core.getViewport(sheet, range, vo)),
     getCellIssue: (sheet, cell) => call(() => core.getCellIssue(sheet, cell)),
