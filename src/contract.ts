@@ -665,8 +665,6 @@ export interface SheetView {
   topLeft?: string
   /** Zoom in percent, 10 to 400. */
   zoom?: number
-  /** Whether the tab belongs to the saved selection of tabs, including a group of tabs. */
-  tabSelected?: boolean
 }
 
 export interface BookInput {
