@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.34.0 (2026-10-13)
+
+Internal release; not published to npm. A selection's clipboard text from the session; a width or height set by hand leaves AutoFit. The synthetic book's values and hashes are as in 0.33.0.
 
 Added:
 
@@ -9,6 +11,7 @@ Added:
 Fixed:
 
 - A height assigned through `setLayout` without `bestFit` now clears the row's old fitted mark. A manually set height stays on the next text entry, including when assigned the same height; undo and redo restore the mark with the height. `height: null` returns to the default, and an explicitly given `bestFit` is honored. Before, a height set after AutoFit kept `bestFit: true` and wrapped text changed it again ([Fitting rows](docs/formats.md#fitting-rows)).
+- A column width set through `setLayout` without `bestFit` clears the column's fitted mark, as a row height does: a number typed later no longer widens a column whose width was set by hand after AutoFit. An explicit `bestFit: true` keeps it fitted ([Fitting columns](docs/formats.md#fitting-columns)).
 
 ## 0.33.0 (2026-10-13)
 
