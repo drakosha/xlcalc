@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-The first public release. Versions up to 0.34.0 were internal builds and were not published to npm; their changes are folded into this entry, and the README describes the package as it is.
+The first public release. The versions before it were internal builds and were not published to npm; their changes are folded into this entry, and the README describes the package as it is.
 
 What is in it:
 
