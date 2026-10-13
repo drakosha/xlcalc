@@ -1937,7 +1937,7 @@ export type LayoutEdit =
   | { sheet: string; columns: string; set: LinePatch<ColumnInput> }
   | ColumnsFit
   | RowsFit
-  /** Rows `5` or `5:9`; the patch applies to each of them. */
+  /** Rows `5` or `5:9`; the patch applies to each. Setting or removing height clears bestFit unless explicitly given. */
   | { sheet: string; rows: string; set: LinePatch<RowInput> }
   /** All the merged areas of the sheet. */
   | { sheet: string; merges: string[] }
@@ -2177,6 +2177,7 @@ export interface Session {
    * meets are recomputed. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE count: their formulas over
    * the rows concerned are recomputed. Nothing else is recomputed. With `display`, the cells whose shown text or colour
    * a width, a format or a merged area changed are listed too.
+   * A row height set or removed without bestFit clears its previous fitted mark; bestFit explicitly given is honored.
    */
   setLayout(edits: LayoutEdit[], opts?: EditOptions): EditResult
   /**
