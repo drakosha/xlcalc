@@ -15,6 +15,7 @@
  * and columns carry their outline levels.
  */
 import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, ExternalBook, RowInput, SheetInput } from '../../contract.js'
+import { sheetViewXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { normalized } from '../../layout/outline.js'
 import { lines, type Line } from '../../layout/spans.js'
@@ -81,7 +82,7 @@ export interface SheetContext extends FileNames {
   filterTable?: string
   /** The first block of the VML shape ids of the sheet's notes (`vmlXml`). */
   noteBlock: number
-  /** The sheet is the book's active one (`workbookView activeTab`), its tab selected: the first visible sheet. */
+  /** The sheet is the book's active one (`workbookView activeTab`), its tab selected unless the saved view specifies it. */
   active: boolean
 }
 
@@ -306,7 +307,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const xml =
     `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
     (filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '') +
-    `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${ctx.active ? ' tabSelected="1"' : ''}${pane ? `>${pane}</sheetView>` : '/>'}</sheetViews>` +
+    `<dimension ref="${dim}"/>${sheetViewXml(sheet.view, pane, ctx.active)}` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
     `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>` +
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +

@@ -26,6 +26,16 @@ A session takes its calls in order: each starts when the one before has finished
 
 `editStructure` answers `{ ok, mapCell, changes }` without the book, as a synchronous session's does, so a thread does not send the book back on every operation; `getBook()` fetches it. From a thread, `getBook()`, `getResult()`, `explain()` and `getViewport()` answer copies. `getSnapshot()` answers independent copies of the book and its result in one call in every kind of session: no edit comes between them, later edits leave both unchanged, and modifying the snapshot cannot change the session. In the same thread its book is copied in portions that yield to the event loop; a worker's transport already copies it. `getBook()` and `getLayout()` in the same thread still expose the session's objects and must not be modified.
 
+`explain(sheet, cell, opts?)` takes its tree options together with `signal` and `timeoutMs` in both asynchronous calculators. A signal already aborted, a waiting call aborted in the queue and a running traversal aborted between portions reject with `CalcError` code `aborted`. A soft deadline rejects with `soft_timeout`. The book, revision and undo history stay unchanged, and the next call can use the session.
+
+```js
+const controller = new AbortController()
+const pending = session.explain('Plan', 'B2', { depth: 5, signal: controller.signal, timeoutMs: 500 })
+controller.abort('active cell moved')
+```
+
+Each local tree node carries `location: { sheet, range }` for navigation. Its `value`, invariant `formula`, `children`, `cells`, `spillOf` and `origin` are available directly, so a panel can traverse `root` without splitting `text`. Use `scanReferences(node.formula)` for formula links and fill a reference without a sheet from `node.location.sheet`; no rendered explanation needs parsing. Nodes of another workbook have no local `location`.
+
 A session's `clock` is its clock as of its last finished call.
 
 `getHash()` answers the values hash `getResult()` would give, without building the result: from a thread, on the synthetic book of 34,000 rows, 0.34 s with the event loop free (`getResult()` takes 1.4 s and stops it for 260 ms while the result is read).
@@ -169,3 +179,7 @@ The evaluation loops are generators that yield only when a calculator's slice is
 - `test/locale-pool.test.ts`: a pool started before ru-RU is loaded refuses a ru-RU book with the synchronous engine's `InputError`; once ru-RU is loaded its threads compute such a book and give a session's explanation and a refusal in Russian, as a synchronous session does, on both threads, with closures and eval; a pool started later and a thread started again after a crash have it; a locale outside the package computes in a thread as sent, in English there as here; a locale without its messages survives a structured clone, a locale with them does not.
 - `test/worker-bundle.test.ts` bundles `xlcalc` for the browser and finds no file of the threads in it; `test/dist.test.ts` runs the pool of the built package by its name from a plain Node process, which exits with the pool open.
 - `test/worker-browser.test.ts` loads the built package in headless Chromium, Firefox and WebKit (through `playwright-core`): the pool on Web Workers gives Node's hashes for the synthetic book and a session's edits, a hard deadline terminates a worker and the session comes back, and the same-thread calculator lets timers run. Each engine is skipped where it is not found.
+
+### Explain cancellation
+
+`test/explain-cancel.test.ts` runs both execution modes in inline sessions and pools: already aborted, queued and running calls, soft deadlines, invalid options and successful reuse after cancellation. An expanded range of 12,000 values makes the traversal yield. `test/session-issue.test.ts` checks node locations, errors, ranges, spills and cycles in all three kinds of session. The traversal and text rendering use the same paced budget checks as the other asynchronous methods.

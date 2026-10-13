@@ -164,6 +164,25 @@ The answer has the range filled (`B1:D4`); `previewPasteText` gives each of its 
 
 Both are one recomputation, one revision and one step of the undo.
 
+## Copying plain text
+
+`formatClipboard(rows, opts?)` from `xlcalc/text` writes a rectangle of cell texts for the clipboard. Rows use CRLF and fields use tabs. A field containing a tab, CR or LF is wrapped in quotes, and quotes inside it are doubled. A quote without a control character stays as text. Windows ends the text with CRLF; pass `{ trailingNewline: false }` for Mac.
+
+```js
+import { formatClipboard } from 'xlcalc/text'
+formatClipboard([['a\nb', 'c"d']]) // '"a\nb"\tc"d\r\n'
+```
+
+The host supplies the texts and the visible rectangle. Excel skips rows and columns hidden by hand as well as rows hidden by a filter. A merged area's value is in its first cell and its other cells are empty. A spill copies its computed values. A wholly empty selection on an empty sheet copies one empty field. Keep the selected blank rows and columns when the sheet has cells beyond them.
+
+Copy text uses the format without the column's clipping: a narrow date showing `##` copies `2026-03-15`; a narrow General cell showing `1` copies `1.23456789`. A grid with only shown texts cannot recover these. Give `displayValue` the value, effective number format and locale, with enough `width` to fit, before formatting the rectangle. The measurement's Mac copy used dot decimals in both interfaces, Windows used its regional decimal separator.
+
+`parseClipboard` reads a quoted field as a text paste does ([A paste and Control+Return](#a-paste-and-controlreturn)), but plain text is not a reversible encoding of every grid: the two cells `"first` and `last"` copy as `"first\r\nlast"`, which a text paste reads as one cell `first`, line break, `last`. Excel pasting its own copy kept the two cells, as it did the sentinel below a copied terminal CRLF. Carry the rectangle separately when an exact roundtrip matters.
+
+### How it was checked
+
+`bench/coverage/clipboard` commits the predictions before the copies run. The copy set has ten cases in each locale on each platform: grid, controls and quotes, one cell, an empty sheet, narrow numbers and dates, hidden rows and columns, filtering, merges and a spill. `copy range` and `pbpaste` on Mac and `Range.Copy` with `Get-Clipboard -Raw` on Windows read text without bringing Excel forward. The Windows `quotes-held` set copies three rectangles, replaces the rich clipboard with their plain text and pastes them, checking the sentinel below too. `test/clipboard-excel.test.ts` checks the stored text and pins the ambiguity.
+
 ## The text a cell opens with
 
 `entryText(value, opts)` is the other way round: the text a cell opens with for editing, as Excel's formula bar shows the value it holds, so that the editor shows what Excel shows and the value reads back from it. `needsApostrophe(text, opts)` tells whether text typed into the cell would read as something else than itself.

@@ -7,6 +7,7 @@
  * Excel shows its own values over the ones written, whichever values it stores.
  */
 import type { BookInput } from '../../contract.js'
+import { activeSheetIndex } from '../view.js'
 import { epochOf } from '../../dates.js'
 import { SHEET_STATES } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
@@ -140,7 +141,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   // the notes' VML shape ids, in blocks of 1,024 through the book
   let noteBlock = 1
   // Excel shows the active sheet, which is never a hidden one
-  const active = book.sheets.findIndex((s) => !s.hidden)
+  const active = activeSheetIndex(book)
   const sheets = book.sheets.map((s, i) => {
     const w = writeSheet(s, i, {
       styles,
@@ -222,7 +223,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names.tables)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names.tables)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {

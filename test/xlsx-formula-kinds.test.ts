@@ -1,3 +1,4 @@
+import { withoutView } from './xlsx-fixtures.js'
 /**
  * The xlsx subpath on names of any formula, the @ operator, references across sheets and array formulas of the old
  * kind: the writer writes them as Excel does (a name's formula as it is, `@x` as `_xlfn.SINGLE(x)`, an old-kind array
@@ -53,7 +54,7 @@ describe('xlsx: names of any formula, @, references across sheets, old-kind arra
   it('reads them back into the same book, with the values computed', async () => {
     const result = compute(book)
     const r = await readXlsx((await writeXlsx({ book, result })).data)
-    expect(r.book).toEqual(book)
+    expect(withoutView(r.book)).toEqual(book)
     expect(r.issues).toEqual([])
     expect(r.cached).toEqual(storedOf(result))
     // `left` used in F1 is E1, the cell to its left

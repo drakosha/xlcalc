@@ -1,3 +1,4 @@
+import { withoutView } from './xlsx-fixtures.js'
 /**
  * Book settings through xlsx: the 1904 date system (`workbookPr date1904`), iterative calculation (`calcPr iterate`,
  * its count and change) and built-in number formats by their number, written and read back, the book computing as the
@@ -35,7 +36,7 @@ describe('xlsx settings: the 1904 date system', () => {
   it('a book of the 1900 system has no workbookPr', async () => {
     const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: { date: '2025-01-31' } } } }] } })
     expect(await text(data, 'xl/workbook.xml')).not.toContain('workbookPr')
-    expect((await readXlsx(data)).book).toEqual({ sheets: [{ name: 'S', cells: { A1: { value: 45688 } } }] })
+    expect(withoutView((await readXlsx(data)).book)).toEqual({ sheets: [{ name: 'S', cells: { A1: { value: 45688 } } }] })
   })
 })
 
@@ -46,7 +47,7 @@ describe('xlsx settings: iterative calculation', () => {
     for (const iteration of [{ maxIterations: 7, maxChange: 0.5 }, { maxChange: 1e-7 }, {}]) {
       const book: BookInput = { iteration, sheets: [{ name: 'S', cells }] }
       const r = await readXlsx((await writeXlsx({ book, result: compute(book, { clock }) })).data)
-      expect(r.book).toEqual(book)
+      expect(withoutView(r.book)).toEqual(book)
       expect(storedValues(r)).toEqual({ A1: 5, B1: 5 })
     }
     const { data } = await writeXlsx({ book: { iteration: { maxIterations: 7, maxChange: 0.5 }, sheets: [{ name: 'S', cells }] } })
@@ -76,7 +77,7 @@ describe('xlsx settings: built-in number formats by number', () => {
       expect(styles).not.toContain('<numFmts')
       for (const id of [14, 38, 9, 22, 44, 20]) expect(styles).toContain(`<xf numFmtId="${id}" `)
       const r = await readXlsx(data)
-      expect(r.book).toEqual(book(locale))
+      expect(withoutView(r.book)).toEqual(book(locale))
       expect(values(r.book)).toEqual(values(book(locale)))
     }
     expect(compute(book('ru-RU')).sheets[0].cells.A1.text).toBe('31.01.2025')

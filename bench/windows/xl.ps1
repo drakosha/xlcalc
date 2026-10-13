@@ -360,6 +360,23 @@ function Step($xl, $wb, $s) {
     'end' { try { Str (Rg $wb $s.sheet $s.cell).End([int]$s.direction).Address($false, $false) } catch { Err $_ } }
     # text put on the clipboard and pasted at a cell of the active sheet (bench/windows/ui.ts); the clipboard's or
     # Excel's refusal is the step's error
+    'copyText' {
+      $before = Get-Clipboard -Raw
+      try {
+        [void](Rg $wb $s.sheet $s.range).Copy()
+        $copied = [string](Get-Clipboard -Raw)
+        if ($s.at) {
+          Set-Clipboard -Value $copied
+          $ws = $wb.Worksheets.Item($s.sheet)
+          [void]$ws.Activate()
+          [void]$ws.Range($s.at).Select()
+          [void]$ws.Paste()
+          List @((Str $copied), (Grid (Rg $wb $s.sheet $s.read).Value2))
+        } else { Str $copied }
+      } finally {
+        Set-Clipboard -Value ([string]$before)
+      }
+    }
     'paste' {
       try {
         Set-Clipboard -Value ([string]$s.text)
@@ -386,6 +403,8 @@ function Step($xl, $wb, $s) {
     }
     # AutoFit of a range's whole columns; each column's ColumnWidth, Width (points) and UseStandardWidth (bench/windows/fit.ts)
     'autofit' { [void](Rg $wb $s.sheet $s.range).EntireColumn.AutoFit(); 'null' }
+    'setColumnWidth' { (Rg $wb $s.sheet $s.column).ColumnWidth = [double]$s.width; 'null' }
+    'standardWidth' { Cell ([double]$wb.Worksheets.Item($s.sheet).StandardWidth) }
     'widths' {
       $ws = $wb.Worksheets.Item($s.sheet)
       List ($s.columns | ForEach-Object { $c = $ws.Range("$($_)1"); List @((Cell ([double]$c.ColumnWidth)), (Cell ([double]$c.Width)), (Cell $c.UseStandardWidth)) })

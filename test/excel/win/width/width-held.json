@@ -1,0 +1,224 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96
+ },
+ "book": {
+  "sheets": [
+   {
+    "name": "S",
+    "cells": {
+     "A1": {
+      "value": "width"
+     }
+    },
+    "columns": {
+     "B": {
+      "width": 8.83203125
+     },
+     "C": {
+      "width": 9.140625
+     },
+     "D": {
+      "width": 3
+     },
+     "E": {
+      "width": 5
+     },
+     "F": {
+      "width": 10
+     },
+     "G": {
+      "width": 15.5
+     },
+     "H": {
+      "width": 0.5
+     },
+     "I": {
+      "width": 0
+     },
+     "J": {
+      "width": 50
+     },
+     "K": {
+      "width": 255
+     }
+    }
+   }
+  ]
+ },
+ "set": [
+  0.5,
+  1,
+  3,
+  8,
+  8.43,
+  10,
+  15.5
+ ],
+ "standardWidth": 8.43,
+ "columns": [
+  [
+   8.43,
+   48,
+   true
+  ],
+  [
+   8.14,
+   46.5,
+   false
+  ],
+  [
+   8.43,
+   48,
+   false
+  ],
+  [
+   2.29,
+   15.75,
+   false
+  ],
+  [
+   4.29,
+   26.25,
+   false
+  ],
+  [
+   9.29,
+   52.5,
+   false
+  ],
+  [
+   14.71,
+   81,
+   false
+  ],
+  [
+   0.25,
+   2.25,
+   false
+  ],
+  [
+   0,
+   0,
+   false
+  ],
+  [
+   49.29,
+   262.5,
+   false
+  ],
+  [
+   254.29,
+   1338.75,
+   false
+  ],
+  [
+   0.5,
+   4.5,
+   false
+  ],
+  [
+   1,
+   9,
+   false
+  ],
+  [
+   3,
+   19.5,
+   false
+  ],
+  [
+   8,
+   45.75,
+   false
+  ],
+  [
+   8.43,
+   48,
+   true
+  ],
+  [
+   10,
+   56.25,
+   false
+  ],
+  [
+   15.57,
+   85.5,
+   false
+  ]
+ ],
+ "saved": {
+  "B": {
+   "width": 8.85546875,
+   "customWidth": true
+  },
+  "C": {
+   "width": 9.140625,
+   "customWidth": true
+  },
+  "D": {
+   "width": 3,
+   "customWidth": true
+  },
+  "E": {
+   "width": 5,
+   "customWidth": true
+  },
+  "F": {
+   "width": 10,
+   "customWidth": true
+  },
+  "G": {
+   "width": 15.42578125,
+   "customWidth": true
+  },
+  "H": {
+   "width": 0.42578125,
+   "customWidth": true
+  },
+  "I": {
+   "width": 0,
+   "customWidth": true,
+   "hidden": true
+  },
+  "J": {
+   "width": 50,
+   "customWidth": true
+  },
+  "K": {
+   "width": 255,
+   "customWidth": true
+  },
+  "L": {
+   "width": 0.85546875,
+   "customWidth": true
+  },
+  "M": {
+   "width": 1.7109375,
+   "customWidth": true
+  },
+  "N": {
+   "width": 3.7109375,
+   "customWidth": true
+  },
+  "O": {
+   "width": 8.7109375,
+   "customWidth": true
+  },
+  "Q": {
+   "width": 10.7109375,
+   "customWidth": true
+  },
+  "R": {
+   "width": 16.28515625,
+   "customWidth": true
+  }
+ }
+}

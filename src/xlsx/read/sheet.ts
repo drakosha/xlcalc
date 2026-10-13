@@ -28,6 +28,7 @@ import { outsideConditional, readConditional } from './conditional.js'
 import type { Dxf } from '../styles/dxf.js'
 import type { Palette } from '../styles/color.js'
 import { readValidations } from './validation.js'
+import { readSheetView } from '../view.js'
 
 export interface SheetSource {
   name: string
@@ -348,6 +349,8 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const [cells, looks] = withEntries(layer, read.cells, stored, [...looked, ...[...read.shared.values()].flatMap((s) => s.copies)])
   sheet.cells = cells
   if (!looks.empty) sheet.looks = listOf(looks)
+  const view = readSheetView(head)
+  if (view) sheet.view = view
   const frozen = readFrozen(head, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
   const cf = readConditional(tail, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)

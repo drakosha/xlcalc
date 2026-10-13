@@ -25,6 +25,7 @@ export function renameSheet(book: BookInput, sheet: string, name: string): Appli
     ends: (a, b) => (sheetKey(a) === key || sheetKey(b) === key ? [renamed(a), renamed(b)] : undefined),
   }
   const out = rewriteBook(book, t, sheetNames(book), (s) => (sheetKey(s) === key ? name : s))
+  if (out.activeSheet !== undefined) out.activeSheet = renamed(out.activeSheet)
   if (out.names) out.names = out.names.map((n) => (n.scope !== undefined && sheetKey(n.scope) === key ? { ...n, scope: name } : n))
   return { ok: true, book: out, geometry: [{ kind: 'renameSheet', s: sheetIndex(book, sheet) }] }
 }
@@ -101,6 +102,7 @@ export function deleteSheet(book: BookInput, sheet: string): Applied {
   if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const t: Transform = { ref: ({ sheet: s }) => (sheetKey(s) === key ? 'gone' : undefined), sheet: (s) => (sheetKey(s) === key ? null : undefined), ends: endsWithout(book, key) }
   const rest: BookInput = { ...book, sheets: book.sheets.filter((_, i) => i !== s) }
+  if (rest.activeSheet !== undefined && sheetKey(rest.activeSheet) === key) rest.activeSheet = rest.sheets.find((s) => !s.hidden)!.name
   if (book.names) rest.names = book.names.filter((n) => n.scope === undefined || sheetKey(n.scope) !== key)
   return { ok: true, book: rewriteBook(rest, t, sheetNames(book)), geometry: [{ kind: 'deleteSheet', s }] }
 }
@@ -118,10 +120,11 @@ const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (
 export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'very'): Applied {
   const key = sheetKey(sheet)
   if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
-  const sheets = book.sheets.map((s) => {
+  const sheets: BookInput['sheets'] = book.sheets.map((s) => {
     if (sheetKey(s.name) !== key) return s
     const { hidden: _, ...rest } = s
     return hidden ? { ...rest, hidden } : rest
   })
-  return { ok: true, book: { ...book, sheets }, geometry: [] }
+  const activeSheet = hidden && book.activeSheet !== undefined && sheetKey(book.activeSheet) === key ? sheets.find((s) => !s.hidden)!.name : book.activeSheet
+  return { ok: true, book: { ...book, sheets, ...(activeSheet !== undefined ? { activeSheet } : {}) }, geometry: [] }
 }

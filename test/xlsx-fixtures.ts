@@ -2,7 +2,7 @@
  * Hand-made xlsx packages for the reader's tests: parts as text, zipped by the package's own writer. `getBook()` makes
  * a minimal workbook around sheet bodies; any part can be replaced or left out to test what a file may lack.
  */
-import type { CellValue, ComputeResult } from '../src/contract.js'
+import type { BookInput, CellValue, ComputeResult } from '../src/contract.js'
 import { readXlsx, type XlsxCached, type XlsxRead } from '../src/xlsx.js'
 import { zip } from '../src/xlsx/zip/write.js'
 
@@ -76,3 +76,9 @@ export const storedOf = (result: ComputeResult): XlsxCached => ({
     ),
   })),
 })
+
+/** Content-only roundtrips compare every field except presentation state, which xlsx-view.test.ts checks. */
+export function withoutView(book: BookInput): BookInput {
+  const { activeSheet: _, ...rest } = book
+  return { ...rest, sheets: rest.sheets.map(({ view: _, ...sheet }) => sheet) }
+}

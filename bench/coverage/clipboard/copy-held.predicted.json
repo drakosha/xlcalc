@@ -1,0 +1,26 @@
+{
+  "en-US": {
+    "grid": "a\tb\r\nc\td\r\ne\tf\r\n",
+    "special": "\"line\nnext\"\r\n\"tab\tstop\"\r\n\"a\"\"b\"\r\n\"\"\"first\"\r\n\"last\"\"\"\r\n\"line\n\"\"quote\"\"\"\r\n\"carriage\rreturn\"\r\n\"pair\r\nnext\"\r\n\r\n tail \r\n",
+    "single": "a\r\n",
+    "empty": "\t\r\n\t\r\n",
+    "narrow": "2026-03-15\r\n123456789012\r\n1.23456789\r\n",
+    "hidden-row": "a\tb\r\nc\td\r\ne\tf\r\n",
+    "hidden-column": "a\tb\r\nc\td\r\ne\tf\r\n",
+    "filtered": "a\tb\r\nc\td\r\n",
+    "merged": "merged\t\tright\r\n\t\tbelow\r\n",
+    "spill": "1\t2\r\n3\t4\r\n"
+  },
+  "ru-RU": {
+    "grid": "a\tb\r\nc\td\r\ne\tf\r\n",
+    "special": "\"line\nnext\"\r\n\"tab\tstop\"\r\n\"a\"\"b\"\r\n\"\"\"first\"\r\n\"last\"\"\"\r\n\"line\n\"\"quote\"\"\"\r\n\"carriage\rreturn\"\r\n\"pair\r\nnext\"\r\n\r\n tail \r\n",
+    "single": "a\r\n",
+    "empty": "\t\r\n\t\r\n",
+    "narrow": "2026-03-15\r\n123456789012\r\n1,23456789\r\n",
+    "hidden-row": "a\tb\r\nc\td\r\ne\tf\r\n",
+    "hidden-column": "a\tb\r\nc\td\r\ne\tf\r\n",
+    "filtered": "a\tb\r\nc\td\r\n",
+    "merged": "merged\t\tright\r\n\t\tbelow\r\n",
+    "spill": "1\t2\r\n3\t4\r\n"
+  }
+}

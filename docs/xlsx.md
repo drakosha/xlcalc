@@ -110,6 +110,27 @@ A sheet a file marks `state="hidden"` gets `hidden: true`, one marked `state="ve
 { name: 'Rates', cells: { … }, hidden: true }, { name: 'Keys', cells: { … }, hidden: 'very' }
 ```
 
+### The saved active sheet and view
+
+A grid can reopen a workbook on its saved sheet and at its saved selection, scroll position and zoom. `book.activeSheet` names the active visible sheet. Each sheet's `view` holds `activeCell`, `selection` (an array of A1 cells or ranges), `topLeft`, and `zoom` (percent, 10 to 400). The active sheet's tab is the one selected.
+
+```js
+const book = {
+  activeSheet: 'Plan',
+  sheets: [{ name: 'Plan', cells: {}, view: {
+    activeCell: 'C4', selection: ['C4:D5', 'F7'], topLeft: 'B3', zoom: 125,
+  } }],
+}
+```
+
+The reader takes `workbookView.activeTab` from the first workbook view and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane. The writer restores those fields; a book without them keeps the previous writer's first-visible-sheet default. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, inactive panes' selections and gridline settings are outside this model, and so is a group of selected tabs: it is read as the active sheet alone, so a book never opens with its sheets grouped, where an edit goes to all of them.
+
+Views change neither values nor `inputHash`. `getLayout()`, `getBook()` and snapshots retain them in every kind of session. Renaming the active sheet updates its name; deleting or hiding it chooses the first visible sheet. The host keeps live selection and scrolling itself and overlays `activeSheet` and `view` on the book before saving. They have no `setLayout` edit, so moving around a grid creates no undo steps.
+
+#### How it was checked
+
+`test/xlsx-view.test.ts` reads explicit OOXML fields, then writes, reads, writes and reads them again. It checks the first visible sheet default, input validation, both hashes in both execution modes, all three kinds of session, and active-sheet changes through rename, hide, delete and undo. No default XML behavior was changed for books without saved view fields.
+
 ### Filters
 
 A sheet whose rows a filter hid gets `filtered: true`. Then `SUBTOTAL` with codes 1 to 11 leaves out its hidden rows too, as Excel does, and so do structure operations ([docs/structure.md](structure.md)). Excel takes a sheet as filtered by what its filters hold, not by the mark `filterMode` alone:
@@ -187,7 +208,7 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | `locale` | a locale the package does not have |
 | `part` | a missing sheet part, a cell outside the sheet |
 
-View settings such as zoom, gridlines and the selection are not reported. A page setup is reported only when someone made one, for example a landscape page or a fit to width.
+Gridlines and other view settings outside `SheetView` are not reported. A page setup is reported only when someone made one, for example a landscape page or a fit to width.
 
 ### The language of the messages
 

@@ -19,7 +19,7 @@ export type Tag = string
 export const HOST = process.env.XLWIN_HOST ?? 'user@windows-host'
 const BASE = 'C:\\xlcalc'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
-export const OUT = join(HERE, 'out')
+export const OUT = process.env.XLWIN_OUT ?? join(HERE, 'out')
 /** One SSH connection shared by the calls of a run: a logon on the machine costs seconds. */
 const OPTS = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', '-o', 'ControlMaster=auto', '-o', `ControlPath=${join(homedir(), '.cache/xlwin-%C')}`, '-o', 'ControlPersist=120']
 const OWNER = `${hostname()}:${process.pid}`
@@ -136,9 +136,9 @@ export const metaOf = (e: WinEnv, tag: Tag) => ({
 export async function withWindowsExcel<T>(tag: Tag, fn: (e: WinEnv) => Promise<T>): Promise<T> {
   // a tag Windows cannot be set to stops here, before the machine is touched
   windowsLocale(tag)
-  syncScripts()
   await lock()
   try {
+    syncScripts()
     host('clean')
     return await fn(await ensureLocale(tag))
   } finally {
@@ -171,12 +171,13 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
   const remote = `${BASE}\\work\\${name}`
   rmSync(local, { recursive: true, force: true })
   mkdirSync(local, { recursive: true })
+  for (const script of ['xl.ps1', 'cond.ps1']) copyFileSync(join(HERE, script), join(local, script))
   books.forEach((b, i) => copyFileSync(b.file, join(local, `${i}.xlsx`)))
   writeFileSync(join(local, 'job.json'), JSON.stringify({ books: books.map((b, i) => ({ file: `${i}.xlsx`, steps: b.steps })) }))
   try {
     exec('scp', ['-q', '-r', ...OPTS, local, `${HOST}:C:/xlcalc/work/`], 300_000)
     const timedOut = await new Promise<boolean>((resolve, reject) => {
-      const child = spawn('ssh', [...OPTS, HOST, psLine('xl.ps1', remote)])
+      const child = spawn('ssh', [...OPTS, HOST, `powershell -NoProfile -ExecutionPolicy Bypass -File ${remote}\\xl.ps1 ${remote}`])
       let err = ''
       child.stderr.on('data', (d: Buffer) => (err += d.toString('utf8')))
       child.stdout.on('data', () => {})

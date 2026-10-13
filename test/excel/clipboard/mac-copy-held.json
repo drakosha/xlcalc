@@ -1,0 +1,59 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "platform": "Mac",
+  "locale": "ru-RU"
+ },
+ "cases": [
+  {
+   "id": "grid",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       },
+       "B1": {
+        "value": "b"
+       },
+       "A2": {
+        "value": "c"
+       },
+       "B2": {
+        "value": "d"
+       },
+       "A3": {
+        "value": "e"
+       },
+       "B3": {
+        "value": "f"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:B3",
+   "rows": [
+    [
+     "a",
+     "b"
+    ],
+    [
+     "c",
+     "d"
+    ],
+    [
+     "e",
+     "f"
+    ]
+   ]
+  }
+ ],
+ "answers": {
+  "grid": {
+   "text": "a\tb\r\nc\td\r\ne\tf"
+  }
+ }
+}

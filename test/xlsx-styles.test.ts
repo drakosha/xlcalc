@@ -1,3 +1,4 @@
+import { withoutView } from './xlsx-fixtures.js'
 /**
  * Styles both ways: theme colours with their tint, the legacy palette and a book's own, built-in and custom
  * number formats, equal styles shared, fonts relative to the default one, and what a style cannot hold reported
@@ -166,7 +167,7 @@ describe('xlsx styles: writing and reading back', () => {
     expect(issues).toEqual([])
     const r = await readXlsx(data)
     const cells = { ...book.sheets[0].cells, A1: { ...book.sheets[0].cells.A1, numberFormat: 2 }, A5: { value: 5, numberFormat: 9 } }
-    expect(expandBook(r.book)).toEqual({ ...book, sheets: [{ ...book.sheets[0], cells }] })
+    expect(expandBook(withoutView(r.book))).toEqual({ ...book, sheets: [{ ...book.sheets[0], cells }] })
     expect(r.issues).toEqual([])
   })
 })

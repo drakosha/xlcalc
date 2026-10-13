@@ -5,7 +5,7 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
+import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, ExplainOptions, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
@@ -422,7 +422,14 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       getLayout: () => value(call('getLayout', [])),
       getUsedRange: (sheet) => value(call('getUsedRange', [sheet])),
       getEnd: (sheet, cell, direction) => value(call('getEnd', [sheet, cell, direction])),
-      explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
+      explain: (sheet, cell, eo) => {
+        try {
+          const { signal, timeoutMs, rest } = splitCall<ExplainOptions>(eo)
+          return value(call('explain', [sheet, cell, rest], { signal, timeoutMs }))
+        } catch (e) {
+          return Promise.reject(e)
+        }
+      },
       getCells: (sheet, range) => value(call('getCells', [sheet, range])),
       getCell: (sheet, cell) => value(call('getCell', [sheet, cell])),
       getViewport: (sheet, range, vo) => value(call('getViewport', [sheet, range, vo])),

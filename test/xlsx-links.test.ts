@@ -1,3 +1,4 @@
+import { withoutView } from './xlsx-fixtures.js'
 /**
  * Links to other workbooks in xlsx: the reader takes each link in the order the workbook lists them, with its target,
  * sheets, names and stored values of every kind; a link of another kind keeps its number; formulas and names over the
@@ -270,7 +271,7 @@ describe('xlsx links: writing', () => {
       externalBooks: [BOOK2, { target: '', sheets: [] }, { target: 'file:///C:/data/Book4.xlsx', sheets: [{ name: 'Data', cells: { XFD1048576: 'end' } }] }],
     }
     const r = await readXlsx((await writeXlsx({ book }, { values: 'omit' })).data)
-    expect(r.book).toEqual(book)
+    expect(withoutView(r.book)).toEqual(book)
     expect(r.issues).toEqual([])
     expect(compute(r.book).inputHash).toBe(compute(book).inputHash)
   })

@@ -8,6 +8,7 @@
  */
 import { advance } from './advances.js'
 import { BLANK, FILL, PAD } from './style.js'
+export { columnPoints, widthOf } from '../column-width.js'
 
 /** Widths in points, by characters of equal width: Latin letters, digits and signs. */
 const WIDTHS: [number, string][] = [
@@ -48,12 +49,6 @@ export function textWidth(s: string): number {
   return w
 }
 
-/** The width of a column without its own: 8 digits and the padding (xlsx `baseColWidth` 8). */
-const DEFAULT_POINTS = 8 * DIGIT + 5
-
-/** Points of a column of xlsx width `w` (characters of a digit with the padding); the default column without one. */
-export const columnPoints = (w: number | undefined): number => (w === undefined ? DEFAULT_POINTS : Math.trunc(DIGIT * w + (21 * DIGIT) / 256))
-
 /** The room for text in a cell of `points`: the column less its padding. */
 export const room = (points: number): number => points - 5
 
@@ -89,9 +84,6 @@ export function fitText(s: string): number {
   const u = laidOut(s, advance)
   return Math.max(Math.floor((u * 11 + 1024) / 2048) + 7, Math.floor((u * 11 * 31) / (2048 * 30)) + 5)
 }
-
-/** The xlsx width of a column of `points`, in 256ths of a digit as Excel writes it. */
-export const widthOf = (points: number): number => Math.floor((points * 256) / DIGIT) / 256
 
 /** Excel shows at most 255 characters of a formatted number; `#` fills the cell instead. */
 export const MAX_SHOWN = 255

@@ -1,0 +1,5 @@
+{
+  "quoted-controls": [["a\tb", "a\nb"], ["a\n\"b\"", "end"], [null, null], [null, null]],
+  "quote-only": [["abc", null], ["first\r\nlast", null], [null, null], ["sentinel", null]],
+  "trailing-blanks": [["a", null], [null, null], [null, null], [null, null]]
+}
