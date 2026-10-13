@@ -188,7 +188,7 @@ const saved = await writeXlsx(session.getSnapshot())
 console.log((await readXlsx(saved.data)).cached.sheets[0].cells.A2) // → { value: 63 }
 ```
 
-The reader also keeps `book.activeSheet` and each sheet's `view` (`activeCell`, `selection`, `topLeft`, `zoom`, `tabSelected`), so a grid can restore the saved window. `getLayout()` retains them; overlay live view state on the book when saving. They do not affect `inputHash`. [Saved views](docs/xlsx.md#the-saved-active-sheet-and-view) has the file mapping and limits.
+The reader also keeps `book.activeSheet` and each sheet's `view` (`activeCell`, `selection`, `topLeft`, `zoom`), so a grid can restore the saved window. `getLayout()` retains them; overlay live view state on the book when saving. They do not affect `inputHash`. [Saved views](docs/xlsx.md#the-saved-active-sheet-and-view) has the file mapping and limits.
 
 ### Show a formula in a locale
 

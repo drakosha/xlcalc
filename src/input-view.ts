@@ -1,12 +1,11 @@
 /** Saved view metadata checked at the book boundary; it does not enter computation. */
-import { array, checkAddress, checkBoolean, checkNumber, InputError, object, onlyKeys } from './input.js'
+import { array, checkAddress, checkNumber, InputError, object, onlyKeys } from './input.js'
 
 export function checkSheetView(v: unknown, path: string): void {
   const view = object(v, path, 'a sheet view such as { activeCell: "B2", zoom: 125 }')
-  onlyKeys(view, path, ['activeCell', 'selection', 'topLeft', 'zoom', 'tabSelected'])
+  onlyKeys(view, path, ['activeCell', 'selection', 'topLeft', 'zoom'])
   for (const field of ['activeCell', 'topLeft']) if (view[field] !== undefined) checkAddress(view[field], `${path}.${field}`)
   if (view.zoom !== undefined) checkNumber(view.zoom, `${path}.zoom`, 10, 400, true)
-  if (view.tabSelected !== undefined) checkBoolean(view.tabSelected, `${path}.tabSelected`)
   if (view.selection !== undefined) {
     const ranges = array(view.selection, `${path}.selection`, 'an array of A1 cells or ranges')
     if (!ranges.length) throw new InputError(`${path}.selection`, 'expected at least one cell or range')

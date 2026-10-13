@@ -112,7 +112,7 @@ A sheet a file marks `state="hidden"` gets `hidden: true`, one marked `state="ve
 
 ### The saved active sheet and view
 
-A grid can reopen a workbook on its saved sheet and at its saved selection, scroll position and zoom. `book.activeSheet` names the active visible sheet. Each sheet's `view` holds `activeCell`, `selection` (an array of A1 cells or ranges), `topLeft`, `zoom` (percent, 10 to 400) and `tabSelected` (including a saved group of selected tabs).
+A grid can reopen a workbook on its saved sheet and at its saved selection, scroll position and zoom. `book.activeSheet` names the active visible sheet. Each sheet's `view` holds `activeCell`, `selection` (an array of A1 cells or ranges), `topLeft`, and `zoom` (percent, 10 to 400). The active sheet's tab is the one selected.
 
 ```js
 const book = {
@@ -123,7 +123,7 @@ const book = {
 }
 ```
 
-The reader takes `workbookView.activeTab` from the first workbook view and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane. The writer restores those fields; a book without them keeps the previous writer's first-visible-sheet default. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, inactive panes' selections and gridline settings are outside this model.
+The reader takes `workbookView.activeTab` from the first workbook view and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane. The writer restores those fields; a book without them keeps the previous writer's first-visible-sheet default. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, inactive panes' selections and gridline settings are outside this model, and so is a group of selected tabs: it is read as the active sheet alone, so a book never opens with its sheets grouped, where an edit goes to all of them.
 
 Views change neither values nor `inputHash`. `getLayout()`, `getBook()` and snapshots retain them in every kind of session. Renaming the active sheet updates its name; deleting or hiding it chooses the first visible sheet. The host keeps live selection and scrolling itself and overlays `activeSheet` and `view` on the book before saving. They have no `setLayout` edit, so moving around a grid creates no undo steps.
 

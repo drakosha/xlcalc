@@ -6,7 +6,7 @@ import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 afterAll(closeCalcs)
 const plain = (): BookInput => ({ sheets: [{ name: 'Hidden', hidden: true, cells: {} }, { name: 'First', cells: { A1: { value: 1 } } }, { name: 'Saved', cells: { C4: { formula: 'First!A1*2' } } }] })
-const viewed = (): BookInput => ({ ...plain(), activeSheet: 'Saved', sheets: plain().sheets.map((s) => s.name === 'Saved' ? { ...s, view: { activeCell: 'C4', selection: ['C4:D5', 'F7'], topLeft: 'B3', zoom: 125, tabSelected: true } } : s) })
+const viewed = (): BookInput => ({ ...plain(), activeSheet: 'Saved', sheets: plain().sheets.map((s) => s.name === 'Saved' ? { ...s, view: { activeCell: 'C4', selection: ['C4:D5', 'F7'], topLeft: 'B3', zoom: 125 } } : s) })
 
 it('reads explicit OOXML fields before the writer supports them', async () => {
   const zip = await JSZip.loadAsync((await writeXlsx({ book: plain() })).data)
@@ -68,14 +68,18 @@ describe.each(['closures', 'eval'] as const)('view metadata, %s', (execution: Ex
   })
 })
 
-it('keeps grouped tabs, a hidden preceding sheet and the selection of the active frozen pane', async () => {
+it('selects the active tab alone, and keeps a hidden preceding sheet and the selection of the active frozen pane', async () => {
   const b = viewed()
-  b.sheets[1].view = { tabSelected: true }
   b.sheets[2].frozen = { rows: 1, columns: 1 }
   b.sheets[2].view!.topLeft = 'A1'
   const first = await readXlsx((await writeXlsx({ book: b })).data)
+  // another sheet made active after reading: its tab alone is selected, the book does not open grouped
+  const data = (await writeXlsx({ book: { ...first.book, activeSheet: first.book.sheets[1].name } })).data
+  const zip = await JSZip.loadAsync(data)
+  const selected = await Promise.all(first.book.sheets.map(async (_, i) => (await zip.file(`xl/worksheets/sheet${i + 1}.xml`)!.async('string')).includes('tabSelected="1"')))
+  expect(selected).toEqual(first.book.sheets.map((_, i) => i === 1))
   const second = await readXlsx((await writeXlsx({ book: first.book })).data)
-  expect(second.book.sheets[1].view).toEqual({ tabSelected: true })
+  expect(second.book.sheets[1].view).toBeUndefined()
   expect(second.book.sheets[2].view).toEqual(b.sheets[2].view)
   expect(second.book.sheets[2].frozen).toEqual({ rows: 1, columns: 1 })
 })
