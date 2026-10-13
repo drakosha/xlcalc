@@ -78,7 +78,7 @@ export function replacer(query: string, by: string, o: Pick<FindCellsOptions, 'c
   }
 }
 
-/** A sheet's hidden rows or columns: whether there are any; whether a line is hidden, and how many lines are hidden before it, the band of lines it is in (a hidden line's between the bands around it). */
+/** A sheet's hidden rows or columns: whether there are any; whether a line is hidden, and how many lines are hidden before it, the band of lines it is in (a hidden line's, the band after it). */
 interface HiddenLines {
   any: boolean
   at(i: number): [hidden: boolean, before: number]
@@ -100,7 +100,7 @@ function hiddenLines<T>(map: Record<string, T> | undefined, axis: 'r' | 'c', hid
     any: spans.length > 0,
     at(i) {
       const k = lowerBound(spans, i, (x) => x[1])
-      return k < spans.length && spans[k][0] <= i ? [true, before[k] + 0.5] : [false, before[k]]
+      return k < spans.length && spans[k][0] <= i ? [true, before[k + 1]] : [false, before[k]]
     },
   }
 }
@@ -216,13 +216,18 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
     if (ix.length) yield [ix, places]
   }
 
-  /** A cell's position in Find's order over `refs`, as `found` gives one (a hidden line's band between those around it); null outside them. */
+  /**
+   * A cell's position in Find's order over `refs`, as `found` gives one; null outside them. On a filtered sheet a cell of
+   * a hidden line stands in its range's first block, as Excel's Find from it goes on there (the set `find/rules-held-4`).
+   */
   const positionOf = (refs: Ref[], s: number, r: number, c: number): number[] | null => {
     const n = refs.findIndex((x) => x.s === s && hasCell(x, r, c))
     if (n < 0) return null
     const { rows: hr, cols: hc } = linesOf(s)
-    const blocks = filtered(s) && (hr.any || hc.any)
-    return [n, blocks ? hr.at(r)[1] : 0, blocks ? hc.at(c)[1] : 0, o.byColumns ? c * MAX_ROWS + r : r * MAX_COLS + c]
+    const place = o.byColumns ? c * MAX_ROWS + r : r * MAX_COLS + c
+    if (!filtered(s) || (!hr.any && !hc.any)) return [n, 0, 0, place]
+    const hidden = hr.at(r)[0] || hc.at(c)[0]
+    return [n, hr.at(hidden ? refs[n].r1 : r)[1], hc.at(hidden ? refs[n].c1 : c)[1], place]
   }
 
   function* found(refs: Ref[], rows: number[] | null, from: number[] | null, to: number[] | null = null): Generator<Found | void> {
