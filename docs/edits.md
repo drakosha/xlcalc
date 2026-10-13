@@ -80,6 +80,7 @@ A cell that shows its lines' look without a look of its own takes none: the line
 - A cell's own General stays its own.
 - The cell keeps its style, note, hyperlink and `meta`.
 - A number, a date or a formula's number too wide for a column of the default width, or of one Excel fitted, widens the column as Excel widens it (`entryWidth`, [Fitting columns](formats.md#fitting-columns)), in the same step of the undo; `width` in the answer is the width, and `widen: false` gives it without setting it. A hidden column and a cell merged across columns are left as they are.
+- Text with a line break wraps the cell (its style, its own or else its row's or column's, with `alignment.wrap`, a style of the table found or added; the answer's `styles` is the new table), and the row of a cell that wraps fits it as AutoFit does, unless its height was set by hand or it is hidden, in the same step ([A line break](entry.md#a-line-break), [Fitting rows](formats.md#fitting-rows)).
 - A value the cell's rule of data validation does not take is written, with `validation`: `{ valid: false, rule, severity, message }`, the message the rule's `error` or the library's text in the book's locale. With `refuseInvalid: true` such a value is refused instead (`code: 'validation'`, the cell, the rule and its style) and nothing changes: the host shows Excel's window first and calls again without the option where the person keeps the value (a warning's Yes, an information's OK); for a rule of the style `stop` Excel does not take the value at all. Without the option the host calls `undo()` if the person cancels. A rule that shows no alert (`showError: false`) gives none.
 - A formula that does not read is refused with its check code, its position in the text and Excel's message in the book's locale; so are a change of part of an old-kind array (`array`) and a formula in a table's header cell (`header`). Text typed into a header cell renames its column.
 
@@ -97,7 +98,7 @@ A cell that shows its lines' look without a look of its own takes none: the line
 
 `pasteText(sheet, cell, text, opts?)` pastes text from the clipboard as Excel pastes it, which reads text otherwise than typing in places ([A paste and Control+Return](entry.md#a-paste-and-controlreturn)):
 
-- The text fills a rectangle from the cell, its rows at line breaks and its fields at tabs (`parseClipboard`); an empty field, a short row's missing ones and the row after a last line break clear their cells. The answer's `range` is the rectangle.
+- The text fills a rectangle from the cell, its rows at line breaks and its fields at tabs (`parseClipboard`), a field begun by a quote running to its closing quote, line breaks inside it, and wrapping its cell; an empty field, a short row's missing ones and the row after a last line break clear their cells. The answer's `range` is the rectangle.
 - Each field is read as typed into its cell, but an apostrophe stays part of the text, a formula Excel does not take is text, a percent cell has no percent editor and `€5` takes the euro format.
 - No column widens and no rule of data validation is checked.
 - Part of an old-kind array, a formula into a table's header cell and a rectangle past the sheet's edge (`off_sheet`) are refused with their `sheet` and `cell`; nothing is written.
