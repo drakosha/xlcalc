@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.32.1 (2026-10-13)
+
+Internal release; not published to npm. The synthetic book's values and hashes are as in 0.32.0.
+
+Fixed:
+
+- The refusal of `limits.writes` is in the book's language, as a person's edit brings it: in a ru-RU book `Правка записывает слишком много ячеек: 1048576 при пределе 100000`. The other limits' messages, which a host's settings bring, stay in English.
+
 ## 0.32.0 (2026-10-13)
 
 Internal release; not published to npm. A bound on the cells one edit writes. The synthetic book's values and hashes are as in 0.31.0.
