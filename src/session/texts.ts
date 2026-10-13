@@ -73,7 +73,7 @@ export function typedTexts(s: EngineState, typings: Typing[], now: string, way: 
     const edit = { ...ref, input: typed.input }
     const refused = pasted ? null : textRefusal(s, edit)
     if (refused) return { ok: false, refusal: refused, ref }
-    cells.set(k, { i, r, c, edit, ...(earlier?.wrap || breaksLine(text) ? { wrap: true as const } : {}) })
+    cells.set(k, { i, r, c, edit, ...(earlier?.wrap || breaksLine(text, typed.input) ? { wrap: true as const } : {}) })
   }
   return pasted ? takenTogether(s, [...cells.values()]) : { ok: true, cells: [...cells.values()] }
 }
@@ -136,7 +136,7 @@ export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c
   const formula = typed.input?.formula
   const copy = formula === undefined ? null : formulaCopier(s.input, s.tables)
   const from = { sheet, row: a.r, col: a.c }
-  const wrap = breaksLine(text) ? { wrap: true as const } : {}
+  const wrap = breaksLine(text, typed.input) ? { wrap: true as const } : {}
   const out: Typed[] = []
   for (let r = x.r1; r <= x.r2; r++)
     for (let c = x.c1; c <= x.c2; c++) {

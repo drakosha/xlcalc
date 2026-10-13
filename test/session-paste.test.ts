@@ -181,7 +181,12 @@ describe('parseClipboard', () => {
   it('rows at line breaks, fields at tabs, a rectangle as wide as the longest row; a line break after the last row is a row', () => {
     expect(parseClipboard('1\t2\r\n3\r4\t5\t6\n')).toEqual([['1', '2', ''], ['3', '', ''], ['4', '5', '6'], ['', '', '']])
     expect(parseClipboard('')).toEqual([['']])
-    expect(parseClipboard('"a\tb"')).toEqual([['"a', 'b"']])
+  })
+  it('a field begun by a quote to its closing quote, tabs and line breaks inside, a doubled quote one, what follows joined; a quote elsewhere a character', () => {
+    expect(parseClipboard('"a\tb"')).toEqual([['a\tb']])
+    expect(parseClipboard('"x\ny"\tz\n1\t2')).toEqual([['x\ny', 'z'], ['1', '2']])
+    expect(parseClipboard('"a""b"c\t"d')).toEqual([['a"bc', 'd']])
+    expect(parseClipboard(' "a\nb"')).toEqual([[' "a'], ['b"']])
     expect(text.parseClipboard).toBe(parseClipboard)
     expect(() => parseClipboard(null as never)).toThrow(new InputError('text', 'expected a string, got null'))
   })

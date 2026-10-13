@@ -1,9 +1,10 @@
 /**
- * Text with a line break typed into cells (`setCellText`, `setCellTexts`, `fillCellText`), as Excel takes it
- * (`test/excel/rows/`): the cell wraps its text, its style taking `alignment.wrap` (a style of the book's table found or
- * added), and the row of a cell that wraps fits it as AutoFit does, unless its height was set by hand or it is hidden.
+ * Text with a line break typed into cells (`setCellText`, `setCellTexts`, `fillCellText`) or pasted (`pasteText`), as
+ * Excel takes it (`test/excel/rows/`): the cell wraps its text, its style taking `alignment.wrap` (a style of the book's
+ * table found or added); a formula typed over lines does not. Typed, the row of a cell that wraps fits it as AutoFit
+ * does, unless its height was set by hand or it is hidden; a paste fits no row.
  */
-import type { CellStyle } from '../contract.js'
+import type { CellInput, CellStyle } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { fitHeights, stateRows } from '../layout/heights.js'
 import { sheetLines } from '../layout/lines.js'
@@ -13,8 +14,8 @@ import type { SetLayoutEdit } from './book.js'
 import { patchStyle } from './styles.js'
 import type { Typed } from './texts.js'
 
-/** Whether typed text breaks a line, which makes Excel wrap the cell. */
-export const breaksLine = (text: string): boolean => /[\r\n]/.test(text)
+/** Whether typed text breaks a line, which makes Excel wrap the cell: text that is no formula (`input`, what it gives the cell). */
+export const breaksLine = (text: string, input: CellInput | null): boolean => input?.formula === undefined && /[\r\n]/.test(text)
 
 /**
  * The typed cells marked `wrap` given the style that wraps (their own, else their row's or column's, with `alignment.wrap`)
