@@ -1954,6 +1954,9 @@ export interface SheetExtent {
   columns: number
 }
 
+/** The way Control and an arrow key go from a cell (`Session.getEnd`). */
+export type EndDirection = 'up' | 'down' | 'left' | 'right'
+
 /** A sheet without its cells and their looks (`Session.getLayout`). */
 export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 
@@ -2100,6 +2103,14 @@ export interface Session {
    * columns, spills and cells without a value, not a pass over all its cells.
    */
   getUsedRange(sheet: string): SheetExtent
+  /**
+   * The cell Control and an arrow key come to from `cell`, as Excel's `Range.End`: from a cell that holds something
+   * (a value, a formula, a spilled value) with such a cell next to it, the last of that block; else the next cell that
+   * holds something, or the sheet's edge (row 1 or 1,048,576, column A or XFD). Cells with a look alone are empty;
+   * hidden rows and columns are passed over, as if not there. It costs the cells of the line it goes along, not a pass
+   * over the sheet.
+   */
+  getEnd(sheet: string, cell: string, direction: EndDirection): string
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle of a sheet (`B2:D9`, `B2`, whole columns `B:D`, whole rows `2:9`), or of several (a cell in
@@ -2243,6 +2254,7 @@ export interface AsyncSession {
   /** As `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
+  getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
   /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
   getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
