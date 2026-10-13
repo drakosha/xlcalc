@@ -1557,10 +1557,6 @@ Excel's answers that the tests compare with are stored in `test/excel/`, so the 
 
 Functions live in `src/functions/<category>.ts` (`math`, `statistical`, `logical`, `information`, `text`, `date`, `financial`, `lookup`, `engineering`, `database`; old names such as `NORMDIST` sit next to their modern versions), each file with its own registry, a large category assembled from `src/functions/<category>/`; `src/functions.ts` assembles them. A function declares the kinds of its arguments (`args: 'n i?'`, see `src/args.ts`), and the shared argument layer coerces them, so an implementation gets numbers, text, lists or grids and never repeats the coercion rules. Ported code keeps its attribution in the file header. A function joins its registry when `test/excel.test.ts` passes for it; the coverage measurement (`bench/coverage`, `docs/coverage-formulajs.md`) lists the cases and the classes of the remaining formula.js functions.
 
-## Moving from the old names
-
-Calls renamed for what they do (`createSession`, `editStructure`, the session's reading methods with `get`, `numberFormat`, `appearance`, `diagnostics`) answer to their new names alone: an old name is no function (a `TypeError` where it is called, and no type to compile against), and input that names the number format `format` is an `InputError` that names `numberFormat`. [docs/migration.md](docs/migration.md) lists the old name and the new of each, and the calls that answer otherwise than before.
-
 ## License
 
 MIT. Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT, Copyright (c) 2014 Sutoiku, Inc.), [jStat](https://github.com/jstat/jstat) (MIT, Copyright (c) 2013 jStat) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0, Copyright (C) 2013-present SheetJS); [THIRD_PARTY.md](THIRD_PARTY.md) has their license texts and the files they are in.
