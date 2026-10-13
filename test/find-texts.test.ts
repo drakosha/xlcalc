@@ -1,7 +1,7 @@
 /**
  * The texts a session keeps for `findCells` (`src/session/search.ts`) change no answer: after each call of a series that
  * changes the book (cells, formulas, formats, widths, hidden rows, a structure operation, undo and redo, names, styles,
- * an array of the old kind, a spill that grows, conditional formats that read another cell, a table), every kind of
+ * an array of the old kind, a spill that grows, conditional formats that read another cell, a table, a replacement), every kind of
  * search over the session that searched before gives what a new session over the same book and clock gives. In a
  * synchronous session, in the same thread and in a thread, with closures and eval, with display and without.
  */
@@ -96,6 +96,7 @@ const SERIES: [string, (s: AsyncSession) => Promise<unknown>][] = [
   ['styles', (s) => s.setStyles([{ font: { bold: true } }, { font: { italic: true } }])],
   ['the clock', (s) => s.setClock({ now: '2027-01-02T12:00:00Z', seed: 1 })],
   ['mixed changes', (s) => s.applyChanges([{ op: 'setCells', edits: [{ sheet: 'F', cell: 'B3', input: { value: 'x9' } }] }, { op: 'replaceCells', edits: [{ sheet: 'S', cell: 'A6', input: { value: 'x false' } }] }])],
+  ['a replacement', (s) => s.replaceInCells(ALL, 'x*', 'чай', { wildcards: true })],
   ['a hidden row on the filtered sheet shown', (s) => s.setLayout([{ sheet: 'F', rows: '2', set: { hidden: false } }])],
 ]
 

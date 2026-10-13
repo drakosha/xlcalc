@@ -1,8 +1,9 @@
 /**
  * Excel's Replace All (`Session.replaceInCells`), measured in Excel for Windows (`bench/coverage/replace/`): the cells
  * Find finds in the text they open with (Look in Formulas, hidden cells skipped as Find skips them), each one's text with
- * the query's matches put as the replacement is (`replacer`), entered back as the cell's own text edited (`inPlace`:
- * `6%` in a percent cell is 0.06, `5` is 500%). Excel enters every cell it found, its text changed or not. A text that
+ * the query's matches put as the replacement is (`replacer`), entered back as typed but without the percent editor (`6%`
+ * in a percent cell is 0.06, `-5` -500%) or the text format (a number stays a number), as `readEntry` reads text Excel's
+ * Replace puts back. Excel enters every cell it found, its text changed or not. A text that
  * reads as something else stays a text, as after an apostrophe (the book keeps no mark of one); an array of the old
  * kind is entered whole from its first cell wherever a cell of it was found. A text Excel would not take (a formula that
  * no longer reads, a formula into a table's header) leaves its cell as it was.
@@ -55,7 +56,7 @@ export function* replacedTexts(s: EngineState, given: RangeRef[], query: string,
     if (own?.array !== undefined) arrays.add(`${i}!${ref.cell}`)
     // a text that reads as something else is entered after the apostrophe it opens with
     const typed = own?.formula === undefined && typeof own?.value === 'string' && editText(i, r, c, own) === `'${text}` ? "'" : ''
-    const t = cellText(s, i, r, c, own, typed + (replace(text) ?? text), now, 'inPlace')
+    const t = cellText(s, i, r, c, own, typed + (replace(text) ?? text), now, 'replaced')
     // a formula into an array's first cell is the array's; anything else there changes part of it
     const input = t.ok ? (own?.array !== undefined && t.input?.formula !== undefined ? { ...t.input, array: own.array } : t.input) : null
     const refusal = t.ok ? textRefusal(s, { ...ref, input }) : t

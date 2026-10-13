@@ -73,8 +73,8 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   return readEntry(text, checkEntryOptions(opts))
 }
 
-/** How text comes into a cell: typed over it, edited in place (F2, a double click, the formula bar), pasted from the clipboard. */
-export type EntryWay = 'typed' | 'inPlace' | 'pasted'
+/** How text comes into a cell: typed over it, edited in place (F2, a double click, the formula bar), pasted from the clipboard, put back by Excel's Replace. */
+export type EntryWay = 'typed' | 'inPlace' | 'pasted' | 'replaced'
 
 /**
  * Text that comes into a cell (options checked), typed over it, edited in place or pasted from the clipboard (`way`).
@@ -82,7 +82,9 @@ export type EntryWay = 'typed' | 'inPlace' | 'pasted'
  * Excel pastes text (the set `ui/paste-held`, Excel for Mac and Windows): read as typed, but an apostrophe stays part of
  * the text, a formula Excel does not take is text, a percent cell has no percent editor (`5` is 5, 500%), and a euro
  * sign before a whole number (`€5`) gives the euro format Excel gives it; the other forms with a euro sign were not
- * measured pasted and are read as typed.
+ * measured pasted and are read as typed. Put back by Excel's Replace (the sets `replace/rules-held` and `rules-held-2`):
+ * read as typed, but a percent cell has no percent editor (`6%` is 0.06, `5` 500%, `-5` -500%) and a cell of the text
+ * format takes a number as a number.
  */
 export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'): EntryResult {
   const pasted = way === 'pasted'
@@ -105,9 +107,9 @@ export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'
   }
   if (text === '') return cell.numberFormat !== undefined || Object.keys(kept).length ? input({}) : { ok: true, input: null }
   if (text.startsWith("'") && !pasted) return input({ value: text.slice(1) })
-  if (shows(cell.numberFormat, 'text') || text === '=') return input({ value: text })
+  if ((way !== 'replaced' && shows(cell.numberFormat, 'text')) || text === '=') return input({ value: text })
   if (text.startsWith('=')) return formula(text, 0)
-  const percent = !pasted && shows(cell.numberFormat, 'pct') && (way === 'typed' || /^[-+]/.test(text))
+  const percent = (way === 'typed' || way === 'inPlace') && shows(cell.numberFormat, 'pct') && (way === 'typed' || /^[-+]/.test(text))
   const typed = readTyped(text, rules, clock, percent)
   // `+` or `-` before what is no constant begins a formula (alone they are text), with the `%` the percent editor added
   // (`-5%` in a percent cell is `-5%%`, the set `entry/typed-keys-held-3`); Excel drops a `+` before a number
