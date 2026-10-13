@@ -1,7 +1,7 @@
 /**
  * The budget of one computation (`docs/async.md`): a soft deadline, an abort signal and size limits, checked at points
- * inside the engine (`spend`, `allot`, `allotSpill`, `count`), and the slice of computing after which a step yields
- * (`due`). The computation being run sets its budget active; on the synchronous path without options none is, and each
+ * inside the engine (`spend`, `allot`, `allotSpill`, `count`, `allotWrites`), and the slice of computing after which a
+ * step yields (`due`). The computation being run sets its budget active; on the synchronous path without options none is, and each
  * check is one comparison. The engine's loops are generators (`Steps`): `run` takes one to its end at once.
  */
 import type { AbortSignalLike, CalcErrorCode, CalcLimits, CellRef } from '../contract.js'
@@ -40,6 +40,7 @@ export class Budget {
   readonly cells: number
   readonly spill: number
   readonly formulas: number
+  readonly writes: number
 
   constructor(
     limits: CalcLimits = {},
@@ -52,6 +53,7 @@ export class Budget {
     // a host that bounds only `cells` bounds spills by it too, as before `spill` was its own limit
     this.spill = limits.spill ?? this.cells
     this.formulas = limits.formulas ?? Infinity
+    this.writes = limits.writes ?? Infinity
   }
 
   /** Set by the host to stop the computation (its calculator closed). */
@@ -128,6 +130,16 @@ export function count(n: number): void {
   if (active !== null && n > active.formulas) throw new CalcError('limit', `${n} formulas, over the limit of ${active.formulas}`, { limit: 'formulas', max: active.formulas, size: n })
 }
 
+/**
+ * An edit is about to write cells, `n` of them or as many as `n()` counts, called only under a limit: over
+ * `limits.writes` stops it before anything is written.
+ */
+export function allotWrites(n: number | (() => number)): void {
+  if (active === null || active.writes === Infinity) return
+  const size = typeof n === 'number' ? n : n()
+  if (size > active.writes) throw new CalcError('limit', `${size} cells written by one edit, over the limit of ${active.writes}`, { limit: 'writes', max: active.writes, size })
+}
+
 /** A limit error without a cell gets the cell of the formula being computed. */
 export function located(e: unknown, cell: () => CellRef): unknown {
   if (e instanceof CalcError && e.code === 'limit' && e.limit !== 'formulas' && !e.cell) {
@@ -187,4 +199,4 @@ export function portion<T>(g: Steps<T>, b: Budget, how: 'next' | 'throw' = 'next
 }
 
 /** A budget of limits alone (the synchronous path), or none without them. */
-export const limitsBudget = (limits: CalcLimits | undefined): Budget | null => (limits && (limits.cells !== undefined || limits.spill !== undefined || limits.formulas !== undefined) ? new Budget(limits) : null)
+export const limitsBudget = (limits: CalcLimits | undefined): Budget | null => (limits && Object.values(limits).some((v) => v !== undefined) ? new Budget(limits) : null)

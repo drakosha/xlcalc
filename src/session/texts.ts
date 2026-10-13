@@ -11,7 +11,7 @@ import type { CellRef, CellReplace, CellTextRefusal, CellValidationAlert, CellVa
 import type { EngineState } from '../engine.js'
 import { clipboardRows } from '../entry/clipboard.js'
 import type { EntryWay } from '../entry/index.js'
-import { spend } from '../exec/budget.js'
+import { allotWrites, spend } from '../exec/budget.js'
 import { array, checkAddress, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
@@ -99,7 +99,8 @@ function takenTogether(s: EngineState, cells: Typed[]): TypedTexts {
  * nothing, with the cell, and a rectangle past the sheet's edge.
  */
 export function pastedText(s: EngineState, i: number, r: number, c: number, text: string, now: string): { ok: true; cells: Typed[]; range: string } | { ok: false; refusal: PasteTextRefusal } {
-  const rows = clipboardRows(text)
+  // a paste over `limits.writes` stops before its rectangle is made
+  const rows = clipboardRows(text, allotWrites)
   const x = { r1: r, c1: c, r2: r + rows.length - 1, c2: c + rows[0].length - 1 }
   const sheet = s.sheetNames[i]
   const cell = formatAddress(r, c)
@@ -126,6 +127,7 @@ export function checkActive(v: unknown, x: Rect, path = 'opts.active'): { r: num
  */
 export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c: number }, text: string, now: string, way: EntryWay = 'typed'): TypedTexts {
   if (cellCount(x) > MAX_CELLS) throw new InputError('range', `a range of ${cellCount(x)} cells: an entry goes into ${MAX_CELLS} cells at most`)
+  allotWrites(cellCount(x))
   const sheet = s.sheetNames[i]
   const typed = readText(s, i, a.r, a.c, inputAt(s, i, formatAddress(a.r, a.c)), text, now, way)
   if (!typed.ok) return { ok: false, refusal: typed as Refusal<CellTextRefusal>, ref: { sheet, cell: formatAddress(a.r, a.c) } }

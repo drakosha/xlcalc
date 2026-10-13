@@ -12,6 +12,7 @@ import { tableKey, tablesOf } from '../tables/model.js'
 import { parseRange, shiftRect, type Rect } from './area.js'
 import { tiles } from './copy.js'
 import type { Applied } from './geometry.js'
+import { pasteOf } from './writes.js'
 
 /** The rectangles of a sheet whose looks an operation reads, moves or writes as entries, by sheet: its tables, a range's source and target. */
 function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
@@ -36,15 +37,13 @@ function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
       break
     case 'moveRange':
     case 'copyRange': {
-      const from = (o.from ?? {}) as Record<string, unknown>
-      const to = (o.to ?? {}) as Record<string, unknown>
-      const [fs, ts, src] = [index(from.sheet), index(to.sheet), range(from.range)]
-      if (!src) break
-      add(fs, src)
-      const at = op.op === 'copyRange' ? range(to.range) : range(to.cell)
-      if (at) add(ts, op.op === 'copyRange' ? tiles(src, at).area : shiftRect(src, at.r1 - src.r1, at.c1 - src.c1))
-      tables(fs)
-      tables(ts)
+      const p = pasteOf(book, op)
+      if (!p) break
+      const { src, at } = p
+      add(p.fs, src)
+      if (at) add(p.ts, p.copy ? tiles(src, at).area : shiftRect(src, at.r1 - src.r1, at.c1 - src.c1))
+      tables(p.fs)
+      tables(p.ts)
       break
     }
     case 'addTable':
