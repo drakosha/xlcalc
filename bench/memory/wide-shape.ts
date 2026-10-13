@@ -1,5 +1,5 @@
 /**
- * The memory and time of a book of the wide shape, made up, no data of it: sheet G of 344 rows from A to XFD of cells that
+ * The memory and time of a book of the wide shape, made up: sheet G of 344 rows from A to XFD of cells that
  * hold only a look, two looks, the second in the same 2,728 columns of every row (columns R, T, AD, AF and every 12th
  * after them), rows in threes with two empty rows between, a little content above; a small second sheet reading it.
  * It runs over the built package (`npm run build`):

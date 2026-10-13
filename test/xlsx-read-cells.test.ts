@@ -1,7 +1,7 @@
 /**
  * The reader on cells: placement by address and by position, value types, text with Excel's escapes, rich and
  * phonetic runs, errors, dates of the 1904 system and of Strict files, cell metadata. The first cases are the
- * the app reader's regressions: a self-closing cell between values, cells without `r`, prefixed tags.
+ * an earlier reader's regressions: a self-closing cell between values, cells without `r`, prefixed tags.
  */
 import { describe, expect, it } from 'vitest'
 import { cellsOf } from './looks-book.js'
