@@ -235,6 +235,8 @@ export interface SheetInput {
    * scrolls, one of them at least (`{ rows: 1 }` freezes the top row). Not part of computation.
    */
   frozen?: FrozenPanes
+  /** Saved window state from xlsx; does not affect computation or inputHash. */
+  view?: SheetView
   /**
    * The sheet's conditional formats (Excel's conditional formatting rules) in priority order, the first one first. They
    * do not change values: a session gives what they show in `CellView.appearance` (`docs/conditional-formats.md`).
@@ -656,7 +658,20 @@ export interface NameInput {
   scope?: string
 }
 
+/** The first saved sheet view; selection holds A1 cells or ranges, without a sheet name. */
+export interface SheetView {
+  activeCell?: string
+  selection?: string[]
+  topLeft?: string
+  /** Zoom in percent, 10 to 400. */
+  zoom?: number
+  /** Whether the tab belongs to the saved selection of tabs, including a group of tabs. */
+  tabSelected?: boolean
+}
+
 export interface BookInput {
+  /** The saved active visible sheet, by name; the writer defaults to the first visible sheet. Not part of inputHash. */
+  activeSheet?: string
   /** Excel's rules for sheet names: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end; one visible sheet at least. */
   sheets: SheetInput[]
   names?: NameInput[]
