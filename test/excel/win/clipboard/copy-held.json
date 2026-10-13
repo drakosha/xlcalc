@@ -1,0 +1,606 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96
+ },
+ "cases": [
+  {
+   "id": "grid",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       },
+       "B1": {
+        "value": "b"
+       },
+       "A2": {
+        "value": "c"
+       },
+       "B2": {
+        "value": "d"
+       },
+       "A3": {
+        "value": "e"
+       },
+       "B3": {
+        "value": "f"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:B3",
+   "rows": [
+    [
+     "a",
+     "b"
+    ],
+    [
+     "c",
+     "d"
+    ],
+    [
+     "e",
+     "f"
+    ]
+   ]
+  },
+  {
+   "id": "special",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "line\nnext"
+       },
+       "A2": {
+        "value": "tab\tstop"
+       },
+       "A3": {
+        "value": "a\"b"
+       },
+       "A4": {
+        "value": "\"first"
+       },
+       "A5": {
+        "value": "last\""
+       },
+       "A6": {
+        "value": "line\n\"quote\""
+       },
+       "A7": {
+        "value": "carriage\rreturn"
+       },
+       "A8": {
+        "value": "pair\r\nnext"
+       },
+       "A9": {
+        "value": ""
+       },
+       "A10": {
+        "value": " tail "
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:A10",
+   "rows": [
+    [
+     "line\nnext"
+    ],
+    [
+     "tab\tstop"
+    ],
+    [
+     "a\"b"
+    ],
+    [
+     "\"first"
+    ],
+    [
+     "last\""
+    ],
+    [
+     "line\n\"quote\""
+    ],
+    [
+     "carriage\rreturn"
+    ],
+    [
+     "pair\r\nnext"
+    ],
+    [
+     ""
+    ],
+    [
+     " tail "
+    ]
+   ]
+  },
+  {
+   "id": "single",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1",
+   "rows": [
+    [
+     "a"
+    ]
+   ]
+  },
+  {
+   "id": "empty",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "range": "A1:B2",
+   "rows": [
+    [
+     "",
+     ""
+    ],
+    [
+     "",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "narrow",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 46096,
+        "numberFormat": "yyyy-mm-dd"
+       },
+       "A2": {
+        "value": 123456789012
+       },
+       "A3": {
+        "value": 1.23456789
+       }
+      },
+      "columns": {
+       "A": {
+        "width": 3
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:A3",
+   "rows": [
+    [
+     "2026-03-15"
+    ],
+    [
+     "123456789012"
+    ],
+    [
+     "1.23456789"
+    ]
+   ]
+  },
+  {
+   "id": "hidden-row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       },
+       "B1": {
+        "value": "b"
+       },
+       "A2": {
+        "value": "c"
+       },
+       "B2": {
+        "value": "d"
+       },
+       "A3": {
+        "value": "e"
+       },
+       "B3": {
+        "value": "f"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:B3",
+   "rows": [
+    [
+     "a",
+     "b"
+    ],
+    [
+     "c",
+     "d"
+    ],
+    [
+     "e",
+     "f"
+    ]
+   ],
+   "steps": [
+    {
+     "do": "hide",
+     "sheet": "S",
+     "range": "2:2",
+     "hidden": true
+    }
+   ]
+  },
+  {
+   "id": "hidden-column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       },
+       "B1": {
+        "value": "b"
+       },
+       "A2": {
+        "value": "c"
+       },
+       "B2": {
+        "value": "d"
+       },
+       "A3": {
+        "value": "e"
+       },
+       "B3": {
+        "value": "f"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:B3",
+   "rows": [
+    [
+     "a",
+     "b"
+    ],
+    [
+     "c",
+     "d"
+    ],
+    [
+     "e",
+     "f"
+    ]
+   ],
+   "steps": [
+    {
+     "do": "hideColumns",
+     "sheet": "S",
+     "range": "B:B",
+     "hidden": true
+    }
+   ]
+  },
+  {
+   "id": "filtered",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       },
+       "B1": {
+        "value": "b"
+       },
+       "A2": {
+        "value": "c"
+       },
+       "B2": {
+        "value": "d"
+       },
+       "A3": {
+        "value": "e"
+       },
+       "B3": {
+        "value": "f"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:B3",
+   "rows": [
+    [
+     "a",
+     "b"
+    ],
+    [
+     "c",
+     "d"
+    ]
+   ],
+   "steps": [
+    {
+     "do": "filter",
+     "sheet": "S",
+     "range": "A1:B3",
+     "field": 1,
+     "criterion": "c"
+    }
+   ]
+  },
+  {
+   "id": "merged",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "merged"
+       },
+       "C1": {
+        "value": "right"
+       },
+       "C2": {
+        "value": "below"
+       }
+      },
+      "merges": [
+       "A1:B2"
+      ]
+     }
+    ]
+   },
+   "range": "A1:C2",
+   "rows": [
+    [
+     "merged",
+     "",
+     "right"
+    ],
+    [
+     "",
+     "",
+     "below"
+    ]
+   ]
+  },
+  {
+   "id": "spill",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(2,2)"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:B2",
+   "rows": [
+    [
+     "1",
+     "2"
+    ],
+    [
+     "3",
+     "4"
+    ]
+   ]
+  }
+ ],
+ "answers": {
+  "grid": {
+   "text": "a\tb\r\nc\td\r\ne\tf\r\n",
+   "shown": [
+    [
+     "a",
+     0
+    ],
+    [
+     "c",
+     0
+    ],
+    [
+     "e",
+     0
+    ]
+   ]
+  },
+  "special": {
+   "text": "\"line\nnext\"\r\n\"tab\tstop\"\r\na\"b\r\n\"first\r\nlast\"\r\n\"line\n\"\"quote\"\"\"\r\n\"carriage\rreturn\"\r\n\"pair\r\nnext\"\r\n\r\n tail \r\n",
+   "shown": [
+    [
+     "line\nnext",
+     0
+    ],
+    [
+     "tab\tstop",
+     0
+    ],
+    [
+     "a\"b",
+     0
+    ]
+   ]
+  },
+  "single": {
+   "text": "a\r\n",
+   "shown": [
+    [
+     "a",
+     0
+    ],
+    [
+     "",
+     0
+    ],
+    [
+     "",
+     0
+    ]
+   ]
+  },
+  "empty": {
+   "text": "\r\n",
+   "shown": [
+    [
+     "",
+     0
+    ],
+    [
+     "",
+     0
+    ],
+    [
+     "",
+     0
+    ]
+   ]
+  },
+  "narrow": {
+   "text": "2026-03-15\r\n1.23457E+11\r\n1.23456789\r\n",
+   "shown": [
+    [
+     "##",
+     0
+    ],
+    [
+     "##",
+     0
+    ],
+    [
+     "1",
+     0
+    ]
+   ]
+  },
+  "hidden-row": {
+   "text": "a\tb\r\ne\tf\r\n",
+   "shown": [
+    [
+     "a",
+     0
+    ],
+    [
+     "c",
+     0
+    ],
+    [
+     "e",
+     0
+    ]
+   ]
+  },
+  "hidden-column": {
+   "text": "a\r\nc\r\ne\r\n",
+   "shown": [
+    [
+     "a",
+     0
+    ],
+    [
+     "c",
+     0
+    ],
+    [
+     "e",
+     0
+    ]
+   ]
+  },
+  "filtered": {
+   "text": "a\tb\r\nc\td\r\n",
+   "shown": [
+    [
+     "a",
+     0
+    ],
+    [
+     "c",
+     0
+    ],
+    [
+     "e",
+     0
+    ]
+   ]
+  },
+  "merged": {
+   "text": "merged\t\tright\r\n\t\tbelow\r\n",
+   "shown": [
+    [
+     "merged",
+     0
+    ],
+    [
+     "",
+     0
+    ],
+    [
+     "",
+     0
+    ]
+   ]
+  },
+  "spill": {
+   "text": "1\t2\r\n3\t4\r\n",
+   "shown": [
+    [
+     "1",
+     0
+    ],
+    [
+     "3",
+     0
+    ],
+    [
+     "",
+     0
+    ]
+   ]
+  }
+ }
+}

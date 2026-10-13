@@ -364,9 +364,16 @@ function Step($xl, $wb, $s) {
       $before = Get-Clipboard -Raw
       try {
         [void](Rg $wb $s.sheet $s.range).Copy()
-        Str ([string](Get-Clipboard -Raw))
+        $copied = [string](Get-Clipboard -Raw)
+        if ($s.at) {
+          Set-Clipboard -Value $copied
+          $ws = $wb.Worksheets.Item($s.sheet)
+          [void]$ws.Activate()
+          [void]$ws.Range($s.at).Select()
+          [void]$ws.Paste()
+          List @((Str $copied), (Grid (Rg $wb $s.sheet $s.read).Value2))
+        } else { Str $copied }
       } finally {
-        $xl.CutCopyMode = $false
         Set-Clipboard -Value ([string]$before)
       }
     }

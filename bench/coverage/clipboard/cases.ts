@@ -31,3 +31,12 @@ export function clipboardCases(tag: string): ClipboardCase[] {
 
 /** Draft engine rule to test against the oracle, with a terminal CRLF and quoted control characters or quotes. */
 export const predictedText = (rows: string[][]): string => rows.map((row) => row.map((s) => /[\t\r\n"]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s).join('\t')).join('\r\n') + '\r\n'
+
+/** Quote-only text and trailing blank cells test whether the plain-text copy is reversible. */
+export function quoteCases(): ClipboardCase[] {
+  return [
+    { id: 'quoted-controls', book: bookOf({ A1: { value: 'a\tb' }, B1: { value: 'a\nb' }, A2: { value: 'a\n"b"' }, B2: { value: 'end' } }), range: 'A1:B2', rows: [['a\tb', 'a\nb'], ['a\n"b"', 'end']] },
+    { id: 'quote-only', book: bookOf({ A1: { value: '"abc"' }, A2: { value: '"first' }, A3: { value: 'last"' } }), range: 'A1:A3', rows: [['"abc"'], ['"first'], ['last"']] },
+    { id: 'trailing-blanks', book: bookOf({ A1: { value: 'a' } }), range: 'A1:B3', rows: [['a', ''], ['', ''], ['', '']] },
+  ]
+}
