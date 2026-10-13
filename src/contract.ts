@@ -1933,7 +1933,7 @@ export type LinePatch<T> = { [K in keyof T]?: T[K] | null }
 
 /** A change of a sheet's layout. */
 export type LayoutEdit =
-  /** Columns `C` or `B:D`; the patch applies to each of them. */
+  /** Columns `C` or `B:D`; the patch applies to each. Setting or removing width clears bestFit unless explicitly given. */
   | { sheet: string; columns: string; set: LinePatch<ColumnInput> }
   | ColumnsFit
   | RowsFit
