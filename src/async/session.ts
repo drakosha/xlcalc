@@ -2,7 +2,7 @@
  * The asynchronous session in the same thread (`docs/async.md`): the steps of `session.ts` run in portions, its calls
  * one after another. A thread of the pool holds its sessions the same way.
  */
-import type { ChangesOptions, PreviewChangesOptions, ReadCellsOptions, FindCellsOptions, DependentsOptions } from '../contract.js'
+import type { ChangesOptions, PreviewChangesOptions, ReadCellsOptions, FindCellsOptions, DependentsOptions, ReplaceOptions } from '../contract.js'
 import type { AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, Clock, EditOptions, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError, type Budget, type Steps } from '../exec/budget.js'
 import { openSteps, type SessionHooks } from '../session.js'
@@ -10,7 +10,7 @@ import type { HistoryData } from '../session/undo.js'
 import { callBudget, drive } from './drive.js'
 import { callLimits, checkCall, checkEditCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
-import { FILL_OPTIONS, FIND_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
+import { FILL_OPTIONS, FIND_CALL_OPTIONS, READ_OPTIONS, REPLACE_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
 
 /** What a calculator gives its sessions. */
 export interface InlineDefaults {
@@ -109,8 +109,9 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     },
     applyChanges: (ops, co) => edit((eo) => core.applyChanges(ops, eo as ChangesOptions), co, ['clock']),
     previewChanges: (ops, co) => edit((eo) => core.previewChanges(ops, eo as PreviewChangesOptions), co, ['clock', 'maxChanges']),
-    readCells: (refs, co) => edit((eo) => core.readCells(refs, eo as ReadCellsOptions), co, ['maxCells', 'cursor', 'count', 'fields']),
-    findCells: (refs, query, co) => edit((eo) => core.findCells(refs, query, eo as FindCellsOptions), co, ['maxCells', 'cursor', 'count', 'fields', ...FIND_OPTIONS]),
+    readCells: (refs, co) => edit((eo) => core.readCells(refs, eo as ReadCellsOptions), co, READ_OPTIONS),
+    findCells: (refs, query, co) => edit((eo) => core.findCells(refs, query, eo as FindCellsOptions), co, FIND_CALL_OPTIONS),
+    replaceInCells: (refs, query, replacement, co) => edit((eo) => core.replaceInCells(refs, query, replacement, eo as ReplaceOptions), co, REPLACE_OPTIONS),
     getDependents: (refs, co) => edit((eo) => core.getDependents(refs, eo as DependentsOptions), co, ['maxCells', 'cursor', 'count', 'maxReferences']),
     summarizeRanges: (refs, co) => edit((eo) => core.summarizeRanges(refs, eo), co),
     setCells: (edits, co) => edit((eo) => core.setCells(edits, eo), co),

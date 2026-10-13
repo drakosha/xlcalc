@@ -313,7 +313,7 @@ function Step($xl, $wb, $s) {
     }
     'autoPercent' { Cell $xl.AutoPercentEntry }
     # Find over a range or the whole sheet (bench/windows/find.ts): from after the range's last cell (of its last area),
-    # so its first cell comes first, the cells Find and FindNext give until they come back to one found before, at most
+    # so its first cell comes first, or after the cell the case names, the cells Find and FindNext give until they come back to one found before, at most
     # max, each [address, Formula, FormulaLocal, Text]; whether more were left, FindNext's error (over a range of one
     # cell), and the cell FindNext came back to when it is not the first (by columns on a filtered sheet)
     'find' {
@@ -323,7 +323,7 @@ function Step($xl, $wb, $s) {
         # are parted by the locale's list separator (`;` in ru-RU)
         $rg = if ($s.range) { , $ws.Range(([string]$s.range).Replace(',', $xl.International(5))) } else { , $ws.Cells }
         $a = $rg.Areas.Item($rg.Areas.Count)
-        $last = $a.Item($a.Rows.Count, $a.Columns.Count)
+        $last = if ($s.after) { $ws.Range([string]$s.after) } else { $a.Item($a.Rows.Count, $a.Columns.Count) }
         $lookIn = if ($s.lookIn -eq 'values') { -4163 } else { -4123 }
         $lookAt = if ($s.whole) { 1 } else { 2 }
         $order = if ($s.byColumns) { 2 } else { 1 }
@@ -343,6 +343,17 @@ function Step($xl, $wb, $s) {
           }
         }
         List @((List $found), (Cell ($null -ne $f)), (Str $next), (Str $back))
+      } catch { Err $_ }
+    }
+    # Replace over a range or the whole sheet (bench/windows/replace.ts), as the dialog's Replace All with Look in
+    # Formulas, a formula put back as a dynamic one (FormulaVersion xlReplaceFormula2, 1): what Range.Replace answers,
+    # or its error; the range kept whole as Find's
+    'replace' {
+      try {
+        $ws = $wb.Worksheets.Item($s.sheet)
+        $rg = if ($s.range) { , $ws.Range(([string]$s.range).Replace(',', $xl.International(5))) } else { , $ws.Cells }
+        $lookAt = if ($s.whole) { 1 } else { 2 }
+        Cell ([bool]$rg.Replace([string]$s.what, [string]$s.by, $lookAt, 1, [bool]$s.matchCase, $false, $false, $false, 1))
       } catch { Err $_ }
     }
     # text put on the clipboard and pasted at a cell of the active sheet (bench/windows/ui.ts); the clipboard's or

@@ -1,0 +1,430 @@
+{
+ "model": "replaceInCells",
+ "locales": {
+  "en-US": {
+   "star-1": {
+    "changed": {
+     "A1": {
+      "value": "xx"
+     },
+     "A2": {
+      "value": "xxx"
+     },
+     "A3": {
+      "value": "x2c3c"
+     },
+     "A4": {
+      "value": "x*c"
+     },
+     "A6": {
+      "value": "xx"
+     }
+    }
+   },
+   "star-2": {
+    "changed": {
+     "A1": {
+      "value": "x"
+     },
+     "A3": {
+      "value": "x"
+     },
+     "A4": {
+      "value": "x"
+     },
+     "A5": {
+      "value": "xx"
+     },
+     "A6": {
+      "value": "x"
+     }
+    }
+   },
+   "star-3": {
+    "changed": {
+     "A1": {
+      "value": "a1x"
+     },
+     "A2": {
+      "value": "x2b"
+     },
+     "A6": {
+      "value": "ax"
+     }
+    }
+   },
+   "star-4": {
+    "changed": {
+     "A1": {
+      "value": "xx"
+     },
+     "A2": {
+      "value": "xx"
+     },
+     "A3": {
+      "value": "x2c3c"
+     },
+     "A4": {
+      "value": "x*c"
+     },
+     "A6": {
+      "value": "xx"
+     }
+    }
+   },
+   "star-5": {
+    "changed": {
+     "A3": {
+      "value": "x3c"
+     },
+     "A4": {
+      "value": "x"
+     }
+    }
+   },
+   "star-6": {
+    "changed": {
+     "A4": {
+      "value": "xxc"
+     }
+    }
+   },
+   "star-7": {
+    "changed": {
+     "A1": {
+      "value": "x"
+     },
+     "A2": {
+      "value": "x"
+     },
+     "A3": {
+      "value": "x"
+     },
+     "A4": {
+      "value": "x"
+     },
+     "A5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "x"
+     }
+    }
+   },
+   "star-8": {
+    "changed": {
+     "A5": {
+      "value": "xx"
+     },
+     "A6": {
+      "value": "xb"
+     }
+    }
+   },
+   "more-1": {
+    "changed": {
+     "A1": {
+      "value": "007"
+     }
+    }
+   },
+   "more-2": {
+    "changed": {}
+   },
+   "more-3": {
+    "changed": {
+     "A3": {
+      "value": "xy"
+     }
+    }
+   },
+   "more-4": {
+    "changed": {
+     "A4": {
+      "value": "12",
+      "format": "@"
+     }
+    }
+   },
+   "more-5": {
+    "changed": {
+     "A5": {
+      "value": "z~"
+     }
+    }
+   },
+   "more-6": {
+    "changed": {}
+   },
+   "more-7": {
+    "changed": {}
+   },
+   "more-8": {
+    "changed": {}
+   },
+   "more-9": {
+    "changed": {
+     "B5": {
+      "value": "%",
+      "format": "0%"
+     }
+    }
+   },
+   "more-10": {
+    "changed": {
+     "B3": null
+    }
+   },
+   "more-11": {
+    "changed": {
+     "B3": {
+      "value": 36526,
+      "format": 17
+     },
+     "B4": {
+      "value": "\"a1\"&A1"
+     }
+    }
+   },
+   "more-12": {
+    "changed": {
+     "B4": {
+      "formula": "\"b2\"&B2"
+     }
+    }
+   },
+   "more-13": {
+    "changed": {
+     "C1": {
+      "value": 123456789012
+     }
+    }
+   },
+   "more-14": {
+    "changed": {
+     "L1": {
+      "value": "Count"
+     },
+     "M2": {
+      "formula": "[[#This Row],[Count]]*2"
+     },
+     "M3": {
+      "formula": "[[#This Row],[Count]]*2"
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "star-1": {
+    "changed": {
+     "A1": {
+      "value": "xx"
+     },
+     "A2": {
+      "value": "xxx"
+     },
+     "A3": {
+      "value": "x2c3c"
+     },
+     "A4": {
+      "value": "x*c"
+     },
+     "A6": {
+      "value": "xx"
+     }
+    }
+   },
+   "star-2": {
+    "changed": {
+     "A1": {
+      "value": "x"
+     },
+     "A3": {
+      "value": "x"
+     },
+     "A4": {
+      "value": "x"
+     },
+     "A5": {
+      "value": "xx"
+     },
+     "A6": {
+      "value": "x"
+     }
+    }
+   },
+   "star-3": {
+    "changed": {
+     "A1": {
+      "value": "a1x"
+     },
+     "A2": {
+      "value": "x2b"
+     },
+     "A6": {
+      "value": "ax"
+     }
+    }
+   },
+   "star-4": {
+    "changed": {
+     "A1": {
+      "value": "xx"
+     },
+     "A2": {
+      "value": "xx"
+     },
+     "A3": {
+      "value": "x2c3c"
+     },
+     "A4": {
+      "value": "x*c"
+     },
+     "A6": {
+      "value": "xx"
+     }
+    }
+   },
+   "star-5": {
+    "changed": {
+     "A3": {
+      "value": "x3c"
+     },
+     "A4": {
+      "value": "x"
+     }
+    }
+   },
+   "star-6": {
+    "changed": {
+     "A4": {
+      "value": "xxc"
+     }
+    }
+   },
+   "star-7": {
+    "changed": {
+     "A1": {
+      "value": "x"
+     },
+     "A2": {
+      "value": "x"
+     },
+     "A3": {
+      "value": "x"
+     },
+     "A4": {
+      "value": "x"
+     },
+     "A5": {
+      "value": "x"
+     },
+     "A6": {
+      "value": "x"
+     }
+    }
+   },
+   "star-8": {
+    "changed": {
+     "A5": {
+      "value": "xx"
+     },
+     "A6": {
+      "value": "xb"
+     }
+    }
+   },
+   "more-1": {
+    "changed": {
+     "A1": {
+      "value": "007"
+     }
+    }
+   },
+   "more-2": {
+    "changed": {}
+   },
+   "more-3": {
+    "changed": {
+     "A3": {
+      "value": "xy"
+     }
+    }
+   },
+   "more-4": {
+    "changed": {
+     "A4": {
+      "value": "12",
+      "format": "@"
+     }
+    }
+   },
+   "more-5": {
+    "changed": {
+     "A5": {
+      "value": "z~"
+     }
+    }
+   },
+   "more-6": {
+    "changed": {}
+   },
+   "more-7": {
+    "changed": {}
+   },
+   "more-8": {
+    "changed": {}
+   },
+   "more-9": {
+    "changed": {
+     "B5": {
+      "value": "%",
+      "format": "0%"
+     }
+    }
+   },
+   "more-10": {
+    "changed": {
+     "B3": null
+    }
+   },
+   "more-11": {
+    "changed": {
+     "B3": {
+      "value": "1/0"
+     },
+     "B4": {
+      "value": "\"a1\"&A1"
+     }
+    }
+   },
+   "more-12": {
+    "changed": {
+     "B4": {
+      "formula": "\"b2\"&B2"
+     }
+    }
+   },
+   "more-13": {
+    "changed": {
+     "C1": {
+      "value": 123456789012
+     }
+    }
+   },
+   "more-14": {
+    "changed": {
+     "L1": {
+      "value": "Count"
+     },
+     "M2": {
+      "formula": "[[#This Row],[Count]]*2"
+     },
+     "M3": {
+      "formula": "[[#This Row],[Count]]*2"
+     }
+    }
+   }
+  }
+ }
+}

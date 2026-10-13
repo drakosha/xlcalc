@@ -1,0 +1,1861 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-13",
+  "seconds": 21
+ },
+ "books": {
+  "more": {
+   "cells": {
+    "A1": {
+     "value": "#1+1",
+     "numberFormat": "@"
+    },
+    "A2": {
+     "value": "xTRUE",
+     "numberFormat": "@"
+    },
+    "A3": {
+     "value": "x3/15/2026",
+     "numberFormat": "@"
+    },
+    "A4": {
+     "value": "x15.03.2026",
+     "numberFormat": "@"
+    },
+    "B1": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    },
+    "B2": {
+     "value": 0.5,
+     "numberFormat": "0%"
+    },
+    "B3": {
+     "value": 46096,
+     "numberFormat": 14
+    },
+    "B4": {
+     "value": 1234.5,
+     "numberFormat": "\"$\"#,##0.00"
+    },
+    "B5": {
+     "value": 12
+    },
+    "B6": {
+     "formula": "1/1"
+    }
+   },
+   "columns": {
+    "A": {
+     "width": 20
+    },
+    "B": {
+     "width": 20
+    }
+   }
+  }
+ },
+ "cases": [
+  {
+   "id": "more-1",
+   "book": "more",
+   "query": {
+    "what": "#",
+    "by": "=",
+    "range": "A1:A2"
+   }
+  },
+  {
+   "id": "more-2",
+   "book": "more",
+   "query": {
+    "what": "x",
+    "by": "",
+    "range": "A2:A3"
+   }
+  },
+  {
+   "id": "more-3",
+   "book": "more",
+   "query": {
+    "what": "x",
+    "by": "",
+    "range": "A4:A5"
+   }
+  },
+  {
+   "id": "more-4",
+   "book": "more",
+   "query": {
+    "what": "5",
+    "by": "+5",
+    "range": "B1:B2"
+   }
+  },
+  {
+   "id": "more-5",
+   "book": "more",
+   "query": {
+    "what": "%",
+    "by": "%%",
+    "range": "B1:B2"
+   }
+  },
+  {
+   "id": "more-6",
+   "book": "more",
+   "query": {
+    "what": "0",
+    "by": "",
+    "range": "B2:B3"
+   }
+  },
+  {
+   "id": "more-7",
+   "book": "more",
+   "query": {
+    "what": "/",
+    "by": "-",
+    "range": "B3:B4"
+   }
+  },
+  {
+   "id": "more-8",
+   "book": "more",
+   "query": {
+    "what": ".",
+    "by": "",
+    "range": "B4:B5"
+   }
+  },
+  {
+   "id": "more-9",
+   "book": "more",
+   "query": {
+    "what": "1",
+    "by": "=1+",
+    "range": "B5:B6"
+   }
+  },
+  {
+   "id": "more-10",
+   "book": "more",
+   "query": {
+    "what": "/1",
+    "by": "/0",
+    "range": "B5:B6"
+   }
+  }
+ ],
+ "answers": {
+  "more-1": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "formula": "1+1",
+      "format": 49
+     },
+     "computed": 2,
+     "text": "2",
+     "code": "@",
+     "local": "@",
+     "value2": 2,
+     "formula": "=1+1",
+     "formulaLocal": "=1+1",
+     "formula2": "=1+1",
+     "formula2Local": "=1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.5,
+      "format": 9
+     },
+     "text": "50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.5,
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-2": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": true,
+      "format": 49
+     },
+     "text": "TRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "TRUE",
+     "formulaLocal": "TRUE",
+     "formula2": "TRUE",
+     "formula2Local": "TRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.5,
+      "format": 9
+     },
+     "text": "50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.5,
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-3": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "15.03.2026",
+      "format": 49
+     },
+     "text": "15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "15.03.2026",
+     "formulaLocal": "15.03.2026",
+     "formula2": "15.03.2026",
+     "formula2Local": "15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.5,
+      "format": 9
+     },
+     "text": "50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.5,
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-4": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.5,
+      "format": 9
+     },
+     "text": "50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.5,
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-5": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": "5%%",
+      "format": 9
+     },
+     "text": "5%%",
+     "code": "0%",
+     "local": "0%",
+     "formula": "5%%",
+     "formulaLocal": "5%%",
+     "formula2": "5%%",
+     "formula2Local": "5%%",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": "50%%",
+      "format": 9
+     },
+     "text": "50%%",
+     "code": "0%",
+     "local": "0%",
+     "formula": "50%%",
+     "formulaLocal": "50%%",
+     "formula2": "50%%",
+     "formula2Local": "50%%",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-6": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": "3/15/226",
+      "format": 14
+     },
+     "text": "3/15/226",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "formula": "3/15/226",
+     "formulaLocal": "3/15/226",
+     "formula2": "3/15/226",
+     "formula2Local": "3/15/226",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-7": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.5,
+      "format": 9
+     },
+     "text": "50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.5,
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-8": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.5,
+      "format": 9
+     },
+     "text": "50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.5,
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 12345,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$12,345.00",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-9": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.5,
+      "format": 9
+     },
+     "text": "50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.5,
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "formula": "1+2"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=1+2",
+     "formulaLocal": "=1+2",
+     "formula2": "=1+2",
+     "formula2Local": "=1+2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/1"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=1/1",
+     "formulaLocal": "=1/1",
+     "formula2": "=1/1",
+     "formula2Local": "=1/1",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  },
+  "more-10": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "#1+1",
+      "format": 49
+     },
+     "text": "#1+1",
+     "code": "@",
+     "local": "@",
+     "formula": "#1+1",
+     "formulaLocal": "#1+1",
+     "formula2": "#1+1",
+     "formula2Local": "#1+1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xTRUE",
+      "format": 49
+     },
+     "text": "xTRUE",
+     "code": "@",
+     "local": "@",
+     "formula": "xTRUE",
+     "formulaLocal": "xTRUE",
+     "formula2": "xTRUE",
+     "formula2Local": "xTRUE",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3/15/2026",
+      "format": 49
+     },
+     "text": "x3/15/2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x3/15/2026",
+     "formulaLocal": "x3/15/2026",
+     "formula2": "x3/15/2026",
+     "formula2Local": "x3/15/2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x15.03.2026",
+      "format": 49
+     },
+     "text": "x15.03.2026",
+     "code": "@",
+     "local": "@",
+     "formula": "x15.03.2026",
+     "formulaLocal": "x15.03.2026",
+     "formula2": "x15.03.2026",
+     "formula2Local": "x15.03.2026",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": 0.5,
+      "format": 9
+     },
+     "text": "50%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.5,
+     "formula": "0.5",
+     "formulaLocal": "0.5",
+     "formula2": "0.5",
+     "formula2Local": "0.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 46096,
+      "format": 14
+     },
+     "text": "3/15/2026",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "value2": 46096,
+     "formula": "46096",
+     "formulaLocal": "46096",
+     "formula2": "46096",
+     "formula2Local": "46096",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": 1234.5,
+      "format": "\"$\"#,##0.00"
+     },
+     "text": "$1,234.50",
+     "code": "$#,##0.00",
+     "local": "$#,##0.00",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 12
+     },
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B6": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    }
+   }
+  }
+ }
+}

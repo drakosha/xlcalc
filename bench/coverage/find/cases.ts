@@ -8,8 +8,8 @@
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { BookInput, CellInput, ColumnInput, RowInput } from '../../../src/contract.js'
-import { createSession } from '../../../src/index.js'
+import type { BookInput, CellInput, ColumnInput, RowInput, TableInput } from '../../../src/contract.js'
+import { createSession, InputError } from '../../../src/index.js'
 import { formatAddress } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { localeDir } from '../locales.js'
@@ -22,6 +22,7 @@ export interface FindBook {
   columns?: Record<string, ColumnInput>
   rows?: Record<string, RowInput>
   merges?: string[]
+  tables?: TableInput[]
   /** An autofilter over `range` keeping the rows whose `field`-th column holds `keep`: Excel hides the others as it applies it, the engine's book holds them hidden on a filtered sheet. */
   filter?: { range: string; field: number; keep: string }
   /** Texts typed into cells once Excel opened the book (`Formula2Local`), for what a file does not hold (a text typed after an apostrophe); the engine's book holds the cell of `cells`. */
@@ -39,6 +40,8 @@ export interface FindQuery {
   /** Search by columns (`xlByColumns`); by rows without it. */
   byColumns?: boolean
   matchCase?: boolean
+  /** The cell Find begins after (`After`); the range's last cell, of its last area, without it, so that its first cell comes first. */
+  after?: string
 }
 
 export interface FindCase {
@@ -92,7 +95,7 @@ export function filteredRows(b: FindBook): number[] {
 
 /** The book as Excel gets it, before its filter and its typed texts. */
 export function sentBook(b: FindBook): BookInput {
-  return { sheets: [{ name: 'S', cells: b.cells, ...(b.columns ? { columns: b.columns } : {}), ...(b.rows ? { rows: b.rows } : {}), ...(b.merges ? { merges: b.merges } : {}) }] }
+  return { sheets: [{ name: 'S', cells: b.cells, ...(b.columns ? { columns: b.columns } : {}), ...(b.rows ? { rows: b.rows } : {}), ...(b.merges ? { merges: b.merges } : {}), ...(b.tables ? { tables: b.tables } : {}) }] }
 }
 
 /** The book as the engine takes it in a locale: with a filter, a filtered sheet with the rows it hides hidden. */
@@ -102,23 +105,26 @@ export function findBook(b: FindBook, locale?: string): BookInput {
   return { ...(locale ? { locale } : {}), sheets: [{ ...sheet, ...(b.filter ? { rows, filtered: true } : {}) }] }
 }
 
-/** The engine's answer to a query over a book in a locale: `findCells` with Find's options over the query's range, each of its areas in turn, or the whole sheet. */
-export function findInBook(b: FindBook, q: FindQuery, tag: string): string[] {
+/** The engine's answer to a query over a book in a locale: `findCells` with Find's options over the query's range, each of its areas in turn, or the whole sheet; null where it refuses the cell to begin after. */
+export function findInBook(b: FindBook, q: FindQuery, tag: string): string[] | null {
   const s = createSession(findBook(b, tag), { clock: { now: '2026-10-12T12:00:00Z', seed: 1 } })
   try {
     const ranges = (q.range ?? 'A1:XFD1048576').split(',').map((range) => ({ sheet: 'S', range }))
-    const found = s.findCells(ranges, q.what, { in: q.lookIn === 'formulas' ? 'edit' : 'text', wildcards: true, wholeCell: q.whole, byColumns: q.byColumns, caseSensitive: q.matchCase, skipHidden: true, fields: [] })
+    const found = s.findCells(ranges, q.what, { in: q.lookIn === 'formulas' ? 'edit' : 'text', wildcards: true, wholeCell: q.whole, byColumns: q.byColumns, caseSensitive: q.matchCase, skipHidden: true, fields: [], ...(q.after ? { after: { sheet: 'S', cell: q.after } } : {}) })
     return found.cells.map((c) => c.cell)
+  } catch (e) {
+    if (e instanceof InputError && e.path === 'opts.after') return null
+    throw e
   } finally {
     s.close()
   }
 }
 
-/** Cases of one group: ids `<group>-<n>`. */
-export function collector() {
-  const out: FindCase[] = []
+/** Cases of one group: ids `<group>-<n>`; a query of Find's by default, of Replace's for its sets. */
+export function collector<Q = FindQuery>() {
+  const out: { id: string; book: string; query: Q }[] = []
   const count = new Map<string, number>()
-  const add = (group: string, book: string, query: FindQuery) => {
+  const add = (group: string, book: string, query: Q) => {
     const n = (count.get(group) ?? 0) + 1
     count.set(group, n)
     out.push({ id: `${group}-${n}`, book, query })

@@ -1,5 +1,5 @@
 /** First element whose numeric key is at least `value`, or the sorted array's length. */
-export function lowerBound<T>(xs: readonly T[], value: number, key: (x: T) => number): number {
+export function lowerBound<T>(xs: ArrayLike<T>, value: number, key: (x: T) => number): number {
   let lo = 0
   let hi = xs.length
   while (lo < hi) {
