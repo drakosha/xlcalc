@@ -75,11 +75,12 @@ describe.each(['closures', 'eval'] as const)('AutoFit in a session, execution %s
     ])
     expect(s.getLayout().sheets[0].columns).toMatchObject({ C: { width: 14.6640625, bestFit: true, numberFormat: '#,##0' }, D: { width: 11.83203125, bestFit: true } })
   })
-  it('refuses AutoFit of rows and a fit that is not true, and checks bestFit', () => {
+  it('refuses a fit that is not true, and checks bestFit', () => {
     const s = createSession(book(), { clock, execution })
-    expect(() => s.setLayout([{ sheet: 'S', rows: '1', fit: true } as never])).toThrow(InputError)
+    expect(() => s.setLayout([{ sheet: 'S', rows: '1', fit: false } as never])).toThrow(/expected true/)
     expect(() => s.setLayout([{ sheet: 'S', columns: 'A', fit: false } as never])).toThrow(/expected true/)
-    expect(() => s.setLayout([{ sheet: 'S', rows: '1', set: { bestFit: true } } as never])).toThrow(InputError)
+    expect(() => s.setLayout([{ sheet: 'S', rows: '1', columns: 'A', fit: true } as never])).toThrow(InputError)
+    expect(() => s.setLayout([{ sheet: 'S', rows: '1', set: { bestFit: 1 } } as never])).toThrow(InputError)
     expect(() => s.setLayout([{ sheet: 'S', columns: 'A', set: { bestFit: 1 } } as never])).toThrow(InputError)
   })
 })
