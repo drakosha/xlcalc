@@ -2,7 +2,7 @@
  * The asynchronous session in the same thread (`docs/async.md`): the steps of `session.ts` run in portions, its calls
  * one after another. A thread of the pool holds its sessions the same way.
  */
-import type { ChangesOptions, PreviewChangesOptions, ReadCellsOptions, FindCellsOptions, DependentsOptions, ReplaceOptions } from '../contract.js'
+import type { ChangesOptions, PreviewChangesOptions, ReadCellsOptions, FindCellsOptions, DependentsOptions, ReplaceOptions, ExplainOptions } from '../contract.js'
 import type { AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, Clock, EditOptions, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError, type Budget, type Steps } from '../exec/budget.js'
 import { openSteps, type SessionHooks } from '../session.js'
@@ -138,7 +138,14 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     getLayout: () => plain(() => core.getLayout()),
     getUsedRange: (sheet) => call(() => core.getUsedRange(sheet)),
     getEnd: (sheet, cell, direction) => call(() => core.getEnd(sheet, cell, direction)),
-    explain: (sheet, cell, eo) => call(() => core.explain(sheet, cell, eo)),
+    explain: (sheet, cell, eo) => {
+      try {
+        const { signal, timeoutMs, rest } = splitCall<ExplainOptions>(eo)
+        return call(() => core.explain(sheet, cell, rest), { signal, timeoutMs })
+      } catch (e) {
+        return Promise.reject(e)
+      }
+    },
     getCells: (sheet, range) => call(() => core.getCells(sheet, range)),
     getCell: (sheet, cell) => call(() => core.getCell(sheet, cell)),
     getViewport: (sheet, range, vo) => call(() => core.getViewport(sheet, range, vo)),

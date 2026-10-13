@@ -84,7 +84,7 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
       value = await s.getEnd(args[0] as string, args[1] as string, args[2] as never)
       break
     case 'explain':
-      value = await s.explain(args[0] as string, args[1] as string, args[2] as never)
+      value = await s.explain(args[0] as string, args[1] as string, { ...(args[2] as object | undefined), ...o })
       break
     case 'getResult':
       value = await s.getResult(o)

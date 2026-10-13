@@ -64,8 +64,8 @@ describe.each(['closures', 'eval'] as const)('the reason and origin of an error,
       const a3 = await s.explain('S', 'A3')
       expect(a3.text).toBe(["S!A3 = #DIV/0!  ← SUM(A1:A2)  (error from S!A1)", "  S!A1:A2 (2 cells)", "    S!A1 = #DIV/0!  ← 1/0  (the error begins here)"].join('\n'))
       expect(a3.root).toEqual({
-        ref: "'S'!A3", value: { error: 'DIV0' }, formula: 'SUM(A1:A2)', origin: "'S'!A1",
-        children: [{ ref: "'S'!A1:A2", cells: 2, children: [{ ref: "'S'!A1", value: { error: 'DIV0' }, formula: '1/0', origin: "'S'!A1", children: [] }] }],
+        location: { sheet: 'S', range: 'A3' }, ref: "'S'!A3", value: { error: 'DIV0' }, formula: 'SUM(A1:A2)', origin: "'S'!A1",
+        children: [{ location: { sheet: 'S', range: 'A1:A2' }, ref: "'S'!A1:A2", cells: 2, children: [{ location: { sheet: 'S', range: 'A1' }, ref: "'S'!A1", value: { error: 'DIV0' }, formula: '1/0', origin: "'S'!A1", children: [] }] }],
       })
       expect((await s.explain('S', 'D2')).text).toBe([
         "S!D2 = #DIV/0!  ← spilled from S!D1  (error from S!A1)",
