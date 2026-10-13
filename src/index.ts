@@ -15,6 +15,7 @@ import * as load from './locale/load.js'
 import * as entry from './entry/index.js'
 import * as entryTexts from './entry/text.js'
 import * as fit from './layout/fit.js'
+import * as heights from './layout/heights.js'
 import * as helpers from './helpers.js'
 import * as styleTable from './style-table.js'
 import * as builtin from './builtin-format.js'
@@ -63,6 +64,7 @@ export const entryText = /* @__PURE__ */ strict(entryTexts.entryText)
 export const needsApostrophe = /* @__PURE__ */ strict(entryTexts.needsApostrophe)
 export const entryWidth = /* @__PURE__ */ strict(fit.entryWidth)
 export const fitColumns = /* @__PURE__ */ strict(fit.fitColumns)
+export const fitRows = /* @__PURE__ */ strict(heights.fitRows)
 export const canonValue = /* @__PURE__ */ strict(helpers.canonValue)
 export const errorText = /* @__PURE__ */ strict(helpers.errorText)
 export const sameValue = /* @__PURE__ */ strict(helpers.sameValue)

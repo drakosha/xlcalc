@@ -22,7 +22,8 @@ import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkBoolean, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkNumber, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
-import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf } from './session/book.js'
+import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
+import { typedHeights, wrapTyped } from './session/wrap.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
@@ -349,16 +350,25 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /**
    * Typed cells written as `call`, in one step of the undo with the widths their columns take (`textWidths`), set unless
-   * `widen` is false: the state after, what changed and the widths.
+   * `widen` is false, the styles that wrap a text with a line break and the heights of the rows that wrap (`wrap.ts`);
+   * `pasted`, a paste, which measures no column and fits no row: the state after, what changed and the widths.
    */
-  function* writeTexts(s: EngineState, cells: Typed[], call: Step['call'], widen: boolean): Steps<[EngineState, Outcome, ColumnWidth[]]> {
+  function* writeTexts(s: EngineState, cells: Typed[], call: Step['call'], widen: boolean, pasted = false): Steps<[EngineState, Outcome, ColumnWidth[]]> {
+    // a text with a line break wraps its cell, by a style the table may gain
+    const wrapped = wrapTyped(s, cells)
     const [next, out, back] = yield* writeCells(s, cells.map((x) => x.edit), call)
     let o = out
     const steps = [back]
-    // a number that does not fit its column widens it, as Excel does, in the same step
-    const widths = textWidths(next, cells)
-    if (widths.length && widen) {
-      const edits = widths.map((w) => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } }))
+    if (wrapped) {
+      const was = next.input.styles
+      next.input.styles = wrapped
+      o = { ...o, styles: true }
+      steps.push(() => stylesStep(was, call))
+    }
+    // a number that does not fit its column widens it, and a row whose cell wraps fits it, as Excel does, in the same step
+    const widths = pasted ? [] : textWidths(next, cells)
+    const edits: SetLayoutEdit[] = [...(widen ? widths.map((w) => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } })) : []), ...(pasted ? [] : typedHeights(next, cells))]
+    if (edits.length) {
       const shown = display ? snapshot(next, layoutCells(next, edits)) : null
       const sheets = applyLayout({ ...next.input, sheets: next.input.sheets.slice() }, edits, (name) => sheetIndex(next)(name)!)
       const [lo, before] = yield* relayout(next, sheets, shown)
@@ -616,9 +626,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkBase(eo, revision)
       const pasted = pastedText(s, ...at(s, sheet, cell), checkString(text, 'text'), clock.now)
       if (!pasted.ok) return pasted.refusal
-      // a paste widens no column and checks no rule of data validation
-      const [next, out, back] = yield* writeCells(s, pasted.cells.map((x) => x.edit), 'pasteText')
-      keep(back)
+      // a paste wraps a text with a line break but fits no row, widens no column and checks no rule of data validation
+      const [next, out] = yield* writeTexts(s, pasted.cells, 'pasteText', false, true)
       return { ok: true, ...answer(next, out), range: pasted.range }
     },
     *previewPasteText(sheet: string, cell: string, text: string, eo?: EditOptions): Steps<PasteTextPreview> {

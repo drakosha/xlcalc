@@ -1,0 +1,546 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-13",
+  "seconds": 40.8
+ },
+ "cases": [
+  {
+   "id": "keys-1",
+   "typed": [
+    [
+     0,
+     "abc"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-2",
+   "typed": [
+    [
+     0,
+     "a\nb"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-3",
+   "typed": [
+    [
+     0,
+     "a\nb\nc"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-4",
+   "row": {
+    "height": 30
+   },
+   "typed": [
+    [
+     0,
+     "a\nb\nc"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-5",
+   "cells": {
+    "0": {
+     "look": {
+      "font": {
+       "size": 16
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     0,
+     "a\nb"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-6",
+   "merged": [
+    0
+   ],
+   "typed": [
+    [
+     0,
+     "a\nb"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-7",
+   "typed": [
+    [
+     0,
+     "=1+\n2"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-8",
+   "typed": [
+    [
+     0,
+     "=\"a\"&CHAR(10)&\"b\""
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-9",
+   "cells": {
+    "0": {
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     0,
+     "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog."
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-10",
+   "cells": {
+    "0": {
+     "value": "a\nb\nc",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   },
+   "typed": [
+    [
+     0,
+     "x"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "fill-1",
+   "typed": [
+    [
+     0,
+     "a\nb"
+    ]
+   ],
+   "via": "fill",
+   "fillTo": 2
+  },
+  {
+   "id": "fill-2",
+   "row": {
+    "height": 30
+   },
+   "typed": [
+    [
+     0,
+     "a\nb\nc"
+    ]
+   ],
+   "via": "fill",
+   "fillTo": 2
+  },
+  {
+   "id": "fill-3",
+   "typed": [
+    [
+     0,
+     "abc"
+    ]
+   ],
+   "via": "fill",
+   "fillTo": 2
+  },
+  {
+   "id": "paste-1",
+   "typed": [
+    [
+     0,
+     "\"a\nb\""
+    ]
+   ],
+   "via": "paste",
+   "below": true
+  },
+  {
+   "id": "paste-2",
+   "typed": [
+    [
+     0,
+     "a\nb"
+    ]
+   ],
+   "via": "paste",
+   "below": true
+  },
+  {
+   "id": "paste-3",
+   "typed": [
+    [
+     0,
+     "\"a\nb\"\tc"
+    ]
+   ],
+   "via": "paste",
+   "fillTo": 1,
+   "below": true
+  },
+  {
+   "id": "paste-4",
+   "typed": [
+    [
+     0,
+     "\"a b\""
+    ]
+   ],
+   "via": "paste"
+  },
+  {
+   "id": "paste-5",
+   "typed": [
+    [
+     0,
+     "\"a\nb"
+    ]
+   ],
+   "via": "paste",
+   "below": true
+  },
+  {
+   "id": "paste-6",
+   "typed": [
+    [
+     0,
+     "\"a\"\"\nb\""
+    ]
+   ],
+   "via": "paste",
+   "below": true
+  }
+ ],
+ "answers": {
+  "keys-1": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "abc",
+     "wrap": false
+    }
+   }
+  },
+  "keys-2": {
+   "before": 15,
+   "height": 32,
+   "standard": true,
+   "saved": {
+    "ht": 32
+   },
+   "cells": {
+    "0": {
+     "formula": "a\nb",
+     "wrap": true
+    }
+   }
+  },
+  "keys-3": {
+   "before": 15,
+   "height": 48,
+   "standard": true,
+   "saved": {
+    "ht": 48
+   },
+   "cells": {
+    "0": {
+     "formula": "a\nb\nc",
+     "wrap": true
+    }
+   }
+  },
+  "keys-4": {
+   "before": 30,
+   "height": 30,
+   "standard": false,
+   "saved": {
+    "ht": 30,
+    "customHeight": true
+   },
+   "cells": {
+    "0": {
+     "formula": "a\nb\nc",
+     "wrap": true
+    }
+   }
+  },
+  "keys-5": {
+   "before": 21,
+   "height": 44,
+   "standard": true,
+   "saved": {
+    "ht": 44
+   },
+   "cells": {
+    "0": {
+     "formula": "a\nb",
+     "wrap": true
+    }
+   }
+  },
+  "keys-6": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "a\nb",
+     "wrap": true
+    }
+   }
+  },
+  "keys-7": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "=1+\n2",
+     "wrap": false
+    }
+   }
+  },
+  "keys-8": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "=\"a\"&CHAR(10)&\"b\"",
+     "wrap": false
+    }
+   }
+  },
+  "keys-9": {
+   "before": 15,
+   "height": 240,
+   "standard": true,
+   "saved": {
+    "ht": 240
+   },
+   "cells": {
+    "0": {
+     "formula": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.",
+     "wrap": true
+    }
+   }
+  },
+  "keys-10": {
+   "before": 48,
+   "height": 16,
+   "standard": true,
+   "saved": {
+    "ht": 16
+   },
+   "cells": {
+    "0": {
+     "formula": "x",
+     "wrap": true
+    }
+   }
+  },
+  "fill-1": {
+   "before": 15,
+   "height": 32,
+   "standard": true,
+   "saved": {
+    "ht": 32
+   },
+   "cells": {
+    "0": {
+     "formula": "a\nb",
+     "wrap": true
+    },
+    "1": {
+     "formula": "a\nb",
+     "wrap": true
+    },
+    "2": {
+     "formula": "a\nb",
+     "wrap": true
+    }
+   }
+  },
+  "fill-2": {
+   "before": 30,
+   "height": 30,
+   "standard": false,
+   "saved": {
+    "ht": 30,
+    "customHeight": true
+   },
+   "cells": {
+    "0": {
+     "formula": "a\nb\nc",
+     "wrap": true
+    },
+    "1": {
+     "formula": "a\nb\nc",
+     "wrap": true
+    },
+    "2": {
+     "formula": "a\nb\nc",
+     "wrap": true
+    }
+   }
+  },
+  "fill-3": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "abc",
+     "wrap": false
+    },
+    "1": {
+     "formula": "abc",
+     "wrap": false
+    },
+    "2": {
+     "formula": "abc",
+     "wrap": false
+    }
+   }
+  },
+  "paste-1": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "a\nb",
+     "wrap": true
+    },
+    "0+1": {
+     "formula": "",
+     "wrap": false
+    }
+   }
+  },
+  "paste-2": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "a",
+     "wrap": false
+    },
+    "0+1": {
+     "formula": "b",
+     "wrap": false
+    }
+   }
+  },
+  "paste-3": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "a\nb",
+     "wrap": true
+    },
+    "1": {
+     "formula": "c",
+     "wrap": false
+    },
+    "0+1": {
+     "formula": "",
+     "wrap": false
+    },
+    "1+1": {
+     "formula": "",
+     "wrap": false
+    }
+   }
+  },
+  "paste-4": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "a b",
+     "wrap": false
+    }
+   }
+  },
+  "paste-5": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "a\nb",
+     "wrap": true
+    },
+    "0+1": {
+     "formula": "",
+     "wrap": false
+    }
+   }
+  },
+  "paste-6": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "a\"\nb",
+     "wrap": true
+    },
+    "0+1": {
+     "formula": "",
+     "wrap": false
+    }
+   }
+  }
+ }
+}

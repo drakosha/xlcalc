@@ -30,8 +30,8 @@ export const escapeColumn = /* @__PURE__ */ strict(function escapeColumn(name: s
 
 /**
  * Text from the clipboard as the rectangle Excel pastes (`Session.pasteText`): its rows, at line breaks, of its fields, at
- * tabs, each row as wide as the longest; an empty field clears its cell, and a line break after the last row is a row
- * of empty fields.
+ * tabs, each row as wide as the longest; a field begun by a quote runs to its closing quote, line breaks and tabs inside
+ * it, a doubled quote one; an empty field clears its cell, and a line break after the last row is a row of empty fields.
  */
 export const parseClipboard = /* @__PURE__ */ strict(function parseClipboard(text: string): string[][] {
   return clipboardRows(checkString(text, 'text'))

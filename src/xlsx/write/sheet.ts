@@ -243,7 +243,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const rowAttrs = new Map<number, string>()
   for (const [lo, hi, e] of rowLines) {
     const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
-    const attrs = (e.height !== undefined ? ` ht="${e.height}" customHeight="1"` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '') + outlineAttrs(e)
+    // a height Excel fitted is written without customHeight, as Excel writes it
+    const attrs = (e.height !== undefined ? ` ht="${e.height}"${e.bestFit ? '' : ' customHeight="1"'}` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '') + outlineAttrs(e)
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
   }
   crossings(rowLines, colLines, styles, (r, c, xf) => {

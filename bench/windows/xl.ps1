@@ -390,6 +390,16 @@ function Step($xl, $wb, $s) {
       $ws = $wb.Worksheets.Item($s.sheet)
       List ($s.columns | ForEach-Object { $c = $ws.Range("$($_)1"); List @((Cell ([double]$c.ColumnWidth)), (Cell ([double]$c.Width)), (Cell $c.UseStandardWidth)) })
     }
+    # AutoFit of a range's whole rows; each row's RowHeight and UseStandardHeight, and cells' Formula and WrapText (bench/windows/rows.ts)
+    'rowfit' { [void](Rg $wb $s.sheet $s.range).EntireRow.AutoFit(); 'null' }
+    'heights' {
+      $ws = $wb.Worksheets.Item($s.sheet)
+      List ($s.rows | ForEach-Object { $r = $ws.Range("A$($_)"); List @((Cell ([double]$r.RowHeight)), (Cell $r.UseStandardHeight)) })
+    }
+    'wraps' {
+      $ws = $wb.Worksheets.Item($s.sheet)
+      List ($s.cells | ForEach-Object { $c = $ws.Range($_); List @((Str ([string]$c.Formula)), (Cell ([bool]$c.WrapText))) })
+    }
     'set' {
       $rg = Rg $wb $s.sheet $s.cell
       try {

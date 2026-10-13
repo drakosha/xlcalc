@@ -118,7 +118,8 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       col = -1
       line = {}
       lineRow = row
-      if (a.ht !== undefined && flag(a.customHeight)) line.height = Number(a.ht)
+      // a height Excel fitted has no customHeight; Excel for Mac writes its highest, 409.5, as 409.6
+      if (a.ht !== undefined) Object.assign(line, { height: Math.min(409.5, Number(a.ht)) }, flag(a.customHeight) ? {} : { bestFit: true })
       // Excel hides a row of height 0 whatever its flag
       if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) {

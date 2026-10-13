@@ -149,14 +149,14 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     })
   })
 
-  it('columns, rows and merged areas; hidden lines with their sizes, a line of size 0 hidden; grouped lines with their levels; equal neighbours in one span', async () => {
+  it('columns, rows and merged areas; hidden lines with their sizes, a line of size 0 hidden, a height without customHeight one Excel fitted, the highest of Excel for Mac, 409.6, read as 409.5; grouped lines with their levels; equal neighbours in one span', async () => {
     const r = await read({
       sheets: [
         {
           name: 'S',
           body:
             '<cols><col min="1" max="1" width="20" customWidth="1"/><col min="2" max="3" width="12.5" customWidth="1" style="1"/><col min="4" max="4" width="9" style="1"/><col min="5" max="5" width="9" customWidth="1" hidden="1"/><col min="6" max="6" width="9" outlineLevel="1"/><col min="7" max="7" width="9" hidden="1"/><col min="8" max="8" width="0" customWidth="1"/></cols>' +
-            '<sheetData><row r="2" ht="30" customHeight="1"/><row r="3" ht="30" customHeight="1"/><row r="4" ht="18"/><row r="5" hidden="1"/><row r="6" s="1" customFormat="1" outlineLevel="1"/><row r="7" ht="25" hidden="1" customHeight="1"/><row r="8" ht="0" customHeight="1"/></sheetData>' +
+            '<sheetData><row r="2" ht="30" customHeight="1"/><row r="3" ht="30" customHeight="1"/><row r="4" ht="18"/><row r="5" hidden="1"/><row r="6" s="1" customFormat="1" outlineLevel="1"/><row r="7" ht="25" hidden="1" customHeight="1"/><row r="8" ht="0" customHeight="1"/><row r="9" ht="409.6"/></sheetData>' +
             '<mergeCells count="3"><mergeCell ref="A1:B2"/><mergeCell ref="B2:C3"/><mergeCell ref="D4:D4"/></mergeCells>',
         },
       ],
@@ -164,7 +164,7 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     })
     const s = r.book.sheets[0]
     expect(s.columns).toEqual({ A: { width: 20 }, 'B:C': { width: 12.5, numberFormat: 10 }, D: { numberFormat: 10 }, E: { width: 9, hidden: true }, F: { outlineLevel: 1 }, G: { hidden: true }, H: { width: 0, hidden: true } })
-    expect(s.rows).toEqual({ '2:3': { height: 30 }, 5: { hidden: true }, 6: { numberFormat: 10, outlineLevel: 1 }, 7: { height: 25, hidden: true }, 8: { height: 0, hidden: true } })
+    expect(s.rows).toEqual({ '2:3': { height: 30 }, 4: { height: 18, bestFit: true }, 5: { hidden: true }, 6: { numberFormat: 10, outlineLevel: 1 }, 7: { height: 25, hidden: true }, 8: { height: 0, hidden: true }, 9: { height: 409.5, bestFit: true } })
     expect(s.merges).toEqual(['A1:B2'])
     expect(codes(r.issues)).toEqual(['part B2:C3'])
   })

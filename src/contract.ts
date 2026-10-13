@@ -178,8 +178,13 @@ export interface ColumnInput {
 
 /** Rows of a sheet, as xlsx `<row>`: the height, and the style and format of their cells that have none. */
 export interface RowInput {
-  /** Points, 0 to 409. */
+  /** Points, 0 to 409.5. Without it a row has Excel's default height, 15 points (a line of Calibri 11). */
   height?: number
+  /**
+   * The height is one Excel fitted, by AutoFit or as text that wraps was typed into the row, not one set by hand (xlsx
+   * writes it without `customHeight`): text typed into the row fits it again (`fitRows`), as a row of the default height.
+   */
+  bestFit?: boolean
   style?: number
   numberFormat?: NumberFormat
   /**
@@ -1906,6 +1911,7 @@ export type LayoutEdit =
   /** Columns `C` or `B:D`; the patch applies to each of them. */
   | { sheet: string; columns: string; set: LinePatch<ColumnInput> }
   | ColumnsFit
+  | RowsFit
   /** Rows `5` or `5:9`; the patch applies to each of them. */
   | { sheet: string; rows: string; set: LinePatch<RowInput> }
   /** All the merged areas of the sheet. */
@@ -1930,6 +1936,18 @@ export type LayoutEdit =
 export interface ColumnsFit {
   sheet: string
   columns: string
+  fit: true
+}
+
+/**
+ * Excel's AutoFit of rows `5` or `2:9` (a double click on the border below a row's number): each row gets the height of
+ * its highest cell as Excel for Mac fits it (`fitRows`), marked `bestFit` and shown if it was hidden; a row as high as
+ * the default gets no height. The heights are computed from the values and layout the edits before it leave
+ * (`docs/formats.md`, "Fitting rows").
+ */
+export interface RowsFit {
+  sheet: string
+  rows: string
   fit: true
 }
 
@@ -2072,7 +2090,9 @@ export interface Session {
    * Text typed into a cell, as Excel takes it in the book's locale, date system and clock, by the format the cell shows
    * (`parseEntry`): the cell keeps its style, meta, note and link, and a format it shows from its row or column is not
    * written into it. A number that does not fit a column of the default width widens it in the same step (`width`), as
-   * Excel does, unless `widen` is false; a value the cell's rule of data validation does not take is written, with the
+   * Excel does, unless `widen` is false. Text with a line break wraps the cell (its style gets `alignment.wrap`, a style
+   * of the book's table found or added), and the row of a cell that wraps fits it (`fitRows`) when nobody set its height
+   * by hand, in the same step; a value the cell's rule of data validation does not take is written, with the
    * rule (`validation`), or with `refuseInvalid` refused, with the rule, and nothing written. A formula Excel does not
    * take, or a change of part of an array, is refused, with a message in the book's locale.
    */
@@ -2083,7 +2103,7 @@ export interface Session {
    * Texts typed into cells at once (a paste of text, an entry into a selection), each read as `setCellText` reads it in
    * its cell, written with one recomputation, one revision and one step of the undo; a cell given twice takes the later
    * text, read by what the earlier one wrote. A column widens once, to the largest width a text typed alone into one of
-   * its cells gives it (`widths`), unless `widen` is false; the values the cells' rules of data validation do not take
+   * its cells gives it (`widths`), unless `widen` is false; cells wrap and rows fit as `setCellText` makes them; the values the cells' rules of data validation do not take
    * after all the texts are written, with the cells (`validations`). A text `setCellText` refuses refuses the whole
    * call, with its cell, and nothing is written; with `refuseInvalid`, so does the cell whose value breaks the strictest
    * rule after all the texts are written, the first of that style.
@@ -2093,8 +2113,9 @@ export interface Session {
   previewCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): CellTextsPreview
   /**
    * Text pasted from the clipboard at a cell, as Excel pastes it: the rows at its line breaks and the fields at its tabs
-   * (`parseClipboard`) fill a rectangle from the cell, a short row's missing fields and a line break after the last row
-   * clearing their cells. Each field is read as `setCellText` reads it, but an apostrophe stays part of the text, a
+   * (`parseClipboard`, a field begun by a quote running to its closing quote) fill a rectangle from the cell, a short
+   * row's missing fields and a line break after the last row clearing their cells; a field with a line break wraps its
+   * cell, as `setCellText` wraps it, and fits no row. Each field is read as `setCellText` reads it, but an apostrophe stays part of the text, a
    * formula Excel does not take is pasted as text, a percent cell has no percent editor (`5` is 500%) and `€5` takes the
    * euro format; no column widens and no rule of data validation is checked. One recomputation, one revision and one
    * step of the undo. Refused, with the cell, where Excel does not paste: part of an array formula, a formula into a
@@ -2108,7 +2129,8 @@ export interface Session {
    * cell (`active`, the range's top-left cell by default): read once, as `setCellText` reads it in the active cell, it
    * gives every cell what the active cell holds after it, a formula with its relative references moved as a copy from
    * the active cell (`copyFormula`), and the active cell's number format, where it has one. The columns widen as typing
-   * widens them (`widths`), unless `widen` is false; a value the active cell's rule of data validation does not take is
+   * widens them (`widths`), unless `widen` is false, and a text with a line break wraps every cell and fits their rows, as
+   * `setCellText` does; a value the active cell's rule of data validation does not take is
    * written, with that rule's alert (`validation`), the only rule checked, or with `refuseInvalid` refused, with the
    * active cell. One recomputation, one revision and one step of the undo. A formula Excel does not take, part of an
    * array formula and a formula into a table's header cell are refused, with the cell, and nothing is written.

@@ -268,13 +268,13 @@ export function checkStyles(v: unknown, path: string): CellStyle[] {
   return array(v, path, 'an array of styles').map((s, i) => checkStyle(s, `${path}[${i}]`))
 }
 
-const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such as "C" or a span such as "B:D"' }, r: { size: 'height', max: 409, what: 'rows', key: 'a row number such as "5" or a span such as "5:9"' } } as const
+const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such as "C" or a span such as "B:D"' }, r: { size: 'height', max: 409.5, what: 'rows', key: 'a row number such as "5" or a span such as "5:9"' } } as const
 
 /** A column or row entry, or a patch of one (fields may be null). */
 function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
-  onlyKeys(o, p, [size, ...(axis === 'c' ? ['bestFit'] : []), 'style', 'numberFormat', 'hidden', 'outlineLevel', 'collapsed'])
+  onlyKeys(o, p, [size, 'bestFit', 'style', 'numberFormat', 'hidden', 'outlineLevel', 'collapsed'])
   const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
@@ -595,9 +595,10 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       return o as unknown as LayoutEdit
     }
     if (o.fit !== undefined) {
-      onlyKeys(o, p, ['sheet', 'columns', 'fit'])
+      const lines = o.rows !== undefined ? 'rows' : 'columns'
+      onlyKeys(o, p, ['sheet', lines, 'fit'])
       if (o.fit !== true) throw new InputError(`${p}.fit`, `expected true, got ${what(o.fit)}`)
-      checkSpan(o.columns, `${p}.columns`, 'c')
+      checkSpan(o[lines], `${p}.${lines}`, lines === 'rows' ? 'r' : 'c')
       return o as unknown as LayoutEdit
     }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
