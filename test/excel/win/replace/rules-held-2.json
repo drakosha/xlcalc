@@ -1,0 +1,5523 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-13",
+  "seconds": 24.3
+ },
+ "books": {
+  "star": {
+   "cells": {
+    "A1": {
+     "value": "a1b2b"
+    },
+    "A2": {
+     "value": "b1b2b"
+    },
+    "A3": {
+     "value": "a1b2c3c"
+    },
+    "A4": {
+     "value": "a*b*c"
+    },
+    "A5": {
+     "value": "xaya"
+    },
+    "A6": {
+     "value": "ab ab"
+    }
+   },
+   "columns": {
+    "A": {
+     "width": 30
+    }
+   }
+  },
+  "more": {
+   "cells": {
+    "A1": {
+     "value": "x007"
+    },
+    "A2": {
+     "value": "#1+"
+    },
+    "A3": {
+     "value": "x(y"
+    },
+    "A4": {
+     "value": "12a",
+     "numberFormat": "@"
+    },
+    "A5": {
+     "value": "b~"
+    },
+    "B1": {
+     "formula": "SUM(D1,D2)"
+    },
+    "B2": {
+     "value": -0.05,
+     "numberFormat": "0%"
+    },
+    "B3": {
+     "formula": "1/0"
+    },
+    "B4": {
+     "formula": "\"a1\"&A1"
+    },
+    "B5": {
+     "value": 0.05,
+     "numberFormat": "0%"
+    },
+    "C1": {
+     "value": 12345
+    },
+    "D1": {
+     "value": 1
+    },
+    "D2": {
+     "value": 2
+    },
+    "L1": {
+     "value": "Qty"
+    },
+    "M1": {
+     "value": "Twice"
+    },
+    "L2": {
+     "value": 2
+    },
+    "L3": {
+     "value": 3
+    },
+    "M2": {
+     "formula": "[@Qty]*2"
+    },
+    "M3": {
+     "formula": "[@Qty]*2"
+    }
+   },
+   "columns": {
+    "A": {
+     "width": 20
+    },
+    "B": {
+     "width": 20
+    }
+   },
+   "tables": [
+    {
+     "name": "T",
+     "range": "L1:M3",
+     "columns": [
+      {
+       "name": "Qty"
+      },
+      {
+       "name": "Twice",
+       "formula": "[@Qty]*2"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "star-1",
+   "book": "star",
+   "query": {
+    "what": "*b",
+    "by": "x",
+    "range": "A1:A6"
+   }
+  },
+  {
+   "id": "star-2",
+   "book": "star",
+   "query": {
+    "what": "a*",
+    "by": "x",
+    "range": "A1:A6"
+   }
+  },
+  {
+   "id": "star-3",
+   "book": "star",
+   "query": {
+    "what": "b*b",
+    "by": "x",
+    "range": "A1:A6"
+   }
+  },
+  {
+   "id": "star-4",
+   "book": "star",
+   "query": {
+    "what": "?*b",
+    "by": "x",
+    "range": "A1:A6"
+   }
+  },
+  {
+   "id": "star-5",
+   "book": "star",
+   "query": {
+    "what": "a*b*c",
+    "by": "x",
+    "range": "A1:A6"
+   }
+  },
+  {
+   "id": "star-6",
+   "book": "star",
+   "query": {
+    "what": "*~*",
+    "by": "x",
+    "range": "A1:A6"
+   }
+  },
+  {
+   "id": "star-7",
+   "book": "star",
+   "query": {
+    "what": "**",
+    "by": "x",
+    "range": "A1:A6"
+   }
+  },
+  {
+   "id": "star-8",
+   "book": "star",
+   "query": {
+    "what": "a*a",
+    "by": "x",
+    "range": "A1:A6"
+   }
+  },
+  {
+   "id": "more-1",
+   "book": "more",
+   "query": {
+    "what": "x",
+    "by": "'",
+    "range": "A1:A2"
+   }
+  },
+  {
+   "id": "more-2",
+   "book": "more",
+   "query": {
+    "what": "#",
+    "by": "=",
+    "range": "A1:A2"
+   }
+  },
+  {
+   "id": "more-3",
+   "book": "more",
+   "query": {
+    "what": "(",
+    "by": "",
+    "range": "A3,B1"
+   }
+  },
+  {
+   "id": "more-4",
+   "book": "more",
+   "query": {
+    "what": "a",
+    "by": "",
+    "range": "A4:A5"
+   }
+  },
+  {
+   "id": "more-5",
+   "book": "more",
+   "query": {
+    "what": "b~",
+    "by": "z",
+    "range": "A4:A5"
+   }
+  },
+  {
+   "id": "more-6",
+   "book": "more",
+   "query": {
+    "what": ",",
+    "by": ";",
+    "range": "B1:B2"
+   }
+  },
+  {
+   "id": "more-7",
+   "book": "more",
+   "query": {
+    "what": ";",
+    "by": ",",
+    "range": "B1:B2"
+   }
+  },
+  {
+   "id": "more-8",
+   "book": "more",
+   "query": {
+    "what": "%",
+    "by": "",
+    "range": "B1:B2"
+   }
+  },
+  {
+   "id": "more-9",
+   "book": "more",
+   "query": {
+    "what": "5",
+    "by": "",
+    "range": "B5:B6"
+   }
+  },
+  {
+   "id": "more-10",
+   "book": "more",
+   "query": {
+    "what": "=1/0",
+    "by": "",
+    "range": "B3:B4",
+    "whole": true
+   }
+  },
+  {
+   "id": "more-11",
+   "book": "more",
+   "query": {
+    "what": "=",
+    "by": "",
+    "range": "B3:B4"
+   }
+  },
+  {
+   "id": "more-12",
+   "book": "more",
+   "query": {
+    "what": "a1",
+    "by": "b2",
+    "range": "B4:B5"
+   }
+  },
+  {
+   "id": "more-13",
+   "book": "more",
+   "query": {
+    "what": "5",
+    "by": "56789012",
+    "range": "C1:C2"
+   }
+  },
+  {
+   "id": "more-14",
+   "book": "more",
+   "query": {
+    "what": "Qty",
+    "by": "Count"
+   }
+  }
+ ],
+ "answers": {
+  "star-1": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "xx"
+     },
+     "text": "xx",
+     "code": "General",
+     "local": "General",
+     "formula": "xx",
+     "formulaLocal": "xx",
+     "formula2": "xx",
+     "formula2Local": "xx",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xxx"
+     },
+     "text": "xxx",
+     "code": "General",
+     "local": "General",
+     "formula": "xxx",
+     "formulaLocal": "xxx",
+     "formula2": "xxx",
+     "formula2Local": "xxx",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x2c3c"
+     },
+     "text": "x2c3c",
+     "code": "General",
+     "local": "General",
+     "formula": "x2c3c",
+     "formulaLocal": "x2c3c",
+     "formula2": "x2c3c",
+     "formula2Local": "x2c3c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x*c"
+     },
+     "text": "x*c",
+     "code": "General",
+     "local": "General",
+     "formula": "x*c",
+     "formulaLocal": "x*c",
+     "formula2": "x*c",
+     "formula2Local": "x*c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "xaya"
+     },
+     "text": "xaya",
+     "code": "General",
+     "local": "General",
+     "formula": "xaya",
+     "formulaLocal": "xaya",
+     "formula2": "xaya",
+     "formula2Local": "xaya",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A6": {
+     "cell": {
+      "value": "xx"
+     },
+     "text": "xx",
+     "code": "General",
+     "local": "General",
+     "formula": "xx",
+     "formulaLocal": "xx",
+     "formula2": "xx",
+     "formula2Local": "xx",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 29.29,
+     "standard": false
+    }
+   }
+  },
+  "star-2": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "b1b2b"
+     },
+     "text": "b1b2b",
+     "code": "General",
+     "local": "General",
+     "formula": "b1b2b",
+     "formulaLocal": "b1b2b",
+     "formula2": "b1b2b",
+     "formula2Local": "b1b2b",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "xx"
+     },
+     "text": "xx",
+     "code": "General",
+     "local": "General",
+     "formula": "xx",
+     "formulaLocal": "xx",
+     "formula2": "xx",
+     "formula2Local": "xx",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A6": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 29.29,
+     "standard": false
+    }
+   }
+  },
+  "star-3": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "a1x"
+     },
+     "text": "a1x",
+     "code": "General",
+     "local": "General",
+     "formula": "a1x",
+     "formulaLocal": "a1x",
+     "formula2": "a1x",
+     "formula2Local": "a1x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "x2b"
+     },
+     "text": "x2b",
+     "code": "General",
+     "local": "General",
+     "formula": "x2b",
+     "formulaLocal": "x2b",
+     "formula2": "x2b",
+     "formula2Local": "x2b",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "a1b2c3c"
+     },
+     "text": "a1b2c3c",
+     "code": "General",
+     "local": "General",
+     "formula": "a1b2c3c",
+     "formulaLocal": "a1b2c3c",
+     "formula2": "a1b2c3c",
+     "formula2Local": "a1b2c3c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "a*b*c"
+     },
+     "text": "a*b*c",
+     "code": "General",
+     "local": "General",
+     "formula": "a*b*c",
+     "formulaLocal": "a*b*c",
+     "formula2": "a*b*c",
+     "formula2Local": "a*b*c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "xaya"
+     },
+     "text": "xaya",
+     "code": "General",
+     "local": "General",
+     "formula": "xaya",
+     "formulaLocal": "xaya",
+     "formula2": "xaya",
+     "formula2Local": "xaya",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A6": {
+     "cell": {
+      "value": "ax"
+     },
+     "text": "ax",
+     "code": "General",
+     "local": "General",
+     "formula": "ax",
+     "formulaLocal": "ax",
+     "formula2": "ax",
+     "formula2Local": "ax",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 29.29,
+     "standard": false
+    }
+   }
+  },
+  "star-4": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "xx"
+     },
+     "text": "xx",
+     "code": "General",
+     "local": "General",
+     "formula": "xx",
+     "formulaLocal": "xx",
+     "formula2": "xx",
+     "formula2Local": "xx",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "xx"
+     },
+     "text": "xx",
+     "code": "General",
+     "local": "General",
+     "formula": "xx",
+     "formulaLocal": "xx",
+     "formula2": "xx",
+     "formula2Local": "xx",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x2c3c"
+     },
+     "text": "x2c3c",
+     "code": "General",
+     "local": "General",
+     "formula": "x2c3c",
+     "formulaLocal": "x2c3c",
+     "formula2": "x2c3c",
+     "formula2Local": "x2c3c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x*c"
+     },
+     "text": "x*c",
+     "code": "General",
+     "local": "General",
+     "formula": "x*c",
+     "formulaLocal": "x*c",
+     "formula2": "x*c",
+     "formula2Local": "x*c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "xaya"
+     },
+     "text": "xaya",
+     "code": "General",
+     "local": "General",
+     "formula": "xaya",
+     "formulaLocal": "xaya",
+     "formula2": "xaya",
+     "formula2Local": "xaya",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A6": {
+     "cell": {
+      "value": "xx"
+     },
+     "text": "xx",
+     "code": "General",
+     "local": "General",
+     "formula": "xx",
+     "formulaLocal": "xx",
+     "formula2": "xx",
+     "formula2Local": "xx",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 29.29,
+     "standard": false
+    }
+   }
+  },
+  "star-5": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "a1b2b"
+     },
+     "text": "a1b2b",
+     "code": "General",
+     "local": "General",
+     "formula": "a1b2b",
+     "formulaLocal": "a1b2b",
+     "formula2": "a1b2b",
+     "formula2Local": "a1b2b",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "b1b2b"
+     },
+     "text": "b1b2b",
+     "code": "General",
+     "local": "General",
+     "formula": "b1b2b",
+     "formulaLocal": "b1b2b",
+     "formula2": "b1b2b",
+     "formula2Local": "b1b2b",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x3c"
+     },
+     "text": "x3c",
+     "code": "General",
+     "local": "General",
+     "formula": "x3c",
+     "formulaLocal": "x3c",
+     "formula2": "x3c",
+     "formula2Local": "x3c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "xaya"
+     },
+     "text": "xaya",
+     "code": "General",
+     "local": "General",
+     "formula": "xaya",
+     "formulaLocal": "xaya",
+     "formula2": "xaya",
+     "formula2Local": "xaya",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A6": {
+     "cell": {
+      "value": "ab ab"
+     },
+     "text": "ab ab",
+     "code": "General",
+     "local": "General",
+     "formula": "ab ab",
+     "formulaLocal": "ab ab",
+     "formula2": "ab ab",
+     "formula2Local": "ab ab",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 29.29,
+     "standard": false
+    }
+   }
+  },
+  "star-6": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "a1b2b"
+     },
+     "text": "a1b2b",
+     "code": "General",
+     "local": "General",
+     "formula": "a1b2b",
+     "formulaLocal": "a1b2b",
+     "formula2": "a1b2b",
+     "formula2Local": "a1b2b",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "b1b2b"
+     },
+     "text": "b1b2b",
+     "code": "General",
+     "local": "General",
+     "formula": "b1b2b",
+     "formulaLocal": "b1b2b",
+     "formula2": "b1b2b",
+     "formula2Local": "b1b2b",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "a1b2c3c"
+     },
+     "text": "a1b2c3c",
+     "code": "General",
+     "local": "General",
+     "formula": "a1b2c3c",
+     "formulaLocal": "a1b2c3c",
+     "formula2": "a1b2c3c",
+     "formula2Local": "a1b2c3c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "xxc"
+     },
+     "text": "xxc",
+     "code": "General",
+     "local": "General",
+     "formula": "xxc",
+     "formulaLocal": "xxc",
+     "formula2": "xxc",
+     "formula2Local": "xxc",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "xaya"
+     },
+     "text": "xaya",
+     "code": "General",
+     "local": "General",
+     "formula": "xaya",
+     "formulaLocal": "xaya",
+     "formula2": "xaya",
+     "formula2Local": "xaya",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A6": {
+     "cell": {
+      "value": "ab ab"
+     },
+     "text": "ab ab",
+     "code": "General",
+     "local": "General",
+     "formula": "ab ab",
+     "formulaLocal": "ab ab",
+     "formula2": "ab ab",
+     "formula2Local": "ab ab",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 29.29,
+     "standard": false
+    }
+   }
+  },
+  "star-7": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A6": {
+     "cell": {
+      "value": "x"
+     },
+     "text": "x",
+     "code": "General",
+     "local": "General",
+     "formula": "x",
+     "formulaLocal": "x",
+     "formula2": "x",
+     "formula2Local": "x",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 29.29,
+     "standard": false
+    }
+   }
+  },
+  "star-8": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "a1b2b"
+     },
+     "text": "a1b2b",
+     "code": "General",
+     "local": "General",
+     "formula": "a1b2b",
+     "formulaLocal": "a1b2b",
+     "formula2": "a1b2b",
+     "formula2Local": "a1b2b",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "b1b2b"
+     },
+     "text": "b1b2b",
+     "code": "General",
+     "local": "General",
+     "formula": "b1b2b",
+     "formulaLocal": "b1b2b",
+     "formula2": "b1b2b",
+     "formula2Local": "b1b2b",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "a1b2c3c"
+     },
+     "text": "a1b2c3c",
+     "code": "General",
+     "local": "General",
+     "formula": "a1b2c3c",
+     "formulaLocal": "a1b2c3c",
+     "formula2": "a1b2c3c",
+     "formula2Local": "a1b2c3c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "a*b*c"
+     },
+     "text": "a*b*c",
+     "code": "General",
+     "local": "General",
+     "formula": "a*b*c",
+     "formulaLocal": "a*b*c",
+     "formula2": "a*b*c",
+     "formula2Local": "a*b*c",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "xx"
+     },
+     "text": "xx",
+     "code": "General",
+     "local": "General",
+     "formula": "xx",
+     "formulaLocal": "xx",
+     "formula2": "xx",
+     "formula2Local": "xx",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A6": {
+     "cell": {
+      "value": "xb"
+     },
+     "text": "xb",
+     "code": "General",
+     "local": "General",
+     "formula": "xb",
+     "formulaLocal": "xb",
+     "formula2": "xb",
+     "formula2Local": "xb",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 29.29,
+     "standard": false
+    }
+   }
+  },
+  "more-1": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "007"
+     },
+     "text": "007",
+     "code": "General",
+     "local": "General",
+     "prefix": "'",
+     "formula": "007",
+     "formulaLocal": "007",
+     "formula2": "007",
+     "formula2Local": "007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1007",
+     "text": "a1007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-2": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-3": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "xy"
+     },
+     "text": "xy",
+     "code": "General",
+     "local": "General",
+     "formula": "xy",
+     "formulaLocal": "xy",
+     "formula2": "xy",
+     "formula2Local": "xy",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-4": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": 12,
+      "format": 49
+     },
+     "text": "12",
+     "code": "@",
+     "local": "@",
+     "value2": 12,
+     "formula": "12",
+     "formulaLocal": "12",
+     "formula2": "12",
+     "formula2Local": "12",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-5": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "z~"
+     },
+     "text": "z~",
+     "code": "General",
+     "local": "General",
+     "formula": "z~",
+     "formulaLocal": "z~",
+     "formula2": "z~",
+     "formula2Local": "z~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-6": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-7": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-8": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -5,
+      "format": 9
+     },
+     "text": "-500%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -5,
+     "formula": "-5",
+     "formulaLocal": "-5",
+     "formula2": "-5",
+     "formula2Local": "-5",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-9": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": "%",
+      "format": 9
+     },
+     "text": "%",
+     "code": "0%",
+     "local": "0%",
+     "formula": "%",
+     "formulaLocal": "%",
+     "formula2": "%",
+     "formula2Local": "%",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-10": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-11": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "value": 36526,
+      "format": 17
+     },
+     "text": "Jan-00",
+     "code": "mmm-yy",
+     "local": "mmm-yy",
+     "value2": 36526,
+     "formula": "36526",
+     "formulaLocal": "36526",
+     "formula2": "36526",
+     "formula2Local": "36526",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "value": "\"a1\"&A1"
+     },
+     "text": "\"a1\"&A1",
+     "code": "General",
+     "local": "General",
+     "formula": "\"a1\"&A1",
+     "formulaLocal": "\"a1\"&A1",
+     "formula2": "\"a1\"&A1",
+     "formula2Local": "\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-12": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"b2\"&B2"
+     },
+     "computed": "b2-0.05",
+     "text": "b2-0.05",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"b2\"&B2",
+     "formulaLocal": "=\"b2\"&B2",
+     "formula2": "=\"b2\"&B2",
+     "formula2Local": "=\"b2\"&B2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-13": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 123456789012
+     },
+     "text": "1.23E+11",
+     "code": "General",
+     "local": "General",
+     "value2": 123456789012,
+     "formula": "123456789012",
+     "formulaLocal": "123456789012",
+     "formula2": "123456789012",
+     "formula2Local": "123456789012",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Qty"
+     },
+     "text": "Qty",
+     "code": "General",
+     "local": "General",
+     "formula": "Qty",
+     "formulaLocal": "Qty",
+     "formula2": "Qty",
+     "formula2Local": "Qty",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Qty]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Qty]*2",
+     "formulaLocal": "=[@Qty]*2",
+     "formula2": "=[@Qty]*2",
+     "formula2Local": "=[@Qty]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  },
+  "more-14": {
+   "replaced": true,
+   "cells": {
+    "A1": {
+     "cell": {
+      "value": "x007"
+     },
+     "text": "x007",
+     "code": "General",
+     "local": "General",
+     "formula": "x007",
+     "formulaLocal": "x007",
+     "formula2": "x007",
+     "formula2Local": "x007",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A2": {
+     "cell": {
+      "value": "#1+"
+     },
+     "text": "#1+",
+     "code": "General",
+     "local": "General",
+     "formula": "#1+",
+     "formulaLocal": "#1+",
+     "formula2": "#1+",
+     "formula2Local": "#1+",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A3": {
+     "cell": {
+      "value": "x(y"
+     },
+     "text": "x(y",
+     "code": "General",
+     "local": "General",
+     "formula": "x(y",
+     "formulaLocal": "x(y",
+     "formula2": "x(y",
+     "formula2Local": "x(y",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A4": {
+     "cell": {
+      "value": "12a",
+      "format": 49
+     },
+     "text": "12a",
+     "code": "@",
+     "local": "@",
+     "formula": "12a",
+     "formulaLocal": "12a",
+     "formula2": "12a",
+     "formula2Local": "12a",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "A5": {
+     "cell": {
+      "value": "b~"
+     },
+     "text": "b~",
+     "code": "General",
+     "local": "General",
+     "formula": "b~",
+     "formulaLocal": "b~",
+     "formula2": "b~",
+     "formula2Local": "b~",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B1": {
+     "cell": {
+      "formula": "SUM(D1,D2)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(D1,D2)",
+     "formulaLocal": "=SUM(D1,D2)",
+     "formula2": "=SUM(D1,D2)",
+     "formula2Local": "=SUM(D1,D2)",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B2": {
+     "cell": {
+      "value": -0.05,
+      "format": 9
+     },
+     "text": "-5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": -0.05,
+     "formula": "-0.05",
+     "formulaLocal": "-0.05",
+     "formula2": "-0.05",
+     "formula2Local": "-0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B3": {
+     "cell": {
+      "formula": "1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=1/0",
+     "formulaLocal": "=1/0",
+     "formula2": "=1/0",
+     "formula2Local": "=1/0",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B4": {
+     "cell": {
+      "formula": "\"a1\"&A1"
+     },
+     "computed": "a1x007",
+     "text": "a1x007",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a1\"&A1",
+     "formulaLocal": "=\"a1\"&A1",
+     "formula2": "=\"a1\"&A1",
+     "formula2Local": "=\"a1\"&A1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "B5": {
+     "cell": {
+      "value": 0.05,
+      "format": 9
+     },
+     "text": "5%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 0.05,
+     "formula": "0.05",
+     "formulaLocal": "0.05",
+     "formula2": "0.05",
+     "formula2Local": "0.05",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "C1": {
+     "cell": {
+      "value": 12345
+     },
+     "text": "12345",
+     "code": "General",
+     "local": "General",
+     "value2": 12345,
+     "formula": "12345",
+     "formulaLocal": "12345",
+     "formula2": "12345",
+     "formula2Local": "12345",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D1": {
+     "cell": {
+      "value": 1
+     },
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "1",
+     "formulaLocal": "1",
+     "formula2": "1",
+     "formula2Local": "1",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "D2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L1": {
+     "cell": {
+      "value": "Count"
+     },
+     "text": "Count",
+     "code": "General",
+     "local": "General",
+     "formula": "Count",
+     "formulaLocal": "Count",
+     "formula2": "Count",
+     "formula2Local": "Count",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M1": {
+     "cell": {
+      "value": "Twice"
+     },
+     "text": "Twice",
+     "code": "General",
+     "local": "General",
+     "formula": "Twice",
+     "formulaLocal": "Twice",
+     "formula2": "Twice",
+     "formula2Local": "Twice",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "L3": {
+     "cell": {
+      "value": 3
+     },
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "3",
+     "formulaLocal": "3",
+     "formula2": "3",
+     "formula2Local": "3",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M2": {
+     "cell": {
+      "formula": "T[[#This Row],[Count]]*2"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=[@Count]*2",
+     "formulaLocal": "=[@Count]*2",
+     "formula2": "=[@Count]*2",
+     "formula2Local": "=[@Count]*2",
+     "hasArray": false,
+     "hasSpill": false
+    },
+    "M3": {
+     "cell": {
+      "formula": "T[[#This Row],[Count]]*2"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=[@Count]*2",
+     "formulaLocal": "=[@Count]*2",
+     "formula2": "=[@Count]*2",
+     "formula2Local": "=[@Count]*2",
+     "hasArray": false,
+     "hasSpill": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "B": {
+     "columnWidth": 19.29,
+     "standard": false
+    },
+    "C": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "D": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "L": {
+     "columnWidth": 8.43,
+     "standard": true
+    },
+    "M": {
+     "columnWidth": 8.43,
+     "standard": true
+    }
+   }
+  }
+ }
+}
