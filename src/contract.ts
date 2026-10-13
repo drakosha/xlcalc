@@ -1698,6 +1698,8 @@ export interface ExplainOptions {
 }
 
 export interface ExplainNode {
+  /** The local node's sheet and A1 cell or range for navigation; absent for another workbook. */
+  location?: RangeRef
   /** `'Sheet'!B3` or `'Sheet'!D:D`. */
   ref: string
   value?: CellValue
@@ -2322,7 +2324,7 @@ export interface AsyncSession {
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
-  explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
+  explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
   getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
   getCell(sheet: string, cell: string): Promise<CellView | undefined>
