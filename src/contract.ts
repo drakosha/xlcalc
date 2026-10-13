@@ -2142,11 +2142,14 @@ export interface Session {
    */
   getUsedRange(sheet: string): SheetExtent
   /**
-   * The cell Control and an arrow key come to from `cell`, as Excel's `Range.End`: from a cell that holds something
-   * (a value, a formula, a spilled value) with such a cell next to it, the last of that block; else the next cell that
-   * holds something, or the sheet's edge (row 1 or 1,048,576, column A or XFD). Cells with a look alone are empty;
-   * hidden rows and columns are passed over, as if not there. It costs the cells of the line it goes along, not a pass
-   * over the sheet.
+   * The cell Control and an arrow key come to from `cell`, its address, as Excel's `Range.End` gives it
+   * (`docs/live-books.md`): from a cell that holds something with such a cell next to it, the last of that block; else
+   * the next cell that holds something, or the sheet's edge (row 1 or 1,048,576, column A or XFD), where a cell at the
+   * edge stays. A value or a formula holds something, whatever it shows (an empty text, zero, an error), and so does
+   * each cell of a spill and of an old-kind array; a look, a note or a link alone does not. Hidden rows and columns are
+   * not there: by hand, by a filter or by a size of 0, `End` never stops on them and a block goes on across them, and
+   * with every line hidden past a cell the edge is the last line shown. A merged area is its cells, its value in the
+   * top-left one. It costs the cells of the line it goes along, up to where the line's values end, not a pass over the sheet.
    */
   getEnd(sheet: string, cell: string, direction: EndDirection): string
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
