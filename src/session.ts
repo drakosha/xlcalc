@@ -350,10 +350,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /**
    * Typed cells written as `call`, in one step of the undo with the widths their columns take (`textWidths`), set unless
-   * `widen` is false, the styles that wrap a text with a line break and, unless `fit` is false, the heights of the rows
-   * that wrap (`wrap.ts`): the state after, what changed and the widths.
+   * `widen` is false, the styles that wrap a text with a line break and the heights of the rows that wrap (`wrap.ts`);
+   * `pasted`, a paste, which measures no column and fits no row: the state after, what changed and the widths.
    */
-  function* writeTexts(s: EngineState, cells: Typed[], call: Step['call'], widen: boolean, fit = true): Steps<[EngineState, Outcome, ColumnWidth[]]> {
+  function* writeTexts(s: EngineState, cells: Typed[], call: Step['call'], widen: boolean, pasted = false): Steps<[EngineState, Outcome, ColumnWidth[]]> {
     // a text with a line break wraps its cell, by a style the table may gain
     const wrapped = wrapTyped(s, cells)
     const [next, out, back] = yield* writeCells(s, cells.map((x) => x.edit), call)
@@ -366,8 +366,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       steps.push(() => stylesStep(was, call))
     }
     // a number that does not fit its column widens it, and a row whose cell wraps fits it, as Excel does, in the same step
-    const widths = widen ? textWidths(next, cells) : []
-    const edits: SetLayoutEdit[] = [...widths.map((w) => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } })), ...(fit ? typedHeights(next, cells) : [])]
+    const widths = pasted ? [] : textWidths(next, cells)
+    const edits: SetLayoutEdit[] = [...(widen ? widths.map((w) => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } })) : []), ...(pasted ? [] : typedHeights(next, cells))]
     if (edits.length) {
       const shown = display ? snapshot(next, layoutCells(next, edits)) : null
       const sheets = applyLayout({ ...next.input, sheets: next.input.sheets.slice() }, edits, (name) => sheetIndex(next)(name)!)
@@ -627,7 +627,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const pasted = pastedText(s, ...at(s, sheet, cell), checkString(text, 'text'), clock.now)
       if (!pasted.ok) return pasted.refusal
       // a paste wraps a text with a line break but fits no row, widens no column and checks no rule of data validation
-      const [next, out] = yield* writeTexts(s, pasted.cells, 'pasteText', false, false)
+      const [next, out] = yield* writeTexts(s, pasted.cells, 'pasteText', false, true)
       return { ok: true, ...answer(next, out), range: pasted.range }
     },
     *previewPasteText(sheet: string, cell: string, text: string, eo?: EditOptions): Steps<PasteTextPreview> {
