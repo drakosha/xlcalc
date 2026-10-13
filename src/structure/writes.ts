@@ -62,5 +62,5 @@ export function checkWrites(book: BookInput, op: StructureOp, values: ValuesIn):
   const p = pasteOf(book, op)
   const target = p?.at
   if (!p || !target || p.fs < 0 || p.ts < 0) return
-  allotWrites(() => (p.copy ? copyWrites(book, p, target, values) : contentIn(book.sheets[p.fs], p.src)))
+  allotWrites(() => (p.copy ? copyWrites(book, p, target, values) : contentIn(book.sheets[p.fs], p.src)), book.locale)
 }

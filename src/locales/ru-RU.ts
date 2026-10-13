@@ -294,6 +294,7 @@ const MESSAGES: Messages = {
   arrayPart: (p) => `Нельзя изменить часть массива ${p.sheet}!${p.cell} (${p.area})`,
   moveOffSheet: (p) => `Диапазон не помещается на лист ${q(p.sheet)}, начиная с ${p.cell}`,
   copyOffSheet: (p) => `Копия не помещается на лист ${q(p.sheet)}, начиная с ${p.cell}`,
+  writesLimit: (p) => `Правка записывает слишком много ячеек: ${p.size} при пределе ${p.max}`,
   moveCutsMerge: (p) => `Нельзя переместить часть объединённых ячеек ${p.sheet}!${p.area}`,
   pasteOnMerge: (p) => `Нельзя вставить ячейки на часть объединённых ячеек ${p.sheet}!${p.area}`,
   filteredPaste: (p) => `Копию без строк, скрытых фильтром, нельзя вставить поверх скрытых строк ${p.sheet}!${p.area}`,

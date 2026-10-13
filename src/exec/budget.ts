@@ -6,6 +6,7 @@
  */
 import type { AbortSignalLike, CalcErrorCode, CalcLimits, CellRef } from '../contract.js'
 import { nowMs } from '../env.js'
+import { say } from '../locale/messages.js'
 
 /** Why an asynchronous or limited call failed, by `code`; a `limit` names the limit, its maximum, the size and the formula's cell. */
 export class CalcError extends Error {
@@ -131,13 +132,15 @@ export function count(n: number): void {
 }
 
 /**
- * An edit is about to write cells, `n` of them or as many as `n()` counts, called only under a limit: over
- * `limits.writes` stops it before anything is written.
+ * An edit of a book in `locale` is about to write cells, `n` of them or as many as `n()` counts, called only under a
+ * limit: over `limits.writes` stops it before anything is written, its message in the book's language, as a person's
+ * edit brings it.
  */
-export function allotWrites(n: number | (() => number)): void {
+export function allotWrites(n: number | (() => number), locale: string | undefined): void {
   if (active === null || active.writes === Infinity) return
   const size = typeof n === 'number' ? n : n()
-  if (size > active.writes) throw new CalcError('limit', `${size} cells written by one edit, over the limit of ${active.writes}`, { limit: 'writes', max: active.writes, size })
+  const max = active.writes
+  if (size > max) throw new CalcError('limit', say(locale, { key: 'writesLimit', size, max }), { limit: 'writes', max, size })
 }
 
 /** A limit error without a cell gets the cell of the formula being computed. */

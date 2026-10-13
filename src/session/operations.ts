@@ -81,7 +81,7 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
   }
   const ops = array(given, 'operations', 'an array of serializable session operations')
   // the batch writes the cells of its edits: over `limits.writes` it stops before anything is staged
-  allotWrites(() => ops.reduce((n: number, op) => n + (isObject(op) && (op.op === 'setCells' || op.op === 'replaceCells') && Array.isArray(op.edits) ? op.edits.length : 0), 0))
+  allotWrites(() => ops.reduce((n: number, op) => n + (isObject(op) && (op.op === 'setCells' || op.op === 'replaceCells') && Array.isArray(op.edits) ? op.edits.length : 0), 0), s.input.locale)
   for (const [n, value] of ops.entries()) {
     const path = `operations[${n}]`,
       op = object(value, path, 'a session operation')

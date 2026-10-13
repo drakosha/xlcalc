@@ -64,6 +64,6 @@ export function* replacedTexts(s: EngineState, given: RangeRef[], query: string,
     else out.cells.push({ i, r, c, edit: { ...ref, input } })
   }
   // what Find found is known only now: over `limits.writes` the call stops before anything is written
-  allotWrites(out.cells.length)
+  allotWrites(out.cells.length, s.input.locale)
   return out
 }

@@ -73,6 +73,8 @@ A spill costs more than its array, because each of its cells gets entries in the
 
 A look alone goes to the sheet's looks and costs little, so `patchCells` and the looks a copy or a move carries do not count. What writes no more than the book holds is not bounded: inserting and deleting rows and columns, the other structure operations, `clearCells`, `undo` and `redo`. An edit over `writes` throws `CalcError` with `limit: 'writes'`, `max` and `size`, the cells it would write, and changes nothing: the book, its revision, its history and its hash stay as they were. `compute` writes nothing, so `writes` bounds sessions alone.
 
+As a person's edit brings it, its message is in the book's language: `1048576 cells written by one edit, over the limit of 100000`, in a ru-RU book `Правка записывает слишком много ячеек: 1048576 при пределе 100000`. The other limits' messages, which a host's own settings bring, are in English.
+
 ```js
 const session = createSession(book, { limits: { writes: 100_000 } })
 session.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', range: 'B:B' } }) // CalcError: limit writes, size 1048576

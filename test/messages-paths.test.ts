@@ -295,6 +295,19 @@ describe('explain', () => {
   }, 60_000)
 })
 
+it("an edit over limits.writes says it in the book's language, in a session as in a calculator", async () => {
+  reached.add('writesLimit')
+  const m: Message = { key: 'writesLimit', size: 1_048_576, max: 100_000 }
+  const copy = { op: 'copyRange', from: { sheet: 'Лист', range: 'A1' }, to: { sheet: 'Лист', range: 'B:B' } } as const
+  for (const [locale, text] of [['ru-RU', ru(m)], [undefined, en(m)]] as const) {
+    const book: BookInput = { ...(locale ? { locale } : {}), sheets: [{ name: 'Лист', cells: { A1: { value: 1 } } }] }
+    expect(() => createSession(book, { limits: { writes: 100_000 } }).editStructure(copy)).toThrow(text)
+    const calc = createInlineCalc({ limits: { writes: 100_000 } })
+    await expect((await calc.createSession(book)).editStructure(copy)).rejects.toThrow(text)
+    await calc.close()
+  }
+})
+
 it('the cases reach every message of the catalog but the rules of names', () => {
   expect(Object.keys(EN_MESSAGES).filter((k) => !reached.has(k as MessageKey))).toEqual(['nameRule'])
 })

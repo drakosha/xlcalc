@@ -11,6 +11,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, createInlineCalc, createSession, type AsyncSession, type BookInput, type CalcLimits, type Execution } from '../src/index.js'
 import { pool } from './fixtures/pool.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import './locales.js'
 
 afterAll(closeCalcs)
 
@@ -106,6 +107,16 @@ describe.each(['closures', 'eval'] as Execution[])('limits.writes, execution %s'
         expect(refusal(e)).toEqual(['limit', 'writes', 100_000, 1_048_576])
         expect(ms).toBeLessThan(50)
         expect([await s.getHash(), s.revision]).toEqual([hash, 0])
+        await s.close()
+      }
+    })
+
+    it("the refusal says it in the book's language, as a person's edit brings it", async () => {
+      const open = await opener(kind)
+      for (const [locale, message] of [[undefined, '1048576 cells written by one edit, over the limit of 100000'], ['ru-RU', 'Правка записывает слишком много ячеек: 1048576 при пределе 100000']] as const) {
+        const s = await open({ ...(locale ? { locale } : {}), sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] }, { clock, execution, limits: { writes: 100_000 } })
+        const e = await s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', range: 'B:B' } }).catch((x: unknown) => x)
+        expect((e as CalcError).message).toBe(message)
         await s.close()
       }
     })
