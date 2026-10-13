@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.33.0 (2026-10-13)
+
+Internal release; not published to npm. Row heights as Excel fits them, wrapped text on entry, the clipboard's plain text, the saved active sheet and view. The synthetic book's values and hashes are as in 0.32.1.
+
+Added:
+
+- `setLayout` takes `{ sheet, rows: '2:5', fit: true }`: the heights Excel for Mac gives rows by AutoFit (a double click below a row's number), one revision and one step of undo, in every kind of session; `fitRows(book, result, sheet, rows)` gives them for a computed book without a session. A row is as high as the tallest cell's text above the common baseline plus the deepest below it, by the font of the cell, else of its row's or column's style, wrapped text by its column's width ([Fitting rows](docs/formats.md#fitting-rows)). `RowInput.bestFit` marks a height Excel fitted rather than one set by hand.
+- Text with a line break typed through `setCellText`, `setCellTexts` or `fillCellText` gets a style with `alignment.wrap` (an equal style found in the table, else added) and its row fitted in the same step of undo, unless the row's height was set by hand or the row is hidden; `pasteText` sets the wrap and leaves the height. The result carries `styles` when the table grew and `layout` when a height changed ([A line break](docs/entry.md#a-line-break)).
+- `formatClipboard(rows, opts?)` in `xlcalc/text` and the root: a rectangle of shown texts as Excel puts plain text on the clipboard, fields at tabs, rows at CRLF, a field with a tab or line break in quotes with its quotes doubled, a CRLF at the end unless `trailingNewline: false` (Excel for Mac leaves it out) ([Copying plain text](docs/entry.md#copying-plain-text)).
+- `columnWidthToPoints(width?)` and `columnWidthFromPoints(points)` in `xlcalc/text` and the root: a column's xlsx width in points of the library's geometry (Excel for Mac, a column without a width 53 points) and back, for a grid that draws columns as the library lays out `####` and overflow; CSS pixels are points × 4/3 ([Column geometry for a grid](docs/formats.md#column-geometry-for-a-grid)).
+- `BookInput.activeSheet` and `SheetInput.view` (`activeCell`, `selection`, `topLeft`, `zoom`): `readXlsx` reads the active sheet and each sheet's first view from the file, `writeXlsx` writes them back, and structure operations keep `activeSheet` on a visible sheet. Neither enters computation or `inputHash`. Only the active sheet's tab is written selected: a group of selected tabs is read as the active sheet alone ([The saved active sheet and view](docs/xlsx.md#the-saved-active-sheet-and-view)).
+- The asynchronous `explain` takes `signal` and `timeoutMs`, in `createInlineCalc` and the pool, and stops a waiting or running call with `CalcError` `aborted`; `ExplainNode.location` gives a node's sheet and A1 cell or range, for a panel that goes to it.
+
+Changed:
+
+- `parseClipboard` and `pasteText` read a field begun by a quote to its closing quote, tabs and line breaks inside it, a doubled quote as one, text after the closing quote joined to the field; a quote elsewhere is a character, as both Excels paste text. Before, quotes were characters everywhere.
+- `readXlsx` reads a row height without `customHeight` as `{ height, bestFit: true }` (before, it left it out); 409.6, which Excel for Mac writes as its highest, reads as 409.5. A book read from a file now has `activeSheet` and sheets' `view` where the file has them.
+
+Measured: row heights in Excel 16.113 for Mac and Excel for Windows (the step `rows`, object model and keyboard, en-US and ru-RU), the engine as Excel for Mac on 709 of 723 rows (the rest in `test/rows-known.ts`: fonts other than Calibri, a formula typed over lines); the clipboard's text copied in both Excels in both locales; column widths through both object models. Known differences: Windows fits rows in pixels (heights differ from Mac, as widths do); heights are not refitted when a book opens or a font changes.
+
 ## 0.32.1 (2026-10-13)
 
 Internal release; not published to npm. The synthetic book's values and hashes are as in 0.32.0.
