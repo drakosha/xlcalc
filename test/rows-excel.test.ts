@@ -76,6 +76,7 @@ const CONFIRMED: Record<string, number> = {
 /** The cases whose height Excel for Windows gave as the Mac did, by `<tag>:<set>`. */
 const WIN_SAME_HEIGHT: Record<string, number> = {
   'en-US:autofit': 49,
+  'ru-RU:autofit': 49,
   'en-US:held': 15,
   'en-US:keys': 6,
   'en-US:lines': 7,
