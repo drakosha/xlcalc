@@ -421,6 +421,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       getBook: () => value<Sent>(call('getBook', [])).then(unpackSlowly),
       getLayout: () => value(call('getLayout', [])),
       getUsedRange: (sheet) => value(call('getUsedRange', [sheet])),
+      getEnd: (sheet, cell, direction) => value(call('getEnd', [sheet, cell, direction])),
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
       getCells: (sheet, range) => value(call('getCells', [sheet, range])),
       getCell: (sheet, cell) => value(call('getCell', [sheet, cell])),
