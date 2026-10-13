@@ -403,6 +403,8 @@ function Step($xl, $wb, $s) {
     }
     # AutoFit of a range's whole columns; each column's ColumnWidth, Width (points) and UseStandardWidth (bench/windows/fit.ts)
     'autofit' { [void](Rg $wb $s.sheet $s.range).EntireColumn.AutoFit(); 'null' }
+    'setColumnWidth' { (Rg $wb $s.sheet $s.column).ColumnWidth = [double]$s.width; 'null' }
+    'standardWidth' { Cell ([double]$wb.Worksheets.Item($s.sheet).StandardWidth) }
     'widths' {
       $ws = $wb.Worksheets.Item($s.sheet)
       List ($s.columns | ForEach-Object { $c = $ws.Range("$($_)1"); List @((Cell ([double]$c.ColumnWidth)), (Cell ([double]$c.Width)), (Cell $c.UseStandardWidth)) })
