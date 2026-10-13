@@ -35,6 +35,8 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:rules-held': 50,
   'en-US:rules-held-2': 20,
   'ru-RU:rules-held-2': 20,
+  'en-US:rules-held-3': 9,
+  'ru-RU:rules-held-3': 9,
 }
 
 const RUNS = TAGS.flatMap((tag) => {
