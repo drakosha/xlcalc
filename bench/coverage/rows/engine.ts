@@ -1,53 +1,60 @@
 /**
  * The engine's answer to a rows case, the same for the predictions written before Excel runs a set and for the tests:
- * the case's book computed, its texts typed in turn (each read by `parseEntry`), its row fitted (`fitRows`) when the
- * case fits it, then the row's height before and after and whether its cells wrap. The engine's functions come as
- * arguments, so a test passes the ones it tests (`src` or `dist`).
+ * the case's book in a session, its texts typed (`setCellText`), entered into a selection (`fillCellText`) or pasted
+ * (`pasteText`) in turn, its row fitted (`setLayout` with `{ rows, fit: true }`) when the case fits it, then the row's
+ * height before and after and its cells' content and wrapping. The engine's functions come as arguments, so a test
+ * passes the ones it tests (`src` or `dist`).
  */
-import type { BookInput, CellInput, ComputeResult, EntryOptions, EntryResult } from '../../../src/contract.js'
-import { caseCols, caseRow, rowsBook, type RowCase } from './cases.js'
+import type { BookInput, CellInput, Session, SessionOptions } from '../../../src/contract.js'
+import { formatAddress } from '../../../src/model.js'
+import { caseCells, caseRow, cellKey, rowsBook, type RowCase } from './cases.js'
 
 export interface RowsEngine {
-  compute(book: BookInput): ComputeResult
-  parseEntry(text: string, opts: EntryOptions): EntryResult
-  fitRows(book: BookInput, result: ComputeResult, sheet: string, rows: string): Record<string, number | null>
+  createSession(book: BookInput, opts?: SessionOptions): Session
 }
 
-/** The engine's answer: the row's height when the book opens and after (the default 15 for none, 0 for a hidden row) and whether each cell wraps. */
+/** The engine's answer: the row's height when the book opens and after (the default 15 for none, 0 for a hidden row) and each read cell's content (as `Formula` reads it) and wrapping. */
 export interface RowsPrediction {
   before: number
   height: number
-  wrap: Record<number, boolean>
+  cells: Record<string, { formula: string; wrap: boolean }>
 }
 
-const DEFAULT = 15
-const COLS = 'BCD'
+/** What `Range.Formula` reads of a cell: its formula after `=`, else its value as text (TRUE, an error's text). */
+function formulaOf(input: CellInput | undefined): string {
+  if (input?.formula !== undefined) return `=${input.formula}`
+  const v = input?.value
+  return v === undefined || v === null ? '' : typeof v === 'boolean' ? (v ? 'TRUE' : 'FALSE') : String(v)
+}
 
-/** The case's answer. */
+/** The case's answer in a session of the locale `tag` whose clock stands at `now`. */
 export function engineRows(e: RowsEngine, c: RowCase, tag: string, now: string): RowsPrediction {
-  const book = rowsBook([c])
-  book.locale = tag
-  const sheet = book.sheets[0]
-  const row = String(caseRow(0))
+  const book = { ...rowsBook([c]), locale: tag }
+  const s = e.createSession(book, { clock: { now: `${now}T12:00:00Z`, seed: 1 } })
+  const row = caseRow(0)
   const shown = () => {
-    const r = sheet.rows?.[row]
-    return r?.hidden ? 0 : (r?.height ?? DEFAULT)
+    const r = s.getLayout().sheets[0].rows?.[String(row)]
+    return r?.hidden || r?.height === 0 ? 0 : (r?.height ?? 15)
   }
+  const at = (col: number, dr = 0) => formatAddress(row - 1 + dr, 1 + col)
   const before = shown()
   for (const [col, text] of c.typed ?? []) {
-    const addr = `${COLS[col]}${row}`
-    const was = sheet.cells[addr]
-    const r = e.parseEntry(text, { locale: tag, now, ...(was ? { cell: was } : {}) })
-    if (!r.ok) continue
-    if (r.input) sheet.cells[addr] = r.input as CellInput
-    else delete sheet.cells[addr]
+    // a text Excel does not take leaves the cells as they were, as the session's refusal does
+    if (c.via === 'paste') s.pasteText('S', at(col), text)
+    else if (c.via === 'fill') s.fillCellText('S', `${at(col)}:${at(c.fillTo!)}`, text)
+    else s.setCellText('S', at(col), text)
   }
-  if (!c.typed || c.fitAfter) {
-    const height = e.fitRows(book, e.compute(book), 'S', row)[row]
-    const { height: _h, hidden: _x, ...rest } = sheet.rows?.[row] ?? {}
-    sheet.rows = { ...sheet.rows, [row]: { ...rest, ...(height === null ? {} : { height }) } }
-  }
-  const styles = book.styles ?? []
-  const wrap = Object.fromEntries(caseCols(c).map((col) => [col, !!styles[sheet.cells[`${COLS[col]}${row}`]?.style ?? -1]?.alignment?.wrap]))
-  return { before, height: shown(), wrap }
+  if (!c.typed || c.fitAfter) s.setLayout([{ sheet: 'S', rows: String(row), fit: true }])
+  const out = s.getBook()
+  const styles = out.styles ?? []
+  const cells = Object.fromEntries(
+    caseCells(c).map((x) => {
+      const input = out.sheets[0].cells[at(x[1], x[0])]
+      const style = s.getViewport('S', at(x[1], x[0])).cells[at(x[1], x[0])]?.effectiveStyle
+      return [cellKey(x), { formula: formulaOf(input), wrap: !!(style !== undefined && styles[style]?.alignment?.wrap) }]
+    }),
+  )
+  const height = shown()
+  s.close()
+  return { before, height, cells }
 }

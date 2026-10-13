@@ -10,7 +10,14 @@ import type { BookInput, CellInput, CellStyle, ColumnInput, RowInput } from '../
 import { formatAddress, indexToCol } from '../../../src/model.js'
 import { internStyle } from '../../../src/style-table.js'
 import { takenPart, type StoredCell } from '../stored.js'
-import type { Via } from '../fit/cases.js'
+
+/**
+ * How `typed` is typed: Excel's `Value` with the text, `Formula2Local` (Excel 365's typing in the user's language), or
+ * on the keyboard (Excel for Mac only): `keys` typed into the cell and Return, `fill` typed into the selection from the
+ * cell to `fillTo` and Control+Return, `paste` put on the clipboard and pasted at the cell (Excel for Windows through
+ * `Worksheet.Paste`).
+ */
+export type RowVia = 'value' | 'local' | 'keys' | 'fill' | 'paste'
 
 /** A cell of a case: a stored cell with its style by its fields, which the book's table takes. */
 export type RowCell = Omit<StoredCell, 'style'> & { look?: CellStyle }
@@ -30,7 +37,11 @@ export interface RowCase {
   /** Texts typed into the row's cells in turn, each by column; without them the row is fitted (AutoFit). */
   typed?: [col: number, text: string][]
   /** How `typed` is typed; `local` without it. */
-  via?: Via
+  via?: RowVia
+  /** The last column of the selection a `fill` enters its text into, from the typed cell; of a `paste`, the last column it may fill, read after. */
+  fillTo?: number
+  /** The cells of the row below are read too (a paste may fill it). */
+  below?: true
   /** AutoFit after the texts are typed. */
   fitAfter?: boolean
 }
@@ -43,8 +54,8 @@ export interface RowAnswer {
   standard: boolean
   /** The row as Excel saved it: its `<row>` height and flags; null when the file has no height for it. */
   saved: { ht: number; customHeight?: true; hidden?: true } | null
-  /** Whether each of the case's cells wraps its text after (`WrapText`), by column. */
-  wrap: Record<number, boolean>
+  /** Each of the case's cells after, by column (`<col>+1` for the row below): its content (`Formula`) and whether it wraps its text (`WrapText`). */
+  cells: Record<string, { formula: string; wrap: boolean }>
   /** A typed text Excel did not take, by its index: Excel's error. */
   refused?: Record<number, string>
 }
@@ -60,8 +71,17 @@ export const caseRow = (k: number) => 2 + 3 * k
 /** The first column of the k-th case of a book, zero-based: B, F, J… */
 export const caseColumn = (k: number) => 1 + 4 * k
 
-/** The columns a case has a cell in, its cells' and those typed into. */
-export const caseCols = (c: RowCase): number[] => [...new Set([...Object.keys(c.cells ?? {}).map(Number), ...(c.typed ?? []).map(([col]) => col)])].sort((a, b) => a - b)
+/** The columns a case has a cell in, its cells' and those typed into (a fill's selection whole). */
+export function caseCols(c: RowCase): number[] {
+  const typed = (c.typed ?? []).flatMap(([col]) => (c.fillTo === undefined ? [col] : Array.from({ length: c.fillTo - col + 1 }, (_, k) => col + k)))
+  return [...new Set([...Object.keys(c.cells ?? {}).map(Number), ...typed])].sort((a, b) => a - b)
+}
+
+/** The cells a case reads after, as `[row offset, column]`: its columns, and with `below` those of the row below. */
+export const caseCells = (c: RowCase): [number, number][] => [0, ...(c.below ? [1] : [])].flatMap((dr) => caseCols(c).map((col): [number, number] => [dr, col]))
+
+/** The key of a read cell in `RowAnswer.cells`. */
+export const cellKey = ([dr, col]: [number, number]) => (dr ? `${col}+${dr}` : String(col))
 
 /** The book of a part, as the engine takes it: each case's cells, columns, row and merged areas, styles interned into one table. */
 export function rowsBook(cases: RowCase[]): BookInput {

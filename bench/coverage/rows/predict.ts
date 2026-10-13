@@ -5,8 +5,7 @@
  */
 import { fileURLToPath } from 'node:url'
 import { setModule, writeAnswers } from '../stored.js'
-import { compute, parseEntry } from '../../../src/index.js'
-import { fitRows } from '../../../src/layout/heights.js'
+import { createSession } from '../../../src/index.js'
 import { TAGS } from '../locales.js'
 import type { RowSet } from './cases.js'
 import { engineRows, type RowsEngine } from './engine.js'
@@ -14,9 +13,7 @@ import { engineRows, type RowsEngine } from './engine.js'
 const set = process.argv[2]
 const { buildRowCases } = await setModule<RowSet>('rows', set)
 const now = new Date().toISOString().slice(0, 10)
-const clock = { now: `${now}T12:00:00Z`, seed: 1 }
-
-const engine: RowsEngine = { compute: (book) => compute(book, { clock }), parseEntry, fitRows }
+const engine: RowsEngine = { createSession }
 
 const locales = Object.fromEntries(TAGS.map((tag) => [tag, Object.fromEntries(buildRowCases(tag).map((c) => [c.id, engineRows(engine, c, tag, now)]))]))
 writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { now, locales })
