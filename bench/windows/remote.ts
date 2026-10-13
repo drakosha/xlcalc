@@ -19,7 +19,7 @@ export type Tag = string
 export const HOST = process.env.XLWIN_HOST ?? 'user@windows-host'
 const BASE = 'C:\\xlcalc'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
-export const OUT = join(HERE, 'out')
+export const OUT = process.env.XLWIN_OUT ?? join(HERE, 'out')
 /** One SSH connection shared by the calls of a run: a logon on the machine costs seconds. */
 const OPTS = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', '-o', 'ControlMaster=auto', '-o', `ControlPath=${join(homedir(), '.cache/xlwin-%C')}`, '-o', 'ControlPersist=120']
 const OWNER = `${hostname()}:${process.pid}`
@@ -136,9 +136,9 @@ export const metaOf = (e: WinEnv, tag: Tag) => ({
 export async function withWindowsExcel<T>(tag: Tag, fn: (e: WinEnv) => Promise<T>): Promise<T> {
   // a tag Windows cannot be set to stops here, before the machine is touched
   windowsLocale(tag)
-  syncScripts()
   await lock()
   try {
+    syncScripts()
     host('clean')
     return await fn(await ensureLocale(tag))
   } finally {

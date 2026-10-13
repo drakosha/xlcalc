@@ -360,6 +360,16 @@ function Step($xl, $wb, $s) {
     'end' { try { Str (Rg $wb $s.sheet $s.cell).End([int]$s.direction).Address($false, $false) } catch { Err $_ } }
     # text put on the clipboard and pasted at a cell of the active sheet (bench/windows/ui.ts); the clipboard's or
     # Excel's refusal is the step's error
+    'copyText' {
+      $before = Get-Clipboard -Raw
+      try {
+        [void](Rg $wb $s.sheet $s.range).Copy()
+        Str ([string](Get-Clipboard -Raw))
+      } finally {
+        $xl.CutCopyMode = $false
+        Set-Clipboard -Value ([string]$before)
+      }
+    }
     'paste' {
       try {
         Set-Clipboard -Value ([string]$s.text)
