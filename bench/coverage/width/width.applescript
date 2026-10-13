@@ -11,7 +11,7 @@ on run argv
     set wb to open workbook workbook file name hfs
     try
       set ws to worksheet "S" of wb
-      set standard to standard width of ws
+      set baseWidth to standard width of ws
       repeat with pair in settings
         set column width of range ((item 1 of pair) & "1") of ws to item 2 of pair
       end repeat
@@ -26,7 +26,7 @@ on run argv
       error msg number n
     end try
   end tell
-  set obj to current application's NSDictionary's dictionaryWithObjects:{standard, widths} forKeys:{"standardWidth", "columns"}
+  set obj to current application's NSDictionary's dictionaryWithObjects:{baseWidth, widths} forKeys:{"standardWidth", "columns"}
   set d to current application's NSJSONSerialization's dataWithJSONObject:obj options:0 |error|:(missing value)
   return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
 end run

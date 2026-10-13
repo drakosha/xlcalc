@@ -35,6 +35,12 @@ Each kind has its test beside the Mac's: `test/excel-win.test.ts` (formulas), `d
 
 `npx tsx bench/windows/compare.ts > bench/windows/differences.md` writes the table of the formula cases where Windows and the Mac part (the Mac's answer, Windows's, the engine's, which of the two the engine follows, and the class: a platform difference with its reason, or noise), and the cases where both Excels agree and the engine does not.
 
+## Clipboard and fixed-width probes
+
+`XLWIN_CODEPAGE=any XLWIN_OUT=<temporary-directory> npx tsx bench/windows/run.ts clipboard ru` (or `en`) records `Range.Copy` with `Get-Clipboard -Raw` in `test/excel/win/clipboard/`. `clipboard-quotes.ts` records copied text pasted as plain text, and `width.ts` records fixed xlsx widths and `ColumnWidth` settings in `test/excel/win/width/`. Their committed predictions are in `bench/coverage/clipboard/` and `bench/coverage/width/`. The Mac counterparts run there under `withExcelLock` without activating Excel.
+
+`XLWIN_OUT` directs all local job files to a caller's own temporary directory. Each job carries its own `xl.ps1` and `cond.ps1`: another worktree updating the shared `bin` cannot change a running job's steps.
+
 ## Running it
 
 A command that takes a locale takes `en`, `ru` or the tag of one of the package's locales (`de-DE`), en-US when it names none.

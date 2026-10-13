@@ -171,12 +171,13 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
   const remote = `${BASE}\\work\\${name}`
   rmSync(local, { recursive: true, force: true })
   mkdirSync(local, { recursive: true })
+  for (const script of ['xl.ps1', 'cond.ps1']) copyFileSync(join(HERE, script), join(local, script))
   books.forEach((b, i) => copyFileSync(b.file, join(local, `${i}.xlsx`)))
   writeFileSync(join(local, 'job.json'), JSON.stringify({ books: books.map((b, i) => ({ file: `${i}.xlsx`, steps: b.steps })) }))
   try {
     exec('scp', ['-q', '-r', ...OPTS, local, `${HOST}:C:/xlcalc/work/`], 300_000)
     const timedOut = await new Promise<boolean>((resolve, reject) => {
-      const child = spawn('ssh', [...OPTS, HOST, psLine('xl.ps1', remote)])
+      const child = spawn('ssh', [...OPTS, HOST, `powershell -NoProfile -ExecutionPolicy Bypass -File ${remote}\\xl.ps1 ${remote}`])
       let err = ''
       child.stderr.on('data', (d: Buffer) => (err += d.toString('utf8')))
       child.stdout.on('data', () => {})
