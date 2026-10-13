@@ -16,8 +16,15 @@ end typeFill
 
 on typeThen(t, fill)
 	my toFront()
+	-- a line break inside the text is typed as Excel for Mac takes one in a cell, Control+Option+Return
+	set AppleScript's text item delimiters to linefeed
+	set parts to text items of t
+	set AppleScript's text item delimiters to ""
 	tell application "System Events"
-		keystroke t
+		repeat with i from 1 to count of parts
+			if i > 1 then keystroke return using {control down, option down}
+			keystroke (item i of parts)
+		end repeat
 		delay 0.2
 		if fill then
 			keystroke return using control down
