@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.32.0 (2026-10-13)
+
+Internal release; not published to npm. A bound on the cells one edit writes. The synthetic book's values and hashes are as in 0.31.0.
+
+Added:
+
+- `limits.writes` (`CalcLimits`, for `createSession`, the calculators and a call's options, field by field as the other limits): the cells with content (a value or a formula) one edit may write, checked before anything is written or built; past it the call throws `CalcError` with code `limit`, `limit: 'writes'`, `max` and `size`, and the book, revision and history stay. A copy counts its source's cells with content times the tiles of its target, a move its source's, `fillCellText` its range, `pasteText` the clipboard's rectangle, `replaceInCells` the cells found, `setCells`, `replaceCells`, `setCellTexts` and `applyChanges` their edits; previews alike. Inserting and deleting lines and other structure operations, clearing, undo and redo are not bounded. None by default, as Excel writes a copy onto a whole column: with `writes: 100000` such a copy is refused in under a millisecond, where it took 2.5 s and 205 MB for a value and 6.7 s and 1.4 GB for a formula ([docs/async.md](docs/async.md)).
+
+Changed:
+
+- A copy from or onto a filtered sheet finds its runs of visible rows by the spans of hidden rows, not row by row: 1,000 hidden spans over a column take 1 ms instead of 1 s.
+
+Measured: every bounded edit refused one under its count and taken at it, in every kind of session and both execution modes, with the book, revision, history and hash after a refusal as before; the runs of visible rows against the former row by row reading on 3,000 random sheets.
+
 ## 0.31.0 (2026-10-13)
 
 Internal release; not published to npm. Where Ctrl+arrow lands. The synthetic book's values and hashes are as in 0.30.0.
