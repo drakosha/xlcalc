@@ -76,7 +76,12 @@ export function endsInBook(b: EndBook, cases: EndCase[], tag: string): Record<st
   }
 }
 
-/** Cases of one group: ids `<group>-<n>`. */
+/** Cells holding their address as text. */
+export const named = (...xs: string[]): Record<string, CellInput> => Object.fromEntries(xs.map((a) => [a, { value: a }]))
+
+const SHORT: Record<string, EndDirection> = { u: 'up', d: 'down', l: 'left', r: 'right' }
+
+/** Cases of one group: ids `<group>-<n>`; `list` adds them from text, `A1:d B5:r` (`u`, `d`, `l`, `r`). */
 export function collector() {
   const out: EndCase[] = []
   const count = new Map<string, number>()
@@ -85,5 +90,11 @@ export function collector() {
     count.set(group, n)
     out.push({ id: `${group}-${n}`, book, cell, direction })
   }
-  return { out, add }
+  const list = (group: string, book: string, text: string) => {
+    for (const x of text.split(' ')) {
+      const [cell, d] = x.split(':')
+      add(group, book, cell, SHORT[d])
+    }
+  }
+  return { out, add, list }
 }

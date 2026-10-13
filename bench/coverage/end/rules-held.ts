@@ -8,11 +8,9 @@
  * inside; rows and columns hidden by hand and rows a filter hid (whether `End` goes through them and stops on them),
  * and every line hidden past some row and column.
  */
-import type { CellInput, EndDirection } from '../../../src/contract.js'
-import { collector, type EndBook, type EndCase } from './cases.js'
+import type { CellInput } from '../../../src/contract.js'
+import { collector, named, type EndBook, type EndCase } from './cases.js'
 
-/** Cells holding their address as text. */
-const named = (...xs: string[]): Record<string, CellInput> => Object.fromEntries(xs.map((a) => [a, { value: a }]))
 /** The cells of a column from row `a` to row `b`. */
 const run = (col: string, a: number, b: number) => Array.from({ length: b - a + 1 }, (_, i) => `${col}${a + i}`)
 
@@ -121,23 +119,17 @@ export const BOOKS: Record<string, EndBook> = {
 }
 
 export function buildEndCases(): EndCase[] {
-  const { out, add } = collector()
-  const go = (group: string, book: string, list: string) => {
-    for (const x of list.split(' ')) {
-      const [cell, d] = x.split(':')
-      add(group, book, cell, ({ u: 'up', d: 'down', l: 'left', r: 'right' } as Record<string, EndDirection>)[d])
-    }
-  }
-  go('blocks', 'blocks', 'A1:d A5:d A10:d A10:u A1:u A11:d A11:u B1:d B500:d B700:d B700:u D1:d D2:d D4:d D5:d D5:u D8:d D10:d D13:d D1048576:d D1048576:u E5:d E5:u')
-  go('blocks', 'blocks', 'A700:r C700:r E700:r G700:r H700:r XFD700:r XFD700:l H700:l D700:l D700:r F700:r A700:l A3:r B3:r D3:r XFD3:l')
-  for (const col of Object.keys(KINDS)) go('kinds', 'kinds', `${col}1:d ${col}20:d`)
-  go('spill', 'spill', 'A1:d A3:d A5:d A5:u A6:u A3:u A3:r C3:r D3:r E3:r G3:l E3:l H1:d H2:d H3:u H3:d J1:d J3:d L1:d L2:u')
-  go('spill', 'spill', 'N1:d N1048576:u N500:u L1:r N1:r N5:l XFD7:l P7:l')
-  go('merged', 'merged', 'A2:r B2:r C2:r D2:r E2:l F2:l G2:l H2:l A5:r B5:r D5:r G5:l F5:l')
-  go('merged', 'merged', 'B7:d B8:d B9:d B11:u B12:u B13:u D12:u E12:u D7:d E7:d C9:r G7:d')
-  go('hidden', 'hidden', 'A1:d A10:u B1:d B11:d B15:u C6:d D19:d D24:u K12:r K30:r O30:l K31:r S31:l K32:r')
-  go('filter', 'filter', 'A1:d A30:u A30:d B1:d B10:u C1:d C15:u D6:d E19:d E24:u')
-  go('tail', 'tail', 'A3:d B5:d A19:d B19:d D1:r J1:r A1048576:u XFD1:l')
-  go('edges', 'edges', 'A1:d A1048576:u A1048576:d A1:r XFD1:l XFD1:r XFD1:u A1:u A1:l XFD1048576:r XFD1048576:d XFD1048576:u XFD1048576:l B2:d B2:r')
+  const { out, list } = collector()
+  list('blocks', 'blocks', 'A1:d A5:d A10:d A10:u A1:u A11:d A11:u B1:d B500:d B700:d B700:u D1:d D2:d D4:d D5:d D5:u D8:d D10:d D13:d D1048576:d D1048576:u E5:d E5:u')
+  list('blocks', 'blocks', 'A700:r C700:r E700:r G700:r H700:r XFD700:r XFD700:l H700:l D700:l D700:r F700:r A700:l A3:r B3:r D3:r XFD3:l')
+  for (const col of Object.keys(KINDS)) list('kinds', 'kinds', `${col}1:d ${col}20:d`)
+  list('spill', 'spill', 'A1:d A3:d A5:d A5:u A6:u A3:u A3:r C3:r D3:r E3:r G3:l E3:l H1:d H2:d H3:u H3:d J1:d J3:d L1:d L2:u')
+  list('spill', 'spill', 'N1:d N1048576:u N500:u L1:r N1:r N5:l XFD7:l P7:l')
+  list('merged', 'merged', 'A2:r B2:r C2:r D2:r E2:l F2:l G2:l H2:l A5:r B5:r D5:r G5:l F5:l')
+  list('merged', 'merged', 'B7:d B8:d B9:d B11:u B12:u B13:u D12:u E12:u D7:d E7:d C9:r G7:d')
+  list('hidden', 'hidden', 'A1:d A10:u B1:d B11:d B15:u C6:d D19:d D24:u K12:r K30:r O30:l K31:r S31:l K32:r')
+  list('filter', 'filter', 'A1:d A30:u A30:d B1:d B10:u C1:d C15:u D6:d E19:d E24:u')
+  list('tail', 'tail', 'A3:d B5:d A19:d B19:d D1:r J1:r A1048576:u XFD1:l')
+  list('edges', 'edges', 'A1:d A1048576:u A1048576:d A1:r XFD1:l XFD1:r XFD1:u A1:u A1:l XFD1048576:r XFD1048576:d XFD1048576:u XFD1048576:l B2:d B2:r')
   return out
 }

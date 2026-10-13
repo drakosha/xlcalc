@@ -1,0 +1,47 @@
+{
+ "model": "getEnd",
+ "locales": {
+  "en-US": {
+   "start-1": "A9",
+   "start-2": "A7",
+   "start-3": "A1",
+   "start-4": "A4",
+   "start-5": "E1",
+   "start-6": "A1",
+   "start-7": "XFD2",
+   "start-8": "A2",
+   "start-9": "XFD6",
+   "start-10": "XFD5",
+   "sizes-1": "A5",
+   "sizes-2": "A1",
+   "sizes-3": "D1",
+   "sizes-4": "D1",
+   "sizes-5": "A4",
+   "merged-1": "B12",
+   "merged-2": "B6",
+   "merged-3": "B6",
+   "merged-4": "B12"
+  },
+  "ru-RU": {
+   "start-1": "A9",
+   "start-2": "A7",
+   "start-3": "A1",
+   "start-4": "A4",
+   "start-5": "E1",
+   "start-6": "A1",
+   "start-7": "XFD2",
+   "start-8": "A2",
+   "start-9": "XFD6",
+   "start-10": "XFD5",
+   "sizes-1": "A5",
+   "sizes-2": "A1",
+   "sizes-3": "D1",
+   "sizes-4": "D1",
+   "sizes-5": "A4",
+   "merged-1": "B12",
+   "merged-2": "B6",
+   "merged-3": "B6",
+   "merged-4": "B12"
+  }
+ }
+}
