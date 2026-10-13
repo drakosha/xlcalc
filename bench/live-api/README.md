@@ -20,14 +20,3 @@ node bench/hyperformula/memory.mjs --before /path/to/compiled/baseline --after .
 ```
 
 Run measurements sequentially without concurrent tests or CPU profiles. Retained heap excludes shared input and holds the session after two event-loop turns and two GCs; maximum RSS is the process watermark before full-compute verification. It includes native compiler storage and is not browser heap.
-
-
-## Completed acceptance
-
-Fresh master `9113b25` (0.22.0) was merged into the work branch. The merge preserves the external-link implementation and format categories. Entered linked formulas use an aside-built batch state, so a preview cannot leak link refresh markers or cached errors into the original session; six fail-before checks cover the three session kinds and two modes.
-
-Source and dist each pass 20,563 tests with 42 skipped. Both full suites use one test worker because the inherited cold-budget test failed under parallel load; its 1,500 ms threshold is unchanged. The strict-argument method catalogue now includes the six added methods. The component copy passes typecheck, both builds and all 309 tests, including four synthetic live-agent/grid cases. The runner installs dist as an ordinary directory, so the component's bundle-boundary path assertions are checked as in a normal package installation. jscpd reports zero clones across 284 source files.
-
-The work branch changes no existing validation policy, publishes no version, and has no own package-version or changelog change relative to the merged master. The app and the the app were not migrated. Component source and its original dependency were not edited.
-
-Package checks (publint and the ESM export/type profile) pass. After the master merge, both execution modes retain the synthetic hashes `101578a9c6b600b1` (3400 rows) and `e64d5f4d0f0ac632` (34000 rows), and the input hashes `1fb3575501a5acbf` and `ca4999a5e730cfc4`. Performance artifacts identify their measured commits before the 0.22.0 merge; full correctness and component acceptance identify the merged implementation. No browser-memory result is claimed.

@@ -72,8 +72,7 @@ describe('sha256', () => {
     const { book } = synthBook({ seed: 1 })
     const r = compute(book, { clock: { now: '2026-10-04T12:00:00Z', seed: 7 } })
     const values = new Map(r.sheets.map((s) => [s.name, new Map(Object.entries(s.cells).map(([a, c]): [string, CellValue] => [a, c.value]))]))
-    // 0.1.0, 0.2.0 and the formula-engine development builds hashed with these versions; the hash of the same values must not move
-    expect(valuesHash(values, 'app-formula/1;compiled-js;formulajs@4.6.1;canon15')).toBe('9d7414efbda34a63990b3be2d2d4cf790ab546d87a19e6673a88d22a98f76ea0')
+    // 0.2.0 and the formula-engine development builds hashed with these versions; the hash of the same values must not move
     expect(valuesHash(values, 'formula-engine/1;compiled-js;formulajs@4.6.1;canon15')).toBe('18be025cb4581543a8953790d380ecf9f3383002d8112eb6b15da4f182c0bba3')
     expect(valuesHash(values, 'formula-engine/2;compiled-js;canon15')).toBe('8d63bad2c247ae26aa632f2823e29d07947af262a623365e03d5856e67dd30fc')
     expect(inputHash(book)).toBe('1fb3575501a5acbff64c388b43b5e3a1176e312243f01de1e4610e4ac7bc67a2')

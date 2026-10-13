@@ -1,5 +1,5 @@
 /**
- * Excel for Windows as a second oracle, on the machine `windows-host` over SSH. Books are written here, as the Mac harness
+ * Excel for Windows as a second oracle, on a machine reached over SSH (`XLWIN_HOST`). Books are written here, as the Mac harness
  * writes them; a job copies them to `C:\xlcalc\work\`, where `xl.ps1` opens each in one Excel through COM, takes its
  * steps and writes its answer; the answers come back by `scp`. `host.ps1` sets the interface language, the regional
  * format and the system locale, holds the lock (one run at a time) and stops Excel left by a job cut short.
@@ -15,8 +15,8 @@ import { alive, sleep } from '../coverage/proc.js'
 /** A locale's tag, one of the package's: the machine's language, regional format and code page are set by it. */
 export type Tag = string
 
-/** `user@host` of the Windows machine. */
-export const HOST = process.env.XLWIN_HOST ?? 'user@windows-host'
+/** `user@host` of the Windows machine, or its SSH alias. */
+export const HOST = process.env.XLWIN_HOST ?? ''
 const BASE = 'C:\\xlcalc'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 export const OUT = process.env.XLWIN_OUT ?? join(HERE, 'out')
@@ -24,7 +24,10 @@ export const OUT = process.env.XLWIN_OUT ?? join(HERE, 'out')
 const OPTS = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', '-o', 'ControlMaster=auto', '-o', `ControlPath=${join(homedir(), '.cache/xlwin-%C')}`, '-o', 'ControlPersist=120']
 const OWNER = `${hostname()}:${process.pid}`
 
-const exec = (cmd: string, args: string[], timeout: number) => execFileSync(cmd, args, { encoding: 'utf8', timeout, maxBuffer: 1 << 26 }).trim()
+const exec = (cmd: string, args: string[], timeout: number) => {
+  if (!HOST) throw new Error('XLWIN_HOST is not set: user@host of the Windows machine, or its SSH alias')
+  return execFileSync(cmd, args, { encoding: 'utf8', timeout, maxBuffer: 1 << 26 }).trim()
+}
 
 /** A PowerShell command line on the machine (its SSH shell is PowerShell). */
 export const ssh = (command: string, timeout = 120_000) => exec('ssh', [...OPTS, HOST, command], timeout)
@@ -64,7 +67,7 @@ const bootTime = () => ssh('(Get-CimInstance Win32_OperatingSystem).LastBootUpTi
 
 /** Restarts the machine and waits until it is up from a new boot (a new system locale needs it). */
 async function restart() {
-  console.log('windows-host: restarting for the system locale')
+  console.log(`${HOST}: restarting for the system locale`)
   const before = bootTime()
   try {
     ssh('Restart-Computer -Force', 30_000)
@@ -72,7 +75,7 @@ async function restart() {
     // the connection may drop as the machine goes down
   }
   for (let i = 0; ; i++) {
-    if (i > 60) throw new Error('windows-host did not come back in 10 minutes')
+    if (i > 60) throw new Error(`${HOST} did not come back in 10 minutes`)
     await sleep(10_000)
     try {
       if (bootTime() !== before) return
@@ -97,7 +100,7 @@ async function ensureLocale(tag: Tag): Promise<WinEnv> {
   }
   const codepage = !ANY_CODEPAGE && [e.system !== tag && `system locale ${e.system}`, e.codepage !== want.codepage && `code page ${e.codepage}`]
   const bad = [e.ui !== tag && `language ${e.ui}`, e.culture !== tag && `format ${e.culture}`, ...(codepage || []), e.excelUI !== want.lcid && `Excel interface ${e.excelUI}`, e.books !== 0 && `${e.books} books open`].filter(Boolean)
-  if (bad.length) throw new Error(`windows-host is not in ${tag}: ${bad.join(', ')}`)
+  if (bad.length) throw new Error(`${HOST} is not in ${tag}: ${bad.join(', ')}`)
   return e
 }
 
@@ -115,8 +118,8 @@ async function lock() {
       ssh(`Remove-Item -Recurse -Force ${BASE}\\lock`)
       continue
     }
-    if (Date.now() > until) throw new Error(`windows-host has been busy for over 60 minutes: ${r}`)
-    if (!said) console.log(`windows-host: ${r}, waiting`)
+    if (Date.now() > until) throw new Error(`${HOST} has been busy for over 60 minutes: ${r}`)
+    if (!said) console.log(`${HOST}: ${r}, waiting`)
     await sleep(10_000)
   }
 }

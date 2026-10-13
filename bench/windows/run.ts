@@ -1,5 +1,5 @@
 /**
- * Excel for Windows (the machine `windows-host`) computes the Mac harness's cases; answers go to `test/excel/win/`.
+ * Excel for Windows (the machine `XLWIN_HOST`) computes the Mac harness's cases; answers go to `test/excel/win/`.
  *
  *   npx tsx bench/windows/run.ts env                   the machine's settings and Excel's, as it starts now
  *   npx tsx bench/windows/run.ts measurement L         the coverage measurement into coverage/excel-<en|ru|tag>.json
