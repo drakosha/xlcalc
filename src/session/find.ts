@@ -5,12 +5,11 @@
  * each range by rows or by columns, those of hidden rows and columns skipped as Find skips them. The texts are read once
  * and kept with the session's state (`search.ts`), so another search of the same sheet only matches them.
  */
-import type { CellValue, FindCellsOptions } from '../contract.js'
+import type { CellValue, ColumnInput, FindCellsOptions, RowInput } from '../contract.js'
 import { literal, wildSource } from '../criteria.js'
 import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { checkBoolean, InputError } from '../input.js'
-import { isHiddenRow } from '../layout/hidden.js'
-import { lines } from '../layout/spans.js'
+import { hiddenSpansOf } from '../layout/hidden.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { outValue } from '../result.js'
 import { cellLooks } from '../shown.js'
@@ -85,14 +84,8 @@ interface HiddenLines {
 }
 
 /** A sheet's hidden rows or columns. */
-function hiddenLines<T>(map: Record<string, T> | undefined, axis: 'r' | 'c', hidden: (e: T) => boolean): HiddenLines {
-  const spans: [number, number][] = []
-  for (const [lo, hi, e] of lines(map, axis)) {
-    if (!hidden(e)) continue
-    const last = spans.at(-1)
-    if (last && last[1] + 1 === lo) last[1] = hi
-    else spans.push([lo, hi])
-  }
+function hiddenLines(map: Record<string, RowInput | ColumnInput> | undefined, axis: 'r' | 'c'): HiddenLines {
+  const spans = hiddenSpansOf(map, axis)
   // the lines hidden before each span, and in all
   const before = [0]
   for (const [lo, hi] of spans) before.push(before.at(-1)! + hi - lo + 1)
@@ -131,7 +124,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
     let x = hidden.get(s)
     if (!x) {
       const input = state.input.sheets[s]
-      hidden.set(s, (x = { rows: hiddenLines(input.rows, 'r', isHiddenRow), cols: hiddenLines(input.columns, 'c', (e) => e.hidden === true || e.width === 0) }))
+      hidden.set(s, (x = { rows: hiddenLines(input.rows, 'r'), cols: hiddenLines(input.columns, 'c') }))
     }
     return x
   }
