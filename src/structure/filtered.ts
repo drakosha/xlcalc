@@ -16,25 +16,28 @@ import { shift } from './shift.js'
 import { sheetOf } from './rewrite.js'
 import type { ValuesIn } from './values.js'
 
-/** The rows of [lo, hi] a filter leaves visible on `sheet`, or null when the sheet is not filtered or none of them is hidden. */
-export function visibleRows(book: BookInput, sheet: string, lo: number, hi: number): number[] | null {
+/**
+ * The runs of rows of [lo, hi] a filter leaves visible on `sheet`, ascending, read from its spans of hidden rows; null
+ * when the sheet is not filtered or none of them is hidden.
+ */
+export function visibleRuns(book: BookInput, sheet: string, lo: number, hi: number): [number, number][] | null {
   const s = sheetOf(book, sheet)
   const h = s.filtered ? hiddenRows(s) : undefined
   if (!h?.spans.some(([a, b]) => a <= hi && b >= lo)) return null
-  const out: number[] = []
-  for (let r = lo; r <= hi; r++) if (!h.spans.some(([a, b]) => r >= a && r <= b)) out.push(r)
+  const out: [number, number][] = []
+  let r = lo
+  for (const [a, b] of h.spans) {
+    if (a > hi) break
+    if (a > r) out.push([r, a - 1])
+    r = Math.max(r, b + 1)
+  }
+  if (r <= hi) out.push([r, hi])
   return out
 }
 
-/** The runs of consecutive rows of a list, ascending. */
-function runs(rows: number[]): [number, number][] {
-  const out: [number, number][] = []
-  for (const r of rows) {
-    const last = out.at(-1)
-    if (last && last[1] === r - 1) last[1] = r
-    else out.push([r, r])
-  }
-  return out
+/** The rows of [lo, hi] a filter leaves visible on `sheet`, or null when the sheet is not filtered or none of them is hidden. */
+export function visibleRows(book: BookInput, sheet: string, lo: number, hi: number): number[] | null {
+  return visibleRuns(book, sheet, lo, hi)?.flatMap(([a, b]) => Array.from({ length: b - a + 1 }, (_, k) => a + k)) ?? null
 }
 
 /** Applies the steps in turn, each to the book the last one gave; the geometry is theirs one after another. */
@@ -58,9 +61,19 @@ export function insertRows(book: BookInput, sheet: string, at: number, n: number
 
 /** Rows `at` … `at + n - 1` deleted from `sheet`: on a filtered sheet the visible ones, each run of them from the bottom up. */
 export function deleteRows(book: BookInput, sheet: string, at: number, n: number): Applied {
-  const visible = visibleRows(book, sheet, at, at + n - 1)
+  const visible = visibleRuns(book, sheet, at, at + n - 1)
   if (!visible?.length) return shift(book, sheet, 'r', at, -n)
-  return chain(book, runs(visible).reverse().map(([lo, hi]) => (b: BookInput) => shift(b, sheet, 'r', lo, lo - hi - 1)))
+  return chain(book, visible.reverse().map(([lo, hi]) => (b: BookInput) => shift(b, sheet, 'r', lo, lo - hi - 1)))
+}
+
+/**
+ * The runs of visible rows a paste into `target` of sheet `to` fills one by one, or null where it fills the target whole:
+ * one cell, or no hidden row of a filtered sheet.
+ */
+export function pasteRuns(book: BookInput, to: string, target: Rect): [number, number][] | null {
+  const one = target.r1 === target.r2 && target.c1 === target.c2
+  const visible = one ? null : visibleRuns(book, to, target.r1, target.r2)
+  return visible?.length ? visible : null
 }
 
 /**
@@ -72,10 +85,8 @@ export function deleteRows(book: BookInput, sheet: string, at: number, n: number
 export function copyRows(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, values: ValuesIn): Applied {
   const clip = clipped(book, from, src, values)
   const [source, at, rect] = clip ? [clip.book, CLIP, clip.src] : [book, from, src]
-  const one = target.r1 === target.r2 && target.c1 === target.c2
-  const visible = one ? null : visibleRows(book, to, target.r1, target.r2)
-  if (!visible?.length) return copyRange(book, at, rect, to, target, withMeta, source)
-  const parts = runs(visible)
+  const parts = pasteRuns(book, to, target)
+  if (!parts) return copyRange(book, at, rect, to, target, withMeta, source)
   if (clip && parts.length > 1)
     return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
   return chain(book, parts.map(([lo, hi]) => (b: BookInput) => copyRange(b, at, rect, to, { ...target, r1: lo, r2: hi }, withMeta, source)))
