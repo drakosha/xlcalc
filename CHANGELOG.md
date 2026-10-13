@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.30.0 (2026-10-13)
+
+Internal release; not published to npm. Searches that cost only their matching, and Excel's Replace. The synthetic book's values and hashes are as in 0.29.0.
+
+Added:
+
+- `rows` in the options of `findCells` and `readCells`, as `getViewport` takes it: only those rows are read and counted (a host's own filter of rows shown).
+- `after` in the options of `findCells` (a `CellRef`): the cells come from the place after it in Find's order, round to the start and to it last, as Excel's Find Next goes on from the active cell.
+- `editText` as a field of `readCells` and `findCells`: the text a cell opens with for editing, as a window gives it.
+- `replaceInCells(ranges, query, replacement, opts)`: Excel's Replace (Look in Formulas, the options of `findCells` but `in` and `byColumns`), in one revision and one step of the undo, the answer with `replaced` and the cells whose new text Excel does not take (`refused`); the rules as measured: `*` in the query takes as little as it can but the last one, a cell found is entered again even when its text is unchanged, a percent has no percent editor, a formula that no longer reads leaves its cell as it was while the others are written, an old-kind array is replaced whole ([docs/live-books.md](docs/live-books.md)).
+
+Changed:
+
+- A session keeps the texts it searches by, by sheet and kind, built at a sheet's first search and kept by edits cell by cell (a change of a sheet's layout or of the styles starts them again): on 510,000 cells a search again or narrowed takes 20 to 50 ms instead of 0.4 s, and about 28 MB is held. A page after a cursor goes on from its place without matching again what came before, and several ranges read their sheet once: the component's filtered search of 1,726 rows went from 5.3 s to 0.1 s, and 50 ranges from 4 s to 0.04 s.
+
+Measured: Excel for Windows through COM: Find after a cell by two sets (53 cases in each locale, predicted before each run), Replace by a new step of the harness (`Range.Replace`) and three sets (92 cases in each locale, predicted before each run); the known differences are a filtered sheet's second round by columns (Find Next skips a column there), text that reads as a number in a file without an apostrophe, and a range of one cell. That the kept texts change no answer: after each edit of a series of 23 every kind of search against a fresh session, in every kind of session.
+
 ## 0.29.0 (2026-10-13)
 
 Internal release; not published to npm. What Excel writes for an item picked from a dropdown list. The synthetic book's values and hashes are as in 0.28.0.
