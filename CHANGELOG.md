@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.31.0 (2026-10-13)
+
+Internal release; not published to npm. Where Ctrl+arrow lands. The synthetic book's values and hashes are as in 0.30.0.
+
+Added:
+
+- `session.getEnd(sheet, cell, direction)` (`'up' | 'down' | 'left' | 'right'`, type `EndDirection`): the cell Excel's Ctrl+arrow (`Range.End`) lands on, in every kind of session. A cell with a value or a formula is not empty, whatever it shows (`=""`, a zero, a space, an error, spilled cells); a cell with a look, a note or a link alone is empty, in the `looks` layer too. From a cell whose next one is not empty it goes to the end of the block, else to the next cell that is not empty or the sheet's edge; hidden rows and columns are passed over, never landed on; a merged area is its cells. It reads the cells of one line, under 1 ms on the synthetic book of 34,000 rows ([docs/live-books.md](docs/live-books.md)).
+
+Measured: Excel for Windows through COM by a new step of the harness (`end`), three sets of 190 cases (en-US, and ru-RU for 4), each predicted before Excel ran it; all came out as predicted.
+
 ## 0.30.0 (2026-10-13)
 
 Internal release; not published to npm. Searches that cost only their matching, and Excel's Replace. The synthetic book's values and hashes are as in 0.29.0.
