@@ -1340,6 +1340,11 @@ export interface FindCellsOptions extends ReadCellsOptions {
    * the hidden lines leave, each block in turn (`docs/live-books.md`). Without it every cell of the ranges is searched.
    */
   skipHidden?: boolean
+  /**
+   * The cell Find begins after, as `Range.Find`'s `After` (a person's Find Next from the active cell): the cells come in
+   * Find's order from the first after it, round to the ranges' first and on to it, itself last; a cell of the ranges.
+   */
+  after?: CellRef
 }
 /** `Session.replaceInCells`' options: Find's, as `findCells` takes them, but what it reads, which is the text a cell opens with (Look in Formulas), and the order. */
 export interface ReplaceOptions extends EditOptions, Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell' | 'skipHidden' | 'rows'> {}
