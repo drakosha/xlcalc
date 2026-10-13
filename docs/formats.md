@@ -142,6 +142,23 @@ console.log(fitColumns(book, compute(book), 'S', 'A:C')) // → { A: 3.83203125,
 console.log(entryWidth(1234567890), entryWidth(46096, { numberFormat: 'd mmmm yyyy', width: 20 })) // → 11.1640625 undefined
 ```
 
+### Column geometry for a grid
+
+`columnWidthToPoints(width?)` and `columnWidthFromPoints(points)` from `xlcalc/text` let a grid use the geometry that the library uses for shown text, `####` and overflow. They use the same helper as the formatter and bring in no engine. With the pair the measured `xlcalc/a1` browser bundle is 11,803 bytes, past its 11,500-byte budget, so the pair is in `xlcalc/text`.
+
+```js
+import { columnWidthToPoints, columnWidthFromPoints } from 'xlcalc/text'
+columnWidthToPoints(8.83203125) // 53
+columnWidthToPoints() // 53
+columnWidthFromPoints(53) // 8.83203125
+```
+
+The input is the stored xlsx width, not the object model's `ColumnWidth` characters. Missing or null width means 53 points. The inverse rounds points down to a whole point and stores the width in 256ths of a digit: 53.75 points become 53 points and width 8.83203125. The helpers accept the full measured file range, through width 255.83203125 or 1,535 points; `ColumnInput.width` still accepts at most 255, so cap a wider returned width at 255 before setting a book's column.
+
+Use points consistently. At 96 CSS pixels per inch, a host converts points to CSS pixels by multiplying by 4/3 and pixels to points by 3/4 before calling the inverse. This is a unit conversion, not a measurement of screen pixels, zoom or display scaling. The measured object-model widths use [Range.Width in points](https://learn.microsoft.com/en-us/office/vba/api/excel.range.width); [ColumnWidth](https://learn.microsoft.com/en-us/office/vba/api/excel.range.columnwidth) uses the Normal style's digit.
+
+Windows has another geometry. Its default is `StandardWidth` 8.43, 48 points (64 pixels at 96 dpi), saved as width 9.140625 when made explicit. An explicit file width 8.83203125 is 46.5 points there (62 pixels), while it is 53 points in the Mac model. For the measured file widths Windows gives `trunc((256w + trunc(128/7)) / 256 * 7) * 3/4` points. That formula does not convert Mac-model defaults into Windows defaults. The library keeps its Mac geometry; switching it to Windows would change which values fit.
+
 ### AutoFit
 
 `fitColumns(book, result, sheet, columns)` gives the widths for a computed book, and the layout edit `{ sheet, columns: 'B:D', fit: true }` sets them in a session (`setLayout` returns the cells that show otherwise, `getLayout()` the widths). A column gets the width of its widest cell, each value by its format in the book's locale, laid out as Excel lays it out for AutoFit, which is not quite how it shows it:
@@ -209,6 +226,8 @@ The list's items in en-US are General (0), Number (2), Currency (`"$"#,##0.00`),
 Most cells are text or General numbers in a default column, and their text is the value's shortest decimal form, so they cost almost nothing. On the synthetic book (54,778 cells) a cold computation takes 310 ms with display and 279 ms without, in the closures mode.
 
 ## How it was checked
+
+`test/column-width.test.ts` checks the exported pair against all 666 existing Mac fit answers, the default, every whole point through 1,535 and invalid inputs. `bench/coverage/width` saves the current model's predictions before the object-model probe: ten fixed widths from the file, the default and seven `ColumnWidth` settings, with each platform's `Width`, `ColumnWidth`, `StandardWidth` and the width Excel saved. `test/column-width-excel.test.ts` checks the stored point widths without any screen measurement. Both platforms matched 17 of 18 predictions: only `ColumnWidth = 0.5` differed (6 points on Mac, 4.5 on Windows, against 8 and 6.75 predicted). All ten fixed widths and both defaults held. Setting characters is a different conversion from setting a file width; the exported inverse takes points instead.
 
 `npx tsx bench/coverage/run.ts display <set> [ru]` writes a book of values or formulas with their formats, one column per width, and merged areas where a case needs one. Excel reads back each cell's `string value` (its `Range.Text`) and `color of font object of display format`. Answers are in `test/excel/display/` and `test/excel/display/ru-RU/`, and `test/display-excel.test.ts` compares the engine with them.
 

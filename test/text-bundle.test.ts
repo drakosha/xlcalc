@@ -25,7 +25,7 @@ describe('text without the engine', () => {
     const { code, used } = await bundle()
     // criteria, dates and numfmt/style: the lexer takes the escape of a regular expression's characters from criteria;
     // numfmt/builtin, category and parse: a number format's category, by the built-in codes and the split into sections
-    expect(used).toEqual(['a1', 'collate', 'criteria', 'dates', 'entry/clipboard', 'input', 'input-error', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/parse', 'numfmt/style', 'scan', 'sheet-pattern', 'strict-args', 'syntax/ast', 'syntax/errors', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text'])
+    expect(used).toEqual(['a1', 'collate', 'column-width', 'criteria', 'dates', 'entry/clipboard', 'input', 'input-error', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/parse', 'numfmt/style', 'scan', 'sheet-pattern', 'strict-args', 'syntax/ast', 'syntax/errors', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text'])
     expect(code.length).toBeLessThan(50 * 1024)
     expect(code).not.toContain('xlcalc')
   }, 60_000)

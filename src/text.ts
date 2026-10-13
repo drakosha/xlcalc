@@ -7,8 +7,9 @@
  * and no locale's data comes with them but en-US's messages, which the tokenizer's errors carry: another locale is given
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
-import { array, checkBoolean, checkString, InputError, object, onlyOptions } from './input.js'
+import { array, checkBoolean, checkNumber, checkString, InputError, object, onlyOptions } from './input.js'
 import { clipboardRows } from './entry/clipboard.js'
+import { columnPoints, widthOf } from './column-width.js'
 import * as category from './numfmt/category.js'
 import * as scan from './scan.js'
 import { strict } from './strict-args.js'
@@ -55,4 +56,16 @@ export const formatClipboard = /* @__PURE__ */ strict(function formatClipboard(r
     }).join('\t')
   })
   return lines.join('\r\n') + (lines.length && o.trailingNewline !== false ? '\r\n' : '')
+})
+
+/** A stored xlsx width in the library's Mac point model; null or undefined is the default 53 points. */
+export const columnWidthToPoints = /* @__PURE__ */ strict(function columnWidthToPoints(width?: number | null): number {
+  if (width !== undefined && width !== null) checkNumber(width, 'width', 0, 255.83203125)
+  return columnPoints(width ?? undefined)
+})
+
+/** Whole points back to a stored width in 256ths; fractional points round down, as the model's geometry does. */
+export const columnWidthFromPoints = /* @__PURE__ */ strict(function columnWidthFromPoints(points: number): number {
+  checkNumber(points, 'points', 0, 1535)
+  return widthOf(Math.trunc(points))
 })
