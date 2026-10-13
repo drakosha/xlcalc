@@ -92,6 +92,7 @@ export const EN_MESSAGES: EnglishMessages = {
   arrayPart: (p) => `the operation changes part of the array formula ${p.sheet}!${p.cell} (${p.area})`,
   moveOffSheet: (p) => `the range does not fit on ${p.sheet} at ${p.cell}`,
   copyOffSheet: (p) => `the copy does not fit on ${p.sheet} at ${p.cell}`,
+  writesLimit: (p) => `${p.size} cells written by one edit, over the limit of ${p.max}`,
   moveCutsMerge: (p) => `the moved cells cut the merged area ${p.sheet}!${p.area}`,
   pasteOnMerge: (p) => `the pasted cells land on part of the merged area ${p.sheet}!${p.area}`,
   filteredPaste: (p) => `the copy leaves out rows a filter hid and cannot be pasted over the hidden rows of ${p.sheet}!${p.area}`,

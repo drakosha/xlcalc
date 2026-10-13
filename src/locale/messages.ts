@@ -251,6 +251,7 @@ export interface MessageParams extends XlsxMessageParams {
   arrayPart: { sheet: string; cell: string; area: string }
   moveOffSheet: { sheet: string; cell: string }
   copyOffSheet: { sheet: string; cell: string }
+  writesLimit: { size: number; max: number }
   moveCutsMerge: { sheet: string; area: string }
   pasteOnMerge: { sheet: string; area: string }
   filteredPaste: { sheet: string; area: string }

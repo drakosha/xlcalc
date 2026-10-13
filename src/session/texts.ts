@@ -100,7 +100,7 @@ function takenTogether(s: EngineState, cells: Typed[]): TypedTexts {
  */
 export function pastedText(s: EngineState, i: number, r: number, c: number, text: string, now: string): { ok: true; cells: Typed[]; range: string } | { ok: false; refusal: PasteTextRefusal } {
   // a paste over `limits.writes` stops before its rectangle is made
-  const rows = clipboardRows(text, allotWrites)
+  const rows = clipboardRows(text, (n) => allotWrites(n, s.input.locale))
   const x = { r1: r, c1: c, r2: r + rows.length - 1, c2: c + rows[0].length - 1 }
   const sheet = s.sheetNames[i]
   const cell = formatAddress(r, c)
@@ -127,7 +127,7 @@ export function checkActive(v: unknown, x: Rect, path = 'opts.active'): { r: num
  */
 export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c: number }, text: string, now: string, way: EntryWay = 'typed'): TypedTexts {
   if (cellCount(x) > MAX_CELLS) throw new InputError('range', `a range of ${cellCount(x)} cells: an entry goes into ${MAX_CELLS} cells at most`)
-  allotWrites(cellCount(x))
+  allotWrites(cellCount(x), s.input.locale)
   const sheet = s.sheetNames[i]
   const typed = readText(s, i, a.r, a.c, inputAt(s, i, formatAddress(a.r, a.c)), text, now, way)
   if (!typed.ok) return { ok: false, refusal: typed as Refusal<CellTextRefusal>, ref: { sheet, cell: formatAddress(a.r, a.c) } }

@@ -90,6 +90,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   arrayPart: [{ sheet: 'S', cell: 'C1', area: 'C1:C3' }],
   moveOffSheet: [{ sheet: 'S', cell: 'A1048575' }],
   copyOffSheet: [{ sheet: 'S', cell: 'XFD1' }],
+  writesLimit: [{ size: 1048576, max: 100000 }],
   moveCutsMerge: [{ sheet: 'S', area: 'A1:B1' }],
   pasteOnMerge: [{ sheet: 'S', area: 'D1:E1' }],
   filteredPaste: [{ sheet: 'S', area: 'D1:E6' }],

@@ -135,9 +135,9 @@ function headerText(s: EngineState, v: Scalar, format: NumberFormat | undefined)
   return shown === s.ctx.rules.display(v, undefined, Infinity).text ? plain : shown
 }
 
-/** Edits of cells checked, one cell each: over `limits.writes` they stop the call before anything is written. */
-function written<T>(edits: T[]): T[] {
-  allotWrites(edits.length)
+/** Edits of cells checked, one cell each, of a book in `locale`: over `limits.writes` they stop the call before anything is written. */
+function written<T>(edits: T[], locale: string | undefined): T[] {
+  allotWrites(edits.length, locale)
   return edits
 }
 
@@ -537,14 +537,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setCells(edits: CellEdit[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsTaken(written(checkFieldEdits(edits, sheetIndex(s), styleCount(s))))), 'setCells')
+      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsTaken(written(checkFieldEdits(edits, sheetIndex(s), styleCount(s)), s.input.locale))), 'setCells')
       keep(back)
       return answer(next, out)
     },
     *replaceCells(edits: CellReplace[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const [next, out, back] = yield* writeCells(s, written(checkEdits(edits, sheetIndex(s), styleCount(s)) as CellReplace[]), 'replaceCells')
+      const [next, out, back] = yield* writeCells(s, written(checkEdits(edits, sheetIndex(s), styleCount(s)) as CellReplace[], s.input.locale), 'replaceCells')
       keep(back)
       return answer(next, out)
     },
@@ -593,7 +593,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setCellTexts(entries: CellTextEntry[], eo?: CellTextOptions) {
       const s = yield* ready()
       const opts = textOptions(eo)
-      const typed = typedTexts(s, written(checkTextEntries(entries, sheetIndex(s))), clock.now, wayOf(opts))
+      const typed = typedTexts(s, written(checkTextEntries(entries, sheetIndex(s)), s.input.locale), clock.now, wayOf(opts))
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       const refused = yield* invalid(s, opts, typed.cells)
       if (refused) return refused
@@ -603,7 +603,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *previewCellTexts(entries: CellTextEntry[], eo?: CellTextOptions): Steps<CellTextsPreview> {
       const s = yield* ready()
       const opts = textOptions(eo)
-      const typed = typedTexts(s, written(checkTextEntries(entries, sheetIndex(s))), clock.now, wayOf(opts))
+      const typed = typedTexts(s, written(checkTextEntries(entries, sheetIndex(s)), s.input.locale), clock.now, wayOf(opts))
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       return yield* previewed(s, typed.cells, () => {
         const alerts = textAlerts(s, typed.cells)
