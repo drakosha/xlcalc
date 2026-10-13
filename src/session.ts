@@ -8,9 +8,9 @@
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { ChangesOptions, ChangesPreview, ChangesResult, PreviewChangesOptions, SessionOperation, ReadCellsOptions, ReadCellsResult, FindCellsOptions, DependentsOptions, DependentsResult, RangeSummary } from './contract.js'
+import type { ChangesOptions, ChangesPreview, ChangesResult, PreviewChangesOptions, SessionOperation, ReadCellsOptions, ReadCellsResult, FindCellsOptions, DependentsOptions, DependentsResult, RangeSummary, ReplaceOptions, ReplaceResult } from './contract.js'
 import { operationsPlan } from './session/operations.js'
-import { readQuery, dependentsQuery, summaryQuery } from './session/queries.js'
+import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/queries.js'
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outValue } from './result.js'
@@ -28,6 +28,8 @@ import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
 import { checkDirection, endOf } from './session/end.js'
+import { textsChanged } from './session/search.js'
+import { replacedTexts } from './session/replace.js'
 import { snapshotBook } from './session/snapshot.js'
 import { checkRange, checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
@@ -57,7 +59,7 @@ import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
 import { putInputs, withLooksOf } from './looks/sheet.js'
-import { FILL_OPTIONS, strictMethods, TEXT_OPTIONS } from './strict-args.js'
+import { FILL_OPTIONS, REPLACE_OPTIONS, strictMethods, TEXT_OPTIONS } from './strict-args.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -77,6 +79,7 @@ export interface SessionSteps {
   previewChanges(operations: SessionOperation[], opts?: PreviewChangesOptions): Steps<ChangesPreview>
   readCells(ranges: RangeRef[], opts?: ReadCellsOptions): Steps<ReadCellsResult>
   findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions): Steps<ReadCellsResult>
+  replaceInCells(ranges: RangeRef[], query: string, replacement: string, opts?: ReplaceOptions): Steps<ReplaceResult>
   getDependents(ranges: RangeRef[], opts?: DependentsOptions): Steps<DependentsResult>
   summarizeRanges(ranges: RangeRef[], opts?: EditOptions): Steps<RangeSummary>
   readonly clock: Clock
@@ -186,6 +189,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /** A call that changed the book answered: the revision one more, and what changed. */
   const answer = (s: EngineState, x: Outcome): EditResult => {
+    textsChanged(s, x)
     const out: EditResult = { revision: ++revision, changes: changes(s, x.keys, x.fields) }
     if (x.layout.size) out.layout = [...x.layout]
     if (x.styles) out.styles = s.input.styles ?? []
@@ -501,7 +505,16 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return yield* readQuery(yield* ready(), revision, clock, refs, eo)
     },
     *findCells(refs: RangeRef[], query: string, eo?: FindCellsOptions) {
-      return yield* readQuery(yield* ready(), revision, clock, refs, eo, query)
+      return yield* findQuery(yield* ready(), revision, clock, refs, query, eo)
+    },
+    *replaceInCells(refs: RangeRef[], query: string, replacement: string, eo?: ReplaceOptions): Steps<ReplaceResult> {
+      const s = yield* ready()
+      const { cells, refused } = yield* replacedTexts(s, refs, query, replacement, checkBase<ReplaceOptions>(eo, revision, REPLACE_OPTIONS), clock.now)
+      const not = refused.length ? { refused } : {}
+      // nothing found: the book, its revision and its history as they were
+      if (!cells.length) return { revision, changes: [], replaced: 0, ...not }
+      const [next, out] = yield* writeTexts(s, cells, 'replaceInCells', false)
+      return { ...answer(next, out), replaced: cells.length, ...not }
     },
     *getDependents(refs: RangeRef[], eo?: DependentsOptions) {
       return yield* dependentsQuery(yield* ready(), revision, clock, refs, eo)
@@ -811,6 +824,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     previewChanges: (ops, o) => now(() => core.previewChanges(ops, o)),
     readCells: (refs, o) => now(() => core.readCells(refs, o)),
     findCells: (refs, query, o) => now(() => core.findCells(refs, query, o)),
+    replaceInCells: (refs, query, replacement, o) => now(() => core.replaceInCells(refs, query, replacement, o)),
     getDependents: (refs, o) => now(() => core.getDependents(refs, o)),
     summarizeRanges: (refs, o) => now(() => core.summarizeRanges(refs, o)),
     setCells: (edits, o) => now(() => core.setCells(edits, o)),

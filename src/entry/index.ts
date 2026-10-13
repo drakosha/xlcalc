@@ -19,7 +19,7 @@ import { epochOf, ymd } from '../dates.js'
 import { msToSerial } from '../model.js'
 import { formatAfter, shows } from './forms.js'
 import { formulaFormat } from './formula.js'
-import { moneyFormat, readTyped } from './read.js'
+import { moneyFormat, readTyped, type Form } from './read.js'
 
 /** The rules of each locale object and date system, with a clock whose year is set for each entry (entries are synchronous). */
 const RULES = new WeakMap<Locale, Map<number, { rules: Rules; clock: RulesClock & { y: number } }>>()
@@ -73,8 +73,8 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   return readEntry(text, checkEntryOptions(opts))
 }
 
-/** How text comes into a cell: typed over it, edited in place (F2, a double click, the formula bar), pasted from the clipboard. */
-export type EntryWay = 'typed' | 'inPlace' | 'pasted'
+/** How text comes into a cell: typed over it, edited in place (F2, a double click, the formula bar), pasted from the clipboard, put back by Excel's Replace. */
+export type EntryWay = 'typed' | 'inPlace' | 'pasted' | 'replaced'
 
 /**
  * Text that comes into a cell (options checked), typed over it, edited in place or pasted from the clipboard (`way`).
@@ -82,7 +82,10 @@ export type EntryWay = 'typed' | 'inPlace' | 'pasted'
  * Excel pastes text (the set `ui/paste-held`, Excel for Mac and Windows): read as typed, but an apostrophe stays part of
  * the text, a formula Excel does not take is text, a percent cell has no percent editor (`5` is 5, 500%), and a euro
  * sign before a whole number (`€5`) gives the euro format Excel gives it; the other forms with a euro sign were not
- * measured pasted and are read as typed.
+ * measured pasted and are read as typed. Put back by Excel's Replace (the sets `replace/rules-held` and `rules-held-2`):
+ * read as typed, but a percent cell has no percent editor (`6%` is 0.06, `5` 500%, `-5` -500%) and a cell of the text
+ * format takes a number, a date, a boolean or a formula as a General cell does, keeping its format where typing gives
+ * none (`3/15/2026` is the date with its date format, `12` the number shown by `@`).
  */
 export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'): EntryResult {
   const pasted = way === 'pasted'
@@ -92,6 +95,9 @@ export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'
   const kept: CellInput = {}
   for (const k of KEPT) if (cell[k] !== undefined) (kept as Record<string, unknown>)[k] = cell[k]
   const input = (body: CellInput, format: NumberFormat | undefined = cell.numberFormat): EntryResult => ({ ok: true, input: { ...body, ...(format !== undefined ? { numberFormat: format } : {}), ...kept } })
+  // put back by Replace, a cell of the text format takes the format typing gives a General cell, and keeps its own where that gives none
+  const base = way === 'replaced' && shows(cell.numberFormat, 'text') ? undefined : cell.numberFormat
+  const after = (form: Form, typed: NumberFormat | undefined) => formatAfter(form, typed, base, locale) ?? (base === cell.numberFormat ? undefined : cell.numberFormat)
   const epoch = epochOf(o.dateSystem)
   const year = ymd(Math.floor(msToSerial(o.now === undefined ? Date.now() : Date.parse(o.now)))).y
   const { rules, clock } = rulesFor(locale, epoch, year)
@@ -101,13 +107,13 @@ export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'
     if (!('formula' in f)) return pasted ? input({ value: text }) : f
     if (f.sets === undefined) return input({ formula: f.formula })
     const sets = f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets
-    return input({ formula: f.formula }, formatAfter(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets, cell.numberFormat, locale))
+    return input({ formula: f.formula }, after(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets))
   }
   if (text === '') return cell.numberFormat !== undefined || Object.keys(kept).length ? input({}) : { ok: true, input: null }
   if (text.startsWith("'") && !pasted) return input({ value: text.slice(1) })
-  if (shows(cell.numberFormat, 'text') || text === '=') return input({ value: text })
+  if ((way !== 'replaced' && shows(cell.numberFormat, 'text')) || text === '=') return input({ value: text })
   if (text.startsWith('=')) return formula(text, 0)
-  const percent = !pasted && shows(cell.numberFormat, 'pct') && (way === 'typed' || /^[-+]/.test(text))
+  const percent = (way === 'typed' || way === 'inPlace') && shows(cell.numberFormat, 'pct') && (way === 'typed' || /^[-+]/.test(text))
   const typed = readTyped(text, rules, clock, percent)
   // `+` or `-` before what is no constant begins a formula (alone they are text), with the `%` the percent editor added
   // (`-5%` in a percent cell is `-5%%`, the set `entry/typed-keys-held-3`); Excel drops a `+` before a number
@@ -116,11 +122,11 @@ export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'
     case 'number':
       // the sign of a locale whose money is not the euro is dropped as typed (`read.ts`)
       if (pasted && typed.form === 'plain' && /^€\d+$/.test(text)) return input({ value: typed.v }, formatAfter('currency', PASTED_EURO, cell.numberFormat, locale))
-      return input({ value: typed.v }, formatAfter(typed.form, typed.format, cell.numberFormat, locale))
+      return input({ value: typed.v }, after(typed.form, typed.format))
     case 'boolean':
       return input({ value: typed.v })
     case 'text':
-      return input({ value: typed.v }, typed.format === undefined ? cell.numberFormat : formatAfter('scientific', typed.format, cell.numberFormat, locale))
+      return input({ value: typed.v }, typed.format === undefined ? cell.numberFormat : after('scientific', typed.format))
     case 'error':
       return input({ formula: typed.literal })
   }

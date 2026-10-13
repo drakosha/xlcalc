@@ -7,7 +7,7 @@
  * (`sessionSource`), a saved one a book and its result (`saved.ts`); either reads the window's cells, never the whole sheet.
  */
 import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, SavedViewportOptions, SheetExtent, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
-import type { EngineState } from '../engine.js'
+import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { checkedEntryText } from '../entry/text.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { array, checkBoolean, checkNumber, checkString, InputError, object, onlyOptions } from '../input.js'
@@ -20,7 +20,7 @@ import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { formatCodeIn } from '../locale/rules.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
-import { cellResult, spilled } from '../result.js'
+import { cellResult, outValue, spilled } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { lowerBound } from '../sorted.js'
 import { parseRange, rectText, type Rect } from '../structure/area.js'
@@ -28,6 +28,7 @@ import { tableAt, type Tables } from '../tables/model.js'
 import { holds } from '../array-areas.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
 import { layerOf } from '../looks/sheet.js'
+import { ownerOf } from '../spill/place.js'
 import { sheetExtent } from './extent.js'
 
 /** The cells a window gives by default, as many as the window of a sheet a server sends. */
@@ -37,8 +38,8 @@ const MAX_CELLS = 20_000
 const DEFAULT_WIDTH = widthOf(columnPoints(undefined))
 const DEFAULT_HEIGHT = 15
 
-/** Line numbers asked of a window: whole numbers from 1 to `max`, ascending, each once. */
-function checkLineNumbers(v: unknown, path: string, max: number) {
+/** Line numbers asked of a window or a query (`rows`): whole numbers from 1 to `max`, ascending, each once. */
+export function checkLineNumbers(v: unknown, path: string, max: number) {
   const xs = array(v, path, 'an array of line numbers such as [2, 5, 9]')
   xs.forEach((n, i) => {
     checkNumber(n, `${path}[${i}]`, 1, max, true)
@@ -177,6 +178,24 @@ export function editTexts(book: BookInput, s: number, tables: Tables, now: strin
     return t
   }
   return { local, editText }
+}
+
+/**
+ * The text each cell of a session's book opens with for editing, as its window gives it (`ViewportCell.editText`), each
+ * sheet's formulas and formats read once; `now` completes text read as a date without a year.
+ */
+export function sessionEditTexts(state: EngineState, now: string): (s: number, r: number, c: number, own: CellInput | undefined) => string {
+  const sheets = new Map<number, { lines: SheetLines; edit: ReturnType<typeof editTexts> }>()
+  return (s, r, c, own) => {
+    let x = sheets.get(s)
+    if (!x) sheets.set(s, (x = { lines: sheetLines(state.input.sheets[s], state), edit: editTexts(state.input, s, state.tables, now) }))
+    const id = state.at.get(key(s, r, c))
+    const formula = id === undefined ? own?.formula : state.formulas[id]!.text
+    // a cell without content of its own in an array's area opens with the array's formula, an old kind's
+    const o = holds(own) ? undefined : ownerOf(state, s, r, c)
+    const view = { formula, value: outValue(toCellValue(valueAt(state, s, r, c))), ...(o ? { spillOf: formatAddress(o.r1, o.c1) } : {}) }
+    return x.edit.editText(view, own, x.lines.format(r, c, own), r, c)
+  }
 }
 
 /** The window of lines `w` of a sheet from `src` (options checked). The steps yield between cells. */

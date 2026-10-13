@@ -48,19 +48,14 @@ export type RawBar = [[string, string], [string, string], string, string, [strin
 /** What the ribbon's Number Format box showed for each cell an action selected, and the item applied to it (empty for none). */
 export type RawRibbon = [string, string][]
 
-/** The answer of a case from what Excel read of its cells and columns, the windows it showed and the file it saved. */
-export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], columns: [number, number, boolean][], saved: Uint8Array, bars?: RawBar[], ribbon?: RawRibbon): Promise<UiAnswer> {
+/** The cells `names` of the sheet `S` as Excel read them (`cells`, in their order) and saved them (`saved`). */
+export async function savedCells(names: string[], cells: RawCell[], saved: Uint8Array): Promise<Record<string, UiCell>> {
   const read = await readXlsx(saved)
   const held = read.book.sheets.find((s) => s.name === 'S')!.cells
   const cached = read.cached.sheets.find((s) => s.name === 'S')!.cells
-  const cols = await savedColumns(saved)
-  const names = readCells(c)
   const out: Record<string, UiCell> = {}
   names.forEach((a, i) => {
     const [text, code, local, prefix, value2, formula, formulaLocal, formula2, formula2Local, hasArray, formulaArray, hasSpill, spillParent] = cells[i]
-    // a case of bars, of an edit or of the ribbon reads its cells first
-    const b = bars?.[i]
-    const r = ribbon?.[i]
     out[a] = {
       cell: heldOf(held[a]),
       ...(a in cached ? { computed: cached[a].value } : {}),
@@ -76,9 +71,21 @@ export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], co
       hasArray,
       ...(hasArray ? { formulaArray } : {}),
       ...(hasSpill === undefined ? {} : { hasSpill, ...(hasSpill ? { spillParent } : {}) }),
-      ...(b ? { bar: { selected: b[0], edit: b[1], focused: b[2], ...(b[3] ? { dialog: b[3] } : {}), ...(b[4] ? { typed: b[4] } : {}) } } : {}),
-      ...(r ? { ribbon: { box: r[1], ...(r[0] ? { item: r[0] } : {}) } } : {}),
     }
+  })
+  return out
+}
+
+/** The answer of a case from what Excel read of its cells and columns, the windows it showed and the file it saved. */
+export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], columns: [number, number, boolean][], saved: Uint8Array, bars?: RawBar[], ribbon?: RawRibbon): Promise<UiAnswer> {
+  const cols = await savedColumns(saved)
+  const out = await savedCells(readCells(c), cells, saved)
+  readCells(c).forEach((a, i) => {
+    // a case of bars, of an edit or of the ribbon reads its cells first
+    const b = bars?.[i]
+    const r = ribbon?.[i]
+    if (b) out[a].bar = { selected: b[0], edit: b[1], focused: b[2], ...(b[3] ? { dialog: b[3] } : {}), ...(b[4] ? { typed: b[4] } : {}) }
+    if (r) out[a].ribbon = { box: r[1], ...(r[0] ? { item: r[0] } : {}) }
   })
   const letters = readColumns(c)
   return {

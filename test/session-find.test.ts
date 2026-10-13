@@ -2,7 +2,8 @@
  * `findCells` by Excel's Find in a session: the query's wildcards (`?` one UTF-16 unit), the whole cell, Match case,
  * Look in Formulas (`in: 'edit'`, the book's locale, a text without its apostrophe) and Values (`in: 'text'`), the
  * cells by rows or by columns with pages and a count, hidden cells as Find skips them (Values always, every search on a
- * filtered sheet, where cells come by blocks), and the options checked. In a synchronous session, in the same thread and
+ * filtered sheet, where cells come by blocks), the rows asked, pages by the cursor, several ranges, Find from a cell
+ * (`after`, round to it), the text a cell opens with (`editText`), and the options checked. In a synchronous session, in the same thread and
  * in a thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -85,6 +86,54 @@ describe.each(['closures', 'eval'] as const)('findCells by Excel Find, execution
       expect(await hid({ in: 'edit' }, F, 'x')).toEqual(['A1', 'C1', 'A3', 'C3'])
       expect(await hid({ in: 'edit', byColumns: true }, F, 'x')).toEqual(['A1', 'C1', 'A3', 'C3'])
       expect(await hid({ in: 'text', skipHidden: false }, F, 'x')).toEqual(['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'C3'])
+    })
+
+    it('takes the rows asked, pages by the cursor, takes several ranges in order, begins after a cell; gives the text a cell opens with', async () => {
+      const s = await (await opener(kind))(book, { clock, execution })
+      const cells = (p: { cells: { cell: string }[] }) => p.cells.map((c) => c.cell)
+      // rows: the cells of those rows alone, counted alone
+      expect(await s.findCells(S, 'a', { rows: [3], count: true, fields: [] })).toMatchObject({ total: 1, cells: [{ cell: 'A3' }] })
+      expect(cells(await s.findCells(S, 'a', { rows: [1, 3], byColumns: true, fields: [] }))).toEqual(['A1', 'A3', 'B1', 'C1'])
+      expect(cells(await s.readCells(S, { rows: [2], fields: ['value'] }))).toEqual(['A2', 'B2', 'C2', 'D2'])
+      // page by page, a counted total kept
+      const all: string[] = []
+      let cursor: string | undefined
+      do {
+        const p = await s.findCells(S, 'a', { maxCells: 1, count: true, fields: [], ...(cursor ? { cursor } : {}) })
+        expect(p.total).toBe(4)
+        all.push(...cells(p))
+        cursor = p.cursor
+      } while (cursor)
+      expect(all).toEqual(['A1', 'B1', 'C1', 'A3'])
+      // the blocks of a filtered sheet, page by page
+      const blocks: string[] = []
+      do {
+        const p = await s.findCells(F, 'x', { in: 'edit', skipHidden: true, byColumns: true, maxCells: 1, fields: [], ...(cursor ? { cursor } : {}) })
+        blocks.push(...cells(p))
+        cursor = p.cursor
+      } while (cursor)
+      expect(blocks).toEqual(['A1', 'C1', 'A3', 'C3'])
+      // ranges in the order given, a cell in the first that has it
+      expect(cells(await s.findCells([{ sheet: 'S', range: 'B1:D9' }, { sheet: 'S', range: 'A1:B9' }], 'a', { fields: [] }))).toEqual(['B1', 'C1', 'A1', 'A3'])
+      // editText: the window's, the apostrophe before a text that reads as a number too, which Look in Formulas leaves out
+      const window = (await s.getViewport('S', 'A1:D4', { editText: true })).cells
+      const read = await s.readCells([{ sheet: 'S', range: 'A1:D4' }], { fields: ['editText'] })
+      expect(read.cells.map((c) => [c.cell, c.editText])).toEqual(read.cells.map((c) => [c.cell, window[c.cell].editText]))
+      expect((await s.findCells(S, '5', { in: 'edit', fields: ['editText'] })).cells).toEqual([{ sheet: 'S', cell: 'B2', editText: '5%' }])
+      expect((await s.findCells(S, '007', { in: 'edit', fields: ['editText'] })).cells).toEqual([{ sheet: 'S', cell: 'C2', editText: "'007" }])
+      // after a cell: the cells after it, round to the first and on to it, page by page
+      const round: string[] = []
+      do {
+        const p = await s.findCells(S, 'a', { after: { sheet: 'S', cell: 'B1' }, maxCells: 1, count: true, fields: [], ...(cursor ? { cursor } : {}) })
+        expect(p.total).toBe(4)
+        round.push(...cells(p))
+        cursor = p.cursor
+      } while (cursor)
+      expect(round).toEqual(['C1', 'A3', 'A1', 'B1'])
+      expect(cells(await s.findCells(F, 'x', { in: 'edit', skipHidden: true, after: { sheet: 'F', cell: 'B1' }, fields: [] }))).toEqual(['C1', 'A3', 'C3', 'A1'])
+      await expect(s.findCells([{ sheet: 'S', range: 'A2:D9' }], 'a', { after: { sheet: 'S', cell: 'A1' } })).rejects.toThrow('opts.after')
+      await expect(s.findCells(S, 'a', { rows: [3, 1] })).rejects.toThrow('opts.rows[1]')
+      await expect(s.readCells(S, { rows: [0] })).rejects.toThrow('opts.rows[0]')
     })
 
     it('checks its options', async () => {
