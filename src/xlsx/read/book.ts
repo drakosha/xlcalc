@@ -25,6 +25,7 @@ import { readLinks } from './links.js'
 import { cellMetadata } from './metadata.js'
 import { relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
+import { readActiveSheet } from '../view.js'
 import { readStrings } from './strings.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
@@ -211,6 +212,8 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     if (!sh.tables.length) delete sh.tables
   }
   const book: BookInput = { sheets }
+  const activeSheet = readActiveSheet(wb, decls, sheets)
+  if (activeSheet) book.activeSheet = activeSheet
   if (names.length) book.names = names
   if (table.styles.length) book.styles = table.styles
   const tag = await locale(archive, root, issues)

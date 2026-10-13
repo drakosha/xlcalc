@@ -685,7 +685,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
       // a sheet hidden or shown, and an outline command, move no cell: the book takes its sheets, nothing is built again
-      if (op.op === 'hideSheet' || op.op === 'unhideSheet' || op.op in OUTLINE_FIELDS) {
+      if (((op.op === 'hideSheet' || op.op === 'unhideSheet') && r.book.activeSheet === old.input.activeSheet) || op.op in OUTLINE_FIELDS) {
         const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
         const [out, before] = yield* relayout(old, next, null)
         keep(() => layoutStep('editStructure', before, next))

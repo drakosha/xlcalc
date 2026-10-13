@@ -56,7 +56,7 @@ describe('xlsx outside Node', () => {
       ctx,
     )) as string
     expect(JSON.parse(out)).toEqual([
-      { sheets: [{ name: 'Лист', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }], locale: 'ru-RU' },
+      { sheets: [{ name: 'Лист', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } }, view: { tabSelected: true } }], locale: 'ru-RU' },
       [['noCachedValues', 'Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла']],
     ])
   }, 60_000)

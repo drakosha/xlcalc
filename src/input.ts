@@ -19,6 +19,7 @@ import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
 import { optionHint } from './strict-args.js'
+import { checkSheetView } from './input-view.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
@@ -342,7 +343,7 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  */
 export function checkBook(v: unknown, path = 'book', looked = false): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks', 'activeSheet'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
   if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (book.iteration !== undefined) {
@@ -359,7 +360,7 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -386,6 +387,7 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
     if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
     if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
+    if (sheet.view !== undefined) checkSheetView(sheet.view, `${p}.view`)
     if (sheet.frozen !== undefined) checkFrozen(sheet.frozen, `${p}.frozen`)
     if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
     if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
@@ -395,6 +397,11 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
   // Excel keeps one visible sheet at least
   const sheets = book.sheets as { hidden?: unknown }[]
   if (sheets.length && sheets.every((s) => s.hidden !== undefined && s.hidden !== false)) throw new InputError(`${path}.sheets`, 'a book keeps one visible sheet at least: every sheet is hidden')
+  if (book.activeSheet !== undefined) {
+    const name = checkString(book.activeSheet, `${path}.activeSheet`)
+    const active = (book.sheets as BookInput['sheets']).find((s) => sheetKey(s.name) === sheetKey(name))
+    if (!active || active.hidden) throw new InputError(`${path}.activeSheet`, 'expected the name of a visible sheet of the book')
+  }
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   if (book.externalBooks !== undefined) checkExternalBooks(book.externalBooks, `${path}.externalBooks`)
   checkTables(book as unknown as BookInput, path)

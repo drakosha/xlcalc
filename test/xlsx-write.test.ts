@@ -1,3 +1,4 @@
+import { withoutView } from './xlsx-fixtures.js'
 /**
  * The writer: a book comes back from its file as written (formulas, values, names, layout, locale), formulas
  * are dynamic array formulas in the file's spelling with their values and spills, the values mode writes values
@@ -63,7 +64,7 @@ describe('xlsx writer', () => {
   it('the book comes back from its file, and the stored values are the result', async () => {
     const result = compute(book, { clock })
     const r = await readXlsx((await writeXlsx({ book, result })).data)
-    expect(r.book).toEqual({
+    expect(withoutView(r.book)).toEqual({
       ...book,
       sheets: [{ ...book.sheets[0], cells: { ...book.sheets[0].cells, A5: { value: 45688 }, H1: { formula: "SUM('It''s'!A1:A2)" } } }, book.sheets[1]],
     })

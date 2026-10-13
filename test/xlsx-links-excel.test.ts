@@ -1,3 +1,4 @@
+import { withoutView } from './xlsx-fixtures.js'
 /**
  * Links to other workbooks in the files Excel saved (`test/excel/links/`, `test/excel/win/links/`, from the step
  * `links`): the reader reads every link of every file, with the targets Excel for Mac and Excel for Windows wrote,
@@ -170,7 +171,7 @@ describe('the round trip of the books of the set written', () => {
     expect(r.book.externalBooks).toEqual(externalBooks)
     expect(r.book.names).toEqual(book.names)
     // the writer quotes every sheet of this book (`'Sheet1'!A1`): formulas compare by their canonical text
-    expect(canonicalBook(r.book)).toEqual(canonicalBook(book))
+    expect(canonicalBook(withoutView(r.book))).toEqual(canonicalBook(book))
     expect(compute(canonicalBook(r.book)).inputHash).toBe(compute(canonicalBook(book)).inputHash)
   })
 })

@@ -1,3 +1,4 @@
+import { withoutView } from './xlsx-fixtures.js'
 /**
  * Hidden rows and columns and filters through xlsx: hidden lines read and written with their sizes, a line of size 0
  * taken as hidden, the filter mode read from each form a file holds a filter in (an autofilter with criteria, the mark of
@@ -97,7 +98,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     expect(xml).toContain('<c r="E5" s="2"/><c r="F5" s="2"/>')
     expect(xml).not.toContain('filterMode')
     const r = await readXlsx(data)
-    expect(r.book).toEqual(book)
+    expect(withoutView(r.book)).toEqual(book)
     expect(r.issues).toEqual([])
     expect(compute(r.book).sheets[0].cells.D2.value).toBe(1 + 4 + 16 + 32)
   })
@@ -116,7 +117,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     expect(xml).toMatch(/^<\?xml[^>]*>\n<worksheet [^>]*><sheetPr filterMode="1"\/><dimension /)
     expect(xml).toContain(`</sheetData><autoFilter ref="B1:D12">${KEEP_ALL}</autoFilter></worksheet>`)
     const r = await readXlsx(data)
-    expect(r.book).toEqual(book)
+    expect(withoutView(r.book)).toEqual(book)
     expect(codes(r.issues)).toEqual(['autoFilter'])
     const values = compute(r.book).sheets[0].cells
     expect([values.D1.value, values.D2.value, values.D3.value]).toEqual([61, 61, 61])
@@ -134,7 +135,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     expect(await text(data, 'xl/worksheets/sheet1.xml')).not.toMatch(/filterMode|autoFilter/)
     expect(await text(data, 'xl/tables/table2.xml')).toContain(`<autoFilter ref="B1:B7">${KEEP_ALL}</autoFilter>`)
     const r = await readXlsx(data)
-    expect(r.book).toEqual(book)
+    expect(withoutView(r.book)).toEqual(book)
     expect(compute(r.book).sheets[0].cells.D1.value).toBe(61)
   })
 

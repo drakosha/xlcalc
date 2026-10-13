@@ -1,3 +1,4 @@
+import { withoutView } from './xlsx-fixtures.js'
 /**
  * Hidden sheets: `SheetInput.hidden` (true, or 'very'), the structure operations hideSheet and unhideSheet, the last
  * visible sheet that neither a delete nor a hide takes, values that do not depend on what is hidden, and the xlsx state
@@ -164,7 +165,7 @@ describe('xlsx', () => {
     expect(await part('xl/workbook.xml')).toContain('<bookViews><workbookView activeTab="2"/></bookViews><sheets><sheet name="A" sheetId="1" state="hidden" r:id="rId1"/><sheet name="B" sheetId="2" state="veryHidden" r:id="rId2"/><sheet name="C" sheetId="3" r:id="rId3"/><sheet name="D" sheetId="4" state="hidden" r:id="rId4"/></sheets>')
     expect(await Promise.all([1, 2, 3, 4].map(async (k) => (await part(`xl/worksheets/sheet${k}.xml`))!.includes('tabSelected="1"')))).toEqual([false, false, true, false])
     const back = await readXlsx(data)
-    expect(back.book).toEqual(b)
+    expect(withoutView(back.book)).toEqual(b)
     expect(back.issues).toEqual([])
     // a book whose first sheet is visible keeps Excel's default active tab
     expect(await openArchive((await writeXlsx({ book: book(true) })).data).text('xl/workbook.xml')).toContain('<workbookView/>')
