@@ -10,7 +10,7 @@
  */
 import type { CellRef, CellTextRefusal, RangeRef, Refusal, ReplaceOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import type { Steps } from '../exec/budget.js'
+import { allotWrites, type Steps } from '../exec/budget.js'
 import { checkString } from '../input.js'
 import { inputIn } from '../looks/sheet.js'
 import { formatAddress, MAX_ROWS } from '../model.js'
@@ -63,5 +63,7 @@ export function* replacedTexts(s: EngineState, given: RangeRef[], query: string,
     if (refusal) out.refused.push({ ...refusal, ...ref })
     else out.cells.push({ i, r, c, edit: { ...ref, input } })
   }
+  // what Find found is known only now: over `limits.writes` the call stops before anything is written
+  allotWrites(out.cells.length)
   return out
 }

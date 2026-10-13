@@ -17,7 +17,7 @@ import { outValue } from './result.js'
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
-import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
+import { allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkBoolean, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkNumber, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
@@ -133,6 +133,12 @@ function headerText(s: EngineState, v: Scalar, format: NumberFormat | undefined)
   if (format === undefined || typeof v !== 'number') return plain
   const shown = s.ctx.rules.display(v, format, Infinity).text
   return shown === s.ctx.rules.display(v, undefined, Infinity).text ? plain : shown
+}
+
+/** Edits of cells checked, one cell each: over `limits.writes` they stop the call before anything is written. */
+function written<T>(edits: T[]): T[] {
+  allotWrites(edits.length)
+  return edits
 }
 
 /** Opens a session in steps: the book checked, then computed. */
@@ -531,14 +537,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setCells(edits: CellEdit[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsTaken(checkFieldEdits(edits, sheetIndex(s), styleCount(s)))), 'setCells')
+      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsTaken(written(checkFieldEdits(edits, sheetIndex(s), styleCount(s))))), 'setCells')
       keep(back)
       return answer(next, out)
     },
     *replaceCells(edits: CellReplace[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const [next, out, back] = yield* writeCells(s, checkEdits(edits, sheetIndex(s), styleCount(s)) as CellReplace[], 'replaceCells')
+      const [next, out, back] = yield* writeCells(s, written(checkEdits(edits, sheetIndex(s), styleCount(s)) as CellReplace[]), 'replaceCells')
       keep(back)
       return answer(next, out)
     },
@@ -587,7 +593,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setCellTexts(entries: CellTextEntry[], eo?: CellTextOptions) {
       const s = yield* ready()
       const opts = textOptions(eo)
-      const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now, wayOf(opts))
+      const typed = typedTexts(s, written(checkTextEntries(entries, sheetIndex(s))), clock.now, wayOf(opts))
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       const refused = yield* invalid(s, opts, typed.cells)
       if (refused) return refused
@@ -597,7 +603,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *previewCellTexts(entries: CellTextEntry[], eo?: CellTextOptions): Steps<CellTextsPreview> {
       const s = yield* ready()
       const opts = textOptions(eo)
-      const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now, wayOf(opts))
+      const typed = typedTexts(s, written(checkTextEntries(entries, sheetIndex(s))), clock.now, wayOf(opts))
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       return yield* previewed(s, typed.cells, () => {
         const alerts = textAlerts(s, typed.cells)

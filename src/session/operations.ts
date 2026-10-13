@@ -1,7 +1,8 @@
 /** Ordered operations staged over sparse cell overlays; no full snapshot is made for ordinary cell and look batches. */
 import type { BookInput, CellInput, CellReplace, SessionOperation, SheetInput } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { array, checkEdits, checkLayoutEdits, checkNames, checkStyles, InputError, object, onlyKeys } from '../input.js'
+import { allotWrites } from '../exec/budget.js'
+import { array, checkEdits, checkLayoutEdits, checkNames, checkStyles, InputError, isObject, object, onlyKeys } from '../input.js'
 import { sheetKey } from '../syntax.js'
 import { withoutLooksAt } from '../looks/sheet.js'
 import { parseAddress } from '../model.js'
@@ -78,7 +79,10 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
       styles = true
     }
   }
-  for (const [n, value] of array(given, 'operations', 'an array of serializable session operations').entries()) {
+  const ops = array(given, 'operations', 'an array of serializable session operations')
+  // the batch writes the cells of its edits: over `limits.writes` it stops before anything is staged
+  allotWrites(() => ops.reduce((n: number, op) => n + (isObject(op) && (op.op === 'setCells' || op.op === 'replaceCells') && Array.isArray(op.edits) ? op.edits.length : 0), 0))
+  for (const [n, value] of ops.entries()) {
     const path = `operations[${n}]`,
       op = object(value, path, 'a session operation')
     const count = book.styles?.length ?? 0
