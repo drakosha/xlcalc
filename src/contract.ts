@@ -961,8 +961,9 @@ export interface ScanOptions {
 }
 
 /**
- * Size limits of a computation. A book over them is not computed: the call throws `CalcError` with code `limit`, so a
- * result is either exact or absent and the values hash never depends on the limits.
+ * Size limits of a computation and of an edit. A book over them is not computed and an edit over them is not made: the
+ * call throws `CalcError` with code `limit`, so a result is either exact or absent and the values hash never depends on
+ * the limits.
  */
 export interface CalcLimits {
   /** Formulas in the book. */
@@ -974,6 +975,14 @@ export interface CalcLimits {
    * checked before they are written; `cells` when not given.
    */
   spill?: number
+  /**
+   * Cells one edit of a session writes with a value or a formula (a look alone goes to the sheet's looks), counted
+   * before anything is written: a copy's source cells that hold one times the tiles of its target, a move's source cells
+   * that hold one, the cells of `fillCellText`'s range and of `pasteText`'s rectangle, the cells `replaceInCells` enters
+   * again, the edits of `setCells`, `replaceCells`, `setCellTexts` and `applyChanges`; their previews too. Operations
+   * that write no more than the sheet holds (rows and columns inserted and deleted, `clearCells`) are not bounded by it.
+   */
+  writes?: number
 }
 
 /**
@@ -2217,7 +2226,7 @@ export interface AbortSignalLike {
  * the computation. `aborted`: its `signal` fired. `hard_timeout`: it ran past the pool's `hardTimeoutMs` and its
  * thread was terminated. `out_of_memory`: its thread reached `maxHeapMb`. `thread_failed`: its thread exited or threw
  * outside the computation. `restore_failed`: the session could not be restored on a thread and is closed. `limit`:
- * the book is over `CalcLimits`. `queue_full`: `maxQueue` tasks already wait. `too_many_sessions`: the pool holds
+ * the book or the edit is over `CalcLimits`. `queue_full`: `maxQueue` tasks already wait. `too_many_sessions`: the pool holds
  * `maxSessions` sessions. `closed`: the calculator or the session is closed. `stale_revision`: an edit's `baseRevision`
  * is not the session's revision (`EditOptions`); it changed nothing.
  */
