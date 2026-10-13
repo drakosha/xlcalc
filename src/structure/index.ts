@@ -21,6 +21,7 @@ import { moveRange } from './move.js'
 import { shift } from './shift.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
+import { checkWrites } from './writes.js'
 import { tableOp } from '../tables/ops.js'
 import { OUTLINE_FIELDS, outlineOp } from './outline.js'
 import { copyTables, moveTables } from '../tables/moves.js'
@@ -111,12 +112,13 @@ function lazyValues(book: BookInput): ValuesIn {
 
 /**
  * The operation on a book already checked, with its geometry. `values` gives the computed values a paste of values takes.
- * Its steps read each sheet's cells once (`withGrids`). The sheets' looks move with their lines as the lines do; those of
- * the cells it copies, moves or writes otherwise are given to it as entries (`overLooks`), so the book it gives may hold
- * entries of a look alone: the engine takes it as it takes a host's.
+ * Its steps read each sheet's cells once (`withGrids`); a copy or a move over `limits.writes` stops first. The sheets'
+ * looks move with their lines as the lines do; those of the cells it copies, moves or writes otherwise are given to it as
+ * entries (`overLooks`), so the book it gives may hold entries of a look alone: the engine takes it as it takes a host's.
  */
 export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn): Applied =>
   withGrids(() => {
+    checkWrites(book, op, values)
     const input = overLooks(book, op)
     const r = applied(input, op, values)
     return r.ok ? linesMoved(input, r) : r
