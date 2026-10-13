@@ -14,7 +14,7 @@ import { readQuery, dependentsQuery, summaryQuery } from './session/queries.js'
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outValue } from './result.js'
-import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
@@ -27,6 +27,7 @@ import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
+import { checkDirection, endOf } from './session/end.js'
 import { snapshotBook } from './session/snapshot.js'
 import { checkRange, checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
@@ -100,6 +101,7 @@ export interface SessionSteps {
   getBook(): BookInput
   getLayout(): BookLayout
   getUsedRange(sheet: string): Steps<SheetExtent>
+  getEnd(sheet: string, cell: string, direction: EndDirection): Steps<string>
   undo(opts?: EditOptions): Steps<UndoResult | null>
   redo(opts?: EditOptions): Steps<UndoResult | null>
   readonly history: SessionHistory
@@ -708,6 +710,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       return sheetExtent(s, checkSheet(sheet, sheetIndex(s), 'sheet'))
     },
+    *getEnd(sheet: string, cell: string, direction: EndDirection) {
+      const s = yield* ready()
+      const [i, r, c] = at(s, sheet, cell)
+      return formatAddress(...endOf(s, i, r, c, checkDirection(direction)))
+    },
     *explain(sheet: string, cell: string, eo?: ExplainOptions) {
       const s = yield* ready()
       const [i, row, col] = at(s, sheet, cell)
@@ -826,6 +833,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     getBook: () => core.getBook(),
     getLayout: () => core.getLayout(),
     getUsedRange: (sheet) => now(() => core.getUsedRange(sheet)),
+    getEnd: (sheet, cell, direction) => now(() => core.getEnd(sheet, cell, direction)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     getCells: (sheet, range) => now(() => core.getCells(sheet, range)),
     getCell: (sheet, cell) => now(() => core.getCell(sheet, cell)),

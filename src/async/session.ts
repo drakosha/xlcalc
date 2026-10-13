@@ -136,6 +136,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     getBook: () => plain(() => core.getBook()),
     getLayout: () => plain(() => core.getLayout()),
     getUsedRange: (sheet) => call(() => core.getUsedRange(sheet)),
+    getEnd: (sheet, cell, direction) => call(() => core.getEnd(sheet, cell, direction)),
     explain: (sheet, cell, eo) => call(() => core.explain(sheet, cell, eo)),
     getCells: (sheet, range) => call(() => core.getCells(sheet, range)),
     getCell: (sheet, cell) => call(() => core.getCell(sheet, cell)),
