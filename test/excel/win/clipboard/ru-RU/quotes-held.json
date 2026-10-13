@@ -1,0 +1,176 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96
+ },
+ "cases": [
+  {
+   "id": "quoted-controls",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a\tb"
+       },
+       "B1": {
+        "value": "a\nb"
+       },
+       "A2": {
+        "value": "a\n\"b\""
+       },
+       "B2": {
+        "value": "end"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:B2",
+   "rows": [
+    [
+     "a\tb",
+     "a\nb"
+    ],
+    [
+     "a\n\"b\"",
+     "end"
+    ]
+   ]
+  },
+  {
+   "id": "quote-only",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "\"abc\""
+       },
+       "A2": {
+        "value": "\"first"
+       },
+       "A3": {
+        "value": "last\""
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:A3",
+   "rows": [
+    [
+     "\"abc\""
+    ],
+    [
+     "\"first"
+    ],
+    [
+     "last\""
+    ]
+   ]
+  },
+  {
+   "id": "trailing-blanks",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       }
+      }
+     }
+    ]
+   },
+   "range": "A1:B3",
+   "rows": [
+    [
+     "a",
+     ""
+    ],
+    [
+     "",
+     ""
+    ],
+    [
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "answers": {
+  "quoted-controls": [
+   "\"a\tb\"\t\"a\nb\"\r\n\"a\n\"\"b\"\"\"\tend\r\n",
+   [
+    [
+     "a\tb",
+     "a\nb"
+    ],
+    [
+     "a\n\"b\"",
+     "end"
+    ],
+    [
+     null,
+     null
+    ],
+    [
+     "sentinel",
+     null
+    ]
+   ]
+  ],
+  "quote-only": [
+   "\"abc\"\r\n\"first\r\nlast\"\r\n",
+   [
+    [
+     "\"abc\"",
+     null
+    ],
+    [
+     "\"first",
+     null
+    ],
+    [
+     "last\"",
+     null
+    ],
+    [
+     "sentinel",
+     null
+    ]
+   ]
+  ],
+  "trailing-blanks": [
+   "a\t\r\n\t\r\n\t\r\n",
+   [
+    [
+     "a",
+     null
+    ],
+    [
+     null,
+     null
+    ],
+    [
+     null,
+     null
+    ],
+    [
+     "sentinel",
+     null
+    ]
+   ]
+  ]
+ }
+}

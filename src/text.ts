@@ -7,7 +7,7 @@
  * and no locale's data comes with them but en-US's messages, which the tokenizer's errors carry: another locale is given
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
-import { checkString } from './input.js'
+import { array, checkBoolean, checkString, InputError, object, onlyOptions } from './input.js'
 import { clipboardRows } from './entry/clipboard.js'
 import * as category from './numfmt/category.js'
 import * as scan from './scan.js'
@@ -35,4 +35,24 @@ export const escapeColumn = /* @__PURE__ */ strict(function escapeColumn(name: s
  */
 export const parseClipboard = /* @__PURE__ */ strict(function parseClipboard(text: string): string[][] {
   return clipboardRows(checkString(text, 'text'))
+})
+
+/** Excel's plain-text copy: tabs, CRLF rows and quoted control characters; Windows ends with CRLF, Mac does not. */
+export const formatClipboard = /* @__PURE__ */ strict(function formatClipboard(rows: string[][], opts?: { trailingNewline?: boolean }): string {
+  const o = opts === undefined ? {} : object(opts, 'opts', 'clipboard options such as { trailingNewline: false }')
+  onlyOptions(o, 'opts', ['trailingNewline'])
+  if (o.trailingNewline !== undefined) checkBoolean(o.trailingNewline, 'opts.trailingNewline')
+  const grid = array(rows, 'rows', 'an array of rows of text')
+  let width = 0
+  const lines = grid.map((row, i) => {
+    const at = `rows[${i}]`
+    const fields = array(row, at, 'an array of cell texts')
+    if (!fields.length || (i > 0 && fields.length !== width)) throw new InputError(at, 'expected a non-empty row as wide as the first row')
+    width = fields.length
+    return fields.map((field, j) => {
+      const text = checkString(field, `${at}[${j}]`)
+      return /[\t\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text
+    }).join('\t')
+  })
+  return lines.join('\r\n') + (lines.length && o.trailingNewline !== false ? '\r\n' : '')
 })

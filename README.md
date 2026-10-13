@@ -112,6 +112,16 @@ console.log(pasted.range, pasted.changes.map((c) => `${c.cell} ${c.text}`)) // �
 console.log(session.undo().call, session.getCell('S', 'A1')) // → pasteText undefined
 ```
 
+### Copy a rectangle as plain text
+
+```js
+import { formatClipboard } from 'xlcalc/text'
+
+console.log(JSON.stringify(formatClipboard([['a', 'b'], ['c', 'd']]))) // → "a\tb\r\nc\td\r\n"
+```
+
+The host supplies visible cells' unclipped formatted texts. Windows ends the copy with CRLF; Mac uses `{ trailingNewline: false }`. Fields with control characters are quoted, with quotes inside them doubled. [Copying plain text](docs/entry.md#copying-plain-text) covers hidden lines, merges, spills and why every plain-text copy cannot be read back without ambiguity.
+
 ### Enter a text into a selection (Control+Return)
 
 ```js
@@ -1356,6 +1366,7 @@ From `xlcalc`:
 | `errorText(code, locale?)` | an error as a cell shows it (`#DIV/0!`, `#ДЕЛ/0!` in ru-RU) |
 | `scanReferences(formula, opts?)` | the references of formula text as it is typed, with their places, rectangles, sheets and tables, a token that does not read skipped; `opts.locale` for text typed in a locale; also from `xlcalc/text` |
 | `escapeColumn(name)` | a column's name in a structured reference, `'` before `[`, `]`, `#`, `'` and a leading `@`; also from `xlcalc/text` ([Tables](#tables)) |
+| `formatClipboard(rows, opts?)` | a rectangle of texts as Excel copies plain text, with quoted control characters, CRLF rows and a terminal CRLF unless `trailingNewline: false`; also from `xlcalc/text` |
 | `parseClipboard(text)` | text from the clipboard as the rectangle Excel pastes: rows at line breaks, fields at tabs, each row as wide as the longest; also from `xlcalc/text` ([Typed entry](#typed-entry)) |
 | `internStyle(styles, style)` | a style's number in a style table, found as `patchCells` finds it: `{ index, styles }`, the same array when an equal style is there, else a new one with the style added ([Editing a grid](#editing-a-grid)) |
 | `sameValue(a, b)`, `canonValue(value)` | values compared as the values hash compares them, and a value's text in the hash |
@@ -1379,7 +1390,7 @@ From `xlcalc`:
 
 `xlcalc/a1` exports the addresses and names of [Addresses and helpers](#addresses-and-helpers) (`parseCell`, `parseRange`, `rangeAddress`, `parseLines`, `patchLines`, `quoteSheetIfNeeded`, `sameName` and the rest) and a sheet's outline groups (`outlineGroups`), the same functions as the root's, without any engine code.
 
-`xlcalc/text` exports `scanReferences`, `quoteSheetIfNeeded` and `escapeColumn`, the root's functions of formula text, for a browser that colours a formula as it is typed without the engine, and `parseClipboard`, the rectangle a paste fills, for a grid to show it before the paste: 30 KB (12 KB gzip) bundled and minified, the engine's tokenizer and the translation of a locale's formula text without the parser or any computation. Of the locales' data it carries en-US's messages alone, which the tokenizer's errors take: text typed in another locale takes the locale as an object (`ruRU` of `xlcalc/locales/ru-RU`, or its formula text alone), and a tag that is not loaded is refused with that advice; the root's advice, which names the module to import and `registerLocale`, comes with the root. Neither `xlcalc/text` nor `xlcalc/a1` holds the string `xlcalc`, so a host that looks for it in its bundle as the sign of the engine finds none in them. `entryText` and `needsApostrophe` stay in the root: they read text as `parseEntry` does, with the parser and number formats.
+`xlcalc/text` exports `scanReferences`, `quoteSheetIfNeeded` and `escapeColumn`, the root's functions of formula text, for a browser that colours a formula as it is typed without the engine, and `formatClipboard`, the plain text a copy writes, and `parseClipboard`, the rectangle a paste fills, for a grid to show it before the paste: 30 KB (12 KB gzip) bundled and minified, the engine's tokenizer and the translation of a locale's formula text without the parser or any computation. Of the locales' data it carries en-US's messages alone, which the tokenizer's errors take: text typed in another locale takes the locale as an object (`ruRU` of `xlcalc/locales/ru-RU`, or its formula text alone), and a tag that is not loaded is refused with that advice; the root's advice, which names the module to import and `registerLocale`, comes with the root. Neither `xlcalc/text` nor `xlcalc/a1` holds the string `xlcalc`, so a host that looks for it in its bundle as the sign of the engine finds none in them. `entryText` and `needsApostrophe` stay in the root: they read text as `parseEntry` does, with the parser and number formats.
 
 `xlcalc/worker` exports `createCalcPool(opts?)`, a `Calc` over a pool of threads (`opts`: `threads`, `maxHeapMb`, `hardTimeoutMs`, `timeoutMs`, `maxQueue`, `maxSessions`, `maxSessionsPerThread`, `limits`, `snapshotEvery`, `sliceMs`, `spawn`), and `CalcError`.
 
