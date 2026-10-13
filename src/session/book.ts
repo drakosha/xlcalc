@@ -87,12 +87,9 @@ export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex:
     else if ('conditionalFormats' in e) sheet.conditionalFormats = e.conditionalFormats.length ? [...e.conditionalFormats] : undefined
     else if ('validations' in e) sheet.validations = e.validations.map((v) => ({ ...v }))
     else if ('outline' in e) sheet.outline = e.outline ? { ...e.outline } : undefined
-    else if ('columns' in e) sheet.columns = patchLines(sheet.columns, 'c', ...parseSpan(e.columns, 'c')!, e.set)
-    else {
-      // Assigning a height leaves AutoFit; an explicit bestFit still describes a fitted height.
-      const set = e.set.height !== undefined && e.set.bestFit === undefined ? { ...e.set, bestFit: null } : e.set
-      sheet.rows = patchLines(sheet.rows, 'r', ...parseSpan(e.rows, 'r')!, set)
-    }
+    // a width or height assigned leaves AutoFit; an explicit bestFit still describes a fitted size
+    else if ('columns' in e) sheet.columns = patchLines(sheet.columns, 'c', ...parseSpan(e.columns, 'c')!, e.set.width !== undefined && e.set.bestFit === undefined ? { ...e.set, bestFit: null } : e.set)
+    else sheet.rows = patchLines(sheet.rows, 'r', ...parseSpan(e.rows, 'r')!, e.set.height !== undefined && e.set.bestFit === undefined ? { ...e.set, bestFit: null } : e.set)
   }
   for (const [i, sheet] of changed) {
     for (const k of ['columns', 'rows', 'merges', 'validations'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]

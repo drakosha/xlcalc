@@ -188,7 +188,7 @@ formatClipboard([['a\nb', 'c"d']]) // '"a\nb"\tc"d\r\n'
 
 Use `formatClipboard` when the host already has the complete rectangle of formatted texts, without column clipping. It only encodes those strings: it cannot recover a value from `##`. A host with a library session uses `copyText` to select and format the cells. The measurement's Mac copy used dot decimals in both interfaces, Windows used its regional decimal separator; the book's locale models those regional settings, not just the interface language.
 
-`parseClipboard` reads a quoted field as a text paste does ([A paste and Control+Return](#a-paste-and-controlreturn)), but plain text is not a reversible encoding of every grid: the two cells `"first` and `last"` copy as `"first\r\nlast"`, which a text paste reads as one cell `first`, line break, `last`. Excel pasting its own copy kept the two cells, as it did the sentinel below a copied terminal CRLF. Carry the rectangle separately when an exact roundtrip matters.
+`parseClipboard` reads a quoted field as a text paste does ([A paste and Control+Return](#a-paste-and-controlreturn)), but plain text is not a reversible encoding of every grid: the two cells `"first` and `last"` copy as `"first\r\nlast"`, which a text paste reads as one cell `first`, line break, `last`. Excel for Windows in ru-RU, pasting that copy as plain text, kept the two cells, and kept the quotes of `"abc"`, where the en-US paste measured above reads a quoted field: the ru-RU paste of quoted fields is not measured on its own yet. Carry the rectangle separately when an exact roundtrip matters.
 
 ### How it was checked
 
