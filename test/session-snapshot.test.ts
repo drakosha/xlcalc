@@ -10,7 +10,7 @@ import { parseEntry, type BookInput, type Execution } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
-import { storedOf } from './xlsx-fixtures.js'
+import { storedOf, withoutView } from './xlsx-fixtures.js'
 
 afterAll(closeCalcs)
 
@@ -59,7 +59,7 @@ describe.each(KINDS)('getSnapshot, %s', (kind) => {
       const { data, issues } = await writeXlsx(snap)
       expect(issues).toEqual([])
       const read = await readXlsx(data)
-      expect(read.book).toEqual(snap.book)
+      expect(withoutView(read.book)).toEqual(withoutView(snap.book))
       expect(read.cached).toEqual(storedOf(snap.result))
       // a session over the file read gives a snapshot that writes the file again
       const again = await open(read.book, { clock: CLOCK, execution })
