@@ -9,7 +9,7 @@
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { BookInput, CellInput, ColumnInput, RowInput, TableInput } from '../../../src/contract.js'
-import { createSession } from '../../../src/index.js'
+import { createSession, InputError } from '../../../src/index.js'
 import { formatAddress } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { localeDir } from '../locales.js'
@@ -40,6 +40,8 @@ export interface FindQuery {
   /** Search by columns (`xlByColumns`); by rows without it. */
   byColumns?: boolean
   matchCase?: boolean
+  /** The cell Find begins after (`After`); the range's last cell, of its last area, without it, so that its first cell comes first. */
+  after?: string
 }
 
 export interface FindCase {
@@ -103,13 +105,16 @@ export function findBook(b: FindBook, locale?: string): BookInput {
   return { ...(locale ? { locale } : {}), sheets: [{ ...sheet, ...(b.filter ? { rows, filtered: true } : {}) }] }
 }
 
-/** The engine's answer to a query over a book in a locale: `findCells` with Find's options over the query's range, each of its areas in turn, or the whole sheet. */
-export function findInBook(b: FindBook, q: FindQuery, tag: string): string[] {
+/** The engine's answer to a query over a book in a locale: `findCells` with Find's options over the query's range, each of its areas in turn, or the whole sheet; null where it refuses the cell to begin after. */
+export function findInBook(b: FindBook, q: FindQuery, tag: string): string[] | null {
   const s = createSession(findBook(b, tag), { clock: { now: '2026-10-12T12:00:00Z', seed: 1 } })
   try {
     const ranges = (q.range ?? 'A1:XFD1048576').split(',').map((range) => ({ sheet: 'S', range }))
-    const found = s.findCells(ranges, q.what, { in: q.lookIn === 'formulas' ? 'edit' : 'text', wildcards: true, wholeCell: q.whole, byColumns: q.byColumns, caseSensitive: q.matchCase, skipHidden: true, fields: [] })
+    const found = s.findCells(ranges, q.what, { in: q.lookIn === 'formulas' ? 'edit' : 'text', wildcards: true, wholeCell: q.whole, byColumns: q.byColumns, caseSensitive: q.matchCase, skipHidden: true, fields: [], ...(q.after ? { after: { sheet: 'S', cell: q.after } } : {}) })
     return found.cells.map((c) => c.cell)
+  } catch (e) {
+    if (e instanceof InputError && e.path === 'opts.after') return null
+    throw e
   } finally {
     s.close()
   }
