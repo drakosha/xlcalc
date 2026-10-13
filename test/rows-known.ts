@@ -22,4 +22,4 @@ export const ROWS_KNOWN: ReadonlyMap<string, RowsReason> = new Map([
 ])
 
 /** Against Excel for Windows, the cells alone. */
-export const ROWS_WIN_KNOWN: ReadonlyMap<string, RowsReason> = new Map([...cases('formulaText', { 'en-US:held': ['typed-2'], 'en-US:quotes': ['paste-12'] })])
+export const ROWS_WIN_KNOWN: ReadonlyMap<string, RowsReason> = new Map([...cases('formulaText', { 'en-US:held': ['typed-2'], 'en-US:quotes': ['paste-12'], 'ru-RU:quotes-ru': ['paste-12'] })])
