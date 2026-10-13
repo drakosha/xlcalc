@@ -79,3 +79,9 @@ it('keeps grouped tabs, a hidden preceding sheet and the selection of the active
   expect(second.book.sheets[2].view).toEqual(b.sheets[2].view)
   expect(second.book.sheets[2].frozen).toEqual({ rows: 1, columns: 1 })
 })
+
+it('roundtrips an explicitly saved first active sheet', async () => {
+  const book: BookInput = { activeSheet: 'S', sheets: [{ name: 'S', cells: {} }, { name: 'Other', cells: {} }] }
+  const data = (await writeXlsx({ book })).data
+  expect((await readXlsx(data)).book.activeSheet).toBe('S')
+})
