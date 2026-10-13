@@ -9,17 +9,20 @@
 -- "ribbon" selects each cell in turn and reads the ribbon's Number Format box, "choose" applies an item of the box's list
 -- to each cell (Accessibility: the box's button pressed, then the item) and reads the box after; both give A1 the text
 -- format as a control cell, selected before each cell, and a set leaves A1 and A2 empty.
+-- "point" selects the cell and takes each step in turn, a text typed (the first begins the cell's editing over what it
+-- holds, Enter mode) or a key pressed by its code with Shift or Command held; after each the formula bar's description
+-- is read and a window Excel shows answered; Escape ends what editing is left without writing it.
 -- Windows Excel shows for a paste or a fill are answered (`answerDialog`). Then read each cell: what it shows (`string
 -- value`), its format codes, prefix character, value (a number only, not read from a cell that shows an error), formula
 -- (`formula`, `formula local`, `formula2`, `formula2 local`) and whether it is part of a formula of the old kind (`has
 -- array`, with its `formula array`); each column's `column width`, `width` and `use standard width`; save the book as
 -- xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the action as
--- JSON {"do": "bars" | "paste" | "fill" | "edit" | "ribbon" | "choose" | "none", "cells": [...], "items": [...], "at": cell,
--- "range": range, "text": text, "keys": {"left", "back", "type"}}, the cells to
+-- JSON {"do": "bars" | "paste" | "fill" | "edit" | "ribbon" | "choose" | "point" | "none", "cells": [...], "items": [...], "at": cell,
+-- "range": range, "text": text, "keys": {"left", "back", "type"}, "steps": [{"type"} | {"key", "shift", "cmd"}]}, the cells to
 -- read and the columns as JSON arrays, the path of excel-keys.applescript. "none" takes no action: the book is only read.
 -- Output: JSON {"dialog": text, "bars": [[[description, value] selected, [description, value] in editing, focus, dialog,
--- [description, value] typed (an edit's)], ...], "ribbon": [[item, box], ...], "cells": [[text, code, local, prefix, value, formula, formula local, formula2, formula2
+-- [description, value] typed (an edit's)], ...], "ribbon": [[item, box], ...], "point": [[bar's description, dialog], ...], "cells": [[text, code, local, prefix, value, formula, formula local, formula2, formula2
 -- local, has array, formula array], ...], "columns": [[column width, points, standard], ...]}.
 use AppleScript version "2.4"
 use framework "Foundation"
@@ -43,6 +46,7 @@ on run argv
 	set said to ""
 	set barsOut to {}
 	set ribbonOut to {}
+	set pointOut to {}
 	set cellsOut to {}
 	set colsOut to {}
 	tell application "Microsoft Excel"
@@ -75,6 +79,8 @@ on run argv
 			set ribbonOut to my ribbon(ws, (act's objectForKey:"cells") as list, {}, bookName, kb)
 		else if todo is "choose" then
 			set ribbonOut to my ribbon(ws, (act's objectForKey:"cells") as list, (act's objectForKey:"items") as list, bookName, kb)
+		else if todo is "point" then
+			set pointOut to my pointSteps(ws, act, bookName, kb)
 		end if
 	on error msg number k
 		-- a step that failed (Excel's window on another desktop) leaves no book open
@@ -112,7 +118,7 @@ on run argv
 			close workbook savedName saving no
 		end timeout
 	end tell
-	set d0 to current application's NSDictionary's dictionaryWithObjects:{said, barsOut, ribbonOut, cellsOut, colsOut} forKeys:{"dialog", "bars", "ribbon", "cells", "columns"}
+	set d0 to current application's NSDictionary's dictionaryWithObjects:{said, barsOut, ribbonOut, pointOut, cellsOut, colsOut} forKeys:{"dialog", "bars", "ribbon", "point", "cells", "columns"}
 	set {d, e} to current application's NSJSONSerialization's dataWithJSONObject:d0 options:0 |error|:(reference)
 	if d is missing value then error "JSON: " & (e's localizedDescription() as text)
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
@@ -168,6 +174,57 @@ on edit(ws, act, bookName, kb)
 	delay 1
 	return {{onSelect, onEdit, inFocus, kb's answerDialog(), onTyped}}
 end edit
+
+-- the cell selected; each step a text typed or a key pressed by its code (any layout) with its modifiers, then the
+-- formula bar's description read and a window Excel showed answered; Escape ends the editing left
+on pointSteps(ws, act, bookName, kb)
+	set bar to kb's formulaBar(bookName)
+	tell application "Microsoft Excel" to select range ((act's objectForKey:"at") as text) of ws
+	set out to {}
+	repeat with stp in ((act's objectForKey:"steps") as list)
+		kb's toFront()
+		set t to (stp's objectForKey:"type")
+		if t is not missing value then
+			tell application "System Events" to keystroke (t as text)
+		else
+			set c to my keyCode((stp's objectForKey:"key") as text)
+			set withShift to (stp's objectForKey:"shift") is not missing value
+			set withCmd to (stp's objectForKey:"cmd") is not missing value
+			tell application "System Events"
+				if withShift and withCmd then
+					key code c using {shift down, command down}
+				else if withShift then
+					key code c using shift down
+				else if withCmd then
+					key code c using command down
+				else
+					key code c
+				end if
+			end tell
+		end if
+		delay 0.5
+		set saidNow to kb's answerDialog()
+		set end of out to {item 1 of kb's barText(bar), saidNow}
+	end repeat
+	kb's toFront()
+	tell application "System Events" to key code 53
+	delay 0.3
+	return out
+end pointSteps
+
+-- a key of a case of `point` by its code on the Mac's keyboard
+on keyCode(k)
+	if k is "left" then return 123
+	if k is "right" then return 124
+	if k is "down" then return 125
+	if k is "up" then return 126
+	if k is "home" then return 115
+	if k is "pagedown" then return 121
+	if k is "f2" then return 120
+	if k is "return" then return 36
+	if k is "escape" then return 53
+	error "no key " & k
+end keyCode
 
 -- the cell selected, its dropdown list opened (Option+Down, key codes: any layout; an empty cell's list opens with its
 -- first item marked), the item reached by Down and taken by Return; the windows Excel shows then are answered

@@ -77,7 +77,7 @@ export async function savedCells(names: string[], cells: RawCell[], saved: Uint8
 }
 
 /** The answer of a case from what Excel read of its cells and columns, the windows it showed and the file it saved. */
-export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], columns: [number, number, boolean][], saved: Uint8Array, bars?: RawBar[], ribbon?: RawRibbon): Promise<UiAnswer> {
+export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], columns: [number, number, boolean][], saved: Uint8Array, bars?: RawBar[], ribbon?: RawRibbon, point?: [string, string][]): Promise<UiAnswer> {
   const cols = await savedColumns(saved)
   const out = await savedCells(readCells(c), cells, saved)
   readCells(c).forEach((a, i) => {
@@ -90,6 +90,7 @@ export async function caseAnswer(c: UiCase, dialog: string, cells: RawCell[], co
   const letters = readColumns(c)
   return {
     ...(dialog ? { dialog } : {}),
+    ...(point ? { point: point.map(([bar, said]) => ({ bar, ...(said ? { dialog: said } : {}) })) } : {}),
     cells: out,
     columns: Object.fromEntries(letters.map((k, i) => [k, { columnWidth: columns[i][0], points: columns[i][1], standard: columns[i][2], saved: cols.get(k) ?? null }])),
   }
@@ -135,8 +136,8 @@ export async function runCase(c: UiCase, label: string, act = actJson(c)): Promi
       throw new Error(`ui ${label}: Excel would repair the book`)
     },
     done: (out, dir) => {
-      const raw = JSON.parse(out) as { dialog: string; bars: RawBar[]; ribbon: RawRibbon; cells: RawCell[]; columns: [number, number, boolean][] }
-      return caseAnswer(c, raw.dialog, raw.cells, raw.columns, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))), raw.bars.length ? raw.bars : undefined, raw.ribbon.length ? raw.ribbon : undefined)
+      const raw = JSON.parse(out) as { dialog: string; bars: RawBar[]; ribbon: RawRibbon; point: [string, string][]; cells: RawCell[]; columns: [number, number, boolean][] }
+      return caseAnswer(c, raw.dialog, raw.cells, raw.columns, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))), raw.bars.length ? raw.bars : undefined, raw.ribbon.length ? raw.ribbon : undefined, raw.point.length ? raw.point : undefined)
     },
   })
 }

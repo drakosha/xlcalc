@@ -31,6 +31,15 @@ export type UiAction =
   | { do: 'edit'; at: string; text: string; keys?: { left: number; back: number; type: string } }
   /** The `item`th item (from 1) of the cell's dropdown list picked on the keyboard (Option+Down with the first item marked, Down, Return); `text` is the item as the list shows it, as a host passes it on. */
   | { do: 'pick'; at: string; item: number; text: string }
+  /**
+   * Excel's Point mode on the keyboard: the cell selected, its editing begun by typing over it (Enter mode), then each
+   * step in turn, a text typed or a key pressed, the formula bar read after each; the windows Excel shows are answered.
+   */
+  | { do: 'point'; at: string; steps: PointStep[] }
+
+/** A step of a case of `point`: a text typed, or a key pressed with the modifiers held (Command on the Mac for Excel's Control). */
+export type PointStep = { type: string } | { key: PointKey; shift?: true; cmd?: true }
+export type PointKey = 'left' | 'right' | 'up' | 'down' | 'home' | 'pagedown' | 'f2' | 'return' | 'escape'
 
 export interface UiCase {
   id: string
@@ -91,6 +100,8 @@ export interface UiColumn {
 export interface UiAnswer {
   /** The windows Excel showed for a paste or a fill, answered (`answerDialog` of `excel-keys.applescript`): their texts. */
   dialog?: string
+  /** A case of `point`: after each step the formula bar (its description, `Formula Bar. C,3 =D3`: the active cell and what it shows) and the windows answered then. */
+  point?: { bar: string; dialog?: string }[]
   cells: Record<string, UiCell>
   columns: Record<string, UiColumn>
 }
@@ -113,7 +124,7 @@ export function cellsOf(range: string): string[] {
 }
 
 /** The actions Excel takes only on the Mac's screen: the keyboard's fill, edit and pick, the ribbon's box and list. */
-export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'edit' || act.do === 'pick' || act.do === 'ribbon' || act.do === 'choose'
+export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'edit' || act.do === 'pick' || act.do === 'ribbon' || act.do === 'choose' || act.do === 'point'
 
 /** The cells an action selects in turn without writing: the formula bar's and the ribbon's; a choice's cells by its picks. */
 export function selectedOf(act: UiAction): string[] {
@@ -137,7 +148,7 @@ export const clipboardText = (act: Extract<UiAction, { do: 'paste' }>): string =
 }
 
 /** The cells read after a case's action: those it selects or writes, then `read`, each once. */
-export const readCells = (c: UiCase): string[] => [...new Set([...selectedOf(c.act), ...entriesOf(c.act).map((e) => e.cell), ...(c.read ?? [])])]
+export const readCells = (c: UiCase): string[] => [...new Set([...selectedOf(c.act), ...entriesOf(c.act).map((e) => e.cell), ...(c.act.do === 'point' ? [c.act.at] : []), ...(c.read ?? [])])]
 
 /** The columns of the cells read, by letter. */
 export const readColumns = (c: UiCase): string[] => [...new Set(readCells(c).map((a) => indexToCol(parseAddress(a).col)))]

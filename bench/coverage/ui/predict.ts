@@ -6,13 +6,15 @@
  * the texts the action puts into cells (`entriesOf`), and after it the cells read as the book holds them, their values
  * and the widths of their columns. An edit in place (F2): `pasteText` of its text, which reads it with no percent
  * editor, and the cells after it. The ribbon's box: `numberFormatCategory` of each cell's format; an item of its list
- * applied: the item of `numberFormatChoices`, its name, the format it applies and the box's category after.
+ * applied: the item of `numberFormatChoices`, its name, the format it applies and the box's category after. Point mode:
+ * the sheet component's model (`point-model.ts`), the formula bar after each step and the cells after.
  */
 import { fileURLToPath } from 'node:url'
 import { setModule, writeAnswers } from '../stored.js'
 import { createSession, type CellInput, type CellValidationAlert, type CellValue } from '../../../src/index.js'
 import { TAGS } from '../locales.js'
 import { entriesOf, readCells, readColumns, ribbonOf, uiBook, windowOver, type UiCase, type UiSet } from './cases.js'
+import { pointPrediction } from './point-model.js'
 
 const set = process.argv[2]
 const { buildUiCases } = await setModule<UiSet>('ui', set)
@@ -24,6 +26,8 @@ const alert = (v: CellValidationAlert) => ({ cell: v.cell, severity: v.severity,
 
 function predict(c: UiCase, tag: string) {
   if (c.act.do === 'ribbon' || c.act.do === 'choose') return { ribbon: ribbonOf(c, tag) }
+  // Point mode: the sheet component's model, the formula bar after each step and the cells after
+  if (c.act.do === 'point') return pointPrediction(uiBook(c, tag), c.act.at, c.act.steps, tag, readCells(c))
   const s = createSession(uiBook(c, tag), { clock })
   try {
     const cells = readCells(c)
