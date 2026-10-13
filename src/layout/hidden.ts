@@ -29,6 +29,19 @@ export function hiddenSpans<T>(map: Record<string, T> | undefined, axis: Axis, h
   return spans
 }
 
+const SPANS = new WeakMap<object, [number, number][]>()
+
+/**
+ * A sheet's hidden rows (`r`) or columns (`c`) as spans (`hiddenSpans`), read once for each map: a change of the layout,
+ * a structure operation and an undo give the sheet a new map, never change one (`layout/lines.ts`).
+ */
+export function hiddenSpansOf(map: Record<string, RowInput | ColumnInput> | undefined, axis: Axis): [number, number][] {
+  if (!map) return []
+  let spans = SPANS.get(map)
+  if (!spans) SPANS.set(map, (spans = axis === 'r' ? hiddenSpans(map, 'r', isHiddenRow) : hiddenSpans(map, 'c', isHiddenColumn)))
+  return spans
+}
+
 /** A sheet's hidden rows, joined where they touch; undefined when none is hidden. */
 export function hiddenRows(sheet: SheetInput): HiddenRows | undefined {
   const spans = hiddenSpans(sheet.rows, 'r', isHiddenRow)

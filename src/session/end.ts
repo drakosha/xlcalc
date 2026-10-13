@@ -6,7 +6,7 @@
 import type { EndDirection } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { InputError, what } from '../input.js'
-import { hiddenSpans, isHiddenColumn, isHiddenRow } from '../layout/hidden.js'
+import { hiddenSpansOf } from '../layout/hidden.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { lowerBound } from '../sorted.js'
 
@@ -24,7 +24,7 @@ export function endOf(state: EngineState, s: number, r: number, c: number, d: En
   const sheet = state.input.sheets[s]
   const data = state.ctx.sheets[s]
   const max = (vertical ? MAX_ROWS : MAX_COLS) - 1
-  const spans = vertical ? hiddenSpans(sheet.rows, 'r', isHiddenRow) : hiddenSpans(sheet.columns, 'c', isHiddenColumn)
+  const spans = vertical ? hiddenSpansOf(sheet.rows, 'r') : hiddenSpansOf(sheet.columns, 'c')
   // the cells of a large spill past its stored ones, as spans of the line
   const fills = data.fills.flatMap((f) => (vertical ? (f.c1 <= c && c <= f.c2 ? [[f.r1, f.r2]] : []) : f.r1 <= r && r <= f.r2 ? [[f.c1, f.c2]] : []))
   const col = data.cols[c]
