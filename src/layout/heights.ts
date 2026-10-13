@@ -6,17 +6,15 @@
  */
 import type { BookInput, CellStyle, CellValue, ComputeResult, SheetInput } from '../contract.js'
 import { toCellValue, type EngineState } from '../engine.js'
-import { checkBook, checkSheet, InputError } from '../input.js'
 import { layerOf } from '../looks/sheet.js'
 import { MAX_COLS, parseAddress } from '../model.js'
 import { columnPoints } from '../numfmt.js'
 import { outValue } from '../result.js'
 import { textWidth } from '../numfmt/glyphs.js'
-import { sheetKey } from '../syntax.js'
-import type { Placed } from './fit.js'
+import { resultSheet, type Placed } from './fit.js'
 import { sheetLines } from './lines.js'
 import { mergesOf } from './merges.js'
-import { lines as spansOf, parseSpan, spanKey } from './spans.js'
+import { lines as spansOf, spanKey } from './spans.js'
 
 /** The height of a row without its own, in points: a line of Calibri 11, the book's default font. */
 export const DEFAULT_HEIGHT = 15
@@ -170,22 +168,13 @@ export function stateRows(s: EngineState, i: number, lo: number, hi: number): { 
  * (`compute(book)`), by spans of rows of one height (`2:4`): null for the default height.
  */
 export function fitRows(book: BookInput, result: ComputeResult, sheet: string, rows: string): Record<string, number | null> {
-  book = checkBook(book)
-  const index = (name: string) => {
-    const i = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(name))
-    return i < 0 ? undefined : i
-  }
-  const i = checkSheet(sheet, index, 'sheet')
-  const span = typeof rows === 'string' ? parseSpan(rows, 'r') : null
-  if (!span) throw new InputError('rows', `expected rows such as "5" or "2:9", got ${JSON.stringify(rows)}`)
-  const values = result.sheets.find((x) => sheetKey(x.name) === sheetKey(book.sheets[i].name))
-  if (!values) throw new InputError('result', `the result has no sheet ${JSON.stringify(book.sheets[i].name)}`)
-  const sh = book.sheets[i]
-  const cells = Object.entries(values.cells).map(([a, x]): Placed => {
+  const x = resultSheet(book, result, sheet, rows, 'r')
+  const sh = x.book.sheets[x.i]
+  // a cell with an entry and no value counts by its font
+  const valued = new Set(x.cells.map(([r, c]) => `${r}:${c}`))
+  for (const a of Object.keys(sh.cells)) {
     const { row, col } = parseAddress(a)
-    return [row, col, x.value]
-  })
-  for (const a of Object.keys(sh.cells)) if (!(a in values.cells)) cells.push([parseAddress(a).row, parseAddress(a).col, null])
-  return fitHeights(book.styles ?? [], sh, cells, ...span)
+    if (!valued.has(`${row}:${col}`)) x.cells.push([row, col, null])
+  }
+  return fitHeights(x.book.styles ?? [], sh, x.cells, x.lo, x.hi)
 }
-
