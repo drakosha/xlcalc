@@ -21,6 +21,7 @@ import { arrayRefusal, cellText, columnWidening, headerRefusal, readText, textRe
 import { cellValue } from './looks.js'
 import { inputAt } from './book.js'
 import { MAX_CELLS } from './styles.js'
+import { breaksLine } from './wrap.js'
 
 /** Text typed into the cell at row `r`, column `c` of sheet `i`. */
 export interface Typing {
@@ -30,12 +31,13 @@ export interface Typing {
   text: string
 }
 
-/** A cell typed into and its edit, the input its texts give it. */
+/** A cell typed into and its edit, the input its texts give it; `wrap`, a text of it breaks a line, which wraps the cell (`wrap.ts`). */
 export interface Typed {
   i: number
   r: number
   c: number
   edit: CellReplace
+  wrap?: true
 }
 
 /** `Session.setCellTexts`' entries checked: the cells and their texts. */
@@ -71,7 +73,7 @@ export function typedTexts(s: EngineState, typings: Typing[], now: string, way: 
     const edit = { ...ref, input: typed.input }
     const refused = pasted ? null : textRefusal(s, edit)
     if (refused) return { ok: false, refusal: refused, ref }
-    cells.set(k, { i, r, c, edit })
+    cells.set(k, { i, r, c, edit, ...(earlier?.wrap || breaksLine(text) ? { wrap: true as const } : {}) })
   }
   return pasted ? takenTogether(s, [...cells.values()]) : { ok: true, cells: [...cells.values()] }
 }
@@ -134,13 +136,14 @@ export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c
   const formula = typed.input?.formula
   const copy = formula === undefined ? null : formulaCopier(s.input, s.tables)
   const from = { sheet, row: a.r, col: a.c }
+  const wrap = breaksLine(text) ? { wrap: true as const } : {}
   const out: Typed[] = []
   for (let r = x.r1; r <= x.r2; r++)
     for (let c = x.c1; c <= x.c2; c++) {
       spend(1)
       const cell = formatAddress(r, c)
       const input = copy && (r !== a.r || c !== a.c) ? { ...typed.input, formula: copy(formula!, from, { sheet, row: r, col: c }) } : typed.input
-      out.push({ i, r, c, edit: { sheet, cell, input: withTyped(s, i, r, c, inputAt(s, i, cell), input) } })
+      out.push({ i, r, c, edit: { sheet, cell, input: withTyped(s, i, r, c, inputAt(s, i, cell), input) }, ...wrap })
     }
   return takenTogether(s, out)
 }

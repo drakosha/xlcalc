@@ -4,7 +4,7 @@
  * with the room Excel gives it (`fitPoints`); cells of hidden rows count, cells merged across columns do not, and a
  * column with nothing to show keeps its width. A number typed into a column whose width nobody set widens the column.
  */
-import type { BookInput, CellValue, ColumnInput, ColumnsFit, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, SheetInput } from '../contract.js'
+import type { BookInput, CellValue, ColumnInput, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, RowInput, SheetInput } from '../contract.js'
 import { epochOf } from '../dates.js'
 import { toCellValue, type EngineState } from '../engine.js'
 import { checkBook, checkCellValue, checkEntryWidthOptions, checkSheet, InputError } from '../input.js'
@@ -12,12 +12,13 @@ import { displayRules, type Rules } from '../locale/rules.js'
 import { parseAddress } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { outValue } from '../result.js'
-import { applyLayout } from '../session/book.js'
+import { applyLayout, type SetLayoutEdit } from '../session/book.js'
 import { sheetKey } from '../syntax.js'
 import { sheetLines } from './lines.js'
 import { parseMerge } from './merges.js'
 import { hasCell } from '../structure/area.js'
 import { parseSpan, spanKey } from './spans.js'
+import { fitHeights, stateRows } from './heights.js'
 
 /** A cell of a sheet and its value: zero-based row and column. */
 export type Placed = readonly [r: number, c: number, v: CellValue]
@@ -57,21 +58,29 @@ function* stateCells(s: EngineState, i: number, lo: number, hi: number): Generat
   for (const f of data.fills) for (let c = Math.max(lo, f.c1); c <= Math.min(hi, f.c2); c++) yield [f.r1, c, outValue(toCellValue(f.v))]
 }
 
+/** What AutoFit sets on a row it fits: the height as Excel's own, the row shown; the default height bare. */
+const rowFitted = (height: number | null): LinePatch<RowInput> => ({ height, bestFit: height === null ? null : true, hidden: null })
+
 /**
- * Layout edits with AutoFit (`ColumnsFit`) turned into the widths it sets, each from the state's values and the layout
- * the edits before it leave.
+ * Layout edits with AutoFit (`ColumnsFit`, `RowsFit`) turned into the widths and heights it sets, each from the state's
+ * values and the layout the edits before it leave.
  */
-export function fitEdits(s: EngineState, edits: LayoutEdit[]): Exclude<LayoutEdit, ColumnsFit>[] {
-  if (!edits.some((e) => 'fit' in e)) return edits as Exclude<LayoutEdit, ColumnsFit>[]
+export function fitEdits(s: EngineState, edits: LayoutEdit[]): SetLayoutEdit[] {
+  if (!edits.some((e) => 'fit' in e)) return edits as SetLayoutEdit[]
   const scratch: BookInput = { ...s.input, sheets: s.input.sheets.slice() }
   const index = (name: string) => s.sheetIdx.get(sheetKey(name))!
-  const out: Exclude<LayoutEdit, ColumnsFit>[] = []
+  const out: SetLayoutEdit[] = []
   for (const e of edits) {
-    const set: Exclude<LayoutEdit, ColumnsFit>[] = []
-    if ('fit' in e) {
+    const set: SetLayoutEdit[] = []
+    if ('fit' in e && 'columns' in e) {
       const i = index(e.sheet)
       const [lo, hi] = parseSpan(e.columns, 'c')!
       for (const [col, width] of Object.entries(fitWidths(s.ctx.rules, scratch.sheets[i], stateCells(s, i, lo, hi), lo, hi))) set.push({ sheet: e.sheet, columns: col, set: fitted(width) })
+    } else if ('fit' in e) {
+      const i = index(e.sheet)
+      const [lo, hi] = parseSpan(e.rows, 'r')!
+      const { cells, spans } = stateRows(s, i, lo, hi)
+      for (const [rows, height] of Object.entries(fitHeights(scratch.styles ?? [], scratch.sheets[i], cells, lo, hi, spans))) set.push({ sheet: e.sheet, rows, set: rowFitted(height) })
     } else set.push(e)
     applyLayout(scratch, set, index)
     out.push(...set)
