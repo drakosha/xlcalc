@@ -27,7 +27,7 @@ const WHERE = ['text', 'edit', 'formula', 'value'] as const
 
 export type Ref = Rect & { s: number }
 
-/** A cell found: its sheet, row and column, its position in Find's order (its range, its block, its place), which a cursor keeps, and the text Find read in it. */
+/** A cell found: its sheet, row and column, its position in Find's order (its range, its block's bands of rows and columns, its place), which a cursor keeps, and the text Find read in it. */
 export type Found = [s: number, r: number, c: number, position: number[], text: string]
 
 const same = (v: number) => v
@@ -78,7 +78,7 @@ export function replacer(query: string, by: string, o: Pick<FindCellsOptions, 'c
   }
 }
 
-/** A sheet's hidden rows or columns: whether there are any; whether a line is hidden, and how many lines are hidden before it, the band of lines it is in. */
+/** A sheet's hidden rows or columns: whether there are any; whether a line is hidden, and how many lines are hidden before it, the band of lines it is in (a hidden line's between the bands around it). */
 interface HiddenLines {
   any: boolean
   at(i: number): [hidden: boolean, before: number]
@@ -100,7 +100,7 @@ function hiddenLines<T>(map: Record<string, T> | undefined, axis: 'r' | 'c', hid
     any: spans.length > 0,
     at(i) {
       const k = lowerBound(spans, i, (x) => x[1])
-      return k < spans.length && spans[k][0] <= i ? [true, 0] : [false, before[k]]
+      return k < spans.length && spans[k][0] <= i ? [true, before[k] + 0.5] : [false, before[k]]
     },
   }
 }
@@ -110,9 +110,12 @@ export interface Finder {
   key: unknown[]
   /**
    * The cells of `refs` that match (each once, in the first range that has it), range by range in Find's order, after
-   * the position `after` of a cell found before; with `rows` (zero-based, ascending), only the cells of those rows.
+   * the position `from` of a cell found before and up to the position `to`; with `rows` (zero-based, ascending), only
+   * the cells of those rows.
    */
-  found(refs: Ref[], rows: number[] | null, after: number[] | null): Generator<Found | void>
+  found(refs: Ref[], rows: number[] | null, from: number[] | null, to?: number[] | null): Generator<Found | void>
+  around(refs: Ref[], rows: number[] | null, start: number[], cursor: number[] | null): Generator<Found | void>
+  positionOf(refs: Ref[], s: number, r: number, c: number): number[] | null
 }
 
 export function finderOf(state: EngineState, query: string, o: FindCellsOptions, now: string): Finder {
@@ -213,19 +216,28 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
     if (ix.length) yield [ix, places]
   }
 
-  function* found(refs: Ref[], rows: number[] | null, after: number[] | null): Generator<Found | void> {
+  /** A cell's position in Find's order over `refs`, as `found` gives one (a hidden line's band between those around it); null outside them. */
+  const positionOf = (refs: Ref[], s: number, r: number, c: number): number[] | null => {
+    const n = refs.findIndex((x) => x.s === s && hasCell(x, r, c))
+    if (n < 0) return null
+    const { rows: hr, cols: hc } = linesOf(s)
+    const blocks = filtered(s) && (hr.any || hc.any)
+    return [n, blocks ? hr.at(r)[1] : 0, blocks ? hc.at(c)[1] : 0, o.byColumns ? c * MAX_ROWS + r : r * MAX_COLS + c]
+  }
+
+  function* found(refs: Ref[], rows: number[] | null, from: number[] | null, to: number[] | null = null): Generator<Found | void> {
     if (!test) return
     for (const [n, x] of refs.entries()) {
-      if (after && n < after[0]) continue
+      if ((from && n < from[0]) || (to && n > to[0])) continue
       const t = yield* textsOf(state, x.s)
       const { rows: hr, cols: hc } = linesOf(x.s)
-      // on a filtered sheet with hidden lines the cells come by blocks, all of the range's put in order: the block's place first, a cursor's too
+      // on a filtered sheet with hidden lines the cells come by blocks, all of the range's put in order: the block's bands first, a cursor's too
       const blocks = filtered(x.s) && (hr.any || hc.any)
-      const from = after && n === after[0] ? after : null
+      const [after, until] = [from && n === from[0] ? from : null, to && n === to[0] ? to : null]
       const raw = kindOf(t, where)
       const texts = fold ? kindOf(t, `${where} folded`) : raw
-      const hits: [block: number, place: number, i: number][] = []
-      for (const chunk of chunksOf(refs, n, t, rows, blocks || !from ? null : from[2])) {
+      const hits: number[][] = []
+      for (const chunk of chunksOf(refs, n, t, rows, blocks || !after ? null : after[3])) {
         if (!chunk) {
           yield
           continue
@@ -236,23 +248,38 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
         for (const [q, i] of ix.entries()) {
           if (paced(1)) yield
           if (!test(texts[i]!)) continue
-          if (!blocks) {
-            yield [x.s, ...rc(t.at[i]), [n, 0, places[q]], raw[i]!]
-            continue
-          }
           const [r, c] = rc(t.at[i])
-          const block = hr.at(r)[1] * MAX_COLS + hc.at(c)[1]
-          if (!from || block > from[1] || (block === from[1] && places[q] > from[2])) hits.push([block, places[q], i])
+          const position = [n, blocks ? hr.at(r)[1] : 0, blocks ? hc.at(c)[1] : 0, places[q]]
+          if (blocks) hits.push([...position, i])
+          else if (until && later(position, until)) return
+          else yield [x.s, r, c, position, raw[i]!]
         }
       }
-      hits.sort((a, b) => a[0] - b[0] || a[1] - b[1])
-      for (const [block, place, i] of hits) yield [x.s, ...rc(t.at[i]), [n, block, place], raw[i]!]
+      hits.sort((a, b) => a[1] - b[1] || a[2] - b[2] || a[3] - b[3])
+      for (const [, rb, cb, place, i] of hits) {
+        const position = [n, rb, cb, place]
+        if ((!after || later(position, after)) && (!until || !later(position, until))) yield [x.s, ...rc(t.at[i]), position, raw[i]!]
+      }
+    }
+  }
+
+  /**
+   * The cells `found` gives, from after the position `start` round to it (Find from a cell, then FindNext), each with its
+   * lap (0 after `start`, 1 from the first) before its position; after `cursor`, a position so given.
+   */
+  function* around(refs: Ref[], rows: number[] | null, start: number[], cursor: number[] | null): Generator<Found | void> {
+    const lap = cursor?.[0] ?? 0
+    for (const [k, from, to] of [[0, lap ? null : (cursor?.slice(1) ?? start), null], [1, lap ? cursor!.slice(1) : null, start]] as const) {
+      if (k < lap) continue
+      for (const f of found(refs, rows, from, to)) yield f && [f[0], f[1], f[2], [k, ...f[3]], f[4]]
     }
   }
 
   return {
     key: [query, where, o.caseSensitive === true, o.wildcards === true, o.wholeCell === true, o.byColumns === true, o.skipHidden === true],
     found,
+    around,
+    positionOf,
   }
 }
 
@@ -260,6 +287,11 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
 const rc = (m: number): [number, number] => {
   const r = Math.floor(m / MAX_COLS)
   return [r, m - r * MAX_COLS]
+}
+/** Whether position `a` comes after `b` in Find's order. */
+const later = (a: number[], b: number[]) => {
+  for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] > b[k]
+  return false
 }
 const cr = (k: number): [number, number] => {
   const c = Math.floor(k / MAX_ROWS)

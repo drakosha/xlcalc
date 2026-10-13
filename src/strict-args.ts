@@ -17,6 +17,8 @@ export const FILL_OPTIONS = ['widen', 'refuseInvalid', 'inPlace', 'active'] as c
 export const READ_OPTIONS = ['maxCells', 'cursor', 'count', 'fields', 'rows'] as const
 /** The options of `findCells` beside `readCells`' (`FindCellsOptions`). */
 export const FIND_OPTIONS = ['in', 'caseSensitive', 'wildcards', 'wholeCell', 'byColumns', 'skipHidden'] as const
+/** All the options of `findCells` beside `baseRevision`: `readCells`', Find's, and the cell it begins after. */
+export const FIND_CALL_OPTIONS = [...READ_OPTIONS, ...FIND_OPTIONS, 'after'] as const
 /** The options of `replaceInCells` beside `baseRevision` (`ReplaceOptions`): Find's but what it reads and the order, and `rows`. */
 export const REPLACE_OPTIONS = ['caseSensitive', 'wildcards', 'wholeCell', 'skipHidden', 'rows'] as const
 
@@ -42,6 +44,7 @@ const TAKEN_BY: Record<string, string> = {
   wholeCell: 'findCells and replaceInCells',
   byColumns: 'findCells',
   skipHidden: 'findCells and replaceInCells',
+  after: 'findCells',
   baseRevision: "a session's calls that change its book",
   table: 'toLocal and toInvariant',
   clock: 'compute and createSession',

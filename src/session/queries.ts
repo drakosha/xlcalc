@@ -3,7 +3,7 @@ import type { CellReadField, Clock, DependentCell, DependentsOptions, Dependents
 import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { referencesOf } from '../graph.js'
-import { array, checkBoolean, checkNumber, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
+import { array, checkAddress, checkBoolean, checkNumber, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
 import { issueDetail } from '../issues.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, readAddress } from '../model.js'
 import { cellResult, cellsIn, outValue } from '../result.js'
@@ -14,8 +14,8 @@ import { checkBase } from './answer.js'
 import { NONE } from '../looks/layer.js'
 import { inputIn, layerOf } from '../looks/sheet.js'
 import { checkLineNumbers, checkRange, sessionEditTexts } from './viewport.js'
-import { FIND_OPTIONS, READ_OPTIONS } from '../strict-args.js'
-import { finderOf, type Ref } from './find.js'
+import { FIND_CALL_OPTIONS, READ_OPTIONS } from '../strict-args.js'
+import { finderOf, type Finder, type Ref } from './find.js'
 import { lowerBound } from '../sorted.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
@@ -38,7 +38,7 @@ class Page<T> {
   readonly count: boolean
   /** The results before the cursor, the position of the last of them in the query's order, and the count of all when a page before counted them. */
   readonly offset: number = 0
-  readonly after: number[] | null = null
+  readonly from: number[] | null = null
   readonly total: number | null = null
   matched = 0
   more = false
@@ -66,7 +66,7 @@ class Page<T> {
       if (c[2] !== signature) throw new InputError('opts.cursor', 'the cursor belongs to another query')
       this.offset = c[1]
       this.total = c[3] >= 0 ? c[3] : null
-      this.after = c.slice(4) as number[]
+      this.from = c.slice(4) as number[]
     }
   }
   /** A result at `position` of the query's order: whether it goes on the page, or the page is full. */
@@ -173,7 +173,7 @@ function queryOf(s: EngineState, revision: number, clock: Clock, given: RangeRef
 export function* readQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], eo?: ReadCellsOptions): Steps<ReadCellsResult> {
   const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, checkBase<ReadCellsOptions>(eo, revision, READ_OPTIONS), [])
   // the cells before the cursor are passed over, by their count
-  const from = page.after?.[0] ?? 0
+  const from = page.from?.[0] ?? 0
   let at = 0
   for (const cell of requested(s, refs, true, rows)) {
     if (!cell) {
@@ -187,11 +187,23 @@ export function* readQuery(s: EngineState, revision: number, clock: Clock, given
   return { ...page.result(), cells: page.items }
 }
 
+/** The position in Find's order of the cell a search begins after (`FindCellsOptions.after`), checked: a cell of the ranges. */
+function startOf(s: EngineState, refs: Ref[], finder: Finder, after: unknown): number[] {
+  const o = object(after, 'opts.after', 'a cell such as { sheet: "Sheet1", cell: "D7" }')
+  onlyKeys(o, 'opts.after', ['sheet', 'cell'])
+  const i = checkSheet(o.sheet, (n) => s.sheetIdx.get(sheetKey(n)), 'opts.after.sheet')
+  const { row, col } = parseAddress(checkAddress(o.cell, 'opts.after.cell'))
+  const at = finder.positionOf(refs, i, row, col)
+  if (!at) throw new InputError('opts.after', `expected a cell of the ranges searched, got ${s.sheetNames[i]}!${formatAddress(row, col)}`)
+  return at
+}
+
 export function* findQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], query: string, eo?: FindCellsOptions): Steps<ReadCellsResult> {
-  const o = checkBase<FindCellsOptions>(eo, revision, [...READ_OPTIONS, ...FIND_OPTIONS])
+  const o = checkBase<FindCellsOptions>(eo, revision, FIND_CALL_OPTIONS)
   const finder = finderOf(s, checkString(query, 'query'), o, clock.now)
-  const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, o, finder.key)
-  for (const cell of finder.found(refs, rows, page.after)) {
+  const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, o, [...finder.key, o.after ?? null])
+  const start = o.after === undefined ? null : startOf(s, refs, finder, o.after)
+  for (const cell of start ? finder.around(refs, rows, start, page.from) : finder.found(refs, rows, page.from)) {
     if (!cell) {
       yield
       continue
@@ -210,7 +222,7 @@ export function* dependentsQuery(s: EngineState, revision: number, clock: Clock,
   checkNumber(max, 'opts.maxReferences', 1, 1000, true)
   const page = new Page<DependentCell>(revision, clock, JSON.stringify(['dependents', refs, max]), o)
   // the cells before the cursor are passed over, by their count
-  const from = page.after?.[0] ?? 0
+  const from = page.from?.[0] ?? 0
   let at = 0
   scan: for (let i = 0; i < s.input.sheets.length; i++)
     for (const addr in s.input.sheets[i].cells) {
