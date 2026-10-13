@@ -6,6 +6,8 @@ stages: [test, package]
 
 default:
   image: node:24
+  # a runner with the tag `heavy` has the cores and memory the full suites need; the instance's shared runner has not
+  tags: [heavy]
   cache:
     key:
       files: [package-lock.json]
@@ -28,8 +30,9 @@ test:
   script:
     - node --version
     - npm run typecheck
-    - npm test
-    - npm run test:dist
+    # the container's CPU limit is not what Node sees as the machine's cores: five workers, not one per core
+    - npm test -- --maxWorkers=5
+    - npm run test:dist -- --maxWorkers=5
 
 package:
   stage: package
