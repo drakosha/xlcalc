@@ -23,6 +23,7 @@
  *   npx tsx bench/windows/run.ts ribbon <name> [L]     the ribbon's Number Format box over a ui set's books, by UI Automation in a session on a screen, into ribbon/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts find <name> [L]       Find and FindNext over a find set's books, into find/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts outline <name> [L]    outline commands over an outline set's books, into outline/[<tag>/]<name>.json and outline/[<tag>/]<name>/
+ *   npx tsx bench/windows/run.ts end <name> [L]        Range.End from cells of an end set's books, into end/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts functions L           the formula cases the Mac has answers for in that locale
  *   npx tsx bench/windows/run.ts books L               the books the Mac has answers for in that locale (display, spill, ...)
  *   npx tsx bench/windows/run.ts all L                 both
@@ -52,6 +53,7 @@ import { stepUi } from './ui.js'
 import { stepRibbon } from './ribbon.js'
 import { stepFind } from './find.js'
 import { stepOutline } from './outline.js'
+import { stepEnd } from './end.js'
 import { env, withWindowsExcel, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
@@ -109,11 +111,12 @@ else if (step === 'ui' && a) await withWindowsExcel(parseTag(b), (e) => stepUi(a
 else if (step === 'ribbon' && a) await withWindowsExcel(parseTag(b), (e) => stepRibbon(a, parseTag(b), e))
 else if (step === 'find' && a) await withWindowsExcel(parseTag(b), (e) => stepFind(a, parseTag(b), e))
 else if (step === 'outline' && a) await withWindowsExcel(parseTag(b), (e) => stepOutline(a, parseTag(b), e))
+else if (step === 'end' && a) await withWindowsExcel(parseTag(b), (e) => stepEnd(a, parseTag(b), e))
 else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functions(parseTag(a), e))
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | find <name> [locale] | outline <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | find <name> [locale] | outline <name> [locale] | end <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

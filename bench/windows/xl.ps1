@@ -345,6 +345,8 @@ function Step($xl, $wb, $s) {
         List @((List $found), (Cell ($null -ne $f)), (Str $next), (Str $back))
       } catch { Err $_ }
     }
+    # the cell Range.End comes to from a cell in a direction (XlDirection), its address (bench/windows/end.ts)
+    'end' { try { Str (Rg $wb $s.sheet $s.cell).End([int]$s.direction).Address($false, $false) } catch { Err $_ } }
     # text put on the clipboard and pasted at a cell of the active sheet (bench/windows/ui.ts); the clipboard's or
     # Excel's refusal is the step's error
     'paste' {
