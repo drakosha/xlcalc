@@ -114,6 +114,25 @@ const done = await session.replaceInCells([{ sheet: 'Plan', range: 'A1:XFD104857
 - No column widens: a number too wide for its column shows as Excel shows it there (`1.23E+11`). No rule of data validation is checked (not measured).
 - Nothing found: nothing changes, and the revision and the undo stay.
 
+## Where Control and an arrow key go
+
+`getEnd(sheet, cell, direction)` is the cell Excel's Control and an arrow key come to from `cell`, as `Range.End` gives it: `direction` is `'up'`, `'down'`, `'left'` or `'right'`, the answer an address. A grid that knows only the cells of the windows it read moves its active cell there and reads the window around it.
+
+```ts
+// A1:A10 and B1:B500 hold values
+await session.getEnd('S', 'A1', 'down') // 'A10', not B500's row
+await session.getEnd('S', 'A10', 'down') // 'A1048576': nothing below
+await session.getEnd('S', 'C1', 'left') // 'B1'
+```
+
+- A cell holds something when it has a value or a formula, whatever it shows: an empty text from a formula (`=""`), an empty text in the file or typed as an apostrophe alone, zero, a space, FALSE, an error, a value a format hides (`;;;`). So do the cells of a spill, an old-kind array's cells and the top-left cell of an array that cannot spill (`#SPILL!`). A cell with a look alone (a style or a number format, its own or of the sheet's looks), a note alone or a hyperlink alone is empty.
+- From a cell that holds something, with the next cell in the direction holding something too, `End` goes to the last cell of that block. Otherwise it goes to the next cell that holds something, past any empty ones, and where there is none to the sheet's edge: row 1 or 1,048,576, column A or XFD. A cell at the edge stays. Blocks one empty cell apart are two blocks.
+- Hidden rows and columns are not there for `End`, those hidden by hand, by a filter and by a height or a width of 0 alike: it never stops on a hidden cell, and a block goes on across hidden lines (in A1:A10 with A5 empty and row 5 hidden, A1 goes down to A10; with B12 holding a value in hidden row 12 and B15 a value, B11 goes down to B15). With every row from 20 on hidden, the edge going down is row 19. From a hidden cell `End` goes as from a shown one, by what that cell holds.
+- A merged area is its cells: the value is in its top-left cell and the others are empty, so `End` stops on the top-left cell coming from either side and passes the area's other cells as empty ones (from G5 left over `B5:D5` it comes to B5; up from E12 under `D8:E10` it goes past the area).
+- The locale changes nothing: ru-RU answered as en-US.
+
+It reads the cells of the line it goes along, up to where the line's values end, and the sheet's hidden lines, which it reads once for each change of the layout. On the synthetic book of 34,000 rows a call takes 0.2 ms down a whole column of values and a few microseconds across a row, in a synchronous session; with every other row hidden, 17,000 hidden rows, 0.6 ms.
+
 ## Known differences
 
 - An empty query: Excel's Find finds the empty cells of the range, or of the sheet from its first cell; `findCells` finds what cells hold and nothing for an empty query. A query of `~` alone, which reads as nothing, finds in Excel only the empty cell it starts after; nothing here.
@@ -154,3 +173,13 @@ Replace was measured the same way (`Range.Replace` with Look in Formulas and dyn
 | `rules-held-3` | 10 | `replaceInCells` | 9, 9 | a cell of the text format takes a formula and a boolean as typed elsewhere, and a date with a date format; percents, dates' and money's separators |
 
 `replaceInCells` leaves each cell as Excel left it in all of them but the cases listed in [Known differences](#known-differences): three of `rules-held` in en-US and four in ru-RU. `test/session-replace.test.ts` checks the rules, the undo and the options in every kind of session, and `test/find-texts.test.ts` the texts kept after a replacement.
+
+`Range.End` was measured the same way (step `end` of `bench/windows`), each case a cell and a direction in a book Excel opened, computed, filtered and typed into, the address it came to; held out with `getEnd`'s predictions committed before Excel ran each set (`bench/coverage/end/`, answers in `test/excel/win/end/`, test `test/end-win.test.ts`):
+
+| set | locale | cases | confirmed | what it settled |
+|---|---|---:|---:|---|
+| `rules-held` | en-US | 167 | 167 | blocks, one empty cell apart and further, to every edge; which cells hold something (14 kinds); spills, a blocked one, an old-kind array, a spill of a whole column; merged areas from each side and from inside; rows and columns hidden by hand and by a filter; every line hidden past a row and a column |
+| `rules-held-2` | en-US | 19 | 19 | from a cell of a hidden row or column, with a value and without; a row of height 0 and a column of width 0 not marked hidden; a merged area whose top-left cell is in a hidden row |
+| `ru-held` | ru-RU | 4 | 4 | blocks, an empty text from a formula, a hidden row and a merged area as in en-US |
+
+`getEnd` gives Excel's cell in all of them, in a synchronous session, in the same thread and in a pool's thread. The keyboard on a screen was not measured: Excel answered through its object model over SSH, without a screen. `test/end.test.ts` checks `getEnd` against a walk cell by cell over the session's result and book on seeded books with spills, empty texts, looks and hidden lines, through edits of cells, of the layout and of the structure and an undo, in every kind of session, and its time on the synthetic book.
