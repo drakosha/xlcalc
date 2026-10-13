@@ -4,9 +4,10 @@
  */
 import type { ChangesOptions, PreviewChangesOptions, ReadCellsOptions, FindCellsOptions, DependentsOptions, ReplaceOptions, ExplainOptions } from '../contract.js'
 import type { CopyTextOptions } from '../contract.js'
-import type { AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, Clock, EditOptions, SessionHistory, SessionOptions } from '../contract.js'
+import type { AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, ChangingMethod, Clock, EditOptions, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError, type Budget, type Steps } from '../exec/budget.js'
 import { openSteps, type SessionHooks } from '../session.js'
+import { subscribers, withSubscribe } from '../session/subscribers.js'
 import type { HistoryData } from '../session/undo.js'
 import { callBudget, drive } from './drive.js'
 import { callLimits, checkCall, checkEditCall, splitCall } from './options.js'
@@ -51,6 +52,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
   let clock: Clock = core.clock
   let history: SessionHistory = core.history
   let revision = core.revision
+  const subs = subscribers(revision)
   // close() called: new calls are refused; kill(): the waiting ones too, and the running one stops
   let ended: CalcError | null = null
   let killed: CalcError | null = null
@@ -69,13 +71,15 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     revision = core.revision
     return r
   }
-  const steps = <T>(f: () => Steps<T>, c: CalcOptions): Promise<T> =>
+  /** A call's steps run in its turn; a changing call (`method`) tells its answer to the subscribers before its promise settles. */
+  const steps = <T>(f: () => Steps<T>, c: CalcOptions, method?: ChangingMethod): Promise<T> =>
     turn(async () => {
       const b = callBudget(o.limits, c.signal, d.sliceMs)
       running = b
       d.running?.add(b)
       try {
-        return after(await drive(f(), b, c.timeoutMs ?? d.timeoutMs))
+        const r = after(await drive(f(), b, c.timeoutMs ?? d.timeoutMs))
+        return method ? subs.after(method, r) : r
       } finally {
         running = null
         d.running?.delete(b)
@@ -88,17 +92,17 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       return Promise.reject(e)
     }
   }
-  /** A call that changes the book: its edit options (`extra` beside `baseRevision`) go to the session. */
-  const edit = <T>(f: (eo: EditOptions | undefined) => Steps<T>, co: unknown, extra?: readonly string[]): Promise<T> => {
+  /** A call that takes edit options (`extra` beside `baseRevision`), which go to the session; `method`, one that changes the book. */
+  const edit = <T>(f: (eo: EditOptions | undefined) => Steps<T>, co: unknown, extra?: readonly string[], method?: ChangingMethod): Promise<T> => {
     try {
       const [c, eo] = checkEditCall(co, extra)
-      return steps(() => f(eo), c)
+      return steps(() => f(eo), c, method)
     } catch (e) {
       return Promise.reject(e)
     }
   }
   const plain = <T>(f: () => T): Promise<T> => turn(async () => after(f()))
-  return strictMethods<InlineSession>({
+  return withSubscribe(strictMethods<InlineSession>({
     get clock() {
       return { ...clock }
     },
@@ -108,33 +112,33 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     get revision() {
       return revision
     },
-    applyChanges: (ops, co) => edit((eo) => core.applyChanges(ops, eo as ChangesOptions), co, ['clock']),
+    applyChanges: (ops, co) => edit((eo) => core.applyChanges(ops, eo as ChangesOptions), co, ['clock'], 'applyChanges'),
     previewChanges: (ops, co) => edit((eo) => core.previewChanges(ops, eo as PreviewChangesOptions), co, ['clock', 'maxChanges']),
     readCells: (refs, co) => edit((eo) => core.readCells(refs, eo as ReadCellsOptions), co, READ_OPTIONS),
     findCells: (refs, query, co) => edit((eo) => core.findCells(refs, query, eo as FindCellsOptions), co, FIND_CALL_OPTIONS),
-    replaceInCells: (refs, query, replacement, co) => edit((eo) => core.replaceInCells(refs, query, replacement, eo as ReplaceOptions), co, REPLACE_OPTIONS),
+    replaceInCells: (refs, query, replacement, co) => edit((eo) => core.replaceInCells(refs, query, replacement, eo as ReplaceOptions), co, REPLACE_OPTIONS, 'replaceInCells'),
     getDependents: (refs, co) => edit((eo) => core.getDependents(refs, eo as DependentsOptions), co, ['maxCells', 'cursor', 'count', 'maxReferences']),
     summarizeRanges: (refs, co) => edit((eo) => core.summarizeRanges(refs, eo), co),
-    setCells: (edits, co) => edit((eo) => core.setCells(edits, eo), co),
-    replaceCells: (edits, co) => edit((eo) => core.replaceCells(edits, eo), co),
-    clearCells: (ranges, what, co) => edit((eo) => core.clearCells(ranges, what, eo), co),
-    patchCells: (patches, co) => edit((eo) => core.patchCells(patches, eo), co),
-    setCellText: (sheet, cell, text, co) => edit((eo) => core.setCellText(sheet, cell, text, eo), co, TEXT_OPTIONS),
+    setCells: (edits, co) => edit((eo) => core.setCells(edits, eo), co, undefined, 'setCells'),
+    replaceCells: (edits, co) => edit((eo) => core.replaceCells(edits, eo), co, undefined, 'replaceCells'),
+    clearCells: (ranges, what, co) => edit((eo) => core.clearCells(ranges, what, eo), co, undefined, 'clearCells'),
+    patchCells: (patches, co) => edit((eo) => core.patchCells(patches, eo), co, undefined, 'patchCells'),
+    setCellText: (sheet, cell, text, co) => edit((eo) => core.setCellText(sheet, cell, text, eo), co, TEXT_OPTIONS, 'setCellText'),
     previewCellText: (sheet, cell, text, co) => edit((eo) => core.previewCellText(sheet, cell, text, eo), co, TEXT_OPTIONS),
-    setCellTexts: (entries, co) => edit((eo) => core.setCellTexts(entries, eo), co, TEXT_OPTIONS),
+    setCellTexts: (entries, co) => edit((eo) => core.setCellTexts(entries, eo), co, TEXT_OPTIONS, 'setCellTexts'),
     previewCellTexts: (entries, co) => edit((eo) => core.previewCellTexts(entries, eo), co, TEXT_OPTIONS),
-    pasteText: (sheet, cell, text, co) => edit((eo) => core.pasteText(sheet, cell, text, eo), co),
+    pasteText: (sheet, cell, text, co) => edit((eo) => core.pasteText(sheet, cell, text, eo), co, undefined, 'pasteText'),
     previewPasteText: (sheet, cell, text, co) => edit((eo) => core.previewPasteText(sheet, cell, text, eo), co),
-    fillCellText: (sheet, range, text, co) => edit((eo) => core.fillCellText(sheet, range, text, eo), co, FILL_OPTIONS),
+    fillCellText: (sheet, range, text, co) => edit((eo) => core.fillCellText(sheet, range, text, eo), co, FILL_OPTIONS, 'fillCellText'),
     previewFillCellText: (sheet, range, text, co) => edit((eo) => core.previewFillCellText(sheet, range, text, eo), co, FILL_OPTIONS),
-    setNames: (names, co) => edit((eo) => core.setNames(names, eo), co),
-    setClock: (next, co) => edit((eo) => core.setClock(next, eo), co),
-    editStructure: (op, co) => edit((eo) => core.editStructure(op, eo), co),
+    setNames: (names, co) => edit((eo) => core.setNames(names, eo), co, undefined, 'setNames'),
+    setClock: (next, co) => edit((eo) => core.setClock(next, eo), co, undefined, 'setClock'),
+    editStructure: (op, co) => edit((eo) => core.editStructure(op, eo), co, undefined, 'editStructure'),
     // eslint-disable-next-line require-yield
     setStyles: (styles, co) => edit(function* (eo) {
       return core.setStyles(styles, eo)
-    }, co),
-    setLayout: (edits, co) => edit((eo) => core.setLayout(edits, eo), co),
+    }, co, undefined, 'setStyles'),
+    setLayout: (edits, co) => edit((eo) => core.setLayout(edits, eo), co, undefined, 'setLayout'),
     getBook: () => plain(() => core.getBook()),
     getLayout: () => plain(() => core.getLayout()),
     getUsedRange: (sheet) => call(() => core.getUsedRange(sheet)),
@@ -164,10 +168,12 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     getResult: (co) => call(() => core.getResult(), co),
     getSnapshot: (co) => call(() => core.getSnapshot(), co),
     getHash: (co) => call(() => core.getHash(), co),
-    undo: (co) => edit((eo) => core.undo(eo), co),
-    redo: (co) => edit((eo) => core.redo(eo), co),
+    undo: (co) => edit((eo) => core.undo(eo), co, undefined, 'undo'),
+    redo: (co) => edit((eo) => core.redo(eo), co, undefined, 'redo'),
     historyData: () => core.historyData(),
+    subscribe: (listener) => subs.subscribe(listener),
     close() {
+      subs.clear()
       if (ended) return Promise.resolve()
       // closing waits for the calls made before it, and closes the session whatever stops them
       const done = queue.run(async () => core.close())
@@ -175,10 +181,11 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       return done
     },
     kill(why: CalcError) {
+      subs.clear()
       ended ??= why
       killed = why
       if (running) running.halted = why
       core.close()
     },
-  }, true)
+  }, true), subs)
 }

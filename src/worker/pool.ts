@@ -6,12 +6,13 @@
  */
 import { abortError } from '../async/queue.js'
 import type { CopyTextOptions } from '../contract.js'
-import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, ExplainOptions, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
+import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, ChangingMethod, Clock, ComputeResult, ExplainOptions, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
 import { splitCall, checkCall, checkEditCall } from '../async/options.js'
 import { checkedMapCell } from '../structure/index.js'
+import { subscribers, withSubscribe } from '../session/subscribers.js'
 import type { SentGeometry } from '../structure/geometry.js'
 import { FILL_OPTIONS, FIND_CALL_OPTIONS, READ_OPTIONS, REPLACE_OPTIONS, strictMethods, TEXT_OPTIONS } from '../strict-args.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
@@ -347,6 +348,9 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   }
 
   function session(r: Rec): AsyncSession {
+    const subs = subscribers(r.revision)
+    /** A changing call's answer, told to the session's subscribers before the call's promise settles. */
+    const told = <T>(method: ChangingMethod, p: Promise<T>) => p.then((v) => subs.after(method, v))
     /** A call to the session's thread; a changing call's arguments, its edit options among them, go into its journal as a copy. */
     const send = (op: Op, args: unknown[], c: CalcOptions): Promise<Answer> => {
       r.used = ++clock
@@ -385,7 +389,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         return { ...rest, mapCell: checkedMapCell(g) } as T
       })
     const step = (op: 'undo' | 'redo', co: unknown) => mapped<UndoResult>(edit(op, [], co))
-    return strictMethods<AsyncSession>({
+    return withSubscribe(strictMethods<AsyncSession>({
       get clock() {
         return { ...r.clock }
       },
@@ -395,30 +399,30 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       get revision() {
         return r.revision
       },
-      applyChanges: (ops, co) => value(edit('applyChanges', [ops], co, ['clock'])),
+      applyChanges: (ops, co) => told('applyChanges', value(edit('applyChanges', [ops], co, ['clock']))),
       previewChanges: (ops, co) => value(edit('previewChanges', [ops], co, ['clock', 'maxChanges'])),
       readCells: (refs, co) => value(edit('readCells', [refs], co, READ_OPTIONS)),
       findCells: (refs, query, co) => value(edit('findCells', [refs, query], co, FIND_CALL_OPTIONS)),
-      replaceInCells: (refs, query, replacement, co) => value(edit('replaceInCells', [refs, query, replacement], co, REPLACE_OPTIONS)),
+      replaceInCells: (refs, query, replacement, co) => told('replaceInCells', value(edit('replaceInCells', [refs, query, replacement], co, REPLACE_OPTIONS))),
       getDependents: (refs, co) => value(edit('getDependents', [refs], co, ['maxCells', 'cursor', 'count', 'maxReferences'])),
       summarizeRanges: (refs, co) => value(edit('summarizeRanges', [refs], co)),
-      setCells: (edits, co) => value(edit('setCells', [edits], co)),
-      replaceCells: (edits, co) => value(edit('replaceCells', [edits], co)),
-      clearCells: (ranges, what, co) => value(edit('clearCells', [ranges, what], co)),
-      patchCells: (patches, co) => value(edit('patchCells', [patches], co)),
-      setCellText: (sheet, cell, text, co) => value(edit('setCellText', [sheet, cell, text], co, TEXT_OPTIONS)),
+      setCells: (edits, co) => told('setCells', value(edit('setCells', [edits], co))),
+      replaceCells: (edits, co) => told('replaceCells', value(edit('replaceCells', [edits], co))),
+      clearCells: (ranges, what, co) => told('clearCells', value(edit('clearCells', [ranges, what], co))),
+      patchCells: (patches, co) => told('patchCells', value(edit('patchCells', [patches], co))),
+      setCellText: (sheet, cell, text, co) => told('setCellText', value(edit('setCellText', [sheet, cell, text], co, TEXT_OPTIONS))),
       previewCellText: (sheet, cell, text, co) => value(edit('previewCellText', [sheet, cell, text], co, TEXT_OPTIONS)),
-      setCellTexts: (entries, co) => value(edit('setCellTexts', [entries], co, TEXT_OPTIONS)),
+      setCellTexts: (entries, co) => told('setCellTexts', value(edit('setCellTexts', [entries], co, TEXT_OPTIONS))),
       previewCellTexts: (entries, co) => value(edit('previewCellTexts', [entries], co, TEXT_OPTIONS)),
-      pasteText: (sheet, cell, text, co) => value(edit('pasteText', [sheet, cell, text], co)),
+      pasteText: (sheet, cell, text, co) => told('pasteText', value(edit('pasteText', [sheet, cell, text], co))),
       previewPasteText: (sheet, cell, text, co) => value(edit('previewPasteText', [sheet, cell, text], co)),
-      fillCellText: (sheet, range, text, co) => value(edit('fillCellText', [sheet, range, text], co, FILL_OPTIONS)),
+      fillCellText: (sheet, range, text, co) => told('fillCellText', value(edit('fillCellText', [sheet, range, text], co, FILL_OPTIONS))),
       previewFillCellText: (sheet, range, text, co) => value(edit('previewFillCellText', [sheet, range, text], co, FILL_OPTIONS)),
-      setNames: (names, co) => value(edit('setNames', [names], co)),
-      setClock: (next, co) => value(edit('setClock', [next], co)),
-      editStructure: (op, co) => mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>,
-      setStyles: (styles, co) => value(edit('setStyles', [styles], co)),
-      setLayout: (edits, co) => value(edit('setLayout', [edits], co)),
+      setNames: (names, co) => told('setNames', value(edit('setNames', [names], co))),
+      setClock: (next, co) => told('setClock', value(edit('setClock', [next], co))),
+      editStructure: (op, co) => told('editStructure', mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>),
+      setStyles: (styles, co) => told('setStyles', value(edit('setStyles', [styles], co))),
+      setLayout: (edits, co) => told('setLayout', value(edit('setLayout', [edits], co))),
       getBook: () => value<Sent>(call('getBook', [])).then(unpackSlowly),
       getLayout: () => value(call('getLayout', [])),
       getUsedRange: (sheet) => value(call('getUsedRange', [sheet])),
@@ -449,9 +453,11 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       // the book comes as text, read a chunk at a time as `getBook()` reads it
       getSnapshot: (co) => value<{ book: Sent; result: ComputeResult }>(call('getSnapshot', [], co)).then(async (v) => ({ book: await unpackSlowly(v.book), result: v.result })),
       getHash: (co) => value(call('getHash', [], co)),
-      undo: (co) => step('undo', co),
-      redo: (co) => step('redo', co),
+      undo: (co) => told('undo', step('undo', co)),
+      redo: (co) => told('redo', step('redo', co)),
+      subscribe: (listener) => subs.subscribe(listener),
       async close() {
+        subs.clear()
         if (r.gone) return
         const done = submit({ t: 'drop', sid: r.sid }, { slot: r.slot, session: r }, undefined, true)
         r.gone = new CalcError('closed', 'the session is closed')
@@ -460,7 +466,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         await done
         r.slot.resident.delete(r)
       },
-    }, true)
+    }, true), subs)
   }
 
   return strictMethods<Calc>({

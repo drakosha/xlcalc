@@ -8,11 +8,13 @@ import { pool } from './fixtures/pool.js'
 export const KINDS = ['a synchronous session', 'the same thread', 'a thread'] as const
 export type Kind = (typeof KINDS)[number]
 
-/** A synchronous session behind the asynchronous API: each of its methods as a promise, its clock, history and revision as they are. */
+/** A synchronous session behind the asynchronous API: each of its methods as a promise, its clock, history, revision and `subscribe` as they are. */
 export function wrapped(s: Session): AsyncSession {
   const out: Record<string, unknown> = {}
   for (const k of Object.keys(s) as (keyof Session)[]) {
     if (k === 'clock' || k === 'history' || k === 'revision') Object.defineProperty(out, k, { get: () => s[k] })
+    // subscribing is synchronous in every kind of session
+    else if (k === 'subscribe') out[k] = s[k]
     else out[k] = async (...a: unknown[]) => (s[k] as (...a: unknown[]) => unknown)(...a)
   }
   return out as unknown as AsyncSession

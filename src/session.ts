@@ -28,6 +28,7 @@ import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf, type 
 import { typedHeights, wrapTyped } from './session/wrap.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
+import { subscribers } from './session/subscribers.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
 import { checkDirection, endOf } from './session/end.js'
@@ -836,6 +837,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
   const budget = limitsBudget(checkSessionOptions(opts).limits)
   const now = <T>(steps: () => Steps<T>): T => withBudget(budget, () => run(steps()))
   const core = now(() => openSteps(book, opts))
+  const subs = subscribers(core.revision)
   return strictMethods<Session>({
     get clock() {
       return core.clock
@@ -843,30 +845,30 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     get revision() {
       return core.revision
     },
-    applyChanges: (ops, o) => now(() => core.applyChanges(ops, o)),
+    applyChanges: (ops, o) => subs.after('applyChanges', now(() => core.applyChanges(ops, o))),
     previewChanges: (ops, o) => now(() => core.previewChanges(ops, o)),
     readCells: (refs, o) => now(() => core.readCells(refs, o)),
     findCells: (refs, query, o) => now(() => core.findCells(refs, query, o)),
-    replaceInCells: (refs, query, replacement, o) => now(() => core.replaceInCells(refs, query, replacement, o)),
+    replaceInCells: (refs, query, replacement, o) => subs.after('replaceInCells', now(() => core.replaceInCells(refs, query, replacement, o))),
     getDependents: (refs, o) => now(() => core.getDependents(refs, o)),
     summarizeRanges: (refs, o) => now(() => core.summarizeRanges(refs, o)),
-    setCells: (edits, o) => now(() => core.setCells(edits, o)),
-    replaceCells: (edits, o) => now(() => core.replaceCells(edits, o)),
-    clearCells: (ranges, what, o) => now(() => core.clearCells(ranges, what, o)),
-    patchCells: (patches, o) => now(() => core.patchCells(patches, o)),
-    setCellText: (sheet, cell, text, o) => now(() => core.setCellText(sheet, cell, text, o)),
+    setCells: (edits, o) => subs.after('setCells', now(() => core.setCells(edits, o))),
+    replaceCells: (edits, o) => subs.after('replaceCells', now(() => core.replaceCells(edits, o))),
+    clearCells: (ranges, what, o) => subs.after('clearCells', now(() => core.clearCells(ranges, what, o))),
+    patchCells: (patches, o) => subs.after('patchCells', now(() => core.patchCells(patches, o))),
+    setCellText: (sheet, cell, text, o) => subs.after('setCellText', now(() => core.setCellText(sheet, cell, text, o))),
     previewCellText: (sheet, cell, text, o) => now(() => core.previewCellText(sheet, cell, text, o)),
-    setCellTexts: (entries, o) => now(() => core.setCellTexts(entries, o)),
+    setCellTexts: (entries, o) => subs.after('setCellTexts', now(() => core.setCellTexts(entries, o))),
     previewCellTexts: (entries, o) => now(() => core.previewCellTexts(entries, o)),
-    pasteText: (sheet, cell, text, o) => now(() => core.pasteText(sheet, cell, text, o)),
+    pasteText: (sheet, cell, text, o) => subs.after('pasteText', now(() => core.pasteText(sheet, cell, text, o))),
     previewPasteText: (sheet, cell, text, o) => now(() => core.previewPasteText(sheet, cell, text, o)),
-    fillCellText: (sheet, range, text, o) => now(() => core.fillCellText(sheet, range, text, o)),
+    fillCellText: (sheet, range, text, o) => subs.after('fillCellText', now(() => core.fillCellText(sheet, range, text, o))),
     previewFillCellText: (sheet, range, text, o) => now(() => core.previewFillCellText(sheet, range, text, o)),
-    setNames: (names, o) => now(() => core.setNames(names, o)),
-    setClock: (clock, o) => now(() => core.setClock(clock, o)),
-    editStructure: (op, o) => now(() => core.editStructure(op, o)),
-    setStyles: (styles, o) => core.setStyles(styles, o),
-    setLayout: (edits, o) => now(() => core.setLayout(edits, o)),
+    setNames: (names, o) => subs.after('setNames', now(() => core.setNames(names, o))),
+    setClock: (clock, o) => subs.after('setClock', now(() => core.setClock(clock, o))),
+    editStructure: (op, o) => subs.after('editStructure', now(() => core.editStructure(op, o))),
+    setStyles: (styles, o) => subs.after('setStyles', core.setStyles(styles, o)),
+    setLayout: (edits, o) => subs.after('setLayout', now(() => core.setLayout(edits, o))),
     getBook: () => core.getBook(),
     getLayout: () => core.getLayout(),
     getUsedRange: (sheet) => now(() => core.getUsedRange(sheet)),
@@ -882,11 +884,15 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     getResult: () => now(() => core.getResult()),
     getSnapshot: () => now(() => core.getSnapshot()),
     getHash: () => now(() => core.getHash()),
-    undo: (o) => now(() => core.undo(o)),
-    redo: (o) => now(() => core.redo(o)),
+    undo: (o) => subs.after('undo', now(() => core.undo(o))),
+    redo: (o) => subs.after('redo', now(() => core.redo(o))),
     get history() {
       return core.history
     },
-    close: () => core.close(),
+    subscribe: (listener) => subs.subscribe(listener),
+    close() {
+      subs.clear()
+      core.close()
+    },
   })
 }

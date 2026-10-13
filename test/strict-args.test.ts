@@ -25,7 +25,7 @@ const SESSION: Record<string, number> = {
   applyChanges: 2, previewChanges: 2, readCells: 2, findCells: 3, replaceInCells: 4, getDependents: 2, summarizeRanges: 2,
   setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setCellTexts: 2, previewCellTexts: 2, pasteText: 4, previewPasteText: 4, fillCellText: 4, previewFillCellText: 4, setNames: 2, setClock: 2, editStructure: 2, setStyles: 2, setLayout: 2,
   getBook: 0, getLayout: 0, getUsedRange: 1, getEnd: 3, explain: 3, getCells: 2, copyText: 3, getCell: 2, getViewport: 3, getCellIssue: 2, getValidation: 2, validateEntry: 3,
-  getResult: 0, getSnapshot: 0, getHash: 0, undo: 1, redo: 1, close: 0,
+  getResult: 0, getSnapshot: 0, getHash: 0, undo: 1, redo: 1, subscribe: 1, close: 0,
 }
 
 /** An asynchronous session's (`AsyncSession`): the calls that compute take a call's options too. */
@@ -72,7 +72,8 @@ describe.each(['closures', 'eval'] as const)('arguments a call does not take, ex
     it('every method refuses an options object or a callback past its arguments, by its name', async () => {
       const s = await open()
       for (const [name, max] of Object.entries(table)) {
-        if (name === 'close') continue
+        // subscribing refuses at once, as a synchronous call, in every kind of session (`session-subscribe.test.ts`)
+        if (name === 'close' || name === 'subscribe') continue
         const call = (s as unknown as Record<string, (...a: unknown[]) => Promise<unknown>>)[name]
         await expect(call(...Array(max).fill(undefined), { depth: 2 }), name).rejects.toThrow(`${name}: takes ${max} argument${max === 1 ? '' : 's'}, got an object as argument ${max + 1} (depth is an option of explain)`)
         await expect(call(...Array(max).fill(undefined), () => 0), name).rejects.toThrow(InputError)
