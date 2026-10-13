@@ -3,7 +3,7 @@
  * are flattened to entries by place (`cell S!A1`, `column S!B`, `name S!rate` …) holding plain values: a style by
  * its fields rather than its index, a formula as its canonical text, a date as its serial number in the book's date
  * system, a code equal to a built-in format every locale shows alike as that format's number, spans of rows and
- * columns line by line (a line of size 0 hidden), iterative calculation with Excel's defaults filled in.
+ * columns line by line (a line of size 0 hidden, a row's height Excel fitted left out), iterative calculation with Excel's defaults filled in.
  */
 import type { BookInput, CellInput, CellResult, CellStyle, CellValue, ComputeResult, NumberFormat, TableInput } from '../../../src/contract.js'
 import { entryAt, lines } from '../../../src/layout/spans.js'
@@ -134,7 +134,11 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
     for (const [addr, x] of cells) out.set(`cell ${s.name}!${addr}`, stable(x))
     // a line of size 0 is hidden in Excel
     for (const [lo, hi, e] of lines(s.columns, 'c')) for (let c = lo; c <= hi; c++) out.set(`column ${s.name}!${indexToCol(c)}`, stable({ width: e.width, hidden: e.hidden || e.width === 0 || undefined, ...lookOf(book, e) }))
-    for (const [lo, hi, e] of lines(s.rows, 'r')) for (let r = lo; r <= hi; r++) out.set(`row ${s.name}!${r + 1}`, stable({ height: e.height, hidden: e.hidden || e.height === 0 || undefined, ...lookOf(book, e) }))
+    // a height Excel fitted (`bestFit`) is Excel's own measure of the row, not a height the book gave it
+    for (const [lo, hi, e] of lines(s.rows, 'r')) {
+      const x = { height: e.bestFit ? undefined : e.height, hidden: e.hidden || e.height === 0 || undefined, ...lookOf(book, e) }
+      if (Object.values(x).some((v) => v !== undefined)) for (let r = lo; r <= hi; r++) out.set(`row ${s.name}!${r + 1}`, stable(x))
+    }
     if (s.merges?.length) out.set(`merges ${s.name}`, stable([...s.merges].sort()))
     // a table's columns: a calculated column's formula as stored text; a totals formula of its own (`custom`) and a label
     // the totals cell holds are left out (the cell holds them; Excel records a label for the text there when it saves)
