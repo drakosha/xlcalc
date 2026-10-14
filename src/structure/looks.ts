@@ -13,6 +13,8 @@ import { parseRange, shiftRect, type Rect } from './area.js'
 import { tiles } from './copy.js'
 import type { Applied } from './geometry.js'
 import { pasteOf } from './writes.js'
+import { grown } from './merge.js'
+import { mergesOf } from '../layout/merges.js'
 
 /** The rectangles of a sheet whose looks an operation reads, moves or writes as entries, by sheet: its tables, a range's source and target. */
 function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
@@ -49,6 +51,13 @@ function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
     case 'addTable':
       add(index(o.sheet), range((o.table as Record<string, unknown> | undefined)?.range))
       break
+    case 'mergeCells': {
+      // the range grown by the merged areas it meets, whose cells the merge moves and writes over their looks
+      const s = index(o.sheet)
+      const x = range(o.range)
+      if (s >= 0 && x) add(s, grown(x, mergesOf(book.sheets[s])))
+      break
+    }
     case 'deleteTable': {
       const t = tablesOf(book).list.find((x) => typeof o.table === 'string' && tableKey(x.name) === tableKey(o.table))
       if (t) add(t.s, t)
