@@ -11,6 +11,7 @@
 import type { BookInput, CellInput, CellValue, ColumnInput, DataValidation, NumberFormat } from '../../../src/contract.js'
 import { formatAddress, indexToCol, parseAddress } from '../../../src/model.js'
 import { numberFormatCategory, numberFormatChoices } from '../../../src/text.js'
+import { groupCollector } from '../collect.js'
 
 export type UiAction =
   /** The formula bar of each cell, selected and then in editing (F2). */
@@ -166,16 +167,7 @@ export const uiBook = (c: UiCase, locale?: string): BookInput => ({
 })
 
 /** Cases of one group: ids `<group>-<n>`. */
-export function collector() {
-  const out: UiCase[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, c: Omit<UiCase, 'id'>) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, ...c })
-  }
-  return { out, add }
-}
+export const collector = () => groupCollector<UiCase>()
 
 /** What the ribbon shows in a cell of a case: the box's category; for an item applied, the item's name, the format it applies and the box's category after. */
 export type RibbonCell = string | { name: string; format: NumberFormat; box: string }
@@ -187,4 +179,12 @@ export function ribbonOf(c: UiCase, tag: string): Record<string, RibbonCell> {
   if (act.do !== 'choose') throw new Error(`${c.id} is no case of the ribbon`)
   const choices = numberFormatChoices(tag)
   return Object.fromEntries(act.picks.map(([a, k]) => [a, { name: choices[k - 1].name, format: choices[k - 1].format, box: numberFormatCategory(choices[k - 1].format, tag).name }]))
+}
+
+/** Each text typed over C3 (A1 = 2, D3 = 10, D4 = 20), then the right arrow and Return (the point sets held out): group `typed`, C4 read. */
+export function typedThenRight(texts: readonly string[]): UiCase[] {
+  const { out, add } = collector()
+  const cells: Record<string, CellInput> = { A1: { value: 2 }, D3: { value: 10 }, D4: { value: 20 } }
+  for (const text of texts) add('typed', { cells, act: { do: 'point', at: 'C3', steps: [{ type: text }, { key: 'right' }, { key: 'return' }] }, read: ['C4'] })
+  return out
 }

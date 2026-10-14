@@ -39,6 +39,26 @@ const book = (): BookInput => ({
 /** Changes as `sheet!cell=value text`, in the order of the sheets and addresses. */
 const listed = (changes: CellChange[]) => changes.map((c) => `${c.sheet}!${c.cell}=${JSON.stringify(c.value)} ${c.text ?? ''}${c.spill ? ` ${c.spill}` : ''}`).sort()
 
+/** Structure operations on `s`, each answered ok: the book after each, a copy. */
+function applied(s: Session, ops: readonly StructureOp[]): BookInput[] {
+  return ops.map((op) => {
+    expect(s.editStructure(op).ok).toBe(true)
+    return structuredClone(s.getBook())
+  })
+}
+
+/** The structure operations that made `books` (from the first) undone one by one, then done again: each book in turn. */
+function backAndAgain(s: Session, books: BookInput[], o: { execution: Execution }) {
+  for (let k = books.length - 2; k >= 0; k--) {
+    expect(s.undo()!.call).toBe('editStructure')
+    same(s, books[k], o)
+  }
+  for (let k = 1; k < books.length; k++) {
+    s.redo()
+    same(s, books[k], o)
+  }
+}
+
 /** The session's book and hash are those of `want`, and a full computation of it. */
 function same(s: Session, want: BookInput, o: { execution: Execution }) {
   expect(s.getBook()).toEqual(want)
@@ -229,21 +249,9 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
       { op: 'hideSheet', sheet: 'R' },
       { op: 'deleteSheet', sheet: 'Plan' },
     ] as const
-    const books = [before]
-    for (const op of ops) {
-      expect(s.editStructure(op).ok).toBe(true)
-      books.push(structuredClone(s.getBook()))
-    }
+    const books = [before, ...applied(s, ops)]
     expect(s.getBook().sheets).toEqual([{ name: 'R', hidden: true, cells: { A1: { formula: '#REF!B1+1' }, A2: { formula: 'SUM(#REF!A:A)' }, C5: { value: 1 }, C6: { value: 2 } } }, { name: 'N', cells: {} }])
-    for (let k = ops.length - 1; k >= 0; k--) {
-      const u = s.undo()!
-      expect(u.call).toBe('editStructure')
-      same(s, books[k], o)
-    }
-    for (let k = 1; k <= ops.length; k++) {
-      s.redo()
-      same(s, books[k], o)
-    }
+    backAndAgain(s, books, o)
   })
 
   it('a deleted sheet given back as the history keeps it, edited, deleted and given back again: each book as it was', () => {
@@ -284,19 +292,8 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
       { op: 'deleteColumns', sheet: 'S', column: 'B' },
       { op: 'addTable', sheet: 'S', table: { name: 'Tab', range: 'H1:I3', columns: [{ name: 'x' }, { name: 'y' }] } },
     ]
-    const books = [structuredClone(s.getBook())]
-    for (const op of ops) {
-      expect(s.editStructure(op).ok).toBe(true)
-      books.push(structuredClone(s.getBook()))
-    }
-    for (let k = ops.length - 1; k >= 0; k--) {
-      s.undo()
-      same(s, books[k], o)
-    }
-    for (let k = 1; k <= ops.length; k++) {
-      s.redo()
-      same(s, books[k], o)
-    }
+    const books = [structuredClone(s.getBook()), ...applied(s, ops)]
+    backAndAgain(s, books, o)
   })
 
   it('a column of more cells deleted than the way back looks up one by one: the sheet counted, its cells back', () => {

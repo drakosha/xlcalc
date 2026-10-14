@@ -3,18 +3,16 @@ import { compute, createSession, type BookInput, type CellInput } from '../src/i
 import { createState } from '../src/engine.js'
 import { CalcError } from '../src/exec/budget.js'
 import { Rng } from '../src/values.js'
+import { columnReads } from './engine-counts.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
 it('descending prefix sums reuse read work instead of reading a quadratic number of cells', () => {
   const n = 1024
   const state = createState({ sheets: [{ name: 'S', cells: Object.fromEntries(Array.from({ length: n }, (_, i) => [`A${i + 1}`, { value: 1 }])) }] }, { now: 0, seed: 1 })
-  let reads = 0
-  state.ctx.sheets[0].cols[0] = new Proxy(state.ctx.sheets[0].cols[0], {
-    get(target, key, receiver) { if (typeof key === 'string' && /^\d+$/.test(key)) reads++; return Reflect.get(target, key, receiver) },
-  })
+  const reads = columnReads(state, 0)
   for (let end = n - 1; end >= 0; end--) expect(state.rt.F.SUM(new Rng(0, 0, 0, end, 0))).toBe(end + 1)
-  expect(reads).toBeLessThan(n * 300)
+  expect(reads()).toBeLessThan(n * 300)
 })
 
 describe.each(['closures', 'eval'] as const)('range aggregates, %s', (execution) => {

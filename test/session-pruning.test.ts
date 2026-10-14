@@ -1,6 +1,6 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { compute, type AsyncSession, type BookInput, type CellInput } from '../src/index.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { afterAll, describe, expect, it } from 'vitest'
+import { compute, type AsyncSession, type CellInput } from '../src/index.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const chain = (): Record<string, CellInput> => {
@@ -12,8 +12,7 @@ afterAll(closeCalcs)
 
 describe.each(['closures', 'eval'] as const)('pruned recalculation, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => { open = await opener(kind) })
+    const open = openerFor(kind)
     const session = (cells: Record<string, CellInput>) => open({ sheets: [{ name: 'S', cells }] }, { clock, execution, display: false })
     const check = async (s: AsyncSession) => {
       const got = await s.getResult()

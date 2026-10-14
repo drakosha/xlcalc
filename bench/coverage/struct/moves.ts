@@ -9,7 +9,8 @@ import type { StructCase, StructCases } from './cases.js'
 
 const col = (i: number) => indexToCol(i - 1)
 
-function windowBook(): BookInput {
+/** S: A1:B14 values; T: every `S!Ai:Aj` and `S!Ai:Bj` in a 12-row window; U: `u`, values to move onto S. */
+export function windowBook(u: Record<string, CellInput> = {}): BookInput {
   const s: Record<string, CellInput> = {}
   for (let r = 1; r <= 14; r++) {
     s[`A${r}`] = { value: r }
@@ -21,7 +22,7 @@ function windowBook(): BookInput {
       t[`${col(j)}${i}`] = { formula: i === j ? `S!A${i}` : `SUM(S!A${i}:A${j})` }
       t[`${col(j)}${i + 20}`] = { formula: `SUM(S!A${i}:B${j})` }
     }
-  return { sheets: [{ name: 'S', cells: s }, { name: 'T', cells: t }, { name: 'U', cells: {} }] }
+  return { sheets: [{ name: 'S', cells: s }, { name: 'T', cells: t }, { name: 'U', cells: u }] }
 }
 
 export function buildStructCases(): StructCases {

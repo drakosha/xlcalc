@@ -7,7 +7,8 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldCases } from './arrays/common.js'
+import { n, s } from '../vals.js'
 
 /** R: values and formulas between them (B1 50, D1 8, C3 5, B5 spills 1, 2, 3); S9: a formula over `S8:S9!A1`, which is A1:S8 there; Uno, Due, Tre: a formula on the middle one. */
 export const SHEETS: SheetCells = {
@@ -17,9 +18,6 @@ export const SHEETS: SheetCells = {
   Due: { A1: { formula: 'R!E9*3' } },
   Tre: { A1: 3 },
 }
-
-const n = (v: number): Val => ({ t: 'n', v })
-const s = (v: string): Val => ({ t: 's', v })
 
 /** Group, formula and the answer predicted before Excel ran. */
 const CASES: [string, string, Val][] = [
@@ -36,11 +34,5 @@ const CASES: [string, string, Val][] = [
   ['union', 'ARRAYTOTEXT(FREQUENCY((R!E1,R!B1:D1),{10;100}),1)', s('{3;1;0}')],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [group, f] of CASES) add(group, group, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)

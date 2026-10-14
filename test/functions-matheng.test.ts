@@ -3,16 +3,10 @@
  * answer at once, whole columns, and round trips through the number systems, Roman numerals and CONVERT.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, type CellInput, type CellValue } from '../src/index.js'
+import { type CellInput } from '../src/index.js'
+import { err, valuesAt } from './formula-values.js'
 
-const err = (code: Extract<CellValue, { error: unknown }>['error']): CellValue => ({ error: code })
-
-function values(formulas: string[], cells: Record<string, CellInput> = {}): CellValue[] {
-  const f: Record<string, CellInput> = {}
-  formulas.forEach((x, i) => (f[`Z${i + 1}`] = { formula: x }))
-  const r = compute({ sheets: [{ name: 'S', cells: { ...cells, ...f } }] }, { clock: { now: '2026-10-06T12:00:00Z', seed: 1 } })
-  return formulas.map((_, i) => r.sheets[0].cells[`Z${i + 1}`].value)
-}
+const values = valuesAt('2026-10-06T12:00:00Z')
 
 describe('math and engineering functions beyond the Excel cases', () => {
   it('Bessel functions of huge orders answer at once: 0 where the value underflows, #NUM! where it overflows', () => {

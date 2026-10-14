@@ -7,10 +7,9 @@
  * hold a name the engine refuses, so refusals are measured through tables renamed, whose names follow the same rules.
  */
 import type { NameInput, StructureOp } from '../../../src/contract.js'
-import { book, on, sales, type CellSpec, type TableCase, type TableStep } from './cases.js'
+import { book, type CellSpec, on, sales, type TableCase, type TableStep, typedFormula } from './cases.js'
 
 const op = (o: StructureOp): TableStep => ({ op: o })
-const typed = (cell: string, formula: string, sheet = 'S'): TableStep => ({ edit: { sheet, cell, value: { formula } } })
 
 /** Sheet S with A1 = 100, the cells given and the names. */
 const named = (names: NameInput[], cells: Record<string, CellSpec>) => ({ ...book(['S', { A1: 100, ...cells }]), names })
@@ -26,13 +25,13 @@ export function buildTableCases(): TableCase[] {
     'cyrillic',
     'names in Cyrillic: a constant and a reference, in formulas of the file and typed',
     named([{ name: 'Ставка', ref: '0.2' }, { name: 'НДС_2025', ref: "'S'!$A$1" }], { B1: '=Ставка*2', B2: '=SUM(Ставка,НДС_2025)', B3: '=НДС_2025*Ставка' }),
-    [typed('C1', 'Ставка*10'), typed('C2', 'SUM(НДС_2025,Ставка)')],
+    [typedFormula('C1', 'Ставка*10'), typedFormula('C2', 'SUM(НДС_2025,Ставка)')],
   )
   add(
     'any-case',
     'a Cyrillic name used in other cases is the same name (Excel may show it in the case it was defined in)',
     named([{ name: 'Ставка', ref: '0.2' }], { B1: '=ставка*2', B2: '=СТАВКА+1' }),
-    [typed('C1', 'сТаВкА*10')],
+    [typedFormula('C1', 'сТаВкА*10')],
   )
   add('cell-like', 'Cyrillic letters and digits are a name, not a cell (АБ12; aБ12 with a Latin a)', named([{ name: 'АБ12', ref: '1' }, { name: 'aБ12', ref: '2' }], { B1: '=АБ12+aБ12*10' }))
   add('r1c1-like', 'Cyrillic letters like R1C1 and like R and C alone are names (К2С3, Р1С1, С, К)', named(['К2С3', 'Р1С1', 'С', 'К'].map((name, i) => ({ name, ref: String(10 ** i) })), { B1: '=К2С3+Р1С1+С+К' }))
@@ -50,7 +49,7 @@ export function buildTableCases(): TableCase[] {
       ],
       names: [{ name: 'Ставка', ref: '0.2' }, { name: 'Ставка', ref: '0.3', scope: 'Лист' }],
     },
-    [typed('C1', 'Лист!Ставка+1')],
+    [typedFormula('C1', 'Лист!Ставка+1')],
     [...on('S', 'A1:C2'), ...on('Лист', 'A1')],
   )
   add('word-ru', "Russian function names are plain words in en-US: Сумма, and СУММ, SUM's name in ru-RU", named([{ name: 'Сумма', ref: '5' }, { name: 'СУММ', ref: '7' }], { B1: '=Сумма*2', B2: '=SUM(Сумма,СУММ)', B3: '=СУММ' }))

@@ -1,9 +1,9 @@
 /** A manually assigned height leaves AutoFit, including after undo, batched layout edits and xlsx roundtrip. */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 afterAll(closeCalcs)
 
@@ -11,8 +11,7 @@ const book = (): BookInput => ({ styles: [{ alignment: { wrap: true } }], sheets
 
 describe.each(['closures', 'eval'] as const)('manual row height, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => { open = await opener(kind) })
+    const open = openerFor(kind)
 
     for (const entry of ['setCellText', 'setCellTexts', 'fillCellText'] as const) it(`keeps a manual height on ${entry}, preserving the other row fields and neighboring rows`, async () => {
       const s = await open(book(), { clock: CLOCK, execution })

@@ -6,13 +6,9 @@
  * object model a formula with a line break or giving one, text into a wrapped cell, a line break into a larger font, a
  * merged cell and a row of a taller cell, a carriage return.
  */
-import type { CellStyle } from '../../../src/contract.js'
 import { textOf } from '../fit/autofit.js'
-import { collector, type RowCase, type RowCell } from './cases.js'
+import { collector, one, type RowCase, size, WRAP } from './cases.js'
 
-const WRAP: CellStyle = { alignment: { wrap: true } }
-const size = (n: number, more: CellStyle = {}): CellStyle => ({ ...more, font: { size: n } })
-const one = (value: RowCell['value'], look?: CellStyle): Record<number, RowCell> => ({ 0: { value, ...(look ? { look } : {}) } })
 const lines = (n: number) => Array.from({ length: n }, (_, i) => `l${i}`).join('\n')
 
 const SENTENCE = 'The quick brown fox jumps over the lazy dog. '.repeat(3).trim()

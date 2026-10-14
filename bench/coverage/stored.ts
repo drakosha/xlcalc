@@ -6,7 +6,8 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import type { BookInput, CellInput, ColumnInput, ConditionalFormat, ConditionalStyle, NumberFormat, RowInput, SheetInput } from '../../src/contract.js'
+import type { BookInput, CellInput, ColumnInput, ConditionalFormat, ConditionalStyle, NumberFormat, RowInput, SheetInput, StructureOp } from '../../src/contract.js'
+import { editStructure } from '../../src/structure/index.js'
 
 /** A step's stored file to go on from; null without one, or with `FCOV_FRESH=1`, which runs every case again. */
 export const loadStored = <T>(file: string): T | null => (existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as T) : null)
@@ -209,4 +210,20 @@ export function runFileCases<C extends { id: string }, A>(label: string, store: 
       console.log(`${answeredLine(label, done, store.answers, store.cases, store.rejected)}, ${took(t0)} s`)
     },
   )
+}
+
+/** An address without its `$` (Excel's `Address()`). */
+export const plain = (a: string) => a.replaceAll('$', '')
+
+/** A cell of a formula. */
+export const formulaCell = (formula: string): StoredCell => ({ formula })
+
+/** A cell of a value. */
+export const valueCell = (value: CellInput['value']): CellInput => ({ value })
+
+/** The book after a structure operation, which must not be refused (a set's book made by an operation). */
+export function after(book: BookInput, op: StructureOp): BookInput {
+  const r = editStructure(book, op)
+  if (!r.ok) throw new Error(`files: ${r.message}`)
+  return r.book
 }

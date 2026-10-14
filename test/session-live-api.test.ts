@@ -1,7 +1,7 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { compute, type AsyncSession, type BookInput, type SessionOperation } from '../src/index.js'
 import { pool } from './fixtures/pool.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const book = (): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' }, C1: { formula: 'B1+3' }, D1: { value: 'hello' } } }] })
 const check = async (s: AsyncSession) => {
@@ -12,10 +12,7 @@ const check = async (s: AsyncSession) => {
 afterAll(closeCalcs)
 describe.each(['closures', 'eval'] as const)('live workbook additions, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => {
-      open = await opener(kind)
-    })
+    const open = openerFor(kind)
     const session = () => open(book(), { clock, execution, display: false })
     it('applies cells, names and formatting as one revision and history step', async () => {
       const s = await session(),

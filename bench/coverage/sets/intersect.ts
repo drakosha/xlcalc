@@ -7,16 +7,12 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldCases } from './arrays/common.js'
 import { SHEETS as AREA_SHEETS } from './areas.js'
+import { n, s, b, e } from '../vals.js'
 
 /** Jan, Feb and Mar of the set `areas`. */
 export const SHEETS: SheetCells = AREA_SHEETS
-
-const n = (v: number): Val => ({ t: 'n', v })
-const s = (v: string): Val => ({ t: 's', v })
-const b = (v: boolean): Val => ({ t: 'b', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
 
 /** Group, formula and the answer predicted before Excel ran (undefined: not predicted). D!B1:B3 4, 8, 15; D!C1:C3 2, 7, 11. */
 const CASES: [string, string, Val?][] = [
@@ -69,16 +65,8 @@ const CASES: [string, string, Val?][] = [
   ['range', 'SUM(D!B1:C3 D!C2:INDEX(D!C1:C8,4))', n(18)],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [group, f] of CASES) add(group, group, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(
-  buildProbes().flatMap((p, i) => (CASES[i][2] ? [[p.id, CASES[i][2]]] : [])),
-)
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)
 
 /** The predictions Excel did not confirm: C3 without a sheet is on the formula's sheet, so `D!B1:B2:C3` joins two sheets. */
 export const MISSED: readonly string[] = ['range#4']

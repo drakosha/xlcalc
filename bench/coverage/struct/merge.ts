@@ -5,10 +5,9 @@
  * merged cells split again (`before`). Predicted by the engine before Excel ran it (`merge.predicted.json`).
  */
 import type { StructureOp } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { caseAdder, type StructCases } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /**
  * S: numbers and text in A1:C6, A3 and B3 filled, B4 `0.00`; formulas over them in H; formulas in B8:C8; an empty A10 and
@@ -73,8 +72,7 @@ export const unmerge = (range: string): StructureOp => ({ op: 'unmergeCells', sh
 const TABLE: StructureOp = { op: 'addTable', sheet: 'S', table: { name: 'Sales', range: 'B13:C16', columns: [{ name: 'h1' }, { name: 'h2' }] } }
 
 export function buildStructCases(): StructCases {
-  const cases: StructCase[] = []
-  const add = (id: string, op: StructureOp, more: Partial<StructCase> = {}) => cases.push({ id, book: 'merge', op, ...more })
+  const { cases, add } = caseAdder('merge')
   add('merge-A1-B2', merge('A1:B2'))
   add('merge-A1-C1-center', merge('A1:C1', { center: true }))
   add('merge-A1-C3-across', merge('A1:C3', { across: true }))

@@ -8,6 +8,7 @@
 import type { BookInput, CellInput, CellStyle, ColumnInput } from '../../../src/contract.js'
 import { formatAddress } from '../../../src/model.js'
 import { takenPart, type StoredCell, type StoredColumn } from '../stored.js'
+import { groupCollector } from '../collect.js'
 
 /** How a text is typed: Excel's `Value` with the text, `Formula2Local` (Excel 365's typing in the user's language), or keys (Excel for Mac only). */
 export type Via = 'value' | 'local' | 'keys'
@@ -77,13 +78,7 @@ export function fitBook(cases: FitCase[]): BookInput {
 }
 
 /** Cases of one group: ids `<group>-<n>`. */
-export function collector() {
-  const out: FitCase[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, c: Omit<FitCase, 'id'>) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, ...c })
-  }
-  return { out, add }
-}
+export const collector = () => groupCollector<FitCase>()
+
+/** Typed only on the keyboard's layout (ASCII): the others are typed through the object model alone. */
+export const ascii = (t: string) => /^[\x20-\x7e]*$/.test(t)

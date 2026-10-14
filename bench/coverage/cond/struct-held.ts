@@ -8,8 +8,7 @@
  */
 import type { BookInput, CellInput, ConditionalFormat, StructureOp } from '../../../src/contract.js'
 import type { CondCase, CondCases } from './cases.js'
-
-const v = (value: CellInput['value']): CellInput => ({ value })
+import { valueCell as v } from '../stored.js'
 
 /**
  * S: numbers in A1:A10 (0 to 9) and B1:G10; rules: B2:B10 above 5, D2:D10 and F2:F4 where $A is above 3, a colour scale

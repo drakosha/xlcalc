@@ -5,27 +5,9 @@
  * empty cells over values, a copy that does not fit.
  */
 import type { BookInput, CellInput, RangeRef } from '../../../src/contract.js'
-import { indexToCol } from '../../../src/model.js'
-import type { StructCase, StructCases } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
-const col = (i: number) => indexToCol(i - 1)
-
-/** S: A1:B14 values; T: every `S!Ai:Aj` and `S!Ai:Bj` in a 12-row window; U: values to move onto S. */
-function windowBook(): BookInput {
-  const s: Record<string, CellInput> = {}
-  for (let r = 1; r <= 14; r++) {
-    s[`A${r}`] = { value: r }
-    s[`B${r}`] = { value: r * 10 }
-  }
-  const t: Record<string, CellInput> = {}
-  for (let i = 1; i <= 12; i++)
-    for (let j = i; j <= 12; j++) {
-      t[`${col(j)}${i}`] = f(i === j ? `S!A${i}` : `SUM(S!A${i}:A${j})`)
-      t[`${col(j)}${i + 20}`] = f(`SUM(S!A${i}:B${j})`)
-    }
-  return { sheets: [{ name: 'S', cells: s }, { name: 'T', cells: t }, { name: 'U', cells: { A1: { value: 7 }, A2: { value: 8 }, A3: { value: 9 }, B1: { value: 1 } } }] }
-}
+import { rangeAt, type StructCase, type StructCases } from './cases.js'
+import { windowBook } from './moves.js'
+import { formulaCell as f } from '../stored.js'
 
 /** E: values; F: references at the last row and column. */
 function edgeBook(): BookInput {
@@ -70,13 +52,9 @@ function copyBook(): BookInput {
 
 export function buildStructCases(): StructCases {
   const cases: StructCase[] = []
-  const at = (ref: string): RangeRef => {
-    const i = ref.lastIndexOf('!')
-    return { sheet: ref.slice(0, i), range: ref.slice(i + 1) }
-  }
   const move = (from: string, to: string, book = 'window') => {
-    const t = at(to)
-    cases.push({ id: `move-${from}-${to}`, book, op: { op: 'moveRange', from: at(from), to: { sheet: t.sheet, cell: t.range } } })
+    const t = rangeAt(to)
+    cases.push({ id: `move-${from}-${to}`, book, op: { op: 'moveRange', from: rangeAt(from), to: { sheet: t.sheet, cell: t.range } } })
   }
   move('S!A5:A6', 'S!A12')
   move('S!A9:A11', 'S!A3')
@@ -99,14 +77,14 @@ export function buildStructCases(): StructCases {
   rows('edge-delete-rows-1048574', 'deleteRows', 1048574)
   cols('edge-delete-cols-XFCx2', 'deleteColumns', 'XFC', 2)
   cols('edge-insert-cols-XFD', 'insertColumns', 'XFD')
-  const copy = (id: string, from: string, to: string) => cases.push({ id, book: 'copy', op: { op: 'copyRange', from: at(from), to: at(to) } })
+  const copy = (id: string, from: string, to: string) => cases.push({ id, book: 'copy', op: { op: 'copyRange', from: rangeAt(from), to: rangeAt(to) } })
   copy('copy-mixed-up', 'S!C10:D10', 'S!C7')
   copy('copy-mixed-down', 'S!C10:D10', 'S!C13')
   copy('copy-local-name-T', 'S!E10', 'T!E10')
   copy('copy-local-name-V', 'S!E10', 'V!E10')
-  cases.push({ id: 'move-local-name-T', book: 'copy', op: { op: 'moveRange', from: at('S!E10:F10'), to: { sheet: 'T', cell: 'A1' } } })
-  cases.push({ id: 'move-empty-over-values', book: 'copy', op: { op: 'moveRange', from: at('S!H1:H2'), to: { sheet: 'S', cell: 'A1' } } })
+  cases.push({ id: 'move-local-name-T', book: 'copy', op: { op: 'moveRange', from: rangeAt('S!E10:F10'), to: { sheet: 'T', cell: 'A1' } } })
+  cases.push({ id: 'move-empty-over-values', book: 'copy', op: { op: 'moveRange', from: rangeAt('S!H1:H2'), to: { sheet: 'S', cell: 'A1' } } })
   // last: Excel refuses a copy that does not fit (an error, if no window)
   copy('copy-off-sheet', 'S!C10:D10', 'S!XFD20')
-  return { books: { window: windowBook(), edge: edgeBook(), copy: copyBook() }, cases }
+  return { books: { window: windowBook({ A1: { value: 7 }, A2: { value: 8 }, A3: { value: 9 }, B1: { value: 1 } }), edge: edgeBook(), copy: copyBook() }, cases }
 }

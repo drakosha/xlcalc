@@ -12,7 +12,7 @@ import { writeXlsx } from '../../src/xlsx.js'
 import { caseAnswer, uiFile, type RawCell, type StoredUi } from '../coverage/ui.js'
 import { clipboardText, macOnly, readCells, readColumns, uiBook, type UiCase, type UiSet } from '../coverage/ui/cases.js'
 import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
-import { inJobs, metaOf, type Step, type Tag, type WinEnv } from './remote.js'
+import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepUi(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = (await setModule<UiSet>('ui', set)).buildUiCases().filter((c) => !macOnly(c.act))
@@ -29,14 +29,7 @@ export async function stepUi(set: string, tag: Tag, e: WinEnv): Promise<void> {
     const paste: Step[] = c.act.do === 'paste' ? [{ do: 'paste', sheet: 'S', at: c.act.at, text: clipboardText(c.act) }] : []
     return { file: f, steps: [{ do: 'full' }, ...paste, { do: 'calc' }, { do: 'cells', sheet: 'S', cells: readCells(c) }, { do: 'widths', sheet: 'S', columns: readColumns(c) }, { do: 'saveAs' }] }
   }
-  await inJobs(`ui-${set}-${tag}`, todo, book, (c, a, cutShort) => {
-    if (a && 'answers' in a && a.saved) {
-      results.push([c, a.answers, a.saved])
-      return []
-    }
-    if (!a && cutShort) return [c]
-    throw new Error(`ui ${set} ${tag} ${c.id}: the book did not run: ${a && 'rejected' in a ? a.rejected : 'the job stopped on it'}`)
-  }, save)
+  await inJobs(`ui-${set}-${tag}`, todo, book, savedInto(results, (c, why) => `ui ${set} ${tag} ${c.id}: the book did not run: ${why}`), save)
   for (const [c, got, saved] of results) {
     // the steps' answers: full, the paste (null, or its error), calc, cells, widths, saveAs
     const at = c.act.do === 'paste' ? 1 : 0

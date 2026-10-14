@@ -11,7 +11,7 @@ import { inParts } from '../coverage/book.js'
 import { cellOf, keptRows, partAnswers, ROWS_PART, rowsFile } from '../coverage/rows.js'
 import { caseCells, caseRow, rowsBook, type RowCase, type RowSet } from '../coverage/rows/cases.js'
 import { answeredLine, inCaseOrder, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
-import { inJobs, metaOf, type Step, type Tag, type WinEnv } from './remote.js'
+import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepRows(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = (await setModule<RowSet>('rows', set)).buildRowCases(tag).filter((c) => c.via !== 'keys' && c.via !== 'fill')
@@ -36,14 +36,7 @@ export async function stepRows(set: string, tag: Tag, e: WinEnv): Promise<void> 
     return { file: f, steps: [{ do: 'heights', sheet: 'S', rows }, ...acts, { do: 'calc' }, { do: 'heights', sheet: 'S', rows }, { do: 'wraps', sheet: 'S', cells }, { do: 'saveAs' }] }
   }
   const results: [RowCase[], unknown[], Uint8Array][] = []
-  await inJobs(`rows-${set}-${tag}`, parts, book, (part, a, cutShort) => {
-    if (a && 'answers' in a && a.saved) {
-      results.push([part, a.answers, a.saved])
-      return []
-    }
-    if (!a && cutShort) return [part]
-    throw new Error(`rows ${set} ${tag}: a part did not run: ${a && 'rejected' in a ? a.rejected : 'the job stopped on it'}`)
-  }, save)
+  await inJobs(`rows-${set}-${tag}`, parts, book, savedInto(results, (part, why) => `rows ${set} ${tag}: a part did not run: ${why}`), save)
   for (const [part, got, saved] of results) {
     // the answers of the steps: heights, set or paste (null, or the error it got) and rowfit, calc, heights, wraps, saveAs
     const before = (got[0] as [number, boolean][]).map(([h]) => h)

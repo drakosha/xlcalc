@@ -11,7 +11,7 @@ import { takenBook } from '../bench/coverage/stored.js'
 import { createSession, type BookInput, type CachedValues, type ComputeResult, type Session, type SheetInput } from '../src/index.js'
 import { patchLines, parseSpan } from '../src/layout/spans.js'
 import { formatAddress, parseAddress } from '../src/model.js'
-import { shownValue } from './spill-shown.js'
+import { readDifferences } from './spill-shown.js'
 
 export const CLOCK = { now: '2026-10-07T12:00:00Z', seed: 1 }
 
@@ -77,18 +77,7 @@ export function differences(c: WorkbookCase, excel: Record<string, Val>, shown: 
     const ours = r.sheets.find((s) => s.name === sheet)!.cells[addr]?.text ?? ''
     if (ours !== text) out.push(`${k} shows ${JSON.stringify(text)} in Excel, ${JSON.stringify(ours)} here`)
   }
-  for (const g of c.read) {
-    const [p, q = p] = g.range.split(':').map(parseAddress)
-    for (let row = p.row; row <= q.row; row++)
-      for (let col = p.col; col <= q.col; col++) {
-        const addr = formatAddress(row, col)
-        const x = excel[`${g.sheet}!${addr}`] ?? null
-        const engine = shownValue(r, g.sheet, addr)
-        const ok = x === null || engine === null ? x === engine : compare(x, engine).ok
-        if (!ok) out.push(`${g.sheet}!${addr}: Excel ${JSON.stringify(x)}, engine ${JSON.stringify(engine)}`)
-      }
-  }
-  return out
+  return [...out, ...readDifferences(c.read, excel, r, (x, engine) => compare(x, engine).ok)]
 }
 
 /** A predicted read as Excel's answer: the values, and the shown text of `show:` keys. */

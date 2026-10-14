@@ -6,15 +6,13 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldCases } from './arrays/common.js'
+import { n, e } from '../vals.js'
 
 /** Sheet H: holidays as date text, as numbers, as numeric text, and text, a boolean and a blank (A6). */
 export const SHEETS: SheetCells = {
   H: { A1: '1/6/2025', A2: '2025-01-07', A3: 45665, A4: 'abc', A5: true, A7: '45663', A8: 'Jan 8, 2025' },
 }
-
-const n = (v: number): Val => ({ t: 'n', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
 
 /** Function, formula and the answer predicted before Excel ran (undefined: not predicted). */
 const CASES: [string, string, Val?][] = [
@@ -98,16 +96,8 @@ const CASES: [string, string, Val?][] = [
   ['WORKDAY', 'WORKDAY(DATE(2025,1,1),5,{"1/6/2025";"abc"})', e('VALUE')],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [fn, f] of CASES) add(fn, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(
-  buildProbes().flatMap((p, i) => (CASES[i][2] ? [[p.id, CASES[i][2]]] : [])),
-)
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)
 
 /**
  * The predictions Excel did not confirm: ACCRINT whose issue's period begins before 1900 is 0, not #NUM!; DURATION

@@ -3,7 +3,7 @@
  * typed, structure and table operations), and the rectangles read at the end, with the tables of every sheet.
  */
 import type { Val } from '../formulajs.js'
-import type { NameInput, RangeRef, StructureOp, TableColumn, TableInput } from '../../../src/contract.js'
+import type { BookInput, NameInput, RangeRef, StructureOp, TableColumn, TableInput } from '../../../src/contract.js'
 import { colToIndex, indexToCol } from '../../../src/model.js'
 import type { StoredBook, StoredCell } from '../stored.js'
 
@@ -128,9 +128,29 @@ export function book(...sheets: [string, Record<string, CellSpec>, ...{ cells: R
 }
 
 /** Answers for predictions. */
-export const n = (v: number): Val => ({ t: 'n', v })
-export const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
-export const s = (v: string): Val => ({ t: 's', v })
+export { n, e, s } from '../vals.js'
 
 /** Rectangles of one sheet. */
 export const on = (sheet: string, ...ranges: string[]): RangeRef[] => ranges.map((range) => ({ sheet, range }))
+
+/** A formula typed into a cell, of sheet S unless another is given. */
+export const typedFormula = (cell: string, formula: string, sheet = 'S'): TableStep => ({ edit: { sheet, cell, value: { formula } } })
+
+/** Text typed into a cell in the book's language, of sheet S unless another is given. */
+export const typedLocal = (cell: string, text: string, sheet = 'S'): TableStep => ({ edit: { sheet, cell, value: { local: text } } })
+
+/** A defined name added, global unless a sheet scopes it. */
+export const addedName = (name: string, ref: string, scope?: string): TableStep => ({ name: { name, ref, ...(scope ? { scope } : {}) } })
+
+/** The book in ru-RU. */
+export const inRu = (b: BookInput): BookInput => ({ ...b, locale: 'ru-RU' })
+
+/** Sales with a totals row in row 6, the sum of Qty. */
+export function salesWithTotals(): ReturnType<typeof sales> {
+  const t = sales()
+  t.table.range = 'A1:D6'
+  t.table.totals = true
+  t.table.columns[1].totals = { function: 'sum' }
+  t.cells.B6 = { formula: 'SUBTOTAL(109,Sales[Qty])' }
+  return t
+}

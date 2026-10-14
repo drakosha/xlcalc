@@ -9,9 +9,9 @@
  * unit), as the comparison's tolerance takes 5.55E-17 for 0. Q!B1:B3 hold 0.1, 0.2, -0.3.
  * Answers: `test/excel/cases/sum-zero-held.json`; `PREDICTED` was committed before Excel ran the set.
  */
-import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector, xl } from './arrays/common.js'
+import { heldGroups, xl } from './arrays/common.js'
+import { n } from '../vals.js'
 
 /** The rule predicted: a sum or difference below 2^(e-49), e the larger operand's exponent, is 0. */
 function near(a: number, b: number, r: number): number {
@@ -22,7 +22,6 @@ function near(a: number, b: number, r: number): number {
 /** SUM as predicted: the numbers added in turn, each addition by the rule. */
 const sum = (...xs: number[]) => xs.reduce((s, x) => near(s, x, s + x), 0)
 
-const n = (v: number): Val => ({ t: 'n', v })
 const M = 2 ** 60
 const K = [7, 8, 12, 15, 16, 17]
 
@@ -63,14 +62,8 @@ const CASES: [string, string, string, number][] = [
   ['NPV', 'NPV', 'NPV(0,0.1,0.2,-0.3)*2^60', (0.1 + 0.2 - 0.3) * M],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [group, fn, f] of CASES) add(group, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, n(CASES[i][3])]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldGroups(CASES.map(([group, fn, f, v]) => [group, fn, f, n(v)]))
 
 /**
  * The predictions Excel did not confirm (the Mac and Windows alike): the exponent is the left operand's, not the larger

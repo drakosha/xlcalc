@@ -10,11 +10,7 @@ import type { Val } from '../formulajs.js'
 import type { Probe } from '../probes.js'
 import { xl } from './arrays/common.js'
 import { xlpm } from './let/xlpm.js'
-
-const n = (v: number): Val => ({ t: 'n', v })
-const s = (v: string): Val => ({ t: 's', v })
-const b = (v: boolean): Val => ({ t: 'b', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
+import { n, s, b, e } from '../vals.js'
 
 /** 127 names, each the previous one plus 1, and no calculation. */
 const names127 = `LET(${Array.from({ length: 127 }, (_, i) => `n_${i + 1},${i ? `n_${i}+1` : '1'}`).join(',')})`

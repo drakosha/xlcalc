@@ -8,11 +8,8 @@
  * `=`, a string in a formula, a cell of the text format, `~` at the end of the query; whether a number too wide for its
  * column widens it; a table's header and the formulas that name its column.
  */
-import type { CellInput } from '../../../src/contract.js'
-import { collector } from '../find/cases.js'
+import { collector, text } from '../find/cases.js'
 import type { ReplaceBook, ReplaceCase, ReplaceQuery } from './cases.js'
-
-const text = (...xs: string[]): Record<string, CellInput> => Object.fromEntries(xs.map((v, i) => [`A${i + 1}`, { value: v }]))
 
 export const BOOKS: Record<string, ReplaceBook> = {
   // where `*` stops

@@ -4,22 +4,18 @@
  * gives) and formulas over both typed in Russian. Predicted by the engine (`caseKey`) before Excel ran it
  * (`name-case-ru-held.predicted.json`).
  */
-import type { BookInput } from '../../../src/contract.js'
 import { PAIRS } from './name-case-held.js'
-import { book, on, type TableCase, type TableStep } from './cases.js'
+import { book, inRu, on, type TableCase, typedLocal } from './cases.js'
 
 export const local = true
-
-const typed = (cell: string, text: string): TableStep => ({ edit: { sheet: 'S', cell, value: { local: text } } })
-const ru = (b: BookInput): BookInput => ({ ...b, locale: 'ru-RU' })
 
 export function buildTableCases(): TableCase[] {
   return PAIRS.flatMap(([id, word, upper]) =>
     ([['word', word], ['upper', upper]] as const).map(([which, name]): TableCase => ({
       id: `${id}-${which}`,
       about: `the name ${name} added in ru-RU, formulas over ${upper} and ${word} typed in Russian`,
-      book: ru(book(['S', { A1: 100 }])),
-      steps: [{ name: { name, ref: '5' } }, typed('C1', `=${upper}*2`), typed('C2', `=${word}*2`)],
+      book: inRu(book(['S', { A1: 100 }])),
+      steps: [{ name: { name, ref: '5' } }, typedLocal('C1', `=${upper}*2`), typedLocal('C2', `=${word}*2`)],
       read: on('S', 'A1:C3'),
     })),
   )

@@ -7,16 +7,14 @@
  * `FCOV_FRESH=1` every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { fromRgb } from './cond/cases.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { caseFile, type LineLook, type LinesAnswer, type LinesCase, type LinesCases, type LinesSet } from './lines/cases.js'
 import { localeMeta } from './locales.js'
 import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { caseFiles } from './xlsx/sent.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-lines.applescript')
 
 export interface StoredLines extends LinesCases {

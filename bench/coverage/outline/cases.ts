@@ -12,6 +12,7 @@ import { editStructure, InputError, outlineGroups, patchLines } from '../../../s
 import { colToIndex, indexToCol } from '../../../src/model.js'
 import { writeXlsx } from '../../../src/xlsx.js'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
+import { groupCollector } from '../collect.js'
 
 /** A book of a set: the sheet `S`. */
 export interface OutlineBook {
@@ -223,12 +224,24 @@ export const engineViews = (b: OutlineBook, c: OutlineCase): Promise<OutlineView
 
 /** Cases of one group: ids `<group>-<n>`. */
 export function collector() {
-  const out: OutlineCase[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, book: string, commands: OutlineCommand[], window?: OutlineWindow) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, book, commands, ...(window ? { window } : {}) })
-  }
+  const { out, add: put } = groupCollector<OutlineCase>()
+  const add = (group: string, book: string, commands: OutlineCommand[], window?: OutlineWindow) => put(group, { book, commands, ...(window ? { window } : {}) })
   return { out, add }
 }
+
+/** The cases of a set by group: `g(group, book, ...commands)` puts a case of the commands on the book (`add` with a window too). */
+export function outlineAdder() {
+  const { out, add } = collector()
+  return { out, add, g: (group: string, book: string, ...commands: OutlineCommand[]) => add(group, book, commands) }
+}
+
+/** Lines at an outline level, and hidden there. */
+export const L = (outlineLevel: number): RowInput & ColumnInput => ({ outlineLevel })
+export const H = (outlineLevel: number): RowInput => ({ outlineLevel, hidden: true })
+
+/** The commands, by the lines they act on: Group, Ungroup, Show Detail, Hide Detail, and the level buttons. */
+export const group = (lines: string): OutlineCommand => ({ group: lines })
+export const ungroup = (lines: string): OutlineCommand => ({ ungroup: lines })
+export const show = (lines: string): OutlineCommand => ({ show: lines })
+export const hide = (lines: string): OutlineCommand => ({ hide: lines })
+export const levels = (rows: number, columns = 0): OutlineCommand => ({ levels: [rows, columns] })

@@ -4,10 +4,11 @@
  * selection and pasted, each in one step of the undo, the row's `bestFit` in xlsx, and the checks of their input. The
  * rules themselves are checked against Excel in `test/rows-excel.test.ts`.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, createSession, fitRows, InputError, type BookInput, type Calc } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { compute, createSession, fitRows, InputError, type BookInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
-import { pool } from './fixtures/pool.js'
+import { closedAfter } from './fixtures/pool.js'
+import { ASYNC_CALCS } from './session-kinds.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 1 }
 const WRAP = { alignment: { wrap: true } }
@@ -131,16 +132,12 @@ describe('the input of AutoFit of rows', () => {
   })
 })
 
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
+const { keep } = closedAfter()
 
-describe.each([
-  ['in the same thread', async () => createInlineCalc()],
-  ['in a thread', async () => pool({ threads: 1 })],
-] as const)('rows in an asynchronous session, %s', (_, make) => {
+describe.each(ASYNC_CALCS)('rows in an asynchronous session, %s', (_, make) => {
   it('AutoFit goes through setLayout and a typed line break wraps its cell and fits its row', async () => {
     const calc = await make()
-    calcs.push(calc)
+    keep(calc)
     const s = await calc.createSession(book(), { clock })
     await s.setLayout([{ sheet: 'S', rows: '1:3', fit: true }])
     expect((await s.getLayout()).sheets[0].rows).toEqual({ 1: { height: 21, bestFit: true }, 2: { height: 51, bestFit: true }, 3: { height: 32, bestFit: true }, 4: { hidden: true, height: 40 } })

@@ -7,7 +7,7 @@
  */
 import type { CellInput, NumberFormat } from '../../../src/contract.js'
 import { textOf } from './autofit.js'
-import { collector, HIDDEN, type FitCase, type Via } from './cases.js'
+import { ascii, collector, type FitCase, HIDDEN, type Via } from './cases.js'
 
 const one = (v: CellInput['value'], format?: NumberFormat): Record<number, CellInput> => ({ 1: { value: v, ...(format !== undefined ? { format } : {}) } })
 const formula = (f: string, format?: NumberFormat): Record<number, CellInput> => ({ 1: { formula: f, ...(format !== undefined ? { format } : {}) } })
@@ -55,8 +55,6 @@ const TYPED: [string, Texts][] = [
   ['formula', { en: '=123456789*1000', ru: '=123456789*1000' }],
   ['pct', { en: '0.5%', ru: '0,5%' }],
 ]
-
-const ascii = (t: string) => /^[\x20-\x7e]*$/.test(t)
 
 export function buildFitCases(tag: string): FitCase[] {
   const { out, add } = collector()

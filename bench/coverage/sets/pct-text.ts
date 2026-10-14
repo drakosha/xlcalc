@@ -11,6 +11,7 @@
 import type { Val } from '../formulajs.js'
 import type { Probe } from '../probes.js'
 import { collector } from './arrays/common.js'
+import { n, e } from '../vals.js'
 
 /** Percent text and the decimal literal it reads as: in en-US's form, ru-RU's, and with no decimal separator. */
 const TEXTS: [string, string][] = [
@@ -53,9 +54,6 @@ export function buildProbes(): Probe[] {
   add('NUMBERVALUE', 'NUMBERVALUE', ...NUMBERVALUE)
   return out
 }
-
-const n = (v: number): Val => ({ t: 'n', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
 
 /** The engine's answers in en-US, predicted before Excel ran the set. */
 export const PREDICTED: Readonly<Record<string, Val>> = {

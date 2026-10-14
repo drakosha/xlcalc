@@ -6,9 +6,7 @@
  * start and the end. `sheets-held-3.predicted.json`, the engine's answers, was committed before Excel ran the set.
  */
 import type { BookInput, SheetInput } from '../../../src/contract.js'
-import type { HiddenCase, HiddenCases } from './cases.js'
-
-const NAMES = ['Jan', 'Feb', 'Mar', 'Apr'] as const
+import { monthBook, type HiddenCase, type HiddenCases, type MonthsHidden } from './cases.js'
 
 const SUM: SheetInput = {
   name: 'Sum',
@@ -20,10 +18,7 @@ const SUM: SheetInput = {
 }
 
 /** Jan to Apr (B2 1, 10, 100, 1000) and Sum, each sheet's `hidden` as given. */
-function months(hidden: Partial<Record<(typeof NAMES)[number] | 'Sum', true | 'very'>> = {}): BookInput {
-  const h = (name: keyof typeof hidden) => (hidden[name] ? { hidden: hidden[name] } : {})
-  return { sheets: [...NAMES.map((name, i) => ({ name, cells: { B2: { value: 10 ** i } }, ...h(name) })), { ...SUM, ...h('Sum') }] }
-}
+const months = (hidden: MonthsHidden = {}): BookInput => monthBook(SUM, hidden)
 
 const BOOKS: Record<string, BookInput> = {
   plain: months(),

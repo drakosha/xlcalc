@@ -6,7 +6,7 @@
  * Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe } from '../probes.js'
-import { xl } from './arrays/common.js'
+import { byFunction, xl } from './arrays/common.js'
 
 export const SHEETS: Record<string, Record<string, number | string | boolean>> = {
   CR: {
@@ -30,13 +30,7 @@ export const SHEETS: Record<string, Record<string, number | string | boolean>> =
 }
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const count = new Map<string, number>()
-  const add = (fn: string, formula: string) => {
-    const n = (count.get(fn) ?? 0) + 1
-    count.set(fn, n)
-    out.push({ id: `${fn}#${n}`, group: fn, fn, formula })
-  }
+  const { out, add } = byFunction(false)
   for (const c of ['D!A7', 'D!A8', '1/0', '"#DIV/0!"', '"=#DIV/0!"', '"<>#DIV/0!"', '"#N/A"', '"<>#N/A"', '"=#N/A"', '"#n/a"', '"#DIV*"', '">#DIV/0!"', '"<#N/A"', '"#NUM!"', '"#NULL!"', '"#VALUE!"', '" #N/A"', '"#DIV/0"'])
     add('COUNTIF', `COUNTIF(D!A1:A15,${c})`)
   for (const f of ['COUNTIF(D!A:A,D!A7)', 'COUNTIF(D!A:A,"<>#N/A")', 'COUNTIF(CR!C1:C4,"#DIV/0!")', 'COUNTIF(CR!C1:C4,"#N/A")', 'COUNTIF(CR!C1:C4,"#NUM!")', 'COUNTIF(CR!C1:C4,D!A7)', 'COUNTIF(CR!C1:C4,"<>#N/A")', 'COUNTIF(D!E1:E8,D!A7)', 'COUNTIF(D!E1:E8,"<>#DIV/0!")'])

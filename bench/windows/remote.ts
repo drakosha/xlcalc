@@ -222,6 +222,21 @@ export function again<T>(part: T[], a: Answer, cutShort: boolean, refused: (item
 }
 
 /**
+ * The take of `inJobs` for items that come back saved: each into `results` with its answers and its file; one cut short
+ * runs again, and anything else stops the step with what `failed` says of it and why.
+ */
+export const savedInto =
+  <T>(results: [T, unknown[], Uint8Array][], failed: (t: T, why: string) => string) =>
+  (t: T, a: Answer, cutShort: boolean): T[] => {
+    if (a && 'answers' in a && a.saved) {
+      results.push([t, a.answers, a.saved])
+      return []
+    }
+    if (!a && cutShort) return [t]
+    throw new Error(failed(t, a && 'rejected' in a ? a.rejected : 'the job stopped on it'))
+  }
+
+/**
  * Items (a part of cases, a case) as books in jobs of up to `per`: `take` stores a book's answer and gives back what is
  * to run again (a part halved, the books after the one a cut-short job hung on); `save` follows every job.
  */

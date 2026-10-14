@@ -6,6 +6,7 @@
  * words. Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe, SheetCells } from '../probes.js'
+import { byGroup } from './arrays/common.js'
 
 /** Words of both scripts, cases and accents (`а`, `е`, `х` are Cyrillic where they stand among Cyrillic letters). */
 const WORDS = ['b', 'а', 'A', 'Б', 'ё', 'е', 'z', 'я', 'Z', 'ж', '1', '10', '9', 'é', 'e', 'ea', 'éa', 'Ё', 'ъ', 'ь', 'й', 'и', 'abc', 'абв', 'Abc', 'Абв', 'ab', 'аб', 'x1', 'х1']
@@ -18,8 +19,7 @@ const LETTERS = ['a', 'а', 'b', 'Б', 'z', 'я', 'е', 'ё', 'e', 'é', 'й', '
 const q = (s: string) => `"${s}"`
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (group: string, formula: string) => out.push({ id: `${group}#${out.filter((p) => p.group === group).length + 1}`, group, formula })
+  const { out, add } = byGroup()
   for (let i = 0; i < LETTERS.length; i++) for (let j = i + 1; j < LETTERS.length; j++) add('compare', `${q(LETTERS[i])}<${q(LETTERS[j])}`)
   for (const [a, b] of [['ё', 'е'], ['Ё', 'ё'], ['é', 'e'], ['Е', 'е'], ['й', 'и'], ['ь', 'ъ'], ['абв', 'АБВ'], ['x1', 'х1']]) add('equal', `${q(a)}=${q(b)}`)
   for (let k = 1; k <= WORDS.length; k++) add('sort', `INDEX(_xlfn._xlws.SORT(O!A1:A${WORDS.length}),${k},1)`)

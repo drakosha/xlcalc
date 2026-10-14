@@ -6,10 +6,8 @@
  * like a cell past the grid (`XFE1`, `A0`), like a cell of the grid (`R1`, `C5`, `XFD1`) and like R1C1 (`R1C1`), added
  * through the object model, with formulas typed after that read them.
  */
-import { book, on, sales, table, type TableCase, type TableStep } from './cases.js'
+import { addedName, book, on, sales, table, type TableCase, type TableStep, typedFormula } from './cases.js'
 
-const typed = (cell: string, formula: string): TableStep => ({ edit: { sheet: 'S', cell, value: { formula } } })
-const added = (name: string, ref: string): TableStep => ({ name: { name, ref } })
 const copy = (from: string, to: string): TableStep => ({ op: { op: 'copyRange', from: { sheet: 'S', range: from }, to: { sheet: 'S', range: to } } })
 
 export function buildTableCases(): TableCase[] {
@@ -28,7 +26,7 @@ export function buildTableCases(): TableCase[] {
     'add-cell-shapes',
     'names shaped like a cell past the grid (XFE1, A0) or of it (R1, C5, XFD1, r1), like R1C1 (R1C1) and four letters (ZZZZ1), added and read',
     names,
-    [added('XFE1', '1'), added('A0', '2'), added('R1', '3'), added('C5', '4'), added('XFD1', '5'), added('r1', '6'), added('R1C1', '7'), added('ZZZZ1', '8'), typed('C1', 'XFE1+0'), typed('C2', 'A0+0'), typed('C3', 'ZZZZ1+0')],
+    [addedName('XFE1', '1'), addedName('A0', '2'), addedName('R1', '3'), addedName('C5', '4'), addedName('XFD1', '5'), addedName('r1', '6'), addedName('R1C1', '7'), addedName('ZZZZ1', '8'), typedFormula('C1', 'XFE1+0'), typedFormula('C2', 'A0+0'), typedFormula('C3', 'ZZZZ1+0')],
     on('S', 'A1:C3'),
   )
   return cases

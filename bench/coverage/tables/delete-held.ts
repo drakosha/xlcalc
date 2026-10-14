@@ -6,7 +6,7 @@
  * tables taken whole. Formulas over both tables are on Other, which no deletion touches, and below them on S.
  */
 import type { StructureOp } from '../../../src/contract.js'
-import { book, on, sales, table, type CellSpec, type TableCase } from './cases.js'
+import { book, type CellSpec, on, sales, salesWithTotals, table, type TableCase } from './cases.js'
 
 /** Formulas over Sales (column A) and over the other table `t` (column B) on Other. */
 const over = (t: string, x: string, y: string, cells: string): Record<string, CellSpec> => ({
@@ -38,11 +38,7 @@ export function buildTableCases(): TableCase[] {
   // the other table, its two columns and its cells
   const add = (id: string, about: string, op: StructureOp, [t, x, y, cells]: [string, string, string, string], ...tables: ReturnType<typeof table>[]) =>
     cases.push({ id, about, book: book(['S', under(t, y), ...tables], ['Other', over(t, x, y, cells)]), steps: [{ op }], read: READ })
-  const totals = sales()
-  totals.table.range = 'A1:D6'
-  totals.table.totals = true
-  totals.table.columns[1].totals = { function: 'sum' }
-  totals.cells.B6 = { formula: 'SUBTOTAL(109,Sales[Qty])' }
+  const totals = salesWithTotals()
 
   add('below-last-rows', "the table below gone with Sales's last two data rows and the rows between", rows(4, 7), ['Below', 'x', 'y', 'A8:B10'], sales(), below())
   add('below-all-data', "the table below gone with all of Sales's data rows: Sales keeps one row", rows(2, 9), ['Below', 'x', 'y', 'A8:B10'], sales(), below())

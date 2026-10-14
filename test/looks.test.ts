@@ -87,10 +87,22 @@ const WINDOWS = ['A1:L30', 'P15:AF40', 'D1:D20', 'DHX20:DKZ60']
 const CELLS = ['A1', 'B2', 'D4', 'E5', 'R21', 'S22', 'C4', 'F5', 'J12', 'J30', 'D69999', 'DIA24']
 const RANGES = ['A1:Z40', 'C:E', '20:22']
 
+/** A session's hashes and book with its looks as entries, and the book. */
+async function hashed(s: AsyncSession): Promise<[Record<string, unknown>, BookInput]> {
+  const book = await s.getBook()
+  return [{ result: await s.getResult().then((r) => [r.hash, r.inputHash]), book: expandBook(book) }, book]
+}
+
+/** The files of two sessions written: the same parts. The first's data. */
+async function sameFiles(s: AsyncSession, e: AsyncSession): Promise<Uint8Array> {
+  const [fs, fe] = [await writeXlsx(await s.getSnapshot()), await writeXlsx(await e.getSnapshot())]
+  expect(await partsHash(fs.data)).toBe(await partsHash(fe.data))
+  return fs.data
+}
+
 /** What a session answers of a book: everything the two books are compared by. */
 async function answers(s: AsyncSession): Promise<unknown> {
-  const book = await s.getBook()
-  const out: Record<string, unknown> = { result: await s.getResult().then((r) => [r.hash, r.inputHash]), book: expandBook(book) }
+  const [out, book] = await hashed(s)
   for (const { name } of book.sheets) {
     out[`used ${name}`] = await s.getUsedRange(name)
     for (const w of WINDOWS) {
@@ -118,11 +130,10 @@ describe.each(['closures', 'eval'] as const)('a book with looks and the same boo
       const [s, e] = [await open(book, opts), await open(expandBook(book), opts)]
       expect(await answers(s)).toEqual(await answers(e))
       // the file: the same parts, and its looks read back as the session holds them
-      const [fs, fe] = [await writeXlsx(await s.getSnapshot()), await writeXlsx(await e.getSnapshot())]
-      expect(await partsHash(fs.data)).toBe(await partsHash(fe.data))
+      const data = await sameFiles(s, e)
       // a file read numbers the styles anew: a look by its style's fields
       const looksOf = (b: BookInput) => b.sheets.map((x) => x.looks?.map(({ style, ...rest }) => ({ ...rest, ...(style !== undefined ? { style: b.styles![style] } : {}) })))
-      expect(looksOf((await readXlsx(fs.data)).book)).toEqual(looksOf(await s.getBook()))
+      expect(looksOf((await readXlsx(data)).book)).toEqual(looksOf(await s.getBook()))
       await Promise.all([s.close(), e.close()])
     }, 60_000)
   })
@@ -130,8 +141,7 @@ describe.each(['closures', 'eval'] as const)('a book with looks and the same boo
 
 /** What a session answers of a book after an edit, the lighter way: hashes, the book, a window, the used range, cells read. */
 async function after(s: AsyncSession): Promise<unknown> {
-  const book = await s.getBook()
-  const out: Record<string, unknown> = { result: await s.getResult().then((r) => [r.hash, r.inputHash]), book: expandBook(book) }
+  const [out, book] = await hashed(s)
   for (const { name } of book.sheets) {
     out[`used ${name}`] = await s.getUsedRange(name)
     const { revision: _, ...v } = await s.getViewport(name, 'A1:Z60', { editText: true })
@@ -186,8 +196,7 @@ describe.each(['closures', 'eval'] as const)('edits of a book with looks and of 
         expect(plain(await s.redo()), `${name}, done again`).toEqual(plain(await e.redo()))
       }
       expect(await after(s)).toEqual(await after(e))
-      const [fs, fe] = [await writeXlsx(await s.getSnapshot()), await writeXlsx(await e.getSnapshot())]
-      expect(await partsHash(fs.data)).toBe(await partsHash(fe.data))
+      await sameFiles(s, e)
       // every edit undone: the book opened
       while (await s.undo());
       expect(expandBook(await s.getBook())).toEqual(expandBook(book))

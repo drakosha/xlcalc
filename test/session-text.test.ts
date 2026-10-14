@@ -11,6 +11,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { compute, type BookInput, type Execution } from '../src/index.js'
 import './locales.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { typingParts } from './text-books.js'
 
 afterAll(closeCalcs)
 
@@ -29,10 +30,9 @@ const book = (locale?: string): BookInput => ({
         E1: { value: 'Qty' },
         E2: { value: 1 },
       },
+      ...typingParts(),
       columns: { D: { numberFormat: '0%' }, F: { width: 4 } },
       rows: { 5: { numberFormat: 'dd.mm.yyyy' } },
-      tables: [{ name: 'T', range: 'E1:E2', columns: [{ name: 'Qty' }] }],
-      validations: [{ range: 'G1:G9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning', error: 'Positive only' }],
     },
   ],
 })

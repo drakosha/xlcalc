@@ -4,6 +4,7 @@
  * sheets with different numbers of filled rows. Excel en-US's answers are in `test/excel/probes.json`, checked
  * by `test/excel-probes.test.ts`.
  */
+import { byGroup } from './sets/arrays/common.js'
 
 export interface Probe {
   id: string
@@ -29,8 +30,7 @@ export const PROBE_SHEETS: Record<string, Record<string, number>> = {
 const lit = (m: string, e: number) => `${m}E${e < 0 ? '-' : '+'}${String(Math.abs(e)).padStart(2, '0')}`
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (group: string, formula: string) => out.push({ id: `${group}#${out.filter((p) => p.group === group).length + 1}`, group, formula })
+  const { out, add } = byGroup()
 
   // numbers as text: mantissas of 1…15 significant digits at exponents −22…22
   for (const m of ['1', '1.5', '7.45', '1.2345', '-1.5', '1.23456789', '1.2345678901234', '1.23456789012345', '-1.23456789012345'])

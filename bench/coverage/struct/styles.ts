@@ -4,11 +4,9 @@
  * inserting under a row with styles and formats, moving and copying ranges, whole rows and columns with
  * their styles and merged areas; last, the moves and copies that cut a merged area (Excel's refusals).
  */
-import type { RangeRef } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { rangeAt, type StructCase, type StructCases } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** Bold, orange, bold on green, blue. */
 export const STYLES: StoredBook['styles'] = [{ font: { bold: true } }, { fill: { color: '#FFC000' } }, { font: { bold: true }, fill: { color: '#92D050' } }, { fill: { color: '#00B0F0' } }]
@@ -56,15 +54,11 @@ export function buildStructCases(): StructCases {
   const cases: StructCase[] = []
   const rows = (op: 'insertRows' | 'deleteRows', row: number, count = 1) => cases.push({ id: `${op === 'insertRows' ? 'insert' : 'delete'}-rows-${row}${count > 1 ? `x${count}` : ''}`, book: 'styled', op: { op, sheet: 'S', row, count } })
   const cols = (op: 'insertColumns' | 'deleteColumns', column: string, count = 1) => cases.push({ id: `${op === 'insertColumns' ? 'insert' : 'delete'}-cols-${column}${count > 1 ? `x${count}` : ''}`, book: 'styled', op: { op, sheet: 'S', column, count } })
-  const at = (ref: string): RangeRef => {
-    const i = ref.lastIndexOf('!')
-    return { sheet: ref.slice(0, i), range: ref.slice(i + 1) }
-  }
   const move = (from: string, to: string) => {
-    const t = at(to)
-    cases.push({ id: `move-${from}-${to}`, book: 'styled', op: { op: 'moveRange', from: at(from), to: { sheet: t.sheet, cell: t.range } } })
+    const t = rangeAt(to)
+    cases.push({ id: `move-${from}-${to}`, book: 'styled', op: { op: 'moveRange', from: rangeAt(from), to: { sheet: t.sheet, cell: t.range } } })
   }
-  const copy = (from: string, to: string) => cases.push({ id: `copy-${from}-${to}`, book: 'styled', op: { op: 'copyRange', from: at(from), to: at(to) } })
+  const copy = (from: string, to: string) => cases.push({ id: `copy-${from}-${to}`, book: 'styled', op: { op: 'copyRange', from: rangeAt(from), to: rangeAt(to) } })
 
   rows('insertRows', 5) // under the styled cells of row 4
   rows('insertRows', 7) // under row 6, blue at height 30

@@ -5,8 +5,7 @@
  */
 import type { WorkbookCase } from './cases.js'
 import type { StoredCell, StoredSheet } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** S: values shown by a format in a wide column. */
 const SHOWN: [StoredCell['value'], string][] = [

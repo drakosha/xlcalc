@@ -4,7 +4,7 @@
  * parts: notes by cell with author and text, hyperlinks by cell with address, place and tooltip, frozen panes by the rows
  * and columns before their split.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { partsFile, type StoredParts } from '../bench/coverage/parts.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
@@ -14,18 +14,12 @@ import { readXlsx } from '../src/xlsx.js'
 import type { BookInput, CellLink, FrozenPanes } from '../src/contract.js'
 import { formatAddress } from '../src/model.js'
 import { parseRange } from '../src/structure/area.js'
+import { storedSets } from './stored-sets.js'
 
 export type PartsSetFile = StoredParts & { name: string; dir: URL }
 
 /** The stored sets of a directory (`excel/parts/`, `excel/win/parts/`) with the folders of their saved files. */
-export function partsSets(sub: string): PartsSetFile[] {
-  const dir = new URL(`./excel/${sub}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .sort()
-    .map((f) => ({ name: f.slice(0, -5), dir: new URL(`${f.slice(0, -5)}/`, dir), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredParts) }))
-}
+export const partsSets = (sub: string): PartsSetFile[] => storedSets<StoredParts>(sub)
 
 /** The file Excel saved for a case. */
 export const savedFile = (set: PartsSetFile, id: string): Uint8Array => new Uint8Array(readFileSync(new URL(`${id}.xlsx`, set.dir)))

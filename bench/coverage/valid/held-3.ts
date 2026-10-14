@@ -4,13 +4,9 @@
  * spellings, rules with absolute and relative references moved and copied to another sheet.
  */
 import type { BookInput, CellInput, DataValidation } from '../../../src/contract.js'
-import type { ValidCases } from './cases.js'
+import { laidOut, v, type ValueColumn, type ValidCases } from './cases.js'
 
-type Column = { rule: Omit<DataValidation, 'range'>; values: (CellInput | null)[] }
-
-const v = (value: CellInput['value']): CellInput => ({ value })
-
-const COLUMNS: Column[] = [
+const COLUMNS: ValueColumn[] = [
   { rule: { type: 'decimal', operator: 'lessThan', formula1: '1', allowBlank: false }, values: [null, v(2)] },
   { rule: { type: 'date', operator: 'greaterThan', formula1: '0', allowBlank: false }, values: [null, v(1)] },
   { rule: { type: 'time', operator: 'notEqual', formula1: '0', allowBlank: false }, values: [null, v(0.5)] },
@@ -22,15 +18,7 @@ const COLUMNS: Column[] = [
 
 function values(): BookInput {
   const cells: Record<string, CellInput> = { Y1: v('y'), Y3: v('z') }
-  const validations: DataValidation[] = []
-  COLUMNS.forEach((col, i) => {
-    const letter = String.fromCharCode(65 + i)
-    cells[`${letter}1`] = { value: `${col.rule.type} ${i + 1}` }
-    col.values.forEach((x, k) => {
-      if (x) cells[`${letter}${k + 2}`] = x
-    })
-    validations.push({ range: `${letter}2:${letter}${col.values.length + 1}`, ...col.rule })
-  })
+  const validations = laidOut(COLUMNS, cells)
   return { sheets: [{ name: 'S', cells, validations }] }
 }
 

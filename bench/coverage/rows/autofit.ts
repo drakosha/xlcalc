@@ -7,11 +7,7 @@
  */
 import type { CellStyle } from '../../../src/contract.js'
 import { textOf } from '../fit/autofit.js'
-import { collector, type RowCase, type RowCell } from './cases.js'
-
-const WRAP: CellStyle = { alignment: { wrap: true } }
-const size = (n: number, more: CellStyle = {}): CellStyle => ({ ...more, font: { size: n } })
-const one = (value: RowCell['value'], look?: CellStyle): Record<number, RowCell> => ({ 0: { value, ...(look ? { look } : {}) } })
+import { collector, one, type RowCase, size, WRAP } from './cases.js'
 
 const SIZES = [1, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72, 96, 144, 200, 300, 409]
 

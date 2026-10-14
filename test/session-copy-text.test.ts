@@ -1,10 +1,10 @@
 /** A selection's copy text is prepared in the library, against stored Excel copies, in all three session kinds. */
 import { readFileSync } from 'node:fs'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { clipboardCases, quoteCases } from '../bench/coverage/clipboard/cases.js'
 import { CalcError, createInlineCalc, createSession, InputError, type BookInput } from '../src/index.js'
 import { CLOCK } from './async-books.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 import './locales.js'
 
 afterAll(closeCalcs)
@@ -13,8 +13,7 @@ const stored = (path: string) => JSON.parse(readFileSync(new URL(path, import.me
 
 describe.each(['closures', 'eval'] as const)('copy text, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => { open = await opener(kind) })
+    const open = openerFor(kind)
     for (const tag of ['en-US', 'ru-RU']) for (const platform of ['Mac', 'Windows']) {
       const path = platform === 'Mac' ? `./excel/clipboard/copy-${tag}.json` : `./excel/win/clipboard/${tag === 'ru-RU' ? 'ru-RU/' : ''}copy-held.json`
       const answers = stored(path).answers

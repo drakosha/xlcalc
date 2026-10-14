@@ -6,15 +6,12 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldCases } from './arrays/common.js'
 import { SHEETS as AREA_SHEETS } from './areas.js'
+import { n, s, e } from '../vals.js'
 
 /** Jan, Feb and Mar of the set `areas`, and T: values with a SUBTOTAL among them (A3), which SUBTOTAL skips. */
 export const SHEETS: SheetCells = { ...AREA_SHEETS, T: { A1: 1, A2: 2, A3: { formula: 'SUBTOTAL(9,A1:A2)' }, B1: 10 } }
-
-const n = (v: number): Val => ({ t: 'n', v })
-const s = (v: string): Val => ({ t: 's', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
 
 /** Formula, function and the answer predicted before Excel ran (undefined: not predicted). */
 const CASES: [string, string, Val?][] = [
@@ -76,16 +73,8 @@ const CASES: [string, string, Val?][] = [
   ['ARRAYTOTEXT(SORTBY((D!B1:B2,Jan!A1),{2;1;3}),1)', 'SORTBY', e('VALUE')],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [f, fn] of CASES) add(fn, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(
-  buildProbes().flatMap((p, i) => (CASES[i][2] ? [[p.id, CASES[i][2]]] : [])),
-)
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES.map(([f, fn, v]) => [fn, f, v]))
 
 /** The predictions Excel did not confirm: SORTBY takes neither a union nor a reference across sheets. */
 export const MISSED: readonly string[] = ['SORTBY#1', 'SORTBY#3', 'SORTBY#4', 'SORTBY#5', 'SORTBY#6', 'SORTBY#7', 'SORTBY#8']

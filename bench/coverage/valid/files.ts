@@ -6,8 +6,8 @@
  * Excel read it. Predicted before Excel ran it (`files.predicted.json`).
  */
 import type { BookInput, CellInput, DataValidation } from '../../../src/contract.js'
-import { editStructure } from '../../../src/index.js'
 import type { ValidCase, ValidCases } from './cases.js'
+import { after } from '../stored.js'
 
 /** Sheet S: a column of values under each rule (row 1 holds the column's title), the bounds and lists beside them. */
 function rulesBook(): BookInput {
@@ -91,12 +91,6 @@ function longBook(): BookInput {
       },
     ],
   }
-}
-
-const after = (book: BookInput, op: Parameters<typeof editStructure>[1]): BookInput => {
-  const r = editStructure(book, op)
-  if (!r.ok) throw new Error(`files: ${r.message}`)
-  return r.book
 }
 
 export function buildValidCases(): ValidCases {

@@ -5,12 +5,10 @@
  * spill as the first value; whole columns where the first value row by row and column by column part; across and
  * centred rows each moving their own; cells merged then split again.
  */
-import type { StructureOp } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { caseAdder, type StructCases } from './cases.js'
 import { merge, unmerge } from './merge.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /**
  * S: an empty A1 before B1 (filled, read by a name, absolute and mixed references, ranges) and C1; a top-left A3
@@ -57,8 +55,7 @@ function thirdBook(): StoredBook {
 }
 
 export function buildStructCases(): StructCases {
-  const cases: StructCase[] = []
-  const add = (id: string, op: StructureOp, more: Partial<StructCase> = {}) => cases.push({ id, book: 'third', op, ...more })
+  const { cases, add } = caseAdder('third')
   add('merge-A1-C1-moves-B1', merge('A1:C1'))
   add('merge-A1-B2-moves-B1', merge('A1:B2'))
   add('merge-A1-C1-center', merge('A1:C1', { center: true }))

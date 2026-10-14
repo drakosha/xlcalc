@@ -5,7 +5,7 @@
  * headers typed as booleans and decimals, a conversion seen through names.
  */
 import type { StructureOp } from '../../../src/contract.js'
-import { book, on, sales, table, type CellSpec, type TableCase, type TableStep } from './cases.js'
+import { book, type CellSpec, on, sales, salesWithTotals, table, type TableCase, type TableStep } from './cases.js'
 
 const OVER: Record<string, CellSpec> = { J1: '=SUM(Sales[Qty])', J2: '=SUM(Sales[[Region]:[Price]])', J3: '=ROWS(Sales[#All])', J4: '=Sales[@Price]', J5: '=SUM(B2:C5)', J6: '=SUM(A1:D5)' }
 const READ = on('S', 'A1:N12')
@@ -22,11 +22,7 @@ export function buildTableCases(): TableCase[] {
   add('ins-past-other', 'a row inserted into a table past the end of a table beside it', [rows('insertRows', 4)], book(['S', OVER, sales(), table('Side', 'F1', ['a', 'b'], [[1, 2], [3, 4]])]))
   add('ins-other-last', "a row inserted at another table's last row, inside both", [rows('insertRows', 3)], book(['S', OVER, sales(), table('Side', 'F1', ['a', 'b'], [[1, 2], [3, 4]])]))
   add('del-only-row', 'the only data row deleted', [rows('deleteRows', 2)], book(['S', { J1: '=SUM(T[b])', J2: '=ROWS(T)', K2: 'outside' }, table('T', 'A1', ['a', 'b'], [[1, '=[@a]*2']], { columns: [{}, { formula: 'T[[#This Row],[a]]*2' }] })]), on('S', 'A1:K4'))
-  const totals = sales()
-  totals.table.range = 'A1:D6'
-  totals.table.totals = true
-  totals.table.columns[1].totals = { function: 'sum' }
-  totals.cells.B6 = { formula: 'SUBTOTAL(109,Sales[Qty])' }
+  const totals = salesWithTotals()
   add('del-data-totals-all', 'every data row and the totals row deleted', [rows('deleteRows', 2, 5)], book(['S', OVER, totals]))
   add('del-first-rows', 'the first two data rows deleted, a range over the data shrinks', [rows('deleteRows', 2, 2)])
   add('insc-before-last', 'a column inserted before the last one: A1 references beside it as usual', [cols('insertColumns', 'D')])

@@ -7,15 +7,13 @@
  * `FSPILL_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
 import { answerOf, BookRejected, editOf, MIRRORS, refusedOf, runOnBook, type FileParts, type RectsAnswer } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
 import type { SpillCase, SpillSet } from './spill/cases.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-spill.applescript')
 
 export interface SpillAnswer extends RectsAnswer {

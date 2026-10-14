@@ -6,20 +6,13 @@
  * too many; an exponent's `e` and its sign; spaces after an operator and after an operand; operators after operators.
  * Both locales' separators are in the set, which runs in each. Typed on the keyboard: ASCII only.
  */
-import { collector, type UiCase } from './cases.js'
-import type { CellInput } from '../../../src/contract.js'
+import { typedThenRight, type UiCase } from './cases.js'
 
 export const POINT_BY = 'refAt'
-
-const CELLS: Record<string, CellInput> = { A1: { value: 2 }, D3: { value: 10 }, D4: { value: 20 } }
 
 const TEXTS = [
   '=1.5', '=A1.', '=x.', '=1,', '=1,5', '="a"', '=5%', '=#N/A', '={1', '={1,', '={1;', '=$', '=A$', '=Sheet1!', "='My S'!", '=T[',
   '=A1)', '=1e', '=1e+', '=A1 + ', '=SUM(A1 ', '=-1', '= ', '=SUM(,', '==', '=A1<>', '=@',
 ]
 
-export function buildUiCases(): UiCase[] {
-  const { out, add } = collector()
-  for (const text of TEXTS) add('typed', { cells: CELLS, act: { do: 'point', at: 'C3', steps: [{ type: text }, { key: 'right' }, { key: 'return' }] }, read: ['C4'] })
-  return out
-}
+export const buildUiCases = (): UiCase[] => typedThenRight(TEXTS)

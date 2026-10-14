@@ -56,7 +56,4 @@ export const one = (id: string, about: string, cells: Record<string, CellSpec>, 
 }
 
 /** Numbers as answers, for predictions. */
-export const n = (v: number): Val => ({ t: 'n', v })
-export const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
-export const s = (v: string): Val => ({ t: 's', v })
-export const b = (v: boolean): Val => ({ t: 'b', v })
+export { n, e, s, b } from '../vals.js'

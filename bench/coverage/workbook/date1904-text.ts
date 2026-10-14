@@ -3,10 +3,8 @@
  * NETWORKDAYS, WEEKNUM, YEARFRAC, the coupon and bond functions) against the others (DAY, DATEDIF, DAYS360, ISOWEEKNUM),
  * text typed in a formula and read from a cell, holidays as text.
  */
-import type { CellInput } from '../../../src/contract.js'
 import type { WorkbookCase } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 const FS = [
   'EDATE("1/31/1904",1)', 'EDATE("1/31/2025",1)', 'EDATE(S!A1,1)', 'EOMONTH("1/31/1904",0)', 'EOMONTH("3/15/2025",0)', 'EOMONTH(S!A2,0)',

@@ -8,11 +8,8 @@
  * at either edge of the sheet, with and without a summary column.
  */
 import type { ColumnInput, RowInput } from '../../../src/contract.js'
-import { collector, type OutlineBook, type OutlineCase, type OutlineCommand } from './cases.js'
+import { H, hide, L, levels, outlineAdder, type OutlineBook, type OutlineCase, show } from './cases.js'
 import { BOOKS as HELD } from './rules-held.js'
-
-const L = (outlineLevel: number): RowInput & ColumnInput => ({ outlineLevel })
-const H = (outlineLevel: number): RowInput => ({ outlineLevel, hidden: true })
 
 export const BOOKS: Record<string, OutlineBook> = {
   nested: HELD.nested,
@@ -40,11 +37,7 @@ export const BOOKS: Record<string, OutlineBook> = {
 }
 
 export function buildOutlineCases(): OutlineCase[] {
-  const { out, add } = collector()
-  const g = (group: string, book: string, ...commands: OutlineCommand[]) => add(group, book, commands)
-  const show = (lines: string) => ({ show: lines })
-  const hide = (lines: string) => ({ hide: lines })
-  const levels = (rows: number, columns = 0): OutlineCommand => ({ levels: [rows, columns] })
+  const { out, add, g } = outlineAdder()
 
   g('group', 'deep', { group: '3:6' })
   g('group', 'deep', { group: '5:6' })

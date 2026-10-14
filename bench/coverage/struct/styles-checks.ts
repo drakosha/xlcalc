@@ -6,7 +6,7 @@
  * of a merged area (refused).
  */
 import type { BookInput, RangeRef } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { rangeAt, type StructCase, type StructCases } from './cases.js'
 import { styledBook } from './styles.js'
 
 /** The styled book with columns F:G 10 wide, rows 12:13 at height 20, B2:C2 merged; T with B2:C3 merged. */
@@ -24,16 +24,12 @@ function checksBook(): BookInput {
 
 export function buildStructCases(): StructCases {
   const cases: StructCase[] = []
-  const at = (ref: string): RangeRef => {
-    const i = ref.lastIndexOf('!')
-    return { sheet: ref.slice(0, i), range: ref.slice(i + 1) }
-  }
   const op = (id: string, o: StructCase['op']) => cases.push({ id, book: 'checks', op: o })
   const move = (from: string, to: string) => {
-    const t = at(to)
-    op(`move-${from}-${to}`, { op: 'moveRange', from: at(from), to: { sheet: t.sheet, cell: t.range } })
+    const t = rangeAt(to)
+    op(`move-${from}-${to}`, { op: 'moveRange', from: rangeAt(from), to: { sheet: t.sheet, cell: t.range } })
   }
-  const copy = (from: string, to: string) => op(`copy-${from}-${to}`, { op: 'copyRange', from: at(from), to: at(to) })
+  const copy = (from: string, to: string) => op(`copy-${from}-${to}`, { op: 'copyRange', from: rangeAt(from), to: rangeAt(to) })
 
   op('insert-cols-Fx2', { op: 'insertColumns', sheet: 'S', column: 'F', count: 2 }) // right of E, bold; F:G moves
   op('insert-rows-12x2', { op: 'insertRows', sheet: 'S', row: 12, count: 2 }) // at the first row of 12:13

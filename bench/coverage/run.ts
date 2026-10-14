@@ -39,7 +39,6 @@
 import { spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { inCaseOrder, loadStored, setModule, took, writeAnswers } from './stored.js'
 import { functionParts, inParts, writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
@@ -65,9 +64,8 @@ import { stepFit } from './fit.js'
 import { stepLines } from './lines.js'
 import { stepUi } from './ui.js'
 import { stepRows } from './rows.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const ONLY = process.env.FCOV_ONLY?.split(',').filter(Boolean)
 const OUT = join(HERE, 'out')
 const BOOK = join(OUT, 'book.xlsx')

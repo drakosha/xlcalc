@@ -6,7 +6,7 @@ import { withoutView } from './xlsx-fixtures.js'
  * cells no formula refers to), and no link is reported as one the model does not have. The set `written` is the files
  * `writeXlsx` wrote: Excel opened them and showed what it showed for the files made by hand.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredLinks } from '../bench/coverage/links.js'
 import { linkFile, linksBook, writtenBook, type CachedValue, type LinksAnswer, type LinksRead } from '../bench/coverage/links/cases.js'
@@ -18,6 +18,7 @@ import { canonical } from '../src/syntax/print.js'
 import { parse } from '../src/syntax/parse.js'
 import { readXlsx } from '../src/xlsx.js'
 import { XLSX_EN_MESSAGES } from '../src/xlsx/messages.js'
+import { storedSets } from './stored-sets.js'
 
 const PLATFORMS = [
   ['Excel for Mac', ''],
@@ -25,13 +26,7 @@ const PLATFORMS = [
 ] as const
 
 /** The stored sets of a platform. */
-function stored(root: string): (StoredLinks & { name: string })[] {
-  const dir = new URL(`./excel/${root}links/`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredLinks) }))
-}
+const stored = (root: string) => storedSets<StoredLinks>(`${root}links/`)
 
 const saved = (root: string, set: string, id: string) => readXlsx(new Uint8Array(readFileSync(new URL(`./excel/${root}links/${set}/${id}.xlsx`, import.meta.url))))
 

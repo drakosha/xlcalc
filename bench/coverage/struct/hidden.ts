@@ -6,8 +6,7 @@
  */
 import type { BookInput, CellInput, RowInput, SheetInput } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** The keys of rows 2:16 an autofilter reads: `x` kept, `y` hidden by the filter. */
 const KEYS = 'xxxxxyyxxyxxxxx'

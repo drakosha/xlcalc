@@ -5,7 +5,7 @@
  * (`test/excel/cases/date-noyear.json`); the tests' clock is in 2026 too.
  */
 import type { Probe, SheetCells } from '../probes.js'
-import { xl } from './arrays/common.js'
+import { byFunction } from './arrays/common.js'
 
 /** G: 2026-01-31 and 2025-01-31 as numbers, the text `1/31`. */
 export const SHEETS: SheetCells = { G: { A1: 46053, A2: 45688, A3: '1/31', B1: 'Jan 31' } }
@@ -25,8 +25,7 @@ const HELD = [
 ]
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (fn: string, formula: string) => out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula: xl(formula) })
+  const { out, add } = byFunction()
   for (const t of [...NUMERIC, ...NAMED]) {
     add('VALUE', `VALUE("${t}")`)
     add('DATEVALUE', `DATEVALUE("${t}")`)

@@ -5,9 +5,9 @@
  * redo, previews, typed text, looks, a structure operation and a copy. Every kind of session in both execution modes;
  * after each step the session's hash is that of a full computation of its book.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { compute, type AsyncSession, type BookInput, type CachedValues, type CellInput, type Execution } from '../src/index.js'
-import { closeCalcs, KINDS, keptPool, opener } from './session-kinds.js'
+import { closeCalcs, keptPool, KINDS, openerFor } from './session-kinds.js'
 import { createInlineCalc } from '../src/index.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -19,10 +19,7 @@ afterAll(closeCalcs)
 
 describe.each(['closures', 'eval'] as Execution[])('circular references in a session, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => {
-      open = await opener(kind)
-    })
+    const open = openerFor(kind)
     /** The values of cells `refs` of sheet S, after checking that the session gives what a full computation of its book gives. */
     const at = async (s: AsyncSession, refs = 'A1:E1') => {
       const b = await s.getBook()

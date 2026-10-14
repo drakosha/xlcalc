@@ -8,7 +8,8 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldCases } from './arrays/common.js'
+import { n, e } from '../vals.js'
 
 /** The large-mean data: 10,000 rows of 1E12 + 0, 0.01, 0.02 in turn (A) and their step 0, 1, 2 (B). */
 const ROWS = 10000
@@ -47,9 +48,6 @@ export const SHEETS: SheetCells = {
     Q1: 'big', R1: 't', S1: 'o', T1: 'm', U1: 'h',
   },
 }
-
-const n = (v: number): Val => ({ t: 'n', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
 
 const BIG = 'Edge!A2:A10001', STEP = 'Edge!B2:B10001'
 
@@ -178,14 +176,8 @@ const CASES: [string, string, Val][] = [
   ['LINEST', 'INDEX(LINEST(Edge!O2:O4,Edge!N2:N4,TRUE,TRUE),3,2)', n(7.17637025164971e-13)],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [fn, f] of CASES) add(fn, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)
 
 /**
  * The predictions Excel did not confirm, the Mac and Windows alike, all known differences (`KNOWN`): Excel computes the

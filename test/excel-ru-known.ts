@@ -4,7 +4,7 @@
  * `excel-locale-cases.ts` compares by them (`KNOWN_BY_LOCALE`). Kept apart, as a list.
  */
 import type { Val } from '../bench/coverage/formulajs.js'
-import type { REASONS } from './excel-cases.js'
+import { BOTH_KNOWN, type REASONS } from './excel-cases.js'
 
 /** Reasons of differences that only ru-RU cases show; each is a line of the README's "Known differences from Excel". */
 export const RU_REASONS = {
@@ -25,17 +25,7 @@ export const RU_KNOWN: Readonly<Record<string, { reason: Reason; engine: Val }>>
   'measurement:CODE#5': { reason: 'codePage', engine: { t: 'n', v: 207 } },
   'measurement:CODE#8': { reason: 'codePage', engine: { t: 'n', v: 200 } },
   'measurement:CODE#12': { reason: 'codePage', engine: { t: 'n', v: 207 } },
-  'char-code:CODE#142': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#143': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#144': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#145': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#146': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#147': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#148': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'measurement:CHIINV#7': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
-  'measurement:CHISQ.INV#14': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000208709.154 } },
-  'measurement:CHISQ.INV.RT#15': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
-  'measurement:GAMMAINV#8': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 19999701973.2484 } },
+  ...BOTH_KNOWN,
   'locale:format#244': { reason: 'secondDecimal', engine: { t: 's', v: '-,500,00' } },
   'measurement:SORT#9': { reason: 'macCollation', engine: { t: 's', v: "x*y" } },
   'measurement:SORT#10': { reason: 'macCollation', engine: { t: 's', v: "Арeнда*" } },

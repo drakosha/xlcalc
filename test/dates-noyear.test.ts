@@ -6,8 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ComputeResult } from '../src/contract.js'
 import { compute, createSession } from '../src/index.js'
-
-const at = (year: number, seed = 1) => ({ now: `${year}-10-05T12:00:00Z`, seed })
+import { at, values, volatile } from './clock-books.js'
 
 const book: BookInput = {
   sheets: [
@@ -30,9 +29,6 @@ const book: BookInput = {
     },
   ],
 }
-
-const values = (r: ComputeResult) => Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value]))
-const volatile = (r: ComputeResult) => r.volatile.map((c) => c.cell).sort()
 
 describe('en-US date text without a year depends on the clock', () => {
   it("takes the clock's year; February 29 of a year that is not leap is February 2029", () => {

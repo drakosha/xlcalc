@@ -8,9 +8,7 @@
 import type { BookInput, CellInput, ConditionalFormat } from '../../../src/contract.js'
 import { editStructure } from '../../../src/index.js'
 import type { CondCase, CondCases } from './cases.js'
-import { takenBook, type StoredBook, type StoredRule } from '../stored.js'
-
-const v = (value: CellInput['value']): CellInput => ({ value })
+import { type StoredBook, type StoredRule, takenBook, valueCell as v } from '../stored.js'
 
 /** Numbers 1 to 10 down each of `cols`, and -2 below them. */
 function numbers(cols: string[]): Record<string, CellInput> {

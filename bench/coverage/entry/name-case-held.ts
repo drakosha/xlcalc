@@ -4,7 +4,7 @@
  * long s, as a value, in an array and as LET's name; function names; LET's names against the letter's upper case. The
  * formula Excel saves shows which word it took (a function's name in its own spelling, a LET name as declared).
  */
-import { collector, type EntryCase } from './cases.js'
+import { type EntryCase, entryCases } from './cases.js'
 
 const GENERAL: Record<string, string[]> = {
   bool: ['=falſe', '=FALſE', '=IF(falſe,1,2)', '={falſe}', '=LET(falſe,1,falſe)', '=LET(x,1,falſe)'],
@@ -12,8 +12,4 @@ const GENERAL: Record<string, string[]> = {
   let: ['=LET(ſ,1,S)', '=LET(S,1,ſ+1)', '=LET(ß,1,SS)', '=LET(SS,1,ß+1)', '=LET(ı,1,I)', '=LET(I,1,ı+1)', '=LET(İ,1,i)', '=LET(i,1,İ+1)', '=LET(ﬁ,1,FI)'],
 }
 
-export function buildEntryCases(): EntryCase[] {
-  const { out, add } = collector()
-  for (const [group, texts] of Object.entries(GENERAL)) for (const t of texts) add(group, t)
-  return out
-}
+export const buildEntryCases = (): EntryCase[] => entryCases(GENERAL)

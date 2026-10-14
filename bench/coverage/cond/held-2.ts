@@ -5,9 +5,8 @@
  */
 import type { BookInput, CellInput, ConditionalFormat, StructureOp } from '../../../src/contract.js'
 import type { CondCase, CondCases } from './cases.js'
-
-const v = (value: CellInput['value']): CellInput => ({ value })
-const RED = { fill: { color: '#FFC7CE' } }
+import { valueCell as v } from '../stored.js'
+import { RED } from './cases.js'
 
 /** S: numbers 0 to 9 in A1:A10 and 1 to 10 in B:H; a rule without references on B and H, one with a relative one on D, average and duplicates on F and G. */
 function heldBook(): BookInput {

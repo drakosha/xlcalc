@@ -7,8 +7,7 @@
  */
 import type { StructCase, StructCases } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** S: values in A1:B16, the sums in D1:D2; rows 3, 6 (orange, `0.00`), 9:10 and 13 (also hidden) at height 0, 15 hidden at 30. T: a sum over S. */
 function zeroBook(): StoredBook {

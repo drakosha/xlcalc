@@ -6,7 +6,7 @@
  * (`test/excel/cases/time-text.json`).
  */
 import type { Probe } from '../probes.js'
-import { xl } from './arrays/common.js'
+import { byFunction, xl } from './arrays/common.js'
 
 const TIMES = [
   '6 PM', '6PM', '6pm', '6 pm', '06 PM', '6  PM', '6:30PM', '6:30pm', '6:30 PM', '6:30  PM', '6:30:15PM', '6:30:15 PM', '6:30 AM', '6:30 am', '6:30 Pm', '6:30AM',
@@ -33,8 +33,7 @@ const LEADING = [
 ]
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (fn: string, formula: string) => out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula })
+  const { out, add } = byFunction(false)
   for (const t of TIMES) {
     add('VALUE', `VALUE("${t}")`)
     add('TIMEVALUE', `TIMEVALUE("${t}")`)

@@ -8,21 +8,17 @@
  */
 import JSZip from 'jszip'
 import { execFileSync } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { writeXlsx } from '../../src/xlsx.js'
 import { formatAddress } from '../../src/model.js'
-import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
+import { declineRepair, ensureExcel, excelVersion, keyedPart, runWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
 import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, writeAnswers } from './stored.js'
 import { caseCells, caseColumn, caseRow, cellKey, rowsBook, type RowAnswer, type RowCase, type RowSet } from './rows/cases.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-rows.applescript')
-const KEYS = join(HERE, 'excel-keys.applescript')
 /** The cases of one book, at most: a row each. */
 export const ROWS_PART = 50
 
@@ -92,25 +88,7 @@ async function runPart(part: RowCase[], label: string): Promise<Record<string, R
   if (declineRepair()) console.log('closed a leftover book repair window')
   const keys = part.some((c) => c.via === 'keys' || c.via === 'fill' || c.via === 'paste')
   return runWatched<Record<string, RowAnswer>>({
-    script: SCRIPT,
-    label: `rows ${label}`,
-    folder: 'frows',
-    book: async (file) => {
-      const { data, issues } = await writeXlsx({ book: rowsBook(part) }, { values: 'omit' })
-      if (issues.length) throw new Error(`rows ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
-      writeFileSync(file, data)
-    },
-    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', JSON.stringify(partSpec(part)), KEYS],
-    timeout: 290_000,
-    poll: 1000,
-    after: 'part',
-    // typed on the keyboard, the script answers the window a refused formula brings itself
-    fatal: !keys,
-    repair: async (stop) => {
-      await stop()
-      await settleRejected()
-      throw new Error(`rows ${label}: Excel would repair the book`)
-    },
+    ...keyedPart(`rows ${label}`, SCRIPT, 'frows', rowsBook(part), partSpec(part), keys),
     done: (out, dir) => {
       const raw = JSON.parse(out) as { before: number[]; refused: string[][]; rows: [number, boolean, [string, boolean][]][] }
       return partAnswers(part, raw.before, raw.refused, raw.rows, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))))

@@ -6,11 +6,8 @@
  * hidden and shown by hand.
  */
 import type { ColumnInput, RowInput } from '../../../src/contract.js'
-import { collector, type OutlineBook, type OutlineCase, type OutlineCommand } from './cases.js'
+import { collector, H, L, levels, type OutlineBook, type OutlineCase } from './cases.js'
 import { BOOKS as HELD } from './rules-held.js'
-
-const L = (outlineLevel: number): RowInput & ColumnInput => ({ outlineLevel })
-const H = (outlineLevel: number): RowInput => ({ outlineLevel, hidden: true })
 
 export const BOOKS: Record<string, OutlineBook> = {
   empty: HELD.empty,
@@ -29,7 +26,6 @@ export const BOOKS: Record<string, OutlineBook> = {
 
 export function buildOutlineCases(): OutlineCase[] {
   const { out, add } = collector()
-  const levels = (rows: number, columns = 0): OutlineCommand => ({ levels: [rows, columns] })
   const right = { rows: '1:3', columns: 'XEX:XFD' }
   const bottom = { rows: '1048570:1048576', columns: 'A:C' }
 

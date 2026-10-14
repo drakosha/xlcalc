@@ -3,6 +3,7 @@
  * format, a value that no conditional section takes (`test/excel/cases/text-format-more.json`).
  */
 import type { Probe } from '../probes.js'
+import { textProbes } from './text-cases.js'
 
 const CASES: [value: string, format: string][] = [
   ['99999999', '?/?'], ['100000000', '?/?'], ['999999999', '?/?'], ['1000000000', '?/?'], ['1000000001', '?/?'], ['2000000000', '?/?'], ['123456789.5', '?/?'],
@@ -11,6 +12,4 @@ const CASES: [value: string, format: string][] = [
   ['-1', '[>5]0'],
 ]
 
-export function buildProbes(): Probe[] {
-  return CASES.map(([v, f], i) => ({ id: `TEXT#${i + 1}`, group: 'TEXT', fn: 'TEXT', formula: `TEXT(${v},"${f}")` }))
-}
+export const buildProbes = (): Probe[] => textProbes(CASES)

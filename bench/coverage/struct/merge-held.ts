@@ -5,12 +5,10 @@
  * the same area again; a cell of a look alone; a formula giving empty text; a spill's anchor and a cell of its spill.
  * Formulas are dynamic array formulas, as the spill needs.
  */
-import type { StructureOp } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { caseAdder, type StructCases } from './cases.js'
 import { merge, unmerge } from './merge.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /**
  * S: an empty filled A1 under B1 (bold) and A2; a formula in B4 beside a percentage; empty A6 and B7 among values; a
@@ -59,8 +57,7 @@ function heldBook(): StoredBook {
 }
 
 export function buildStructCases(): StructCases {
-  const cases: StructCase[] = []
-  const add = (id: string, op: StructureOp, more: Partial<StructCase> = {}) => cases.push({ id, book: 'held', op, ...more })
+  const { cases, add } = caseAdder('held')
   add('merge-A1-B2-order', merge('A1:B2'))
   add('merge-A1-B2-order-center', merge('A1:B2', { center: true }))
   add('merge-A1-A2-down', merge('A1:A2'))

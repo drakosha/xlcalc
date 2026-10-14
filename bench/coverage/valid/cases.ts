@@ -5,7 +5,7 @@
  * whether the cell's value meets it: `Validation.Value`), the window's outline levels, hidden and collapsed lines and the
  * sheet's summary settings, and saves the book. The answer is what Excel read, and the file it saved goes beside it.
  */
-import type { BookInput, DataValidation, OutlineSettings, StructureOp, ValidationOperator, ValidationType } from '../../../src/contract.js'
+import type { BookInput, CellInput, DataValidation, OutlineSettings, StructureOp, ValidationOperator, ValidationType } from '../../../src/contract.js'
 import { LOCALES, createSession, parseEntry, toInvariant, validateFormula } from '../../../src/index.js'
 import { isHiddenRow } from '../../../src/layout/hidden.js'
 import { lines, parseSpan, patchLines } from '../../../src/layout/spans.js'
@@ -302,4 +302,26 @@ export function lineRange(text: string): string {
   if (m) return `A${m[1]}:A${m[2] ?? m[1]}`
   const [a, b = a] = text.split(':')
   return `${a}1:${b}1`
+}
+
+/** A column of a set of values: a rule and the values below its title. */
+export type ValueColumn = { rule: Omit<DataValidation, 'range'>; values: (CellInput | null)[] }
+
+/** A value cell and a formula cell. */
+export { valueCell as v } from '../stored.js'
+export { formulaCell as f } from '../stored.js'
+
+/**
+ * The columns laid out on a sheet from A, into `cells`: row 1 the rule's title, the values below it (a null one left
+ * blank); the rules over the values, returned.
+ */
+export function laidOut(columns: readonly ValueColumn[], cells: Record<string, CellInput>): DataValidation[] {
+  return columns.map((col, i) => {
+    const letter = String.fromCharCode(65 + i)
+    cells[`${letter}1`] = { value: `${col.rule.type} ${i + 1}` }
+    col.values.forEach((x, k) => {
+      if (x) cells[`${letter}${k + 2}`] = x
+    })
+    return { range: `${letter}2:${letter}${col.values.length + 1}`, ...col.rule }
+  })
 }

@@ -2,7 +2,7 @@
  * The General format in narrow columns: numbers of every shape (long fractions, large and small magnitudes,
  * negatives, values that round up) in columns from half a character to 14 characters wide.
  */
-import { collector } from './cases.js'
+import { collector, sixths } from './cases.js'
 
 const VALUES = [
   1234567.891, 0.000123456789, 123456789, 3.14159265358979, -3.14159265358979, 99999.99, 1e-10, 1.5e20, 12345678901234, 0.5, -0.5, 100000, 1234.5, 0.30000000000000004,
@@ -12,8 +12,6 @@ const VALUES = [
   1.5e-5, 5.5e-5, 0.00015, 123456.7, 12345.6, 99999.4, -99999.99, 2.5e-100, 1.5e-11, 1 / 3, 2 / 3, 1e-4, 9.999e-5, 1.23e-4, 999999999.5, 0.99999, 9.9999,
   12345678901, 123456789012, -12345.6, -123456.7,
 ]
-
-const sixths = (from: number, to: number) => Array.from({ length: Math.round((to - from) * 6) + 1 }, (_, i) => Math.round((from + i / 6) * 1e4) / 1e4)
 
 export function buildDisplayCases() {
   const { out, add } = collector()

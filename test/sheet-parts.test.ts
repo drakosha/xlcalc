@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, InputError, createSession, editStructure, type BookInput, type Execution, type SheetInput, type StructureOp } from '../src/index.js'
+import { sameValuesApart } from './formula-values.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 1 }
 
@@ -75,10 +76,7 @@ describe('notes, links and frozen panes as input', () => {
   })
 
   it('values and the values hash are those of the book without them; inputHash takes them in only when there are any', () => {
-    const [r, b] = [compute(book(), { clock }), compute(bare(book()), { clock })]
-    expect(r.hash).toBe(b.hash)
-    expect(r.sheets).toEqual(b.sheets)
-    expect(r.inputHash).not.toBe(b.inputHash)
+    const r = sameValuesApart(book(), bare(book()), clock)
     // a book without them keeps the inputHash it had before they existed: recorded with master e1383d4
     const old: BookInput = { styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 0 }, A2: { value: 2 }, A3: { value: 3 }, B1: { formula: 'SUM(A1:A3)' }, B2: { value: 'site' }, C3: {} }, merges: ['D1:E1'] }, { name: 'T', cells: { A1: { value: 'back' } } }] }
     expect(compute(old, { clock }).inputHash).toBe('0cfa5b2caae351144eb19b829ac9148095834a251d6c6250abbe5643d067802d')

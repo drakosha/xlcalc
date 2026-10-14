@@ -5,7 +5,7 @@
  * operation, reads each sheet's visibility, the active sheet and the values of the read cells, and saves the book. The
  * answer is what Excel read; the file it saved goes beside it.
  */
-import type { BookInput, CellValue, StructureOp } from '../../../src/contract.js'
+import type { BookInput, CellValue, SheetInput, StructureOp } from '../../../src/contract.js'
 import { compute, editStructure } from '../../../src/index.js'
 import { writeXlsx } from '../../../src/xlsx.js'
 import { editParts } from '../xlsx/sent.js'
@@ -100,3 +100,14 @@ export function engineAnswer(set: HiddenCases, c: HiddenCase): { refused?: strin
  */
 export const excelRefused = (set: HiddenCases, c: HiddenCase, a: HiddenAnswer) =>
   !!a.error || (c.op?.op === 'deleteSheet' && JSON.stringify(a.sheets) === JSON.stringify(sheetsOf(set.books[c.book])))
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr'] as const
+
+/** Which of the months' sheets and their sum's are hidden, and how. */
+export type MonthsHidden = Partial<Record<(typeof MONTHS)[number] | 'Sum', true | 'very'>>
+
+/** The sheets Jan to Apr (B2 1, 10, 100, 1000) and the sheet `sum` after them, each sheet's `hidden` as given. */
+export function monthBook(sum: SheetInput, hidden: MonthsHidden = {}): BookInput {
+  const h = (name: keyof MonthsHidden) => (hidden[name] ? { hidden: hidden[name] } : {})
+  return { sheets: [...MONTHS.map((name, i) => ({ name, cells: { B2: { value: 10 ** i } }, ...h(name) })), { ...sum, ...h('Sum') }] }
+}

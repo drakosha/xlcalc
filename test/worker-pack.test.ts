@@ -9,7 +9,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { compute, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { pack, unpack, unpackSlowly, type Sent } from '../src/worker/pack.js'
-import { BOOKS, chainBook, CLOCK } from './async-books.js'
+import { BOOKS, chainBook, CLOCK, loopDuring } from './async-books.js'
 import { inside, pool } from './fixtures/pool.js'
 
 const pools: { close(): Promise<void> }[] = []
@@ -140,18 +140,7 @@ describe('a book as text', () => {
     const p = await pool({ threads: 1 })
     pools.push(p)
     await p.compute(chainBook(2))
-    let last = performance.now()
-    let worst = 0
-    let done = false
-    const tick = () => {
-      const now = performance.now()
-      worst = Math.max(worst, now - last)
-      last = now
-      if (!done) setImmediate(tick)
-    }
-    setImmediate(tick)
-    const s = await p.createSession(book, { clock: CLOCK })
-    done = true
+    const { value: s, worst } = await loopDuring(p.createSession(book, { clock: CLOCK }))
     // the pool copied the book and cloned it to the thread in one stretch: more than half a clone
     expect(worst).toBeLessThan(clone / 3)
     expect(await s.getHash()).toBe(createSession(book, { clock: CLOCK }).getHash())

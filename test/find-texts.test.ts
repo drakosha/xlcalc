@@ -10,6 +10,7 @@ import type { AsyncSession, BookInput, Execution, FindCellsOptions } from '../sr
 import { createSession } from '../src/index.js'
 import './locales.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { filteredSheet } from './find-books.js'
 
 afterAll(closeCalcs)
 
@@ -38,13 +39,7 @@ const book: BookInput = {
       conditionalFormats: [{ type: 'cellIs', ranges: ['J1:J5'], operator: 'greaterThan', formulas: ['$D$1*10'], style: { numberFormat: '0.0' } }],
       tables: [{ name: 'T', range: 'L1:M3', columns: [{ name: 'Qty' }, { name: 'Twice', formula: '[@Qty]*2' }] }],
     },
-    {
-      name: 'F',
-      cells: { A1: { value: 'x1' }, B1: { value: 'x2' }, C1: { value: 'x3' }, A2: { value: 'x4' }, B2: { value: 'x5' }, C2: { value: 'x6' }, A3: { value: 'x7' }, C3: { value: 'x8' } },
-      rows: { 2: { hidden: true } },
-      columns: { B: { hidden: true } },
-      filtered: true,
-    },
+    filteredSheet(),
   ],
 }
 

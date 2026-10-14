@@ -11,7 +11,7 @@ import type { SpillSet } from '../spill/cases.js'
 import type { StructSet } from '../struct/cases.js'
 import type { TableSet } from '../tables/cases.js'
 import { filterBook, Y_ROWS } from './filters.js'
-import { takenBook } from '../stored.js'
+import { formulaCell as f, takenBook, valueCell as v } from '../stored.js'
 
 /** The clock the round trip computes its books with. */
 export const XLSX_CLOCK = { now: '2026-10-07T12:00:00Z', seed: 7 }
@@ -30,9 +30,6 @@ export interface RoundTrip {
 const STRUCT_SETS = ['arrays', 'cube', 'edge', 'move', 'moves', 'rows', 'sheets', 'spill', 'spill-more', 'styles']
 const SPILL_SETS = ['at', 'base', 'cse', 'held', 'let', 'names', 'order']
 const TABLE_SETS = ['refs', 'refs-held', 'ops', 'ops-held']
-
-const v = (value: CellInput['value']): CellInput => ({ value })
-const f = (formula: string): CellInput => ({ formula })
 
 const values: BookInput = {
   sheets: [

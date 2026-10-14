@@ -4,7 +4,7 @@
  * Excel en-US (`test/excel/cases/complex-text.json`).
  */
 import type { Probe } from '../probes.js'
-import { xl } from './arrays/common.js'
+import { byFunction } from './arrays/common.js'
 
 const TEXTS = [
   '50%+i', '1+50%i', '50%-50%i', '%50+i', '$1+2i', '1+$2i', '$1,000.5-2i', '1,000+2i', '1+1,000i', '1,00+2i', '(1)+2i', '1+(2)i', '-(1)+i',
@@ -17,8 +17,7 @@ const TEXTS = [
 ]
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (fn: string, formula: string) => out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula: xl(formula) })
+  const { out, add } = byFunction()
   for (const t of TEXTS) {
     add('IMREAL', `IMREAL("${t}")`)
     add('IMAGINARY', `IMAGINARY("${t}")`)

@@ -7,7 +7,6 @@
  * only those cases, `FCOV_FRESH=1` every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { areasOf } from '../../src/validation/rules.js'
 import { formatAddress } from '../../src/model.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
@@ -16,9 +15,8 @@ import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { opJson } from './struct.js'
 import { lineRange, validCaseFile, WINDOW, type ValidAnswer, type ValidCase, type ValidCases, type ValidMake, type ValidSet, type ValidSheetAnswer } from './valid/cases.js'
 import { caseFiles } from './xlsx/sent.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-valid.applescript')
 
 export interface StoredValid extends ValidCases {
@@ -46,13 +44,19 @@ export function ruleRange(range: string): { range: string; first: string } {
   return { range: areas.map((x) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`).join(','), first: formatAddress(areas[0].r1, areas[0].c1) }
 }
 
+/** A rule a case makes as Excel takes it: the rule, its range and that range's first cell, its formulas spelled for Excel. */
+export function excelRule(m: Extract<ValidMake, { rule: unknown }>) {
+  const r = m.rule
+  const { range, first } = ruleRange(m.range)
+  const [f1, f2] = m.excel ?? [formulaForExcel(r.formula1), formulaForExcel(r.formula2)]
+  return { r, range, first, f1, f2 }
+}
+
 /** What a case makes, as the script takes it. */
 export function makeArgs(make: ValidMake[] = []): string[][] {
   return make.map((m) => {
     if ('rule' in m) {
-      const r = m.rule
-      const { range, first } = ruleRange(m.range)
-      const [f1, f2] = m.excel ?? [formulaForExcel(r.formula1), formulaForExcel(r.formula2)]
+      const { r, range, first, f1, f2 } = excelRule(m)
       return ['rule', m.sheet, range, first, r.type, r.errorStyle ?? '', r.operator ?? '', f1, f2 ?? '', flag(r.allowBlank), flag(r.dropdown), flag(r.showPrompt), flag(r.showError), r.promptTitle ?? '', r.prompt ?? '', r.errorTitle ?? '', r.error ?? '']
     }
     if ('summary' in m) return ['summary', m.sheet, flag(m.summary.summaryBelow), flag(m.summary.summaryRight)]
@@ -62,7 +66,6 @@ export function makeArgs(make: ValidMake[] = []): string[][] {
 }
 
 type RawSheet = [string, ValidSheetAnswer['rules'], ValidSheetAnswer['rows'], ValidSheetAnswer['columns'], [string, string]]
-
 
 /** One case in Excel: its answer and the saved file, or the repair window's text. A window that is not a book stops the run. */
 async function runCase(c: ValidCase, data: Uint8Array, window: string): Promise<{ answer: ValidAnswer; saved: Uint8Array } | { rejected: string }> {

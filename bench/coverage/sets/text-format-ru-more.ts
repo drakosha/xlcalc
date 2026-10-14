@@ -2,6 +2,7 @@
  * Excel ru-RU cases for TEXT: colour names, month names after a day, the system long date (`test/excel/cases/ru-RU/text-format-ru-more.json`).
  */
 import type { Probe } from '../probes.js'
+import { textProbes } from './text-cases.js'
 
 const CASES: [value: string, format: string][] = [
   ['5', '[Черный]0'], ['5', '[Голубой]0'], ['5', '[Зеленый]0'], ['5', '[Фиолетовый]0'], ['5', '[Белый]0'], ['5', '[Желтый]0'], ['5', '[Цвет 10]0'], ['5', '[ЦВЕТ10]0'],
@@ -9,6 +10,4 @@ const CASES: [value: string, format: string][] = [
   ['1000000000', '?/?'], ['1/3', '@'],
 ]
 
-export function buildProbes(): Probe[] {
-  return CASES.map(([v, f], i) => ({ id: `TEXT#${i + 1}`, group: 'TEXT', fn: 'TEXT', formula: `TEXT(${v},"${f}")` }))
-}
+export const buildProbes = (): Probe[] => textProbes(CASES)

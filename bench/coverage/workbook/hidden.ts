@@ -6,9 +6,9 @@
  */
 import type { CellInput, SheetInput } from '../../../src/contract.js'
 import type { Step, WorkbookCase } from './cases.js'
+import { formulaCell as f } from '../stored.js'
 
 const AGG = 'AGGREGATE'
-const f = (formula: string): CellInput => ({ formula })
 
 /** Sheet S: a header in row 1, A2:A16 the values 2^0 … 2^14, B2:B16 the keys a filter reads (`x` kept, `y` not). */
 const KEYS = 'xxxxxyyxxyxxxxx'

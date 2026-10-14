@@ -7,9 +7,7 @@
  * (`name-case-sheets-held.predicted.json`).
  */
 import { PAIRS } from './name-case-held.js'
-import { book, on, table, type TableCase, type TableStep } from './cases.js'
-
-const typed = (cell: string, formula: string): TableStep => ({ edit: { sheet: 'S', cell, value: { formula } } })
+import { book, on, table, type TableCase, typedFormula } from './cases.js'
 
 export function buildTableCases(): TableCase[] {
   const cases: TableCase[] = []
@@ -26,7 +24,7 @@ export function buildTableCases(): TableCase[] {
       id: `table-${id}`,
       about: `a table T${word}, formulas over T${upper} and T${word} typed`,
       book: book(['S', {}, t]),
-      steps: [typed('C1', `ROWS(T${upper})`), typed('C2', `ROWS(T${word})`)],
+      steps: [typedFormula('C1', `ROWS(T${upper})`), typedFormula('C2', `ROWS(T${word})`)],
       read: on('S', 'A1:C3'),
     })
   }

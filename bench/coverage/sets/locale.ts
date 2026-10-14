@@ -7,6 +7,7 @@
  * array formulas (Excel 365).
  */
 import type { Probe, SheetCells } from '../probes.js'
+import { byGroup } from './arrays/common.js'
 
 /** L!A1:A16: numbers, dates (46143 is 2026-05-01, 46023 2026-01-01, 45657 2024-12-31), booleans, text that reads as numbers and words, #N/A. */
 export const SHEETS: SheetCells = {
@@ -100,8 +101,7 @@ const NUMBER_CODES_MORE = [
 ]
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (group: string, formula: string) => out.push({ id: `${group}#${out.filter((p) => p.group === group).length + 1}`, group, formula })
+  const { out, add } = byGroup()
 
   for (const t of NUMBERS) for (const f of [`VALUE(${q(t)})`, `${q(t)}*1`]) add('number', f)
   for (const t of NUMBERS_MORE) for (const f of [`VALUE(${q(t)})`, `${q(t)}*1`]) add('number', f)

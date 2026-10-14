@@ -7,8 +7,9 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldCases } from './arrays/common.js'
 import { SHEETS as EDGE } from './stat-edges-held.js'
+import { n } from '../vals.js'
 
 const ROWS = 10000
 const K = 12
@@ -36,8 +37,6 @@ for (let k = 0; k < K; k++) {
 }
 
 export const SHEETS: SheetCells = { Edge: EDGE.Edge, Fit: fit }
-
-const n = (v: number): Val => ({ t: 'n', v })
 
 const BIG = 'Edge!A2:A10001', STEP = 'Edge!B2:B10001', TWO = 'Fit!A2:B10001'
 const X = 'Fit!D2:D13', LINE = 'Fit!E2:E13', GROW = 'Fit!F2:F13', X2 = 'Fit!H2:I13', Y2 = 'Fit!J2:J13'
@@ -95,14 +94,8 @@ const CASES: [string, string, Val][] = [
   ['TREND', `TREND(${Y2},${X2},{1000012,1000003})`, n(1000000005.22236)],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [fn, f] of CASES) add(fn, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)
 
 /**
  * The predictions Excel did not confirm, the Mac and Windows alike: Excel's intercept and regression sum of squares on

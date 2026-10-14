@@ -6,7 +6,7 @@
  * Answers: `test/excel/cases/lookup-rules.json`.
  */
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { probesOf } from './arrays/common.js'
 
 /** Lk: B2:B4 and C2:C3, G3 beside the end of E2's array of two (E2:E3), E4 below it. */
 export const SHEETS: SheetCells = {
@@ -34,8 +34,4 @@ const CASES: [string, string][] = [
   ['LOOKUP', 'LOOKUP(4.19,D!L1:L6+0,IF(TRUE,Lk!B2:B3))&""'],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [fn, f] of CASES) add(fn, fn, f)
-  return out
-}
+export const buildProbes = (): Probe[] => probesOf(CASES)

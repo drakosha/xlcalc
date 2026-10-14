@@ -7,16 +7,14 @@
  * `case-book.ts`. `FBOOK_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, takenBook, took, unpredicted, writeAnswers } from './stored.js'
 import { answerOf, cellsOf, editOf, fileFormula, MIRRORS, runOnBook } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
 import { compute } from '../../src/index.js'
 import type { Step, WorkbookAnswer, WorkbookCase, WorkbookSet } from './workbook/cases.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-workbook.applescript')
 
 export interface StoredWorkbook {

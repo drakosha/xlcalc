@@ -7,12 +7,8 @@
  * `PREDICTED`, the answers by that rule, was committed before Excel ran the set.
  */
 import type { Val } from '../formulajs.js'
-import type { Probe } from '../probes.js'
-import { collector } from './arrays/common.js'
-
-const n = (v: number): Val => ({ t: 'n', v })
-const s = (v: string): Val => ({ t: 's', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
+import { heldCases } from './arrays/common.js'
+import { n, s, e } from '../vals.js'
 
 /** Function, formula and the answer predicted before Excel ran (D!B1:B8 4, 8, 15, 16, 23, 42, −3.5, 10.25 by D!C1:C8). */
 const CASES: [string, string, Val][] = [
@@ -42,14 +38,8 @@ const CASES: [string, string, Val][] = [
   ['SORTBY', 'ARRAYTOTEXT(SORTBY(D!B1:B8,5,{1;-1}),1)', s('{4;}')],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [fn, f] of CASES) add(fn, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)
 
 /** The predictions Excel did not confirm, the Mac and Windows alike: none. */
 export const MISSED: readonly string[] = []

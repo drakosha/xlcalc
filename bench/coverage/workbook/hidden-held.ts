@@ -8,8 +8,7 @@ import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
 import type { CellInput, SheetInput } from '../../../src/contract.js'
 import type { WorkbookCase } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** S: A1:C1 a header, A2:C13 values (A powers of two, B text and booleans, C numbers), D2:D13 the filter's keys; a nested SUBTOTAL in A9 and A12. */
 function data(): SheetInput {

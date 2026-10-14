@@ -6,9 +6,7 @@
  */
 import type { BookInput, CellInput, DataValidation } from '../../../src/contract.js'
 import type { ValidCases } from './cases.js'
-
-const v = (value: CellInput['value']): CellInput => ({ value })
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f, valueCell as v } from '../stored.js'
 
 /** Each list and the values tried against it, by column from A. */
 const COLUMNS: { formula1: string; allowBlank?: boolean; values: CellInput[] }[] = [

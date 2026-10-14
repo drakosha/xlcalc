@@ -3,7 +3,11 @@
  * en-US and ru-RU), the semantics cases, the synthetic book, the spill book, seeded books, iterative calculation,
  * the 1904 date system; and a book of a long chain, where one edit recomputes thousands of formulas.
  */
+import { expect } from 'vitest'
 import type { BookInput, CellReplace, CellInput } from '../src/contract.js'
+import { CalcError, createSession, type AsyncSession, type Execution, type Session } from '../src/index.js'
+import type { SynthBook } from '../src/synth.js'
+import { edits } from './session-edits.js'
 import { synthBook } from '../src/synth.js'
 import { CASES, excelBook } from './excel-cases.js'
 import { randomBook } from './seeded-books.js'
@@ -48,4 +52,55 @@ export async function medianMs(n: number, f: (i: number) => unknown): Promise<nu
     xs.push(performance.now() - t)
   }
   return xs.sort((a, b) => a - b)[n >> 1]
+}
+
+/** The CalcError a call fails with; a call that does not fail fails the test. */
+export const fails = async (p: Promise<unknown>): Promise<CalcError> => {
+  try {
+    await p
+  } catch (e) {
+    expect(e).toBeInstanceOf(CalcError)
+    return e as CalcError
+  }
+  throw new Error('expected CalcError')
+}
+
+/** The longest wait of the event loop while `p` is pending, and its runs; a call that never yields leaves it none. */
+export async function loopDuring<T>(p: Promise<T>): Promise<{ value: T; worst: number; ticks: number }> {
+  let last = performance.now()
+  let worst = 0
+  let ticks = 0
+  let done = false
+  const tick = () => {
+    const now = performance.now()
+    worst = Math.max(worst, now - last)
+    last = now
+    ticks++
+    if (!done) setImmediate(tick)
+  }
+  setImmediate(tick)
+  const value = await p.finally(() => (done = true))
+  return { value, worst: Math.max(worst, performance.now() - last), ticks }
+}
+
+/** A session `s` and a synchronous one over the synthetic book `synth`, given 40 edits: the same changes and hash after each; the synchronous one. */
+export async function sameOverEdits(s: AsyncSession, synth: SynthBook, execution: Execution): Promise<Session> {
+  const sync = createSession(synth.book, { clock: CLOCK, execution })
+  for (const batch of edits(5, 40, synth)) {
+    expect(await s.setCells(batch)).toEqual(sync.setCells(batch))
+    expect((await s.getResult()).hash).toBe(sync.getResult().hash)
+  }
+  return sync
+}
+
+/**
+ * A call stopped by its soft deadline on the heavy book's session `s`, and the call after it, which computes the book
+ * again outside its deadline: the deadline, a quarter of a cold computation of the book as fast as the machine runs now.
+ */
+export async function afterStopped(s: AsyncSession): Promise<number> {
+  const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
+  expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
+  expect((await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).changes).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+  expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 12 })
+  return timeoutMs
 }

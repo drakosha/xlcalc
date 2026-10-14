@@ -12,7 +12,7 @@ import { sentBook } from '../coverage/find/cases.js'
 import { columnsOf, readOf, replaceFile, type ReplaceAnswer, type ReplaceCase, type ReplaceSet, type StoredReplace } from '../coverage/replace/cases.js'
 import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
 import { savedCells, type RawCell } from '../coverage/ui.js'
-import { inJobs, metaOf, type Step, type Tag, type WinEnv } from './remote.js'
+import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepReplace(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const { BOOKS, buildReplaceCases } = await setModule<ReplaceSet>('replace', set)
@@ -33,14 +33,7 @@ export async function stepReplace(set: string, tag: Tag, e: WinEnv): Promise<voi
     const typed = Object.entries(b.typed ?? {}).map(([cell, value]): Step => ({ do: 'set', sheet: 'S', cell, kind: 'l2', value }))
     return { file: f, steps: [{ do: 'full' }, ...filter, ...typed, { do: 'calc' }, { do: 'replace', sheet: 'S', ...c.query }, { do: 'calc' }, { do: 'cells', sheet: 'S', cells: readOf(b) }, { do: 'widths', sheet: 'S', columns: columnsOf(b) }, { do: 'saveAs' }] }
   }
-  await inJobs(`replace-${set}-${tag}`, todo, book, (c, a, cutShort) => {
-    if (a && 'answers' in a && a.saved) {
-      results.push([c, a.answers, a.saved])
-      return []
-    }
-    if (!a && cutShort) return [c]
-    throw new Error(`replace ${set} ${tag} ${c.id}: the book did not run: ${a && 'rejected' in a ? a.rejected : 'the job stopped on it'}`)
-  }, save)
+  await inJobs(`replace-${set}-${tag}`, todo, book, savedInto(results, (c, why) => `replace ${set} ${tag} ${c.id}: the book did not run: ${why}`), save)
   for (const [c, got, saved] of results) {
     // the steps' answers: full, the filter, the typed texts, calc, replace, calc, cells, widths, saveAs
     const at = got.length - 5

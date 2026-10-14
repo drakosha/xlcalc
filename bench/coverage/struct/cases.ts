@@ -6,8 +6,9 @@
  * Excel never meets a circular reference.
  */
 import type { FileParts } from '../case-book.js'
-import type { BookInput, CellInput, CellRef, StructureOp } from '../../../src/contract.js'
+import type { BookInput, CellInput, CellRef, RangeRef, StructureOp } from '../../../src/contract.js'
 import type { StoredBook } from '../stored.js'
+import { formulaCell as f } from '../stored.js'
 
 export interface StructCase {
   id: string
@@ -42,8 +43,6 @@ export interface StructCases {
 export interface StructSet {
   buildStructCases(): StructCases
 }
-
-const f = (formula: string): CellInput => ({ formula })
 
 /** S: data in A1:D12 and rows 30:31, formulas in F:H; T: formulas over S; `My Data`: a sheet name in quotes. */
 export function baseBook(): BookInput {
@@ -122,4 +121,16 @@ export function baseBook(): BookInput {
       { name: 'tloc', ref: "'S'!$A$5:$A$6", scope: 'T' },
     ],
   }
+}
+
+/** `Sheet!range` as a range of a sheet. */
+export function rangeAt(ref: string): RangeRef {
+  const i = ref.lastIndexOf('!')
+  return { sheet: ref.slice(0, i), range: ref.slice(i + 1) }
+}
+
+/** The cases of a set over one book: `add(id, op, more)` puts a case of the operation. */
+export function caseAdder(book: string): { cases: StructCase[]; add: (id: string, op: StructureOp, more?: Partial<StructCase>) => void } {
+  const cases: StructCase[] = []
+  return { cases, add: (id, op, more = {}) => void cases.push({ id, book, op, ...more }) }
 }

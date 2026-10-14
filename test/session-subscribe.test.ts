@@ -5,9 +5,9 @@
  * every listener in the order of their revisions, a change a listener makes too; a listener that throws stops neither
  * the call nor the others; unsubscribing and closing stop the calls.
  */
-import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, describe, expect, it, vi } from 'vitest'
 import { InputError, type AsyncSession, type BookInput, type EditResult, type SessionChange } from '../src/index.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
@@ -31,8 +31,7 @@ afterEach(() => vi.unstubAllGlobals())
 
 describe.each(['closures', 'eval'] as const)('subscribers, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => { open = await opener(kind) })
+    const open = openerFor(kind)
     const session = () => open(book(), { clock, execution })
 
     it("each changing call is told with its answer's EditResult and its name, before the call returns", async () => {

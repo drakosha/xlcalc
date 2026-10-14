@@ -2,12 +2,9 @@
  * Tables in Excel ru-RU (`run.ts tables locale ru`): structured references as Excel shows them in Russian (`#Данные`,
  * `;` between items, `@` for the formula's row), formulas typed in Russian, and the names Excel gives new columns.
  */
-import type { BookInput } from '../../../src/contract.js'
-import { on, sales, table, type TableCase } from './cases.js'
+import { inRu, on, sales, table, type TableCase } from './cases.js'
 
 export const local = true
-
-const ru = (b: BookInput): BookInput => ({ ...b, locale: 'ru-RU' })
 
 export function buildTableCases(): TableCase[] {
   const s = sales()
@@ -18,12 +15,12 @@ export function buildTableCases(): TableCase[] {
   }
   const totals = table('T', 'A1', ['a', 'b'], [[1, '=[@a]*2'], [2, '=[@a]*2']], { totals: ['=ROWS([#Data])', '=SUBTOTAL(109,[b])'] })
   return [
-    { id: 'shown', about: 'every specifier and the formula row as Excel ru-RU shows them, outside and inside the table', book: ru({ sheets: [{ name: 'S', cells: { ...s.cells, ...cellsOf(shown) }, tables: [s.table] }] }), read: on('S', 'A1:K9') },
-    { id: 'totals', about: 'a totals row and a calculated column in ru-RU', book: ru({ sheets: [{ name: 'S', cells: totals.cells, tables: [totals.table] }] }), read: on('S', 'A1:B4') },
+    { id: 'shown', about: 'every specifier and the formula row as Excel ru-RU shows them, outside and inside the table', book: inRu({ sheets: [{ name: 'S', cells: { ...s.cells, ...cellsOf(shown) }, tables: [s.table] }] }), read: on('S', 'A1:K9') },
+    { id: 'totals', about: 'a totals row and a calculated column in ru-RU', book: inRu({ sheets: [{ name: 'S', cells: totals.cells, tables: [totals.table] }] }), read: on('S', 'A1:B4') },
     {
       id: 'typed',
       about: 'formulas typed in Russian: the specifiers in any case, the formula row as #Эта строка',
-      book: ru({ sheets: [{ name: 'S', cells: s.cells, tables: [s.table] }] }),
+      book: inRu({ sheets: [{ name: 'S', cells: s.cells, tables: [s.table] }] }),
       steps: [
         { edit: { sheet: 'S', cell: 'J1', value: { local: '=СУММ(Sales[[#Заголовки];[Qty]])' } } },
         { edit: { sheet: 'S', cell: 'J2', value: { local: '=ЧСТРОК(Sales[#Все])' } } },
@@ -37,7 +34,7 @@ export function buildTableCases(): TableCase[] {
     {
       id: 'columns',
       about: 'a column inserted into a table and a header cleared: Excel ru-RU names them Столбец1 and Столбец2',
-      book: ru({ sheets: [{ name: 'S', cells: { ...s.cells, J1: { formula: 'SUM(Sales[[Region]:[Price]])' } }, tables: [s.table] }] }),
+      book: inRu({ sheets: [{ name: 'S', cells: { ...s.cells, J1: { formula: 'SUM(Sales[[Region]:[Price]])' } }, tables: [s.table] }] }),
       steps: [{ op: { op: 'insertColumns', sheet: 'S', column: 'B' } }, { edit: { sheet: 'S', cell: 'A1', value: null } }],
       read: on('S', 'A1:K5'),
     },

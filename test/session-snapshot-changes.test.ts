@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { compute, parseEntry, type AsyncSession, type BookInput, type CellChange, type EditResult } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const note = { author: 'Ann', text: 'before' }
@@ -35,8 +35,7 @@ afterAll(closeCalcs)
 
 describe.each(['closures', 'eval'] as const)('snapshot and cell attachments, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => { open = await opener(kind) })
+    const open = openerFor(kind)
     const session = (input = book()) => open(input, { clock, execution })
 
     it('a snapshot stays at its original book and result through edits, history and closing', async () => {

@@ -16,7 +16,6 @@
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { compute } from '../../src/index.js'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { inParts, writeBook } from './book.js'
@@ -32,9 +31,8 @@ import { FORMAT_IDS, formatBook } from './xlsx/formats.js'
 import { OLD_FORMULAS, oldFormulaBook } from './xlsx/intersect.js'
 import { partsHash } from './xlsx/sent.js'
 import { loadStored, secondsSince, setModule, writeAnswers } from './stored.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const DATA = join(ROOT, 'test/excel/xlsx')
 const OUT = join(HERE, 'out/xlsx')
 const ONLY = process.env.FXLSX_ONLY?.split(',').filter(Boolean)

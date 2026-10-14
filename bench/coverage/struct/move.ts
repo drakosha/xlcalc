@@ -4,9 +4,8 @@
  * of copied formulas, copies past the sheet's edge, tiling.
  */
 import type { BookInput, CellInput, RangeRef } from '../../../src/contract.js'
-import { baseBook, type StructCase, type StructCases } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { baseBook, rangeAt, type StructCase, type StructCases } from './cases.js'
+import { formulaCell as f } from '../stored.js'
 
 /** Data in A1:B10, a row of formulas in D1:J1 to fill down and right. */
 function fillBook(): BookInput {
@@ -29,15 +28,11 @@ function fillBook(): BookInput {
 
 export function buildStructCases(): StructCases {
   const cases: StructCase[] = []
-  const at = (ref: string): RangeRef => {
-    const i = ref.lastIndexOf('!')
-    return { sheet: ref.slice(0, i), range: ref.slice(i + 1) }
-  }
   const move = (id: string, from: string, to: string, book = 'base') => {
-    const t = at(to)
-    cases.push({ id, book, op: { op: 'moveRange', from: at(from), to: { sheet: t.sheet, cell: t.range } } })
+    const t = rangeAt(to)
+    cases.push({ id, book, op: { op: 'moveRange', from: rangeAt(from), to: { sheet: t.sheet, cell: t.range } } })
   }
-  const copy = (id: string, from: string, to: string, book = 'base') => cases.push({ id, book, op: { op: 'copyRange', from: at(from), to: at(to) } })
+  const copy = (id: string, from: string, to: string, book = 'base') => cases.push({ id, book, op: { op: 'copyRange', from: rangeAt(from), to: rangeAt(to) } })
 
   move('move-A5-K5', 'S!A5', 'S!K5')
   move('move-A3:A8-K3', 'S!A3:A8', 'S!K3')

@@ -8,18 +8,8 @@ import { describe, expect, it } from 'vitest'
 import type { StructCases } from '../bench/coverage/struct/cases.js'
 import { takenBook } from '../bench/coverage/stored.js'
 import { editStructure } from '../src/index.js'
-import { differences, STRUCT_SETS } from './structure-excel.js'
-
-/** `<set>:<case id>` → the difference lines pinned for that case, each with its reason in a comment. */
-const STRUCT_KNOWN: Readonly<Record<string, string[]>> = {
-  // whole columns copied onto part of a merged area: Excel pastes them and keeps the area (and the value of its
-  // top-left cell, where the source cell was empty); two observations, the engine refuses as for a range
-  'styles:copy-S!D:D-S!C1': ['engine refused (merged): the pasted cells land on part of the merged area S!B10:C11'],
-  'styles-checks:copy-S!C:C-S!I1': ['engine refused (merged): the pasted cells land on part of the merged area S!I2:J2'],
-  // Excel's fill handle (Range.AutoFill) fills the hidden rows of a filtered sheet too; the engine's copyRange is
-  // copy and paste, which, as Fill Down, fills the visible rows only (the case filtered-fill-down)
-  'hidden:filtered-fill-handle': ['D4', 'E4', 'D7', 'E7', 'D8', 'E8', 'D11', 'E11'].map((a) => `'S'!${a}: Excel ${JSON.stringify(a[0] === 'D' ? 'top' : `=A${a.slice(1)}+1000`)}, engine ""`),
-}
+import { differences, STRUCT_KNOWN, STRUCT_SETS } from './structure-excel.js'
+import { currentStructSet } from './stored-cases.js'
 
 describe('structure operations against Excel en-US', () => {
   it('every set has its cases answered', () => {
@@ -46,12 +36,7 @@ for (const set of STRUCT_SETS) {
   const built = ((await import(`../bench/coverage/struct/${set.name}.ts`)) as { buildStructCases: () => StructCases }).buildStructCases()
 
   describe(`structure set ${set.name}`, () => {
-    it('the stored Excel answers are for the current cases and books', () => {
-      expect(set.cases).toEqual(built.cases)
-      expect(set.books).toEqual(built.books)
-      expect(set.files).toEqual(built.files)
-      expect(built.cases.filter((c) => !set.answers[c.id])).toEqual([])
-    })
+    currentStructSet(set, built)
 
     const look = set.meta.look === undefined ? undefined : String(set.meta.look)
     for (const c of set.cases) {
