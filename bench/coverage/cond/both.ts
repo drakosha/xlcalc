@@ -6,8 +6,7 @@
  */
 import type { BookInput, CellInput, ConditionalFormat, DataValidation, StructureOp } from '../../../src/contract.js'
 import type { CondCase, CondCases } from './cases.js'
-
-const v = (value: CellInput['value']): CellInput => ({ value })
+import { valueCell as v } from '../stored.js'
 
 function bothBook(): BookInput {
   const cells: Record<string, CellInput> = {}

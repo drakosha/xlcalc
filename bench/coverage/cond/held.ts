@@ -8,9 +8,8 @@
  */
 import type { BookInput, CellInput, ConditionalFormat, StructureOp } from '../../../src/contract.js'
 import type { CondCase, CondCases } from './cases.js'
-
-const v = (value: CellInput['value']): CellInput => ({ value })
-const RED = { fill: { color: '#FFC7CE' } }
+import { valueCell as v } from '../stored.js'
+import { RED } from './cases.js'
 
 function looksBook(): BookInput {
   const cells: Record<string, CellInput> = { A1: v(5), A2: v(1), A3: v(2) }

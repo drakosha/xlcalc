@@ -53,3 +53,6 @@ export function collector() {
   }
   return { out, add }
 }
+
+/** Widths in steps of a sixth of a character (Excel for Mac counts a digit of Calibri 11 as 6 points), from `from` to `to`. */
+export const sixths = (from: number, to: number) => Array.from({ length: Math.round((to - from) * 6) + 1 }, (_, i) => Math.round((from + i / 6) * 1e4) / 1e4)

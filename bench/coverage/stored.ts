@@ -216,3 +216,6 @@ export const plain = (a: string) => a.replaceAll('$', '')
 
 /** A cell of a formula. */
 export const formulaCell = (formula: string): StoredCell => ({ formula })
+
+/** A cell of a value. */
+export const valueCell = (value: CellInput['value']): CellInput => ({ value })

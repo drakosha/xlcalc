@@ -10,6 +10,17 @@ export type ErrCode = 'NULL' | 'DIV0' | 'VALUE' | 'REF' | 'NAME' | 'NUM' | 'NA' 
 /** A cell's value: a date is kept as a serial number and written with a date format. */
 export type Cell = number | string | boolean | { error: ErrCode; formula: string } | { date: number } | { text: string; formula: string }
 
+/** The database of Excel's function reference: trees, their height, age, yield and profit. */
+export const TREES: (string | number)[][] = [
+  ['Tree', 'Height', 'Age', 'Yield', 'Profit'],
+  ['Apple', 18, 20, 14, 105],
+  ['Pear', 12, 12, 10, 96],
+  ['Cherry', 13, 14, 9, 105],
+  ['Apple', 14, 15, 10, 75],
+  ['Pear', 9, 8, 8, 76.8],
+  ['Apple', 8, 9, 6, 45],
+]
+
 export const DATA_SHEET = 'D'
 
 export const dt = (iso: string): number => dateToSerial(iso)
@@ -93,15 +104,7 @@ export const REGIONS: Record<string, Region> = {
   // a database (the example of Excel's function reference) and criteria ranges
   db: {
     ref: 'U1:Y7',
-    rows: [
-      ['Tree', 'Height', 'Age', 'Yield', 'Profit'],
-      ['Apple', 18, 20, 14, 105],
-      ['Pear', 12, 12, 10, 96],
-      ['Cherry', 13, 14, 9, 105],
-      ['Apple', 14, 15, 10, 75],
-      ['Pear', 9, 8, 8, 76.8],
-      ['Apple', 8, 9, 6, 45],
-    ],
+    rows: TREES,
   },
   critApple: { ref: 'AA1:AB2', rows: [['Tree', 'Height'], ['Apple', '>10']] },
   critPear: { ref: 'AC1:AC2', rows: [['Tree'], ['Pear']] },

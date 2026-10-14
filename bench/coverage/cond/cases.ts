@@ -171,3 +171,6 @@ export function engineCase(set: CondCases, c: CondCase, clock: Clock, stored: St
 
 /** Each sheet's rules as `ruleKey` gives them. */
 export const rulesOf = (book: StoredBook): Record<string, unknown[]> => Object.fromEntries(book.sheets.map((s) => [s.name, (s.conditionalFormats ?? []).map(ruleKey)]))
+
+/** Excel's light red fill of its preset rules. */
+export const RED = { fill: { color: '#FFC7CE' } }

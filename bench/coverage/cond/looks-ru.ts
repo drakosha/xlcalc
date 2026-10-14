@@ -6,9 +6,9 @@
 import type { CellInput, ConditionalFormat, ConditionalStyle } from '../../../src/contract.js'
 import type { CondCases } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
+import { valueCell as v } from '../stored.js'
 
 const RED: ConditionalStyle = { fill: { color: '#FFC7CE' }, font: { color: '#9C0006' } }
-const v = (value: CellInput['value']): CellInput => ({ value })
 
 function ruBook(): StoredBook {
   const words = [v('Яблоко'), v('ЯБЛОКО'), v('яблоня'), v('груша'), v(1.5), v('1,5'), v(1234.5), v('ёлка'), v('Ёж'), v('b')]

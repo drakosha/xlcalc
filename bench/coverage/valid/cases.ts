@@ -308,7 +308,7 @@ export function lineRange(text: string): string {
 export type ValueColumn = { rule: Omit<DataValidation, 'range'>; values: (CellInput | null)[] }
 
 /** A value cell and a formula cell. */
-export const v = (value: CellInput['value']): CellInput => ({ value })
+export { valueCell as v } from '../stored.js'
 export { formulaCell as f } from '../stored.js'
 
 /**

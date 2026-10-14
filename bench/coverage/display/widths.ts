@@ -5,7 +5,7 @@
  * whole numbers of 1 to 14 digits against columns from 1 to 12 characters give where digits stop fitting;
  * fills of `.` and of spaces in columns of fractional widths, and in the default one, give their room to a point.
  */
-import { collector } from './cases.js'
+import { collector, sixths } from './cases.js'
 
 /** The characters whose widths are measured by fill. */
 export const GLYPHS = [
@@ -16,9 +16,6 @@ export const GLYPHS = [
   ...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ',
   ...'₽€£¥',
 ]
-
-/** Widths in steps of a sixth of a character (Excel for Mac counts a digit of Calibri 11 as 6 points). */
-const sixths = (from: number, to: number) => Array.from({ length: Math.round((to - from) * 6) + 1 }, (_, i) => Math.round((from + i / 6) * 1e4) / 1e4)
 
 export function buildDisplayCases() {
   const { out, add } = collector()

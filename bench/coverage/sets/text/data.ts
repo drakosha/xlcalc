@@ -1,4 +1,5 @@
 /** Data sheets of the text case set: T texts, L lookup data (unsorted and mixed columns too), B a database with criteria. */
+import { TREES } from '../../data.js'
 
 export type Cell = number | string | boolean
 
@@ -6,13 +7,7 @@ const column = (col: string, values: (Cell | null)[], from = 1): Record<string, 
   Object.fromEntries(values.flatMap((v, i) => (v === null ? [] : [[`${col}${from + i}`, v]])))
 
 const DB: Cell[][] = [
-  ['Tree', 'Height', 'Age', 'Yield', 'Profit'],
-  ['Apple', 18, 20, 14, 105],
-  ['Pear', 12, 12, 10, 96],
-  ['Cherry', 13, 14, 9, 105],
-  ['Apple', 14, 15, 10, 75],
-  ['Pear', 9, 8, 8, 76.8],
-  ['Apple', 8, 9, 6, 45],
+  ...TREES,
   ['Applesauce', 10, '12', true, 50],
   ['pineapple', 7, 5, '', 30],
 ]

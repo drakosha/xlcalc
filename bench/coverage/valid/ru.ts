@@ -5,8 +5,7 @@
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import type { ValidCases } from './cases.js'
-
-const v = (value: CellInput['value']): CellInput => ({ value })
+import { valueCell as v } from '../stored.js'
 
 function book(): BookInput {
   const cells: Record<string, CellInput> = {
