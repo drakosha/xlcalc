@@ -278,7 +278,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const keys = movedChanges(old, next, g, fields, display && looks ? [cellLooks(old), cellLooks(next)] : undefined, pass)
       const diff = pass ? yield* bookDiff(pass, inverse(g)) : null
       state = next
-      return [next, { ...nothing(), keys, fields, valued: true, layout: new Set(layoutChanged(old.input, next.input)) }, diff]
+      // a style a structure operation spelled out, or its undo took away
+      const styles = JSON.stringify(old.input.styles ?? []) !== JSON.stringify(next.input.styles ?? [])
+      return [next, { ...nothing(), keys, fields, valued: true, layout: new Set(layoutChanged(old.input, next.input)), styles }, diff]
     } catch (e) {
       untick(old, at)
       throw e
