@@ -14,7 +14,9 @@ import { formatAddress, indexToCol, parseAddress } from '../src/model.js'
 import { cornersText, decode, encode, meets } from '../src/structure/area.js'
 import { canonical, parse, sheetKey, walk } from '../src/syntax.js'
 import { expandSheet } from './looks-book.js'
-import { numberFormatOf } from '../bench/coverage/stored.js'
+import { numberFormatOf, takenBook, type StoredBook } from '../bench/coverage/stored.js'
+import type { StructCase } from '../bench/coverage/struct/cases.js'
+import { editStructure } from '../src/structure/index.js'
 
 const dir = new URL('./excel/struct/', import.meta.url)
 
@@ -88,7 +90,8 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
       const [cell, row, col] = [sheet.cells[formatAddress(tr, tc)], lineAt(sheet.rows, 'r', tr), lineAt(sheet.columns, 'c', tc)]
       const style = book.styles?.[cell?.style ?? row?.style ?? col?.style ?? -1]
       const format = numberFormatOf(cell) ?? numberFormatOf(row) ?? numberFormatOf(col)
-      const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format: String(format) } : {}) }
+      const align = style?.alignment?.horizontal
+      const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format: String(format) } : {}), ...(align && align !== 'general' ? { align } : {}) }
       if (Object.keys(l).length) out.cells[addr] = l
     }
   // a hidden line shows no size, as Excel reads it; a row of height 0 is hidden
@@ -107,6 +110,9 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
   for (const m of merges) if (meets(m, window) && !out.merges.includes(cornersText(m))) out.merges.push(cornersText(m))
 }
 
+/** A merged area of whole rows or columns as Excel writes its address (`20:21`, `J:K`), in cells (`A20:XFD21`). */
+const fullLines = (m: string) => m.replace(/^(\d+):(\d+)$/, 'A$1:XFD$2').replace(/^([A-Z]+):([A-Z]+)$/, '$11:$21048576')
+
 /** Differences of looks, as `place: Excel …, engine …` lines. */
 function lookDifferences(name: string, excel: SheetLook, ours: SheetLook, widths: boolean): string[] {
   const out: string[] = []
@@ -118,7 +124,7 @@ function lookDifferences(name: string, excel: SheetLook, ours: SheetLook, widths
   diff('height', excel.heights, ours.heights)
   const [hx, hy] = [JSON.stringify([...(excel.hidden ?? [])].sort()), JSON.stringify([...(ours.hidden ?? [])].sort())]
   if (hx !== hy) out.push(`'${name}' hidden: Excel ${hx}, engine ${hy}`)
-  const [x, y] = [[...excel.merges].sort(), [...ours.merges].sort()]
+  const [x, y] = [excel.merges.map(fullLines).sort(), [...ours.merges].sort()]
   if (JSON.stringify(x) !== JSON.stringify(y)) out.push(`'${name}' merges: Excel ${JSON.stringify(x)}, engine ${JSON.stringify(y)}`)
   return out
 }
@@ -171,5 +177,12 @@ export function differences(book: BookInput, a: ExcelStructAnswer, read: string,
 
 /** Number of formulas Excel showed in a case (for the report). */
 export const formulaCount = (a: ExcelStructAnswer) => a.sheets.reduce((n, s) => n + Object.values(s.cells).filter((t) => t.startsWith('=')).length, 0) + a.names.filter((n) => !n.name.startsWith('_xlfn.')).length
+
+/** The case's operation on its book, after the one taken before it. */
+export function structureOf(book: StoredBook, c: StructCase) {
+  const first = c.before ? editStructure(takenBook(book), c.before) : null
+  if (first && !first.ok) throw new Error(`${c.id}: the engine refused the operation before: ${first.message}`)
+  return editStructure(first ? first.book : takenBook(book), c.op)
+}
 
 export { formatAddress }

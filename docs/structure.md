@@ -1,8 +1,8 @@
 # Structure operations
 
-Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting, moving, hiding and showing sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks, frozen panes, conditional formats, rules of data validation and outline levels. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
+Inserting and deleting rows and columns, moving and copying ranges, merging and unmerging cells, renaming, deleting, inserting, moving, hiding and showing sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks, frozen panes, conditional formats, rules of data validation and outline levels. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
 
-The rules below were measured in Excel 16 for Mac (en-US).
+The rules below were measured in Excel 16 for Mac (en-US), those of merging cells in Excel for Windows.
 
 ## API
 
@@ -21,6 +21,8 @@ type StructureOp =
   | { op: 'moveSheet'; sheet: string; before?: string }   // to the end without `before`
   | { op: 'hideSheet'; sheet: string; very?: boolean }   // very hidden with `very`
   | { op: 'unhideSheet'; sheet: string }
+  | { op: 'mergeCells'; sheet: string; range: string; across?: boolean; center?: boolean }
+  | { op: 'unmergeCells'; sheet: string; range: string }
 
 type RangeRef = { sheet: string; range: string }       // B2, B2:D9, B:D, 2:9
 type StructureResult =
@@ -46,7 +48,8 @@ Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fi
 | `very_hidden` | deleting or moving a very hidden sheet |
 | `merged` | a move whose source cuts a merged area, or a copy that lands on part of one |
 | `filtered` | a copy that left out rows a filter hid, pasted over hidden rows of a filtered sheet |
-| `array` | lines inserted inside the area of an array formula of the old kind, part of one deleted or moved, a paste over part of one |
+| `array` | lines inserted inside the area of an array formula of the old kind, part of one deleted or moved, a paste over part of one, a merge over one |
+| `table` | a merge over cells of a table ([Merging cells](#merging-cells)); for the operations on tables see [docs/tables.md](tables.md) |
 
 Excel refuses an insert only when a non-empty cell would leave the sheet. Here any cell counts, even one with only a format, style or `meta`, so nothing is dropped silently.
 
@@ -174,6 +177,36 @@ Merged areas inside the source go along. A copy also takes the part of a merged 
 
 A renamed sheet keeps its layout, and a deleted sheet takes it along.
 
+## Merging cells
+
+`mergeCells` is Excel's Merge Cells: the range becomes one merged area (`SheetInput.merges`). With `across: true` each row of the range is merged on its own, as Merge Across does; with `center: true` the area is centred as well, as Merge & Center does. `unmergeCells` is Unmerge Cells.
+
+```ts
+editStructure(book, { op: 'mergeCells', sheet: 'Plan', range: 'B2:D2', center: true })
+editStructure(book, { op: 'mergeCells', sheet: 'Plan', range: 'B4:D9', across: true }) // B4:D4, B5:D5, …, B9:D9
+editStructure(book, { op: 'unmergeCells', sheet: 'Plan', range: 'C2' }) // splits B2:D2, which holds C2
+```
+
+### What the cells keep
+
+The area keeps its top-left cell. Its other cells lose their values and formulas, as Excel merges once its warning ("Merging cells only keeps the upper-left value") is accepted. Formulas elsewhere that read a cleared cell keep reading it and now read an empty cell.
+
+When the top-left cell is empty, the first cell of the area that holds a value or a formula, row by row, is moved into it, as cut and paste moves a cell: formulas and names that read it follow it, its own formula keeps its text, and its style and number format come with it. In `A1:C2` with A1 empty, B1 = 5 and A2 = 7, B1 moves to A1, `=B1*2` elsewhere becomes `=A1*2`, and A2 is cleared. As cut and paste over a cell, a reference to the empty A1 itself becomes `#REF!` (`=A1` is `=#REF!`), in a name and on another sheet too. A cell of a spill holds nothing of its own and is not moved. `mapCell` says where the moved cell went.
+
+### The look
+
+Every cell of the area takes the top-left cell's style and number format (its own, else its row's, else its column's), so that after Unmerge Cells the cells keep the look the area had. With `center`, that style gets a centred horizontal alignment, added to the book's style table if it has none such.
+
+### Merged areas met
+
+A range that meets a merged area takes it in whole, and grows again for each area it then meets: merging `D2:E2` beside the merged area `E2:F3` merges `D2:F3`, and merging cells inside a merged area merges it again. With `across`, the merged areas met are split into the rows of the range. Unmerge Cells splits every merged area that meets its range, and the cells keep their values and looks; a range without one changes nothing.
+
+Whole rows and columns merge too: `'20:21'` is one area `A20:XFD21`, as in Excel.
+
+### Refusals
+
+A range that meets a table is refused with `table`: Excel does not merge the cells of a table. A range that meets an array formula of the old kind is refused with `array`.
+
 ## Notes, hyperlinks and frozen panes
 
 A cell's `note` and `link` go with the cell, as its style does:
@@ -264,6 +297,8 @@ Styles and layout change through the session so that its book stays the host's b
 - rules of data validation through `setLayout`: `{ sheet, validations: [...] }` replaces the sheet's rules;
 - outlines through `setLayout`: a group is the lines' `outlineLevel`, collapsing it hides its lines and marks its summary line `collapsed` (`{ sheet, rows: '3:5', set: { hidden: true } }`, `{ sheet, rows: '6', set: { collapsed: true } }`), and `{ sheet, outline: { summaryBelow: false } }` sets where the summaries are.
 
+A merge that moves no cell changes the cells of its range, the merged areas and the style table, as a patch of looks does, without building the state again: on the book of 34,000 rows, merging 3 by 3 cells of the data that 2,800 SUMIFS read takes 0.17 s and its undo as long, nearly all of it computing the formulas over the cleared cells. A merge that moves a cell into an empty top-left cell, or that meets an array formula or more than 65,536 cells, builds the state again, as an insert does (1.5 s on that book).
+
 Only two of these recompute values. A merged area added or removed over an array's spill range recomputes that array. Rows hidden or shown, and a new filter mode, recompute the `SUBTOTAL` and `AGGREGATE` formulas over the rows concerned and what depends on them.
 
 ## How it was checked
@@ -296,11 +331,13 @@ The look also lists the hidden rows and columns. The set `hidden` writes its fil
 
 All cases match except the two known differences below. Of the predicted cases, `checks` matched 21 of 26, `styles-checks` 17 of 18 and `zero-held` 8 of 8 (Excel for Windows too); the misses found two wrong rules and a conversion error in the comparison itself, all fixed.
 
-Not checked against Excel: a move that does not fit (it is refused like a copy), most moves to another sheet, fonts other than bold, borders and alignment (they move with the style number).
+Not checked against Excel: a move that does not fit (it is refused like a copy), most moves to another sheet, fonts other than bold, borders and alignment (they move with the style number). For merging: borders, fonts other than bold, the vertical alignment, and the notes, hyperlinks and `meta` of the cells a merge clears (here they keep them).
 
 Copies were applied through AppleScript's `copy range` with a destination, Excel's `Range.Copy`. On a filtered sheet it pasted values. Copying and pasting in Excel's window was not measured.
 
 Hidden sheets were measured by the step `hidden` in Excel for Mac and for Windows (`npx tsx bench/coverage/run.ts hidden <set>`, `bench/windows/run.ts hidden <set>`, `test/hidden-sheets-excel.test.ts`): sheets hidden and shown through the object model (`Visible`), renamed, deleted, inserted and moved beside hidden ones, with references across sheets over them. Each set's answers were predicted before Excel ran it: `sheets-held` held in 25 of 29 cases, the misses being the very hidden sheet that neither Excel deletes or moves and a sheet moved before a hidden one, which went after it; `sheets-held-2` in 6 of 11, the misses being moves past hidden sheets with none visible after them and ends of references across sheets that moved without passing the other end; `sheets-held-3` in 10 of 10. Both Excels answered alike ([docs/xlsx.md](xlsx.md#hidden-sheets-2)).
+
+Merging cells was measured in Excel for Windows (`npx tsx bench/windows/run.ts struct <set>`: `Range.Merge`, `Range.UnMerge`, Merge & Center as `Merge` with the alignment centred, alerts off), whose answers are in `test/excel/win/struct/` and compared by `test/structure-win.test.ts`; Excel for Mac was not asked. The look read there has the horizontal alignment as well. A case may take an operation before its own (`before`): cells merged and split again show the look the merge gave them, and a table is made over the cells first (`ListObjects.Add`). Each set was predicted before Excel ran it. `merge` (28 cases) held in 20: an empty top-left cell takes the area's first value (6 cases, the prediction kept it empty), and Excel writes a merged area of whole rows as `20:21` (2, the same area). `merge-held` (18) held in 10: the value comes as cut and paste moves it, with the references to it and its look (8). `merge-third-held` (12) held in all 12, and `merge-top-held` (3), references to the empty top-left cell, in all 3. `test/merge-cells.test.ts` checks that a session gives the book `editStructure` gives on every case, with and without building the state again, and undoes and redoes it in one step in every kind of session.
 
 ## Known differences and limits
 

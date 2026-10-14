@@ -1,0 +1,1167 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "read": "A1:Z60",
+  "look": "A1:J24",
+  "seconds": 120.8
+ },
+ "books": {
+  "third": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 2,
+       "style": 0
+      },
+      "C1": {
+       "value": 3
+      },
+      "B2": {
+       "value": 20
+      },
+      "H1": {
+       "formula": "$B$1*10"
+      },
+      "H2": {
+       "formula": "B$1+$B1"
+      },
+      "H3": {
+       "formula": "SUM(B1:B2)"
+      },
+      "H4": {
+       "formula": "SUM(A1:C1)"
+      },
+      "H5": {
+       "formula": "nb"
+      },
+      "H6": {
+       "formula": "C1"
+      },
+      "A3": {
+       "formula": "B3+1"
+      },
+      "B3": {
+       "value": 30
+      },
+      "H7": {
+       "formula": "B3"
+      },
+      "B5": {
+       "formula": "C5*2"
+      },
+      "C5": {
+       "value": 50
+      },
+      "H8": {
+       "formula": "B5"
+      },
+      "D12": {
+       "formula": "SEQUENCE(3)"
+      },
+      "H12": {
+       "formula": "D13"
+      },
+      "B16": {
+       "value": "u"
+      },
+      "C16": {
+       "value": "v"
+      },
+      "C17": {
+       "value": "w"
+      },
+      "K5": {
+       "value": "k"
+      },
+      "J7": {
+       "value": "j"
+      },
+      "H9": {
+       "formula": "K5"
+      },
+      "H10": {
+       "formula": "J7"
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "formula": "S!B1"
+      },
+      "A2": {
+       "formula": "SUM(S!B1:B2)"
+      },
+      "A3": {
+       "formula": "S!$B$1"
+      }
+     }
+    }
+   ],
+   "names": [
+    {
+     "name": "nb",
+     "ref": "'S'!$B$1"
+    }
+   ],
+   "styles": [
+    {
+     "fill": {
+      "color": "#FFC000"
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "merge-A1-C1-moves-B1",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A1:C1"
+   }
+  },
+  {
+   "id": "merge-A1-B2-moves-B1",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A1:B2"
+   }
+  },
+  {
+   "id": "merge-A1-C1-center",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A1:C1",
+    "center": true
+   }
+  },
+  {
+   "id": "unmerge-A1-after-move",
+   "book": "third",
+   "op": {
+    "op": "unmergeCells",
+    "sheet": "S",
+    "range": "A1:C1"
+   },
+   "before": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A1:C1"
+   }
+  },
+  {
+   "id": "merge-A3-B3-top-formula",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A3:B3"
+   }
+  },
+  {
+   "id": "merge-A5-C5-moves-formula",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A5:C5"
+   }
+  },
+  {
+   "id": "merge-C13-D13-spill-cell",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "C13:D13"
+   }
+  },
+  {
+   "id": "merge-columns-J-K",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "J:K"
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "K1048576"
+    }
+   ]
+  },
+  {
+   "id": "merge-A16-C17-across",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A16:C17",
+    "across": true
+   }
+  },
+  {
+   "id": "merge-A16-C17-across-center",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A16:C17",
+    "across": true,
+    "center": true
+   }
+  },
+  {
+   "id": "merge-A16-C17",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A16:C17"
+   }
+  },
+  {
+   "id": "merge-B1-C2-top-holds",
+   "book": "third",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "B1:C2"
+   }
+  }
+ ],
+ "dynamic": true,
+ "answers": {
+  "merge-A1-C1-moves-B1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "A1": "2",
+      "H1": "=$A$1*10",
+      "B2": "20",
+      "H2": "=A$1+$A1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "A1": {
+        "fill": "#FFC000"
+       },
+       "B1": {
+        "fill": "#FFC000"
+       },
+       "C1": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "A1:C1"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!A1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$A$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$A$1"
+    }
+   ]
+  },
+  "merge-A1-B2-moves-B1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "A1": "2",
+      "C1": "3",
+      "H1": "=$A$1*10",
+      "H2": "=A$1+$A1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "A1": {
+        "fill": "#FFC000"
+       },
+       "B1": {
+        "fill": "#FFC000"
+       },
+       "A2": {
+        "fill": "#FFC000"
+       },
+       "B2": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "A1:B2"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!A1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$A$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$A$1"
+    }
+   ]
+  },
+  "merge-A1-C1-center": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "A1": "2",
+      "H1": "=$A$1*10",
+      "B2": "20",
+      "H2": "=A$1+$A1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "A1": {
+        "fill": "#FFC000",
+        "align": "center"
+       },
+       "B1": {
+        "fill": "#FFC000",
+        "align": "center"
+       },
+       "C1": {
+        "fill": "#FFC000",
+        "align": "center"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "A1:C1"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!A1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$A$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$A$1"
+    }
+   ]
+  },
+  "unmerge-A1-after-move": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "A1": "2",
+      "H1": "=$A$1*10",
+      "B2": "20",
+      "H2": "=A$1+$A1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "A1": {
+        "fill": "#FFC000"
+       },
+       "B1": {
+        "fill": "#FFC000"
+       },
+       "C1": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!A1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$A$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$A$1"
+    }
+   ]
+  },
+  "merge-A3-B3-top-formula": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "B1": "2",
+      "C1": "3",
+      "H1": "=$B$1*10",
+      "B2": "20",
+      "H2": "=B$1+$B1",
+      "A3": "=B3+1",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "B1": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "A3:B3"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!B1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$B$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$B$1"
+    }
+   ]
+  },
+  "merge-A5-C5-moves-formula": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "B1": "2",
+      "C1": "3",
+      "H1": "=$B$1*10",
+      "B2": "20",
+      "H2": "=B$1+$B1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "A5": "=C5*2",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=A5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "B1": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "A5:C5"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!B1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$B$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$B$1"
+    }
+   ]
+  },
+  "merge-C13-D13-spill-cell": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "B1": "2",
+      "C1": "3",
+      "H1": "=$B$1*10",
+      "B2": "20",
+      "H2": "=B$1+$B1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "B1": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "C13:D13"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!B1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$B$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$B$1"
+    }
+   ]
+  },
+  "merge-columns-J-K": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "B1": "2",
+      "C1": "3",
+      "H1": "=$B$1*10",
+      "J1": "k",
+      "B2": "20",
+      "H2": "=B$1+$B1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "H6": "=C1",
+      "H7": "=B3",
+      "H8": "=B5",
+      "H9": "=J1",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "B1": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "J:K"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!B1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$B$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "K1048576",
+     "text": ""
+    }
+   ],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$B$1"
+    }
+   ]
+  },
+  "merge-A16-C17-across": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "B1": "2",
+      "C1": "3",
+      "H1": "=$B$1*10",
+      "B2": "20",
+      "H2": "=B$1+$B1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "A16": "u",
+      "A17": "w"
+     },
+     "look": {
+      "cells": {
+       "B1": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "A16:C16",
+       "A17:C17"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!B1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$B$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$B$1"
+    }
+   ]
+  },
+  "merge-A16-C17-across-center": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "B1": "2",
+      "C1": "3",
+      "H1": "=$B$1*10",
+      "B2": "20",
+      "H2": "=B$1+$B1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "A16": "u",
+      "A17": "w"
+     },
+     "look": {
+      "cells": {
+       "B1": {
+        "fill": "#FFC000"
+       },
+       "A16": {
+        "align": "center"
+       },
+       "B16": {
+        "align": "center"
+       },
+       "C16": {
+        "align": "center"
+       },
+       "A17": {
+        "align": "center"
+       },
+       "B17": {
+        "align": "center"
+       },
+       "C17": {
+        "align": "center"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "A16:C16",
+       "A17:C17"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!B1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$B$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$B$1"
+    }
+   ]
+  },
+  "merge-A16-C17": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "B1": "2",
+      "C1": "3",
+      "H1": "=$B$1*10",
+      "B2": "20",
+      "H2": "=B$1+$B1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "A16": "u"
+     },
+     "look": {
+      "cells": {
+       "B1": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "A16:C17"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!B1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$B$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$B$1"
+    }
+   ]
+  },
+  "merge-B1-C2-top-holds": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$K$17",
+     "cells": {
+      "B1": "2",
+      "H1": "=$B$1*10",
+      "H2": "=B$1+$B1",
+      "A3": "=B3+1",
+      "B3": "30",
+      "H3": "=SUM(B1:B2)",
+      "H4": "=SUM(A1:C1)",
+      "B5": "=C5*2",
+      "C5": "50",
+      "H5": "=nb",
+      "K5": "k",
+      "H6": "=C1",
+      "H7": "=B3",
+      "J7": "j",
+      "H8": "=B5",
+      "H9": "=K5",
+      "H10": "=J7",
+      "D12": "=SEQUENCE(3)",
+      "H12": "=D13",
+      "B16": "u",
+      "C16": "v",
+      "C17": "w"
+     },
+     "look": {
+      "cells": {
+       "B1": {
+        "fill": "#FFC000"
+       },
+       "C1": {
+        "fill": "#FFC000"
+       },
+       "B2": {
+        "fill": "#FFC000"
+       },
+       "C2": {
+        "fill": "#FFC000"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": [
+       "B1:C2"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$3",
+     "cells": {
+      "A1": "=S!B1",
+      "A2": "=SUM(S!B1:B2)",
+      "A3": "=S!$B$1"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "nb",
+     "ref": "=S!$B$1"
+    }
+   ]
+  }
+ }
+}

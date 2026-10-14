@@ -14,6 +14,8 @@ export interface StructCase {
   /** The key of the case's book in the set's `books`. */
   book: string
   op: StructureOp
+  /** An operation taken before `op`, by Excel and the engine alike (cells merged, then split again); Excel for Windows only. */
+  before?: StructureOp
   /** Cells outside the read rectangle to read after the operation. */
   extra?: CellRef[]
   /**

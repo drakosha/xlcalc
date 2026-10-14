@@ -10,14 +10,16 @@ import type { StructSet } from './cases.js'
 import { LOOK } from '../struct.js'
 import { editStructure } from '../../../src/index.js'
 import { lookOf } from '../../../test/structure-excel.js'
+import { expandSheet } from '../../../test/looks-book.js'
 
 const set = process.argv[2]
 const { books, cases, look = [] } = (await setModule<StructSet>('struct', set)).buildStructCases()
 const rects = [LOOK, ...look].join(',')
 const out: Record<string, unknown> = {}
 for (const c of cases) {
-  const r = editStructure(takenBook(books[c.book]), c.op)
-  out[c.id] = r.ok ? { sheets: Object.fromEntries(r.book.sheets.map((s) => [s.name, { look: lookOf(r.book, s, rects), cells: Object.fromEntries(Object.entries(s.cells).map(([a, x]) => [a, x.formula !== undefined ? `=${x.formula}` : String(x.value)])) }])) } : { refused: r.code }
+  const first = c.before ? editStructure(takenBook(books[c.book]), c.before) : null
+  const r = first && !first.ok ? first : editStructure(first ? first.book : takenBook(books[c.book]), c.op)
+  out[c.id] = r.ok ? { sheets: Object.fromEntries(r.book.sheets.map((s) => [s.name, { look: lookOf(r.book, expandSheet(s), rects), cells: Object.fromEntries(Object.entries(s.cells).map(([a, x]) => [a, x.formula !== undefined ? `=${x.formula}` : String(x.value)])) }])) } : { refused: r.code }
 }
 writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)
 console.log(`${set}: ${cases.length} cases predicted`)

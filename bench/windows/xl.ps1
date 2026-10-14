@@ -64,6 +64,15 @@ function Struct($wb, $s) {
     'copyRange' { [void]$ws.Range($s.range).Copy((Rg $wb $s.target $s.to)) }
     'fillDown' { [void](Rg $wb $s.target $s.to).FillDown() }
     'autofill' { [void]$ws.Range($s.range).AutoFill((Rg $wb $s.target $s.to), 0) }
+    # flags in target: across, center (alerts are off, so Excel keeps the top-left value without asking)
+    'mergeCells' {
+      $rg = $ws.Range($s.range)
+      [void]$rg.Merge([bool]($s.target -match 'across'))
+      if ($s.target -match 'center') { $rg.HorizontalAlignment = -4108 }
+    }
+    'unmergeCells' { [void]$ws.Range($s.range).UnMerge() }
+    # a table with headers over the range, named target (Excel for Windows only; the tables step makes its own)
+    'addTable' { $ws.ListObjects.Add(1, $ws.Range($s.range), [Type]::Missing, 1).Name = $s.target }
     'renameSheet' { $ws.Name = $s.target }
     'deleteSheet' { [void]$ws.Delete() }
     'insertSheet' {
@@ -78,12 +87,12 @@ function Struct($wb, $s) {
   }
 }
 
-# the look of a sheet: cells [address, bold, fill BGR, format, merged area], columns [letter, standard, width, hidden], rows likewise
+# the look of a sheet: cells [address, bold, fill BGR, format, merged area, horizontal alignment], columns [letter, standard, width, hidden], rows likewise
 function Look($ws, $s) {
   $cells = foreach ($a in $s.cells) {
     $c = $ws.Range($a)
     $m = if ($c.MergeCells) { $c.MergeArea.Address() } else { '' }
-    List @((Str $a), (Cell $c.Font.Bold), (Cell $c.Interior.Color), (Str $c.NumberFormat), (Str $m))
+    List @((Str $a), (Cell $c.Font.Bold), (Cell $c.Interior.Color), (Str $c.NumberFormat), (Str $m), (Cell $c.HorizontalAlignment))
   }
   $cols = foreach ($k in $s.columns) {
     $c = $ws.Range("${k}1")

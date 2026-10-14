@@ -264,6 +264,7 @@ export interface MessageParams extends XlsxMessageParams {
   tableNameDefined: { name: string }
   tableOverTable: { range: string; table: string }
   tableOverMerge: { range: string; area: string }
+  mergeInTable: { range: string; table: string }
   // typing into a cell
   headerFormula: { sheet: string; cell: string; table: string }
   validationError: object
