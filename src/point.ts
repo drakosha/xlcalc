@@ -2,9 +2,10 @@
  * What an arrow does in formula text typed over a cell (Excel's Enter mode), measured on Excel for Mac in en-US and ru-RU
  * (`bench/coverage/ui/point-*.ts`, `docs/entry.md`, "Point mode"): text that does not begin a formula is entered; in a
  * formula a reference goes in where an operand is wanted (after the formula's first character, an operator, `(`, the
- * list separator, `:`, a sheet's `!`, a point, a space), and elsewhere the formula is entered when it reads as it stands,
- * in the locale it is typed in, and nothing happens when it does not (`=A1)`, `=1e`, `=1.5` in ru-RU) or when the caret
- * is inside a string, a quoted sheet's name or a table's brackets. A host that pointed already moves its own reference:
+ * list separator, `:`, a sheet's `!`, a point, a space) and, after an `=` of its own, at the start of the text; elsewhere
+ * the whole formula is entered when it reads with its brackets closed, as Return enters it, in the locale it is typed in,
+ * and nothing happens when it does not (`=A1)`, `=1e`, `=1.5` in ru-RU) or when the caret is inside a string, a quoted
+ * sheet's name or a table's brackets. A host that pointed already moves its own reference:
  * this says what an arrow does with no reference pointed since the text was typed.
  */
 import type { PointAction, ScanOptions } from './contract.js'
@@ -20,10 +21,10 @@ import { isSpace } from './syntax/scan.js'
 /** The characters after which an operand is wanted, beside the list separator: the operators, `(`, the range's `:`, a sheet's `!`, and a point (`=1.`, `=A1.`, as Excel's answers have it). */
 const WANTS_OPERAND = new Set([...'=+-*/^&<>(:!@.'])
 
-/** Whether `upTo` lies inside a string, a quoted sheet's name or a table's brackets of `text`. */
-function inLiteral(text: string, upTo: number): boolean {
+/** How `text` stands at `upTo`: inside a string, a quoted sheet's name or a table's brackets, and the brackets left open. */
+function scanTo(text: string, upTo: number): { literal: boolean; open: number } {
   let quote: string | null = null
-  let depth = 0
+  let [depth, open] = [0, 0]
   for (let i = 0; i < upTo; i++) {
     const c = text[i]
     if (quote) {
@@ -31,8 +32,10 @@ function inLiteral(text: string, upTo: number): boolean {
     } else if (c === '"' || c === "'") quote = c
     else if (c === '[') depth++
     else if (c === ']') depth = Math.max(0, depth - 1)
+    else if (depth === 0 && c === '(') open++
+    else if (depth === 0 && c === ')') open = Math.max(0, open - 1)
   }
-  return quote !== null || depth > 0
+  return { literal: quote !== null || depth > 0, open }
 }
 
 /** Whether a formula's text after its first character reads as a formula, in `locale` (en-US's stored syntax without one). */
@@ -66,12 +69,14 @@ export function refAt(text: string, caret?: number, opts?: ScanOptions): PointAc
   const locale = opts?.locale === undefined ? undefined : checkLocaleArg(opts.locale, 'opts.locale')
   // a value: the arrow enters it, as Excel does any text not begun by `=`, `+` or `-`
   if (!/^[=+-]/.test(t)) return { action: 'commit' }
-  if (inLiteral(t, at)) return { action: 'none' }
+  // at the start of the text Excel begins a formula anew: the reference goes in after an = of its own
+  if (at === 0) return { action: 'insert', at, equals: true }
+  if (scanTo(t, at).literal) return { action: 'none' }
   let i = at
   while (i > 1 && isSpace(t[i - 1])) i--
-  // after the formula's first character, an operand wanted, or a space after an operand (the intersection operator);
-  // before the first character no reference goes in
-  if (at > 0 && (i <= 1 || i < at || WANTS_OPERAND.has(t[i - 1]) || t[i - 1] === (locale?.listSeparator ?? ','))) return { action: 'insert', at }
-  // the arrow enters the whole text, wherever the caret is: it goes in when the formula reads
-  return reads(t.startsWith('=') ? t.slice(1) : t, locale) ? { action: 'commit' } : { action: 'none' }
+  // after the formula's first character, an operand wanted, or a space after an operand (the intersection operator)
+  if (i <= 1 || i < at || WANTS_OPERAND.has(t[i - 1]) || t[i - 1] === (locale?.listSeparator ?? ',')) return { action: 'insert', at }
+  // the arrow enters the whole text, wherever the caret is, as Return does: with its brackets closed, when it reads
+  const whole = (t.startsWith('=') ? t.slice(1) : t) + ')'.repeat(scanTo(t, t.length).open)
+  return reads(whole, locale) ? { action: 'commit' } : { action: 'none' }
 }

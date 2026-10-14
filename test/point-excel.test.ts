@@ -61,7 +61,8 @@ describe.each(SETS)('Point mode $tag $set', ({ tag, set, stored }) => {
     const bars = stored.answers[id].point!.map((s) => barOf(s.bar))
     const [before, after] = [bars[arrow - 1], bars[arrow]]
     expect(before, 'the bar shows the text typed').toEqual({ cell: at, text: typed })
-    const excel: PointAction = after.cell !== at ? { action: 'commit' } : after.text === `${typed.slice(0, caret)}D3${typed.slice(caret)}` ? { action: 'insert', at: caret } : after.text === typed ? { action: 'none' } : (() => {
+    const put = (ref: string) => after.text === `${typed.slice(0, caret)}${ref}${typed.slice(caret)}`
+    const excel: PointAction = after.cell !== at ? { action: 'commit' } : put('D3') ? { action: 'insert', at: caret } : put('=D3') ? { action: 'insert', at: caret, equals: true } : after.text === typed ? { action: 'none' } : (() => {
       throw new Error(`${id}: the bar after the arrow is ${after.text}`)
     })()
     const ours = refAt(typed, caret, { locale: tag })

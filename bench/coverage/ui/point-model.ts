@@ -102,7 +102,13 @@ export function pointPrediction(book: BookInput, at: string, steps: PointStep[],
       else if (step.key === 'home' && ed.mode === 'edit') ed.caret = 0
       else if (STEPS[step.key] && !step.cmd && ed.mode === 'enter') {
         const going = run && run.text === ed.text && ed.caret === run.to ? run : null
-        const lib = by === 'refAt' && !going ? refAt(ed.text, ed.caret, { locale: tag }).action : null
+        const said = by === 'refAt' && !going ? refAt(ed.text, ed.caret, { locale: tag }) : null
+        const lib = said?.action ?? null
+        // a reference put in at the start of the text goes after an = of its own
+        if (said?.action === 'insert' && said.equals) {
+          ed.text = `${ed.text.slice(0, ed.caret)}=${ed.text.slice(ed.caret)}`
+          ed.caret++
+        }
         if (lib === 'commit') commit(STEPS[step.key])
         else if (lib === 'none') {
           // nothing happens
