@@ -11,6 +11,7 @@ import { array, checkBoolean, checkNumber, checkString, InputError, object, only
 import { clipboardRows } from './entry/clipboard.js'
 import { columnPoints, widthOf } from './column-width.js'
 import * as category from './numfmt/category.js'
+import * as point from './point.js'
 import * as scan from './scan.js'
 import { strict } from './strict-args.js'
 import { escapeColumn as escaped } from './syntax/table.js'
@@ -18,6 +19,7 @@ import { escapeColumn as escaped } from './syntax/table.js'
 export { quoteSheetIfNeeded } from './a1.js'
 
 export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
+export const refAt = /* @__PURE__ */ strict(point.refAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
 

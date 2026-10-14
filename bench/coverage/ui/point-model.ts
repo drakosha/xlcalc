@@ -8,7 +8,7 @@
  * and Right or Down take the caret to the end, Left or Up to the start; Home and Page Down scroll (Mac). Return commits
  * and moves down. The list of functions, which takes arrows while it is open, is not modelled.
  */
-import { createSession, rangeAddress, type BookInput } from '../../../src/index.js'
+import { createSession, rangeAddress, refAt, type BookInput } from '../../../src/index.js'
 import { formatAddress, indexToCol, parseAddress } from '../../../src/model.js'
 import type { PointStep } from './cases.js'
 
@@ -47,7 +47,12 @@ const STEPS: Record<string, [number, number]> = { down: [1, 0], up: [-1, 0], rig
 const moved = (p: Pos, [dr, dc]: [number, number]): Pos => ({ row: Math.max(0, p.row + dr), col: Math.max(0, p.col + dc) })
 
 /** The formula bar after each step, as the harness reads its description (`Formula Bar. C,3 =D3`), and the book after. */
-export function pointPrediction(book: BookInput, at: string, steps: PointStep[], tag: string, cells: string[]) {
+/**
+ * The formula bar after each step and the cells after. `by`: whose rule says where an arrow points in Enter mode with no
+ * reference pointed yet, the component's (`refFits`, an arrow elsewhere in a formula moving the caret) or the library's
+ * `refAt` (a reference, the text entered, or nothing); the rest is the component's model either way.
+ */
+export function pointPrediction(book: BookInput, at: string, steps: PointStep[], tag: string, cells: string[], by: 'component' | 'refAt' = 'component') {
   const s = createSession(book, { clock: { now: '2026-10-14T12:00:00Z', seed: 1 } })
   try {
     const separator = tag === 'ru-RU' ? ';' : ','
@@ -96,7 +101,11 @@ export function pointPrediction(book: BookInput, at: string, steps: PointStep[],
       } else if (step.key === 'f2') ed.mode = ed.mode === 'enter' ? 'edit' : 'enter'
       else if (STEPS[step.key] && !step.cmd && ed.mode === 'enter') {
         const going = run && run.text === ed.text && ed.caret === run.to ? run : null
-        if (going || refFits(ed.text, ed.caret, separator)) {
+        const lib = by === 'refAt' && !going ? refAt(ed.text, ed.caret, { locale: tag }).action : null
+        if (lib === 'commit') commit(STEPS[step.key])
+        else if (lib === 'none') {
+          // nothing happens
+        } else if (going || lib === 'insert' || (!lib && refFits(ed.text, ed.caret, separator))) {
           const extend = going && step.shift
           const anchor = extend ? going.anchor : moved(going ? going.anchor : ed.at, STEPS[step.key])
           write(anchor, extend ? moved(going.far, STEPS[step.key]) : anchor)

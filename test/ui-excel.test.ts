@@ -44,7 +44,8 @@ const RUNS: Run[] = (['Mac', 'Windows'] as const).flatMap((excel) =>
       .filter((f) => f.endsWith('.json'))
       .map((f) => ({ excel, tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredUi }))
   }),
-)
+  // Point mode's sets are compared with `refAt` in `point-excel.test.ts`
+).filter((r) => r.stored.cases.every((c) => c.act.do !== 'point'))
 
 /** What a paste or a fill left, as compared: each read cell's value or formula and format, the width typing gave each column (null where it kept its own), the cell a window came up for. */
 interface Outcome {

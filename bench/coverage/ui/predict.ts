@@ -17,7 +17,7 @@ import { entriesOf, readCells, readColumns, ribbonOf, uiBook, windowOver, type U
 import { pointPrediction } from './point-model.js'
 
 const set = process.argv[2]
-const { buildUiCases } = await setModule<UiSet>('ui', set)
+const { buildUiCases, POINT_BY } = await setModule<UiSet & { POINT_BY?: 'refAt' }>('ui', set)
 const now = new Date().toISOString().slice(0, 10)
 const clock = { now: `${now}T12:00:00Z`, seed: 1 }
 
@@ -27,7 +27,7 @@ const alert = (v: CellValidationAlert) => ({ cell: v.cell, severity: v.severity,
 function predict(c: UiCase, tag: string) {
   if (c.act.do === 'ribbon' || c.act.do === 'choose') return { ribbon: ribbonOf(c, tag) }
   // Point mode: the sheet component's model, the formula bar after each step and the cells after
-  if (c.act.do === 'point') return pointPrediction(uiBook(c, tag), c.act.at, c.act.steps, tag, readCells(c))
+  if (c.act.do === 'point') return pointPrediction(uiBook(c, tag), c.act.at, c.act.steps, tag, readCells(c), POINT_BY)
   const s = createSession(uiBook(c, tag), { clock })
   try {
     const cells = readCells(c)

@@ -83,8 +83,13 @@ on run argv
 			set pointOut to my pointSteps(ws, act, bookName, kb)
 		end if
 	on error msg number k
-		-- a step that failed (Excel's window on another desktop) leaves no book open
-		tell application "Microsoft Excel" to close wb saving no
+		-- a step that failed (Excel's window on another desktop) leaves no book open: an editing it left is ended first,
+		-- and the step's own error is the one reported
+		try
+			tell application "System Events" to key code 53
+			delay 0.3
+			tell application "Microsoft Excel" to close wb saving no
+		end try
 		error msg number k
 	end try
 	tell application "Microsoft Excel"
@@ -181,7 +186,10 @@ on pointSteps(ws, act, bookName, kb)
 	set bar to kb's formulaBar(bookName)
 	tell application "Microsoft Excel" to select range ((act's objectForKey:"at") as text) of ws
 	set out to {}
-	repeat with stp in ((act's objectForKey:"steps") as list)
+	-- the steps kept an NSArray of NSDictionary: `as list` would make them records, which take no objectForKey
+	set allSteps to act's objectForKey:"steps"
+	repeat with i from 0 to ((allSteps's |count|()) - 1)
+		set stp to (allSteps's objectAtIndex:i)
 		kb's toFront()
 		set t to (stp's objectForKey:"type")
 		if t is not missing value then
@@ -203,7 +211,7 @@ on pointSteps(ws, act, bookName, kb)
 			end tell
 		end if
 		delay 0.5
-		set saidNow to kb's answerDialog()
+		set saidNow to my answerAlerts()
 		set end of out to {item 1 of kb's barText(bar), saidNow}
 	end repeat
 	kb's toFront()
@@ -211,6 +219,53 @@ on pointSteps(ws, act, bookName, kb)
 	delay 0.3
 	return out
 end pointSteps
+
+-- The alerts Excel shows during a case of `point`, answered as a person answers them (No, OK, Cancel) and their texts;
+-- a window without buttons (the tip of a function's arguments) is left, and no Escape follows: the editing goes on.
+on answerAlerts()
+	set said to ""
+	repeat 5 times
+		set found to false
+		tell application "System Events" to tell process "Microsoft Excel"
+			-- a window that closes meanwhile (a tip) is skipped: the list is taken once and each window read in a try
+			set ws to {}
+			try
+				set ws to every window
+			end try
+			repeat with w in ws
+				set sr to ""
+				set names to {}
+				try
+					set sr to subrole of w
+					set names to name of every button of w
+				end try
+				if sr is not "AXStandardWindow" and names is not {} then
+					set tx to ""
+					repeat with x in (static texts of w)
+						try
+							set v to value of x
+							if v is not missing value then set tx to tx & (v as text) & " "
+						end try
+					end repeat
+					set said to said & tx & "| "
+					repeat with b in {"No", "Нет", "OK", "ОК", "Cancel", "Отмена"}
+						if names contains (b as text) then
+							click button (b as text) of w
+							set found to true
+							exit repeat
+						end if
+					end repeat
+					if not found then error "an Excel alert without No, OK or Cancel: " & tx
+					exit repeat
+				end if
+			end repeat
+		end tell
+		if not found then exit repeat
+		delay 1
+	end repeat
+	if said is "" then return ""
+	return "dialog: " & said
+end answerAlerts
 
 -- a key of a case of `point` by its code on the Mac's keyboard
 on keyCode(k)
