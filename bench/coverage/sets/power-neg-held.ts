@@ -9,9 +9,9 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldGroups } from './arrays/common.js'
+import { n } from '../vals.js'
 
-const n = (v: number): Val => ({ t: 'n', v })
 const NUM: Val = { t: 'e', v: 'NUM' }
 /** -(-x)^y, the real root predicted. */
 const real = (x: number, y: number) => -Math.pow(-x, y)
@@ -89,14 +89,8 @@ const CASES: [string, string, string, Val][] = [
   ['SERIESSUM', 'SERIESSUM', 'SERIESSUM(-8,1/2,1,{1})', n(0)],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [group, fn, f] of CASES) add(group, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][3]]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldGroups(CASES)
 
 /**
  * The predictions Excel did not confirm (the Mac and Windows alike): 1/y of 999999999999999 is too large for a root,

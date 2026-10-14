@@ -12,14 +12,13 @@
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
 import { collector, xl } from './arrays/common.js'
+import { n } from '../vals.js'
 
 /** The rule predicted: a sum or difference within 2^-49 of its larger operand's magnitude is 0. */
 function last(a: number, b: number, op: '+' | '-'): number {
   const r = op === '+' ? a + b : a - b
   return Math.abs(r) <= 2 ** -49 * Math.max(Math.abs(a), Math.abs(b)) ? 0 : r
 }
-
-const n = (v: number): Val => ({ t: 'n', v })
 
 /** A formula and its answer predicted; `cell`: also put in a cell of P and read from there. */
 interface Case {

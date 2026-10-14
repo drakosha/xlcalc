@@ -8,6 +8,7 @@
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
 import { collector } from './arrays/common.js'
+import { s } from '../vals.js'
 
 const keys = Object.fromEntries(Array.from({ length: 6 }, (_, i) => [`A${i + 1}`, i + 1]))
 const lookup = (formula: string) => ({ formula, dynamic: true as const })
@@ -29,7 +30,6 @@ export const SHEETS: SheetCells = {
   Lu: { ...keys, B1: 'b1', C1: 'c1', D1: 'd1', B2: 'b2', C2: 'c2', D2: 'd2', B3: 'b3', C3: 'c3', D3: 'd3', C5: 'c5', F2: lookup('LOOKUP(5,A1:A6,INDEX(B1:D3,0,2))&""') },
 }
 
-const s = (v: string): Val => ({ t: 's', v })
 /** The engine's #CYCLE!, which Excel has no code for: where the engine counts the LOOKUP's own cell among those it may read. */
 const cycle = { t: 'e', v: 'CYCLE' } as unknown as Val
 

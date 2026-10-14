@@ -1,4 +1,5 @@
 /** Shared parts of the case sets: the `_xlfn.` prefixes of formulas and the case builder. */
+import type { Val } from '../../formulajs.js'
 import type { Probe } from '../../probes.js'
 import { XLFN } from '../../signatures.js'
 
@@ -21,4 +22,33 @@ export function collector(): { out: Probe[]; add: Add } {
     }
   }
   return { out, add }
+}
+
+/** The probes of `[function, formula]` cases, each in the group of its function (`<function>#<n>`). */
+export function probesOf(cases: readonly (readonly [string, string, ...unknown[]])[]): Probe[] {
+  const { out, add } = collector()
+  for (const [fn, f] of cases) add(fn, fn, f)
+  return out
+}
+
+/**
+ * A held-out set of `[function, formula, answer predicted]` cases: its probes (`probesOf`) and the predicted answers by
+ * id, a case without a prediction left out.
+ */
+export const heldCases = (cases: readonly (readonly [string, string, Val?])[]): HeldSet => heldGroups(cases.map(([fn, f, v]) => [fn, fn, f, v]))
+
+/** A held-out set's probes and the answers predicted by case id. */
+export interface HeldSet {
+  buildProbes: () => Probe[]
+  PREDICTED: Readonly<Record<string, Val>>
+}
+
+/** A held-out set of `[group, function, formula, answer predicted]` cases, as `heldCases`. */
+export function heldGroups(cases: readonly (readonly [string, string, string, Val?])[]): HeldSet {
+  const buildProbes = () => {
+    const { out, add } = collector()
+    for (const [group, fn, f] of cases) add(group, fn, f)
+    return out
+  }
+  return { buildProbes, PREDICTED: Object.fromEntries(buildProbes().flatMap((p, i) => (cases[i][3] ? [[p.id, cases[i][3]]] : []))) }
 }

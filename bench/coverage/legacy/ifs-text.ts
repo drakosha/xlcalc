@@ -7,9 +7,7 @@
 import type { Val } from '../formulajs.js'
 import type { Probe } from '../probes.js'
 import { probe } from './params.js'
-
-const n = (v: number): Val => ({ t: 'n', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
+import { n, e } from '../vals.js'
 
 /** Formula and the answer predicted before Excel ran. */
 const CASES: [string, Val][] = [

@@ -128,9 +128,7 @@ export function book(...sheets: [string, Record<string, CellSpec>, ...{ cells: R
 }
 
 /** Answers for predictions. */
-export const n = (v: number): Val => ({ t: 'n', v })
-export const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
-export const s = (v: string): Val => ({ t: 's', v })
+export { n, e, s } from '../vals.js'
 
 /** Rectangles of one sheet. */
 export const on = (sheet: string, ...ranges: string[]): RangeRef[] => ranges.map((range) => ({ sheet, range }))

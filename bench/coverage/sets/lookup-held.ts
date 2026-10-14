@@ -7,15 +7,13 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldCases } from './arrays/common.js'
+import { s, e } from '../vals.js'
 
 /** Lk: text at the end of row 1 (XFB1:XFD1) and of columns A to C (rows 1048575 and 1048576). */
 export const SHEETS: SheetCells = {
   Lk: { XFB1: 'xfb', XFC1: 'xfc', XFD1: 'xfd', A1048575: 'a5', A1048576: 'a6', B1048576: 'b6', C1048576: 'c6', B2: 'b2', B3: 'b3', B4: 'b4', C2: 'c2' },
 }
-
-const s = (v: string): Val => ({ t: 's', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
 
 /** Function, formula and the answer predicted before Excel ran (4.19 falls in D!L3, 5 in D!L4 and D!O8). */
 const CASES: [string, string, Val][] = [
@@ -46,14 +44,8 @@ const CASES: [string, string, Val][] = [
   ['LOOKUP', 'LOOKUP(4.19,D!L1:L6,IF(TRUE,Lk!XFD1))&""', s('')],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [fn, f] of CASES) add(fn, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)
 
 /**
  * The predictions Excel did not confirm (the Mac and Windows alike): SORTBY answers #VALUE! after the first position

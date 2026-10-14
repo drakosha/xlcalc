@@ -6,10 +6,8 @@
  * `PREDICTED` was committed before Excel ran the set (D!A1 blank, D!B1:B8 numbers).
  */
 import type { Val } from '../formulajs.js'
-import type { Probe } from '../probes.js'
-import { collector } from './arrays/common.js'
-
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
+import { heldCases } from './arrays/common.js'
+import { e } from '../vals.js'
 
 /** Function, formula and the answer predicted before Excel ran. */
 const CASES: [string, string, Val][] = [
@@ -32,11 +30,5 @@ const CASES: [string, string, Val][] = [
   ['STEYX', 'STEYX(D!A1,D!B1:B3)', e('VALUE')],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [fn, f] of CASES) add(fn, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)

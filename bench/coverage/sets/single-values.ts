@@ -6,12 +6,8 @@
  * committed before Excel ran the set.
  */
 import type { Val } from '../formulajs.js'
-import type { Probe } from '../probes.js'
-import { collector } from './arrays/common.js'
-
-const n = (v: number): Val => ({ t: 'n', v })
-const s = (v: string): Val => ({ t: 's', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
+import { heldCases } from './arrays/common.js'
+import { n, s, e } from '../vals.js'
 
 /** Function, formula and the answer predicted before Excel ran (undefined: not predicted). */
 const CASES: [string, string, Val?][] = [
@@ -89,16 +85,8 @@ const CASES: [string, string, Val?][] = [
   ['WRAPCOLS', 'ARRAYTOTEXT(WRAPCOLS({1,2,3},5),1)', s('{1;2;3}')],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [fn, f] of CASES) add(fn, fn, f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(
-  buildProbes().flatMap((p, i) => (CASES[i][2] ? [[p.id, CASES[i][2]]] : [])),
-)
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES)
 
 /** The predictions Excel did not confirm: a table or values given as one value are read as a number first, so numeric text and numbers find nothing (#N/A) and then sizes count (#NUM!). */
 export const MISSED: readonly string[] = ['MATCH#2', 'MATCH#6', 'MATCH#7', 'VLOOKUP#3', 'HLOOKUP#1', 'XIRR#1', 'XNPV#1']

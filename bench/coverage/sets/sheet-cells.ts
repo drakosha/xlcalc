@@ -7,6 +7,7 @@
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
 import { collector } from './arrays/common.js'
+import { n, b, e } from '../vals.js'
 
 /** S1, S2, S3 in this order before D and C; formulas with the unquoted names on S1 and S3. */
 export const SHEETS: SheetCells = {
@@ -14,10 +15,6 @@ export const SHEETS: SheetCells = {
   S2: { A1: 4, A2: 5 },
   S3: { A1: 7, A2: 8, B1: 70, C5: { formula: 'SUM(S1:S3!A1)' }, C6: { formula: 'SUM(S1:S3!A1:A2)' } },
 }
-
-const n = (v: number): Val => ({ t: 'n', v })
-const b = (v: boolean): Val => ({ t: 'b', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
 
 /** Formula and the answer predicted before Excel ran (undefined: not predicted). */
 const CASES: [string, Val?][] = [

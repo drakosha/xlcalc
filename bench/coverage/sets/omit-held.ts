@@ -9,11 +9,7 @@
 import type { Val } from '../formulajs.js'
 import type { Probe } from '../probes.js'
 import { xl } from './arrays/common.js'
-
-const n = (v: number): Val => ({ t: 'n', v })
-const s = (v: string): Val => ({ t: 's', v })
-const b = (v: boolean): Val => ({ t: 'b', v })
-const e = (v: Extract<Val, { t: 'e' }>['v']): Val => ({ t: 'e', v })
+import { n, s, b, e } from '../vals.js'
 
 /** Formula (the engine's spelling), the function it checks and the predicted answer. */
 const CASES: [string, string, Val | 'refused'][] = [
