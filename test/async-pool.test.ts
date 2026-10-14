@@ -7,7 +7,7 @@
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, fails, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
+import { afterStopped, BOOKS, chainBook, CLOCK, fails, heavyBook, sameOverEdits, setA1, slowBook } from './async-books.js'
 import { closedAfter } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
@@ -34,11 +34,7 @@ describe.each(['closures', 'eval'] as const)('in threads, execution %s', (execut
     const synth = synthBook({ seed: 1, rows: 340 })
     const p = await made({ threads: 1 })
     const s = await p.createSession(synth.book, { clock: CLOCK, execution })
-    const sync = createSession(synth.book, { clock: CLOCK, execution })
-    for (const batch of edits(5, 40, synth)) {
-      expect(await s.setCells(batch)).toEqual(sync.setCells(batch))
-      expect((await s.getResult()).hash).toBe(sync.getResult().hash)
-    }
+    const sync = await sameOverEdits(s, synth, execution)
     const report = synth.book.sheets.at(-1)!
     const cell = Object.keys(report.cells).find((k) => report.cells[k].formula)!
     expect(await s.explain(report.name, cell)).toEqual(sync.explain(report.name, cell))
@@ -186,11 +182,7 @@ describe('in threads', () => {
   it('the call after a stopped one: computing the book again in the thread does not count in its soft deadline', async () => {
     const p = await made({ threads: 1 })
     const s = await p.createSession(heavyBook(), { clock: CLOCK })
-    // the calls' deadline is a quarter of a cold computation of the book (as fast as the machine runs it now)
-    const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
-    expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
-    expect((await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).changes).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
-    expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 12 })
+    await afterStopped(s)
   }, 60_000)
 
   it('maxHeapMb without limits: arrays of more values than the heap has 64 bytes, spills of more than it has KB give CalcError', async () => {

@@ -5,27 +5,9 @@
 import { describe, expect, it } from 'vitest'
 import { createInlineCalc, createSession, editStructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { CLOCK, fails, medianMs } from './async-books.js'
+import { CLOCK, fails, loopDuring, medianMs } from './async-books.js'
 
 const SLICE_MS = 5
-
-/** The longest wait of the event loop while `p` is pending, and its runs; a call that never yields leaves it none. */
-async function loopDuring<T>(p: Promise<T>): Promise<{ value: T; worst: number; ticks: number }> {
-  let last = performance.now()
-  let worst = 0
-  let ticks = 0
-  let done = false
-  const tick = () => {
-    const now = performance.now()
-    worst = Math.max(worst, now - last)
-    last = now
-    ticks++
-    if (!done) setImmediate(tick)
-  }
-  setImmediate(tick)
-  const value = await p.finally(() => (done = true))
-  return { value, worst: Math.max(worst, performance.now() - last), ticks }
-}
 
 /** `n` formulas over the table T: renaming it rewrites each of them. */
 function tableBook(n: number): BookInput {

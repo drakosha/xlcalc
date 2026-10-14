@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, fails, heavyBook, medianMs, setA1 } from './async-books.js'
+import { afterStopped, BOOKS, chainBook, CLOCK, fails, heavyBook, loopDuring, medianMs, sameOverEdits, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
 import './locales.js'
 import { cellIssues } from './diagnostics.js'
@@ -40,11 +40,7 @@ describe.each(['closures', 'eval'] as const)('in the same thread, execution %s',
     const synth = synthBook({ seed: 1, rows: 340 })
     const calc = createInlineCalc({ sliceMs: 0 })
     const s = await calc.createSession(synth.book, { clock: CLOCK, execution })
-    const sync = createSession(synth.book, { clock: CLOCK, execution })
-    for (const batch of edits(5, 40, synth)) {
-      expect(await s.setCells(batch)).toEqual(sync.setCells(batch))
-      expect((await s.getResult()).hash).toBe(sync.getResult().hash)
-    }
+    await sameOverEdits(s, synth, execution)
     await s.close()
   }, 120_000)
 })
@@ -84,20 +80,9 @@ describe('in the same thread', () => {
     const formula = Math.max(0, ((await medianMs(3, () => compute(sorting(40), { clock: CLOCK }))) - (await medianMs(3, () => compute(sorting(0), { clock: CLOCK })))) / 40)
     const book = sorting(300)
     const calc = createInlineCalc({ sliceMs: 10 })
-    let last = performance.now()
-    let worst = 0
-    let done = false
-    const tick = () => {
-      const now = performance.now()
-      worst = Math.max(worst, now - last)
-      last = now
-      if (!done) setImmediate(tick)
-    }
-    setImmediate(tick)
     const t0 = performance.now()
-    const e = await fails(calc.compute(book, { timeoutMs: 100 }))
+    const { value: e, worst } = await loopDuring(fails(calc.compute(book, { timeoutMs: 100 })))
     const took = performance.now() - t0
-    done = true
     expect(e.code).toBe('soft_timeout')
     // without a check before each formula the deadline was seen at the end, after 300 formulas, and the loop never ran
     expect(took).toBeLessThan(100 + 10 * formula + 50)
@@ -106,12 +91,8 @@ describe('in the same thread', () => {
 
   it('the call after a stopped one: computing the book again does not count in its soft deadline', async () => {
     const calc = createInlineCalc({ sliceMs: 5 })
-    // the calls' deadline is a quarter of a cold computation of the book (as fast as the machine runs it now)
     const s = await calc.createSession(heavyBook(), { clock: CLOCK })
-    const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
-    expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
-    expect((await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).changes).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
-    expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 12 })
+    const timeoutMs = await afterStopped(s)
     expect((await s.getResult({ timeoutMs })).hash).toBe(compute(await s.getBook(), { clock: CLOCK }).hash)
     // a signal still stops it, between the formulas of the book
     const t = await calc.createSession(chainBook(20_000), { clock: CLOCK })
