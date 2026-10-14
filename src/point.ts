@@ -3,7 +3,8 @@
  * (`bench/coverage/ui/point-*.ts`, `docs/entry.md`, "Point mode"): text that does not begin a formula is entered; in a
  * formula a reference goes in where an operand is wanted (after the formula's first character, an operator, `(`, the
  * list separator, `:`, a sheet's `!`, a point, a space) and, after an `=` of its own, at the start of the text; elsewhere
- * the whole formula is entered when it reads with its brackets closed, as Return enters it, in the locale it is typed in,
+ * the whole formula is entered when it reads with its functions' brackets closed, as Return enters it (a group's bracket
+ * left open is not closed), in the locale it is typed in,
  * and nothing happens when it does not (`=A1)`, `=1e`, `=1.5` in ru-RU) or when the caret is inside a string, a quoted
  * sheet's name or a table's brackets. A host that pointed already moves its own reference:
  * this says what an arrow does with no reference pointed since the text was typed.
@@ -21,10 +22,14 @@ import { isSpace } from './syntax/scan.js'
 /** The characters after which an operand is wanted, beside the list separator: the operators, `(`, the range's `:`, a sheet's `!`, and a point (`=1.`, `=A1.`, as Excel's answers have it). */
 const WANTS_OPERAND = new Set([...'=+-*/^&<>(:!@.'])
 
-/** How `text` stands at `upTo`: inside a string, a quoted sheet's name or a table's brackets, and the brackets left open. */
-function scanTo(text: string, upTo: number): { literal: boolean; open: number } {
+/**
+ * How `text` stands at `upTo`: inside a string, a quoted sheet's name or a table's brackets, and the brackets left open,
+ * each a function's (after its name) or a group's.
+ */
+function scanTo(text: string, upTo: number): { literal: boolean; open: ('call' | 'group')[] } {
   let quote: string | null = null
-  let [depth, open] = [0, 0]
+  let depth = 0
+  const open: ('call' | 'group')[] = []
   for (let i = 0; i < upTo; i++) {
     const c = text[i]
     if (quote) {
@@ -32,8 +37,8 @@ function scanTo(text: string, upTo: number): { literal: boolean; open: number } 
     } else if (c === '"' || c === "'") quote = c
     else if (c === '[') depth++
     else if (c === ']') depth = Math.max(0, depth - 1)
-    else if (depth === 0 && c === '(') open++
-    else if (depth === 0 && c === ')') open = Math.max(0, open - 1)
+    else if (depth === 0 && c === '(') open.push(i > 0 && /[\p{L}\p{N}._]/u.test(text[i - 1]) ? 'call' : 'group')
+    else if (depth === 0 && c === ')') open.pop()
   }
   return { literal: quote !== null || depth > 0, open }
 }
@@ -76,7 +81,9 @@ export function refAt(text: string, caret?: number, opts?: ScanOptions): PointAc
   while (i > 1 && isSpace(t[i - 1])) i--
   // after the formula's first character, an operand wanted, or a space after an operand (the intersection operator)
   if (i <= 1 || i < at || WANTS_OPERAND.has(t[i - 1]) || t[i - 1] === (locale?.listSeparator ?? ',')) return { action: 'insert', at }
-  // the arrow enters the whole text, wherever the caret is, as Return does: with its brackets closed, when it reads
-  const whole = (t.startsWith('=') ? t.slice(1) : t) + ')'.repeat(scanTo(t, t.length).open)
-  return reads(whole, locale) ? { action: 'commit' } : { action: 'none' }
+  // the arrow enters the whole text, wherever the caret is, as Return does: with its functions' brackets closed, when it
+  // reads; a group's bracket left open is not closed
+  const { open } = scanTo(t, t.length)
+  if (open.includes('group')) return { action: 'none' }
+  return reads((t.startsWith('=') ? t.slice(1) : t) + ')'.repeat(open.length), locale) ? { action: 'commit' } : { action: 'none' }
 }
