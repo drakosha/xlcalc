@@ -309,7 +309,7 @@ export type ValueColumn = { rule: Omit<DataValidation, 'range'>; values: (CellIn
 
 /** A value cell and a formula cell. */
 export const v = (value: CellInput['value']): CellInput => ({ value })
-export const f = (formula: string): CellInput => ({ formula })
+export { formulaCell as f } from '../stored.js'
 
 /**
  * The columns laid out on a sheet from A, into `cells`: row 1 the rule's title, the values below it (a null one left

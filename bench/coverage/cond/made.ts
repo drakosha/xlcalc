@@ -7,9 +7,9 @@
  */
 import type { BookInput, CellInput, ConditionalFormat, ConditionalStyle } from '../../../src/contract.js'
 import type { CondCase, CondCases, CondMake } from './cases.js'
+import { formulaCell as f } from '../stored.js'
 
 const v = (value: CellInput['value']): CellInput => ({ value })
-const f = (formula: string): CellInput => ({ formula })
 
 /** The style the harness gives a rule Excel makes: a red fill, a dark red bold font. */
 export const MADE_STYLE: ConditionalStyle = { fill: { color: '#FFC7CE' }, font: { color: '#9C0006', bold: true } }

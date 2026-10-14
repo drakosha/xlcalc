@@ -5,8 +5,7 @@
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** E: one value; F: references to E's edges; a name on the last row. */
 function edgeBook(): BookInput {

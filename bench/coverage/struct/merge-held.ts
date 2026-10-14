@@ -9,8 +9,7 @@ import type { StructureOp } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
 import { merge, unmerge } from './merge.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /**
  * S: an empty filled A1 under B1 (bold) and A2; a formula in B4 beside a percentage; empty A6 and B7 among values; a

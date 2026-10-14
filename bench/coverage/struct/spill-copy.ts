@@ -6,8 +6,7 @@
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** S: E2 spills E2:E4, B1 spills B1:C1; G1 sums E2#, H1 reads E3. */
 function book(): BookInput {

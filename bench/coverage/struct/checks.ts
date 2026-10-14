@@ -7,9 +7,7 @@
 import type { BookInput, CellInput, RangeRef } from '../../../src/contract.js'
 import { rangeAt, type StructCase, type StructCases } from './cases.js'
 import { windowBook } from './moves.js'
-
-const f = (formula: string): CellInput => ({ formula })
-
+import { formulaCell as f } from '../stored.js'
 
 /** E: values; F: references at the last row and column. */
 function edgeBook(): BookInput {

@@ -5,8 +5,7 @@
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** S: E2 spills E2:E4, B1 spills B1:C1, readers of both; T: readers from another sheet; a name over E2#. */
 export function spillBook(): BookInput {

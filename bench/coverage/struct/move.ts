@@ -5,8 +5,7 @@
  */
 import type { BookInput, CellInput, RangeRef } from '../../../src/contract.js'
 import { baseBook, rangeAt, type StructCase, type StructCases } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** Data in A1:B10, a row of formulas in D1:J1 to fill down and right. */
 function fillBook(): BookInput {

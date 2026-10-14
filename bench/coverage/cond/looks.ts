@@ -9,6 +9,7 @@
 import type { BookInput, CellInput, ConditionalFormat, ConditionalStyle, ConditionalValue } from '../../../src/contract.js'
 import type { CondCase, CondCases } from './cases.js'
 import type { StoredRule, StoredStyle } from '../stored.js'
+import { formulaCell as f } from '../stored.js'
 
 const RED: ConditionalStyle = { fill: { color: '#FFC7CE' }, font: { color: '#9C0006' } }
 
@@ -20,7 +21,6 @@ function columns(values: (CellInput | undefined)[], cols: string[]): Record<stri
 }
 
 const v = (value: CellInput['value']): CellInput => ({ value })
-const f = (formula: string): CellInput => ({ formula })
 
 /** A mix of kinds: numbers, text, empty text, a boolean, an error, numeric text, a blank. */
 const MIX = [v(1), v(5), v(10), v('abc'), v(''), v(true), f('NA()'), v(0), v(-3), v('10'), undefined, v(7)]

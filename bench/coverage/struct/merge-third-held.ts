@@ -9,8 +9,7 @@ import type { StructureOp } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
 import { merge, unmerge } from './merge.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /**
  * S: an empty A1 before B1 (filled, read by a name, absolute and mixed references, ranges) and C1; a top-left A3

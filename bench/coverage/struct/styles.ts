@@ -6,8 +6,7 @@
  */
 import { rangeAt, type StructCase, type StructCases } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** Bold, orange, bold on green, blue. */
 export const STYLES: StoredBook['styles'] = [{ font: { bold: true } }, { fill: { color: '#FFC000' } }, { font: { bold: true }, fill: { color: '#92D050' } }, { fill: { color: '#00B0F0' } }]

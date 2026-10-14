@@ -7,8 +7,7 @@
 import type { StructureOp } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /**
  * S: numbers and text in A1:C6, A3 and B3 filled, B4 `0.00`; formulas over them in H; formulas in B8:C8; an empty A10 and

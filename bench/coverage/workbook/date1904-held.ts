@@ -8,8 +8,7 @@ import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
 import type { WorkbookCase } from './cases.js'
 import type { StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 const SHOWN: [number, string][] = [
   [-100, 'mmm d, yyyy'],

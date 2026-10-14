@@ -7,8 +7,7 @@ import type { StructureOp } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
 import { merge } from './merge.js'
 import type { StoredBook, StoredCell } from '../stored.js'
-
-const f = (formula: string): StoredCell => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 /** S: an empty A1 before B1 and C1, read alone, in ranges and absolutely; an empty A5 read by a name and another sheet. */
 function topBook(): StoredBook {

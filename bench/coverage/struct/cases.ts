@@ -8,6 +8,7 @@
 import type { FileParts } from '../case-book.js'
 import type { BookInput, CellInput, CellRef, RangeRef, StructureOp } from '../../../src/contract.js'
 import type { StoredBook } from '../stored.js'
+import { formulaCell as f } from '../stored.js'
 
 export interface StructCase {
   id: string
@@ -42,8 +43,6 @@ export interface StructCases {
 export interface StructSet {
   buildStructCases(): StructCases
 }
-
-const f = (formula: string): CellInput => ({ formula })
 
 /** S: data in A1:D12 and rows 30:31, formulas in F:H; T: formulas over S; `My Data`: a sheet name in quotes. */
 export function baseBook(): BookInput {

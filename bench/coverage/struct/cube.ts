@@ -6,8 +6,7 @@
  */
 import type { BookInput, CellInput, StructureOp } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
-
-const f = (formula: string): CellInput => ({ formula })
+import { formulaCell as f } from '../stored.js'
 
 function book(): BookInput {
   const data = (k: number): Record<string, CellInput> => ({ A1: { value: k }, A2: { value: k * 10 }, A3: { value: k * 100 }, B1: { value: k + 1 } })
