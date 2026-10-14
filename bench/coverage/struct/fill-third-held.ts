@@ -9,10 +9,7 @@
 import { caseAdder, type StructCases } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
 import { formulaCell as f } from '../stored.js'
-import { fill } from './fill.js'
-
-/** A date of the 1900 system shown as one. */
-const date = (serial: number): StoredCell => ({ value: serial, format: 'yyyy-mm-dd' })
+import { date, fill } from './fill.js'
 
 /** A time of day shown as one. */
 const time = (hours: number): StoredCell => ({ value: hours / 24, format: 'h:mm' })

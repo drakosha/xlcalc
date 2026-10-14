@@ -11,7 +11,7 @@ import type { StoredBook, StoredCell } from '../stored.js'
 import { formulaCell as f } from '../stored.js'
 
 /** A date of the 1900 system shown as one. */
-const date = (serial: number): StoredCell => ({ value: serial, format: 'yyyy-mm-dd' })
+export const date = (serial: number): StoredCell => ({ value: serial, format: 'yyyy-mm-dd' })
 
 /**
  * S: sources of fills down in rows 1:3 of columns A:Z, of fills up in rows 40:42, of fills right in rows 50:53 and of fills

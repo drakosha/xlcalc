@@ -1921,19 +1921,23 @@ export type StructureOp =
   | { op: 'unmergeCells'; sheet: string; range: string }
   /**
    * Excel's fill handle (`Range.AutoFill`): the cells of `range` go on over `to`, which holds `range` and reaches past it
-   * along one axis, down, up, right or left (`A1:B2` over `A1:B9`, or over `A1:F2`). Each column of a fill down or up,
-   * and each row of one right or left, goes on by itself. The cells added take the source's cells in turn, as copies do
-   * (formulas, styles, number formats), the part of the source nearest to it at the far end when `to` is not a whole
-   * number of sources long; what goes on as a series takes the next value of its series instead (`FillType`).
+   * along one axis, down, up, right or left (`A1:B2` over `A1:B9`, or over `A1:F2`). The cells added take the source's
+   * cells in turn, as copies do (formulas, styles, number formats), the part of the source nearest to it at the far end
+   * when `to` is not a whole number of sources long; refusals are a copy's. Each column of a fill down or up, and each row
+   * of one right or left, goes on by itself, and what goes on as a series takes its next values instead (`FillType`,
+   * docs/structure.md "The fill handle"). A `to` of another shape is an `InputError`.
    */
   | { op: 'fillRange'; sheet: string; range: string; to: string; type?: FillType }
 
 /**
  * What a fill takes from its source (`StructureOp` `fillRange`), as Excel's `XlAutoFillType`. `default` is the drag of
- * the fill handle (`xlFillDefault`): numbers of two cells or more go on by their trend, a date by days or by the step of
- * its dates, text that ends in a number by the number (`Item1`, `Item2`), the names of days and months through their
- * list; anything else, a single number too, is copied. `series` (`xlFillSeries`, the drag with Ctrl over a number) goes
- * on with a single number as well, by 1. `copy` (`xlFillCopy`) copies every cell.
+ * the fill handle (`xlFillDefault`). A line's source is cut into runs of cells of one kind, empty cells skipped: numbers
+ * go on by their step or trend; dates by days, by their step, or by months when they share a day of the month or are
+ * months' ends; times by hours or their step; text with a number at the start (and a space) or at the end by the number,
+ * quarters and en-US ordinals too; names of days and months through their list; dates, times and text without one step
+ * are copied, and so are text, booleans and formulas. A single number goes on by 1 unless the source holds plain numbers
+ * alone. `series` (`xlFillSeries`, the drag with Ctrl over a number) makes a single number go on by 1 always. `copy`
+ * (`xlFillCopy`) copies every cell.
  */
 export type FillType = 'default' | 'series' | 'copy'
 

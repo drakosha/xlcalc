@@ -207,6 +207,45 @@ Whole rows and columns merge too: `'20:21'` is one area `A20:XFD21`, as in Excel
 
 A range that meets a table is refused with `table`: Excel does not merge the cells of a table. A range that meets an array formula of the old kind is refused with `array`.
 
+## The fill handle
+
+`fillRange` is Excel's fill handle (`Range.AutoFill`): the cells of `range` go on over `to`, which holds `range` and reaches past it down, up, right or left. A host that lets a user drag the handle sends the source and the whole frame of the drag.
+
+```js
+import { editStructure } from 'xlcalc'
+
+const book = { sheets: [{ name: 'Plan', cells: {
+  A1: { value: 1 }, A2: { value: 2 },
+  B1: { value: 'Item1' },
+  C1: { value: 45688, numberFormat: 'yyyy-mm-dd' }, C2: { value: 45716, numberFormat: 'yyyy-mm-dd' }, // Jan 31, Feb 28
+  D1: { value: 'Mon' },
+  E1: { formula: 'A1*10' },
+} }] }
+const r = editStructure(book, { op: 'fillRange', sheet: 'Plan', range: 'A1:E2', to: 'A1:E5' })
+const c = r.book.sheets[0].cells
+console.log(c.A3.value, c.A5.value, c.B3.value, c.B5.value, c.C3.value, c.C4.value, c.D3.value, c.E3.formula)
+// → 3 5 Item2 Item3 45747 45777 Tue A3*10 (Mar 31, Apr 30)
+```
+
+### Copies first
+
+The cells added take the source's cells in turn, as copy and paste lays them: formulas with their relative references moved, styles, number formats, notes and links, rules of conditional formats and data validation. When `to` is not a whole number of sources long, the part of the source nearest to it comes at the far end: `A1:A3` filled to `A1:A8` lays `A1:A3` over `A4:A6` and `A1:A2` over `A7:A8`. Refusals are a copy's (`merged`, `array`, `table`, `filtered`).
+
+### What goes on as a series
+
+Each column of a fill down or up, and each row of a fill right or left, goes on by itself. Its source is cut into runs: cells of one kind next to each other, empty cells between them skipped, and text without a number, booleans and formulas ending a run. A run's cells come again in every copy of the source, so a run goes on from copy to copy: `1, 2, x` goes on as `3, 4, x, 5, 6, x`, and `1, (empty), 3` as `5, (empty), 7`. A fill up or left goes backwards: `1, 2` filled up gives `0, -1` above.
+
+- Numbers: two or more go on by their step, or by their least-squares trend when the steps differ (`1, 3, 4` gives `5.67, 7.17`). A single number is copied when the whole source holds plain numbers and empty cells alone, and goes on by 1 when the source holds anything else as well (text, a boolean, a formula, a date).
+- Dates (numbers shown in a format with a day, a month or a year): one date goes on by days; dates on one day of the month, or each on the last day of its month, a whole number of months apart go on by months (`Jan 31, Feb 28` gives `Mar 31, Apr 30`; `Jan 15, Apr 15` gives `Jul 15`); other dates with one step in days go on by it, and dates without one step are copied.
+- Times of day: one time goes on by hours; times with one step go on by it, others are copied.
+- Text with a number: a number at the start followed by a space goes on (`10 kg`, `11 kg`; `1 item 2`, `2 item 2`), else a number at the end (`Item1`, `Item2`; `Item09`, `Item10`), with the step of the run, and a run without one step is copied. A number below zero is written by its size (`Item1` filled up gives `Item0`, `Item1`, `Item2`). Quarters go round the year (`Q4`, `Q1`; `Qtr`, `Quarter 1`), en-US ordinals take their endings (`1st`, `2nd`, `3rd`, `11th`, always small). Text with the number inside (`a1b`) or right before letters (`1abc`) is copied.
+- Names of days and months, short or long (`Mon`, `Monday`, `Jan`, `January`), go round their list in the case they are written in (`MONDAY`, `TUESDAY`); en-US's names, and in a book of another locale its own names too.
+- Everything else is copied: text, booleans, errors, formulas.
+
+`type` changes this as Excel's `XlAutoFillType` does: `'series'` makes a single number go on by 1 as well (Excel's drag with Ctrl over a number), `'copy'` copies every cell.
+
+`mapCell` of a fill is a copy's: the cells it writes over are cleared, the others stay.
+
 ## Notes, hyperlinks and frozen panes
 
 A cell's `note` and `link` go with the cell, as its style does:
@@ -339,10 +378,13 @@ Hidden sheets were measured by the step `hidden` in Excel for Mac and for Window
 
 Merging cells was measured in Excel for Windows (`npx tsx bench/windows/run.ts struct <set>`: `Range.Merge`, `Range.UnMerge`, Merge & Center as `Merge` with the alignment centred, alerts off), whose answers are in `test/excel/win/struct/` and compared by `test/structure-win.test.ts`; Excel for Mac was not asked. The look read there has the horizontal alignment as well. A case may take an operation before its own (`before`): cells merged and split again show the look the merge gave them, and a table is made over the cells first (`ListObjects.Add`). Each set was predicted before Excel ran it. `merge` (28 cases) held in 20: an empty top-left cell takes the area's first value (6 cases, the prediction kept it empty), and Excel writes a merged area of whole rows as `20:21` (2, the same area). `merge-held` (18) held in 10: the value comes as cut and paste moves it, with the references to it and its look (8). `merge-third-held` (12) held in all 12, and `merge-top-held` (3), references to the empty top-left cell, in all 3. `test/merge-cells.test.ts` checks that a session gives the book `editStructure` gives on every case, with and without building the state again, and undoes and redoes it in one step in every kind of session.
 
+The fill handle was measured in Excel for Windows by the same step (`Range.AutoFill` over the range `to`, its type `xlFillDefault`, `xlFillSeries` or `xlFillCopy`), in en-US, three sets each predicted before Excel ran it. `fill` (46 cases) held in 38: dates at months' ends go on by months, `Q1` by quarters, `1st` by ordinals, a number before text goes on, and a number alone beside text goes on by 1; three more cases differed only in the comparison, which now writes the engine's numbers in Excel's 15 digits. `fill-held` (45) held in 37: an empty cell does not end a run, dates and text without one step are copied, months go on from one day of the month or from months' ends alone, a number first needs a space after it and comes before one at the end, ordinals end small, a number alone is copied only when the source holds numbers alone. `fill-third-held` (31) held in 28: a date beside a number alone makes it go on, steps are taken alike in 15 digits (`9:00, 10:00, 11:00` go on by the hour), a number first loses its zeros (`007 x`, `8 x`). After those corrections all 122 cases match; no fourth set was run. `test/fill-range.test.ts` checks that a session gives the book `editStructure` gives on every case, undoes and redoes it in one step in every kind of session, and keeps dates given as text.
+
 ## Known differences and limits
 
 - Whole columns copied onto part of a merged area: Excel pastes them and keeps the area, the engine refuses with `merged` (two observations).
-- Excel's fill handle fills the hidden rows of a filtered sheet. `copyRange` fills the visible rows only, as Fill Down does.
+- Excel's fill handle fills the hidden rows of a filtered sheet. `copyRange` fills the visible rows only, as Fill Down does, and so does `fillRange`, whose copies are `copyRange`'s.
+- The fill handle was not measured in Excel for Mac, nor in a ru-RU Excel (its lists of names), nor with the types other than default, series and copy. Not measured either: whether a number at the end of text keeps its zeros past one width (`Item001`, here `Item002`), and a time beside a number alone (here it makes the number go on, as a date does).
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
 - Charts are not part of a book. Threads of comments are notes in a book ([docs/xlsx.md](xlsx.md#threads-of-comments)).
 - References to other workbooks are not read, so they never occur in a valid formula.

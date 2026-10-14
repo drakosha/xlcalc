@@ -8,10 +8,7 @@
 import { caseAdder, type StructCases } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
 import { formulaCell as f } from '../stored.js'
-import { fill } from './fill.js'
-
-/** A date of the 1900 system shown as one. */
-const date = (serial: number): StoredCell => ({ value: serial, format: 'yyyy-mm-dd' })
+import { date, fill } from './fill.js'
 
 /** S: sources of fills down in rows 1:3, of fills up in rows 40:42, of fills right in rows 50:53 and of fills left in row 56. */
 function heldBook(): StoredBook {
