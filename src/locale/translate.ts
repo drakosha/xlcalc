@@ -50,6 +50,15 @@ const byLength = (xs: readonly string[]) => [...new Set(xs)].sort((a, b) => b.le
 const swap = (xs: [string, string][]) => xs.map(([a, b]): [string, string] => [b, a])
 const same = (xs: readonly string[]) => xs.map((x): [string, string] => [x, x])
 
+/**
+ * The local side of `loc` reading its own error texts alone, as Excel's formula bar in that locale reads them: `#N/A` does
+ * not read in ru-RU, whose text is `#Н/Д` (`refAt`). English function names and TRUE/FALSE read as names there, as they do.
+ */
+export function ownErrors(loc: Locale, local: Side): Side {
+  const errors = LOCALE_ERRORS.map((e): [string, string] => [e, loc.errors[e] ?? e])
+  return { ...local, errors: byLength(errors.map((e) => e[1])), err: upperKeys(swap(errors)) }
+}
+
 /** Both sides of a (checked) locale. Local text also reads English function names, TRUE/FALSE and error texts. */
 export function sides(loc: Locale): Sides {
   const local: Syntax = { decimal: loc.decimalSeparator, list: loc.listSeparator, arrayColumn: loc.arrayColumnSeparator, arrayRow: loc.arrayRowSeparator }
