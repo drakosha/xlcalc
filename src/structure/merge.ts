@@ -1,7 +1,8 @@
 /**
  * Excel's Merge Cells and Unmerge Cells (`mergeCells`, `unmergeCells`). A merge takes in whole each merged area its range
  * meets, growing until it meets no other; the range then becomes one merged area, or one a row with `across`. Each new
- * area keeps its top-left cell; its other cells lose their values and formulas and take the top-left cell's style and
+ * area keeps its top-left cell, or when that is empty what the first cell holding a value or a formula holds, row by row
+ * (the formula's text as it is); its other cells lose their values and formulas and take the top-left cell's style and
  * number format (its own, else its row's, else its column's), so that they keep it when the area is split again. With
  * `center` the top-left cells' style is centred across. Cells of a table, and of an array formula of the old kind, are
  * not merged. An unmerge drops the merged areas its range meets; the cells keep what they hold and look like.
@@ -17,6 +18,7 @@ import { tablesOf } from '../tables/model.js'
 import { cornersText, meets, rectText, type Rect } from './area.js'
 import type { Applied } from './geometry.js'
 import { arraysOf, cellsIn, gridOf } from './grid.js'
+import { holds } from '../array-areas.js'
 
 /** The fields of a cell a merge clears: what it holds. */
 const CONTENT = ['value', 'formula', 'array', 'held'] as const
@@ -60,12 +62,15 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
       const was = style === undefined ? {} : styles[style]
       ;({ index: style, styles } = internStyle(styles, { ...was, alignment: { ...was.alignment, horizontal: 'center' } }))
     }
-    // the top-left cell holds its look as its own, which the look of the area beneath an entry does not give it
     const look = { ...(style === undefined ? {} : { style }), ...(numberFormat === undefined ? {} : { numberFormat }) }
-    if (center) cells[top] = { ...withoutLook(sh.cells[top]), ...look }
+    const inside = cellsIn(g, a).sort((i, j) => g.row[i] - g.row[j] || g.col[i] - g.col[j])
+    // an empty top-left cell takes what the first cell that holds a value or a formula holds, row by row
+    const from = holds(sh.cells[top]) ? undefined : inside.find((i) => holds(g.cell[i]))
+    // the top-left cell written holds its look as its own, which the look of the area beneath an entry does not give it
+    if (center || from !== undefined) cells[top] = { ...withoutLook(sh.cells[top]), ...(from === undefined ? {} : contentOf(g.cell[from])), ...look }
     if (a.r1 === a.r2 && a.c1 === a.c2) continue
     looks.push({ range: cornersText(a), ...look })
-    for (const i of cellsIn(g, a)) {
+    for (const i of inside) {
       const addr = g.addr[i]
       if (addr === top) continue
       const kept = cleared(g.cell[i])
@@ -97,6 +102,13 @@ export function unmergeCells(book: BookInput, sheet: string, x: Rect): Applied {
 function withoutLook(cell: CellInput | undefined): CellInput {
   const { style: _s, numberFormat: _f, ...rest } = cell ?? {}
   return rest
+}
+
+/** What a cell holds: its value or formula. */
+function contentOf(cell: CellInput): CellInput {
+  const out: Record<string, unknown> = {}
+  for (const k of CONTENT) if (cell[k] !== undefined) out[k] = cell[k]
+  return out
 }
 
 /** What a cleared cell keeps (its meta, note and link), or null when nothing. */
