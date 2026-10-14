@@ -14,7 +14,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { escapeAttr } from '../../src/xlsx/xml/text.js'
-import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
+import { declineRepair, ensureExcel, excelVersion, KEYS, runWatched, settleRejected } from './excel.js'
 import { heldOf } from './entry.js'
 import { savedColumns } from './fit.js'
 import { localeDir, localeMeta } from './locales.js'
@@ -24,7 +24,6 @@ import { rawFile } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
 
 const SCRIPT = join(HERE, 'excel-ui.applescript')
-const KEYS = join(HERE, 'excel-keys.applescript')
 const INPUT_SOURCE = join(HERE, 'input-source.swift')
 /** pbpaste and pbcopy read and write text in the locale's encoding. */
 const UTF8 = { ...process.env, LANG: 'en_US.UTF-8' }

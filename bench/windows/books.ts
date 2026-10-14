@@ -119,6 +119,17 @@ export function makeErrors(c: { make?: unknown[]; op?: unknown }, answers: unkno
   return { n, errors: stepErrors(answers.slice(skip, n), (i) => (i < makes ? 'make' : 'op')) }
 }
 
+/** The refusals of a case's `n` edits, whose answers come after the full calculation, each before its calculation. */
+const editsRefused = (answers: unknown[], n: number) => refusedOf(Array.from({ length: n }, (_, i) => (answers[1 + 2 * i] as { error?: string } | null)?.error))
+
+/** What a step records of a case whose book Excel did not load: `empty` answers, marked rejected. */
+const rejected =
+  <A>(answers: Record<string, A>, empty: Omit<A, 'rejected'>) =>
+  (c: { id: string }, why: string) => {
+    console.log(`${c.id}: Excel did not load the book (${why})`)
+    answers[c.id] = { ...empty, rejected: true } as A
+  }
+
 /**
  * The cases to do of a step whose cases go to Excel as files (`files`) and come back saved, one book each, in jobs
  * (`job` names them): `steps` are a case's steps, `answer` its answer from theirs. A case whose book Excel did not load,
@@ -165,13 +176,10 @@ export async function stepSpill(set: string, tag: Tag, e: WinEnv): Promise<void>
     (c, a) => {
       const n = (c.edits ?? []).length * 2
       const answer: SpillAnswer = rectsOf(c.read, a.answers.slice(1 + n), !!c.legacy)
-      const refused = refusedOf((c.edits ?? []).map((_, i) => (a.answers[1 + 2 * i] as { error?: string } | null)?.error))
+      const refused = editsRefused(a.answers, (c.edits ?? []).length)
       answers[c.id] = refused ? { ...answer, refused } : answer
     },
-    (c, why) => {
-      console.log(`${c.id}: Excel did not load the book (${why})`)
-      answers[c.id] = { values: {}, formulas: {}, rejected: true }
-    },
+    rejected(answers, { values: {}, formulas: {} }),
     save,
   )
   save()
@@ -296,13 +304,10 @@ export async function stepTables(set: string, tag: Tag, e: WinEnv): Promise<void
         })
       const answer: TableAnswer = { values: rect.values, formulas: rect.formulas, ...(local ? { local: localText } : {}), tables: tableShapes(raw.at(-1) as RawTable[]) }
       if (addsNames(c)) answer.names = (raw.at(-2) as [string, string][]).map(([name]) => name)
-      const refused = refusedOf(Array.from({ length: n }, (_, i) => (a.answers[1 + 2 * i] as { error?: string } | null)?.error))
+      const refused = editsRefused(a.answers, n)
       answers[c.id] = refused ? { ...answer, refused } : answer
     },
-    (c, why) => {
-      console.log(`${c.id}: Excel did not load the book (${why})`)
-      answers[c.id] = { values: {}, formulas: {}, tables: [], rejected: true }
-    },
+    rejected(answers, { values: {}, formulas: {}, tables: [] }),
     save,
   )
   save()

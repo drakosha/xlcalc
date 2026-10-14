@@ -323,7 +323,7 @@ export interface Watch<T> {
  * book stops the run when `fatal`, nothing clicked; so does Excel not answering in time.
  */
 /** The keyboard's script, which the steps that type into Excel run. */
-const KEYS = fileURLToPath(new URL('./excel-keys.applescript', import.meta.url))
+export const KEYS = fileURLToPath(new URL('./excel-keys.applescript', import.meta.url))
 
 /**
  * What `runWatched` takes for a part of a set run with the keyboard's help (`fit`, `rows`): the book written whole as
