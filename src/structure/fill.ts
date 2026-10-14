@@ -1,12 +1,14 @@
 /**
- * Excel's fill handle (`StructureOp` `fillRange`, `Range.AutoFill`). The cells added take the source's cells in turn as
- * copies of it: whole sources next to it, then the part of it nearest to it at the far end (`copyRange` each, so formulas,
- * looks, rules and validations go as a copy takes them). Then, unless the fill copies alone, each line along the fill (a
- * column of a fill down or up, a row of one right or left) is cut into runs of its source's cells that go on together, and
- * the copies of a run's cells take the run's next values: numbers by their trend, dates by days or by months, times by
- * hours, text that ends in a number by the number, the names of days and months through their list. A run's cells come
- * again in every copy of the source, so the run goes on from copy to copy (1, 2, x → 3, 4, x, 5, 6, x), and backwards in a
- * fill up or left.
+ * Excel's fill handle (`StructureOp` `fillRange`, `Range.AutoFill`), as measured on Excel for Windows (the struct sets
+ * `fill`, `fill-held`, `fill-third-held`). The cells added take the source's cells in turn as copies of it: whole sources
+ * next to it, then the part of it nearest to it at the far end (`copyRange` each, so formulas, looks, rules and
+ * validations go as a copy takes them). Then, unless the fill copies alone, each line along the fill (a column of a fill
+ * down or up, a row of one right or left) is cut into runs of its source's cells that go on together, and the copies of a
+ * run's cells take the run's next values. A run is cells of one kind in a row, empty cells between them skipped and text,
+ * booleans and formulas ending it: numbers go on by their trend, dates by their step in days or by months, times by their
+ * step or by hours, text with a number by the number, names of days and months through their list; dates and text with
+ * no single step are copied. A run's cells come again in every copy of the source, so the run goes on from copy to copy
+ * (1, 2, x → 3, 4, x, 5, 6, x), and backwards in a fill up or left.
  */
 import type { BookInput, CellInput, FillType } from '../contract.js'
 import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
@@ -30,14 +32,20 @@ export type Copier = (book: BookInput, from: Rect, to: Rect) => Applied
 /** A cell of a line's source as a fill reads it: what kind of series it can go on in, and its value there. */
 type Item =
   | { k: 'number' | 'date' | 'time'; y: number }
-  /** Text that goes on by a number in it: the cells of one `key` go on together, `make` writes the text of another number. */
-  | { k: 'text'; key: string; y: number; make: (n: number) => string }
+  /**
+   * Text that goes on by a number in it: the cells of one `key` go on together, `make` writes the text of another number;
+   * a list's names and quarters go round `cycle`.
+   */
+  | { k: 'text'; key: string; y: number; make: (n: number) => string; cycle?: number }
+  | { k: 'empty' }
   | { k: 'other' }
 
-/** A run of a line's source: consecutive cells that go on together, from position `at` of the source. */
+type Kind = Exclude<Item, { k: 'empty' | 'other' }>
+
+/** A run of a line's source: cells that go on together, at their positions along the source. */
 interface Run {
-  at: number
-  items: Item[]
+  at: number[]
+  items: Kind[]
 }
 
 /**
@@ -88,6 +96,9 @@ function wayOf(src: Rect, target: Rect): { axis: Axis; forward: boolean } | null
   return null
 }
 
+/** A cell that holds nothing a fill reads: none, or one without a value or a formula. */
+const empty = (cell: CellInput | undefined) => !cell || (cell.formula === undefined && (cell.value === undefined || cell.value === null))
+
 /** The cells of positions `added` (from, to along the axis) that a series writes, with their values. */
 function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [number, number], type: FillType): [string, CellInput['value']][] {
   const sheet = book.sheets[s]
@@ -96,36 +107,38 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
   const h = hi(src, axis) - a + 1
   // the source's cells by line across the fill, at their position along it
   const lines = new Map<number, Map<number, CellInput>>()
+  // a number alone in its run is copied, as a single cell is, when the source holds numbers alone and the fill is no series
+  let numbers = type !== 'series'
   for (const i of cellsIn(g, src)) {
+    const cell = g.cell[i]
+    if (empty(cell)) continue
+    numbers &&= cell.formula === undefined && (typeof cell.value === 'number' || typeof cell.value === 'object')
     const [along, across] = axis === 'r' ? [g.row[i], g.col[i]] : [g.col[i], g.row[i]]
     let line = lines.get(across)
     if (!line) lines.set(across, (line = new Map()))
-    line.set(along - a, g.cell[i])
+    line.set(along - a, cell)
   }
   const lists = listsOf(book)
   const epoch = epochOf(book.dateSystem)
   const out: [string, CellInput['value']][] = []
   for (const [across, line] of lines) {
     const items = Array.from({ length: h }, (_, p) => {
-      const at = a + p
-      const [r, c] = axis === 'r' ? [at, across] : [across, at]
-      return itemOf(line.get(p), formatAt(sheet, line.get(p), r, c), book, lists)
+      const [r, c] = axis === 'r' ? [a + p, across] : [across, a + p]
+      const cell = line.get(p)
+      return itemOf(cell, formatAt(sheet, cell, r, c), book, lists)
     })
-    // a number alone in its line is copied as a single cell is, unless the fill is a series
-    const alone = line.size === 1 || [...line.values()].filter((x) => x.formula !== undefined || (x.value !== undefined && x.value !== null)).length === 1
     for (const run of runsOf(items)) {
-      const next = goesOn(run, type === 'series' || !alone, epoch)
+      const next = goesOn(run, !numbers, epoch)
       if (!next) continue
-      const m = run.items.length
+      const m = run.at.length
       for (let pos = added[0]; pos <= added[1]; pos++) {
         const p = pos - a
-        const q = ((p % h) + h) % h
-        if (q < run.at || q >= run.at + m) continue
-        const e = Math.floor(p / h) * m + (q - run.at)
+        const d = run.at.indexOf(((p % h) + h) % h)
+        if (d < 0) continue
+        const e = Math.floor(p / h) * m + d
         const [r, c] = axis === 'r' ? [pos, across] : [across, pos]
-        const source = run.items[q - run.at]
-        const value = next(e, source)
-        const own = line.get(q)!.value
+        const value = next(e, run.items[d])
+        const own = line.get(run.at[d])!.value
         out.push([formatAddress(r, c), typeof own === 'object' && own !== null && typeof value === 'number' ? { date: serialToDate(value, { dateSystem: book.dateSystem }) } : value])
       }
     }
@@ -145,14 +158,14 @@ function listsOf(book: BookInput): (readonly string[])[] {
   return r && r.lcid !== '409' ? [...en, r.daysShort, r.days, r.monthsShort, r.months] : en
 }
 
-/** Text that ends in a number: the text before it and its digits. */
-const SUFFIX = /^(.*?)(\d+)$/s
-/** Text that starts with a number: its digits and the text after them. */
-const LEADING = /^(\d+)(\D.*)$/s
 /** A quarter: `Q1`, `Qtr 2`, `Quarter 4`. */
 const QUARTER = /^(q|qtr|quarter)( ?)([1-4])$/i
 /** An ordinal of en-US: `1st`, `22nd`. */
 const ORDINAL = /^(\d+)(st|nd|rd|th)$/i
+/** Text that starts with a number and a space: its digits and the text from the space on. */
+const LEADING = /^(\d+)( .*)$/s
+/** Text that ends in a number: the text before it and its digits. */
+const SUFFIX = /^(.*?)(\d+)$/s
 
 /** `n` within 0 … `size` - 1, as a list goes round. */
 const round = (n: number, size: number) => ((n % size) + size) % size
@@ -171,8 +184,9 @@ function ordinal(n: number): string {
 
 /** How a fill reads a cell of its source. */
 function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], book: BookInput, lists: (readonly string[])[]): Item {
-  if (!cell || cell.formula !== undefined) return { k: 'other' }
-  const v = cell.value
+  if (empty(cell)) return { k: 'empty' }
+  if (cell!.formula !== undefined) return { k: 'other' }
+  const v = cell!.value
   if (typeof v === 'object' && v !== null) {
     const serial = dateSerial(v.date, book)
     return serial === null ? { k: 'other' } : { k: 'date', y: serial }
@@ -183,24 +197,21 @@ function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], 
   for (const [i, list] of lists.entries()) {
     const y = list.findIndex((x) => x.toLowerCase() === lower)
     const caseOf = casing(v)
-    if (y >= 0) return { k: 'text', key: `list ${i}`, y, make: (n) => caseOf(list[round(n, list.length)]) }
+    if (y >= 0) return { k: 'text', key: `list ${i}`, y, make: (n) => caseOf(list[round(n, list.length)]), cycle: list.length }
   }
   let m = QUARTER.exec(v)
   if (m) {
     const head = m[1] + m[2]
-    return { k: 'text', key: `quarter ${head.toLowerCase()}`, y: Number(m[3]), make: (n) => head + (round(n - 1, 4) + 1) }
+    return { k: 'text', key: `quarter ${head.toLowerCase()}`, y: Number(m[3]), make: (n) => head + (round(n - 1, 4) + 1), cycle: 4 }
   }
-  if ((m = ORDINAL.exec(v))) {
-    const caseOf = casing(m[2])
-    return { k: 'text', key: 'ordinal', y: Number(m[1]), make: (n) => Math.abs(n) + caseOf(ordinal(n)) }
+  if ((m = ORDINAL.exec(v))) return { k: 'text', key: 'ordinal', y: Number(m[1]), make: (n) => Math.abs(n) + ordinal(n) }
+  if ((m = LEADING.exec(v))) {
+    const [tail, width] = [m[2], widthOf(m[1])]
+    return { k: 'text', key: `leading ${tail}`, y: Number(m[1]), make: (n) => digits(n, width) + tail }
   }
   if ((m = SUFFIX.exec(v))) {
     const [head, width] = [m[1], widthOf(m[2])]
     return { k: 'text', key: `suffix ${head}`, y: Number(m[2]), make: (n) => head + digits(n, width) }
-  }
-  if ((m = LEADING.exec(v))) {
-    const [tail, width] = [m[2], widthOf(m[1])]
-    return { k: 'text', key: `leading ${tail}`, y: Number(m[1]), make: (n) => digits(n, width) + tail }
   }
   return { k: 'other' }
 }
@@ -237,56 +248,58 @@ function casing(s: string): (x: string) => string {
   return (x) => x[0].toUpperCase() + x.slice(1).toLowerCase()
 }
 
-/** The runs of a line's source: consecutive cells of one kind (text with one prefix, names of one list). */
+/** The runs of a line's source: cells of one kind (text with one key), empty cells between them skipped, other cells ending them. */
 function runsOf(items: Item[]): Run[] {
   const runs: Run[] = []
   let run: Run | null = null
   items.forEach((x, at) => {
+    if (x.k === 'empty') return
+    if (x.k === 'other') return void (run = null)
     const last = run?.items.at(-1)
-    if (run && last && together(last, x)) run.items.push(x)
-    else runs.push((run = { at, items: [x] }))
+    if (run && last && last.k === x.k && (x.k !== 'text' || (last as typeof x).key === x.key)) {
+      run.at.push(at)
+      run.items.push(x)
+    } else runs.push((run = { at: [at], items: [x] }))
   })
   return runs
 }
-
-const together = (x: Item, y: Item): boolean => x.k !== 'other' && x.k === y.k && (x.k !== 'text' || x.key === (y as typeof x).key)
 
 /**
  * A run's value at element `e` (0 its first cell, its length the first copied), given the source cell it copies; null when
  * the run is copied. A single number goes on by 1 when `single`, else it is copied.
  */
-function goesOn(run: Run, single: boolean, epoch: number): ((e: number, source: Item) => CellInput['value']) | null {
+function goesOn(run: Run, single: boolean, epoch: number): ((e: number, source: Kind) => CellInput['value']) | null {
   const first = run.items[0]
-  const ys = run.items.map((x) => (x.k === 'other' ? 0 : x.y))
-  const m = ys.length
+  const ys = run.items.map((x) => x.y)
+  if (ys.length === 1 && first.k === 'number') return single ? (e) => ys[0] + e : null
+  if (ys.length === 1 && first.k === 'time') return (e) => ys[0] + e / 24
   switch (first.k) {
-    case 'other':
-      return null
-    case 'number': {
-      if (m === 1) return single ? (e) => ys[0] + e : null
-      const f = trend(ys)
-      return (e) => f(e)
-    }
-    case 'time': {
-      if (m === 1) return (e) => ys[0] + e / 24
+    case 'number':
       return trend(ys)
-    }
-    case 'date': {
-      if (m === 1) return (e) => ys[0] + e
-      const months = monthStep(ys, epoch)
-      return months ?? trend(ys)
-    }
+    case 'time':
+      return stepOf(ys)
+    case 'date':
+      return (ys.length > 1 && monthStep(ys, epoch)) || stepOf(ys)
     case 'text': {
-      const f = m === 1 ? (e: number) => ys[0] + e : trend(ys)
-      return (e, source) => (source.k === 'text' ? source : first).make(Math.round(f(e)))
+      const f = stepOf(first.cycle ? unwrapped(ys, first.cycle) : ys)
+      return f && ((e, source) => (source.k === 'text' ? source : first).make(Math.round(f(e))))
     }
   }
 }
 
+/** Positions in a list that goes round `cycle`, each taken a step forward from the one before it (Sat, Sun as 6, 7). */
+const unwrapped = (ys: number[], cycle: number) => ys.map((y, i) => (i === 0 ? y : ys[0] + ys.slice(1, i + 1).reduce((s, x, j) => s + round(x - ys[j], cycle), 0)))
+
+/** The values' step, when each goes on from the one before it by the same (a single value by 1): the value at element `e`; else null. */
+function stepOf(ys: number[]): ((e: number) => number) | null {
+  const d = ys.length > 1 ? ys[1] - ys[0] : 1
+  return ys.every((y, i) => i === 0 || y - ys[i - 1] === d) ? (e) => ys[0] + d * e : null
+}
+
 /** The values' linear trend at element `e`: their step when they have one, else the least-squares line. */
 function trend(ys: number[]): (e: number) => number {
-  const d = ys[1] - ys[0]
-  if (ys.every((y, i) => i === 0 || y - ys[i - 1] === d)) return (e) => ys[0] + d * e
+  const step = stepOf(ys)
+  if (step) return step
   const m = ys.length
   const mx = (m - 1) / 2
   const my = ys.reduce((s, y) => s + y, 0) / m
@@ -301,18 +314,22 @@ function trend(ys: number[]): (e: number) => number {
 }
 
 /**
- * Dates a whole number of months apart, each step the same, a day past a month's end taken back to its last day (Jan 31,
- * Feb 28, Mar 31): the date `e` steps on from the first, else null.
+ * Dates on one day of the month, or each on its month's last day, a whole number of months apart, each step the same: the
+ * date `e` steps on from the first (on the last day of its month, or on the day, taken back to the last day of a shorter
+ * month); else null.
  */
 function monthStep(ys: number[], epoch: number): ((e: number) => number) | null {
-  const { y, m, d } = ymd(Math.floor(ys[0]) + epoch)
+  const ds = ys.map((y) => ymd(Math.floor(y) + epoch))
+  const ends = ds.every((x) => x.d === daysInMonth(x.y, x.m))
+  if (!ends && ds.some((x) => x.d !== ds[0].d)) return null
+  const months = ds.map((x) => x.y * 12 + x.m)
+  const step = months[1] - months[0]
+  if (step === 0 || months.some((x, i) => i > 0 && x - months[i - 1] !== step)) return null
+  const { y, m, d } = ds[0]
   const t = ys[0] - Math.floor(ys[0])
-  const second = ymd(Math.floor(ys[1]) + epoch)
-  const step = second.y * 12 + second.m - (y * 12 + m)
-  if (step === 0) return null
-  const at = (e: number) => {
+  return (e) => {
     const to = addMonths(y, m, step * e)
-    return serialOf(to.y, to.m, Math.min(d, daysInMonth(to.y, to.m))) - epoch + t
+    const last = daysInMonth(to.y, to.m)
+    return serialOf(to.y, to.m, ends ? last : Math.min(d, last)) - epoch + t
   }
-  return ys.every((v, i) => Math.abs(at(i) - v) < 1e-9) ? at : null
 }
