@@ -5,6 +5,7 @@
  * engine's order beyond the pairs of single letters of `collation.ts`. The sheet `W` holds the words.
  */
 import type { Probe, SheetCells } from '../probes.js'
+import { byGroup } from './arrays/common.js'
 
 const WORDS = ['ёа', 'еб', 'еа', 'ёб', 'Еа', 'ЁА', 'ежик', 'ёжик', 'шел', 'шёл', 'йа', 'иб', 'иа', 'йб', 'ъ', 'ы', 'ь', 'éa', 'eb', 'ea', 'éb', 'Ab', 'aB', 'а1', 'a1']
 
@@ -13,8 +14,7 @@ export const SHEETS: SheetCells = { W: Object.fromEntries(WORDS.map((w, i) => [`
 const q = (s: string) => `"${s}"`
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (group: string, formula: string) => out.push({ id: `${group}#${out.filter((p) => p.group === group).length + 1}`, group, formula })
+  const { out, add } = byGroup()
   const pairs = [
     ['ёа', 'еб'], ['еб', 'ёа'], ['еа', 'ёб'], ['ёб', 'еа'], ['Ёа', 'еб'], ['йа', 'иб'], ['иа', 'йб'], ['йб', 'иа'],
     ['éa', 'eb'], ['eb', 'éa'], ['ea', 'éb'], ['аБ', 'Аб'], ['Аб', 'аБ'], ['ёж', 'ежа'], ['ежик', 'ёжик'], ['ёжик', 'ежик'], ['шёл', 'шел'], ['шел', 'шёл'],

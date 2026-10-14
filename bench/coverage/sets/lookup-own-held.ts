@@ -7,7 +7,7 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe, SheetCells } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { heldCases } from './arrays/common.js'
 import { s } from '../vals.js'
 
 const keys = Object.fromEntries(Array.from({ length: 6 }, (_, i) => [`A${i + 1}`, i + 1]))
@@ -46,14 +46,8 @@ const CASES: [string, Val][] = [
   ['Lu!F2', cycle],
 ]
 
-export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [f] of CASES) add('LOOKUP', 'LOOKUP', f)
-  return out
-}
-
-/** The predicted answers by case id. */
-export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][1]]))
+/** The set's cases and the answers predicted, by case id. */
+export const { buildProbes, PREDICTED } = heldCases(CASES.map(([f, v]) => ['LOOKUP', f, v]))
 
 /**
  * The predictions Excel did not confirm (the Mac and Windows alike), all the engine's #CYCLE!: Excel follows the cells

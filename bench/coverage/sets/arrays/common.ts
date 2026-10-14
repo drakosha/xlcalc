@@ -24,6 +24,18 @@ export function collector(): { out: Probe[]; add: Add } {
   return { out, add }
 }
 
+/** A collector of cases by group alone: `add(group, formula)` puts a case with no function and the formula as written (`<group>#<n>`). */
+export function byGroup(): { out: Probe[]; add: (group: string, formula: string) => void } {
+  const out: Probe[] = []
+  const count = new Map<string, number>()
+  const add = (group: string, formula: string) => {
+    const n = (count.get(group) ?? 0) + 1
+    count.set(group, n)
+    out.push({ id: `${group}#${n}`, group, formula })
+  }
+  return { out, add }
+}
+
 /** A collector of cases by function: `add(fn, formula)` puts a case in the group of its function (`<fn>#<n>`); `prefixed` false keeps the formulas as written. */
 export function byFunction(prefixed = true): { out: Probe[]; add: (fn: string, formula: string) => void } {
   const out: Probe[] = []

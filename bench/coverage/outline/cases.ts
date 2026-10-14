@@ -228,3 +228,14 @@ export function collector() {
   const add = (group: string, book: string, commands: OutlineCommand[], window?: OutlineWindow) => put(group, { book, commands, ...(window ? { window } : {}) })
   return { out, add }
 }
+
+/** Lines at an outline level, and hidden there. */
+export const L = (outlineLevel: number): RowInput & ColumnInput => ({ outlineLevel })
+export const H = (outlineLevel: number): RowInput => ({ outlineLevel, hidden: true })
+
+/** The commands, by the lines they act on: Group, Ungroup, Show Detail, Hide Detail, and the level buttons. */
+export const group = (lines: string): OutlineCommand => ({ group: lines })
+export const ungroup = (lines: string): OutlineCommand => ({ ungroup: lines })
+export const show = (lines: string): OutlineCommand => ({ show: lines })
+export const hide = (lines: string): OutlineCommand => ({ hide: lines })
+export const levels = (rows: number, columns = 0): OutlineCommand => ({ levels: [rows, columns] })
