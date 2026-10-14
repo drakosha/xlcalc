@@ -1,9 +1,9 @@
 /**
  * Formula text without the engine (the `./text` subpath, the same functions in the root): the references of text as it
- * is typed, for colouring them, a sheet's name and a table column's name as a reference writes them, the clipboard's
+ * is typed, for colouring them, what an arrow does in it (Point mode, `point.ts`), a sheet's name and a table column's name as a reference writes them, the clipboard's
  * text as the rectangle Excel pastes, and the category of a number format as the ribbon's Number Format box shows it,
- * with the items of its list (`numfmt/category.ts`, by the engine's reader of format codes). The tokenizer and the
- * translation of a locale's formula text are the engine's own (`scan.ts`, `locale/translate.ts`); they compute nothing,
+ * with the items of its list (`numfmt/category.ts`, by the engine's reader of format codes). The tokenizer, the parser
+ * and the translation of a locale's formula text are the engine's own (`scan.ts`, `locale/translate.ts`); they compute nothing,
  * and no locale's data comes with them but en-US's messages, which the tokenizer's errors carry: another locale is given
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
