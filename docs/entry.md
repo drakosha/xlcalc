@@ -198,8 +198,8 @@ Use `formatClipboard` when the host already has the complete rectangle of format
 
 While a formula is typed over a cell (Excel's Enter mode: the editing began with a key, not with F2), an arrow either points, enters the text, or does nothing. `refAt(text, caret?, { locale })` from `xlcalc/text` says which, as Excel decides it:
 
-- `insert`: a reference to the cell beside the edited one goes in at the caret. After the formula's first character (`=`, and `+` or `-`, which begin a formula too), an operator, `(`, the locale's list separator (`,` in en-US, `;` in ru-RU), the range's `:`, a sheet's `!`, a point (`=1.`, `=A1.`) and a space (`=A1 D3`, the intersection operator).
-- `commit`: the text is entered and the arrow moves the selection, as after a value. After anything else, when the formula reads as it stands in the locale it is typed in: `=5`, `=A1`, `=SUM(A1)`, `=TRUE`, `="a"`, `=5%`, `=SUM` (entered as a reference to the function), `=1.5` in en-US and `=1,5` in ru-RU. Any text that does not begin a formula too.
+- `insert`: a reference to the cell beside the edited one goes in at the caret. After the formula's first character (`=`, and `+` or `-`, which begin a formula too), an operator, `(`, the locale's list separator (`,` in en-US, `;` in ru-RU), the range's `:`, a sheet's `!`, a point (`=1.`, `=A1.`) and a space (`=A1 D3`, the intersection operator). Before the formula's first character Excel begins a formula anew: the reference goes in after an `=` of its own (`equals: true`), so `=A1` becomes `=D3=A1` and `+1` becomes `=D3+1`.
+- `commit`: the text is entered and the arrow moves the selection, as after a value. After anything else, when the formula reads in the locale it is typed in: `=5`, `=A1`, `=SUM(A1)`, `=TRUE`, `="a"`, `=5%`, `=SUM` (entered as a reference to the function), `=1.5` in en-US and `=1,5` in ru-RU. The whole formula decides, wherever the caret is: `=A1+(` with the caret after `A1` does nothing. A function's bracket left open is closed, as Return closes it (`=SUM(A1` and `=SUM(A1,` are entered), a group's is not (`=(1+2` does nothing). Any text that does not begin a formula too, the caret anywhere.
 - `none`: nothing happens. When the formula does not read (`=A1)`, `=1e`, `={1`, `=$`, `=1,5` in en-US, `=1.5` and `=#N/A` in ru-RU, which writes `#Н/Д`), after a character the locale's formulas do not have there (`;` in en-US, `,` after a reference in ru-RU, where it is the decimal separator), and inside a string, a quoted sheet's name or a table's brackets.
 
 Once a reference is pointed the host moves it, as Excel does, by the keys alone; the rule above is for an arrow with nothing pointed since the text was typed:
@@ -207,7 +207,7 @@ Once a reference is pointed the host moves it, as Excel does, by the keys alone;
 - An arrow moves the reference from its first cell; Shift and an arrow move its far corner (the first Shift and arrow after `=` makes a range from the edited cell: `=C3:D3`); a plain arrow after a range moves from the range's first cell (`=D3:D4` and Down is `=D4`).
 - Command and an arrow on the Mac (Control on Windows) jump as on the sheet, to the edge of the data (`=D3` and Command+Down over D3:D6 is `=D6`), with Shift extend to it (`=D3:D6`); Home points at the row's first column, Page Down a screen below.
 - Typing after a reference ends it: the next arrow, where `refAt` says `insert`, points from the edited cell again (`=D3+` and Right is `=D3+D3`).
-- F2 turns Enter mode to Edit mode, where arrows move the caret, and F2 again back to pointing.
+- F2 turns Enter mode to Edit mode, where arrows and Home move the caret, and F2 again back to pointing, where the rule above holds at the caret.
 
 Return enters the formula as typed: Excel closes the brackets left open (`=SUM(D3` is `=SUM(D3)`), offers its corrections otherwise.
 
@@ -219,7 +219,13 @@ The step `ui` of `bench/coverage` types on the Mac's keyboard in Excel 16 for Ma
 - `point-more-held`, 27 places, predicted by that first `refAt`: 39 of 54 as Excel did it. It entered every formula ending in an operand; Excel enters one only when it reads (`=A1)`, `=1e`, `=1,5` in en-US do nothing) and takes a reference after any point (`=A1.`). `refAt` was revised by them.
 - `point-third-held`, 20 places no set had, predicted by the revised `refAt`: 19 of 20 in each locale. The one left is a reference to a sheet the book does not have (`=Sheet1!A`): Excel takes it for another workbook's and the arrow does nothing, which text alone cannot tell; `test/point-excel.test.ts` keeps it as a known difference.
 
-`test/point-excel.test.ts` compares `refAt` with every case that types a text and presses Right, 69 in each locale. A case whose formula bar does not show the text it typed is not stored (another keyboard layout, or a key pressed by someone else at the Mac during the run, spoiled 11 cases of one run, which were run again).
+Then the caret elsewhere than at the end, reached by F2, Home and arrows in Edit mode and F2 again, three sets more, each predicted before Excel ran it:
+
+- `point-caret-held`, 24 cases in each locale: 27 of 48 as predicted. With the caret before the formula's first character Excel puts in its own `=` and the reference (20 cases); `=SUM(A1,` with the caret before the comma is entered in en-US. That the whole formula decides past the caret held.
+- `point-caret-held-2`, 19 cases: 16 of 19 in each locale. A group's bracket left open is not closed (`=(1+2`, `=((1`), a function's is.
+- `point-caret-held-3`, 13 cases: 9 of 13 in en-US, 11 of 13 in ru-RU. Excel does nothing with `=SUM(1)+MAX(2` and `=ABS(-(1)`, and in en-US with `=ROUND(1.5` and `=ROUND(A1*2` (where `ROUND` is known), which `refAt` enters. Measuring stopped at the third set with a correction; these six stay known differences (`test/point-excel.test.ts`), fewer than without closing a function's bracket (12).
+
+`test/point-excel.test.ts` compares `refAt` with every case that types a text and presses Right, 138 in each locale, the caret read from the keys pressed before the arrow. A case whose formula bar does not show the text it typed is not stored (another keyboard layout, or a key pressed by someone else at the Mac during the run, spoiled 11 cases of one run and 1 of another, which were run again; macOS turns two spaces typed into a point and a space, so no case types two).
 
 Not measured: a mouse press on a cell or on a sheet's tab while pointing (the harness presses keys only), and Excel for Windows, whose keyboard is not reachable over SSH.
 

@@ -1,0 +1,559 @@
+{
+ "now": "2026-10-14",
+ "locales": {
+  "en-US": {
+   "end-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM((1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM((1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =(SUM(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(SUM(1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =MAX(1,(2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(1,(2"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =ROUND(1.5"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-5": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =IF(A1>0,1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-6": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =-(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =-(A1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-7": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1)+(2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1)+(2"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-8": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(1)+MAX(2"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-9": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =ABS(-(1)"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   }
+  },
+  "ru-RU": {
+   "end-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM((1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM((1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =(SUM(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(SUM(1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =MAX(1,(2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(1,(2"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =ROUND(1.5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(1.5"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-5": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =IF(A1>0,1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-6": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =-(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =-(A1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-7": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1)+(2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1)+(2"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-8": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(1)+MAX(2"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "end-9": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =ABS(-(1)"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1+2"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =(A1+2"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. C,3 =ROUND(A1*2"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   }
+  }
+ }
+}

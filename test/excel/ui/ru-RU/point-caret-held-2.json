@@ -1,0 +1,1827 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-14",
+  "seconds": 295.3
+ },
+ "cases": [
+  {
+   "id": "start-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(1,2)"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "-5"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1+B1"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=1/0"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-5",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "= A1"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-6",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "5"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-7",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "abc"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1,2"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=(1+2"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1 +1"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1)"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-5",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(\"a\","
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-6",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=\"a\"&"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-7",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(1+2)*"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=(1+2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=((1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1,2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-5",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=MAX(1;2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  }
+ ],
+ "answers": {
+  "start-1": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =SUM(1,2)"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(1,2)"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(1,2)"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(1,2)"
+    },
+    {
+     "bar": "Строка формул. C,3 =D3=SUM(1,2)"
+    },
+    {
+     "bar": "Строка формул. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3=SUM(1.2)"
+     },
+     "computed": {
+      "error": "NAME"
+     },
+     "text": "#ИМЯ?",
+     "code": "General",
+     "local": "Основной",
+     "formula": "=D3=SUM(1.2)",
+     "formulaLocal": "=D3=SUM(1,2)",
+     "formula2": "=D3=SUM(1.2)",
+     "formula2Local": "=D3=SUM(1,2)",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-2": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 -5"
+    },
+    {
+     "bar": "Строка формул. C,3 -5"
+    },
+    {
+     "bar": "Строка формул. C,3 -5"
+    },
+    {
+     "bar": "Строка формул. C,3 -5"
+    },
+    {
+     "bar": "Строка формул. C,3 =D3-5"
+    },
+    {
+     "bar": "Строка формул. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3-5"
+     },
+     "computed": 5,
+     "text": "5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "=D3-5",
+     "formulaLocal": "=D3-5",
+     "formula2": "=D3-5",
+     "formula2Local": "=D3-5",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-3": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =A1+B1"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1+B1"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1+B1"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1+B1"
+    },
+    {
+     "bar": "Строка формул. C,3 =D3=A1+B1"
+    },
+    {
+     "bar": "Строка формул. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3=A1+B1"
+     },
+     "computed": false,
+     "text": "ЛОЖЬ",
+     "code": "General",
+     "local": "Основной",
+     "formula": "=D3=A1+B1",
+     "formulaLocal": "=D3=A1+B1",
+     "formula2": "=D3=A1+B1",
+     "formula2Local": "=D3=A1+B1",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-4": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =1/0"
+    },
+    {
+     "bar": "Строка формул. C,3 =1/0"
+    },
+    {
+     "bar": "Строка формул. C,3 =1/0"
+    },
+    {
+     "bar": "Строка формул. C,3 =1/0"
+    },
+    {
+     "bar": "Строка формул. C,3 =D3=1/0"
+    },
+    {
+     "bar": "Строка формул. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3=1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#ДЕЛ/0!",
+     "code": "General",
+     "local": "Основной",
+     "formula": "=D3=1/0",
+     "formulaLocal": "=D3=1/0",
+     "formula2": "=D3=1/0",
+     "formula2Local": "=D3=1/0",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-5": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 = A1"
+    },
+    {
+     "bar": "Строка формул. C,3 = A1"
+    },
+    {
+     "bar": "Строка формул. C,3 = A1"
+    },
+    {
+     "bar": "Строка формул. C,3 = A1"
+    },
+    {
+     "bar": "Строка формул. C,3 =D3= A1"
+    },
+    {
+     "bar": "Строка формул. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3= A1"
+     },
+     "computed": false,
+     "text": "ЛОЖЬ",
+     "code": "General",
+     "local": "Основной",
+     "formula": "=D3= A1",
+     "formulaLocal": "=D3= A1",
+     "formula2": "=D3= A1",
+     "formula2Local": "=D3= A1",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-6": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 5"
+    },
+    {
+     "bar": "Строка формул. C,3 5"
+    },
+    {
+     "bar": "Строка формул. C,3 5"
+    },
+    {
+     "bar": "Строка формул. C,3 5"
+    },
+    {
+     "bar": "Строка формул. D,3 10"
+    },
+    {
+     "bar": "Строка формул. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "General",
+     "local": "Основной",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-7": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 abc"
+    },
+    {
+     "bar": "Строка формул. C,3 abc"
+    },
+    {
+     "bar": "Строка формул. C,3 abc"
+    },
+    {
+     "bar": "Строка формул. C,3 abc"
+    },
+    {
+     "bar": "Строка формул. D,3 10"
+    },
+    {
+     "bar": "Строка формул. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "value": "abc"
+     },
+     "text": "abc",
+     "code": "General",
+     "local": "Основной",
+     "formula": "abc",
+     "formulaLocal": "abc",
+     "formula2": "abc",
+     "formula2Local": "abc",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-1": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2",
+     "dialog": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | "
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2",
+     "dialog": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-2": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =(1+2"
+    },
+    {
+     "bar": "Строка формул. C,3 =(1+2"
+    },
+    {
+     "bar": "Строка формул. C,3 =(1+2"
+    },
+    {
+     "bar": "Строка формул. C,3 =(1+2"
+    },
+    {
+     "bar": "Строка формул. C,3 =(1+2"
+    },
+    {
+     "bar": "Строка формул. C,3 =(1+2",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=(1+2)‬\n\nВы хотите принять это исправление? |  В формуле не хватает открывающей или закрывающей круглой скобки. | "
+    },
+    {
+     "bar": "Строка формул. C,3 =(1+2",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=(1+2)‬\n\nВы хотите принять это исправление? |  В формуле не хватает открывающей или закрывающей круглой скобки. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-3": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =A1 +1"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1 +1"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1 +1"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1 +1"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1 +1"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1 +1"
+    },
+    {
+     "bar": "Строка формул. D,3 10"
+    },
+    {
+     "bar": "Строка формул. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "A1 +1"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "Основной",
+     "value2": 3,
+     "formula": "=A1 +1",
+     "formulaLocal": "=A1 +1",
+     "formula2": "=A1 +1",
+     "formula2Local": "=A1 +1",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-4": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =A1)"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1)"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1)"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1)"
+    },
+    {
+     "bar": "Строка формул. C,3 =A1)",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=A1‬\n\nВы хотите принять это исправление? | В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | "
+    },
+    {
+     "bar": "Строка формул. C,3 =A1)",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=A1‬\n\nВы хотите принять это исправление? | В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-5": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =SUM(\"a\","
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(\"a\","
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(\"a\","
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(\"a\","
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(\"a\",",
+     "dialog": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | "
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(\"a\",",
+     "dialog": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-6": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =\"a\"&"
+    },
+    {
+     "bar": "Строка формул. C,3 =\"a\"&"
+    },
+    {
+     "bar": "Строка формул. C,3 =\"a\"&"
+    },
+    {
+     "bar": "Строка формул. C,3 =\"a\"&"
+    },
+    {
+     "bar": "Строка формул. C,3 =\"a\"&",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=\"a\"‬\n\nВы хотите принять это исправление? | Неполная формула. После оператора \"+\" или \"-\" пропущен операнд. Выполните одно из следующих действий: \n• добавьте операнд или удалите оператор;\n• старайтесь не использовать вне формул знак равенства (=) и минус (-) в начале текста или ставьте перед ними одиночную кавычку ('). | "
+    },
+    {
+     "bar": "Строка формул. C,3 =\"a\"&",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=\"a\"‬\n\nВы хотите принять это исправление? | Неполная формула. После оператора \"+\" или \"-\" пропущен операнд. Выполните одно из следующих действий: \n• добавьте операнд или удалите оператор;\n• старайтесь не использовать вне формул знак равенства (=) и минус (-) в начале текста или ставьте перед ними одиночную кавычку ('). | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-7": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =SUM(1+2)*"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(1+2)*"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(1+2)*"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(1+2)*"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(1+2)*",
+     "dialog": "dialog: Неполная формула. После оператора \"+\" или \"-\" пропущен операнд. Выполните одно из следующих действий: \n• добавьте операнд или удалите оператор;\n• старайтесь не использовать вне формул знак равенства (=) и минус (-) в начале текста или ставьте перед ними одиночную кавычку ('). | "
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(1+2)*",
+     "dialog": "dialog: Неполная формула. После оператора \"+\" или \"-\" пропущен операнд. Выполните одно из следующих действий: \n• добавьте операнд или удалите оператор;\n• старайтесь не использовать вне формул знак равенства (=) и минус (-) в начале текста или ставьте перед ними одиночную кавычку ('). | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-1": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =SUM(A1"
+    },
+    {
+     "bar": "Строка формул. D,3 10"
+    },
+    {
+     "bar": "Строка формул. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "SUM(A1)"
+     },
+     "computed": {
+      "error": "NAME"
+     },
+     "text": "#ИМЯ?",
+     "code": "General",
+     "local": "Основной",
+     "formula": "=SUM(A1)",
+     "formulaLocal": "=SUM(A1)",
+     "formula2": "=SUM(A1)",
+     "formula2Local": "=SUM(A1)",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-2": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =(1+2"
+    },
+    {
+     "bar": "Строка формул. C,3 =(1+2",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=(1+2)‬\n\nВы хотите принять это исправление? |  В формуле не хватает открывающей или закрывающей круглой скобки. | "
+    },
+    {
+     "bar": "Строка формул. C,3 =(1+2",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=(1+2)‬\n\nВы хотите принять это исправление? |  В формуле не хватает открывающей или закрывающей круглой скобки. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-3": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =((1"
+    },
+    {
+     "bar": "Строка формул. C,3 =((1",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=((1))‬\n\nВы хотите принять это исправление? |  В формуле не хватает открывающей или закрывающей круглой скобки. | "
+    },
+    {
+     "bar": "Строка формул. C,3 =((1",
+     "dialog": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=((1))‬\n\nВы хотите принять это исправление? |  В формуле не хватает открывающей или закрывающей круглой скобки. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-4": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2"
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2",
+     "dialog": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | "
+    },
+    {
+     "bar": "Строка формул. C,3 =SUM(A1,2",
+     "dialog": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-5": {
+   "point": [
+    {
+     "bar": "Строка формул. C,3 =MAX(1;2"
+    },
+    {
+     "bar": "Строка формул. D,3 10"
+    },
+    {
+     "bar": "Строка формул. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "MAX(1,2)"
+     },
+     "computed": {
+      "error": "NAME"
+     },
+     "text": "#ИМЯ?",
+     "code": "General",
+     "local": "Основной",
+     "formula": "=MAX(1,2)",
+     "formulaLocal": "=MAX(1;2)",
+     "formula2": "=MAX(1,2)",
+     "formula2Local": "=MAX(1;2)",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "Основной",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}

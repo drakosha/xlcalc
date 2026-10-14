@@ -8,13 +8,20 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
+import type { PointStep } from '../bench/coverage/ui/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { refAt, type PointAction } from '../src/index.js'
 import './locales.js'
 
-/** Cases where `refAt` knowingly differs from Excel, by `<set>:<id>` in every locale, with the reason. */
+/** Cases where `refAt` knowingly differs from Excel, by `<set>:<id>` in every locale or `<tag>:<set>:<id>` in one, with the reason. */
 const KNOWN: Record<string, string> = {
   'point-third-held:typed-6': "a sheet the book does not have (`=Sheet1!A`): Excel takes the name for another workbook's and the arrow does nothing; refAt reads text and knows no book's sheets",
+  ...Object.fromEntries(
+    ['point-caret-held-3:end-8', 'point-caret-held-3:end-9', 'en-US:point-caret-held-3:end-4', 'en-US:point-caret-held-3:inside-4'].map((k) => [
+      k,
+      "a function's bracket left open where Excel does nothing (=SUM(1)+MAX(2, =ABS(-(1), and in en-US =ROUND(1.5 and =ROUND(A1*2, ROUND known there): refAt closes it as Return does and enters the formula when it reads; three sets did not find Excel's rule",
+    ]),
+  ),
 }
 
 /** The active cell and the text of a formula bar's description, `Formula Bar. C,3 =D3` (`Строка формул. C,3 =D3`). */
@@ -32,18 +39,41 @@ const SETS = TAGS.flatMap((tag) => {
     .map((f) => ({ tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredUi }))
 })
 
+/**
+ * A case that types a text, moves the caret in Edit mode (F2, then Home and arrows, F2 again) or not, then presses Right
+ * in Point mode: the text, where the caret is, and the step of the arrow; null for any other case.
+ */
+function arrowAt(steps: PointStep[]): { typed: string; caret: number; arrow: number } | null {
+  const [first, ...rest] = steps
+  if (!first || !('type' in first)) return null
+  let [caret, edit] = [first.type.length, false]
+  for (const [k, s] of rest.entries()) {
+    if (!('key' in s) || s.shift || s.cmd) return null
+    if (s.key === 'f2') edit = !edit
+    else if (edit && s.key === 'home') caret = 0
+    else if (edit && (s.key === 'left' || s.key === 'right')) caret = Math.min(first.type.length, Math.max(0, caret + (s.key === 'left' ? -1 : 1)))
+    else if (!edit && s.key === 'right') return { typed: first.type, caret, arrow: k + 1 }
+    else return null
+  }
+  return null
+}
+
 describe.each(SETS)('Point mode $tag $set', ({ tag, set, stored }) => {
-  const typedThenRight = stored.cases.filter((c) => c.act.do === 'point' && c.act.steps.length === 3 && 'type' in c.act.steps[0] && 'key' in c.act.steps[1] && c.act.steps[1].key === 'right' && !c.act.steps[1].shift && !c.act.steps[1].cmd)
-  it.each(typedThenRight.map((c) => [c.id, c] as const))('%s', (_, c) => {
-    if (c.act.do !== 'point' || !('type' in c.act.steps[0])) throw new Error('no typed text')
-    const typed = c.act.steps[0].type
-    const [before, after] = stored.answers[c.id].point!.map((s) => barOf(s.bar))
-    expect(before, 'the bar shows the text typed').toEqual({ cell: c.act.at, text: typed })
-    const excel: PointAction = after.cell !== c.act.at ? { action: 'commit' } : after.text === `${typed}D3` ? { action: 'insert', at: typed.length } : after.text === typed ? { action: 'none' } : (() => {
-      throw new Error(`${c.id}: the bar after the arrow is ${after.text}`)
+  const arrows = stored.cases.flatMap((c) => {
+    const a = c.act.do === 'point' ? arrowAt(c.act.steps) : null
+    return a && c.act.do === 'point' ? [[c.id, { ...a, at: c.act.at }] as const] : []
+  })
+  it.each(arrows)('%s', (id, { typed, caret, arrow, at }) => {
+    const bars = stored.answers[id].point!.map((s) => barOf(s.bar))
+    const [before, after] = [bars[arrow - 1], bars[arrow]]
+    expect(before, 'the bar shows the text typed').toEqual({ cell: at, text: typed })
+    const put = (ref: string) => after.text === `${typed.slice(0, caret)}${ref}${typed.slice(caret)}`
+    const excel: PointAction = after.cell !== at ? { action: 'commit' } : put('D3') ? { action: 'insert', at: caret } : put('=D3') ? { action: 'insert', at: caret, equals: true } : after.text === typed ? { action: 'none' } : (() => {
+      throw new Error(`${id}: the bar after the arrow is ${after.text}`)
     })()
-    const known = KNOWN[`${set}:${c.id}`]
-    if (known) expect(refAt(typed, undefined, { locale: tag }), `${typed} is known to differ: ${known}`).not.toEqual(excel)
-    else expect(refAt(typed, undefined, { locale: tag }), typed).toEqual(excel)
+    const ours = refAt(typed, caret, { locale: tag })
+    const known = KNOWN[`${set}:${id}`] ?? KNOWN[`${tag}:${set}:${id}`]
+    if (known) expect(ours, `${typed} is known to differ: ${known}`).not.toEqual(excel)
+    else expect(ours, `${typed} with the caret at ${caret}`).toEqual(excel)
   })
 })

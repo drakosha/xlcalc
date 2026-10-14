@@ -46,9 +46,8 @@ interface Pos {
 const STEPS: Record<string, [number, number]> = { down: [1, 0], up: [-1, 0], right: [0, 1], left: [0, -1] }
 const moved = (p: Pos, [dr, dc]: [number, number]): Pos => ({ row: Math.max(0, p.row + dr), col: Math.max(0, p.col + dc) })
 
-/** The formula bar after each step, as the harness reads its description (`Formula Bar. C,3 =D3`), and the book after. */
 /**
- * The formula bar after each step and the cells after. `by`: whose rule says where an arrow points in Enter mode with no
+ * The formula bar after each step, as the harness reads its description (`Formula Bar. C,3 =D3`), and the cells after. `by`: whose rule says where an arrow points in Enter mode with no
  * reference pointed yet, the component's (`refFits`, an arrow elsewhere in a formula moving the caret) or the library's
  * `refAt` (a reference, the text entered, or nothing); the rest is the component's model either way.
  */
@@ -99,9 +98,17 @@ export function pointPrediction(book: BookInput, at: string, steps: PointStep[],
         ed = null
         run = null
       } else if (step.key === 'f2') ed.mode = ed.mode === 'enter' ? 'edit' : 'enter'
+      // Home in Edit mode takes the caret to the start
+      else if (step.key === 'home' && ed.mode === 'edit') ed.caret = 0
       else if (STEPS[step.key] && !step.cmd && ed.mode === 'enter') {
         const going = run && run.text === ed.text && ed.caret === run.to ? run : null
-        const lib = by === 'refAt' && !going ? refAt(ed.text, ed.caret, { locale: tag }).action : null
+        const said = by === 'refAt' && !going ? refAt(ed.text, ed.caret, { locale: tag }) : null
+        const lib = said?.action ?? null
+        // a reference put in at the start of the text goes after an = of its own
+        if (said?.action === 'insert' && said.equals) {
+          ed.text = `${ed.text.slice(0, ed.caret)}=${ed.text.slice(ed.caret)}`
+          ed.caret++
+        }
         if (lib === 'commit') commit(STEPS[step.key])
         else if (lib === 'none') {
           // nothing happens
