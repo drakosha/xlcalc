@@ -974,11 +974,12 @@ export type FormulaReference = GridReference | TableReference
 
 /**
  * What an arrow does at a place of formula text typed over a cell (Excel's Enter mode), as `refAt` says it: `insert`, a
- * reference to the cell the arrow points at goes in at `at` (Point mode); `commit`, the text is entered into the cell and
+ * reference to the cell the arrow points at goes in at `at` (Point mode), after an `=` of its own with `equals` (at the
+ * start of the text, where Excel begins a formula anew: `=A1` becomes `=D3=A1`); `commit`, the text is entered into the cell and
  * the arrow moves the selection, as after a value; `none`, nothing happens (the text cannot take a reference there and is
  * not a formula Excel enters: inside a string, after a character the locale's formulas do not have).
  */
-export type PointAction = { action: 'insert'; at: number } | { action: 'commit' } | { action: 'none' }
+export type PointAction = { action: 'insert'; at: number; equals?: true } | { action: 'commit' } | { action: 'none' }
 
 /** `scanReferences`'s options. */
 export interface ScanOptions {
