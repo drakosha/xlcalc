@@ -6,7 +6,7 @@
  * (`test/excel/cases/lead-spaces.json`) and ru-RU (`test/excel/cases/ru-RU/lead-spaces.json`).
  */
 import type { Probe, SheetCells } from '../probes.js'
-import { xl } from './arrays/common.js'
+import { byFunction } from './arrays/common.js'
 
 /** G: cell text with leading spaces, for criteria that read a cell's text as a number. */
 export const SHEETS: SheetCells = { G: { A1: ' 2025-01-31', A2: ' 5', A3: ' 6:30', A4: '2025-01-31 ' } }
@@ -15,8 +15,7 @@ const D = ['" 2025-01-31"', '"2025-01-31 "', '"  2025-01-31"']
 const T = ['" 6:30"', '"6:30 "']
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (fn: string, formula: string) => out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula: xl(formula) })
+  const { out, add } = byFunction()
   for (const fn of ['DAY', 'MONTH', 'YEAR', 'WEEKDAY', 'ISOWEEKNUM', 'WEEKNUM', 'DATEVALUE', 'VALUE', 'ABS', 'N', 'INT']) for (const d of D) add(fn, `${fn}(${d})`)
   for (const fn of ['HOUR', 'MINUTE', 'SECOND', 'TIMEVALUE', 'VALUE', 'ABS']) for (const t of T) add(fn, `${fn}(${t})`)
   for (const d of D.slice(0, 2)) {

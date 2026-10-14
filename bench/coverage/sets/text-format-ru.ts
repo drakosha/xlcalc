@@ -4,8 +4,8 @@
  * fractions, General among literals, currency; in Excel ru-RU (`test/excel/cases/ru-RU/text-format-ru.json`).
  */
 import type { Probe } from '../probes.js'
+import { textFormatProbes } from './text-cases.js'
 
-const lit = (s: string) => `"${s.replace(/"/g, '""')}"`
 
 const NUMBERS = ['1234.567', '-1234.567', '0', '0.5', '-0.5', '1E+15', '"abc"']
 
@@ -19,10 +19,4 @@ const DATES = ['45688.75', '0', '-1', '45688.999999', '0.75/86400', '1.5']
 
 const DATE_CODES = ['[ч]:мм:сс', '[ч]:мм', '[мм]:сс', '[сс]', '[ч]', 'ч:мм:сс,0', 'мм:сс,00', '[Красный]ДД.ММ.ГГГГ', '[$-409]ММММ', '[$-419]ММММ', 'ДД/ММ/ГГГГ', 'ДДДД']
 
-export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (group: string, value: string, code: string) => out.push({ id: `${group}#${out.filter((p) => p.group === group).length + 1}`, group, fn: 'TEXT', formula: `TEXT(${value},${lit(code)})` })
-  for (const c of NUMBER_CODES) for (const v of NUMBERS) add('number', v, c)
-  for (const c of DATE_CODES) for (const v of DATES) add('date', v, c)
-  return out
-}
+export const buildProbes = (): Probe[] => textFormatProbes(NUMBER_CODES, NUMBERS, DATE_CODES, DATES)

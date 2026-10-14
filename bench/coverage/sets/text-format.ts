@@ -5,9 +5,9 @@
  * (`test/excel/cases/text-format.json`). `text-format-ru` has the ru-RU codes.
  */
 import type { Probe } from '../probes.js'
+import { textFormatProbes } from './text-cases.js'
 
 /** A formula's text literal. */
-const lit = (s: string) => `"${s.replace(/"/g, '""')}"`
 
 const NUMBERS = ['1234.567', '-1234.567', '0', '0.5', '-0.5', '-0.0000001', '1E+15', '"abc"']
 
@@ -26,10 +26,4 @@ const DATE_CODES = [
   'mmmmm', 'dddd', 'm/d/yyyy', 'yyyy-mm-dd hh:mm:ss',
 ]
 
-export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (group: string, value: string, code: string) => out.push({ id: `${group}#${out.filter((p) => p.group === group).length + 1}`, group, fn: 'TEXT', formula: `TEXT(${value},${lit(code)})` })
-  for (const c of NUMBER_CODES) for (const v of NUMBERS) add('number', v, c)
-  for (const c of DATE_CODES) for (const v of DATES) add('date', v, c)
-  return out
-}
+export const buildProbes = (): Probe[] => textFormatProbes(NUMBER_CODES, NUMBERS, DATE_CODES, DATES)

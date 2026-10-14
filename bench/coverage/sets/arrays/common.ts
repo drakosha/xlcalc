@@ -24,6 +24,18 @@ export function collector(): { out: Probe[]; add: Add } {
   return { out, add }
 }
 
+/** A collector of cases by function: `add(fn, formula)` puts a case in the group of its function (`<fn>#<n>`); `prefixed` false keeps the formulas as written. */
+export function byFunction(prefixed = true): { out: Probe[]; add: (fn: string, formula: string) => void } {
+  const out: Probe[] = []
+  const count = new Map<string, number>()
+  const add = (fn: string, formula: string) => {
+    const n = (count.get(fn) ?? 0) + 1
+    count.set(fn, n)
+    out.push({ id: `${fn}#${n}`, group: fn, fn, formula: prefixed ? xl(formula) : formula })
+  }
+  return { out, add }
+}
+
 /** The probes of `[function, formula]` cases, each in the group of its function (`<function>#<n>`). */
 export function probesOf(cases: readonly (readonly [string, string, ...unknown[]])[]): Probe[] {
   const { out, add } = collector()

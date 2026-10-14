@@ -6,14 +6,13 @@
  * in Excel en-US (`test/excel/cases/char-code.json`) and ru-RU (`test/excel/cases/ru-RU/char-code.json`).
  */
 import type { Probe, SheetCells } from '../probes.js'
-import { xl } from './arrays/common.js'
+import { byFunction } from './arrays/common.js'
 
 /** G: codes and texts read by reference. */
 export const SHEETS: SheetCells = { G: { A1: 65, A2: 97, A3: 'B', A4: 'b', B1: '65', B2: '' } }
 
 export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (fn: string, formula: string) => out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula: xl(formula) })
+  const { out, add } = byFunction()
   for (let n = 1; n <= 127; n++) add('CHAR', `CHAR(${n})`)
   for (let n = 1; n <= 127; n++) add('CODE', `CODE(CHAR(${n}))`)
   // the code taken whole, outside 1–255, numbers and text and blanks as arguments
