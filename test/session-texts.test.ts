@@ -10,6 +10,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { compute, InputError, type AsyncSession, type BookInput, type CellChange, type CellTextEntry, type Execution } from '../src/index.js'
 import './locales.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { typingParts } from './text-books.js'
 
 afterAll(closeCalcs)
 
@@ -29,9 +30,7 @@ const book = (): BookInput => ({
         E2: { value: 1 },
         F1: { formula: 'T[Qty]*2' },
       },
-      columns: { D: { numberFormat: '0%' } },
-      tables: [{ name: 'T', range: 'E1:E2', columns: [{ name: 'Qty' }] }],
-      validations: [{ range: 'G1:G9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning', error: 'Positive only' }],
+      ...typingParts(),
     },
     { name: 'Q', cells: { A1: { formula: "S!A3+1" } } },
   ],

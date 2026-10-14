@@ -1,5 +1,6 @@
 /** Formulas computed for tests of functions: their values, and an error value by its code. */
-import { compute, type CellInput, type CellValue } from '../src/index.js'
+import { expect } from 'vitest'
+import { compute, type BookInput, type CellInput, type CellValue, type Clock, type ComputeResult } from '../src/index.js'
 
 /** An error value by its code. */
 export const err = (code: Extract<CellValue, { error: unknown }>['error']): CellValue => ({ error: code })
@@ -24,3 +25,12 @@ export const sheetValuesAt =
     const r = compute({ sheets: [{ name: 'S', cells }] }, { clock: { now, seed: 1 } })
     return Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value]))
   }
+
+/** A book and the same book without some of its parts (`bare`): the same values and hash, another input hash. The book's result. */
+export function sameValuesApart(book: BookInput, bare: BookInput, clock: Clock): ComputeResult {
+  const [r, b] = [compute(book, { clock }), compute(bare, { clock })]
+  expect(r.hash).toBe(b.hash)
+  expect(r.sheets).toEqual(b.sheets)
+  expect(r.inputHash).not.toBe(b.inputHash)
+  return r
+}

@@ -13,6 +13,7 @@ import { compute, InputError, parseClipboard, type AsyncSession, type BookInput,
 import * as text from '../src/text.js'
 import './locales.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { typingParts } from './text-books.js'
 
 afterAll(closeCalcs)
 
@@ -33,9 +34,7 @@ const book = (): BookInput => ({
         C5: { formula: 'A1:A2*10', array: 'C5:C6' },
         E1: { value: 'Qty' }, E2: { value: 1 }, F1: { formula: 'T[Qty]*2' },
       },
-      columns: { D: { numberFormat: '0%' } },
-      tables: [{ name: 'T', range: 'E1:E2', columns: [{ name: 'Qty' }] }],
-      validations: [{ range: 'G1:G9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning', error: 'Positive only' }],
+      ...typingParts(),
     },
   ],
 })

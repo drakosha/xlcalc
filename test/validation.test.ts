@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, InputError, createSession, editStructure, type BookInput, type CellInput, type DataValidation, type Execution, type SheetInput, type StructureOp } from '../src/index.js'
 import { pool } from './fixtures/pool.js'
 import './locales.js'
+import { sameValuesApart } from './formula-values.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 1 }
 
@@ -60,10 +61,7 @@ describe('data validation as input', () => {
   })
 
   it('values and the values hash are those of the book without rules; inputHash takes them in only when there are any', () => {
-    const [r, b] = [compute(book(), { clock }), compute(bare(book()), { clock })]
-    expect(r.hash).toBe(b.hash)
-    expect(r.sheets).toEqual(b.sheets)
-    expect(r.inputHash).not.toBe(b.inputHash)
+    const r = sameValuesApart(book(), bare(book()), clock)
     // rules in any order hash alike
     const swapped = book()
     swapped.sheets[0].validations!.reverse()
