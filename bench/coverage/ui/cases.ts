@@ -180,3 +180,11 @@ export function ribbonOf(c: UiCase, tag: string): Record<string, RibbonCell> {
   const choices = numberFormatChoices(tag)
   return Object.fromEntries(act.picks.map(([a, k]) => [a, { name: choices[k - 1].name, format: choices[k - 1].format, box: numberFormatCategory(choices[k - 1].format, tag).name }]))
 }
+
+/** Each text typed over C3 (A1 = 2, D3 = 10, D4 = 20), then the right arrow and Return (the point sets held out): group `typed`, C4 read. */
+export function typedThenRight(texts: readonly string[]): UiCase[] {
+  const { out, add } = collector()
+  const cells: Record<string, CellInput> = { A1: { value: 2 }, D3: { value: 10 }, D4: { value: 20 } }
+  for (const text of texts) add('typed', { cells, act: { do: 'point', at: 'C3', steps: [{ type: text }, { key: 'right' }, { key: 'return' }] }, read: ['C4'] })
+  return out
+}
