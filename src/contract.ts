@@ -1908,10 +1908,12 @@ export type StructureOp =
    */
   | { op: 'showLevels'; sheet: string; rows?: number; columns?: number }
   /**
-   * Excel's Merge Cells over `range` (`B2:D3`, whole columns and rows too): the range becomes one merged area
-   * (`SheetInput.merges`) that keeps its top-left cell, the other cells losing what they hold, as Excel merges with its
-   * warning accepted. With `across`, each row of the range is merged on its own (Merge Across); with `center`, the
-   * area is centred as well (Merge & Center).
+   * Excel's Merge Cells over `range` (`B2:D3`, whole columns and rows too): the range, grown by the merged areas it
+   * meets, becomes one merged area (`SheetInput.merges`) that keeps its top-left cell; when that cell is empty, the
+   * area's first cell holding a value or a formula, row by row, moves into it as cut and paste moves it. The other cells
+   * lose their values and formulas and take the top-left cell's style and number format. With `across`, each row of the
+   * range is merged on its own (Merge Across); with `center`, the area is centred as well (Merge & Center). A range that
+   * meets a table is refused (`table`), and one that meets an array formula of the old kind (`array`).
    */
   | { op: 'mergeCells'; sheet: string; range: string; across?: boolean; center?: boolean }
   /** Excel's Unmerge Cells: the merged areas that meet `range` are split back into their cells. */

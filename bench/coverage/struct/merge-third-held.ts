@@ -7,6 +7,7 @@
  */
 import type { StructureOp } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
+import { merge, unmerge } from './merge.js'
 import type { StoredBook, StoredCell } from '../stored.js'
 
 const f = (formula: string): StoredCell => ({ formula })
@@ -58,8 +59,6 @@ function thirdBook(): StoredBook {
 export function buildStructCases(): StructCases {
   const cases: StructCase[] = []
   const add = (id: string, op: StructureOp, more: Partial<StructCase> = {}) => cases.push({ id, book: 'third', op, ...more })
-  const merge = (range: string, flags: { across?: true; center?: true } = {}): StructureOp => ({ op: 'mergeCells', sheet: 'S', range, ...flags })
-  const unmerge = (range: string): StructureOp => ({ op: 'unmergeCells', sheet: 'S', range })
   add('merge-A1-C1-moves-B1', merge('A1:C1'))
   add('merge-A1-B2-moves-B1', merge('A1:B2'))
   add('merge-A1-C1-center', merge('A1:C1', { center: true }))

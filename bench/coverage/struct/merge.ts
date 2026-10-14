@@ -64,13 +64,17 @@ function mergeBook(): StoredBook {
   }
 }
 
+/** Merge Cells over a range of the sheet S, with Excel's flags. */
+export const merge = (range: string, flags: { across?: true; center?: true } = {}): StructureOp => ({ op: 'mergeCells', sheet: 'S', range, ...flags })
+
+/** Unmerge Cells over a range of the sheet S. */
+export const unmerge = (range: string): StructureOp => ({ op: 'unmergeCells', sheet: 'S', range })
+
 const TABLE: StructureOp = { op: 'addTable', sheet: 'S', table: { name: 'Sales', range: 'B13:C16', columns: [{ name: 'h1' }, { name: 'h2' }] } }
 
 export function buildStructCases(): StructCases {
   const cases: StructCase[] = []
   const add = (id: string, op: StructureOp, more: Partial<StructCase> = {}) => cases.push({ id, book: 'merge', op, ...more })
-  const merge = (range: string, flags: { across?: true; center?: true } = {}): StructureOp => ({ op: 'mergeCells', sheet: 'S', range, ...flags })
-  const unmerge = (range: string): StructureOp => ({ op: 'unmergeCells', sheet: 'S', range })
   add('merge-A1-B2', merge('A1:B2'))
   add('merge-A1-C1-center', merge('A1:C1', { center: true }))
   add('merge-A1-C3-across', merge('A1:C3', { across: true }))
