@@ -187,6 +187,19 @@ const log = (x: number, y: number): [number, number] | null => (x === 0 && y ===
 
 const ZERO: Complex = { re: 0, im: 0, unit: '' }
 
+/** A function of all the complex numbers of its arguments and ranges (`collect`), which share a unit, else #VALUE!. */
+const overAll = (f: (zs: Complex[], unit: 'i' | 'j', rules: Rules) => string | CErr): FnDef => ({
+  args: 'G',
+  rep: 1,
+  cx: true,
+  fn: (cx: Cx, grids: Grid[]) => {
+    const zs = collect(grids, cx.rules)
+    if (isErr(zs)) return zs
+    const unit = unitOf(zs)
+    return unit ? f(zs, unit, cx.rules) : E.VALUE
+  },
+})
+
 /** The complex numbers of arguments and ranges in order, blank cells as 0; an error or invalid text stops. */
 function collect(grids: readonly Grid[], rules: Rules): Complex[] | CErr {
   const out: Complex[] = []
@@ -275,22 +288,13 @@ export const functions: Record<string, FnDef> = {
     return w && [w[0] / LN2, w[1] / LN2]
   }),
   IMPOWER: { args: 'v x', cx: true, fn: power },
-  IMPRODUCT: {
-    args: 'G',
-    rep: 1,
-    cx: true,
-    fn: (cx: Cx, grids: Grid[]) => {
-      const zs = collect(grids, cx.rules)
-      if (isErr(zs)) return zs
-      const unit = unitOf(zs)
-      if (!unit) return E.VALUE
-      let re = 1
-      let im = 0
-      for (const z of zs) [re, im] = [re * z.re - im * z.im, re * z.im + im * z.re]
-      // Excel: an overflowing product is #VALUE!
-      return Number.isFinite(re) && Number.isFinite(im) ? complexText(re, im, unit, cx.rules) : E.VALUE
-    },
-  },
+  IMPRODUCT: overAll((zs, unit, rules) => {
+    let re = 1
+    let im = 0
+    for (const z of zs) [re, im] = [re * z.re - im * z.im, re * z.im + im * z.re]
+    // Excel: an overflowing product is #VALUE!
+    return Number.isFinite(re) && Number.isFinite(im) ? complexText(re, im, unit, rules) : E.VALUE
+  }),
   IMREAL: part((z) => z.re),
   IMSEC: unary((x, y) => {
     const d = Math.cos(2 * x) + ch(2 * y)
@@ -301,22 +305,13 @@ export const functions: Record<string, FnDef> = {
   IMSINH: unary(sinh, 'im'),
   IMSQRT: unary(sqrt),
   IMSUB: binary((a, b) => [a.re - b.re, a.im - b.im]),
-  IMSUM: {
-    args: 'G',
-    rep: 1,
-    cx: true,
-    fn: (cx: Cx, grids: Grid[]) => {
-      const zs = collect(grids, cx.rules)
-      if (isErr(zs)) return zs
-      const unit = unitOf(zs)
-      if (!unit) return E.VALUE
-      return complexText(
-        zs.reduce((s, z) => s + z.re, 0),
-        zs.reduce((s, z) => s + z.im, 0),
-        unit,
-        cx.rules,
-      )
-    },
-  },
+  IMSUM: overAll((zs, unit, rules) =>
+    complexText(
+      zs.reduce((s, z) => s + z.re, 0),
+      zs.reduce((s, z) => s + z.im, 0),
+      unit,
+      rules,
+    ),
+  ),
   IMTAN: unary(tan, 're'),
 }

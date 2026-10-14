@@ -423,12 +423,33 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     if (!o.refuseInvalid || !checked.some(({ i, r, c }) => hasRule(s, i, r, c))) return null
     return strictestRefusal(yield* previewed(s, cells, () => textAlerts(s, checked)))
   }
-  /** A text entered into a range from its active cell (`fillCellText`), its arguments checked: the sheet, the active cell and the cells. */
-  const fill = (s: EngineState, sheet: string, range: string, text: string, opts: FillTextOptions) => {
+  /** A text typed into a cell (`setCellText` and its preview), its arguments checked: the state, the options, the cell and the cell typed. */
+  function* typedCell(sheet: string, cell: string, text: string, eo: CellTextOptions | undefined) {
+    const s = yield* ready()
+    const opts = textOptions(eo)
+    const [i, r, c] = at(s, sheet, cell)
+    return { s, opts, i, r, c, typed: typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now, wayOf(opts)) }
+  }
+  /** Texts typed into cells (`setCellTexts` and its preview), checked: the state, the options and the cells typed. */
+  function* typedCells(entries: CellTextEntry[], eo: CellTextOptions | undefined) {
+    const s = yield* ready()
+    const opts = textOptions(eo)
+    return { s, opts, typed: typedTexts(s, written(checkTextEntries(entries, sheetIndex(s)), s.input.locale), clock.now, wayOf(opts)) }
+  }
+  /** A text pasted at a cell (`pasteText` and its preview), checked: the state and the cells pasted. */
+  function* pastedAt(sheet: string, cell: string, text: string, eo: EditOptions | undefined) {
+    const s = yield* ready()
+    checkBase(eo, revision)
+    return { s, pasted: pastedText(s, ...at(s, sheet, cell), checkString(text, 'text'), clock.now) }
+  }
+  /** A text entered into a range from its active cell (`fillCellText` and its preview), checked: the state, the options, the sheet, the active cell and the cells. */
+  function* filledRange(sheet: string, range: string, text: string, eo: FillTextOptions | undefined) {
+    const s = yield* ready()
+    const opts = textOptions(eo, FILL_OPTIONS)
     const i = checkSheet(sheet, sheetIndex(s), 'sheet')
     const x = checkRange(range, 'range')
     const a = checkActive(opts.active, x)
-    return [i, a, filledText(s, i, x, a, checkString(text, 'text'), clock.now, wayOf(opts))] as const
+    return { s, opts, i, a, filled: filledText(s, i, x, a, checkString(text, 'text'), clock.now, wayOf(opts)) }
   }
   /** Executes a staged batch; previews undo their sparse inputs or drop their aside-built state. */
   function* operations(given: SessionOperation[], eo: PreviewChangesOptions | undefined, preview: boolean): Steps<ChangesResult | ChangesPreview> {
@@ -581,10 +602,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return answer(next, out)
     },
     *setCellText(sheet: string, cell: string, text: string, eo?: CellTextOptions) {
-      const s = yield* ready()
-      const opts = textOptions(eo)
-      const [i, r, c] = at(s, sheet, cell)
-      const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now, wayOf(opts))
+      const { s, opts, i, r, c, typed } = yield* typedCell(sheet, cell, text, eo)
       if (!typed.ok) return typed.refusal
       const refused = yield* invalid(s, opts, typed.cells)
       if (refused) return refused
@@ -593,10 +611,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return { ok: true, ...answer(next, out), ...(widths.length ? { width: widths[0].width } : {}), ...(alert ? { validation: alert } : {}) }
     },
     *previewCellText(sheet: string, cell: string, text: string, eo?: CellTextOptions): Steps<CellTextPreview> {
-      const s = yield* ready()
-      const opts = textOptions(eo)
-      const [i, r, c] = at(s, sheet, cell)
-      const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now, wayOf(opts))
+      const { s, opts, i, r, c, typed } = yield* typedCell(sheet, cell, text, eo)
       if (!typed.ok) return typed.refusal
       return yield* previewed(s, typed.cells, () => {
         const alert = validationAlert(s, i, r, c)
@@ -606,9 +621,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       })
     },
     *setCellTexts(entries: CellTextEntry[], eo?: CellTextOptions) {
-      const s = yield* ready()
-      const opts = textOptions(eo)
-      const typed = typedTexts(s, written(checkTextEntries(entries, sheetIndex(s)), s.input.locale), clock.now, wayOf(opts))
+      const { s, opts, typed } = yield* typedCells(entries, eo)
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       const refused = yield* invalid(s, opts, typed.cells)
       if (refused) return refused
@@ -616,9 +629,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return { ok: true, ...answer(next, out), ...textsFound(widths, textAlerts(next, typed.cells)) }
     },
     *previewCellTexts(entries: CellTextEntry[], eo?: CellTextOptions): Steps<CellTextsPreview> {
-      const s = yield* ready()
-      const opts = textOptions(eo)
-      const typed = typedTexts(s, written(checkTextEntries(entries, sheetIndex(s)), s.input.locale), clock.now, wayOf(opts))
+      const { s, opts, typed } = yield* typedCells(entries, eo)
       if (!typed.ok) return { ...typed.refusal, ...typed.ref }
       return yield* previewed(s, typed.cells, () => {
         const alerts = textAlerts(s, typed.cells)
@@ -627,25 +638,19 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       })
     },
     *pasteText(sheet: string, cell: string, text: string, eo?: EditOptions) {
-      const s = yield* ready()
-      checkBase(eo, revision)
-      const pasted = pastedText(s, ...at(s, sheet, cell), checkString(text, 'text'), clock.now)
+      const { s, pasted } = yield* pastedAt(sheet, cell, text, eo)
       if (!pasted.ok) return pasted.refusal
       // a paste wraps a text with a line break but fits no row, widens no column and checks no rule of data validation
       const [next, out] = yield* writeTexts(s, pasted.cells, 'pasteText', false, true)
       return { ok: true, ...answer(next, out), range: pasted.range }
     },
     *previewPasteText(sheet: string, cell: string, text: string, eo?: EditOptions): Steps<PasteTextPreview> {
-      const s = yield* ready()
-      checkBase(eo, revision)
-      const pasted = pastedText(s, ...at(s, sheet, cell), checkString(text, 'text'), clock.now)
+      const { s, pasted } = yield* pastedAt(sheet, cell, text, eo)
       if (!pasted.ok) return pasted.refusal
       return yield* previewed(s, pasted.cells, () => ({ ok: true as const, range: pasted.range, cells: previewCells(s, pasted.cells) }))
     },
     *fillCellText(sheet: string, range: string, text: string, eo?: FillTextOptions) {
-      const s = yield* ready()
-      const opts = textOptions(eo, FILL_OPTIONS)
-      const [i, a, filled] = fill(s, sheet, range, text, opts)
+      const { s, opts, i, a, filled } = yield* filledRange(sheet, range, text, eo)
       if (!filled.ok) return { ...filled.refusal, ...filled.ref }
       // the active cell's rule alone is checked, as Excel checks it
       const refused = yield* invalid(s, opts, filled.cells, filled.cells.filter((x) => x.r === a.r && x.c === a.c))
@@ -655,9 +660,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return { ok: true, ...answer(next, out), ...textsFound(widths, []), ...(alert ? { validation: alert } : {}) }
     },
     *previewFillCellText(sheet: string, range: string, text: string, eo?: FillTextOptions): Steps<FillTextPreview> {
-      const s = yield* ready()
-      const opts = textOptions(eo, FILL_OPTIONS)
-      const [i, a, filled] = fill(s, sheet, range, text, opts)
+      const { s, opts, i, a, filled } = yield* filledRange(sheet, range, text, eo)
       if (!filled.ok) return { ...filled.refusal, ...filled.ref }
       return yield* previewed(s, filled.cells, () => {
         const alert = validationAlert(s, i, a.r, a.c)

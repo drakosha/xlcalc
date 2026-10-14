@@ -14,10 +14,10 @@ import { tableAt, tablesOf } from '../tables/model.js'
 import { rewriteTableRefs } from '../tables/rewrite.js'
 import { isFull, LIMIT, shiftRect, span, type Area, type Axis, type Bound, type Rect } from './area.js'
 import { carryNames } from './move.js'
-import { arrayRefusal, copiedCells, relocated } from './arrays.js'
+import { copiedCells, relocated } from './arrays.js'
 import { placer, type Applied, type Geometry } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
-import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
+import { pasteLayout, pasteRefusal, type Paste } from './paste.js'
 import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Outcome, type Transform } from './rewrite.js'
 import { linksIn, markedLinks } from '../syntax/links.js'
 import { copyConditional } from '../cond/structure.js'
@@ -79,10 +79,8 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   const [dr, dc] = offsets[0]
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
   const paste: Paste = { from, src, to, area: pasted, offsets, move: false }
-  const refused = mergeRefusal(book, paste)
-  if (refused) return { ok: false, code: 'merged', message: say(book.locale, refused) }
-  const part = arrayRefusal(book, paste)
-  if (part) return { ok: false, code: 'array', message: say(book.locale, part) }
+  const refusal = pasteRefusal(book, paste)
+  if (refusal) return refusal
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const ti = sheetIndex(book, to)
   const geometry: Geometry = [{ kind: 'clear', s: ti, area: pasted }]

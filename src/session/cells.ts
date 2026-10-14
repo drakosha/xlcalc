@@ -5,7 +5,7 @@
  */
 import type { CellEdit, CellFields, CellInput, CellReplace } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { array, CELL_FIELDS, checkAddress, checkCell, checkSheet, InputError, object, onlyKeys } from '../input.js'
+import { CELL_FIELDS, checkCell, checkEditList, InputError, object, onlyKeys } from '../input.js'
 import { sheetKey } from '../syntax.js'
 import { inputAt } from './book.js'
 
@@ -37,27 +37,18 @@ export function withFields(input: CellInput | undefined, fields: CellFields | nu
 
 /** Edits by fields of a book with `styles` styles: a sheet of the book, an address, the fields (null removing one) or null. */
 export function checkFieldEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): CellEdit[] {
-  return array(v, path, 'an array of edits such as [{ sheet: "Sheet1", cell: "A1", input: { value: 1 } }]').map((e, i) => {
-    const p = `${path}[${i}]`
-    const o = object(e, p, 'an edit such as { sheet: "Sheet1", cell: "A1", input: { value: 1 } }')
-    onlyKeys(o, p, ['sheet', 'cell', 'input'])
-    checkSheet(o.sheet, sheetIndex, `${p}.sheet`)
-    checkAddress(o.cell, `${p}.cell`)
-    if (o.input === undefined) throw new InputError(`${p}.input`, 'expected the fields of a cell, or null to clear its content')
-    if (o.input !== null) {
-      const f = object(o.input, `${p}.input`, 'the fields of a cell such as { value: 1 } or { formula: "A1*2", style: null }')
-      // the fields given are checked as a cell's, those removed (null) left out; most edits remove none
-      onlyKeys(f, `${p}.input`, CELL_FIELDS)
-      let given = f
-      for (const k in f)
-        if (f[k] === null && k !== 'value') {
-          given = Object.fromEntries(Object.entries(f).filter(([x, v]) => v !== null || x === 'value'))
-          break
-        }
-      checkCell(given, `${p}.input`, styles)
-      if (given.array !== undefined && typeof f.formula !== 'string') throw new InputError(`${p}.input.array`, 'an array area goes with its formula')
-    }
-    return o as unknown as CellEdit
+  return checkEditList(v, sheetIndex, path, 'the fields of a cell, or null to clear its content', (input, p) => {
+    const f = object(input, p, 'the fields of a cell such as { value: 1 } or { formula: "A1*2", style: null }')
+    // the fields given are checked as a cell's, those removed (null) left out; most edits remove none
+    onlyKeys(f, p, CELL_FIELDS)
+    let given = f
+    for (const k in f)
+      if (f[k] === null && k !== 'value') {
+        given = Object.fromEntries(Object.entries(f).filter(([x, v]) => v !== null || x === 'value'))
+        break
+      }
+    checkCell(given, p, styles)
+    if (given.array !== undefined && typeof f.formula !== 'string') throw new InputError(`${p}.array`, 'an array area goes with its formula')
   })
 }
 

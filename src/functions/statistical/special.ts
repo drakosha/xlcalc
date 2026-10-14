@@ -130,23 +130,20 @@ function betacf(x: number, a: number, b: number): number {
   if (Math.abs(d) < FPMIN) d = FPMIN
   d = 1 / d
   let h = d
+  // one term of the fraction: the factor it brings to h
+  const step = (aa: number) => {
+    d = 1 + aa * d
+    if (Math.abs(d) < FPMIN) d = FPMIN
+    c = 1 + aa / c
+    if (Math.abs(c) < FPMIN) c = FPMIN
+    d = 1 / d
+    return d * c
+  }
   for (let m = 1; ; m++) {
     if (m > MAX_ITER) return NaN
     const m2 = 2 * m
-    let aa = (m * (b - m) * x) / ((qam + m2) * (a + m2))
-    d = 1 + aa * d
-    if (Math.abs(d) < FPMIN) d = FPMIN
-    c = 1 + aa / c
-    if (Math.abs(c) < FPMIN) c = FPMIN
-    d = 1 / d
-    h *= d * c
-    aa = (-(a + m) * (qab + m) * x) / ((a + m2) * (qap + m2))
-    d = 1 + aa * d
-    if (Math.abs(d) < FPMIN) d = FPMIN
-    c = 1 + aa / c
-    if (Math.abs(c) < FPMIN) c = FPMIN
-    d = 1 / d
-    const del = d * c
+    h *= step((m * (b - m) * x) / ((qam + m2) * (a + m2)))
+    const del = step((-(a + m) * (qab + m) * x) / ((a + m2) * (qap + m2)))
     h *= del
     if (Math.abs(del - 1) < EPS) return h
   }

@@ -549,20 +549,26 @@ export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   return o as SessionOptions
 }
 
-/** Edits: each names a sheet of the book (`sheetIndex` resolves it) and a valid address; the book has `styles` styles. */
-/** Edits of cells as the engine takes them (`taken.ts`). */
-export function checkEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): CellEdit[] {
-  const edits = array(v, path, 'an array of edits such as [{ sheet: "Sheet1", cell: "A1", input: { value: 1 } }]').map((e, i) => {
+/**
+ * Each of a list of edits checked as an edit (`{ sheet, cell, input }`): a sheet of the book (`sheetIndex` resolves it),
+ * a valid address and an input, which `check` checks unless null; `missing` says what an edit without one lacks.
+ */
+export function checkEditList(v: unknown, sheetIndex: (name: string) => number | undefined, path: string, missing: string, check: (input: unknown, path: string) => void): CellEdit[] {
+  return array(v, path, 'an array of edits such as [{ sheet: "Sheet1", cell: "A1", input: { value: 1 } }]').map((e, i) => {
     const p = `${path}[${i}]`
     const o = object(e, p, 'an edit such as { sheet: "Sheet1", cell: "A1", input: { value: 1 } }')
     onlyKeys(o, p, ['sheet', 'cell', 'input'])
     checkSheet(o.sheet, sheetIndex, `${p}.sheet`)
     checkAddress(o.cell, `${p}.cell`)
-    if (o.input === undefined) throw new InputError(`${p}.input`, 'expected a cell object, or null to clear the cell')
-    if (o.input !== null) checkCell(o.input, `${p}.input`, styles)
+    if (o.input === undefined) throw new InputError(`${p}.input`, `expected ${missing}`)
+    if (o.input !== null) check(o.input, `${p}.input`)
     return o as unknown as CellEdit
   })
-  return editsTaken(edits)
+}
+
+/** Edits of cells of a book with `styles` styles, as the engine takes them (`taken.ts`). */
+export function checkEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): CellEdit[] {
+  return editsTaken(checkEditList(v, sheetIndex, path, 'a cell object, or null to clear the cell', (input, p) => checkCell(input, p, styles)))
 }
 
 /**

@@ -11,10 +11,10 @@ import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { inputNameFor } from '../names.js'
 import { parse, sheetKey, walk } from '../syntax.js'
 import { contains, hasCell, hi, isFull, lo, meets, parseRange, rectOf, shiftRect, withSpan, type Area, type Axis, type Rect } from './area.js'
-import { arrayRefusal, relocated } from './arrays.js'
+import { relocated } from './arrays.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
 import { gridOf } from './grid.js'
-import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
+import { pasteLayout, pasteRefusal, type Paste } from './paste.js'
 import { rewriteCell, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { moveConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
@@ -139,10 +139,8 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
   const dst = shiftRect(src, dr, dc)
   if (dst.r2 >= MAX_ROWS || dst.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'moveOffSheet', sheet: to, cell: formatAddress(row, col) }) }
   const paste: Paste = { from, src, to, area: dst, offsets: [[dr, dc]], move: true }
-  const refused = mergeRefusal(book, paste)
-  if (refused) return { ok: false, code: 'merged', message: say(book.locale, refused) }
-  const part = arrayRefusal(book, paste)
-  if (part) return { ok: false, code: 'array', message: say(book.locale, part) }
+  const refusal = pasteRefusal(book, paste)
+  if (refusal) return refusal
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const [fi, ti] = [sheetIndex(book, from), sheetIndex(book, to)]
   const geometry: Geometry = [{ kind: 'range', from: fi, src, to: ti, dr, dc }]
