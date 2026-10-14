@@ -137,6 +137,21 @@ export const REASONS = {
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).',
 } as const
 
+/** Known differences that hold in en-US and in ru-RU alike: CODE of characters outside the code page, inverse gamma's convergence. */
+export const BOTH_KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
+  'char-code:CODE#142': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#143': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#144': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#145': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#146': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#147': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#148': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'measurement:CHIINV#7': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
+  'measurement:CHISQ.INV#14': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000208709.154 } },
+  'measurement:CHISQ.INV.RT#15': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
+  'measurement:GAMMAINV#8': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 19999701973.2484 } },
+}
+
 /**
  * Cases where this engine knowingly differs from Excel, by `<source>:<case id>` (`measurement` or a case
  * set's name): the engine's answer the tests pin instead of Excel's. An entry whose case matches Excel fails
@@ -151,17 +166,7 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'measurement:CODE#5': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
   'measurement:CODE#6': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
   'measurement:CODE#12': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#142': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#143': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#144': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#145': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#146': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#147': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'char-code:CODE#148': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
-  'measurement:CHIINV#7': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
-  'measurement:CHISQ.INV#14': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000208709.154 } },
-  'measurement:CHISQ.INV.RT#15': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
-  'measurement:GAMMAINV#8': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 19999701973.2484 } },
+  ...BOTH_KNOWN,
   'stat:CHISQ.INV#27': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232618.5678 } },
   'stat:CHISQ.INV.RT#27': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990232502.22995 } },
   'stat:GAMMA.INV#5': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 1.50908414769475 } },
