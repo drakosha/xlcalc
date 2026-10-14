@@ -110,6 +110,9 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
   for (const m of merges) if (meets(m, window) && !out.merges.includes(cornersText(m))) out.merges.push(cornersText(m))
 }
 
+/** A merged area of whole rows or columns as Excel writes its address (`20:21`, `J:K`), in cells (`A20:XFD21`). */
+const fullLines = (m: string) => m.replace(/^(\d+):(\d+)$/, 'A$1:XFD$2').replace(/^([A-Z]+):([A-Z]+)$/, '$11:$21048576')
+
 /** Differences of looks, as `place: Excel …, engine …` lines. */
 function lookDifferences(name: string, excel: SheetLook, ours: SheetLook, widths: boolean): string[] {
   const out: string[] = []
@@ -121,7 +124,7 @@ function lookDifferences(name: string, excel: SheetLook, ours: SheetLook, widths
   diff('height', excel.heights, ours.heights)
   const [hx, hy] = [JSON.stringify([...(excel.hidden ?? [])].sort()), JSON.stringify([...(ours.hidden ?? [])].sort())]
   if (hx !== hy) out.push(`'${name}' hidden: Excel ${hx}, engine ${hy}`)
-  const [x, y] = [[...excel.merges].sort(), [...ours.merges].sort()]
+  const [x, y] = [excel.merges.map(fullLines).sort(), [...ours.merges].sort()]
   if (JSON.stringify(x) !== JSON.stringify(y)) out.push(`'${name}' merges: Excel ${JSON.stringify(x)}, engine ${JSON.stringify(y)}`)
   return out
 }

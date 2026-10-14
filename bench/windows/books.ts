@@ -357,7 +357,13 @@ export async function stepStruct(set: string, tag: Tag, e: WinEnv): Promise<void
 /** Excel's `HorizontalAlignment` constants by name (`AlignmentStyle.horizontal`); a range of mixed alignments reads null. */
 const ALIGN: Record<number, string> = { 1: 'general', [-4131]: 'left', [-4108]: 'center', [-4152]: 'right', 5: 'fill', [-4130]: 'justify', 7: 'centerContinuous', [-4117]: 'distributed' }
 
+/** A cell's alignment as `xl.ps1` writes the constant (an integer as `{ e }`), by name. */
+function alignOf(v: unknown): string {
+  const n = typeof v === 'object' && v !== null && 'e' in v ? Number(v.e) : Number(v)
+  return ALIGN[n] ?? `unknown ${JSON.stringify(v)}`
+}
+
 /** The look as `xl.ps1` reads it, in the Mac's shape: a fill as `[r, g, b]`. */
 function rawLook([cells, cols, rows]: [unknown[][], unknown[][], unknown[][]]): RawLook {
-  return [cells.map(([a, bold, fill, format, merge, align]) => [String(a), bold === true, rgb(Number(fill)), String(format), String(merge), ALIGN[Number(align)] ?? `unknown ${align}`]), cols as RawLook[1], rows as RawLook[2]]
+  return [cells.map(([a, bold, fill, format, merge, align]) => [String(a), bold === true, rgb(Number(fill)), String(format), String(merge), alignOf(align)]), cols as RawLook[1], rows as RawLook[2]]
 }
