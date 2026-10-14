@@ -4,7 +4,7 @@
  * it, written without `$`, as a name its calculation reads instead of the cell. The edges IV and IW, rows 65,536 and
  * 65,537, the sheet's last cell, `$` written, lower case, and the cell itself after the LET.
  */
-import { collector, type EntryCase } from './cases.js'
+import { type EntryCase, entryCases } from './cases.js'
 
 const let1 = (name: string) => `=LET(${name},1,${name})`
 
@@ -14,8 +14,4 @@ const GENERAL: Record<string, string[]> = {
   scope: ['=LET(IW1,5,IW1*2)', '=LET(IW1,5,IW1)+IW1', '=LET(iw1,2,IW1*3)'],
 }
 
-export function buildEntryCases(): EntryCase[] {
-  const { out, add } = collector()
-  for (const [group, texts] of Object.entries(GENERAL)) for (const t of texts) add(group, t)
-  return out
-}
+export const buildEntryCases = (): EntryCase[] => entryCases(GENERAL)

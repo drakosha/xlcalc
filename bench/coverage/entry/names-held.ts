@@ -5,7 +5,7 @@
  * inside, first and after a cell's shape (`a?b`, `\x`, `A1?x`); the words past the grid alone in a formula; unknown names
  * and an unknown function in lower and mixed case, beside a function typed in lower case.
  */
-import { collector, type EntryCase } from './cases.js'
+import { type EntryCase, entryCases } from './cases.js'
 
 const let1 = (name: string) => `=LET(${name},1,${name})`
 
@@ -17,8 +17,4 @@ const GENERAL: Record<string, string[]> = {
   unknown: ['=foo', '=foo+1', '=Foo*2', '=SUM(foo,1)', '=fooBar', '=foo(1)', '=sum(1,2)'],
 }
 
-export function buildEntryCases(): EntryCase[] {
-  const { out, add } = collector()
-  for (const [group, texts] of Object.entries(GENERAL)) for (const t of texts) add(group, t)
-  return out
-}
+export const buildEntryCases = (): EntryCase[] => entryCases(GENERAL)

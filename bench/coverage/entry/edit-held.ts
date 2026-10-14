@@ -5,7 +5,7 @@
  * apostrophe, and numbers typed into cells formatted before as dates, times, money, fractions, scientific and text.
  * Both locales' forms are in the set, which runs in each.
  */
-import { collector, type EntryCase } from './cases.js'
+import { type EntryCase, entryCases } from './cases.js'
 
 export const edit = true
 
@@ -40,9 +40,4 @@ const FORMATTED: [string, string | number, string[]][] = [
   ['pct-text', '0%', ["'5"]],
 ]
 
-export function buildEntryCases(): EntryCase[] {
-  const { out, add } = collector()
-  for (const [group, texts] of Object.entries(GENERAL)) for (const t of texts) add(group, t)
-  for (const [group, format, texts] of FORMATTED) for (const t of texts) add(group, t, format)
-  return out
-}
+export const buildEntryCases = (): EntryCase[] => entryCases(GENERAL, FORMATTED)

@@ -5,7 +5,7 @@
  * parentheses, a leading `%`, groups, an exponent and money. Fractions (`1 2/3`, with percent too) are where a whole part
  * plus the fraction and the fraction over its denominator part. Plain decimals and the scientific form are the control.
  */
-import { collector, type EntryCase } from './cases.js'
+import { type EntryCase, entryCases } from './cases.js'
 
 const GENERAL: Record<string, string[]> = {
   pen: ['1.1%', '0.7%', '1.255%', '99.9%', '8.2%', '33.3%', '57.1%', '0.035%', '1.005%', '0.07%', '123.45%', '-0.7%', '(1.1%)', '%1.1', '1,000.7%', '1.1E+0%', '$1.1%'],
@@ -14,8 +14,4 @@ const GENERAL: Record<string, string[]> = {
   plain: ['0.011', '0,011', '1.1E-2', '1,1E-2', '0.007', '0,007'],
 }
 
-export function buildEntryCases(): EntryCase[] {
-  const { out, add } = collector()
-  for (const [group, texts] of Object.entries(GENERAL)) for (const t of texts) add(group, t)
-  return out
-}
+export const buildEntryCases = (): EntryCase[] => entryCases(GENERAL)

@@ -4,7 +4,7 @@
  * formats, built-in formats of other kinds, spaces around dates and times, more groups, dates and fractions.
  */
 import type { NumberFormat } from '../../../src/contract.js'
-import { collector, type EntryCase } from './cases.js'
+import { type EntryCase, entryCases } from './cases.js'
 
 const GENERAL: Record<string, string[]> = {
   euro: ['€1,234.5', '€1 234,5', '€ 5', '-€5', '€-5', '5€', '€5%', '€5,5', '€5.5', '(€5)', '€'],
@@ -35,9 +35,4 @@ const FORMATS: Record<string, NumberFormat> = {
 
 const INTO = ['5', '15.03.2026', '3/15/2026', '18:30', '5%', '1 1/2', '1,5E+3', '1.5E+3', '5 ₽', '$5', '=TODAY()', '=СЕГОДНЯ()']
 
-export function buildEntryCases(): EntryCase[] {
-  const { out, add } = collector()
-  for (const [group, texts] of Object.entries(GENERAL)) for (const t of texts) add(group, t)
-  for (const [name, format] of Object.entries(FORMATS)) for (const t of INTO) add(`in-${name}`, t, format)
-  return out
-}
+export const buildEntryCases = (): EntryCase[] => entryCases(GENERAL, Object.entries(FORMATS).map(([name, format]) => [`in-${name}`, format, INTO]))
