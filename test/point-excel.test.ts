@@ -13,9 +13,15 @@ import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { refAt, type PointAction } from '../src/index.js'
 import './locales.js'
 
-/** Cases where `refAt` knowingly differs from Excel, by `<set>:<id>` in every locale, with the reason. */
+/** Cases where `refAt` knowingly differs from Excel, by `<set>:<id>` in every locale or `<tag>:<set>:<id>` in one, with the reason. */
 const KNOWN: Record<string, string> = {
   'point-third-held:typed-6': "a sheet the book does not have (`=Sheet1!A`): Excel takes the name for another workbook's and the arrow does nothing; refAt reads text and knows no book's sheets",
+  ...Object.fromEntries(
+    ['point-caret-held-3:end-8', 'point-caret-held-3:end-9', 'en-US:point-caret-held-3:end-4', 'en-US:point-caret-held-3:inside-4'].map((k) => [
+      k,
+      "a function's bracket left open where Excel does nothing (=SUM(1)+MAX(2, =ABS(-(1), and in en-US =ROUND(1.5 and =ROUND(A1*2, ROUND known there): refAt closes it as Return does and enters the formula when it reads; three sets did not find Excel's rule",
+    ]),
+  ),
 }
 
 /** The active cell and the text of a formula bar's description, `Formula Bar. C,3 =D3` (`Строка формул. C,3 =D3`). */
@@ -66,7 +72,7 @@ describe.each(SETS)('Point mode $tag $set', ({ tag, set, stored }) => {
       throw new Error(`${id}: the bar after the arrow is ${after.text}`)
     })()
     const ours = refAt(typed, caret, { locale: tag })
-    const known = KNOWN[`${set}:${id}`]
+    const known = KNOWN[`${set}:${id}`] ?? KNOWN[`${tag}:${set}:${id}`]
     if (known) expect(ours, `${typed} is known to differ: ${known}`).not.toEqual(excel)
     else expect(ours, `${typed} with the caret at ${caret}`).toEqual(excel)
   })

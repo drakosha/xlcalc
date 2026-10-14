@@ -3,7 +3,7 @@
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
   "date": "2026-10-14",
-  "seconds": 1084.6
+  "seconds": 1110.8
  },
  "cases": [
   {
@@ -1048,24 +1048,24 @@
      "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
     },
     {
-     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1"
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
     },
     {
-     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1"
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
     },
     {
-     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1"
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
     },
     {
-     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1"
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
     },
     {
-     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1",
-     "dialog": "dialog:  The formula is missing an opening or closing parenthesis. | "
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=MAX(A1,2)+(1)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
     },
     {
-     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1",
-     "dialog": "dialog:  The formula is missing an opening or closing parenthesis. | "
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=MAX(A1,2)+(1)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
     }
    ],
    "cells": {
