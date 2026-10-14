@@ -3,32 +3,27 @@ import { compute, createSession, type CellInput } from '../src/index.js'
 import { createState } from '../src/engine.js'
 import { Rng } from '../src/values.js'
 import { CacheBudget } from '../src/range-cache.js'
+import { columnReads } from './engine-counts.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
 it.each(['AVERAGE', 'COUNTA', 'COUNTIF'])('%s reuses descending prefixes without rereading their whole input', (name) => {
   const n = 1024, cells = Object.fromEntries(Array.from({ length: n }, (_, i) => [`A${i + 1}`, { value: 1 }]))
   const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1 })
-  let reads = 0
-  state.ctx.sheets[0].cols[0] = new Proxy(state.ctx.sheets[0].cols[0], {
-    get(target, key, receiver) { if (typeof key === 'string' && /^\d+$/.test(key)) reads++; return Reflect.get(target, key, receiver) },
-  })
+  const reads = columnReads(state, 0)
   for (let end = n - 1; end >= 0; end--) {
     const g = new Rng(0, 0, 0, end, 0)
     expect(name === 'COUNTIF' ? state.rt.F.COUNTIF(g, '>0') : state.rt.F[name](g)).toBe(name === 'AVERAGE' ? 1 : end + 1)
   }
-  expect(reads).toBeLessThan(n * 300)
+  expect(reads()).toBeLessThan(n * 300)
 })
 
 it('COUNTIF retains shared equality indexes for many criteria over the same range', () => {
   const n = 1024, cells = Object.fromEntries(Array.from({ length: n }, (_, i) => [`A${i + 1}`, { value: i }]))
   const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1 })
-  let reads = 0
-  state.ctx.sheets[0].cols[0] = new Proxy(state.ctx.sheets[0].cols[0], {
-    get(target, key, receiver) { if (typeof key === 'string' && /^\d+$/.test(key)) reads++; return Reflect.get(target, key, receiver) },
-  })
+  const reads = columnReads(state, 0)
   for (let value = 0; value < 100; value++) expect(state.rt.F.COUNTIF(new Rng(0, 0, 0, n - 1, 0), value)).toBe(1)
-  expect(reads).toBeLessThan(n * 10)
+  expect(reads()).toBeLessThan(n * 10)
 })
 
 it('does not materialize an optional equality index larger than the cache budget', () => {
