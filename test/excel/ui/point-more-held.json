@@ -1,0 +1,2176 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-14",
+  "seconds": 337.9
+ },
+ "cases": [
+  {
+   "id": "typed-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=1.5"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1."
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=x."
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=1,"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-5",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=1,5"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-6",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=\"a\""
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-7",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=5%"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-8",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=#N/A"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-9",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "={1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-10",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "={1,"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-11",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "={1;"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-12",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=$"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-13",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A$"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-14",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=Sheet1!"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-15",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "='My S'!"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-16",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=T["
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-17",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1)"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-18",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=1e"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-19",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=1e+"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-20",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1 + "
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-21",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1 "
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-22",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=-1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-23",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "= "
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-24",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(,"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-25",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=="
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-26",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1<>"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  },
+  {
+   "id": "typed-27",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=@"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C4"
+   ]
+  }
+ ],
+ "answers": {
+  "typed-1": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =1.5"
+    },
+    {
+     "bar": "Formula Bar. D,3 10"
+    },
+    {
+     "bar": "Formula Bar. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "1.5"
+     },
+     "computed": 1.5,
+     "text": "1.5",
+     "code": "General",
+     "local": "General",
+     "value2": 1.5,
+     "formula": "=1.5",
+     "formulaLocal": "=1.5",
+     "formula2": "=1.5",
+     "formula2Local": "=1.5",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-2": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =A1."
+    },
+    {
+     "bar": "Formula Bar. C,3 =A1.D3"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "_FV(A1,\"D3\")"
+     },
+     "computed": {
+      "error": "ERROR"
+     },
+     "text": "#FIELD!",
+     "code": "General",
+     "local": "General",
+     "formula": "=A1.D3",
+     "formulaLocal": "=A1.D3",
+     "formula2": "=A1.D3",
+     "formula2Local": "=A1.D3",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-3": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =x."
+    },
+    {
+     "bar": "Formula Bar. C,3 =x.D3"
+    },
+    {
+     "bar": "Formula Bar. C,4 c"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "x.D3"
+     },
+     "computed": {
+      "error": "NAME"
+     },
+     "text": "#NAME?",
+     "code": "General",
+     "local": "General",
+     "formula": "=x.D3",
+     "formulaLocal": "=x.D3",
+     "formula2": "=x.D3",
+     "formula2Local": "=x.D3",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-4": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =1,"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1,D3"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1,D3",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=D13‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-5": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =1,5"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1,5",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=15‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =1,5",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=15‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-6": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =\"a\""
+    },
+    {
+     "bar": "Formula Bar. D,3 10"
+    },
+    {
+     "bar": "Formula Bar. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "\"a\""
+     },
+     "computed": "a",
+     "text": "a",
+     "code": "General",
+     "local": "General",
+     "formula": "=\"a\"",
+     "formulaLocal": "=\"a\"",
+     "formula2": "=\"a\"",
+     "formula2Local": "=\"a\"",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-7": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =5%"
+    },
+    {
+     "bar": "Formula Bar. D,3 10"
+    },
+    {
+     "bar": "Formula Bar. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "5%"
+     },
+     "computed": 0.05,
+     "text": "0.05",
+     "code": "General",
+     "local": "General",
+     "value2": 0.05,
+     "formula": "=5%",
+     "formulaLocal": "=5%",
+     "formula2": "=5%",
+     "formula2Local": "=5%",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-8": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =#N/A"
+    },
+    {
+     "bar": "Formula Bar. D,3 10"
+    },
+    {
+     "bar": "Formula Bar. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "#N/A"
+     },
+     "computed": {
+      "error": "NA"
+     },
+     "text": "#N/A",
+     "code": "General",
+     "local": "General",
+     "formula": "=#N/A",
+     "formulaLocal": "=#N/A",
+     "formula2": "=#N/A",
+     "formula2Local": "=#N/A",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-9": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 ={1"
+    },
+    {
+     "bar": "Formula Bar. C,3 ={1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭={1}‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    },
+    {
+     "bar": "Formula Bar. C,3 ={1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭={1}‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-10": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 ={1,"
+    },
+    {
+     "bar": "Formula Bar. C,3 ={1,D3"
+    },
+    {
+     "bar": "Formula Bar. C,3 ={1,D3",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-11": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 ={1;"
+    },
+    {
+     "bar": "Formula Bar. C,3 ={1;",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    },
+    {
+     "bar": "Formula Bar. C,3 ={1;",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-12": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =$"
+    },
+    {
+     "bar": "Formula Bar. C,3 =$",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =$",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-13": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =A$"
+    },
+    {
+     "bar": "Formula Bar. C,3 =A$",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =A$",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-14": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =Sheet1!"
+    },
+    {
+     "bar": "Formula Bar. C,3 =Sheet1!D3"
+    },
+    {
+     "bar": "Formula Bar. C,3 =Sheet1!D3"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "[1]Sheet1!D3"
+     },
+     "computed": {
+      "error": "REF"
+     },
+     "text": "#REF!",
+     "code": "General",
+     "local": "General",
+     "formula": "=Sheet1!D3",
+     "formulaLocal": "=Sheet1!D3",
+     "formula2": "=Sheet1!D3",
+     "formula2Local": "=Sheet1!D3",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-15": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 ='My S'!"
+    },
+    {
+     "bar": "Formula Bar. C,3 ='My S'!D3"
+    },
+    {
+     "bar": "Formula Bar. C,3 ='My S'!D3"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "'[1]My S'!D3"
+     },
+     "computed": {
+      "error": "REF"
+     },
+     "text": "#REF!",
+     "code": "General",
+     "local": "General",
+     "formula": "='My S'!D3",
+     "formulaLocal": "='My S'!D3",
+     "formula2": "='My S'!D3",
+     "formula2Local": "='My S'!D3",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-16": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =T["
+    },
+    {
+     "bar": "Formula Bar. C,3 =T[",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =T[",
+     "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-17": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =A1)"
+    },
+    {
+     "bar": "Formula Bar. C,3 =A1)",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=A1‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =A1)",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=A1‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-18": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =1e"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1e",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=e1‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =1e",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=e1‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-19": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =1e+"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1e+D3"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1e+D3",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=e1+D3‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-20": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =A1 + "
+    },
+    {
+     "bar": "Formula Bar. C,3 =A1 + D3"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "A1 + D3"
+     },
+     "computed": 12,
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "=A1 + D3",
+     "formulaLocal": "=A1 + D3",
+     "formula2": "=A1 + D3",
+     "formula2Local": "=A1 + D3",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-21": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1 "
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1 D3"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "SUM(A1 D3)"
+     },
+     "computed": {
+      "error": "NULL"
+     },
+     "text": "#NULL!",
+     "code": "General",
+     "local": "General",
+     "formula": "=SUM(A1 D3)",
+     "formulaLocal": "=SUM(A1 D3)",
+     "formula2": "=SUM(A1 D3)",
+     "formula2Local": "=SUM(A1 D3)",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-22": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =-1"
+    },
+    {
+     "bar": "Formula Bar. D,3 10"
+    },
+    {
+     "bar": "Formula Bar. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "-1"
+     },
+     "computed": -1,
+     "text": "-1",
+     "code": "General",
+     "local": "General",
+     "value2": -1,
+     "formula": "=-1",
+     "formulaLocal": "=-1",
+     "formula2": "=-1",
+     "formula2Local": "=-1",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-23": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 = "
+    },
+    {
+     "bar": "Formula Bar. C,3 = D3"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": " D3"
+     },
+     "computed": 10,
+     "text": "10",
+     "code": "General",
+     "local": "General",
+     "value2": 10,
+     "formula": "= D3",
+     "formulaLocal": "= D3",
+     "formula2": "= D3",
+     "formula2Local": "= D3",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-24": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =SUM(,"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(,D3"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "SUM(,D3)"
+     },
+     "computed": 10,
+     "text": "10",
+     "code": "General",
+     "local": "General",
+     "value2": 10,
+     "formula": "=SUM(,D3)",
+     "formulaLocal": "=SUM(,D3)",
+     "formula2": "=SUM(,D3)",
+     "formula2Local": "=SUM(,D3)",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-25": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =="
+    },
+    {
+     "bar": "Formula Bar. C,3 ==D3"
+    },
+    {
+     "bar": "Formula Bar. C,3 ==D3",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=D3‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-26": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =A1<>"
+    },
+    {
+     "bar": "Formula Bar. C,3 =A1<>D3"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "A1<>D3"
+     },
+     "computed": true,
+     "text": "TRUE",
+     "code": "General",
+     "local": "General",
+     "formula": "=A1<>D3",
+     "formulaLocal": "=A1<>D3",
+     "formula2": "=A1<>D3",
+     "formula2Local": "=A1<>D3",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "typed-27": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =@"
+    },
+    {
+     "bar": "Formula Bar. C,3 =@D3"
+    },
+    {
+     "bar": "Formula Bar. C,4 ",
+     "dialog": "dialog: This formula is not supported by some older versions of Excel. \nWould you like to use this variation instead?\n\n‭=D3‬ | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "@D3"
+     },
+     "computed": 10,
+     "text": "10",
+     "code": "General",
+     "local": "General",
+     "value2": 10,
+     "formula": "=@D3",
+     "formulaLocal": "=@D3",
+     "formula2": "=@D3",
+     "formula2Local": "=@D3",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}
