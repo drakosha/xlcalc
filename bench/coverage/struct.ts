@@ -14,7 +14,7 @@ import { localeMeta } from './locales.js'
 import { ensureExcel, excelVersion, runWatched } from './excel.js'
 import { markDynamic } from './book.js'
 import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from './case-book.js'
-import type { CellStyle, NumberFormat } from '../../src/contract.js'
+import type { CellStyle, FillType, NumberFormat } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { colToIndex, formatAddress, indexToCol, parseAddress } from '../../src/model.js'
 import { parseRange, rectCells } from '../../src/structure/area.js'
@@ -204,12 +204,18 @@ export function opArgs(c: StructCase): string[] {
       return [o.sheet, cells(o.range), [o.across ? 'across' : '', o.center ? 'center' : ''].join(' ').trim(), '']
     case 'unmergeCells':
       return [o.sheet, cells(o.range), '', '']
+    // the fill's type (XlAutoFillType) in the target's place; Excel for Windows only
+    case 'fillRange':
+      return [o.sheet, cells(o.range), String(FILL_TYPES[o.type ?? 'default']), cells(o.to)]
     case 'addTable':
       return [o.sheet, o.table.range, o.table.name, '']
     default:
       throw new Error(`${c.id}: the struct step has no ${o.op} (the tables step has)`)
   }
 }
+
+/** `FillType` as Excel's `XlAutoFillType`. */
+const FILL_TYPES: Record<FillType, number> = { default: 0, copy: 1, series: 2 }
 
 /** A case's operation as the scripts of the steps with files take it: JSON of the operation and its arguments, `[]` for none. */
 export const opJson = (c: { id: string; book: string; op?: StructCase['op'] }): string => JSON.stringify(c.op ? [c.op.op, ...opArgs({ id: c.id, book: c.book, op: c.op })] : [])
@@ -265,7 +271,7 @@ export function lookOf([cells, widths, heights]: RawLook): SheetLook {
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
 async function runCase(c: StructCase, book: StoredBook, dynamic: boolean, lookRects: string, files?: FileParts): Promise<ExcelStructAnswer> {
-  if (c.before || c.op.op === 'mergeCells' || c.op.op === 'unmergeCells') throw new Error(`${c.id}: merged cells and operations taken before are measured on Excel for Windows (bench/windows)`)
+  if (c.before || c.op.op === 'mergeCells' || c.op.op === 'unmergeCells' || c.op.op === 'fillRange') throw new Error(`${c.id}: merged cells, fills and operations taken before are measured on Excel for Windows (bench/windows)`)
   const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
   const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
   return runWatched<ExcelStructAnswer>({
