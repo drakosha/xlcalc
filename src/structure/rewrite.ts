@@ -4,7 +4,8 @@
  */
 import type { BookInput, CellInput, NameInput, TableColumn, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
-import { FormulaError, parse, quoteSheet, sheetKey, tokenize, type Tok } from '../syntax.js'
+import { FormulaError, parse, quoteSheet, sheetKey, type Tok } from '../syntax.js'
+import { eachToken } from '../syntax/links.js'
 import { decode, encode, sameArea, type Area } from './area.js'
 import { rewriteConditional } from '../cond/structure.js'
 import { rewriteValidations } from '../validation/structure.js'
@@ -45,8 +46,6 @@ export const sheetOf = <S extends { name: string }>(book: { sheets: S[] }, name:
 
 const same = (a: string | null, b: string | null) => a !== null && b !== null && sheetKey(a) === sheetKey(b)
 
-const SPACE = new Set([' ', '\t', '\n', '\r'])
-
 /**
  * The formula with its references rewritten by `t`. `host` is the formula's sheet before the operation,
  * `moved` after it (a moved formula's references without a sheet get the sheet they point to); null for
@@ -60,29 +59,17 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
     if (e instanceof FormulaError) return text
     throw e
   }
-  const toks = tokenize(text)
-  let out = ''
-  let pos = 0
-  for (let k = 0; k < toks.length - 1; k++) {
-    const tok = toks[k]
-    let end = toks[k + 1].at
-    while (end > tok.at && SPACE.has(text[end - 1])) end--
-    const written = text.slice(tok.at, end)
-    const now =
-      tok.t === 'ref'
-        ? tok.last === undefined
-          ? refText(tok, written, host, moved, t, sheets)
-          : cubeText(tok, tok.last, written, t, sheets)
-        : tok.t === 'err' && tok.sheet !== undefined && tok.book === undefined
-          ? errText(tok.sheet, tok.ref ?? '', t, sheets)
-          : tok.t === 'xref' && t.copy
-            ? copiedLink(tok, written, t)
-            : undefined
-    if (now === undefined) continue
-    out += text.slice(pos, tok.at) + now
-    pos = end
-  }
-  return pos === 0 ? text : out + text.slice(pos)
+  return eachToken(text, (tok, written) =>
+    tok.t === 'ref'
+      ? tok.last === undefined
+        ? refText(tok, written, host, moved, t, sheets)
+        : cubeText(tok, tok.last, written, t, sheets)
+      : tok.t === 'err' && tok.sheet !== undefined && tok.book === undefined
+        ? errText(tok.sheet, tok.ref ?? '', t, sheets)
+        : tok.t === 'xref' && t.copy
+          ? copiedLink(tok, written, t)
+          : undefined,
+  )
 }
 
 /**

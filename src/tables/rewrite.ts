@@ -6,7 +6,8 @@
 import type { BookInput, CellInput, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, readAddress } from '../model.js'
-import { FormulaError, parse, quoteSheet, tokenize, type Tok } from '../syntax.js'
+import { FormulaError, parse, quoteSheet } from '../syntax.js'
+import { eachToken } from '../syntax/links.js'
 import { caseKey } from '../collate.js'
 import { specText, type TableSpec } from '../syntax/table.js'
 import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
@@ -17,8 +18,6 @@ export type TableChange = undefined | { table?: string; cols?: [string] | [strin
 /** A change of the references to tables: `t` the table referred to (as it was), the cell's sheet and row (null in a name). */
 export type TableEdit = (t: Table, spec: TableSpec, at: { s: number; r: number } | null) => TableChange
 
-const SPACE = new Set([' ', '\t', '\n', '\r'])
-
 /**
  * The formula with its structured references changed by `edit`; `enclosing` is the table holding the formula's cell
  * (it gives the references written without a table name). `qualify` names the table in those too: the formula leaves it.
@@ -28,24 +27,17 @@ export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table 
     const key = caseKey(text)
     if (!tables.list.some((t) => key.includes(caseKey(t.name)))) return text
   }
-  let toks: Tok[]
   try {
     parse(text, { union: at === null })
-    toks = tokenize(text)
   } catch (e) {
     if (e instanceof FormulaError) return text
     throw e
   }
-  let out = ''
-  let pos = 0
-  for (let k = 0; k < toks.length - 1; k++) {
-    const tok = toks[k]
-    let end = toks[k + 1].at
-    while (end > tok.at && SPACE.has(text[end - 1])) end--
+  return eachToken(text, (tok) => {
     let now: string | undefined
     if (tok.t === 'table') {
       const t = tok.table === null ? enclosing : tables.byName.get(tableKey(tok.table))
-      if (!t) continue
+      if (!t) return undefined
       const ch = edit(t, tok.spec, at)
       const named = tok.table !== null || qualify
       if (ch === 'lost') now = '#REF!'
@@ -60,11 +52,8 @@ export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table 
       else if (ch && 'text' in ch) now = ch.text
       else if (ch?.table) now = ch.table
     }
-    if (now === undefined) continue
-    out += text.slice(pos, tok.at) + now
-    pos = end
-  }
-  return pos === 0 ? text : out + text.slice(pos)
+    return now
+  })
 }
 
 /**
