@@ -12,7 +12,7 @@ import { inParts } from '../coverage/book.js'
 import { FIT_PART, fitFile, keptAnswers, partAnswers } from '../coverage/fit.js'
 import { caseColumn, caseRows, fitBook, type FitCase, type FitSet } from '../coverage/fit/cases.js'
 import { answeredLine, inCaseOrder, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
-import { inJobs, metaOf, type Step, type Tag, type WinEnv } from './remote.js'
+import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = (await setModule<FitSet>('fit', set)).buildFitCases(tag).filter((c) => c.via !== 'keys')
@@ -35,14 +35,7 @@ export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
     return { file: f, steps: [...acts, { do: 'calc' }, { do: 'widths', sheet: 'S', columns: cols }, { do: 'shown', sheet: 'S', cells }, { do: 'saveAs' }] }
   }
   const results: [FitCase[], unknown[], Uint8Array][] = []
-  await inJobs(`fit-${set}-${tag}`, parts, book, (part, a, cutShort) => {
-    if (a && 'answers' in a && a.saved) {
-      results.push([part, a.answers, a.saved])
-      return []
-    }
-    if (!a && cutShort) return [part]
-    throw new Error(`fit ${set} ${tag}: a part did not run: ${a && 'rejected' in a ? a.rejected : 'the job stopped on it'}`)
-  }, save)
+  await inJobs(`fit-${set}-${tag}`, parts, book, savedInto(results, (part, why) => `fit ${set} ${tag}: a part did not run: ${why}`), save)
   for (const [part, got, saved] of results) {
     // the answers of the steps: autofit and set (null, or the error a set got), calc, widths, shown, saveAs
     let i = 0
