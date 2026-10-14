@@ -8,10 +8,7 @@
  * cells of arrays, a merged area, a hidden row and column and a row a filter hid; the order by rows and by columns, in a
  * range and over the whole sheet. Both locales' texts are in the set, which runs in each.
  */
-import type { CellInput } from '../../../src/contract.js'
-import { collector, type FindBook, type FindCase, type FindQuery } from './cases.js'
-
-const text = (...xs: string[]): Record<string, CellInput> => Object.fromEntries(xs.map((v, i) => [`A${i + 1}`, { value: v }]))
+import { collector, type FindBook, type FindCase, type FindQuery, text } from './cases.js'
 
 export const BOOKS: Record<string, FindBook> = {
   // the characters wildcards read; A11 is `e` and a combining acute accent, A12 the precomposed `é`

@@ -5,7 +5,7 @@
  * references. Names hold formulas, unions, references without `$` and references across sheets.
  */
 import type { BookInput, CellInput, StructureOp } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { caseAdder, type StructCases } from './cases.js'
 import { formulaCell as f } from '../stored.js'
 
 function book(): BookInput {
@@ -43,8 +43,7 @@ function book(): BookInput {
 }
 
 export function buildStructCases(): StructCases {
-  const cases: StructCase[] = []
-  const add = (id: string, op: StructureOp) => cases.push({ id, book: 'cube', op })
+  const { cases, add } = caseAdder('cube')
   add('insert-rows-S', { op: 'insertRows', sheet: 'S', row: 2 })
   add('delete-rows-S', { op: 'deleteRows', sheet: 'S', row: 1 })
   add('insert-rows-Feb', { op: 'insertRows', sheet: 'Feb', row: 1 })

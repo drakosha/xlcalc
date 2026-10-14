@@ -3,8 +3,7 @@
  * and a formula on another sheet that read the empty top-left cell a merge moves a cell into, alone, in a range with
  * it and as an absolute reference. Cut and paste over a cell that formulas read makes their references `#REF!`.
  */
-import type { StructureOp } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { caseAdder, type StructCases } from './cases.js'
 import { merge } from './merge.js'
 import type { StoredBook, StoredCell } from '../stored.js'
 import { formulaCell as f } from '../stored.js'
@@ -34,8 +33,7 @@ function topBook(): StoredBook {
 }
 
 export function buildStructCases(): StructCases {
-  const cases: StructCase[] = []
-  const add = (id: string, op: StructureOp) => cases.push({ id, book: 'top', op })
+  const { cases, add } = caseAdder('top')
   add('merge-A1-C1-read-top', merge('A1:C1'))
   add('merge-A5-B5-name-top', merge('A5:B5'))
   add('merge-A1-B2-read-top', merge('A1:B2'))

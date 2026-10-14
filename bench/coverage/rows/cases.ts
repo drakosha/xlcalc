@@ -113,3 +113,8 @@ export function rowsBook(cases: RowCase[]): BookInput {
 
 /** Cases of one group: ids `<group>-<n>`. */
 export const collector = () => groupCollector<RowCase>()
+
+/** A wrapping cell's style, a font size over a style, a row's first cell alone with its look. */
+export const WRAP: CellStyle = { alignment: { wrap: true } }
+export const size = (n: number, more: CellStyle = {}): CellStyle => ({ ...more, font: { size: n } })
+export const one = (value: RowCell['value'], look?: CellStyle): Record<number, RowCell> => ({ 0: { value, ...(look ? { look } : {}) } })

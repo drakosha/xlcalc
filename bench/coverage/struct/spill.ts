@@ -4,7 +4,7 @@
  * them. The formulas are dynamic array formulas, so the anchors spill as in Excel 365.
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { caseAdder, type StructCases } from './cases.js'
 import { formulaCell as f } from '../stored.js'
 
 /** S: E2 spills E2:E4, B1 spills B1:C1, readers of both; T: readers from another sheet; a name over E2#. */
@@ -32,8 +32,7 @@ export function spillBook(): BookInput {
 }
 
 export function buildStructCases(): StructCases {
-  const cases: StructCase[] = []
-  const add = (id: string, op: StructCase['op']) => cases.push({ id, book: 'spill', op })
+  const { cases, add } = caseAdder('spill')
   add('insert-rows-1', { op: 'insertRows', sheet: 'S', row: 1 })
   add('insert-rows-3', { op: 'insertRows', sheet: 'S', row: 3 })
   add('delete-rows-2', { op: 'deleteRows', sheet: 'S', row: 2 })

@@ -3,7 +3,7 @@
  * over the area, the area moved and copied whole or in part, a paste over part of it, and a formula reading it.
  */
 import type { BookInput, StructureOp } from '../../../src/contract.js'
-import type { StructCase, StructCases } from './cases.js'
+import { caseAdder, type StructCases } from './cases.js'
 
 function book(): BookInput {
   return {
@@ -23,8 +23,7 @@ function book(): BookInput {
 }
 
 export function buildStructCases(): StructCases {
-  const cases: StructCase[] = []
-  const add = (id: string, op: StructureOp) => cases.push({ id, book: 'arrays', op })
+  const { cases, add } = caseAdder('arrays')
   add('insert-row-above', { op: 'insertRows', sheet: 'S', row: 1 })
   add('insert-row-inside', { op: 'insertRows', sheet: 'S', row: 3 })
   add('insert-row-below', { op: 'insertRows', sheet: 'S', row: 5 })

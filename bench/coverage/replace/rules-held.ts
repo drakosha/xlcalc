@@ -11,10 +11,8 @@
  */
 import type { CellInput } from '../../../src/contract.js'
 import { formatAddress } from '../../../src/model.js'
-import { collector } from '../find/cases.js'
+import { collector, text } from '../find/cases.js'
 import type { ReplaceBook, ReplaceCase, ReplaceQuery } from './cases.js'
-
-const text = (...xs: string[]): Record<string, CellInput> => Object.fromEntries(xs.map((v, i) => [`A${i + 1}`, { value: v }]))
 
 export const BOOKS: Record<string, ReplaceBook> = {
   // the wildcards' texts; A10 a character outside the BMP alone

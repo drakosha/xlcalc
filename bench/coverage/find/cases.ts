@@ -127,3 +127,6 @@ export function collector<Q = FindQuery>() {
   const add = (group: string, book: string, query: Q) => put(group, { book, query })
   return { out, add }
 }
+
+/** Texts down column A from A1. */
+export const text = (...xs: string[]): Record<string, CellInput> => Object.fromEntries(xs.map((v, i) => [`A${i + 1}`, { value: v }]))

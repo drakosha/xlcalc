@@ -128,3 +128,9 @@ export function rangeAt(ref: string): RangeRef {
   const i = ref.lastIndexOf('!')
   return { sheet: ref.slice(0, i), range: ref.slice(i + 1) }
 }
+
+/** The cases of a set over one book: `add(id, op, more)` puts a case of the operation. */
+export function caseAdder(book: string): { cases: StructCase[]; add: (id: string, op: StructureOp, more?: Partial<StructCase>) => void } {
+  const cases: StructCase[] = []
+  return { cases, add: (id, op, more = {}) => void cases.push({ id, book, op, ...more }) }
+}
