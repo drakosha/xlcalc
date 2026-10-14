@@ -59,8 +59,8 @@ function fillBook(): StoredBook {
     X1: { value: 10 },
     X2: { value: 8 },
     Y1: { value: '1 item' },
-    // 2025-01-01 by the built-in short date
-    Z1: { value: 45658, format: 14 },
+    // 2025-01-01 by the short date's code
+    Z1: { value: 45658, format: 'm/d/yyyy' },
     A41: { value: 1 },
     A42: { value: 2 },
     B42: { value: 'Item1' },
