@@ -79,3 +79,6 @@ export function fitBook(cases: FitCase[]): BookInput {
 
 /** Cases of one group: ids `<group>-<n>`. */
 export const collector = () => groupCollector<FitCase>()
+
+/** Typed only on the keyboard's layout (ASCII): the others are typed through the object model alone. */
+export const ascii = (t: string) => /^[\x20-\x7e]*$/.test(t)

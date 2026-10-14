@@ -4,7 +4,7 @@
  * one AutoFit narrowed, and in turn into one column (does a column widen again, does it narrow).
  */
 import type { NumberFormat } from '../../../src/contract.js'
-import { collector, type FitCase, type Via } from './cases.js'
+import { ascii, collector, type FitCase, type Via } from './cases.js'
 
 /** A typed text in each locale. */
 type Texts = { en: string; ru: string }
@@ -38,9 +38,6 @@ const SINGLE: [string, Texts, NumberFormat?][] = [
   ['text', { en: 'abcdefghijklmnopqrstuvwxyz', ru: 'abcdefghijklmnopqrstuvwxyz' }],
   ['text', { en: 'TRUE', ru: 'ИСТИНА' }],
 ]
-
-/** Typed only on the keyboard's layout (ASCII): the others are typed through the object model alone. */
-const ascii = (t: string) => /^[\x20-\x7e]*$/.test(t)
 
 export function buildFitCases(tag: string): FitCase[] {
   const { out, add } = collector()
