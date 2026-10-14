@@ -821,7 +821,7 @@ A grid, a dialog or a server that keeps versions of a book needs Excel's rules f
 import { cellAddress, linesKey, parseLines, parseRange, quoteSheetIfNeeded, rangeAddress, sameName } from 'xlcalc/a1'
 import { entryText, errorText, needsApostrophe, sameValue, validateSheetName } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
-import { scanReferences } from 'xlcalc/text'
+import { refAt, scanReferences } from 'xlcalc/text'
 
 console.log(parseRange('$d$9:B2'), parseRange('ZZZ1'), rangeAddress({ top: 1, left: 2, bottom: 1048576, right: 4 }))
 // → { kind: 'cells', top: 2, left: 2, bottom: 9, right: 4 } null B:D
@@ -835,10 +835,13 @@ console.log(errorText('DIV0', ruRU), entryText(0.125, { numberFormat: '0.0%' }),
 console.log(scanReferences('=СУММ(B2:B9;\'Q1 data\'!C1;"D4")', { locale: ruRU }).map((r) => `${r.at}-${r.end} ${r.text} ${r.sheet ?? ''}`))
 // → [ '6-11 B2:B9 ', "12-24 'Q1 data'!C1 Q1 data" ]
 console.log(scanReferences('=A1+)B2*"C3').map((r) => r.text)) // → [ 'A1', 'B2' ]
+console.log(refAt('=SUM(A1,').action, refAt('=A1').action, refAt('="a').action, refAt('=SUM(A1;', undefined, { locale: ruRU })) // → insert commit none { action: 'insert', at: 8 }
 console.log(sameValue(0.1 + 0.2, 0.3), sameValue(1, true)) // → true false
 ```
 
 Rows and columns are numbered from 1, as A1 numbers them. `parseCell` and `parseRange` take `$` and letters in either case and give null past `XFD1048576` or for anything else; a range given corner to corner the other way round is put in order, as Excel orders a typed reference, and its `kind` says whether it named cells, whole columns (`B:D`) or whole rows (`2:9`). `cellAddress`, `colLetters`, `colNumber` and `rangeAddress` write them back, `rangeAddress` as Excel writes a range: `B2` for one cell, `B:D` for a range over every row. `parseLines` and `linesKey` read and write the keys of `SheetInput.columns` and `rows` (`C`, `B:D`, `5`, `5:9`), null for a key a book does not take, and `patchLines` patches such a map as `setLayout` does ([Layout](#layout)); `rectsMeet` and `rectContains` compare rectangles; `MAX_ROWS` and `MAX_COLS` are the sheet's size.
+
+`refAt(text, caret?, { locale })` says what an arrow does in formula text typed over a cell, as Excel's Point mode decides it: `insert`, a reference to the cell the arrow points at goes in at `at`; `commit`, the text is entered and the selection moves, as after an operand; `none`, nothing happens (inside a string, after a character the locale's formulas do not have). Moving or extending a reference already pointed is the host's ([Point mode](docs/entry.md#point-mode)).
 
 `nameKey` and `sameName` are the rule by which the engine compares names of sheets, tables and defined names: in any case, by Unicode's upper case in every locale (`straße` is `STRASSE`), but the dotless `ı` and the long `ſ`, which Excel for Windows keeps apart from `I` and `S`. `quoteSheetIfNeeded` writes a sheet's name in a reference as Excel writes it, measured in Excel for Mac and for Windows: in quotes (an apostrophe inside doubled) when the name is anything but letters, digits, `_` and `.` after a letter or `_`, when it is a cell of the sheet (`A1`; not `XFE1`), when it begins with an R1C1 reference with a number (`R2D2`, `C3PO`; not `Region`, nor `C1.x`, where a `.` follows), or when it is `R`, `C`, `RC` or one of the locale's booleans (`TRUE`, `'ИСТИНА'` in ru-RU's formula text). Stored formulas keep every sheet in quotes, as their canonical text; the text shown to a person (`toLocal`, a window's `formulaLocal` and `editText`, the text of `explain`) quotes a sheet by this rule. `validateSheetName` checks a sheet's name as a book's sheets are checked (31 characters at most, none of `: \ / ? * [ ]`, no apostrophe at either end, not `History`): `{ ok: true }`, or a refusal with the code `empty`, `too_long`, `character`, `apostrophe` or `reserved`, a message in `opts.locale`'s language and, for a character, its place.
 

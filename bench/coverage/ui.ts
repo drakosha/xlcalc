@@ -20,13 +20,14 @@ import { heldOf } from './entry.js'
 import { savedColumns } from './fit.js'
 import { localeDir, localeMeta } from './locales.js'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, writeAnswers } from './stored.js'
-import { clipboardText, readCells, readColumns, selectedOf, uiBook, type UiAnswer, type UiCase, type UiCell, type UiSet } from './ui/cases.js'
+import { clipboardText, readCells, readColumns, selectedOf, uiBook, type PointStep, type UiAnswer, type UiCase, type UiCell, type UiSet } from './ui/cases.js'
 import { rawFile } from './xlsx/sent.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-ui.applescript')
 const KEYS = join(HERE, 'excel-keys.applescript')
+const INPUT_SOURCE = join(HERE, 'input-source.swift')
 /** pbpaste and pbcopy read and write text in the locale's encoding. */
 const UTF8 = { ...process.env, LANG: 'en_US.UTF-8' }
 
@@ -116,9 +117,20 @@ export async function caseFile(c: UiCase, label: string): Promise<Uint8Array> {
   return rawFile(data, [...codes].map((code) => ({ part: 'xl/styles.xml', from: `formatCode="${escapeAttr(code + OWN)}"`, to: `formatCode="${escapeAttr(code)}"` })))
 }
 
+/** A case of `point` whose formula bar does not end with a text it typed, right after typing it, is no answer: the keyboard typed something else. */
+function checkTyped(steps: PointStep[], bars: [string, string][], label: string): void {
+  steps.forEach((s, i) => {
+    if (!('type' in s)) return
+    const shown = / [A-Z]+,\d+ (.*)$/s.exec(bars[i]?.[0] ?? '')?.[1] ?? ''
+    if (!shown.endsWith(s.type)) throw new Error(`ui ${label}: typed ${JSON.stringify(s.type)}, the formula bar shows ${JSON.stringify(shown)}: the keyboard's layout is not ABC`)
+  })
+}
+
 /** One case in Excel, its action taken (`none` reads the book alone). A book Excel repairs stops the run; a window Excel shows for the action is answered by the script. */
 export async function runCase(c: UiCase, label: string, act = actJson(c)): Promise<UiAnswer> {
   if (declineRepair()) console.log('closed a leftover book repair window')
+  // the keyboard types a case of `point` in the ABC layout, taken again before each: another layout typed `=ф2#` for `=E2#`
+  if (c.act.do === 'point') execFileSync('swift', [INPUT_SOURCE, 'com.apple.keylayout.ABC'])
   return runWatched<UiAnswer>({
     script: SCRIPT,
     label: `ui ${label}`,
@@ -137,6 +149,7 @@ export async function runCase(c: UiCase, label: string, act = actJson(c)): Promi
     },
     done: (out, dir) => {
       const raw = JSON.parse(out) as { dialog: string; bars: RawBar[]; ribbon: RawRibbon; point: [string, string][]; cells: RawCell[]; columns: [number, number, boolean][] }
+      if (c.act.do === 'point') checkTyped(c.act.steps, raw.point, label)
       return caseAnswer(c, raw.dialog, raw.cells, raw.columns, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))), raw.bars.length ? raw.bars : undefined, raw.ribbon.length ? raw.ribbon : undefined, raw.point.length ? raw.point : undefined)
     },
   })

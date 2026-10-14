@@ -194,6 +194,35 @@ Use `formatClipboard` when the host already has the complete rectangle of format
 
 `bench/coverage/clipboard` commits the predictions before the copies run. The copy set has ten cases in each locale on each platform: grid, controls and quotes, one cell, an empty sheet, narrow numbers and dates, hidden rows and columns, filtering, merges and a spill. `copy range` and `pbpaste` on Mac and `Range.Copy` with `Get-Clipboard -Raw` on Windows read text without bringing Excel forward. The Windows `quotes-held` set copies three rectangles, replaces the rich clipboard with their plain text and pastes them, checking the sentinel below too. `test/clipboard-excel.test.ts` checks the stored text and pins the ambiguity; `test/session-copy-text.test.ts` checks `copyText` from the books against the same stored copies in all three session kinds and both execution modes.
 
+## Point mode
+
+While a formula is typed over a cell (Excel's Enter mode: the editing began with a key, not with F2), an arrow either points, enters the text, or does nothing. `refAt(text, caret?, { locale })` from `xlcalc/text` says which, as Excel decides it:
+
+- `insert`: a reference to the cell beside the edited one goes in at the caret. After the formula's first character (`=`, and `+` or `-`, which begin a formula too), an operator, `(`, the locale's list separator (`,` in en-US, `;` in ru-RU), the range's `:`, a sheet's `!`, a point (`=1.`, `=A1.`) and a space (`=A1 D3`, the intersection operator).
+- `commit`: the text is entered and the arrow moves the selection, as after a value. After anything else, when the formula reads as it stands in the locale it is typed in: `=5`, `=A1`, `=SUM(A1)`, `=TRUE`, `="a"`, `=5%`, `=SUM` (entered as a reference to the function), `=1.5` in en-US and `=1,5` in ru-RU. Any text that does not begin a formula too.
+- `none`: nothing happens. When the formula does not read (`=A1)`, `=1e`, `={1`, `=$`, `=1,5` in en-US, `=1.5` and `=#N/A` in ru-RU, which writes `#Н/Д`), after a character the locale's formulas do not have there (`;` in en-US, `,` after a reference in ru-RU, where it is the decimal separator), and inside a string, a quoted sheet's name or a table's brackets.
+
+Once a reference is pointed the host moves it, as Excel does, by the keys alone; the rule above is for an arrow with nothing pointed since the text was typed:
+
+- An arrow moves the reference from its first cell; Shift and an arrow move its far corner (the first Shift and arrow after `=` makes a range from the edited cell: `=C3:D3`); a plain arrow after a range moves from the range's first cell (`=D3:D4` and Down is `=D4`).
+- Command and an arrow on the Mac (Control on Windows) jump as on the sheet, to the edge of the data (`=D3` and Command+Down over D3:D6 is `=D6`), with Shift extend to it (`=D3:D6`); Home points at the row's first column, Page Down a screen below.
+- Typing after a reference ends it: the next arrow, where `refAt` says `insert`, points from the edited cell again (`=D3+` and Right is `=D3+D3`).
+- F2 turns Enter mode to Edit mode, where arrows move the caret, and F2 again back to pointing.
+
+Return enters the formula as typed: Excel closes the brackets left open (`=SUM(D3` is `=SUM(D3)`), offers its corrections otherwise.
+
+### How it was checked
+
+The step `ui` of `bench/coverage` types on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU: a text typed over C3, keys pressed, the formula bar's description read after each (the active cell and its text), then Return, and the cell read back. Three sets, each predicted before Excel ran it:
+
+- `point-held`, 40 cases in each locale, predicted by the sheet component's own model (`bench/coverage/ui/point-model.ts`): 21 of 40 as Excel did it in each. Excel differed where an arrow enters the text (after an operand the component moved the caret), after a leading `+` or `-`, a space after an operand and `=1.`, and in every key the component left to its field (Command and an arrow, Home, Page Down). `refAt` was written from these answers.
+- `point-more-held`, 27 places, predicted by that first `refAt`: 39 of 54 as Excel did it. It entered every formula ending in an operand; Excel enters one only when it reads (`=A1)`, `=1e`, `=1,5` in en-US do nothing) and takes a reference after any point (`=A1.`). `refAt` was revised by them.
+- `point-third-held`, 20 places no set had, predicted by the revised `refAt`: 19 of 20 in each locale. The one left is a reference to a sheet the book does not have (`=Sheet1!A`): Excel takes it for another workbook's and the arrow does nothing, which text alone cannot tell; `test/point-excel.test.ts` keeps it as a known difference.
+
+`test/point-excel.test.ts` compares `refAt` with every case that types a text and presses Right, 69 in each locale. A case whose formula bar does not show the text it typed is not stored (another keyboard layout, or a key pressed by someone else at the Mac during the run, spoiled 11 cases of one run, which were run again).
+
+Not measured: a mouse press on a cell or on a sheet's tab while pointing (the harness presses keys only), and Excel for Windows, whose keyboard is not reachable over SSH.
+
 ## The text a cell opens with
 
 `entryText(value, opts)` is the other way round: the text a cell opens with for editing, as Excel's formula bar shows the value it holds, so that the editor shows what Excel shows and the value reads back from it. `needsApostrophe(text, opts)` tells whether text typed into the cell would read as something else than itself.
