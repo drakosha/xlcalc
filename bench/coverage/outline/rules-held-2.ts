@@ -8,7 +8,7 @@
  * at either edge of the sheet, with and without a summary column.
  */
 import type { ColumnInput, RowInput } from '../../../src/contract.js'
-import { collector, H, hide, L, levels, type OutlineBook, type OutlineCase, type OutlineCommand, show } from './cases.js'
+import { H, hide, L, levels, outlineAdder, type OutlineBook, type OutlineCase, show } from './cases.js'
 import { BOOKS as HELD } from './rules-held.js'
 
 export const BOOKS: Record<string, OutlineBook> = {
@@ -37,8 +37,7 @@ export const BOOKS: Record<string, OutlineBook> = {
 }
 
 export function buildOutlineCases(): OutlineCase[] {
-  const { out, add } = collector()
-  const g = (group: string, book: string, ...commands: OutlineCommand[]) => add(group, book, commands)
+  const { out, add, g } = outlineAdder()
 
   g('group', 'deep', { group: '3:6' })
   g('group', 'deep', { group: '5:6' })

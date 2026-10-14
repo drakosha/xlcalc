@@ -144,3 +144,13 @@ export const addedName = (name: string, ref: string, scope?: string): TableStep 
 
 /** The book in ru-RU. */
 export const inRu = (b: BookInput): BookInput => ({ ...b, locale: 'ru-RU' })
+
+/** Sales with a totals row in row 6, the sum of Qty. */
+export function salesWithTotals(): ReturnType<typeof sales> {
+  const t = sales()
+  t.table.range = 'A1:D6'
+  t.table.totals = true
+  t.table.columns[1].totals = { function: 'sum' }
+  t.cells.B6 = { formula: 'SUBTOTAL(109,Sales[Qty])' }
+  return t
+}

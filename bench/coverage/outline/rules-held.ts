@@ -8,7 +8,7 @@
  * (as `writeXlsx` writes lines hidden through `setLayout`).
  */
 import type { ColumnInput, RowInput } from '../../../src/contract.js'
-import { collector, group, H, hide, L, levels, type OutlineBook, type OutlineCase, type OutlineCommand, show, ungroup } from './cases.js'
+import { group, H, hide, L, levels, outlineAdder, type OutlineBook, type OutlineCase, show, ungroup } from './cases.js'
 
 export const BOOKS: Record<string, OutlineBook> = {
   empty: {},
@@ -42,8 +42,7 @@ export const BOOKS: Record<string, OutlineBook> = {
 }
 
 export function buildOutlineCases(): OutlineCase[] {
-  const { out, add } = collector()
-  const g = (group: string, book: string, ...commands: OutlineCommand[]) => add(group, book, commands)
+  const { out, add, g } = outlineAdder()
 
   g('group', 'empty', group('3:5'))
   g('group', 'empty', group('3:5'), group('6:8'))

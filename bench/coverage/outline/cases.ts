@@ -229,6 +229,12 @@ export function collector() {
   return { out, add }
 }
 
+/** The cases of a set by group: `g(group, book, ...commands)` puts a case of the commands on the book (`add` with a window too). */
+export function outlineAdder() {
+  const { out, add } = collector()
+  return { out, add, g: (group: string, book: string, ...commands: OutlineCommand[]) => add(group, book, commands) }
+}
+
 /** Lines at an outline level, and hidden there. */
 export const L = (outlineLevel: number): RowInput & ColumnInput => ({ outlineLevel })
 export const H = (outlineLevel: number): RowInput => ({ outlineLevel, hidden: true })
