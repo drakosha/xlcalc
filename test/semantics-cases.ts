@@ -34,7 +34,6 @@ export interface SemCase {
   note?: string
 }
 
-
 export const CASES: SemCase[] = [
   { id: 's1', fn: 'SUMIFS', formula: 'SUMIFS(Sem!B1:B7,Sem!C1:C7,">=2025-01-01")', excel: 94, note: 'date as text in the criterion' },
   { id: 's2', fn: 'SUMIFS', formula: 'SUMIFS(Sem!B1:B7,Sem!C1:C7,">="&DATE(2025,1,1))', excel: 94, note: 'date through DATE' },

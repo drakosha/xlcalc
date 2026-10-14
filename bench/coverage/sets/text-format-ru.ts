@@ -6,7 +6,6 @@
 import type { Probe } from '../probes.js'
 import { textFormatProbes } from './text-cases.js'
 
-
 const NUMBERS = ['1234.567', '-1234.567', '0', '0.5', '-0.5', '1E+15', '"abc"']
 
 const NUMBER_CODES = [

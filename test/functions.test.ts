@@ -8,7 +8,6 @@ import { describe, expect, it } from 'vitest'
 import { type CellInput } from '../src/index.js'
 import { err, valuesAt } from './formula-values.js'
 
-
 /** Computes formulas over sheet S (cells as given), beside a sheet T, and returns their values in order. */
 const values = valuesAt('2026-10-05T12:00:00Z', true)
 

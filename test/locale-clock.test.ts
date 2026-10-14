@@ -10,7 +10,6 @@ import { compute, createSession } from '../src/index.js'
 import './locales.js'
 import { at, values, volatile } from './clock-books.js'
 
-
 const book: BookInput = {
   locale: 'ru-RU',
   sheets: [
@@ -38,7 +37,6 @@ const book: BookInput = {
     },
   ],
 }
-
 
 describe('date text without a year depends on the clock', () => {
   it("takes the clock's year", () => {

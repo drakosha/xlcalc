@@ -13,7 +13,6 @@ import { currentStructSet } from './stored-cases.js'
 
 const SETS = winFiles<StoredStruct>('struct/')
 
-
 /** The look at the sheet's edges (styles of rows and columns that reach row 1048576 or column XFD) as Excel for Windows reports it. */
 const EDGE = 'Excel for Windows reports the look at the sheet\'s edges otherwise: the empty cells a span reaching the end takes after the operation read plain'
 

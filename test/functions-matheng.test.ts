@@ -6,7 +6,6 @@ import { describe, expect, it } from 'vitest'
 import { type CellInput } from '../src/index.js'
 import { err, valuesAt } from './formula-values.js'
 
-
 const values = valuesAt('2026-10-06T12:00:00Z')
 
 describe('math and engineering functions beyond the Excel cases', () => {

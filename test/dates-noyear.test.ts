@@ -8,7 +8,6 @@ import type { BookInput, ComputeResult } from '../src/contract.js'
 import { compute, createSession } from '../src/index.js'
 import { at, values, volatile } from './clock-books.js'
 
-
 const book: BookInput = {
   sheets: [
     {
@@ -30,7 +29,6 @@ const book: BookInput = {
     },
   ],
 }
-
 
 describe('en-US date text without a year depends on the clock', () => {
   it("takes the clock's year; February 29 of a year that is not leap is February 2029", () => {
