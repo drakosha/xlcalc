@@ -5,10 +5,7 @@
  * a formula over the other spelling reads the name or gives #NAME?; one case adds both. Predicted by the engine before
  * Excel ran it (`name-case-held.predicted.json`).
  */
-import { book, on, type TableCase, type TableStep } from './cases.js'
-
-const typed = (cell: string, formula: string): TableStep => ({ edit: { sheet: 'S', cell, value: { formula } } })
-const added = (name: string, ref: string): TableStep => ({ name: { name, ref } })
+import { addedName, book, on, type TableCase, typedFormula } from './cases.js'
 
 /** The pairs: the spelling JavaScript's upper case changes, the one it gives (the sets `name-case-*` take them too). */
 export const PAIRS: [id: string, word: string, upper: string][] = [
@@ -27,14 +24,14 @@ export function buildTableCases(): TableCase[] {
         id: `${id}-${which}`,
         about: `the name ${name} added, formulas over ${upper} and ${word}`,
         book: book(['S', { A1: 100 }]),
-        steps: [added(name, '5'), typed('C1', `${upper}*2`), typed('C2', `${word}*2`)],
+        steps: [addedName(name, '5'), typedFormula('C1', `${upper}*2`), typedFormula('C2', `${word}*2`)],
         read: on('S', 'A1:C3'),
       })
   cases.push({
     id: 'long-s-both',
     about: 'the names S and ſ added in turn: one name or two',
     book: book(['S', { A1: 100 }]),
-    steps: [added('S', '5'), added('ſ', '7'), typed('C1', 'S*2'), typed('C2', 'ſ*2')],
+    steps: [addedName('S', '5'), addedName('ſ', '7'), typedFormula('C1', 'S*2'), typedFormula('C2', 'ſ*2')],
     read: on('S', 'A1:C3'),
   })
   return cases

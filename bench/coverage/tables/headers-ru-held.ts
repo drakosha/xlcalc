@@ -6,7 +6,7 @@
  * number, a date or a boolean, and formulas typed in Russian over a column named `1,5`.
  */
 import type { NumberFormat } from '../../../src/contract.js'
-import { on, sales, type CellSpec, type TableCase, type TableStep } from './cases.js'
+import { type CellSpec, on, sales, type TableCase, type TableStep, typedLocal } from './cases.js'
 import type { StoredBook, StoredCell } from '../stored.js'
 
 export const local = true
@@ -23,7 +23,6 @@ function ru(head?: NumberFormat): StoredBook {
 }
 
 const type = (cell: string, value: number | string): TableStep => ({ edit: { sheet: 'S', cell, value } })
-const typed = (cell: string, text: string): TableStep => ({ edit: { sheet: 'S', cell, value: { local: text } } })
 
 export function buildTableCases(): TableCase[] {
   const cases: TableCase[] = []
@@ -40,6 +39,6 @@ export function buildTableCases(): TableCase[] {
   add('text-iso', 'a date typed as text, 2025-01-31', [type('C1', '2025-01-31')])
   add('text-decimal', 'a decimal typed as text, 1,5', [type('C1', '1,5')])
   add('text-bool', 'ИСТИНА typed as text', [type('C1', 'ИСТИНА')])
-  add('typed-formulas', 'formulas typed in Russian over the column named 1,5', [type('C1', 1.5), typed('K1', '=СУММ(Sales[[1,5]])'), typed('K2', '=Sales[@[1,5]]*2'), typed('K3', '=СУММ(Sales[[Qty]:[1,5]])')])
+  add('typed-formulas', 'formulas typed in Russian over the column named 1,5', [type('C1', 1.5), typedLocal('K1', '=СУММ(Sales[[1,5]])'), typedLocal('K2', '=Sales[@[1,5]]*2'), typedLocal('K3', '=СУММ(Sales[[Qty]:[1,5]])')])
   return cases
 }
