@@ -10,7 +10,7 @@ import type { StructSet } from '../bench/coverage/struct/cases.js'
 import { pool } from './fixtures/pool.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
-const sets = await Promise.all(['merge', 'merge-held', 'merge-third-held'].map(async (n) => ((await import(`../bench/coverage/struct/${n}.ts`)) as StructSet).buildStructCases()))
+const sets = await Promise.all(['merge', 'merge-held', 'merge-third-held', 'merge-top-held'].map(async (n) => ((await import(`../bench/coverage/struct/${n}.ts`)) as StructSet).buildStructCases()))
 
 /** The input hash and the values' hash of a book. */
 const hashes = (book: BookInput) => {

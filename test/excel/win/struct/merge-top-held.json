@@ -1,0 +1,200 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "read": "A1:Z60",
+  "seconds": 23.9
+ },
+ "books": {
+  "top": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": 2
+      },
+      "C1": {
+       "value": 3
+      },
+      "H1": {
+       "formula": "A1"
+      },
+      "H2": {
+       "formula": "$A$1+B1"
+      },
+      "H3": {
+       "formula": "SUM(A1:B1)"
+      },
+      "H4": {
+       "formula": "COUNTA(A1:A2)"
+      },
+      "H5": {
+       "formula": "IF(A1=\"\",1,0)"
+      },
+      "B5": {
+       "value": 5
+      },
+      "H6": {
+       "formula": "top"
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "formula": "S!A5"
+      },
+      "A2": {
+       "formula": "S!A1+S!B1"
+      }
+     }
+    }
+   ],
+   "names": [
+    {
+     "name": "top",
+     "ref": "'S'!$A$5"
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "merge-A1-C1-read-top",
+   "book": "top",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A1:C1"
+   }
+  },
+  {
+   "id": "merge-A5-B5-name-top",
+   "book": "top",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A5:B5"
+   }
+  },
+  {
+   "id": "merge-A1-B2-read-top",
+   "book": "top",
+   "op": {
+    "op": "mergeCells",
+    "sheet": "S",
+    "range": "A1:B2"
+   }
+  }
+ ],
+ "answers": {
+  "merge-A1-C1-read-top": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$6",
+     "cells": {
+      "A1": "2",
+      "H1": "=#REF!",
+      "H2": "=#REF!+A1",
+      "H3": "=SUM(A1:A1)",
+      "H4": "=COUNTA(A1:A2)",
+      "B5": "5",
+      "H5": "=IF(#REF!=\"\",1,0)",
+      "H6": "=top"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$2",
+     "cells": {
+      "A1": "=S!A5",
+      "A2": "=S!#REF!+S!A1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "top",
+     "ref": "=S!$A$5"
+    }
+   ]
+  },
+  "merge-A5-B5-name-top": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$6",
+     "cells": {
+      "B1": "2",
+      "C1": "3",
+      "H1": "=A1",
+      "H2": "=$A$1+B1",
+      "H3": "=SUM(A1:B1)",
+      "H4": "=COUNTA(A1:A2)",
+      "A5": "5",
+      "H5": "=IF(A1=\"\",1,0)",
+      "H6": "=top"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$2",
+     "cells": {
+      "A1": "=S!#REF!",
+      "A2": "=S!A1+S!B1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "top",
+     "ref": "=S!#REF!"
+    }
+   ]
+  },
+  "merge-A1-B2-read-top": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$6",
+     "cells": {
+      "A1": "2",
+      "C1": "3",
+      "H1": "=#REF!",
+      "H2": "=#REF!+A1",
+      "H3": "=SUM(A1:A1)",
+      "H4": "=COUNTA(A1:A2)",
+      "B5": "5",
+      "H5": "=IF(#REF!=\"\",1,0)",
+      "H6": "=top"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$2",
+     "cells": {
+      "A1": "=S!A5",
+      "A2": "=S!#REF!+S!A1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "top",
+     "ref": "=S!$A$5"
+    }
+   ]
+  }
+ }
+}
