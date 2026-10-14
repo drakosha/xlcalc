@@ -5,7 +5,7 @@
  * closes that session only; admission (`maxQueue`, `maxSessions`) and the order in which a thread takes its tasks.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, createSession, type BookInput, type Calc, type CellEdit } from '../src/index.js'
+import { compute, createSession, type AsyncSession, type BookInput, type Calc, type CellEdit, type Session } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { nodeSpawn, workerThreads } from '../src/worker/platform.js'
 import { createPool } from '../src/worker/pool.js'
@@ -137,29 +137,34 @@ async function heavyCallMs(): Promise<number> {
 const CALLS = 5
 const JOURNAL = 12
 
+/** A session of `calc` over the heavy book and a synchronous one. */
+const heavyPair = async (calc: Calc): Promise<[AsyncSession, Session]> => [await calc.createSession(heavyBook(), { clock: CLOCK }), createSession(heavyBook(), { clock: CLOCK })]
+
+/** The next edit of A1 in both: the same changes and hash. */
+async function sameNext(a: AsyncSession, y: Session) {
+  expect(await a.setCells(setA1(20))).toEqual(y.setCells(setA1(20)))
+  expect((await a.getResult()).hash).toBe(y.getResult().hash)
+}
+
 describe('a restore and the hard deadline', () => {
   it('a session that left a full thread comes back within the deadline however long its journal was', async () => {
     const p = kept(await pool({ threads: 1, hardTimeoutMs: Math.ceil(CALLS * (await heavyCallMs())), maxSessionsPerThread: 1 }))
-    const a = await p.createSession(heavyBook(), { clock: CLOCK })
-    const y = createSession(heavyBook(), { clock: CLOCK })
+    const [a, y] = await heavyPair(p)
     for (let i = 2; i < 2 + JOURNAL; i++) expect(await a.setCells(setA1(i))).toEqual(y.setCells(setA1(i)))
     await p.createSession(chainBook(3), { clock: CLOCK })
-    expect(await a.setCells(setA1(20))).toEqual(y.setCells(setA1(20)))
-    expect((await a.getResult()).hash).toBe(y.getResult().hash)
+    await sameNext(a, y)
   }, 60_000)
 
   it('after a crash the replay of a long journal has a deadline of every call it replays', async () => {
     const { calc, crash } = await inside({ threads: 1, hardTimeoutMs: Math.ceil(CALLS * (await heavyCallMs())) })
     kept(calc)
-    const a = await calc.createSession(heavyBook(), { clock: CLOCK })
-    const y = createSession(heavyBook(), { clock: CLOCK })
+    const [a, y] = await heavyPair(calc)
     for (let i = 2; i < 2 + JOURNAL; i++) {
       await a.setCells(setA1(i))
       y.setCells(setA1(i))
     }
     crash(0)
-    expect(await a.setCells(setA1(20))).toEqual(y.setCells(setA1(20)))
-    expect((await a.getResult()).hash).toBe(y.getResult().hash)
+    await sameNext(a, y)
   }, 60_000)
 })
 

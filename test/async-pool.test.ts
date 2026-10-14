@@ -5,7 +5,7 @@
  * and running.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, createSession, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
+import { compute, createSession, type BookInput, type Calc, type CellInput, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { afterStopped, BOOKS, chainBook, CLOCK, fails, heavyBook, sameOverEdits, setA1, slowBook } from './async-books.js'
 import { closedAfter } from './fixtures/pool.js'
@@ -13,6 +13,24 @@ import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
 import './locales.js'
 import { cellIssues } from './diagnostics.js'
+
+/**
+ * The operations on the book in a session of the pool `p` and in a synchronous one: the same answers, refusals, changes and
+ * `mapCell` of `cells` on each sheet, and the same book after them.
+ */
+async function sameStructure(p: Calc, book: BookInput, ops: StructureOp[], cells: string[]) {
+  const s = await p.createSession(book, { clock: CLOCK })
+  const y = createSession(book, { clock: CLOCK })
+  for (const op of ops) {
+    const names = y.getBook().sheets.map((x) => x.name)
+    const [a, b] = [await s.editStructure(op), y.editStructure(op)]
+    expect(a.ok, JSON.stringify(op)).toBe(b.ok)
+    if (!a.ok || !b.ok) continue
+    expect(a.changes).toEqual(b.changes)
+    for (const sheet of names) for (const cell of cells) expect(a.mapCell({ sheet, cell }), `${JSON.stringify(op)} ${sheet}!${cell}`).toEqual(b.mapCell({ sheet, cell }))
+  }
+  expect(await s.getBook()).toEqual(y.getBook())
+}
 
 const one = (formula: string): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { formula } } }] })
 
@@ -96,17 +114,7 @@ describe('in threads', () => {
       { op: 'deleteSheet', sheet: 'New' },
       { op: 'insertRows', sheet: 'S 3', row: 1048576, count: 1 },
     ]
-    const s = await p.createSession(book, { clock: CLOCK })
-    const y = createSession(book, { clock: CLOCK })
-    for (const op of ops) {
-      const names = y.getBook().sheets.map((x) => x.name)
-      const [a, b] = [await s.editStructure(op), y.editStructure(op)]
-      expect(a.ok, JSON.stringify(op)).toBe(b.ok)
-      if (!a.ok || !b.ok) continue
-      expect(a.changes).toEqual(b.changes)
-      for (const sheet of names) for (const cell of ['A1', 'B2', 'C5', 'D9', 'A12', 'F3', 'G10', 'H20']) expect(a.mapCell({ sheet, cell }), `${JSON.stringify(op)} ${sheet}!${cell}`).toEqual(b.mapCell({ sheet, cell }))
-    }
-    expect(await s.getBook()).toEqual(y.getBook())
+    await sameStructure(p, book, ops, ['A1', 'B2', 'C5', 'D9', 'A12', 'F3', 'G10', 'H20'])
   }, 60_000)
 
   it('editStructure over tables: mapCell and changes of the synchronous session, refusals as its', async () => {
@@ -132,17 +140,7 @@ describe('in threads', () => {
       { op: 'convertTable', table: 'Sales' },
       { op: 'deleteTable', table: 'Deux' },
     ]
-    const s = await p.createSession(book, { clock: CLOCK })
-    const y = createSession(book, { clock: CLOCK })
-    for (const op of ops) {
-      const names = y.getBook().sheets.map((x) => x.name)
-      const [a, b] = [await s.editStructure(op), y.editStructure(op)]
-      expect(a.ok, JSON.stringify(op)).toBe(b.ok)
-      if (!a.ok || !b.ok) continue
-      expect(a.changes).toEqual(b.changes)
-      for (const sheet of names) for (const cell of ['A1', 'A2', 'B1', 'B2', 'C3', 'D4', 'F2', 'J1', 'J2']) expect(a.mapCell({ sheet, cell }), `${JSON.stringify(op)} ${sheet}!${cell}`).toEqual(b.mapCell({ sheet, cell }))
-    }
-    expect(await s.getBook()).toEqual(y.getBook())
+    await sameStructure(p, book, ops, ['A1', 'A2', 'B1', 'B2', 'C3', 'D4', 'F2', 'J1', 'J2'])
   }, 60_000)
 
   it('soft deadlines and aborts, waiting and running; input errors come back as InputError', async () => {
