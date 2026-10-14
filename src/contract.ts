@@ -1919,6 +1919,23 @@ export type StructureOp =
   | { op: 'mergeCells'; sheet: string; range: string; across?: boolean; center?: boolean }
   /** Excel's Unmerge Cells: the merged areas that meet `range` are split back into their cells. */
   | { op: 'unmergeCells'; sheet: string; range: string }
+  /**
+   * Excel's fill handle (`Range.AutoFill`): the cells of `range` go on over `to`, which holds `range` and reaches past it
+   * along one axis, down, up, right or left (`A1:B2` over `A1:B9`, or over `A1:F2`). Each column of a fill down or up,
+   * and each row of one right or left, goes on by itself. The cells added take the source's cells in turn, as copies do
+   * (formulas, styles, number formats), the part of the source nearest to it at the far end when `to` is not a whole
+   * number of sources long; what goes on as a series takes the next value of its series instead (`FillType`).
+   */
+  | { op: 'fillRange'; sheet: string; range: string; to: string; type?: FillType }
+
+/**
+ * What a fill takes from its source (`StructureOp` `fillRange`), as Excel's `XlAutoFillType`. `default` is the drag of
+ * the fill handle (`xlFillDefault`): numbers of two cells or more go on by their trend, a date by days or by the step of
+ * its dates, text that ends in a number by the number (`Item1`, `Item2`), the names of days and months through their
+ * list; anything else, a single number too, is copied. `series` (`xlFillSeries`, the drag with Ctrl over a number) goes
+ * on with a single number as well, by 1. `copy` (`xlFillCopy`) copies every cell.
+ */
+export type FillType = 'default' | 'series' | 'copy'
 
 /** Why Excel would refuse an operation. */
 export type StructureRefusal =

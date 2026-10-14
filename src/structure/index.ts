@@ -54,6 +54,7 @@ const FIELDS: Record<string, string[]> = {
   ...OUTLINE_FIELDS,
   mergeCells: ['sheet', 'range', 'across', 'center'],
   unmergeCells: ['sheet', 'range'],
+  fillRange: ['sheet', 'range', 'to', 'type'],
 }
 
 function integer(v: unknown, path: string, min: number, max: number): number {
@@ -231,6 +232,8 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
       r = o.op === 'mergeCells' ? mergeCells(book, sheet, range, flag('across'), flag('center')) : unmergeCells(book, sheet, range)
       break
     }
+    case 'fillRange':
+      throw new InputError('op.op', 'fillRange is not built yet')
   }
   return r
 }
