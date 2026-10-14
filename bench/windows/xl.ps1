@@ -71,6 +71,8 @@ function Struct($wb, $s) {
       if ($s.target -match 'center') { $rg.HorizontalAlignment = -4108 }
     }
     'unmergeCells' { [void]$ws.Range($s.range).UnMerge() }
+    # the fill handle over the range `to`, which holds the source; the fill's type (XlAutoFillType) in target
+    'fillRange' { [void]$ws.Range($s.range).AutoFill($ws.Range($s.to), [int]$s.target) }
     # a table with headers over the range, named target (Excel for Windows only; the tables step makes its own)
     'addTable' { $ws.ListObjects.Add(1, $ws.Range($s.range), [Type]::Missing, 1).Name = $s.target }
     'renameSheet' { $ws.Name = $s.target }

@@ -1919,6 +1919,27 @@ export type StructureOp =
   | { op: 'mergeCells'; sheet: string; range: string; across?: boolean; center?: boolean }
   /** Excel's Unmerge Cells: the merged areas that meet `range` are split back into their cells. */
   | { op: 'unmergeCells'; sheet: string; range: string }
+  /**
+   * Excel's fill handle (`Range.AutoFill`): the cells of `range` go on over `to`, which holds `range` and reaches past it
+   * along one axis, down, up, right or left (`A1:B2` over `A1:B9`, or over `A1:F2`). The cells added take the source's
+   * cells in turn, as copies do (formulas, styles, number formats), the part of the source nearest to it at the far end
+   * when `to` is not a whole number of sources long; refusals are a copy's. Each column of a fill down or up, and each row
+   * of one right or left, goes on by itself, and what goes on as a series takes its next values instead (`FillType`,
+   * docs/structure.md "The fill handle"). A `to` of another shape is an `InputError`.
+   */
+  | { op: 'fillRange'; sheet: string; range: string; to: string; type?: FillType }
+
+/**
+ * What a fill takes from its source (`StructureOp` `fillRange`), as Excel's `XlAutoFillType`. `default` is the drag of
+ * the fill handle (`xlFillDefault`). A line's source is cut into runs of cells of one kind, empty cells skipped: numbers
+ * go on by their step or trend; dates by days, by their step, or by months when they share a day of the month or are
+ * months' ends; times by hours or their step; text with a number at the start (and a space) or at the end by the number,
+ * quarters and en-US ordinals too; names of days and months through their list; dates, times and text without one step
+ * are copied, and so are text, booleans and formulas. A single number goes on by 1 unless the source holds plain numbers
+ * alone. `series` (`xlFillSeries`, the drag with Ctrl over a number) makes a single number go on by 1 always. `copy`
+ * (`xlFillCopy`) copies every cell.
+ */
+export type FillType = 'default' | 'series' | 'copy'
 
 /** Why Excel would refuse an operation. */
 export type StructureRefusal =

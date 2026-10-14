@@ -3,34 +3,11 @@
  * it again (`session/merged.ts`), in one step of the undo, in every kind of session; the cell moved into an empty
  * top-left cell is where `mapCell` says; the operations' input is checked. Excel's answers are in `structure-win.test.ts`.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, createSession, editStructure, InputError, registerLocale, type BookInput, type Calc, type StructureOp } from '../src/index.js'
-import { takenBook } from '../bench/coverage/stored.js'
-import type { StructSet } from '../bench/coverage/struct/cases.js'
-import { pool } from './fixtures/pool.js'
+import { describe, expect, it } from 'vitest'
+import { compute, createSession, editStructure, registerLocale, type BookInput } from '../src/index.js'
+import { clock, hashes, inOtherSessions, inputErrorPath, opCases } from './struct-sessions.js'
 
-const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
-const sets = await Promise.all(['merge', 'merge-held', 'merge-third-held', 'merge-top-held'].map(async (n) => ((await import(`../bench/coverage/struct/${n}.ts`)) as StructSet).buildStructCases()))
-
-/** The input hash and the values' hash of a book. */
-const hashes = (book: BookInput) => {
-  const r = compute(book, { clock })
-  return [r.inputHash, r.hash]
-}
-
-/** Each case's book, its operations in order, and the book `editStructure` gives after them (null when it refuses). */
-const cases = sets.flatMap((set) =>
-  set.cases.map((c) => {
-    const book = takenBook(set.books[c.book])
-    const ops = [...(c.before ? [c.before] : []), c.op]
-    let after: BookInput | null = book
-    for (const op of ops) {
-      const r: ReturnType<typeof editStructure> | null = after && editStructure(after, op)
-      after = r?.ok ? r.book : null
-    }
-    return { id: c.id, book, ops, after }
-  }),
-)
+const cases = await opCases(['merge', 'merge-held', 'merge-third-held', 'merge-top-held'])
 
 describe('mergeCells and unmergeCells in a session', () => {
   it('give the book editStructure gives, and undo and redo each in one step', () => {
@@ -74,17 +51,7 @@ describe('mergeCells and unmergeCells in a session', () => {
       [{ op: 'mergeCells', sheet: 'X', range: 'A1:B2' }, 'op.sheet'],
       [{ op: 'unmergeCells', sheet: 'S', range: 'A1', across: true }, 'op'],
     ]
-    for (const [op, path] of bad) {
-      const e = (() => {
-        try {
-          editStructure(book, op as StructureOp)
-        } catch (x) {
-          return x
-        }
-      })()
-      expect(e, JSON.stringify(op)).toBeInstanceOf(InputError)
-      expect((e as InputError).path, JSON.stringify(op)).toBe(path)
-    }
+    for (const [op, path] of bad) expect(inputErrorPath(book, op), JSON.stringify(op)).toBe(path)
   })
 
   it('refuse in the language of the book', async () => {
@@ -96,21 +63,5 @@ describe('mergeCells and unmergeCells in a session', () => {
 })
 
 describe('mergeCells and unmergeCells in the other kinds of session', () => {
-  const calcs: Calc[] = []
-  afterAll(() => Promise.all(calcs.map((c) => c.close())))
-
-  /** The cases of `merge-held` in a session of `calc`: the same books and steps as the synchronous session's. */
-  async function same(calc: Calc) {
-    calcs.push(calc)
-    for (const c of cases.filter((x) => x.after && x.id.startsWith('merge-A1-B2'))) {
-      const s = await calc.createSession(c.book, { clock })
-      for (const op of c.ops) await s.editStructure(op)
-      expect(hashes(await s.getBook()), c.id).toEqual(hashes(c.after!))
-      await s.undo()
-      expect(hashes(await s.getBook()), c.id).toEqual(hashes(c.book))
-    }
-  }
-
-  it('in the same thread', () => same(createInlineCalc({ sliceMs: 1 })))
-  it('in a thread', async () => same(await pool({ threads: 1 })), 60_000)
+  inOtherSessions(cases.filter((x) => x.after && x.id.startsWith('merge-A1-B2')))
 })
