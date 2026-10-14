@@ -7,6 +7,7 @@
  */
 import type { BookInput, CellInput, CellValue, NumberFormat } from '../../../src/contract.js'
 import type { StoredCell } from '../stored.js'
+import { groupCollector } from '../collect.js'
 
 export interface EntryCase {
   id: string
@@ -75,12 +76,7 @@ export function entryCases(general: Readonly<Record<string, readonly string[]>>,
 }
 
 export function collector() {
-  const out: EntryCase[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, text: string, format?: NumberFormat) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, text, ...(format !== undefined ? { format } : {}) })
-  }
+  const { out, add: put } = groupCollector<EntryCase>()
+  const add = (group: string, text: string, format?: NumberFormat) => put(group, { text, ...(format !== undefined ? { format } : {}) })
   return { out, add }
 }

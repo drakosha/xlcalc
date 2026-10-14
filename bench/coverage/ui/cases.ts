@@ -11,6 +11,7 @@
 import type { BookInput, CellInput, CellValue, ColumnInput, DataValidation, NumberFormat } from '../../../src/contract.js'
 import { formatAddress, indexToCol, parseAddress } from '../../../src/model.js'
 import { numberFormatCategory, numberFormatChoices } from '../../../src/text.js'
+import { groupCollector } from '../collect.js'
 
 export type UiAction =
   /** The formula bar of each cell, selected and then in editing (F2). */
@@ -166,16 +167,7 @@ export const uiBook = (c: UiCase, locale?: string): BookInput => ({
 })
 
 /** Cases of one group: ids `<group>-<n>`. */
-export function collector() {
-  const out: UiCase[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, c: Omit<UiCase, 'id'>) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, ...c })
-  }
-  return { out, add }
-}
+export const collector = () => groupCollector<UiCase>()
 
 /** What the ribbon shows in a cell of a case: the box's category; for an item applied, the item's name, the format it applies and the box's category after. */
 export type RibbonCell = string | { name: string; format: NumberFormat; box: string }

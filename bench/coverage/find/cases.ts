@@ -13,6 +13,7 @@ import { createSession, InputError } from '../../../src/index.js'
 import { formatAddress } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { localeDir } from '../locales.js'
+import { groupCollector } from '../collect.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
 
@@ -122,12 +123,7 @@ export function findInBook(b: FindBook, q: FindQuery, tag: string): string[] | n
 
 /** Cases of one group: ids `<group>-<n>`; a query of Find's by default, of Replace's for its sets. */
 export function collector<Q = FindQuery>() {
-  const out: { id: string; book: string; query: Q }[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, book: string, query: Q) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, book, query })
-  }
+  const { out, add: put } = groupCollector<{ id: string; book: string; query: Q }>()
+  const add = (group: string, book: string, query: Q) => put(group, { book, query })
   return { out, add }
 }

@@ -12,6 +12,7 @@ import { editStructure, InputError, outlineGroups, patchLines } from '../../../s
 import { colToIndex, indexToCol } from '../../../src/model.js'
 import { writeXlsx } from '../../../src/xlsx.js'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
+import { groupCollector } from '../collect.js'
 
 /** A book of a set: the sheet `S`. */
 export interface OutlineBook {
@@ -223,12 +224,7 @@ export const engineViews = (b: OutlineBook, c: OutlineCase): Promise<OutlineView
 
 /** Cases of one group: ids `<group>-<n>`. */
 export function collector() {
-  const out: OutlineCase[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, book: string, commands: OutlineCommand[], window?: OutlineWindow) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, book, commands, ...(window ? { window } : {}) })
-  }
+  const { out, add: put } = groupCollector<OutlineCase>()
+  const add = (group: string, book: string, commands: OutlineCommand[], window?: OutlineWindow) => put(group, { book, commands, ...(window ? { window } : {}) })
   return { out, add }
 }

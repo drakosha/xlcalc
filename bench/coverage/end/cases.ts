@@ -10,6 +10,7 @@ import type { BookInput, CellInput, CellStyle, ColumnInput, EndDirection, LookRa
 import { createSession } from '../../../src/index.js'
 import { filteredRows } from '../find/cases.js'
 import { localeDir } from '../locales.js'
+import { groupCollector } from '../collect.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
 
@@ -83,13 +84,8 @@ const SHORT: Record<string, EndDirection> = { u: 'up', d: 'down', l: 'left', r: 
 
 /** Cases of one group: ids `<group>-<n>`; `list` adds them from text, `A1:d B5:r` (`u`, `d`, `l`, `r`). */
 export function collector() {
-  const out: EndCase[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, book: string, cell: string, direction: EndDirection) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, book, cell, direction })
-  }
+  const { out, add: put } = groupCollector<EndCase>()
+  const add = (group: string, book: string, cell: string, direction: EndDirection) => put(group, { book, cell, direction })
   const list = (group: string, book: string, text: string) => {
     for (const x of text.split(' ')) {
       const [cell, d] = x.split(':')

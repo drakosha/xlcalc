@@ -10,6 +10,7 @@ import type { BookInput, CellInput, CellStyle, ColumnInput, RowInput } from '../
 import { formatAddress, indexToCol } from '../../../src/model.js'
 import { internStyle } from '../../../src/style-table.js'
 import { takenPart, type StoredCell } from '../stored.js'
+import { groupCollector } from '../collect.js'
 
 /**
  * How `typed` is typed: Excel's `Value` with the text, `Formula2Local` (Excel 365's typing in the user's language), or
@@ -111,13 +112,4 @@ export function rowsBook(cases: RowCase[]): BookInput {
 }
 
 /** Cases of one group: ids `<group>-<n>`. */
-export function collector() {
-  const out: RowCase[] = []
-  const count = new Map<string, number>()
-  const add = (group: string, c: Omit<RowCase, 'id'>) => {
-    const n = (count.get(group) ?? 0) + 1
-    count.set(group, n)
-    out.push({ id: `${group}-${n}`, ...c })
-  }
-  return { out, add }
-}
+export const collector = () => groupCollector<RowCase>()
