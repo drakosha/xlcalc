@@ -8,16 +8,14 @@
  * `FCOV_FRESH=1` every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { hiddenFile, type HiddenAnswer, type HiddenCase, type HiddenCases, type HiddenSet } from './hidden/cases.js'
 import { localeMeta } from './locales.js'
 import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { opJson } from './struct.js'
 import { caseFiles } from './xlsx/sent.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-hidden.applescript')
 
 export interface StoredHidden extends HiddenCases {

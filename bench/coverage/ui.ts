@@ -12,7 +12,6 @@
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { escapeAttr } from '../../src/xlsx/xml/text.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
@@ -22,9 +21,8 @@ import { localeDir, localeMeta } from './locales.js'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, writeAnswers } from './stored.js'
 import { clipboardText, readCells, readColumns, selectedOf, uiBook, type PointStep, type UiAnswer, type UiCase, type UiCell, type UiSet } from './ui/cases.js'
 import { rawFile } from './xlsx/sent.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-ui.applescript')
 const KEYS = join(HERE, 'excel-keys.applescript')
 const INPUT_SOURCE = join(HERE, 'input-source.swift')

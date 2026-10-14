@@ -9,7 +9,6 @@
 import { execFileSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, takenBook, took, writeAnswers, type StoredBook } from './stored.js'
 import { answerOf, editOf, mirrorFormulas, MIRRORS, mirrorRanges, refusedOf } from './case-book.js'
 import { columnCells, rowCells } from './struct.js'
@@ -20,9 +19,8 @@ import type { TableAnswer, TableCase, TableSet, TableShape, TableStep } from './
 import type { BookInput } from '../../src/contract.js'
 import { sheetKey } from '../../src/syntax.js'
 import { writeXlsx } from '../../src/xlsx.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-tables.applescript')
 
 export interface StoredTables {

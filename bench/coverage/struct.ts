@@ -8,7 +8,6 @@
  * `FSTRUCT_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, writeAnswers } from './stored.js'
 import { localeMeta } from './locales.js'
@@ -22,9 +21,8 @@ import { parseRange, rectCells } from '../../src/structure/area.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
 import { fromRgb } from './cond/cases.js'
 import type { StoredBook, StoredRow, StoredSheet } from './stored.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-struct.applescript')
 
 /** The rectangle read on every sheet after the operation; a case keeps its cells inside it or lists them in `extra`. */

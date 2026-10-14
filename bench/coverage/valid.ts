@@ -7,7 +7,6 @@
  * only those cases, `FCOV_FRESH=1` every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { areasOf } from '../../src/validation/rules.js'
 import { formatAddress } from '../../src/model.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
@@ -16,9 +15,8 @@ import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { opJson } from './struct.js'
 import { lineRange, validCaseFile, WINDOW, type ValidAnswer, type ValidCase, type ValidCases, type ValidMake, type ValidSet, type ValidSheetAnswer } from './valid/cases.js'
 import { caseFiles } from './xlsx/sent.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-valid.applescript')
 
 export interface StoredValid extends ValidCases {
@@ -62,7 +60,6 @@ export function makeArgs(make: ValidMake[] = []): string[][] {
 }
 
 type RawSheet = [string, ValidSheetAnswer['rules'], ValidSheetAnswer['rows'], ValidSheetAnswer['columns'], [string, string]]
-
 
 /** One case in Excel: its answer and the saved file, or the repair window's text. A window that is not a book stops the run. */
 async function runCase(c: ValidCase, data: Uint8Array, window: string): Promise<{ answer: ValidAnswer; saved: Uint8Array } | { rejected: string }> {

@@ -8,16 +8,14 @@
  * text, nothing clicked. `FLINKS_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { answerOf, cellsOf, eachRectCell, grid, mirrorRanges, refusedOf } from './case-book.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { linkFile, type LinksAnswer, type LinksCase, type LinksCases, type LinksOp, type LinksRead, type LinksSet } from './links/cases.js'
 import { localeMeta } from './locales.js'
 import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { caseFiles } from './xlsx/sent.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-links.applescript')
 
 export interface StoredLinks extends LinksCases {

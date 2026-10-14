@@ -6,7 +6,6 @@
  * the reader and `editStructure` without Excel. `FPARTS_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` every case again.
  */
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { writeXlsx } from '../../src/xlsx.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { localeMeta } from './locales.js'
@@ -15,9 +14,8 @@ import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { threadedFile } from './parts/threaded.js'
 import { opJson } from './struct.js'
 import { caseFiles, rawFile } from './xlsx/sent.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-parts.applescript')
 
 export interface StoredParts extends PartsCases {

@@ -9,7 +9,6 @@
 import JSZip from 'jszip'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { writeXlsx } from '../../src/xlsx.js'
 import { indexToCol } from '../../src/model.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
@@ -17,9 +16,8 @@ import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
 import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, writeAnswers } from './stored.js'
 import { caseColumn, caseRows, fitBook, type FitAnswer, type FitCase, type FitSet } from './fit/cases.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-fit.applescript')
 const KEYS = join(HERE, 'excel-keys.applescript')
 /** The cases of one book, at most: a column each. */

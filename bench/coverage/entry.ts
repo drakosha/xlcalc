@@ -9,7 +9,6 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import type { CellInput } from '../../src/contract.js'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
@@ -17,9 +16,8 @@ import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
 import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, writeAnswers, type StoredCell } from './stored.js'
 import { entryBook, type EntryAnswer, type EntryCase, type EntrySet } from './entry/cases.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-entry.applescript')
 /** The cases of one book, at most. */
 export const ENTRY_PART = 100

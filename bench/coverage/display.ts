@@ -13,7 +13,6 @@ import JSZip from 'jszip'
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
 import { dialogText, ensureExcel, excelVersion, halving, runScriptWatched } from './excel.js'
@@ -24,9 +23,8 @@ import { xl } from './sets/arrays/common.js'
 import { formatAddress, inputScalar } from '../../src/model.js'
 import type { DisplayAnswer, DisplayCase, DisplaySet } from './display/cases.js'
 import { fromRgb } from './cond/cases.js'
+import { HERE, ROOT } from './paths.js'
 
-const HERE = fileURLToPath(new URL('.', import.meta.url))
-const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-display.applescript')
 const OUT = join(HERE, 'out')
 
