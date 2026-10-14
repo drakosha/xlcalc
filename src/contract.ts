@@ -972,6 +972,14 @@ export interface TableReference extends ReferenceSpan {
 /** A reference found in formula text: to cells or lines of a sheet, or to a table. */
 export type FormulaReference = GridReference | TableReference
 
+/**
+ * What an arrow does at a place of formula text typed over a cell (Excel's Enter mode), as `refAt` says it: `insert`, a
+ * reference to the cell the arrow points at goes in at `at` (Point mode); `commit`, the text is entered into the cell and
+ * the arrow moves the selection, as after a value; `none`, nothing happens (the text cannot take a reference there and is
+ * not a formula Excel enters: inside a string, after a character the locale's formulas do not have).
+ */
+export type PointAction = { action: 'insert'; at: number } | { action: 'commit' } | { action: 'none' }
+
 /** `scanReferences`'s options. */
 export interface ScanOptions {
   /** The locale the text is typed in, a loaded locale's tag (`LOCALES`) or a locale object; without it the text is a stored formula. */
