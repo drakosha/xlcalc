@@ -2,8 +2,8 @@
  * `editStructure(book, op)`: one structure operation on a book, as a pure function. Input of the wrong
  * shape throws `InputError`; an operation Excel would refuse returns `{ ok: false, code, message }`.
  */
-import type { BookInput, CellRef, StructureResult, StructureOp } from '../contract.js'
-import { checkAddress, checkBook, checkString, InputError, onlyKeys } from '../input.js'
+import type { BookInput, CellRef, FillType, StructureResult, StructureOp } from '../contract.js'
+import { checkAddress, checkBook, checkOneOf, checkString, InputError, onlyKeys } from '../input.js'
 import { opTaken } from '../taken.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { say } from '../locale/messages.js'
@@ -11,7 +11,7 @@ import { sheetKey } from '../syntax.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockSerial } from '../result.js'
-import { parseRange } from './area.js'
+import { areaText, parseRange } from './area.js'
 import { looksTaken } from '../looks/sheet.js'
 import { linesMoved, overLooks } from './looks.js'
 import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry.js'
@@ -25,6 +25,7 @@ import { checkWrites } from './writes.js'
 import { tableOp } from '../tables/ops.js'
 import { OUTLINE_FIELDS, outlineOp } from './outline.js'
 import { mergeCells, unmergeCells } from './merge.js'
+import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
 
@@ -56,6 +57,8 @@ const FIELDS: Record<string, string[]> = {
   unmergeCells: ['sheet', 'range'],
   fillRange: ['sheet', 'range', 'to', 'type'],
 }
+
+const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
 
 function integer(v: unknown, path: string, min: number, max: number): number {
   if (typeof v !== 'number' || !Number.isInteger(v) || v < min || v > max) throw new InputError(path, `expected an integer from ${min} to ${max}, got ${JSON.stringify(v)}`)
@@ -232,8 +235,13 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
       r = o.op === 'mergeCells' ? mergeCells(book, sheet, range, flag('across'), flag('center')) : unmergeCells(book, sheet, range)
       break
     }
-    case 'fillRange':
-      throw new InputError('op.op', 'fillRange is not built yet')
+    case 'fillRange': {
+      if (o.type !== undefined) checkOneOf(o.type, 'op.type', FILL_TYPES)
+      const sheet = named(o.sheet, 'op.sheet')
+      const copy: Copier = (b, from, at) => applyOp(b, { op: 'copyRange', from: { sheet, range: areaText(from) }, to: { sheet, range: areaText(at) } }, values)
+      r = fillRange(book, sheet, rangeOf(o.range, 'op.range'), rangeOf(o.to, 'op.to'), String(o.to), (o.type ?? 'default') as FillType, copy)
+      break
+    }
   }
   return r
 }
