@@ -112,7 +112,7 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
   for (const i of cellsIn(g, src)) {
     const cell = g.cell[i]
     if (empty(cell)) continue
-    numbers &&= cell.formula === undefined && (typeof cell.value === 'number' || typeof cell.value === 'object')
+    numbers &&= cell.formula === undefined && typeof cell.value === 'number' && shownAs(formatAt(sheet, cell, g.row[i], g.col[i])) === 'number'
     const [along, across] = axis === 'r' ? [g.row[i], g.col[i]] : [g.col[i], g.row[i]]
     let line = lines.get(across)
     if (!line) lines.set(across, (line = new Map()))
@@ -206,8 +206,8 @@ function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], 
   }
   if ((m = ORDINAL.exec(v))) return { k: 'text', key: 'ordinal', y: Number(m[1]), make: (n) => Math.abs(n) + ordinal(n) }
   if ((m = LEADING.exec(v))) {
-    const [tail, width] = [m[2], widthOf(m[1])]
-    return { k: 'text', key: `leading ${tail}`, y: Number(m[1]), make: (n) => digits(n, width) + tail }
+    const tail = m[2]
+    return { k: 'text', key: `leading ${tail}`, y: Number(m[1]), make: (n) => digits(n, 0) + tail }
   }
   if ((m = SUFFIX.exec(v))) {
     const [head, width] = [m[1], widthOf(m[2])]
@@ -290,10 +290,13 @@ function goesOn(run: Run, single: boolean, epoch: number): ((e: number, source: 
 /** Positions in a list that goes round `cycle`, each taken a step forward from the one before it (Sat, Sun as 6, 7). */
 const unwrapped = (ys: number[], cycle: number) => ys.map((y, i) => (i === 0 ? y : ys[0] + ys.slice(1, i + 1).reduce((s, x, j) => s + round(x - ys[j], cycle), 0)))
 
+/** Two values alike in Excel's 15 digits (9:00 and two hours on from 9:00 part in the last bit from 11:00). */
+const same = (x: number, y: number) => x.toPrecision(15) === y.toPrecision(15)
+
 /** The values' step, when each goes on from the one before it by the same (a single value by 1): the value at element `e`; else null. */
 function stepOf(ys: number[]): ((e: number) => number) | null {
   const d = ys.length > 1 ? ys[1] - ys[0] : 1
-  return ys.every((y, i) => i === 0 || y - ys[i - 1] === d) ? (e) => ys[0] + d * e : null
+  return ys.every((y, i) => same(ys[0] + d * i, y)) ? (e) => ys[0] + d * e : null
 }
 
 /** The values' linear trend at element `e`: their step when they have one, else the least-squares line. */
