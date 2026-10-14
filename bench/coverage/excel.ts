@@ -14,6 +14,8 @@ import type { ErrCode } from './data.js'
 import type { Val } from './formulajs.js'
 import { launchArgs } from './locales.js'
 import { alive, sleep } from './proc.js'
+import type { BookInput } from '../../src/contract.js'
+import { writeXlsx } from '../../src/xlsx.js'
 
 /** Excel's sandbox: Excel opens a book from there without asking for access. */
 const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
@@ -320,6 +322,37 @@ export interface Watch<T> {
  * ("We found a problem with some content") is declined and the step's `repair` answers; another window that is not a
  * book stops the run when `fatal`, nothing clicked; so does Excel not answering in time.
  */
+/** The keyboard's script, which the steps that type into Excel run. */
+const KEYS = fileURLToPath(new URL('./excel-keys.applescript', import.meta.url))
+
+/**
+ * What `runWatched` takes for a part of a set run with the keyboard's help (`fit`, `rows`): the book written whole as
+ * xlsx (`label` names it in errors), the saved file and the part's spec as arguments; typed on the keyboard, the script
+ * answers a refused formula's window itself, and a book Excel would repair stops the run.
+ */
+export function keyedPart(label: string, script: string, folder: string, book: BookInput, spec: unknown, keys: boolean): Omit<Watch<never>, 'done'> {
+  return {
+    script,
+    label,
+    folder,
+    book: async (file) => {
+      const { data, issues } = await writeXlsx({ book }, { values: 'omit' })
+      if (issues.length) throw new Error(`${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
+      writeFileSync(file, data)
+    },
+    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', JSON.stringify(spec), KEYS],
+    timeout: 290_000,
+    poll: 1000,
+    after: 'part',
+    fatal: !keys,
+    repair: async (stop) => {
+      await stop()
+      await settleRejected()
+      throw new Error(`${label}: Excel would repair the book`)
+    },
+  }
+}
+
 export async function runWatched<T>(w: Watch<T>): Promise<T> {
   const at = (m: string) => (w.label === undefined ? m : `${w.label}: ${m}`)
   if (w.before !== false) {

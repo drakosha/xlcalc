@@ -7,11 +7,10 @@
  * cases, `FFIT_AGAIN=id,id` those again, `FCOV_FRESH=1` every case again.
  */
 import JSZip from 'jszip'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { writeXlsx } from '../../src/xlsx.js'
 import { indexToCol } from '../../src/model.js'
-import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
+import { declineRepair, ensureExcel, excelVersion, keyedPart, runWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
 import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, writeAnswers } from './stored.js'
@@ -19,7 +18,6 @@ import { caseColumn, caseRows, fitBook, type FitAnswer, type FitCase, type FitSe
 import { HERE, ROOT } from './paths.js'
 
 const SCRIPT = join(HERE, 'excel-fit.applescript')
-const KEYS = join(HERE, 'excel-keys.applescript')
 /** The cases of one book, at most: a column each. */
 export const FIT_PART = 60
 
@@ -85,25 +83,7 @@ async function runPart(part: FitCase[], label: string): Promise<Record<string, F
   if (declineRepair()) console.log('closed a leftover book repair window')
   const keys = part.some((c) => c.via === 'keys')
   return runWatched<Record<string, FitAnswer>>({
-    script: SCRIPT,
-    label: `fit ${label}`,
-    folder: 'ffit',
-    book: async (file) => {
-      const { data, issues } = await writeXlsx({ book: fitBook(part) }, { values: 'omit' })
-      if (issues.length) throw new Error(`fit ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
-      writeFileSync(file, data)
-    },
-    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', JSON.stringify(partSpec(part)), KEYS],
-    timeout: 290_000,
-    poll: 1000,
-    after: 'part',
-    // typed on the keyboard, the script answers the window a refused formula brings itself
-    fatal: !keys,
-    repair: async (stop) => {
-      await stop()
-      await settleRejected()
-      throw new Error(`fit ${label}: Excel would repair the book`)
-    },
+    ...keyedPart(`fit ${label}`, SCRIPT, 'ffit', fitBook(part), partSpec(part), keys),
     done: (out, dir) => {
       const raw = JSON.parse(out) as { refused: string[][]; cases: [number, number, boolean, string[]][] }
       return partAnswers(part, raw.refused, raw.cases, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))))
