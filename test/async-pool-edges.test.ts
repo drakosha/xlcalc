@@ -2,20 +2,14 @@
  * The pool at its edges: a book or an edit that cannot cross to a thread, closing a session while the pool closes or
  * while its thread is lost, admission with `maxQueue: 0`, options that cannot hold together.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { InputError, type BookInput, type Calc, type CellInput } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { InputError, type BookInput, type CellInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { createCalcPool } from '../src/worker/index.js'
 import { chainBook, setA1 } from './async-books.js'
-import { inside, pool } from './fixtures/pool.js'
+import { closedAfter, inside, pool } from './fixtures/pool.js'
 
-const open: Calc[] = []
-const made = async (...a: Parameters<typeof pool>) => {
-  const p = await pool(...a)
-  open.push(p)
-  return p
-}
-afterAll(() => Promise.all(open.map((p) => p.close())))
+const { keep, made } = closedAfter()
 
 /** What `p` settles to, or 'hung' when it has not within `ms`. */
 const settled = (p: Promise<unknown>, ms = 3000): Promise<unknown> =>
@@ -59,7 +53,7 @@ describe('the pool at its edges', () => {
 
   it('a session closed while its thread is lost is closed', async () => {
     const { calc, crash } = await inside({ threads: 1 })
-    open.push(calc)
+    keep(calc)
     const s = await calc.createSession(chainBook(3))
     const closing = s.close()
     crash(0)

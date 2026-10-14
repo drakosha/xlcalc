@@ -3,21 +3,11 @@
  * between portions, and a structure operation stops at its soft deadline, leaving the session as it was.
  */
 import { describe, expect, it } from 'vitest'
-import { CalcError, createInlineCalc, createSession, editStructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
+import { createInlineCalc, createSession, editStructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { CLOCK, medianMs } from './async-books.js'
+import { CLOCK, fails, medianMs } from './async-books.js'
 
 const SLICE_MS = 5
-
-const fails = async (p: Promise<unknown>): Promise<CalcError> => {
-  try {
-    await p
-  } catch (e) {
-    expect(e).toBeInstanceOf(CalcError)
-    return e as CalcError
-  }
-  throw new Error('expected CalcError')
-}
 
 /** The longest wait of the event loop while `p` is pending, and its runs; a call that never yields leaves it none. */
 async function loopDuring<T>(p: Promise<T>): Promise<{ value: T; worst: number; ticks: number }> {

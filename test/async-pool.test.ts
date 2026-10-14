@@ -4,35 +4,19 @@
  * calls mixed; `mapCell` of a structure operation as the synchronous session's; soft deadlines and aborts, waiting
  * and running.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { CalcError, compute, createSession, type BookInput, type Calc, type CellInput, type StructureOp } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { compute, createSession, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
-import { pool } from './fixtures/pool.js'
+import { BOOKS, chainBook, CLOCK, fails, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
+import { closedAfter } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
 import './locales.js'
 import { cellIssues } from './diagnostics.js'
 
-const fails = async (p: Promise<unknown>): Promise<CalcError> => {
-  try {
-    await p
-  } catch (e) {
-    expect(e).toBeInstanceOf(CalcError)
-    return e as CalcError
-  }
-  throw new Error('expected CalcError')
-}
-
 const one = (formula: string): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { formula } } }] })
 
-const open: Calc[] = []
-const made = async (...a: Parameters<typeof pool>) => {
-  const p = await pool(...a)
-  open.push(p)
-  return p
-}
-afterAll(() => Promise.all(open.map((p) => p.close())))
+const { made } = closedAfter()
 
 describe.each(['closures', 'eval'] as const)('in threads, execution %s', (execution) => {
   it('the case books: values and hashes as the synchronous engine', async () => {

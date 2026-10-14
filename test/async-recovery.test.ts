@@ -4,28 +4,16 @@
  * session that never lost its thread, a session leaves a full thread and comes back the same way, a failed restore
  * closes that session only; admission (`maxQueue`, `maxSessions`) and the order in which a thread takes its tasks.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { CalcError, compute, createSession, type BookInput, type Calc, type CellEdit } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { compute, createSession, type BookInput, type Calc, type CellEdit } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { nodeSpawn, workerThreads } from '../src/worker/platform.js'
 import { createPool } from '../src/worker/pool.js'
-import { chainBook, CLOCK, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
-import { inside, pool } from './fixtures/pool.js'
+import { chainBook, CLOCK, fails, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
+import { closedAfter, inside, pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
 
-const fails = async (p: Promise<unknown>): Promise<CalcError> => {
-  try {
-    await p
-  } catch (e) {
-    expect(e).toBeInstanceOf(CalcError)
-    return e as CalcError
-  }
-  throw new Error('expected CalcError')
-}
-
-const open: Calc[] = []
-afterAll(() => Promise.all(open.map((p) => p.close())))
-const kept = <T extends Calc>(c: T) => (open.push(c), c)
+const { keep: kept } = closedAfter()
 
 const heavy: CellEdit[] = setA1(2)
 

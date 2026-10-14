@@ -4,6 +4,7 @@
  * into one module first. `peek` sees the pool's threads and sessions; `inside` also crashes a thread.
  */
 import { build } from 'esbuild'
+import { afterAll } from 'vitest'
 import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -35,6 +36,17 @@ async function threadScript(): Promise<URL> {
 export async function pool(opts?: CalcPoolOptions, peek?: (inside: PoolInside) => void): Promise<Calc> {
   const o = checkPoolOptions(opts)
   return createPool(o, nodeSpawn(workerThreads()!, await threadScript(), o.maxHeapMb), peek)
+}
+
+/**
+ * Calcs closed after a test file's tests (`open`, in the order kept): `keep` one made otherwise, `made` a pool (`pool`). Called at the top of a file,
+ * where `afterAll` registers the closing.
+ */
+export function closedAfter() {
+  const open: Calc[] = []
+  afterAll(() => Promise.all(open.map((c) => c.close())))
+  const keep = <T extends Calc>(c: T): T => (open.push(c), c)
+  return { open, keep, made: async (...a: Parameters<typeof pool>) => keep(await pool(...a)) }
 }
 
 /** A pool with its inside, and a crash of thread `i` as Node reports a thread that exited by itself. */

@@ -6,24 +6,18 @@
  * explanation, a window's formulas in the locale (`getViewport`) and its refusals are a synchronous session's. Before
  * ru-RU is loaded a pool refuses a ru-RU book as the same thread does. The file does not import `locales.ts`.
  */
-import { afterAll, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { compute, InputError, createSession, registerLocale, type BookInput, type Calc } from '../src/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { sentLocale } from '../src/worker/protocol.js'
-import { inside, pool } from './fixtures/pool.js'
+import { closedAfter, inside } from './fixtures/pool.js'
 
 const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { formula: 'TEXT(45688.75,"ДД ММММ ГГГГ ч:мм")' } }
 const book = (locale: string): BookInput => ({ locale, sheets: [{ name: 'S', cells }] })
 const HINT = "book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)"
 
-const open: Calc[] = []
-const made = async (...a: Parameters<typeof pool>) => {
-  const p = await pool(...a)
-  open.push(p)
-  return p
-}
-afterAll(() => Promise.all(open.map((p) => p.close())))
+const { open, keep, made } = closedAfter()
 
 /** What a synchronous session answers: its values, its explanation, a window's formula in the locale and its refusal of deleting the last sheet. */
 function sync(b: BookInput, execution: 'closures' | 'eval') {
@@ -70,7 +64,7 @@ describe('locales in a pool', () => {
       const calc = await made({ threads: 1 })
       expect(await threaded(calc, book('ru-RU'), execution)).toEqual(sync(book('ru-RU'), execution))
       const { calc: lost, crash } = await inside({ threads: 1 })
-      open.push(lost)
+      keep(lost)
       const s = await lost.createSession(book('ru-RU'), { clock, execution })
       crash(0)
       expect((await s.explain('S', 'A1')).text).toBe(sync(book('ru-RU'), execution).explain)

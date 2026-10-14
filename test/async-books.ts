@@ -3,7 +3,9 @@
  * en-US and ru-RU), the semantics cases, the synthetic book, the spill book, seeded books, iterative calculation,
  * the 1904 date system; and a book of a long chain, where one edit recomputes thousands of formulas.
  */
+import { expect } from 'vitest'
 import type { BookInput, CellReplace, CellInput } from '../src/contract.js'
+import { CalcError } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { CASES, excelBook } from './excel-cases.js'
 import { randomBook } from './seeded-books.js'
@@ -48,4 +50,15 @@ export async function medianMs(n: number, f: (i: number) => unknown): Promise<nu
     xs.push(performance.now() - t)
   }
   return xs.sort((a, b) => a - b)[n >> 1]
+}
+
+/** The CalcError a call fails with; a call that does not fail fails the test. */
+export const fails = async (p: Promise<unknown>): Promise<CalcError> => {
+  try {
+    await p
+  } catch (e) {
+    expect(e).toBeInstanceOf(CalcError)
+    return e as CalcError
+  }
+  throw new Error('expected CalcError')
 }

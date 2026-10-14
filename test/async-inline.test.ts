@@ -4,22 +4,12 @@
  * `CalcError`, calls taken in order with their own changes, a stopped call that changes nothing, limits, closing.
  */
 import { describe, expect, it } from 'vitest'
-import { CalcError, compute, createInlineCalc, createSession, type BookInput } from '../src/index.js'
+import { compute, createInlineCalc, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1 } from './async-books.js'
+import { BOOKS, chainBook, CLOCK, fails, heavyBook, medianMs, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
 import './locales.js'
 import { cellIssues } from './diagnostics.js'
-
-const fails = async (p: Promise<unknown>): Promise<CalcError> => {
-  try {
-    await p
-  } catch (e) {
-    expect(e).toBeInstanceOf(CalcError)
-    return e as CalcError
-  }
-  throw new Error('expected CalcError')
-}
 
 /** Runs of the event loop while `p` is pending. */
 async function ticksDuring(p: Promise<unknown>): Promise<number> {
