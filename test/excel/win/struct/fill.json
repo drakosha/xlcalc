@@ -1,0 +1,5068 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "read": "A1:Z60",
+  "look": "A1:J24",
+  "seconds": 222.5
+ },
+ "books": {
+  "fill": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "B1": {
+       "value": 1
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 3
+      },
+      "C3": {
+       "value": 4
+      },
+      "D1": {
+       "value": "Item1"
+      },
+      "E1": {
+       "value": "Item1"
+      },
+      "E2": {
+       "value": "Item3"
+      },
+      "F1": {
+       "value": "Товар1"
+      },
+      "G1": {
+       "value": 45658,
+       "format": "yyyy-mm-dd"
+      },
+      "H1": {
+       "value": 45672,
+       "format": "yyyy-mm-dd"
+      },
+      "H2": {
+       "value": 45703,
+       "format": "yyyy-mm-dd"
+      },
+      "I1": {
+       "value": 45688,
+       "format": "yyyy-mm-dd"
+      },
+      "I2": {
+       "value": 45716,
+       "format": "yyyy-mm-dd"
+      },
+      "J1": {
+       "value": "Mon"
+      },
+      "K1": {
+       "value": "January"
+      },
+      "L1": {
+       "value": "abc"
+      },
+      "M1": {
+       "formula": "A1*2"
+      },
+      "N1": {
+       "value": 1
+      },
+      "N2": {
+       "value": 2
+      },
+      "N3": {
+       "value": "x"
+      },
+      "O1": {
+       "value": 0.375,
+       "format": "h:mm"
+      },
+      "P1": {
+       "value": "Item09"
+      },
+      "Q1": {
+       "value": "Q1"
+      },
+      "R1": {
+       "value": 0.5
+      },
+      "R2": {
+       "value": 1
+      },
+      "S1": {
+       "value": true
+      },
+      "T1": {
+       "value": "Пн"
+      },
+      "U1": {
+       "value": "1st"
+      },
+      "V1": {
+       "value": "a1"
+      },
+      "V2": {
+       "value": "b2"
+      },
+      "W1": {
+       "value": 45658,
+       "format": "yyyy-mm-dd"
+      },
+      "W2": {
+       "value": 46023,
+       "format": "yyyy-mm-dd"
+      },
+      "X1": {
+       "value": 10
+      },
+      "X2": {
+       "value": 8
+      },
+      "Y1": {
+       "value": "1 item"
+      },
+      "Z1": {
+       "value": 45658,
+       "format": "m/d/yyyy"
+      },
+      "A41": {
+       "value": 1
+      },
+      "A42": {
+       "value": 2
+      },
+      "B42": {
+       "value": "Item1"
+      },
+      "C42": {
+       "value": 45658,
+       "format": "yyyy-mm-dd"
+      },
+      "D42": {
+       "value": "Mon"
+      },
+      "E40": {
+       "value": 1
+      },
+      "E41": {
+       "value": 2
+      },
+      "E42": {
+       "value": "x"
+      },
+      "A50": {
+       "value": 1
+      },
+      "B50": {
+       "value": 2
+      },
+      "A51": {
+       "value": "Item1"
+      },
+      "A52": {
+       "value": "Mon"
+      },
+      "B52": {
+       "value": "Tue"
+      },
+      "A53": {
+       "value": 5
+      },
+      "B53": {
+       "value": "a"
+      },
+      "Y55": {
+       "value": 10
+      },
+      "Z55": {
+       "value": 20
+      },
+      "Z56": {
+       "value": "Mar"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "down-numbers",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "A1:A2",
+    "to": "A1:A8"
+   }
+  },
+  {
+   "id": "down-one-number",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "B1",
+    "to": "B1:B5"
+   }
+  },
+  {
+   "id": "down-trend",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "C1:C3",
+    "to": "C1:C8"
+   }
+  },
+  {
+   "id": "down-item1",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "D1",
+    "to": "D1:D5"
+   }
+  },
+  {
+   "id": "down-item1-item3",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "E1:E2",
+    "to": "E1:E7"
+   }
+  },
+  {
+   "id": "down-cyrillic",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "F1",
+    "to": "F1:F4"
+   }
+  },
+  {
+   "id": "down-date",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "G1",
+    "to": "G1:G5"
+   }
+  },
+  {
+   "id": "down-months",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "H1:H2",
+    "to": "H1:H6"
+   }
+  },
+  {
+   "id": "down-month-ends",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "I1:I2",
+    "to": "I1:I6"
+   }
+  },
+  {
+   "id": "down-day-name",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "J1",
+    "to": "J1:J9"
+   }
+  },
+  {
+   "id": "down-month-name",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "K1",
+    "to": "K1:K14"
+   }
+  },
+  {
+   "id": "down-text",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "L1",
+    "to": "L1:L4"
+   }
+  },
+  {
+   "id": "down-formula",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "M1",
+    "to": "M1:M4"
+   }
+  },
+  {
+   "id": "down-numbers-text",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "N1:N3",
+    "to": "N1:N10"
+   }
+  },
+  {
+   "id": "down-numbers-text-part",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "N1:N3",
+    "to": "N1:N4"
+   }
+  },
+  {
+   "id": "down-time",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "O1",
+    "to": "O1:O4"
+   }
+  },
+  {
+   "id": "down-zeros",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "P1",
+    "to": "P1:P4"
+   }
+  },
+  {
+   "id": "down-quarter",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "Q1",
+    "to": "Q1:Q6"
+   }
+  },
+  {
+   "id": "down-halves",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "R1:R2",
+    "to": "R1:R6"
+   }
+  },
+  {
+   "id": "down-boolean",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "S1",
+    "to": "S1:S3"
+   }
+  },
+  {
+   "id": "down-day-name-ru",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "T1",
+    "to": "T1:T4"
+   }
+  },
+  {
+   "id": "down-ordinal",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "U1",
+    "to": "U1:U4"
+   }
+  },
+  {
+   "id": "down-two-prefixes",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "V1:V2",
+    "to": "V1:V6"
+   }
+  },
+  {
+   "id": "down-years",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "W1:W2",
+    "to": "W1:W5"
+   }
+  },
+  {
+   "id": "down-going-down",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "X1:X2",
+    "to": "X1:X6"
+   }
+  },
+  {
+   "id": "down-number-first",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "Y1",
+    "to": "Y1:Y4"
+   }
+  },
+  {
+   "id": "down-short-date",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "Z1",
+    "to": "Z1:Z3"
+   }
+  },
+  {
+   "id": "down-two-columns",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "A1:B2",
+    "to": "A1:B6"
+   }
+  },
+  {
+   "id": "series-one-number",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "B1",
+    "to": "B1:B5",
+    "type": "series"
+   }
+  },
+  {
+   "id": "series-text",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "L1",
+    "to": "L1:L3",
+    "type": "series"
+   }
+  },
+  {
+   "id": "series-trend",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "C1:C3",
+    "to": "C1:C7",
+    "type": "series"
+   }
+  },
+  {
+   "id": "series-item1",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "D1",
+    "to": "D1:D4",
+    "type": "series"
+   }
+  },
+  {
+   "id": "series-date",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "G1",
+    "to": "G1:G4",
+    "type": "series"
+   }
+  },
+  {
+   "id": "copy-numbers",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "A1:A2",
+    "to": "A1:A6",
+    "type": "copy"
+   }
+  },
+  {
+   "id": "copy-item1",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "D1",
+    "to": "D1:D4",
+    "type": "copy"
+   }
+  },
+  {
+   "id": "copy-date",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "G1",
+    "to": "G1:G4",
+    "type": "copy"
+   }
+  },
+  {
+   "id": "up-numbers",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "A41:A42",
+    "to": "A35:A42"
+   }
+  },
+  {
+   "id": "up-item1",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "B42",
+    "to": "B37:B42"
+   }
+  },
+  {
+   "id": "up-date",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "C42",
+    "to": "C38:C42"
+   }
+  },
+  {
+   "id": "up-day-name",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "D42",
+    "to": "D36:D42"
+   }
+  },
+  {
+   "id": "up-numbers-text",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "E40:E42",
+    "to": "E33:E42"
+   }
+  },
+  {
+   "id": "right-numbers",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "A50:B50",
+    "to": "A50:G50"
+   }
+  },
+  {
+   "id": "right-item1",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "A51",
+    "to": "A51:E51"
+   }
+  },
+  {
+   "id": "right-two-rows",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "A52:B53",
+    "to": "A52:F53"
+   }
+  },
+  {
+   "id": "left-numbers",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "Y55:Z55",
+    "to": "T55:Z55"
+   }
+  },
+  {
+   "id": "left-month-name",
+   "book": "fill",
+   "op": {
+    "op": "fillRange",
+    "sheet": "S",
+    "range": "Z56",
+    "to": "V56:Z56"
+   }
+  }
+ ],
+ "answers": {
+  "down-numbers": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "A3": "3",
+      "C3": "4",
+      "N3": "x",
+      "A4": "4",
+      "A5": "5",
+      "A6": "6",
+      "A7": "7",
+      "A8": "8",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-one-number": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "B2": "1",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "B3": "1",
+      "C3": "4",
+      "N3": "x",
+      "B4": "1",
+      "B5": "1",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-trend": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "C4": "5.66666666666667",
+      "C5": "7.16666666666667",
+      "C6": "8.66666666666667",
+      "C7": "10.1666666666667",
+      "C8": "11.6666666666667",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-item1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "D2": "Item2",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "D3": "Item3",
+      "N3": "x",
+      "D4": "Item4",
+      "D5": "Item5",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-item1-item3": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "E3": "Item5",
+      "N3": "x",
+      "E4": "Item7",
+      "E5": "Item9",
+      "E6": "Item11",
+      "E7": "Item13",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-cyrillic": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "F2": "Товар2",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "F3": "Товар3",
+      "N3": "x",
+      "F4": "Товар4",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-date": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "G2": "45659",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "G3": "45660",
+      "N3": "x",
+      "G4": "45661",
+      "G5": "45662",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "G2": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       },
+       "G3": {
+        "format": "yyyy-mm-dd"
+       },
+       "G4": {
+        "format": "yyyy-mm-dd"
+       },
+       "G5": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-months": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "H3": "45731",
+      "N3": "x",
+      "H4": "45762",
+      "H5": "45792",
+      "H6": "45823",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       },
+       "H3": {
+        "format": "yyyy-mm-dd"
+       },
+       "H4": {
+        "format": "yyyy-mm-dd"
+       },
+       "H5": {
+        "format": "yyyy-mm-dd"
+       },
+       "H6": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-month-ends": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "I3": "45747",
+      "N3": "x",
+      "I4": "45777",
+      "I5": "45808",
+      "I6": "45838",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I3": {
+        "format": "yyyy-mm-dd"
+       },
+       "I4": {
+        "format": "yyyy-mm-dd"
+       },
+       "I5": {
+        "format": "yyyy-mm-dd"
+       },
+       "I6": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-day-name": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "J2": "Tue",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "J3": "Wed",
+      "N3": "x",
+      "J4": "Thu",
+      "J5": "Fri",
+      "J6": "Sat",
+      "J7": "Sun",
+      "J8": "Mon",
+      "J9": "Tue",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-month-name": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "K2": "February",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "K3": "March",
+      "N3": "x",
+      "K4": "April",
+      "K5": "May",
+      "K6": "June",
+      "K7": "July",
+      "K8": "August",
+      "K9": "September",
+      "K10": "October",
+      "K11": "November",
+      "K12": "December",
+      "K13": "January",
+      "K14": "February",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-text": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "L2": "abc",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "L3": "abc",
+      "N3": "x",
+      "L4": "abc",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-formula": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "M2": "=A2*2",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "M3": "=A3*2",
+      "N3": "x",
+      "M4": "=A4*2",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-numbers-text": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "N4": "3",
+      "N5": "4",
+      "N6": "x",
+      "N7": "5",
+      "N8": "6",
+      "N9": "x",
+      "N10": "7",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-numbers-text-part": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "N4": "3",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-time": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "O2": "0.416666666666667",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "O3": "0.458333333333333",
+      "O4": "0.5",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-zeros": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "P2": "Item10",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "P3": "Item11",
+      "P4": "Item12",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-quarter": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "Q2": "Q2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "Q3": "Q3",
+      "Q4": "Q4",
+      "Q5": "Q1",
+      "Q6": "Q2",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-halves": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "R3": "1.5",
+      "R4": "2",
+      "R5": "2.5",
+      "R6": "3",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-boolean": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "S2": "TRUE",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "S3": "TRUE",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-day-name-ru": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "T2": "Пн",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "T3": "Пн",
+      "T4": "Пн",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-ordinal": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "U2": "2nd",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "U3": "3rd",
+      "U4": "4th",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-two-prefixes": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "V3": "a2",
+      "V4": "b3",
+      "V5": "a3",
+      "V6": "b4",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-years": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "W3": "46388",
+      "W4": "46753",
+      "W5": "47119",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-going-down": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "X3": "6",
+      "X4": "4",
+      "X5": "2",
+      "X6": "0",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-number-first": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "Y2": "2 item",
+      "C3": "4",
+      "N3": "x",
+      "Y3": "3 item",
+      "Y4": "4 item",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-short-date": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "Z2": "45659",
+      "C3": "4",
+      "N3": "x",
+      "Z3": "45660",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "down-two-columns": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "A3": "3",
+      "B3": "1",
+      "C3": "4",
+      "N3": "x",
+      "A4": "4",
+      "A5": "5",
+      "B5": "1",
+      "A6": "6",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "series-one-number": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "B2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "B3": "3",
+      "C3": "4",
+      "N3": "x",
+      "B4": "4",
+      "B5": "5",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "series-text": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "L2": "abc",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "L3": "abc",
+      "N3": "x",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "series-trend": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "C4": "5.66666666666667",
+      "C5": "7.16666666666667",
+      "C6": "8.66666666666667",
+      "C7": "10.1666666666667",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "series-item1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "D2": "Item2",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "D3": "Item3",
+      "N3": "x",
+      "D4": "Item4",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "series-date": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "G2": "45659",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "G3": "45660",
+      "N3": "x",
+      "G4": "45661",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "G2": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       },
+       "G3": {
+        "format": "yyyy-mm-dd"
+       },
+       "G4": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "copy-numbers": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "A3": "1",
+      "C3": "4",
+      "N3": "x",
+      "A4": "2",
+      "A5": "1",
+      "A6": "2",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "copy-item1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "D2": "Item1",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "D3": "Item1",
+      "N3": "x",
+      "D4": "Item1",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "copy-date": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "G2": "45658",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "G3": "45658",
+      "N3": "x",
+      "G4": "45658",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "G2": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       },
+       "G3": {
+        "format": "yyyy-mm-dd"
+       },
+       "G4": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "up-numbers": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "A35": "-5",
+      "A36": "-4",
+      "A37": "-3",
+      "A38": "-2",
+      "A39": "-1",
+      "A40": "0",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "up-item1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "B37": "Item4",
+      "B38": "Item3",
+      "B39": "Item2",
+      "B40": "Item1",
+      "E40": "1",
+      "A41": "1",
+      "B41": "Item0",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "up-date": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "C38": "45654",
+      "C39": "45655",
+      "C40": "45656",
+      "E40": "1",
+      "A41": "1",
+      "C41": "45657",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "up-day-name": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "D36": "Tue",
+      "D37": "Wed",
+      "D38": "Thu",
+      "D39": "Fri",
+      "D40": "Sat",
+      "E40": "1",
+      "A41": "1",
+      "D41": "Sun",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "up-numbers-text": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "E33": "x",
+      "E34": "-3",
+      "E35": "-2",
+      "E36": "x",
+      "E37": "-1",
+      "E38": "0",
+      "E39": "x",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "right-numbers": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "C50": "3",
+      "D50": "4",
+      "E50": "5",
+      "F50": "6",
+      "G50": "7",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "right-item1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "B51": "Item2",
+      "C51": "Item3",
+      "D51": "Item4",
+      "E51": "Item5",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "right-two-rows": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "C52": "Wed",
+      "D52": "Thu",
+      "E52": "Fri",
+      "F52": "Sat",
+      "A53": "5",
+      "B53": "a",
+      "C53": "6",
+      "D53": "a",
+      "E53": "7",
+      "F53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "left-numbers": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "T55": "-40",
+      "U55": "-30",
+      "V55": "-20",
+      "W55": "-10",
+      "X55": "0",
+      "Y55": "10",
+      "Z55": "20",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "left-month-name": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$Z$56",
+     "cells": {
+      "A1": "1",
+      "B1": "1",
+      "C1": "1",
+      "D1": "Item1",
+      "E1": "Item1",
+      "F1": "Товар1",
+      "G1": "45658",
+      "H1": "45672",
+      "I1": "45688",
+      "J1": "Mon",
+      "K1": "January",
+      "L1": "abc",
+      "M1": "=A1*2",
+      "N1": "1",
+      "O1": "0.375",
+      "P1": "Item09",
+      "Q1": "Q1",
+      "R1": "0.5",
+      "S1": "TRUE",
+      "T1": "Пн",
+      "U1": "1st",
+      "V1": "a1",
+      "W1": "45658",
+      "X1": "10",
+      "Y1": "1 item",
+      "Z1": "45658",
+      "A2": "2",
+      "C2": "3",
+      "E2": "Item3",
+      "H2": "45703",
+      "I2": "45716",
+      "N2": "2",
+      "R2": "1",
+      "V2": "b2",
+      "W2": "46023",
+      "X2": "8",
+      "C3": "4",
+      "N3": "x",
+      "E40": "1",
+      "A41": "1",
+      "E41": "2",
+      "A42": "2",
+      "B42": "Item1",
+      "C42": "45658",
+      "D42": "Mon",
+      "E42": "x",
+      "A50": "1",
+      "B50": "2",
+      "A51": "Item1",
+      "A52": "Mon",
+      "B52": "Tue",
+      "A53": "5",
+      "B53": "a",
+      "Y55": "10",
+      "Z55": "20",
+      "V56": "Nov",
+      "W56": "Dec",
+      "X56": "Jan",
+      "Y56": "Feb",
+      "Z56": "Mar"
+     },
+     "look": {
+      "cells": {
+       "G1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H1": {
+        "format": "yyyy-mm-dd"
+       },
+       "I1": {
+        "format": "yyyy-mm-dd"
+       },
+       "H2": {
+        "format": "yyyy-mm-dd"
+       },
+       "I2": {
+        "format": "yyyy-mm-dd"
+       }
+      },
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  }
+ }
+}

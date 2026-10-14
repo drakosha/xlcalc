@@ -47,7 +47,8 @@ function shown(c: CellInput): string {
   const v = c.value
   if (v === undefined || v === null) return ''
   if (typeof v === 'boolean') return v ? 'TRUE' : 'FALSE'
-  return typeof v === 'object' ? v.date : String(v)
+  // Excel writes a number in 15 significant digits
+  return typeof v === 'object' ? v.date : typeof v === 'number' ? String(Number(v.toPrecision(15))) : v
 }
 
 const excelShown = (text: string) => (text.startsWith('=') ? `=${normalFormula(text.slice(1))}` : text)
