@@ -1,8 +1,8 @@
 /** A width set by hand leaves AutoFit: a number typed later does not widen the column, as in Excel. */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/index.js'
 import { CLOCK } from './async-books.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 afterAll(closeCalcs)
 
@@ -10,8 +10,7 @@ const book = (): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 }
 
 describe.each(['closures', 'eval'] as const)('manual column width, %s', (execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => { open = await opener(kind) })
+    const open = openerFor(kind)
 
     it('a width set after AutoFit clears bestFit, keeps the other fields, and a typed number leaves it', async () => {
       const s = await open(book(), { clock: CLOCK, execution })

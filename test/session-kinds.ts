@@ -2,6 +2,7 @@
  * The three ways a session runs, behind the asynchronous API so that one test covers them: a synchronous session, a
  * session computed in portions in the same thread and one in a thread of the pool.
  */
+import { beforeAll } from 'vitest'
 import { createInlineCalc, createSession, type AsyncSession, type BookInput, type Calc, type Session, type SessionOptions } from '../src/index.js'
 import { pool } from './fixtures/pool.js'
 
@@ -38,4 +39,13 @@ export async function opener(kind: Kind): Promise<(book: BookInput, opts: Sessio
   const calc = kind === 'the same thread' ? createInlineCalc({ sliceMs: 2 }) : await keptPool()
   if (kind === 'the same thread') calcs.push(calc)
   return (book, opts) => calc.createSession(book, opts)
+}
+
+/** Opens sessions of one kind in a `describe`'s tests: the opener is made before them (`beforeAll`). */
+export function openerFor(kind: Kind): (book: BookInput, opts: SessionOptions) => Promise<AsyncSession> {
+  let open: Awaited<ReturnType<typeof opener>>
+  beforeAll(async () => {
+    open = await opener(kind)
+  })
+  return (book, opts) => open(book, opts)
 }

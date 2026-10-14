@@ -1,8 +1,8 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { applyEdits, createState } from '../src/engine.js'
 import { run } from '../src/exec/budget.js'
 import { compute, type AsyncSession, type BookInput, type CellEdit } from '../src/index.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 afterAll(closeCalcs)
@@ -27,8 +27,7 @@ describe.each(['closures', 'eval'] as const)('formula storage, %s', (execution) 
   })
 
   describe.each(KINDS)('%s', (kind) => {
-    let open: Awaited<ReturnType<typeof opener>>
-    beforeAll(async () => { open = await opener(kind) })
+    const open = openerFor(kind)
     it('keeps references, spills, cycles, nested summaries, clock and history after replacements', async () => {
       const book: BookInput = { sheets: [{ name: 'S', cells: {
         A1: { value: 3 }, A2: { value: 1 }, B1: { formula: 'A1+1' }, B2: { value: 1 },
