@@ -1,0 +1,1164 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-14",
+  "seconds": 1084.6
+ },
+ "cases": [
+  {
+   "id": "end-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM((1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=(SUM(1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=MAX(1,(2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=ROUND(1.5"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-5",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=IF(A1>0,1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-6",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=-(A1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-7",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1)+(2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-8",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(1)+MAX(2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-9",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=ABS(-(1)"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1+2"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=(A1+2"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=MAX(A1,2)+(1"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=ROUND(A1*2"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  }
+ ],
+ "answers": {
+  "end-1": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =SUM((1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM((1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=SUM((1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM((1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=SUM((1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-2": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =(SUM(1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =(SUM(1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=(SUM(1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =(SUM(1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=(SUM(1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-3": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =MAX(1,(2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(1,(2",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=MAX(1,(2))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(1,(2",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=MAX(1,(2))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-4": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =ROUND(1.5"
+    },
+    {
+     "bar": "Formula Bar. C,3 =ROUND(1.5",
+     "dialog": "dialog:  You've entered too few arguments for this function. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =ROUND(1.5",
+     "dialog": "dialog:  You've entered too few arguments for this function. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-5": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =IF(A1>0,1"
+    },
+    {
+     "bar": "Formula Bar. D,3 10"
+    },
+    {
+     "bar": "Formula Bar. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "IF(A1>0,1)"
+     },
+     "computed": 1,
+     "text": "1",
+     "code": "General",
+     "local": "General",
+     "value2": 1,
+     "formula": "=IF(A1>0,1)",
+     "formulaLocal": "=IF(A1>0,1)",
+     "formula2": "=IF(A1>0,1)",
+     "formula2Local": "=IF(A1>0,1)",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-6": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =-(A1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =-(A1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=-(A1)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =-(A1",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=-(A1)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-7": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1)+(2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1)+(2",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=SUM(A1)+(2)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1)+(2",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=SUM(A1)+(2)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-8": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =SUM(1)+MAX(2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(1)+MAX(2",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=SUM(1)+MAX(2)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(1)+MAX(2",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=SUM(1)+MAX(2)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "end-9": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =ABS(-(1)"
+    },
+    {
+     "bar": "Formula Bar. C,3 =ABS(-(1)",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=ABS(-(1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =ABS(-(1)",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=ABS(-(1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-1": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(A1+2"
+    },
+    {
+     "bar": "Formula Bar. D,3 10"
+    },
+    {
+     "bar": "Formula Bar. D,4 20"
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "SUM(A1+2)"
+     },
+     "computed": 4,
+     "text": "4",
+     "code": "General",
+     "local": "General",
+     "value2": 4,
+     "formula": "=SUM(A1+2)",
+     "formulaLocal": "=SUM(A1+2)",
+     "formula2": "=SUM(A1+2)",
+     "formula2Local": "=SUM(A1+2)",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-2": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =(A1+2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =(A1+2",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=(A1+2)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =(A1+2",
+     "dialog": "dialog: We found a typo in your formula and tried to correct it to: \n‭=(A1+2)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-3": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+(1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1",
+     "dialog": "dialog:  The formula is missing an opening or closing parenthesis. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =MAX(A1,2)+ttuytu(1",
+     "dialog": "dialog:  The formula is missing an opening or closing parenthesis. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "inside-4": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =ROUND(A1*2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =ROUND(A1*2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =ROUND(A1*2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =ROUND(A1*2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =ROUND(A1*2"
+    },
+    {
+     "bar": "Formula Bar. C,3 =ROUND(A1*2",
+     "dialog": "dialog:  You've entered too few arguments for this function. | "
+    },
+    {
+     "bar": "Formula Bar. C,3 =ROUND(A1*2",
+     "dialog": "dialog:  You've entered too few arguments for this function. | "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}
