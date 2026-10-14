@@ -8,7 +8,8 @@ import type { StoredStruct } from '../bench/coverage/struct.js'
 import type { StructCases } from '../bench/coverage/struct/cases.js'
 import type { BookInput } from '../src/index.js'
 import { winFiles } from './excel-win-cases.js'
-import { differences, structureOf } from './structure-excel.js'
+import { differences, STRUCT_KNOWN, structureOf } from './structure-excel.js'
+import { currentStructSet } from './stored-cases.js'
 
 const SETS = winFiles<StoredStruct>('struct/')
 
@@ -36,12 +37,8 @@ const WIN_STRUCT: Readonly<Record<string, string | string[]>> = {
   ...Object.fromEntries(
     ['delete-rows-3-4', 'delete-row-1048572', 'delete-row-1048576', 'delete-rows-1048575-2', 'delete-rows-1048568-4', 'delete-columns-B-C', 'delete-column-XFB', 'delete-column-XFD', 'delete-columns-XEZ-3'].map((id) => [`edge-layout:${id}`, EDGE]),
   ),
-  // whole columns copied onto part of a merged area: Excel pastes them, on Windows as on the Mac; the engine refuses
-  'styles:copy-S!D:D-S!C1': ['engine refused (merged): the pasted cells land on part of the merged area S!B10:C11'],
-  'styles-checks:copy-S!C:C-S!I1': ['engine refused (merged): the pasted cells land on part of the merged area S!I2:J2'],
-  // Excel's fill handle (Range.AutoFill) fills the hidden rows of a filtered sheet too, on Windows as on the Mac; the
-  // engine's copyRange fills the visible rows only
-  'hidden:filtered-fill-handle': ['D4', 'E4', 'D7', 'E7', 'D8', 'E8', 'D11', 'E11'].map((a) => `'S'!${a}: Excel ${JSON.stringify(a[0] === 'D' ? 'top' : `=A${a.slice(1)}+1000`)}, engine ""`),
+  // the Mac's: whole columns copied onto part of a merged area, the fill handle over a filtered sheet
+  ...STRUCT_KNOWN,
 }
 
 /** A difference line of the look: a cell's style, a row's height, a column's width. */
@@ -51,11 +48,7 @@ for (const set of SETS) {
   const built = ((await import(`../bench/coverage/struct/${set.name}.ts`)) as { buildStructCases: () => StructCases }).buildStructCases()
 
   describe(`structure set ${set.name} against Excel for Windows`, () => {
-    it('the stored answers are for the current cases and books', () => {
-      expect(set.cases).toEqual(built.cases)
-      expect(set.books).toEqual(built.books)
-      expect(built.cases.filter((c) => !set.answers[c.id])).toEqual([])
-    })
+    currentStructSet(set, built)
 
     const look = set.meta.look === undefined ? undefined : String(set.meta.look)
     for (const c of set.cases)

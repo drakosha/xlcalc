@@ -8,7 +8,7 @@ import { place, type StoredDisplay } from '../bench/coverage/display.js'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import type { BookInput, CellDisplay, CellInput, CellValue, SheetInput } from '../src/contract.js'
-import { displayValue } from '../src/index.js'
+import { compute, displayValue } from '../src/index.js'
 import { formatAddress, indexToCol } from '../src/model.js'
 import './locales.js'
 
@@ -56,6 +56,18 @@ export function displayBook(cases: DisplayCase[], locale: string): { book: BookI
     if (span > 1) sheet.merges.push(`${addr}:${formatAddress(row, col + span - 1)}`)
   }
   return { book: { locale, sheets: [sheet] }, at }
+}
+
+/** What the engine shows for each of the cases, laid out as the harness lays them: the value, and the text with its colour. */
+export function engineShown(cases: DisplayCase[], locale: string): Map<string, { value: CellValue; engine: CellDisplay }> {
+  const { book, at } = displayBook(cases, locale)
+  const cells = compute(book, { clock: CLOCK }).sheets[0].cells
+  return new Map(
+    cases.map((c) => {
+      const out = cells[at.get(c.id)!]
+      return [c.id, { value: out.value, engine: { text: out.text!, ...(out.color ? { color: out.color } : {}) } }]
+    }),
+  )
 }
 
 /**

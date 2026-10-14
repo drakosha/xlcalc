@@ -10,7 +10,7 @@ import { takenBook } from '../bench/coverage/stored.js'
 import { compute, InputError, createSession, type BookInput, type ComputeResult } from '../src/index.js'
 import { fromLegacy } from '../src/xlsx.js'
 import { formatAddress, parseAddress } from '../src/model.js'
-import { shownValue } from './spill-shown.js'
+import { readDifferences } from './spill-shown.js'
 
 const CLOCK = { now: '2026-10-06T12:00:00Z', seed: 1 }
 
@@ -51,17 +51,5 @@ export function computed(c: SpillCase): ComputeResult {
 
 /** Cells of the case's rectangles where the engine does not show Excel's answer. */
 export function differences(c: SpillCase, a: RectsAnswer, r: ComputeResult): string[] {
-  const out: string[] = []
-  for (const g of c.read) {
-    const [p, q = p] = g.range.split(':').map(parseAddress)
-    for (let row = p.row; row <= q.row; row++)
-      for (let col = p.col; col <= q.col; col++) {
-        const addr = formatAddress(row, col)
-        const excel = a.values[`${g.sheet}!${addr}`] ?? null
-        const engine = shownValue(r, g.sheet, addr)
-        const ok = excel === null || engine === null ? excel === engine : c.volatile && excel.t === 'n' ? engine.t === 'n' : compare(excel, engine).ok
-        if (!ok) out.push(`${g.sheet}!${addr}: Excel ${JSON.stringify(excel)}, engine ${JSON.stringify(engine)}`)
-      }
-  }
-  return out
+  return readDifferences(c.read, a.values, r, (excel, engine) => (c.volatile && excel.t === 'n' ? engine.t === 'n' : compare(excel, engine).ok))
 }

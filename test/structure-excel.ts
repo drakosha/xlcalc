@@ -185,4 +185,18 @@ export function structureOf(book: StoredBook, c: StructCase) {
   return editStructure(first ? first.book : takenBook(book), c.op)
 }
 
+/**
+ * `<set>:<case id>` → the difference lines pinned for that case against Excel for Mac, each with its reason in a comment;
+ * Excel for Windows answers these cases alike.
+ */
+export const STRUCT_KNOWN: Readonly<Record<string, string[]>> = {
+  // whole columns copied onto part of a merged area: Excel pastes them and keeps the area (and the value of its
+  // top-left cell, where the source cell was empty); two observations, the engine refuses as for a range
+  'styles:copy-S!D:D-S!C1': ['engine refused (merged): the pasted cells land on part of the merged area S!B10:C11'],
+  'styles-checks:copy-S!C:C-S!I1': ['engine refused (merged): the pasted cells land on part of the merged area S!I2:J2'],
+  // Excel's fill handle (Range.AutoFill) fills the hidden rows of a filtered sheet too; the engine's copyRange is
+  // copy and paste, which, as Fill Down, fills the visible rows only (the case filtered-fill-down)
+  'hidden:filtered-fill-handle': ['D4', 'E4', 'D7', 'E7', 'D8', 'E8', 'D11', 'E11'].map((a) => `'S'!${a}: Excel ${JSON.stringify(a[0] === 'D' ? 'top' : `=A${a.slice(1)}+1000`)}, engine ""`),
+}
+
 export { formatAddress }

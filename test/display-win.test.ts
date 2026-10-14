@@ -9,8 +9,8 @@ import { describe, expect, it } from 'vitest'
 import type { StoredDisplay } from '../bench/coverage/display.js'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
-import { compute, displayValue, type CellValue } from '../src/index.js'
-import { CLOCK, displayBook, formatted, ROUNDED_MOMENT, sameShown } from './display-cases.js'
+import { displayValue, type CellValue } from '../src/index.js'
+import { engineShown, formatted, ROUNDED_MOMENT, sameShown } from './display-cases.js'
 import { winFiles } from './excel-win-cases.js'
 import './locales.js'
 import { currentCases } from './stored-cases.js'
@@ -57,13 +57,11 @@ for (const set of SETS) {
     currentCases(set, built)
 
     it('every case shows what Excel for Windows showed, or differs for a reason of WIN_SHOWN', () => {
-      const { book, at } = displayBook(set.cases, set.locale)
-      const cells = compute(book, { clock: CLOCK }).sheets[0].cells
+      const shown = engineShown(set.cases, set.locale)
       const off = set.cases.flatMap((c) => {
-        const out = cells[at.get(c.id)!]
-        const engine = { text: out.text!, ...(out.color ? { color: out.color } : {}) }
-        if (sameShown(set.answers[c.id], engine, out.value)) return []
-        const rule = WIN_SHOWN.find(([, covers]) => covers({ c, locale: set.locale, value: out.value, win: set.answers[c.id], engine }))
+        const { value, engine } = shown.get(c.id)!
+        if (sameShown(set.answers[c.id], engine, value)) return []
+        const rule = WIN_SHOWN.find(([, covers]) => covers({ c, locale: set.locale, value, win: set.answers[c.id], engine }))
         if (rule) {
           used.add(rule[0])
           return []

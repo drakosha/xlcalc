@@ -6,8 +6,8 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
-import { compute, displayValue, type CellDisplay } from '../src/index.js'
-import { CLOCK, DISPLAY_SETS, displayBook, formatted, ROUNDED_MOMENT, sameShown } from './display-cases.js'
+import { displayValue, type CellDisplay } from '../src/index.js'
+import { DISPLAY_SETS, engineShown, formatted, ROUNDED_MOMENT, sameShown } from './display-cases.js'
 import { currentCases } from './stored-cases.js'
 
 /** A case as Excel for Mac showed it and as the engine shows it. */
@@ -66,12 +66,10 @@ for (const set of DISPLAY_SETS) {
     currentCases(set, built)
 
     it('every case shows what Excel showed', () => {
-      const { book, at } = displayBook(set.cases, set.locale)
-      const cells = compute(book, { clock: CLOCK }).sheets[0].cells
+      const shown = engineShown(set.cases, set.locale)
       const off = set.cases.flatMap((c) => {
-        const out = cells[at.get(c.id)!]
-        const engine = { text: out.text!, ...(out.color ? { color: out.color } : {}) }
-        if (sameShown(set.answers[c.id], engine, out.value) || macRule({ c, locale: set.locale, mac: set.answers[c.id], engine }) || rounded(c, set.locale, set.answers[c.id])) return []
+        const { value, engine } = shown.get(c.id)!
+        if (sameShown(set.answers[c.id], engine, value) || macRule({ c, locale: set.locale, mac: set.answers[c.id], engine }) || rounded(c, set.locale, set.answers[c.id])) return []
         return [`${c.id} ${JSON.stringify(c.cell)} width ${c.width ?? 'default'}: Excel ${JSON.stringify(set.answers[c.id])}, engine ${JSON.stringify(engine)}`]
       })
       expect(off).toEqual([])
