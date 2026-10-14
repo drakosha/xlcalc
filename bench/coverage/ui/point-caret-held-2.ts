@@ -13,7 +13,7 @@ export const POINT_BY = 'refAt'
 const CELLS: Record<string, CellInput> = { A1: { value: 2 }, D3: { value: 10 }, D4: { value: 20 } }
 
 /** At the start of the text. */
-const START = ['=SUM(1,2)', '-5', '=A1+B1', '=1/0', '=  A1', '5', 'abc']
+const START = ['=SUM(1,2)', '-5', '=A1+B1', '=1/0', '= A1', '5', 'abc']
 
 /** A text and how many characters the caret goes back from its end. */
 const INSIDE: [string, number][] = [

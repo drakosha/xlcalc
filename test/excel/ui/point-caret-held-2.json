@@ -1,0 +1,1008 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-14",
+  "seconds": 74.8
+ },
+ "cases": [
+  {
+   "id": "start-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(1,2)"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "-5"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1+B1"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=1/0"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-5",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=  A1"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-6",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "5"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "start-7",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "abc"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "home"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1,2"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=(1+2"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1 +1"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=A1)"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-5",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(\"a\","
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-6",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=\"a\"&"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "inside-7",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(1+2)*"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "left"
+     },
+     {
+      "key": "f2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-1",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-2",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=(1+2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-3",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=((1"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-4",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=SUM(A1,2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  },
+  {
+   "id": "end-5",
+   "cells": {
+    "A1": {
+     "value": 2
+    },
+    "D3": {
+     "value": 10
+    },
+    "D4": {
+     "value": 20
+    }
+   },
+   "act": {
+    "do": "point",
+    "at": "C3",
+    "steps": [
+     {
+      "type": "=MAX(1;2"
+     },
+     {
+      "key": "right"
+     },
+     {
+      "key": "return"
+     }
+    ]
+   },
+   "read": [
+    "C3",
+    "C4"
+   ]
+  }
+ ],
+ "answers": {
+  "start-1": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =SUM(1,2)"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(1,2)"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(1,2)"
+    },
+    {
+     "bar": "Formula Bar. C,3 =SUM(1,2)"
+    },
+    {
+     "bar": "Formula Bar. C,3 =D3=SUM(1,2)"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3=SUM(1,2)"
+     },
+     "computed": false,
+     "text": "FALSE",
+     "code": "General",
+     "local": "General",
+     "formula": "=D3=SUM(1,2)",
+     "formulaLocal": "=D3=SUM(1,2)",
+     "formula2": "=D3=SUM(1,2)",
+     "formula2Local": "=D3=SUM(1,2)",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-2": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 -5"
+    },
+    {
+     "bar": "Formula Bar. C,3 -5"
+    },
+    {
+     "bar": "Formula Bar. C,3 -5"
+    },
+    {
+     "bar": "Formula Bar. C,3 -5"
+    },
+    {
+     "bar": "Formula Bar. C,3 =D3-5"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3-5"
+     },
+     "computed": 5,
+     "text": "5",
+     "code": "General",
+     "local": "General",
+     "value2": 5,
+     "formula": "=D3-5",
+     "formulaLocal": "=D3-5",
+     "formula2": "=D3-5",
+     "formula2Local": "=D3-5",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-3": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =A1+B1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =A1+B1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =A1+B1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =A1+B1"
+    },
+    {
+     "bar": "Formula Bar. C,3 =D3=A1+B1"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3=A1+B1"
+     },
+     "computed": false,
+     "text": "FALSE",
+     "code": "General",
+     "local": "General",
+     "formula": "=D3=A1+B1",
+     "formulaLocal": "=D3=A1+B1",
+     "formula2": "=D3=A1+B1",
+     "formula2Local": "=D3=A1+B1",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "start-4": {
+   "point": [
+    {
+     "bar": "Formula Bar. C,3 =1/0"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1/0"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1/0"
+    },
+    {
+     "bar": "Formula Bar. C,3 =1/0"
+    },
+    {
+     "bar": "Formula Bar. C,3 =D3=1/0"
+    },
+    {
+     "bar": "Formula Bar. C,4 "
+    }
+   ],
+   "cells": {
+    "C3": {
+     "cell": {
+      "formula": "D3=1/0"
+     },
+     "computed": {
+      "error": "DIV0"
+     },
+     "text": "#DIV/0!",
+     "code": "General",
+     "local": "General",
+     "formula": "=D3=1/0",
+     "formulaLocal": "=D3=1/0",
+     "formula2": "=D3=1/0",
+     "formula2Local": "=D3=1/0",
+     "hasArray": false
+    },
+    "C4": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "C": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}
