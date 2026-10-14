@@ -5,15 +5,11 @@
  */
 import { describe, expect, it } from 'vitest'
 import { mulberry32 } from '../src/synth.js'
-import { compute, validateFormula, type CellInput, type CellValue } from '../src/index.js'
+import { validateFormula, type CellInput } from '../src/index.js'
+import { valuesAt } from './formula-values.js'
 
 /** Formulas computed on sheet S with the given cells; values in order. */
-function values(formulas: string[], cells: Record<string, CellInput> = {}): CellValue[] {
-  const f: Record<string, CellInput> = { ...cells }
-  formulas.forEach((x, i) => (f[`Z${i + 1}`] = { formula: x }))
-  const r = compute({ sheets: [{ name: 'S', cells: f }] }, { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
-  return formulas.map((_, i) => r.sheets[0].cells[`Z${i + 1}`].value)
-}
+const values = valuesAt('2026-10-05T12:00:00Z')
 
 /** Weekend days (0 Sunday) of a WORKDAY.INTL code 1–7 or 11–17; serial 1 is a Sunday in Excel. */
 const weekendOf = (code: number) => (code < 10 ? [(code + 5) % 7, (code + 6) % 7] : [code - 11])

@@ -3,15 +3,11 @@
  * large whole columns, INDEX answering a reference, and LOOKUP past the end of its result range.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, createSession, type CellInput, type CellValue } from '../src/index.js'
+import { compute, createSession, type CellInput } from '../src/index.js'
+import { err, sheetValuesAt } from './formula-values.js'
 
-const err = (code: Extract<CellValue, { error: unknown }>['error']): CellValue => ({ error: code })
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
-
-function sheet(cells: Record<string, CellInput>): Record<string, CellValue> {
-  const r = compute({ sheets: [{ name: 'S', cells }] }, { clock })
-  return Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value]))
-}
+const sheet = sheetValuesAt(clock.now)
 
 describe('lookup and database functions beyond the Excel cases', () => {
   it('ROW and COLUMN without an argument give the formula cell; of a range the array of its rows or columns (spilled)', () => {

@@ -15,6 +15,7 @@ import { samePin } from '../bench/coverage/compare.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { compute, createSession, toLocal, type BookInput, type CellValue, type CellRef, type Session } from '../src/index.js'
+import { storedSets } from './stored-sets.js'
 
 const PLATFORMS = [
   ['Excel for Mac', ''],
@@ -49,13 +50,7 @@ const MISSED: Record<string, string> = {
 }
 
 /** The stored sets of a platform. */
-function stored(root: string): (StoredLinks & { name: string })[] {
-  const dir = new URL(`./excel/${root}links/`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredLinks) }))
-}
+const stored = (root: string) => storedSets<StoredLinks>(`${root}links/`)
 
 const valOf = (v: CellValue | undefined): Val | null => (v === null || v === undefined ? null : ((typeof v === 'object' ? { t: 'e', v: v.error } : { t: typeof v === 'number' ? 'n' : typeof v === 'string' ? 's' : 'b', v }) as Val))
 const cachedVal = (v: CachedValue | null): Val | null => valOf(v as CellValue)

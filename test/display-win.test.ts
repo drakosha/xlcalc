@@ -13,6 +13,7 @@ import { compute, displayValue, type CellValue } from '../src/index.js'
 import { CLOCK, displayBook, formatted, ROUNDED_MOMENT, sameShown } from './display-cases.js'
 import { winFiles } from './excel-win-cases.js'
 import './locales.js'
+import { currentCases } from './stored-cases.js'
 
 /** The reasons that covered a case, filled as the sets run. */
 const used = new Set<string>()
@@ -53,10 +54,7 @@ for (const set of SETS) {
   describe(`cells shown as in Excel for Windows ${set.locale}: set ${set.name}`, async () => {
     const built = ((await import(`../bench/coverage/display/${set.name}.ts`)) as { buildDisplayCases: () => DisplayCase[] }).buildDisplayCases()
 
-    it('the stored cases are the current ones, all answered', () => {
-      expect(set.cases).toEqual(built)
-      expect(built.filter((c) => !set.answers[c.id])).toEqual([])
-    })
+    currentCases(set, built)
 
     it('every case shows what Excel for Windows showed, or differs for a reason of WIN_SHOWN', () => {
       const { book, at } = displayBook(set.cases, set.locale)

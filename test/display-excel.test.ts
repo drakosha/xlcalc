@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
 import { compute, displayValue, type CellDisplay } from '../src/index.js'
 import { CLOCK, DISPLAY_SETS, displayBook, formatted, ROUNDED_MOMENT, sameShown } from './display-cases.js'
+import { currentCases } from './stored-cases.js'
 
 /** A case as Excel for Mac showed it and as the engine shows it. */
 interface Shown {
@@ -62,10 +63,7 @@ for (const set of DISPLAY_SETS) {
   describe(`cells shown as in Excel ${set.locale}: set ${set.name}`, async () => {
     const built = ((await import(`../bench/coverage/display/${set.name}.ts`)) as { buildDisplayCases: () => typeof set.cases }).buildDisplayCases()
 
-    it('the stored cases are the current ones, all answered', () => {
-      expect(set.cases).toEqual(built)
-      expect(built.filter((c) => !set.answers[c.id])).toEqual([])
-    })
+    currentCases(set, built)
 
     it('every case shows what Excel showed', () => {
       const { book, at } = displayBook(set.cases, set.locale)

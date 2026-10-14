@@ -5,24 +5,18 @@
  * engine's rules after the case, and what the engine shows on that saved book. Known differences are pinned with
  * their reasons.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredCond } from '../bench/coverage/cond.js'
 import { condFile, engineCase, rulesOf, type CondCase, type CondCases, type CondSet, type Look } from '../bench/coverage/cond/cases.js'
 import { readXlsx } from '../src/xlsx.js'
 import './locales.js'
+import { storedSets } from './stored-sets.js'
 
 export type CondSetFile = StoredCond & { name: string; dir: URL }
 
 /** The stored sets of a directory (`excel/cond/`, `excel/cond/ru-RU/`, `excel/win/cond/`) with the folders of their saved files. */
-export function condSets(sub: string): CondSetFile[] {
-  const dir = new URL(`./excel/${sub}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .sort()
-    .map((f) => ({ name: f.slice(0, -5), dir: new URL(`${f.slice(0, -5)}/`, dir), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredCond) }))
-}
+export const condSets = (sub: string): CondSetFile[] => storedSets<StoredCond>(sub)
 
 /** Differences pinned by key: `<set>:<case>` for a case's rules, `<set>:<case>:<sheet>!<cell>` for a cell's look. */
 export type Known = Record<string, string>

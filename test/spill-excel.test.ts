@@ -11,6 +11,7 @@ import type { RectsAnswer } from '../bench/coverage/case-book.js'
 import type { StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
 import { computed, differences } from './spill-cases.js'
+import { currentCases } from './stored-cases.js'
 
 const dir = new URL('./excel/spill/', import.meta.url)
 const SETS = existsSync(dir)
@@ -35,10 +36,7 @@ for (const set of SETS) {
   const built = ((await import(`../bench/coverage/spill/${set.name}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()
 
   describe(`spilling against Excel en-US: set ${set.name}`, () => {
-    it('the stored cases are the current ones, all answered', () => {
-      expect(set.cases).toEqual(built)
-      expect(built.filter((c) => !set.answers[c.id])).toEqual([])
-    })
+    currentCases(set, built)
 
     // a book Excel does not load is checked where its reason is (`test/names-excel.test.ts`)
     for (const c of set.cases.filter((x) => !set.answers[x.id]?.rejected)) {

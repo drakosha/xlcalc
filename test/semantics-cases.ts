@@ -4,6 +4,7 @@
  */
 import type { BookInput, CellInput, CellValue } from '../src/contract.js'
 import { dateToSerial } from '../src/model.js'
+import { err } from './formula-values.js'
 
 export const SEM = 'Sem'
 const A = ['Аренда', 'аренда', 'Арендй', 'Арeнда*', 'x*y', 'Чай', 'Чаи'] // 'Арeнда*' has a Latin e
@@ -33,7 +34,6 @@ export interface SemCase {
   note?: string
 }
 
-const err = (code: Extract<CellValue, { error: unknown }>['error']): CellValue => ({ error: code })
 
 export const CASES: SemCase[] = [
   { id: 's1', fn: 'SUMIFS', formula: 'SUMIFS(Sem!B1:B7,Sem!C1:C7,">=2025-01-01")', excel: 94, note: 'date as text in the criterion' },

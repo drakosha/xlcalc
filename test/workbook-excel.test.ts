@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
 import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
 import { differences, engineReads, goesOn, predictionCheck } from './workbook-cases.js'
+import { currentCases } from './stored-cases.js'
 
 const dir = new URL('./excel/workbook/', import.meta.url)
 const SETS = existsSync(dir)
@@ -40,10 +41,7 @@ for (const set of SETS) {
   const built = ((await import(`../bench/coverage/workbook/${set.name}.ts`)) as { buildWorkbookCases: () => WorkbookCase[] }).buildWorkbookCases()
 
   describe(`workbook features against Excel en-US: set ${set.name}`, () => {
-    it('the stored cases are the current ones, all answered', () => {
-      expect(set.cases).toEqual(built)
-      expect(built.filter((c) => !set.answers[c.id])).toEqual([])
-    })
+    currentCases(set, built)
 
     for (const c of set.cases) {
       it(`${c.id}: ${c.about}`, () => {

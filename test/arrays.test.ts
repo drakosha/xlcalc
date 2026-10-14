@@ -4,16 +4,13 @@
  * that are arrays in a session, array constants in the canonical form.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, debugGeneratedCode, createSession, editStructure, validateFormula, validateLocalFormula, type CellInput, type CellValue } from '../src/index.js'
+import { compute, debugGeneratedCode, createSession, editStructure, validateFormula, validateLocalFormula, type CellInput } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { cellIssues } from './diagnostics.js'
+import { sheetValuesAt } from './formula-values.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
-
-function sheet(cells: Record<string, CellInput>): Record<string, CellValue> {
-  const r = compute({ sheets: [{ name: 'S', cells }] }, { clock })
-  return Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value]))
-}
+const sheet = sheetValuesAt(clock.now)
 
 describe('arrays beyond the Excel cases', () => {
   it('a whole column is 1,048,576 rows: the blank ones count where an operator makes them values', () => {

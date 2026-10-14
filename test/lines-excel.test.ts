@@ -6,7 +6,7 @@
  * saved, a book written and saved by Excel read back as written, and how Excel stores the cells of formatted lines.
  * Known differences are pinned with their reasons.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredLines } from '../bench/coverage/lines.js'
 import { caseBook, caseFile, engineCase, partsOf, sessionBook, sessionCase, type LineLook, type LinesAnswer } from '../bench/coverage/lines/cases.js'
@@ -17,6 +17,7 @@ import type { BookInput, NumberFormat } from '../src/contract.js'
 import { checkBook } from '../src/input.js'
 import { readXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
+import { storedSets } from './stored-sets.js'
 
 /** Excel merges the styles of a row and a column it formats across each other; `applySteps` sets the line's style, as `setLayout` does. */
 const MERGED =
@@ -31,14 +32,7 @@ const LINES_KNOWN: Record<string, string> = {
 
 type LinesSetFile = StoredLines & { name: string; dir: URL }
 
-function linesSets(sub: string): LinesSetFile[] {
-  const dir = new URL(`./excel/${sub}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .sort()
-    .map((f) => ({ name: f.slice(0, -5), dir: new URL(`${f.slice(0, -5)}/`, dir), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredLines) }))
-}
+const linesSets = (sub: string): LinesSetFile[] => storedSets<StoredLines>(sub)
 
 const show = (l: LineLook | undefined) => (l ? `${JSON.stringify(l.text)} ${l.format} fill ${l.fill ?? 'none'} font ${l.font}${l.bold ? ' bold' : ''}${l.italic ? ' italic' : ''}` : 'none')
 
