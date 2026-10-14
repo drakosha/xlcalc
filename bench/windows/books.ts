@@ -119,6 +119,15 @@ export function makeErrors(c: { make?: unknown[]; op?: unknown }, answers: unkno
   return { n, errors: stepErrors(answers.slice(skip, n), (i) => (i < makes ? 'make' : 'op')) }
 }
 
+/** A case's steps: what it makes (`make` writes each), its operation, `read` and a save. */
+export const madeSteps = <M>(c: { id: string; book: string; make?: M[]; op?: StructCase['op'] }, make: (m: M) => Step, read: Step): Step[] => [...(c.make ?? []).map(make), ...opSteps(c), read, { do: 'saveAs' }]
+
+/** A case's answer from its steps' (`madeSteps`): the errors of what it made and of its operation, and its sheets from the read's answer. */
+export function madeAnswer<R, S>(c: { make?: unknown[]; op?: unknown }, answers: unknown[], sheet: (raw: R) => S): { error?: string; sheets: S[] } {
+  const { n, errors } = makeErrors(c, answers)
+  return { ...(errors.length ? { error: errors.join('; ') } : {}), sheets: (answers[n] as R[]).map(sheet) }
+}
+
 /** The refusals of a case's `n` edits, whose answers come after the full calculation, each before its calculation. */
 const editsRefused = (answers: unknown[], n: number) => refusedOf(Array.from({ length: n }, (_, i) => (answers[1 + 2 * i] as { error?: string } | null)?.error))
 

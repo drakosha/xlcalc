@@ -210,3 +210,6 @@ export function runFileCases<C extends { id: string }, A>(label: string, store: 
     },
   )
 }
+
+/** An address without its `$` (Excel's `Address()`). */
+export const plain = (a: string) => a.replaceAll('$', '')

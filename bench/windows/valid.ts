@@ -6,10 +6,10 @@
  * files beside them; `test/validation-win.test.ts` reads them.
  */
 import { localeDir } from '../coverage/locales.js'
-import { fileAnswers, secondsSince } from '../coverage/stored.js'
-import { flag, formulaForExcel, ruleRange, validSet } from '../coverage/valid.js'
+import { fileAnswers, plain, secondsSince } from '../coverage/stored.js'
+import { excelRule, flag, validSet } from '../coverage/valid.js'
 import { lineRange, WINDOW, type ExcelLine, type ExcelRule, type ValidAnswer, type ValidCase, type ValidMake } from '../coverage/valid/cases.js'
-import { fileJobs, makeErrors, opSteps } from './books.js'
+import { fileJobs, madeAnswer, madeSteps } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -23,9 +23,7 @@ const ALERT_OF: Record<string, number> = { stop: 1, warning: 2, information: 3 }
 /** A step of `xl.ps1` that makes what the case makes. */
 function makeStep(m: ValidMake): Step {
   if ('rule' in m) {
-    const r = m.rule
-    const { range, first } = ruleRange(m.range)
-    const [f1, f2] = m.excel ?? [formulaForExcel(r.formula1), formulaForExcel(r.formula2)]
+    const { r, range, first, f1, f2 } = excelRule(m)
     return {
       do: 'vmake', kind: 'rule', sheet: m.sheet, range, first, type: TYPE_OF[r.type], alert: ALERT_OF[r.errorStyle ?? 'stop'], operator: OPERATOR_OF[r.operator ?? 'between'], f1, f2: f2 ?? '',
       ignore: flag(r.allowBlank), dropdown: flag(r.dropdown), showInput: flag(r.showPrompt), showError: flag(r.showError), inputTitle: r.promptTitle ?? '', inputMessage: r.prompt ?? '', errorTitle: r.errorTitle ?? '', errorMessage: r.error ?? '',
@@ -39,8 +37,6 @@ function makeStep(m: ValidMake): Step {
 type RawRule = [string, number, number, string, string, boolean, boolean, boolean, boolean, number, string, string, string, string, boolean]
 type RawSheet = [string, RawRule[], ExcelLine[], ExcelLine[], [number, number]]
 
-const plain = (a: string) => a.replaceAll('$', '')
-
 export async function stepValid(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const { built, files, sent } = await validSet(set)
   const { books, cases } = built
@@ -53,21 +49,14 @@ export async function stepValid(set: string, tag: Tag, e: WinEnv): Promise<void>
     `valid-${set}`,
     store,
     files,
-    (c) => [...(c.make ?? []).map(makeStep), ...opSteps(c), { do: 'valid', window }, { do: 'saveAs' }],
-    (c, a) => {
-      const { n, errors } = makeErrors(c, a.answers)
-      const raw = a.answers[n] as RawSheet[]
-      return {
-        ...(errors.length ? { error: errors.join('; ') } : {}),
-        sheets: raw.map(([name, rules, rows, columns, [sr, sc]]) => ({
-          name,
-          rules: rules.map((x): ExcelRule => [plain(x[0]), TYPES[x[1]], OPERATORS[x[2]] ?? '', x[3], x[4], x[5], x[6], x[7], x[8], ALERTS[x[9]] ?? '', x[10], x[11], x[12], x[13], x[14]]),
-          rows,
-          columns,
-          summary: [sr === 0 ? 'summary above' : 'summary below', sc === -4131 ? 'summary on left' : 'summary on right'],
-        })),
-      }
-    },
+    (c) => madeSteps(c, makeStep, { do: 'valid', window }),
+    (c, a) => madeAnswer(c, a.answers, ([name, rules, rows, columns, [sr, sc]]: RawSheet) => ({
+      name,
+      rules: rules.map((x): ExcelRule => [plain(x[0]), TYPES[x[1]], OPERATORS[x[2]] ?? '', x[3], x[4], x[5], x[6], x[7], x[8], ALERTS[x[9]] ?? '', x[10], x[11], x[12], x[13], x[14]]),
+      rows,
+      columns,
+      summary: [sr === 0 ? 'summary above' : 'summary below', sc === -4131 ? 'summary on left' : 'summary on right'],
+    })),
     save,
   )
 }

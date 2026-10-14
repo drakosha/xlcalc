@@ -44,13 +44,19 @@ export function ruleRange(range: string): { range: string; first: string } {
   return { range: areas.map((x) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`).join(','), first: formatAddress(areas[0].r1, areas[0].c1) }
 }
 
+/** A rule a case makes as Excel takes it: the rule, its range and that range's first cell, its formulas spelled for Excel. */
+export function excelRule(m: Extract<ValidMake, { rule: unknown }>) {
+  const r = m.rule
+  const { range, first } = ruleRange(m.range)
+  const [f1, f2] = m.excel ?? [formulaForExcel(r.formula1), formulaForExcel(r.formula2)]
+  return { r, range, first, f1, f2 }
+}
+
 /** What a case makes, as the script takes it. */
 export function makeArgs(make: ValidMake[] = []): string[][] {
   return make.map((m) => {
     if ('rule' in m) {
-      const r = m.rule
-      const { range, first } = ruleRange(m.range)
-      const [f1, f2] = m.excel ?? [formulaForExcel(r.formula1), formulaForExcel(r.formula2)]
+      const { r, range, first, f1, f2 } = excelRule(m)
       return ['rule', m.sheet, range, first, r.type, r.errorStyle ?? '', r.operator ?? '', f1, f2 ?? '', flag(r.allowBlank), flag(r.dropdown), flag(r.showPrompt), flag(r.showError), r.promptTitle ?? '', r.prompt ?? '', r.errorTitle ?? '', r.error ?? '']
     }
     if ('summary' in m) return ['summary', m.sheet, flag(m.summary.summaryBelow), flag(m.summary.summaryRight)]

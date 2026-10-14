@@ -7,8 +7,8 @@
  */
 import { partsSet } from '../coverage/parts.js'
 import type { PartsAnswer, PartsCase, PartsMake } from '../coverage/parts/cases.js'
-import { fileAnswers, secondsSince } from '../coverage/stored.js'
-import { fileJobs, makeErrors, opSteps } from './books.js'
+import { fileAnswers, plain, secondsSince } from '../coverage/stored.js'
+import { fileJobs, madeAnswer, madeSteps } from './books.js'
 import { winFile } from './functions.js'
 import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -21,8 +21,6 @@ function makeStep(m: PartsMake): Step {
 
 type RawSheet = [string, [string, string, string][], [string, [string, string][]][], [string, string, string, string, string][], [boolean, number, number, number, number, number, number]]
 
-const plain = (a: string) => a.replaceAll('$', '')
-
 export async function stepParts(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const { built, files, sent } = await partsSet(set)
   const { books, cases, threads } = built
@@ -34,21 +32,14 @@ export async function stepParts(set: string, tag: Tag, e: WinEnv): Promise<void>
     `parts-${set}`,
     store,
     files,
-    (c) => [...(c.make ?? []).map(makeStep), ...opSteps(c), { do: 'parts' }, { do: 'saveAs' }],
-    (c, a) => {
-      const { n, errors } = makeErrors(c, a.answers)
-      const raw = a.answers[n] as RawSheet[]
-      return {
-        ...(errors.length ? { error: errors.join('; ') } : {}),
-        sheets: raw.map(([name, notes, threads, links, [freeze, splitRow, splitColumn, , , scrollRow, scrollColumn]]) => ({
-          name,
-          notes: Object.fromEntries(notes.map(([addr, author, text]) => [plain(addr), { author, text }])),
-          links: links.map(([range, address, subAddress, tip, display]) => ({ range: plain(range), address, subAddress, tip, display })),
-          panes: { freeze, splitRow, splitColumn, scrollRow, scrollColumn },
-          ...(threads.length ? { threads: Object.fromEntries(threads.map(([addr, list]) => [plain(addr), list.map(([author, text]) => ({ author, text }))])) } : {}),
-        })),
-      }
-    },
+    (c) => madeSteps(c, makeStep, { do: 'parts' }),
+    (c, a) => madeAnswer(c, a.answers, ([name, notes, threads, links, [freeze, splitRow, splitColumn, , , scrollRow, scrollColumn]]: RawSheet) => ({
+      name,
+      notes: Object.fromEntries(notes.map(([addr, author, text]) => [plain(addr), { author, text }])),
+      links: links.map(([range, address, subAddress, tip, display]) => ({ range: plain(range), address, subAddress, tip, display })),
+      panes: { freeze, splitRow, splitColumn, scrollRow, scrollColumn },
+      ...(threads.length ? { threads: Object.fromEntries(threads.map(([addr, list]) => [plain(addr), list.map(([author, text]) => ({ author, text }))])) } : {}),
+    })),
     save,
   )
 }

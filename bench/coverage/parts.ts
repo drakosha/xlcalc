@@ -10,7 +10,7 @@ import { writeXlsx } from '../../src/xlsx.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { localeMeta } from './locales.js'
 import type { PartsAnswer, PartsCase, PartsCases, PartsMake, PartsSet } from './parts/cases.js'
-import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
+import { fileAnswers, plain, runFileCases, secondsSince, setModule } from './stored.js'
 import { threadedFile } from './parts/threaded.js'
 import { opJson } from './struct.js'
 import { caseFiles, rawFile } from './xlsx/sent.js'
@@ -49,8 +49,6 @@ export async function partsSet(set: string): Promise<{ built: PartsCases; files:
 }
 
 type RawSheet = [string, [string, string, string][], [string, string, string, string, string][], [boolean, number, number, number, number, number, number]]
-
-const plain = (a: string) => a.replaceAll('$', '')
 
 /** One case in Excel: its answer and the saved file, or the repair window's text. A window that is not a book stops the run. */
 async function runCase(c: PartsCase, data: Uint8Array): Promise<{ answer: PartsAnswer; saved: Uint8Array } | { rejected: string }> {
