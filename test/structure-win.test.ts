@@ -6,12 +6,12 @@
 import { describe, expect, it } from 'vitest'
 import type { StoredStruct } from '../bench/coverage/struct.js'
 import type { StructCases } from '../bench/coverage/struct/cases.js'
-import { takenBook } from '../bench/coverage/stored.js'
-import { editStructure, type BookInput } from '../src/index.js'
+import type { BookInput } from '../src/index.js'
 import { winFiles } from './excel-win-cases.js'
-import { differences } from './structure-excel.js'
+import { differences, structureOf } from './structure-excel.js'
 
 const SETS = winFiles<StoredStruct>('struct/')
+
 
 /** The look at the sheet's edges (styles of rows and columns that reach row 1048576 or column XFD) as Excel for Windows reports it. */
 const EDGE = 'Excel for Windows reports the look at the sheet\'s edges otherwise: the empty cells a span reaching the end takes after the operation read plain'
@@ -61,7 +61,7 @@ for (const set of SETS) {
     for (const c of set.cases)
       it(`${c.id}: as Excel for Windows`, () => {
         const a = set.answers[c.id]
-        const r = editStructure(takenBook(set.books[c.book]), c.op)
+        const r = structureOf(set.books[c.book], c)
         const same = (book: BookInput) => differences(book, a, String(set.meta.read), look, set.widths !== false).filter((l) => !sameSize(l))
         if (a.error) {
           expect(r.ok, `Excel refused: ${a.error}`).toBe(false)

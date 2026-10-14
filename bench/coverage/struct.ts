@@ -33,11 +33,12 @@ export const READ = 'A1:Z60'
 /** The rectangle whose look is read on every sheet of a styled book; a case keeps its styles inside it. */
 export const LOOK = 'A1:J24'
 
-/** What a cell looks like in the short signature: bold, the fill colour, the number format; left out when plain. */
+/** What a cell looks like in the short signature: bold, the fill colour, the number format, the horizontal alignment (Excel for Windows reads it); left out when plain. */
 export interface CellLook {
   bold?: true
   fill?: string
   format?: string
+  align?: string
 }
 
 /** The look of `LOOK` on a sheet: cells that are not plain, the columns and rows not of the standard size, merged areas meeting it, hidden columns and rows. */
@@ -200,6 +201,13 @@ export function opArgs(c: StructCase): string[] {
       return [o.before ?? '', '', o.name, '']
     case 'moveSheet':
       return [o.sheet, '', o.before ?? '', '']
+    // the flags in the target's place (`across center`); Excel for Windows only
+    case 'mergeCells':
+      return [o.sheet, cells(o.range), [o.across ? 'across' : '', o.center ? 'center' : ''].join(' ').trim(), '']
+    case 'unmergeCells':
+      return [o.sheet, cells(o.range), '', '']
+    case 'addTable':
+      return [o.sheet, o.table.range, o.table.name, '']
     default:
       throw new Error(`${c.id}: the struct step has no ${o.op} (the tables step has)`)
   }
@@ -237,14 +245,14 @@ export function lookArgs(look: string): [string, string, string] {
   return [[...cells].join('\n'), [...cols].join('\n'), [...rows].join('\n')]
 }
 
-export type RawLook = [[string, boolean, number[], string, string][], [string, boolean, number, boolean][], [string, boolean, number, boolean][]]
+export type RawLook = [[string, boolean, number[], string, string, string?][], [string, boolean, number, boolean][], [string, boolean, number, boolean][]]
 
 /** Excel's look of a sheet: a white fill is no fill (cases do not use white), sizes of the standard size are left out. */
 export function lookOf([cells, widths, heights]: RawLook): SheetLook {
   const out: SheetLook = { cells: {}, widths: {}, heights: {}, merges: [] }
-  for (const [addr, bold, rgb, format, merge] of cells) {
+  for (const [addr, bold, rgb, format, merge, align] of cells) {
     const fill = fromRgb(rgb)
-    const look: CellLook = { ...(bold ? { bold: true } : {}), ...(fill !== '#FFFFFF' ? { fill } : {}), ...(format !== 'General' ? { format } : {}) }
+    const look: CellLook = { ...(bold ? { bold: true } : {}), ...(fill !== '#FFFFFF' ? { fill } : {}), ...(format !== 'General' ? { format } : {}), ...(align && align !== 'general' ? { align } : {}) }
     if (Object.keys(look).length) out.cells[addr] = look
     const m = merge.replaceAll('$', '')
     if (m && !out.merges.includes(m)) out.merges.push(m)
@@ -259,6 +267,7 @@ export function lookOf([cells, widths, heights]: RawLook): SheetLook {
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
 async function runCase(c: StructCase, book: StoredBook, dynamic: boolean, lookRects: string, files?: FileParts): Promise<ExcelStructAnswer> {
+  if (c.before || c.op.op === 'mergeCells' || c.op.op === 'unmergeCells') throw new Error(`${c.id}: merged cells and operations taken before are measured on Excel for Windows (bench/windows)`)
   const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
   const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
   return runWatched<ExcelStructAnswer>({

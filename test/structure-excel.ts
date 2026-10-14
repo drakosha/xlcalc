@@ -14,7 +14,9 @@ import { formatAddress, indexToCol, parseAddress } from '../src/model.js'
 import { cornersText, decode, encode, meets } from '../src/structure/area.js'
 import { canonical, parse, sheetKey, walk } from '../src/syntax.js'
 import { expandSheet } from './looks-book.js'
-import { numberFormatOf } from '../bench/coverage/stored.js'
+import { numberFormatOf, takenBook, type StoredBook } from '../bench/coverage/stored.js'
+import type { StructCase } from '../bench/coverage/struct/cases.js'
+import { editStructure } from '../src/structure/index.js'
 
 const dir = new URL('./excel/struct/', import.meta.url)
 
@@ -88,7 +90,8 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
       const [cell, row, col] = [sheet.cells[formatAddress(tr, tc)], lineAt(sheet.rows, 'r', tr), lineAt(sheet.columns, 'c', tc)]
       const style = book.styles?.[cell?.style ?? row?.style ?? col?.style ?? -1]
       const format = numberFormatOf(cell) ?? numberFormatOf(row) ?? numberFormatOf(col)
-      const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format: String(format) } : {}) }
+      const align = style?.alignment?.horizontal
+      const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format: String(format) } : {}), ...(align && align !== 'general' ? { align } : {}) }
       if (Object.keys(l).length) out.cells[addr] = l
     }
   // a hidden line shows no size, as Excel reads it; a row of height 0 is hidden
@@ -171,5 +174,12 @@ export function differences(book: BookInput, a: ExcelStructAnswer, read: string,
 
 /** Number of formulas Excel showed in a case (for the report). */
 export const formulaCount = (a: ExcelStructAnswer) => a.sheets.reduce((n, s) => n + Object.values(s.cells).filter((t) => t.startsWith('=')).length, 0) + a.names.filter((n) => !n.name.startsWith('_xlfn.')).length
+
+/** The case's operation on its book, after the one taken before it. */
+export function structureOf(book: StoredBook, c: StructCase) {
+  const first = c.before ? editStructure(takenBook(book), c.before) : null
+  if (first && !first.ok) throw new Error(`${c.id}: the engine refused the operation before: ${first.message}`)
+  return editStructure(first ? first.book : takenBook(book), c.op)
+}
 
 export { formatAddress }

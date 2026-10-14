@@ -332,12 +332,15 @@ export async function stepStruct(set: string, tag: Tag, e: WinEnv): Promise<void
       await writeStructBook(c, book, f, dynamic, files?.[c.book])
       const [cells, columns, rows] = styled(book) ? lookArgs(lookRects).map((x) => x.split('\n')) : [[], [], []]
       const looked = styled(book) ? { look: { cells, columns, rows } } : {}
-      return { file: f, steps: [...opSteps(c, c.via ?? c.op.op), { do: 'sheets', range: READ, ...looked }, { do: 'formulaAt', cells: c.extra ?? [] }, { do: 'names' }] }
+      const before = c.before ? opSteps({ ...c, op: c.before }) : []
+      return { file: f, steps: [...before, ...opSteps(c, c.via ?? c.op.op), { do: 'sheets', range: READ, ...looked }, { do: 'formulaAt', cells: c.extra ?? [] }, { do: 'names' }] }
     },
     (c, a) => {
-      const [op, sheets, extra, names] = a.answers as [{ error?: string } | null, [string, string, WinCell[][], [unknown[][], unknown[][], unknown[][]] | ''][], string[], [string, string][]]
+      const all = a.answers as unknown[]
+      const first = c.before ? (all[0] as { error?: string } | null) : null
+      const [op, sheets, extra, names] = (c.before ? all.slice(1) : all) as [{ error?: string } | null, [string, string, WinCell[][], [unknown[][], unknown[][], unknown[][]] | ''][], string[], [string, string][]]
       answers[c.id] = {
-        ...(op?.error ? { error: `op: ${op.error}` } : {}),
+        ...(first?.error ? { error: `before: ${first.error}` } : op?.error ? { error: `op: ${op.error}` } : {}),
         sheets: sheets.map(([name, used, f, lk]) => ({ name, used, cells: structCells(f), ...(lk ? { look: lookOf(rawLook(lk)) } : {}) })),
         extra: (c.extra ?? []).map((x, i) => ({ sheet: x.sheet, cell: x.cell, text: extra[i] })),
         names: names.map(([name, ref]) => ({ name, ref })),
@@ -351,7 +354,10 @@ export async function stepStruct(set: string, tag: Tag, e: WinEnv): Promise<void
   if (failed.length) throw new Error(`struct ${set}: Excel did not load ${failed.join('; ')}`)
 }
 
+/** Excel's `HorizontalAlignment` constants by name (`AlignmentStyle.horizontal`); a range of mixed alignments reads null. */
+const ALIGN: Record<number, string> = { 1: 'general', [-4131]: 'left', [-4108]: 'center', [-4152]: 'right', 5: 'fill', [-4130]: 'justify', 7: 'centerContinuous', [-4117]: 'distributed' }
+
 /** The look as `xl.ps1` reads it, in the Mac's shape: a fill as `[r, g, b]`. */
 function rawLook([cells, cols, rows]: [unknown[][], unknown[][], unknown[][]]): RawLook {
-  return [cells.map(([a, bold, fill, format, merge]) => [String(a), bold === true, rgb(Number(fill)), String(format), String(merge)]), cols as RawLook[1], rows as RawLook[2]]
+  return [cells.map(([a, bold, fill, format, merge, align]) => [String(a), bold === true, rgb(Number(fill)), String(format), String(merge), ALIGN[Number(align)] ?? `unknown ${align}`]), cols as RawLook[1], rows as RawLook[2]]
 }

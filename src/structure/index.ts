@@ -24,6 +24,7 @@ import { stateValues, type ValuesIn } from './values.js'
 import { checkWrites } from './writes.js'
 import { tableOp } from '../tables/ops.js'
 import { OUTLINE_FIELDS, outlineOp } from './outline.js'
+import { mergeCells, unmergeCells } from './merge.js'
 import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
 
@@ -51,6 +52,8 @@ const FIELDS: Record<string, string[]> = {
   deleteTable: ['table'],
   convertTable: ['table'],
   ...OUTLINE_FIELDS,
+  mergeCells: ['sheet', 'range', 'across', 'center'],
+  unmergeCells: ['sheet', 'range'],
 }
 
 function integer(v: unknown, path: string, min: number, max: number): number {
@@ -217,6 +220,17 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
     case 'showLevels':
       r = outlineOp(book, named(o.sheet, 'op.sheet'), o)
       break
+    case 'mergeCells':
+    case 'unmergeCells': {
+      const sheet = named(o.sheet, 'op.sheet')
+      const range = rangeOf(o.range, 'op.range')
+      const flag = (k: 'across' | 'center') => {
+        if (o[k] !== undefined && typeof o[k] !== 'boolean') throw new InputError(`op.${k}`, `expected a boolean, got ${JSON.stringify(o[k])}`)
+        return o[k] === true
+      }
+      r = o.op === 'mergeCells' ? mergeCells(book, sheet, range, flag('across'), flag('center')) : unmergeCells(book, sheet, range)
+      break
+    }
   }
   return r
 }
