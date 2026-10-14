@@ -30,8 +30,8 @@ export type Copier = (book: BookInput, from: Rect, to: Rect) => Applied
 /** A cell of a line's source as a fill reads it: what kind of series it can go on in, and its value there. */
 type Item =
   | { k: 'number' | 'date' | 'time'; y: number }
-  | { k: 'suffix'; prefix: string; y: number; width: number }
-  | { k: 'list'; list: readonly string[]; y: number; caseOf: (s: string) => string }
+  /** Text that goes on by a number in it: the cells of one `key` go on together, `make` writes the text of another number. */
+  | { k: 'text'; key: string; y: number; make: (n: number) => string }
   | { k: 'other' }
 
 /** A run of a line's source: consecutive cells that go on together, from position `at` of the source. */
@@ -111,8 +111,10 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
       const [r, c] = axis === 'r' ? [at, across] : [across, at]
       return itemOf(line.get(p), formatAt(sheet, line.get(p), r, c), book, lists)
     })
+    // a number alone in its line is copied as a single cell is, unless the fill is a series
+    const alone = line.size === 1 || [...line.values()].filter((x) => x.formula !== undefined || (x.value !== undefined && x.value !== null)).length === 1
     for (const run of runsOf(items)) {
-      const next = goesOn(run, type, epoch)
+      const next = goesOn(run, type === 'series' || !alone, epoch)
       if (!next) continue
       const m = run.items.length
       for (let pos = added[0]; pos <= added[1]; pos++) {
@@ -145,6 +147,27 @@ function listsOf(book: BookInput): (readonly string[])[] {
 
 /** Text that ends in a number: the text before it and its digits. */
 const SUFFIX = /^(.*?)(\d+)$/s
+/** Text that starts with a number: its digits and the text after them. */
+const LEADING = /^(\d+)(\D.*)$/s
+/** A quarter: `Q1`, `Qtr 2`, `Quarter 4`. */
+const QUARTER = /^(q|qtr|quarter)( ?)([1-4])$/i
+/** An ordinal of en-US: `1st`, `22nd`. */
+const ORDINAL = /^(\d+)(st|nd|rd|th)$/i
+
+/** `n` within 0 … `size` - 1, as a list goes round. */
+const round = (n: number, size: number) => ((n % size) + size) % size
+
+/** A number's digits, as wide as `width` with zeros before them; a number below zero by its size. */
+const digits = (n: number, width: number) => String(Math.abs(n)).padStart(width, '0')
+
+/** The width a number's digits keep: theirs when they start with a zero, else none. */
+const widthOf = (d: string) => (d.length > 1 && d[0] === '0' ? d.length : 0)
+
+/** en-US's ending of an ordinal: 1st, 2nd, 3rd, 4th, 11th, 21st. */
+function ordinal(n: number): string {
+  const [t, u] = [Math.abs(n) % 100, Math.abs(n) % 10]
+  return t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'
+}
 
 /** How a fill reads a cell of its source. */
 function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], book: BookInput, lists: (readonly string[])[]): Item {
@@ -156,13 +179,29 @@ function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], 
   }
   if (typeof v === 'number') return { k: shownAs(format), y: v }
   if (typeof v !== 'string') return { k: 'other' }
-  const key = v.toLowerCase()
-  for (const list of lists) {
-    const y = list.findIndex((x) => x.toLowerCase() === key)
-    if (y >= 0) return { k: 'list', list, y, caseOf: casing(v) }
+  const lower = v.toLowerCase()
+  for (const [i, list] of lists.entries()) {
+    const y = list.findIndex((x) => x.toLowerCase() === lower)
+    const caseOf = casing(v)
+    if (y >= 0) return { k: 'text', key: `list ${i}`, y, make: (n) => caseOf(list[round(n, list.length)]) }
   }
-  const m = SUFFIX.exec(v)
-  if (m) return { k: 'suffix', prefix: m[1], y: Number(m[2]), width: m[2].length > 1 && m[2][0] === '0' ? m[2].length : 0 }
+  let m = QUARTER.exec(v)
+  if (m) {
+    const head = m[1] + m[2]
+    return { k: 'text', key: `quarter ${head.toLowerCase()}`, y: Number(m[3]), make: (n) => head + (round(n - 1, 4) + 1) }
+  }
+  if ((m = ORDINAL.exec(v))) {
+    const caseOf = casing(m[2])
+    return { k: 'text', key: 'ordinal', y: Number(m[1]), make: (n) => Math.abs(n) + caseOf(ordinal(n)) }
+  }
+  if ((m = SUFFIX.exec(v))) {
+    const [head, width] = [m[1], widthOf(m[2])]
+    return { k: 'text', key: `suffix ${head}`, y: Number(m[2]), make: (n) => head + digits(n, width) }
+  }
+  if ((m = LEADING.exec(v))) {
+    const [tail, width] = [m[2], widthOf(m[1])]
+    return { k: 'text', key: `leading ${tail}`, y: Number(m[1]), make: (n) => digits(n, width) + tail }
+  }
   return { k: 'other' }
 }
 
@@ -210,11 +249,13 @@ function runsOf(items: Item[]): Run[] {
   return runs
 }
 
-const together = (x: Item, y: Item): boolean =>
-  x.k !== 'other' && x.k === y.k && (x.k !== 'suffix' || x.prefix === (y as typeof x).prefix) && (x.k !== 'list' || x.list === (y as typeof x).list)
+const together = (x: Item, y: Item): boolean => x.k !== 'other' && x.k === y.k && (x.k !== 'text' || x.key === (y as typeof x).key)
 
-/** A run's value at element `e` (0 its first cell, its length the first copied), given the source cell it copies; null when the run is copied. */
-function goesOn(run: Run, type: FillType, epoch: number): ((e: number, source: Item) => CellInput['value']) | null {
+/**
+ * A run's value at element `e` (0 its first cell, its length the first copied), given the source cell it copies; null when
+ * the run is copied. A single number goes on by 1 when `single`, else it is copied.
+ */
+function goesOn(run: Run, single: boolean, epoch: number): ((e: number, source: Item) => CellInput['value']) | null {
   const first = run.items[0]
   const ys = run.items.map((x) => (x.k === 'other' ? 0 : x.y))
   const m = ys.length
@@ -222,7 +263,7 @@ function goesOn(run: Run, type: FillType, epoch: number): ((e: number, source: I
     case 'other':
       return null
     case 'number': {
-      if (m === 1) return type === 'series' ? (e) => ys[0] + e : null
+      if (m === 1) return single ? (e) => ys[0] + e : null
       const f = trend(ys)
       return (e) => f(e)
     }
@@ -235,20 +276,9 @@ function goesOn(run: Run, type: FillType, epoch: number): ((e: number, source: I
       const months = monthStep(ys, epoch)
       return months ?? trend(ys)
     }
-    case 'suffix': {
+    case 'text': {
       const f = m === 1 ? (e: number) => ys[0] + e : trend(ys)
-      return (e) => {
-        const v = Math.abs(Math.round(f(e)))
-        return first.prefix + String(v).padStart(first.width, '0')
-      }
-    }
-    case 'list': {
-      const n = first.list.length
-      const f = m === 1 ? (e: number) => ys[0] + e : trend(ys)
-      return (e, source) => {
-        const i = ((Math.round(f(e)) % n) + n) % n
-        return (source.k === 'list' ? source.caseOf : first.caseOf)(first.list[i])
-      }
+      return (e, source) => (source.k === 'text' ? source : first).make(Math.round(f(e)))
     }
   }
 }
@@ -270,15 +300,19 @@ function trend(ys: number[]): (e: number) => number {
   return (e) => my + slope * (e - mx)
 }
 
-/** Dates on one day of the month a whole number of months apart, each step the same: the date `e` steps on, else null. */
+/**
+ * Dates a whole number of months apart, each step the same, a day past a month's end taken back to its last day (Jan 31,
+ * Feb 28, Mar 31): the date `e` steps on from the first, else null.
+ */
 function monthStep(ys: number[], epoch: number): ((e: number) => number) | null {
-  const ds = ys.map((y) => ({ ...ymd(Math.floor(y) + epoch), t: y - Math.floor(y) }))
-  if (ds.some((x) => x.d !== ds[0].d)) return null
-  const step = ds[1].y * 12 + ds[1].m - (ds[0].y * 12 + ds[0].m)
-  if (step === 0 || ds.some((x, i) => i > 0 && x.y * 12 + x.m - (ds[i - 1].y * 12 + ds[i - 1].m) !== step)) return null
-  const { y, m, d, t } = ds[0]
-  return (e) => {
-    const at = addMonths(y, m, step * e)
-    return serialOf(at.y, at.m, Math.min(d, daysInMonth(at.y, at.m))) - epoch + t
+  const { y, m, d } = ymd(Math.floor(ys[0]) + epoch)
+  const t = ys[0] - Math.floor(ys[0])
+  const second = ymd(Math.floor(ys[1]) + epoch)
+  const step = second.y * 12 + second.m - (y * 12 + m)
+  if (step === 0) return null
+  const at = (e: number) => {
+    const to = addMonths(y, m, step * e)
+    return serialOf(to.y, to.m, Math.min(d, daysInMonth(to.y, to.m))) - epoch + t
   }
+  return ys.every((v, i) => Math.abs(at(i) - v) < 1e-9) ? at : null
 }
