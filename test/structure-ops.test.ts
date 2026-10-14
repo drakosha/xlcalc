@@ -119,7 +119,7 @@ describe('editStructure', () => {
 
   it('throws InputError on input of the wrong shape', () => {
     const fails = (op: unknown, message: string) => expect(() => editStructure(book(), op as StructureOp)).toThrow(new InputError(message.split(': ')[0], message.slice(message.indexOf(': ') + 2)))
-    fails({ op: 'insertRow', sheet: 'S', row: 1 }, 'op.op: expected one of insertRows, deleteRows, insertColumns, deleteColumns, moveRange, copyRange, renameSheet, deleteSheet, insertSheet, moveSheet, hideSheet, unhideSheet, addTable, renameTable, deleteTable, convertTable, group, ungroup, showDetail, hideDetail, showLevels, mergeCells, unmergeCells, got "insertRow"')
+    fails({ op: 'insertRow', sheet: 'S', row: 1 }, 'op.op: expected one of insertRows, deleteRows, insertColumns, deleteColumns, moveRange, copyRange, renameSheet, deleteSheet, insertSheet, moveSheet, hideSheet, unhideSheet, addTable, renameTable, deleteTable, convertTable, group, ungroup, showDetail, hideDetail, showLevels, mergeCells, unmergeCells, fillRange, got "insertRow"')
     fails({ op: 'insertRows', sheet: 'Нет', row: 1 }, 'op.sheet: unknown sheet "Нет"')
     fails({ op: 'insertRows', sheet: 'S', row: 0 }, 'op.row: expected an integer from 1 to 1048576, got 0')
     fails({ op: 'deleteRows', sheet: 'S', row: 1048576, count: 2 }, 'op.count: expected an integer from 1 to 1, got 2')
