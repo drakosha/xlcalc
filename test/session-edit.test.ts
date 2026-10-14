@@ -9,11 +9,12 @@ import { CalcError, compute, InputError, type BookInput, type Execution } from '
 import { CLOCK } from './async-books.js'
 import { inside } from './fixtures/pool.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { boldAndYellow } from './looks-book.js'
 
 afterAll(closeCalcs)
 
 const book = (): BookInput => ({
-  styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }],
+  styles: boldAndYellow(),
   sheets: [
     {
       name: 'S',

@@ -4,7 +4,7 @@
  * any case, one namespace with tables, and a name kept through structure operations and an xlsx file.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, createSession, editStructure, toInvariant, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput } from '../src/index.js'
+import { compute, InputError, createSession, editStructure, toInvariant, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput, type SheetInput } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { nameIssues } from './diagnostics.js'
@@ -19,6 +19,15 @@ const values = (b: BookInput) => {
   const r = compute(b, { display: false })
   return { issues: nameIssues(r), cells: Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value])) }
 }
+
+/** A global name Ставка (0.2) and one of the sheet Лист (0.3), which Лист!A1 reads; S holds `cells`. */
+const rates = (cells: SheetInput['cells']): BookInput => ({
+  sheets: [
+    { name: 'S', cells },
+    { name: 'Лист', cells: { A1: { formula: 'ставка' } } },
+  ],
+  names: [{ name: 'Ставка', ref: '0.2' }, { name: 'Ставка', ref: '0.3', scope: 'Лист' }],
+})
 
 describe('defined names in letters of any script', () => {
   it('a name of any script is valid; the rules of a name stay: no digit first, no cell address, no R1C1, no TRUE', () => {
@@ -41,26 +50,14 @@ describe('defined names in letters of any script', () => {
   })
 
   it('a sheet\'s own name of any script, on a sheet named in Cyrillic', () => {
-    const b: BookInput = {
-      sheets: [
-        { name: 'S', cells: { A1: { formula: "'Лист'!Ставка*2" }, A2: { formula: 'Ставка' } } },
-        { name: 'Лист', cells: { A1: { formula: 'ставка' } } },
-      ],
-      names: [{ name: 'Ставка', ref: '0.2' }, { name: 'Ставка', ref: '0.3', scope: 'Лист' }],
-    }
+    const b = rates({ A1: { formula: "'Лист'!Ставка*2" }, A2: { formula: 'Ставка' } })
     const r = compute(b, { display: false })
     expect(nameIssues(r)).toEqual([])
     expect([r.sheets[0].cells.A1.value, r.sheets[0].cells.A2.value, r.sheets[1].cells.A1.value]).toEqual([0.6, 0.2, 0.3])
   })
 
   it("a formula spells a name as it is defined, as Excel shows it (tables/names-held any-case): typed in any case, a sheet's own too", () => {
-    const b: BookInput = {
-      sheets: [
-        { name: 'S', cells: { A1: { formula: 'ставка*2' }, A2: { formula: "SUM('Лист'!СТАВКА,1)" } } },
-        { name: 'Лист', cells: { A1: { formula: 'ставка' } } },
-      ],
-      names: [{ name: 'Ставка', ref: '0.2' }, { name: 'Ставка', ref: '0.3', scope: 'Лист' }],
-    }
+    const b = rates({ A1: { formula: 'ставка*2' }, A2: { formula: "SUM('Лист'!СТАВКА,1)" } })
     const r = compute(b, { display: false })
     expect([r.sheets[0].cells.A1.formula, r.sheets[0].cells.A2.formula, r.sheets[1].cells.A1.formula]).toEqual(['Ставка*2', "SUM('Лист'!Ставка,1)", 'Ставка'])
     const s = createSession(b)

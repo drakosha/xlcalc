@@ -7,11 +7,11 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, InputError, createSession, type BookInput, type Calc, type CellPatch, type Execution } from '../src/index.js'
 import { CLOCK } from './async-books.js'
-import { cellsOf } from './looks-book.js'
+import { boldAndYellow, cellsOf } from './looks-book.js'
 import { inside, pool } from './fixtures/pool.js'
 
 const book = (): BookInput => ({
-  styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }],
+  styles: boldAndYellow(),
   sheets: [
     {
       name: 'S',

@@ -27,6 +27,7 @@ import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 import { CLOCK, matches, show, toVal } from './excel-cases.js'
 import { cellsOf } from './looks-book.js'
 import './locales.js'
+import { filterRun } from './xlsx-filters.js'
 
 const dir = new URL('./excel/xlsx/', import.meta.url)
 const json = <T>(name: string): T => JSON.parse(readFileSync(new URL(name, dir), 'utf8')) as T
@@ -89,20 +90,13 @@ describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip th
 describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Excel computed and saved them', () => {
   const run = json<StoredRun>('filters.json')
 
-  it('every file of the set went through Excel, and only those', () => {
-    expect(Object.keys(run.books).sort()).toEqual(FILTER_FILES.map((c) => c.id).sort())
+  filterRun(run, 'Excel', async (c) => {
+    const read = await readXlsx(readFileSync(new URL(`filters/${c.id}.xlsx`, dir)))
+    // the filter mode Excel took, as predicted: the engine computes the values Excel stored, which are the ones predicted
+    expect(!!read.book.sheets[0].filtered).toBe(predicted.filters[c.id].filtered)
+    expect(compareCached(compute(read.book, { clock: XLSX_CLOCK }), read.cached)).toEqual([])
+    expect(Object.fromEntries(Object.entries(read.cached.sheets[1].cells).map(([a, v]) => [`F!${a}`, v.value]))).toEqual(predicted.filters[c.id].values)
   })
-
-  for (const c of FILTER_FILES)
-    it(`${c.id}: ${c.about}`, async () => {
-      const data = await filterFile(c)
-      expect(run.books[c.id].sent, 'the file changed since Excel saw it: run the xlsx filters step').toBe(await partsHash(data))
-      const read = await readXlsx(readFileSync(new URL(`filters/${c.id}.xlsx`, dir)))
-      // the filter mode Excel took, as predicted: the engine computes the values Excel stored, which are the ones predicted
-      expect(!!read.book.sheets[0].filtered).toBe(predicted.filters[c.id].filtered)
-      expect(compareCached(compute(read.book, { clock: XLSX_CLOCK }), read.cached)).toEqual([])
-      expect(Object.fromEntries(Object.entries(read.cached.sheets[1].cells).map(([a, v]) => [`F!${a}`, v.value]))).toEqual(predicted.filters[c.id].values)
-    })
 })
 
 describe.skipIf(!existsSync(new URL('colors.json', dir)))('xlsx fill colours as Excel shows them', () => {

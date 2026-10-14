@@ -2,7 +2,7 @@
  * A book's looks (`SheetInput.looks`) as entries of a look alone, as a book held them before the looks: for the tests
  * that read a book's cells as entries, and the book a book with looks is compared with.
  */
-import type { BookInput, CellInput, SheetInput } from '../src/contract.js'
+import type { BookInput, CellInput, CellStyle, SheetInput } from '../src/contract.js'
 import { readRanges } from '../src/looks/ranges.js'
 import { formatAddress } from '../src/model.js'
 
@@ -26,3 +26,6 @@ export const expandBook = <B extends Pick<BookInput, 'sheets'>>(book: B): B => (
 
 /** A sheet's cells with its looks as entries (`expandSheet`). */
 export const cellsOf = (sheet: SheetInput): Record<string, CellInput> => expandSheet(sheet).cells
+
+/** A style table of two: bold (0), a yellow fill (1). */
+export const boldAndYellow = (): CellStyle[] => [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }]
