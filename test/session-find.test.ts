@@ -10,6 +10,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import type { BookInput, Execution, FindCellsOptions } from '../src/index.js'
 import './locales.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { filteredSheet } from './find-books.js'
 
 afterAll(closeCalcs)
 
@@ -29,13 +30,7 @@ const book: BookInput = {
       },
       rows: { 4: { hidden: true } },
     },
-    {
-      name: 'F',
-      cells: { A1: { value: 'x1' }, B1: { value: 'x2' }, C1: { value: 'x3' }, A2: { value: 'x4' }, B2: { value: 'x5' }, C2: { value: 'x6' }, A3: { value: 'x7' }, C3: { value: 'x8' } },
-      rows: { 2: { hidden: true } },
-      columns: { B: { hidden: true } },
-      filtered: true,
-    },
+    filteredSheet(),
   ],
 }
 

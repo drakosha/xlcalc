@@ -4,11 +4,12 @@
  * column's `bestFit` in xlsx, and the checks of their input. The rules themselves are checked against Excel in
  * `test/fit-excel.test.ts`.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, entryWidth, fitColumns, InputError, createSession, parseEntry, type BookInput, type Calc } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { compute, entryWidth, fitColumns, InputError, createSession, parseEntry, type BookInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
-import { pool } from './fixtures/pool.js'
+import { closedAfter } from './fixtures/pool.js'
 import './locales.js'
+import { ASYNC_CALCS } from './session-kinds.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 1 }
 
@@ -85,16 +86,12 @@ describe.each(['closures', 'eval'] as const)('AutoFit in a session, execution %s
   })
 })
 
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
+const { keep } = closedAfter()
 
-describe.each([
-  ['in the same thread', async () => createInlineCalc()],
-  ['in a thread', async () => pool({ threads: 1 })],
-] as const)('AutoFit in an asynchronous session, %s', (_, make) => {
+describe.each(ASYNC_CALCS)('AutoFit in an asynchronous session, %s', (_, make) => {
   it('goes through setLayout and the layout gives the widths', async () => {
     const calc = await make()
-    calcs.push(calc)
+    keep(calc)
     const s = await calc.createSession(book(), { clock })
     expect((await s.setLayout([{ sheet: 'S', columns: 'A:F', fit: true }])).changes.map((c) => c.cell)).toEqual(['B1', 'C1', 'B2'])
     expect((await s.getLayout()).sheets[0].columns?.C).toEqual({ width: 11.83203125, bestFit: true })

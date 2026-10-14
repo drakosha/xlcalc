@@ -6,6 +6,12 @@ import { beforeAll } from 'vitest'
 import { createInlineCalc, createSession, type AsyncSession, type BookInput, type Calc, type Session, type SessionOptions } from '../src/index.js'
 import { pool } from './fixtures/pool.js'
 
+/** The asynchronous calcs a test runs in turn: computing in portions in the same thread, and in a thread of a pool. */
+export const ASYNC_CALCS = [
+  ['in the same thread', async (): Promise<Calc> => createInlineCalc()],
+  ['in a thread', async (): Promise<Calc> => pool({ threads: 1 })],
+] as const
+
 export const KINDS = ['a synchronous session', 'the same thread', 'a thread'] as const
 export type Kind = (typeof KINDS)[number]
 
