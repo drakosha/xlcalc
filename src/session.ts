@@ -56,6 +56,7 @@ import { buildResult, cellsIn, clockSerial, spillFields, stateHash } from './res
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
+import { mergedPlan } from './session/merged.js'
 import { OUTLINE_FIELDS } from './structure/outline.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
@@ -695,6 +696,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const old = yield* ready()
       checkBase(eo, revision)
       op = opTaken(op)
+      // a merge that moves no cell is written as a patch is (`session/merged.ts`)
+      const plan = op.op === 'mergeCells' || op.op === 'unmergeCells' ? mergedPlan(old, op) : null
+      if (plan && 'ok' in plan) return plan
+      if (plan) {
+        const [next, out, steps] = yield* applyPlan(old, plan, 'editStructure', (x, edits) => writeCells(x, edits, 'editStructure'))
+        keep(() => manyStep('editStructure', steps.map((f) => f())))
+        return { ok: true, mapCell: checkedMapCell({ geometry: [], before: old.sheetNames, after: old.sheetNames }), ...answer(next, out) }
+      }
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
       // a sheet hidden or shown, and an outline command, move no cell: the book takes its sheets, nothing is built again
