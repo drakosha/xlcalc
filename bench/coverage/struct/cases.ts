@@ -6,7 +6,7 @@
  * Excel never meets a circular reference.
  */
 import type { FileParts } from '../case-book.js'
-import type { BookInput, CellInput, CellRef, StructureOp } from '../../../src/contract.js'
+import type { BookInput, CellInput, CellRef, RangeRef, StructureOp } from '../../../src/contract.js'
 import type { StoredBook } from '../stored.js'
 
 export interface StructCase {
@@ -122,4 +122,10 @@ export function baseBook(): BookInput {
       { name: 'tloc', ref: "'S'!$A$5:$A$6", scope: 'T' },
     ],
   }
+}
+
+/** `Sheet!range` as a range of a sheet. */
+export function rangeAt(ref: string): RangeRef {
+  const i = ref.lastIndexOf('!')
+  return { sheet: ref.slice(0, i), range: ref.slice(i + 1) }
 }

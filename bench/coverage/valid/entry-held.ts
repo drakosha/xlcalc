@@ -6,15 +6,10 @@
  * spaces, lists of cells holding numbers as text.
  */
 import type { BookInput, CellInput, DataValidation } from '../../../src/contract.js'
-import type { ValidCases } from './cases.js'
-
-type Column = { rule: Omit<DataValidation, 'range'>; values: (CellInput | null)[] }
-
-const v = (value: CellInput['value']): CellInput => ({ value })
-const f = (formula: string): CellInput => ({ formula })
+import { f, laidOut, v, type ValueColumn, type ValidCases } from './cases.js'
 
 /** The rules and their values, by column from A. */
-const COLUMNS: Column[] = [
+const COLUMNS: ValueColumn[] = [
   { rule: { type: 'list', formula1: '"Yes,No,1,2.5,TRUE, spaced,1/2/2025"' }, values: [v('Yes'), v('No'), v(1), f('"1"'), v(2.5), v(true), f('"TRUE"'), v(' spaced'), v('spaced'), v(45659), v('1/2/2025'), null] },
   { rule: { type: 'whole', formula1: '1', formula2: '10' }, values: [v(1), v(10), v(0), v(11), f('5*1'), v(5.5), f('"5"'), v(true), f('NA()'), null, v(1e-20)] },
   { rule: { type: 'whole', formula1: '10', formula2: '1' }, values: [v(5), v(1), v(10), v(0)] },
@@ -40,15 +35,7 @@ const COLUMNS: Column[] = [
 
 function book(): BookInput {
   const cells: Record<string, CellInput> = { Y1: { value: 1 }, Y2: { formula: '"2"' }, Y3: { value: true }, Y4: { value: 'Yes' }, Y5: { value: 3.0 } }
-  const validations: DataValidation[] = []
-  COLUMNS.forEach((col, i) => {
-    const letter = String.fromCharCode(65 + i)
-    cells[`${letter}1`] = { value: `${col.rule.type} ${i + 1}` }
-    col.values.forEach((x, k) => {
-      if (x) cells[`${letter}${k + 2}`] = x
-    })
-    validations.push({ range: `${letter}2:${letter}${col.values.length + 1}`, ...col.rule })
-  })
+  const validations = laidOut(COLUMNS, cells)
   return { sheets: [{ name: 'S', cells, validations }] }
 }
 

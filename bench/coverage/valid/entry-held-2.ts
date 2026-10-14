@@ -5,14 +5,9 @@
  * a whole column, none; booleans against bounds; blanks where blanks are not ignored; equality to 15 digits.
  */
 import type { BookInput, CellInput, DataValidation } from '../../../src/contract.js'
-import type { ValidCases } from './cases.js'
+import { f, laidOut, v, type ValueColumn, type ValidCases } from './cases.js'
 
-type Column = { rule: Omit<DataValidation, 'range'>; values: (CellInput | null)[] }
-
-const v = (value: CellInput['value']): CellInput => ({ value })
-const f = (formula: string): CellInput => ({ formula })
-
-const COLUMNS: Column[] = [
+const COLUMNS: ValueColumn[] = [
   { rule: { type: 'list', formula1: '"1000,50%,2025-01-02, Two ,3"' }, values: [v(1000), f('"1,000"'), v(0.5), v(45659), v('Two'), v('two'), v(' Two '), v(3), f('"3 "')] },
   { rule: { type: 'custom', formula1: 'B2+$Z$1>5' }, values: [v(1), v(10)] },
   { rule: { type: 'custom', formula1: 'SUM($Z$1:$Z$3)>5' }, values: [v(1)] },
@@ -33,15 +28,7 @@ const COLUMNS: Column[] = [
 
 function book(): BookInput {
   const cells: Record<string, CellInput> = { U1: v('apple'), U3: v('pear'), U5: v('plum'), W1: v('pear'), W2: v('fig') }
-  const validations: DataValidation[] = []
-  COLUMNS.forEach((col, i) => {
-    const letter = String.fromCharCode(65 + i)
-    cells[`${letter}1`] = { value: `${col.rule.type} ${i + 1}` }
-    col.values.forEach((x, k) => {
-      if (x) cells[`${letter}${k + 2}`] = x
-    })
-    validations.push({ range: `${letter}2:${letter}${col.values.length + 1}`, ...col.rule })
-  })
+  const validations = laidOut(COLUMNS, cells)
   return {
     sheets: [{ name: 'S', cells, validations }],
     names: [
