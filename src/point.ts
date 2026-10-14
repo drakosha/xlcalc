@@ -69,8 +69,9 @@ export function refAt(text: string, caret?: number, opts?: ScanOptions): PointAc
   if (inLiteral(t, at)) return { action: 'none' }
   let i = at
   while (i > 1 && isSpace(t[i - 1])) i--
-  // the formula's first character alone, an operand wanted, or a space after an operand (the intersection operator)
-  if (i <= 1 || i < at || WANTS_OPERAND.has(t[i - 1]) || t[i - 1] === (locale?.listSeparator ?? ',')) return { action: 'insert', at }
-  const body = t.slice(0, at)
-  return reads(body.startsWith('=') ? body.slice(1) : body, locale) ? { action: 'commit' } : { action: 'none' }
+  // after the formula's first character, an operand wanted, or a space after an operand (the intersection operator);
+  // before the first character no reference goes in
+  if (at > 0 && (i <= 1 || i < at || WANTS_OPERAND.has(t[i - 1]) || t[i - 1] === (locale?.listSeparator ?? ','))) return { action: 'insert', at }
+  // the arrow enters the whole text, wherever the caret is: it goes in when the formula reads
+  return reads(t.startsWith('=') ? t.slice(1) : t, locale) ? { action: 'commit' } : { action: 'none' }
 }

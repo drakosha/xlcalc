@@ -1,0 +1,1335 @@
+{
+ "now": "2026-10-14",
+ "locales": {
+  "en-US": {
+   "start-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "A1"
+     },
+     "C4": null
+    }
+   },
+   "start-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "5"
+     },
+     "C4": null
+    }
+   },
+   "start-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "start-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "start-5": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "value": 1
+     },
+     "C4": null
+    }
+   },
+   "start-6": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "value": "="
+     },
+     "C4": null
+    }
+   },
+   "start-7": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "start-8": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =\"a\""
+     },
+     {
+      "bar": "Formula Bar. C,3 =\"a\""
+     },
+     {
+      "bar": "Formula Bar. C,3 =\"a\""
+     },
+     {
+      "bar": "Formula Bar. C,3 =\"a\""
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "\"a\""
+     },
+     "C4": null
+    }
+   },
+   "start-9": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "start-10": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 -A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 -A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 -A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 -A1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "-A1"
+     },
+     "C4": null
+    }
+   },
+   "first-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =D3A1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "D3A1"
+     },
+     "C4": null
+    }
+   },
+   "first-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =D35"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "D35"
+     },
+     "C4": null
+    }
+   },
+   "first-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +D31"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "+D31"
+     },
+     "C4": null
+    }
+   },
+   "first-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =D3("
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "A1+B1"
+     },
+     "C4": null
+    }
+   },
+   "inside-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-5": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-6": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "control-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "A1"
+     },
+     "C4": null
+    }
+   },
+   "control-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+D3"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "1+D3"
+     },
+     "C4": null
+    }
+   },
+   "control-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "control-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =(D3"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   }
+  },
+  "ru-RU": {
+   "start-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "A1"
+     },
+     "C4": null
+    }
+   },
+   "start-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "5"
+     },
+     "C4": null
+    }
+   },
+   "start-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "start-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "start-5": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "value": 1
+     },
+     "C4": null
+    }
+   },
+   "start-6": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,3 ="
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "value": "="
+     },
+     "C4": null
+    }
+   },
+   "start-7": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "start-8": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =\"a\""
+     },
+     {
+      "bar": "Formula Bar. C,3 =\"a\""
+     },
+     {
+      "bar": "Formula Bar. C,3 =\"a\""
+     },
+     {
+      "bar": "Formula Bar. C,3 =\"a\""
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "\"a\""
+     },
+     "C4": null
+    }
+   },
+   "start-9": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "start-10": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 -A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 -A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 -A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 -A1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "-A1"
+     },
+     "C4": null
+    }
+   },
+   "first-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =D3A1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "D3A1"
+     },
+     "C4": null
+    }
+   },
+   "first-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5"
+     },
+     {
+      "bar": "Formula Bar. C,3 =D35"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "D35"
+     },
+     "C4": null
+    }
+   },
+   "first-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +1"
+     },
+     {
+      "bar": "Formula Bar. C,3 +D31"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "+D31"
+     },
+     "C4": null
+    }
+   },
+   "first-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =D3("
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+("
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+B1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "A1+B1"
+     },
+     "C4": null
+    }
+   },
+   "inside-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1+"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)+1"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-5": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,3 =5*"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "inside-6": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,3 =SUM(A1,"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "control-1": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1"
+     },
+     {
+      "bar": "Formula Bar. D,3 10"
+     },
+     {
+      "bar": "Formula Bar. D,4 20"
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "A1"
+     },
+     "C4": null
+    }
+   },
+   "control-2": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+"
+     },
+     {
+      "bar": "Formula Bar. C,3 =1+D3"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": {
+      "formula": "1+D3"
+     },
+     "C4": null
+    }
+   },
+   "control-3": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,3 =A1)"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   },
+   "control-4": {
+    "steps": [
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =("
+     },
+     {
+      "bar": "Formula Bar. C,3 =(D3"
+     },
+     {
+      "bar": "Formula Bar. C,4 "
+     }
+    ],
+    "after": {
+     "C3": null,
+     "C4": null
+    }
+   }
+  }
+ }
+}
