@@ -304,6 +304,15 @@ function linesKey(first: number, last: number, axis: "columns" | "rows"): string
 
 The key of lines `first` to `last` (`C`, `B:D`; `5`, `5:9`), in order whichever comes first.
 
+### <a id="xlcalc-liveworkbook"></a>`liveWorkbook`
+
+```ts
+function liveWorkbook(session: Session): LiveWorkbook
+```
+
+The live workbook of a synchronous session ([`LiveWorkbook`](#liveworkbook)): the same object for the same session. An asynchronous
+session throws [`InputError`](#xlcalc-inputerror); its writes cannot answer what they computed.
+
 ### <a id="xlcalc-locales"></a>`LOCALES`
 
 ```ts
@@ -2737,6 +2746,97 @@ The lines a key of [`SheetInput.columns`](#sheetinput) or `rows` names (`C`, `B:
 interface LineSpan {
   first: number
   last: number
+}
+```
+
+### `LiveCell`
+
+A cell of a [`LiveSheet`](#livesheet), by its address: after rows are inserted above it, it is the cell now at that address. Each
+property reads the session as it is now; an assignment edits it at once, or as part of a `batch`, and throws what the
+session's call throws, the book unchanged.
+
+```ts
+interface LiveCell {
+  readonly sheet: LiveSheet
+  /** The cell's address, `B12`. */
+  readonly address: string
+  /** The computed value, null for an empty cell. */
+  get value(): CellValue
+  /** As `setCells` with a `value`: the content is replaced, the formula goes, the look stays. Null clears the content and the hyperlink, as `clearCells` with `contents`. */
+  set value(value: Scalar | { date: string })
+  /** The text the cell shows (`CellResult.text`); undefined for an empty cell and in a session without `display`. */
+  get text(): string | undefined
+  /** The formula without `=`, as `CellResult.formula`; undefined for a cell without one. */
+  get formula(): string | undefined
+  /** As `setCells` with a `formula`; null removes it. */
+  set formula(formula: string | null)
+  /** The cell's own number format, as `CellView.numberFormat`. */
+  get numberFormat(): NumberFormat | undefined
+  /** As `patchCells`: the value and formula stay; null removes the cell's own format. */
+  set numberFormat(format: NumberFormat | null)
+  /** The cell's own style, an index of the book's `styles`, as `CellView.style`. */
+  get style(): number | undefined
+  /** As `patchCells`: a style by its number, or by its fields over the style the cell shows; null removes the cell's own. */
+  set style(style: number | StylePatch | null)
+  /** Text typed into the cell, as `Session.setCellText` takes it and answers. */
+  type(text: string, opts?: CellTextOptions): CellTextResult
+  /**
+   * Calls `listener` after each change that touched the cell: its value, shown text, formula or look changed
+   * (`EditResult.changes`, the cells a recomputation changed too), or a structure operation moved other cells to its
+   * address (`moved`). Answers the function that unsubscribes; after the sheet is deleted it is called no more.
+   */
+  watch(listener: (change: SessionChange) => void): () => void
+}
+```
+
+### `LiveSheet`
+
+A sheet of a [`LiveWorkbook`](#liveworkbook). After the sheet is deleted, every use of the object throws [`InputError`](#xlcalc-inputerror).
+
+```ts
+interface LiveSheet {
+  /** The sheet's name now: a rename changes it. */
+  readonly name: string
+  /**
+   * The sheet's cells by address in any case, without `$` (`cells.B12`, `cells.b12`), each made when it is read and the
+   * same object while it is held; any other key (a range, `then`, `toJSON`, a symbol) is undefined.
+   */
+  readonly cells: { readonly [address: string]: LiveCell }
+  /** The cell at `address`, as `cells` gives it; `InputError` for anything but the address of a cell. */
+  cell(address: string): LiveCell
+  /**
+   * Calls `listener` after each change that touched the sheet: its cells, its layout, a structure operation on it, its
+   * rename or move, the book's style table. Answers the function that unsubscribes; after the sheet is deleted it is
+   * called no more.
+   */
+  watch(listener: (change: SessionChange) => void): () => void
+}
+```
+
+### `LiveWorkbook`
+
+Objects of a synchronous session's sheets and cells ([`liveWorkbook`](#xlcalc-liveworkbook)): a cell reads what the session computed, an
+assignment to it is the session's edit (recomputed, one step of the undo), and a listener learns of the changes of a
+cell, a sheet or the book, whoever makes them. One per session: [`liveWorkbook`](#xlcalc-liveworkbook) gives the same object for it again.
+
+```ts
+interface LiveWorkbook {
+  /** The session the objects read and edit. */
+  readonly session: Session
+  /**
+   * The sheet by its name in any case: the same object while the sheet lives, renamed or moved. `InputError` for a name
+   * the book has no sheet by; a sheet deleted and brought back by `undo` is a new object.
+   */
+  sheet(name: string): LiveSheet
+  /**
+   * Runs `fn` and applies the assignments it makes to cells as one `applyChanges`: one recomputation, one revision, one
+   * step of the undo, one change told. Until `fn` returns, the cells read as they were before it. A batch inside another
+   * is part of the outer one; when `fn` throws, none of its assignments is applied and the error goes on. Text typed
+   * (`LiveCell.type`) cannot be part of a batch, nor an `fn` that answers a promise.
+   */
+  batch(fn: () => void): void
+  /** Calls `listener` after each change of the book, as `Session.subscribe` does; answers the function that unsubscribes. */
+  watch(listener: (change: SessionChange) => void): () => void
 }
 ```
 
