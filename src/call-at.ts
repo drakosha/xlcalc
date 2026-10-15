@@ -7,8 +7,7 @@
  * Excel.
  */
 import type { CallAt, ScanOptions } from './contract.js'
-import { checkNumber, checkString, object, onlyKeys } from './input.js'
-import { checkLocaleArg } from './locale/load.js'
+import { typedArgs } from './point.js'
 import type { Locale } from './locale/types.js'
 
 /** A character of a function's name: a letter of any script, a digit, `.` or `_` (`СТАНДОТКЛОН.В`, `LOG10`). */
@@ -26,30 +25,35 @@ function englishName(name: string, locale: Locale | undefined): string {
 }
 
 /**
- * The innermost call whose brackets hold `caret` (the end of the text by default) of formula text `text`, and the argument
- * it is in; null outside any call, and for text that is no formula (not begun by `=`, `+` or `-`). `opts.locale`: the
- * locale the text is typed in (its list separator and names); without it the text is en-US's.
+ * The characters of `t` from `from` up to `to` outside strings, quoted sheets' names and tables' brackets, each given to
+ * `f` with its place; `f` answering true stops the walk.
  */
-export function callAt(text: string, caret?: number, opts?: ScanOptions): CallAt | null {
-  const t = checkString(text, 'text')
-  if (caret !== undefined) checkNumber(caret, 'caret', 0, t.length, true)
-  const at = caret ?? t.length
-  if (opts !== undefined) onlyKeys(object(opts, 'opts', "options such as { locale: 'ru-RU' }"), 'opts', ['locale'])
-  const locale = opts?.locale === undefined ? undefined : checkLocaleArg(opts.locale, 'opts.locale')
-  if (!/^[=+-]/.test(t)) return null
-  const sep = locale?.listSeparator ?? ','
-  const stack: Frame[] = []
+function walk(t: string, from: number, to: number, f: (c: string, i: number) => boolean | void): void {
   let quote: string | null = null
   let table = 0
-  for (let i = 1; i < at; i++) {
+  for (let i = from; i < to; i++) {
     const c = t[i]
     if (quote) {
       if (c === quote) quote = null
     } else if (c === '"' || c === "'") quote = c
     else if (c === '[') table++
     else if (c === ']') table = Math.max(0, table - 1)
-    else if (table) continue
-    else if (c === '{') stack.push({ kind: 'array' })
+    else if (!table && f(c, i)) return
+  }
+}
+
+/**
+ * The innermost call whose brackets hold `caret` (the end of the text by default) of formula text `text`, and the argument
+ * it is in; null outside any call, and for text that is no formula (not begun by `=`, `+` or `-`). `opts.locale`: the
+ * locale the text is typed in (its list separator and names); without it the text is en-US's.
+ */
+export function callAt(text: string, caret?: number, opts?: ScanOptions): CallAt | null {
+  const { t, at, locale } = typedArgs(text, caret, opts)
+  if (!/^[=+-]/.test(t)) return null
+  const sep = locale?.listSeparator ?? ','
+  const stack: Frame[] = []
+  walk(t, 1, at, (c, i) => {
+    if (c === '{') stack.push({ kind: 'array' })
     else if (c === '}') {
       if (stack.at(-1)?.kind === 'array') stack.pop()
     } else if (c === '(') {
@@ -62,27 +66,17 @@ export function callAt(text: string, caret?: number, opts?: ScanOptions): CallAt
       const top = stack.at(-1)
       if (top?.kind === 'call') top.index++
     }
-  }
+  })
   const call = stack.findLast((f) => f.kind === 'call') as Extract<Frame, { kind: 'call' }> | undefined
   if (!call) return null
-  return { name: call.name, fn: englishName(call.name, locale), index: call.index, open: call.open, close: closeOf(t, call.open) }
-}
-
-/** Where the bracket opened at `open` closes, read as `callAt` reads; null while it is open. */
-function closeOf(t: string, open: number): number | null {
-  let quote: string | null = null
-  let table = 0
+  let close: number | null = null
   let depth = 0
-  for (let i = open; i < t.length; i++) {
-    const c = t[i]
-    if (quote) {
-      if (c === quote) quote = null
-    } else if (c === '"' || c === "'") quote = c
-    else if (c === '[') table++
-    else if (c === ']') table = Math.max(0, table - 1)
-    else if (table) continue
-    else if (c === '(') depth++
-    else if (c === ')' && --depth === 0) return i
-  }
-  return null
+  walk(t, call.open, t.length, (c, i) => {
+    if (c === '(') depth++
+    else if (c === ')' && --depth === 0) {
+      close = i
+      return true
+    }
+  })
+  return { name: call.name, fn: englishName(call.name, locale), index: call.index, open: call.open, close }
 }
