@@ -6,7 +6,7 @@
 import type { Val } from '../bench/coverage/formulajs.js'
 import { BOTH_KNOWN, type REASONS } from './excel-cases.js'
 
-/** Reasons of differences that only ru-RU cases show; each is a line of the README's "Known differences from Excel". */
+/** Reasons of differences that only ru-RU cases show; each is a line of docs/limitations.md's "Known differences from Excel". */
 export const RU_REASONS = {
   secondDecimal:
     'A second decimal separator among the decimals of a number format (`#,##0,00` in ru-RU) is a literal between digits; Excel shows one digit fewer before it in some numbers (`TEXT(-0.5,"#,##0,00")` is `-,50,00` in Excel and `-,500,00` here).',

@@ -100,7 +100,7 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
   return v.ok || (fn !== undefined && fn in SOFT && v.soft === true)
 }
 
-/** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
+/** Reasons of known differences; each is a line of docs/limitations.md's "Known differences from Excel". */
 export const REASONS = {
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',

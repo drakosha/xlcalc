@@ -38,8 +38,8 @@ for (const tag of LOCALE_TAGS) {
         expect(Object.keys(known).filter((k) => !keys.has(k))).toEqual([])
       })
 
-      it(`the README's known differences have a line for every reason in KNOWN_BY_LOCALE['${tag}']`, () => {
-        const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
+      it(`docs/limitations.md's known differences have a line for every reason in KNOWN_BY_LOCALE['${tag}']`, () => {
+        const readme = readFileSync(new URL('../docs/limitations.md', import.meta.url), 'utf8')
         const section = readme.slice(readme.indexOf('- **Known differences from Excel:**'), readme.indexOf('- **Syntax.**'))
         const used = [...new Set(Object.values(known).map((k) => k.reason))]
         expect(used.filter((r) => !section.includes(`  - ${reasonText(r)}\n`))).toEqual([])

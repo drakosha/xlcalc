@@ -22,7 +22,7 @@ import './locales.js'
 /** The locales compared here: the package's, but en-US. */
 export const LOCALE_TAGS: readonly string[] = TAGS.filter((t) => t !== 'en-US')
 
-/** Reasons of differences that only some locale's cases show, by name; each is a line of the README's "Known differences from Excel". */
+/** Reasons of differences that only some locale's cases show, by name; each is a line of docs/limitations.md's "Known differences from Excel". */
 export const LOCALE_REASONS = { ...RU_REASONS } as const
 
 export type LocaleReason = keyof typeof REASONS | keyof typeof LOCALE_REASONS

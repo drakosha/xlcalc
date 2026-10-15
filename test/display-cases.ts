@@ -82,7 +82,7 @@ export function sameShown(excel: DisplayAnswer, engine: CellDisplay, value: Cell
 }
 
 /**
- * A known difference from both Excels (README, Known differences), with the test of the cases it covers: a cell's shown
+ * A known difference from both Excels (docs/limitations.md, Known differences), with the test of the cases it covers: a cell's shown
  * text is written from its value as the result gives it, to 15 significant digits, where Excel writes a date and a time
  * from the whole number; `displayValue` of the case's own value shows Excel's text (`#` across the cell in as many
  * characters as the platform fits). The set `seconds-held`: moments a few millionths of a second from half a second.
