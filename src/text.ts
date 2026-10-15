@@ -10,6 +10,7 @@
 import { array, checkBoolean, checkNumber, checkString, InputError, object, onlyOptions } from './input.js'
 import { clipboardRows } from './entry/clipboard.js'
 import { columnPoints, widthOf } from './column-width.js'
+import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
 import * as point from './point.js'
 import * as scan from './scan.js'
@@ -20,6 +21,7 @@ export { quoteSheetIfNeeded } from './a1.js'
 
 export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const refAt = /* @__PURE__ */ strict(point.refAt)
+export const callAt = /* @__PURE__ */ strict(call.callAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
 

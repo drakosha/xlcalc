@@ -12,4 +12,4 @@ What is in it:
 - `xlcalc/xlsx`: reading and writing xlsx without dependencies, with what a book cannot hold listed as issues.
 - `createInlineCalc` and `createCalcPool` from `xlcalc/worker`: computing without blocking, in portions on the same thread or in worker threads, with deadlines, cancellation and limits.
 - Localization: formulas, number formats and messages in ru-RU through `xlcalc/locales/ru-RU`; the tip of a function's arguments (`functionSignature`), with names of the library's own in English and Russian.
-- `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`) and number format categories, without the engine.
+- `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.

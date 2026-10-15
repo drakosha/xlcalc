@@ -63,7 +63,7 @@ describe('built package', () => {
     expect(out.contract).toEqual(['MAX_FORMULA_DEPTH', 'MAX_FORMULA_LENGTH'])
     expect(out.internal).toEqual(['function', 'function', 'function'])
     // the root's functions of formula text and the clipboard's are the subpath's own
-    expect(out.text).toEqual({ keys: ['columnWidthFromPoints', 'columnWidthToPoints', 'escapeColumn', 'formatClipboard', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences'], same: true })
+    expect(out.text).toEqual({ keys: ['callAt', 'columnWidthFromPoints', 'columnWidthToPoints', 'escapeColumn', 'formatClipboard', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences'], same: true })
     expect(out.closed).toEqual(Array(3).fill('ERR_PACKAGE_PATH_NOT_EXPORTED'))
   }, 60_000)
 
