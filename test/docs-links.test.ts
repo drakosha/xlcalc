@@ -28,6 +28,7 @@ function anchors(text: string): Set<string> {
     seen.set(base, n + 1)
     out.add(n ? `${base}-${n}` : base)
   }
+  for (const m of text.matchAll(/<a id="([^"]+)"><\/a>/g)) out.add(m[1])
   return out
 }
 

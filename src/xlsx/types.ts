@@ -143,6 +143,7 @@ export interface ReadXlsxOptions {
   locale?: string | Locale
 }
 
+/** Options of `writeXlsx`: the language of its issues, which values of formulas the file stores, formulas or values alone. */
 export interface WriteXlsxOptions {
   /** The language of the issues' messages, as `readXlsx` takes it (`ReadXlsxOptions.locale`). */
   locale?: string | Locale
@@ -160,6 +161,7 @@ export interface WriteXlsxOptions {
   mode?: 'formulas' | 'values'
 }
 
+/** What `writeXlsx` answers: the file and what the book held that the file could not. */
 export interface XlsxWritten {
   /** The xlsx file. */
   data: Uint8Array

@@ -85,4 +85,5 @@ export const SYNTAX: readonly string[] = ['LET']
 /** A whitelisted function, a call or syntax. */
 export const isFunction = (name: string): boolean => name in FUNCTIONS || SYNTAX.includes(name)
 
+/** The whitelist: every function a formula can call, by its English name, in alphabetical order. */
 export const FUNCTION_NAMES: readonly string[] = [...Object.keys(FUNCTIONS), ...SYNTAX].sort()

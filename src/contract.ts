@@ -11,8 +11,10 @@ import type { Locale } from './locale/types.js'
 
 export type { Locale } from './locale/types.js'
 
+/** A plain value: a number, text, a boolean, or null for an empty cell. */
 export type Scalar = number | string | boolean | null
 
+/** Data a host keeps on a cell (`CellInput.meta`), as JSON. */
 export type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
 
 /** An input cell. A date is passed explicitly (`{ date: '2025-01-31' }`) and becomes an Excel serial number. */
@@ -134,6 +136,7 @@ export interface BorderLine {
   color?: Color
 }
 
+/** A cell's alignment (`CellStyle.alignment`), as xlsx `<alignment>`: horizontal and vertical, text wrapped, indent. */
 export interface AlignmentStyle {
   horizontal?: 'general' | 'left' | 'center' | 'right' | 'fill' | 'justify' | 'centerContinuous' | 'distributed'
   vertical?: 'top' | 'center' | 'bottom' | 'justify' | 'distributed'
@@ -205,6 +208,7 @@ export interface RowInput {
   collapsed?: boolean
 }
 
+/** A sheet of a book (`BookInput.sheets`): its name, its cells by address, and what else a sheet keeps (rows, columns, merged areas, tables, looks, rules, frozen panes). */
 export interface SheetInput {
   name: string
   /** Cells by A1 address (`B12`). */
@@ -295,6 +299,7 @@ export type ConditionalFormat =
   | DataBarFormat
   | IconSetFormat
 
+/** What every kind of conditional format shares (`ConditionalFormat`): the cells it applies to and Excel's Stop If True. */
 export interface ConditionalBase {
   /**
    * The cells it applies to: rectangles of the sheet (`B2:B20`, `D2`, whole columns `F:F`, whole rows `3:5`), as Excel's
@@ -515,6 +520,7 @@ export interface BarLook {
   rightToLeft?: true
 }
 
+/** A sheet's frozen panes (`SheetInput.frozen`, Excel's Freeze Panes): the rows above the split and the columns left of it. */
 export interface FrozenPanes {
   /** 1 to 1,048,575. */
   rows?: number
@@ -621,6 +627,7 @@ export interface TableInput {
   columns: TableColumn[]
 }
 
+/** A column of a table (`TableInput.columns`): its header's name and what its cells and totals row compute. */
 export interface TableColumn {
   /** 1 to 255 characters, unique in the table in any case; the header cell's text. */
   name: string
@@ -640,6 +647,7 @@ export interface TableColumn {
 /** Excel's totals functions of a table column (xlsx `totalsRowFunction`). */
 export type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' | 'min' | 'stdDev' | 'var' | 'custom'
 
+/** A defined name of a book (`BookInput.names`): the name, what it refers to and its scope. */
 export interface NameInput {
   /**
    * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`,
@@ -672,6 +680,7 @@ export interface SheetView {
   zoom?: number
 }
 
+/** A workbook as the engine takes it: its sheets with their cells, names, styles, locale and date system; what `compute`, `createSession` and `writeXlsx` take and `readXlsx` gives. */
 export interface BookInput {
   /** The saved active visible sheet, by name; the writer defaults to the first visible sheet. Not part of inputHash. */
   activeSheet?: string
@@ -798,6 +807,7 @@ export interface Clock {
   seed: number
 }
 
+/** A cell of a book: its sheet's name and its A1 address (`B2`). */
 export interface CellRef {
   sheet: string
   cell: string
@@ -1036,6 +1046,7 @@ export interface CachedValues {
   sheets: { name: string; cells: Record<string, { value: CellValue }> }[]
 }
 
+/** Options of `compute` and of a session: the clock, the way formulas run, limits and the values a file stored. */
 export interface ComputeOptions {
   /**
    * The clock for TODAY, NOW, RAND and RANDBETWEEN. By default the current moment and a random seed;
@@ -1099,6 +1110,7 @@ export interface CellIssue extends CellRef {
   at?: number
 }
 
+/** Why a defined name gives no value: the name, its scope (none for a global name) and the reason. */
 export interface NameIssue {
   name: string
   scope?: string
@@ -1117,6 +1129,7 @@ export interface NameIssue {
  */
 export type Diagnostic = ({ kind: 'cell' } & CellIssue) | ({ kind: 'name' } & NameIssue)
 
+/** What `compute` gives: each sheet's cells with their values and shown text, the issues, the values' `hash`, `inputHash` and the clock it computed with. */
 export interface ComputeResult {
   sheets: { name: string; cells: Record<string, CellResult> }[]
   /**
@@ -1136,6 +1149,7 @@ export interface ComputeResult {
   ms: number
 }
 
+/** What `validateFormula` checks a formula against: the book's sheets, names and tables; without them they are not checked. */
 export interface ValidateContext {
   /** Sheets of the book; without them sheets are not checked. */
   sheets?: string[]
@@ -1160,6 +1174,7 @@ export interface ValidateContext {
   externalBooks?: ExternalBook[]
 }
 
+/** What `validateFormula` answers: the formula's canonical text and what it names, or why it does not read and where. */
 export type ValidateResult =
   /** `tables`: the tables the formula's structured references name (and bare table names, with `ctx.tables`). */
   | { ok: true; canonical: string; functions: string[]; sheets: string[]; names: string[]; externals: string[]; tables: string[] }
@@ -1185,6 +1200,7 @@ export interface Refusal<Code extends string = string> {
  */
 export type NameRefusal = 'chars' | 'reference' | 'boolean'
 
+/** What `validateName` answers: the name is good, or why not. */
 export type NameCheck = { ok: true } | Refusal<NameRefusal>
 
 /** The book whose rules `validateName` checks a name by. */
@@ -1247,6 +1263,7 @@ export interface CellView extends CellResult {
   numberFormatCode?: string
 }
 
+/** A cell a call changed (`EditResult.changes`): its address, its new value and, where they changed, its text, formula, look, note or link. */
 export interface CellChange extends CellRef, Partial<CellDisplay> {
   value: CellValue
   spill?: string
@@ -1357,11 +1374,14 @@ export type SessionOperation =
 
 /** An explicit clock makes a preview and its application reproducible, including in a live session. */
 export interface ChangesOptions extends EditOptions { clock?: Clock }
+/** Options of `previewChanges`: those of `applyChanges` and how many changed cells to give. */
 export interface PreviewChangesOptions extends ChangesOptions {
   /** Maximum changed cells returned, 1000 by default, at most 10000. The computation itself remains complete. */
   maxChanges?: number
 }
+/** What `applyChanges` answers: the edit's result and the clock it computed with. */
 export interface ChangesResult extends EditResult { clock: Clock }
+/** A cell a previewed change would change (`ChangesPreview`): its value before and after. */
 export interface CellImpact extends CellRef {
   before: CellValue
   after: CellValue
@@ -1377,11 +1397,13 @@ export interface ChangesPreview extends ChangesResult {
 
 /** A field `readCells` and `findCells` give of a cell: `editText` is the text it opens with for editing, as a window's (`ViewportCell.editText`). */
 export type CellReadField = 'value' | 'text' | 'formula' | 'editText' | 'style' | 'numberFormat' | 'note' | 'link' | 'issue'
+/** A cell as `readCells` and `findCells` give it: its address and the fields asked for. */
 export interface ReadCell extends CellRef, Partial<CellView> {
   issue?: CellIssueDetail | null
   /** With the field `editText`: the text the cell opens with for editing, as `ViewportCell.editText`; what `findCells` reads in `edit`, but for the apostrophe before a text that reads as something else, which it leaves out. */
   editText?: string
 }
+/** Options of a query that answers in pages (`readCells`, `findCells`, `getDependents`): how many results a page holds and where the last page stopped. */
 export interface PageOptions extends EditOptions {
   /** Maximum results returned, 1000 by default, at most 10000. */
   maxCells?: number
@@ -1390,6 +1412,7 @@ export interface PageOptions extends EditOptions {
   /** Count all matching cells, even after the page is full; false by default. */
   count?: boolean
 }
+/** Options of `readCells`: the fields to read and which rows and columns. */
 export interface ReadCellsOptions extends PageOptions {
   /** value, text and formula by default. Address and sheet are always returned. */
   fields?: CellReadField[]
@@ -1400,6 +1423,7 @@ export interface ReadCellsOptions extends PageOptions {
    */
   rows?: number[]
 }
+/** Options of `findCells`: what is searched and how, beside those of `readCells`. */
 export interface FindCellsOptions extends ReadCellsOptions {
   /**
    * What is searched: the text a cell shows (`text`, the default; Excel's Look in Values), the text it opens with for
@@ -1439,6 +1463,7 @@ export interface ReplaceResult extends EditResult {
   refused?: (Refusal<CellTextRefusal> & CellRef)[]
 }
 
+/** A page of a query's answer: the revision and clock it read, whether more is left and where to go on. */
 export interface QueryPage {
   revision: number
   clock: Clock
@@ -1447,17 +1472,22 @@ export interface QueryPage {
   /** With count: the number matched over the complete query, not just this page. */
   total?: number
 }
+/** What `readCells` and `findCells` answer: a page of cells. */
 export interface ReadCellsResult extends QueryPage { cells: ReadCell[] }
+/** A cell whose formula reads the ranges `getDependents` was asked about, with the references that read them. */
 export interface DependentCell extends CellRef {
   /** Matching source references remain rectangles, never expanded into individual cells. */
   references: RangeRef[]
   referencesTruncated?: boolean
 }
+/** Options of `getDependents`: those of a page and how many references to give for each cell. */
 export interface DependentsOptions extends PageOptions {
   /** Maximum matching source references per dependent, 64 by default, at most 1000. */
   maxReferences?: number
 }
+/** What `getDependents` answers: a page of the cells whose formulas read the ranges. */
 export interface DependentsResult extends QueryPage { dependents: DependentCell[] }
+/** What `summarizeRanges` answers, as Excel's status bar shows a selection: how many cells hold something, how many numbers and errors, their sum, the least and the greatest number. */
 export interface RangeSummary {
   revision: number
   clock: Clock
@@ -1753,6 +1783,7 @@ export interface CellIssueDetail {
   origin: CellRef
 }
 
+/** Options of `explain`: how deep the tree goes and how many nodes it holds. */
 export interface ExplainOptions {
   /** Depth over precedents, 3 by default. */
   depth?: number
@@ -1764,6 +1795,7 @@ export interface ExplainOptions {
   errorDepth?: number
 }
 
+/** A node of an explanation (`Explanation.root`): a cell or a range, its formula and value, and the nodes it reads. */
 export interface ExplainNode {
   /** The local node's sheet and A1 cell or range for navigation; absent for another workbook. */
   location?: RangeRef
@@ -1784,6 +1816,7 @@ export interface ExplainNode {
   children: ExplainNode[]
 }
 
+/** What `explain` answers: why a cell holds its value, as a tree of what it reads and as text. */
 export interface Explanation {
   root: ExplainNode
   nodes: number
@@ -2425,6 +2458,7 @@ export interface CalcOptions {
   timeoutMs?: number
 }
 
+/** Options of `compute` of a pool or of `createInlineCalc`: those of `compute` and the call's deadline and signal. */
 export type AsyncComputeOptions = ComputeOptions & CalcOptions
 /** `signal` and `timeoutMs` bound the opening (the first computation of the book). */
 export type AsyncSessionOptions = SessionOptions & CalcOptions
@@ -2518,6 +2552,7 @@ export interface Calc {
   close(): Promise<void>
 }
 
+/** Options of `createInlineCalc`. */
 export interface InlineCalcOptions {
   /** Milliseconds of computing between two yields to the event loop; 10 by default. */
   sliceMs?: number
@@ -2534,6 +2569,7 @@ export interface WorkerLike {
   addEventListener(type: 'message' | 'error' | 'messageerror', listener: (event: { data?: unknown; message?: string }) => void): void
 }
 
+/** Options of `createCalcPool`. */
 export interface CalcPoolOptions {
   /** Threads; 2 by default. */
   threads?: number
@@ -2564,5 +2600,7 @@ export interface CalcPoolOptions {
   spawn?: () => WorkerLike
 }
 
+/** Excel's limit of a formula's text: 8,192 characters. */
 export const MAX_FORMULA_LENGTH = 8_192
+/** Excel's limit of calls nested in a formula: 64. */
 export const MAX_FORMULA_DEPTH = 64

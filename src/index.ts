@@ -87,6 +87,11 @@ export const compute = /* @__PURE__ */ strict(function compute(book: BookInput, 
   return withBudget(limitsBudget(o.limits), () => run(computeSteps(book, o)))
 })
 
+/**
+ * Checks formula text as a cell stores it (without `=`, en-US syntax): its canonical text and the functions, sheets, names,
+ * external books and tables it names, or why it does not read and where (`ValidateResult`). With `ctx`, the sheets, names
+ * and tables it names are checked against the book's.
+ */
 export const validateFormula = /* @__PURE__ */ strict(function validateFormula(text: string, ctx?: ValidateContext): ValidateResult {
   const r = validate(checkString(text, 'text'), checkValidateContext(ctx))
   if (!r.ok) return r
