@@ -15,6 +15,7 @@ import { localeOf } from '../locale/registry.js'
 import { markingClock, type RulesClock } from '../locale/rules/data.js'
 import { rulesOf, type Rules } from '../locale/rules.js'
 import type { Locale } from '../locale/types.js'
+import { englishName } from '../call-at.js'
 import { epochOf, ymd } from '../dates.js'
 import { FUNCTIONS } from '../functions.js'
 import { msToSerial } from '../model.js'
@@ -78,8 +79,8 @@ function taken(text: string, v: ReturnType<typeof validateTyped>, shift: number,
 
 /** Whether `name` is a function's name in the locale, in any case: its own word, else its English one (`SUM` is none in ru-RU, `ABS` is). */
 function known(name: string, locale: Locale): boolean {
-  const upper = name.toUpperCase()
-  return upper in FUNCTIONS ? (locale.functions[upper] ?? upper).toUpperCase() === upper : Object.values(locale.functions).some((w) => w.toUpperCase() === upper)
+  const fn = englishName(name, locale)
+  return fn in FUNCTIONS && (locale.functions[fn] ?? fn).toUpperCase() === name.toUpperCase()
 }
 
 /** Whether typed text begins with a `+` before a number (`+1*2`, `+.5+1`, `++5`): Excel drops it, the formula is `1*2`. */

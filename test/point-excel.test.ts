@@ -17,9 +17,9 @@ import './locales.js'
 const KNOWN: Record<string, string> = {
   'point-third-held:typed-6': "a sheet the book does not have (`=Sheet1!A`): Excel takes the name for another workbook's and the arrow does nothing; refAt reads text and knows no book's sheets",
   ...Object.fromEntries(
-    ['point-caret-held-3:end-8', 'point-caret-held-3:end-9', 'en-US:point-caret-held-3:end-4', 'en-US:point-caret-held-3:inside-4'].map((k) => [
+    ['en-US:point-caret-held-3:end-4', 'en-US:point-caret-held-3:inside-4'].map((k) => [
       k,
-      "a function's bracket left open where Excel does nothing (=SUM(1)+MAX(2, =ABS(-(1), and in en-US =ROUND(1.5 and =ROUND(A1*2, ROUND known there): refAt closes it as Return does and enters the formula when it reads; three sets did not find Excel's rule",
+      "too few arguments once closed (=ROUND(1.5 and =ROUND(A1*2 in en-US, where ROUND is known): Excel does nothing, as Return would bring its window; refAt reads no function's arguments and enters the formula",
     ]),
   ),
 }

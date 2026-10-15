@@ -1,13 +1,69 @@
 /**
  * The pieces of formula text that the tokenizer (`tokens.ts`), the locale lexer (`locale/lex.ts`) and the reader of a
  * file's formulas (`xlsx/formulas/from-file.ts`) scan alike: quoted and bracketed runs, whitespace, a call after a word,
- * a number, the characters of a word. What each does with a run left open stays with it.
+ * a number, the characters of a word. What each does with a run left open stays with it. And text half typed, walked
+ * outside its strings, quoted sheets' names and tables' brackets (`walk`), for `callAt`, `refAt` and a formula closed on Return.
  */
 
 /** Whitespace between the tokens of a formula (an intersection where it stands between two references). */
 export const isSpace = (ch: string | undefined) => ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r'
 
-/** The index of the quote closing the run `src[i]` opens (`"…"` or `'…'`, the quote doubled inside), -1 when it is not closed. */
+/**
+ * The characters of `t` from `from` up to `to` outside strings, quoted sheets' names and tables' brackets, each given to
+ * `f` with its place; `f` answering true stops the walk. What is open where it stopped: a string's or a quoted sheet's
+ * quote, and tables' brackets.
+ */
+export function walk(t: string, from: number, to: number, f: (c: string, i: number) => boolean | void): { quote: string | null; table: number } {
+  let quote: string | null = null
+  let table = 0
+  for (let i = from; i < to; i++) {
+    const c = t[i]
+    if (quote) {
+      if (c === quote) quote = null
+    } else if (c === '"' || c === "'") quote = c
+    else if (c === '[') table++
+    else if (c === ']') table = Math.max(0, table - 1)
+    else if (!table && f(c, i)) break
+  }
+  return { quote, table }
+}
+/** A character of a function's name: a letter of any script, a digit, `.` or `_` (`СТАНДОТКЛОН.В`, `LOG10`). */
+const NAME_CHAR = /[\p{L}\p{N}._]/u
+
+/** A bracket or brace left open in typed text: a function's, with its name, its argument's index so far and where it opened; a group's; an array constant's. */
+export type OpenBracket = { kind: 'call'; name: string; index: number; open: number } | { kind: 'group' | 'array' }
+
+/**
+ * The brackets and braces typed formula text `t` leaves open at `to`, walked from its second character as `walk` walks
+ * it, a call's arguments counted by the list separator `sep`; with what `walk` leaves open there, whether a `)` was met
+ * and the names of the functions called.
+ */
+export function openBrackets(t: string, to: number, sep = ','): { open: OpenBracket[]; quote: string | null; table: number; shut: boolean; calls: string[] } {
+  const open: OpenBracket[] = []
+  const calls: string[] = []
+  let shut = false
+  const { quote, table } = walk(t, 1, to, (c, i) => {
+    if (c === '{') open.push({ kind: 'array' })
+    else if (c === '}') {
+      if (open.at(-1)?.kind === 'array') open.pop()
+    } else if (c === '(') {
+      let from = i
+      while (from > 1 && NAME_CHAR.test(t[from - 1])) from--
+      if (from < i) calls.push(t.slice(from, i))
+      open.push(from < i ? { kind: 'call', name: t.slice(from, i), index: 0, open: i } : { kind: 'group' })
+    } else if (c === ')') {
+      shut = true
+      if (open.at(-1)?.kind !== 'array') open.pop()
+    } else if (c === sep) {
+      const top = open.at(-1)
+      if (top?.kind === 'call') top.index++
+    }
+  })
+  return { open, quote, table, shut, calls }
+}
+
+/** The index of the quote closing the run
+ `src[i]` opens (`"…"` or `'…'`, the quote doubled inside), -1 when it is not closed. */
 export function closingQuote(src: string, i: number): number {
   const q = src[i]
   for (let j = i + 1; j < src.length; j++) {
