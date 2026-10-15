@@ -46,7 +46,7 @@ export async function checkCase(set: EntrySetFile, c: EntryCase, known: (key: st
   const got = parseEntry(c.text, { locale: set.tag, now: String(set.meta.date), ...(c.format !== undefined ? { cell: { numberFormat: c.format } } : {}) })
   const want = set.answers[c.id]
   if (want.value2 !== undefined && typeof want.cell?.value === 'number') expect(want.value2, "the object model's value is the number the file holds").toBe(want.cell.value)
-  const diff = entryDifferences(got, want, set.tag)
+  const diff = entryDifferences(got, want, set.tag, c.text)
   const reason = known(`${set.tag}:${set.name}:${c.id}`)
   if (reason) expect(diff.length, `${c.id} is known to differ: ${ENTRY_REASONS[reason]}`).toBeGreaterThan(0)
   else expect(diff).toEqual([])

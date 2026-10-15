@@ -16,8 +16,10 @@ import { markingClock, type RulesClock } from '../locale/rules/data.js'
 import { rulesOf, type Rules } from '../locale/rules.js'
 import type { Locale } from '../locale/types.js'
 import { epochOf, ymd } from '../dates.js'
+import { FUNCTIONS } from '../functions.js'
 import { msToSerial } from '../model.js'
 import { formatAfter, shows } from './forms.js'
+import { closeTyped } from './close.js'
 import { formulaFormat } from './formula.js'
 import { moneyFormat, readTyped, type Form } from './read.js'
 
@@ -46,8 +48,24 @@ const STOPS: ReadonlySet<CheckCode> = new Set(['syntax', 'empty', 'too_long', 't
  * A typed formula, `shift` characters into the typed text: its canonical stored text and the format it sets (`formula.ts`),
  * its invariant text where it names what the book may lack (`#NAME?` then), or why Excel stops it, at its place in the text.
  */
-function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: ExternalBook[]): { formula: string; sets?: NumberFormat | 'money' } | Extract<EntryResult, { ok: false }> {
-  const v = validateTyped(text, locale, externalBooks ? { externalBooks } : undefined)
+function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: ExternalBook[], close = false): Formula | Extract<EntryResult, { ok: false }> {
+  const opts = externalBooks ? { externalBooks } : undefined
+  const v = validateTyped(text, locale, opts)
+  // typed or edited in place, what is left open at the end Excel closes on Return, or offers to (`close.ts`)
+  const c = close && !v.ok && v.code === 'syntax' ? closeTyped(text) : null
+  if (c?.silent) {
+    const f = taken(c.text, validateTyped(c.text, locale, opts), shift, locale, externalBooks)
+    return 'formula' in f ? f : { ...f, at: Math.min(f.at, text.length + shift) }
+  }
+  const f = taken(text, v, shift, locale, externalBooks)
+  return c && !('formula' in f) && c.calls.every((n) => known(n, locale)) && validateTyped(c.text, locale, opts).ok ? { ...f, correction: c.text } : f
+}
+
+/** A typed formula's canonical stored text and the format it sets. */
+type Formula = { formula: string; sets?: NumberFormat | 'money' }
+
+/** `text` as `validateTyped` read it (`v`): taken as a formula, or why Excel stops it, at its place in the typed text. */
+function taken(text: string, v: ReturnType<typeof validateTyped>, shift: number, locale: Locale, externalBooks?: ExternalBook[]): Formula | Extract<EntryResult, { ok: false }> {
   if (v.ok) {
     const p = validate(v.canonical)
     return { formula: v.canonical, ...(p.ok ? { sets: formulaFormat(p.ast) } : {}) }
@@ -56,6 +74,12 @@ function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: 
   if (STOPS.has(v.code) || (externalBooks && v.code === 'external_ref')) return { ok: false, code: v.code, message: v.message, at: v.at + shift }
   const t = toInvariant(text, locale)
   return t.ok ? { formula: t.formula } : { ...t, at: t.at + shift }
+}
+
+/** Whether `name` is a function's name in the locale, in any case: its own word, else its English one (`SUM` is none in ru-RU, `ABS` is). */
+function known(name: string, locale: Locale): boolean {
+  const upper = name.toUpperCase()
+  return upper in FUNCTIONS ? (locale.functions[upper] ?? upper).toUpperCase() === upper : Object.values(locale.functions).some((w) => w.toUpperCase() === upper)
 }
 
 /** Whether typed text begins with a `+` before a number (`+1*2`, `+.5+1`, `++5`): Excel drops it, the formula is `1*2`. */
@@ -103,7 +127,7 @@ export function readEntry(text: string, o: EntryOptions, way: EntryWay = 'typed'
   const { rules, clock } = rulesFor(locale, epoch, year)
   // a formula takes the format of what it computes as a typed constant of that kind would (`forms.ts`)
   const formula = (src: string, shift: number): EntryResult => {
-    const f = formulaOf(src, shift, locale, o.externalBooks)
+    const f = formulaOf(src, shift, locale, o.externalBooks, way === 'typed' || way === 'inPlace')
     if (!('formula' in f)) return pasted ? input({ value: text }) : f
     if (f.sets === undefined) return input({ formula: f.formula })
     const sets = f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets
