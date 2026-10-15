@@ -1,0 +1,195 @@
+{
+ "now": "2026-10-15",
+ "locales": {
+  "en-US": {
+   "space-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1)"
+    }
+   },
+   "space-2": {
+    "ok": true,
+    "input": {
+     "formula": "-SUM(1)"
+    }
+   },
+   "space-3": {
+    "ok": true,
+    "input": {
+     "formula": "-SUM(1)"
+    }
+   },
+   "space-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 6,
+    "correction": "= (1+2)"
+   },
+   "array-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected , ; or } in an array constant, found end of formula",
+    "at": 9
+   },
+   "array-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected , ; or } in an array constant, found end of formula",
+    "at": 6
+   },
+   "array-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected , ; or } in an array constant, found end of formula",
+    "at": 6
+   },
+   "array-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unterminated string",
+    "at": 6,
+    "correction": "={\"a\",\"b\"}"
+   },
+   "array-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected , ; or } in an array constant, found end of formula",
+    "at": 12
+   },
+   "call-1": {
+    "ok": true,
+    "input": {
+     "formula": "PI()"
+    }
+   },
+   "call-2": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()",
+     "numberFormat": 22
+    }
+   },
+   "call-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unterminated string",
+    "at": 9,
+    "correction": "=IF(C1>0,\"a\")"
+   },
+   "call-4": {
+    "ok": true,
+    "input": {
+     "formula": "ROUND(C1,1)"
+    }
+   },
+   "call-5": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(C1)"
+    }
+   },
+   "call-6": {
+    "ok": true,
+    "input": {
+     "formula": "CONCAT(\"a\",C1)"
+    }
+   }
+  },
+  "ru-RU": {
+   "space-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1)"
+    }
+   },
+   "space-2": {
+    "ok": true,
+    "input": {
+     "formula": "-SUM(1)"
+    }
+   },
+   "space-3": {
+    "ok": true,
+    "input": {
+     "formula": "-SUM(1)"
+    }
+   },
+   "space-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 6,
+    "correction": "= (1+2)"
+   },
+   "array-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 9
+   },
+   "array-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 6
+   },
+   "array-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 6
+   },
+   "array-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Текст не закрыт кавычкой",
+    "at": 6
+   },
+   "array-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 12
+   },
+   "call-1": {
+    "ok": true,
+    "input": {
+     "formula": "PI()"
+    }
+   },
+   "call-2": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()",
+     "numberFormat": 22
+    }
+   },
+   "call-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Текст не закрыт кавычкой",
+    "at": 9
+   },
+   "call-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «C1» читается иначе",
+    "at": 7
+   },
+   "call-5": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(C1)"
+    }
+   },
+   "call-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 11
+   }
+  }
+ }
+}

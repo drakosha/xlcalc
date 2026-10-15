@@ -64,6 +64,7 @@ export const ENTRY_KNOWN: ReadonlyMap<string, EntryReason> = new Map([
     'ru-RU:typed': ['fx-23', 'fx-24'],
     'en-US:typed-held': ['ffx-14', 'ffx-15', 'ffx-16'],
     'ru-RU:typed-held': ['ffx-16', 'ffx-32'],
+    'en-US:close-held-2': ['ref-4'],
   }),
   ...cases('gettingData', { 'en-US:typed': ['err-19'], 'ru-RU:typed': ['err-20'] }),
   ...cases('plusPercent', { 'en-US:typed-keys-held-2': ['key2-sign-13'], 'ru-RU:typed-keys-held-2': ['key2-sign-13'] }),
