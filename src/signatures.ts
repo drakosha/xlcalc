@@ -7,6 +7,7 @@
  * agrees with each function's measured arguments (`test/signatures.test.ts`). Beside them, its category, as Excel's Insert
  * Function window lists it (`function-info.ts`); what it does is `xlcalc/function-text`'s.
  */
+import { englishName } from './call-at.js'
 import type { FunctionArgument, FunctionSignature } from './contract.js'
 import { CATEGORY_NAMES, CATEGORY_OF } from './function-info.js'
 import { checkString } from './input.js'
@@ -533,8 +534,8 @@ export function functionSignature(name: string, locale?: string | Locale): Funct
   checkString(name, 'name')
   const loc = locale === undefined ? localeOf(undefined) : checkLocaleArg(locale, 'locale')
   const upper = name.toUpperCase()
-  const invariant = upper in SIGNATURES ? upper : Object.keys(loc.functions).find((k) => loc.functions[k].toUpperCase() === upper)
-  if (!invariant || !(invariant in SIGNATURES)) return null
+  const invariant = upper in SIGNATURES ? upper : englishName(name, loc)
+  if (!(invariant in SIGNATURES)) return null
   const shape = shapeOf(invariant)
   const words = loc.argumentWords
   const groups = shape.groups.map((g) => ({ optional: g.optional, names: g.names.map((n) => translated(n, words)) }))

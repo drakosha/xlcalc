@@ -8,40 +8,15 @@
  */
 import type { CallAt, ScanOptions } from './contract.js'
 import { typedArgs } from './point.js'
+import { openBrackets, walk, type OpenBracket } from './syntax/scan.js'
 import type { Locale } from './locale/types.js'
 
-/** A character of a function's name: a letter of any script, a digit, `.` or `_` (`СТАНДОТКЛОН.В`, `LOG10`). */
-const NAME_CHAR = /[\p{L}\p{N}._]/u
-
-/** A bracket open at the caret: a call's with its name, its index so far and where it opened, or a group's or an array's. */
-type Frame = { kind: 'call'; name: string; index: number; open: number } | { kind: 'group' | 'array' }
-
 /** A function's English name: the locale's name translated, in upper case; another name upper-cased as it is. */
-function englishName(name: string, locale: Locale | undefined): string {
+export function englishName(name: string, locale: Locale | undefined): string {
   const upper = name.toUpperCase()
   if (!locale) return upper
   const fns = locale.functions
   return Object.keys(fns).find((k) => fns[k].toUpperCase() === upper) ?? upper
-}
-
-/**
- * The characters of `t` from `from` up to `to` outside strings, quoted sheets' names and tables' brackets, each given to
- * `f` with its place; `f` answering true stops the walk. What is open where it stopped: a string's or a quoted sheet's
- * quote, and tables' brackets.
- */
-export function walk(t: string, from: number, to: number, f: (c: string, i: number) => boolean | void): { quote: string | null; table: number } {
-  let quote: string | null = null
-  let table = 0
-  for (let i = from; i < to; i++) {
-    const c = t[i]
-    if (quote) {
-      if (c === quote) quote = null
-    } else if (c === '"' || c === "'") quote = c
-    else if (c === '[') table++
-    else if (c === ']') table = Math.max(0, table - 1)
-    else if (!table && f(c, i)) break
-  }
-  return { quote, table }
 }
 
 /**
@@ -52,24 +27,8 @@ export function walk(t: string, from: number, to: number, f: (c: string, i: numb
 export function callAt(text: string, caret?: number, opts?: ScanOptions): CallAt | null {
   const { t, at, locale } = typedArgs(text, caret, opts)
   if (!/^[=+-]/.test(t)) return null
-  const sep = locale?.listSeparator ?? ','
-  const stack: Frame[] = []
-  walk(t, 1, at, (c, i) => {
-    if (c === '{') stack.push({ kind: 'array' })
-    else if (c === '}') {
-      if (stack.at(-1)?.kind === 'array') stack.pop()
-    } else if (c === '(') {
-      let from = i
-      while (from > 1 && NAME_CHAR.test(t[from - 1])) from--
-      stack.push(from < i ? { kind: 'call', name: t.slice(from, i), index: 0, open: i } : { kind: 'group' })
-    } else if (c === ')') {
-      if (stack.at(-1)?.kind !== 'array') stack.pop()
-    } else if (c === sep) {
-      const top = stack.at(-1)
-      if (top?.kind === 'call') top.index++
-    }
-  })
-  const call = stack.findLast((f) => f.kind === 'call') as Extract<Frame, { kind: 'call' }> | undefined
+  const stack = openBrackets(t, at, locale?.listSeparator).open
+  const call = stack.findLast((f) => f.kind === 'call') as Extract<OpenBracket, { kind: 'call' }> | undefined
   if (!call) return null
   let close: number | null = null
   let depth = 0
