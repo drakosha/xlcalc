@@ -10,6 +10,7 @@ import * as saved from './session/saved.js'
 import * as structure from './structure/index.js'
 import * as copy from './structure/copy.js'
 import * as inline from './async/inline.js'
+import * as live from './live.js'
 import * as locales from './locale/index.js'
 import * as load from './locale/load.js'
 import * as entry from './entry/index.js'
@@ -51,6 +52,7 @@ export type { DateSystemOptions } from './date-serial.js'
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses
 export const createSession = /* @__PURE__ */ strict(sessions.createSession)
 export const createInlineCalc = /* @__PURE__ */ strict(inline.createInlineCalc)
+export const liveWorkbook = /* @__PURE__ */ strict(live.liveWorkbook)
 export const viewportOf = /* @__PURE__ */ strict(saved.viewportOf)
 // in the root alone: its names would take `xlcalc/text` past its 50 KB (`text-bundle.test.ts`)
 export const functionSignature = /* @__PURE__ */ strict(signatures.functionSignature)

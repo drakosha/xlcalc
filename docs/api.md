@@ -296,6 +296,15 @@ function linesKey(first: number, last: number, axis: "columns" | "rows"): string
 
 The key of lines `first` to `last` (`C`, `B:D`; `5`, `5:9`), in order whichever comes first.
 
+### <a id="xlcalc-liveworkbook"></a>`liveWorkbook`
+
+```ts
+function liveWorkbook(session: Session): LiveWorkbook
+```
+
+The live workbook of a synchronous session ([`LiveWorkbook`](#liveworkbook)): the same object for the same session. An asynchronous
+session throws [`InputError`](#xlcalc-inputerror); its writes cannot answer what they computed.
+
 ### <a id="xlcalc-locales"></a>`LOCALES`
 
 ```ts
@@ -2783,9 +2792,9 @@ interface LiveSheet {
 
 ### `LiveWorkbook`
 
-Objects of a synchronous session's sheets and cells (`liveWorkbook`): a cell reads what the session computed, an
+Objects of a synchronous session's sheets and cells ([`liveWorkbook`](#xlcalc-liveworkbook)): a cell reads what the session computed, an
 assignment to it is the session's edit (recomputed, one step of the undo), and a listener learns of the changes of a
-cell, a sheet or the book, whoever makes them. One per session: `liveWorkbook` gives the same object for it again.
+cell, a sheet or the book, whoever makes them. One per session: [`liveWorkbook`](#xlcalc-liveworkbook) gives the same object for it again.
 
 ```ts
 interface LiveWorkbook {
