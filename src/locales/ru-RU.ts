@@ -12,7 +12,6 @@
  * are written by hand, close to Excel ru-RU's own where it has one for the same refusal.
  */
 import { RU_NAMES } from '../locale/lcid.js'
-import { RU_FUNCTION_TEXT } from '../locale/ru-functions.js'
 import type { Counts, Found, Lines, Messages, NameRule, RuleText, StyleLoss, StylePart, Words } from '../locale/messages.js'
 import type { Locale } from '../locale/types.js'
 
@@ -426,72 +425,12 @@ const MESSAGES: Messages = {
   filterModeOut: () => 'Режим фильтра листа, у таблиц которого нет строки заголовков, не записан: автофильтр по ячейкам листа задел бы эти таблицы',
 }
 
-/**
- * The words of the arguments' names in the tips of functions (`functionSignature`), by their English word: the library's
- * own names (decision 39 of the design), a number after a word kept (`число1`).
- */
-const ARGUMENT_WORDS: Locale['argumentWords'] = {
-    abs_type: 'тип_ссылки', actual: 'наблюдаемые', address: 'адрес', alpha: 'альфа', angle: 'угол',
-    approximate: 'приближённо', area: 'область', array: 'массив', array_x: 'массив_x', array_y: 'массив_y',
-    average_range: 'диапазон_усреднения', base: 'основание', basis: 'базис', beta: 'бета', bins: 'интервалы',
-    bottom: 'нижняя_граница', by_array: 'по_массиву', by_column: 'по_столбцам', bytes: 'байты',
-    calculation_or_name: 'вычисление_или_имя', chars: 'знаки', chosen: 'выбрано', coefficients: 'коэффициенты',
-    column: 'столбец', column_delimiter: 'разделитель_столбцов', column_index: 'номер_столбца', columns: 'столбцы',
-    complex: 'комплексное', condition: 'условие', const: 'конст', cost: 'стоимость', coupon: 'купон',
-    criteria: 'условие', criteria_range: 'диапазон_условия', cumulative: 'интегральная', data: 'данные',
-    database: 'база_данных', date: 'дата', dates: 'даты', day: 'день', days: 'дни', decimal: 'десятичная',
-    decimal_separator: 'десятичный_разделитель', decimals: 'знаки_после_запятой',
-    default_or_value: 'по_умолчанию_или_значение', delimiter: 'разделитель', denominator: 'делитель',
-    digits: 'разряды', dimension: 'размер', discount: 'скидка', divisor: 'делитель',
-    effect_rate: 'фактическая_ставка', end_date: 'кон_дата', end_period: 'кон_период', error: 'ошибка',
-    exactly_once: 'ровно_один_раз', expected: 'ожидаемые', expression: 'выражение', factor: 'коэффициент',
-    failures: 'неудачи', field: 'поле', finance_rate: 'ставка_финансирования', find: 'искомый_текст',
-    first_coupon: 'первый_купон', first_interest: 'первый_доход', first_period: 'первый_период', form: 'форма',
-    format: 'формат', fraction: 'дробь', fractional: 'дробная', freedom: 'степени_свободы', frequency: 'частота',
-    from_issue: 'от_выпуска', from_unit: 'из_единицы', function: 'функция', future_value: 'будущая_стоимость',
-    group_separator: 'разделитель_групп', guess: 'предположение', holidays: 'праздники', hour: 'час',
-    if_empty: 'если_пусто', if_error: 'если_ошибка', if_false: 'если_ложь', if_na: 'если_нд',
-    if_not_found: 'если_не_найдено', if_true: 'если_истина', ignore: 'пропуск', ignore_empty: 'пропускать_пустые',
-    imaginary: 'мнимая_часть', include: 'включить', index: 'номер', instance: 'номер_вхождения',
-    investment: 'инвестиция', issue: 'дата_выпуска', known_x: 'известные_x', known_y: 'известные_y', label: 'подпись',
-    lambda: 'лямбда', last_interest: 'последний_доход', life: 'срок', logical: 'логическое',
-    lookup_array: 'просматриваемый_массив', lookup_range: 'просматриваемый_диапазон', lookup_value: 'искомое',
-    lower_limit: 'нижний_предел', match_end: 'конец_как_разделитель', match_mode: 'режим_сопоставления',
-    match_type: 'тип_сопоставления', maturity: 'дата_погашения', max: 'максимум', max_range: 'диапазон_максимума',
-    mean: 'среднее', method: 'метод', min: 'минимум', min_length: 'мин_длина', min_range: 'диапазон_минимума',
-    minute: 'минута', mode: 'режим', month: 'месяц', months: 'месяцы', multiple: 'кратное', name: 'имя',
-    new_text: 'новый_текст', new_x: 'новые_x', no_commas: 'без_разделителей', nominal_rate: 'номинальная_ставка',
-    number: 'число', numerator: 'числитель', old_text: 'старый_текст', options: 'параметры', order: 'порядок',
-    pad_with: 'заполнитель', par: 'номинал', part: 'часть', payment: 'выплата', percent: 'доля', period: 'период',
-    periods: 'кол_периодов', periods_per_year: 'периодов_в_году', places: 'разрядность',
-    population_size: 'размер_совокупности', population_successes: 'успехи_в_совокупности', power: 'степень',
-    present_value: 'приведённая_стоимость', price: 'цена', principal: 'первоначальная_сумма',
-    probabilities: 'вероятности', probability: 'вероятность', purchased: 'дата_приобретения', quarter: 'квартиль',
-    radix: 'основание', range: 'диапазон', rate: 'ставка', real: 'действительная_часть', redemption: 'погашение',
-    ref: 'ссылка', reference: 'ссылка', reinvest_rate: 'ставка_реинвестирования', result: 'результат',
-    result_range: 'диапазон_результатов', return_array: 'возвращаемый_массив', return_type: 'тип', row: 'строка',
-    row_delimiter: 'разделитель_строк', row_index: 'номер_строки', rows: 'строки', salvage: 'остаточная_стоимость',
-    sample_size: 'размер_выборки', sample_successes: 'успехи_в_выборке', scan_by_column: 'по_столбцам',
-    schedule: 'ставки', search_mode: 'режим_поиска', second: 'секунда', settlement: 'дата_соглашения', sheet: 'лист',
-    shift: 'сдвиг', sigma: 'сигма', significance: 'точность', size: 'размер', sort_index: 'индекс_сортировки',
-    sort_order: 'порядок_сортировки', start: 'начало', start_date: 'нач_дата', start_period: 'нач_период',
-    stats: 'статистика', std_dev: 'станд_откл', step: 'шаг', success_probability: 'вероятность_успеха',
-    successes: 'успехи', successes_to: 'успехи_до', suffix: 'мнимая_единица', sum_range: 'диапазон_суммирования',
-    table: 'таблица', tails: 'хвосты', text: 'текст', time: 'время', times: 'число_повторов', to_unit: 'в_единицу',
-    top: 'верхняя_граница', trials: 'испытания', type: 'тип', unit: 'единица', upper_limit: 'верхний_предел',
-    value: 'значение', values: 'значения', vector: 'вектор', weekend: 'выходные', whole: 'целое',
-    whole_number: 'целые', within: 'просматриваемый_текст', wrap_count: 'число_значений', year: 'год',
-    yield: 'доходность',
-}
-
 /** ru-RU, for `registerLocale`, and for `toLocal` and the functions without a book as it is. */
 export const ruRU: Locale = {
   tag: 'ru-RU',
   ...FORMULA_TEXT,
   // the specifiers of structured references, which the snapshot's books have none of: as Excel 16.113 ru-RU shows them
   // (`#Все`, `#Данные`, `#Заголовки`, `#Итоги`) and takes them typed (`#Эта строка`, shown as `@`), the table set `locale`
-  argumentWords: ARGUMENT_WORDS,
-  functionText: RU_FUNCTION_TEXT,
   tableItems: { '#All': '#Все', '#Data': '#Данные', '#Headers': '#Заголовки', '#Totals': '#Итоги', '#This Row': '#Эта строка' },
   regional: {
     decimal: ',',

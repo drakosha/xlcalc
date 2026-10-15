@@ -9,6 +9,8 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/text`](#xlcalctext)
 - [`xlcalc/xlsx`](#xlcalcxlsx)
 - [`xlcalc/worker`](#xlcalcworker)
+- [`xlcalc/function-text`](#xlcalcfunction-text)
+- [`xlcalc/function-text/ru-RU`](#xlcalcfunction-textru-ru)
 - [`xlcalc/locales/ru-RU`](#xlcalclocalesru-ru)
 - [`xlcalc/contract`](#xlcalccontract)
 - [Types](#types)
@@ -688,6 +690,25 @@ function createCalcPool(opts?: CalcPoolOptions): Calc
 
 A pool of threads. Node runs `worker_threads` with `maxHeapMb` as each thread's heap; a browser runs Web Workers,
 started by `spawn` or by the thread's module next to this one, and has no memory limit.
+
+## xlcalc/function-text
+
+### <a id="xlcalcfunction-text-functiondescription"></a>`functionDescription`
+
+```ts
+function functionDescription(fn: string, locale?: string | Locale): string | null
+```
+
+What a function does, by its English name ([`FunctionSignature.fn`](#functionsignature), [`CallAt.fn`](#callat)) in any case: one line in the locale's
+words when the locale has them (`{ ...ruRU, ...ruRUFunctionText }`), else in en-US; null for a name outside the whitelist.
+
+## xlcalc/function-text/ru-RU
+
+### <a id="xlcalcfunction-textru-ru-rurufunctiontext"></a>`ruRUFunctionText`
+
+```ts
+const ruRUFunctionText: Required<Pick<Locale, "argumentWords" | "functionText">>
+```
 
 ## xlcalc/locales/ru-RU
 
@@ -2577,6 +2598,8 @@ them: `SUM(number1, [number2], ...)`, in ru-RU `СУММ(число1;[число
 interface FunctionSignature {
   /** The function's name in the locale (`СУММ`). */
   name: string
+  /** Its English name, as stored formulas, `CallAt.fn` and `functionDescription` take it (`SUM`). */
+  fn: string
   /** The arguments in the tip's order, those that repeat listed twice (`number1`, `number2`), the second time optional. */
   args: FunctionArgument[]
   /**
@@ -2590,8 +2613,6 @@ interface FunctionSignature {
   category: FunctionCategory
   /** The category's name in the locale (`Math & Trig`, `Математические`). */
   categoryName: string
-  /** What the function does, one line in the locale, in the library's own words. */
-  description: string
 }
 ```
 
@@ -2869,12 +2890,13 @@ interface Locale {
   readonly tableItems?: Readonly<Partial<Record<TableItem, string>>>
   /**
    * The words of the arguments' names in the tips of functions (`functionSignature`) by their English word (`number:
-   * 'число'`, so `number1` is `число1`); a word not listed stays English.
+   * 'число'`, so `number1` is `число1`); a word not listed stays English. The package's locales leave them, and
+   * `functionText`, to modules of their own (`xlcalc/function-text/ru-RU`), which a host joins to the locale.
    */
   readonly argumentWords?: Readonly<Record<string, string>>
   /**
-   * The words of Excel's Insert Function window (`functionSignature`): the categories' names and what each function does,
-   * by its English name; what is not listed stays English.
+   * The words of Excel's Insert Function window: the categories' names (`functionSignature`) and what each function does
+   * (`functionDescription`), by its English name; what is not listed stays English.
    */
   readonly functionText?: { readonly categories: Readonly<Partial<Record<FunctionCategory, string>>>; readonly descriptions: Readonly<Record<string, string>> }
   /**

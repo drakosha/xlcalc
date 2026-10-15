@@ -46,6 +46,14 @@
       "types": "./dist/text.d.ts",
       "default": "./dist/text.js"
     },
+    "./function-text": {
+      "types": "./dist/function-text/index.d.ts",
+      "default": "./dist/function-text/index.js"
+    },
+    "./function-text/ru-RU": {
+      "types": "./dist/function-text/ru-RU.d.ts",
+      "default": "./dist/function-text/ru-RU.js"
+    },
     "./unstable/internal": {
       "types": "./dist/internal.d.ts",
       "default": "./dist/internal.js"
