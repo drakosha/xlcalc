@@ -224,7 +224,7 @@ const book = { sheets: [{ name: 'Plan', cells: {
 const r = editStructure(book, { op: 'fillRange', sheet: 'Plan', range: 'A1:E2', to: 'A1:E5' })
 const c = r.book.sheets[0].cells
 console.log(c.A3.value, c.A5.value, c.B3.value, c.B5.value, c.C3.value, c.C4.value, c.D3.value, c.E3.formula)
-// → 3 5 Item2 Item3 45747 45777 Tue A3*10 (Mar 31, Apr 30)
+// → 3 5 Item2 Item3 45747 45777 Tue A3*10
 ```
 
 ### Copies first
