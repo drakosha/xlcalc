@@ -16,6 +16,21 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.44.0 (2026-10-16)
+
+Internal release; not published to npm. A formula left open closed as Excel closes it on Return. The synthetic book's values and hashes are as in 0.43.0.
+
+Added:
+
+- A typed formula left open at its end: `parseEntry`, `setCellText`, `setCellTexts`, `fillCellText` and their previews, typed over a cell or edited in place, close it without a word when it begins with a function, a sign or a space before it or not, whose bracket is the only one left open, with no `)` typed (`=SUM(1,2` is `=SUM(1,2)`, `=-SUM(C1` is `=-SUM(C1)`). Any other formula left open is refused as before, now with `correction`, the formula Excel's window offers to correct it to: its brackets, quotes and array braces closed and the spaces after `=` dropped (`=(1+2` offers `=(1+2)`, `=SUM(MAX(1` offers `=SUM(MAX(1))`). Excel offers none, and so the engine, when the formula closed would not read, calls a name that is no function in the locale, or leaves an array constant open inside a function's brackets or after an operator. Pasted text is not closed ([A formula left open](docs/entry.md#a-formula-left-open)).
+- Contract: `EntryResult`'s refusal, `CellTextRefused` (the refusal of `setCellText` and `previewCellText`) and `CellTextsRefusal` (of `setCellTexts`, `fillCellText` and their previews) carry `correction`.
+
+Changed:
+
+- `=SUM(A1,` and the like, refused before, are taken as Excel takes them (`SUM(A1,)`).
+
+Measured: on the Mac's keyboard in Excel 16.113 and 16.114 for Mac, en-US and ru-RU, three sets each predicted before Excel ran it, 165 cases (69 of 79, 46 of 51 and 23 of 35 predicted); the engine as Excel on all but five known differences, none of them about brackets. Not measured: Excel for Windows.
+
 ## 0.43.0 (2026-10-15)
 
 Internal release; not published to npm. The texts of the tips apart from the engine. The synthetic book's values and hashes are as in 0.42.0.

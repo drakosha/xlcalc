@@ -1565,7 +1565,7 @@ with `refuseInvalid`, the cell whose value breaks the strictest rule of data val
 warning, then information; the first cell of that style).
 
 ```ts
-type CellTextsRefusal = (Refusal<CellTextRefusal> & CellRef) | CellValidationRefusal
+type CellTextsRefusal = (CellTextRefused & CellRef) | CellValidationRefusal
 ```
 
 ### `CellTextsResult`

@@ -1576,7 +1576,7 @@ export type CellValidationAlert = CellRef & ValidationAlert
  * with `refuseInvalid`, the cell whose value breaks the strictest rule of data validation once all are written (stop, then
  * warning, then information; the first cell of that style).
  */
-export type CellTextsRefusal = (Refusal<CellTextRefusal> & CellRef) | CellValidationRefusal
+export type CellTextsRefusal = (CellTextRefused & CellRef) | CellValidationRefusal
 
 /**
  * Texts typed into cells at once (`Session.setCellTexts`): the edit's result, with the widths the columns took
