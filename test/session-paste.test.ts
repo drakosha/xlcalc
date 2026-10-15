@@ -156,7 +156,7 @@ describe.each(['closures', 'eval'] as const)('a paste and an entry into a select
       expect(await s.previewFillCellText('S', 'G1:G2', '-1')).toMatchObject({ ok: true, validation: { severity: 'warning' } })
       expect((await cellsOf(s)).F5).toEqual({ value: -3 })
       const revision = s.revision
-      expect(await s.fillCellText('S', 'H1:H2', '=СУММ(A1;', { active: 'H2' })).toEqual({ ok: false, code: 'syntax', message: 'Формула не закончена', at: 9, sheet: 'S', cell: 'H2' })
+      expect(await s.fillCellText('S', 'H1:H2', '=СУММ(A1)+', { active: 'H2' })).toEqual({ ok: false, code: 'syntax', message: 'Формула не закончена', at: 10, sheet: 'S', cell: 'H2' })
       expect(await s.fillCellText('S', 'C4:C5', '1')).toEqual({ ok: false, code: 'array', message: 'Нельзя изменить часть массива S!C5 (C5:C6)', sheet: 'S', cell: 'C5' })
       expect(await s.previewFillCellText('S', 'D1:E1', '=1', { active: 'D1' })).toEqual({ ok: false, code: 'header', message: 'Ячейка S!E1 в строке заголовков таблицы «T»: в ней имя столбца, а не формула', sheet: 'S', cell: 'E1' })
       expect(s.revision).toBe(revision)

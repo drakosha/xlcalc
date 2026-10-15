@@ -4,8 +4,8 @@
  * same step as Excel widens it, or the width only told; a value its rule of data validation does not take written with
  * the rule; a formula that does not read, part of an array and a formula in a table's header refused with a message in
  * the book's locale; a header typed over renamed; text edited in place (`inPlace`) without the percent editor's `%` on a
- * number begun by a digit. In a synchronous session, in the same thread and in a thread, with
- * closures and eval.
+ * number begun by a digit; a formula left open at its end closed as Excel closes it on Return, or refused with the
+ * correction Excel offers. In a synchronous session, in the same thread and in a thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, type BookInput, type Execution } from '../src/index.js'
@@ -66,6 +66,29 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
       // empty text clears the value and keeps the rest
       await s.setCellText('S', 'A1', '')
       expect((await cells()).A1).toEqual({ numberFormat: 4, style: 0, meta: 'm', note: { text: 'n' } })
+      expect(await s.getHash()).toBe(compute(await s.getBook(), { clock, execution }).hash)
+      await s.close()
+    })
+
+    it("a formula left open at its end: closed as Excel closes it on Return, or refused with Excel's correction; pasted, it is text", async () => {
+      const s = await (await opener(kind))(book('ru-RU'), { clock, execution })
+      const cells = () => s.getBook().then((b) => b.sheets[0].cells)
+      // begun by the function whose bracket is the one left open: closed without a word, typed or edited in place
+      expect(await s.setCellText('S', 'A6', '=СУММ(A1;2')).toMatchObject({ ok: true, changes: [{ cell: 'A6', value: 3 }] })
+      await s.setCellText('S', 'A7', '=-СУММ(A1', { inPlace: true })
+      expect((await cells()).A6).toEqual({ formula: 'SUM(A1,2)' })
+      expect((await cells()).A7).toEqual({ formula: '-SUM(A1)' })
+      // anything else left open: refused, with the correction Excel's window offers, and the cell as it was
+      expect(await s.previewCellText('S', 'A8', '=1+СУММ(2')).toMatchObject({ ok: false, code: 'syntax', correction: '=1+СУММ(2)' })
+      expect(await s.setCellText('S', 'A8', '= (1+2')).toMatchObject({ ok: false, code: 'syntax', correction: '=(1+2)' })
+      expect(await s.setCellText('S', 'A8', '=ДЛСТР("аб')).toMatchObject({ ok: false, correction: '=ДЛСТР("аб")' })
+      // no correction where Excel offers none: an English name in ru-RU, an array constant in a function's brackets
+      expect(await s.setCellText('S', 'A8', '=SUM((1')).not.toHaveProperty('correction')
+      expect(await s.setCellText('S', 'A8', '=СУММ({1;2')).not.toHaveProperty('correction')
+      expect((await cells()).A8).toBeUndefined()
+      // pasted, a formula that does not read is text
+      await s.pasteText('S', 'A9', '=СУММ(1;2')
+      expect((await cells()).A9).toEqual({ value: '=СУММ(1;2' })
       expect(await s.getHash()).toBe(compute(await s.getBook(), { clock, execution }).hash)
       await s.close()
     })

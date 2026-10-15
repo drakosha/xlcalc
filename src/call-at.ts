@@ -26,9 +26,10 @@ function englishName(name: string, locale: Locale | undefined): string {
 
 /**
  * The characters of `t` from `from` up to `to` outside strings, quoted sheets' names and tables' brackets, each given to
- * `f` with its place; `f` answering true stops the walk.
+ * `f` with its place; `f` answering true stops the walk. What is open where it stopped: a string's or a quoted sheet's
+ * quote, and tables' brackets.
  */
-function walk(t: string, from: number, to: number, f: (c: string, i: number) => boolean | void): void {
+export function walk(t: string, from: number, to: number, f: (c: string, i: number) => boolean | void): { quote: string | null; table: number } {
   let quote: string | null = null
   let table = 0
   for (let i = from; i < to; i++) {
@@ -38,8 +39,9 @@ function walk(t: string, from: number, to: number, f: (c: string, i: number) => 
     } else if (c === '"' || c === "'") quote = c
     else if (c === '[') table++
     else if (c === ']') table = Math.max(0, table - 1)
-    else if (!table && f(c, i)) return
+    else if (!table && f(c, i)) break
   }
+  return { quote, table }
 }
 
 /**

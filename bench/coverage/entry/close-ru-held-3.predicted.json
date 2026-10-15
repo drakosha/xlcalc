@@ -1,0 +1,71 @@
+{
+ "now": "2026-10-15",
+ "locales": {
+  "en-US": {
+   "ru-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 9
+   },
+   "ru-2": {
+    "ok": true,
+    "input": {
+     "formula": "ПИ()"
+    }
+   },
+   "ru-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected , ; or } in an array constant, found end of formula",
+    "at": 9
+   },
+   "ru-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 9
+   },
+   "ru-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 6,
+    "correction": "= (1+2)"
+   }
+  },
+  "ru-RU": {
+   "ru-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,2)"
+    }
+   },
+   "ru-2": {
+    "ok": true,
+    "input": {
+     "formula": "PI()"
+    }
+   },
+   "ru-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 9
+   },
+   "ru-4": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(1,2)"
+    }
+   },
+   "ru-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 6,
+    "correction": "= (1+2)"
+   }
+  }
+ }
+}

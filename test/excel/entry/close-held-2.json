@@ -1,0 +1,292 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-15",
+  "seconds": 62.6
+ },
+ "cases": [
+  {
+   "id": "sign-1",
+   "text": "=+SUM(1"
+  },
+  {
+   "id": "sign-2",
+   "text": "=--SUM(1"
+  },
+  {
+   "id": "sign-3",
+   "text": "=-SUM(MAX(1"
+  },
+  {
+   "id": "sign-4",
+   "text": "=-(SUM(1"
+  },
+  {
+   "id": "sign-5",
+   "text": "=-FOO(1"
+  },
+  {
+   "id": "array-1",
+   "text": "=SUM({1,2}"
+  },
+  {
+   "id": "array-2",
+   "text": "=SUM(1,{1,2"
+  },
+  {
+   "id": "array-3",
+   "text": "={1,2;3"
+  },
+  {
+   "id": "array-4",
+   "text": "=1+{1,2"
+  },
+  {
+   "id": "array-5",
+   "text": "=SUM({1,2},{3"
+  },
+  {
+   "id": "string-1",
+   "text": "=SUM(1,\"ab"
+  },
+  {
+   "id": "string-2",
+   "text": "=\"ab\"&SUM(1"
+  },
+  {
+   "id": "string-3",
+   "text": "=LEN(\"a)b\""
+  },
+  {
+   "id": "string-4",
+   "text": "=SUM(\"ab\""
+  },
+  {
+   "id": "ref-1",
+   "text": "=SUM(C1:C2"
+  },
+  {
+   "id": "ref-2",
+   "text": "=SUM(S!C1"
+  },
+  {
+   "id": "ref-3",
+   "text": "=SUM('S'!C1"
+  },
+  {
+   "id": "ref-4",
+   "text": "=MAX(C1,C2"
+  },
+  {
+   "id": "shape-1",
+   "text": "= SUM(1"
+  },
+  {
+   "id": "shape-2",
+   "text": "=1+sum(2"
+  },
+  {
+   "id": "shape-3",
+   "text": "=sum(max(1"
+  },
+  {
+   "id": "shape-4",
+   "text": "=SUM(1,2,"
+  }
+ ],
+ "answers": {
+  "sign-1": {
+   "cell": {
+    "formula": "+SUM(1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "sign-2": {
+   "cell": {
+    "formula": "--SUM(1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "sign-3": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭=-SUM(MAX(1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "sign-4": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭=-(SUM(1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "sign-5": {
+   "cell": {
+    "formula": "-FOO(1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "array-1": {
+   "cell": {
+    "formula": "SUM({1,2})"
+   },
+   "computed": 3,
+   "text": "3",
+   "code": "General",
+   "local": "General",
+   "value2": 3
+  },
+  "array-2": {
+   "refused": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "array-3": {
+   "refused": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "array-4": {
+   "refused": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "array-5": {
+   "refused": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "string-1": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭=SUM(1,\"ab\")‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "string-2": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭=\"ab\"&SUM(1)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "string-3": {
+   "cell": {
+    "formula": "LEN(\"a)b\")"
+   },
+   "computed": 3,
+   "text": "3",
+   "code": "General",
+   "local": "General",
+   "value2": 3
+  },
+  "string-4": {
+   "cell": {
+    "formula": "SUM(\"ab\")"
+   },
+   "computed": {
+    "error": "VALUE"
+   },
+   "text": "#VALUE!",
+   "code": "General",
+   "local": "General"
+  },
+  "ref-1": {
+   "cell": {
+    "formula": "SUM(C1:C2)"
+   },
+   "computed": 46098,
+   "text": "46098",
+   "code": "General",
+   "local": "General",
+   "value2": 46098
+  },
+  "ref-2": {
+   "cell": {
+    "formula": "SUM(S!C1)"
+   },
+   "computed": 2,
+   "text": "2",
+   "code": "General",
+   "local": "General",
+   "value2": 2
+  },
+  "ref-3": {
+   "cell": {
+    "formula": "SUM(S!C1)"
+   },
+   "computed": 2,
+   "text": "2",
+   "code": "General",
+   "local": "General",
+   "value2": 2
+  },
+  "ref-4": {
+   "cell": {
+    "formula": "MAX(C1,C2)",
+    "format": 14
+   },
+   "computed": 46096,
+   "text": "3/15/26",
+   "code": "m/d/yy",
+   "local": "m/d/yy"
+  },
+  "shape-1": {
+   "cell": {
+    "formula": " SUM(1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "shape-2": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭=1+sum(2)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "shape-3": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭=sum(max(1))‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "shape-4": {
+   "cell": {
+    "formula": "SUM(1,2,)"
+   },
+   "computed": 3,
+   "text": "3",
+   "code": "General",
+   "local": "General",
+   "value2": 3
+  }
+ }
+}

@@ -899,9 +899,13 @@ export interface EntryOptions {
 /**
  * Text typed into a cell as Excel takes it (`parseEntry`): the cell's new input, `null` when nothing is left of the
  * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
- * language of `opts.locale` (English for en-US) and the position in the typed text.
+ * language of `opts.locale` (English for en-US) and the position in the typed text. A formula typed with brackets,
+ * quotes or array braces left open at its end Excel closes on Return when it begins with a function, has no `)` and
+ * leaves only functions' brackets open (`=SUM(1,2` is `=SUM(1,2)`); any other such formula it refuses and offers to
+ * correct, when the formula closed reads with every function known: `correction` is that text, as typed with what was
+ * left open closed (`=(1+2` offers `=(1+2)`). Pasted text is not closed.
  */
-export type EntryResult = { ok: true; input: CellInput | null } | (Refusal<CheckCode> & { at: number })
+export type EntryResult = { ok: true; input: CellInput | null } | (Refusal<CheckCode> & { at: number; correction?: string })
 
 /**
  * `entryText`'s and `needsApostrophe`'s options: the cell's number format (its row's or column's without its own), the
@@ -1539,15 +1543,18 @@ export type ValidationRefusal = Refusal<'validation'> & { rule: DataValidation; 
 /** Typed text refused for the value a cell's rule of data validation does not take (`CellTextOptions.refuseInvalid`): the cell, the rule, its alert's style and message. */
 export type CellValidationRefusal = ValidationRefusal & CellRef
 
+/** Text `Session.setCellText` did not take, and the formula Excel offers to correct it to, as `parseEntry`'s `correction`. */
+export type CellTextRefused = Refusal<CellTextRefusal> & { correction?: string }
+
 /**
  * Text typed into a cell (`Session.setCellText`): the edit's result, with the width the column took (`width`) and the
  * rule of data validation the value breaks (`validation`); or why the text was not taken, with its position in the text,
  * or, with `refuseInvalid`, the rule the value breaks.
  */
-export type CellTextResult = (EditResult & { ok: true; width?: number; validation?: ValidationAlert }) | Refusal<CellTextRefusal> | CellValidationRefusal
+export type CellTextResult = (EditResult & { ok: true; width?: number; validation?: ValidationAlert }) | CellTextRefused | CellValidationRefusal
 
 /** What `Session.setCellText` would do (`Session.previewCellText`): the cell's input, its value, the width and the alert, with nothing changed. */
-export type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; width?: number; validation?: ValidationAlert } | Refusal<CellTextRefusal> | CellValidationRefusal
+export type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; width?: number; validation?: ValidationAlert } | CellTextRefused | CellValidationRefusal
 
 /** Text typed into a cell, one of several typed at once (`Session.setCellTexts`). */
 export interface CellTextEntry extends CellRef {

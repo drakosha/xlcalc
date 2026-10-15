@@ -591,6 +591,23 @@ Line breaks were measured by the step `rows` (`bench/coverage/rows.ts`, `docs/fo
 
 Refusing a value a rule does not take (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not measure: the alert is a window, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a refused call leaves the book, the revision and the history as they were, and that a value the rules take is written as without the option.
 
+### Typed entry: A formula left open
+
+From [Typed entry, A formula left open](entry.md#a-formula-left-open).
+
+The step `entry` typed each text on the Mac's keyboard and pressed Return (`keys` sets), in Excel 16.113 and 16.114 for Mac: Excel updated itself between the first set and the rest. The harness answers Excel's windows itself, No to a correction and OK after it, and keeps their texts, so a refused case holds the correction Excel offered. The Russian names were typed in the Russian layout (`input-source.swift com.apple.keylayout.Russian`), the other sets in ABC.
+
+| set | cases | predicted before the run |
+|---|---:|---|
+| `close-held` | 34 in each locale | 29 (en-US) and 32 (ru-RU): two or more functions' brackets left open (`=SUM(MAX(1,2`) get a correction, not closed without a word; a sign before the function (`=-SUM(1`) is closed; an array constant left open in a function's brackets gets no correction |
+| `close-ru-held` | 11 (ru-RU) | 8: as in `close-held` |
+| `close-held-2` | 22 in each locale | 19 and 20: a space before the function (`= SUM(1`) is closed; an array constant after an operator (`=1+{1,2`) gets no correction; and a date format from a reference, a known difference |
+| `close-ru-held-2` | 7 (ru-RU) | 7 |
+| `close-held-3` | 15 in each locale | 11 and 10: a correction drops the spaces after `=` (`= (1+2` to `=(1+2)`); a formula begun by an array constant gets one for a later array left open (`={1,2}+{3`); and the cases below |
+| `close-ru-held-3` | 5 (ru-RU) | 2: as in `close-held-3` |
+
+The rule came from the answers of Point mode's sets, which pressed Return after the arrows (`point-caret-held-2` and `-3`: 62 formulas left open), and each set's misses corrected it; the third set's corrections were taken without a fourth. Five cases differ and are known (`test/entry-known.ts`): `=MAX(C1,C2` takes C2's date format in Excel, and the engine, without a book, none; `=NOW(` in ru-RU, where `NOW` is no Russian name; and three texts with two spaces (`=  SUM(1`), which macOS types as a period and a space (`NSAutomaticPeriodSubstitutionEnabled`), so they tell nothing of Excel. A case typed with Latin letters in the Russian layout (`=ABS(-(1)`, typed as `=ФИЫ(-(1)`) was taken out of `close-ru-held`.
+
 ### Typed entry: Copying plain text
 
 From [Typed entry, Copying plain text](entry.md#copying-plain-text).

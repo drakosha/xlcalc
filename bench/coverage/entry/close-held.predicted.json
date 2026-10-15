@@ -1,0 +1,439 @@
+{
+ "now": "2026-10-15",
+ "locales": {
+  "en-US": {
+   "first-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,2)"
+    }
+   },
+   "first-2": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,2)"
+    }
+   },
+   "first-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1)"
+    }
+   },
+   "first-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(MAX(1,2))"
+    }
+   },
+   "first-5": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,MAX(2))"
+    }
+   },
+   "first-6": {
+    "ok": true,
+    "input": {
+     "formula": "IF(C1>0,SUM(1))"
+    }
+   },
+   "first-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,)"
+    }
+   },
+   "first-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected )",
+    "at": 7
+   },
+   "first-9": {
+    "ok": true,
+    "input": {
+     "formula": "ROUND(1.5,)"
+    }
+   },
+   "first-10": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(\"(\",1)"
+    }
+   },
+   "first-11": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(\")\",1)"
+    }
+   },
+   "later-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 8,
+    "correction": "=1+SUM(2)"
+   },
+   "later-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 7,
+    "correction": "=-SUM(1)"
+   },
+   "later-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 9,
+    "correction": "=C1*SUM(2)"
+   },
+   "later-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 13,
+    "correction": "=SUM(1)+SUM(2)"
+   },
+   "later-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 13,
+    "correction": "=SUM(MAX(1),2)"
+   },
+   "later-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 10,
+    "correction": "=SUM(1)*(2)"
+   },
+   "group-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 5,
+    "correction": "=(1+2)"
+   },
+   "group-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 9,
+    "correction": "=SUM(1,(2))"
+   },
+   "group-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 7,
+    "correction": "=((1+2))"
+   },
+   "group-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 9,
+    "correction": "=(1+2)*(3)"
+   },
+   "string-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unterminated string",
+    "at": 1,
+    "correction": "=\"ab\""
+   },
+   "string-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unterminated string",
+    "at": 5,
+    "correction": "=SUM(\"ab\")"
+   },
+   "string-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unterminated string",
+    "at": 5,
+    "correction": "=LEN(\"ab\")"
+   },
+   "string-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unterminated string",
+    "at": 5,
+    "correction": "=\"a\"&\"b\""
+   },
+   "string-5": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(\"a\",2)"
+    }
+   },
+   "array-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected , ; or } in an array constant, found end of formula",
+    "at": 5,
+    "correction": "={1,2}"
+   },
+   "array-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected , ; or } in an array constant, found end of formula",
+    "at": 9,
+    "correction": "=SUM({1,2})"
+   },
+   "array-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM({1,2},3)"
+    }
+   },
+   "name-1": {
+    "ok": true,
+    "input": {
+     "formula": "FOO(1)"
+    }
+   },
+   "name-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 7
+   },
+   "name-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 8
+   },
+   "sign-1": {
+    "ok": true,
+    "input": {
+     "formula": "-SUM(1)"
+    }
+   },
+   "sign-2": {
+    "ok": true,
+    "input": {
+     "formula": "+SUM(1,2)"
+    }
+   }
+  },
+  "ru-RU": {
+   "first-1": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1.2)"
+    }
+   },
+   "first-2": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1.2)"
+    }
+   },
+   "first-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1)"
+    }
+   },
+   "first-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(MAX(1.2))"
+    }
+   },
+   "first-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь «МАКС»",
+    "at": 7
+   },
+   "first-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь «СУММ»",
+    "at": 9
+   },
+   "first-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1)"
+    }
+   },
+   "first-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «)»",
+    "at": 7
+   },
+   "first-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 8
+   },
+   "first-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь число",
+    "at": 8
+   },
+   "first-11": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь число",
+    "at": 8
+   },
+   "later-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 8
+   },
+   "later-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 7
+   },
+   "later-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 9
+   },
+   "later-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 13
+   },
+   "later-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь число",
+    "at": 11
+   },
+   "later-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 10
+   },
+   "group-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 5,
+    "correction": "=(1+2)"
+   },
+   "group-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь «(»",
+    "at": 7
+   },
+   "group-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 7,
+    "correction": "=((1+2))"
+   },
+   "group-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 9,
+    "correction": "=(1+2)*(3)"
+   },
+   "string-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Текст не закрыт кавычкой",
+    "at": 1,
+    "correction": "=\"ab\""
+   },
+   "string-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Текст не закрыт кавычкой",
+    "at": 5
+   },
+   "string-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Текст не закрыт кавычкой",
+    "at": 5
+   },
+   "string-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Текст не закрыт кавычкой",
+    "at": 5,
+    "correction": "=\"a\"&\"b\""
+   },
+   "string-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь число",
+    "at": 8
+   },
+   "array-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 5,
+    "correction": "={1,2}"
+   },
+   "array-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 9
+   },
+   "array-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь число",
+    "at": 10
+   },
+   "name-1": {
+    "ok": true,
+    "input": {
+     "formula": "FOO(1)"
+    }
+   },
+   "name-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 7
+   },
+   "name-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 8
+   },
+   "sign-1": {
+    "ok": true,
+    "input": {
+     "formula": "-SUM(1)"
+    }
+   },
+   "sign-2": {
+    "ok": true,
+    "input": {
+     "formula": "+SUM(1.2)"
+    }
+   }
+  }
+ }
+}

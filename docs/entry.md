@@ -13,8 +13,8 @@ console.log(parseEntry('15.3', { locale: 'ru-RU', now }).input) // → { value: 
 console.log(parseEntry('$1,234.50').input) // → { value: 1234.5, numberFormat: '"$"#,##0.00_);[Red]\\("$"#,##0.00\\)' }
 console.log(parseEntry('5', { cell: { numberFormat: '0%', style: 3 } }).input) // → { value: 0.05, numberFormat: '0%', style: 3 }
 console.log(parseEntry('=СУММ(A1:A3;1,5)', { locale: 'ru-RU' }).input) // → { formula: 'SUM(A1:A3,1.5)' }
-const bad = parseEntry('=СУММ(A1;', { locale: 'ru-RU' })
-console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Формула не закончена 9
+const bad = parseEntry('=СУММ(A1)+', { locale: 'ru-RU' })
+console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Формула не закончена 10
 ```
 
 ## In short
@@ -159,8 +159,8 @@ console.log(pasted.range, Object.entries(session.getCells('S', pasted.range)).ma
 // → A4:D5 [ "A4 '007", 'B4 =СУММ(A1;1.5)', 'C4 500%', 'D4 -2', 'A5 € 5' ] false
 const filled = session.fillCellText('S', 'D1:D2', '=A1-5')
 console.log(filled.changes.map((c) => `${c.cell} ${c.formula} ${c.value}`), filled.validation.severity) // → [ 'D2 A2-5 -2', 'D1 A1-5 -3' ] warning
-const refused = session.fillCellText('S', 'E1:E3', '=СУММ(A1;', { active: 'E2' })
-console.log(refused.code, refused.cell, refused.at, session.revision) // → syntax E2 9 2
+const refused = session.fillCellText('S', 'E1:E3', '=СУММ(A1)+', { active: 'E2' })
+console.log(refused.code, refused.cell, refused.at, session.revision) // → syntax E2 10 2
 ```
 
 ## API
@@ -218,7 +218,7 @@ A number typed into a column too narrow for it widens the column in Excel when n
 
 - Text that begins with `=` is a formula, typed in the locale's formula text (`=СУММ(A1;1,5)` in ru-RU, `=SUM(A1,1.5)` in en-US), translated by `toInvariant` and stored in its canonical form (`SUM(A1,1.5)`).
 - A `+` or a `-` that begins no number begins a formula as well: `-C1` is the formula `-C1`, `-qq` the formula `-qq` (`#NAME?`), `+C1` the formula `+C1`. Excel drops a `+` before a number there: `+1+2` is the formula `1+2`, `++5` the formula `+5`. `-5`, `+5`, `- 5` and `-5%` are numbers, and `+`, `-` and `=` alone are text.
-- An unknown function or name does not stop the entry: `=FOO(1)` is stored and computes `#NAME?`. A formula that does not parse is refused with its position: `=1+`, `==1`, `-1,5` in en-US (where `,` is no decimal separator), `=SUM(A1,1.5)` in ru-RU.
+- An unknown function or name does not stop the entry: `=FOO(1)` is stored and computes `#NAME?`. A formula that does not parse is refused with its position: `=1+`, `==1`, `-1,5` in en-US (where `,` is no decimal separator), `=SUM(A1,1.5)` in ru-RU. A formula left open at its end is closed, or refused with Excel's correction ([A formula left open](#a-formula-left-open)).
 - A formula takes the format of what it computes: `TODAY()` and `DATE()` the short date (14), `NOW()` the date and time (22), `TIME()` the time with AM or PM (18), `PMT()`, `PV()`, `FV()`, `IPMT()`, `PPMT()` and `NPV()` the locale's money with two decimals. The format passes through a sign, parentheses, `SUM`, `MAX`, `MIN`, `AVERAGE` and `ROUND`, a sum (`1+TODAY()`) and a difference less a plain number (`TODAY()-1`); `YEAR(TODAY())`, `EDATE(…)`, `IF(…, TODAY(), …)`, `TODAY()*1` and `NOW()-TODAY()` have none.
 
 ### Text
@@ -288,6 +288,30 @@ Text with a line break (`\n`, as Excel's editor takes Control+Option+Return on t
 
 Empty text clears the value or formula and keeps the format, style, meta, note and link: `{ numberFormat: '0.00', meta: 1 }`, or `null` when nothing is left.
 
+## A formula left open
+
+Excel closes what a typed formula leaves open when Return enters it, or asks first. `parseEntry` and a session's `setCellText` answer as it does, for text typed over a cell and edited in place:
+
+- A formula begun by a function, a sign or a space before it or not, where that function's bracket is the only one left open and no `)` was typed, is closed without a word: `=SUM(1,2` is `=SUM(1,2)`, `=-SUM(C1` is `=-SUM(C1)`, `=FOO(1` is `=FOO(1)` and computes `#NAME?`. A formula that still does not read once closed is refused as before (`=ROUND(1.5`, too few arguments).
+- Any other formula left open is refused, and Excel's window offers to correct it to the formula with its brackets, quotes and array braces closed and the spaces after `=` dropped. The refusal carries that text as `correction`, for a grid to ask the same question: `=(1+2` offers `=(1+2)`, `=1+SUM(2` offers `=1+SUM(2)`, `=SUM(MAX(1` offers `=SUM(MAX(1))`, `="ab` offers `="ab"`, `= (1+2` offers `=(1+2)`.
+- Excel offers no correction when the formula closed would not read, when it calls a name that is no function in the locale (`=SUM((1` in ru-RU, where `SUM` is no Russian name), and for an array constant left open inside a function's brackets or after an operator (`=SUM({1,2`, `=1+{1,2`); a formula begun by an array constant it does correct (`={1,2` offers `={1,2}`, `={1,2}+{3` offers `={1,2}+{3}`).
+- Text pasted from the clipboard is not closed: a formula that does not read is pasted as text.
+
+```js
+import { parseEntry, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+console.log(parseEntry('=СУММ(1;2', { locale: 'ru-RU' }).input) // → { formula: 'SUM(1,2)' }
+const asked = parseEntry('=(1+2')
+console.log(asked.ok, asked.code, asked.correction) // → false syntax =(1+2)
+console.log(parseEntry('=SUM({1,2').correction) // → undefined
+```
+
+### Checked against Excel
+
+Measured on the Mac's keyboard in Excel 16.113 and 16.114 for Mac, en-US and ru-RU, the Russian names typed in the Russian layout: three sets with Return after each text, 165 cases, each set predicted before Excel ran it. The engine gives Excel's answer on all of them but five known differences, none of them about brackets. Not measured: Excel for Windows, which offers the same windows on a screen the harness does not reach.
+
 ## A paste and Control+Return
 
 `session.pasteText(sheet, cell, text)` pastes text from the clipboard as Excel pastes it, in both Excels and both locales alike:
@@ -355,7 +379,7 @@ Once a reference is pointed the host moves it, as Excel does, by the keys alone;
 - Typing after a reference ends it: the next arrow, where `refAt` says `insert`, points from the edited cell again (`=D3+` and Right is `=D3+D3`).
 - F2 turns Enter mode to Edit mode, where arrows and Home move the caret, and F2 again back to pointing, where the rule above holds at the caret.
 
-Return enters the formula as typed: Excel closes the brackets left open (`=SUM(D3` is `=SUM(D3)`), offers its corrections otherwise.
+Return enters the formula as typed, closing what it leaves open as [A formula left open](#a-formula-left-open) says (`=SUM(D3` is `=SUM(D3)`).
 
 ### Checked against Excel
 
