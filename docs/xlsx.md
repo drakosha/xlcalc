@@ -11,6 +11,72 @@ const result = compute(book)
 const { data } = await writeXlsx({ book, result })
 ```
 
+## In short
+
+`readXlsx(data)` from `xlcalc/xlsx` reads a file's bytes (a `Uint8Array`, a Node `Buffer` or an `ArrayBuffer`: `await readFile(path)`, `await file.arrayBuffer()`) into a book. Beside the book it gives `cached`, the values Excel stored for formulas and spilled cells in the shape of a result, and `issues`, everything the book cannot hold, such as rich text, with the sheet and cells. `compute(read.book, { cached: read.cached })` and `createSession` with the same option open a book with a circular reference as Excel opens the file ([Circular references](cycles.md)); nothing else is taken from `cached`. `writeXlsx({ book, result })` writes a book with the values of its formulas: `result` is `compute`'s, a session's (`session.getSnapshot()` gives the book and its result in one call) or the `cached` of a file read. Formulas are written as dynamic array formulas with their spills, and `mode: 'values'` writes values only.
+
+```js
+import { compute, createSession } from 'xlcalc'
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+const book = { sheets: [{ name: 'Sales', cells: { A1: { value: 120 }, A2: { value: 80 }, B1: { formula: 'SUM(A1:A2)' }, C1: { formula: 'SEQUENCE(2)' } } }] }
+const { data } = await writeXlsx({ book, result: compute(book) })
+
+const read = await readXlsx(data)
+console.log(read.book.sheets[0].cells.B1) // → { formula: 'SUM(A1:A2)' }
+console.log(read.cached.sheets[0].cells.B1, read.cached.sheets[0].cells.C2) // → { value: 200 } { value: 2, spillOf: 'C1' }
+console.log(read.issues) // → []
+
+const session = createSession(read.book)
+session.setCells([{ sheet: 'Sales', cell: 'A1', input: { value: 150 } }])
+const saved = await readXlsx((await writeXlsx(session.getSnapshot())).data)
+console.log(saved.cached.sheets[0].cells.B1) // → { value: 230 }
+
+const values = await readXlsx((await writeXlsx({ book, result: compute(book) }, { mode: 'values' })).data)
+console.log(values.book.sheets[0].cells.C2) // → { value: 2 }
+console.log((await writeXlsx({ book })).issues.map((i) => i.code)) // → [ 'noCachedValues' ]
+```
+
+`values` says which values of formulas the file stores. With a result it is `'require'`: every formula and every cell of an array has its value in the result, else the result is not the book's and `writeXlsx` throws `InputError`. `'preserve'` writes the values the result has and reports the formulas without one (`noCachedValues`). Without a result it is `'omit'`: the file stores no values, reported as `noCachedValues` when the book has formulas, but not when `values: 'omit'` asks for it. A file with formulas asks Excel to compute them when it opens it, whichever values it stores. A formula a circular reference stops stores its `held` value where the result gives none (with `omit` too), as Excel opens the file holding it. A session is not a snapshot (an asynchronous one lives in a thread): pass `session.getSnapshot()`, awaited for an asynchronous session. Nor is a result alone, which has no book: `writeXlsx(compute(book))` throws `InputError` with `pass { book, result }`.
+
+Both functions return promises: the archive is inflated and deflated by the platform's streams. Hidden and very hidden sheets (`hidden: true` and `hidden: 'very'`; the writer makes the first visible sheet the active one), styles, number formats (built-in ones by their number), widths, heights, hidden rows and columns, outline levels, merged areas, notes, hyperlinks, frozen panes, conditional formats (Excel 2010's rules too), rules of data validation, names, tables, a sheet's filter mode, the date system, iterative calculation and the book's locale go both ways. A cell without a style or a format of its own is written with its row's, else its column's, as Excel writes a value typed there, so a date in a column of dates shows as a date in Excel, and it reads back without one. A cell the file stores with a look alone, as Excel stores each cell of a formatted area, is read into its sheet's `looks` ([Looks of many cells](grid.md#looks-of-many-cells)), and the cells of `looks` are written back as such cells. A group's collapsed mark is written as Excel keeps and saves it: on the summary row of a group whose rows are all hidden, rows hidden through `setLayout` too, and not on one whose rows show ([docs/outline.md](outline.md#in-xlsx-files)).
+
+```js
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+const book = {
+  sheets: [{
+    name: 'Sales',
+    cells: {
+      A1: { value: 'Region', note: { author: 'Ann', text: 'From the CRM' } },
+      B1: { value: 'Report', link: { url: 'https://example.com/report', tooltip: 'Open the report' } },
+    },
+    frozen: { rows: 1 },
+  }],
+}
+const back = (await readXlsx((await writeXlsx({ book })).data)).book.sheets[0]
+console.log(back.cells.A1.note, back.frozen) // → { author: 'Ann', text: 'From the CRM' } { rows: 1 }
+```
+
+A thread of comments, as Excel 365 makes them, is read as a note: its first author, and every comment's text with the replies' authors. [docs/xlsx.md](xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
+
+An issue's `message` is for a person, in English by default. `opts.locale` of either function writes it in another language: the tag of a loaded locale or a locale object, as the other functions take a locale. The code, sheet, cells and name of an issue stay as they are, so a program reads them alike in every language.
+
+```js
+import { registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+registerLocale(ruRU)
+const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }] }
+const { data, issues } = await writeXlsx({ book }, { locale: 'ru-RU' })
+console.log(issues[0].code, issues[0].message) // → noCachedValues Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла
+console.log((await writeXlsx({ book })).issues[0].message) // → no result was given: the file stores no values of formulas, and Excel computes them when it opens the file
+console.log((await readXlsx(data, { locale: ruRU })).book.locale) // → ru-RU
+```
+
+Pass the locale the person reading the messages chose. A file does not say it: Excel keeps no language in xlsx, and the locale `xlcalc.locale` that the writer stores, which `readXlsx` gives as `book.locale`, is the book's, the rules it computes by, which a person working in another language may open too. So neither function takes the language from the book.
+
 ## Reading
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` (a Node `Buffer` is one, as `readFile` gives it), another view of bytes or an `ArrayBuffer` (`await file.arrayBuffer()` in a browser), and resolves to three things.
@@ -77,7 +143,7 @@ Excel for Mac saves some built-in formats otherwise than by their number: the mo
 
 ### Cells of a look alone
 
-Excel stores each cell of a formatted area, a row formatted to column XFD among them, as a cell with a cell format and nothing else (`<c r="B2" s="3"/>`). Such a cell does not become an entry of `cells`: the reader puts its look into its sheet's `looks` ([Looks of many cells](../README.md#looks-of-many-cells)) as it reads the row, by runs of columns of one look, and rows with the same runs share them. A cell with a value or a formula stays an entry with its own look, as before.
+Excel stores each cell of a formatted area, a row formatted to column XFD among them, as a cell with a cell format and nothing else (`<c r="B2" s="3"/>`). Such a cell does not become an entry of `cells`: the reader puts its look into its sheet's `looks` ([Looks of many cells](grid.md#looks-of-many-cells)) as it reads the row, by runs of columns of one look, and rows with the same runs share them. A cell with a value or a formula stays an entry with its own look, as before.
 
 ```js
 // <row r="20"><c r="A20" s="1"/><c r="B20" s="1"/> … <c r="XFD20" s="1"/></row>, and so rows 21 and 22
@@ -127,9 +193,9 @@ The reader takes `workbookView.activeTab` from the first workbook view and the f
 
 Views change neither values nor `inputHash`. `getLayout()`, `getBook()` and snapshots retain them in every kind of session. Renaming the active sheet updates its name; deleting or hiding it chooses the first visible sheet. The host keeps live selection and scrolling itself and overlays `activeSheet` and `view` on the book before saving. They have no `setLayout` edit, so moving around a grid creates no undo steps.
 
-#### How it was checked
+#### How it is tested
 
-`test/xlsx-view.test.ts` reads explicit OOXML fields, then writes, reads, writes and reads them again. It checks the first visible sheet default, input validation, both hashes in both execution modes, all three kinds of session, and active-sheet changes through rename, hide, delete and undo. No default XML behavior was changed for books without saved view fields.
+By round trips through the writer and the reader, in every kind of session; not measured in Excel.
 
 ### Filters
 
@@ -326,16 +392,9 @@ rows: { 6: { style: 0, numberFormat: 'General' } }
 
 Excel, formatting a line across a formatted one, merges their formats field by field: a row made bold across a filled column of dates gives the cells where they cross bold, filled and dates. A book's style is one whole, and `setLayout` sets a line's style alone: where a row with a style crosses a column with one, the book shows the row's. `patchCells` formats lines as Excel does and gives those cells a style of their own ([Editing a grid](edits.md#whole-rows-and-columns)).
 
-### How it was checked
+### Checked against Excel
 
-`npx tsx bench/coverage/run.ts lines <set>` writes each book of `bench/coverage/lines/<set>.ts` with `writeXlsx`; Excel for Mac opens it, takes the case's steps through its object model (a number format, bold, italic or a fill set on a column, a row or a cell, a value typed into a cell), reads each listed cell's text, number format and the fill, font colour, bold and italic of its display format, and saves the book. `npx tsx bench/windows/run.ts lines <set>` does the same in Excel for Windows through COM (`NumberFormat`, `Font`, `Interior`, `Value2`, `Range.Text`, `DisplayFormat`). A bare case sends the file without the cells the writer writes where lines cross, as other writers leave it. `test/lines-excel.test.ts` checks, without Excel, that the engine shows what Excel showed after each case, on the book written or on the one the reader reads from a bare file, that it shows the same on the book read from the file Excel saved, and that a book written and saved by Excel reads back as written.
-
-| set | cases | cells | what |
-|---|---|---|---|
-| `files` | 9 | 586 | formatted columns and rows over numbers, dates, text, booleans, errors, formulas and a spill without a format of their own, cells with their own style or General, empty cells with a style; rows with only a style or a format crossing columns with the other, written and bare, values typed there; Excel formatting a column, a row and lines across each other, values typed into them |
-| `held` | 6 | 501 | spans of rows and columns, a row with only a style crossing columns with a format and a style, dates, a spill across formatted columns, cells with their own General, plain style or italic, written and bare, values typed where lines cross; Excel formatting a row and then columns across it |
-
-The engine's answers were committed before each run. The first run of `files`, on the writer that did not write the cells where lines cross, held in 314 of 320 cells: four were empty or typed cells where a row with only a style or a format crosses a column with the other, which both Excels showed by the row's whole cell format, and two were the cells where Excel formatted a filled column across a bold row, which it gave both. The writer then wrote those cells and the reader read a file without them as Excel shows it, and the second run of `files` held in 584 of 586 cells, the two being those Excel formatted; `held`, made after it, in 500 of 501, the other being the same merge. Excel for Windows showed what Excel for Mac showed in every cell of both runs, opened every file without the repair window, and the engine shows what Excel showed on every book read from a file Excel saved. In the fit set `autofit`, whose cases `colformat` hold a number in a formatted column, both Excels show the column's format and fit the column for it, as the engine does.
+Measured in Excel for Mac and for Windows: Excel opened the written books, formatted rows, columns and cells through its object model and showed what the engine shows.
 
 ## Conditional formats
 
@@ -391,21 +450,9 @@ Excel takes the part of an address after `#` as its place: a file holding `https
 
 A note and a hyperlink go with their cell: a move takes them along, a copy copies them, a deleted cell and a cell a move or a copy lands on lose them. Inserted rows and columns get none. A hyperlink's place is kept as written when its sheet is renamed or deleted, as Excel keeps it. Rows inserted above the split of frozen panes push it down, and deleted ones draw it up, but one row stays frozen at least; the same goes for columns. [docs/structure.md](structure.md) has the rules.
 
-### How it was checked
+### Checked against Excel
 
-`npx tsx bench/coverage/run.ts parts <set>` writes each book of `bench/coverage/parts/<set>.ts` with `writeXlsx`. Excel for Mac opens it, makes what the case makes through its object model (`add comment`, `make new hyperlink`, `freeze panes`), applies the case's structure operation, reads every sheet's notes, hyperlinks and panes, and saves the book. `npx tsx bench/windows/run.ts parts <set>` does the same in Excel for Windows through COM (`AddComment`, `Hyperlinks.Add`, `FreezePanes`). `test/sheet-parts-excel.test.ts` and `test/sheet-parts-win.test.ts` check, without Excel, that Excel read what the engine holds after each case and that the reader reads every file Excel saved as Excel read it.
-
-| set | cases | what |
-|---|---|---|
-| `files` | 10 | books written with every kind of note, link and frozen pane, 1,100 notes on one sheet, a long tooltip and a long address, books written after a structure operation in the engine; notes, links and frozen panes Excel made itself |
-| `struct-held` | 26 | rows and columns inserted and deleted around frozen panes, notes and links; ranges moved and copied with them and onto them; sheets renamed and deleted under links to them |
-| `frozen-held` | 9 | frozen rows and columns deleted past the split and inserted several at once |
-| `threads` | 2 | threads of comments put into a file as Excel 365 writes them, with a row inserted above them |
-| `refs-held` | 5 | a note's cell as another writer may spell it, put into the file by hand: `A01`, `A1:A1`, `a1`, `$A$1`, `A1:B2` |
-
-Both Excels opened every book without the repair window but the file of `refs-held` with a note on `A1:B2`, which neither opens. Excel for Mac refused the first version of the book with a tooltip of 300 characters; since then the writer cuts tooltips to 255, and both open it. The engine's answers to `struct-held`, `frozen-held` and `threads` were committed before Excel ran them (`bench/coverage/parts/*.predicted.json`), and so were those to `files`, which held but for the address with `#` and the long tooltip: `struct-held` held in 24 of 26 cases, the two others showing that deleting every frozen row or column leaves one frozen; `frozen-held`, made after that, held in 9 of 9; `threads` in 1 of 2, the other being the inserted row below; `refs-held` in 1 of 5, as the engine kept a note on `A01` and `A1:A1` under those keys and left out one on `$A$1` and one on `A1:B2` without a word, where both Excels showed the first three on A1 and saved them so. Excel for Windows read what Excel for Mac read in every case, but for the author of the notes each made itself, its own user.
-
-Neither Excel takes threads of comments into its object model: Excel 2024 for Windows refuses to make one through COM, Excel for Mac's AppleScript has none, and both show the placeholder note of a thread they open. After inserting a row both moved the placeholder note and left the thread at its cell, which is why the reader follows the placeholder. A file Excel 365 made with threads was not available, so the threads were put into the file by hand (`bench/coverage/parts/threaded.ts`).
+Measured in Excel for Mac and for Windows: both opened every written book with notes, hyperlinks and frozen panes (but one with a note over a range, which neither opens) and saved what the engine holds.
 
 ## Data validation and outlines
 
@@ -433,9 +480,9 @@ The writer writes every rule in `<dataValidations>`, references to other sheets 
 
 A row or column's `outlineLevel` and `collapsed` are `<row>`'s and `<col>`'s attributes, the summary settings `<sheetPr><outlinePr summaryBelow summaryRight>`. The writer writes the deepest levels into `<sheetFormatPr outlineLevelRow outlineLevelCol>`, where Excel reserves room for the outline's buttons, and the reader takes them from the lines. The writer writes `collapsed` as Excel keeps and saves it, on the summary line of a group whose lines are all hidden, whatever marks the book holds; the reader reads a file's marks as they are ([docs/outline.md](outline.md#in-xlsx-files)). Automatic outline styles (`applyStyles`) are reported.
 
-### How it was checked
+### Checked against Excel
 
-The valid sets of `bench/coverage/valid/` were written by `writeXlsx` and opened by Excel for Mac and for Windows: every book loaded, and Excel read the rules, each cell's check and the outlines the engine holds but for texts cut to Excel's limits. Rules and outlines Excel made itself, and the books Excel saved after structure operations, read back as Excel read them ([docs/validation.md](validation.md#how-it-was-checked)).
+Measured as [Data validation](validation.md) says: both Excels opened every written book and read the rules, each cell's check and the outlines the engine holds.
 
 ## Links to other workbooks
 
@@ -494,17 +541,9 @@ A formula or a name over a link is written in the file's spelling, the sheet in 
 
 Excel itself leaves out, when it saves, the values of the other book's cells no formula reads and a link no formula refers to, numbering the links after it anew in the formulas.
 
-### How it was checked
+### Checked against Excel
 
-`npx tsx bench/coverage/run.ts links <set>` sends each case of `bench/coverage/links/<set>.ts` to Excel for Mac, which opens the file without updating its links (as a person who answers "Don't Update" does), reads the case's cells, takes its edits, computes the book fully, reads the cells again and saves the book; `npx tsx bench/windows/run.ts links <set>` does the same in Excel for Windows. The sets `first`, `basics-held`, `edits-held`, `refresh-held` and `functions-held` are files put together by hand around what `writeXlsx` writes, so they do not depend on the writer; the set `written` is files `writeXlsx` writes from a book with `externalBooks`.
-
-| set | cases | what |
-|---|---|---|
-| `written` | 7 | the cases of `basics-held` but one (a link with every kind of stored value, its names and this book's names over it, lookups, a dynamic array, fill downs and a copy that mark the link; marked data and a sheet without data; two links; the forms of a target); cells stored empty and empty text, with the mark and without; #SPILL! and #CALC! stored; a link without sheets and with an empty target between two others |
-
-The values of `written` were predicted and committed before Excel ran it. In the first run Excel for Mac opened six of the seven files and showed every predicted value, the same as for the files made by hand; it repaired the file whose link stored #SPILL! and #CALC! as their text. Written as `#VALUE!` with their rich values, the file opened and showed `#VALUE!` for both, the alternative the case gave, and Excel saved them as plain `#VALUE!`; the writer now writes that. In the last run both Excels opened all seven files and showed 72 of the 76 predicted values, the four others as their alternatives. Each case of `basics-held` read and computed as its file made by hand, before the edits and after, on both platforms, with the same formulas and shown text. Excel for Windows answered as Excel for Mac in every read.
-
-`test/xlsx-links-excel.test.ts` checks this without Excel, and that the reader reads every link of the 48 files both Excels saved in the six sets: the targets each wrote (Excel for Mac keeps a relative target, or writes the absolute path it found beside the relative one in `alternateUrls`; Excel for Windows writes an absolute path without the drive), the marks and the stored values Excel kept, and no link reported as one the model does not have. Every book of `written` reads back from its file with the same links, names, formulas by their canonical text and input hash. `test/xlsx-links.test.ts` reads links made by hand in every form above and writes the parts as Excel writes them.
+Measured in Excel for Mac and for Windows, which opened the files without updating their links.
 
 ## Speed
 
@@ -531,40 +570,9 @@ A read book of 800,000 values holds about 100 MB of heap; the book of the wide s
 
 Reading uses the parser and copy and paste of the structure operations. It does not load the engine's functions or evaluator, and a minified browser bundle of the subpath is about 175 KB. The issues' messages are kept as a key and parameters (`src/xlsx/issues.ts`) and written in a locale when listed: a locale's text is in its file beside its other messages (`src/locales/ru-RU.ts`), the English one in the subpath (`src/xlsx/messages.ts`), so that `compute`, the root and `xlcalc/text` do not carry it.
 
-## How it was checked
+## Checked against Excel
 
-`npx tsx bench/coverage/run.ts xlsx <step>` sends files to Excel 16.113 for Mac through AppleScript. Excel opens each file, computes it fully and saves it under another name. The repair window "We found a problem with some content" would mean a broken file, and none appeared. The saved files are in `test/excel/xlsx/`, and `test/xlsx-excel.test.ts` checks them without Excel.
-
-| step | what | result |
-|---|---|---|
-| `roundtrip` | 181 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, the books of the structure, spill and table sets (names of any formula, `@`, references across sheets, array formulas of the old kind and tables with structured references among them), hidden rows and columns with their sizes, lines of size 0, filtered sheets with and without a table, the 1904 date system, iterative calculation and the built-in formats by number in en-US and ru-RU | every file opens, every book reads back as written, and Excel's values equal the engine's |
-| `filters` | 8 files with a filter in each form a file holds it, `SUBTOTAL` and `AGGREGATE` over the rows it hid | read with the filter mode Excel took, every formula computes the value Excel stored |
-| `saved` | 97 books of the case sets, 29,089 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
-| `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` |
-| `colors` | 233 fills: theme colours with Excel's tints and the legacy palette | 212 equal to Excel's colour, the rest within 3 of 255 per channel |
-| `formats` | the built-in number formats 1 to 58 | the codes Excel en-US shows equal the engine's for 1 to 49 and the reader's for 50 to 58 |
-
-Without Excel, `test/xlsx-issue-locale.test.ts` reads a file with 28 issues (26 messages of the catalog) and the 15 files Excel saved that have issues in en-US and in ru-RU, and writes a book with 8 losses in both: each Russian message is the catalog's for the issue, the codes, sheets, cells and names equal the English read's, and without the option the issues are the English ones. `test/messages-catalog.test.ts` checks that every message has its Russian text, which shows each parameter the English one shows. `test/xlsx-snapshot.test.ts` checks the three kinds of `values`, the refusals, `cached` in the shape of a result and the files written again from it, a file Excel saved among them, and `test/session-snapshot.test.ts` writes the snapshot of a synchronous session, one in the same thread and one in a thread, and reads it back with the session's values.
-
-The 934 files of `test/excel/` were read by the reader of looks and by the one before it (`a0fa646`): every book, its looks as entries, every result of stored values and every issue were the same, and so were the files written again from them, part for part. The book of the wide shape read the same, and its windows, cells and used ranges in a session and the file written of it were those of the book of entries. `test/looks.test.ts` writes books with looks and the same books with entries from every kind of session: the same parts, and the looks read back as the session holds them.
-
-The round trip compares books by what they mean: a style by its fields, a formula by its canonical text, spans of rows and columns line by line, a line of size 0 as hidden, a code that every locale shows as a built-in format as that format's number.
-
-The 98 files of the workbook sets (`bench/coverage/workbook/`: hidden rows and columns, autofilters with and without criteria and the filter mark, the 1904 date system, iterative calculation), which Excel opened and computed step by step, read into the books the engine was checked with against Excel's answers, and compute the same values (`test/xlsx-workbook.test.ts`).
-
-The answers to the filter files and to nine books of the round trip were predicted and committed before Excel ran them (`bench/coverage/xlsx/predicted.json`): the filter mode of 8 files and 118 values, all as Excel gave them. The books were predicted to come back without differences, and three did not: Excel saved the built-in formats of two by codes and escaped the literal characters of the date formats of the third.
-
-### Hidden sheets
-
-`npx tsx bench/coverage/run.ts hidden <set>` writes each book of `bench/coverage/hidden/<set>.ts` with `writeXlsx`; Excel for Mac opens it, notes the active sheet, hides and shows sheets through its object model (`visible`), applies a sheet operation (rename, delete, insert, move), reads each sheet's visibility, the active sheet and the values of formulas over the sheets, and saves the book. `npx tsx bench/windows/run.ts hidden <set>` does the same in Excel for Windows (`Worksheet.Visible`). `test/hidden-sheets-excel.test.ts` checks, without Excel, that Excel read what the engine holds after each case and that the reader reads every file Excel saved with the visibility Excel read.
-
-| set | cases | what |
-|---|---|---|
-| `sheets-held` | 29 | books written with hidden and very hidden sheets, the first ones too; sheets hidden, very hidden and shown by Excel; the last visible sheet hidden and deleted; hidden sheets renamed, deleted and moved, sheets inserted and moved beside them; two files changed by hand, one whose active tab is a hidden sheet and one whose every sheet is hidden |
-| `sheets-held-2` | 11 | sheets moved before two hidden sheets in a row, a very hidden one and a hidden last one, a hidden sheet moved, sheets inserted before hidden ones |
-| `sheets-held-3` | 10 | ends of references across sheets moved inward, outward and past each other, sheets moved past hidden ones at the start and the end |
-
-Both Excels opened every file the writer wrote without the repair window, read each sheet's state as written, showed the first visible sheet, and computed a reference across sheets through a hidden one and `SUBTOTAL` and `AGGREGATE` over a hidden sheet's hidden row as over visible ones. A file whose active tab names a hidden sheet opened with that sheet shown, and one whose every sheet is hidden was repaired. The engine's answers were committed before Excel ran each set (`bench/coverage/hidden/<set>.predicted.json`): `sheets-held` held in 25 of 29 cases on both Excels, `sheets-held-2`, made after it, in 6 of 11, and `sheets-held-3`, made after that, in 10 of 10. The misses became the rules of [docs/structure.md](structure.md#hidden-sheets): a very hidden sheet is neither deleted nor moved, a moved sheet is placed by the visible sheets, and an end of a reference across sheets that moves stays its end until it passes the other. Both Excels answered alike in every case; Excel for Mac refused some deletes without an error, leaving the sheet.
+Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote without the repair window, computed it and saved it, and the reader read the files Excel saved back as Excel read them.
 
 ## Known differences
 

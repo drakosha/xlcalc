@@ -13,6 +13,7 @@ import type { TableItem } from '../syntax/table.js'
 
 export type { TableItem }
 
+/** A locale (`ruRU` of `xlcalc/locales/ru-RU`): its formula text and, for a book that computes in it, its rules of computation and messages. */
 export interface Locale {
   /** BCP 47 tag: `en-US`, `ru-RU`. A locale without messages of its own takes those of the loaded locale of its tag (English for another tag). */
   readonly tag: string

@@ -11,6 +11,28 @@ names: [
 ]
 ```
 
+## In short
+
+```js
+import { compute } from 'xlcalc'
+
+const result = compute({
+  sheets: [
+    { name: 'Data', cells: { A1: { value: 'tea' }, B1: { value: 3 }, A2: { value: 'coffee' }, B2: { value: 5 } } },
+    { name: 'Report', cells: { A1: { formula: 'SUMIF(items,"tea",amounts)' } } },
+  ],
+  names: [
+    { name: 'items', ref: "'Data'!$A:$A" },
+    { name: 'amounts', ref: "'Data'!$B:$B" },
+  ],
+})
+console.log(result.sheets[1].cells.A1.value) // → 3
+```
+
+A name follows Excel's rules for names, in letters of any script (`Ставка`, `НДС_2025`, `Став?ка`), and is compared in any case: `ставка` is the name `Ставка`, and a formula's text shows it as it is defined (`ставка*2` is `Ставка*2`). A name with `scope: 'Sheet'` is visible on that sheet only and shadows a global name. Invalid names are reported in the result's `diagnostics` (`kind: 'name'`), `dropped` telling a name left out from one kept with an error.
+
+A name can hold any formula: a constant (`0.2`), a calculation (`'Data'!$B$1*2`), a reference from `INDEX`, a union. A reference without `$` moves with the cell that uses the name. [docs/names.md](names.md) has the rules.
+
 ## A name
 
 A name follows Excel's rules for names, which a table's name follows too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, at most 255 characters. It must not read as something else in a formula: a cell address of the sheet (`Q1`, `AB12`, `XFD1`), an R1C1 reference (`R2C3`, and `R` or `C` alone), TRUE or FALSE. A cell's shape past the sheet is a name, `XFE1` and `A0`, and a formula reads it as one. Cell addresses and R1C1 are in Latin letters, so the same shape in Cyrillic is a name. In a ru-RU book its booleans `ИСТИНА` and `ЛОЖЬ` are no names either, in any case: Excel ru-RU refuses them and does not open a file that holds such a name, while Excel en-US takes them.
@@ -98,29 +120,9 @@ A function that takes only a reference (SUMIF's range) and gets an array through
 
 Operations rewrite the references in names' formulas as in cells' formulas: a union's parts each on its own, a reference across sheets by its ends. A reference without `$` is an offset, so inserted and deleted rows and columns leave it as it is (`'S'!XFD1` stays when row 1 is deleted).
 
-## How it was checked
+## Checked against Excel
 
-The sets `spill/names` (16 books) and `struct/cube` (20 operations) were computed in Excel. The 24 cells of the set `spill/names-held` (10 books) were predicted before Excel computed them, and all came out as predicted.
-
-The rules of a name were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU, through the table sets ([Tables](tables.md)): names in formulas of the file and typed, names added through Excel's object model (`Names.Add`), which refuses a name Excel does not take, tables renamed and books Excel loads or not. Six sets were predicted before Excel computed them:
-
-| set | cases | as predicted (Mac) | misses |
-|---|---:|---:|---|
-| `names-held` | 17 | 13 | a name typed in another case shown as defined (2, fixed); tables renamed to names Excel does not take (2, known) |
-| `names-ru-held` (ru-RU) | 8 | 6 | the name's case (fixed); a file with the name `ИСТИНА`, which Excel ru-RU does not open (fixed) |
-| `names-more-held` | 12 | 7 | `?` and `\` inside a name, added and in a file (4, fixed); a 255-letter name in a typed formula, cut by AppleScript (known, the Mac only) |
-| `names-ru-more-held` (ru-RU) | 10 | 5 | `ИСТИНА` and `ЛОЖЬ` refused and TRUE and FALSE taken (TRUE known), `?` and `\` (fixed), files with `ИСТИНА`, `истина`, `ЛОЖЬ` not opened (3, fixed); one more the predictions held no text for: the word `ИСТИНА` shown as `'ИСТИНА'` (fixed) |
-| `names-tables-held` | 4 | 3 | a table renamed `?Продажи` (known) |
-| `names-ru-tables-held` (ru-RU) | 3 | 0 | tables renamed `ИСТИНА`, `ложь`, `TRUE`, where the two Excels part (known) |
-| `paste-names-held` (`add-cell-shapes`) | 1 | 0 | `XFE1` and `A0` taken and read by a formula (fixed); `R1`, `C5`, `XFD1`, `r1` and `R1C1` refused, as predicted |
-| `name-case-held`, `name-case-sheets-held` | 11 and 10 | 8 and 6 (Windows: 6 and 8; the rule the first set gave predicted the second) | the dotless `ı` is no `I`, the long `ſ` no `S` in Excel for Windows, which the engine follows (fixed; Excel for Mac takes `ſ` for `S`, known); `ß` is `SS` and `ﬁ` is `FI` in names and tables, as predicted; sheets compare letter by letter in both Excels, `ß` beside `SS` (known) |
-| `name-case-ru-held` (ru-RU) | 10 | 8 (Windows: 10) | the long `ſ` taken for `S` by Excel for Mac (known); the rest as in en-US |
-
-In all, 34 of the 54 cases before `name-case-held` came out as predicted on the Mac and 35 on Windows, which agreed with the Mac on every case but the 255-letter name and the tables of `names-ru-tables-held`. The two Excels agree on `add-cell-shapes`. Of the 31 cases of the `name-case` sets, 22 came out as predicted on the Mac and 24 on Windows; the two Excels part on the long `ſ` alone.
-
-The words of a formula, TRUE and FALSE, function names and LET's names in the long s, the sharp s, the ligature `ﬁ` and the dotless and dotted i, were measured in a file and typed (the case set `name-case-held` and the entry sets `name-case-held` and `name-case-values-held`): Excel for Windows reads them letter by letter (`falſe` is a name, `gauß(1)` no `GAUSS`, `LET(ß,1,SS)` `#NAME?`), Excel for Mac reads `ſ` as `s`.
-
-LET's names were measured as text typed into cells (the entry sets `names-held`, `let-grid-held` and `let-cells-held`, [Typed entry](entry.md)), predicted before Excel ran them: of the cells' words the engine refused all, and Excel takes every one but those that read as R1C1's row or column too (`R2`, `C100`, `RC5`), on the Mac and Windows alike; `?` and `\` inside, first and after a cell's shape (`A1?x`) are names, as predicted. The engine takes them so now (fixed).
+Measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU, through the spill, structure, table and entry sets, the later ones predicted before Excel ran them. Where the two Excels part (the long `ſ` in a name), the engine follows Excel for Windows.
 
 ## Known differences
 

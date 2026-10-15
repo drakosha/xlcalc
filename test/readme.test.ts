@@ -1,11 +1,12 @@
 /**
- * The README's code runs: every ```js block runs as an ES module that imports the built package by name
+ * The README's code runs, and the examples of docs/ that import the package and say what they print: every ```js block runs as an ES module that imports the built package by name
  * (`npm test` builds first), and each `// → text` comment must equal what the corresponding console.log
  * printed, in order; comment lines starting with `//   ` right after it continue a multi-line output.
- * The README's list of functions is the whitelist.
+ * The list of functions in docs/functions.md is the whitelist.
  */
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { FUNCTION_NAMES } from '../src/index.js'
@@ -13,6 +14,12 @@ import { FUNCTION_NAMES } from '../src/index.js'
 const root = fileURLToPath(new URL('..', import.meta.url))
 const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
 const blocks = [...readme.matchAll(/```js\n([\s\S]*?)```/g)].map((m) => m[1])
+/** The examples of docs/ that run: ```js blocks that import the package and print what their `// →` comments say. */
+const docBlocks = readdirSync(join(root, 'docs'))
+  .filter((f) => f.endsWith('.md'))
+  .sort()
+  .flatMap((f) => [...readFileSync(join(root, 'docs', f), 'utf8').matchAll(/```js\n([\s\S]*?)```/g)].map((m): [string, string] => [f, m[1]]))
+  .filter(([, b]) => /from 'xlcalc/.test(b) && b.includes('// → ') && b.includes('console.log('))
 
 function expected(code: string): string[] {
   const out: string[] = []
@@ -38,11 +45,18 @@ describe('README', () => {
     for (const b of blocks) expect(expected(b).length, b.slice(0, 80)).toBeGreaterThan(0)
   })
 
-  it('lists the whitelist by category in Functions', () => {
-    const section = readme.slice(readme.indexOf('## Functions\n'), readme.indexOf('\nStatus:'))
+  it('lists the whitelist by category in docs/functions.md', () => {
+    const functions = readFileSync(join(root, 'docs/functions.md'), 'utf8')
+    const section = functions.slice(0, functions.indexOf('\nStatus:'))
     const listed = [...section.matchAll(/^- [^:]+: (.+)$/gm)].flatMap((m) => [...m[1].matchAll(/`([^`]+)`/g)].map((x) => x[1]))
     expect([...listed].sort()).toEqual(FUNCTION_NAMES)
   })
+
+  for (const [i, [file, code]] of docBlocks.entries()) {
+    it(`docs/${file} block ${i + 1}: ${code.split('\n').find((l) => l.startsWith('import'))}`, () => {
+      expect(run(code)).toEqual(expected(code))
+    }, 30_000)
+  }
 
   for (const [i, code] of blocks.entries()) {
     it(`block ${i + 1}: ${code.split('\n').find((l) => l.startsWith('import'))}`, () => {

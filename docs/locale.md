@@ -2,6 +2,72 @@
 
 Excel depends on its language and regional settings in two ways. It shows and reads formulas in the user's language, and it computes some values by regional rules: text read as a number or a date, numbers and booleans turned into text, format codes, currency. A book here stores formulas in the invariant form of xlsx files (English function names, `,` between arguments, `.` as the decimal separator) whatever its locale. en-US and ru-RU are supported for both formula text and computation.
 
+## In short
+
+Books store formulas the way xlsx files do: English function names, `,` between arguments, `.` as the decimal separator. A locale changes how formulas are typed and shown, as Excel shows them in another language, and how a book computes, as Excel computes with those regional settings. en-US is built in. ru-RU (Excel with the Russian interface) is a module of its own, which a bundle carries only when it is imported: `registerLocale` loads it, once, for books in ru-RU and for its tag.
+
+```js
+import { LOCALES, registerLocale, toInvariant, toLocal, validateLocalFormula } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+console.log(toLocal('IF(B1>0.5,SUM({1,2;3,4}),#N/A)', ruRU).formula) // → ЕСЛИ(B1>0,5;СУММ({1;2:3;4});#Н/Д)
+registerLocale(ruRU)
+console.log(LOCALES.get('ru-RU') === ruRU, [...LOCALES.keys()]) // → true [ 'en-US', 'ru-RU' ]
+console.log(toInvariant('=СУММ(A1:A3;1,5)', 'ru-RU').formula) // → SUM(A1:A3,1.5)
+const bad = validateLocalFormula('=СУММ(A1;1.5)', 'ru-RU')
+console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Здесь не может стоять «.» 10
+console.log(validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', ruRU, { sheets: ['Данные'] }).canonical) // → ROUND('Данные'!B2*1.2,0)
+```
+
+`LOCALES` lists the loaded locales by tag. Every function that takes a locale takes the tag of a loaded one or the locale object, and an object needs no loading where no book is needed: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `validateSheetName`, `validateName` and `validateNames`. A book's `locale` is a tag, and a book in a locale that is not loaded is an `InputError` that says what to import, wherever the book goes (`compute`, sessions, `editStructure`, `fitColumns`, `writeXlsx`, a pool); `readXlsx` keeps a file's locale as it reads it. A pool of threads loads in its threads the locales loaded where it runs, and those loaded later too. A locale is a plain object (the `Locale` type), so formula text in another language is another object of the same shape; one without rules of computation reads and shows values as en-US does. Adding a locale to the package is a module ([docs/locale.md](locale.md#adding-a-locale)).
+
+```js
+import { compute } from 'xlcalc'
+
+try {
+  compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })
+} catch (e) {
+  console.log(e.message) // → book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)
+}
+```
+
+`toLocal` and `toInvariant` return `{ ok: true, formula }` or `{ ok: false, code, message, at }` with the position in the given text. They translate function names, TRUE and FALSE, error literals, the decimal separator and the separators of arguments and of array constants (`{1;2:3;4}` in ru-RU); strings, defined names, references and whitespace stay as they are. `toLocal` writes a sheet's name in quotes only where Excel puts them, by `quoteSheetIfNeeded` with the locale's booleans ([Addresses and helpers](addresses.md)), as every text shown to a person does (a window's `formulaLocal` and `editText`, the text of `explain`): the stored `'Data'!B2*2` is `Data!B2*2` in every locale, en-US's too, `'Q1 data'!A1` keeps its quotes, and a sheet named `ИСТИНА` is `'ИСТИНА'!A1` in ru-RU. `toInvariant` reads a name with quotes and without and keeps it as typed; a stored formula quotes every sheet, as its canonical text. `toInvariant` drops a leading `=` and also reads English function names, TRUE/FALSE and error texts; a function the locale does not name (an external one, say) passes through. Text that would read differently once translated (`1.5` typed in ru-RU, where `.` is not a decimal separator) is a `syntax` error at its place. `validateLocalFormula(text, locale, ctx?)` is `validateFormula` for typed text: the same result with the canonical stored text, and positions in `text`. The messages of all three are in the locale's language.
+
+The ru-RU data come from Excel itself. `bench/locale/snapshot.ts` opens books with 6,381 formulas (the coverage measurement's cases, the probes, a call of every function on Microsoft's list that the measurement lacks, literals) in Excel 16.113 for Mac with the Russian interface and reads each formula back in English and in Russian; `bench/locale/generate.ts ru-RU` writes the formula text of ru-RU's locale file, `src/locales/ru-RU.ts`, from that text (`test/excel/locale/ru-RU.json`). `test/locale-excel.test.ts` checks that both translations reproduce Excel's text of all 6,381 formulas, and `test/locale-roundtrip.test.ts` that the 15,266 formulas of the measurement, the case sets and the probes come back unchanged from ru-RU. Excel 16.113 for Mac does not know `ENCODEURL`, `FILTERXML`, `WEBSERVICE`, `REGEXEXTRACT`, `REGEXREPLACE` and `REGEXTEST`, and deletes `CALL` and `REGISTER.ID` from the books it loads, so these keep their English names; so do the error literals newer than `#GETTING_DATA` (`#SPILL!`, `#CALC!` and the rest), which it does not take as literals in a formula.
+
+A book is computed in its own locale, `BookInput.locale` (the tag of a loaded locale: `'en-US'` by default, or `'ru-RU'` once loaded), as Excel computes with those regional settings, whoever opens the book; a viewer still sees the formulas in their own language through `toLocal`. The locale changes how text reads as a number, a date or a boolean, how numbers and booleans become text, `TEXT`'s format codes and what cells show, `DOLLAR` and `FIXED`, error texts, the words and numbers in criteria and the order of text:
+
+```js
+import { compute, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { formula: 'TEXT(45688.75,"ДД ММММ ГГГГ ч:мм")' }, A4: { formula: 'DOLLAR(-1234.567)' }, A5: { formula: 'VALUE("1.5")' } }
+const r = compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells }] }, { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
+const v = r.sheets[0].cells
+console.log(v.A1.value, v.A2.value, v.A3.value, v.A4.value, v.A5.value) // → 1236 a1,5ИСТИНА 31 Январь 2025 18:00 -1 234,57 ₽ 46143
+console.log(r.volatile.map((c) => c.cell).join(',')) // → A5
+```
+
+In ru-RU, as Excel 16.113 for Mac with the Russian interface and locale computes, and as Excel for Windows where the two part: numbers in text take a decimal comma and a space between groups (`1 234,5`) and the ruble after the amount (`1 234,5 ₽`); dates are day-month-year (`31.01.2025`, `31/1/25`, `2025-01-31`, `31 янв 2025` with a month named by three letters or more of its nominative name; English month names are not read); `ИСТИНА` and `ЛОЖЬ` are the booleans in text (`"TRUE"` is no boolean there); numbers become text with a decimal comma (`a1,5`), complex numbers too; `TEXT` reads the Russian codes (`ДД.ММ.ГГГГ`, `ч:мм:сс`, `# ##0,00`, `Основной`, `[Красный]`, `[Цвет10]`) and treats English letters as literals, while cells read their formats as xlsx files store them (`dd/mm/yyyy` shows `31.01.2025`); `DOLLAR` is `1 234,57 ₽`; month names have a capital (`Январь`) and short ones three letters (`фев`); text sorts Latin before Cyrillic, as Excel for Windows sorts (Excel for Mac puts Cyrillic first). Date text without a year (`1.5` is 1 May, `15 янв`) takes the year of the book's clock, as Excel takes the current year, so a cell that reads one depends on the clock as `TODAY` does: it is in `volatile` and a session recomputes it on `setClock`. The rules were measured case by case in Excel ([docs/locale.md](locale.md)).
+
+Messages for people come in the book's locale too: why a typed formula does not read (`parseEntry`, and `toLocal`, `toInvariant` and `validateLocalFormula` in their locale), why a structure operation is refused, and the text of `explain`, whose numbers, formulas, booleans and errors are written as the locale writes them, and its references as Excel writes them (`План!B1`). Codes, positions and the fields of `explain`'s tree stay as they are, so a program reads them the same in every locale.
+
+```js
+import { createSession, parseEntry, registerLocale, editStructure } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 400 }, B1: { formula: 'ROUND(A1*1.2,0)' } } }] }
+console.log(createSession(book).explain('План', 'B1').text)
+// → План!B1 = 480  ← ОКРУГЛ(A1*1,2;0)
+//     План!A1 = 400
+console.log(parseEntry('=ОКРУГЛ(A1;2;3)', { locale: 'ru-RU' }).message) // → Функция ОКРУГЛ принимает 2 аргумента, а указано 3
+console.log(editStructure(book, { op: 'deleteSheet', sheet: 'План' }).message) // → В книге должен остаться хотя бы один лист
+```
+
+`validateFormula`, which has no locale, answers in English, as do the reasons of cell errors and the checks of names. A locale's messages are part of its module ([docs/locale.md](locale.md#messages)), and a locale object without messages of its own speaks as the loaded locale of its tag, else in English.
+
 ## Loading a locale
 
 en-US is built in. ru-RU is a module of its own, `xlcalc/locales/ru-RU`, so a bundle that has no ru-RU book does not carry its 52 KB of formula text, rules and messages. A host imports it and loads it once, before a book in it computes:
@@ -278,14 +344,6 @@ A locale is ready when the engine gives Excel's answers in it, and every differe
 
 A new locale needs the same: the measurement and the sets computed in its Excel, and its own list of differences ([Tests and harnesses](#tests-and-harnesses)).
 
-## How it was checked
+## Checked against Excel
 
-`test/excel-locales.test.ts` computes the measurement's book with `locale: 'ru-RU'` and compares every whitelisted function's cases with Excel ru-RU's answers in `test/excel/coverage/excel-ru.json`. `test/excel-locales-sets.test.ts` does the same for the ru-RU case sets in `test/excel/cases/ru-RU/`, among them `locale` (1,109 cases) and `collation` (174). `npx tsx bench/coverage/run.ts probes <set> ru` computes a set in Excel ru-RU. Known differences are listed in `RU_KNOWN` with a line each in the README; among them are the cases where the engine follows Excel for Windows and the Mac answers otherwise (the order of text, month names).
-
-`test/excel-win.test.ts` checks the same books against Excel for Windows (`test/excel/win/`, `bench/windows`), with the set `collation-more` (62 cases of the order inside Cyrillic and Latin) measured in Windows alone.
-
-`test/locale-excel.test.ts` checks that both translations reproduce Excel's own text of all 6,381 formulas in ru-RU, and `test/locale-roundtrip.test.ts` that 15,266 formulas of the case sets come back unchanged from every locale.
-
-`test/locale-modules.test.ts` loads nothing until its last part: a ru-RU book is the `InputError` that names the module in `compute`, a session, `editStructure`, `fitColumns`, the same thread and `writeXlsx`, and so is the tag in every function that takes a locale; `ruRU` as an object gives these functions their answers without loading; an en-US book gives Excel's `Январь` for `[$-419]mmmm` and Excel for Mac's widths of Cyrillic letters; `readXlsx` keeps a file's ru-RU; once loaded, a ru-RU book computes as before in a session and in the same thread, with closures and eval; `registerLocale` refuses another object with a loaded tag, en-US, and a locale without rules or with wrong messages; the files of `src/locales/`, `PACKAGE_LOCALES`, `LOCALE_MODULES` and the subpaths agree. `test/locale-args.test.ts` gives every function with a locale the tag and the object and gets the same answer, and `test/locale-pool.test.ts` checks the threads of a pool. `test/bundle-size.test.ts` bundles `compute` alone with esbuild: 253 KB minified, with en-US alone of the locales, under its budget of 300 KB.
-
-Excel for Mac and Excel for Windows (16.0.20430) compute ru-RU alike but for their regional data. Where those part, the engine follows Windows: the order of text, month names, the times of built-in formats, `CHAR` and `CODE`. It keeps the Mac's long date `[$-F800]` (`пятница, 31 января 2025 г.`; Windows's has no weekday). Formula text in ru-RU (array constants and the like) was not compared with Windows.
+Every function's cases and the ru-RU case sets were computed in Excel ru-RU; both translations give Excel's own text of all 6,381 formulas in ru-RU, and 15,266 formulas come back unchanged from every locale.

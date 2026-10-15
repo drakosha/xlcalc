@@ -1,8 +1,43 @@
 # Circular references
 
-A circular reference is a formula that reads itself, directly or through other cells. Without iterative calculation, Excel computes neither the cells of a cycle nor the cells that read one: it keeps the values they show and computes the rest of the book. The engine does the same. With iterative calculation (`iteration`, [Iterative calculation](../README.md#iterative-calculation)) the cycles are computed instead, and nothing below applies.
+A circular reference is a formula that reads itself, directly or through other cells. Without iterative calculation, Excel computes neither the cells of a cycle nor the cells that read one: it keeps the values they show and computes the rest of the book. The engine does the same. With iterative calculation (`iteration`, [Iterative calculation](#iterative-calculation-in-short)) the cycles are computed instead, and nothing below applies.
 
 The rules below were measured in Excel 16 for Windows (en-US). Excel for Mac shows a warning window when it opens such a book, so it was not measured.
+
+## In short
+
+A formula in a circular reference, and every formula that reads one, is not computed in a book without iterative calculation, as Excel computes none of them: each holds its value, the cell's `held` or 0 without it, and the rest of the book is computed. `cached`, the values a file stores (`readXlsx`'s `cached`), opens such a book as Excel opens the file: a cell holds the value stored for it, empty text where the file stores none. A session keeps the values as Excel keeps them: an edit that does not break the cycle changes none of them, a formula entered there holds 0, a cell another edit brings into the cycle's way holds what it showed, and a value typed into a cell of the cycle breaks it, and everything computes again. `getBook()` gives the values in `held`, so a full computation of the session's book gives what the session shows, and `writeXlsx` stores them. Each such cell is in `diagnostics` with `error: 'CYCLE'`. The rules and how they were measured: [docs/cycles.md](cycles.md).
+
+```js
+import { compute, createSession } from 'xlcalc'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'B1/2+1' }, B1: { formula: 'A1' }, C1: { formula: 'A1*10' }, K1: { value: 3 }, E1: { formula: 'K1*2' } } }] }
+const cached = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, B1: { value: 2 } } }] }
+const r = compute(book, { cached })
+console.log(r.sheets[0].cells.A1.value, r.sheets[0].cells.C1.value, r.sheets[0].cells.E1.value) // → 2  6
+console.log(r.diagnostics.map((d) => `${d.cell} ${d.error}`), r.diagnostics[0].reason) // → [ 'A1 CYCLE', 'B1 CYCLE', 'C1 CYCLE' ] circular reference: not computed, the value is held
+
+const session = createSession(book, { cached })
+session.setCells([{ sheet: 'S', cell: 'B1', input: { value: 4 } }])
+console.log(session.getCell('S', 'A1').value, session.getCell('S', 'C1').value) // → 3 30
+session.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'A1' } }])
+console.log(session.getCell('S', 'B1').value, session.getBook().sheets[0].cells.C1) // → 0 { formula: 'A1*10', held: 30 }
+```
+
+## Iterative calculation in short
+
+With `iteration`, as Excel's setting "Enable iterative calculation" stores it in a file, the cells of every cycle, and the cells that depend on them, are computed again and again from 0, as Excel computes a book it opens, and `held` has no effect. The rounds stop after `maxIterations` (100 by default) or when no number changes by `maxChange` (0.001 by default) or more.
+
+```js
+import { compute } from 'xlcalc'
+
+const cells = { B1: { value: 1000 }, B2: { value: 0.1 }, B3: { formula: 'B2*(B1+B4)/2' }, B4: { formula: 'B1+B3-100' } }
+const r = compute({ sheets: [{ name: 'S', cells }], iteration: {} }).sheets[0].cells
+console.log(r.B3.value, r.B4.value) // → 99.999984375 999.999984375
+console.log(compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells.B3.value) // → 0
+```
+
+Cells are computed sheet by sheet in the order of the sheets' names, row by row. A change of text, a boolean or an error into another of them does not count as a change. Every computation starts from 0, so a session gives what a full computation gives. Excel goes on from the values it holds when it recalculates, which the engine does not do (see [Limitations](limitations.md)).
 
 ## Which cells a cycle stops
 
@@ -64,13 +99,6 @@ An array formula a cycle stops spills nothing and holds one value. A cycle throu
 
 An array that spilled and that an edit brings into a cycle's way holds its first value here and spills no more, as `held` is one value a cell. Excel keeps its whole spill as it was: with `A1 = SEQUENCE(3)+D1` and D1 = A3*0 typed, Excel keeps 1, 2 and 3 in A1:A3, the engine 1 in A1 and nothing below.
 
-## How it was checked
+## Checked against Excel
 
-The workbook step of the Windows harness (`bench/windows`, `cycle` cases) opens each book through COM, takes the case's steps (a value or a formula typed, a full calculation, a recalculation, a save) and reads the cells after each; the file of a case stores the values it lists, as Excel stores what it computed (`test/excel/win/workbook/`).
-
-| set | books | what | the engine |
-|---|---:|---|---|
-| `cycles` | 21 | a cycle typed into a book, the values a file stores (converged ones, others, none), a precedent changed, a formula typed again, the link broken and typed back, a cycle of one cell, through INDIRECT, OFFSET, a name and a spill, cells beside a cycle (above it, on another sheet, typed after opening, a chain closed), a file with `calcPr iterate` | all but the cycles through INDIRECT and OFFSET (not in the whitelist) and the iteration from stored values (`iterate-file`, [Limitations](../README.md#limitations)) |
-| `cycles-held` | 6 | predicted by the engine before Excel ran them: an array brought into a cycle's way, a formula typed again as it was, a cell cleared, a dependent typed out of the way, two cycles of which one is broken, a file storing values for part of a cycle | 125 of the 129 cells read as predicted; the four others are the spill an array a cycle comes to keeps in Excel |
-
-`test/workbook-win.test.ts` compares the engine with the stored answers without Excel. `test/session-cycles.test.ts` takes the measured scenarios through each kind of session (the same thread synchronously and in portions, a thread of the pool) in both execution modes, with undo, redo, previews, typed text, a look, a row inserted and a copy, and after each step checks the session's hash against a full computation of its book. The seeded session tests do the same after each of their edits.
+Measured in Excel 16 for Windows, en-US, on 27 books, 6 of them predicted before Excel ran them. The engine matches all but the cycles through `INDIRECT` and `OFFSET`, which are not in the whitelist, and the iteration from stored values ([Limitations](limitations.md)).

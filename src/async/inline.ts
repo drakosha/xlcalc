@@ -13,6 +13,10 @@ import { strictMethods } from '../strict-args.js'
 /** Milliseconds of computing between two yields by default: a frame stays smooth. */
 export const SLICE_MS = 10
 
+/**
+ * A calculator in the same thread (`Calc`): it computes in portions of `sliceMs` that give way to the event loop, with the
+ * deadlines, cancellation and limits of a pool's calls; its sessions answer the same as a pool's.
+ */
 export function createInlineCalc(opts?: InlineCalcOptions): Calc {
   const o = checkInlineOptions(opts)
   const running = new Set<Budget>()

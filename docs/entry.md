@@ -17,6 +17,152 @@ const bad = parseEntry('=СУММ(A1;', { locale: 'ru-RU' })
 console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Формула не закончена 9
 ```
 
+## In short
+
+`parseEntry` reads text typed into a cell the way Excel reads it in the book's locale, without a book, and gives the cell's new input: a number, a date or a time with the format Excel sets for it (`15.03.2026` in ru-RU gets the short date, `5%` the format `0%`, `$1,234.50` the locale's money), a boolean, an error, text, or a formula in the stored form. The cell typed into keeps its style, meta, note and link, and its format unless Excel changes it: a number typed into a percent cell is percent, a time typed into a date cell sets `h:mm`, the number formats and the book's own formats stay.
+
+```js
+import { parseEntry } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+const ru = (text, cell) => parseEntry(text, { locale: ruRU, cell, now: '2026-10-10T12:00:00Z' })
+console.log(ru('1 234,5').input, ru('15.03.2026').input, ru('5%').input) // → { value: 1234.5, numberFormat: 4 } { value: 46096, numberFormat: 14 } { value: 0.05, numberFormat: 9 }
+console.log(ru('ИСТИНА').input, ru('#Н/Д').input, ru("'007").input, ru('15.3').input) // → { value: true } { formula: '#N/A' } { value: '007' } { value: 46096, numberFormat: 16 }
+console.log(ru('=СУММ(A1;1,5)').input, ru('=FOO(1)').input, ru('-C1').input) // → { formula: 'SUM(A1,1.5)' } { formula: 'FOO(1)' } { formula: '-C1' }
+const stop = ru('=SUM(A1,1.5)')
+console.log(stop.ok, stop.code, stop.message, stop.at) // → false syntax Здесь не может стоять «.» 9
+console.log(ru('18:30', { numberFormat: 14, style: 2, meta: { id: 7 }, note: { text: 'checked' } }).input)
+// → {
+//     value: 0.7708333333333334,
+//     numberFormat: 20,
+//     style: 2,
+//     meta: { id: 7 },
+//     note: { text: 'checked' }
+//   }
+console.log(parseEntry('3/15/2026').input, parseEntry('$1,234.50').input.value, parseEntry('5', { cell: { numberFormat: '0%' } }).input) // → { value: 46096, numberFormat: 14 } 1234.5 { value: 0.05, numberFormat: '0%' }
+```
+
+`opts.locale` is the book's locale, a loaded locale's tag or a locale object ([Localization](locale.md)), `opts.cell` the entry context (its effective `numberFormat`, `style`, `meta`, `note` and `link`), `opts.now` the moment whose year completes a date typed without one (`15.3`), and `opts.dateSystem` the book's date system. A `CellInput` or a `CellView` from `getCell` or `getCells` holds only the cell's own number format. To account for a row's or column's format, use the resolved cell from `getViewport`, or supply the effective `numberFormat` yourself:
+
+```js
+import { createSession, parseEntry } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', columns: { A: { numberFormat: '0%' } }, cells: { A1: { value: 0.1 } } }] })
+const shown = session.getViewport('S', 'A1').cells.A1
+console.log(parseEntry('5', { cell: shown }).input) // → { value: 0.05, numberFormat: '0%' }
+session.close()
+```
+
+`parseEntry` stores the supplied format in its returned input. For editing a session, `setCellText` resolves the inherited format itself and keeps it on its row or column instead of storing it on the cell. Only a formula that does not parse stops the entry, with the check code, its position in the text and a message in the book's locale, as Excel's window does; an unknown function is taken and computes `#NAME?`. Empty text clears the value and keeps the rest of the cell (`null` when nothing is left). The rules, measured case by case in Excel for Mac and Excel for Windows, typed through the object model and on the keyboard, are in [docs/entry.md](entry.md). A number typed into a column too narrow for it widens the column: `entryWidth` gives the width ([Showing values](formats.md)).
+
+A session takes typed text into a cell itself: `setCellText(sheet, cell, text, opts?)` reads it as `parseEntry` does, in the book's locale and date system, by the session's clock and the format the cell shows (its own, else its row's or column's, which the cell does not take as its own), keeps the rest of the cell, and widens the column in the same step of the undo as Excel does, unless `widen: false`; `previewCellText` says the same and changes nothing.
+
+```js
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({
+  locale: 'ru-RU',
+  styles: [{ font: { bold: true } }],
+  sheets: [{
+    name: 'S',
+    cells: { A1: { value: 1, style: 0 } },
+    columns: { B: { numberFormat: '0%' } },
+    validations: [{ range: 'C1:C9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }],
+  }],
+}, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+const typed = session.setCellText('S', 'A1', '1234567890')
+console.log(typed.width, session.getBook().sheets[0].cells.A1) // → 11.1640625 { style: 0, value: 1234567890 }
+console.log(session.setCellText('S', 'B1', '7').changes, session.getBook().sheets[0].cells.B1) // → [ { sheet: 'S', cell: 'B1', value: 0.07, text: '7%' } ] { value: 0.07 }
+const refused = session.setCellText('S', 'A2', '=СУММ(A1;1.5)')
+console.log(session.previewCellText('S', 'C1', '-2').validation.severity, refused.code, refused.at) // → warning syntax 10
+```
+
+A value the cell's rule of data validation does not take is written, with `validation`, the rule, its alert's style (`severity`) and message. A formula that does not read, a change of part of an old-kind array and a formula in a table's header cell are refused (`{ ok: false, code, message, at? }`, the message in the book's locale); text typed into a header cell renames its column, as `setCells` does.
+
+Excel shows the rule's alert before it writes such a value: a `stop` alert never takes it (Retry or Cancel), a `warning` writes it on Yes, an `information` on OK. With `refuseInvalid: true` the call writes nothing and answers `{ ok: false, code: 'validation', sheet, cell, rule, severity, message }`, so the host shows the alert first. Where the person keeps the value, the host makes the same call again without the option, and the value is written with its alert. Without the option the value is written, and a host that refuses it afterwards calls `undo()`, which leaves a step to redo.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{ name: 'S', cells: {}, validations: [{ range: 'A1:A9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning', error: 'Positive only' }] }],
+})
+const asked = session.setCellText('S', 'A1', '-2', { refuseInvalid: true })
+console.log(asked.code, asked.cell, asked.severity, asked.message, session.revision, session.history) // → validation A1 warning Positive only 0 { undo: 0, redo: 0 }
+// the person answers Yes: the same call without the option writes the value
+const kept = session.setCellText('S', 'A1', '-2')
+console.log(kept.validation.severity, session.getBook().sheets[0].cells.A1, session.revision) // → warning { value: -2 } 1
+const many = session.setCellTexts([{ sheet: 'S', cell: 'A2', text: '5' }, { sheet: 'S', cell: 'A3', text: '1.5' }], { refuseInvalid: true })
+console.log(many.code, many.cell, session.revision) // → validation A3 1
+```
+
+`setCellTexts(entries, opts?)` takes several texts typed at once: each `{ sheet, cell, text }` is read as `setCellText` reads it in its cell, in order, and all are written with one recomputation, one revision and one step of the undo. A cell given twice keeps the later text, read by the format the earlier one gave it. A column widens once, to the largest width a text typed alone into one of its cells would give it (`widths`, unless `widen: false`), and the cells whose values their rules do not take come back with their alerts (`validations`). A text `setCellText` refuses refuses the whole call, with its `sheet` and `cell`, and nothing is written; with `refuseInvalid`, so does the cell whose value breaks the strictest rule once all the texts are written (stop before warning before information, the first cell of that style). `previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
+
+```js
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({
+  locale: 'ru-RU',
+  sheets: [{ name: 'S', cells: { A1: { value: 'Item' } }, validations: [{ range: 'C1:C9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }] }],
+}, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+const typed = session.setCellTexts([
+  { sheet: 'S', cell: 'B1', text: '15.03.2026' },
+  { sheet: 'S', cell: 'B2', text: '1234567890' },
+  { sheet: 'S', cell: 'C1', text: '-2' },
+])
+console.log(typed.widths, typed.validations.map((v) => `${v.cell} ${v.severity}`)) // → [ { sheet: 'S', column: 'B', width: 11.1640625 } ] [ 'C1 warning' ]
+const refused = session.setCellTexts([{ sheet: 'S', cell: 'A2', text: '7' }, { sheet: 'S', cell: 'A3', text: '=СУММ(A1;1.5)' }])
+console.log(refused.code, refused.cell, refused.at, session.revision) // → syntax A3 10 1
+console.log(session.previewCellTexts([{ sheet: 'S', cell: 'A2', text: '5%' }, { sheet: 'S', cell: 'A3', text: '=A2*2' }]).cells.map((c) => [c.cell, c.input, c.value]))
+// → [
+//     [ 'A2', { value: 0.05, numberFormat: 9 }, 0.05 ],
+//     [ 'A3', { formula: 'A2*2' }, 0.1 ]
+//   ]
+```
+
+A cell edited in place, after F2, a double click or in the formula bar, opens with its own text, and Excel reads what comes back otherwise than text typed over the cell: its percent editor adds `%` only to a number begun by a sign. With `inPlace: true`, `setCellText`, `setCellTexts`, `fillCellText` and their previews read the text so: in a percent cell `6%` is 0.06 and `6` is 6 (600%), where typed over the cell `6%` is the text `6%%` and `6` is 6%.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 0.05, numberFormat: '0%' } } }] })
+console.log(session.previewCellText('S', 'A1', '6%').input, session.previewCellText('S', 'A1', '6%', { inPlace: true }).input)
+// → { value: '6%%', numberFormat: '0%' } { value: 0.06, numberFormat: '0%' }
+```
+
+A paste and Control+Return read text otherwise than typing, and have their own calls. `pasteText(sheet, cell, text, opts?)` pastes text from the clipboard as Excel pastes it: `parseClipboard(text)` makes it a rectangle, rows at line breaks and fields at tabs, every row as wide as the longest, and the rectangle fills the cells from `cell`, an empty field, a short row's missing ones and the row after a last line break clearing theirs. A field begun by a quote runs to its closing quote, line breaks and tabs inside it, and wraps its cell. Each field is read as typed into its cell, but an apostrophe stays part of the text, a formula Excel does not take is pasted as text, a percent cell has no percent editor (`5` is 500%) and `€5` takes the euro format; no column widens and no rule is checked. The answer has the `range` filled; part of an array, a formula into a header cell and a rectangle past the sheet's edge are refused with the `sheet` and `cell`.
+
+`fillCellText(sheet, range, text, opts?)` enters a text into every cell of a range, as Control+Return: it reads the text once in the active cell, the range's top-left one or `active`, and every cell takes what the active cell holds after it, a formula moved as a copy from the active cell moves it (`copyFormula`) and the active cell's number format where it has one. The columns widen as typing widens them (`widths`, unless `widen: false`), and only the active cell's rule is checked (`validation`, or with `refuseInvalid` the refusal before anything is written). Both are one step of the undo, and `previewPasteText` and `previewFillCellText` change nothing. The rules, as measured in Excel, are in [docs/entry.md](entry.md#a-paste-and-controlreturn).
+
+```js
+import { createSession, parseClipboard, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({
+  locale: 'ru-RU',
+  sheets: [{
+    name: 'S',
+    cells: { A1: { value: 2 }, A2: { value: 3 } },
+    columns: { C: { numberFormat: '0%' } },
+    validations: [{ range: 'D1:D9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }],
+  }],
+}, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+const text = "'007\t=СУММ(A1;1.5)\t5\t-2\r\n€5"
+console.log(parseClipboard(text)) // → [ [ "'007", '=СУММ(A1;1.5)', '5', '-2' ], [ '€5', '', '', '' ] ]
+const pasted = session.pasteText('S', 'A4', text)
+console.log(pasted.range, Object.entries(session.getCells('S', pasted.range)).map(([a, c]) => `${a} ${c.text}`), 'validation' in pasted)
+// → A4:D5 [ "A4 '007", 'B4 =СУММ(A1;1.5)', 'C4 500%', 'D4 -2', 'A5 € 5' ] false
+const filled = session.fillCellText('S', 'D1:D2', '=A1-5')
+console.log(filled.changes.map((c) => `${c.cell} ${c.formula} ${c.value}`), filled.validation.severity) // → [ 'D2 A2-5 -2', 'D1 A1-5 -3' ] warning
+const refused = session.fillCellText('S', 'E1:E3', '=СУММ(A1;', { active: 'E2' })
+console.log(refused.code, refused.cell, refused.at, session.revision) // → syntax E2 9 2
+```
+
 ## API
 
 `parseEntry(text, opts?)` returns `{ ok: true, input }` or `{ ok: false, code, message, at }`.
@@ -83,7 +229,7 @@ A number typed into a column too narrow for it widens the column in Excel when n
 
 ### Numbers
 
-Numbers are read as `VALUE` reads them in the locale ([Localization](../README.md#localization)), with 15 significant digits (`1234567890123456789` is 1234567890123450000), and their form sets the format of a cell in General:
+Numbers are read as `VALUE` reads them in the locale ([Localization](locale.md)), with 15 significant digits (`1234567890123456789` is 1234567890123450000), and their form sets the format of a cell in General:
 
 | typed | ru-RU | en-US | format |
 |---|---|---|---|
@@ -190,9 +336,9 @@ Use `formatClipboard` when the host already has the complete rectangle of format
 
 `parseClipboard` reads a quoted field as a text paste does ([A paste and Control+Return](#a-paste-and-controlreturn)), but plain text is not a reversible encoding of every grid: the two cells `"first` and `last"` copy as `"first\r\nlast"`, which a text paste reads as one cell `first`, line break, `last`. Excel for Windows in ru-RU, pasting that copy as plain text, kept the two cells and the quotes of `"abc"`: a paste of a copy is not a paste of typed text. Typed text with quotes, the set `quotes` again in ru-RU (`quotes-ru`), Excel for Windows pastes as in en-US, a field begun by a quote read to its closing quote, all 12 cases alike, so `parseClipboard` reads quotes alike in every locale. Carry the rectangle separately when an exact roundtrip matters.
 
-### How it was checked
+### Checked against Excel
 
-`bench/coverage/clipboard` commits the predictions before the copies run. The copy set has ten cases in each locale on each platform: grid, controls and quotes, one cell, an empty sheet, narrow numbers and dates, hidden rows and columns, filtering, merges and a spill. `copy range` and `pbpaste` on Mac and `Range.Copy` with `Get-Clipboard -Raw` on Windows read text without bringing Excel forward. The Windows `quotes-held` set copies three rectangles, replaces the rich clipboard with their plain text and pastes them, checking the sentinel below too. `test/clipboard-excel.test.ts` checks the stored text and pins the ambiguity; `test/session-copy-text.test.ts` checks `copyText` from the books against the same stored copies in all three session kinds and both execution modes.
+Measured by copying in Excel for Mac and for Windows, en-US and ru-RU: ten cases in each locale on each, predicted before they ran.
 
 ## Point mode
 
@@ -211,23 +357,9 @@ Once a reference is pointed the host moves it, as Excel does, by the keys alone;
 
 Return enters the formula as typed: Excel closes the brackets left open (`=SUM(D3` is `=SUM(D3)`), offers its corrections otherwise.
 
-### How it was checked
+### Checked against Excel
 
-The step `ui` of `bench/coverage` types on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU: a text typed over C3, keys pressed, the formula bar's description read after each (the active cell and its text), then Return, and the cell read back. Three sets, each predicted before Excel ran it:
-
-- `point-held`, 40 cases in each locale, predicted by the sheet component's own model (`bench/coverage/ui/point-model.ts`): 21 of 40 as Excel did it in each. Excel differed where an arrow enters the text (after an operand the component moved the caret), after a leading `+` or `-`, a space after an operand and `=1.`, and in every key the component left to its field (Command and an arrow, Home, Page Down). `refAt` was written from these answers.
-- `point-more-held`, 27 places, predicted by that first `refAt`: 39 of 54 as Excel did it. It entered every formula ending in an operand; Excel enters one only when it reads (`=A1)`, `=1e`, `=1,5` in en-US do nothing) and takes a reference after any point (`=A1.`). `refAt` was revised by them.
-- `point-third-held`, 20 places no set had, predicted by the revised `refAt`: 19 of 20 in each locale. The one left is a reference to a sheet the book does not have (`=Sheet1!A`): Excel takes it for another workbook's and the arrow does nothing, which text alone cannot tell; `test/point-excel.test.ts` keeps it as a known difference.
-
-Then the caret elsewhere than at the end, reached by F2, Home and arrows in Edit mode and F2 again, three sets more, each predicted before Excel ran it:
-
-- `point-caret-held`, 24 cases in each locale: 27 of 48 as predicted. With the caret before the formula's first character Excel puts in its own `=` and the reference (20 cases); `=SUM(A1,` with the caret before the comma is entered in en-US. That the whole formula decides past the caret held.
-- `point-caret-held-2`, 19 cases: 16 of 19 in each locale. A group's bracket left open is not closed (`=(1+2`, `=((1`), a function's is.
-- `point-caret-held-3`, 13 cases: 9 of 13 in en-US, 11 of 13 in ru-RU. Excel does nothing with `=SUM(1)+MAX(2` and `=ABS(-(1)`, and in en-US with `=ROUND(1.5` and `=ROUND(A1*2` (where `ROUND` is known), which `refAt` enters. Measuring stopped at the third set with a correction; these six stay known differences (`test/point-excel.test.ts`), fewer than without closing a function's bracket (12).
-
-`test/point-excel.test.ts` compares `refAt` with every case that types a text and presses Right, 138 in each locale, the caret read from the keys pressed before the arrow. A case whose formula bar does not show the text it typed is not stored (another keyboard layout, or a key pressed by someone else at the Mac during the run, spoiled 11 cases of one run and 1 of another, which were run again; macOS turns two spaces typed into a point and a space, so no case types two).
-
-Not measured: a mouse press on a cell or on a sheet's tab while pointing (the harness presses keys only), and Excel for Windows, whose keyboard is not reachable over SSH.
+Measured on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU: six sets, each predicted before Excel ran it, 138 cases in each locale. Seven known differences stay: a reference to a sheet the book does not have, and six formulas with a function's bracket left open where Excel does nothing. Not measured: the mouse, and Excel for Windows.
 
 ## The text a cell opens with
 
@@ -257,41 +389,9 @@ A grid without the engine takes the text from its window: `getViewport` and `vie
 - A cell of an old-kind array formula's area opens with the area's formula, every cell of it, as F2 opens it (the formula bar shows it in braces, `{=SUM(C1:C3)}`). A cell a dynamic array spilled into opens empty; selected, Excel's formula bar shows its anchor's formula.
 - Text is written as it is, with an apostrophe before it when typing it would read as something else (`needsApostrophe`, by `parseEntry`): a number, a date, a time, a boolean, an error or a formula in the locale (`'007`, `'1.5` in ru-RU where it is a date, `'=1+2`), text a percent cell's editor would make a number (`'5`), text that begins with an apostrophe (`''x`), empty text. Under the text format nothing reads otherwise (`007`).
 
-## How it was checked
+## Checked against Excel
 
-The rules were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, in en-US and ru-RU, by the step `entry` of the harness (`bench/coverage/entry.ts`, `bench/windows/entry.ts`). A case types its text into a cell of its own, in General or with a format set before, through the object model as Excel 365 takes typed text in the user's language (`formula2 local` on the Mac, `Formula2Local` on Windows); then the cell's shown text and format codes are read, and the book is saved and read back with `readXlsx` for what the cell holds. On the Mac a set may be typed on the keyboard instead (System Events, an ASCII keyboard layout): the window Excel shows for a formula it does not take ("We found a typo in your formula", then why it is not taken) is answered with No and OK, and Escape leaves the cell as it was. The answers are in `test/excel/entry/` and `test/excel/win/entry/`, and `test/entry-excel.test.ts` and `test/entry-win.test.ts` compare `parseEntry` with every case, on the day of the run.
-
-| set | cases per locale | how | predicted before the run, en-US and ru-RU |
-|---|---:|---|---|
-| `typed` | 552 | object model, Mac and Windows | Mac 385 and 397, Windows 385 and 378 |
-| `typed-keys` | 39 | keyboard, Mac | 30 and 30 |
-| `typed-held` | 257 | object model, Mac and Windows | Mac 181 and 184, Windows 186 and 184 |
-| `typed-keys-held` | 44 | keyboard, Mac | 36 and 36 |
-| `typed-held-2` | 102 | object model, Mac and Windows | 85 and 84 on both |
-| `typed-keys-held-2` | 29 | keyboard, Mac | 25 and 26 |
-| `typed-keys-held-3` | 6 | keyboard, Mac | 3 and 4: `-5%`, `+5%` and `-0.5%` typed over a percent cell are formulas with the editor's second `%` (`-5%%`), where the engine wrote `-5%` |
-| `typed-pct-held` | 47 | object model, Mac and Windows | 45 and 46 on both |
-| `names-held` | 28 (en-US) | object model, Mac and Windows | 21 on both: cells' words as LET's names (`XFD1`, `XFE1`, `A0`) and the words past the sheet alone, refused here and taken by Excel, and an unknown name's case |
-| `let-grid-held` | 14 (en-US) | object model, Mac and Windows | 10 on both: `IV1`, `A65536` and `IV65536` are LET's names too, so the edge predicted, Excel 2003's sheet, is none, and a LET name read after its LET |
-| `let-cells-held` | 25 (en-US) | object model, Mac and Windows | 11 on both: every cell is LET's name but those that read as R1C1's row or column too |
-
-Each set's predictions (`bench/coverage/entry/<set>.predicted.json`) were committed before Excel ran it, and the misses became rules. The engine now gives Excel for Windows's answer on 1,812 of the 1,983 cases of the object model's sets, and the Mac's keyboard answer on 232 of 236; the other cases are the known differences below, pinned in `test/entry-known.ts`.
-
-Values are compared exactly, as the saved file holds every digit. `typed-pct-held` types percents with decimals where moving the point and dividing by 100 give different numbers (`1.1%`, `0.7%`, `1.255%`, `99.9%`, with a sign, parentheses, a leading `%`, groups and an exponent), fractions and plain decimals; each cell's value is also read through the object model (`value` on the Mac, `Value2` on Windows), which equals the number the file holds in every case. Both Excels stored every decimal percent as its decimal text reads; the miss was `$1.1%`, which Excel en-US keeps as text, the other the sign difference of the object model.
-
-Excel for Windows and Excel for Mac answer alike, but where their own built-in codes part: the Mac's en-US short date is `m/d/yy` and its ru-RU short time `hh:mm`, so it keeps the codes `m/d/yyyy` (en-US) and `h:mm` (ru-RU) as formats of the book's own, where Windows takes them as the formats 14 and 20. The engine follows Windows.
-
-The text a cell opens with was measured by the same step on the sets `edit-held` (85 texts) and `edit-numbers-held` (38 numbers around a length of 21 characters), which read each cell's `Formula` and `FormulaLocal` and, on the Mac, its formula bar itself: each cell selected in turn with Excel in front, the bar's text read through the window's accessibility (`Formula Bar. A,1 1/31/2025  6:00:00 PM`). The bar is needed: both Excels' object model gives a date's, a time's and a percent's number there (`45688`, `0.12`), and under other formats the text the bar shows, the apostrophe being the cell's prefix character. `entryText`'s predictions were committed before Excel ran each set: `edit-held` came out as predicted on 72 of 85 cells in en-US and 74 in ru-RU, the misses being numbers of 21 characters written whole, the two spaces before a time, the apostrophe Excel keeps and ru-RU's times, and with the rules fixed `edit-numbers-held` came out as predicted on all 38 numbers in both locales, in Excel for Mac's formula bar and Excel for Windows's `FormulaLocal` alike. `test/entry-text-excel.test.ts` compares `entryText` with the formula bar and with the object model under the other formats, and reads every text back with `parseEntry` to the value Excel saved.
-
-The object model takes some text otherwise than typing, and the keyboard sets settle these: through `Formula2Local` a text begun by `+` or `-` that is no number is text (`-C1`, `+1+2`), a number goes into a percent cell as it is (`5` is 500%), and empty text makes a cell formatted as text hold empty text. Excel for Windows has `AutoPercentEntry` on, as the answers' `meta` records, but takes `Formula2Local` as the Mac does.
-
-Text pasted from the clipboard and a text entered into a selection with Control+Return were measured by the step `ui` (`bench/coverage/ui.ts`; the sets `paste-held`, 25 pastes on both Excels, and `fill-held`, 18 entries on the Mac's keyboard), and the text a cell of an array opens with by the set `arrays-held` (the formula bar selected and once F2 began the editing, on the Mac; `Formula2Local` on both, which is the text F2 opens). The predictions, `setCellTexts` of the texts and `editText`, were committed before Excel ran each set, and the misses became the rules of [A paste and Control+Return](#a-paste-and-controlreturn) and of the cells of an old-kind array's area; Excel for Mac and Excel for Windows pasted alike in every case. `test/ui-excel.test.ts` compares `pasteText`, `fillCellText` (from the selection's first cell, a call with a stop alert taken back) and `editText` with every case: the engine gives Excel's answer to the 100 pastes (25 in each locale on each Excel), to 33 of the 36 entries into a selection and to the 16 cases of `arrays-held`; the other three are known differences below.
-
-A cell edited in place was measured by the same step on the Mac's keyboard (the set `edit-held`, 20 cases in each locale): the cell selected, F2, what it opened with erased or only its digit changed, the text typed and Return, the formula bar read when F2 began the editing and once more before Return. The prediction, `pasteText` of each text (no percent editor at all), was committed before Excel ran it and came out as predicted on 14 cases in en-US and 13 in ru-RU: the misses were numbers begun by a sign (`-5` is -5%), to which the editor still adds `%`, and in ru-RU a column Excel widened. `test/ui-excel.test.ts` compares `setCellText` with `inPlace` with every case, and the engine gives Excel's answer to all 40.
-
-Line breaks were measured by the step `rows` (`bench/coverage/rows.ts`, `docs/formats.md`, "Fitting rows"): text with a line break set through the object model (the sets `autofit` and `held`, both Excels), typed on the Mac's keyboard with Control+Option+Return, entered into a selection with Control+Return and pasted with Cmd+V (`keys`), and quotes in pasted text (`quotes`, both Excels, Windows through `Worksheet.Paste`; `quotes-ru`, the same pastes in ru-RU on Windows), each cell's content and wrapping read with its row's height. The keyboard, the object model and a paste set `wrap` alike, and the two Excels pasted every quote alike; the predictions, committed before each set ran, had the paste read no quotes, which the answers made the rule above.
-
-Refusing a value a rule does not take (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not measure: the alert is a window, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a refused call leaves the book, the revision and the history as they were, and that a value the rules take is written as without the option.
+Measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU: about 2,000 typed texts through the object model and 236 on the Mac's keyboard, each set predicted before Excel ran it. The engine gives Excel for Windows's answer on 1,812 of the 1,983 cases of the object model and the Mac keyboard's on 232 of 236; the others are the known differences above. Pastes, Control+Return, the text a cell opens with and editing in place were measured the same way; the buttons of a validation rule's alert were not.
 
 ## Known differences
 
