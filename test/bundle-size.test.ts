@@ -26,9 +26,9 @@ describe('bundle size', () => {
     expect(bytes).toBeLessThan(300 * 1024)
   }, 60_000)
 
-  it('the root takes en-US alone of the locales; the ru-RU module none of the computation', async () => {
+  it('the root takes en-US alone of the locales; the ru-RU module none of the computation, its words of functions beside its names', async () => {
     expect(locales((await minified(`export * from ${lib('index.js')}`)).used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     const ru = await minified(`export * from ${lib('locales/ru-RU.js')}`)
-    expect(ru.used.map((f) => f.replace(/^(.*\/)?(src|dist)\//, '')).sort()).toEqual([expect.stringMatching(/^locale\/lcid\.(ts|js)$/), expect.stringMatching(/^locales\/ru-RU\.(ts|js)$/)])
+    expect(ru.used.map((f) => f.replace(/^(.*\/)?(src|dist)\//, '')).sort()).toEqual([expect.stringMatching(/^locale\/lcid\.(ts|js)$/), expect.stringMatching(/^locale\/ru-functions\.(ts|js)$/), expect.stringMatching(/^locales\/ru-RU\.(ts|js)$/)])
   }, 60_000)
 })
