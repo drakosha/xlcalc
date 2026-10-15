@@ -11,5 +11,5 @@ What is in it:
 - Sessions: edits, undo and redo, subscribers told of every change of the book (`subscribe`), structure operations (insert, delete and move rows, columns and sheets, merge and unmerge cells as Excel's Merge Cells, Merge Across and Merge & Center do, the fill handle with the series Excel continues), typed entry as Excel reads it, fill and paste, Find and Replace, outline, AutoFit, conditional formats, data validation, and the text each cell shows in its number format.
 - `xlcalc/xlsx`: reading and writing xlsx without dependencies, with what a book cannot hold listed as issues.
 - `createInlineCalc` and `createCalcPool` from `xlcalc/worker`: computing without blocking, in portions on the same thread or in worker threads, with deadlines, cancellation and limits.
-- Localization: formulas, number formats and messages in ru-RU through `xlcalc/locales/ru-RU`.
-- `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the tip of a function's arguments (`functionSignature`, names of the library's own in English and Russian) and number format categories, without the engine.
+- Localization: formulas, number formats and messages in ru-RU through `xlcalc/locales/ru-RU`; the tip of a function's arguments (`functionSignature`), with names of the library's own in English and Russian.
+- `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`) and number format categories, without the engine.
