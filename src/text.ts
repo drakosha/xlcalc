@@ -13,6 +13,7 @@ import { columnPoints, widthOf } from './column-width.js'
 import * as category from './numfmt/category.js'
 import * as point from './point.js'
 import * as scan from './scan.js'
+import * as signatures from './signatures.js'
 import { strict } from './strict-args.js'
 import { escapeColumn as escaped } from './syntax/table.js'
 
@@ -22,6 +23,7 @@ export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const refAt = /* @__PURE__ */ strict(point.refAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
+export const functionSignature = /* @__PURE__ */ strict(signatures.functionSignature)
 
 /**
  * A column's name in a structured reference as Excel writes it: `'` before each `[`, `]`, `#` and `'` in it and before
