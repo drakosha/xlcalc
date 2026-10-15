@@ -15,6 +15,7 @@ export const ENTRY_REASONS = {
   plusPercent: 'typed on the keyboard, +5%+1 takes the percent format of its first number; parseEntry gives a formula begun by + the format of what it computes, none here',
   plusInside: 'typed on the keyboard, Excel drops a + before a number further into a formula begun by + (+-+5 is +-5); parseEntry drops only the first',
   nameCase: 'Excel writes an unknown name in the case it was first typed in the book (=Foo*2 after =foo is foo*2, Mac and Windows alike); parseEntry has no book and keeps the case typed',
+  twoSpaces: 'typed on the keyboard, two spaces are a period on macOS (NSAutomaticPeriodSubstitutionEnabled): Excel got =. SUM(1 and refused it; the case tells nothing of Excel',
   letAfter: "a cell's word used as LET's name and again after the LET in one formula: Excel reads the later one as a defined name (_xlnm.IW1, #NAME?); parseEntry reads it as the cell",
   macLongS: "Excel for Mac reads the long s as s: =falſe and the value falſe typed are FALSE, =ſum(1,2) is SUM and ſ is LET's name S; parseEntry follows Excel for Windows, where ſ is a letter of its own (falſe a name or text, ſum an unknown function)",
   typedI: 'Excel reads a typed function\'s name with the dotted İ as I (=İF(TRUE,1,2) is IF), and Excel for Windows with the dotless ı too (=ıf(TRUE,1,2)); parseEntry reads a function\'s name by its own letters, as Excel reads it in a file (İF(TRUE,1,2) is #NAME? there)',
@@ -58,6 +59,7 @@ export const ENTRY_KNOWN: ReadonlyMap<string, EntryReason> = new Map([
     'ru-RU:typed': ['fx-13', 'fx-17', 'fx-21'],
     'ru-RU:typed-held': ['ffx-1', 'ffx-2', 'ffx-4', 'ffx-22', 'ffx-23', 'ffx-24', 'in-code-pct-11', ...['b41', 'b45', 'b46', 'b48', 'b13', 'b18', 'b7', 'b5'].map((f) => `in-${f}-11`)],
     'ru-RU:typed-held-2': ['ffx2-1', 'ffx2-8', 'ffx2-9', ...['sci', 'frac', 'mmss', 'pct2', 'elapsed'].map((f) => `in-code-${f}-5`)],
+    'ru-RU:close-held-3': ['call-2'],
   }),
   ...cases('reference', {
     'en-US:typed': ['fx-23', 'fx-24'],
@@ -72,6 +74,7 @@ export const ENTRY_KNOWN: ReadonlyMap<string, EntryReason> = new Map([
   ...cases('nameCase', { 'en-US:names-held': ['unknown-3'], 'en-US:name-case-held': ['let-4', 'let-7'] }),
   ...cases('typedI', { 'en-US:name-case-held': ['fn-6'] }),
   ...cases('letAfter', { 'en-US:let-grid-held': ['scope-2'] }),
+  ...cases('twoSpaces', { 'en-US:close-held-3': ['space-1'], 'ru-RU:close-held-3': ['space-1'], 'ru-RU:close-ru-held-3': ['ru-1'] }),
 ])
 
 /** Against Excel for Mac alone, where its regional data part from Windows's. */

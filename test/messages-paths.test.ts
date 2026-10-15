@@ -7,6 +7,7 @@
  * every message of the catalog but the rules of names, which only `validateName` gives, in English.
  */
 import { afterAll, describe, expect, it } from 'vitest'
+import { closeTyped } from '../src/entry/close.js'
 import { createInlineCalc, createSession, parseEntry, editStructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
@@ -110,7 +111,8 @@ describe('a formula that does not read', () => {
   it("parseEntry stops a formula with the message in the book's locale", () => {
     const stops = TYPED.filter(([text, , ctx]) => !ctx && text !== '=' && ['syntax', 'empty', 'too_long', 'too_deep'].includes((validateLocalFormula(text, ruRU) as { code: string }).code))
     expect(stops.length).toBeGreaterThan(30)
-    for (const [text, m] of stops) expect(parseEntry(text, { locale: 'ru-RU' }), text).toMatchObject({ ok: false, message: ru(m) })
+    // a formula Excel closes on Return is taken (\`docs/entry.md\`, "A formula left open")
+    for (const [text, m] of stops) expect(parseEntry(text, { locale: 'ru-RU' }), text).toMatchObject(closeTyped(text)?.silent ? { ok: true } : { ok: false, message: ru(m) })
     expect(parseEntry('=1+')).toEqual({ ok: false, code: 'syntax', message: 'unexpected end of formula', at: 3 })
   })
 })

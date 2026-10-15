@@ -1521,7 +1521,7 @@ interface CellTextOptions extends EditOptions {
 What [`Session.setCellText`](#session) would do ([`Session.previewCellText`](#session)): the cell's input, its value, the width and the alert, with nothing changed.
 
 ```ts
-type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; width?: number; validation?: ValidationAlert } | Refusal<CellTextRefusal> | CellValidationRefusal
+type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; width?: number; validation?: ValidationAlert } | CellTextRefused | CellValidationRefusal
 ```
 
 ### `CellTextRefusal`
@@ -1532,6 +1532,14 @@ Why [`Session.setCellText`](#session) did not take the text: a formula Excel doe
 type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'array' | 'header'
 ```
 
+### `CellTextRefused`
+
+Text [`Session.setCellText`](#session) did not take, and the formula Excel offers to correct it to, as [`parseEntry`](#xlcalc-parseentry)'s `correction`.
+
+```ts
+type CellTextRefused = Refusal<CellTextRefusal> & { correction?: string }
+```
+
 ### `CellTextResult`
 
 Text typed into a cell ([`Session.setCellText`](#session)): the edit's result, with the width the column took (`width`) and the
@@ -1539,7 +1547,7 @@ rule of data validation the value breaks (`validation`); or why the text was not
 or, with `refuseInvalid`, the rule the value breaks.
 
 ```ts
-type CellTextResult = (EditResult & { ok: true; width?: number; validation?: ValidationAlert }) | Refusal<CellTextRefusal> | CellValidationRefusal
+type CellTextResult = (EditResult & { ok: true; width?: number; validation?: ValidationAlert }) | CellTextRefused | CellValidationRefusal
 ```
 
 ### `CellTextsPreview`
@@ -2217,10 +2225,14 @@ interface EntryOptions {
 
 Text typed into a cell as Excel takes it ([`parseEntry`](#xlcalc-parseentry)): the cell's new input, `null` when nothing is left of the
 cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
-language of `opts.locale` (English for en-US) and the position in the typed text.
+language of `opts.locale` (English for en-US) and the position in the typed text. A formula typed with brackets,
+quotes or array braces left open at its end Excel closes on Return when it begins with a function, has no `)` and
+leaves only functions' brackets open (`=SUM(1,2` is `=SUM(1,2)`); any other such formula it refuses and offers to
+correct, when the formula closed reads with every function known: `correction` is that text, as typed with what was
+left open closed (`=(1+2` offers `=(1+2)`). Pasted text is not closed.
 
 ```ts
-type EntryResult = { ok: true; input: CellInput | null } | (Refusal<CheckCode> & { at: number })
+type EntryResult = { ok: true; input: CellInput | null } | (Refusal<CheckCode> & { at: number; correction?: string })
 ```
 
 ### `EntryTextOptions`

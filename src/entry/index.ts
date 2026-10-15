@@ -54,11 +54,11 @@ function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: 
   // typed or edited in place, what is left open at the end Excel closes on Return, or offers to (`close.ts`)
   const c = close && !v.ok && v.code === 'syntax' ? closeTyped(text) : null
   if (c?.silent) {
-    const f = taken(c.text, validateTyped(c.text, locale, opts), shift, locale, externalBooks)
+    const f = taken(c.closed, validateTyped(c.closed, locale, opts), shift, locale, externalBooks)
     return 'formula' in f ? f : { ...f, at: Math.min(f.at, text.length + shift) }
   }
   const f = taken(text, v, shift, locale, externalBooks)
-  return c?.offered && !('formula' in f) && c.calls.every((n) => known(n, locale)) && validateTyped(c.text, locale, opts).ok ? { ...f, correction: c.text } : f
+  return c?.offered && !('formula' in f) && c.calls.every((n) => known(n, locale)) && validateTyped(c.correction, locale, opts).ok ? { ...f, correction: c.correction } : f
 }
 
 /** A typed formula's canonical stored text and the format it sets. */

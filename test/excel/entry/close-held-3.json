@@ -1,0 +1,197 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-15",
+  "seconds": 59.8
+ },
+ "cases": [
+  {
+   "id": "space-1",
+   "text": "=  SUM(1"
+  },
+  {
+   "id": "space-2",
+   "text": "= -SUM(1"
+  },
+  {
+   "id": "space-3",
+   "text": "=- SUM(1"
+  },
+  {
+   "id": "space-4",
+   "text": "= (1+2"
+  },
+  {
+   "id": "array-1",
+   "text": "={1,2}+{3"
+  },
+  {
+   "id": "array-2",
+   "text": "=-{1,2"
+  },
+  {
+   "id": "array-3",
+   "text": "= {1,2"
+  },
+  {
+   "id": "array-4",
+   "text": "={\"a\",\"b"
+  },
+  {
+   "id": "array-5",
+   "text": "=SUM(1)+{1,2"
+  },
+  {
+   "id": "call-1",
+   "text": "=PI("
+  },
+  {
+   "id": "call-2",
+   "text": "=NOW("
+  },
+  {
+   "id": "call-3",
+   "text": "=IF(C1>0,\"a"
+  },
+  {
+   "id": "call-4",
+   "text": "=ROUND(C1,1"
+  },
+  {
+   "id": "call-5",
+   "text": "=AVERAGE(C1"
+  },
+  {
+   "id": "call-6",
+   "text": "=CONCAT(\"a\",C1"
+  }
+ ],
+ "answers": {
+  "space-1": {
+   "refused": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "space-2": {
+   "cell": {
+    "formula": " -SUM(1)"
+   },
+   "computed": -1,
+   "text": "-1",
+   "code": "General",
+   "local": "General",
+   "value2": -1
+  },
+  "space-3": {
+   "cell": {
+    "formula": "- SUM(1)"
+   },
+   "computed": -1,
+   "text": "-1",
+   "code": "General",
+   "local": "General",
+   "value2": -1
+  },
+  "space-4": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭=(1+2)‬\n\nDo you want to accept this correction? |  The formula is missing an opening or closing parenthesis. | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "array-1": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭={1,2}+{3}‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "array-2": {
+   "refused": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "array-3": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭={1,2}‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "array-4": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭={\"a\",\"b\"}‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "array-5": {
+   "refused": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "call-1": {
+   "cell": {
+    "formula": "PI()"
+   },
+   "computed": 3.141592653589793,
+   "text": "3.141592654",
+   "code": "General",
+   "local": "General",
+   "value2": 3.141592653589793
+  },
+  "call-2": {
+   "cell": {
+    "formula": "NOW()",
+    "format": 22
+   },
+   "computed": 46310.96064479167,
+   "text": "10/15/26 23:03",
+   "code": "m/d/yy h:mm",
+   "local": "m/d/yy h:mm"
+  },
+  "call-3": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭=IF(C1>0,\"a\")‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "call-4": {
+   "cell": {
+    "formula": "ROUND(C1,1)"
+   },
+   "computed": 2,
+   "text": "2",
+   "code": "General",
+   "local": "General",
+   "value2": 2
+  },
+  "call-5": {
+   "cell": {
+    "formula": "AVERAGE(C1)"
+   },
+   "computed": 2,
+   "text": "2",
+   "code": "General",
+   "local": "General",
+   "value2": 2
+  },
+  "call-6": {
+   "cell": {
+    "formula": "CONCAT(\"a\",C1)"
+   },
+   "computed": "a2",
+   "text": "a2",
+   "code": "General",
+   "local": "General"
+  }
+ }
+}

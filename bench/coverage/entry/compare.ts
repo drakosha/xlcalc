@@ -36,9 +36,10 @@ export function entryDifferences(got: EntryResult, want: { refused?: string; cel
   if (want.refused !== undefined) {
     if (got.ok) return [`Excel refused it (${want.refused.split('\n')[0]}), the engine took it as ${JSON.stringify(got.input)}`]
     // the formula Excel's window offers to correct the text to, between the marks of left-to-right text it puts around it;
-    // only one that closes what the text left open is the engine's to offer
+    // only one that closes what the text left open (the spaces after = dropped) is the engine's to offer
     const offered = /\u202d(.*?)\u202c/s.exec(want.refused)?.[1]
-    const fix = offered !== undefined && offered.startsWith(text) && /^["')}]+$/.test(offered.slice(text.length)) ? offered : null
+    const typed = text[0] + text.slice(1).replace(/^\s+/, '')
+    const fix = offered !== undefined && offered.startsWith(typed) && /^["')}]+$/.test(offered.slice(typed.length)) ? offered : null
     return fix === (got.correction ?? null) ? [] : [`correction: Excel ${JSON.stringify(offered ?? null)}, the engine ${JSON.stringify(got.correction ?? null)}`]
   }
   if (!got.ok) return [`Excel took it as ${JSON.stringify(want.cell)}, the engine refused it: ${got.code} ${got.message} at ${got.at}`]
