@@ -49,6 +49,14 @@ function checkText(locale: unknown, path: string): void {
   words(loc.errors, `${path}.errors`, LOCALE_ERRORS, /^#\S+$/u, 'an error literal starting with #')
   words(loc.functions, `${path}.functions`, null, WORD, 'a function name')
   if (loc.tableItems !== undefined) words(loc.tableItems, `${path}.tableItems`, TABLE_ITEMS, /^#[^[\]'@]+$/u, 'a specifier starting with #')
+  if (loc.argumentWords !== undefined) argumentWords(loc.argumentWords, `${path}.argumentWords`)
+}
+
+/** The words of arguments' names: two English words may share one (`criteria` and `condition` are `условие`). */
+function argumentWords(v: unknown, path: string): void {
+  if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, 'expected an object')
+  for (const [k, w] of Object.entries(v))
+    if (typeof w !== 'string' || !/^[\p{L}_][\p{L}\p{N}_]*$/u.test(w)) throw new InputError(`${path}[${JSON.stringify(k)}]`, `expected a word of an argument's name, got ${JSON.stringify(w)}`)
 }
 
 const checked = new WeakSet<object>()

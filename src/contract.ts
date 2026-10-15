@@ -1941,6 +1941,30 @@ export type StructureOp =
  */
 export type FillType = 'default' | 'series' | 'copy'
 
+/**
+ * A function's signature for a tip of its arguments while a formula is typed (`functionSignature`), as Excel's tip lists
+ * them: `SUM(number1, [number2], ...)`, in ru-RU `СУММ(число1;[число2];...)`.
+ */
+export interface FunctionSignature {
+  /** The function's name in the locale (`СУММ`). */
+  name: string
+  /** The arguments in the tip's order, those that repeat listed twice (`number1`, `number2`), the second time optional. */
+  args: FunctionArgument[]
+  /**
+   * How many of the last arguments repeat past the list (the tip's `...`): 1 for SUM, 2 for SUMIFS, 0 when none do. The
+   * argument at index `i` past the list is named as the one `repeat` before it, with its number counted on.
+   */
+  repeat: number
+  /** The tip's text, with the locale's list separator. */
+  text: string
+}
+
+/** An argument of a function's signature: its name in the locale and whether a call can leave it out. */
+export interface FunctionArgument {
+  name: string
+  optional: boolean
+}
+
 /** Why Excel would refuse an operation. */
 export type StructureRefusal =
   /** Cells would leave the sheet (past XFD or row 1,048,576), or a paste does not fit. */
