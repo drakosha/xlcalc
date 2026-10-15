@@ -10,7 +10,7 @@ import * as text from '../src/text.js'
 
 describe('xlcalc/text', () => {
   it("holds the root's functions themselves", () => {
-    expect(Object.keys(text).sort()).toEqual(['columnWidthFromPoints', 'columnWidthToPoints', 'escapeColumn', 'formatClipboard', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences'])
+    expect(Object.keys(text).sort()).toEqual(['callAt', 'columnWidthFromPoints', 'columnWidthToPoints', 'escapeColumn', 'formatClipboard', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences'])
     for (const [k, f] of Object.entries(text)) expect(root[k as keyof typeof root], k).toBe(f)
   })
 })
