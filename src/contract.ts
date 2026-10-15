@@ -981,6 +981,22 @@ export type FormulaReference = GridReference | TableReference
  */
 export type PointAction = { action: 'insert'; at: number; equals?: true } | { action: 'commit' } | { action: 'none' }
 
+/**
+ * The call a caret stands in, in formula text as it is typed (`callAt`): the innermost function whose brackets hold the
+ * caret, and the argument it is in, for a tip of the function's arguments (`functionSignature`).
+ */
+export interface CallAt {
+  /** The function's name as typed (`СуммЕсли`). */
+  name: string
+  /** Its English name in upper case, as `functionSignature` and stored formulas take it: the locale's name translated (`SUMIF`), another name as it is. */
+  fn: string
+  /** The argument the caret is in, from 0: the list separators before it at the call's own level. */
+  index: number
+  /** Where the call's `(` is, and its `)`, or null while it is open. */
+  open: number
+  close: number | null
+}
+
 /** `scanReferences`'s options. */
 export interface ScanOptions {
   /** The locale the text is typed in, a loaded locale's tag (`LOCALES`) or a locale object; without it the text is a stored formula. */
