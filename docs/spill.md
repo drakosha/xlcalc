@@ -82,19 +82,9 @@ A formula that reads a range its own array's formula also reads closes a cycle, 
 
 On the synthetic book, which has no spills, cold computation, edits and the hash are unchanged within noise.
 
-## How it was checked
+## Checked against Excel
 
-Each case is a small book written the way Excel 365 saves dynamic array formulas (`cm="1"` and the `XLDAPR` metadata). Reading a range of values that contains errors is unsafe in Excel (errors drop out of the list, and a two-dimensional read crashed Excel), so every cell that is read has three mirror formulas on separate sheets that never fail: a type code, the number and the text. `npx tsx bench/coverage/run.ts spill <set>` runs a set, and `test/spill-excel.test.ts` compares the engine with the stored answers without Excel.
-
-| set | cases | what |
-|---|---|---|
-| `base` | 50 | directions, blocking, collisions, edges, `E2#`, sizes from data, whole columns, volatile arrays |
-| `order` | 21 | two arrays over the same cells, computed four times |
-| `held` | 17 | predicted by the engine before Excel computed them; all 17 matched |
-| `more` | 13 | sizes from a draw (five runs), edits in books with merged areas |
-| struct `spill`, `spill-more`, `spill-copy` | 22 | `E2#` and spilled cells under structure operations |
-
-Answers are in `test/excel/spill/` and `test/excel/struct/`. Cutting a formula with a spill to another sheet crashed Excel 16.113 twice, so it is not among the cases.
+Measured in Excel 365 on 104 books; the last 17 cases were predicted before Excel computed them, all as predicted.
 
 ## Known differences
 

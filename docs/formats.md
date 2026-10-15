@@ -373,81 +373,9 @@ The list's items in en-US are General (0), Number (2), Currency (`"$"#,##0.00`),
 
 Most cells are text or General numbers in a default column, and their text is the value's shortest decimal form, so they cost almost nothing. On the synthetic book (54,778 cells) a cold computation takes 310 ms with display and 279 ms without, in the closures mode.
 
-## How it was checked
+## Checked against Excel
 
-`test/column-width.test.ts` checks the exported pair against all 666 existing Mac fit answers, the default, every whole point through 1,535 and invalid inputs. `bench/coverage/width` saves the current model's predictions before the object-model probe: ten fixed widths from the file, the default and seven `ColumnWidth` settings, with each platform's `Width`, `ColumnWidth`, `StandardWidth` and the width Excel saved. `test/column-width-excel.test.ts` checks the stored point widths without any screen measurement. Both platforms matched 17 of 18 predictions: only `ColumnWidth = 0.5` differed (6 points on Mac, 4.5 on Windows, against 8 and 6.75 predicted). All ten fixed widths and both defaults held. Setting characters is a different conversion from setting a file width; the exported inverse takes points instead.
-
-`npx tsx bench/coverage/run.ts display <set> [ru]` writes a book of values or formulas with their formats, one column per width, and merged areas where a case needs one. Excel reads back each cell's `string value` (its `Range.Text`) and `color of font object of display format`. Answers are in `test/excel/display/` and `test/excel/display/ru-RU/`, and `test/display-excel.test.ts` compares the engine with them.
-
-| set | cells | what |
-|---|---|---|
-| `widths` | 1,523 | character widths, column room, fractional and default widths |
-| `general` | 5,166 | 82 numbers in General, columns from half a character to 14 characters |
-| `codes` | 1,674 per locale | 99 number formats on 12 values, 38 date formats on 15 values |
-| `fit` | 678 per locale | booleans, errors and text in narrow columns, numbers near the edge, fills, merged areas, colours, date separators, calendar edges |
-| `names` | 70 per locale | month names, long dates and times, large fractions, values no section takes |
-| `held` | 58 per locale | predicted by the engine before Excel computed them; 57 of 58 matched in each locale, and the miss became the rule for values no section takes |
-| `builtin` | 300 per locale | the built-in formats 0 to 49 by number on six values, with the codes Excel reports for them |
-| `builtin-held` | 350 per locale | built-in formats on other values and widths, predicted by the engine before Excel computed them, all matched |
-| `seconds-held` | 35 (en-US) | moments at the edge of a second in `d h:mm:ss`, predicted by the engine before Excel computed them; 15 missed (the rounding to the second, and the 15 digits a cell's text is written from, a known difference), Windows the same |
-
-`TEXT` was measured as formulas in the case sets `text-format` and `text-format-more` (en-US) and `text-format-ru` and `text-format-ru-more` (ru-RU), 771 cases in all; a moment's whole seconds in the set `seconds-held` (35 values next to `SECOND` and `DAY`, the same in Excel for Mac and for Windows).
-
-The cases write a format as a custom code, so a code equal to a built-in format does not show by the locale. The sets of built-in formats write the number alone, as Excel stores it.
-
-The 1904 date system was checked with the workbook set `date1904` (`bench/coverage/workbook/`): the same cells and `TEXT` formulas in a book of each system.
-
-Excel for Windows showed the same sets (`bench/windows`, `test/display-win.test.ts`). Its regional data, where they part from the Mac's, are the engine's: the built-in codes, month names in ru-RU, the times of built-in formats. The cells that show otherwise meet a column's edge, where Windows, laying text out in pixels, shows what the engine shows at another width, and the ru-RU long date `[$-F800]`, which the engine keeps as the Mac's. `test/display-excel.test.ts` covers the Mac's answers in the places where the engine follows Windows (`MAC_SHOWN`).
-
-AppleScript returns no colour for an exact 0 in a format of fewer than three sections (`[Red]0`) and for text under a coloured text section (`[Red]@`), though Excel draws the colour on screen there. The engine gives the section's colour in these places, and the comparison accepts any colour.
-
-Fitting columns was measured by `npx tsx bench/coverage/run.ts fit <set> [ru]`: a book of one column per case, which Excel fits (`autofit` of the entire column) or types the case's texts into in turn, through `value`, `formula2 local` or the keyboard; then it reads each column's width and what its cells show and saves the book, whose `<col>` elements give the width Excel stores. Answers are in `test/excel/fit/`, and `test/fit-excel.test.ts` compares `fitColumns`, `parseEntry` and `entryWidth` with them, width and shown text.
-
-| set | columns, en-US and ru-RU | what | predicted before the run |
-|---|---|---|---|
-| `autofit` | 161 and 161 | text of every width from 3 to 60 points and wider, numbers in General and by formats, booleans, errors, several cells, empty columns, merged areas, a hidden row and column, fonts, formulas and a spill | 11 and 11 |
-| `typed` | 87 and 82 | numbers, dates, money, percents and formulas typed through the object model and on the keyboard, into columns of the default width, set by hand and fitted, and in turn | 21 and 19 |
-| `glyphs` | 332, en-US | each character of the table alone and in a run of about 600 points, Russian words | 253 |
-| `held` | 86 and 85 | held out from the others: text near 90 points and outside ASCII, General near its own text, paddings and blanks, typing that fits exactly or drops decimals | 76 and 74 |
-
-The first sets showed the rules: the predictions of `autofit` and `typed` came from a guess (text width plus the padding, no widening of a General number); `glyphs` showed that Excel measures text outside ASCII by the font's advances. Of the misses in `held`, five were typed through the object model, which the prediction widened though `typed` had shown it does not; the others became rules: a General number that fits exactly widens its column, a whole number's blank fraction keeps the room of its digits and slash, characters of Latin-1 have their own widths, a fitted width equal to the default stays. The engine now gives Excel's width and text on all 994 columns but the 67 in `test/fit-known.ts`, for the reasons below.
-
-Excel 16.0.20430 for Windows fitted the same books and typed the same texts through `Value2` and `Formula2Local` (`bench/windows/run.ts fit <set>`, `test/excel/win/fit/`, `test/fit-win.test.ts`; 912 columns, the keyboard's cases being the Mac's alone). It does what the Mac does: it fits a column with something to show and marks it `bestFit`, shows a hidden column, leaves a column with nothing to show, and widens nothing for text set through the object model. Its widths are its own: it lays text out in pixels, a digit 7 at 96 dpi, and saves the width in sevenths of a digit, so of the columns it fitted only 16 of 161 (`autofit`, either locale), 34 of 332 (`glyphs`) and 15 of 71 (`held`) have the Mac's width. 1234567890 gets 11 on Windows and 11.1640625 on the Mac, a long date 21.7109375 and 19.6640625, 300 points of `b` 59.85546875 and 52.5.
-
-Fitting rows was measured by `npx tsx bench/coverage/run.ts rows <set> [ru]`: a book of one row per case, its cells in columns of their own, which Excel reads the height of when it opens it, types the case's texts into (through `value`, `formula2 local`, or with Excel in front on the keyboard, Control+Return or Cmd+V) and fits (`autofit` of the entire row); then it reads each row's height and its cells' content and wrapping and saves the book, whose `<row>` elements give the height Excel stores. Answers are in `test/excel/rows/`, and `test/rows-excel.test.ts` compares a session with them, height, content and wrapping.
-
-| set | rows, en-US and ru-RU | what | heights predicted before the run |
-|---|---|---|---|
-| `autofit` | 129 and 129 | an empty row, Calibri of 25 sizes, other fonts, values, several cells and the lines' styles, line breaks, where a wrapped line breaks, long text over six widths, heights set by hand, a hidden row, merged cells, text with a line break set through the object model | 50 and 50 |
-| `held` | 99 and 99 | Calibri of 20 more sizes, wrapped lines of 15 sizes, other fonts wrapped, the row's style smaller than the default, a wrapped cell beside a larger font, a line of 16 points, spaces and a hyphen at the break, typing into wrapped and merged cells | 81 and 81 |
-| `lines` | 118 and 118 | 1 to 26 wrapped lines of 11 points and lines of 6 to 24 points, half sizes, a wrapped cell beside fonts from 8 to 36 points, lines of 20 and 24 points | 79 and 79 |
-| `keys` | 19, en-US | on the keyboard: line breaks typed into a cell, a selection (Control+Return), rows set by hand, a larger font, a merged cell, formulas over lines; text with line breaks pasted, inside quotes and not | 19 |
-| `quotes` | 12, en-US | quotes in pasted text: a tab inside, text after the closing quote, a quote inside, a space before | 12 (the heights; the cells were predicted without quotes) |
-
-The first set came from a guess (a line of `1.2207·s` points, the wrapped line of shown text); its answers gave the line, the room of a wrapped line and that the object model wraps text with a line break. `held` showed rows higher than their highest cell and half points, which `lines` resolved into the line cells stand on. The engine now gives Excel for Mac's height, content and wrapping on all 723 rows of both locales but the 14 in `test/rows-known.ts`: a font other than Calibri, and a formula typed over lines, whose line breaks Excel keeps in its text.
-
-Excel 16.0.20430 for Windows ran the same books (`bench/windows/run.ts rows <set>`, `test/excel/win/rows/`, the keyboard's cases but the pastes being the Mac's alone; Cmd+V is `Worksheet.Paste` there). It does what the Mac does with the cells: text with a line break set through the object model or pasted inside quotes wraps, a paste fits no row, AutoFit shows a hidden row and drops a height set by hand, merged cells count as on the Mac. Its heights are its pixels': a line of Calibri 11 is 20 pixels, 15 points, wrapped or not, 16 points 28 pixels (21), and 49 of the 129 rows of `autofit` have the Mac's height.
-
-The ribbon was read by `npx tsx bench/coverage/run.ts ui ribbon [ru]`, the step `ui` with Excel in front (`bench/coverage/README.md`). Excel selects each cell of a book and reads the Number Format box through Accessibility, after selecting a control cell in the text format that the box must follow; then it applies each item of the list to a cell of its own and reads the item's name, the box after and the format the saved file holds. The answers are in `test/excel/ui/ribbon.json` and `test/excel/ui/ru-RU/ribbon.json`, and `test/ui-excel.test.ts` compares the functions with them, a format by what it shows (44 and the code Excel writes for it alike).
-
-| cells, en-US and ru-RU | what |
-|---|---|
-| 50 | the built-in formats 0 to 49 by number, as an xlsx file stores them |
-| 50 | the same formats by their en-US codes as codes of the file's own; Excel takes a code equal to a built-in format's as that format (`0.00` saves as 2) |
-| 17 | ru-RU's codes of the built-in formats |
-| 193 | variants: decimals, groups and negatives, currencies of each place and form, accounting, dates and times with and without `;@` and locale tags, fractions, exponents, text, General with text, hidden formats, colours and conditions, the special formats |
-| 32 | eight formats on text, a blank, a negative number and a date |
-| 26 | the list's items applied, to cells in General and in other formats |
-
-The first rule, committed before Excel ran the set, named the box right for 179 of 342 en-US cells and 110 ru-RU ones; it guessed the categories by the shape of a code. The en-US rule above came from the answers and gives Excel's box for every cell but the 7 en-US cells of `m/d/yyyy`, and Excel's items but the date and time items of the en-US run (below).
-
-Excel 16.0 for Windows read the same books in ru-RU (`npx tsx bench/windows/run.ts ribbon ribbon ru`, the Windows step `ribbon`, `bench/windows/README.md`): it shows its ribbon only on a screen, so the step runs as a task in a session logged on through Remote Desktop and reads the box by UI Automation, selecting a control cell in the text format before each cell as on the Mac. The cases that apply the list's items are the Mac's alone. Windows named 266 of the 342 cells as the Mac; each of the 76 others is `(все форматы)` on the Mac and a category on Windows (23 Числовой, 15 Дата, 12 Денежный, 9 Финансовый, 17 others). A held-out set, `ribbon-ru-held` (50 cells: what the Format Cells window of ru-RU might list, dates with `[$-419]` and `[$-FC19]`, the ruble in more forms, fractions with the space quoted), ran after it. The answers are in `test/excel/win/ribbon/ru-RU/`, and `test/format-category-win.test.ts` compares the function with them.
-
-| run | rule committed before it | cells named as Excel for Windows |
-|---|---|---|
-| 50 codes set through the object model (dropped: COM reads `$` in a code as the locale's currency) | en-US's with the locale's names and short date | 44 of 50 |
-| `ribbon`, 342 cells | the first run's misses made rules | 318 by the prediction, 342 by the rule above |
-| `ribbon-ru-held`, 50 cells | the same | 29 by the prediction, 34 by the rule above; the 16 others are dates and times with `;@` (below) |
+Measured in Excel 16.113 for Mac, en-US and ru-RU, and checked again in Excel for Windows: the shown text of 12,949 cells, column widths, AutoFit and row heights, the later sets predicted before Excel ran them.
 
 ## Known differences
 

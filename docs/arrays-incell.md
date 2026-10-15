@@ -65,33 +65,6 @@ The compiler knows statically whether a node of a formula can be an array (`src/
 
 An array inside a formula exists only while the formula runs, so arrays add nothing to the reference graph. A session recomputes formulas with arrays like any others.
 
-## How it was checked
+## Checked against Excel
 
-The `arrays` case set (`bench/coverage/sets/arrays.ts`) is computed in Excel as dynamic array formulas. The harness writes each formula the way Excel 365 saves one: `<c cm="1"><f t="array" ref="A1">…</f>` plus `xl/metadata.xml` with the `XLDAPR` metadata and `dynamicArrayProperties fDynamic="1"`. Without that metadata Excel reads a formula the old way, with implicit intersection: `SUM(IF(D!B1:B8>0,D!B1:B8))` is 114.75 as an old formula and 118.25 as a dynamic one. The `_xlfn._xlws.` prefixes only name newer functions and do not make a formula dynamic.
-
-A case whose answer is an array is checked through a wrapper that returns one value (SUM, INDEX, ROWS, COLUMNS, COUNTA, CONCAT, TEXTJOIN), or directly, where both Excel and the engine give `#SPILL!` because every neighbour of the case is occupied.
-
-All case sets of the library are computed as dynamic array formulas, so the whole acceptance follows Excel 365.
-
-The set `known-held` (37 cases) was predicted before Excel computed it, to check rules taken from a few answers of the random check: `SORTBY` with an array of orders, `LOOKUP` past the end of a shorter result, `IFS` with a condition of text under `ROWS`, `TYPE` and `VSTACK`, and `SWITCH`, `IF` and `CHOOSE` beside it. Excel for Mac and Excel for Windows gave the same 37 answers, and 26 came out as predicted. The 11 misses are now the engine's rules: `SORTBY` answers by position rather than element by element (6), and `LOOKUP` reads a result of one cell as a row, reads on with a computed lookup array and reads a blank past the sheet's end (5). All 11 `IFS` cases came out as predicted.
-
-The set `lookup-held` (19 cases) was predicted the same way for what `known-held` left: `SORTBY` with two orders of one shape, valid orders over a by-array of another size, an order of one value beside one of two, and `LOOKUP` past the sheet's last column and row and past a reference a function answers. Both Excels gave the same answers and 10 came out as predicted. The 9 misses, and 14 cases measured after them (the set `lookup-rules`), are now the engine's rules: `SORTBY` answers `#VALUE!` after the first position that sorts when it has more than one by-array, a by-array of another size gives its error at every position, the first position that sorts need not be the first, and past a shorter order the position is `#N/A`; `LOOKUP` reads on past any reference, one a spill, a function, parentheses or a range operator answers too. The set `lookup-own-held` (9 cases, predicted) puts the `LOOKUP` beside the cells it may read on to: beside a spilled column and in a row past what it may read both Excels and the engine agree (5); where the `LOOKUP` lies among the cells it may read but does not, the engine, which counts them all as its references, answers `#CYCLE!` and Excel computes it (4, a known difference).
-
-The set `sortby-one-held` (19 cases, predicted) puts a by-array of one value into `SORTBY` beside others: in a column, a row, a table of two columns and one cell, with an order left out and with orders by position. Both Excels gave the same answers, all 19 as predicted: one value fits an array of one column or one row and nothing wider, the first by-array decides between rows and columns and a later one must fit it (`SORTBY(A1:A6,B1:B6,1,5,1)` and `SORTBY(A1:A6,5,1,B1:B6,1)` are `#VALUE!`), and an error given as a by-array is the answer.
-
-The shared collector and array helpers were additionally compared with frozen build `69b4d1f` in both execution modes and locales: 2,600 complete results matched in values, issues and both hashes, including edits, whole-column fills, row/column selection, old-style arrays and conditional aggregates. Across 672 limit checks, the result or cell-limit error also matched at limits of 4, 20 and 100 values. These used local builds and the saved Excel fixtures, without a live Excel run.
-
-On Node 26.7, 2026-10-09, seven alternating measured pairs after two warmup pairs (ten calls per sample) gave these medians for arrays of 34,000 elements. MAXA and AVERAGEA used mixed numbers, text and booleans; FILTER retained every third row; CHOOSECOLS selected the same column three times.
-
-| Call | Before | Shared implementation |
-|---|---:|---:|
-| SUM | 0.332 ms | 0.347 ms |
-| MAXA | 0.297 ms | 0.253 ms |
-| AVERAGEA | 0.251 ms | 0.272 ms |
-| FILTER | 0.295 ms | 0.248 ms |
-| SORT | 3.564 ms | 3.429 ms |
-| CHOOSECOLS | 1.064 ms | 0.940 ms |
-
-The SUM and AVERAGEA microbenchmarks retain a small overhead. The collector stays local to the argument handler: moving it to a module-level function slowed mixed-array coercion substantially in the trial. V8's inlining trace showed the original per-element closure being inlined; the module-level collector remained a separate function.
-
-Five alternating pairs of `synthBook({ seed: 1, rows: 34000 })`, with closures and fixed clock/seed, gave 1,561/1,547 ms for full compute and 3.71/3.53 ms for edit-A p95 (before/after). This workload showed no overall regression from the shared helpers.
+Every case set of the library is computed in Excel as dynamic array formulas, so the rules above are Excel 365's. Held-out sets, each predicted before Excel computed it, settled `SORTBY` and `LOOKUP`; one known difference stays: a `LOOKUP` placed among the cells it may read on to gives `#CYCLE!`, where Excel computes it.

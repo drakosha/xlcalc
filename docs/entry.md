@@ -336,9 +336,9 @@ Use `formatClipboard` when the host already has the complete rectangle of format
 
 `parseClipboard` reads a quoted field as a text paste does ([A paste and Control+Return](#a-paste-and-controlreturn)), but plain text is not a reversible encoding of every grid: the two cells `"first` and `last"` copy as `"first\r\nlast"`, which a text paste reads as one cell `first`, line break, `last`. Excel for Windows in ru-RU, pasting that copy as plain text, kept the two cells and the quotes of `"abc"`: a paste of a copy is not a paste of typed text. Typed text with quotes, the set `quotes` again in ru-RU (`quotes-ru`), Excel for Windows pastes as in en-US, a field begun by a quote read to its closing quote, all 12 cases alike, so `parseClipboard` reads quotes alike in every locale. Carry the rectangle separately when an exact roundtrip matters.
 
-### How it was checked
+### Checked against Excel
 
-`bench/coverage/clipboard` commits the predictions before the copies run. The copy set has ten cases in each locale on each platform: grid, controls and quotes, one cell, an empty sheet, narrow numbers and dates, hidden rows and columns, filtering, merges and a spill. `copy range` and `pbpaste` on Mac and `Range.Copy` with `Get-Clipboard -Raw` on Windows read text without bringing Excel forward. The Windows `quotes-held` set copies three rectangles, replaces the rich clipboard with their plain text and pastes them, checking the sentinel below too. `test/clipboard-excel.test.ts` checks the stored text and pins the ambiguity; `test/session-copy-text.test.ts` checks `copyText` from the books against the same stored copies in all three session kinds and both execution modes.
+Measured by copying in Excel for Mac and for Windows, en-US and ru-RU: ten cases in each locale on each, predicted before they ran.
 
 ## Point mode
 
@@ -357,23 +357,9 @@ Once a reference is pointed the host moves it, as Excel does, by the keys alone;
 
 Return enters the formula as typed: Excel closes the brackets left open (`=SUM(D3` is `=SUM(D3)`), offers its corrections otherwise.
 
-### How it was checked
+### Checked against Excel
 
-The step `ui` of `bench/coverage` types on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU: a text typed over C3, keys pressed, the formula bar's description read after each (the active cell and its text), then Return, and the cell read back. Three sets, each predicted before Excel ran it:
-
-- `point-held`, 40 cases in each locale, predicted by the sheet component's own model (`bench/coverage/ui/point-model.ts`): 21 of 40 as Excel did it in each. Excel differed where an arrow enters the text (after an operand the component moved the caret), after a leading `+` or `-`, a space after an operand and `=1.`, and in every key the component left to its field (Command and an arrow, Home, Page Down). `refAt` was written from these answers.
-- `point-more-held`, 27 places, predicted by that first `refAt`: 39 of 54 as Excel did it. It entered every formula ending in an operand; Excel enters one only when it reads (`=A1)`, `=1e`, `=1,5` in en-US do nothing) and takes a reference after any point (`=A1.`). `refAt` was revised by them.
-- `point-third-held`, 20 places no set had, predicted by the revised `refAt`: 19 of 20 in each locale. The one left is a reference to a sheet the book does not have (`=Sheet1!A`): Excel takes it for another workbook's and the arrow does nothing, which text alone cannot tell; `test/point-excel.test.ts` keeps it as a known difference.
-
-Then the caret elsewhere than at the end, reached by F2, Home and arrows in Edit mode and F2 again, three sets more, each predicted before Excel ran it:
-
-- `point-caret-held`, 24 cases in each locale: 27 of 48 as predicted. With the caret before the formula's first character Excel puts in its own `=` and the reference (20 cases); `=SUM(A1,` with the caret before the comma is entered in en-US. That the whole formula decides past the caret held.
-- `point-caret-held-2`, 19 cases: 16 of 19 in each locale. A group's bracket left open is not closed (`=(1+2`, `=((1`), a function's is.
-- `point-caret-held-3`, 13 cases: 9 of 13 in en-US, 11 of 13 in ru-RU. Excel does nothing with `=SUM(1)+MAX(2` and `=ABS(-(1)`, and in en-US with `=ROUND(1.5` and `=ROUND(A1*2` (where `ROUND` is known), which `refAt` enters. Measuring stopped at the third set with a correction; these six stay known differences (`test/point-excel.test.ts`), fewer than without closing a function's bracket (12).
-
-`test/point-excel.test.ts` compares `refAt` with every case that types a text and presses Right, 138 in each locale, the caret read from the keys pressed before the arrow. A case whose formula bar does not show the text it typed is not stored (another keyboard layout, or a key pressed by someone else at the Mac during the run, spoiled 11 cases of one run and 1 of another, which were run again; macOS turns two spaces typed into a point and a space, so no case types two).
-
-Not measured: a mouse press on a cell or on a sheet's tab while pointing (the harness presses keys only), and Excel for Windows, whose keyboard is not reachable over SSH.
+Measured on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU: six sets, each predicted before Excel ran it, 138 cases in each locale. Seven known differences stay: a reference to a sheet the book does not have, and six formulas with a function's bracket left open where Excel does nothing. Not measured: the mouse, and Excel for Windows.
 
 ## The text a cell opens with
 
@@ -403,41 +389,9 @@ A grid without the engine takes the text from its window: `getViewport` and `vie
 - A cell of an old-kind array formula's area opens with the area's formula, every cell of it, as F2 opens it (the formula bar shows it in braces, `{=SUM(C1:C3)}`). A cell a dynamic array spilled into opens empty; selected, Excel's formula bar shows its anchor's formula.
 - Text is written as it is, with an apostrophe before it when typing it would read as something else (`needsApostrophe`, by `parseEntry`): a number, a date, a time, a boolean, an error or a formula in the locale (`'007`, `'1.5` in ru-RU where it is a date, `'=1+2`), text a percent cell's editor would make a number (`'5`), text that begins with an apostrophe (`''x`), empty text. Under the text format nothing reads otherwise (`007`).
 
-## How it was checked
+## Checked against Excel
 
-The rules were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, in en-US and ru-RU, by the step `entry` of the harness (`bench/coverage/entry.ts`, `bench/windows/entry.ts`). A case types its text into a cell of its own, in General or with a format set before, through the object model as Excel 365 takes typed text in the user's language (`formula2 local` on the Mac, `Formula2Local` on Windows); then the cell's shown text and format codes are read, and the book is saved and read back with `readXlsx` for what the cell holds. On the Mac a set may be typed on the keyboard instead (System Events, an ASCII keyboard layout): the window Excel shows for a formula it does not take ("We found a typo in your formula", then why it is not taken) is answered with No and OK, and Escape leaves the cell as it was. The answers are in `test/excel/entry/` and `test/excel/win/entry/`, and `test/entry-excel.test.ts` and `test/entry-win.test.ts` compare `parseEntry` with every case, on the day of the run.
-
-| set | cases per locale | how | predicted before the run, en-US and ru-RU |
-|---|---:|---|---|
-| `typed` | 552 | object model, Mac and Windows | Mac 385 and 397, Windows 385 and 378 |
-| `typed-keys` | 39 | keyboard, Mac | 30 and 30 |
-| `typed-held` | 257 | object model, Mac and Windows | Mac 181 and 184, Windows 186 and 184 |
-| `typed-keys-held` | 44 | keyboard, Mac | 36 and 36 |
-| `typed-held-2` | 102 | object model, Mac and Windows | 85 and 84 on both |
-| `typed-keys-held-2` | 29 | keyboard, Mac | 25 and 26 |
-| `typed-keys-held-3` | 6 | keyboard, Mac | 3 and 4: `-5%`, `+5%` and `-0.5%` typed over a percent cell are formulas with the editor's second `%` (`-5%%`), where the engine wrote `-5%` |
-| `typed-pct-held` | 47 | object model, Mac and Windows | 45 and 46 on both |
-| `names-held` | 28 (en-US) | object model, Mac and Windows | 21 on both: cells' words as LET's names (`XFD1`, `XFE1`, `A0`) and the words past the sheet alone, refused here and taken by Excel, and an unknown name's case |
-| `let-grid-held` | 14 (en-US) | object model, Mac and Windows | 10 on both: `IV1`, `A65536` and `IV65536` are LET's names too, so the edge predicted, Excel 2003's sheet, is none, and a LET name read after its LET |
-| `let-cells-held` | 25 (en-US) | object model, Mac and Windows | 11 on both: every cell is LET's name but those that read as R1C1's row or column too |
-
-Each set's predictions (`bench/coverage/entry/<set>.predicted.json`) were committed before Excel ran it, and the misses became rules. The engine now gives Excel for Windows's answer on 1,812 of the 1,983 cases of the object model's sets, and the Mac's keyboard answer on 232 of 236; the other cases are the known differences below, pinned in `test/entry-known.ts`.
-
-Values are compared exactly, as the saved file holds every digit. `typed-pct-held` types percents with decimals where moving the point and dividing by 100 give different numbers (`1.1%`, `0.7%`, `1.255%`, `99.9%`, with a sign, parentheses, a leading `%`, groups and an exponent), fractions and plain decimals; each cell's value is also read through the object model (`value` on the Mac, `Value2` on Windows), which equals the number the file holds in every case. Both Excels stored every decimal percent as its decimal text reads; the miss was `$1.1%`, which Excel en-US keeps as text, the other the sign difference of the object model.
-
-Excel for Windows and Excel for Mac answer alike, but where their own built-in codes part: the Mac's en-US short date is `m/d/yy` and its ru-RU short time `hh:mm`, so it keeps the codes `m/d/yyyy` (en-US) and `h:mm` (ru-RU) as formats of the book's own, where Windows takes them as the formats 14 and 20. The engine follows Windows.
-
-The text a cell opens with was measured by the same step on the sets `edit-held` (85 texts) and `edit-numbers-held` (38 numbers around a length of 21 characters), which read each cell's `Formula` and `FormulaLocal` and, on the Mac, its formula bar itself: each cell selected in turn with Excel in front, the bar's text read through the window's accessibility (`Formula Bar. A,1 1/31/2025  6:00:00 PM`). The bar is needed: both Excels' object model gives a date's, a time's and a percent's number there (`45688`, `0.12`), and under other formats the text the bar shows, the apostrophe being the cell's prefix character. `entryText`'s predictions were committed before Excel ran each set: `edit-held` came out as predicted on 72 of 85 cells in en-US and 74 in ru-RU, the misses being numbers of 21 characters written whole, the two spaces before a time, the apostrophe Excel keeps and ru-RU's times, and with the rules fixed `edit-numbers-held` came out as predicted on all 38 numbers in both locales, in Excel for Mac's formula bar and Excel for Windows's `FormulaLocal` alike. `test/entry-text-excel.test.ts` compares `entryText` with the formula bar and with the object model under the other formats, and reads every text back with `parseEntry` to the value Excel saved.
-
-The object model takes some text otherwise than typing, and the keyboard sets settle these: through `Formula2Local` a text begun by `+` or `-` that is no number is text (`-C1`, `+1+2`), a number goes into a percent cell as it is (`5` is 500%), and empty text makes a cell formatted as text hold empty text. Excel for Windows has `AutoPercentEntry` on, as the answers' `meta` records, but takes `Formula2Local` as the Mac does.
-
-Text pasted from the clipboard and a text entered into a selection with Control+Return were measured by the step `ui` (`bench/coverage/ui.ts`; the sets `paste-held`, 25 pastes on both Excels, and `fill-held`, 18 entries on the Mac's keyboard), and the text a cell of an array opens with by the set `arrays-held` (the formula bar selected and once F2 began the editing, on the Mac; `Formula2Local` on both, which is the text F2 opens). The predictions, `setCellTexts` of the texts and `editText`, were committed before Excel ran each set, and the misses became the rules of [A paste and Control+Return](#a-paste-and-controlreturn) and of the cells of an old-kind array's area; Excel for Mac and Excel for Windows pasted alike in every case. `test/ui-excel.test.ts` compares `pasteText`, `fillCellText` (from the selection's first cell, a call with a stop alert taken back) and `editText` with every case: the engine gives Excel's answer to the 100 pastes (25 in each locale on each Excel), to 33 of the 36 entries into a selection and to the 16 cases of `arrays-held`; the other three are known differences below.
-
-A cell edited in place was measured by the same step on the Mac's keyboard (the set `edit-held`, 20 cases in each locale): the cell selected, F2, what it opened with erased or only its digit changed, the text typed and Return, the formula bar read when F2 began the editing and once more before Return. The prediction, `pasteText` of each text (no percent editor at all), was committed before Excel ran it and came out as predicted on 14 cases in en-US and 13 in ru-RU: the misses were numbers begun by a sign (`-5` is -5%), to which the editor still adds `%`, and in ru-RU a column Excel widened. `test/ui-excel.test.ts` compares `setCellText` with `inPlace` with every case, and the engine gives Excel's answer to all 40.
-
-Line breaks were measured by the step `rows` (`bench/coverage/rows.ts`, `docs/formats.md`, "Fitting rows"): text with a line break set through the object model (the sets `autofit` and `held`, both Excels), typed on the Mac's keyboard with Control+Option+Return, entered into a selection with Control+Return and pasted with Cmd+V (`keys`), and quotes in pasted text (`quotes`, both Excels, Windows through `Worksheet.Paste`; `quotes-ru`, the same pastes in ru-RU on Windows), each cell's content and wrapping read with its row's height. The keyboard, the object model and a paste set `wrap` alike, and the two Excels pasted every quote alike; the predictions, committed before each set ran, had the paste read no quotes, which the answers made the rule above.
-
-Refusing a value a rule does not take (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not measure: the alert is a window, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a refused call leaves the book, the revision and the history as they were, and that a value the rules take is written as without the option.
+Measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, en-US and ru-RU: about 2,000 typed texts through the object model and 236 on the Mac's keyboard, each set predicted before Excel ran it. The engine gives Excel for Windows's answer on 1,812 of the 1,983 cases of the object model and the Mac keyboard's on 232 of 236; the others are the known differences above. Pastes, Control+Return, the text a cell opens with and editing in place were measured the same way; the buttons of a validation rule's alert were not.
 
 ## Known differences
 

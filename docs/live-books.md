@@ -150,36 +150,6 @@ Use `explain` for the sources of a result, `getDependents` for possible conseque
 
 Asynchronous calls accept `signal` and `timeoutMs` beside their own options. Abort, deadline and stale-revision refusals leave the book and its history unchanged. Authorization, journals of agent actions and database version publication remain responsibilities of the host.
 
-## How it was checked
+## Checked against Excel
 
-Find was measured in Excel 16.0.20430 for Windows through its object model (`Range.Find` and `FindNext`, step `find` of `bench/windows`), in en-US and in ru-RU, on three sets held out with their predictions committed before Excel ran them (`bench/coverage/find/`, answers in `test/excel/win/find/`, test `test/find-win.test.ts`):
-
-| set | cases in each locale | predicted by | confirmed | what it settled |
-|---|---:|---|---:|---|
-| `rules-held` | 155 | the grid's own model: the lookup functions' wildcards, Look in Formulas `editText`, Values the shown text | 136 | wildcards and `~`, `?` over a character outside the BMP, the case of letters, what Look in reads, merged areas and arrays, order, hidden cells on a filtered sheet |
-| `rules-held-2` | 64 | `findCells` | 45 | hidden cells on a sheet without a filter, ranges of several areas, narrow columns, more of Look in, the Greek sigma |
-| `rules-held-3` | 32 | `findCells` | 32 | a filter's mode makes Look in Formulas skip hidden cells and take the blocks, even when it hides nothing |
-| `rules-held-4` | 29 | `findCells` | 22 | Find from a cell (`after`): round to it, a cell outside the range refused, a hidden row without a filter; on a filtered sheet a cell of a hidden line stands in the first block, and by columns the first column of the first block is not come back to |
-| `rules-held-5` | 24 | `findCells` | 15 | Find from cells of later blocks and of hidden lines further on a filtered sheet goes on as `rules-held-4` showed, by rows and by columns, in ranges that begin past the first block too |
-
-`findCells` gives Excel's cells in Excel's order in all of them but, in each locale, the seven cases of `rules-held`, the four of `rules-held-4` and the nine of `rules-held-5` listed in [Known differences](#known-differences). Excel for Mac's Find was not measured. `test/session-find.test.ts` checks the options in a synchronous session, in the same thread and in a pool's thread, with closures and eval.
-
-Replace was measured the same way (`Range.Replace` with Look in Formulas and dynamic formulas, `FormulaVersion` 1, step `replace` of `bench/windows`), each case in a book of its own, its cells read and the book saved and read back, with the columns' widths from `rules-held-2` (`bench/coverage/replace/`, answers in `test/excel/win/replace/`, test `test/replace-win.test.ts`):
-
-| set | cases in each locale | predicted by | confirmed in en-US, ru-RU | what it settled |
-|---|---:|---|---:|---|
-| `rules-held` | 60 | the grid's own Replace All: Find's cells in formulas, every match with `*` as long as it can be, written by `setCellTexts` | 51, 50 | wildcards in the query and in what is put, `?` over a character outside the BMP, the case, the whole cell, `*` as short as it can be, every cell found entered again, percents and dates, formulas in the book's language and ones that no longer read, arrays whole, hidden cells, a range of one cell |
-| `rules-held-2` | 22 | `replaceInCells` | 20, 20 | where `*` stops, an apostrophe put, a percent begun by a sign, the text format, the list separator, a table's header, no widening |
-| `rules-held-3` | 10 | `replaceInCells` | 9, 9 | a cell of the text format takes a formula and a boolean as typed elsewhere, and a date with a date format; percents, dates' and money's separators |
-
-`replaceInCells` leaves each cell as Excel left it in all of them but the cases listed in [Known differences](#known-differences): three of `rules-held` in en-US and four in ru-RU. `test/session-replace.test.ts` checks the rules, the undo and the options in every kind of session, and `test/find-texts.test.ts` the texts kept after a replacement.
-
-`Range.End` was measured the same way (step `end` of `bench/windows`), each case a cell and a direction in a book Excel opened, computed, filtered and typed into, the address it came to; held out with `getEnd`'s predictions committed before Excel ran each set (`bench/coverage/end/`, answers in `test/excel/win/end/`, test `test/end-win.test.ts`):
-
-| set | locale | cases | confirmed | what it settled |
-|---|---|---:|---:|---|
-| `rules-held` | en-US | 167 | 167 | blocks, one empty cell apart and further, to every edge; which cells hold something (14 kinds); spills, a blocked one, an old-kind array, a spill of a whole column; merged areas from each side and from inside; rows and columns hidden by hand and by a filter; every line hidden past a row and a column |
-| `rules-held-2` | en-US | 19 | 19 | from a cell of a hidden row or column, with a value and without; a row of height 0 and a column of width 0 not marked hidden; a merged area whose top-left cell is in a hidden row |
-| `ru-held` | ru-RU | 4 | 4 | blocks, an empty text from a formula, a hidden row and a merged area as in en-US |
-
-`getEnd` gives Excel's cell in all of them, in a synchronous session, in the same thread and in a pool's thread. The keyboard on a screen was not measured: Excel answered through its object model over SSH, without a screen. `test/end.test.ts` checks `getEnd` against a walk cell by cell over the session's result and book on seeded books with spills, empty texts, looks and hidden lines, through edits of cells, of the layout and of the structure and an undo, in every kind of session, and its time on the synthetic book.
+Find and Control with an arrow were measured in Excel 16.0.20430 for Windows, en-US and ru-RU, on held-out sets predicted before Excel ran them: `findCells` gives Excel's cells in Excel's order in all but the known differences above, and `getEnd` gives Excel's cell in every case. Not measured: Excel for Mac's Find, and the keyboard on a screen.

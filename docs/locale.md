@@ -344,14 +344,6 @@ A locale is ready when the engine gives Excel's answers in it, and every differe
 
 A new locale needs the same: the measurement and the sets computed in its Excel, and its own list of differences ([Tests and harnesses](#tests-and-harnesses)).
 
-## How it was checked
+## Checked against Excel
 
-`test/excel-locales.test.ts` computes the measurement's book with `locale: 'ru-RU'` and compares every whitelisted function's cases with Excel ru-RU's answers in `test/excel/coverage/excel-ru.json`. `test/excel-locales-sets.test.ts` does the same for the ru-RU case sets in `test/excel/cases/ru-RU/`, among them `locale` (1,109 cases) and `collation` (174). `npx tsx bench/coverage/run.ts probes <set> ru` computes a set in Excel ru-RU. Known differences are listed in `RU_KNOWN` with a line each in the README; among them are the cases where the engine follows Excel for Windows and the Mac answers otherwise (the order of text, month names).
-
-`test/excel-win.test.ts` checks the same books against Excel for Windows (`test/excel/win/`, `bench/windows`), with the set `collation-more` (62 cases of the order inside Cyrillic and Latin) measured in Windows alone.
-
-`test/locale-excel.test.ts` checks that both translations reproduce Excel's own text of all 6,381 formulas in ru-RU, and `test/locale-roundtrip.test.ts` that 15,266 formulas of the case sets come back unchanged from every locale.
-
-`test/locale-modules.test.ts` loads nothing until its last part: a ru-RU book is the `InputError` that names the module in `compute`, a session, `editStructure`, `fitColumns`, the same thread and `writeXlsx`, and so is the tag in every function that takes a locale; `ruRU` as an object gives these functions their answers without loading; an en-US book gives Excel's `Январь` for `[$-419]mmmm` and Excel for Mac's widths of Cyrillic letters; `readXlsx` keeps a file's ru-RU; once loaded, a ru-RU book computes as before in a session and in the same thread, with closures and eval; `registerLocale` refuses another object with a loaded tag, en-US, and a locale without rules or with wrong messages; the files of `src/locales/`, `PACKAGE_LOCALES`, `LOCALE_MODULES` and the subpaths agree. `test/locale-args.test.ts` gives every function with a locale the tag and the object and gets the same answer, and `test/locale-pool.test.ts` checks the threads of a pool. `test/bundle-size.test.ts` bundles `compute` alone with esbuild: 253 KB minified, with en-US alone of the locales, under its budget of 300 KB.
-
-Excel for Mac and Excel for Windows (16.0.20430) compute ru-RU alike but for their regional data. Where those part, the engine follows Windows: the order of text, month names, the times of built-in formats, `CHAR` and `CODE`. It keeps the Mac's long date `[$-F800]` (`пятница, 31 января 2025 г.`; Windows's has no weekday). Formula text in ru-RU (array constants and the like) was not compared with Windows.
+Every function's cases and the ru-RU case sets were computed in Excel ru-RU; both translations give Excel's own text of all 6,381 formulas in ru-RU, and 15,266 formulas come back unchanged from every locale.

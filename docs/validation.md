@@ -96,7 +96,7 @@ A literal list is a text constant of items separated by commas, `'"Open,Shipped,
 
 ## How a value is checked
 
-These are the rules measured in Excel for Mac and for Windows (`How it was checked`).
+These are the rules measured in Excel for Mac and for Windows ([Checked against Excel](#checked-against-excel)).
 
 ### Blanks
 
@@ -139,31 +139,9 @@ const list = session.getValidation('S', 'B2').list
 session.setCells([{ sheet: 'S', cell: 'B2', input: list[0].input }])
 ```
 
-## How it was checked
+## Checked against Excel
 
-`npx tsx bench/coverage/run.ts valid <set> [ru]` writes each book of `bench/coverage/valid/<set>.ts` with `writeXlsx`. Excel for Mac opens it, makes what the case makes through its object model (`add data validation` with the range's first cell selected, groups, a collapsed group), applies the case's structure operation, and over a window of each sheet reads, with each cell selected in turn, the cell's rule (type, operator, formulas, settings, texts) and `Validation.Value`, whether the cell's value meets it; it reads the outline too and saves the book. `npx tsx bench/windows/run.ts valid <set> [ru]` does the same in Excel for Windows through COM. `test/validation-excel.test.ts` and `test/validation-win.test.ts` check, without Excel, that Excel read what the engine holds after each case, `validateEntry` with each cell's own input against `Validation.Value`, and that the reader reads the file Excel saved as Excel read it.
-
-| set | cases | what |
-|---|---|---|
-| `files` | 8 | books written with every type and setting, whole columns, several ranges, another sheet, texts past Excel's limits, outlines; books written after structure operations in the engine |
-| `made` | 4 | rules of every type, groups and collapsed groups made by Excel itself |
-| `struct-held` | 31 | lines inserted and deleted around and inside rules and groups, moves and copies of rules and onto them, sheets renamed and deleted under lists |
-| `struct-held-2` | 15 | held out after `struct-held`: lines inserted right after rules, moves onto rules and to another sheet, lines inserted into collapsed groups |
-| `entry-held` | 96 values | values of every kind against every type, bounds on blank cells, lists of cells holding numbers as text |
-| `lists` | 30 values | lists through names, another sheet, a spill, a formula, a whole column, literal lists with `;` and spaces |
-| `entry-held-2` | 39 values | held out after `entry-held` and `lists` |
-| `held-3` | 30 values, 2 moves | held out after the second sets: blanks where blanks are not ignored, literal numbers, moves and copies to another sheet |
-| `ru` | 2 | in ru-RU: literal lists with commas and semicolons in a file, and lists, bounds and formulas typed into the object model in Russian |
-| `edge-held` | 8 | rules at the sheet's last row and column, one cell and two, under lines deleted and inserted far before them and the last line deleted |
-| `sqref-held` | 5 | a rule's cells as another writer may spell them: in lower case, with `$`, both, several ranges, Excel 2010's `<xm:sqref>` (put into the file by hand) |
-
-The engine's answers were committed before Excel ran each set (`bench/coverage/valid/*.predicted.json`). Excel loaded every written book. Of the predictions, `files` held in 2 of 8 books (a literal list matches text in its case; texts the writer cuts), `made` in 3 of 4 (lines inserted into a collapsed group open it), `struct-held` in 26 of 31 (lines inserted right after a rule take it; a move keeps the target's rules; a formula referring to a blank cell lets anything in), `struct-held-2` in 14 of 15 (a rule moved to another sheet moves its formulas as a copy), the checks of values in 87 of 96 (`entry-held`), 26 of 30 (`lists`), 36 of 39 (`entry-held-2`) and 27 of 30 (`held-3`), and `edge-held` in 4 of 8 (a rule of one cell on the last row or column stretches over the line before it when lines above are deleted, as a range ending there does; Excel refuses lines inserted that push its cells off the sheet, as predicted). Each miss gave one of the rules above, fitted on the set that showed it. In `sqref-held` both Excels took every spelling as the range it names, where the engine predicted four of the five rules lost (it read lower case but not `$`); it now reads them as Excel does. Excel for Windows read what Excel for Mac read in every set in en-US.
-
-In ru-RU both Excels read a file's literal lists as en-US does, split at commas. Typed through the object model in Russian, a list `x;y;z` is three items in Excel for Windows and one in Excel for Mac's AppleScript, which also made no rule of a formula with a Russian function name, and Excel for Mac's object model shows a rule's formulas now in Russian, now in English, so the ru-RU set compares Excel for Mac's values and settings and leaves the formulas to the file it saved.
-
-What Excel does with a picked item of a dropdown, and the text its dropdown shows, was not measured: no object model gives them. Lists of cells were checked by which values they take.
-
-An item picked from a dropdown was measured by the step `ui` on the Mac's keyboard (the set `pick-held`, 14 picks in each locale: the cell selected, its list opened with Option+Down, the item reached with Down and taken with Return): a list of cells holding text that reads as a number, a date, a boolean or a percent when typed, a number shown as a percent, plain text, a literal list, into cells in General, in the text format and a percent. The prediction, each item typed as its text with the rule checked, was committed before Excel ran the set and came out on 5 picks in each locale: Excel took no item as typed from a list of cells and showed no alert. `test/ui-excel.test.ts` compares `setCells` of each item's `input` with every pick.
+Measured in Excel for Mac and Excel for Windows, en-US and ru-RU, on 74 books, each set predicted before Excel ran it. Not measured: what Excel does with an item picked in a dropdown and the text its dropdown shows, which no object model gives.
 
 ## Known differences
 

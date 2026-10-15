@@ -74,16 +74,6 @@ Typed text reads either form and the number: `toInvariant` with `externalBooks`,
 - `INDIRECT`, `OFFSET` and `CELL` are not in the engine (`#NAME?` in any book): over a closed book Excel gives `#REF!`, `#VALUE!` and no text.
 - A link of another kind than a workbook (DDE, OLE) keeps its number and is reported by `readXlsx`; its references are `#REF!`.
 
-## How it was checked
+## Checked against Excel
 
-`npx tsx bench/coverage/run.ts links <set>` writes each case of `bench/coverage/links/<set>.ts` as `writeXlsx` writes its own cells, with the formulas over links and the link parts put in by hand as Excel writes them, and has Excel for Mac open it with `update links do not update links`; `npx tsx bench/windows/run.ts links <set>` has Excel for Windows open it with `UpdateLinks` 0. Neither showed a window about the links. Each reads the rectangles after opening, takes the case's operations (a fill down, a copy, rows inserted, a sheet renamed), reads them again after a full calculation, and saves the book. The answers are in `test/excel/links/` and `test/excel/win/links/` with the files Excel saved; the predictions in each set were committed before Excel ran it.
-
-| set | what it covers |
-|---|---|
-| `first` | one cell, the shape of the step |
-| `basics-held` | cells, ranges, whole columns and rows, cells not stored, text, booleans and errors stored, sheets with a space and in Cyrillic, the linked book's names, this book's names over a link, lookups, criteria, `INDIRECT`, `OFFSET`, a dynamic array, a fill down, a copy, a renamed sheet, inserted rows, failed updates, two links, six forms of a target |
-| `edits-held` | which edit makes a cell not stored `#REF!`: none, fills and copies onto stored and unstored cells, a rename, inserted rows |
-| `refresh-held` | the mark on stored values, on empty data, a sheet without data, and which sheets and links a fill marks |
-| `functions-held` | the functions that take only a reference, a linked criterion, a linked range through a name, more functions that read values |
-
-Both Excels gave the same values everywhere. `test/links-excel.test.ts` checks, for each platform, the values after opening against `compute` of the case's book, the values after the operations against a session that takes them, the formulas Excel showed against `toLocal` with the links' targets in the opened file's folder, and that Excel's answer was the predicted value or one of its alternatives; the predictions it did not confirm are named there with the reason (a cell not stored was predicted blank, and is, until a formula with the link is entered). Excel also built a link itself, to a book it had open: it stored only the non-empty cells of the source's used part, an empty text as `t="str"` with an empty value, and opened without the source gave the stored values, blank elsewhere. `test/links-session.test.ts` runs an edit under formulas with links, an entered link and a refused new link in a synchronous session, in the same thread and in a pool, in both execution modes, against a full computation of the session's book. `test/links.test.ts` covers the text, the check, the input check, the input hash and structure operations.
+Measured in Excel for Mac and Excel for Windows, which opened each file without updating its links and gave the same values everywhere; the engine gives their values and their formulas' text.

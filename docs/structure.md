@@ -338,7 +338,7 @@ An outline is the outline levels of rows and columns (`outlineLevel`, 1 to 7) wi
 
 Excel's outline commands, Group, Ungroup, Show and Hide Detail and the level buttons, are structure operations too, which move no cell: [docs/outline.md](outline.md) has them.
 
-The valid sets `struct-held` and `struct-held-2` measured these rules in Excel for Mac and for Windows, with the engine's answers committed before Excel ran them ([docs/validation.md](validation.md#how-it-was-checked)).
+The valid sets `struct-held` and `struct-held-2` measured these rules in Excel for Mac and for Windows, with the engine's answers committed before Excel ran them ([Development](development.md#data-validation)).
 
 ## Hidden rows and filtered sheets
 
@@ -389,45 +389,9 @@ A merge that moves no cell changes the cells of its range, the merged areas and 
 
 Only two of these recompute values. A merged area added or removed over an array's spill range recomputes that array. Rows hidden or shown, and a new filter mode, recompute the `SUBTOTAL` and `AGGREGATE` formulas over the rows concerned and what depends on them.
 
-## How it was checked
+## Checked against Excel
 
-`test/structure-geometry.test.ts` checks that every kind of operation puts the cells where its `mapCell` says: each cell it keeps is at the address `mapCell` gives and nowhere else, a cell it takes away is in no other place, and the way back takes each cell to the place it came from; `test/session-geometry.test.ts` checks `moved` and `mapCell` of a filtered delete and a deleted table done, undone and redone in every kind of session, and `null` for a sheet `mapCell` does not know. The seeded undo sessions (`test/session-undo-fuzz.test.ts`) keep a host's screen, moved by `mapCell` and given the changes, equal to the session's values.
-
-`test/copy-formula.test.ts` checks `copyFormula` against `copyRange` on every copy of the structure sets and the table sets: each formula of the source at each place the copy pastes it, 317 and 8 of them.
-
-`npx tsx bench/coverage/run.ts struct <set>` applies each case's operation to its book in Excel through AppleScript and stores what every sheet shows in `A1:Z60`, with the defined names, in `test/excel/struct/<set>.json`. For books with styles it also reads the look of `A1:J24`: bold, fill colour and number format of each cell, widths and heights that are not standard, and the merged areas. `test/structure-excel.test.ts` compares `editStructure` with the stored answers without Excel.
-
-| set | cases | what |
-|---|---|---|
-| `rows` | 26 | inserting and deleting rows and columns with every kind of reference: relative, absolute, mixed, ranges, whole columns and rows, other sheets, quoted names, global and local names |
-| `edge` | 10 | references at the last row and column, the whole sheet, the two inserts Excel refuses |
-| `move` | 27 | cut and copy on the same book, onto referenced cells, whole columns and rows, other sheets, fill down and right, tiles |
-| `moves` | 20 | every range `Ai:Aj` and `Ai:Bj` of a 12-row window under 20 moves |
-| `sheets` | 9 | renaming (quotes, case, an apostrophe) and deleting sheets |
-| `history` | 6 | renaming to `History` in three cases (Excel refuses) and to similar names (Excel accepts) |
-| `checks` | 26 | predicted before Excel computed them: moves outside the fitted ones, edge cases, copies with mixed `$` and local names |
-| `styles` | 46 | inserts, deletes, moves and copies in a book with cell styles, styled rows and columns, widths and merged areas |
-| `styles-checks` | 18 | predicted before Excel computed them: spans, tiled and moved merged areas, cells moved into styled rows and out of styled columns |
-| `edge-layout`, `edge-wide` | 9, 4 | styled rows and columns, spans and merged areas at the end of the sheet |
-| `spill`, `spill-more`, `spill-copy` | 8, 4, 10 | spill references and spilled cells under structure operations |
-| `hidden` | 49 | copies, fills, moves, inserts and deletes over rows hidden by hand and on a filtered sheet, and next to hidden columns |
-| `cube` | 20 | references across sheets and names of any formula: rows and columns, sheets renamed, deleted, inserted and moved, copies |
-| `arrays` | 17 | array formulas of the old kind: lines inserted and deleted around and inside the area, the area moved, copied and pasted over |
-| `zero-held` | 8 | predicted before Excel ran them: rows inserted under rows of height 0, one styled, a span of two, one also marked hidden, and under a row hidden at height 30 |
-
-The look also lists the hidden rows and columns. The set `hidden` writes its filtered book with an autofilter and its criteria, and runs its fills through Excel's Fill Down and fill handle as well as copy and paste.
-
-All cases match except the two known differences below. Of the predicted cases, `checks` matched 21 of 26, `styles-checks` 17 of 18 and `zero-held` 8 of 8 (Excel for Windows too); the misses found two wrong rules and a conversion error in the comparison itself, all fixed.
-
-Not checked against Excel: a move that does not fit (it is refused like a copy), most moves to another sheet, fonts other than bold, borders and alignment (they move with the style number). For merging: borders, fonts other than bold, the vertical alignment, and the notes, hyperlinks and `meta` of the cells a merge clears (here they keep them).
-
-Copies were applied through AppleScript's `copy range` with a destination, Excel's `Range.Copy`. On a filtered sheet it pasted values. Copying and pasting in Excel's window was not measured.
-
-Hidden sheets were measured by the step `hidden` in Excel for Mac and for Windows (`npx tsx bench/coverage/run.ts hidden <set>`, `bench/windows/run.ts hidden <set>`, `test/hidden-sheets-excel.test.ts`): sheets hidden and shown through the object model (`Visible`), renamed, deleted, inserted and moved beside hidden ones, with references across sheets over them. Each set's answers were predicted before Excel ran it: `sheets-held` held in 25 of 29 cases, the misses being the very hidden sheet that neither Excel deletes or moves and a sheet moved before a hidden one, which went after it; `sheets-held-2` in 6 of 11, the misses being moves past hidden sheets with none visible after them and ends of references across sheets that moved without passing the other end; `sheets-held-3` in 10 of 10. Both Excels answered alike ([docs/xlsx.md](xlsx.md#hidden-sheets-2)).
-
-Merging cells was measured in Excel for Windows (`npx tsx bench/windows/run.ts struct <set>`: `Range.Merge`, `Range.UnMerge`, Merge & Center as `Merge` with the alignment centred, alerts off), whose answers are in `test/excel/win/struct/` and compared by `test/structure-win.test.ts`; Excel for Mac was not asked. The look read there has the horizontal alignment as well. A case may take an operation before its own (`before`): cells merged and split again show the look the merge gave them, and a table is made over the cells first (`ListObjects.Add`). Each set was predicted before Excel ran it. `merge` (28 cases) held in 20: an empty top-left cell takes the area's first value (6 cases, the prediction kept it empty), and Excel writes a merged area of whole rows as `20:21` (2, the same area). `merge-held` (18) held in 10: the value comes as cut and paste moves it, with the references to it and its look (8). `merge-third-held` (12) held in all 12, and `merge-top-held` (3), references to the empty top-left cell, in all 3. `test/merge-cells.test.ts` checks that a session gives the book `editStructure` gives on every case, with and without building the state again, and undoes and redoes it in one step in every kind of session.
-
-The fill handle was measured in Excel for Windows by the same step (`Range.AutoFill` over the range `to`, its type `xlFillDefault`, `xlFillSeries` or `xlFillCopy`), in en-US, three sets each predicted before Excel ran it. `fill` (46 cases) held in 38: dates at months' ends go on by months, `Q1` by quarters, `1st` by ordinals, a number before text goes on, and a number alone beside text goes on by 1; three more cases differed only in the comparison, which now writes the engine's numbers in Excel's 15 digits. `fill-held` (45) held in 37: an empty cell does not end a run, dates and text without one step are copied, months go on from one day of the month or from months' ends alone, a number first needs a space after it and comes before one at the end, ordinals end small, a number alone is copied only when the source holds numbers alone. `fill-third-held` (31) held in 28: a date beside a number alone makes it go on, steps are taken alike in 15 digits (`9:00, 10:00, 11:00` go on by the hour), a number first loses its zeros (`007 x`, `8 x`). After those corrections all 122 cases match; no fourth set was run. `test/fill-range.test.ts` checks that a session gives the book `editStructure` gives on every case, undoes and redoes it in one step in every kind of session, and keeps dates given as text.
+Measured in Excel 16 for Mac, en-US, on 317 books; merging cells (61 cases) and the fill handle (122 cases) in Excel for Windows, hidden sheets in both. All match but the known differences below. Not measured: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment and the notes and links of the cells it clears; the fill handle in Excel for Mac and with a ru-RU Excel's lists.
 
 ## Known differences and limits
 
