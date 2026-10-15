@@ -36,6 +36,11 @@ export interface Locale {
    */
   readonly tableItems?: Readonly<Partial<Record<TableItem, string>>>
   /**
+   * The words of the arguments' names in the tips of functions (`functionSignature`) by their English word (`number:
+   * 'число'`, so `number1` is `число1`); a word not listed stays English.
+   */
+  readonly argumentWords?: Readonly<Record<string, string>>
+  /**
    * The rules of computation as data: number and date text, names, `TEXT`'s codes, the text order, the code page. A
    * locale a book computes in has them, but en-US, whose rules are the engine's own code; a locale without them reads
    * and shows values as en-US does.
