@@ -4,9 +4,11 @@
  * (`SUM(number1, [number2], ...)`). The names are the library's own, in the style of Excel's (decision 39 of the design):
  * common words where Excel uses them, its abbreviations spelled out. A locale's names are its words for the English
  * ones (`Locale.argumentWords`); a word it lacks stays English. Which arguments are optional and how many there can be
- * agrees with each function's measured arguments (`test/signatures.test.ts`).
+ * agrees with each function's measured arguments (`test/signatures.test.ts`). Beside them, its category and what it does
+ * (`function-info.ts`), as Excel's Insert Function window shows them.
  */
 import type { FunctionArgument, FunctionSignature } from './contract.js'
+import { CATEGORY_NAMES, CATEGORY_OF, DESCRIPTIONS } from './function-info.js'
 import { checkString } from './input.js'
 import { checkLocaleArg } from './locale/load.js'
 import { localeOf } from './locale/registry.js'
@@ -540,5 +542,15 @@ export function functionSignature(name: string, locale?: string | Locale): Funct
   const parts = groups.map((g) => (g.optional ? `[${g.names.join(sep)}]` : g.names.join(sep)))
   const local = loc.functions[invariant] ?? invariant
   const args: FunctionArgument[] = groups.flatMap((g) => g.names.map((n) => ({ name: n, optional: g.optional })))
-  return { name: local, args, repeat: shape.repeats ? groups[groups.length - 1].names.length : 0, text: `${local}(${[...parts, ...(shape.repeats ? ['...'] : [])].join(sep)})` }
+  const category = CATEGORY_OF.get(invariant)!
+  const own = loc.functionText
+  return {
+    name: local,
+    args,
+    repeat: shape.repeats ? groups[groups.length - 1].names.length : 0,
+    text: `${local}(${[...parts, ...(shape.repeats ? ['...'] : [])].join(sep)})`,
+    category,
+    categoryName: own?.categories[category] ?? CATEGORY_NAMES[category],
+    description: own?.descriptions[invariant] ?? DESCRIPTIONS[invariant],
+  }
 }

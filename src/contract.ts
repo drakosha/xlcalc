@@ -2006,7 +2006,19 @@ export interface FunctionSignature {
   repeat: number
   /** The tip's text, with the locale's list separator. */
   text: string
+  /** The function's category, as Excel's Insert Function window lists it (`FUNCTION_CATEGORIES`). */
+  category: FunctionCategory
+  /** The category's name in the locale (`Math & Trig`, `Математические`). */
+  categoryName: string
+  /** What the function does, one line in the locale, in the library's own words. */
+  description: string
 }
+
+/**
+ * A category of functions, as Excel's Insert Function window lists them; `compatibility` holds the old names Excel keeps
+ * beside their newer versions (`NORMDIST` beside `NORM.DIST`).
+ */
+export type FunctionCategory = 'financial' | 'date' | 'math' | 'statistical' | 'lookup' | 'database' | 'text' | 'logical' | 'information' | 'engineering' | 'compatibility'
 
 /** An argument of a function's signature: its name in the locale and whether a call can leave it out. */
 export interface FunctionArgument {

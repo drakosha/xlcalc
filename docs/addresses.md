@@ -32,12 +32,16 @@ Rows and columns are numbered from 1, as A1 numbers them. `parseCell` and `parse
 
 `functionSignature(name, locale?)`, in the root alone (its names would take `xlcalc/text` past 50 KB), gives a function's arguments for a tip while a formula is typed, as Excel's tip lists them: the name in the locale, `args` (each argument's name and whether a call can leave it out), `repeat` (how many of the last arguments go on past the list, 1 for SUM, 2 for SUMIFS) and the tip's `text`; null for a name outside the whitelist. The name is taken in English or in the locale, in any case. The names of the arguments are the library's own, in the style of Excel's (common words, Excel's abbreviations spelled out), in English and, with `xlcalc/locales/ru-RU`, in Russian; which arguments are optional and how many a call takes are the measured ones of each function.
 
+For a window like Excel's Insert Function, the signature also has the function's `category`, as that window lists the functions (`FUNCTION_CATEGORIES` gives the categories in its order, `compatibility` holding the old names such as `NORMDIST`), the category's name in the locale (`categoryName`) and a line saying what the function does (`description`), in the library's own words, in English and in Russian. The window's "Most Recently Used" and "All" are the host's to keep.
+
 ```js
 import { callAt, functionSignature } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
 
 console.log(functionSignature('sumifs').text) // → SUMIFS(sum_range, criteria_range1, criteria1, [criteria_range2, criteria2], ...)
 console.log(functionSignature('ВПР', ruRU).text) // → ВПР(искомое;таблица;номер_столбца;[приближённо])
+const vlookup = functionSignature('VLOOKUP')
+console.log(vlookup.categoryName, '|', vlookup.description) // → Lookup & Reference | A value from a column of a table, found in its first column.
 const call = callAt('=СУММЕСЛИ(A:A;">1";', undefined, { locale: ruRU })
 console.log(call.fn, call.index, functionSignature(call.fn, ruRU).args[call.index].name) // → SUMIF 2 диапазон_суммирования
 ```

@@ -38,6 +38,7 @@ import { sheetKey, validate, validateName as checkName } from './syntax.js'
 
 export * from './contract.js'
 export { FUNCTION_NAMES } from './functions.js'
+export { FUNCTION_CATEGORIES } from './function-info.js'
 export { CONFIG_VERSION } from './config.js'
 export { InputError } from './input.js'
 export { CalcError } from './exec/budget.js'
