@@ -21,6 +21,46 @@ console.log(session.getValidation('Orders', 'A5').list.map((i) => i.text).join('
 console.log(session.validateEntry('Orders', 'B5', { value: 120 }).ok, session.validateEntry('Orders', 'A5', { value: 'Done' }).ok) // → false false
 ```
 
+## In short
+
+A sheet's rules of data validation (`validations`) say what its cells take: a list, whole numbers or dates between bounds, a text length, a custom formula, with the message shown while a cell is selected and the alert for a value it does not take. `session.getValidation(sheet, cell)` gives a cell's rule and the items of its list, computed in the book as it is now, each with the `input` Excel writes when it is picked from the dropdown (a cell's value as it is, a literal item read as typed in en-US; no rule checked); `session.validateEntry(sheet, cell, input)` tells whether a value meets the rule, as Excel checks it: `{ ok: true }`, or the rule with its alert's style (`severity`) and message, the rule's `error` or, without one, the text of Excel's alert in the book's locale (`This value doesn't match the data validation restrictions defined for this cell.`); `setCellText` checks the value it writes so.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{
+    name: 'Orders',
+    cells: { A1: { value: 'Status' }, A2: { value: 'Open' }, B2: { value: 5 }, B3: { value: 7 } },
+    validations: [
+      { range: 'A2:A100', type: 'list', formula1: '"Open,Shipped,Closed"', prompt: 'Pick a status' },
+      { range: 'B2:B3', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' },
+    ],
+  }],
+})
+console.log(session.getValidation('Orders', 'A7').list.map((i) => i.value)) // → [ 'Open', 'Shipped', 'Closed' ]
+console.log(session.validateEntry('Orders', 'A7', { value: 'Lost' }).ok, session.validateEntry('Orders', 'B3', { value: -2 }).rule.errorStyle) // → false warning
+```
+
+Rules and outlines change through `setLayout` ([Layout](grid.md#layout)), move with structure operations as Excel moves them and go both ways in xlsx files. [docs/validation.md](validation.md) has how a value is checked and how it was measured in Excel.
+
+Rows and columns have outline levels (`outlineLevel`, 1 to 7), Excel's groups: a collapsed group is hidden rows with its summary row, the row past it, marked `collapsed`. `outlineGroups(sheet)` (also from `xlcalc/a1`, without the engine) gives a sheet's groups as Excel draws them, each `{ first, last, level, summary, collapsed }`, from a sheet or its layout; Excel's commands on them are structure operations: `group` and `ungroup` of rows or columns, `hideDetail` and `showDetail` at a line (a group's `−` and `+`), `showLevels` (the level buttons), each one step of the undo in a session. The marks are read and written as Excel keeps them: a group whose rows are all hidden, through `setLayout` too, is collapsed, and an inner group collapsed inside an outer one stays collapsed when the outer one opens.
+
+```js
+import { createSession, outlineGroups } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{ name: 'S', cells: {}, rows: { '3:4': { outlineLevel: 1 }, '5:7': { outlineLevel: 2 }, '8:10': { outlineLevel: 1 } } }],
+})
+session.editStructure({ op: 'hideDetail', sheet: 'S', row: 8 })
+session.editStructure({ op: 'hideDetail', sheet: 'S', row: 11 })
+session.editStructure({ op: 'showDetail', sheet: 'S', row: 11 })
+console.log(outlineGroups(session.getLayout().sheets[0]).rows.map((g) => [`${g.first}:${g.last}`, g.collapsed])) // → [ [ '3:10', false ], [ '5:7', true ] ]
+console.log(session.editStructure({ op: 'showDetail', sheet: 'S', row: 11 }).code) // → detail
+```
+
+[docs/outline.md](outline.md) has the rules, measured in Excel for Windows.
+
 ## Rules
 
 A rule is `DataValidation`, as an xlsx file holds it:

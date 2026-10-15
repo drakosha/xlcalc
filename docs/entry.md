@@ -17,6 +17,152 @@ const bad = parseEntry('=СУММ(A1;', { locale: 'ru-RU' })
 console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Формула не закончена 9
 ```
 
+## In short
+
+`parseEntry` reads text typed into a cell the way Excel reads it in the book's locale, without a book, and gives the cell's new input: a number, a date or a time with the format Excel sets for it (`15.03.2026` in ru-RU gets the short date, `5%` the format `0%`, `$1,234.50` the locale's money), a boolean, an error, text, or a formula in the stored form. The cell typed into keeps its style, meta, note and link, and its format unless Excel changes it: a number typed into a percent cell is percent, a time typed into a date cell sets `h:mm`, the number formats and the book's own formats stay.
+
+```js
+import { parseEntry } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+const ru = (text, cell) => parseEntry(text, { locale: ruRU, cell, now: '2026-10-10T12:00:00Z' })
+console.log(ru('1 234,5').input, ru('15.03.2026').input, ru('5%').input) // → { value: 1234.5, numberFormat: 4 } { value: 46096, numberFormat: 14 } { value: 0.05, numberFormat: 9 }
+console.log(ru('ИСТИНА').input, ru('#Н/Д').input, ru("'007").input, ru('15.3').input) // → { value: true } { formula: '#N/A' } { value: '007' } { value: 46096, numberFormat: 16 }
+console.log(ru('=СУММ(A1;1,5)').input, ru('=FOO(1)').input, ru('-C1').input) // → { formula: 'SUM(A1,1.5)' } { formula: 'FOO(1)' } { formula: '-C1' }
+const stop = ru('=SUM(A1,1.5)')
+console.log(stop.ok, stop.code, stop.message, stop.at) // → false syntax Здесь не может стоять «.» 9
+console.log(ru('18:30', { numberFormat: 14, style: 2, meta: { id: 7 }, note: { text: 'checked' } }).input)
+// → {
+//     value: 0.7708333333333334,
+//     numberFormat: 20,
+//     style: 2,
+//     meta: { id: 7 },
+//     note: { text: 'checked' }
+//   }
+console.log(parseEntry('3/15/2026').input, parseEntry('$1,234.50').input.value, parseEntry('5', { cell: { numberFormat: '0%' } }).input) // → { value: 46096, numberFormat: 14 } 1234.5 { value: 0.05, numberFormat: '0%' }
+```
+
+`opts.locale` is the book's locale, a loaded locale's tag or a locale object ([Localization](locale.md)), `opts.cell` the entry context (its effective `numberFormat`, `style`, `meta`, `note` and `link`), `opts.now` the moment whose year completes a date typed without one (`15.3`), and `opts.dateSystem` the book's date system. A `CellInput` or a `CellView` from `getCell` or `getCells` holds only the cell's own number format. To account for a row's or column's format, use the resolved cell from `getViewport`, or supply the effective `numberFormat` yourself:
+
+```js
+import { createSession, parseEntry } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', columns: { A: { numberFormat: '0%' } }, cells: { A1: { value: 0.1 } } }] })
+const shown = session.getViewport('S', 'A1').cells.A1
+console.log(parseEntry('5', { cell: shown }).input) // → { value: 0.05, numberFormat: '0%' }
+session.close()
+```
+
+`parseEntry` stores the supplied format in its returned input. For editing a session, `setCellText` resolves the inherited format itself and keeps it on its row or column instead of storing it on the cell. Only a formula that does not parse stops the entry, with the check code, its position in the text and a message in the book's locale, as Excel's window does; an unknown function is taken and computes `#NAME?`. Empty text clears the value and keeps the rest of the cell (`null` when nothing is left). The rules, measured case by case in Excel for Mac and Excel for Windows, typed through the object model and on the keyboard, are in [docs/entry.md](entry.md). A number typed into a column too narrow for it widens the column: `entryWidth` gives the width ([Showing values](formats.md)).
+
+A session takes typed text into a cell itself: `setCellText(sheet, cell, text, opts?)` reads it as `parseEntry` does, in the book's locale and date system, by the session's clock and the format the cell shows (its own, else its row's or column's, which the cell does not take as its own), keeps the rest of the cell, and widens the column in the same step of the undo as Excel does, unless `widen: false`; `previewCellText` says the same and changes nothing.
+
+```js
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({
+  locale: 'ru-RU',
+  styles: [{ font: { bold: true } }],
+  sheets: [{
+    name: 'S',
+    cells: { A1: { value: 1, style: 0 } },
+    columns: { B: { numberFormat: '0%' } },
+    validations: [{ range: 'C1:C9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }],
+  }],
+}, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+const typed = session.setCellText('S', 'A1', '1234567890')
+console.log(typed.width, session.getBook().sheets[0].cells.A1) // → 11.1640625 { style: 0, value: 1234567890 }
+console.log(session.setCellText('S', 'B1', '7').changes, session.getBook().sheets[0].cells.B1) // → [ { sheet: 'S', cell: 'B1', value: 0.07, text: '7%' } ] { value: 0.07 }
+const refused = session.setCellText('S', 'A2', '=СУММ(A1;1.5)')
+console.log(session.previewCellText('S', 'C1', '-2').validation.severity, refused.code, refused.at) // → warning syntax 10
+```
+
+A value the cell's rule of data validation does not take is written, with `validation`, the rule, its alert's style (`severity`) and message. A formula that does not read, a change of part of an old-kind array and a formula in a table's header cell are refused (`{ ok: false, code, message, at? }`, the message in the book's locale); text typed into a header cell renames its column, as `setCells` does.
+
+Excel shows the rule's alert before it writes such a value: a `stop` alert never takes it (Retry or Cancel), a `warning` writes it on Yes, an `information` on OK. With `refuseInvalid: true` the call writes nothing and answers `{ ok: false, code: 'validation', sheet, cell, rule, severity, message }`, so the host shows the alert first. Where the person keeps the value, the host makes the same call again without the option, and the value is written with its alert. Without the option the value is written, and a host that refuses it afterwards calls `undo()`, which leaves a step to redo.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{ name: 'S', cells: {}, validations: [{ range: 'A1:A9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning', error: 'Positive only' }] }],
+})
+const asked = session.setCellText('S', 'A1', '-2', { refuseInvalid: true })
+console.log(asked.code, asked.cell, asked.severity, asked.message, session.revision, session.history) // → validation A1 warning Positive only 0 { undo: 0, redo: 0 }
+// the person answers Yes: the same call without the option writes the value
+const kept = session.setCellText('S', 'A1', '-2')
+console.log(kept.validation.severity, session.getBook().sheets[0].cells.A1, session.revision) // → warning { value: -2 } 1
+const many = session.setCellTexts([{ sheet: 'S', cell: 'A2', text: '5' }, { sheet: 'S', cell: 'A3', text: '1.5' }], { refuseInvalid: true })
+console.log(many.code, many.cell, session.revision) // → validation A3 1
+```
+
+`setCellTexts(entries, opts?)` takes several texts typed at once: each `{ sheet, cell, text }` is read as `setCellText` reads it in its cell, in order, and all are written with one recomputation, one revision and one step of the undo. A cell given twice keeps the later text, read by the format the earlier one gave it. A column widens once, to the largest width a text typed alone into one of its cells would give it (`widths`, unless `widen: false`), and the cells whose values their rules do not take come back with their alerts (`validations`). A text `setCellText` refuses refuses the whole call, with its `sheet` and `cell`, and nothing is written; with `refuseInvalid`, so does the cell whose value breaks the strictest rule once all the texts are written (stop before warning before information, the first cell of that style). `previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
+
+```js
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({
+  locale: 'ru-RU',
+  sheets: [{ name: 'S', cells: { A1: { value: 'Item' } }, validations: [{ range: 'C1:C9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }] }],
+}, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+const typed = session.setCellTexts([
+  { sheet: 'S', cell: 'B1', text: '15.03.2026' },
+  { sheet: 'S', cell: 'B2', text: '1234567890' },
+  { sheet: 'S', cell: 'C1', text: '-2' },
+])
+console.log(typed.widths, typed.validations.map((v) => `${v.cell} ${v.severity}`)) // → [ { sheet: 'S', column: 'B', width: 11.1640625 } ] [ 'C1 warning' ]
+const refused = session.setCellTexts([{ sheet: 'S', cell: 'A2', text: '7' }, { sheet: 'S', cell: 'A3', text: '=СУММ(A1;1.5)' }])
+console.log(refused.code, refused.cell, refused.at, session.revision) // → syntax A3 10 1
+console.log(session.previewCellTexts([{ sheet: 'S', cell: 'A2', text: '5%' }, { sheet: 'S', cell: 'A3', text: '=A2*2' }]).cells.map((c) => [c.cell, c.input, c.value]))
+// → [
+//     [ 'A2', { value: 0.05, numberFormat: 9 }, 0.05 ],
+//     [ 'A3', { formula: 'A2*2' }, 0.1 ]
+//   ]
+```
+
+A cell edited in place, after F2, a double click or in the formula bar, opens with its own text, and Excel reads what comes back otherwise than text typed over the cell: its percent editor adds `%` only to a number begun by a sign. With `inPlace: true`, `setCellText`, `setCellTexts`, `fillCellText` and their previews read the text so: in a percent cell `6%` is 0.06 and `6` is 6 (600%), where typed over the cell `6%` is the text `6%%` and `6` is 6%.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 0.05, numberFormat: '0%' } } }] })
+console.log(session.previewCellText('S', 'A1', '6%').input, session.previewCellText('S', 'A1', '6%', { inPlace: true }).input)
+// → { value: '6%%', numberFormat: '0%' } { value: 0.06, numberFormat: '0%' }
+```
+
+A paste and Control+Return read text otherwise than typing, and have their own calls. `pasteText(sheet, cell, text, opts?)` pastes text from the clipboard as Excel pastes it: `parseClipboard(text)` makes it a rectangle, rows at line breaks and fields at tabs, every row as wide as the longest, and the rectangle fills the cells from `cell`, an empty field, a short row's missing ones and the row after a last line break clearing theirs. A field begun by a quote runs to its closing quote, line breaks and tabs inside it, and wraps its cell. Each field is read as typed into its cell, but an apostrophe stays part of the text, a formula Excel does not take is pasted as text, a percent cell has no percent editor (`5` is 500%) and `€5` takes the euro format; no column widens and no rule is checked. The answer has the `range` filled; part of an array, a formula into a header cell and a rectangle past the sheet's edge are refused with the `sheet` and `cell`.
+
+`fillCellText(sheet, range, text, opts?)` enters a text into every cell of a range, as Control+Return: it reads the text once in the active cell, the range's top-left one or `active`, and every cell takes what the active cell holds after it, a formula moved as a copy from the active cell moves it (`copyFormula`) and the active cell's number format where it has one. The columns widen as typing widens them (`widths`, unless `widen: false`), and only the active cell's rule is checked (`validation`, or with `refuseInvalid` the refusal before anything is written). Both are one step of the undo, and `previewPasteText` and `previewFillCellText` change nothing. The rules, as measured in Excel, are in [docs/entry.md](entry.md#a-paste-and-controlreturn).
+
+```js
+import { createSession, parseClipboard, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({
+  locale: 'ru-RU',
+  sheets: [{
+    name: 'S',
+    cells: { A1: { value: 2 }, A2: { value: 3 } },
+    columns: { C: { numberFormat: '0%' } },
+    validations: [{ range: 'D1:D9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }],
+  }],
+}, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+const text = "'007\t=СУММ(A1;1.5)\t5\t-2\r\n€5"
+console.log(parseClipboard(text)) // → [ [ "'007", '=СУММ(A1;1.5)', '5', '-2' ], [ '€5', '', '', '' ] ]
+const pasted = session.pasteText('S', 'A4', text)
+console.log(pasted.range, Object.entries(session.getCells('S', pasted.range)).map(([a, c]) => `${a} ${c.text}`), 'validation' in pasted)
+// → A4:D5 [ "A4 '007", 'B4 =СУММ(A1;1.5)', 'C4 500%', 'D4 -2', 'A5 € 5' ] false
+const filled = session.fillCellText('S', 'D1:D2', '=A1-5')
+console.log(filled.changes.map((c) => `${c.cell} ${c.formula} ${c.value}`), filled.validation.severity) // → [ 'D2 A2-5 -2', 'D1 A1-5 -3' ] warning
+const refused = session.fillCellText('S', 'E1:E3', '=СУММ(A1;', { active: 'E2' })
+console.log(refused.code, refused.cell, refused.at, session.revision) // → syntax E2 9 2
+```
+
 ## API
 
 `parseEntry(text, opts?)` returns `{ ok: true, input }` or `{ ok: false, code, message, at }`.
@@ -83,7 +229,7 @@ A number typed into a column too narrow for it widens the column in Excel when n
 
 ### Numbers
 
-Numbers are read as `VALUE` reads them in the locale ([Localization](../README.md#localization)), with 15 significant digits (`1234567890123456789` is 1234567890123450000), and their form sets the format of a cell in General:
+Numbers are read as `VALUE` reads them in the locale ([Localization](locale.md)), with 15 significant digits (`1234567890123456789` is 1234567890123450000), and their form sets the format of a cell in General:
 
 | typed | ru-RU | en-US | format |
 |---|---|---|---|

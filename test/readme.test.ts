@@ -2,7 +2,7 @@
  * The README's code runs, and the examples of docs/ that import the package and say what they print: every ```js block runs as an ES module that imports the built package by name
  * (`npm test` builds first), and each `// → text` comment must equal what the corresponding console.log
  * printed, in order; comment lines starting with `//   ` right after it continue a multi-line output.
- * The README's list of functions is the whitelist.
+ * The list of functions in docs/functions.md is the whitelist.
  */
 import { execFileSync } from 'node:child_process'
 import { readdirSync, readFileSync } from 'node:fs'
@@ -45,8 +45,9 @@ describe('README', () => {
     for (const b of blocks) expect(expected(b).length, b.slice(0, 80)).toBeGreaterThan(0)
   })
 
-  it('lists the whitelist by category in Functions', () => {
-    const section = readme.slice(readme.indexOf('## Functions\n'), readme.indexOf('\nStatus:'))
+  it('lists the whitelist by category in docs/functions.md', () => {
+    const functions = readFileSync(join(root, 'docs/functions.md'), 'utf8')
+    const section = functions.slice(0, functions.indexOf('\nStatus:'))
     const listed = [...section.matchAll(/^- [^:]+: (.+)$/gm)].flatMap((m) => [...m[1].matchAll(/`([^`]+)`/g)].map((x) => x[1]))
     expect([...listed].sort()).toEqual(FUNCTION_NAMES)
   })

@@ -4,6 +4,127 @@ Besides its value, each cell of a result carries what Excel shows in it: `text`,
 
 The rules below were measured in Excel 16.113 for Mac, en-US and ru-RU.
 
+## In short
+
+A result gives each cell, beside its `value`, the `text` Excel shows in it (VBA's `Range.Text`) and the `color` of its format's section. The format is the cell's own `numberFormat`, else its row's, else its column's: an Excel format code as an xlsx file stores it (`#,##0.00`, `d mmmm yyyy`, `[Blue]0;[Red]-0`), shown in the book's locale. The width is the column's (`columns: { A: { width: 16 } }`, as xlsx stores it; Excel's default without one), or a merged area's columns: General drops decimals or turns scientific to fit, a number that still does not fit shows `#` across the column, text is never cut (it runs over the next cells). The value stays the number whatever the text shows, and the text is not part of the values hash.
+
+```js
+import { compute, displayValue, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const book = {
+  sheets: [{
+    name: 'S',
+    cells: {
+      A1: { value: 1234567.891, numberFormat: '#,##0.00' },
+      A2: { value: -42, numberFormat: '[Blue]0;[Red]-0' },
+      A3: { value: { date: '2025-01-31' }, numberFormat: 'd mmmm yyyy' },
+      A4: { value: 1 / 3 },
+      B1: { value: 123456789 },
+    },
+    columns: { A: { width: 16 }, B: { width: 6 } },
+  }],
+}
+const cells = compute(book).sheets[0].cells
+console.log(cells.A1, cells.A2.text, cells.A2.color, cells.A3.text, cells.A4.text, cells.B1.text)
+// → { value: 1234567.891, text: '1,234,567.89', numberFormat: '#,##0.00' } -42 #FF0000 31 January 2025 0.333333333 1E+08
+const ru = compute({ ...book, locale: 'ru-RU' }).sheets[0].cells
+console.log(ru.A1.text, ru.A3.text, ru.A4.text) // → 1 234 567,89 31 Январь 2025 0,333333333
+console.log(compute(book, { display: false }).sheets[0].cells.A1) // → { value: 1234567.891, numberFormat: '#,##0.00' }
+console.log(displayValue(0.4567, { numberFormat: '0.0%', locale: 'ru-RU' }), displayValue(1234.5, { width: 3 })) // → { text: '45,7%' } { text: '##' }
+console.log(displayValue(46096, { numberFormat: 'dd.mm.yyyy' }), displayValue(46096, { numberFormat: 'dd.mm.yyyy', width: 8.83203125 })) // → { text: '15.03.2026' } { text: '#########' }
+```
+
+`compute(book, { display: false })` and `createSession(book, { display: false })` give values alone and spend nothing on formatting. A session's changes carry the text of the cells they list, and with the display on they also list the cells whose text or colour changed without a new value: a new `numberFormat` through `setCells` or `patchCells`, a width, a row's or a column's format or a merged area ([Layout](grid.md#layout)), a column moved by `editStructure`. `displayValue(value, { numberFormat, locale, width })` shows a value without a book, for a cell being edited, say, in a loaded locale's tag or a locale object; the number itself is always the cell's `value`. Without `width` the width is not limited: General keeps its digits and no number turns into `#`, as no column narrows it. With the column's width it shows what the cell shows (Excel's default column is `width: 8.83203125`, as xlsx stores it).
+
+A format can also be the number of one of Excel's built-in formats, from 0 to 49, as an xlsx file stores a cell's format without a code. Excel shows some of them by the locale: `numberFormat: 14` is the short date, `1/31/2025` in en-US and `31.01.2025` in ru-RU, as Excel for Windows shows it. `builtinFormatCode(id, locale?)` gives the code a number shows by (`locale` a loaded locale's tag or a locale object), for a format menu or an editor, and undefined for a number that is no built-in format, so `builtinFormatCode(id) !== undefined` tells whether it is one. The table is in [docs/formats.md](formats.md).
+
+```js
+import { builtinFormatCode } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+console.log(builtinFormatCode(14), builtinFormatCode(14, ruRU), builtinFormatCode(7, ruRU)) // → m/d/yyyy dd.mm.yyyy #,##0.00 "₽";-#,##0.00 "₽"
+console.log(builtinFormatCode(3), builtinFormatCode(50), builtinFormatCode(164) !== undefined) // → #,##0 undefined false
+```
+
+The Number Format box on Excel's Home tab names the category of the active cell's format, and its list applies a format of each category. `numberFormatCategory(format, locale?)` gives that category for a code or a built-in format's number, as a stable key and the name the box shows (`Number`, `Числовой`); `numberFormatChoices(locale?)` gives the list's items in order, each with its name, the format it applies and that format's code in the locale. Both come without the engine, in `xlcalc/text` too. The box names the category of Excel's Format Cells window whose formats hold the code as Excel keeps it, and Custom when none does: `0.000` is Number, `0.00;-0.00` and `#,##0%` are Custom, and so is `$#,##0.00`, as Excel keeps a dollar written bare as a literal; the Currency item writes `"$"#,##0.00`. In ru-RU the names are Russian and the rules Excel for Windows's: `0.00` is Числовой as in en-US, money is the ruble's (`#,##0.00\ "₽"` Денежный, while the dollar's `"$"#,##0.00` is `(все форматы)`), and the short date is `dd/mm/yyyy`, which Excel shows as `ДД.ММ.ГГГГ`. Excel for Mac names nearly every code `(все форматы)` there, as it compares the code with its formats written in Russian syntax. The rules and how they were measured are in [docs/formats.md](formats.md#the-ribbons-number-format-box).
+
+```js
+import { numberFormatCategory, numberFormatChoices } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+console.log(numberFormatCategory('0.000'), numberFormatCategory('$#,##0.00').name, numberFormatCategory('"$"#,##0.00').name, numberFormatCategory(14).name)
+// → { category: 'number', name: 'Number' } Custom Currency Date
+console.log(numberFormatCategory('0.000', ruRU).name, numberFormatCategory('#,##0.00\\ "₽"', ruRU).name, numberFormatCategory('"$"#,##0.00', ruRU).name)
+// → Числовой Денежный (все форматы)
+console.log(numberFormatChoices().map((c) => c.name).join(', '))
+// → General, Number, Currency, Accounting, Short Date, Long Date, Time, Percentage, Fraction, Scientific, Text
+const { name, format } = numberFormatChoices(ruRU)[2]
+console.log(name, format) // → Денежный #,##0.00\ "₽"
+```
+
+`TEXT` uses the same formats, read in the book's locale (`TEXT(x,"# ##0,00")` in ru-RU), without the width: it drops fills, has no colour and answers `#VALUE!` where a cell shows `#`. The rules, as measured in Excel 16.113 for Mac in en-US and ru-RU on 11,649 cells and 771 `TEXT` cases, are in [docs/formats.md](formats.md), with the differences.
+
+Excel widens columns by itself in two places, and the engine gives the same widths. AutoFit (a double click on a column's border) gives a column the width of its widest cell: `fitColumns(book, result, sheet, columns)` computes the widths for a computed book, and the layout edit `{ sheet, columns, fit: true }` applies them in a session ([Layout](grid.md#layout)). And a number typed into a column whose width nobody set widens it until the number shows whole: `entryWidth(value, opts)` gives that width for the value a typed text computes, for a host to set with `bestFit: true`. A width Excel fitted (`ColumnInput.bestFit`) widens again as numbers are typed; one set by hand stays.
+
+```js
+import { compute, entryWidth, fitColumns, parseEntry, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const book = {
+  locale: 'ru-RU',
+  sheets: [{ name: 'S', cells: { A1: { value: 'Итого' }, B1: { value: 1234567.5, numberFormat: '#,##0.00' }, C1: { value: 46096, numberFormat: 14 } } }],
+}
+const result = compute(book)
+console.log(result.sheets[0].cells.C1.text, fitColumns(book, result, 'S', 'A:C'))
+// → ######### { A: 5.6640625, B: 11.33203125, C: 10.1640625 }
+const typed = parseEntry('1234567890', { locale: 'ru-RU' }).input
+console.log(entryWidth(typed.value, { locale: 'ru-RU' }), entryWidth(3.14159265, { locale: 'ru-RU' }), entryWidth(typed.value, { locale: 'ru-RU', width: 9 }))
+// → 11.1640625 undefined undefined
+```
+
+AutoFit counts every cell of the column with something to show, hidden rows too, but not cells merged across columns; a column with nothing to show keeps its width, and a hidden column is shown. Typing widens a column for a number, a date or a formula's number that AutoFit would give more room, but not for text, which runs over the next cells, nor for a number in General that shows with fewer decimals (`3,141593`). Excel widens nothing for text set through its object model, only for text typed. The widths are Excel for Mac's, measured on 994 columns in en-US and ru-RU ([docs/formats.md](formats.md#fitting-columns)); Excel for Windows lays text out in pixels and fits it to other widths.
+
+Rows fit the same way. `fitRows(book, result, sheet, rows)` gives the heights AutoFit gives rows `5` or `2:9` of a computed book, by spans of rows of one height, and `{ sheet, rows, fit: true }` applies them in a session: a row stands its cells on one line at its bottom, one line of each cell's font or the lines of text that wraps (`alignment.wrap`) at its column's width, and gets the most any cell needs above that line and the most any needs below, a line of Calibri 11 15 points alone and 16 wrapped; a cell merged down counts for nothing. A text with a line break typed (`setCellText`, `setCellTexts`, `fillCellText`) wraps its cell and fits its row in the same step, unless the row's height was set by hand; one pasted wraps its cell alone (a quoted field of the clipboard keeps its line breaks). A height Excel fitted is marked `bestFit` and written to xlsx as Excel writes it. The heights are Excel for Mac's, measured on 723 rows in en-US and ru-RU; Excel for Windows fits rows to its pixels ([docs/formats.md](formats.md#fitting-rows)).
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 'Total', style: 0 } } }], styles: [{ font: { size: 16 } }] })
+session.setLayout([{ sheet: 'S', rows: '1', fit: true }])
+session.setCellText('S', 'B2', 'two\nlines')
+console.log(session.getLayout().sheets[0].rows, session.getBook().styles)
+// → {
+//     '1': { height: 21, bestFit: true },
+//     '2': { height: 32, bestFit: true }
+//   } [ { font: { size: 16 } }, { alignment: { wrap: true } } ]
+```
+
+A sheet's `conditionalFormats` are Excel's conditional formatting rules: values compared with a formula, formulas that hold, text, blanks, dates, top and average rules, duplicates, colour scales, data bars and icon sets. `Session.getCells` and `getViewport` give each cell of a window the `appearance` its rules give it by the current values, as Excel shows it: the rules' styles merged by priority, a colour scale's colour, a bar, an icon, and the text by a rule's number format.
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{
+    name: 'S',
+    cells: { A1: { value: 3 }, A2: { value: 12 }, A3: { value: 7 } },
+    conditionalFormats: [
+      { type: 'cellIs', ranges: ['A1:A3'], operator: 'greaterThan', formulas: ['10'], style: { font: { bold: true } } },
+      { type: 'colorScale', ranges: ['A1:A3'], points: [{ value: { type: 'min' }, color: '#FFFFFF' }, { value: { type: 'max' }, color: '#63BE7B' }] },
+      { type: 'expression', ranges: ['B1:B3'], formula: '$A1<5', style: { fill: { color: '#FFC7CE' } } },
+    ],
+  }],
+})
+const w = session.getCells('S', 'A1:B3')
+console.log(w.A2.appearance, w.A3.appearance, w.B1.appearance)
+// → { style: { font: { bold: true }, fill: { color: '#63BE7B' } } } { style: { fill: { color: '#BAE3C5' } } } { style: { fill: { color: '#FFC7CE' } } }
+```
+
+The rules follow Excel's, measured in Excel for Mac and Windows: a formula is written for the top-left cell of the rule's cells and moves to each, statistics leave out text and errors, a colour moves channel by channel. `readXlsx` and `writeXlsx` keep the rules, Excel 2010's among them, and structure operations move them as Excel does. Edits list no appearances: a host reads its window again where the rules' cells in `repaint` meet it. `setLayout` replaces a sheet's rules ([Layout](grid.md#layout)). [docs/conditional-formats.md](conditional-formats.md) has the rules and how they were checked.
+
 ## API
 
 - `compute(book, { display })` and `createSession(book, { display })`. `display` is `true` by default, and then every cell in `sheets[].cells` has `text` (spilled cells too) and `color` when its section has one. Session edits return these fields for the cells they list, and also list cells whose text or colour changed while their value did not: a new `numberFormat` through `setCells`, a width, a row or column format or a merged area through `setLayout`, a moved cell through `editStructure`.

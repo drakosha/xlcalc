@@ -20,6 +20,41 @@ const session = await pool.createSession(book)
 const changes = await session.setCells(edits, { signal: AbortSignal.timeout(5_000) })
 ```
 
+## In short
+
+`createInlineCalc()` computes in the same thread, in slices that let timers and input run between them; `createCalcPool()` from `xlcalc/worker` computes in a pool of threads, where a session's book lives in its thread. Both have one API: `compute`, `createSession` and the session's methods return promises, and every call takes `timeoutMs`, a soft deadline of computing time, and `signal`, an `AbortSignal`. A call that fails changes nothing. `limits` bound the formulas of a book, the values of one array, the cells of one spill and the cells one edit of a session writes (`writes`: a copy of one cell onto a whole column writes 1,048,576), in the synchronous `compute` and `createSession` too; over them the call throws `CalcError` rather than computing or writing.
+
+```js
+import { createInlineCalc } from 'xlcalc'
+import { createCalcPool } from 'xlcalc/worker'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*10' }, A3: { formula: 'SUM(SEQUENCE(1000,1000))' } } }] }
+
+const calc = createInlineCalc({ limits: { cells: 100_000 } })
+const e = await calc.compute(book).catch((e) => e)
+console.log(e.code, e.limit, e.cell) // → limit cells { sheet: 'S', cell: 'A3' }
+
+const pool = createCalcPool({ threads: 2, hardTimeoutMs: 10_000 })
+const session = await pool.createSession(book, { clock: { now: '2026-10-07T12:00:00Z', seed: 1 } })
+console.log((await session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }], { timeoutMs: 1_000 })).changes)
+// → [
+//     { sheet: 'S', cell: 'A1', value: 3, text: '3' },
+//     { sheet: 'S', cell: 'A2', value: 30, text: '30' }
+//   ]
+const stop = new AbortController()
+const first = session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 4 } }])
+const second = session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }], { signal: stop.signal }).catch((e) => e)
+stop.abort() // the second call waits for the first: it is refused at once
+await first
+console.log((await second).code, (await session.getResult()).sheets[0].cells.A2.value) // → aborted 40
+const bounded = await pool.createSession(book, { limits: { writes: 100_000 } })
+const w = await bounded.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', range: 'B:B' } }).catch((e) => e)
+console.log(w.code, w.limit, w.size, bounded.revision) // → limit writes 1048576 0
+await pool.close()
+```
+
+A task that runs past the pool's `hardTimeoutMs` terminates its thread, and in Node `maxHeapMb` bounds each thread's heap. The pool keeps a snapshot and a journal of each session's book, so a session whose thread was lost comes back on its next call as it was before the call that failed, its history of undo and redo too. With `maxHeapMb` a session's history holds `maxHeapMb / (8 × maxSessionsPerThread)` MB by default, so the histories of a full thread take an eighth of its heap; a session's own `undo.maxMb` takes its place. [docs/async.md](async.md) has the rules, the error codes and what this costs.
+
 ## Calls
 
 A session takes its calls in order: each starts when the one before has finished. Two `setCells` called without waiting give each promise its own changes, as two synchronous calls would. A call that fails changes nothing: the session is as it was before the call, and the next call works on that state.

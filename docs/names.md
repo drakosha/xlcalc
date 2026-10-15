@@ -11,6 +11,28 @@ names: [
 ]
 ```
 
+## In short
+
+```js
+import { compute } from 'xlcalc'
+
+const result = compute({
+  sheets: [
+    { name: 'Data', cells: { A1: { value: 'tea' }, B1: { value: 3 }, A2: { value: 'coffee' }, B2: { value: 5 } } },
+    { name: 'Report', cells: { A1: { formula: 'SUMIF(items,"tea",amounts)' } } },
+  ],
+  names: [
+    { name: 'items', ref: "'Data'!$A:$A" },
+    { name: 'amounts', ref: "'Data'!$B:$B" },
+  ],
+})
+console.log(result.sheets[1].cells.A1.value) // → 3
+```
+
+A name follows Excel's rules for names, in letters of any script (`Ставка`, `НДС_2025`, `Став?ка`), and is compared in any case: `ставка` is the name `Ставка`, and a formula's text shows it as it is defined (`ставка*2` is `Ставка*2`). A name with `scope: 'Sheet'` is visible on that sheet only and shadows a global name. Invalid names are reported in the result's `diagnostics` (`kind: 'name'`), `dropped` telling a name left out from one kept with an error.
+
+A name can hold any formula: a constant (`0.2`), a calculation (`'Data'!$B$1*2`), a reference from `INDEX`, a union. A reference without `$` moves with the cell that uses the name. [docs/names.md](names.md) has the rules.
+
 ## A name
 
 A name follows Excel's rules for names, which a table's name follows too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, at most 255 characters. It must not read as something else in a formula: a cell address of the sheet (`Q1`, `AB12`, `XFD1`), an R1C1 reference (`R2C3`, and `R` or `C` alone), TRUE or FALSE. A cell's shape past the sheet is a name, `XFE1` and `A0`, and a formula reads it as one. Cell addresses and R1C1 are in Latin letters, so the same shape in Cyrillic is a name. In a ru-RU book its booleans `ИСТИНА` and `ЛОЖЬ` are no names either, in any case: Excel ru-RU refuses them and does not open a file that holds such a name, while Excel en-US takes them.

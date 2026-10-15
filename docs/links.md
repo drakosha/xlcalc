@@ -14,6 +14,20 @@ const externalBooks = [
 
 Element `i` of `externalBooks` answers `[i+1]`. `target` is where the link points, as the file holds it: a file name, a relative or an absolute path, a `file:` or web address. A sheet's `cells` are its stored values by address (a number, text, a boolean or an error), `null` for a cell stored empty. `readXlsx` reads them from the file's links and `writeXlsx` writes them back ([docs/xlsx.md](xlsx.md)).
 
+## In short
+
+```js
+import { compute, toLocal } from 'xlcalc'
+
+const externalBooks = [{ target: 'Prices.xlsx', sheets: [{ name: 'Sheet1', cells: { A1: 5, A2: 7, B1: 'pear' } }] }]
+const book = { sheets: [{ name: 'S', cells: { A1: { formula: "[1]Sheet1!A1+1" }, A2: { formula: 'SUM([1]Sheet1!A:A)' }, A3: { formula: "COUNTIF([1]Sheet1!A:A,5)" } } }], externalBooks }
+const cells = compute(book).sheets[0].cells
+console.log(cells.A1.value, cells.A2.value, cells.A3.value, cells.A1.formula) // → 6 12 { error: 'VALUE' } '[1]Sheet1'!A1+1
+console.log(toLocal(cells.A1.formula, 'en-US', { externalBooks })) // → { ok: true, formula: '[Prices.xlsx]Sheet1!A1+1' }
+```
+
+A cell the stored values do not hold is blank, as Excel takes it, unless the sheet's last update failed (`refreshError`) or nothing of the sheet is stored: then it is `#REF!`. The criteria functions' ranges (`SUMIF`, `COUNTIFS` and the others), `COUNTBLANK` and the database functions take only an open book's reference and give `#VALUE!` over a link, as in Excel; `INDEX`, `MATCH`, `VLOOKUP`, `XLOOKUP`, `SUMPRODUCT` and the rest read the stored values. A formula with a link entered in a session makes Excel mark that workbook as it cannot read it, and so does the session: its cells the stored values lack are `#REF!` from then on. Formulas are stored with the link's number; `toLocal`, `toInvariant`, `parseEntry`, a window's `formulaLocal` and `editText` show and read them as Excel does, by the file name (`[Prices.xlsx]Sheet1!A1`), and refuse a workbook the book has no link to. [docs/links.md](links.md) has the rules and how they were measured.
+
 ## Values
 
 - A cell the link stores gives its value: `[1]Sheet1!A1+1` is 6. Excel stores `#SPILL!` and `#CALC!` of another workbook as `#VALUE!`, and so does the engine compute them (and its own `#CYCLE!`, which a name that uses itself gives, and `#ERROR!`).

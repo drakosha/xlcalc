@@ -20,6 +20,39 @@ console.log(r.sheets[0].cells.D2.formula) // → Sales[[#This Row],[Qty]]*Sales[
 
 The rules below were measured in Excel 16.113 for Mac (en-US and ru-RU).
 
+## In short
+
+```js
+import { compute } from 'xlcalc'
+
+const cells = {
+  A1: { value: 'Item' }, B1: { value: 'Qty' }, C1: { value: 'Price' }, D1: { value: 'Total' },
+  A2: { value: 'tea' }, B2: { value: 2 }, C2: { value: 10 }, D2: { formula: '[@Qty]*[@Price]' },
+  A3: { value: 'coffee' }, B3: { value: 3 }, C3: { value: 20 }, D3: { formula: '[@Qty]*[@Price]' },
+  F1: { formula: 'SUM(Orders[Total])' },
+  F2: { formula: 'ROWS(Orders[#All])' },
+  F3: { formula: 'Orders[[#Headers],[Price]]' },
+}
+const columns = [{ name: 'Item' }, { name: 'Qty' }, { name: 'Price' }, { name: 'Total', formula: '[@Qty]*[@Price]' }]
+const r = compute({ sheets: [{ name: 'S', cells, tables: [{ name: 'Orders', range: 'A1:D3', columns }] }] })
+const out = r.sheets[0].cells
+console.log(out.F1.value, out.F2.value, out.F3.value) // → 80 3 Price
+console.log(out.D2.formula) // → Orders[[#This Row],[Qty]]*Orders[[#This Row],[Price]]
+```
+
+A formula stores its references as an xlsx file does (`Orders[[#This Row],[Qty]]` for `[@Qty]`), and `toLocal` shows them as Excel does, in Russian too (`#Данные`). Structure operations grow, shrink and move tables as Excel does, an edit of a header cell renames its column, and `editStructure` adds, renames, deletes and converts tables. [docs/tables.md](tables.md) has the rules.
+
+A formula typed in a cell of a table refers to it without its name, `[@Qty]`. Without the book, the table of the cell is an option: `toLocal(formula, locale, { table })` drops the name as Excel shows such a formula, `toInvariant(text, locale, { table })` puts it back, and `validateFormula` and `validateLocalFormula` with `ctx.table` check the formula as in the table and give the text the book stores. `escapeColumn` writes a column's name in a reference, `'` before the characters that mean something there (`[`, `]`, `#`, `'`, a leading `@`).
+
+```js
+import { escapeColumn, toInvariant, validateFormula } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+console.log(toInvariant('=[@Qty]*1,5', ruRU, { table: 'Orders' }).formula) // → Orders[@Qty]*1.5
+console.log(validateFormula('[@Qty]*[@Price]', { table: 'Orders' }).canonical) // → Orders[[#This Row],[Qty]]*Orders[[#This Row],[Price]]
+console.log(`Orders[${escapeColumn('Price #2')}]`) // → Orders[Price '#2]
+```
+
 ## A table in a book
 
 A sheet lists its tables in `tables` (`TableInput`):

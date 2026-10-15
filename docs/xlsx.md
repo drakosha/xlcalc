@@ -11,6 +11,72 @@ const result = compute(book)
 const { data } = await writeXlsx({ book, result })
 ```
 
+## In short
+
+`readXlsx(data)` from `xlcalc/xlsx` reads a file's bytes (a `Uint8Array`, a Node `Buffer` or an `ArrayBuffer`: `await readFile(path)`, `await file.arrayBuffer()`) into a book. Beside the book it gives `cached`, the values Excel stored for formulas and spilled cells in the shape of a result, and `issues`, everything the book cannot hold, such as rich text, with the sheet and cells. `compute(read.book, { cached: read.cached })` and `createSession` with the same option open a book with a circular reference as Excel opens the file ([Circular references](cycles.md)); nothing else is taken from `cached`. `writeXlsx({ book, result })` writes a book with the values of its formulas: `result` is `compute`'s, a session's (`session.getSnapshot()` gives the book and its result in one call) or the `cached` of a file read. Formulas are written as dynamic array formulas with their spills, and `mode: 'values'` writes values only.
+
+```js
+import { compute, createSession } from 'xlcalc'
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+const book = { sheets: [{ name: 'Sales', cells: { A1: { value: 120 }, A2: { value: 80 }, B1: { formula: 'SUM(A1:A2)' }, C1: { formula: 'SEQUENCE(2)' } } }] }
+const { data } = await writeXlsx({ book, result: compute(book) })
+
+const read = await readXlsx(data)
+console.log(read.book.sheets[0].cells.B1) // → { formula: 'SUM(A1:A2)' }
+console.log(read.cached.sheets[0].cells.B1, read.cached.sheets[0].cells.C2) // → { value: 200 } { value: 2, spillOf: 'C1' }
+console.log(read.issues) // → []
+
+const session = createSession(read.book)
+session.setCells([{ sheet: 'Sales', cell: 'A1', input: { value: 150 } }])
+const saved = await readXlsx((await writeXlsx(session.getSnapshot())).data)
+console.log(saved.cached.sheets[0].cells.B1) // → { value: 230 }
+
+const values = await readXlsx((await writeXlsx({ book, result: compute(book) }, { mode: 'values' })).data)
+console.log(values.book.sheets[0].cells.C2) // → { value: 2 }
+console.log((await writeXlsx({ book })).issues.map((i) => i.code)) // → [ 'noCachedValues' ]
+```
+
+`values` says which values of formulas the file stores. With a result it is `'require'`: every formula and every cell of an array has its value in the result, else the result is not the book's and `writeXlsx` throws `InputError`. `'preserve'` writes the values the result has and reports the formulas without one (`noCachedValues`). Without a result it is `'omit'`: the file stores no values, reported as `noCachedValues` when the book has formulas, but not when `values: 'omit'` asks for it. A file with formulas asks Excel to compute them when it opens it, whichever values it stores. A formula a circular reference stops stores its `held` value where the result gives none (with `omit` too), as Excel opens the file holding it. A session is not a snapshot (an asynchronous one lives in a thread): pass `session.getSnapshot()`, awaited for an asynchronous session. Nor is a result alone, which has no book: `writeXlsx(compute(book))` throws `InputError` with `pass { book, result }`.
+
+Both functions return promises: the archive is inflated and deflated by the platform's streams. Hidden and very hidden sheets (`hidden: true` and `hidden: 'very'`; the writer makes the first visible sheet the active one), styles, number formats (built-in ones by their number), widths, heights, hidden rows and columns, outline levels, merged areas, notes, hyperlinks, frozen panes, conditional formats (Excel 2010's rules too), rules of data validation, names, tables, a sheet's filter mode, the date system, iterative calculation and the book's locale go both ways. A cell without a style or a format of its own is written with its row's, else its column's, as Excel writes a value typed there, so a date in a column of dates shows as a date in Excel, and it reads back without one. A cell the file stores with a look alone, as Excel stores each cell of a formatted area, is read into its sheet's `looks` ([Looks of many cells](grid.md#looks-of-many-cells)), and the cells of `looks` are written back as such cells. A group's collapsed mark is written as Excel keeps and saves it: on the summary row of a group whose rows are all hidden, rows hidden through `setLayout` too, and not on one whose rows show ([docs/outline.md](outline.md#in-xlsx-files)).
+
+```js
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+const book = {
+  sheets: [{
+    name: 'Sales',
+    cells: {
+      A1: { value: 'Region', note: { author: 'Ann', text: 'From the CRM' } },
+      B1: { value: 'Report', link: { url: 'https://example.com/report', tooltip: 'Open the report' } },
+    },
+    frozen: { rows: 1 },
+  }],
+}
+const back = (await readXlsx((await writeXlsx({ book })).data)).book.sheets[0]
+console.log(back.cells.A1.note, back.frozen) // → { author: 'Ann', text: 'From the CRM' } { rows: 1 }
+```
+
+A thread of comments, as Excel 365 makes them, is read as a note: its first author, and every comment's text with the replies' authors. [docs/xlsx.md](xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
+
+An issue's `message` is for a person, in English by default. `opts.locale` of either function writes it in another language: the tag of a loaded locale or a locale object, as the other functions take a locale. The code, sheet, cells and name of an issue stay as they are, so a program reads them alike in every language.
+
+```js
+import { registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+registerLocale(ruRU)
+const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }] }
+const { data, issues } = await writeXlsx({ book }, { locale: 'ru-RU' })
+console.log(issues[0].code, issues[0].message) // → noCachedValues Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла
+console.log((await writeXlsx({ book })).issues[0].message) // → no result was given: the file stores no values of formulas, and Excel computes them when it opens the file
+console.log((await readXlsx(data, { locale: ruRU })).book.locale) // → ru-RU
+```
+
+Pass the locale the person reading the messages chose. A file does not say it: Excel keeps no language in xlsx, and the locale `xlcalc.locale` that the writer stores, which `readXlsx` gives as `book.locale`, is the book's, the rules it computes by, which a person working in another language may open too. So neither function takes the language from the book.
+
 ## Reading
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` (a Node `Buffer` is one, as `readFile` gives it), another view of bytes or an `ArrayBuffer` (`await file.arrayBuffer()` in a browser), and resolves to three things.
@@ -77,7 +143,7 @@ Excel for Mac saves some built-in formats otherwise than by their number: the mo
 
 ### Cells of a look alone
 
-Excel stores each cell of a formatted area, a row formatted to column XFD among them, as a cell with a cell format and nothing else (`<c r="B2" s="3"/>`). Such a cell does not become an entry of `cells`: the reader puts its look into its sheet's `looks` ([Looks of many cells](../README.md#looks-of-many-cells)) as it reads the row, by runs of columns of one look, and rows with the same runs share them. A cell with a value or a formula stays an entry with its own look, as before.
+Excel stores each cell of a formatted area, a row formatted to column XFD among them, as a cell with a cell format and nothing else (`<c r="B2" s="3"/>`). Such a cell does not become an entry of `cells`: the reader puts its look into its sheet's `looks` ([Looks of many cells](grid.md#looks-of-many-cells)) as it reads the row, by runs of columns of one look, and rows with the same runs share them. A cell with a value or a formula stays an entry with its own look, as before.
 
 ```js
 // <row r="20"><c r="A20" s="1"/><c r="B20" s="1"/> … <c r="XFD20" s="1"/></row>, and so rows 21 and 22

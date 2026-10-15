@@ -4,6 +4,55 @@ Inserting and deleting rows and columns, moving and copying ranges, merging and 
 
 The rules below were measured in Excel 16 for Mac (en-US), those of merging cells in Excel for Windows.
 
+## In short
+
+`editStructure(book, op)` inserts or deletes rows and columns, moves (cut and paste) or copies (copy and paste, fill) a range, renames or deletes a sheet, and adjusts every reference in formulas and names on every sheet as Excel adjusts it: ranges grow and shrink, lost references become `#REF!`, absolute references move with inserted rows. It returns the new book and `mapCell`, which says where a cell of the old book is now (null for a cell deleted or overwritten, or of a sheet the old book does not have); the input book is not changed.
+
+```js
+import { editStructure } from 'xlcalc'
+
+const book = {
+  sheets: [{
+    name: 'Sales',
+    cells: {
+      A1: { value: 120 }, A2: { value: 80 }, A3: { value: 45 },
+      C1: { formula: 'SUM(A1:A3)' }, C2: { formula: 'A3*2' },
+    },
+  }],
+}
+
+const ins = editStructure(book, { op: 'insertRows', sheet: 'Sales', row: 2 })
+console.log(ins.book.sheets[0].cells.C1.formula, ins.book.sheets[0].cells.C3.formula) // → SUM(A1:A4) A4*2
+console.log(ins.mapCell({ sheet: 'Sales', cell: 'A3' })) // → { sheet: 'Sales', cell: 'A4' }
+
+const del = editStructure(book, { op: 'deleteRows', sheet: 'Sales', row: 3 })
+console.log(del.book.sheets[0].cells.C1.formula, del.book.sheets[0].cells.C2.formula) // → SUM(A1:A2) #REF!*2
+const last = editStructure(book, { op: 'deleteSheet', sheet: 'Sales' })
+console.log(last.ok, last.code) // → false last_sheet
+```
+
+The operations are `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`), `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`), `copyRange` (`from` and `to` as `{ sheet, range }`; a target that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`), `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`), `moveSheet` (`sheet`, `before`; Excel places a sheet by the visible ones), `hideSheet` (`sheet`, `very` for a very hidden sheet) and `unhideSheet` (`sheet`), over tables `addTable` (`sheet`, `table`), `renameTable` (`table`, `name`), `deleteTable` and `convertTable` (`table`; [docs/tables.md](tables.md)), and Excel's outline commands `group` and `ungroup` (`sheet`, `rows` or `columns`), `hideDetail` and `showDetail` (`sheet`, `row` or `column`) and `showLevels` (`sheet`, `rows`, `columns`; [docs/outline.md](outline.md)), and Excel's Merge Cells and Unmerge Cells, `mergeCells` (`sheet`, `range`, `across` for Merge Across, `center` for Merge & Center) and `unmergeCells` (`sheet`, `range`): a merge keeps the top-left cell, or moves the area's first value into it when it is empty, and clears the rest ([docs/structure.md](structure.md#merging-cells)), and Excel's fill handle, `fillRange` (`sheet`, `range`, `to` that holds `range` and reaches past it, `type` `default`, `series` or `copy`): copies of the source with numbers, dates, times, text with a number and names of days and months going on as Excel continues them ([docs/structure.md](structure.md#the-fill-handle)). Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel refuses returns `{ ok: false, code, message }`, the message in the book's locale (`Нельзя изменить часть массива S!C1 (C1:C3)` in a ru-RU book), with `off_sheet` (cells would leave the sheet), `sheet_name` (a name Excel would not take, `History` among them, or one another sheet has), `last_sheet` (the last visible sheet deleted or hidden), `very_hidden` (a very hidden sheet deleted or moved), `merged` (a move cutting a merged area, a copy landing on part of one) `filtered` (a copy without the rows a filter hid, pasted over hidden rows of a filtered sheet) `array` (part of an old-kind array formula's area would change, or a merge would cover one), `table` (rows or columns into two tables at once, or deleted from two tables unless both go whole, a header row deleted alone, cells of a table merged), `table_name`, `outline_deep` (Group of lines at the deepest level), `not_grouped` (Ungroup of lines in no group, a group's button where there is none) or `detail` (Show Detail of a group shown, Hide Detail of one hidden). A name whose reference is lost gives `#REF!` where it is used, as in Excel; the parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
+
+A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment), `style` in a cell, an index into it, and per sheet `columns` and `rows` (by line `C`, `5` or span `B:D`, `5:9`: a width or height, a style, a number format) and `merges` (`B2:D3`). A cell without its own style or format shows its row's, else its column's. Computation ignores them, but a merged area stops an array spilling over it, as in Excel; the operations change them as Excel does: inserted rows take the format of the row above (its height, style and format, its cells' styles and formats) and columns of the column on the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their look, whole rows and columns take their sizes and styles along. A cell's note and hyperlink go with the cell as its style does, frozen panes keep the rows and columns before their split, rules of data validation move as references do and lines inserted right after a rule take it, and inserted lines take the outline level of the line before them. The rules, and how they were checked against Excel on 317 books and the valid sets, merging on 61 more and the fill handle on 122 in Excel for Windows, are in [docs/structure.md](structure.md).
+
+A session applies the same operations to its book with `session.editStructure(op)` and recomputes, keeping the book's styles, so a host can hold the book in the session alone and save `getBook()` as a version:
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{ name: 'Plan', cells: { A1: { value: 100 }, A2: { value: 250 }, A3: { formula: 'SUM(A1:A2)', style: 0 } } }],
+  styles: [{ font: { bold: true } }],
+})
+const r = session.editStructure({ op: 'deleteRows', sheet: 'Plan', row: 1 })
+console.log(r.mapCell({ sheet: 'Plan', cell: 'A3' }), r.moved)
+// → { sheet: 'Plan', cell: 'A2' } [ { kind: 'lines', sheet: 'Plan', axis: 'rows', at: 1, count: -1 } ]
+console.log(r.changes.map((c) => [c.cell, c.value, c.formula])) // → [ [ 'A2', 250, 'SUM(A1:A1)' ] ]
+console.log(session.getBook().sheets[0].cells) // → { A1: { value: 250 }, A2: { formula: 'SUM(A1:A1)', style: 0 } }
+```
+
+It answers `mapCell`, as `editStructure` does, but not the book, which `getBook()` gives; `moved`, how the addresses moved (`{ kind: 'lines', sheet, axis, at, count }` for rows and columns inserted or deleted, a range moved, a sheet renamed, deleted, inserted or moved); and `changes`, the cells whose value or formula text differs from those of the cell that was at their old place (`SUM(A1:A2)` above became `SUM(A1:A1)`), so an interface that moves its window by `moved` (or each cell by `mapCell`) and applies `changes` is up to date. It builds the state again, at the cost of a cold computation and a comparison of the cells with those of their old places (170 ms for the 3,400-row synthetic book), but for a sheet hidden or shown (`hideSheet`, `unhideSheet`), which changes no value, the outline commands, which recompute only the `SUBTOTAL` and `AGGREGATE` formulas over the rows they hide and show, and a merge that moves no cell, which writes the cells of its range as an edit does. Each operation is one step of the undo ([Undo and redo](sessions.md#undo-and-redo)).
+
 ## API
 
 ```ts
