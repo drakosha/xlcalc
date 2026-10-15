@@ -58,7 +58,7 @@ function formulaOf(text: string, shift: number, locale: Locale, externalBooks?: 
     return 'formula' in f ? f : { ...f, at: Math.min(f.at, text.length + shift) }
   }
   const f = taken(text, v, shift, locale, externalBooks)
-  return c && !('formula' in f) && c.calls.every((n) => known(n, locale)) && validateTyped(c.text, locale, opts).ok ? { ...f, correction: c.text } : f
+  return c?.offered && !('formula' in f) && c.calls.every((n) => known(n, locale)) && validateTyped(c.text, locale, opts).ok ? { ...f, correction: c.text } : f
 }
 
 /** A typed formula's canonical stored text and the format it sets. */

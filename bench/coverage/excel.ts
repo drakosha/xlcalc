@@ -162,7 +162,7 @@ export function excelDialogs(): { subrole: string; text: string }[] {
     }
 }
 
-/** The windows that are not books in one line (`subrole «text»; …`), empty when there are none. */
+/** The windows that are not books (nor a function's tip, AXUnknown) in one line (`subrole «text»; …`), empty when there are none. */
 export const dialogText = (): string => excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
 
 function listDialogs(): { subrole: string; text: string }[] {
@@ -173,7 +173,7 @@ function listDialogs(): { subrole: string; text: string }[] {
     try
       set sr to subrole of w
     end try
-    if sr is not "AXStandardWindow" then
+    if sr is not "AXStandardWindow" and sr is not "AXUnknown" then
       set tx to ""
       repeat with t in (static texts of w)
         try

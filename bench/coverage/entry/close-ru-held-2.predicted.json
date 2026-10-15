@@ -1,0 +1,98 @@
+{
+ "now": "2026-10-15",
+ "locales": {
+  "en-US": {
+   "ru-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 8
+   },
+   "ru-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 7
+   },
+   "ru-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found end of formula",
+    "at": 9
+   },
+   "ru-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unterminated string",
+    "at": 10
+   },
+   "ru-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 7
+   },
+   "ru-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 7
+   },
+   "ru-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected , ; or } in an array constant, found end of formula",
+    "at": 5,
+    "correction": "={1;2}"
+   }
+  },
+  "ru-RU": {
+   "ru-1": {
+    "ok": true,
+    "input": {
+     "formula": "-SUM(1,2)"
+    }
+   },
+   "ru-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 12
+   },
+   "ru-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 9,
+    "correction": "=1+сумм(2)"
+   },
+   "ru-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Текст не закрыт кавычкой",
+    "at": 10,
+    "correction": "=ЕСЛИ(1>0;\"да\")"
+   },
+   "ru-5": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,2,)"
+    }
+   },
+   "ru-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а формула закончилась",
+    "at": 13,
+    "correction": "=МАКС(1;МИН(2))"
+   },
+   "ru-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В массиве констант ожидалось «;», «:» или «}», а формула закончилась",
+    "at": 5,
+    "correction": "={1;2}"
+   }
+  }
+ }
+}
