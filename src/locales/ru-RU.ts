@@ -12,6 +12,7 @@
  * are written by hand, close to Excel ru-RU's own where it has one for the same refusal.
  */
 import { RU_NAMES } from '../locale/lcid.js'
+import { RU_FUNCTION_TEXT } from '../locale/ru-functions.js'
 import type { Counts, Found, Lines, Messages, NameRule, RuleText, StyleLoss, StylePart, Words } from '../locale/messages.js'
 import type { Locale } from '../locale/types.js'
 
@@ -490,6 +491,7 @@ export const ruRU: Locale = {
   // the specifiers of structured references, which the snapshot's books have none of: as Excel 16.113 ru-RU shows them
   // (`#Все`, `#Данные`, `#Заголовки`, `#Итоги`) and takes them typed (`#Эта строка`, shown as `@`), the table set `locale`
   argumentWords: ARGUMENT_WORDS,
+  functionText: RU_FUNCTION_TEXT,
   tableItems: { '#All': '#Все', '#Data': '#Данные', '#Headers': '#Заголовки', '#Totals': '#Итоги', '#This Row': '#Эта строка' },
   regional: {
     decimal: ',',

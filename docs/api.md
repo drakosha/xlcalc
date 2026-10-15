@@ -252,6 +252,14 @@ function formatClipboard(rows: string[][], opts?: { trailingNewline?: boolean | 
 
 Excel's plain-text copy: tabs, CRLF rows and quoted control characters; Windows ends with CRLF, Mac does not.
 
+### <a id="xlcalc-function_categories"></a>`FUNCTION_CATEGORIES`
+
+```ts
+const FUNCTION_CATEGORIES: readonly FunctionCategory[]
+```
+
+The categories in the order Excel's window lists them.
+
 ### <a id="xlcalc-function_names"></a>`FUNCTION_NAMES`
 
 ```ts
@@ -2542,6 +2550,15 @@ interface FunctionArgument {
 }
 ```
 
+### `FunctionCategory`
+
+A category of functions, as Excel's Insert Function window lists them; `compatibility` holds the old names Excel keeps
+beside their newer versions (`NORMDIST` beside `NORM.DIST`).
+
+```ts
+type FunctionCategory = 'financial' | 'date' | 'math' | 'statistical' | 'lookup' | 'database' | 'text' | 'logical' | 'information' | 'engineering' | 'compatibility'
+```
+
 ### `FunctionSignature`
 
 A function's signature for a tip of its arguments while a formula is typed ([`functionSignature`](#xlcalc-functionsignature)), as Excel's tip lists
@@ -2560,6 +2577,12 @@ interface FunctionSignature {
   repeat: number
   /** The tip's text, with the locale's list separator. */
   text: string
+  /** The function's category, as Excel's Insert Function window lists it (`FUNCTION_CATEGORIES`). */
+  category: FunctionCategory
+  /** The category's name in the locale (`Math & Trig`, `Математические`). */
+  categoryName: string
+  /** What the function does, one line in the locale, in the library's own words. */
+  description: string
 }
 ```
 
@@ -2749,6 +2772,11 @@ interface Locale {
    * 'число'`, so `number1` is `число1`); a word not listed stays English.
    */
   readonly argumentWords?: Readonly<Record<string, string>>
+  /**
+   * The words of Excel's Insert Function window (`functionSignature`): the categories' names and what each function does,
+   * by its English name; what is not listed stays English.
+   */
+  readonly functionText?: { readonly categories: Readonly<Partial<Record<FunctionCategory, string>>>; readonly descriptions: Readonly<Record<string, string>> }
   /**
    * The rules of computation as data: number and date text, names, `TEXT`'s codes, the text order, the code page. A
    * locale a book computes in has them, but en-US, whose rules are the engine's own code; a locale without them reads

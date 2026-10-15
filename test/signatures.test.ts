@@ -4,7 +4,7 @@
  * no tip names two arguments alike; the tip's text, a name in the locale, and the input checked.
  */
 import { describe, expect, it } from 'vitest'
-import { FUNCTION_NAMES, functionSignature, InputError, registerLocale } from '../src/index.js'
+import { FUNCTION_CATEGORIES, FUNCTION_NAMES, functionSignature, InputError, registerLocale } from '../src/index.js'
 import { FUNCTIONS } from '../src/functions.js'
 import { SIGNATURES } from '../src/signatures.js'
 import { ruRU } from '../src/locales/ru-RU.js'
@@ -46,6 +46,22 @@ describe('functionSignature', () => {
     expect(Object.keys(ruRU.argumentWords!).filter((w) => !WORDS.has(w))).toEqual([])
   })
 
+  it('gives every function a category of the window and a line in en-US and ru-RU', () => {
+    expect([...FUNCTION_CATEGORIES]).toEqual(['financial', 'date', 'math', 'statistical', 'lookup', 'database', 'text', 'logical', 'information', 'engineering', 'compatibility'])
+    for (const name of FUNCTION_NAMES)
+      for (const locale of ['en-US', 'ru-RU']) {
+        const s = functionSignature(name, locale)!
+        expect(FUNCTION_CATEGORIES, name).toContain(s.category)
+        expect(s.description, `${locale} ${name}`).toMatch(/^\S.*\.$/)
+      }
+    // ru-RU names every category and describes every function in Russian
+    expect(Object.keys(ruRU.functionText!.categories).sort()).toEqual([...FUNCTION_CATEGORIES].sort())
+    expect(Object.keys(ruRU.functionText!.descriptions).sort()).toEqual([...FUNCTION_NAMES])
+    expect(FUNCTION_NAMES.filter((n) => !/[а-яё]/i.test(ruRU.functionText!.descriptions[n]))).toEqual([])
+    expect(functionSignature('NORMDIST')).toMatchObject({ category: 'compatibility', categoryName: 'Compatibility' })
+    expect(functionSignature('СЧЁТЕСЛИ', ruRU)).toMatchObject({ category: 'statistical', categoryName: 'Статистические', description: 'Сколько ячеек отвечают условию.' })
+  })
+
   it('writes the tip as Excel lists it, with the locale list separator', () => {
     expect(functionSignature('SUM')).toEqual({
       name: 'SUM',
@@ -55,6 +71,9 @@ describe('functionSignature', () => {
       ],
       repeat: 1,
       text: 'SUM(number1, [number2], ...)',
+      category: 'math',
+      categoryName: 'Math & Trig',
+      description: 'The sum of numbers.',
     })
     expect(functionSignature('sumifs')!.text).toBe('SUMIFS(sum_range, criteria_range1, criteria1, [criteria_range2, criteria2], ...)')
     expect(functionSignature('ВПР', 'ru-RU')!.text).toBe('ВПР(искомое;таблица;номер_столбца;[приближённо])')

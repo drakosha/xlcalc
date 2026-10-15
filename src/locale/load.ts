@@ -50,6 +50,7 @@ function checkText(locale: unknown, path: string): void {
   words(loc.functions, `${path}.functions`, null, WORD, 'a function name')
   if (loc.tableItems !== undefined) words(loc.tableItems, `${path}.tableItems`, TABLE_ITEMS, /^#[^[\]'@]+$/u, 'a specifier starting with #')
   if (loc.argumentWords !== undefined) argumentWords(loc.argumentWords, `${path}.argumentWords`)
+  if (loc.functionText !== undefined) functionText(loc.functionText, `${path}.functionText`)
 }
 
 /** The words of arguments' names: two English words may share one (`criteria` and `condition` are `условие`). */
@@ -57,6 +58,15 @@ function argumentWords(v: unknown, path: string): void {
   if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, 'expected an object')
   for (const [k, w] of Object.entries(v))
     if (typeof w !== 'string' || !/^[\p{L}_][\p{L}\p{N}_]*$/u.test(w)) throw new InputError(`${path}[${JSON.stringify(k)}]`, `expected a word of an argument's name, got ${JSON.stringify(w)}`)
+}
+
+/** The words of the Insert Function window: texts by category and by function. */
+function functionText(v: unknown, path: string): void {
+  const o = object(v, path, 'an object such as { categories, descriptions }')
+  for (const k of ['categories', 'descriptions'] as const) {
+    const m = object(o[k], `${path}.${k}`, 'an object of texts')
+    for (const [name, text] of Object.entries(m)) if (typeof text !== 'string' || !text) throw new InputError(`${path}.${k}[${JSON.stringify(name)}]`, `expected text, got ${JSON.stringify(text)}`)
+  }
 }
 
 const checked = new WeakSet<object>()
