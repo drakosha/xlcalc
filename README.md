@@ -33,6 +33,7 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 |---|---|
 | computing a book | `compute` from `xlcalc` |
 | a session over a book: edits, structure operations, undo, AutoFit, conditional formats, data validation, what cells show | `createSession` from `xlcalc` |
+| objects of a session's cells: `cells.A1.value = 100`, a listener of a cell | `liveWorkbook` from `xlcalc` ([Live objects](docs/live-objects.md)) |
 | reading and writing xlsx files | `readXlsx`, `writeXlsx` and `fromLegacy` from `xlcalc/xlsx` |
 | computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
 | cell addresses in A1 style, without the engine | `xlcalc/a1` |
@@ -84,6 +85,20 @@ import { createSession } from 'xlcalc'
 const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*21' } } }] })
 const { revision, changes } = session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }])
 console.log(revision, changes.map((c) => `${c.cell}=${c.value}`)) // → 1 [ 'A1=3', 'A2=63' ]
+```
+
+### Assign to a cell and follow another
+
+```js
+import { createSession, liveWorkbook } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*21' } } }] })
+const s = liveWorkbook(session).sheet('S')
+s.cells.A2.watch(() => console.log('A2 is now', s.cells.A2.value))
+s.cells.A1.value = 3
+console.log(s.cells.A2.text)
+// → A2 is now 63
+// → 63
 ```
 
 ### Type text into a cell as Excel reads it, in ru-RU
@@ -244,6 +259,7 @@ Sessions and grids:
 - [Sessions](docs/sessions.md): opening one, undo and redo, following changes, the clock.
 - [A grid over a session](docs/grid.md): windows, layout, looks of many cells.
 - [Editing a grid](docs/edits.md), [Typed entry](docs/entry.md), [Live workbook operations](docs/live-books.md).
+- [Live objects of sheets and cells](docs/live-objects.md): `cells.A1.value = 100`, batches, listeners of a cell or a sheet, a Vue `customRef`.
 - [Structure operations](docs/structure.md): rows and columns, moves and copies, the fill handle, merged cells, sheets.
 - [Conditional formats](docs/conditional-formats.md), [Data validation](docs/validation.md), [Outlines](docs/outline.md).
 - [Addresses and formula text](docs/addresses.md): `xlcalc/a1` and `xlcalc/text`, without the engine.
