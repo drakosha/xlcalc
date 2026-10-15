@@ -8,7 +8,7 @@
  */
 import type { Messages } from './messages.js'
 import type { RegionalData } from './rules/data.js'
-import type { Refusal } from '../contract.js'
+import type { FunctionCategory, Refusal } from '../contract.js'
 import type { TableItem } from '../syntax/table.js'
 
 export type { TableItem }
@@ -41,6 +41,11 @@ export interface Locale {
    * 'число'`, so `number1` is `число1`); a word not listed stays English.
    */
   readonly argumentWords?: Readonly<Record<string, string>>
+  /**
+   * The words of Excel's Insert Function window (`functionSignature`): the categories' names and what each function does,
+   * by its English name; what is not listed stays English.
+   */
+  readonly functionText?: { readonly categories: Readonly<Partial<Record<FunctionCategory, string>>>; readonly descriptions: Readonly<Record<string, string>> }
   /**
    * The rules of computation as data: number and date text, names, `TEXT`'s codes, the text order, the code page. A
    * locale a book computes in has them, but en-US, whose rules are the engine's own code; a locale without them reads
