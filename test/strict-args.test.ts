@@ -12,6 +12,7 @@ import * as a1 from '../src/a1.js'
 import * as text from '../src/text.js'
 import * as xlsx from '../src/xlsx.js'
 import * as worker from '../src/worker/index.js'
+import * as functionText from '../src/function-text/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, keptPool, KINDS, opener } from './session-kinds.js'
@@ -120,6 +121,7 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/text', text, { scanReferences: 2, refAt: 3, callAt: 3, quoteSheetIfNeeded: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, numberFormatCategory: 2, numberFormatChoices: 1 }],
     ['xlcalc/xlsx', xlsx, { readXlsx: 2, writeXlsx: 2, fromLegacy: 2 }],
     ['xlcalc/worker', worker, { createCalcPool: 1 }],
+    ['xlcalc/function-text', functionText, { functionDescription: 2 }],
   ]
 
   for (const [entry, mod, table] of FUNCTIONS)

@@ -1997,6 +1997,8 @@ export type FillType = 'default' | 'series' | 'copy'
 export interface FunctionSignature {
   /** The function's name in the locale (`СУММ`). */
   name: string
+  /** Its English name, as stored formulas, `CallAt.fn` and `functionDescription` take it (`SUM`). */
+  fn: string
   /** The arguments in the tip's order, those that repeat listed twice (`number1`, `number2`), the second time optional. */
   args: FunctionArgument[]
   /**
@@ -2010,8 +2012,6 @@ export interface FunctionSignature {
   category: FunctionCategory
   /** The category's name in the locale (`Math & Trig`, `Математические`). */
   categoryName: string
-  /** What the function does, one line in the locale, in the library's own words. */
-  description: string
 }
 
 /**

@@ -38,6 +38,7 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
 | cell addresses in A1 style, without the engine | `xlcalc/a1` |
 | the references of formula text as it is typed, for colouring them, and a number format's category as the ribbon shows it, without the engine | `xlcalc/text` |
+| the tips of functions' arguments, and their categories, without the engine's computation | `functionSignature` and `FUNCTION_CATEGORIES` from `xlcalc`; what a function does, `functionDescription` from `xlcalc/function-text`; their Russian words, `ruRUFunctionText` from `xlcalc/function-text/ru-RU` ([Addresses and formula text](docs/addresses.md)) |
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](docs/locale.md)) |
 | types alone | `xlcalc/contract` |
 

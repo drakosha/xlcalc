@@ -38,12 +38,13 @@ export interface Locale {
   readonly tableItems?: Readonly<Partial<Record<TableItem, string>>>
   /**
    * The words of the arguments' names in the tips of functions (`functionSignature`) by their English word (`number:
-   * 'число'`, so `number1` is `число1`); a word not listed stays English.
+   * 'число'`, so `number1` is `число1`); a word not listed stays English. The package's locales leave them, and
+   * `functionText`, to modules of their own (`xlcalc/function-text/ru-RU`), which a host joins to the locale.
    */
   readonly argumentWords?: Readonly<Record<string, string>>
   /**
-   * The words of Excel's Insert Function window (`functionSignature`): the categories' names and what each function does,
-   * by its English name; what is not listed stays English.
+   * The words of Excel's Insert Function window: the categories' names (`functionSignature`) and what each function does
+   * (`functionDescription`), by its English name; what is not listed stays English.
    */
   readonly functionText?: { readonly categories: Readonly<Partial<Record<FunctionCategory, string>>>; readonly descriptions: Readonly<Record<string, string>> }
   /**

@@ -8,8 +8,13 @@ import { FUNCTION_CATEGORIES, FUNCTION_NAMES, functionSignature, InputError, reg
 import { FUNCTIONS } from '../src/functions.js'
 import { SIGNATURES } from '../src/signatures.js'
 import { ruRU } from '../src/locales/ru-RU.js'
+import { functionDescription } from '../src/function-text/index.js'
+import { ruRUFunctionText } from '../src/function-text/ru-RU.js'
 
 registerLocale(ruRU)
+
+/** ru-RU with its words of the tips joined, as a host takes them. */
+const ru = { ...ruRU, ...ruRUFunctionText }
 
 /** The English words of the signatures' names, numbers taken off. */
 const WORDS = new Set(Object.values(SIGNATURES).flatMap((s) => s.split(' ').flatMap((t) => (t && t !== '...' ? [t.replace(/^\[|\]$/g, '').replace(/\d+$/, '')] : []))))
@@ -35,36 +40,42 @@ describe('functionSignature', () => {
 
   it('names no two arguments of a tip alike, in en-US and ru-RU', () => {
     for (const name of FUNCTION_NAMES)
-      for (const locale of ['en-US', 'ru-RU']) {
+      for (const locale of ['en-US', ru]) {
         const names = functionSignature(name, locale)!.args.map((a) => a.name)
-        expect(new Set(names).size, `${locale} ${name}: ${names.join(' ')}`).toBe(names.length)
+        expect(new Set(names).size, `${typeof locale === 'string' ? locale : 'ru'} ${name}: ${names.join(' ')}`).toBe(names.length)
       }
   })
 
   it('has ru-RU words for every English word but single letters', () => {
-    expect([...WORDS].filter((w) => !(w in ruRU.argumentWords!) && !/^[a-z]$/.test(w))).toEqual([])
-    expect(Object.keys(ruRU.argumentWords!).filter((w) => !WORDS.has(w))).toEqual([])
+    expect([...WORDS].filter((w) => !(w in ruRUFunctionText.argumentWords) && !/^[a-z]$/.test(w))).toEqual([])
+    expect(Object.keys(ruRUFunctionText.argumentWords).filter((w) => !WORDS.has(w))).toEqual([])
   })
 
   it('gives every function a category of the window and a line in en-US and ru-RU', () => {
     expect([...FUNCTION_CATEGORIES]).toEqual(['financial', 'date', 'math', 'statistical', 'lookup', 'database', 'text', 'logical', 'information', 'engineering', 'compatibility'])
-    for (const name of FUNCTION_NAMES)
-      for (const locale of ['en-US', 'ru-RU']) {
-        const s = functionSignature(name, locale)!
-        expect(FUNCTION_CATEGORIES, name).toContain(s.category)
-        expect(s.description, `${locale} ${name}`).toMatch(/^\S.*\.$/)
-      }
-    // ru-RU names every category and describes every function in Russian
-    expect(Object.keys(ruRU.functionText!.categories).sort()).toEqual([...FUNCTION_CATEGORIES].sort())
-    expect(Object.keys(ruRU.functionText!.descriptions).sort()).toEqual([...FUNCTION_NAMES])
-    expect(FUNCTION_NAMES.filter((n) => !/[а-яё]/i.test(ruRU.functionText!.descriptions[n]))).toEqual([])
-    expect(functionSignature('NORMDIST')).toMatchObject({ category: 'compatibility', categoryName: 'Compatibility' })
-    expect(functionSignature('СЧЁТЕСЛИ', ruRU)).toMatchObject({ category: 'statistical', categoryName: 'Статистические', description: 'Сколько ячеек отвечают условию.' })
+    for (const name of FUNCTION_NAMES) {
+      expect(FUNCTION_CATEGORIES, name).toContain(functionSignature(name)!.category)
+      for (const locale of [undefined, ru]) expect(functionDescription(name, locale), `${locale ? 'ru' : 'en'} ${name}`).toMatch(/^\S.*\.$/)
+    }
+    // ru-RU's module names every category and describes every function in Russian
+    const own = ruRUFunctionText.functionText
+    expect(Object.keys(own.categories).sort()).toEqual([...FUNCTION_CATEGORIES].sort())
+    expect(Object.keys(own.descriptions).sort()).toEqual([...FUNCTION_NAMES])
+    expect(FUNCTION_NAMES.filter((n) => !/[а-яё]/i.test(own.descriptions[n]))).toEqual([])
+    expect(functionSignature('NORMDIST')).toMatchObject({ fn: 'NORMDIST', category: 'compatibility', categoryName: 'Compatibility' })
+    expect(functionSignature('СЧЁТЕСЛИ', ru)).toMatchObject({ fn: 'COUNTIF', category: 'statistical', categoryName: 'Статистические' })
+    expect(functionDescription('countif', ru)).toBe('Сколько ячеек отвечают условию.')
+    expect(functionDescription('VLOOKUP')).toBe('A value from a column of a table, found in its first column.')
+    expect(functionDescription('CELL')).toBeNull()
+    // the ru-RU locale alone, as a host that only computes takes it, has none of the tips' words
+    expect(ruRU.argumentWords).toBeUndefined()
+    expect(functionSignature('ВПР', ruRU)!.text).toBe('ВПР(lookup_value;table;column_index;[approximate])')
   })
 
   it('writes the tip as Excel lists it, with the locale list separator', () => {
     expect(functionSignature('SUM')).toEqual({
       name: 'SUM',
+      fn: 'SUM',
       args: [
         { name: 'number1', optional: false },
         { name: 'number2', optional: true },
@@ -73,14 +84,13 @@ describe('functionSignature', () => {
       text: 'SUM(number1, [number2], ...)',
       category: 'math',
       categoryName: 'Math & Trig',
-      description: 'The sum of numbers.',
     })
     expect(functionSignature('sumifs')!.text).toBe('SUMIFS(sum_range, criteria_range1, criteria1, [criteria_range2, criteria2], ...)')
-    expect(functionSignature('ВПР', 'ru-RU')!.text).toBe('ВПР(искомое;таблица;номер_столбца;[приближённо])')
-    expect(functionSignature('СуммЕслиМн', ruRU)).toMatchObject({ name: 'СУММЕСЛИМН', repeat: 2, text: 'СУММЕСЛИМН(диапазон_суммирования;диапазон_условия1;условие1;[диапазон_условия2;условие2];...)' })
-    expect(functionSignature('SUM', 'ru-RU')!.text).toBe('СУММ(число1;[число2];...)')
+    expect(functionSignature('ВПР', ru)!.text).toBe('ВПР(искомое;таблица;номер_столбца;[приближённо])')
+    expect(functionSignature('СуммЕслиМн', ru)).toMatchObject({ name: 'СУММЕСЛИМН', repeat: 2, text: 'СУММЕСЛИМН(диапазон_суммирования;диапазон_условия1;условие1;[диапазон_условия2;условие2];...)' })
+    expect(functionSignature('SUM', ru)!.text).toBe('СУММ(число1;[число2];...)')
     // a function ru-RU names in English
-    expect(functionSignature('ABS', 'ru-RU')!.text).toBe('ABS(число)')
+    expect(functionSignature('ABS', ru)!.text).toBe('ABS(число)')
     expect(functionSignature('TODAY')!.text).toBe('TODAY()')
     expect(functionSignature('ROW')!.text).toBe('ROW([reference])')
   })

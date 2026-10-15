@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { callAt, functionSignature, InputError } from '../src/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
+import { ruRUFunctionText } from '../src/function-text/ru-RU.js'
 
 /** The call at the place of `|` in `text`, as `name index`, or null. */
 function at(marked: string, locale?: typeof ruRU): string | null {
@@ -50,7 +51,7 @@ describe('callAt', () => {
     expect(at('=ABS(|', ruRU)).toBe('ABS 0')
     const r = callAt('=СуммЕсли(A:A;1)', 14, { locale: ruRU })!
     expect(r).toEqual({ name: 'СуммЕсли', fn: 'SUMIF', index: 1, open: 9, close: 15 })
-    expect(functionSignature(r.fn, ruRU)!.args[r.index].name).toBe('условие')
+    expect(functionSignature(r.fn, { ...ruRU, ...ruRUFunctionText })!.args[r.index].name).toBe('условие')
   })
 
   it('gives where the call opens and closes', () => {
