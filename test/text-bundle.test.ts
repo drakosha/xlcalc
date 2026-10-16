@@ -7,18 +7,12 @@
  * looks for in its bundle as the sign of the engine: a tag not loaded asks for the locale as an object, and only the root
  * names the module to import and `registerLocale`.
  */
-import { build } from 'esbuild'
-import { fileURLToPath } from 'node:url'
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
-import { libUrl } from './fixtures/target.js'
+import { browserBundle } from './fixtures/browser-bundle.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 
-async function bundle() {
-  const r = await build({ entryPoints: [fileURLToPath(libUrl('text.js'))], bundle: true, platform: 'browser', format: 'iife', globalName: 'TEXT', target: 'es2020', write: false, metafile: true, minify: true, logLevel: 'silent' })
-  const used = Object.entries(Object.values(r.metafile.outputs)[0].inputs).flatMap(([file, v]) => (v.bytesInOutput > 0 ? [file.replace(/^(?:.*\/)?(src|dist)\//, '').replace(/\.(ts|js)$/, '')] : []))
-  return { code: r.outputFiles[0].text, used: used.sort() }
-}
+const bundle = () => browserBundle('text.js', 'TEXT')
 
 describe('text without the engine', () => {
   it('the bundle holds the modules of formula text alone, under 55 KB', async () => {

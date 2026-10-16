@@ -3,17 +3,11 @@
  * only the address modules and the check of its functions' arguments (no parser, locale, number format or computation),
  * stays small, holds no `xlcalc` (a host's sign of the engine in its bundle), and runs in an empty `node:vm` context.
  */
-import { build } from 'esbuild'
-import { fileURLToPath } from 'node:url'
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
-import { libUrl } from './fixtures/target.js'
+import { browserBundle } from './fixtures/browser-bundle.js'
 
-async function bundle() {
-  const r = await build({ entryPoints: [fileURLToPath(libUrl('a1.js'))], bundle: true, platform: 'browser', format: 'iife', globalName: 'A1', target: 'es2020', write: false, metafile: true, minify: true, logLevel: 'silent' })
-  const used = Object.entries(Object.values(r.metafile.outputs)[0].inputs).flatMap(([file, v]) => (v.bytesInOutput > 0 ? [file.replace(/^(?:.*\/)?(src|dist)\//, '')] : []))
-  return { code: r.outputFiles[0].text, used }
-}
+const bundle = () => browserBundle('a1.js', 'A1')
 
 describe('a1 without the engine', () => {
   it('the bundle holds the address modules alone, in a few kilobytes', async () => {

@@ -4,18 +4,12 @@
  * (`function-arity.ts`), and the formatting of a value for editing, but no function's implementation, no compiler and
  * no computation; it stays under 110 KB, and runs in an empty `node:vm` context with ru-RU given as an object.
  */
-import { build } from 'esbuild'
-import { fileURLToPath } from 'node:url'
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
-import { libUrl } from './fixtures/target.js'
+import { browserBundle } from './fixtures/browser-bundle.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 
-async function bundle() {
-  const r = await build({ entryPoints: [fileURLToPath(libUrl('typed-entry.js'))], bundle: true, platform: 'browser', format: 'iife', globalName: 'ENTRY', target: 'es2020', write: false, metafile: true, minify: true })
-  const used = Object.entries(Object.values(r.metafile.outputs)[0].inputs).flatMap(([file, v]) => (v.bytesInOutput > 0 ? [file.replace(/^(?:.*\/)?(src|dist)\//, '').replace(/\.(ts|js)$/, '')] : []))
-  return { code: r.outputFiles[0].text, used }
-}
+const bundle = () => browserBundle('typed-entry.js', 'ENTRY')
 
 describe('typed entry without the engine', () => {
   it('the bundle holds no function, compiler or computation, under 110 KB', async () => {
