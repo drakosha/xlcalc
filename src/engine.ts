@@ -244,7 +244,9 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   if (sheetIdx.size !== sheetNames.length) throw new Error('duplicate sheet name')
   // the state's own cells (edits change them), copied unless they are its own already, the entries of a look alone in the
   // sheet's looks (a structure operation over looks gives them back so); the layout and the styles are shared
-  const input: BookInput = { ...book, sheets: book.sheets.map((x) => looksTaken(x)).map((s) => ({ ...s, cells: opts.own?.(s.cells) ? s.cells : { ...s.cells } })) }
+  // no closure here takes \`opts\`: the state's closures share this scope, and \`opts.prior\` holds the state built before
+  const own = opts.own
+  const input: BookInput = { ...book, sheets: book.sheets.map((x) => looksTaken(x)).map((s) => ({ ...s, cells: own?.(s.cells) ? s.cells : { ...s.cells } })) }
   const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
   const tables = tablesOf(input)
   const prepared = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale), book.externalBooks)
