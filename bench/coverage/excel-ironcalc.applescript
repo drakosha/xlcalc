@@ -11,17 +11,23 @@ on run argv
 	set n to item 2 of argv
 	set refs to paragraphs of (item 3 of argv)
 	set hfs to (POSIX file p) as text
-	set rows to {}
+	set probes to {}
 	repeat with r in refs
 		set x to r as text
-		set end of rows to {"=IF(ISBLANK(" & x & "),-5,IF(ISERROR(" & x & "),ERROR.TYPE(" & x & "),IF(ISNUMBER(" & x & "),0,IF(ISLOGICAL(" & x & "),IF(" & x & ",-1,-2),IF(ISTEXT(" & x & "),-3,-4)))))", "=IF(ISNUMBER(" & x & ")," & x & ",0)", "=IF(ISTEXT(" & x & ")," & x & ",\"\")"}
+		set end of probes to {"=IF(ISBLANK(" & x & "),-5,IF(ISERROR(" & x & "),ERROR.TYPE(" & x & "),IF(ISNUMBER(" & x & "),0,IF(ISLOGICAL(" & x & "),IF(" & x & ",-1,-2),IF(ISTEXT(" & x & "),-3,-4)))))", "=IF(ISNUMBER(" & x & ")," & x & ",0)", "=IF(ISTEXT(" & x & ")," & x & ",\"\")"}
 	end repeat
 	tell application "Microsoft Excel"
 		with timeout of 170 seconds
 			set wb to open workbook workbook file name hfs
 			calculate full
 			set ws to make new worksheet at end of wb
-			set formula of range ("A1:C" & n) of ws to rows
+			-- a list of rows set on a range at once leaves it empty: cell by cell
+			repeat with i from 1 to count of probes
+				set {fa, fb, fc} to item i of probes
+				set formula of range ("A" & i) of ws to fa
+				set formula of range ("B" & i) of ws to fb
+				set formula of range ("C" & i) of ws to fc
+			end repeat
 			calculate
 			set t to value of range ("A1:A" & n) of ws
 			set nums to value of range ("B1:B" & n) of ws
