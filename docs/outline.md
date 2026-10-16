@@ -64,9 +64,21 @@ import { outlineEdit } from 'xlcalc/a1'
 
 const rows = { '3:4': { outlineLevel: 1 }, '5:7': { outlineLevel: 2 }, '8:10': { outlineLevel: 1 } }
 console.log(outlineEdit({ rows }, { op: 'hideDetail', row: 8 }))
-// → { ok: true, rows: { '8': { outlineLevel: 1, collapsed: true }, '3:4': { outlineLevel: 1 }, '5:7': { outlineLevel: 2, hidden: true }, '9:10': { outlineLevel: 1 } } }
+// → {
+//     ok: true,
+//     rows: {
+//       '8': { outlineLevel: 1, collapsed: true },
+//       '3:4': { outlineLevel: 1 },
+//       '5:7': { outlineLevel: 2, hidden: true },
+//       '9:10': { outlineLevel: 1 }
+//     }
+//   }
 console.log(outlineEdit({ rows }, { op: 'showDetail', row: 11 }))
-// → { ok: false, code: 'detail', message: 'the detail of row 11 is shown already' }
+// → {
+//     ok: false,
+//     code: 'detail',
+//     message: 'the detail of row 11 is shown already'
+//   }
 ```
 
 ## In xlsx files
