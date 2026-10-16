@@ -21,7 +21,8 @@ describe('a1 without the engine', () => {
     expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/outline', 'layout/spans', 'model', 'sheet-pattern', 'strict-args', 'structure/area'])
     // the list above keeps the engine out; this, that the address modules stay small (8,182 with the case of names as
     // Excel compares them, 10,957 with a sheet's outline groups)
-    expect(code.length).toBeLessThan(11_500)
+    // 11.8 KB with mergedArea (16.10)
+    expect(code.length).toBeLessThan(12_000)
     expect(code).not.toContain('xlcalc')
   }, 60_000)
 
