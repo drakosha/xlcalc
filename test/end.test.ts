@@ -161,7 +161,9 @@ describe.each(KINDS)('getEnd, %s', (kind) => {
 })
 
 describe('getEnd on the synthetic book of 34,000 rows', () => {
-  it('under 1 ms a call in a synchronous session, down a whole column of values and across the sheet', () => {
+  // in the ordinary run other test files (and CI's slower runner) load the machine: the limit catches a call that
+  // scans or rebuilds far more than the column, FORMULA_BENCH the speed (about 0.5 ms down the column on an M5)
+  it('under 5 ms a call in a synchronous session (1 ms with FORMULA_BENCH), down a whole column of values and across the sheet', () => {
     const { book } = synthBook({ seed: 1, rows: 34_000 })
     const s = createSession(book, { clock: CLOCK })
     const sheet = book.sheets[0].name
@@ -173,7 +175,7 @@ describe('getEnd on the synthetic book of 34,000 rows', () => {
         s.getEnd(sheet, cell, d)
         return performance.now() - t
       }).sort((a, b) => a - b)
-      expect(times[10], `${cell} ${d}`).toBeLessThan(1)
+      expect(times[10], `${cell} ${d}`).toBeLessThan(process.env.FORMULA_BENCH === '1' ? 1 : 5)
     }
     s.close()
   }, 60_000)
