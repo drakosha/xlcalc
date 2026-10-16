@@ -1,11 +1,10 @@
 /**
  * The arguments a function takes, as the check of a formula needs them, without its implementation: how many, by its
  * declared kinds and the group that repeats (`FnDef.args`, `rep`, `max`), and which it lets a formula leave out
- * (`notOmitted`). The engine's spec of a function (`args.ts`, `specOf`) takes them from here, and so does the check of
- * typed text without the engine (`function-arity.ts`).
+ * (`notOmitted`). The engine's spec of a function (`args.ts`, `specOf`) counts them here; the check of a formula's calls
+ * takes the arities the entry it is loaded by gives (`useArities`): the engine's specs, or `function-arity.ts` without it.
  */
 import type { Counts } from './locale/messages.js'
-import { FUNCTION_ARITY } from './function-arity.js'
 
 /** Argument positions: those `at`, and from `from` on every one, or the odd or the even ones. */
 export interface Positions {
@@ -59,14 +58,25 @@ export function arityOf(def: ArityDef): Arity {
   return { min, max, takes: (k) => k >= min && k <= max && whole(k), counts, omits: (i) => !holds(def.notOmitted, i) }
 }
 
-const ARITIES = new Map<string, Arity>()
+/** Where the arity of a whitelisted function comes from: the engine's specs (`functions.ts`), or without the engine its declared arguments (`typed-entry.ts`). */
+let arities: (name: string) => Arity | undefined = () => undefined
 
-/** The arity of a whitelisted function by its English name, from its declared arguments; undefined for another name. */
-export function arityFor(name: string): Arity | undefined {
-  let a = ARITIES.get(name)
-  if (!a && name in FUNCTION_ARITY) ARITIES.set(name, (a = arityOf(FUNCTION_ARITY[name])))
-  return a
+export function useArities(f: (name: string) => Arity | undefined) {
+  arities = f
 }
+
+/** The arities of a table of declared arguments, each made once, by name. */
+export function aritiesOf(table: Readonly<Record<string, ArityDef>>): (name: string) => Arity | undefined {
+  const made = new Map<string, Arity>()
+  return (name) => {
+    let a = made.get(name)
+    if (!a && Object.hasOwn(table, name)) made.set(name, (a = arityOf(table[name])))
+    return a
+  }
+}
+
+/** The arity of a whitelisted function by its English name; undefined for another name. */
+export const arityFor = (name: string): Arity | undefined => arities(name)
 
 /**
  * Whitelisted functions that are syntax rather than calls: LET's names are bound by the parser
@@ -75,4 +85,4 @@ export function arityFor(name: string): Arity | undefined {
 export const SYNTAX: readonly string[] = ['LET']
 
 /** A whitelisted function, a call or syntax. */
-export const isFunction = (name: string): boolean => name in FUNCTION_ARITY || SYNTAX.includes(name)
+export const isFunction = (name: string): boolean => arities(name) !== undefined || SYNTAX.includes(name)

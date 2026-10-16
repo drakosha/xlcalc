@@ -4,7 +4,7 @@
  * Excel en-US, or with its own semantics tests where the measurement has no cases.
  */
 import { specOf, type FnDef, type FunctionSpec } from './args.js'
-import { SYNTAX } from './arity.js'
+import { SYNTAX, useArities } from './arity.js'
 import { functions as database } from './functions/database.js'
 import { functions as date } from './functions/date.js'
 import { functions as engineering } from './functions/engineering.js'
@@ -77,6 +77,9 @@ export const DEFS: Readonly<Record<string, FnDef>> = assemble()
 
 /** Argument counts and range positions by function name, for the parser and the code generator. */
 export const FUNCTIONS: Readonly<Record<string, FunctionSpec>> = Object.fromEntries(Object.entries(DEFS).map(([name, def]) => [name, specOf(name, def)]))
+
+// the check of a formula's calls counts by the engine's own specs
+useArities((name) => (Object.hasOwn(FUNCTIONS, name) ? FUNCTIONS[name] : undefined))
 
 /** The whitelist: every function a formula can call, by its English name, in alphabetical order. */
 export const FUNCTION_NAMES: readonly string[] = [...Object.keys(FUNCTIONS), ...SYNTAX].sort()

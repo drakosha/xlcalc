@@ -1,6 +1,6 @@
 /**
  * Each function's declared arguments (`ArityDef`), without its implementation, for the check of a formula's calls where
- * the engine is not loaded (`syntax/check.ts`, typed entry in `xlcalc/entry`). Made from the engine's definitions by
+ * the engine is not loaded (`xlcalc/entry`, `useArities`). Made from the engine's definitions by
  * `npx tsx test/function-arity.ts --write`; `test/function-arity.test.ts` keeps it the same as them.
  */
 import type { ArityDef } from './arity.js'

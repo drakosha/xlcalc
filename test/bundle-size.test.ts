@@ -26,8 +26,11 @@ describe('bundle size', () => {
     expect(bytes).toBeLessThan(300 * 1024)
   }, 60_000)
 
-  it('the root takes en-US alone of the locales; the ru-RU module none of the computation', async () => {
-    expect(locales((await minified(`export * from ${lib('index.js')}`)).used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
+  it('the root takes en-US alone of the locales, and the functions\' arguments once, by their specs; the ru-RU module none of the computation', async () => {
+    const root = (await minified(`export * from ${lib('index.js')}`)).used
+    expect(locales(root)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
+    // the table of declared arguments is xlcalc/entry's, without the engine
+    expect(root.filter((f) => /function-arity/.test(f))).toEqual([])
     const ru = await minified(`export * from ${lib('locales/ru-RU.js')}`)
     expect(ru.used.map((f) => f.replace(/^(.*\/)?(src|dist)\//, '')).sort()).toEqual([expect.stringMatching(/^locale\/lcid\.(ts|js)$/), expect.stringMatching(/^locales\/ru-RU\.(ts|js)$/)])
   }, 60_000)
