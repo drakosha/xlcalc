@@ -59,7 +59,9 @@ export function arityOf(def: ArityDef): Arity {
 }
 
 /** Where the arity of a whitelisted function comes from: the engine's specs (`functions.ts`), or without the engine its declared arguments (`typed-entry.ts`). */
-let arities: (name: string) => Arity | undefined = () => undefined
+let arities = (name: string): Arity | undefined => {
+  throw new Error(`no arities to check ${name}'s arguments by: an entry gives them (useArities)`)
+}
 
 export function useArities(f: (name: string) => Arity | undefined) {
   arities = f
