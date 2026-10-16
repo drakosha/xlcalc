@@ -7,7 +7,7 @@
  */
 import { shapes, type NameRef } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
-import { holds } from '../args.js'
+import { holds } from '../arity.js'
 import { FUNCTIONS } from '../functions.js'
 import { OPEN_REFERENCE } from '../functions/omitted.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'

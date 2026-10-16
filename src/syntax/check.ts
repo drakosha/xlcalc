@@ -1,7 +1,7 @@
 /** Checks of a formula with codes: functions and their argument counts, sheets, names; valid range names. */
 import type { CheckCode, NameCheck, NameRefusal, ValidateContext, ValidateResult } from '../contract.js'
 import { caseKey, wordKey } from '../collate.js'
-import { FUNCTIONS, isFunction } from '../functions.js'
+import { arityFor, isFunction } from '../arity.js'
 import { english } from '../locale/english.js'
 import type { Message, NameRule } from '../locale/messages.js'
 import { FormulaError, type Ast } from './ast.js'
@@ -45,7 +45,7 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
           }
           return null
         }
-        const spec = FUNCTIONS[n.name]
+        const spec = arityFor(n.name)
         if (!spec) return null
         const k = n.args.length
         if (!spec.takes(k)) return new FormulaError('syntax', { key: 'argumentCount', fn: n.name, counts: spec.counts, got: k }, positionOf(src, n.name))
@@ -150,7 +150,7 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
   walk(ast, (n) => {
     if (n.k === 'fn') {
       functions.add(n.name)
-      if (externalSet.has(n.name) && !FUNCTIONS[n.name]) externals.push(canonical(n))
+      if (externalSet.has(n.name) && !arityFor(n.name)) externals.push(canonical(n))
     } else if (n.k === 'let') functions.add('LET')
     else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined && n.book === undefined)) sheets.add(n.sheet!)
     else if (n.k === 'ref3d') sheets.add(n.first).add(n.last)
@@ -172,7 +172,7 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
     const known = new Set(ctx.names.map(caseKey))
     for (const n of names) if (!known.has(caseKey(n))) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   }
-  const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !FUNCTIONS[f])
+  const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !arityFor(f))
   if (calls) return { ok: false, code: calls.code, message: say(calls.msg), at: calls.at }
   return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)], tables: bound.tables }
 }

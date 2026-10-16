@@ -22,6 +22,7 @@ export { quoteSheetIfNeeded } from './a1.js'
 export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const refAt = /* @__PURE__ */ strict(point.refAt)
 export const callAt = /* @__PURE__ */ strict(call.callAt)
+export const nameAt = /* @__PURE__ */ strict(call.nameAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
 

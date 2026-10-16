@@ -1011,6 +1011,16 @@ export interface CallAt {
   close: number | null
 }
 
+/**
+ * The name of a function being typed at a caret, in formula text as it is typed (`nameAt`), for the list of Formula
+ * AutoComplete: where the name begins and ends, and the part of it before the caret.
+ */
+export interface NameAt {
+  from: number
+  to: number
+  typed: string
+}
+
 /** `scanReferences`'s options. */
 export interface ScanOptions {
   /** The locale the text is typed in, a loaded locale's tag (`LOCALES`) or a locale object; without it the text is a stored formula. */

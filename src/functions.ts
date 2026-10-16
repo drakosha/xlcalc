@@ -4,6 +4,7 @@
  * Excel en-US, or with its own semantics tests where the measurement has no cases.
  */
 import { specOf, type FnDef, type FunctionSpec } from './args.js'
+import { SYNTAX } from './arity.js'
 import { functions as database } from './functions/database.js'
 import { functions as date } from './functions/date.js'
 import { functions as engineering } from './functions/engineering.js'
@@ -18,6 +19,7 @@ import { NOT_OMITTED, OMITTED } from './functions/omitted.js'
 import { functions as text } from './functions/text.js'
 
 export type { FunctionSpec } from './args.js'
+export { isFunction, SYNTAX } from './arity.js'
 
 const CATEGORIES = { database, date, engineering, financial, information, logical, lookup, math, statistical, text }
 
@@ -75,15 +77,6 @@ export const DEFS: Readonly<Record<string, FnDef>> = assemble()
 
 /** Argument counts and range positions by function name, for the parser and the code generator. */
 export const FUNCTIONS: Readonly<Record<string, FunctionSpec>> = Object.fromEntries(Object.entries(DEFS).map(([name, def]) => [name, specOf(name, def)]))
-
-/**
- * Whitelisted functions that are syntax rather than calls: LET's names are bound by the parser
- * (`syntax/parse.ts`) and its values computed by the walk (`exec/walk.ts`).
- */
-export const SYNTAX: readonly string[] = ['LET']
-
-/** A whitelisted function, a call or syntax. */
-export const isFunction = (name: string): boolean => name in FUNCTIONS || SYNTAX.includes(name)
 
 /** The whitelist: every function a formula can call, by its English name, in alphabetical order. */
 export const FUNCTION_NAMES: readonly string[] = [...Object.keys(FUNCTIONS), ...SYNTAX].sort()

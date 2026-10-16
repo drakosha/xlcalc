@@ -51,6 +51,7 @@
 import type { ErrorCode } from './contract.js'
 import { Arr } from './arrays/value.js'
 import { MAX_SERIAL } from './dates.js'
+import { arityOf, type Positions } from './arity.js'
 import type { Counts } from './locale/messages.js'
 import type { Rules } from './locale/rules.js'
 import { Areas, E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
@@ -190,21 +191,6 @@ export interface Omission {
 
 const TAKEN: Record<Omit, V | undefined> = { default: undefined, blank: null, true: true, NA: E.NA, VALUE: E.VALUE }
 
-/** Argument positions: those `at`, and from `from` on every one, or the odd or the even ones. */
-export interface Positions {
-  at?: readonly number[]
-  from?: number
-  odd?: boolean
-  even?: boolean
-}
-
-export function holds(p: Positions | undefined, i: number): boolean {
-  if (!p) return false
-  if (p.at?.includes(i)) return true
-  if (p.from === undefined || i < p.from) return false
-  return p.odd ? i % 2 === 1 : p.even ? i % 2 === 0 : true
-}
-
 /** What the parser and the code generator need to know about a function. */
 /** How an argument takes an array: element by element, arrays only (kind `r`), passed unless lifted (`p`), whole. */
 export type ArgMode = 'lift' | 'array' | 'pass' | 'whole'
@@ -237,8 +223,6 @@ export interface FunctionSpec {
   cell?: boolean
 }
 
-/** Excel's limit on the number of arguments. */
-const MAX_ARGS = 255
 const RANGE_KINDS = 'NAYZVGCMRrP'
 const LIST_KINDS = 'NAYZ'
 const WHOLE_KINDS = 'NAYZVGCMR'
@@ -269,12 +253,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
   const rep = def.rep ?? 0
   const fixed = kinds.length - rep
   const kindAt = kindOf(kinds.map((k) => k.k), rep)
-  const min = kinds.filter((k) => !k.optional).length
-  let max = rep ? (def.max ?? MAX_ARGS) : kinds.length
-  // past the declared kinds, repeated groups come whole (an optional one inside the first group may be left out)
-  const whole = (k: number) => k <= kinds.length || (k - fixed) % rep === 0
-  if (rep && !whole(max)) max--
-  const counts: Counts = rep === 2 ? { min, max, parity: fixed % 2 ? 'odd' : 'even', or: min < kinds.length } : { min, max }
+  const { min, max, takes, counts, omits } = arityOf(def)
   const mode = (i: number): ArgMode => {
     const k = kindAt(i)
     return k === 'r' ? 'array' : k === 'p' || k === 'P' ? 'pass' : WHOLE_KINDS.includes(k) ? 'whole' : 'lift'
@@ -289,7 +268,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
   return {
     min,
     max,
-    takes: (k) => k >= min && k <= max && whole(k),
+    takes,
     counts,
     range: (i) => RANGE_KINDS.includes(kindAt(i)),
     mode,
@@ -302,7 +281,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
     refs: kinds.some((k) => k.k === 'P'),
     liftFirst: def.liftFirst ?? [],
     omitted,
-    omits: (i) => !holds(def.notOmitted, i),
+    omits,
   }
 }
 
