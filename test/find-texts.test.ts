@@ -1,8 +1,10 @@
 /**
- * The texts a session keeps for `findCells` (`src/session/search.ts`) change no answer: after each call of a series that
- * changes the book (cells, formulas, formats, widths, hidden rows, a structure operation, undo and redo, names, styles,
- * an array of the old kind, a spill that grows, conditional formats that read another cell, a table, a replacement), every kind of
- * search over the session that searched before gives what a new session over the same book and clock gives. In a
+ * The texts and places a session keeps for `findCells` and `readCells` (`src/session/search.ts`, `read-order.ts`) change
+ * no answer: after each call of a series that changes the book (cells, formulas, formats, widths, hidden rows, a
+ * structure operation, undo and redo, names, styles, an array of the old kind, a spill that grows and shrinks,
+ * conditional formats that read another cell, a table, a replacement, a note on a new cell, a cell cleared whole, looks
+ * alone), every kind of search, `readCells` of every field and `summarizeRanges` over the session that read before give
+ * what a new session over the same book and clock gives. In a
  * synchronous session, in the same thread and in a thread, with closures and eval, with display and without.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -64,6 +66,10 @@ async function answers(s: AsyncSession) {
     const p = await s.findCells(ALL, query, { ...o, fields: ['value', 'text', 'editText'], count: true, maxCells: 10000 })
     out.push([query, o, p.total, p.cells])
   }
+  const read = await s.readCells(ALL, { fields: ['value', 'text', 'formula', 'editText', 'style', 'numberFormat', 'note', 'link', 'issue'], count: true, maxCells: 10000 })
+  out.push(['readCells', read.total, read.cells], ['readCells rows', (await s.readCells(ALL, { rows: [1, 3, 7], fields: ['value'] })).cells])
+  const { cells, numbers, errors, sum, min, max } = await s.summarizeRanges(ALL)
+  out.push(['summarizeRanges', cells, numbers, errors, sum, min, max])
   return out
 }
 
@@ -93,9 +99,13 @@ const SERIES: [string, (s: AsyncSession) => Promise<unknown>][] = [
   ['mixed changes', (s) => s.applyChanges([{ op: 'setCells', edits: [{ sheet: 'F', cell: 'B3', input: { value: 'x9' } }] }, { op: 'replaceCells', edits: [{ sheet: 'S', cell: 'A6', input: { value: 'x false' } }] }])],
   ['a replacement', (s) => s.replaceInCells(ALL, 'x*', 'чай', { wildcards: true })],
   ['a hidden row on the filtered sheet shown', (s) => s.setLayout([{ sheet: 'F', rows: '2', set: { hidden: false } }])],
+  ['a note on a new cell', (s) => s.setCells([{ sheet: 'S', cell: 'G9', input: { note: { text: 'n' } } }])],
+  ['a cell cleared whole', (s) => s.clearCells([{ sheet: 'S', range: 'E7' }], 'all')],
+  ['looks alone', (s) => s.patchCells([{ sheet: 'S', range: 'K5:K6', set: { numberFormat: '0.0' } }])],
+  ['a spill that shrinks', (s) => s.setCells([{ sheet: 'S', cell: 'D2', input: { value: 1 } }])],
 ]
 
-describe.each(['closures', 'eval'] as const)('findCells over the texts it keeps, execution %s', (execution: Execution) => {
+describe.each(['closures', 'eval'] as const)('findCells and readCells over the texts and places kept, execution %s', (execution: Execution) => {
   describe.each(KINDS)('%s', (kind) => {
     // without display a change lists no cell whose shown text alone changed
     it.each([true, false])('answers after each change as a new session over the same book, display %s', async (display) => {
@@ -104,7 +114,7 @@ describe.each(['closures', 'eval'] as const)('findCells over the texts it keeps,
       for (const [what, call] of SERIES) {
         await call(s)
         const fresh = createSession(await s.getBook(), { clock: s.clock, execution, display })
-        const want = await answers({ findCells: async (...a: Parameters<AsyncSession['findCells']>) => fresh.findCells(...a) } as AsyncSession)
+        const want = await answers({ findCells: async (...a: Parameters<AsyncSession['findCells']>) => fresh.findCells(...a), readCells: async (...a: Parameters<AsyncSession['readCells']>) => fresh.readCells(...a), summarizeRanges: async (...a: Parameters<AsyncSession['summarizeRanges']>) => fresh.summarizeRanges(...a) } as AsyncSession)
         fresh.close()
         expect([what, await answers(s)]).toEqual([what, want])
       }

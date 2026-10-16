@@ -5,6 +5,7 @@
  */
 import type { CellInput, LookRange, SheetInput } from '../contract.js'
 import type { Look } from '../layout/lines.js'
+import { wrote } from '../cell-writes.js'
 import { formatAddress, MAX_COLS, readAddress } from '../model.js'
 import type { Rect } from '../structure/area.js'
 import { cellEdits, edited, emptyLayer, LookTable, NONE, type Layer } from './layer.js'
@@ -167,10 +168,12 @@ function keptCells(cells: Record<string, CellInput>, gone: Set<string>): Record<
 }
 
 /**
- * Writes a cell's input on a sheet of a session's book: content to the sheet's entries (with no look under it), a look
- * alone or none to its looks, which take the writes when they are next read (`layerOf`) or settled.
+ * Writes a cell's input on a sheet of a session's book, the one way a cell of a live book is written: content to the
+ * sheet's entries (with no look under it), a look alone or none to its looks, which take the writes when they are next
+ * read (`layerOf`) or settled; the cell's place noted in the sheet's log of writes (`cell-writes.ts`).
  */
 export function putInput(sheet: SheetInput, addr: string, r: number, c: number, input: CellInput | null): void {
+  wrote(sheet, r * MAX_COLS + c)
   const alone = input === null || lookAlone(input)
   if (alone) delete sheet.cells[addr]
   else sheet.cells[addr] = input

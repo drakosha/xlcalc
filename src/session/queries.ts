@@ -5,18 +5,17 @@ import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { referencesOf } from '../graph.js'
 import { array, checkAddress, checkBoolean, checkNumber, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
 import { issueDetail } from '../issues.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, readAddress } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { cellResult, cellsIn, outValue } from '../result.js'
-import { rectText, hasCell, meets } from '../structure/area.js'
+import { rectText, meets } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
-import { NONE } from '../looks/layer.js'
-import { inputIn, layerOf } from '../looks/sheet.js'
+import { inputIn } from '../looks/sheet.js'
 import { checkLineNumbers, checkRange, sessionEditTexts } from './viewport.js'
 import { FIND_CALL_OPTIONS, READ_OPTIONS } from '../strict-args.js'
 import { finderOf, type Finder, type Ref } from './find.js'
-import { lowerBound } from '../sorted.js'
+import { readOrder } from './read-order.js'
 
 const PAGE = ['maxCells', 'cursor', 'count'] as const
 const FIELDS: CellReadField[] = ['value', 'text', 'formula', 'editText', 'style', 'numberFormat', 'note', 'link', 'issue']
@@ -88,97 +87,6 @@ class Page<T> {
   }
 }
 
-/** The rows of rows `r1` to `r2`, or those of them `rows` holds (ascending). */
-function* rowsIn(rows: number[] | null, r1: number, r2: number): Generator<number> {
-  if (!rows) for (let r = r1; r <= r2; r++) yield r
-  else for (let k = lowerBound(rows, r1, (r) => r); k < rows.length && rows[k] <= r2; k++) yield rows[k]
-}
-
-/** A cell of a query: its sheet, row and column, and the range it comes in. */
-type Requested = [s: number, r: number, c: number, n: number]
-
-/**
- * Range by range, each cell once, in the first range that has it: a range's input cells in the order of their keys,
- * then the cells of the sheets' looks, then spilled cells; with `rows` (zero-based, ascending), only the cells of those
- * rows. A sheet's cells are read once: the first range on it keeps the later ranges' cells for them. Stable while the
- * revision is unchanged. Without `looks`, the cells of the looks that hold no value are left out (what a sum reads of
- * them is nothing).
- */
-function* requested(s: EngineState, refs: Ref[], looks = true, rows: number[] | null = null): Generator<Requested | undefined> {
-  const only = rows && new Set(rows)
-  const owner = (i: number, r: number, c: number) => refs.findIndex((x) => x.s === i && hasCell(x, r, c))
-  const later = new Map<number, number[]>()
-  const p = { r: 0, c: 0 }
-  for (const [n, x] of refs.entries()) {
-    const cells = s.input.sheets[x.s].cells
-    if (refs.findIndex((y) => y.s === x.s) === n)
-      for (const addr in cells) {
-        if (paced(1)) yield undefined
-        readAddress(addr, p)
-        if (only && !only.has(p.r)) continue
-        const k = owner(x.s, p.r, p.c)
-        if (k === n) yield [x.s, p.r, p.c, n]
-        else if (k > n) {
-          let kept = later.get(k)
-          if (!kept) later.set(k, (kept = []))
-          kept.push(p.r * MAX_COLS + p.c)
-        }
-      }
-    else
-      for (const m of later.get(n) ?? []) {
-        if (paced(1)) yield undefined
-        yield [x.s, Math.floor(m / MAX_COLS), m % MAX_COLS, n]
-      }
-    const layer = looks ? layerOf(s.input.sheets[x.s]) : undefined
-    for (const piece of layer?.pieces(x) ?? [])
-      for (const r of rowsIn(rows, piece.r1, piece.r2))
-        for (let c = piece.c1; c <= piece.c2; c++) {
-          if (paced(1)) yield undefined
-          if (!(formatAddress(r, c) in cells) && owner(x.s, r, c) === n) yield [x.s, r, c, n]
-        }
-    for (const spill of s.spills.on.values()) {
-      if (spill.s !== x.s || !meets(spill, x)) continue
-      for (const r of rowsIn(rows, Math.max(spill.r1, x.r1), Math.min(spill.r2, x.r2)))
-        for (let c = Math.max(spill.c1, x.c1); c <= Math.min(spill.c2, x.c2); c++) {
-          if (paced(1)) yield undefined
-          if (!(formatAddress(r, c) in cells) && (layer?.idAt(r, c) ?? NONE) === NONE && owner(x.s, r, c) === n) yield [x.s, r, c, n]
-        }
-    }
-  }
-}
-
-/** The cells of a query by rows: their places, range by range, each range's sorted, and where each range ends. */
-interface Ordered {
-  revision: number
-  key: string
-  places: Float64Array
-  ends: number[]
-}
-
-/** The last query's cells by rows, kept with the state for the pages after its first while the revision holds. */
-const orders = new WeakMap<EngineState, Ordered>()
-
-/** The cells of `requested`, each range's by rows (sorted by their places, as Find's order by rows); `key` the query's. */
-function* ordered(s: EngineState, revision: number, refs: Ref[], rows: number[] | null, key: string): Steps<Ordered> {
-  const had = orders.get(s)
-  if (had && had.revision === revision && had.key === key) return had
-  const places: number[] = []
-  const ends: number[] = []
-  for (const cell of requested(s, refs, true, rows)) {
-    if (!cell) {
-      yield
-      continue
-    }
-    while (ends.length < cell[3]) ends.push(places.length)
-    places.push(cell[1] * MAX_COLS + cell[2])
-  }
-  while (ends.length < refs.length) ends.push(places.length)
-  const out: Ordered = { revision, key, places: Float64Array.from(places), ends }
-  for (let n = 0; n < ends.length; n++) out.places.subarray(n ? ends[n - 1] : 0, ends[n]).sort()
-  orders.set(s, out)
-  return out
-}
-
 function* projected(s: EngineState, i: number, r: number, c: number, fields: CellReadField[], edit: ReturnType<typeof sessionEditTexts> | null): Steps<ReadCell> {
   const addr = formatAddress(r, c),
     out: ReadCell = { sheet: s.sheetNames[i], cell: addr }
@@ -208,13 +116,13 @@ function queryOf(s: EngineState, revision: number, clock: Clock, given: RangeRef
 
 export function* readQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], eo?: ReadCellsOptions): Steps<ReadCellsResult> {
   const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, checkBase<ReadCellsOptions>(eo, revision, READ_OPTIONS), [])
-  const { places, ends } = yield* ordered(s, revision, refs, rows, page.signature)
-  // the cells before the cursor are passed over, by their count; a page that counts goes on to the end
-  let n = 0
-  for (let at = page.from?.[0] ?? 0; at < places.length; at++) {
-    if (paced(1)) yield
-    while (at >= ends[n]) n++
-    if (page.wanted([at + 1])) page.items.push(yield* projected(s, refs[n].s, Math.floor(places[at] / MAX_COLS), places[at] % MAX_COLS, fields, edit))
+  for (const cell of readOrder(s, refs, rows, page.from)) {
+    if (!cell) {
+      yield
+      continue
+    }
+    const [i, r, c, n] = cell
+    if (page.wanted([n, r * MAX_COLS + c])) page.items.push(yield* projected(s, i, r, c, fields, edit))
     if (page.done) break
   }
   return { ...page.result(), cells: page.items }
@@ -278,7 +186,7 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
   if (o.rows !== undefined) checkLineNumbers(o.rows, 'opts.rows', MAX_ROWS)
   const out: RangeSummary = { revision, clock: { ...clock }, cells: 0, numbers: 0, errors: 0, sum: 0, min: null, max: null },
     sum = new CompensatedSum()
-  for (const at of requested(s, refsOf(s, given), false, o.rows?.map((n) => n - 1) ?? null)) {
+  for (const at of readOrder(s, refsOf(s, given), o.rows?.map((n) => n - 1) ?? null, null, false)) {
     if (!at) {
       yield
       continue
