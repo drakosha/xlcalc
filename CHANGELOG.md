@@ -16,6 +16,14 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.44.2 (2026-10-16)
+
+Internal release; not published to npm. A session lets go of the state it built before. The synthetic book's values and hashes are as in 0.44.1.
+
+Fixed:
+
+- Since 0.27.0 every operation that builds a session's book again (a table's column renamed by its header, a structure operation, new names) kept the state built before it, and so each one before: about 84 MB more at each over a table of 34,000 rows and 16 columns, never given back, so that a pool of `maxHeapMb: 384` ran `out_of_memory` at the third rename. The new state now holds nothing of the old one, and the heap stays where it was after the session opened (`test/session-rebuild-memory.test.ts`, in a fresh process).
+
 ## 0.44.1 (2026-10-16)
 
 Internal release; not published to npm. Point mode by the rule of a formula closed on Return. The synthetic book's values and hashes are as in 0.44.0.
