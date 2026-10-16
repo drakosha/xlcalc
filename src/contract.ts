@@ -1480,6 +1480,14 @@ export interface FindCellsOptions extends ReadCellsOptions {
 /** `findMatcher`'s and `findReplacer`'s options: Find's, as `findCells` takes them, over a host's own texts. */
 export type FindTextOptions = Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell'>
 
+/** The options of `compareValues` and `valueComparator`. */
+export interface CompareValuesOptions {
+  /** Largest first; blanks stay last. */
+  descending?: boolean
+  /** A loaded locale's tag (`LOCALES`), or a locale object, loaded or not, whose order of text the values take (`ruRU`, Latin before Cyrillic as Excel for Windows sorts); en-US's without one. */
+  locale?: string | Locale
+}
+
 /** `Session.replaceInCells`' options: Find's, as `findCells` takes them, but what it reads, which is the text a cell opens with (Look in Formulas), and the order. */
 export interface ReplaceOptions extends EditOptions, Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell' | 'skipHidden' | 'rows'> {}
 

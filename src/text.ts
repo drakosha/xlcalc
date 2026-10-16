@@ -8,10 +8,12 @@
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
 import { array, checkBoolean, checkCellValue, checkNumber, checkString, InputError, object, onlyOptions } from './input.js'
-import type { CellValue, FindTextOptions } from './contract.js'
+import type { CellValue, CompareValuesOptions, FindTextOptions } from './contract.js'
 import { clipboardRows } from './entry/clipboard.js'
 import { folded, matcher, replacer } from './find-text.js'
-import { sortOrder } from './sort-order.js'
+import { sameType, sortOrder } from './sort-order.js'
+import { textOrder } from './collate.js'
+import { checkLocaleArg } from './locale/load.js'
 import { charsOfPoints, columnPoints, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
@@ -48,10 +50,10 @@ export const parseClipboard = /* @__PURE__ */ strict(function parseClipboard(tex
   return clipboardRows(checkString(text, 'text'))
 })
 
-/** Options of boolean flags checked: an object of `keys` alone, each a boolean (`hint`: an example for the message). */
-function flags<K extends string>(opts: Partial<Record<K, boolean>> | undefined, keys: readonly K[], hint: string): Partial<Record<K, boolean>> {
+/** Options of boolean flags checked: an object of `keys` and `more` alone, each of `keys` a boolean (`hint`: an example for the message). */
+function flags<K extends string>(opts: object | undefined, keys: readonly K[], hint: string, more: readonly string[] = []): Partial<Record<K, boolean>> {
   const o = opts === undefined ? {} : object(opts, 'opts', hint)
-  onlyOptions(o, 'opts', keys)
+  onlyOptions(o, 'opts', [...keys, ...more])
   for (const k of keys) if (o[k] !== undefined) checkBoolean(o[k], `opts.${k}`)
   return o as Partial<Record<K, boolean>>
 }
@@ -115,22 +117,33 @@ export const findReplacer = /* @__PURE__ */ strict(function findReplacer(query: 
   return replacer(checkString(query, 'query'), checkString(by, 'by'), flags(opts, FIND, 'Find options such as { wildcards: true }'))
 })
 
-/** The `descending` option of the comparisons, checked. */
-const descending = (opts: { descending?: boolean } | undefined) => flags(opts, ['descending'], 'options such as { descending: true }').descending === true
+/** The order of values of one type by a locale's order of text (`RegionalData.collation`), each made once. */
+const ORDERS = new Map<string, (a: CellValue, b: CellValue) => number>()
+
+/** The options of the comparisons, checked: the reversal, and the order of one type (en-US's, `sortOrder`'s own, as undefined). */
+function compareOptions(opts: CompareValuesOptions | undefined): [boolean, ((a: CellValue, b: CellValue) => number) | undefined] {
+  const desc = flags(opts, ['descending'], 'options such as { descending: true }', ['locale']).descending === true
+  const tag = (opts?.locale === undefined ? undefined : checkLocaleArg(opts.locale, 'opts.locale').regional?.collation) ?? 'en-US'
+  if (tag === 'en-US') return [desc, undefined]
+  let same = ORDERS.get(tag)
+  if (!same) ORDERS.set(tag, (same = sameType(textOrder(tag))))
+  return [desc, same]
+}
 
 /**
- * Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (en-US's collation),
- * FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`; negative when `a` comes first.
+ * Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (in the order of
+ * `locale`'s text, en-US's without it), FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`;
+ * negative when `a` comes first.
  */
-export const compareValues = /* @__PURE__ */ strict(function compareValues(a: CellValue, b: CellValue, opts?: { descending?: boolean }): number {
-  return sortOrder(checkCellValue(a, 'a'), checkCellValue(b, 'b'), descending(opts))
+export const compareValues = /* @__PURE__ */ strict(function compareValues(a: CellValue, b: CellValue, opts?: CompareValuesOptions): number {
+  return sortOrder(checkCellValue(a, 'a'), checkCellValue(b, 'b'), ...compareOptions(opts))
 })
 
 /**
  * `compareValues` with its options checked once, for `Array.prototype.sort` over many values: the order of two cells'
  * values, which it takes as `CellValue`s unchecked (`values.sort(valueComparator({ descending: true }))`).
  */
-export const valueComparator = /* @__PURE__ */ strict(function valueComparator(opts?: { descending?: boolean }): (a: CellValue, b: CellValue) => number {
-  const desc = descending(opts)
-  return (a, b) => sortOrder(a, b, desc)
+export const valueComparator = /* @__PURE__ */ strict(function valueComparator(opts?: CompareValuesOptions): (a: CellValue, b: CellValue) => number {
+  const [desc, same] = compareOptions(opts)
+  return (a, b) => sortOrder(a, b, desc, same)
 })

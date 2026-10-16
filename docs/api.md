@@ -117,11 +117,12 @@ A stored xlsx width in the library's Mac point model; null or undefined is the d
 ### <a id="xlcalc-comparevalues"></a>`compareValues`
 
 ```ts
-function compareValues(a: CellValue, b: CellValue, opts?: { descending?: boolean | undefined; }): number
+function compareValues(a: CellValue, b: CellValue, opts?: CompareValuesOptions): number
 ```
 
-Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (en-US's collation),
-FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`; negative when `a` comes first.
+Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (in the order of
+`locale`'s text, en-US's without it), FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`;
+negative when `a` comes first.
 
 ### <a id="xlcalc-compute"></a>`compute`
 
@@ -729,7 +730,7 @@ language, English without one; `at` is the place of the character Excel does not
 ### <a id="xlcalc-valuecomparator"></a>`valueComparator`
 
 ```ts
-function valueComparator(opts?: { descending?: boolean | undefined; }): (a: CellValue, b: CellValue) => number
+function valueComparator(opts?: CompareValuesOptions): (a: CellValue, b: CellValue) => number
 ```
 
 [`compareValues`](#xlcalc-comparevalues) with its options checked once, for `Array.prototype.sort` over many values: the order of two cells'
@@ -1947,6 +1948,19 @@ interface ColumnWidth {
   sheet: string
   column: string
   width: number
+}
+```
+
+### `CompareValuesOptions`
+
+The options of [`compareValues`](#xlcalc-comparevalues) and [`valueComparator`](#xlcalc-valuecomparator).
+
+```ts
+interface CompareValuesOptions {
+  /** Largest first; blanks stay last. */
+  descending?: boolean
+  /** A loaded locale's tag (`LOCALES`), or a locale object, loaded or not, whose order of text the values take (`ruRU`, Latin before Cyrillic as Excel for Windows sorts); en-US's without one. */
+  locale?: string | Locale
 }
 ```
 
