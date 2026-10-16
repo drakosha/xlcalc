@@ -5,6 +5,7 @@
  * merged across is one line, and the cells of a row without a value count by the font they show (the row's style, else
  * a column's, else the book's Calibri 11), so an empty row gets the default height.
  */
+import { DEFAULT_ROW_HEIGHT as DEFAULT_HEIGHT, MAX_ROW_HEIGHT as MAX_HEIGHT } from '../column-width.js'
 import type { BookInput, CellStyle, CellValue, ComputeResult, SheetInput } from '../contract.js'
 import { toCellValue, type EngineState } from '../engine.js'
 import { layerOf } from '../looks/sheet.js'
@@ -17,11 +18,7 @@ import { sheetLines } from './lines.js'
 import { mergesOf } from './merges.js'
 import { lines as spansOf, spanKey } from './spans.js'
 
-/** The height of a row without its own, in points: a line of Calibri 11, the book's default font. */
-export const DEFAULT_HEIGHT = 15
-
-/** The highest row Excel makes, in points. */
-export const MAX_HEIGHT = 409.5
+export { DEFAULT_HEIGHT, MAX_HEIGHT }
 
 /** The size of the book's default font, which a style without one shows. */
 const DEFAULT_SIZE = 11

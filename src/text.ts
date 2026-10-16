@@ -9,7 +9,7 @@
  */
 import { array, checkBoolean, checkNumber, checkString, InputError, object, onlyOptions } from './input.js'
 import { clipboardRows } from './entry/clipboard.js'
-import { columnPoints, widthOf } from './column-width.js'
+import { charsOfPoints, columnPoints, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
 import * as point from './point.js'
@@ -18,6 +18,8 @@ import { strict } from './strict-args.js'
 import { escapeColumn as escaped } from './syntax/table.js'
 
 export { quoteSheetIfNeeded } from './a1.js'
+export { DEFAULT_ROW_HEIGHT, MAX_OUTLINE, MAX_ROW_HEIGHT } from './column-width.js'
+export { FUNCTION_CATEGORIES } from './function-categories.js'
 
 export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const refAt = /* @__PURE__ */ strict(point.refAt)
@@ -73,4 +75,19 @@ export const columnWidthToPoints = /* @__PURE__ */ strict(function columnWidthTo
 export const columnWidthFromPoints = /* @__PURE__ */ strict(function columnWidthFromPoints(points: number): number {
   checkNumber(points, 'points', 0, 1535)
   return widthOf(Math.trunc(points))
+})
+
+/**
+ * A stored xlsx width as Excel for Mac's Column Width box shows it, in characters of the book's default font to two
+ * decimals (the default column, null or undefined, is 8); in the library's Mac point model, as `columnWidthToPoints`.
+ */
+export const columnWidthToChars = /* @__PURE__ */ strict(function columnWidthToChars(width?: number | null): number {
+  if (width !== undefined && width !== null) checkNumber(width, 'width', 0, 255.83203125)
+  return charsOfPoints(columnPoints(width ?? undefined))
+})
+
+/** A width in characters, as typed into Excel for Mac's Column Width box (0 to 255), to the stored xlsx width Excel makes of it. */
+export const columnWidthFromChars = /* @__PURE__ */ strict(function columnWidthFromChars(chars: number): number {
+  checkNumber(chars, 'chars', 0, 255)
+  return widthOf(pointsOfChars(chars))
 })

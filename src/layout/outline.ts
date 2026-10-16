@@ -9,6 +9,7 @@
  * lines are all hidden keeps the mark it had, which is how an inner group stays collapsed while an outer one closes and
  * opens again. A group touching the sheet's edge has no summary line; its mark is on its line at the edge.
  */
+import { MAX_OUTLINE } from '../column-width.js'
 import type { LinePatch } from '../contract.js'
 import { LIMIT, type Axis } from '../structure/area.js'
 import { entryAt, lines, patchLines, type Line } from './spans.js'
@@ -24,8 +25,7 @@ export interface OutlineEntry {
 
 type Map<T extends OutlineEntry = OutlineEntry> = Record<string, T>
 
-/** Excel's deepest outline level. */
-export const MAX_OUTLINE = 7
+export { MAX_OUTLINE }
 
 /** A group: lines `lo`..`hi` at `level` or deeper; its summary line (null past the sheet's edge); collapsed as Excel reads it. */
 export interface Group {

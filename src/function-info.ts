@@ -4,9 +4,9 @@
  * each function does is `xlcalc/function-text`'s.
  */
 import type { FunctionCategory } from './contract.js'
+import { FUNCTION_CATEGORIES } from './function-categories.js'
 
-/** The categories in the order Excel's window lists them. */
-export const FUNCTION_CATEGORIES: readonly FunctionCategory[] = ['financial', 'date', 'math', 'statistical', 'lookup', 'database', 'text', 'logical', 'information', 'engineering', 'compatibility']
+export { FUNCTION_CATEGORIES }
 
 /** The categories' names in en-US. */
 export const CATEGORY_NAMES: Readonly<Record<FunctionCategory, string>> = {
