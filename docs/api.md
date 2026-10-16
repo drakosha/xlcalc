@@ -481,6 +481,17 @@ function numberFormatChoices(locale?: string | Locale): FormatChoice[]
 
 The items of the Number Format list in `locale`, in its order: each one's key, name, the format it applies and that format's code in the locale.
 
+### <a id="xlcalc-outlineedit"></a>`outlineEdit`
+
+```ts
+function outlineEdit(sheet: Pick<SheetInput, "columns" | "rows" | "outline">, op: OutlineEditOp): OutlineEditResult
+```
+
+Excel's outline commands on a sheet alone, as [`editStructure`](#xlcalc-editstructure) does them in a book ([`OutlineEditOp`](#outlineeditop): Group, Ungroup,
+Show and Hide Detail, the level buttons): the sheet's rows and columns after the command, its summary settings read,
+or why Excel refuses it, in English (`{ ok: false, code: 'detail', message: 'the detail of row 11 is shown already' }`).
+The sheet is checked as [`outlineGroups`](#xlcalc-outlinegroups) checks it, the operation as [`editStructure`](#xlcalc-editstructure) checks it.
+
 ### <a id="xlcalc-outlinegroups"></a>`outlineGroups`
 
 ```ts
@@ -715,6 +726,15 @@ Whether Excel takes a sheet name, by the rules a book's sheets are checked by: 1
 `: \ / ? * [ ]`, no apostrophe at either end, not `History` in any case. A refusal's message is in `opts.locale`'s
 language, English without one; `at` is the place of the character Excel does not take.
 
+### <a id="xlcalc-valuecomparator"></a>`valueComparator`
+
+```ts
+function valueComparator(opts?: { descending?: boolean | undefined; }): (a: CellValue, b: CellValue) => number
+```
+
+[`compareValues`](#xlcalc-comparevalues) with its options checked once, for `Array.prototype.sort` over many values: the order of two cells'
+values, which it takes as [`CellValue`](#cellvalue)s unchecked (`values.sort(valueComparator({ descending: true }))`).
+
 ### <a id="xlcalc-viewportof"></a>`viewportOf`
 
 ```ts
@@ -727,11 +747,11 @@ computing its formulas: the result's values, text and colour, the book's formats
 
 ## xlcalc/a1
 
-Described under an entry above: [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`linesKey`](#xlcalc-lineskey), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameKey`](#xlcalc-namekey), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`sameName`](#xlcalc-samename).
+Described under an entry above: [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`linesKey`](#xlcalc-lineskey), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameKey`](#xlcalc-namekey), [`outlineEdit`](#xlcalc-outlineedit), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`sameName`](#xlcalc-samename).
 
 ## xlcalc/text
 
-Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`scanReferences`](#xlcalc-scanreferences).
+Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`scanReferences`](#xlcalc-scanreferences), [`valueComparator`](#xlcalc-valuecomparator).
 
 ## xlcalc/entry
 
@@ -3201,6 +3221,23 @@ interface NumberFormatCategory {
   category: FormatCategory
   name: string
 }
+```
+
+### `OutlineEditOp`
+
+An outline operation of [`StructureOp`](#structureop) without its sheet, for a sheet alone ([`outlineEdit`](#xlcalc-outlineedit)): `{ op: 'group', rows: '5:7' }`.
+
+```ts
+type OutlineEditOp = WithoutSheet<Extract<StructureOp, { op: 'group' | 'ungroup' | 'showDetail' | 'hideDetail' | 'showLevels' }>>
+```
+
+### `OutlineEditResult`
+
+A sheet's rows and columns after an outline command ([`outlineEdit`](#xlcalc-outlineedit)), each axis whole as [`SheetInput`](#sheetinput) holds it and left
+out when it has no lines; or why Excel refuses the command, as [`editStructure`](#xlcalc-editstructure) refuses it, in English.
+
+```ts
+type OutlineEditResult = { ok: true; rows?: Record<string, RowInput>; columns?: Record<string, ColumnInput> } | Refusal<'outline_deep' | 'not_grouped' | 'detail'>
 ```
 
 ### `OutlineGroup`

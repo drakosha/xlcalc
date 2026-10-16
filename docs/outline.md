@@ -1,6 +1,6 @@
 # Outlines
 
-Rows and columns of a sheet can be grouped, as Excel's Data > Group does: the bars beside the row numbers and above the column letters, a `−` or `+` button on each group's summary line and the level buttons in the corner. The library gives a sheet's groups as Excel draws them, `outlineGroups`, without the engine, and Excel's commands on them, Group, Ungroup, Show Detail, Hide Detail and the level buttons, as structure operations: `editStructure(book, op)`, or `session.editStructure(op)` with one revision and one step of the undo. A grid draws the groups from `getLayout()` and sends the commands; the rules below are Excel for Windows' own, measured through its object model.
+Rows and columns of a sheet can be grouped, as Excel's Data > Group does: the bars beside the row numbers and above the column letters, a `−` or `+` button on each group's summary line and the level buttons in the corner. The library gives a sheet's groups as Excel draws them, `outlineGroups`, without the engine, and Excel's commands on them, Group, Ungroup, Show Detail, Hide Detail and the level buttons, as structure operations: `editStructure(book, op)`, or `session.editStructure(op)` with one revision and one step of the undo, and on a sheet alone, without the engine, `outlineEdit`. A grid draws the groups from `getLayout()` and sends the commands; the rules below are Excel for Windows' own, measured through its object model.
 
 ```js
 import { createSession, outlineGroups } from 'xlcalc'
@@ -54,6 +54,20 @@ Each is a `StructureOp` on one sheet; a session's `editStructure` recomputes wha
 - `{ op: 'showLevels', sheet, rows: 2 }` (and `columns`) is a level button: the lines of level 2 and deeper hidden, the other grouped lines shown, rows hidden by hand among them too, lines without a level left as they are; then the marks as Excel keeps them. With the rows above, level 2 hides 5:7 and marks row 8; level 1 hides 3:10 and marks row 11 alone; 8 shows every group.
 
 A refusal is `{ ok: false, code, message }`, the message in the book's locale (`Детали строки 11 уже показаны` in ru-RU), and changes nothing.
+
+### Without the engine
+
+A grid that keeps its own rows and columns runs the same commands with `outlineEdit(sheet, op)` of `xlcalc/a1`: the sheet's `rows`, `columns` and `outline` (a `SheetInput` or its layout) and the operation without `sheet`. It answers the axes after the command, whole, as a sheet holds them (an axis with no lines left out), or the refusal `editStructure` gives, in English.
+
+```js
+import { outlineEdit } from 'xlcalc/a1'
+
+const rows = { '3:4': { outlineLevel: 1 }, '5:7': { outlineLevel: 2 }, '8:10': { outlineLevel: 1 } }
+console.log(outlineEdit({ rows }, { op: 'hideDetail', row: 8 }))
+// → { ok: true, rows: { '8': { outlineLevel: 1, collapsed: true }, '3:4': { outlineLevel: 1 }, '5:7': { outlineLevel: 2, hidden: true }, '9:10': { outlineLevel: 1 } } }
+console.log(outlineEdit({ rows }, { op: 'showDetail', row: 11 }))
+// → { ok: false, code: 'detail', message: 'the detail of row 11 is shown already' }
+```
 
 ## In xlsx files
 

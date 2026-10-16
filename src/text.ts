@@ -115,10 +115,22 @@ export const findReplacer = /* @__PURE__ */ strict(function findReplacer(query: 
   return replacer(checkString(query, 'query'), checkString(by, 'by'), flags(opts, FIND, 'Find options such as { wildcards: true }'))
 })
 
+/** The `descending` option of the comparisons, checked. */
+const descending = (opts: { descending?: boolean } | undefined) => flags(opts, ['descending'], 'options such as { descending: true }').descending === true
+
 /**
  * Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (en-US's collation),
  * FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`; negative when `a` comes first.
  */
 export const compareValues = /* @__PURE__ */ strict(function compareValues(a: CellValue, b: CellValue, opts?: { descending?: boolean }): number {
-  return sortOrder(checkCellValue(a, 'a'), checkCellValue(b, 'b'), flags(opts, ['descending'], 'options such as { descending: true }').descending === true)
+  return sortOrder(checkCellValue(a, 'a'), checkCellValue(b, 'b'), descending(opts))
+})
+
+/**
+ * `compareValues` with its options checked once, for `Array.prototype.sort` over many values: the order of two cells'
+ * values, which it takes as `CellValue`s unchecked (`values.sort(valueComparator({ descending: true }))`).
+ */
+export const valueComparator = /* @__PURE__ */ strict(function valueComparator(opts?: { descending?: boolean }): (a: CellValue, b: CellValue) => number {
+  const desc = descending(opts)
+  return (a, b) => sortOrder(a, b, desc)
 })
