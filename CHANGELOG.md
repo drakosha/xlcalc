@@ -16,6 +16,14 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.45.1 (2026-10-16)
+
+Internal release; not published to npm. The functions' arguments once in each bundle. The synthetic book's values and hashes are as in 0.45.0.
+
+Fixed:
+
+- 0.45.0 put the table of the functions' declared arguments, which `xlcalc/entry` checks a formula's calls by, into the root as well, beside the engine's own specs: `compute` took 11 KB more (291.6 KB, 280.4 in 0.43.0). The engine now checks by its specs, the table is `xlcalc/entry`'s alone (`compute` 280.7 KB), and a check of calls with neither throws rather than passing over the counts.
+
 ## 0.45.0 (2026-10-16)
 
 Internal release; not published to npm. What a grid needs without the engine. The synthetic book's values and hashes are as in 0.44.2.
