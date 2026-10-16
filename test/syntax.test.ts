@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+// the engine's functions give the check of a formula's calls their arities
+import '../src/functions.js'
 import { canonical, parse, validate, validateName } from '../src/syntax.js'
 
 const ctx = { sheets: ['Данные', 'S'], names: ['data_amt', 'one'] }
