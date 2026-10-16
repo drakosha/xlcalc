@@ -16,6 +16,18 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.44.1 (2026-10-16)
+
+Internal release; not published to npm. Point mode by the rule of a formula closed on Return. The synthetic book's values and hashes are as in 0.44.0.
+
+Fixed:
+
+- `refAt` enters a formula left open when Return would close it without a word, and does nothing when Return would bring Excel's window: `=SUM(1)+MAX(2` and `=ABS(-(1)` do nothing, as Excel does, where `refAt` entered them ([Point mode](docs/entry.md#point-mode)). Two known differences of Point mode are left, in en-US: `=ROUND(1.5` and `=ROUND(A1*2`, too few arguments.
+
+Changed:
+
+- The brackets left open in typed text are read in one place for `callAt`, `refAt` and a formula closed on Return, and a function's English name is found in one place for `callAt`, `functionSignature` and the correction's check; no change of their answers.
+
 ## 0.44.0 (2026-10-16)
 
 Internal release; not published to npm. A formula left open closed as Excel closes it on Return. The synthetic book's values and hashes are as in 0.43.0.
