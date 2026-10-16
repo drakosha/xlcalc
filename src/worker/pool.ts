@@ -435,7 +435,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
           return Promise.reject(e)
         }
       },
-      getCells: (sheet, range) => value(call('getCells', [sheet, range])),
+      getCells: (sheet, range, co) => value(call('getCells', [sheet, range], co)),
       copyText: (sheet, range, o) => {
         try {
           const { signal, timeoutMs, rest } = splitCall<CopyTextOptions>(o)

@@ -2634,8 +2634,8 @@ export interface AsyncSession {
   getUsedRange(sheet: string): Promise<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
-  /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
-  getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** As `Session.getCells`; from a thread only the rectangles come back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
+  getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
   /** As `Session.copyText`; the text is prepared in one read in the session's thread. */
   copyText(sheet: string, range: string, opts?: CopyTextOptions & CalcOptions): Promise<string>
   getCell(sheet: string, cell: string): Promise<CellView | undefined>

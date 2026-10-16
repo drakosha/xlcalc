@@ -151,7 +151,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
         return Promise.reject(e)
       }
     },
-    getCells: (sheet, range) => call(() => core.getCells(sheet, range)),
+    getCells: (sheet, range, co) => call(() => core.getCells(sheet, range), co),
     copyText: (sheet, range, o) => {
       try {
         const { signal, timeoutMs, rest } = splitCall<CopyTextOptions>(o)
