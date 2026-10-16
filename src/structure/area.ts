@@ -98,6 +98,20 @@ export const contains = (outer: Rect, inner: Rect) => inner.r1 >= outer.r1 && in
 
 export const meets = (x: Rect, y: Rect) => x.r1 <= y.r2 && y.r1 <= x.r2 && x.c1 <= y.c2 && y.c1 <= x.c2
 
+/** The range grown by the merged areas it meets, each taken in whole, until it meets no other. */
+export function grown(x: Rect, merges: Rect[]): Rect {
+  let out = x
+  for (let more = true; more; ) {
+    more = false
+    for (const m of merges)
+      if (meets(m, out) && (m.r1 < out.r1 || m.c1 < out.c1 || m.r2 > out.r2 || m.c2 > out.c2)) {
+        out = { r1: Math.min(out.r1, m.r1), c1: Math.min(out.c1, m.c1), r2: Math.max(out.r2, m.r2), c2: Math.max(out.c2, m.c2) }
+        more = true
+      }
+  }
+  return out
+}
+
 /** Whether the cell at row `r`, column `c` lies in the rectangle. */
 export const hasCell = (x: Rect, r: number, c: number) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2
 

@@ -12,7 +12,7 @@ import { groupsOf, type OutlineEntry } from './layout/outline.js'
 import { lines, parseSpan, patchLines as patchSpans, spanKey } from './layout/spans.js'
 import type { Locale } from './locale/types.js'
 import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
-import { contains, encode, meets, parseRange as rangeArg, span, type Area, type Axis, type Rect } from './structure/area.js'
+import { contains, encode, grown, meets, parseRange as rangeArg, span, type Area, type Axis, type Rect } from './structure/area.js'
 import { PLAIN_SHEET } from './sheet-pattern.js'
 import { strict } from './strict-args.js'
 
@@ -73,9 +73,9 @@ export const parseCell = /* @__PURE__ */ strict(function parseCell(cell: string)
 })
 
 /** A rectangle checked against the sheet, corners in order, as the engine's area of a reference without `$`. */
-function areaOf(r: CellRect): Area {
-  const [top, bottom] = [line(r.top, MAX_ROWS, 'rect.top'), line(r.bottom, MAX_ROWS, 'rect.bottom')]
-  const [left, right] = [line(r.left, MAX_COLS, 'rect.left'), line(r.right, MAX_COLS, 'rect.right')]
+function areaOf(r: CellRect, path = 'rect'): Area {
+  const [top, bottom] = [line(r.top, MAX_ROWS, `${path}.top`), line(r.bottom, MAX_ROWS, `${path}.bottom`)]
+  const [left, right] = [line(r.left, MAX_COLS, `${path}.left`), line(r.right, MAX_COLS, `${path}.right`)]
   const b = (i: number) => ({ i: i - 1, abs: false })
   return { kind: top === bottom && left === right ? 'cell' : 'range', r: span(b(top), b(bottom)), c: span(b(left), b(right)) }
 }
@@ -95,6 +95,18 @@ export const rectsMeet = /* @__PURE__ */ strict(function rectsMeet(a: CellRect, 
 /** Whether `inner` lies within `outer`. */
 export const rectContains = /* @__PURE__ */ strict(function rectContains(outer: CellRect, inner: CellRect): boolean {
   return contains(rect(outer), rect(inner))
+})
+
+/**
+ * The rectangle a merge takes in (`mergeCells`, Merge Cells): `rect` grown by each merged area of `merges` it meets,
+ * taken in whole, again for each it then meets, until it meets no other.
+ */
+export const mergedArea = /* @__PURE__ */ strict(function mergedArea(r: CellRect, merges: readonly CellRect[]): CellRect {
+  areaOf(r)
+  if (!Array.isArray(merges)) throw new InputError('merges', `expected an array of rectangles, got ${what(merges)}`)
+  merges.forEach((m, i) => areaOf(m, `merges[${i}]`))
+  const g = grown(rect(r), merges.map(rect))
+  return { top: g.r1, left: g.c1, bottom: g.r2, right: g.c2 }
 })
 
 /** The engine's axis of layout lines. */
