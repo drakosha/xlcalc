@@ -1,11 +1,13 @@
 /**
- * The texts a session's searches read (`findCells`), kept with its state: for each sheet searched, the cells a search
- * reads (its cells and those its arrays spill into) by their places, row by row, and each kind's text of them, read
- * when a search first needs it. A call that changes the book has the cells its answer lists read again when a search
- * next needs them; a change of a sheet's layout drops the sheet's texts, a change of the styles or of the sheets all of
- * them, and the texts conditional formats show are read again after any change of a value, which they may read. A
- * state built anew (a structure operation, new names, a call that stopped) starts with none.
+ * The texts a session's searches read (`findCells`), kept with its state: for each sheet searched or read
+ * (`readCells`), the cells a search reads (its cells and those its arrays spill into) by their places, row by row, and
+ * each kind's text of them, read when a search first needs it. A call that changes the book has the cells its answer
+ * lists read again when a search next needs them, and the cells written since (the sheet's log of writes,
+ * `cell-writes.ts`) put in their places (a place whose cell is gone stays, with no text); a change of a sheet's layout drops the sheet's texts, a change of the styles all of them,
+ * a move of cells the places too, and the texts conditional formats show are read again after any change of a value,
+ * which they may read. A state built anew (a structure operation, new names, a call that stopped) starts with none.
  */
+import { writesMark, writesSince } from '../cell-writes.js'
 import { keyParts, type EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, readAddress } from '../model.js'
@@ -27,6 +29,9 @@ export interface SheetTexts {
   columns?: { ix: Uint32Array; at: Float64Array }
   /** The places of the cells changed since the texts were read. */
   changed: Set<number>
+  /** The sheet the places are of, and how far its log of writes was read (`cell-writes.ts`). */
+  sheet: object
+  mark: [number, number]
 }
 
 const kept = new WeakMap<EngineState, Map<number, SheetTexts>>()
@@ -35,7 +40,9 @@ const same = (v: number) => v
 
 /** The cells of sheet `s` a search reads: its cells, and those its arrays spill into. The steps yield between cells. */
 function* sheetCells(state: EngineState, s: number): Steps<SheetTexts> {
-  const cells = state.input.sheets[s].cells
+  const sheet = state.input.sheets[s]
+  const mark = writesMark(sheet)
+  const { cells } = sheet
   const out: number[] = []
   const p = { r: 0, c: 0 }
   for (const addr in cells) {
@@ -51,7 +58,7 @@ function* sheetCells(state: EngineState, s: number): Steps<SheetTexts> {
         if (!(formatAddress(r, c) in cells)) out.push(r * MAX_COLS + c)
       }
   }
-  return { at: Float64Array.from(out).sort(), texts: new Map(), changed: new Set() }
+  return { at: Float64Array.from(out).sort(), texts: new Map(), changed: new Set(), sheet, mark }
 }
 
 /** The changed cells' texts left to read again, and the cells new to the sheet put in their places. */
@@ -86,13 +93,21 @@ function refresh(x: SheetTexts) {
   x.columns = undefined
 }
 
-/** The texts of sheet `s` kept with the state, its cells read first when it has none; the changed cells' texts left to read again. */
+/**
+ * The texts of sheet `s` kept with the state, its cells read first when it has none (or its sheet is another object, or
+ * its log of writes started again); the cells written since put in their places, and the changed cells' texts left to
+ * read again.
+ */
 export function* textsOf(state: EngineState, s: number): Steps<SheetTexts> {
   let sheets = kept.get(state)
   if (!sheets) kept.set(state, (sheets = new Map()))
   let x = sheets.get(s)
-  if (x) refresh(x)
-  else sheets.set(s, (x = yield* sheetCells(state, s)))
+  const written = x && x.sheet === state.input.sheets[s] ? writesSince(x.sheet, x.mark) : null
+  if (x && written) {
+    for (const m of written) x.changed.add(m)
+    x.mark = writesMark(x.sheet)
+    refresh(x)
+  } else sheets.set(s, (x = yield* sheetCells(state, s)))
   return x
 }
 
@@ -122,8 +137,10 @@ export function byColumns(x: SheetTexts): NonNullable<SheetTexts['columns']> {
 export function textsChanged(state: EngineState, o: Outcome): void {
   const sheets = kept.get(state)
   if (!sheets?.size) return
-  if (o.moved.length || o.styles) return sheets.clear()
-  for (const name of o.layout) sheets.delete(state.sheetIdx.get(sheetKey(name))!)
+  if (o.moved.length) return sheets.clear()
+  // a sheet's layout and the styles change what its cells show, not where its cells are
+  for (const x of o.styles ? sheets.values() : []) x.texts.clear()
+  for (const name of o.layout) sheets.get(state.sheetIdx.get(sheetKey(name))!)?.texts.clear()
   // what conditional formats show reads values anywhere
   const shown = new Set(o.rules.map((x) => state.sheetIdx.get(sheetKey(x.sheet))))
   for (const [i, x] of sheets)

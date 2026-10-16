@@ -9,7 +9,8 @@
  */
 import type { CachedValues, CellReplace, CellValue } from './contract.js'
 import { key, toCellValue, type EngineState, type Formula } from './engine.js'
-import { formatAddress } from './model.js'
+import { putInput } from './looks/sheet.js'
+import { formatAddress, parseAddress } from './model.js'
 import { inverse, placer, type Geometry, type Place } from './structure/geometry.js'
 import { sheetKey } from './syntax.js'
 import { E, type V } from './values.js'
@@ -34,7 +35,8 @@ export function putHeld(state: EngineState, s: number, addr: string, v: V | unde
     sheet = state.input.sheets[s] = { ...sheet, cells: { ...sheet.cells } }
   }
   const { held: _, ...rest } = was
-  sheet.cells[addr] = v === undefined ? rest : { ...rest, held: toCellValue(v) as Exclude<CellValue, null> }
+  const { row, col } = parseAddress(addr)
+  putInput(sheet, addr, row, col, v === undefined ? rest : { ...rest, held: toCellValue(v) as Exclude<CellValue, null> })
   const k = `${s}!${addr}`
   if (state.journal && !state.journal.has(k)) state.journal.set(k, { sheet: state.sheetNames[s], cell: addr, input: was })
 }
