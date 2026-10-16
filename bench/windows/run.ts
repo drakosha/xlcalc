@@ -59,6 +59,7 @@ import { stepFind } from './find.js'
 import { stepReplace } from './replace.js'
 import { stepOutline } from './outline.js'
 import { stepEnd } from './end.js'
+import { stepIronCalc } from './ironcalc.js'
 import { env, withWindowsExcel, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
@@ -120,6 +121,7 @@ else if (step === 'find' && a) await withWindowsExcel(parseTag(b), (e) => stepFi
 else if (step === 'replace' && a) await withWindowsExcel(parseTag(b), (e) => stepReplace(a, parseTag(b), e))
 else if (step === 'outline' && a) await withWindowsExcel(parseTag(b), (e) => stepOutline(a, parseTag(b), e))
 else if (step === 'end' && a) await withWindowsExcel(parseTag(b), (e) => stepEnd(a, parseTag(b), e))
+else if (step === 'ironcalc') await withWindowsExcel(parseTag(a), (e) => stepIronCalc(parseTag(a), e))
 else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functions(parseTag(a), e))
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
