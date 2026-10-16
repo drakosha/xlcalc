@@ -16,6 +16,16 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.47.0 (2026-10-16)
+
+Internal release; not published to npm. `readCells` in order and faster, and the docs' examples run. The synthetic book's values and hashes are as in 0.46.0.
+
+Changed:
+
+- `readCells` gives each range's cells by rows (`A1`, `B1`, `A2`), as `findCells` gives them, whatever order the book's cells were given in; before, a range's input cells came in the order of their keys, then the cells of a look alone, then spilled cells. `readCells` and `summarizeRanges` find the cells of their ranges by the index of a sheet's cells by place that Find keeps, built at the first read of a sheet and kept up to date by every write, instead of going over every cell of the sheet: on the synthetic book's data sheet of 506,594 cells a window of 1,600 cells takes 1.2 ms (64 ms before), the sheet by pages of 10,000 0.47 s (5.3 s), the first read of the sheet 97 ms (64 ms); edits as fast as before.
+- A cell of a session's book is written one way alone (`putInput`), which notes each write for the index; the values a cycle holds go that way too.
+- The examples of the docs print what their comments say and are run by the tests: new ones in [Spilling](docs/spill.md), [Arrays inside a formula](docs/arrays-incell.md) and [References](docs/references.md), and the examples of calls in eleven other documents.
+
 ## 0.46.0 (2026-10-16)
 
 Internal release; not published to npm. A grid's outline commands and sorting without the engine. The synthetic book's values and hashes are as in 0.45.1.
