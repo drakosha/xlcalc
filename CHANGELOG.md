@@ -16,6 +16,21 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.45.0 (2026-10-16)
+
+Internal release; not published to npm. What a grid needs without the engine. The synthetic book's values and hashes are as in 0.44.2.
+
+Added:
+
+- `xlcalc/entry`: `parseEntry`, `needsApostrophe` and `entryText` without the engine (97 KB minified, 36 KB gzip), a locale given as an object. The check of a formula's calls takes each function's declared arguments (`function-arity.ts`, made from the definitions and kept the same by a test), not its implementation ([Typed entry](docs/entry.md)).
+- In `xlcalc/text` and the root: `nameAt(text, caret?, { locale })`, the name of a function being typed for Formula AutoComplete; `FUNCTION_CATEGORIES`; `columnWidthToChars` and `columnWidthFromChars`, the width Excel for Mac's Column Width box shows and takes, checked against every column the Mac's fit sets read; `DEFAULT_ROW_HEIGHT`, `MAX_ROW_HEIGHT`, `MAX_OUTLINE`; `findMatcher` and `findReplacer`, Find and Replace over a host's texts as `findCells` and `replaceInCells` match; `compareValues`, the order SORT sorts mixed values in.
+- In `xlcalc/a1` and the root: `mergedArea(rect, merges)`, the rectangle a merge takes in.
+- `summarizeRanges` takes `rows`, the rows a host's filter shows, as `readCells` does; an asynchronous session's `getCells` takes `signal` and `timeoutMs`.
+
+Changed:
+
+- `xlcalc/text` is 51 KB (19 KB gzip), its budget 55 KB; `xlcalc/a1` 11.8 KB, its budget 12,000 bytes.
+
 ## 0.44.2 (2026-10-16)
 
 Internal release; not published to npm. A session lets go of the state it built before. The synthetic book's values and hashes are as in 0.44.1.
