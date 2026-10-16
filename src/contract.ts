@@ -2260,7 +2260,7 @@ export interface Session {
   applyChanges(operations: SessionOperation[], opts?: ChangesOptions): ChangesResult
   /** Dependent-value changes and errors without changing the session; use its clock when applying. */
   previewChanges(operations: SessionOperation[], opts?: PreviewChangesOptions): ChangesPreview
-  /** One revision, multiple ranges, only the fields and number of cells requested. */
+  /** One revision, multiple ranges, only the fields and number of cells requested; range by range, each range's cells by rows. */
   readCells(ranges: RangeRef[], opts?: ReadCellsOptions): ReadCellsResult
   /** Search performed where the book lives, literal or by Excel's Find; output is paged, in Find's order. */
   findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions): ReadCellsResult
@@ -2616,7 +2616,7 @@ export interface AsyncSession {
   applyChanges(operations: SessionOperation[], opts?: ChangesOptions & CalcOptions): Promise<ChangesResult>
   /** Dependent-value changes and errors without changing the session; use its clock when applying. */
   previewChanges(operations: SessionOperation[], opts?: PreviewChangesOptions & CalcOptions): Promise<ChangesPreview>
-  /** One revision, multiple ranges, only the fields and number of cells requested. */
+  /** One revision, multiple ranges, only the fields and number of cells requested; range by range, each range's cells by rows. */
   readCells(ranges: RangeRef[], opts?: ReadCellsOptions & CalcOptions): Promise<ReadCellsResult>
   /** Search performed where the book lives, literal or by Excel's Find; output is paged, in Find's order. */
   findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions & CalcOptions): Promise<ReadCellsResult>
