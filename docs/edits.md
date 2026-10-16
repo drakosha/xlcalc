@@ -78,8 +78,13 @@ Beside `revision` and `changes`, an answer has `layout`, the sheets whose layout
 `setCells(edits)` sets the fields an edit gives and keeps the cell's others: a new value keeps the style, the number format, the note, the hyperlink and `meta`.
 
 ```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 2, numberFormat: '0.00', note: { text: 'n' } } } }] })
 session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }])
-// A1 was { value: 2, style: 0, numberFormat: '0.00', note: { text: 'n' } }, now { value: 5, style: 0, numberFormat: '0.00', note: { text: 'n' } }
+// the number format and the note stay
+console.log(session.getBook().sheets[0].cells.A1)
+// → { numberFormat: '0.00', note: { text: 'n' }, value: 5 }
 ```
 
 - A field set to null is removed: `{ style: null }` leaves the cell the look of its row or column.
@@ -116,8 +121,20 @@ A host's `meta` is the cell's identity rather than its content or its look, so i
 A style given by its fields goes over the style each cell shows, as Excel formats a selection: the cell's own style, else its row's, else its column's.
 
 ```js
-session.patchCells([{ sheet: 'S', range: 'A1:C3', set: { style: { font: { bold: true } } } }])
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  styles: [{ font: { italic: true } }, { fill: { color: '#FFFF00' } }],
+  sheets: [{ name: 'S', columns: { C: { style: 1 } }, cells: { A1: { value: 'x', style: 0 } } }],
+})
+const { styles } = session.patchCells([{ sheet: 'S', range: 'A1:C3', set: { style: { font: { bold: true } } } }])
 // A1 italic: bold and italic; B2 empty: bold; C1 in a filled column: bold and filled
+console.log(['A1', 'B2', 'C1'].map((cell) => styles[session.getCell('S', cell).style]))
+// → [
+//     { font: { italic: true, bold: true } },
+//     { font: { bold: true } },
+//     { font: { bold: true }, fill: { color: '#FFFF00' } }
+//   ]
 ```
 
 - The font, the border's sides and the alignment change field by field; the fill changes whole. `{ font: { bold: null } }` removes bold, `{ fill: null }` the fill.

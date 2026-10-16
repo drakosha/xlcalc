@@ -341,8 +341,11 @@ Both are one recomputation, one revision and one step of the undo.
 `session.copyText(sheet, range, opts?)` prepares a selection's text in the library, from its computed values and effective number formats, including conditional formats. It works in synchronous, inline and pooled sessions, even with `display: false`, and changes no cells, revision or undo history. The host writes the returned string to its clipboard.
 
 ```js
+import { createSession } from 'xlcalc'
+
 const session = createSession({ sheets: [{ name: 'S', columns: { A: { width: 3 } }, cells: { A1: { value: 46096, numberFormat: 'yyyy-mm-dd' }, A2: { value: 1.23456789 } } }] })
-session.copyText('S', 'A1:A2', { trailingNewline: false }) // '2026-03-15\r\n1.23456789'
+console.log(JSON.stringify(session.copyText('S', 'A1:A2', { trailingNewline: false })))
+// → "2026-03-15\r\n1.23456789"
 ```
 
 Copy text uses the format without the column's clipping: a narrow date showing `##` copies `2026-03-15`; a narrow General cell showing `1` copies `1.23456789`. The book's locale and date system control the formatting; `trailingNewline` controls only the terminal CRLF (true by default, false for Mac). A General number still uses General's rounding, not the formula bar's full precision.
@@ -355,7 +358,9 @@ Rows and columns hidden by hand, by zero height or width, or by a filter are ski
 
 ```js
 import { formatClipboard } from 'xlcalc/text'
-formatClipboard([['a\nb', 'c"d']]) // '"a\nb"\tc"d\r\n'
+
+console.log(JSON.stringify(formatClipboard([['a\nb', 'c"d']])))
+// → "\"a\nb\"\tc\"d\r\n"
 ```
 
 Use `formatClipboard` when the host already has the complete rectangle of formatted texts, without column clipping. It only encodes those strings: it cannot recover a value from `##`. A host with a library session uses `copyText` to select and format the cells. The measurement's Mac copy used dot decimals in both interfaces, Windows used its regional decimal separator; the book's locale models those regional settings, not just the interface language.

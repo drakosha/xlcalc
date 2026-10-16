@@ -4,6 +4,27 @@ Operators and functions work on whole arrays and ranges, as in Excel 365 with dy
 
 Rules that go beyond Excel's documentation were measured in Excel 16.113 for Mac (en-US).
 
+```js
+import { compute } from 'xlcalc'
+
+const cells = {
+  A1: { value: 'a' }, A2: { value: 'b' }, A3: { value: 'a' },
+  B1: { value: 2 }, B2: { value: 3 }, B3: { value: 4 },
+  C1: { value: 10 }, C2: { value: 100 }, C3: { value: 1000 },
+  D1: { formula: 'SUM(B1:B3*C1:C3)' },
+  D2: { formula: 'SUM(IF(A1:A3="a",B1:B3))' },
+  D3: { formula: 'TYPE({1}+0)' },
+  E1: { formula: 'SUMIF(A1:A3,{"a","b"},B1:B3)' },
+  E3: { formula: '{1,2,3}+{1,2}' },
+}
+const out = compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells
+console.log(out.D1.value, out.D2.value, out.D3.value)
+// → 4320 6 64
+// SUMIF over two criteria gives two sums, spilled to F1; the shorter operand leaves #N/A
+console.log([out.E1.value, out.F1.value], [out.E3.value, out.F3.value, out.G3.value])
+// → [ 6, 3 ] [ 2, 4, { error: 'NA' } ]
+```
+
 ## Array values
 
 An array is a rectangle of values stored row by row (`Arr` in `src/arrays/value.ts`). An element is anything a cell can hold: a number, text, a boolean, an error or empty. An error inside an array is a value like any other and does not stop the other elements from being computed.

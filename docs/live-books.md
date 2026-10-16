@@ -6,17 +6,21 @@ These additions support a grid or an agent editing the same live session. They w
 
 `session.applyChanges(operations, options?)` accepts plain data, with operations applied in order and calculation performed over their final state. The call is atomic and produces one revision and one undo step. The result is an `EditResult` with the clock used.
 
-```ts
-const operations: SessionOperation[] = [
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'Plan', cells: { A2: { value: 10 }, C2: { formula: 'B2+1' } } }] })
+const operations = [
   { op: 'setCells', edits: [{ sheet: 'Plan', cell: 'B2', input: { formula: 'A2*Rate' } }] },
   { op: 'setNames', names: [{ name: 'Rate', ref: '1.2' }] },
   { op: 'patchCells', patches: [{ sheet: 'Plan', range: 'B2', set: { numberFormat: '0.00' } }] },
 ]
 const preview = await session.previewChanges(operations, { baseRevision: session.revision })
-const applied = await session.applyChanges(operations, {
-  baseRevision: preview.revision,
-  clock: preview.clock,
-})
+console.log(preview.impacts.map((i) => [i.cell, i.before, i.after]), session.revision)
+// → [ [ 'B2', null, 12 ], [ 'C2', 1, 13 ] ] 0
+const applied = await session.applyChanges(operations, { baseRevision: preview.revision, clock: preview.clock })
+console.log(applied.revision, session.getCell('Plan', 'B2').text, session.history)
+// → 1 12.00 { undo: 1, redo: 0 }
 ```
 
 The operations are `setCells`, `replaceCells`, `clearCells`, `patchCells`, `setNames`, `setStyles` and `setLayout`. Their fields and replacement rules are those of the existing methods. In particular, `setNames` replaces the whole name list. Structure operations and AutoFit are separate calls. AutoFit reads calculated values; run it after the batch. For localized typed text and data validation alerts, use the existing text-entry methods. These changes add no new data validation policy.
@@ -33,15 +37,22 @@ A cell preview recalculates forward and back using a sparse value journal. A pre
 
 ## Reading and finding
 
-```ts
+```js
+import { createSession } from 'xlcalc'
+
+// A1:A300 hold numbers, every 7th row the text 'overdue'
+const cells = Object.fromEntries(Array.from({ length: 300 }, (_, i) => [`A${i + 1}`, { value: i % 7 ? i : 'overdue' }]))
+const session = createSession({ sheets: [{ name: 'Plan', cells }] }, { clock: { now: '2026-10-16T12:00:00Z', seed: 1 } })
 const ranges = [{ sheet: 'Plan', range: 'A1:D1000' }]
-const page = await session.readCells(ranges, {
-  fields: ['value', 'formula'], maxCells: 100, baseRevision: session.revision,
-})
-const hits = await session.findCells(ranges, 'overdue', {
-  in: 'text', fields: ['text', 'value'], maxCells: 100, count: true,
-})
-const totals = await session.summarizeRanges(ranges)
+const page = await session.readCells(ranges, { fields: ['value', 'formula'], maxCells: 100, baseRevision: session.revision })
+console.log(page.cells.length, page.cells[0], page.truncated, typeof page.cursor)
+// → 100 { sheet: 'Plan', cell: 'A1', value: 'overdue' } true string
+const hits = await session.findCells(ranges, 'overdue', { in: 'text', fields: ['text', 'value'], maxCells: 10, count: true })
+console.log(hits.cells.length, hits.total, hits.cells[1])
+// → 10 43 { sheet: 'Plan', cell: 'A8', text: 'overdue', value: 'overdue' }
+const { cells: n, numbers, sum, min, max } = await session.summarizeRanges(ranges)
+console.log({ cells: n, numbers, sum, min, max })
+// → { cells: 300, numbers: 257, sum: 38529, min: 1, max: 299 }
 ```
 
 `readCells` reads several ranges at one revision, deduplicating overlaps: a cell comes in the first range that has it, and a sheet's cells are read once however many ranges it has. Fields are `value`, `text`, `formula`, `editText`, `style`, `numberFormat`, `note`, `link` and `issue`; value, text and formula are the default. `editText` is the text the cell opens with for editing, the one `getViewport` gives with its option `editText`. Sheet and address are always returned. Input cells and spill cells are included, including unstored large spills, with output limited before they are materialized. Own styles and number formats are returned; use `getViewport` for resolved grid appearance.
@@ -60,10 +71,22 @@ A host that keeps its own texts finds and replaces in them as `findCells` and `r
 
 A grid's Find and Replace calls `findCells` with the options of Excel's dialog and gets the cells Excel's Find gives, in its order, without reading the sheet's windows itself.
 
-```ts
-const found = await session.findCells([{ sheet: 'Plan', range: 'A1:XFD1048576' }], 'Q?-*', {
-  wildcards: true, in: 'edit', skipHidden: true, maxCells: 500, count: true, fields: ['text'],
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{
+    name: 'Plan',
+    rows: { 3: { hidden: true } },
+    filtered: true,
+    cells: { A1: { value: 'Q1-plan' }, B1: { value: 'Q2-fact' }, A2: { value: 'q3-plan' }, A3: { value: 'Q4-hidden' }, A4: { value: 'Q12' }, B4: { formula: '"Q9-"&A4' } },
+  }],
 })
+const all = [{ sheet: 'Plan', range: 'A1:XFD1048576' }]
+const found = await session.findCells(all, 'Q?-*', { wildcards: true, in: 'edit', skipHidden: true, maxCells: 500, count: true, fields: ['text'] })
+// in any case; A3 left out, its row hidden on a filtered sheet; B4 found in its formula, ="Q9-"&A4
+console.log(found.cells.map((c) => `${c.cell} ${c.text}`), found.total)
+// → [ 'A1 Q1-plan', 'B1 Q2-fact', 'A2 q3-plan', 'B4 Q9-Q12' ] 4
 ```
 
 - `wildcards: true` reads the query as Find does. `*` stands for any text and `?` for one character; `~` before a character takes it as it is, so `~*` finds a star, `~?` a question mark and `~~` a tilde. `~` before an ordinary character is that character (`~a` finds `a`), and a `~` at the end is left out (`a~` finds `a`). These are the lookup functions' wildcards, but `?` stands for one UTF-16 unit: a character outside the BMP takes two (`a??b` finds `a😀b`, `a?b` does not), and so does a letter with a combining mark (`e?x` finds `e` with a combining acute before `x`, `?x` finds `éx` written as one character).
@@ -102,10 +125,15 @@ The times are of a synchronous session, of one in the same thread and of one in 
 
 `replaceInCells(ranges, query, replacement, options?)` is Excel's Replace All: the cells `findCells` finds with the same options in the text they open with (Look in Formulas, which Excel's Replace always reads), each with the query's matches replaced, written in one call with one recalculation, one revision and one step of the undo. The answer is an `EditResult` with `replaced`, the number of cells written, and `refused`, the cells whose new text Excel would not take, left as they were.
 
-```ts
-const done = await session.replaceInCells([{ sheet: 'Plan', range: 'A1:XFD1048576' }], 'Q?-*', 'Q4-', {
-  wildcards: true, skipHidden: true, rows: shownRows,
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{ name: 'Plan', cells: { A1: { value: 'Q1-plan' }, A2: { value: 'Q2-fact' }, A3: { value: 'Q1' }, A4: { formula: 'A1&"!"' } } }],
 })
+const done = await session.replaceInCells([{ sheet: 'Plan', range: 'A1:XFD1048576' }], 'Q?-*', 'Q4-', { wildcards: true })
+console.log(done.replaced, ['A1', 'A2', 'A3', 'A4'].map((c) => session.getCell('Plan', c).value), session.history)
+// → 2 [ 'Q4-', 'Q4-', 'Q1', 'Q4-!' ] { undo: 1, redo: 0 }
 ```
 
 - The query reads as Find reads it (`wildcards`, `caseSensitive`, `wholeCell`), `?` one UTF-16 unit: `a??b` replaces `a😀b`, and `a?` replaces the first half of the emoji, leaving the second. `*` takes as little as it can and the query's last `*` the rest of the text: `a*b` in `a1b2b` is `a1b`, `b*b` in `b1b2b` is `b1b`, `*b` matches `a1b2b` twice, `a*` and `*` take the rest. Every match is replaced, in any case without `caseSensitive`. What is put goes in as it is, `*`, `?` and `~` too; nothing put removes the matches, and a cell whose whole text is replaced by nothing is emptied.
@@ -120,11 +148,16 @@ const done = await session.replaceInCells([{ sheet: 'Plan', range: 'A1:XFD104857
 
 `getEnd(sheet, cell, direction)` is the cell Excel's Control and an arrow key come to from `cell`, as `Range.End` gives it: `direction` is `'up'`, `'down'`, `'left'` or `'right'`, the answer an address. A grid that knows only the cells of the windows it read moves its active cell there and reads the window around it.
 
-```ts
+```js
+import { createSession } from 'xlcalc'
+
 // A1:A10 and B1:B500 hold values
-await session.getEnd('S', 'A1', 'down') // 'A10', not B500's row
-await session.getEnd('S', 'A10', 'down') // 'A1048576': nothing below
-await session.getEnd('S', 'C1', 'left') // 'B1'
+const cells = {}
+for (let r = 1; r <= 500; r++) cells[`B${r}`] = { value: r }
+for (let r = 1; r <= 10; r++) cells[`A${r}`] = { value: r }
+const session = createSession({ sheets: [{ name: 'S', cells }] })
+console.log(await session.getEnd('S', 'A1', 'down'), await session.getEnd('S', 'A10', 'down'), await session.getEnd('S', 'C1', 'left'))
+// → A10 A1048576 B1
 ```
 
 - A cell holds something when it has a value or a formula, whatever it shows: an empty text from a formula (`=""`), an empty text in the file or typed as an apostrophe alone, zero, a space, FALSE, an error, a value a format hides (`;;;`). So do the cells of a spill, an old-kind array's cells and the top-left cell of an array that cannot spill (`#SPILL!`). A cell with a look alone (a style or a number format, its own or of the sheet's looks), a note alone or a hyperlink alone is empty.
