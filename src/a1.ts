@@ -1,18 +1,20 @@
 /**
  * A1 addresses without the engine (the `./a1` subpath, the same functions in the root): cells, ranges, the keys of layout
- * lines and their maps patched, a sheet's outline groups, rectangles, a sheet's name in a reference as Excel writes it
- * and the rule names compare by. Rows and columns are numbered from 1, as A1 numbers them; the parts reused are the
- * engine's own (`model.ts`, `structure/area.ts`, `layout/spans.ts`, `layout/outline.ts`, `collate.ts`), which compute
- * nothing. Each function refuses options it does not take (`strict-args.ts`).
+ * lines and their maps patched, a sheet's outline groups and Excel's commands on them, rectangles, a sheet's name in a
+ * reference as Excel writes it and the rule names compare by. Rows and columns are numbered from 1, as A1 numbers them;
+ * the parts reused are the engine's own (`model.ts`, `structure/area.ts`, `layout/spans.ts`, `layout/outline.ts`,
+ * `structure/outline-command.ts`, `collate.ts`), which compute nothing. Each function refuses options it does not take (`strict-args.ts`).
  */
-import type { CellPosition, CellRect, LinePatch, LineSpan, OutlineGroup, RangeRect, SheetInput, SheetOutline } from './contract.js'
+import type { CellPosition, CellRect, LinePatch, LineSpan, OutlineEditOp, OutlineEditResult, OutlineGroup, RangeRect, SheetInput, SheetOutline } from './contract.js'
 import { caseKey } from './collate.js'
 import { InputError, what } from './input-error.js'
 import { groupsOf, type OutlineEntry } from './layout/outline.js'
 import { lines, parseSpan, patchLines as patchSpans, spanKey } from './layout/spans.js'
 import type { Locale } from './locale/types.js'
+import { OUTLINE_MESSAGES } from './locale/outline-messages.js'
 import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
 import { contains, encode, grown, meets, parseRange as rangeArg, span, type Area, type Axis, type Rect } from './structure/area.js'
+import { applyOutline, OUTLINE_FIELDS, type OutlineAxes, type OutlineOp } from './structure/outline-command.js'
 import { PLAIN_SHEET } from './sheet-pattern.js'
 import { strict } from './strict-args.js'
 
@@ -156,6 +158,13 @@ function checkMap(map: unknown, axis: Axis, path: string, key: string): asserts 
   if (lines(map as Record<string, object> | undefined, axis).some(([lo], i, ls) => i > 0 && lo <= ls[i - 1][1])) throw new InputError(path, 'two spans overlap')
 }
 
+/** A sheet or its layout, its maps of rows and columns checked as `checkMap` checks them. */
+function checkAxes(sheet: OutlineAxes) {
+  if (!isObject(sheet)) throw new InputError('sheet', `expected a sheet or its layout, got ${what(sheet)}`)
+  checkMap(sheet.rows, 'r', 'sheet.rows', 'a span of rows ("5", "5:9")')
+  checkMap(sheet.columns, 'c', 'sheet.columns', 'a span of columns ("C", "B:D")')
+}
+
 /**
  * A sheet's groups of rows and columns as Excel draws them (`SheetOutline`), from its lines' outline levels, hidden
  * state and collapsed marks and its summary settings: a `SheetInput`, or a `SheetLayout` as `getLayout()` gives it. Each
@@ -163,13 +172,29 @@ function checkMap(map: unknown, axis: Axis, path: string, key: string): asserts 
  * keeps the mark on its summary line (`RowInput.collapsed`), whatever marks the sheet holds.
  */
 export const outlineGroups = /* @__PURE__ */ strict(function outlineGroups(sheet: Pick<SheetInput, 'rows' | 'columns' | 'outline'>): SheetOutline {
-  if (!isObject(sheet)) throw new InputError('sheet', `expected a sheet or its layout, got ${what(sheet)}`)
-  checkMap(sheet.rows, 'r', 'sheet.rows', 'a span of rows ("5", "5:9")')
-  checkMap(sheet.columns, 'c', 'sheet.columns', 'a span of columns ("C", "B:D")')
+  checkAxes(sheet)
   const o = sheet.outline
   const groups = (map: Record<string, OutlineEntry> | undefined, axis: Axis, after: boolean): OutlineGroup[] =>
     groupsOf(map, axis, after).map((g) => ({ first: g.lo + 1, last: g.hi + 1, level: g.level, summary: g.summary === null ? null : g.summary + 1, collapsed: g.collapsed }))
   return { rows: groups(sheet.rows, 'r', o?.summaryBelow !== false), columns: groups(sheet.columns, 'c', o?.summaryRight !== false) }
+})
+
+/**
+ * Excel's outline commands on a sheet alone, as `editStructure` does them in a book (`OutlineEditOp`: Group, Ungroup,
+ * Show and Hide Detail, the level buttons): the sheet's rows and columns after the command, its summary settings read,
+ * or why Excel refuses it, in English (`{ ok: false, code: 'detail', message: 'the detail of row 11 is shown already' }`).
+ * The sheet is checked as `outlineGroups` checks it, the operation as `editStructure` checks it.
+ */
+export const outlineEdit = /* @__PURE__ */ strict(function outlineEdit(sheet: Pick<SheetInput, 'rows' | 'columns' | 'outline'>, op: OutlineEditOp): OutlineEditResult {
+  checkAxes(sheet)
+  if (!isObject(op)) throw new InputError('op', `expected an outline operation, got ${what(op)}`)
+  const fields = Object.hasOwn(OUTLINE_FIELDS, op.op as string) ? OUTLINE_FIELDS[op.op as OutlineOp['op']].filter((k) => k !== 'sheet') : null
+  if (!fields) throw new InputError('op.op', `expected one of ${Object.keys(OUTLINE_FIELDS).join(', ')}, got ${what(op.op)}`)
+  for (const k of Object.keys(op)) if (k !== 'op' && !fields.includes(k)) throw new InputError('op', `unknown field ${JSON.stringify(k)} (expected op, ${fields.join(', ')})`)
+  const r = applyOutline(sheet, op)
+  if (!r.ok) return { ok: false, code: r.code, message: OUTLINE_MESSAGES[r.message.key](r.message) }
+  const { rows, columns } = r.sheet
+  return { ok: true, ...(rows && Object.keys(rows).length ? { rows } : {}), ...(columns && Object.keys(columns).length ? { columns } : {}) }
 })
 
 const PLAIN = new RegExp(`^${PLAIN_SHEET}$`, 'u')

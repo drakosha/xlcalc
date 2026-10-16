@@ -1,7 +1,11 @@
 /** Find and Replace over a host's texts (`findMatcher`, `findReplacer` of `xlcalc/text`) answer as a session's `findCells` and `replaceInCells` over the same texts. */
 import { expect, it } from 'vitest'
 import { compute, createSession, type CellValue } from '../src/index.js'
-import { compareValues, findMatcher, findReplacer } from '../src/text.js'
+import { compareValues, findMatcher, findReplacer, valueComparator } from '../src/text.js'
+import { ruRU } from '../src/locales/ru-RU.js'
+import { registerLocale } from '../src/index.js'
+
+registerLocale(ruRU)
 
 const TEXTS = ['Straße', 'STRASSE', 'a*b', 'a1b2b', 'Σίσυφος', 'x~y', '']
 const QUERIES: [string, object][] = [['straße', {}], ['STRA?E', { wildcards: true }], ['a~*b', { wildcards: true }], ['a*b', { wildcards: true, wholeCell: true }], ['σ', {}], ['Straße', { caseSensitive: true }], ['~', { wildcards: true }], ['', {}]]
@@ -30,4 +34,25 @@ it('compareValues sorts as SORT does: numbers, text, booleans, errors, blanks la
   const out = compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells
   // SORT gives a blank as 0
   expect(Array.from({ length: 9 }, (_, i) => out[`C${i + 1}`].value)).toEqual(sorted(false).map((v) => v ?? 0))
+})
+
+it('valueComparator answers as compareValues on every pair of mixed values, with descending and without, in a locale\'s order of text', () => {
+  const vals: CellValue[] = [null, 0, -1.5, 2, 1e300, '', 'a', 'A', 'b', 'Б', 'ё', 'Е', '10', true, false, { error: 'NA' }, { error: 'DIV0' }, { error: 'VALUE' }]
+  for (const opts of [undefined, {}, { descending: false }, { descending: true }]) {
+    const cmp = valueComparator(opts)
+    for (const a of vals) for (const b of vals) expect([a, b, opts, cmp(a, b)]).toEqual([a, b, opts, compareValues(a, b, opts)])
+  }
+  // a locale's order of text: ru-RU's is en-US's, Latin first, as Excel for Windows sorts; one that puts Cyrillic first
+  const cyrillicFirst = { ...ruRU, tag: 'ru-XC', regional: { ...ruRU.regional!, collation: 'ru' } }
+  for (const opts of [{ locale: 'ru-RU' }, { locale: ruRU, descending: true }, { locale: cyrillicFirst }]) {
+    const cmp = valueComparator(opts)
+    for (const a of vals) for (const b of vals) expect([a, b, cmp(a, b)]).toEqual([a, b, compareValues(a, b, opts)])
+  }
+  const sorted = (opts: object) => ['b', 'а', 'A', 'Б', 'ё', 'е'].sort(valueComparator(opts))
+  expect(sorted({ locale: ruRU })).toEqual(sorted({}))
+  expect(sorted({})).toEqual(['A', 'b', 'а', 'Б', 'е', 'ё'])
+  expect(sorted({ locale: cyrillicFirst })).toEqual(['а', 'Б', 'е', 'ё', 'A', 'b'])
+  expect(() => valueComparator({ locale: 'xx-YY' })).toThrow('opts.locale')
+  expect(() => valueComparator({ desc: true } as never)).toThrow('opts')
+  expect(() => valueComparator({ descending: 1 } as never)).toThrow('opts.descending')
 })

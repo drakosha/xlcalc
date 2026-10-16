@@ -556,6 +556,18 @@ export interface SheetOutline {
   columns: OutlineGroup[]
 }
 
+/** An outline operation of `StructureOp` without its sheet, for a sheet alone (`outlineEdit`): `{ op: 'group', rows: '5:7' }`. */
+export type OutlineEditOp = WithoutSheet<Extract<StructureOp, { op: 'group' | 'ungroup' | 'showDetail' | 'hideDetail' | 'showLevels' }>>
+
+/** Each operation of a union without its `sheet`. */
+type WithoutSheet<T> = T extends unknown ? Omit<T, 'sheet'> : never
+
+/**
+ * A sheet's rows and columns after an outline command (`outlineEdit`), each axis whole as `SheetInput` holds it and left
+ * out when it has no lines; or why Excel refuses the command, as `editStructure` refuses it, in English.
+ */
+export type OutlineEditResult = { ok: true; rows?: Record<string, RowInput>; columns?: Record<string, ColumnInput> } | Refusal<'outline_deep' | 'not_grouped' | 'detail'>
+
 /**
  * What a rule of data validation lets a cell hold: any value (`any`, a rule for its input message alone), a whole number,
  * a number, a date or a time compared with the rule's formulas, a text whose length compares so, one of a list, or a value
@@ -1467,6 +1479,14 @@ export interface FindCellsOptions extends ReadCellsOptions {
 }
 /** `findMatcher`'s and `findReplacer`'s options: Find's, as `findCells` takes them, over a host's own texts. */
 export type FindTextOptions = Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell'>
+
+/** The options of `compareValues` and `valueComparator`. */
+export interface CompareValuesOptions {
+  /** Largest first; blanks stay last. */
+  descending?: boolean
+  /** A loaded locale's tag (`LOCALES`), or a locale object, loaded or not, whose order of text the values take (`ruRU`, Latin before Cyrillic as Excel for Windows sorts); en-US's without one. */
+  locale?: string | Locale
+}
 
 /** `Session.replaceInCells`' options: Find's, as `findCells` takes them, but what it reads, which is the text a cell opens with (Look in Formulas), and the order. */
 export interface ReplaceOptions extends EditOptions, Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell' | 'skipHidden' | 'rows'> {}

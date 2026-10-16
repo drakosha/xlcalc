@@ -3,6 +3,7 @@
  * a span of lines (`B:D`, `5:9`); spans do not overlap. Indexes are zero-based and spans inclusive.
  */
 import type { LinePatch } from '../contract.js'
+import { InputError, what } from '../input-error.js'
 import { colToIndex, indexToCol } from '../model.js'
 import { LIMIT, type Axis } from '../structure/area.js'
 
@@ -20,6 +21,16 @@ export function parseSpan(key: string, axis: Axis): [number, number] | null {
   const lo = index(m[1], axis)
   const hi = m[2] === undefined ? lo : index(m[2], axis)
   return hi < LIMIT[axis] && (m[2] === undefined || lo < hi) ? [lo, hi] : null
+}
+
+/** What a key of each axis is, for a message. */
+export const SPAN_KEY = { c: 'letters such as "C" or a span such as "B:D"', r: 'a row number such as "5" or a span such as "5:9"' } as const
+
+/** The lines of a key of `columns` or `rows` (`C`, `B:D`; `5`, `5:9`), else `InputError` naming `path`. */
+export function checkSpan(key: unknown, path: string, axis: Axis): [number, number] {
+  const sp = typeof key === 'string' ? parseSpan(key, axis) : null
+  if (!sp) throw new InputError(path, `expected ${SPAN_KEY[axis]} within the sheet, got ${what(key)}`)
+  return sp
 }
 
 /** The key of lines [lo, hi]: one line, or a span. */

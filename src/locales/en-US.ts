@@ -5,6 +5,7 @@
  */
 import type { Counts, EnglishMessages, Found, NameRule } from '../locale/messages.js'
 import type { Locale } from '../locale/types.js'
+import { OUTLINE_MESSAGES } from '../locale/outline-messages.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
 
 const found = (f: Found) => (f.t === 'op' || f.t === 'ident' || f.t === 'fn' ? JSON.stringify(f.v) : f.t === 'eof' ? 'end of formula' : f.t)
@@ -82,11 +83,7 @@ export const EN_MESSAGES: EnglishMessages = {
   lastSheet: () => 'a book keeps at least one sheet',
   lastVisibleSheet: (p) => `a book keeps at least one visible sheet, and ${JSON.stringify(p.sheet)} is its last`,
   veryHidden: (p) => `the very hidden sheet ${JSON.stringify(p.sheet)} is neither deleted nor moved: show it first`,
-  outlineDeep: (p) => `the ${p.lines} ${p.span} are at the deepest outline level, 7, and are not grouped further`,
-  notGrouped: (p) => `the ${p.lines} ${p.span} are in no group`,
-  noSummary: (p) => `${p.lines === 'rows' ? 'row' : 'column'} ${p.span} is in no group with a summary ${p.lines === 'rows' ? 'row' : 'column'}`,
-  detailShown: (p) => `the detail of ${p.lines === 'rows' ? 'row' : 'column'} ${p.span} is shown already`,
-  detailHidden: (p) => `the detail of ${p.lines === 'rows' ? 'row' : 'column'} ${p.span} is hidden already`,
+  ...OUTLINE_MESSAGES,
   insertOffSheet: (p) => `inserting ${p.count} ${p.lines} would push ${p.sheet}!${p.cell} off the sheet`,
   insertMergeOffSheet: (p) => `inserting ${p.count} ${p.lines} would push a merged area of ${p.sheet} off the sheet`,
   arrayPart: (p) => `the operation changes part of the array formula ${p.sheet}!${p.cell} (${p.area})`,

@@ -5,7 +5,7 @@
  */
 import type { AlignmentStyle, BookInput, BorderLine, CachedValues, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, ExternalBook, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
-import { parseSpan } from './layout/spans.js'
+import { checkSpan, SPAN_KEY } from './layout/spans.js'
 import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
 import { checkBookLocale, checkLocaleArg } from './locale/load.js'
@@ -269,7 +269,7 @@ export function checkStyles(v: unknown, path: string): CellStyle[] {
   return array(v, path, 'an array of styles').map((s, i) => checkStyle(s, `${path}[${i}]`))
 }
 
-const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such as "C" or a span such as "B:D"' }, r: { size: 'height', max: 409.5, what: 'rows', key: 'a row number such as "5" or a span such as "5:9"' } } as const
+const LINE = { c: { size: 'width', max: 255, what: 'columns', key: SPAN_KEY.c }, r: { size: 'height', max: 409.5, what: 'rows', key: SPAN_KEY.r } } as const
 
 /** A column or row entry, or a patch of one (fields may be null). */
 function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
@@ -284,14 +284,6 @@ function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boo
   field('outlineLevel', (x, path) => checkNumber(x, path, 1, 7, true))
   field('collapsed', checkBoolean)
   field('bestFit', checkBoolean)
-}
-
-/** The lines of a key (`C`, `B:D`; `5`, `5:9`). */
-/** The lines of a key of `columns` or `rows` (`C`, `B:D`; `5`, `5:9`), else `InputError` naming `path`. */
-export function checkSpan(key: unknown, path: string, axis: Axis): [number, number] {
-  const sp = typeof key === 'string' ? parseSpan(key, axis) : null
-  if (!sp) throw new InputError(path, `expected ${LINE[axis].key} within the sheet, got ${what(key)}`)
-  return sp
 }
 
 function checkLines(v: unknown, path: string, axis: Axis, styles: number) {
