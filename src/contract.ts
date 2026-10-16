@@ -1504,6 +1504,10 @@ export interface DependentsOptions extends PageOptions {
 }
 /** What `getDependents` answers: a page of the cells whose formulas read the ranges. */
 export interface DependentsResult extends QueryPage { dependents: DependentCell[] }
+/** `summarizeRanges`' options: only the cells of these rows (the rows a host's filter shows), as `ReadCellsOptions.rows`. */
+export interface SummaryOptions extends EditOptions {
+  rows?: number[]
+}
 /** What `summarizeRanges` answers, as Excel's status bar shows a selection: how many cells hold something, how many numbers and errors, their sum, the least and the greatest number. */
 export interface RangeSummary {
   revision: number
@@ -2253,7 +2257,7 @@ export interface Session {
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions): DependentsResult
   /** Totals over nonblank stored values and spills, without returning their cells. */
-  summarizeRanges(ranges: RangeRef[], opts?: EditOptions): RangeSummary
+  summarizeRanges(ranges: RangeRef[], opts?: SummaryOptions): RangeSummary
   readonly clock: Clock
   /** The book's revision: 0 when opened, one more after each call that changed the book (`EditResult.revision`). */
   readonly revision: number
@@ -2601,7 +2605,7 @@ export interface AsyncSession {
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions & CalcOptions): Promise<DependentsResult>
   /** Totals over nonblank stored values and spills, without returning their cells. */
-  summarizeRanges(ranges: RangeRef[], opts?: EditOptions & CalcOptions): Promise<RangeSummary>
+  summarizeRanges(ranges: RangeRef[], opts?: SummaryOptions & CalcOptions): Promise<RangeSummary>
   /** The session's clock as of its last finished call. */
   readonly clock: Clock
   /** The session's revision as of its last finished call. */

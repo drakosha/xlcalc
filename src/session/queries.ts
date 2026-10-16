@@ -1,5 +1,5 @@
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
-import type { CellReadField, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
+import type { CellReadField, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
 import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { referencesOf } from '../graph.js'
@@ -240,11 +240,12 @@ export function* dependentsQuery(s: EngineState, revision: number, clock: Clock,
   return { ...page.result(), dependents: page.items }
 }
 
-export function* summaryQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], eo?: PageOptions): Steps<RangeSummary> {
-  checkBase(eo, revision)
+export function* summaryQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], eo?: SummaryOptions): Steps<RangeSummary> {
+  const o = checkBase<SummaryOptions>(eo, revision, ['rows'])
+  if (o.rows !== undefined) checkLineNumbers(o.rows, 'opts.rows', MAX_ROWS)
   const out: RangeSummary = { revision, clock: { ...clock }, cells: 0, numbers: 0, errors: 0, sum: 0, min: null, max: null },
     sum = new CompensatedSum()
-  for (const at of requested(s, refsOf(s, given), false)) {
+  for (const at of requested(s, refsOf(s, given), false, o.rows?.map((n) => n - 1) ?? null)) {
     if (!at) {
       yield
       continue

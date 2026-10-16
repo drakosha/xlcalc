@@ -8,7 +8,7 @@
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { ChangesOptions, ChangesPreview, ChangesResult, PreviewChangesOptions, SessionOperation, ReadCellsOptions, ReadCellsResult, FindCellsOptions, DependentsOptions, DependentsResult, RangeSummary, ReplaceOptions, ReplaceResult } from './contract.js'
+import type { ChangesOptions, ChangesPreview, ChangesResult, PreviewChangesOptions, SessionOperation, ReadCellsOptions, ReadCellsResult, FindCellsOptions, DependentsOptions, DependentsResult, RangeSummary, SummaryOptions, ReplaceOptions, ReplaceResult } from './contract.js'
 import { operationsPlan } from './session/operations.js'
 import { checkCopyOptions, copyText } from './session/clipboard.js'
 import type { CopyTextOptions } from './contract.js'
@@ -86,7 +86,7 @@ export interface SessionSteps {
   findCells(ranges: RangeRef[], query: string, opts?: FindCellsOptions): Steps<ReadCellsResult>
   replaceInCells(ranges: RangeRef[], query: string, replacement: string, opts?: ReplaceOptions): Steps<ReplaceResult>
   getDependents(ranges: RangeRef[], opts?: DependentsOptions): Steps<DependentsResult>
-  summarizeRanges(ranges: RangeRef[], opts?: EditOptions): Steps<RangeSummary>
+  summarizeRanges(ranges: RangeRef[], opts?: SummaryOptions): Steps<RangeSummary>
   readonly clock: Clock
   readonly revision: number
   setCells(edits: CellEdit[], opts?: EditOptions): Steps<EditResult>
@@ -563,7 +563,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *getDependents(refs: RangeRef[], eo?: DependentsOptions) {
       return yield* dependentsQuery(yield* ready(), revision, clock, refs, eo)
     },
-    *summarizeRanges(refs: RangeRef[], eo?: EditOptions) {
+    *summarizeRanges(refs: RangeRef[], eo?: SummaryOptions) {
       return yield* summaryQuery(yield* ready(), revision, clock, refs, eo)
     },
     get clock() {
