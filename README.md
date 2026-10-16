@@ -36,14 +36,14 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | objects of a session's cells: `cells.A1.value = 100`, a listener of a cell | `liveWorkbook` from `xlcalc` ([Live objects](docs/live-objects.md)) |
 | reading and writing xlsx files | `readXlsx`, `writeXlsx` and `fromLegacy` from `xlcalc/xlsx` |
 | computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
-| cell addresses in A1 style, without the engine | `xlcalc/a1` |
+| cell addresses in A1 style and a sheet's outline commands, without the engine | `xlcalc/a1` |
 | the references of formula text as it is typed, for colouring them, the name being typed for AutoComplete, a number format's category as the ribbon shows it, Find over a host's texts and the sort order of values, without the engine | `xlcalc/text` |
 | typed entry, and the text a cell opens with for editing, without the engine | `parseEntry`, `needsApostrophe`, `entryText` from `xlcalc/entry` ([Typed entry](docs/entry.md)) |
 | the tips of functions' arguments, and their categories, without the engine's computation | `functionSignature` and `FUNCTION_CATEGORIES` from `xlcalc`; what a function does, `functionDescription` from `xlcalc/function-text`; their Russian words, `ruRUFunctionText` from `xlcalc/function-text/ru-RU` ([Addresses and formula text](docs/addresses.md)) |
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](docs/locale.md)) |
 | types alone | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified (16.10.2026, 0.45.1), `compute` alone takes 281 KB (107 KB gzip), `createSession` 484 KB (182 KB), the whole root 544 KB (203 KB), `xlcalc/xlsx` 204 KB (75 KB), `xlcalc/worker` 25 KB (9 KB) in the page and the thread it starts 596 KB (203 KB), `xlcalc/a1` 11 KB (5 KB), `xlcalc/text` 50 KB (19 KB), `xlcalc/entry` 96 KB (36 KB), the ru-RU module 99 KB (16 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled by esbuild for the browser and minified (16.10.2026, 0.46.0), `compute` alone takes 281 KB (107 KB gzip), `createSession` 484 KB (182 KB), the whole root 544 KB (203 KB), `xlcalc/xlsx` 204 KB (75 KB), `xlcalc/worker` 25 KB (9 KB) in the page and the thread it starts 596 KB (203 KB), `xlcalc/a1` 16 KB (6 KB), `xlcalc/text` 50 KB (19 KB), `xlcalc/entry` 96 KB (36 KB), the ru-RU module 99 KB (16 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 

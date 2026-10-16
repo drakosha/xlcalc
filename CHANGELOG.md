@@ -14,7 +14,20 @@ What is in it:
 - `createInlineCalc` and `createCalcPool` from `xlcalc/worker`: computing without blocking, in portions on the same thread or in worker threads, with deadlines, cancellation and limits.
 - Localization: formulas, number formats and messages in ru-RU through `xlcalc/locales/ru-RU`.
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
-- `xlcalc/a1` and `xlcalc/text`: addresses, references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
+- `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
+
+## 0.46.0 (2026-10-16)
+
+Internal release; not published to npm. A grid's outline commands and sorting without the engine. The synthetic book's values and hashes are as in 0.45.1.
+
+Added:
+
+- In `xlcalc/a1` and the root: `outlineEdit(sheet, op)`, Excel's outline commands (Group, Ungroup, Show and Hide Detail, the level buttons) on a sheet's rows and columns alone, as `editStructure` does them in a book, with its refusals in English. The commands' reading and their messages are the engine's own, in modules without it ([Outlines](docs/outline.md)).
+- In `xlcalc/text` and the root: `valueComparator(opts?)`, `compareValues` with its options checked once, for sorting many values (34,000 mixed values sorted in about the time of `sortOrder` itself, half of `compareValues`'s). `compareValues` and `valueComparator` take `locale`, whose order of text they sort by; ru-RU's is en-US's, as Excel for Windows sorts in every locale (the sets `collation` and `collation-more`).
+
+Changed:
+
+- `xlcalc/a1` is 16.6 KB, its budget 17,000 bytes.
 
 ## 0.45.1 (2026-10-16)
 
