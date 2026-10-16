@@ -10,18 +10,7 @@ import { allot } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
 import { Areas, E, isErr, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
-
-/** Sort rank of a type: numbers, text, booleans, errors, then blanks. */
-const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : typeof v === 'boolean' ? 2 : v === null ? 4 : 3)
-
-/** Excel's sort order of two values, one type by the book's (`Rules.compare`), errors equal; `desc` reverses it, blanks stay last. */
-function order(a: V, b: V, desc: boolean, rules: Rules): number {
-  const ra = rank(a)
-  const rb = rank(b)
-  if (ra === 4 || rb === 4) return ra - rb
-  const c = ra !== rb ? ra - rb : ra === 3 ? 0 : rules.compare(a, b)
-  return desc ? -c : c
-}
+import { sortOrder } from '../../sort-order.js'
 
 /** The lines (rows, or columns `byCol`) of an array that are not all blank past the occupied part, in order. */
 const lineCount = (a: Arr, byCol: boolean) => (a.fill === null ? (byCol ? a.w : a.h) : byCol ? a.cols : a.rows)
@@ -31,7 +20,7 @@ function sortLines(a: Arr, byCol: boolean, key: (line: number, k: number) => V, 
   const n = lineCount(a, byCol)
   const lines = Array.from({ length: n }, (_, i) => i).sort((x, y) => {
     for (let k = 0; k < desc.length; k++) {
-      const c = order(key(x, k), key(y, k), desc[k], rules)
+      const c = sortOrder(key(x, k), key(y, k), desc[k], rules.compare)
       if (c) return c
     }
     return x - y
