@@ -17,6 +17,8 @@ const bad = parseEntry('=СУММ(A1)+', { locale: 'ru-RU' })
 console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Формула не закончена 10
 ```
 
+`xlcalc/entry` gives `parseEntry`, `needsApostrophe` and `entryText` without the engine (about 100 KB minified, no function's implementation), a locale given as an object, for a grid that writes what it types and opens cells for editing without loading the computation.
+
 ## In short
 
 `parseEntry` reads text typed into a cell the way Excel reads it in the book's locale, without a book, and gives the cell's new input: a number, a date or a time with the format Excel sets for it (`15.03.2026` in ru-RU gets the short date, `5%` the format `0%`, `$1,234.50` the locale's money), a boolean, an error, text, or a formula in the stored form. The cell typed into keeps its style, meta, note and link, and its format unless Excel changes it: a number typed into a percent cell is percent, a time typed into a date cell sets `h:mm`, the number formats and the book's own formats stay.

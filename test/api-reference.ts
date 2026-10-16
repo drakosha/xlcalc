@@ -15,6 +15,7 @@ export const ENTRIES: readonly [string, string][] = [
   ['xlcalc', 'src/index.ts'],
   ['xlcalc/a1', 'src/a1.ts'],
   ['xlcalc/text', 'src/text.ts'],
+  ['xlcalc/entry', 'src/typed-entry.ts'],
   ['xlcalc/xlsx', 'src/xlsx.ts'],
   ['xlcalc/worker', 'src/worker/index.ts'],
   ['xlcalc/function-text', 'src/function-text/index.ts'],

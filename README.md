@@ -37,12 +37,13 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | reading and writing xlsx files | `readXlsx`, `writeXlsx` and `fromLegacy` from `xlcalc/xlsx` |
 | computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
 | cell addresses in A1 style, without the engine | `xlcalc/a1` |
-| the references of formula text as it is typed, for colouring them, and a number format's category as the ribbon shows it, without the engine | `xlcalc/text` |
+| the references of formula text as it is typed, for colouring them, the name being typed for AutoComplete, a number format's category as the ribbon shows it, Find over a host's texts and the sort order of values, without the engine | `xlcalc/text` |
+| typed entry, and the text a cell opens with for editing, without the engine | `parseEntry`, `needsApostrophe`, `entryText` from `xlcalc/entry` ([Typed entry](docs/entry.md)) |
 | the tips of functions' arguments, and their categories, without the engine's computation | `functionSignature` and `FUNCTION_CATEGORIES` from `xlcalc`; what a function does, `functionDescription` from `xlcalc/function-text`; their Russian words, `ruRUFunctionText` from `xlcalc/function-text/ru-RU` ([Addresses and formula text](docs/addresses.md)) |
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](docs/locale.md)) |
 | types alone | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 254 KB (97 KB gzip), `createSession` 395 KB (148 KB), the whole root 419 KB (157 KB), `xlcalc/xlsx` 174 KB (65 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 499 KB (168 KB), `xlcalc/a1` 8 KB (3 KB), `xlcalc/text` 45 KB (17 KB), the ru-RU module 92 KB (15 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 254 KB (97 KB gzip), `createSession` 395 KB (148 KB), the whole root 419 KB (157 KB), `xlcalc/xlsx` 174 KB (65 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 499 KB (168 KB), `xlcalc/a1` 12 KB (5 KB), `xlcalc/text` 51 KB (19 KB), `xlcalc/entry` 97 KB (36 KB), the ru-RU module 92 KB (15 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 
