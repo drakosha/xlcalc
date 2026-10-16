@@ -47,7 +47,7 @@ export { enUS, type Locale, type Translation } from './locale/index.js'
 export { LOCALES } from './locale/registry.js'
 export type { CopyContext } from './structure/copy.js'
 export * from './a1.js'
-export { callAt, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, escapeColumn, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, refAt, scanReferences } from './text.js'
+export { callAt, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, escapeColumn, findMatcher, findReplacer, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, refAt, scanReferences } from './text.js'
 export type { DateSystemOptions } from './date-serial.js'
 
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses

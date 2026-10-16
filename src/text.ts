@@ -8,7 +8,9 @@
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
 import { array, checkBoolean, checkNumber, checkString, InputError, object, onlyOptions } from './input.js'
+import type { FindTextOptions } from './contract.js'
 import { clipboardRows } from './entry/clipboard.js'
+import { folded, matcher, replacer } from './find-text.js'
 import { charsOfPoints, columnPoints, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
@@ -90,4 +92,24 @@ export const columnWidthToChars = /* @__PURE__ */ strict(function columnWidthToC
 export const columnWidthFromChars = /* @__PURE__ */ strict(function columnWidthFromChars(chars: number): number {
   checkNumber(chars, 'chars', 0, 255)
   return widthOf(pointsOfChars(chars))
+})
+
+/** Find's options checked. */
+function findOptions(opts: FindTextOptions | undefined): FindTextOptions {
+  const o = opts === undefined ? {} : object(opts, 'opts', 'Find options such as { wildcards: true }')
+  onlyOptions(o, 'opts', ['caseSensitive', 'wildcards', 'wholeCell'])
+  for (const k of ['caseSensitive', 'wildcards', 'wholeCell'] as const) if (o[k] !== undefined) checkBoolean(o[k], `opts.${k}`)
+  return o
+}
+
+/** Excel's Find over a host's texts, as `findCells` matches a cell's: the test of a text, null when nothing can match (an empty query, `~` alone). */
+export const findMatcher = /* @__PURE__ */ strict(function findMatcher(query: string, opts?: FindTextOptions): ((text: string) => boolean) | null {
+  const o = findOptions(opts)
+  const test = matcher(checkString(query, 'query'), o)
+  return test && ((text) => test(o.caseSensitive ? text : folded(text)))
+})
+
+/** Excel's Replace over a host's texts, as `replaceInCells` replaces in a cell's: a text with each match put as `by`, null where nothing matches. */
+export const findReplacer = /* @__PURE__ */ strict(function findReplacer(query: string, by: string, opts?: FindTextOptions): ((text: string) => string | null) | null {
+  return replacer(checkString(query, 'query'), checkString(by, 'by'), findOptions(opts))
 })

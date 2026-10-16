@@ -1465,6 +1465,9 @@ export interface FindCellsOptions extends ReadCellsOptions {
    */
   after?: CellRef
 }
+/** `findMatcher`'s and `findReplacer`'s options: Find's, as `findCells` takes them, over a host's own texts. */
+export type FindTextOptions = Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell'>
+
 /** `Session.replaceInCells`' options: Find's, as `findCells` takes them, but what it reads, which is the text a cell opens with (Look in Formulas), and the order. */
 export interface ReplaceOptions extends EditOptions, Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell' | 'skipHidden' | 'rows'> {}
 
