@@ -50,9 +50,17 @@ A formula that does not read the cycle is computed as usual, even when it reads 
 A stopped cell holds a value, the cell's `held`, or 0 without it. It is not computed, so a change of a precedent changes nothing, and neither does a full calculation.
 
 ```js
+import { compute, createSession } from 'xlcalc'
+
 const cells = { A1: { formula: 'B1/2+K1' }, B1: { formula: 'A1' }, C1: { formula: 'A1*10', held: 20 }, K1: { value: 1 } }
-compute({ sheets: [{ name: 'S', cells }] })
-// A1 0, B1 0, C1 20: none is computed; K1 changed to 5, they stay
+const r = compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells
+console.log(r.A1.value, r.B1.value, r.C1.value)
+// → 0 0 20
+// none is computed: K1 changed to 5, they stay
+const session = createSession({ sheets: [{ name: 'S', cells }] })
+session.setCells([{ sheet: 'S', cell: 'K1', input: { value: 5 } }])
+console.log(session.getCell('S', 'A1').value, session.getCell('S', 'C1').value)
+// → 0 20
 ```
 
 A file stores the values Excel showed when it saved it, and `readXlsx` gives them as `cached`. `compute(read.book, { cached: read.cached })` and `createSession(read.book, { cached: read.cached })` open the book as Excel opens the file: a stopped cell without a `held` of its own holds the value stored for it, and empty text where the file stores none. Nothing else is read from `cached`.

@@ -6,9 +6,12 @@ The subpath `xlcalc/xlsx` reads an xlsx file into a book the engine computes, an
 import { compute } from 'xlcalc'
 import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
 
-const { book, cached, issues } = await readXlsx(await readFile('book.xlsx'))
-const result = compute(book)
-const { data } = await writeXlsx({ book, result })
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*SEQUENCE(2)' } } }] }
+const { data } = await writeXlsx({ book, result: compute(book) }) // a Uint8Array, for writeFile or a download
+// read back, as from `await readFile('book.xlsx')`: the book, the values Excel would show, what the book cannot hold
+const read = await readXlsx(data)
+console.log(read.book.sheets[0].cells, read.cached.sheets[0].cells.A3.value, read.issues)
+// → { A1: { value: 2 }, A2: { formula: 'A1*SEQUENCE(2)' } } 4 []
 ```
 
 ## In short
@@ -305,9 +308,24 @@ The messages are part of the locale's module, beside its other messages ([docs/l
 | `locale` | the language of the issues' messages, as `readXlsx` takes it: English by default ([The language of the messages](#the-language-of-the-messages)) |
 
 ```js
+import { compute, createSession } from 'xlcalc'
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*10' } } }] }
+const session = createSession(book)
 const file = await writeXlsx(session.getSnapshot())
-const values = await writeXlsx({ book, result }, { mode: 'values' })
+const values = await writeXlsx({ book, result: compute(book) }, { mode: 'values' })
 const later = await writeXlsx({ book }, { values: 'omit' })
+const a2 = async (f) => {
+  const r = await readXlsx(f.data)
+  return [r.book.sheets[0].cells.A2, r.cached.sheets[0]?.cells.A2?.value]
+}
+// the formula with its value; the value alone; the formula, for Excel to compute
+console.log(await a2(file), await a2(values), await a2(later))
+// → [ { formula: 'A1*10' }, 20 ] [ { value: 20 }, undefined ] [ { formula: 'A1*10' }, undefined ]
+// without a result and without values, the file says so
+console.log(later.issues, (await writeXlsx({ book })).issues.map((i) => i.code))
+// → [] [ 'noCachedValues' ]
 ```
 
 A session is no snapshot: an asynchronous session is a proxy of a thread, and its book and result are taken there by `await session.getSnapshot()`. Given one, a result alone (`writeXlsx(compute(book))`, told by its hashes) or a result of another shape, `writeXlsx` throws `InputError` saying what to pass. The older form, the book first and its result in the options (`writeXlsx(book, { result, mode })`), is an `InputError` too: a book is not a snapshot.

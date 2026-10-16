@@ -135,8 +135,22 @@ A rule's ranges move as references do: they grow with lines inserted after their
 Picking an item of a cell's dropdown writes it without checking the rule, and not as typed text: a list of cells gives the cell's value as it is, and a literal list's item is read as typed in en-US, the locale a file holds the list in, whatever the book's locale. With `001`, `1/2` and `0.5` shown as `50%` in the list's cells, a cell in General takes the text `001`, the text `1/2` and the number 0.5, keeping its own format; from the literal list `"001,1/2,x"` it takes the number 1 and the 2nd of January in the format `d-mmm`, in ru-RU too. Each item of `getValidation`'s `list` has that as `input`, which a grid passes to `setCells`:
 
 ```js
-const list = session.getValidation('S', 'B2').list
-session.setCells([{ sheet: 'S', cell: 'B2', input: list[0].input }])
+import { createSession } from 'xlcalc'
+
+const session = createSession({
+  sheets: [{ name: 'S', cells: { B2: { value: 0 } }, validations: [{ range: 'B2', type: 'list', formula1: '"001,1/2,x"' }] }],
+}, { clock: { now: '2026-10-16T12:00:00Z', seed: 1 } }) // a date without a year takes the clock's
+const { list } = session.getValidation('S', 'B2')
+console.log(list.map((item) => item.input))
+// → [ { value: 1 }, { value: 46024, numberFormat: 16 }, { value: 'x' } ]
+session.setCells([{ sheet: 'S', cell: 'B2', input: list[1].input }])
+console.log(session.getCell('S', 'B2'))
+// → {
+//     value: 46024,
+//     text: '2-Jan',
+//     numberFormat: 16,
+//     numberFormatCode: 'd-mmm'
+//   }
 ```
 
 ## Checked against Excel

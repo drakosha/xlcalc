@@ -9,11 +9,14 @@ The rules below were measured in Excel 16.113 for Mac (en-US).
 ```js
 import { fromLegacy } from 'xlcalc/xlsx'
 
-fromLegacy('A1:A10*2')                // → '@A1:A10*2'
-fromLegacy('SUM(A1:A10*2)')           // → 'SUM(@A1:A10*2)'
-fromLegacy('SUMPRODUCT(A1:A10*2)')    // → 'SUMPRODUCT(A1:A10*2)'
-fromLegacy('INDEX(A1:C3,0,1)+1')      // → '@INDEX(A1:C3,0,1)+1'
-fromLegacy('rng*2', { names, sheet }) // → '@rng*2' when rng is a range
+console.log(fromLegacy('A1:A10*2'), fromLegacy('SUM(A1:A10*2)'))
+// → @A1:A10*2 SUM(@A1:A10*2)
+console.log(fromLegacy('SUMPRODUCT(A1:A10*2)'), fromLegacy('INDEX(A1:C3,0,1)+1'))
+// → SUMPRODUCT(A1:A10*2) @INDEX(A1:C3,0,1)+1
+// a name that is a range takes @, one that is a value does not
+const names = [{ name: 'rng', ref: 'S!$A$1:$A$10' }, { name: 'rate', ref: '0.2' }]
+console.log(fromLegacy('rng*2', { names, sheet: 'S' }), fromLegacy('rate*2', { names, sheet: 'S' }))
+// → @rng*2 rate*2
 ```
 
 An xlsx cell formula without dynamic array metadata (`cm`) is of the old kind. `fromLegacy` takes its text after the prefixes of newer functions are dropped and returns canonical text. A formula it does not read comes back as it is.

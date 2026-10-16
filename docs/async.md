@@ -12,12 +12,16 @@ Both calculators have one API: `compute(book, opts)`, `createSession(book, opts)
 import { createInlineCalc } from 'xlcalc'
 import { createCalcPool } from 'xlcalc/worker'
 
-const calc = createInlineCalc()                                  // the same thread
-const pool = createCalcPool({ threads: 4, hardTimeoutMs: 10_000, maxHeapMb: 512 })
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*10' } } }] }
+const calc = createInlineCalc() // the same thread
+const pool = createCalcPool({ threads: 2, hardTimeoutMs: 10_000, maxHeapMb: 512 })
 
 const result = await calc.compute(book, { timeoutMs: 2_000 })
 const session = await pool.createSession(book)
-const changes = await session.setCells(edits, { signal: AbortSignal.timeout(5_000) })
+const { changes } = await session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }], { signal: AbortSignal.timeout(5_000) })
+console.log(result.sheets[0].cells.A2.value, changes.map((c) => [c.cell, c.value]))
+// → 20 [ [ 'A1', 3 ], [ 'A2', 30 ] ]
+await Promise.all([calc.close(), pool.close()])
 ```
 
 ## In short
@@ -64,9 +68,20 @@ A session takes its calls in order: each starts when the one before has finished
 `explain(sheet, cell, opts?)` takes its tree options together with `signal` and `timeoutMs` in both asynchronous calculators. A signal already aborted, a waiting call aborted in the queue and a running traversal aborted between portions reject with `CalcError` code `aborted`. A soft deadline rejects with `soft_timeout`. The book, revision and undo history stay unchanged, and the next call can use the session.
 
 ```js
+import { createInlineCalc } from 'xlcalc'
+
+const calc = createInlineCalc()
+const session = await calc.createSession({ sheets: [{ name: 'Plan', cells: { A2: { value: 4 }, B2: { formula: 'A2*2' } } }] })
 const controller = new AbortController()
 const pending = session.explain('Plan', 'B2', { depth: 5, signal: controller.signal, timeoutMs: 500 })
 controller.abort('active cell moved')
+const e = await pending.catch((e) => e)
+console.log(e.code, e.cause)
+// → aborted active cell moved
+// the session goes on
+console.log((await session.explain('Plan', 'B2')).root.value)
+// → 8
+await calc.close()
 ```
 
 Each local tree node carries `location: { sheet, range }` for navigation. Its `value`, invariant `formula`, `children`, `cells`, `spillOf` and `origin` are available directly, so a panel can traverse `root` without splitting `text`. Use `scanReferences(node.formula)` for formula links and fill a reference without a sheet from `node.location.sheet`; no rendered explanation needs parsing. Nodes of another workbook have no local `location`.
@@ -100,7 +115,15 @@ A call that stops by its deadline or its signal throws `CalcError` with `soft_ti
 `limits` bound what a book may make: `formulas`, the formulas of the book, `cells`, the values of one range read whole or one array, and `spill`, the values one spill fills; and `writes`, what one edit writes (below). `SUM`, `COUNT`, `MIN` and `MAX` of one range read it cell by cell without making it whole, so `cells` does not bound them. They are options of `compute` and `createSession` too, not only of the calculators. A calculator's `limits` hold for every call; a call's own `limits` take their place field by field, so a call that gives `formulas` alone keeps the calculator's `cells` and `spill`.
 
 ```js
-compute(book, { limits: { formulas: 100_000, cells: 5_000_000, spill: 500_000 } })
+import { compute } from 'xlcalc'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(SEQUENCE(3000,3000))' } } }] }
+try {
+  compute(book, { limits: { formulas: 100_000, cells: 5_000_000, spill: 500_000 } })
+} catch (e) {
+  console.log(e.code, e.limit, e.max, e.size, e.cell)
+// → limit cells 5000000 9000000 { sheet: 'S', cell: 'A1' }
+}
 ```
 
 A book over a limit is not computed: the call throws `CalcError` with code `limit`, `limit` (`formulas`, `cells` or `spill`), `max`, `size` and, for `cells` and `spill`, the formula's `cell`. A limit is no cell error such as `#NUM!`, because then the values and their hash would depend on the limits; a result is either exact or absent. Arrays are checked before they are made: without `cells`, `SUM(SEQUENCE(20000,20000))` asks for 400 million values and brings a Node process down.
@@ -121,8 +144,18 @@ A look alone goes to the sheet's looks and costs little, so `patchCells` and the
 As a person's edit brings it, its message is in the book's language: `1048576 cells written by one edit, over the limit of 100000`, in a ru-RU book `Правка записывает слишком много ячеек: 1048576 при пределе 100000`. The other limits' messages, which a host's own settings bring, are in English.
 
 ```js
-const session = createSession(book, { limits: { writes: 100_000 } })
-session.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', range: 'B:B' } }) // CalcError: limit writes, size 1048576
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] }, { limits: { writes: 100_000 } })
+try {
+  session.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', range: 'B:B' } })
+} catch (e) {
+  console.log(e.code, e.limit, e.max, e.size)
+// → limit writes 100000 1048576
+}
+// nothing changed
+console.log(session.revision, session.getBook().sheets[0].cells)
+// → 0 { A1: { value: 1 } }
 ```
 
 ## Errors

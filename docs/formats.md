@@ -265,13 +265,13 @@ console.log(entryWidth(1234567890), entryWidth(46096, { numberFormat: 'd mmmm yy
 
 ### Column geometry for a grid
 
-`columnWidthToPoints(width?)` and `columnWidthFromPoints(points)` from `xlcalc/text` let a grid use the geometry that the library uses for shown text, `####` and overflow. They use the same helper as the formatter and bring in no engine. With the pair the measured `xlcalc/a1` browser bundle is 11,803 bytes, past its 11,500-byte budget, so the pair is in `xlcalc/text`.
+`columnWidthToPoints(width?)` and `columnWidthFromPoints(points)` from `xlcalc/text` let a grid use the geometry that the library uses for shown text, `####` and overflow. They use the same helper as the formatter and bring in no engine.
 
 ```js
 import { columnWidthToPoints, columnWidthFromPoints } from 'xlcalc/text'
-columnWidthToPoints(8.83203125) // 53
-columnWidthToPoints() // 53
-columnWidthFromPoints(53) // 8.83203125
+
+console.log(columnWidthToPoints(8.83203125), columnWidthToPoints(), columnWidthFromPoints(53), columnWidthFromPoints(53.75))
+// → 53 53 8.83203125 8.83203125
 ```
 
 The input is the stored xlsx width, not the object model's `ColumnWidth` characters. Missing or null width means 53 points. The inverse rounds points down to a whole point and stores the width in 256ths of a digit: 53.75 points become 53 points and width 8.83203125. The helpers accept the full measured file range, through width 255.83203125 or 1,535 points; `ColumnInput.width` still accepts at most 255, so cap a wider returned width at 255 before setting a book's column.
@@ -339,9 +339,15 @@ The Number Format box on Excel's Home tab names the category of the active cell'
 ```js
 import { numberFormatCategory, numberFormatChoices } from 'xlcalc/text'
 
-numberFormatCategory('0.000') // { category: 'number', name: 'Number' }
-numberFormatCategory('0.00;-0.00').name // 'Custom'
-numberFormatChoices()[2] // { key: 'currency', name: 'Currency', format: '"$"#,##0.00', code: '"$"#,##0.00' }
+console.log(numberFormatCategory('0.000'), numberFormatCategory('0.00;-0.00').name)
+// → { category: 'number', name: 'Number' } Custom
+console.log(numberFormatChoices()[2])
+// → {
+//     key: 'currency',
+//     name: 'Currency',
+//     format: '"$"#,##0.00',
+//     code: '"$"#,##0.00'
+//   }
 ```
 
 The box names the category of Excel's Format Cells window whose formats hold the code, and Custom when none does. The keys are `general`, `number`, `currency`, `accounting`, `date`, `time`, `percentage`, `fraction`, `scientific`, `text`, `special` and `custom`. In en-US:

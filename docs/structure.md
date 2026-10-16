@@ -232,10 +232,22 @@ A renamed sheet keeps its layout, and a deleted sheet takes it along.
 
 `mergedArea(rect, merges)` of `xlcalc/a1` gives the rectangle a merge takes in, grown by each merged area it meets, for a grid that warns before a merge loses values.
 
-```ts
-editStructure(book, { op: 'mergeCells', sheet: 'Plan', range: 'B2:D2', center: true })
-editStructure(book, { op: 'mergeCells', sheet: 'Plan', range: 'B4:D9', across: true }) // B4:D4, B5:D5, …, B9:D9
-editStructure(book, { op: 'unmergeCells', sheet: 'Plan', range: 'C2' }) // splits B2:D2, which holds C2
+```js
+import { editStructure } from 'xlcalc'
+
+let book = { sheets: [{ name: 'Plan', cells: { B2: { value: 'Q1' }, C2: { value: 'gone' } } }] }
+const merge = (op) => {
+  const r = editStructure(book, { sheet: 'Plan', ...op })
+  book = r.book
+  return book.sheets[0].merges
+}
+console.log(merge({ op: 'mergeCells', range: 'B2:D2', center: true }), book.sheets[0].cells)
+// → [ 'B2:D2' ] { B2: { value: 'Q1', style: 0 } }
+console.log(merge({ op: 'mergeCells', range: 'B4:D6', across: true }))
+// → [ 'B2:D2', 'B4:D4', 'B5:D5', 'B6:D6' ]
+// unmerging at C2 splits B2:D2, which holds C2
+console.log(merge({ op: 'unmergeCells', range: 'C2' }))
+// → [ 'B4:D4', 'B5:D5', 'B6:D6' ]
 ```
 
 ### What the cells keep

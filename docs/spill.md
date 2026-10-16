@@ -4,6 +4,31 @@ When a formula returns several values, they fill the cells to the right of and b
 
 The rules below were measured in Excel 16.113 for Mac (en-US) with dynamic array formulas.
 
+```js
+import { compute, createSession } from 'xlcalc'
+
+const book = {
+  sheets: [{
+    name: 'S',
+    cells: { A1: { value: 3 }, B1: { formula: 'SEQUENCE(A1)*10' }, C1: { formula: 'SUM(B1#)' }, D1: { formula: 'ROWS(B1#)' } },
+  }],
+}
+const { cells } = compute(book).sheets[0]
+console.log([cells.B1.value, cells.B2.value, cells.B3.value], cells.B1.spill, cells.B3.spillOf)
+// → [ 10, 20, 30 ] B1:B3 B1
+console.log(cells.C1.value, cells.D1.value)
+// → 60 3
+
+// a value in the way: #SPILL!, and its readers follow; cleared, the array spills again
+const session = createSession(book)
+session.setCells([{ sheet: 'S', cell: 'B3', input: { value: 'x' } }])
+console.log(session.getCell('S', 'B1').value, session.getCell('S', 'C1').value)
+// → { error: 'SPILL' } { error: 'SPILL' }
+session.setCells([{ sheet: 'S', cell: 'B3', input: null }])
+console.log(session.getCell('S', 'C1').value)
+// → 60
+```
+
 ## Where the values go
 
 An array takes as many rows and columns from the formula's cell as it has. A reference to several cells spills their values: `=A1:A4` copies A1:A4.

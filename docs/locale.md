@@ -19,7 +19,7 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Здес�
 console.log(validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', ruRU, { sheets: ['Данные'] }).canonical) // → ROUND('Данные'!B2*1.2,0)
 ```
 
-`LOCALES` lists the loaded locales by tag. Every function that takes a locale takes the tag of a loaded one or the locale object, and an object needs no loading where no book is needed: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `validateSheetName`, `validateName` and `validateNames`. A book's `locale` is a tag, and a book in a locale that is not loaded is an `InputError` that says what to import, wherever the book goes (`compute`, sessions, `editStructure`, `fitColumns`, `writeXlsx`, a pool); `readXlsx` keeps a file's locale as it reads it. A pool of threads loads in its threads the locales loaded where it runs, and those loaded later too. A locale is a plain object (the `Locale` type), so formula text in another language is another object of the same shape; one without rules of computation reads and shows values as en-US does. Adding a locale to the package is a module ([docs/locale.md](locale.md#adding-a-locale)).
+`LOCALES` lists the loaded locales by tag. Every function that takes a locale takes the tag of a loaded one or the locale object, and an object needs no loading where no book is needed: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `refAt`, `callAt`, `nameAt`, `functionSignature`, `functionDescription`, `compareValues`, `valueComparator`, `validateSheetName`, `validateName` and `validateNames`. A book's `locale` is a tag, and a book in a locale that is not loaded is an `InputError` that says what to import, wherever the book goes (`compute`, sessions, `editStructure`, `fitColumns`, `writeXlsx`, a pool); `readXlsx` keeps a file's locale as it reads it. A pool of threads loads in its threads the locales loaded where it runs, and those loaded later too. A locale is a plain object (the `Locale` type), so formula text in another language is another object of the same shape; one without rules of computation reads and shows values as en-US does. Adding a locale to the package is a module ([docs/locale.md](locale.md#adding-a-locale)).
 
 ```js
 import { compute } from 'xlcalc'
@@ -73,16 +73,18 @@ console.log(editStructure(book, { op: 'deleteSheet', sheet: 'План' }).messag
 en-US is built in. ru-RU is a module of its own, `xlcalc/locales/ru-RU`, so a bundle that has no ru-RU book does not carry its 52 KB of formula text, rules and messages. A host imports it and loads it once, before a book in it computes:
 
 ```js
-import { compute, registerLocale } from 'xlcalc'
+import { compute, LOCALES, registerLocale } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
 
 registerLocale(ruRU)
-compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { formula: 'VALUE("1,5")' } } }] }) // A1 is 1.5
+const book = { locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { formula: 'VALUE("1,5")' } } }] }
+console.log(compute(book).sheets[0].cells.A1.value, [...LOCALES.keys()])
+// → 1.5 [ 'en-US', 'ru-RU' ]
 ```
 
 - `LOCALES` lists the loaded locales by tag: `en-US`, then each locale registered.
 - A book's `locale` is a tag of a loaded locale. A book in a locale that is not loaded is an `InputError` that says what to do: `book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)`. So is the tag given to a function that takes a locale. Another tag lists the loaded ones, and names the tag meant when only its case differs (`ru-ru`): tags are compared as written.
-- Every function that takes a locale takes the tag of a loaded one or the locale object: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `validateSheetName`, `validateName` and `validateNames`. An object needs no loading there, since no book is computed: `toLocal(formula, ruRU)` works in a bundle that never calls `registerLocale`.
+- Every function that takes a locale takes the tag of a loaded one or the locale object: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `builtinFormatCode`, `numberFormatCategory`, `numberFormatChoices`, `entryText`, `needsApostrophe`, `errorText`, `scanReferences`, `refAt`, `callAt`, `nameAt`, `functionSignature`, `functionDescription`, `compareValues`, `valueComparator`, `validateSheetName`, `validateName` and `validateNames`. An object needs no loading there, since no book is computed: `toLocal(formula, ruRU)` works in a bundle that never calls `registerLocale`.
 - Importing the module does nothing by itself, so a bundler keeps it out of a bundle that does not use it. Loading the same object again does nothing; another object with a loaded tag is an `InputError`, as is a locale without the rules a book computes by.
 - `readXlsx` keeps a file's locale (`ru-RU`) as it reads it, loaded or not; computing or writing the book needs the locale loaded.
 - A pool's threads load the locales loaded where the pool runs, those loaded after it started too ([docs/async.md](async.md#locales)).

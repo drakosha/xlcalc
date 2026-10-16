@@ -4,6 +4,34 @@ Kinds of references that Excel files use. `@A1:A10` takes one cell of a range. `
 
 The rules below were measured in Excel 16.113 for Mac (en-US) with dynamic array formulas.
 
+```js
+import { compute } from 'xlcalc'
+
+const month = (n) => ({ cells: { A1: { value: n }, A2: { value: n * 10 } } })
+const book = {
+  sheets: [
+    { name: 'Jan', ...month(1) },
+    { name: 'Feb', ...month(2) },
+    { name: 'Mar', ...month(3) },
+    {
+      name: 'Sum',
+      cells: {
+        B1: { value: 5 }, B2: { value: 'text' }, B3: { value: 7 }, D1: { value: 100 }, D3: { value: 300 },
+        // @ takes the cell of B1:B3 in the formula's row, as a reference
+        C2: { formula: 'SUM(@B1:B3)' }, C3: { formula: '@B1:B3*2' },
+        E1: { formula: 'SUM((B1:B3,D1:D3))' }, E2: { formula: 'INDEX((B1:B3,D1:D3),3,1,2)' },
+        F1: { formula: "SUM('Jan:Mar'!A1:A2)" }, F2: { formula: 'SUM(B1:D3 D1:D3)' }, F3: { formula: 'SUM(B1:INDEX(B1:B3,3))' },
+      },
+    },
+  ],
+}
+const s = compute(book).sheets[3].cells
+console.log(s.C2.value, s.C3.value, s.E1.value, s.E2.value)
+// → 0 14 412 300
+console.log(s.F1.value, s.F2.value, s.F3.value)
+// → 66 400 12
+```
+
 ## The @ operator
 
 `@x` is implicit intersection: one value where `x` could give several.
