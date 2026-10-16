@@ -1,0 +1,1886 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 85.2
+ },
+ "answers": {
+  "calc_tests/DATABASE/DCOUNT_DCOUNTA_DGET_DPRODUCT.xlsx#DCOUNT_DCOUNTA!B56": {
+   "t": "number",
+   "v": 4
+  },
+  "calc_tests/DATABASE/DCOUNT_DCOUNTA_DGET_DPRODUCT.xlsx#DCOUNT_DCOUNTA!B57": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/DATABASE/DCOUNT_DCOUNTA_DGET_DPRODUCT.xlsx#DCOUNT_DCOUNTA!B67": {
+   "t": "number",
+   "v": 3
+  },
+  "calc_tests/DATABASE/DCOUNT_DCOUNTA_DGET_DPRODUCT.xlsx#DCOUNT_DCOUNTA!C56": {
+   "t": "number",
+   "v": 4
+  },
+  "calc_tests/DATABASE/DCOUNT_DCOUNTA_DGET_DPRODUCT.xlsx#DCOUNT_DCOUNTA!C57": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/DATABASE/DCOUNT_DCOUNTA_DGET_DPRODUCT.xlsx#DPRODUCT!B56": {
+   "t": "number",
+   "v": 21600000000000000
+  },
+  "calc_tests/DATABASE/DCOUNT_DCOUNTA_DGET_DPRODUCT.xlsx#DPRODUCT!B57": {
+   "t": "number",
+   "v": 5.72064768e+25
+  },
+  "calc_tests/DATABASE/DMIN_DMAX_DAVERAGE_DSUM.xlsx#DMIN_DMAX_DAVERAGE_DSUM!B56": {
+   "t": "number",
+   "v": 6000
+  },
+  "calc_tests/DATABASE/DMIN_DMAX_DAVERAGE_DSUM.xlsx#DMIN_DMAX_DAVERAGE_DSUM!B57": {
+   "t": "number",
+   "v": 9600
+  },
+  "calc_tests/DATABASE/DMIN_DMAX_DAVERAGE_DSUM.xlsx#DMIN_DMAX_DAVERAGE_DSUM!C56": {
+   "t": "number",
+   "v": 20000
+  },
+  "calc_tests/DATABASE/DMIN_DMAX_DAVERAGE_DSUM.xlsx#DMIN_DMAX_DAVERAGE_DSUM!D56": {
+   "t": "number",
+   "v": 13250
+  },
+  "calc_tests/DATABASE/DMIN_DMAX_DAVERAGE_DSUM.xlsx#DMIN_DMAX_DAVERAGE_DSUM!D57": {
+   "t": "number",
+   "v": 22066.666666666668
+  },
+  "calc_tests/DATABASE/DMIN_DMAX_DAVERAGE_DSUM.xlsx#DMIN_DMAX_DAVERAGE_DSUM!E56": {
+   "t": "number",
+   "v": 53000
+  },
+  "calc_tests/DATABASE/DMIN_DMAX_DAVERAGE_DSUM.xlsx#DMIN_DMAX_DAVERAGE_DSUM!E57": {
+   "t": "number",
+   "v": 132400
+  },
+  "calc_tests/DATABASE/DVAR_DVARP_DSTDEV_DSTDEVP.xlsx#DVAR_DVARP_DSTDEV_DSTDEVP!B56": {
+   "t": "number",
+   "v": 34250000
+  },
+  "calc_tests/DATABASE/DVAR_DVARP_DSTDEV_DSTDEVP.xlsx#DVAR_DVARP_DSTDEV_DSTDEVP!B57": {
+   "t": "number",
+   "v": 120714666.6666667
+  },
+  "calc_tests/DATABASE/DVAR_DVARP_DSTDEV_DSTDEVP.xlsx#DVAR_DVARP_DSTDEV_DSTDEVP!C56": {
+   "t": "number",
+   "v": 25687500
+  },
+  "calc_tests/DATABASE/DVAR_DVARP_DSTDEV_DSTDEVP.xlsx#DVAR_DVARP_DSTDEV_DSTDEVP!C57": {
+   "t": "number",
+   "v": 100595555.55555555
+  },
+  "calc_tests/DATABASE/DVAR_DVARP_DSTDEV_DSTDEVP.xlsx#DVAR_DVARP_DSTDEV_DSTDEVP!D56": {
+   "t": "number",
+   "v": 5852.349955359812
+  },
+  "calc_tests/DATABASE/DVAR_DVARP_DSTDEV_DSTDEVP.xlsx#DVAR_DVARP_DSTDEV_DSTDEVP!D57": {
+   "t": "number",
+   "v": 10987.022647954573
+  },
+  "calc_tests/DATABASE/DVAR_DVARP_DSTDEV_DSTDEVP.xlsx#DVAR_DVARP_DSTDEV_DSTDEVP!E56": {
+   "t": "number",
+   "v": 5068.283733178323
+  },
+  "calc_tests/DATABASE/DVAR_DVARP_DSTDEV_DSTDEVP.xlsx#DVAR_DVARP_DSTDEV_DSTDEVP!E57": {
+   "t": "number",
+   "v": 10029.7335735081
+  },
+  "calc_tests/DATE_AND_TIME/DATEVALUE.xlsx#DATEVALUE!B48": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/DATE_AND_TIME/DAYS_DAYS360.xlsx#Sheet1!C71": {
+   "t": "number",
+   "v": 30
+  },
+  "calc_tests/DATE_AND_TIME/DAYS_DAYS360.xlsx#Sheet1!D24": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/DATE_AND_TIME/DAYS_DAYS360.xlsx#Sheet1!D71": {
+   "t": "number",
+   "v": 30
+  },
+  "calc_tests/DATE_AND_TIME/DAYS_DAYS360.xlsx#Sheet1!D77": {
+   "t": "number",
+   "v": 1
+  },
+  "calc_tests/DATE_AND_TIME/DAYS_DAYS360.xlsx#Sheet1!D78": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/DATE_AND_TIME/DAYS_DAYS360.xlsx#Sheet1!D82": {
+   "t": "number",
+   "v": -1
+  },
+  "calc_tests/DATE_AND_TIME/NETWORKDAYS_NETWORKDAYS.INTL.xlsx#Sheet1!C60": {
+   "t": "number",
+   "v": 23
+  },
+  "calc_tests/DATE_AND_TIME/NETWORKDAYS_NETWORKDAYS.INTL.xlsx#Sheet1!D60": {
+   "t": "number",
+   "v": 23
+  },
+  "calc_tests/DATE_AND_TIME/TIMEVALUE.xlsx#TIMEVALUE!B47": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/DATE_AND_TIME/WEEKDAY_WEEKNUM_ISOWEEKNUM.xlsx#WEEKDAY!N12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/DATE_AND_TIME/WEEKDAY_WEEKNUM_ISOWEEKNUM.xlsx#WEEKDAY!O12": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "calc_tests/DATE_AND_TIME/WEEKDAY_WEEKNUM_ISOWEEKNUM.xlsx#WEEKDAY!P12": {
+   "t": "e",
+   "v": "NA"
+  },
+  "calc_tests/DATE_AND_TIME/WORKDAY_WORKDAY.INTL.xlsx#Sheet1!C40": {
+   "t": "number",
+   "v": 45666
+  },
+  "calc_tests/DATE_AND_TIME/WORKDAY_WORKDAY.INTL.xlsx#Sheet1!C42": {
+   "t": "number",
+   "v": 45666
+  },
+  "calc_tests/DATE_AND_TIME/WORKDAY_WORKDAY.INTL.xlsx#Sheet1!D40": {
+   "t": "number",
+   "v": 45666
+  },
+  "calc_tests/DATE_AND_TIME/WORKDAY_WORKDAY.INTL.xlsx#Sheet1!D42": {
+   "t": "number",
+   "v": 45666
+  },
+  "calc_tests/ENGINEERING/COMPLEXs.xlsx#Sheet1!X16": {
+   "t": "number",
+   "v": 10000000000000000
+  },
+  "calc_tests/ENGINEERING/COMPLEXs.xlsx#Sheet1!X17": {
+   "t": "number",
+   "v": 100000000000000000
+  },
+  "calc_tests/ENGINEERING/COMPLEXs.xlsx#Sheet1!X18": {
+   "t": "number",
+   "v": 1000000000000000000
+  },
+  "calc_tests/ENGINEERING/COMPLEXs.xlsx#Sheet1!X19": {
+   "t": "number",
+   "v": 100000000000000000000
+  },
+  "calc_tests/ENGINEERING/COMPLEXs.xlsx#Sheet1!Y16": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/ENGINEERING/COMPLEXs.xlsx#Sheet1!Y17": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/ENGINEERING/COMPLEXs.xlsx#Sheet1!Y18": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/ENGINEERING/COMPLEXs.xlsx#Sheet1!Y19": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/FINANCIAL/ACCRINT.xlsx#Sheet1!B32": {
+   "t": "number",
+   "v": 241.12362637362637
+  },
+  "calc_tests/FINANCIAL/ACCRINT.xlsx#Sheet1!B33": {
+   "t": "number",
+   "v": 236.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT.xlsx#Sheet1!B34": {
+   "t": "number",
+   "v": 240.04109589041096
+  },
+  "calc_tests/FINANCIAL/ACCRINT.xlsx#Sheet1!B36": {
+   "t": "number",
+   "v": 239.25000000000003
+  },
+  "calc_tests/FINANCIAL/ACCRINT.xlsx#Sheet1!B38": {
+   "t": "number",
+   "v": 251.55737704918027
+  },
+  "calc_tests/FINANCIAL/ACCRINT.xlsx#Sheet1!B39": {
+   "t": "number",
+   "v": 78.87362637362637
+  },
+  "calc_tests/FINANCIAL/ACCRINT.xlsx#Sheet1!B5": {
+   "t": "number",
+   "v": 66.94444444444446
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!I5": {
+   "t": "number",
+   "v": 16.944444444444446
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!J10": {
+   "t": "number",
+   "v": 240.04109589041096
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!J12": {
+   "t": "number",
+   "v": 241.12362637362637
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!J13": {
+   "t": "number",
+   "v": 236.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!J14": {
+   "t": "number",
+   "v": 240.04109589041096
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!J8": {
+   "t": "number",
+   "v": 241.12362637362637
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!J9": {
+   "t": "number",
+   "v": 236.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!K10": {
+   "t": "number",
+   "v": -254.95890410958904
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!K11": {
+   "t": "number",
+   "v": -247.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!K12": {
+   "t": "number",
+   "v": 241.12362637362637
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!K13": {
+   "t": "number",
+   "v": 236.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!K14": {
+   "t": "number",
+   "v": 240.04109589041096
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!K8": {
+   "t": "number",
+   "v": -253.8763736263736
+  },
+  "calc_tests/FINANCIAL/ACCRINT_ACCRINTM.xlsx#Sheet1!K9": {
+   "t": "number",
+   "v": -258.49999999999994
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!I5": {
+   "t": "number",
+   "v": 16.944444444444446
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!J10": {
+   "t": "number",
+   "v": 240.04109589041096
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!J12": {
+   "t": "number",
+   "v": 241.12362637362637
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!J13": {
+   "t": "number",
+   "v": 236.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!J14": {
+   "t": "number",
+   "v": 240.04109589041096
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!J31": {
+   "t": "number",
+   "v": 245.68681318681323
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!J35": {
+   "t": "number",
+   "v": 245.68681318681323
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!J8": {
+   "t": "number",
+   "v": 241.12362637362637
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!J9": {
+   "t": "number",
+   "v": 236.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K10": {
+   "t": "number",
+   "v": -254.95890410958904
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K11": {
+   "t": "number",
+   "v": -247.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K12": {
+   "t": "number",
+   "v": 241.12362637362637
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K13": {
+   "t": "number",
+   "v": 236.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K14": {
+   "t": "number",
+   "v": 240.04109589041096
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K31": {
+   "t": "number",
+   "v": 245.68681318681323
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K35": {
+   "t": "number",
+   "v": 245.68681318681323
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K8": {
+   "t": "number",
+   "v": -253.8763736263736
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet1!K9": {
+   "t": "number",
+   "v": -258.49999999999994
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!I5": {
+   "t": "number",
+   "v": 16.944444444444446
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J10": {
+   "t": "number",
+   "v": 3153.082191780822
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J12": {
+   "t": "number",
+   "v": 3152.225274725275
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J13": {
+   "t": "number",
+   "v": 3148.7500000000005
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J14": {
+   "t": "number",
+   "v": 3153.082191780822
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J31": {
+   "t": "number",
+   "v": 3156.639344262295
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J32": {
+   "t": "number",
+   "v": 3159.75
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J33": {
+   "t": "number",
+   "v": 3157.1506849315065
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J35": {
+   "t": "number",
+   "v": 3156.639344262295
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J36": {
+   "t": "number",
+   "v": 3159.75
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J37": {
+   "t": "number",
+   "v": 3157.1506849315065
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J8": {
+   "t": "number",
+   "v": 3152.225274725275
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!J9": {
+   "t": "number",
+   "v": 3148.7500000000005
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K10": {
+   "t": "number",
+   "v": -311.91780821917814
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K11": {
+   "t": "number",
+   "v": -305.25
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K12": {
+   "t": "number",
+   "v": 3152.225274725275
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K13": {
+   "t": "number",
+   "v": 3148.7500000000005
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K14": {
+   "t": "number",
+   "v": 3153.082191780822
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K18": {
+   "t": "number",
+   "v": 1179.75
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K19": {
+   "t": "number",
+   "v": 1174.9126431619134
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K20": {
+   "t": "number",
+   "v": 1193.5
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K21": {
+   "t": "number",
+   "v": 1177.150684931507
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K22": {
+   "t": "number",
+   "v": 1179.75
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K30": {
+   "t": "number",
+   "v": 189.75
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K31": {
+   "t": "number",
+   "v": 186.63934426229505
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K32": {
+   "t": "number",
+   "v": 189.74999999999997
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K33": {
+   "t": "number",
+   "v": 187.15068493150685
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K34": {
+   "t": "number",
+   "v": 189.75
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K35": {
+   "t": "number",
+   "v": 3156.639344262295
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K36": {
+   "t": "number",
+   "v": 3159.75
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K37": {
+   "t": "number",
+   "v": 3157.1506849315065
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K7": {
+   "t": "number",
+   "v": 189.75
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K8": {
+   "t": "number",
+   "v": -312.77472527472526
+  },
+  "calc_tests/FINANCIAL/ACCRINT_extended.xlsx#Sheet2!K9": {
+   "t": "number",
+   "v": -316.25
+  },
+  "calc_tests/FINANCIAL/FV.xlsx#Sheet2!A1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "calc_tests/FINANCIAL/IRR.xlsx#General!N3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/FINANCIAL/IRR.xlsx#General!N5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/FINANCIAL/MIRR.xlsx#Sheet2!N15": {
+   "t": "number",
+   "v": -1
+  },
+  "calc_tests/FINANCIAL/MIRR.xlsx#Sheet2!O15": {
+   "t": "number",
+   "v": -1
+  },
+  "calc_tests/FINANCIAL/MIRR.xlsx#Sheet2!P15": {
+   "t": "number",
+   "v": -1
+  },
+  "calc_tests/FINANCIAL/MIRR.xlsx#Three parameters!F18": {
+   "t": "number",
+   "v": -1
+  },
+  "calc_tests/FINANCIAL/MIRR.xlsx#Three parameters!F19": {
+   "t": "number",
+   "v": -1
+  },
+  "calc_tests/FINANCIAL/MIRR.xlsx#Two Parameters!E7": {
+   "t": "number",
+   "v": 1
+  },
+  "calc_tests/FINANCIAL/XIRR.xlsx#Sheet1!Q20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "calc_tests/FINANCIAL/XIRR.xlsx#Sheet1!Q7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "calc_tests/FINANCIAL/XNPV.xlsx#Sheet1!Q7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I101": {
+   "t": "number",
+   "v": 25
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I143": {
+   "t": "number",
+   "v": -47.22222222222222
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I144": {
+   "t": "number",
+   "v": 46.01648351648352
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I145": {
+   "t": "number",
+   "v": -47.73351648351648
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I146": {
+   "t": "number",
+   "v": 45.48611111111111
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I147": {
+   "t": "number",
+   "v": -48.26388888888889
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I148": {
+   "t": "number",
+   "v": 46.147260273972606
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I149": {
+   "t": "number",
+   "v": -47.602739726027394
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I151": {
+   "t": "number",
+   "v": -47.22222222222222
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I153": {
+   "t": "number",
+   "v": -4.708333333333333
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I154": {
+   "t": "number",
+   "v": 0.9065934065934067
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I155": {
+   "t": "number",
+   "v": -4.718406593406593
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I156": {
+   "t": "number",
+   "v": 0.854166666666667
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I157": {
+   "t": "number",
+   "v": -4.770833333333333
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I158": {
+   "t": "number",
+   "v": 0.9195205479452057
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I159": {
+   "t": "number",
+   "v": -4.705479452054794
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I161": {
+   "t": "number",
+   "v": -4.708333333333333
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I163": {
+   "t": "number",
+   "v": 8.333333333333332
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I165": {
+   "t": "number",
+   "v": 8.379120879120878
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I167": {
+   "t": "number",
+   "v": 8.472222222222223
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I169": {
+   "t": "number",
+   "v": 8.356164383561644
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I171": {
+   "t": "number",
+   "v": 8.333333333333332
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I173": {
+   "t": "number",
+   "v": -30.833333333333336
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I174": {
+   "t": "number",
+   "v": 118.4065934065934
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I175": {
+   "t": "number",
+   "v": -31.59340659340659
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I176": {
+   "t": "number",
+   "v": 118.05555555555556
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I177": {
+   "t": "number",
+   "v": -31.944444444444443
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I178": {
+   "t": "number",
+   "v": 118.49315068493152
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I179": {
+   "t": "number",
+   "v": -31.506849315068497
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I181": {
+   "t": "number",
+   "v": -30.833333333333336
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I213": {
+   "t": "number",
+   "v": -50
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I214": {
+   "t": "number",
+   "v": 149.86301369863014
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I215": {
+   "t": "number",
+   "v": -50.136986301369866
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I216": {
+   "t": "number",
+   "v": 149.16666666666666
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I217": {
+   "t": "number",
+   "v": -50.83333333333333
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I218": {
+   "t": "number",
+   "v": 149.86301369863014
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I219": {
+   "t": "number",
+   "v": -50.136986301369866
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I221": {
+   "t": "number",
+   "v": -50
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I223": {
+   "t": "number",
+   "v": 62.5
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I225": {
+   "t": "number",
+   "v": 62.32876712328767
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I227": {
+   "t": "number",
+   "v": 63.19444444444444
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I229": {
+   "t": "number",
+   "v": 62.32876712328767
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I231": {
+   "t": "number",
+   "v": 62.5
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I253": {
+   "t": "number",
+   "v": 16.944444444444446
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I255": {
+   "t": "number",
+   "v": 16.847826086956523
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I257": {
+   "t": "number",
+   "v": 17.22222222222222
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I259": {
+   "t": "number",
+   "v": 16.986301369863014
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I261": {
+   "t": "number",
+   "v": 17.22222222222222
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I283": {
+   "t": "number",
+   "v": 10.416666666666668
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I285": {
+   "t": "number",
+   "v": 10.497237569060774
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I287": {
+   "t": "number",
+   "v": 10.555555555555555
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I289": {
+   "t": "number",
+   "v": 10.41095890410959
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I291": {
+   "t": "number",
+   "v": 10.416666666666668
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I303": {
+   "t": "number",
+   "v": 21.180555555555557
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I305": {
+   "t": "number",
+   "v": 21.291208791208792
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I307": {
+   "t": "number",
+   "v": 21.52777777777778
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I309": {
+   "t": "number",
+   "v": 21.232876712328768
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I311": {
+   "t": "number",
+   "v": 21.180555555555557
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I313": {
+   "t": "number",
+   "v": -2.4791666666666665
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I314": {
+   "t": "number",
+   "v": 4.986263736263737
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I315": {
+   "t": "number",
+   "v": -2.5137362637362637
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I316": {
+   "t": "number",
+   "v": 4.958333333333333
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I317": {
+   "t": "number",
+   "v": -2.541666666666667
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I318": {
+   "t": "number",
+   "v": 4.993150684931507
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I319": {
+   "t": "number",
+   "v": -2.5068493150684934
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I320": {
+   "t": "number",
+   "v": 5.020833333333334
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I321": {
+   "t": "number",
+   "v": -2.4791666666666665
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I33": {
+   "t": "number",
+   "v": -1.875
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I34": {
+   "t": "number",
+   "v": 1.8647540983606556
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I343": {
+   "t": "number",
+   "v": -26.041666666666668
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I344": {
+   "t": "number",
+   "v": 37.36413043478261
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I345": {
+   "t": "number",
+   "v": -25.13586956521739
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I346": {
+   "t": "number",
+   "v": 36.80555555555556
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I347": {
+   "t": "number",
+   "v": -25.694444444444443
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I348": {
+   "t": "number",
+   "v": 37.157534246575345
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I349": {
+   "t": "number",
+   "v": -25.34246575342466
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I35": {
+   "t": "number",
+   "v": -1.8852459016393444
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I351": {
+   "t": "number",
+   "v": -26.041666666666668
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I36": {
+   "t": "number",
+   "v": 1.8333333333333335
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I363": {
+   "t": "number",
+   "v": -14.444444444444446
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I364": {
+   "t": "number",
+   "v": 10.302197802197801
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I365": {
+   "t": "number",
+   "v": -14.697802197802199
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I366": {
+   "t": "number",
+   "v": 10.13888888888889
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I367": {
+   "t": "number",
+   "v": -14.86111111111111
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I368": {
+   "t": "number",
+   "v": 10.342465753424658
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I369": {
+   "t": "number",
+   "v": -14.657534246575343
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I37": {
+   "t": "number",
+   "v": -1.9166666666666665
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I371": {
+   "t": "number",
+   "v": -14.444444444444446
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I38": {
+   "t": "number",
+   "v": 1.8595890410958902
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I39": {
+   "t": "number",
+   "v": -1.8904109589041098
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I41": {
+   "t": "number",
+   "v": -1.875
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I43": {
+   "t": "number",
+   "v": 12.5
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I45": {
+   "t": "number",
+   "v": 12.568306010928962
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I47": {
+   "t": "number",
+   "v": 12.777777777777777
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I49": {
+   "t": "number",
+   "v": 12.602739726027398
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I51": {
+   "t": "number",
+   "v": 12.5
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I53": {
+   "t": "number",
+   "v": 50
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I55": {
+   "t": "number",
+   "v": 50
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I57": {
+   "t": "number",
+   "v": 50.83333333333333
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I59": {
+   "t": "number",
+   "v": 50.136986301369866
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I61": {
+   "t": "number",
+   "v": 50
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I64": {
+   "t": "number",
+   "v": 22.494070137512765
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I65": {
+   "t": "number",
+   "v": 22.494070137512765
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I83": {
+   "t": "number",
+   "v": -37.5
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I84": {
+   "t": "number",
+   "v": 37.704918032786885
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I85": {
+   "t": "number",
+   "v": -37.295081967213115
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I86": {
+   "t": "number",
+   "v": 37.083333333333336
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I87": {
+   "t": "number",
+   "v": -37.916666666666664
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I89": {
+   "t": "number",
+   "v": -37.397260273972606
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I91": {
+   "t": "number",
+   "v": -37.5
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I93": {
+   "t": "number",
+   "v": 25
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I95": {
+   "t": "number",
+   "v": 25.136612021857925
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I97": {
+   "t": "number",
+   "v": 25.555555555555554
+  },
+  "calc_tests/FINANCIAL/accrint_cases.xlsx#accrint_cases!I99": {
+   "t": "number",
+   "v": 25.205479452054796
+  },
+  "calc_tests/INFORMATION/ERROR.TYPE.xlsx#Sheet1!B8": {
+   "t": "number",
+   "v": 14
+  },
+  "calc_tests/INFORMATION/ISREF.xlsx#Sheet1!D17": {
+   "t": "boolean",
+   "v": false
+  },
+  "calc_tests/LOGICAL/IFERROR.xlsx#Sheet1!C51": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/INDEX.xlsx#INDEX!E9": {
+   "t": "number",
+   "v": 1
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/SORT.xlsx#Sheet1!D15": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/SORT.xlsx#Sheet1!M15": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/SORT.xlsx#Sheet1!N14": {
+   "t": "string",
+   "v": "nht"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/SORT.xlsx#Sheet1!N15": {
+   "t": "string",
+   "v": "ghdf"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#LargerRows!G9": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#LargerRows!J9": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#LargerRows!V9": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#LargerRows!Y9": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#MultipleElements!E8": {
+   "t": "string",
+   "v": "j"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#MultipleElements!M8": {
+   "t": "string",
+   "v": "b"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!E11": {
+   "t": "string",
+   "v": "f"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!E8": {
+   "t": "string",
+   "v": "g"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!F11": {
+   "t": "string",
+   "v": "f"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!F8": {
+   "t": "string",
+   "v": "g"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!G11": {
+   "t": "string",
+   "v": "f"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!G8": {
+   "t": "string",
+   "v": "g"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!I24": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!I27": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!I39": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!I42": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnLarger!J40": {
+   "t": "number",
+   "v": 2
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!E13": {
+   "t": "string",
+   "v": "g"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!E27": {
+   "t": "string",
+   "v": "e"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!E28": {
+   "t": "string",
+   "v": "e"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!E42": {
+   "t": "string",
+   "v": "e"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!E43": {
+   "t": "string",
+   "v": "e"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!F13": {
+   "t": "string",
+   "v": "g"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!G13": {
+   "t": "string",
+   "v": "g"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!I25": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!I26": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!I40": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#ReturnSmaller!I41": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#SmallerRow!AA5": {
+   "t": "string",
+   "v": "e"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#SmallerRow!AB5": {
+   "t": "string",
+   "v": "e"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#SmallerRow!J9": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#SmallerRow!K9": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#SmallerRow!L5": {
+   "t": "string",
+   "v": "e"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#SmallerRow!M5": {
+   "t": "string",
+   "v": "e"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#SmallerRow!Y9": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#SmallerRow!Z9": {
+   "t": "number",
+   "v": 6
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#WilcardRows!M5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#WilcardRows!T5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#Wildcards!E13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XLOOKUP.xlsx#Wildcards!E20": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XMATCH.xlsx#Sheet1!E6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/LOOKUP_AND_REFERENCE/XMATCH.xlsx#Sheet1!E7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/EXP_SIGN.xlsx#EXP_SIGN!B31": {
+   "t": "number",
+   "v": 2.6881171418161356e+43
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/EXP_SIGN.xlsx#EXP_SIGN!B49": {
+   "t": "number",
+   "v": 2.6881171418161356e+43
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/EXP_SIGN.xlsx#EXP_SIGN!B54": {
+   "t": "number",
+   "v": 2.6881171418161356e+43
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/EXP_SIGN.xlsx#EXP_SIGN!C31": {
+   "t": "number",
+   "v": 1
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/EXP_SIGN.xlsx#EXP_SIGN!C49": {
+   "t": "number",
+   "v": 1
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/EXP_SIGN.xlsx#EXP_SIGN!C54": {
+   "t": "number",
+   "v": 1
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!M148": {
+   "t": "number",
+   "v": -8
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!M149": {
+   "t": "number",
+   "v": -8
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!O145": {
+   "t": "number",
+   "v": -10.08
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!O148": {
+   "t": "number",
+   "v": -7.14
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!O149": {
+   "t": "number",
+   "v": -7.9799999999999995
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!P145": {
+   "t": "number",
+   "v": -14
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!P148": {
+   "t": "number",
+   "v": -14
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!P149": {
+   "t": "number",
+   "v": -14
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!R148": {
+   "t": "number",
+   "v": -8
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!R149": {
+   "t": "number",
+   "v": -8
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!T145": {
+   "t": "number",
+   "v": -10.08
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!T148": {
+   "t": "number",
+   "v": -7.14
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!T149": {
+   "t": "number",
+   "v": -7.9799999999999995
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!U145": {
+   "t": "number",
+   "v": -14
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!U148": {
+   "t": "number",
+   "v": -14
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#CEILING!U149": {
+   "t": "number",
+   "v": -14
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!F15": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!F16": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!F21": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!F43": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!F9": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!M148": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!M149": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!M15": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!M16": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!M21": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!M43": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!M9": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!O145": {
+   "t": "number",
+   "v": -9.87
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!O148": {
+   "t": "number",
+   "v": -6.93
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!O149": {
+   "t": "number",
+   "v": -7.77
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!P145": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!P148": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!P149": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!P15": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!P16": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!P21": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!P43": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!P9": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!R148": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!R149": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!S15": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!S16": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!S21": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!S43": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!S9": {
+   "t": "number",
+   "v": 0
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!T145": {
+   "t": "number",
+   "v": -9.87
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!T148": {
+   "t": "number",
+   "v": -6.93
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!T149": {
+   "t": "number",
+   "v": -7.77
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!U145": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!U148": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/FLOOR_CEILING.xlsx#FLOOR!U149": {
+   "t": "number",
+   "v": -7
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/GCD_LCM.xlsx#Sheet1!D13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/GCD_LCM.xlsx#Sheet1!E13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/LCM_GCD.xlsx#LCM_GCD!D13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/LCM_GCD.xlsx#LCM_GCD!E13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/ROUND.xlsx#Sheet1!C41": {
+   "t": "number",
+   "v": 0.0063
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/ROUND.xlsx#issues!A2": {
+   "t": "number",
+   "v": 0.0063
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/TRIGONOMETRIC.xlsx#COTH_CSCH_SECH!C18": {
+   "t": "number",
+   "v": 1000000000000
+  },
+  "calc_tests/MATH_AND_TRIGONOMETRY/TRIGONOMETRIC.xlsx#COTH_CSCH_SECH!C19": {
+   "t": "number",
+   "v": -1000000000000
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!E28": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!E30": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!F28": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!F30": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!G28": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!G30": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!H28": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!H30": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!I12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!I7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!J12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!J7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!K12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!K7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!L12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!L7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!M12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!M7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!N12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!N7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!O12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!O7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!P12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Columns!P7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!AB5": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!AB6": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!AB7": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!AB8": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!AD5": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!AD6": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!AD7": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!AD8": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!M10": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!M11": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!M12": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!M13": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!M14": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!M15": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!M16": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!M9": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!R10": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!R11": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!R12": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!R13": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!R14": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!R15": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!R16": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIF.xlsx#Rows!R9": {
+   "t": "number",
+   "v": 10
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!P10": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!P11": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!P12": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!P13": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!P14": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!P15": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!P16": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!P9": {
+   "t": "number",
+   "v": 9
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!Y5": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!Y6": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!Y7": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/COUNTIFS.xlsx#Rows2!Y8": {
+   "t": "number",
+   "v": 7
+  },
+  "calc_tests/STATISTICAL/LOGNORM.xlsx#LOGNORM.DIST LOGNORM.INV!F26": {
+   "t": "number",
+   "v": 3.999765880934408
+  },
+  "calc_tests/STATISTICAL/POISSON.xlsx#POISSON.DIST!D26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "calc_tests/STATISTICAL/PROB.xlsx#Sheet1!O2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "calc_tests/TEXT/MID_LEFT_RIGHT_arrays.xlsx#Sheet1!G32": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "calc_tests/TEXT/MID_LEFT_RIGHT_arrays.xlsx#Sheet1!G34": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G20": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G21": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G22": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G23": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G24": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXT.xlsx#DATES!G9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!G16": {
+   "t": "string",
+   "v": " 456 the 891"
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!G17": {
+   "t": "string",
+   "v": " 456 the 891"
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!G19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!G20": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!I16": {
+   "t": "string",
+   "v": "123 "
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!I17": {
+   "t": "string",
+   "v": "123 "
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!I19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!I20": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXTBEFORE_TEXTAFTER.xlsx#Sheet1!K19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXTSPLIT.xlsx#Sheet1!B26": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/TEXTSPLIT.xlsx#Sheet1!L26": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "calc_tests/TEXT/T_VALUE_VALUETOTEXT.xlsx#Sheet1!C15": {
+   "t": "number",
+   "v": 44960
+  },
+  "calc_tests/TEXT/T_VALUE_VALUETOTEXT.xlsx#Sheet1!C9": {
+   "t": "number",
+   "v": 12
+  },
+  "calc_tests/TEXT/T_VALUE_VALUETOTEXT.xlsx#Sheet1!I3": {
+   "t": "number",
+   "v": 23
+  },
+  "calc_tests/TEXT/T_VALUE_VALUETOTEXT.xlsx#Sheet1!I5": {
+   "t": "number",
+   "v": 36445
+  },
+  "calc_tests/arithmetic.xlsx#Sheet2!C1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "docs/FV.xlsx#Sheet1!A14": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "templates/wordle.xlsx#Wordle!N2": {
+   "t": "e",
+   "v": "NAME"
+  }
+ }
+}
