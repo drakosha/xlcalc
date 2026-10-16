@@ -1011,6 +1011,16 @@ export interface CallAt {
   close: number | null
 }
 
+/**
+ * The name of a function being typed at a caret, in formula text as it is typed (`nameAt`), for the list of Formula
+ * AutoComplete: where the name begins and ends, and the part of it before the caret.
+ */
+export interface NameAt {
+  from: number
+  to: number
+  typed: string
+}
+
 /** `scanReferences`'s options. */
 export interface ScanOptions {
   /** The locale the text is typed in, a loaded locale's tag (`LOCALES`) or a locale object; without it the text is a stored formula. */
@@ -1455,6 +1465,9 @@ export interface FindCellsOptions extends ReadCellsOptions {
    */
   after?: CellRef
 }
+/** `findMatcher`'s and `findReplacer`'s options: Find's, as `findCells` takes them, over a host's own texts. */
+export type FindTextOptions = Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell'>
+
 /** `Session.replaceInCells`' options: Find's, as `findCells` takes them, but what it reads, which is the text a cell opens with (Look in Formulas), and the order. */
 export interface ReplaceOptions extends EditOptions, Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell' | 'skipHidden' | 'rows'> {}
 
@@ -1491,6 +1504,10 @@ export interface DependentsOptions extends PageOptions {
 }
 /** What `getDependents` answers: a page of the cells whose formulas read the ranges. */
 export interface DependentsResult extends QueryPage { dependents: DependentCell[] }
+/** `summarizeRanges`' options: only the cells of these rows (the rows a host's filter shows), as `ReadCellsOptions.rows`. */
+export interface SummaryOptions extends EditOptions {
+  rows?: number[]
+}
 /** What `summarizeRanges` answers, as Excel's status bar shows a selection: how many cells hold something, how many numbers and errors, their sum, the least and the greatest number. */
 export interface RangeSummary {
   revision: number
@@ -2240,7 +2257,7 @@ export interface Session {
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions): DependentsResult
   /** Totals over nonblank stored values and spills, without returning their cells. */
-  summarizeRanges(ranges: RangeRef[], opts?: EditOptions): RangeSummary
+  summarizeRanges(ranges: RangeRef[], opts?: SummaryOptions): RangeSummary
   readonly clock: Clock
   /** The book's revision: 0 when opened, one more after each call that changed the book (`EditResult.revision`). */
   readonly revision: number
@@ -2588,7 +2605,7 @@ export interface AsyncSession {
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions & CalcOptions): Promise<DependentsResult>
   /** Totals over nonblank stored values and spills, without returning their cells. */
-  summarizeRanges(ranges: RangeRef[], opts?: EditOptions & CalcOptions): Promise<RangeSummary>
+  summarizeRanges(ranges: RangeRef[], opts?: SummaryOptions & CalcOptions): Promise<RangeSummary>
   /** The session's clock as of its last finished call. */
   readonly clock: Clock
   /** The session's revision as of its last finished call. */
@@ -2617,8 +2634,8 @@ export interface AsyncSession {
   getUsedRange(sheet: string): Promise<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
-  /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
-  getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** As `Session.getCells`; from a thread only the rectangles come back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
+  getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
   /** As `Session.copyText`; the text is prepared in one read in the session's thread. */
   copyText(sheet: string, range: string, opts?: CopyTextOptions & CalcOptions): Promise<string>
   getCell(sheet: string, cell: string): Promise<CellView | undefined>

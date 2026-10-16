@@ -16,28 +16,16 @@ import { inputIn } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
 import { internStyle } from '../style-table.js'
 import { tablesOf } from '../tables/model.js'
-import { cornersText, meets, rectText, type Rect } from './area.js'
+import { cornersText, grown, meets, rectText, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { moveRange } from './move.js'
 import { arraysOf, cellsIn, gridOf } from './grid.js'
 import { holds } from '../array-areas.js'
 
+export { grown }
+
 /** The fields of a cell a merge clears: what it holds. */
 const CONTENT = ['value', 'formula', 'array', 'held'] as const
-
-/** The range grown by the merged areas it meets, each taken in whole, until it meets no other. */
-export function grown(x: Rect, merges: Rect[]): Rect {
-  let out = x
-  for (let more = true; more; ) {
-    more = false
-    for (const m of merges)
-      if (meets(m, out) && (m.r1 < out.r1 || m.c1 < out.c1 || m.r2 > out.r2 || m.c2 > out.c2)) {
-        out = { r1: Math.min(out.r1, m.r1), c1: Math.min(out.c1, m.c1), r2: Math.max(out.r2, m.r2), c2: Math.max(out.c2, m.c2) }
-        more = true
-      }
-  }
-  return out
-}
 
 export function mergeCells(book: BookInput, sheet: string, x: Rect, across: boolean, center: boolean): Applied {
   const s = book.sheets.findIndex((t) => t.name === sheet)

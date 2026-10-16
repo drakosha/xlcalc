@@ -8,7 +8,8 @@ import * as root from '../src/index.js'
 import { caseKey } from '../src/collate.js'
 import { checkBook, InputError } from '../src/input.js'
 import { ruRU } from '../src/locales/ru-RU.js'
-import { cellAddress, colLetters, colNumber, linesKey, MAX_COLS, MAX_ROWS, nameKey, parseCell, parseLines, parseRange, quoteSheetIfNeeded, rangeAddress, rectContains, rectsMeet, sameName } from '../src/a1.js'
+import { cellAddress, colLetters, colNumber, linesKey, MAX_COLS, MAX_ROWS, mergedArea, nameKey, parseCell, parseLines, parseRange, quoteSheetIfNeeded, rangeAddress, rectContains, rectsMeet, sameName } from '../src/a1.js'
+import { editStructure } from '../src/index.js'
 
 describe('cells', () => {
   it('reads a cell with $ and letters in any case, rows and columns from 1', () => {
@@ -124,5 +125,21 @@ describe('names', () => {
 describe('the root exports the same functions', () => {
   it('one function, two entry points', () => {
     for (const [k, v] of Object.entries(a1)) expect((root as Record<string, unknown>)[k], k).toBe(v)
+  })
+})
+
+describe('mergedArea: the rectangle a merge takes in', () => {
+  const R = (top: number, left: number, bottom: number, right: number) => ({ top, left, bottom, right })
+  it('grown by each merged area it meets, again for those it then meets, as mergeCells grows it', () => {
+    expect(mergedArea(R(2, 2, 2, 2), [R(1, 1, 2, 2), R(2, 3, 5, 3)])).toEqual(R(1, 1, 2, 2))
+    expect(mergedArea(R(2, 2, 2, 3), [R(1, 1, 2, 2), R(2, 3, 5, 3), R(5, 4, 6, 4)])).toEqual(R(1, 1, 5, 3))
+    expect(mergedArea(R(2, 2, 2, 2), [R(5, 5, 6, 6)])).toEqual(R(2, 2, 2, 2))
+    const book = { sheets: [{ name: 'S', cells: { A1: { value: 1 } }, merges: ['A1:B2', 'C2:C5', 'D5:D6'] }] }
+    const r = editStructure(book, { op: 'mergeCells', sheet: 'S', range: 'B2:C2' })
+    expect(r.ok && r.book.sheets[0].merges).toEqual(['D5:D6', rangeAddress(mergedArea(R(2, 2, 2, 3), [R(1, 1, 2, 2), R(2, 3, 5, 3), R(5, 4, 6, 4)]))])
+  })
+  it('the input checked', () => {
+    expect(() => mergedArea(R(2, 2, 2, 2), [R(0, 1, 1, 1)])).toThrow('merges[0].top')
+    expect(() => mergedArea(R(2, 2, 2, 2), {} as never)).toThrow('merges')
   })
 })

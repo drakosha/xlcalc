@@ -17,7 +17,7 @@ import { rulesOf, type Rules } from '../locale/rules.js'
 import type { Locale } from '../locale/types.js'
 import { englishName } from '../call-at.js'
 import { epochOf, ymd } from '../dates.js'
-import { FUNCTIONS } from '../functions.js'
+import { arityFor } from '../arity.js'
 import { msToSerial } from '../model.js'
 import { formatAfter, shows } from './forms.js'
 import { closeTyped } from './close.js'
@@ -80,7 +80,7 @@ function taken(text: string, v: ReturnType<typeof validateTyped>, shift: number,
 /** Whether `name` is a function's name in the locale, in any case: its own word, else its English one (`SUM` is none in ru-RU, `ABS` is). */
 function known(name: string, locale: Locale): boolean {
   const fn = englishName(name, locale)
-  return fn in FUNCTIONS && (locale.functions[fn] ?? fn).toUpperCase() === name.toUpperCase()
+  return arityFor(fn) !== undefined && (locale.functions[fn] ?? fn).toUpperCase() === name.toUpperCase()
 }
 
 /** Whether typed text begins with a `+` before a number (`+1*2`, `+.5+1`, `++5`): Excel drops it, the formula is `1*2`. */

@@ -52,7 +52,9 @@ const totals = await session.summarizeRanges(ranges)
 
 Pages contain `revision`, `clock`, `truncated` and, when another page exists, `cursor`. `maxCells` defaults to 1000 and is bounded by 10000. Use a cursor only with the same query; an edited session rejects it with `stale_revision`. A cursor holds the place of the page's last cell in the query's order, and the next page goes on after it without reading again what came before. `count: true` counts all matches and returns `total`, even when the first page is full; the cursor of a page that counted keeps the count, so a later page with `count` stops when it is full too. Without `count` a page stops when it has enough results to determine that another page exists. The limit counts cells, not serialized bytes; a host may also apply its own tool-output budget.
 
-`summarizeRanges` returns cells, numbers, errors, a compensated sum, min and max with the revision and clock. Null and empty text do not count as cells; text and errors do not add to the numeric sum. An overflowing sum is `{ error: 'NUM' }`, not a non-finite number that JSON would turn into null.
+`summarizeRanges` returns cells, numbers, errors, a compensated sum, min and max with the revision and clock. Null and empty text do not count as cells; text and errors do not add to the numeric sum. An overflowing sum is `{ error: 'NUM' }`, not a non-finite number that JSON would turn into null.  `rows` takes the rows a host's filter shows, as `readCells` takes them. What Excel's status bar counts was not measured: here a formula that shows empty text is no cell, and an error is a cell and adds to `errors`.
+
+A host that keeps its own texts finds and replaces in them as `findCells` and `replaceInCells` do with `findMatcher(query, opts?)` and `findReplacer(query, by, opts?)` of `xlcalc/text` (`caseSensitive`, `wildcards`, `wholeCell`), without the engine. `compareValues(a, b, { descending })` is the order SORT sorts values of mixed types in: numbers, text in any case, FALSE then TRUE, errors, and blanks last either way, for a host's display filter.
 
 ## Finding as Excel finds
 

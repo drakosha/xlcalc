@@ -278,6 +278,8 @@ The input is the stored xlsx width, not the object model's `ColumnWidth` charact
 
 Use points consistently. At 96 CSS pixels per inch, a host converts points to CSS pixels by multiplying by 4/3 and pixels to points by 3/4 before calling the inverse. This is a unit conversion, not a measurement of screen pixels, zoom or display scaling. The measured object-model widths use [Range.Width in points](https://learn.microsoft.com/en-us/office/vba/api/excel.range.width); [ColumnWidth](https://learn.microsoft.com/en-us/office/vba/api/excel.range.columnwidth) uses the Normal style's digit.
 
+`columnWidthToChars(width?)` and `columnWidthFromChars(chars)` give the width Excel for Mac's Column Width box shows and takes, in characters of the default font to two decimals: 6 points a character past a margin of 5, 11 points a character under one (`columnWidthToChars()` is 8, `columnWidthFromChars(8)` is 8.83203125). They agree with every column the Mac's fit sets read (`ColumnWidth` beside the stored width); Excel for Windows counts 7 pixels a character and shows the default as 8.43. `DEFAULT_ROW_HEIGHT` (15), `MAX_ROW_HEIGHT` (409.5) and `MAX_OUTLINE` (7 levels) are the sizes of rows and outlines the library uses.
+
 Windows has another geometry. Its default is `StandardWidth` 8.43, 48 points (64 pixels at 96 dpi), saved as width 9.140625 when made explicit. An explicit file width 8.83203125 is 46.5 points there (62 pixels), while it is 53 points in the Mac model. For the measured file widths Windows gives `trunc((256w + trunc(128/7)) / 256 * 7) * 3/4` points. That formula does not convert Mac-model defaults into Windows defaults. The library keeps its Mac geometry; switching it to Windows would change which values fit.
 
 ### AutoFit

@@ -210,6 +210,11 @@ describe.each(['closures', 'eval'] as const)('live workbook additions, %s', (exe
         expect(found.cells[0]).toMatchObject({ cell: 'D1', value: 'hello' })
         const stats = await s.summarizeRanges(all)
         expect(stats).toMatchObject({ revision: 0, cells: 4, numbers: 3, errors: 0, sum: 13, min: 2, max: 7 })
+        // the rows a filter shows alone, as readCells takes them
+        await s.setCells([{ sheet: 'S', cell: 'A3', input: { value: 100 } }])
+        expect(await s.summarizeRanges([{ sheet: 'S', range: 'A1:A3' }], { rows: [3] })).toMatchObject({ cells: 1, numbers: 1, sum: 100 })
+        expect(await s.summarizeRanges([{ sheet: 'S', range: 'A1:A3' }], { rows: [2] })).toMatchObject({ cells: 0, sum: 0, min: null })
+        await expect(s.summarizeRanges(all, { rows: [2, 1] })).rejects.toThrow('opts.rows')
       } finally {
         await s.close()
       }

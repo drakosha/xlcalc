@@ -12,6 +12,7 @@ import { compute, createInlineCalc, createSession, displayValue, entryWidth, Inp
 import * as a1 from '../src/a1.js'
 import * as contract from '../src/contract.js'
 import * as text from '../src/text.js'
+import * as typedEntry from '../src/typed-entry.js'
 import * as worker from '../src/worker/index.js'
 import * as xlsx from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
@@ -50,7 +51,7 @@ describe('no entry of the package exports an old name', () => {
     expect(typeof xlsx.fromLegacy).toBe('function')
   })
 
-  it.each([['xlcalc/contract', contract], ['xlcalc/a1', a1], ['xlcalc/text', text], ['xlcalc/xlsx', xlsx], ['xlcalc/worker', worker]] as const)('%s has none of them', (_, mod) => {
+  it.each([['xlcalc/contract', contract], ['xlcalc/a1', a1], ['xlcalc/text', text], ['xlcalc/entry', typedEntry], ['xlcalc/xlsx', xlsx], ['xlcalc/worker', worker]] as const)('%s has none of them', (_, mod) => {
     expect([...ROOT.filter((name) => name !== 'fromLegacy'), ...Object.keys(METHODS)].filter((name) => name in mod)).toEqual([])
   })
 })

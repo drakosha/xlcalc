@@ -27,7 +27,7 @@ const TAKEN_BY: Record<string, string> = {
   formulaLocal: 'getViewport',
   diagnostics: 'getViewport',
   maxCells: 'getViewport',
-  rows: 'getViewport, readCells, findCells and replaceInCells',
+  rows: 'getViewport, readCells, findCells, replaceInCells and summarizeRanges',
   columns: 'getViewport',
   editText: 'getViewport',
   appearance: 'viewportOf',

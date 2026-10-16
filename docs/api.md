@@ -7,6 +7,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc`](#xlcalc)
 - [`xlcalc/a1`](#xlcalca1)
 - [`xlcalc/text`](#xlcalctext)
+- [`xlcalc/entry`](#xlcalcentry)
 - [`xlcalc/xlsx`](#xlcalcxlsx)
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
@@ -80,6 +81,14 @@ function colNumber(letters: string): number | null
 
 The number of a column by its letters in any case (`B` is 2), or null when they are no column of the sheet (`XFE`).
 
+### <a id="xlcalc-columnwidthfromchars"></a>`columnWidthFromChars`
+
+```ts
+function columnWidthFromChars(chars: number): number
+```
+
+A width in characters, as typed into Excel for Mac's Column Width box (0 to 255), to the stored xlsx width Excel makes of it.
+
 ### <a id="xlcalc-columnwidthfrompoints"></a>`columnWidthFromPoints`
 
 ```ts
@@ -88,6 +97,15 @@ function columnWidthFromPoints(points: number): number
 
 Whole points back to a stored width in 256ths; fractional points round down, as the model's geometry does.
 
+### <a id="xlcalc-columnwidthtochars"></a>`columnWidthToChars`
+
+```ts
+function columnWidthToChars(width?: number | null): number
+```
+
+A stored xlsx width as Excel for Mac's Column Width box shows it, in characters of the book's default font to two
+decimals (the default column, null or undefined, is 8); in the library's Mac point model, as [`columnWidthToPoints`](#xlcalc-columnwidthtopoints).
+
 ### <a id="xlcalc-columnwidthtopoints"></a>`columnWidthToPoints`
 
 ```ts
@@ -95,6 +113,15 @@ function columnWidthToPoints(width?: number | null): number
 ```
 
 A stored xlsx width in the library's Mac point model; null or undefined is the default 53 points.
+
+### <a id="xlcalc-comparevalues"></a>`compareValues`
+
+```ts
+function compareValues(a: CellValue, b: CellValue, opts?: { descending?: boolean | undefined; }): number
+```
+
+Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (en-US's collation),
+FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`; negative when `a` comes first.
 
 ### <a id="xlcalc-compute"></a>`compute`
 
@@ -161,6 +188,14 @@ function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): string
 
 The `eval` mode's generated code of the book in evaluation order, for reading while debugging; not part of the contract.
 
+### <a id="xlcalc-default_row_height"></a>`DEFAULT_ROW_HEIGHT`
+
+```ts
+const DEFAULT_ROW_HEIGHT: 15
+```
+
+The height of a row without its own, in points: a line of Calibri 11, the book's default font.
+
 ### <a id="xlcalc-displayvalue"></a>`displayValue`
 
 ```ts
@@ -190,7 +225,7 @@ The text a cell holding `value` opens with for editing, as Excel's formula bar s
 `opts.numberFormat`: a number with its 15 significant digits and the locale's decimal separator (`1234.5`, `1234,5`), a
 percent cell's number as a percent (`12%`), a date or a time cell's by the locale's short date and long time
 (`1/31/2025  6:00:00 PM`, `31.01.2025  18:00:00`), a boolean and an error in the locale's words, text with an
-apostrophe where typing it would read otherwise (`'007`). The value reads back from the text ([`parseEntry`](#xlcalc-parseentry)).
+apostrophe where typing it would read otherwise (`'007`). The value reads back from the text ([`parseEntry`](#xlcalcentry-parseentry)).
 
 ### <a id="xlcalc-entrywidth"></a>`entryWidth`
 
@@ -228,6 +263,22 @@ function escapeColumn(name: string): string
 A column's name in a structured reference as Excel writes it: `'` before each `[`, `]`, `#` and `'` in it and before
 an `@` it starts with (`x#y` is `x'#y`, `@at` is `'@at`), the rest as it is (`Unit Price`).
 
+### <a id="xlcalc-findmatcher"></a>`findMatcher`
+
+```ts
+function findMatcher(query: string, opts?: FindTextOptions): ((text: string) => boolean) | null
+```
+
+Excel's Find over a host's texts, as `findCells` matches a cell's: the test of a text, null when nothing can match (an empty query, `~` alone).
+
+### <a id="xlcalc-findreplacer"></a>`findReplacer`
+
+```ts
+function findReplacer(query: string, by: string, opts?: FindTextOptions): ((text: string) => string | null) | null
+```
+
+Excel's Replace over a host's texts, as `replaceInCells` replaces in a cell's: a text with each match put as `by`, null where nothing matches.
+
 ### <a id="xlcalc-fitcolumns"></a>`fitColumns`
 
 ```ts
@@ -260,7 +311,7 @@ Excel's plain-text copy: tabs, CRLF rows and quoted control characters; Windows 
 const FUNCTION_CATEGORIES: readonly FunctionCategory[]
 ```
 
-The categories in the order Excel's window lists them.
+The categories of functions in the order Excel's Insert Function window lists them (their members are `function-info.ts`'s).
 
 ### <a id="xlcalc-function_names"></a>`FUNCTION_NAMES`
 
@@ -347,6 +398,22 @@ const MAX_FORMULA_LENGTH: 8192
 
 Excel's limit of a formula's text: 8,192 characters.
 
+### <a id="xlcalc-max_outline"></a>`MAX_OUTLINE`
+
+```ts
+const MAX_OUTLINE: 7
+```
+
+The deepest outline of rows or columns Excel makes: seven levels of groups below the sheet's own.
+
+### <a id="xlcalc-max_row_height"></a>`MAX_ROW_HEIGHT`
+
+```ts
+const MAX_ROW_HEIGHT: 409.5
+```
+
+The highest row Excel makes, in points.
+
 ### <a id="xlcalc-max_rows"></a>`MAX_ROWS`
 
 ```ts
@@ -354,6 +421,28 @@ const MAX_ROWS: 1048576
 ```
 
 A sheet's rows, as Excel's: 1,048,576.
+
+### <a id="xlcalc-mergedarea"></a>`mergedArea`
+
+```ts
+function mergedArea(r: CellRect, merges: readonly CellRect[]): CellRect
+```
+
+The rectangle a merge takes in (`mergeCells`, Merge Cells): `rect` grown by each merged area of `merges` it meets,
+taken in whole, again for each it then meets, until it meets no other.
+
+### <a id="xlcalc-nameat"></a>`nameAt`
+
+```ts
+function nameAt(text: string, caret?: number, opts?: ScanOptions): NameAt | null
+```
+
+The name of a function being typed at `caret` (the end of the text by default) of formula text `text`, for the list
+of Formula AutoComplete: the characters of a name around the caret, begun by a letter or `_`, where an operand may
+begin (after the formula's first character, an operator, `(`, the locale's list separator, a space); null where no
+function can stand: no name at the caret, in a string, a quoted sheet's name or a table's brackets, after a sheet's
+`!` or a `$`, and for text that is no formula. `opts.locale`: the locale the text is typed in (its list separator);
+without it the text is en-US's.
 
 ### <a id="xlcalc-namekey"></a>`nameKey`
 
@@ -638,11 +727,44 @@ computing its formulas: the result's values, text and colour, the book's formats
 
 ## xlcalc/a1
 
-Described under an entry above: [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`linesKey`](#xlcalc-lineskey), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_ROWS`](#xlcalc-max_rows), [`nameKey`](#xlcalc-namekey), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`sameName`](#xlcalc-samename).
+Described under an entry above: [`cellAddress`](#xlcalc-celladdress), [`colLetters`](#xlcalc-colletters), [`colNumber`](#xlcalc-colnumber), [`linesKey`](#xlcalc-lineskey), [`MAX_COLS`](#xlcalc-max_cols), [`MAX_ROWS`](#xlcalc-max_rows), [`mergedArea`](#xlcalc-mergedarea), [`nameKey`](#xlcalc-namekey), [`outlineGroups`](#xlcalc-outlinegroups), [`parseCell`](#xlcalc-parsecell), [`parseLines`](#xlcalc-parselines), [`parseRange`](#xlcalc-parserange), [`patchLines`](#xlcalc-patchlines), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`rangeAddress`](#xlcalc-rangeaddress), [`rectContains`](#xlcalc-rectcontains), [`rectsMeet`](#xlcalc-rectsmeet), [`sameName`](#xlcalc-samename).
 
 ## xlcalc/text
 
-Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`escapeColumn`](#xlcalc-escapecolumn), [`formatClipboard`](#xlcalc-formatclipboard), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`scanReferences`](#xlcalc-scanreferences).
+Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`scanReferences`](#xlcalc-scanreferences).
+
+## xlcalc/entry
+
+### <a id="xlcalcentry-entrytext"></a>`entryText`
+
+```ts
+function entryText(value: CellValue, opts?: EntryTextOptions): string
+```
+
+The text a cell holding `value` opens with for editing, as Excel's formula bar shows it, in `opts.locale` by the cell's
+`opts.numberFormat`: a number with its 15 significant digits and the locale's decimal separator (`1234.5`, `1234,5`), a
+percent cell's number as a percent (`12%`), a date or a time cell's by the locale's short date and long time
+(`1/31/2025  6:00:00 PM`, `31.01.2025  18:00:00`), a boolean and an error in the locale's words, text with an
+apostrophe where typing it would read otherwise (`'007`). The value reads back from the text ([`parseEntry`](#xlcalcentry-parseentry)).
+
+### <a id="xlcalcentry-needsapostrophe"></a>`needsApostrophe`
+
+```ts
+function needsApostrophe(text: string, opts?: EntryTextOptions): boolean
+```
+
+Whether text typed into a cell would read as something else than that text, so the cell needs an apostrophe before it
+to hold it: a number, a date, a boolean, an error or a formula in the locale (`007`, `1.5` in ru-RU, `=A1`), a number
+in a percent cell, text that begins with an apostrophe, empty text.
+
+### <a id="xlcalcentry-parseentry"></a>`parseEntry`
+
+```ts
+function parseEntry(text: string, opts?: EntryOptions): EntryResult
+```
+
+Text typed into a cell as Excel takes it in the book's locale: the cell's new input, with the cell's style, meta, note
+and link and the format Excel leaves it, or a formula Excel does not take. Empty text clears the value and keeps the rest.
 
 ## xlcalc/xlsx
 
@@ -806,7 +928,7 @@ interface AsyncSession {
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions & CalcOptions): Promise<DependentsResult>
   /** Totals over nonblank stored values and spills, without returning their cells. */
-  summarizeRanges(ranges: RangeRef[], opts?: EditOptions & CalcOptions): Promise<RangeSummary>
+  summarizeRanges(ranges: RangeRef[], opts?: SummaryOptions & CalcOptions): Promise<RangeSummary>
   /** The session's clock as of its last finished call. */
   readonly clock: Clock
   /** The session's revision as of its last finished call. */
@@ -835,8 +957,8 @@ interface AsyncSession {
   getUsedRange(sheet: string): Promise<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
-  /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
-  getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** As `Session.getCells`; from a thread only the rectangles come back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
+  getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
   /** As `Session.copyText`; the text is prepared in one read in the session's thread. */
   copyText(sheet: string, range: string, opts?: CopyTextOptions & CalcOptions): Promise<string>
   getCell(sheet: string, cell: string): Promise<CellView | undefined>
@@ -1534,7 +1656,7 @@ type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'array' | 
 
 ### `CellTextRefused`
 
-Text [`Session.setCellText`](#session) did not take, and the formula Excel offers to correct it to, as [`parseEntry`](#xlcalc-parseentry)'s `correction`.
+Text [`Session.setCellText`](#session) did not take, and the formula Excel offers to correct it to, as [`parseEntry`](#xlcalcentry-parseentry)'s `correction`.
 
 ```ts
 type CellTextRefused = Refusal<CellTextRefusal> & { correction?: string }
@@ -2190,7 +2312,7 @@ type EntryCheck = { ok: true } | ValidationRefusal
 
 ### `EntryOptions`
 
-[`parseEntry`](#xlcalc-parseentry)'s options: the book text is typed into and the cell it goes to.
+[`parseEntry`](#xlcalcentry-parseentry)'s options: the book text is typed into and the cell it goes to.
 
 ```ts
 interface EntryOptions {
@@ -2223,7 +2345,7 @@ interface EntryOptions {
 
 ### `EntryResult`
 
-Text typed into a cell as Excel takes it ([`parseEntry`](#xlcalc-parseentry)): the cell's new input, `null` when nothing is left of the
+Text typed into a cell as Excel takes it ([`parseEntry`](#xlcalcentry-parseentry)): the cell's new input, `null` when nothing is left of the
 cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
 language of `opts.locale` (English for en-US) and the position in the typed text. A formula typed with brackets,
 quotes or array braces left open at its end Excel closes on Return when it begins with a function, has no `)` and
@@ -2237,8 +2359,8 @@ type EntryResult = { ok: true; input: CellInput | null } | (Refusal<CheckCode> &
 
 ### `EntryTextOptions`
 
-[`entryText`](#xlcalc-entrytext)'s and [`needsApostrophe`](#xlcalc-needsapostrophe)'s options: the cell's number format (its row's or column's without its own), the
-book's locale and date system, and for text the moment whose year completes a date typed without one, as [`parseEntry`](#xlcalc-parseentry)
+[`entryText`](#xlcalcentry-entrytext)'s and [`needsApostrophe`](#xlcalcentry-needsapostrophe)'s options: the cell's number format (its row's or column's without its own), the
+book's locale and date system, and for text the moment whose year completes a date typed without one, as [`parseEntry`](#xlcalcentry-parseentry)
 reads it.
 
 ```ts
@@ -2508,6 +2630,14 @@ interface FindCellsOptions extends ReadCellsOptions {
    */
   after?: CellRef
 }
+```
+
+### `FindTextOptions`
+
+[`findMatcher`](#xlcalc-findmatcher)'s and [`findReplacer`](#xlcalc-findreplacer)'s options: Find's, as `findCells` takes them, over a host's own texts.
+
+```ts
+type FindTextOptions = Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell'>
 ```
 
 ### `FontStyle`
@@ -2940,6 +3070,19 @@ interface LookRange {
   /** A style of the book's `styles`, by index. */
   style?: number
   numberFormat?: NumberFormat
+}
+```
+
+### `NameAt`
+
+The name of a function being typed at a caret, in formula text as it is typed ([`nameAt`](#xlcalc-nameat)), for the list of Formula
+AutoComplete: where the name begins and ends, and the part of it before the caret.
+
+```ts
+interface NameAt {
+  from: number
+  to: number
+  typed: string
 }
 ```
 
@@ -3453,7 +3596,7 @@ interface Session {
   /** Immediate formula dependents; source ranges stay ranges. */
   getDependents(ranges: RangeRef[], opts?: DependentsOptions): DependentsResult
   /** Totals over nonblank stored values and spills, without returning their cells. */
-  summarizeRanges(ranges: RangeRef[], opts?: EditOptions): RangeSummary
+  summarizeRanges(ranges: RangeRef[], opts?: SummaryOptions): RangeSummary
   readonly clock: Clock
   /** The book's revision: 0 when opened, one more after each call that changed the book (`EditResult.revision`). */
   readonly revision: number
@@ -4015,6 +4158,16 @@ interface StylePatch {
   fill?: { color: Color } | null
   border?: { [K in keyof NonNullable<CellStyle['border']>]?: BorderLine | null } | null
   alignment?: { [K in keyof AlignmentStyle]?: AlignmentStyle[K] | null } | null
+}
+```
+
+### `SummaryOptions`
+
+`summarizeRanges`' options: only the cells of these rows (the rows a host's filter shows), as [`ReadCellsOptions.rows`](#readcellsoptions).
+
+```ts
+interface SummaryOptions extends EditOptions {
+  rows?: number[]
 }
 ```
 

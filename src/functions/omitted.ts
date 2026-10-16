@@ -6,7 +6,8 @@
  * not given, a required one #N/A (`EDATE(,1)`). `OMITTED` lists where a function takes it otherwise,
  * `NOT_OMITTED` where Excel does not load a formula that leaves it out.
  */
-import type { Omission, Positions } from '../args.js'
+import type { Omission } from '../args.js'
+import type { Positions } from '../arity.js'
 
 const DEFAULT = 'default' as const
 

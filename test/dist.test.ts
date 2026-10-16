@@ -24,7 +24,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './a1', './text', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './worker', './locales/ru-RU'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './worker', './locales/ru-RU'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {
@@ -63,7 +63,7 @@ describe('built package', () => {
     expect(out.contract).toEqual(['MAX_FORMULA_DEPTH', 'MAX_FORMULA_LENGTH'])
     expect(out.internal).toEqual(['function', 'function', 'function'])
     // the root's functions of formula text and the clipboard's are the subpath's own
-    expect(out.text).toEqual({ keys: ['callAt', 'columnWidthFromPoints', 'columnWidthToPoints', 'escapeColumn', 'formatClipboard', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences'], same: true })
+    expect(out.text).toEqual({ keys: ['DEFAULT_ROW_HEIGHT', 'FUNCTION_CATEGORIES', 'MAX_OUTLINE', 'MAX_ROW_HEIGHT', 'callAt', 'columnWidthFromChars', 'columnWidthFromPoints', 'columnWidthToChars', 'columnWidthToPoints', 'compareValues', 'escapeColumn', 'findMatcher', 'findReplacer', 'formatClipboard', 'nameAt', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences'], same: true })
     expect(out.closed).toEqual(Array(3).fill('ERR_PACKAGE_PATH_NOT_EXPORTED'))
   }, 60_000)
 

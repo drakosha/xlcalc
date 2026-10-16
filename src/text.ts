@@ -7,9 +7,12 @@
  * and no locale's data comes with them but en-US's messages, which the tokenizer's errors carry: another locale is given
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
-import { array, checkBoolean, checkNumber, checkString, InputError, object, onlyOptions } from './input.js'
+import { array, checkBoolean, checkCellValue, checkNumber, checkString, InputError, object, onlyOptions } from './input.js'
+import type { CellValue, FindTextOptions } from './contract.js'
 import { clipboardRows } from './entry/clipboard.js'
-import { columnPoints, widthOf } from './column-width.js'
+import { folded, matcher, replacer } from './find-text.js'
+import { sortOrder } from './sort-order.js'
+import { charsOfPoints, columnPoints, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
 import * as point from './point.js'
@@ -18,10 +21,13 @@ import { strict } from './strict-args.js'
 import { escapeColumn as escaped } from './syntax/table.js'
 
 export { quoteSheetIfNeeded } from './a1.js'
+export { DEFAULT_ROW_HEIGHT, MAX_OUTLINE, MAX_ROW_HEIGHT } from './column-width.js'
+export { FUNCTION_CATEGORIES } from './function-categories.js'
 
 export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const refAt = /* @__PURE__ */ strict(point.refAt)
 export const callAt = /* @__PURE__ */ strict(call.callAt)
+export const nameAt = /* @__PURE__ */ strict(call.nameAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
 
@@ -42,11 +48,17 @@ export const parseClipboard = /* @__PURE__ */ strict(function parseClipboard(tex
   return clipboardRows(checkString(text, 'text'))
 })
 
+/** Options of boolean flags checked: an object of `keys` alone, each a boolean (`hint`: an example for the message). */
+function flags<K extends string>(opts: Partial<Record<K, boolean>> | undefined, keys: readonly K[], hint: string): Partial<Record<K, boolean>> {
+  const o = opts === undefined ? {} : object(opts, 'opts', hint)
+  onlyOptions(o, 'opts', keys)
+  for (const k of keys) if (o[k] !== undefined) checkBoolean(o[k], `opts.${k}`)
+  return o as Partial<Record<K, boolean>>
+}
+
 /** Excel's plain-text copy: tabs, CRLF rows and quoted control characters; Windows ends with CRLF, Mac does not. */
 export const formatClipboard = /* @__PURE__ */ strict(function formatClipboard(rows: string[][], opts?: { trailingNewline?: boolean }): string {
-  const o = opts === undefined ? {} : object(opts, 'opts', 'clipboard options such as { trailingNewline: false }')
-  onlyOptions(o, 'opts', ['trailingNewline'])
-  if (o.trailingNewline !== undefined) checkBoolean(o.trailingNewline, 'opts.trailingNewline')
+  const o = flags(opts, ['trailingNewline'], 'clipboard options such as { trailingNewline: false }')
   const grid = array(rows, 'rows', 'an array of rows of text')
   let width = 0
   const lines = grid.map((row, i) => {
@@ -72,4 +84,41 @@ export const columnWidthToPoints = /* @__PURE__ */ strict(function columnWidthTo
 export const columnWidthFromPoints = /* @__PURE__ */ strict(function columnWidthFromPoints(points: number): number {
   checkNumber(points, 'points', 0, 1535)
   return widthOf(Math.trunc(points))
+})
+
+/**
+ * A stored xlsx width as Excel for Mac's Column Width box shows it, in characters of the book's default font to two
+ * decimals (the default column, null or undefined, is 8); in the library's Mac point model, as `columnWidthToPoints`.
+ */
+export const columnWidthToChars = /* @__PURE__ */ strict(function columnWidthToChars(width?: number | null): number {
+  if (width !== undefined && width !== null) checkNumber(width, 'width', 0, 255.83203125)
+  return charsOfPoints(columnPoints(width ?? undefined))
+})
+
+/** A width in characters, as typed into Excel for Mac's Column Width box (0 to 255), to the stored xlsx width Excel makes of it. */
+export const columnWidthFromChars = /* @__PURE__ */ strict(function columnWidthFromChars(chars: number): number {
+  checkNumber(chars, 'chars', 0, 255)
+  return widthOf(pointsOfChars(chars))
+})
+
+const FIND = ['caseSensitive', 'wildcards', 'wholeCell'] as const
+
+/** Excel's Find over a host's texts, as `findCells` matches a cell's: the test of a text, null when nothing can match (an empty query, `~` alone). */
+export const findMatcher = /* @__PURE__ */ strict(function findMatcher(query: string, opts?: FindTextOptions): ((text: string) => boolean) | null {
+  const o = flags(opts, FIND, 'Find options such as { wildcards: true }')
+  const test = matcher(checkString(query, 'query'), o)
+  return test && ((text) => test(o.caseSensitive ? text : folded(text)))
+})
+
+/** Excel's Replace over a host's texts, as `replaceInCells` replaces in a cell's: a text with each match put as `by`, null where nothing matches. */
+export const findReplacer = /* @__PURE__ */ strict(function findReplacer(query: string, by: string, opts?: FindTextOptions): ((text: string) => string | null) | null {
+  return replacer(checkString(query, 'query'), checkString(by, 'by'), flags(opts, FIND, 'Find options such as { wildcards: true }'))
+})
+
+/**
+ * Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (en-US's collation),
+ * FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`; negative when `a` comes first.
+ */
+export const compareValues = /* @__PURE__ */ strict(function compareValues(a: CellValue, b: CellValue, opts?: { descending?: boolean }): number {
+  return sortOrder(checkCellValue(a, 'a'), checkCellValue(b, 'b'), flags(opts, ['descending'], 'options such as { descending: true }').descending === true)
 })

@@ -47,7 +47,7 @@ export { enUS, type Locale, type Translation } from './locale/index.js'
 export { LOCALES } from './locale/registry.js'
 export type { CopyContext } from './structure/copy.js'
 export * from './a1.js'
-export { callAt, columnWidthFromPoints, columnWidthToPoints, escapeColumn, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, refAt, scanReferences } from './text.js'
+export { callAt, compareValues, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, escapeColumn, findMatcher, findReplacer, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, refAt, scanReferences } from './text.js'
 export type { DateSystemOptions } from './date-serial.js'
 
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses
@@ -55,7 +55,7 @@ export const createSession = /* @__PURE__ */ strict(sessions.createSession)
 export const createInlineCalc = /* @__PURE__ */ strict(inline.createInlineCalc)
 export const liveWorkbook = /* @__PURE__ */ strict(live.liveWorkbook)
 export const viewportOf = /* @__PURE__ */ strict(saved.viewportOf)
-// in the root alone: its names would take `xlcalc/text` past its 50 KB (`text-bundle.test.ts`)
+// in the root alone: its names would take `xlcalc/text` past its 55 KB (`text-bundle.test.ts`)
 export const functionSignature = /* @__PURE__ */ strict(signatures.functionSignature)
 export const toLocal = /* @__PURE__ */ strict(locales.toLocal)
 export const toInvariant = /* @__PURE__ */ strict(locales.toInvariant)

@@ -28,7 +28,7 @@ export function walk(t: string, from: number, to: number, f: (c: string, i: numb
   return { quote, table }
 }
 /** A character of a function's name: a letter of any script, a digit, `.` or `_` (`СТАНДОТКЛОН.В`, `LOG10`). */
-const NAME_CHAR = /[\p{L}\p{N}._]/u
+export const NAME_CHAR = /[\p{L}\p{N}._]/u
 
 /** A bracket or brace left open in typed text: a function's, with its name, its argument's index so far and where it opened; a group's; an array constant's. */
 export type OpenBracket = { kind: 'call'; name: string; index: number; open: number } | { kind: 'group' | 'array' }

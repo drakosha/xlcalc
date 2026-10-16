@@ -118,7 +118,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     findCells: (refs, query, co) => edit((eo) => core.findCells(refs, query, eo as FindCellsOptions), co, FIND_CALL_OPTIONS),
     replaceInCells: (refs, query, replacement, co) => edit((eo) => core.replaceInCells(refs, query, replacement, eo as ReplaceOptions), co, REPLACE_OPTIONS, 'replaceInCells'),
     getDependents: (refs, co) => edit((eo) => core.getDependents(refs, eo as DependentsOptions), co, ['maxCells', 'cursor', 'count', 'maxReferences']),
-    summarizeRanges: (refs, co) => edit((eo) => core.summarizeRanges(refs, eo), co),
+    summarizeRanges: (refs, co) => edit((eo) => core.summarizeRanges(refs, eo), co, ['rows']),
     setCells: (edits, co) => edit((eo) => core.setCells(edits, eo), co, undefined, 'setCells'),
     replaceCells: (edits, co) => edit((eo) => core.replaceCells(edits, eo), co, undefined, 'replaceCells'),
     clearCells: (ranges, what, co) => edit((eo) => core.clearCells(ranges, what, eo), co, undefined, 'clearCells'),
@@ -151,7 +151,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
         return Promise.reject(e)
       }
     },
-    getCells: (sheet, range) => call(() => core.getCells(sheet, range)),
+    getCells: (sheet, range, co) => call(() => core.getCells(sheet, range), co),
     copyText: (sheet, range, o) => {
       try {
         const { signal, timeoutMs, rest } = splitCall<CopyTextOptions>(o)

@@ -230,6 +230,8 @@ A renamed sheet keeps its layout, and a deleted sheet takes it along.
 
 `mergeCells` is Excel's Merge Cells: the range becomes one merged area (`SheetInput.merges`). With `across: true` each row of the range is merged on its own, as Merge Across does; with `center: true` the area is centred as well, as Merge & Center does. `unmergeCells` is Unmerge Cells.
 
+`mergedArea(rect, merges)` of `xlcalc/a1` gives the rectangle a merge takes in, grown by each merged area it meets, for a grid that warns before a merge loses values.
+
 ```ts
 editStructure(book, { op: 'mergeCells', sheet: 'Plan', range: 'B2:D2', center: true })
 editStructure(book, { op: 'mergeCells', sheet: 'Plan', range: 'B4:D9', across: true }) // B4:D4, B5:D5, …, B9:D9

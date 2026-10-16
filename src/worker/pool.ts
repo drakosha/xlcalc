@@ -405,7 +405,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       findCells: (refs, query, co) => value(edit('findCells', [refs, query], co, FIND_CALL_OPTIONS)),
       replaceInCells: (refs, query, replacement, co) => told('replaceInCells', value(edit('replaceInCells', [refs, query, replacement], co, REPLACE_OPTIONS))),
       getDependents: (refs, co) => value(edit('getDependents', [refs], co, ['maxCells', 'cursor', 'count', 'maxReferences'])),
-      summarizeRanges: (refs, co) => value(edit('summarizeRanges', [refs], co)),
+      summarizeRanges: (refs, co) => value(edit('summarizeRanges', [refs], co, ['rows'])),
       setCells: (edits, co) => told('setCells', value(edit('setCells', [edits], co))),
       replaceCells: (edits, co) => told('replaceCells', value(edit('replaceCells', [edits], co))),
       clearCells: (ranges, what, co) => told('clearCells', value(edit('clearCells', [ranges, what], co))),
@@ -435,7 +435,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
           return Promise.reject(e)
         }
       },
-      getCells: (sheet, range) => value(call('getCells', [sheet, range])),
+      getCells: (sheet, range, co) => value(call('getCells', [sheet, range], co)),
       copyText: (sheet, range, o) => {
         try {
           const { signal, timeoutMs, rest } = splitCall<CopyTextOptions>(o)
