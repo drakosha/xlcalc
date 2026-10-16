@@ -51,8 +51,8 @@ import { dropStats } from './cond/stats.js'
 import { fitEdits } from './layout/fit.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
-import { formatAddress, parseAddress } from './model.js'
-import { buildResult, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
+import { formatAddress, parseAddress, readAddress } from './model.js'
+import { buildResult, cellAt, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
@@ -183,7 +183,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     }
     return state!
   }
-  const sheetIndex = (s: EngineState) => (name: string) => s.sheetIdx.get(sheetKey(name))
+  // a name spelled as the book spells it is found without its key, which upper-cases it
+  const sheetIndex = (s: EngineState) => (name: string) => {
+    const i = s.sheetNames.indexOf(name)
+    return i >= 0 ? i : s.sheetIdx.get(sheetKey(name))
+  }
   const styleCount = (s: EngineState) => s.input.styles?.length ?? 0
   /** The changes of cells `keys` as a host gets them, with the fields that changed of some and a new format's code. */
   const changes = (s: EngineState, keys: string[], fields: Map<string, FieldChange>) => {
@@ -405,8 +409,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const at = (s: EngineState, sheet: string, cell: string) => {
     const i = checkSheet(sheet, sheetIndex(s), 'sheet')
-    const { row, col } = parseAddress(checkAddress(cell, 'cell'))
-    return [i, row, col] as const
+    const p = { r: 0, c: 0 }
+    readAddress(checkAddress(cell, 'cell'), p)
+    return [i, p.r, p.c] as const
   }
   /** A text call's options checked: `baseRevision`, `widen`, `refuseInvalid`, `inPlace` and, entering a selection, `active`. */
   const textOptions = <T extends CellTextOptions>(eo: T | undefined, allowed: readonly string[] = TEXT_OPTIONS): T => {
@@ -777,7 +782,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *getCell(sheet: string, cell: string) {
       const s = yield* ready()
       const [i, r, c] = at(s, sheet, cell)
-      return (yield* cellsIn(s, i, [{ r1: r, c1: c, r2: r, c2: c }], display))[cell]
+      return yield* cellAt(s, i, r, c, display)
     },
     *copyText(sheet: string, range: string, o?: CopyTextOptions) {
       const s = yield* ready()

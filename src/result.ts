@@ -1,7 +1,7 @@
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
 import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
-import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalAppearance, Diagnostic } from './contract.js'
+import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalAppearance, Diagnostic, NumberFormat } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
@@ -10,7 +10,7 @@ import { formatAddress, MAX_COLS, msToSerial, parseAddress } from './model.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks, type Looks } from './shown.js'
-import { NONE } from './looks/layer.js'
+import { NONE, type Layer } from './looks/layer.js'
 import { inputIn, layerOf } from './looks/sheet.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
@@ -65,6 +65,11 @@ export function* spilled(state: EngineState, s: number, within?: Rect, whole = f
  */
 export function cellResult(state: EngineState, s: number, addr: string, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const { row, col } = parseAddress(addr)
+  return resultAt(state, s, addr, row, col, look, spillOf, format)
+}
+
+/** `cellResult` of the cell at `addr`, row `row` and column `col`: for callers that have both, without reading the address again. */
+function resultAt(state: EngineState, s: number, addr: string, row: number, col: number, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const inCell = inputIn(state.input.sheets[s], addr, row, col) ?? {}
   const value = outValue(toCellValue(valueAt(state, s, row, col)))
   const id = state.at.get(key(s, row, col))
@@ -132,17 +137,8 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
   const code = formatCodeIn(state.input.locale)
   for (const addr of yield* sortedSteps([...listed])) {
     if (paced(1)) yield
-    const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
-    const input = cells[addr] ?? (layer && layer.lookAt(...rowCol(addr)))
-    // what the cell shows beside its value: its own style, note and link, an old-kind array's area, its format's code, and its conditional formats' appearance
-    if (input?.style !== undefined) view.style = input.style
-    if (input?.note !== undefined) view.note = input.note
-    if (input?.link !== undefined) view.link = input.link
-    if (input?.array !== undefined) view.array = input.array
-    if (view.numberFormat !== undefined) view.numberFormatCode = code(view.numberFormat)
-    const cf = cond.get(cellIndex(addr))
-    if (cf) withLook(view, cf, look && ((format) => look(s, ...rowCol(addr), view.value, { ...input, numberFormat: format })))
-    out[addr] = view
+    const { row, col } = parseAddress(addr)
+    out[addr] = viewOf(state, s, addr, row, col, layer, look, spill.get(addr), cond.get(row * MAX_COLS + col), code)
   }
   return out
 }
@@ -152,9 +148,39 @@ const cellIndex = (addr: string) => {
   return row * MAX_COLS + col
 }
 
-const rowCol = (addr: string): [number, number] => {
-  const { row, col } = parseAddress(addr)
-  return [row, col]
+/**
+ * A listed cell of `cellsIn` (its address `addr`, row `r` and column `c`): its result, and what it shows beside its value:
+ * its own style, note and link, an old-kind array's area, its format's code, and its conditional formats' appearance `cf`.
+ */
+function viewOf(state: EngineState, s: number, addr: string, r: number, c: number, layer: Layer | undefined, look: Looks | null, spillOf: string | undefined, cf: ConditionalAppearance | undefined, code: (format: NumberFormat) => string): CellView {
+  const view: CellView = resultAt(state, s, addr, r, c, look, spillOf)
+  const input = state.input.sheets[s].cells[addr] ?? (layer && layer.lookAt(r, c))
+  if (input?.style !== undefined) view.style = input.style
+  if (input?.note !== undefined) view.note = input.note
+  if (input?.link !== undefined) view.link = input.link
+  if (input?.array !== undefined) view.array = input.array
+  if (view.numberFormat !== undefined) view.numberFormatCode = code(view.numberFormat)
+  if (cf) withLook(view, cf, look && ((format) => look(s, r, c, view.value, { ...input, numberFormat: format })))
+  return view
+}
+
+/**
+ * The cell at row `r` and column `c` of sheet `s` as `cellsIn` gives it for its one-cell rectangle (`Session.getCell`),
+ * without the work of a rectangle; undefined where it lists none. The steps yield only in conditional formats' tests.
+ */
+export function* cellAt(state: EngineState, s: number, r: number, c: number, display: boolean): Steps<CellView | undefined> {
+  const sheet = state.input.sheets[s]
+  const addr = formatAddress(r, c)
+  const layer = layerOf(sheet)
+  // as `spilled`: a stored cell of a spill, not its formula's, not one an input cell occupies
+  let spillOf: string | undefined
+  if (state.spills.on.size)
+    for (const x of state.spills.on.values())
+      if (x.s === s && r >= x.r1 && c >= x.c1 && r <= Math.min(x.r1 + x.h - 1, x.r2) && c <= Math.min(x.c1 + x.w - 1, x.c2) && (r !== x.r1 || c !== x.c1) && !state.spills.occupied.has(s, r, c)) spillOf = formatAddress(x.r1, x.c1)
+  const cond = sheet.conditionalFormats?.length ? yield* windowLooks(state, s, { r1: r, c1: c, r2: r, c2: c }) : null
+  const k = r * MAX_COLS + c
+  if (spillOf === undefined && !cond?.has(k) && !(addr in sheet.cells) && !(layer && layer.idAt(r, c) !== NONE)) return undefined
+  return viewOf(state, s, addr, r, c, layer, display ? cellLooks(state) : null, spillOf, cond?.get(k), (format) => formatCodeIn(state.input.locale)(format))
 }
 
 /**

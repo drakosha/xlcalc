@@ -14,30 +14,35 @@ import { hasCell, meets, type Rect } from '../structure/area.js'
 import type { Ref } from './find.js'
 import { textsOf } from './search.js'
 
-/** A cell of a query: its sheet, row and column, and the range it comes in. */
-export type Read = [s: number, r: number, c: number, n: number]
+/** A cell of a query: its sheet, row and column, the range it comes in, and its address. */
+export type Read = [s: number, r: number, c: number, n: number, addr: string]
 
 const same = (v: number) => v
 
 /** The rows of `rows` (ascending) from row `r` on, as the index of the first; all rows without `rows`. */
 const nextRow = (rows: number[] | null, r: number) => (rows ? (rows[lowerBound(rows, r, same)] ?? Infinity) : r)
 
-/** The places of `at` (ascending) in rectangle `x` and rows `rows`, by rows, from place `start` on: each row's run found by a search. */
-function* indexed(at: Float64Array, x: Rect, rows: number[] | null, start: number): Generator<number> {
-  let j = lowerBound(at, Math.max(start, x.r1 * MAX_COLS + x.c1), same)
+/** The index of the first place of `at` (ascending) from index `j` on in rectangle `x` and rows `rows`, not before place `start`, each row's run found by a search; `at.length` when none. */
+function nextIn(at: Float64Array, x: Rect, rows: number[] | null, start: number, j: number): number {
   while (j < at.length) {
     const m = at[j]
     const r = Math.floor(m / MAX_COLS)
     const c = m - r * MAX_COLS
     const row = nextRow(rows, r)
-    if (row > x.r2) return
+    if (row > x.r2) return at.length
     if (row > r || c < x.c1) j = lowerBound(at, Math.max(start, row * MAX_COLS + x.c1), same)
     else if (c > x.c2) j = lowerBound(at, Math.max(start, nextRow(rows, r + 1) * MAX_COLS + x.c1), same)
-    else {
-      yield m
-      j++
-    }
+    else return j
   }
+  return at.length
+}
+
+/** The index of the first place of `at` in rectangle `x` and rows `rows` from place `start` on; `at.length` when none. */
+const firstIn = (at: Float64Array, x: Rect, rows: number[] | null, start: number) => nextIn(at, x, rows, start, lowerBound(at, Math.max(start, x.r1 * MAX_COLS + x.c1), same))
+
+/** The places of `at` in rectangle `x` and rows `rows`, by rows, from place `start` on. */
+function* indexed(at: Float64Array, x: Rect, rows: number[] | null, start: number): Generator<number> {
+  for (let j = firstIn(at, x, rows, start); j < at.length; j = nextIn(at, x, rows, start, j + 1)) yield at[j]
 }
 
 /** The places of the cells of rectangles that do not overlap, in rows `rows`, by rows, from place `start` on. */
@@ -73,7 +78,20 @@ export function* readOrder(state: EngineState, refs: Ref[], rows: number[] | nul
     const spills = [...state.spills.on.values()].filter((y) => y.s === x.s && meets(y, x)).map((y) => ({ r1: Math.max(y.r1, x.r1), r2: Math.min(y.r2, x.r2), c1: Math.max(y.c1, x.c1), c2: Math.min(y.c2, x.c2) }))
     const earlier = refs.slice(0, n).filter((y) => y.s === x.s && meets(y, x))
     const layer = looks ? layerOf(sheet) : undefined
-    const streams = [indexed((yield* textsOf(state, x.s)).at, x, rows, start), covered(spills, rows, start), covered(layer ? [...layer.pieces(x)] : [], rows, start)]
+    const pieces = layer ? [...layer.pieces(x)] : []
+    const { at } = yield* textsOf(state, x.s)
+    // no spill and no look in the range: its cells are the index's alone, but places whose cells are gone
+    if (!spills.length && !pieces.length) {
+      for (let j = firstIn(at, x, rows, start); j < at.length; j = nextIn(at, x, rows, start, j + 1)) {
+        if (paced(1)) yield
+        const r = Math.floor(at[j] / MAX_COLS)
+        const c = at[j] - r * MAX_COLS
+        const addr = formatAddress(r, c)
+        if (addr in cells && !(earlier.length && earlier.some((y) => hasCell(y, r, c)))) yield [x.s, r, c, n, addr]
+      }
+      continue
+    }
+    const streams = [indexed(at, x, rows, start), covered(spills, rows, start), covered(pieces, rows, start)]
     const heads = streams.map((g) => g.next())
     for (;;) {
       let k = -1
@@ -84,10 +102,10 @@ export function* readOrder(state: EngineState, refs: Ref[], rows: number[] | nul
       if (paced(1)) yield
       const r = Math.floor(m / MAX_COLS)
       const c = m - r * MAX_COLS
-      const own = formatAddress(r, c) in cells
+      const addr = formatAddress(r, c)
       // an input cell from the index alone, a spilled cell from its spill alone, a look's cell where neither is
-      if ((k === 0) !== own || (k === 2 && spills.some((y) => hasCell(y, r, c))) || earlier.some((y) => hasCell(y, r, c))) continue
-      yield [x.s, r, c, n]
+      if ((k === 0) !== (addr in cells) || (k === 2 && spills.some((y) => hasCell(y, r, c))) || (earlier.length && earlier.some((y) => hasCell(y, r, c)))) continue
+      yield [x.s, r, c, n, addr]
     }
   }
 }
