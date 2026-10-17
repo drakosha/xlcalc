@@ -421,6 +421,15 @@
   },
   "refs-ironcalc-held-2-1": {
    "sent": "fe5ed2b1c909db18564eb13d28c1b003e72d672bd9ce3ca99afcd1601bf97018"
+  },
+  "xmatch-regex-held-1": {
+   "sent": "cf40eab90d173572217e3af4d51f5b0fa9c9077589e3dccbb04ee60e39d136d5"
+  },
+  "xmatch-regex-held-2-1": {
+   "sent": "14cef16f090caca85e2866d0e9bc8f1f89b36315eaafa93c75f7c570c2e1c093"
+  },
+  "xmatch-regex-held-3-1": {
+   "sent": "7b38a8ed0c13d4bb496a305e5e3ed6b83fc49c27ff655dfd2b0e33747ce3eec4"
   }
  }
 }

@@ -4,8 +4,37 @@ import { Arr, asArray } from '../../arrays/value.js'
 import { E, isErr, Rng, type CErr, type V } from '../../values.js'
 import { exactMatch, type Compare, type Key } from './search.js'
 
-const MATCH_MODES = [0, -1, 1, 2]
+const MATCH_MODES = [0, -1, 1, 2, 3]
 const SEARCH_MODES = [1, -1, 2, -2]
+
+/**
+ * Match mode 3, a regular expression found anywhere in a text, from the end with search mode -1 (Excel for Mac;
+ * Excel for Windows 16.0.20430 has no such mode, #VALUE!). A leading `(?i)` ignores case, as PCRE takes it; a pattern
+ * JavaScript does not read, or a binary search, is #VALUE!. The key and the values are read as text (42 finds 42, a
+ * blank is empty text).
+ */
+function regex(cx: Cx, k: Key | null, look: Grid, searchMode: number): number | CErr {
+  if (Math.abs(searchMode) === 2) return E.VALUE
+  const text = k === null ? '' : (cx.rules.toText(k) as string)
+  const insensitive = text.startsWith('(?i)')
+  let re: RegExp
+  try {
+    re = new RegExp(insensitive ? text.slice(4) : text, insensitive ? 'iu' : 'u')
+  } catch {
+    return E.VALUE
+  }
+  const n = look.v.length
+  const size = look.rows * look.cols
+  // a blank is empty text, past the occupied part too (`^$` finds the first blank)
+  const blanks = re.test('')
+  if (blanks && searchMode < 0 && size > n) return size - 1
+  for (let j = 0; j < n; j++) {
+    const i = searchMode > 0 ? j : n - 1 - j
+    const v = look.v[i]
+    if (!isErr(v) && re.test(v === null ? '' : typeof v === 'string' ? v : (cx.rules.toText(v) as string))) return i
+  }
+  return blanks && searchMode > 0 && size > n ? n : -1
+}
 
 /** A blank key finds the first (from the end: the last) blank cell, past the occupied part too, as in Excel. */
 function blank(look: Grid, searchMode: number): number {
@@ -54,7 +83,7 @@ function binary(k: Key, look: Grid, matchMode: number, desc: boolean, compare: C
   return j >= 0 && j < n ? j : -1
 }
 
-/** Match modes 0, −1, 1, 2 (wildcards, `~` escaping any character); search modes ±1, ±2 (binary, which takes no wildcards). */
+/** Match modes 0, −1, 1, 2 (wildcards, `~` escaping any character; 3 is `regex`); search modes ±1, ±2 (binary, which takes no wildcards). */
 function xfind(k: Key | null, look: Grid, matchMode: number, searchMode: number, compare: Compare): number | CErr {
   if (k === null) return blank(look, searchMode)
   if (Math.abs(searchMode) === 2) return matchMode === 2 ? E.VALUE : binary(k, look, matchMode, searchMode < 0, compare)
@@ -105,7 +134,7 @@ function xlookup(cx: Cx, key: V, look: Grid, ret: V | Rng | Arr, notFound?: Arg,
   const vertical = look.rows === 1 && look.cols === 1 ? rows === 1 : look.cols === 1
   if (vertical ? rows !== look.rows : cols !== look.cols) return E.VALUE
   if (!MATCH_MODES.includes(matchMode) || !SEARCH_MODES.includes(searchMode)) return E.VALUE
-  const pos = xfind(key, look, matchMode, searchMode, cx.rules.compare)
+  const pos = matchMode === 3 ? regex(cx, key, look, searchMode) : xfind(key, look, matchMode, searchMode, cx.rules.compare)
   if (isErr(pos)) return pos
   if (pos < 0) return notFound === undefined ? E.NA : notFound
   return line(r, pos, vertical)
@@ -114,7 +143,7 @@ function xlookup(cx: Cx, key: V, look: Grid, ret: V | Rng | Arr, notFound?: Arg,
 function xmatch(cx: Cx, key: V, look: Grid, matchMode = 0, searchMode = 1): V {
   if (isErr(key)) return key
   if ((look.cols !== 1 && look.rows !== 1) || !MATCH_MODES.includes(matchMode) || !SEARCH_MODES.includes(searchMode)) return E.VALUE
-  const pos = xfind(key, look, matchMode, searchMode, cx.rules.compare)
+  const pos = matchMode === 3 ? regex(cx, key, look, searchMode) : xfind(key, look, matchMode, searchMode, cx.rules.compare)
   return isErr(pos) ? pos : pos < 0 ? E.NA : pos + 1
 }
 

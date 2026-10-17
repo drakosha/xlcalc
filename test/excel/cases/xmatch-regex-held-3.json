@@ -1,0 +1,72 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.718,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "XMATCH#1",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Rz!A1:A3,3)"
+  },
+  {
+   "id": "XMATCH#2",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Rz!A1:A3,3,-1)"
+  },
+  {
+   "id": "XMATCH#3",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Rz!A:A,3,-1)"
+  },
+  {
+   "id": "XMATCH#4",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Rz!A3:A10,3)"
+  },
+  {
+   "id": "XMATCH#5",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"x*\",Rz!A1:A3,3)"
+  },
+  {
+   "id": "XMATCH#6",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\".\",Rz!A2:A2,3)"
+  }
+ ],
+ "values": {
+  "XMATCH#1": {
+   "t": "n",
+   "v": 2
+  },
+  "XMATCH#2": {
+   "t": "n",
+   "v": 2
+  },
+  "XMATCH#3": {
+   "t": "n",
+   "v": 1048576
+  },
+  "XMATCH#4": {
+   "t": "n",
+   "v": 2
+  },
+  "XMATCH#5": {
+   "t": "n",
+   "v": 1
+  },
+  "XMATCH#6": {
+   "t": "e",
+   "v": "NA"
+  }
+ }
+}

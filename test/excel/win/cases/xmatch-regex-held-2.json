@@ -1,0 +1,107 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 14.5,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "XMATCH#1",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"1\\.5\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#2",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"E\\+20\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#3",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^-\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#4",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"TRUE\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#5",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"N/A\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#6",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#7",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"d$\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#8",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(1.5,Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#9",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(TRUE,Ry!A1:A7,3)"
+  }
+ ],
+ "values": {
+  "XMATCH#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#9": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}
