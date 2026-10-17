@@ -18,7 +18,8 @@ const version = (name) => JSON.parse(readFileSync(here(`node_modules/${name}/pac
 const uptime = () => execFileSync('uptime', { encoding: 'utf8' }).trim()
 
 const jobs = [
-  ...(parts.includes('engines') ? WORKLOADS.map((w) => ({ part: 'engines', file: 'iron-child.mjs', args: [w.id, 'ironcalc'] })) : []),
+  // xlcalc beside IronCalc in the same run, by the same child, so that a ratio between them is of one load
+  ...(parts.includes('engines') ? WORKLOADS.flatMap((w) => ['xl-closures', 'xl-eval', 'ironcalc'].map((e) => ({ part: 'engines', file: 'iron-child.mjs', args: [w.id, e] }))) : []),
   ...(parts.includes('structure')
     ? [
         ...['business-3400', 'prefix-sum'].flatMap((id) => ['xl-closures', 'xl-eval', 'hf-default', 'ironcalc'].map((e) => ({ part: 'structure', file: 'structure-child.mjs', args: [id, e] }))),
