@@ -355,6 +355,81 @@
   },
   "sum-zero-held-1": {
    "sent": "192cfefe8aa4d1ebfb3d8c758a794a7fcf21124a9bd3addcf99bfe191185920a"
+  },
+  "accrint-ironcalc-held-1": {
+   "sent": "afe4130db2e2f8ce2a2de8a5b19d0c8b3546b0c4a395f7dd1f4f64185661aaa8"
+  },
+  "countif-ironcalc-held-1": {
+   "sent": "15d9d7fcbe348ab76b6007c5d62a3c8442d1553a6c2837640d3c66192e29efe9"
+  },
+  "database-ironcalc-held-1": {
+   "sent": "2dd3a771ea2222f29cca0c9716fda7f762c00945bc455af628a78974b967cc39"
+  },
+  "euro-ironcalc-held-1": {
+   "sent": "9d5ad33b0689c39ccf5a06cf717659669aaa696493925f437a8c3a374dbb4761"
+  },
+  "euro-ironcalc-held-2-1": {
+   "sent": "5e52311eb5092aad09b6a86494f8bbda501287bfbc06c32616cd83bf7d154ae8"
+  },
+  "euro-ironcalc-held-3-1": {
+   "sent": "516d3d1660f3c52533d04b978c1ebbaa733ef96eb7747f7149a3a1ecf52caae7"
+  },
+  "rounding-ironcalc-held-1": {
+   "sent": "6873b0990d371c67531cd924082839a454c224743b4ccac945fbc6191ace86d6"
+  },
+  "text-date-ironcalc-held-1": {
+   "sent": "c28bd5b2cd935b0fe17c68ff9831b816527e1b280465e13208b1931c0c826a5a"
+  },
+  "text-date-ironcalc-held-2-1": {
+   "sent": "d86f5188f9cef7233d6e6fd5f8797ffa89879f256f1e01d736e78df8111b61de"
+  },
+  "text-date-ironcalc-held-3-1": {
+   "sent": "b3407e983c932e037793004cbde410ff6bb75284e1c724cd97da22f6c1591c56"
+  },
+  "textafter-ironcalc-held-1": {
+   "sent": "5637720d938507ced6f6646bc12b64250b88b22c9d13b5a8000cb8a5e9663993"
+  },
+  "textafter-ironcalc-held-2-1": {
+   "sent": "65894affcb5244c0f4e28bcd87edffb0bc9b4b96dff7d92c5d43c379ee80a7a5"
+  },
+  "xlookup-ironcalc-held-1": {
+   "sent": "184fc1bba44a5fa005204b59dc64a8441fdf34c67ccb3fcb3855c74a8de0d428"
+  },
+  "xlookup-ironcalc-held-2-1": {
+   "sent": "c8259f07435f72bbcdee6b47ba0b4f1685b84d18e0d68ba53fb1182a5f14f3c2"
+  },
+  "currency-held-1": {
+   "sent": "095e0abe78e4752ea411917e61007f65524bf2c1fb2309209a982476eb3d81f2"
+  },
+  "text-date-ironcalc-held-4-1": {
+   "sent": "2e6404d28f5282b1e3fa5a2b0bc7fdd4686fbddfd56111eb9e59ceb43c0e05fb"
+  },
+  "date-ironcalc-held-1": {
+   "sent": "cd94ccefd03ec26a14b2d9e87ac8dab75bfd5f5db09af5c39bad996ee5c1f772"
+  },
+  "finance-ironcalc-held-1": {
+   "sent": "6081726132901e3b480b251e1b8006868449d2ead14246db4a7e46adc9bc67aa"
+  },
+  "finance-ironcalc-held-2-1": {
+   "sent": "dca47f32baf3c7c872e66407a16e1610c5bd86b2e19ae6913bd69edf35ff9180"
+  },
+  "math-ironcalc-held-1": {
+   "sent": "341cad6ff99292dac6564bb2c335bb799fa4928d3e75f0b11f664ef1704722fd"
+  },
+  "refs-ironcalc-held-1": {
+   "sent": "60388cb4a445baf13ace85069283016ecc1fa7f7efca384c8d8f72f77ce42604"
+  },
+  "refs-ironcalc-held-2-1": {
+   "sent": "fe5ed2b1c909db18564eb13d28c1b003e72d672bd9ce3ca99afcd1601bf97018"
+  },
+  "xmatch-regex-held-1": {
+   "sent": "cf40eab90d173572217e3af4d51f5b0fa9c9077589e3dccbb04ee60e39d136d5"
+  },
+  "xmatch-regex-held-2-1": {
+   "sent": "14cef16f090caca85e2866d0e9bc8f1f89b36315eaafa93c75f7c570c2e1c093"
+  },
+  "xmatch-regex-held-3-1": {
+   "sent": "7b38a8ed0c13d4bb496a305e5e3ed6b83fc49c27ff655dfd2b0e33747ce3eec4"
   }
  }
 }

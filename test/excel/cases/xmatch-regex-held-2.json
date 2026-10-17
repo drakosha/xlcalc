@@ -1,0 +1,102 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.699,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "XMATCH#1",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"1\\.5\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#2",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"E\\+20\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#3",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^-\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#4",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"TRUE\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#5",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"N/A\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#6",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#7",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"d$\",Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#8",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(1.5,Ry!A1:A7,3)"
+  },
+  {
+   "id": "XMATCH#9",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(TRUE,Ry!A1:A7,3)"
+  }
+ ],
+ "values": {
+  "XMATCH#1": {
+   "t": "n",
+   "v": 1
+  },
+  "XMATCH#2": {
+   "t": "n",
+   "v": 2
+  },
+  "XMATCH#3": {
+   "t": "n",
+   "v": 3
+  },
+  "XMATCH#4": {
+   "t": "n",
+   "v": 4
+  },
+  "XMATCH#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "XMATCH#6": {
+   "t": "n",
+   "v": 5
+  },
+  "XMATCH#7": {
+   "t": "n",
+   "v": 7
+  },
+  "XMATCH#8": {
+   "t": "n",
+   "v": 1
+  },
+  "XMATCH#9": {
+   "t": "n",
+   "v": 4
+  }
+ }
+}

@@ -197,7 +197,8 @@ const MAX_TIME = 10_000 / 24
 
 /**
  * A time as Excel en-US reads it, in VALUE and in date and time arguments alike (the `time-text` set; `patterns`):
- * with AM or PM hours to 12 and minutes and seconds below 60, without any minutes and seconds below 10,000 hours.
+ * with AM or PM hours to 12 and minutes and seconds below 60, without any minutes and seconds below 10,000 each and
+ * 10,000 hours in all.
  * The day fraction, past 1 from 24 hours, or null.
  */
 function timeText(s: string, decimal: string): number | null {
@@ -208,6 +209,8 @@ function timeText(s: string, decimal: string): number | null {
     let h = Number(hs)
     const mi = Number(ms)
     const sec = Number(ss.replace(decimal, '.'))
+    // minutes or seconds of five digits are no time (`0:0:86400`), whatever the hours
+    if (mi >= 10_000 || sec >= 10_000) return null
     if (ampm) {
       if (h > 12 || mi > 59 || sec >= 60) return null
       h = (h % 12) + (ampm === 'p' ? 12 : 0)
@@ -279,6 +282,9 @@ export const textReaders = (number: (text: string) => number | null, dates: Date
 
 // ---------- number text (en-US): VALUE's reading, also of text in arithmetic and numeric arguments ----------
 
+/** Number text from this magnitude on is no number: Excel's largest number is 9.99999999999999E+307. */
+const MAX_TEXT_NUMBER = 1e308
+
 /** Digits with commas, each followed by three digits at least (Excel: `1,0000` is 10000, `10,00` and `0,123` are not numbers). */
 const GROUPED = /^((?!0+,)\d+(?:,\d{3,})*|)(\.\d*)?$/
 
@@ -301,20 +307,30 @@ export function unwrap(text: string): { s: string; paren: boolean; percent: bool
 }
 
 /**
- * Number text as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$`, parentheses,
- * commas, exponent, one `%` at either end (not with `$`: `$1.1%` is text, the set `pct-text`), `1 1/2`, spaces around
- * it. Null if it is none (dates and times are read apart).
+ * Number text as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$` or `€` before it
+ * (`€` after it too: `12€`), parentheses, commas, exponent, one `%` at either end (not with a currency: `$1.1%` is
+ * text, the set `pct-text`), `1 1/2` (`$1 1/2` and `(1 1/2€)` too), spaces around it. Null if it is none (dates and
+ * times are read apart). A criterion's own text reads no `€` (`enCritNumber`).
  */
-export function enNumber(text: string): number | null {
+export const enNumber = (text: string) => numberText(text, true)
+
+/** Number text as en-US criteria read their own text: as `enNumber`, without `€` (a cell's `€100` still equals 100 under a number criterion). */
+export const enCritNumber = (text: string) => numberText(text, false)
+
+/** Typed number text before entry's own euro sign (`entry/read.ts`): as `enCritNumber`, a fraction neither after `$` nor in parentheses, as before the set `euro-ironcalc-held-2` (typing was not measured). */
+export const enTypedNumber = (text: string) => numberText(text, false, false)
+
+function numberText(text: string, euros: boolean, fractions = true): number | null {
   const t = trimSpaces(text)
   if (t === '') return null
   const { s, paren, percent } = unwrap(t)
+  const euro = euros && s.endsWith('€')
   // `s`: text with a line break is matched whole and read as no number, not left unmatched
-  const sign = /^([+-]?) *(\$?) *([+-]?) *(.*)$/s.exec(s)!
-  if (sign[1] && sign[3]) return null
+  const sign = (euros ? /^([+-]?) *([$€]?) *([+-]?) *(.*)$/s : /^([+-]?) *(\$?) *([+-]?) *(.*)$/s).exec(euro ? trimSpaces(s.slice(0, -1)) : s)!
+  if ((sign[1] && sign[3]) || (euro && sign[2])) return null
   const negative = (sign[1] || sign[3]) === '-'
-  if ((paren && negative) || (sign[2] && percent)) return null
-  return bodyNumber(sign[4], GROUPED, (mant) => mant.replace(/,/g, ''), percent, !sign[2] && !paren, negative || paren)
+  if ((paren && negative) || ((euro || sign[2]) && percent)) return null
+  return bodyNumber(sign[4], GROUPED, (mant) => mant.replace(/,/g, ''), percent, fractions || (sign[2] !== '$' && !paren), negative || paren)
 }
 
 /**
@@ -332,17 +348,24 @@ export function bodyNumber(body: string, grouped: RegExp, plain: (mant: string) 
     const frac = /^(\d+) (\d+)\/(\d+)$/.exec(body)
     if (frac && Number(frac[3]) > 0) n = (Number(frac[1]) + Number(frac[2]) / Number(frac[3])) / (percent ? 100 : 1)
   }
-  if (n === null || !Number.isFinite(n)) return null
+  // Excel's largest number is below 1E+308: text of it or more is no number, as a typed one is text (`entry/read.ts`)
+  if (n === null || !(Math.abs(n) < MAX_TEXT_NUMBER)) return null
   return negative ? -n : n
 }
 
 /** en-US text as a number outside a book, as operators and arguments read it: date text without a year is no date. */
 export const textToNumber = textReaders(enNumber, EN_DATES).argument
 
+/** en-US criterion text as a number outside a book (`textToNumber` without `€`). */
+export const critTextToNumber = textReaders(enCritNumber, EN_DATES).argument
+
 /** How operators and numeric arguments read text: plain decimal text, whitespace around it trimmed (the common case), else as `read` reads it. */
 export const decimalFirst =
   (read: (text: string) => number | null) =>
   (text: string): number | null => {
     const t = text.trim()
-    return NUMBER_TEXT.test(t) ? readNumber(t) : read(text)
+    if (!NUMBER_TEXT.test(t)) return read(text)
+    // text of 1E+308 or more is no number (`"1e308"+0` is #VALUE!), as `bodyNumber` has it
+    const n = readNumber(t)
+    return Math.abs(n) < MAX_TEXT_NUMBER ? n : null
   }

@@ -132,9 +132,10 @@ function index(x: Arg, r: number, c?: number, area?: number): Arg {
   const cols = x instanceof Rng ? x.c2 - x.c1 + 1 : x instanceof Arr ? x.cols : 1
   if (area !== undefined && area !== 1) return area < 1 ? E.VALUE : E.REF
   if (c === undefined) {
-    // one number indexes a row or a column; in a two-dimensional range Excel answers #REF!
-    if (rows > 1 && cols > 1) return r < 0 ? E.VALUE : E.REF
-    if (rows === 1) [r, c] = [1, r]
+    // one number indexes a row or a column; in a two-dimensional range Excel answers #REF!, of an array it takes the row
+    if (rows > 1 && cols > 1 && !(x instanceof Arr)) return r < 0 ? E.VALUE : E.REF
+    if (rows > 1 && cols > 1) c = 0
+    else if (rows === 1) [r, c] = [1, r]
     else c = 1
   }
   if (r < 0 || c < 0) return E.VALUE

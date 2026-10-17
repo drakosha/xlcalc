@@ -17,7 +17,8 @@ function next(text: string, from: number, cols: string[], rows: string[]): { at:
 }
 
 function textsplit(cx: Cx, text: string, colSeg: Segment | undefined, rowSeg?: Segment, ignoreEmpty = false, mode = 0, pad: V = E.NA): V | Arr {
-  // a column delimiter left out (`TEXTSPLIT(t,,";")`): no columns
+  // a column delimiter left out (`TEXTSPLIT(t,,";")`): no columns; neither delimiter is #VALUE!
+  if (colSeg === undefined && rowSeg === undefined) return E.VALUE
   const cols = colSeg === undefined ? [] : delimiters(colSeg, cx.rules)
   if (isErr(cols)) return cols
   const rows = rowSeg === undefined ? [] : delimiters(rowSeg, cx.rules)

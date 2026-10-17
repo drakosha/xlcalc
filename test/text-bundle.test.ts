@@ -19,7 +19,7 @@ describe('text without the engine', () => {
     const { code, used } = await bundle()
     // criteria, dates and numfmt/style: the lexer takes the escape of a regular expression's characters from criteria;
     // numfmt/builtin, category and parse: a number format's category, by the built-in codes and the split into sections
-    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'criteria', 'dates', 'entry/clipboard', 'entry/close', 'find-text', 'function-categories', 'input', 'input-error', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/parse', 'numfmt/style', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text'])
+    expect(used).toEqual(['a1', 'call-at', 'collate', 'column-width', 'criteria', 'dates', 'entry/clipboard', 'entry/close', 'error-type', 'find-text', 'function-categories', 'input', 'input-error', 'layout/spans', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/outline-messages', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/builtin', 'numfmt/category', 'numfmt/parse', 'numfmt/style', 'point', 'scan', 'sheet-pattern', 'sort-order', 'strict-args', 'syntax/ast', 'syntax/errors', 'syntax/parse', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text'])
     // 50.5 KB with nameAt, Find, the sort order, the categories and the column's characters (16.10)
     expect(code.length).toBeLessThan(55 * 1024)
     expect(code).not.toContain('xlcalc')

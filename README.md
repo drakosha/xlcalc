@@ -7,7 +7,7 @@ What it does differently:
 - **Compiles each formula once.** By default a formula becomes a tree of JavaScript closures, with no code generated, so a strict Content Security Policy does not stand in the way; with `execution: 'eval'` it becomes JavaScript text, and one `new Function` call compiles the book. A formula that exceeds the JS compiler's nesting limit falls back to closures, preserving evaluation order. Both modes give the same values and hashes, and the tests compute every case book both ways. Cells are evaluated over the reference graph in topological order. A session keeps the compiled book and recomputes only the cells that depend on an edit. On a synthetic book with 3,400 data rows and 3,907 formulas, mostly SUMIFS over whole columns, a cold compute takes about 0.3 s with the cells' shown text (0.28 s without) and an edit of a criterion cell under 10 ms (p95) in either mode on an Apple M5 Pro with Node 26; `test/budgets.test.ts` enforces 1.5 s and 100 ms.
 - **Deterministic values and hashes.** The same book with the same clock gives the same values and the same `hash` (SHA-256 of a canonical text of all values plus the engine configuration version), regardless of input order, process or time zone. `inputHash` identifies the input.
 - **A clock for volatile functions.** `TODAY` and `NOW` come from `clock.now` (UTC), `RAND` and `RANDBETWEEN` from `clock.seed` and the cell address. Without a clock the engine takes the current moment and a random seed, and `result.clock` reproduces the result.
-- **A whitelist of functions, checked against Microsoft Excel.** A function is admitted only when it gives Excel's answer on every one of its test cases, typical calls and edge cases (text and booleans in numeric arguments, blanks, errors, date text, ranges with mixed content), computed in Excel 16 with the en-US locale; [Functions](docs/functions.md) has the list. Any other function is reported as `unknown_function` (`#NAME?`) rather than computed with different semantics.
+- **A whitelist of functions, checked against Microsoft Excel.** A function is admitted when it gives Excel's answers on its test cases, typical calls and edge cases (text and booleans in numeric arguments, blanks, errors, date text, ranges with mixed content), computed in Excel 16 with the en-US locale: 43,778 cases, with Excel's answers stored in this repository ([Functions](docs/functions.md) has the list and the counts). Where an admitted function still answers otherwise than Excel, the difference is listed in [Limitations](docs/limitations.md). Inputs outside these cases can differ too. Any other function is reported as `unknown_function` (`#NAME?`) rather than computed with different semantics.
 - **Arrays inside a formula.** Operators and functions work element by element over ranges and arrays with Excel 365's rules (`SUM(B:B*C:C)`, `SUMPRODUCT((A1:A9="x")*B1:B9)`, `SUM(IF(A1:A9>0,A1:A9))`), array constants `{1,2;3,4}` are read, and functions with an array answer (`SORT`, `FILTER`, `UNIQUE`, `SEQUENCE`, `MMULT`, …) can be used inside a formula. A formula whose result is an array spills into the cells to its right and below, as in Excel 365 (`#SPILL!` where they are taken), and `E2#` refers to the range it filled (see [Arrays](docs/formulas.md#arrays)).
 - **Cells shown as Excel shows them.** Each cell of a result carries, beside its value, the text Excel shows in it: its number format in the book's locale, General narrowed to the column's width, `#` across a column a number does not fit, the colour of the format's section (see [Showing values](docs/formats.md)). The value stays the number; `display: false` leaves the text out. A session also gives what a sheet's conditional formats show in each cell of a window: fills, fonts, colour scales, data bars and icons by the current values.
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and the result's `diagnostics` say why, with a check code and the position in the formula.
@@ -38,7 +38,7 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
 | cell addresses in A1 style and a sheet's outline commands, without the engine | `xlcalc/a1` |
 | the references of formula text as it is typed, for colouring them, the name being typed for AutoComplete, a number format's category as the ribbon shows it, Find over a host's texts and the sort order of values, without the engine | `xlcalc/text` |
-| typed entry, and the text a cell opens with for editing, without the engine | `parseEntry`, `needsApostrophe`, `entryText` from `xlcalc/entry` ([Typed entry](docs/entry.md)) |
+| typed entry, and the text a cell opens with for editing, without the engine | `parseEntry`, `needsApostrophe`, `entryText` from `xlcalc/entry` ([Cell entry](docs/entry.md)) |
 | the tips of functions' arguments, and their categories, without the engine's computation | `functionSignature` and `FUNCTION_CATEGORIES` from `xlcalc`; what a function does, `functionDescription` from `xlcalc/function-text`; their Russian words, `ruRUFunctionText` from `xlcalc/function-text/ru-RU` ([Addresses and formula text](docs/addresses.md)) |
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](docs/locale.md)) |
 | types alone | `xlcalc/contract` |
@@ -252,23 +252,23 @@ Books and formulas:
 
 - [Formulas](docs/formulas.md): arrays inside formulas, checking formula text, errors, external functions, hidden rows, date systems.
 - [Functions](docs/functions.md): the whitelist by category.
-- [Arrays inside a formula](docs/arrays-incell.md) and [Spilling](docs/spill.md).
+- [Array operations in formulas](docs/arrays-incell.md) and [Spilling](docs/spill.md).
 - [Defined names](docs/names.md), [Tables](docs/tables.md), [References](docs/references.md) (`@`, unions, references across sheets).
-- [Circular references](docs/cycles.md), [Links to other workbooks](docs/links.md), [Formulas of the old kind](docs/legacy.md).
+- [Circular references](docs/cycles.md), [External references](docs/links.md), [Legacy array formulas and implicit intersection](docs/legacy.md).
 
 Sessions and grids:
 
 - [Sessions](docs/sessions.md): opening one, undo and redo, following changes, the clock.
-- [A grid over a session](docs/grid.md): windows, layout, looks of many cells.
-- [Editing a grid](docs/edits.md), [Typed entry](docs/entry.md), [Live workbook operations](docs/live-books.md).
-- [Live objects of sheets and cells](docs/live-objects.md): `cells.A1.value = 100`, batches, listeners of a cell or a sheet, a Vue `customRef`.
+- [Rendering a grid from a session](docs/grid.md): windows, layout, looks of many cells.
+- [Editing a grid](docs/edits.md), [Cell entry](docs/entry.md), [Batch changes, previews and paged queries in a live session](docs/live-books.md).
+- [Live sheet and cell objects](docs/live-objects.md): `cells.A1.value = 100`, batches, listeners of a cell or a sheet, a Vue `customRef`.
 - [Structure operations](docs/structure.md): rows and columns, moves and copies, the fill handle, merged cells, sheets.
 - [Conditional formats](docs/conditional-formats.md), [Data validation](docs/validation.md), [Outlines](docs/outline.md).
 - [Addresses and formula text](docs/addresses.md): `xlcalc/a1` and `xlcalc/text`, without the engine.
 
 Values, locales, files and threads:
 
-- [Number formats and shown text](docs/formats.md), [Locales](docs/locale.md).
+- [Number formats and displayed text](docs/formats.md), [Locales](docs/locale.md).
 - [Reading and writing xlsx](docs/xlsx.md), [Asynchronous and threaded computation](docs/async.md).
 
 The project:

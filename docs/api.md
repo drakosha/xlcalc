@@ -121,8 +121,8 @@ function compareValues(a: CellValue, b: CellValue, opts?: CompareValuesOptions):
 ```
 
 Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (in the order of
-`locale`'s text, en-US's without it), FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`;
-negative when `a` comes first.
+`locale`'s text, en-US's without it), FALSE then TRUE, errors by ERROR.TYPE's number (#DIV/0! before #N/A), and
+blanks (null) last, also with `descending`; negative when `a` comes first.
 
 ### <a id="xlcalc-compute"></a>`compute`
 

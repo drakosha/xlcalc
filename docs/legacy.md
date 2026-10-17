@@ -1,4 +1,4 @@
-# Formulas of the old kind
+# Legacy array formulas and implicit intersection
 
 Files saved before dynamic arrays hold formulas of the old kind. Excel 365 computes them with implicit intersection and shows them with `@`. The engine computes every formula as a dynamic one, so a reader turns an old formula into the dynamic formula Excel shows for it with `fromLegacy`. Array formulas entered with Ctrl+Shift+Enter keep their own kind in the book: `CellInput.array`.
 

@@ -132,8 +132,8 @@ function compareOptions(opts: CompareValuesOptions | undefined): [boolean, ((a: 
 
 /**
  * Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (in the order of
- * `locale`'s text, en-US's without it), FALSE then TRUE, errors (equal), and blanks (null) last, also with `descending`;
- * negative when `a` comes first.
+ * `locale`'s text, en-US's without it), FALSE then TRUE, errors by ERROR.TYPE's number (#DIV/0! before #N/A), and
+ * blanks (null) last, also with `descending`; negative when `a` comes first.
  */
 export const compareValues = /* @__PURE__ */ strict(function compareValues(a: CellValue, b: CellValue, opts?: CompareValuesOptions): number {
   return sortOrder(checkCellValue(a, 'a'), checkCellValue(b, 'b'), ...compareOptions(opts))

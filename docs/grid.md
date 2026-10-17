@@ -1,6 +1,6 @@
-# A grid over a session
+# Rendering a grid from a session
 
-What a grid reads from a session to draw a sheet: a window of cells with their looks, the sizes of rows and columns, merged areas and tables; and how it changes the layout and the looks of many cells at once.
+What a grid reads from a session to draw a sheet: a window of cells with their formatting, the sizes of rows and columns, merged areas and tables; and how it changes the layout and the looks of many cells at once.
 
 ## A window for a grid
 

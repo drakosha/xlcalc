@@ -91,11 +91,11 @@ export const functions: Record<string, FnDef> = {
     if (isErr(hol)) return hol
     return allWeekend(weekend) ? 0 : networkDays(start, end, weekend, hol)
   }, { cx: true }),
-  WORKDAY: atp('e j V?', (cx: Cx, start: number, days: number, h?: Segment) => {
+  WORKDAY: atp('e f V?', (cx: Cx, start: number, days: number, h?: Segment) => {
     const hol = holidaysOf(h, cx.rules)
     return isErr(hol) ? hol : workday(start, days, SAT_SUN, hol)
   }, { cx: true, date: 'book' }),
-  'WORKDAY.INTL': atp('e j a? V?', (cx: Cx, start: number, days: number, w: V | undefined, h?: Segment) => {
+  'WORKDAY.INTL': atp('e f a? V?', (cx: Cx, start: number, days: number, w: V | undefined, h?: Segment) => {
     const weekend = weekendOf(w)
     if (isErr(weekend)) return weekend
     if (allWeekend(weekend)) return E.VALUE

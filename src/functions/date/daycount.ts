@@ -1,6 +1,6 @@
 /** Day-count conventions (DAYS360, YEARFRAC), shared with the financial functions. */
 import type { FnDef } from '../../args.js'
-import { isLeap, lastDayExcel, serialOf, utcDays, ymd } from '../../dates.js'
+import { isLeap, lastDayExcel, momentOf, serialOf, utcDays, ymd } from '../../dates.js'
 import { atp, need, type AtpOrder } from './atp.js'
 
 export type Ymd = { y: number; m: number; d: number }
@@ -36,6 +36,16 @@ export function days30(a: Ymd, b: Ymd): number {
   else if (d1 === 30 && d2 === 31) d2 = 30
   else if (lastOfFeb(a) && lastOfFeb(b)) [d1, d2] = [30, 30]
   else if (lastOfFeb(a)) d1 = 30
+  return d360(a, b, d1, d2)
+}
+
+/** US 30/360 as ACCRINT counts it, dates in either order; `both` moves the end's last of February and 31st whatever the start. */
+export function us360(a: Ymd, b: Ymd, both: boolean): number {
+  let d1 = a.d
+  let d2 = b.d
+  if (lastOfFeb(b) && (lastOfFeb(a) || both)) d2 = 30
+  if (d2 === 31 && (d1 >= 30 || both)) d2 = 30
+  if (d1 === 31 || lastOfFeb(a)) d1 = 30
   return d360(a, b, d1, d2)
 }
 
@@ -77,6 +87,7 @@ export const basisFirst = (i: number): AtpOrder => ({ first: [i], check: { [i]: 
 export const freqAt = (i: number): AtpOrder => ({ check: { [i]: need(validFreq) } })
 
 export const functions: Record<string, FnDef> = {
-  DAYS360: { args: 'd d b?', fn: (start: number, end: number, european = false) => days360(start, end, european) },
+  // the days of the moments, rounded to the second as DAY reads them (DAYS360(45992.000001,46000.999999) is 9)
+  DAYS360: { args: 't t b?', fn: (start: number, end: number, european = false) => days360(momentOf(start).day, momentOf(end).day, european) },
   YEARFRAC: atp('e e j?', (start: number, end: number, basis = 0) => yearFrac(start, end, basis), basisFirst(2)),
 }

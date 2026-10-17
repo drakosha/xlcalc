@@ -1,0 +1,352 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.124,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "VALUE#1",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"¥100\")"
+  },
+  {
+   "id": "VALUE#2",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100¥\")"
+  },
+  {
+   "id": "VALUE#3",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₽100\")"
+  },
+  {
+   "id": "VALUE#4",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₽\")"
+  },
+  {
+   "id": "VALUE#5",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₹100\")"
+  },
+  {
+   "id": "VALUE#6",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₹\")"
+  },
+  {
+   "id": "VALUE#7",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₩100\")"
+  },
+  {
+   "id": "VALUE#8",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₩\")"
+  },
+  {
+   "id": "VALUE#9",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₪100\")"
+  },
+  {
+   "id": "VALUE#10",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₪\")"
+  },
+  {
+   "id": "VALUE#11",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₺100\")"
+  },
+  {
+   "id": "VALUE#12",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₺\")"
+  },
+  {
+   "id": "VALUE#13",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₴100\")"
+  },
+  {
+   "id": "VALUE#14",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₴\")"
+  },
+  {
+   "id": "VALUE#15",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"¢100\")"
+  },
+  {
+   "id": "VALUE#16",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100¢\")"
+  },
+  {
+   "id": "VALUE#17",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"฿100\")"
+  },
+  {
+   "id": "VALUE#18",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100฿\")"
+  },
+  {
+   "id": "VALUE#19",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₫100\")"
+  },
+  {
+   "id": "VALUE#20",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₫\")"
+  },
+  {
+   "id": "VALUE#21",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₦100\")"
+  },
+  {
+   "id": "VALUE#22",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₦\")"
+  },
+  {
+   "id": "VALUE#23",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"₱100\")"
+  },
+  {
+   "id": "VALUE#24",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100₱\")"
+  },
+  {
+   "id": "VALUE#25",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"£100\")"
+  },
+  {
+   "id": "VALUE#26",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100£\")"
+  },
+  {
+   "id": "VALUE#27",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100 ₽\")"
+  },
+  {
+   "id": "VALUE#28",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"Fr100\")"
+  },
+  {
+   "id": "VALUE#29",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100 kr\")"
+  },
+  {
+   "id": "VALUE#30",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"USD100\")"
+  },
+  {
+   "id": "VALUE#31",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100 USD\")"
+  },
+  {
+   "id": "VALUE#32",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100 $\")"
+  },
+  {
+   "id": "VALUE#33",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"$100\")"
+  },
+  {
+   "id": "VALUE#34",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100 €\")"
+  }
+ ],
+ "values": {
+  "VALUE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#20": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#21": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#22": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#23": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#24": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#25": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#26": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#27": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#28": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#29": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#30": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#31": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#32": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#33": {
+   "t": "n",
+   "v": 100
+  },
+  "VALUE#34": {
+   "t": "n",
+   "v": 100
+  }
+ }
+}

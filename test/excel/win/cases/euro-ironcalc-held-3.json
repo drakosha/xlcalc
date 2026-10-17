@@ -1,0 +1,177 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 15.3,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "VALUE#1",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"$ 1 1/2\")"
+  },
+  {
+   "id": "VALUE#2",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"-$1 1/2\")"
+  },
+  {
+   "id": "VALUE#3",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"(1 1/2)\")"
+  },
+  {
+   "id": "VALUE#4",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"($1 1/2)\")"
+  },
+  {
+   "id": "VALUE#5",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1 1/2%\")"
+  },
+  {
+   "id": "VALUE#6",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"$1 1/2%\")"
+  },
+  {
+   "id": "VALUE#7",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "\"1 1/2\"+\"$1 1/2\""
+  },
+  {
+   "id": "ABS#1",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"(2 1/4€)\")"
+  },
+  {
+   "id": "COUNTIF#1",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ed!A1:A5,100)"
+  },
+  {
+   "id": "COUNTIF#2",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ed!A1:A5,-100)"
+  },
+  {
+   "id": "COUNTIF#3",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ed!A1:A5,1.5)"
+  },
+  {
+   "id": "COUNTIF#4",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ed!A1:A5,\"=100\")"
+  },
+  {
+   "id": "COUNTIF#5",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ed!A1:A5,\"=€100\")"
+  },
+  {
+   "id": "COUNTIF#6",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ed!A1:A5,\">50\")"
+  },
+  {
+   "id": "SUMIF#1",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(Ed!A1:A5,100,Ed!B1:B5)"
+  },
+  {
+   "id": "COUNTIFS#1",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(Ed!A1:A5,\"$100\")"
+  }
+ ],
+ "values": {
+  "VALUE#1": {
+   "t": "n",
+   "v": 1.5
+  },
+  "VALUE#2": {
+   "t": "n",
+   "v": -1.5
+  },
+  "VALUE#3": {
+   "t": "n",
+   "v": -1.5
+  },
+  "VALUE#4": {
+   "t": "n",
+   "v": -1.5
+  },
+  "VALUE#5": {
+   "t": "n",
+   "v": 0.015
+  },
+  "VALUE#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#7": {
+   "t": "n",
+   "v": 3
+  },
+  "ABS#1": {
+   "t": "n",
+   "v": 2.25
+  },
+  "COUNTIF#1": {
+   "t": "n",
+   "v": 3
+  },
+  "COUNTIF#2": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#3": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#4": {
+   "t": "n",
+   "v": 3
+  },
+  "COUNTIF#5": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#6": {
+   "t": "n",
+   "v": 0
+  },
+  "SUMIF#1": {
+   "t": "n",
+   "v": 7
+  },
+  "COUNTIFS#1": {
+   "t": "n",
+   "v": 3
+  }
+ }
+}

@@ -30,13 +30,16 @@ function fieldIndex(db: Grid, field: V, rules: Rules): number | CErr {
   return nameIndex(db, field, rules)
 }
 
-/** The column whose header reads as `name` (any case), or #VALUE!; a criteria header is always a name, 45688 too. */
+/**
+ * The first column whose header reads as `name` in any case, or #VALUE!: a criteria header is always a name, 45688
+ * too, and the text `true` names a header TRUE as TRUE names a header `true`.
+ */
 function nameIndex(db: Grid, name: V, rules: Rules): number | CErr {
   if (isErr(name)) return name
   const text = (rules.toText(name) as string).toLowerCase()
   for (let c = 0; c < db.cols; c++) {
     const h = gridAt(db, c)
-    if (typeof h === 'string' ? h.toLowerCase() === text : rules.toText(h) === text) return c
+    if ((typeof h === 'string' ? h : (rules.toText(h) as string)).toLowerCase() === text) return c
   }
   return E.VALUE
 }

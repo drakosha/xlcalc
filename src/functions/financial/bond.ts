@@ -1,10 +1,10 @@
 /** Bonds with regular coupons (PRICE, YIELD, DURATION, MDURATION) and ACCRINT, after Excel's documented formulas. */
 import type { FnDef } from '../../args.js'
-import { ymd } from '../../dates.js'
+import { addMonths, daysInMonth, ymd } from '../../dates.js'
 import { E } from '../../values.js'
 import { atp, need } from '../date/atp.js'
-import { freqAt, validBasis, validFreq } from '../date/daycount.js'
-import { badCoupon, bondDays, cmp, couponDate, coupons, daysBetween, normalDays, periodOf, serialOfYmd, type Ymd } from './coupon.js'
+import { d360, freqAt, us360, validBasis, validFreq } from '../date/daycount.js'
+import { badCoupon, bondDays, cmp, coupons, normalDays, serialOfYmd, type Ymd } from './coupon.js'
 
 /** Price per 100 at yield `yld`: cash flows discounted from settlement, less accrued interest. */
 function price(settlement: number, maturity: number, rate: number, yld: number, redemption: number, freq: number, basis: number): number {
@@ -59,40 +59,49 @@ export function solveDecreasing(f: (x: number) => number, guess: number, lo: num
   return (a + b) / 2
 }
 
+/** A coupon date `n` months from `x` as ACCRINT steps its schedule: the day kept within the month, an end-of-month bond's on the last. */
+function shift(x: Ymd, n: number, eom: boolean): Ymd {
+  const t = addMonths(x.y, x.m, n)
+  const last = daysInMonth(t.y, t.m)
+  return { y: t.y, m: t.m, d: eom ? last : Math.min(x.d, last) }
+}
+
+/**
+ * ACCRINT's coupon periods, as Excel counts them (the algorithm of ExcelFinancialFunctions): dates stepped from
+ * first_interest, each from the one before; the period before the settlement counts its days over the length of the
+ * period ending at first_interest, each whole period back to the issue 1 (0 with calc_method FALSE, and the settlement's
+ * period then starts at that regular one), the issue's own period its days over that period's length.
+ */
+function accrint(issue: number, first: number, settlement: number, freq: number, basis: number, calc: boolean): number {
+  const months = 12 / freq
+  const fi = ymd(first)
+  const is = ymd(issue)
+  const st = ymd(settlement)
+  const eom = fi.d === daysInMonth(fi.y, fi.m)
+  const days = (a: Ymd, b: Ymd) => (basis === 0 ? us360(a, b, false) : basis === 4 ? d360(a, b, Math.min(a.d, 30), Math.min(b.d, 30)) : serialOfYmd(b) - serialOfYmd(a))
+  const regular = shift(fi, -months, eom)
+  let pcd = regular
+  if (calc && cmp(st, fi) > 0) for (let q = fi; cmp(q, st) < 0; q = shift(q, months, eom)) pcd = q
+  let sum = days(cmp(is, pcd) > 0 ? is : pcd, st) / (basis === 1 ? serialOfYmd(fi) - serialOfYmd(regular) : normalDays(basis, freq))
+  for (let end = pcd; cmp(end, is) > 0; ) {
+    const start = shift(end, -months, eom)
+    if (cmp(is, start) <= 0) sum += calc ? 1 : 0
+    // the issue's period beginning before 1900 leaves no periods to count (`ACCRINT(1,…)` is 0)
+    else if (serialOfYmd(start) < 0) return 0
+    else sum += days(is, end) / (basis === 0 ? us360(start, end, true) : basis === 2 || basis === 3 ? normalDays(basis, freq) : days(start, end))
+    end = start
+  }
+  return sum
+}
+
 /** DURATION and MDURATION check the frequency as they read it; PRICE and YIELD read the basis first. */
 const FREQ_READ = freqAt(4)
 const PRICE_READ = { first: [6], check: { 6: need(validBasis), 5: need(validFreq) } }
 
 export const functions: Record<string, FnDef> = {
-  // quasi-coupon periods anchored at first_interest, whole ones before the settlement counting 1; calc_method FALSE counts the days in one piece
-  ACCRINT: atp('e e e x x j j? b?', (issue: number, first: number, settlement: number, rate: number, par = 1000, freq: number, basis = 0, calc = true) => {
-    if (rate <= 0 || par <= 0 || !validBasis(basis) || issue >= settlement || issue < 1 || first < 1) return E.NUM
-    const anchor = ymd(first)
-    const start = ymd(issue)
-    const end = ymd(settlement)
-    const normal = normalDays(basis, freq)
-    // a period before first_interest counts its own days on bases 1 and 4; on basis 1 later ones take the length of the one ending at first_interest
-    const before = daysBetween(couponDate(anchor, -1, freq), anchor, 1)
-    const nl = (k: number, q0: Ymd, q1: Ymd) => {
-      if (basis === 1) return k < 0 ? daysBetween(q0, q1, 1) : before
-      return basis === 4 && k < 0 && cmp(end, q1) >= 0 ? daysBetween(q0, q1, 4) : normal
-    }
-    if (!calc && settlement > first) return (par * rate * daysBetween(start, end, basis)) / freq / (basis === 1 ? before : normal)
-    const k0 = periodOf(anchor, start, freq)
-    // the issue's period beginning before 1900 leaves no periods to count (`ACCRINT(1,…)` is 0)
-    if (serialOfYmd(couponDate(anchor, k0, freq)) < 0) return 0
-    let sum = 0
-    for (let k = k0; ; k++) {
-      const q0 = couponDate(anchor, k, freq)
-      if (cmp(q0, end) >= 0) break
-      const q1 = couponDate(anchor, k + 1, freq)
-      const lo = cmp(start, q0) > 0 ? start : q0
-      const hi = cmp(end, q1) < 0 ? end : q1
-      // the period that ends on the settlement is counted by its days, as a part of one
-      sum += lo === q0 && hi === q1 && cmp(end, q1) > 0 ? 1 : daysBetween(lo, hi, basis) / nl(k, q0, q1)
-    }
-    return (par * rate * sum) / freq
-  }, freqAt(5)),
+  ACCRINT: atp('e e e x x j j? b?', (issue: number, first: number, settlement: number, rate: number, par = 1000, freq: number, basis = 0, calc = true) =>
+    rate <= 0 || par <= 0 || !validBasis(basis) || issue >= settlement || issue < 1 || first < 1 ? E.NUM : accrint(issue, first, settlement, freq, basis, calc) * ((par * rate) / freq),
+  freqAt(5)),
   DURATION: atp('e e x x j j?', (settlement: number, maturity: number, rate: number, yld: number, freq: number, basis = 0) =>
     badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 ? E.NUM : duration(settlement, maturity, rate, yld, freq, basis),
   FREQ_READ),

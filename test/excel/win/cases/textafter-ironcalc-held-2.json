@@ -1,0 +1,117 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 15.8,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "TEXTAFTER#1",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"abcd\")"
+  },
+  {
+   "id": "TEXTBEFORE#1",
+   "group": "TEXTBEFORE",
+   "fn": "TEXTBEFORE",
+   "formula": "_xlfn.TEXTBEFORE(\"abc\",\"abcd\")"
+  },
+  {
+   "id": "TEXTAFTER#2",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",{\"abcd\",\"wxyz\"})"
+  },
+  {
+   "id": "TEXTAFTER#3",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"abcd\",,,,\"-\")"
+  },
+  {
+   "id": "TEXTAFTER#4",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"ABCD\",,1)"
+  },
+  {
+   "id": "TEXTAFTER#5",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"abcd\",1)"
+  },
+  {
+   "id": "TEXTBEFORE#2",
+   "group": "TEXTBEFORE",
+   "fn": "TEXTBEFORE",
+   "formula": "_xlfn.TEXTBEFORE(\"abc\",\"abcd\",-1)"
+  },
+  {
+   "id": "TEXTAFTER#6",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"abcd\",Ta!A1)"
+  },
+  {
+   "id": "TEXTAFTER#7",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"abcd\",Ta!A2)"
+  },
+  {
+   "id": "TEXTAFTER#8",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"abcd\",1,,,\"-\")"
+  }
+ ],
+ "values": {
+  "TEXTAFTER#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TEXTBEFORE#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TEXTAFTER#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TEXTAFTER#3": {
+   "t": "s",
+   "v": "-"
+  },
+  "TEXTAFTER#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TEXTAFTER#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTBEFORE#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#8": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

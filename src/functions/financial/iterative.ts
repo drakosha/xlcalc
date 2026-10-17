@@ -62,8 +62,8 @@ function flows(g: Grid): number[] | CErr {
 const signs = (xs: number[]) => xs.some((x) => x > 0) && xs.some((x) => x < 0)
 
 /**
- * XNPV: a blank is #VALUE!, text or a boolean #NUM!; XIRR (`lenient`, the book's rules) reads numeric and date
- * text and a blank value as 0, a boolean or other text is #VALUE! anywhere before a blank date counts as #NUM!. One
+ * XNPV: a blank first value or date is #VALUE!, a later one #NUM!, text or a boolean #NUM!; XIRR (`lenient`, the book's rules) reads numeric and date text and a blank value as 0, a boolean or
+ * other text is #VALUE! anywhere before a blank date counts as #NUM!. One
  * value as the values or the dates is read as a number first: a boolean or text that is no number is #VALUE!, before
  * the sizes are compared (`XIRR(TRUE,A1:A5)`, the set `single-values`).
  */
@@ -93,7 +93,12 @@ function dated(values: Grid, dates: Grid, rules: Rules, lenient: boolean): [numb
         continue
       }
     }
-    if (v === null || d === null) return E.VALUE
+    // XNPV: a blank first value or date is #VALUE!, a later one #NUM!
+    if (v === null || d === null) {
+      if (i === 0) return E.VALUE
+      blank = true
+      continue
+    }
     if (typeof v !== 'number' || typeof d !== 'number' || d < 0) return E.NUM
     vs.push(v)
     ds.push(Math.floor(d))
@@ -143,6 +148,8 @@ export const functions: Record<string, FnDef> = {
     fn: (g: Grid, guess = 0.1) => {
       const xs = flows(g)
       if (isErr(xs)) return xs
+      // a guess of -1 or less is #VALUE!, before the flows' signs are looked at
+      if (guess <= -1) return E.VALUE
       if (!signs(xs)) return E.NUM
       return irr(xs, guess) ?? E.NUM
     },
@@ -163,7 +170,8 @@ export const functions: Record<string, FnDef> = {
         if (xs[i] > 0) pos += xs[i] * Math.pow(1 + reinvest, n - 1 - i)
         else neg += xs[i] / Math.pow(1 + finance, i)
       }
-      if (pos === 0 || neg === 0) return E.DIV0
+      // no outflow, or one value alone, is #DIV/0!; no inflow -1, as in Excel
+      if (neg === 0 || n < 2) return E.DIV0
       return Math.pow(-pos / neg, 1 / (n - 1)) - 1
     },
   },

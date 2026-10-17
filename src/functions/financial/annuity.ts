@@ -5,10 +5,13 @@
 import { E, isErr, type CErr } from '../../values.js'
 import { coerce, type Arg, type Cx, type FnDef } from '../../args.js'
 import { atp } from '../date/atp.js'
+import { power } from '../math/arithmetic.js'
 
-function fv(rate: number, nper: number, pmt: number, pv: number, type: number): number {
+function fv(rate: number, nper: number, pmt: number, pv: number, type: number): number | CErr {
   if (rate === 0) return -(pv + pmt * nper)
-  const term = Math.pow(1 + rate, nper)
+  // (1 + rate)^nper as Excel's power takes it: at a rate of -1, 0^0 is #NUM! and 0 to a negative power #DIV/0!
+  const term = power(1 + rate, nper)
+  if (isErr(term)) return term
   return -(pv * term + (pmt * (1 + rate * type) * (term - 1)) / rate)
 }
 
@@ -123,7 +126,9 @@ export const functions: Record<string, FnDef> = {
     args: 'n n n n? n?',
     fn: (rate: number, nper: number, p: number, fvalue = 0, type?: number) => {
       if (rate === 0) return -(fvalue + p * nper)
-      const term = Math.pow(1 + rate, nper)
+      // (1 + rate)^nper as in FV, then a term of 0 divides by 0
+      const term = power(1 + rate, nper)
+      if (isErr(term)) return term
       return term === 0 ? E.DIV0 : -(fvalue + (p * (1 + rate * t01(type)) * (term - 1)) / rate) / term
     },
   },

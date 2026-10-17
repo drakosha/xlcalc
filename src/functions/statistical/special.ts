@@ -182,10 +182,38 @@ export function normCdf(z: number): [number, number] {
 }
 
 /**
- * Φ⁻¹(p) with q = 1 − p given precisely: jStat's erfcinv start (Abramowitz and Stegun 26.2.22), refined by
- * Halley steps on an accurate erfc until they stop changing the result.
+ * Φ(z) as LOGNORM.DIST takes it: next to 0 (|z| < 1.4E-4) 0.5 + erf(z/√2)/2 by erf's Maclaurin series, which keeps
+ * the digits erfc's sum with 1 loses (LOGNORM.DIST(4,3.5,1E12,TRUE), IronCalc's test); NORM.S.DIST keeps erfc's last
+ * digit there (the set `math-ironcalc-held`), as does LOGNORM.DIST further out.
+ */
+export function lognormCdf(z: number): number {
+  const x = z / Math.SQRT2
+  if (Math.abs(x) >= 1e-4) return normCdf(z)[0]
+  let sum = 0
+  for (let n = 0, t = x; n < 40; n++, t *= (-x * x) / n) {
+    const term = t / (2 * n + 1)
+    sum += term
+    if (Math.abs(term) <= 1e-17 * Math.abs(sum)) break
+  }
+  return 0.5 + sum / Math.sqrt(Math.PI)
+}
+
+/** Wichura's AS 241 (PPND16) in the middle, |p − 0.5| ≤ 0.425: its rational function of r = 0.180625 − (p − 0.5)². */
+const AS241_A = [3.387132872796366608, 133.14166789178437745, 1971.5909503065514427, 13731.693765509461125, 45921.953931549871457, 67265.770927008700853, 33430.575583588128105, 2509.0809287301226727]
+const AS241_B = [1, 42.313330701600911252, 687.1870074920579083, 5394.1960214247511077, 21213.794301586595867, 39307.89580009271061, 28729.085735721942674, 5226.495278852854561]
+const horner = (cs: readonly number[], r: number) => cs.reduceRight((acc, c) => acc * r + c, 0)
+
+/**
+ * Φ⁻¹(p) with q = 1 − p given precisely: in the middle AS 241, whose p − 0.5 keeps the digits that 2·min(p, q) loses
+ * next to 0.5 (LOGNORM.INV of 0.5 − 8.4E-13 with σ = 1E12, IronCalc's test); else jStat's erfcinv start (Abramowitz
+ * and Stegun 26.2.22), refined by Halley steps on an accurate erfc until they stop changing the result.
  */
 export function normInv(p: number, q = 1 - p): number {
+  const c = p - 0.5
+  if (Math.abs(c) <= 0.425) {
+    const r = 0.180625 - c * c
+    return (c * horner(AS241_A, r)) / horner(AS241_B, r)
+  }
   const pp = 2 * Math.min(p, q)
   if (pp <= 0) return NaN
   let x = 0.70711 * deviate(pp / 2)

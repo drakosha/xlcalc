@@ -1,0 +1,147 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 17.3,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "VALUE#1",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1 1/2€\")"
+  },
+  {
+   "id": "VALUE#2",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"-€1 1/2\")"
+  },
+  {
+   "id": "VALUE#3",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€ 2 3/4\")"
+  },
+  {
+   "id": "VALUE#4",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€1 1/2\")+0"
+  },
+  {
+   "id": "VALUE#5",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"$1 1/2\")"
+  },
+  {
+   "id": "VALUE#6",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"(1 1/2€)\")"
+  },
+  {
+   "id": "VALUE#7",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1e3€\")"
+  },
+  {
+   "id": "COUNTIF#1",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ec!A1:A3,100)"
+  },
+  {
+   "id": "COUNTIF#2",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ec!A1:A3,\"€100\")"
+  },
+  {
+   "id": "COUNTIF#3",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ec!A1:A3,\"<>€100\")"
+  },
+  {
+   "id": "SUMIF#1",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(Ec!A1:A3,\"100\",Ec!B1:B3)"
+  },
+  {
+   "id": "COUNTIFS#1",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(Ec!A1:A3,\"€100\",Ec!B1:B3,1)"
+  },
+  {
+   "id": "MATCH#1",
+   "group": "MATCH",
+   "fn": "MATCH",
+   "formula": "MATCH(\"€100\",Ec!A1:A3,0)"
+  }
+ ],
+ "values": {
+  "VALUE#1": {
+   "t": "n",
+   "v": 1.5
+  },
+  "VALUE#2": {
+   "t": "n",
+   "v": -1.5
+  },
+  "VALUE#3": {
+   "t": "n",
+   "v": 2.75
+  },
+  "VALUE#4": {
+   "t": "n",
+   "v": 1.5
+  },
+  "VALUE#5": {
+   "t": "n",
+   "v": 1.5
+  },
+  "VALUE#6": {
+   "t": "n",
+   "v": -1.5
+  },
+  "VALUE#7": {
+   "t": "n",
+   "v": 1000
+  },
+  "COUNTIF#1": {
+   "t": "n",
+   "v": 3
+  },
+  "COUNTIF#2": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#3": {
+   "t": "n",
+   "v": 2
+  },
+  "SUMIF#1": {
+   "t": "n",
+   "v": 7
+  },
+  "COUNTIFS#1": {
+   "t": "n",
+   "v": 1
+  },
+  "MATCH#1": {
+   "t": "n",
+   "v": 1
+  }
+ }
+}

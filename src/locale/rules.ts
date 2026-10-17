@@ -7,7 +7,7 @@
  */
 import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
-import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders, type DateSyntax } from '../dates.js'
+import { decimalFirst, enCritNumber, enDates, enNumber, enTypedNumber, inSystem, parseDateWith, textReaders, type DateSyntax } from '../dates.js'
 import { builtinCodes, displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
@@ -107,6 +107,7 @@ const EN_STYLE: Style = {
 function englishRules(clock: RulesClock, epoch: number): Rules {
   const dates = inSystem(enDates(() => clock.year()), epoch)
   const { value: valueText, argument } = textReaders(enNumber, dates)
+  const crit = textReaders(enCritNumber, dates).argument
   const number = decimalFirst(argument)
   const style = styleIn(EN_STYLE, epoch)
   const dialect: Dialect = { codes: EN_CODES, style, number }
@@ -115,7 +116,7 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
     ...EN_CRIT,
     ...coercions(number, EN_US.booleans, generalText),
     clock,
-    critNumber: argument,
+    critNumber: crit,
     cellNumber: cellNumberOf(argument),
     locale: EN_US,
     decimal: '.',
@@ -123,7 +124,7 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
     currency: { symbol: '$', before: true, space: '', negative: '()' },
     valueText,
     dateText: (text) => parseDateWith(text, dates),
-    numberOnly: enNumber,
+    numberOnly: enTypedNumber,
     dates,
     numberText: generalText,
     formatText: (value, format) => formatWith(value, format, dialect),

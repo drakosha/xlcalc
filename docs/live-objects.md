@@ -1,4 +1,4 @@
-# Live objects of sheets and cells
+# Live sheet and cell objects
 
 `liveWorkbook(session)` gives objects of a session's sheets and cells. Reading a cell's property reads what the session computed; assigning one is the session's edit, recomputed before the next line runs, with a step of the undo; and a listener of a cell, a sheet or the book is called when a change touched it, whoever made the change. The objects hold no copy of the book and need nothing besides the package, so a framework's reactivity (Vue's `customRef`, a signal) can sit on top of them.
 
@@ -47,7 +47,7 @@ console.log(a.B1.type('5%').ok, a.B1.value, a.B1.text) // → true 0.05 5%
 
 ## Batches
 
-`book.batch(fn)` applies the assignments `fn` makes as one `applyChanges` ([Live workbook operations](live-books.md)): one recomputation, one revision, one step of the undo and one change told to listeners.
+`book.batch(fn)` applies the assignments `fn` makes as one `applyChanges` ([Batch changes, previews and paged queries in a live session](live-books.md)): one recomputation, one revision, one step of the undo and one change told to listeners.
 
 - Until `fn` returns, the cells read as they were before the batch: the assignments wait for its end.
 - A batch inside another is part of the outer one.

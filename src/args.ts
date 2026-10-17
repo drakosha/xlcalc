@@ -304,11 +304,16 @@ function toTime(v: V, rules: Rules): number | CErr {
 
 /** A time of day argument (HOUR, MINUTE, SECOND): as `toTime`, in the book's date system, whose day fraction is the same. */
 function timeOfDay(v: V, rules: Rules): number | CErr {
-  const t = typeof v === 'string' ? rules.dateText(v) : null
-  const n = t ?? rules.toNum(v)
+  const n = timeRead(v, rules)
   if (isErr(n)) return n
-  return n < 0 || n >= MAX_SERIAL + 1 - rules.epoch ? E.NUM : n
+  return inCalendar(n, rules) ? n : E.NUM
 }
+
+/** A time or date-time argument as read, before its range is checked (WEEKDAY reads its type in between). */
+export const timeRead = (v: V, rules: Rules): number | CErr => (typeof v === 'string' ? rules.dateText(v) : null) ?? rules.toNum(v)
+
+/** Whether a serial number of the book's date system lies in its calendar, its first day … 9999-12-31. */
+export const inCalendar = (n: number, rules: Rules) => n >= 0 && n < MAX_SERIAL + 1 - rules.epoch
 
 /** A number where a boolean is #VALUE! (the former Analysis ToolPak's rule). */
 export const noBool = (v: V, rules: Rules): number | CErr => (typeof v === 'boolean' ? E.VALUE : rules.toNum(v))

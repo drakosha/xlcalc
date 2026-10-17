@@ -1,6 +1,6 @@
 /** TEXTBEFORE and TEXTAFTER, this engine's own (Excel 2024). The delimiter may be several texts (an array or a range). */
 import type { Cx, FnDef, Segment } from '../../args.js'
-import { E, isErr, type V } from '../../values.js'
+import { E, isErr, WHOLE, type V } from '../../values.js'
 import { delimiters } from './common.js'
 
 type Span = [number, number]
@@ -31,16 +31,19 @@ function occurrence(hay: string, keys: string[], n: number, matchEnd: boolean): 
 }
 
 const around = (after: boolean): FnDef => ({
-  args: 's V w? i? i? a?',
+  args: 's V n? i? i? a?',
   cx: true,
-  fn: (cx: Cx, text: string, delim: Segment, n = 1, mode = 0, matchEnd = 0, notFound?: V): V => {
+  fn: (cx: Cx, text: string, delim: Segment, instance?: number, mode = 0, matchEnd = 0, notFound?: V): V => {
+    // the instance is rounded down, as Excel does (-1.2 is -2), a hair under a whole number taken for it
+    const n = instance === undefined ? 1 : Math.floor(instance + WHOLE)
     const keys = delimiters(delim, cx.rules)
     if (isErr(keys)) return keys
     if (n === 0 || (mode !== 0 && mode !== 1) || (matchEnd !== 0 && matchEnd !== 1)) return E.VALUE
     const empty = keys.includes('')
     // empty text: an empty delimiter is found, else Excel answers #N/A only to the plain call
     if (text === '') return empty ? '' : n === 1 && !matchEnd && notFound === undefined ? E.NA : E.VALUE
-    if (Math.abs(n) > text.length && !empty) return E.VALUE
+    // an instance past the text's length is #VALUE!, and so are delimiters all longer than the text once an instance is given
+    if (!empty && (Math.abs(n) > text.length || (instance !== undefined && keys.every((k) => k.length > text.length)))) return E.VALUE
     const s = mode ? occurrence(text.toLowerCase(), keys.map((k) => k.toLowerCase()), n, matchEnd === 1) : occurrence(text, keys, n, matchEnd === 1)
     // Excel returns the not-found value as text
     if (!s) return notFound === undefined ? E.NA : cx.rules.toText(notFound)

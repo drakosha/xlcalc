@@ -1,0 +1,247 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 18.2,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "TEXTAFTER#1",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"123 the 456 the 891\",\"the\",-1.6,1,0,\"Not found\")"
+  },
+  {
+   "id": "TEXTAFTER#2",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"123 the 456 the 891\",\"the\",-1.2,1,0,\"Not found\")"
+  },
+  {
+   "id": "TEXTBEFORE#1",
+   "group": "TEXTBEFORE",
+   "fn": "TEXTBEFORE",
+   "formula": "_xlfn.TEXTBEFORE(\"123 the 456 the 891\",\"the\",-1.6,1,0, \"Not found\")"
+  },
+  {
+   "id": "TEXTAFTER#3",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"del\",\"deli\",1,1,0,\"qwerty\")"
+  },
+  {
+   "id": "TEXTAFTER#4",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"hi\",\"Hello Good Morning\",1,1,0,\"@\")"
+  },
+  {
+   "id": "TEXTAFTER#5",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"del\",\"deli\",1)"
+  },
+  {
+   "id": "TEXTBEFORE#2",
+   "group": "TEXTBEFORE",
+   "fn": "TEXTBEFORE",
+   "formula": "_xlfn.TEXTBEFORE(\"del\",\"deli\",1,1,0, \"qwerty\")"
+  },
+  {
+   "id": "TEXTSPLIT#1",
+   "group": "TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "_xlfn.TEXTSPLIT(\"Hola sin split\",)"
+  },
+  {
+   "id": "TEXTSPLIT#2",
+   "group": "TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "_xlfn.TEXTSPLIT(\"Hola sin split\",,)"
+  },
+  {
+   "id": "TEXTAFTER#6",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"123 the 456 the 891\",\"the\",1.6)"
+  },
+  {
+   "id": "TEXTAFTER#7",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"123 the 456 the 891\",\"the\",-0.5)"
+  },
+  {
+   "id": "TEXTAFTER#8",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"123 the 456 the 891\",\"the\",0.5)"
+  },
+  {
+   "id": "TEXTAFTER#9",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"123 the 456 the 891\",\"the\",1.9999999)"
+  },
+  {
+   "id": "TEXTBEFORE#3",
+   "group": "TEXTBEFORE",
+   "fn": "TEXTBEFORE",
+   "formula": "_xlfn.TEXTBEFORE(\"123 the 456 the 891\",\"the\",-2.5)"
+  },
+  {
+   "id": "TEXTBEFORE#4",
+   "group": "TEXTBEFORE",
+   "fn": "TEXTBEFORE",
+   "formula": "_xlfn.TEXTBEFORE(\"123 the 456 the 891\",\"the\",2.7)"
+  },
+  {
+   "id": "TEXTAFTER#10",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"abc\")"
+  },
+  {
+   "id": "TEXTAFTER#11",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",{\"abcd\",\"b\"})"
+  },
+  {
+   "id": "TEXTAFTER#12",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",{\"abcd\",\"xyzw\"},1,0,0,\"-\")"
+  },
+  {
+   "id": "TEXTAFTER#13",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"ABCD\",1,1)"
+  },
+  {
+   "id": "TEXTBEFORE#5",
+   "group": "TEXTBEFORE",
+   "fn": "TEXTBEFORE",
+   "formula": "_xlfn.TEXTBEFORE(\"abc\",\"abcd\",1,0,1)"
+  },
+  {
+   "id": "TEXTAFTER#14",
+   "group": "TEXTAFTER",
+   "fn": "TEXTAFTER",
+   "formula": "_xlfn.TEXTAFTER(\"abc\",\"x\",1,0,0,\"-\")"
+  },
+  {
+   "id": "TEXTSPLIT#3",
+   "group": "TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "ROWS(_xlfn.TEXTSPLIT(\"a;b\",,\";\"))"
+  },
+  {
+   "id": "TEXTSPLIT#4",
+   "group": "TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "COLUMNS(_xlfn.TEXTSPLIT(\"a b\",\" \"))"
+  }
+ ],
+ "values": {
+  "TEXTAFTER#1": {
+   "t": "s",
+   "v": " 456 the 891"
+  },
+  "TEXTAFTER#2": {
+   "t": "s",
+   "v": " 456 the 891"
+  },
+  "TEXTBEFORE#1": {
+   "t": "s",
+   "v": "123 "
+  },
+  "TEXTAFTER#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTBEFORE#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTSPLIT#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTSPLIT#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#6": {
+   "t": "s",
+   "v": " 456 the 891"
+  },
+  "TEXTAFTER#7": {
+   "t": "s",
+   "v": " 891"
+  },
+  "TEXTAFTER#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#9": {
+   "t": "s",
+   "v": " 891"
+  },
+  "TEXTBEFORE#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TEXTBEFORE#4": {
+   "t": "s",
+   "v": "123 the 456 "
+  },
+  "TEXTAFTER#10": {
+   "t": "s",
+   "v": ""
+  },
+  "TEXTAFTER#11": {
+   "t": "s",
+   "v": "c"
+  },
+  "TEXTAFTER#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTBEFORE#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTAFTER#14": {
+   "t": "s",
+   "v": "-"
+  },
+  "TEXTSPLIT#3": {
+   "t": "n",
+   "v": 2
+  },
+  "TEXTSPLIT#4": {
+   "t": "n",
+   "v": 2
+  }
+ }
+}

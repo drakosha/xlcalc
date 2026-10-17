@@ -1,0 +1,312 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.109,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "GCD#1",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(Mt!A1,Mt!B1,Mt!C1)"
+  },
+  {
+   "id": "LCM#1",
+   "group": "LCM",
+   "fn": "LCM",
+   "formula": "LCM(Mt!A1,Mt!B1,Mt!C1)"
+  },
+  {
+   "id": "CSCH#1",
+   "group": "CSCH",
+   "fn": "CSCH",
+   "formula": "_xlfn.CSCH(1E-12)"
+  },
+  {
+   "id": "CSCH#2",
+   "group": "CSCH",
+   "fn": "CSCH",
+   "formula": "_xlfn.CSCH(-1E-12)"
+  },
+  {
+   "id": "IMREAL#1",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(_xlfn.IMCSCH(COMPLEX(1E-16,0)))"
+  },
+  {
+   "id": "IMAGINARY#1",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(_xlfn.IMCSCH(COMPLEX(1E-20,0)))"
+  },
+  {
+   "id": "LOGNORM.INV#1",
+   "group": "LOGNORM.INV",
+   "fn": "LOGNORM.INV",
+   "formula": "_xlfn.LOGNORM.INV(_xlfn.LOGNORM.DIST(4,3.5,1E12,TRUE),3.5,1E12)"
+  },
+  {
+   "id": "POISSON.DIST#1",
+   "group": "POISSON.DIST",
+   "fn": "POISSON.DIST",
+   "formula": "_xlfn.POISSON.DIST(-0.000001,5,TRUE)"
+  },
+  {
+   "id": "PROB#1",
+   "group": "PROB",
+   "fn": "PROB",
+   "formula": "PROB(Mt!D1:D2,Mt!E1:E2,1)"
+  },
+  {
+   "id": "GCD#2",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(Mt!A1)"
+  },
+  {
+   "id": "GCD#3",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(Mt!A1,6)"
+  },
+  {
+   "id": "LCM#2",
+   "group": "LCM",
+   "fn": "LCM",
+   "formula": "LCM(Mt!A1,4)"
+  },
+  {
+   "id": "GCD#4",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(Mt!A1:A2)"
+  },
+  {
+   "id": "GCD#5",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(Mt!F1:F2)"
+  },
+  {
+   "id": "CSCH#3",
+   "group": "CSCH",
+   "fn": "CSCH",
+   "formula": "_xlfn.CSCH(1E-300)"
+  },
+  {
+   "id": "CSCH#4",
+   "group": "CSCH",
+   "fn": "CSCH",
+   "formula": "_xlfn.CSCH(0.5)"
+  },
+  {
+   "id": "IMCSCH#1",
+   "group": "IMCSCH",
+   "fn": "IMCSCH",
+   "formula": "_xlfn.IMCSCH(\"1E-300\")"
+  },
+  {
+   "id": "IMAGINARY#2",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(_xlfn.IMCSCH(COMPLEX(0,1E-16)))"
+  },
+  {
+   "id": "IMCSCH#2",
+   "group": "IMCSCH",
+   "fn": "IMCSCH",
+   "formula": "_xlfn.IMCSCH(\"0.5+0.5i\")"
+  },
+  {
+   "id": "IMCSCH#3",
+   "group": "IMCSCH",
+   "fn": "IMCSCH",
+   "formula": "_xlfn.IMCSCH(0)"
+  },
+  {
+   "id": "LOGNORM.INV#2",
+   "group": "LOGNORM.INV",
+   "fn": "LOGNORM.INV",
+   "formula": "_xlfn.LOGNORM.INV(_xlfn.LOGNORM.DIST(4,3.5,1E8,TRUE),3.5,1E8)"
+  },
+  {
+   "id": "NORM.S.DIST#1",
+   "group": "NORM.S.DIST",
+   "fn": "NORM.S.DIST",
+   "formula": "_xlfn.NORM.S.DIST(1E-13,TRUE)-0.5"
+  },
+  {
+   "id": "NORM.S.DIST#2",
+   "group": "NORM.S.DIST",
+   "fn": "NORM.S.DIST",
+   "formula": "_xlfn.NORM.S.DIST(0.2,TRUE)"
+  },
+  {
+   "id": "NORM.S.INV#1",
+   "group": "NORM.S.INV",
+   "fn": "NORM.S.INV",
+   "formula": "_xlfn.NORM.S.INV(0.5-2^-40)"
+  },
+  {
+   "id": "POISSON.DIST#2",
+   "group": "POISSON.DIST",
+   "fn": "POISSON.DIST",
+   "formula": "_xlfn.POISSON.DIST(-0,5,TRUE)"
+  },
+  {
+   "id": "POISSON.DIST#3",
+   "group": "POISSON.DIST",
+   "fn": "POISSON.DIST",
+   "formula": "_xlfn.POISSON.DIST(0.9,5,FALSE)"
+  },
+  {
+   "id": "POISSON.DIST#4",
+   "group": "POISSON.DIST",
+   "fn": "POISSON.DIST",
+   "formula": "_xlfn.POISSON.DIST(-1E-300,5,TRUE)"
+  },
+  {
+   "id": "PROB#2",
+   "group": "PROB",
+   "fn": "PROB",
+   "formula": "PROB(Mt!G1:G3,Mt!H1:H3,1)"
+  },
+  {
+   "id": "PROB#3",
+   "group": "PROB",
+   "fn": "PROB",
+   "formula": "PROB({\"a\",\"b\"},{0.5,0.5},1)"
+  },
+  {
+   "id": "PROB#4",
+   "group": "PROB",
+   "fn": "PROB",
+   "formula": "PROB({TRUE,1},{0.5,1},1)"
+  }
+ ],
+ "values": {
+  "GCD#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LCM#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CSCH#1": {
+   "t": "n",
+   "v": 1000000000000
+  },
+  "CSCH#2": {
+   "t": "n",
+   "v": -1000000000000
+  },
+  "IMREAL#1": {
+   "t": "n",
+   "v": 10000000000000000
+  },
+  "IMAGINARY#1": {
+   "t": "n",
+   "v": 0
+  },
+  "LOGNORM.INV#1": {
+   "t": "n",
+   "v": 3.999765880934408
+  },
+  "POISSON.DIST#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PROB#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "GCD#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GCD#3": {
+   "t": "n",
+   "v": 6
+  },
+  "LCM#2": {
+   "t": "n",
+   "v": 4
+  },
+  "GCD#4": {
+   "t": "n",
+   "v": 0
+  },
+  "GCD#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CSCH#3": {
+   "t": "n",
+   "v": 9.999999999999999e+299
+  },
+  "CSCH#4": {
+   "t": "n",
+   "v": 1.9190347513349437
+  },
+  "IMCSCH#1": {
+   "t": "s",
+   "v": "1E+300"
+  },
+  "IMAGINARY#2": {
+   "t": "n",
+   "v": -10000000000000000
+  },
+  "IMCSCH#2": {
+   "t": "s",
+   "v": "0.912074264038811-1.07822969465402i"
+  },
+  "IMCSCH#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "LOGNORM.INV#2": {
+   "t": "n",
+   "v": 3.9999999730123177
+  },
+  "NORM.S.DIST#1": {
+   "t": "n",
+   "v": 3.9968028886505635e-14
+  },
+  "NORM.S.DIST#2": {
+   "t": "n",
+   "v": 0.579259709439103
+  },
+  "NORM.S.INV#1": {
+   "t": "n",
+   "v": -2.2797651350911116e-12
+  },
+  "POISSON.DIST#2": {
+   "t": "n",
+   "v": 0.006737946999085467
+  },
+  "POISSON.DIST#3": {
+   "t": "n",
+   "v": 0.006737946999085467
+  },
+  "POISSON.DIST#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PROB#2": {
+   "t": "n",
+   "v": 0.5
+  },
+  "PROB#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "PROB#4": {
+   "t": "n",
+   "v": 1
+  }
+ }
+}

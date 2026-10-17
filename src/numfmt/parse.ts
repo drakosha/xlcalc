@@ -12,7 +12,7 @@ import { EN_COLORS, PALETTE } from './palette.js'
  * a minus only), a date part or an elapsed one by its en-US letters (`n` minutes whatever stands around them).
  */
 export type Tok =
-  | { t: 'lit'; s: string }
+  | { t: 'lit'; s: string; point?: true }
   | { t: 'ph'; c: '0' | '#' | '?' }
   | { t: 'dot'; s: string }
   | { t: 'comma'; s: string }
@@ -181,8 +181,8 @@ function parseSection(text: string, codes: Codes): Section | null {
     }
     if (ch === 'E' || ch === 'e') return null
     if (ch === '0' || ch === '#' || ch === '?') toks.push({ t: 'ph', c: ch })
-    // a second decimal separator is a literal (`0.0.`)
-    else if (ch === codes.decimal) toks.push(point ? { t: 'lit', s: ch } : { t: 'dot', s: ch })
+    // a second decimal separator is a literal (`0.0.`), marked: in a date it may start the second's decimals (`yy.00.00`)
+    else if (ch === codes.decimal) toks.push(point ? { t: 'lit', s: ch, point: true } : { t: 'dot', s: ch })
     else if (ch === codes.group) toks.push(codes.currency && text.startsWith(codes.currency, i + 1) ? { t: 'lit', s: ch } : { t: 'comma', s: ch })
     else if (ch === '%') toks.push({ t: 'pct' })
     else if (ch === '/') toks.push({ t: 'slash' })
