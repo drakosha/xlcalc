@@ -4,9 +4,8 @@
  * takes the formula's place and a new formula the value's; an edit of null clears the content and the hyperlink, as Delete.
  */
 import type { CellEdit, CellFields, CellInput, CellReplace } from '../contract.js'
-import type { EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { CELL_FIELDS, checkCell, checkEditList, InputError, object, onlyKeys } from '../input.js'
-import { sheetKey } from '../syntax.js'
 import { inputAt } from './book.js'
 
 /** The fields of a cell's content: a formula's value held while a circular reference stops it goes with the formula. */
@@ -17,19 +16,19 @@ export const CONTENT = ['value', 'formula', 'array', 'held'] as const
  * and the hyperlink, as Excel's Delete key and ClearContents do (the set `lines/clear`).
  */
 export function withFields(input: CellInput | undefined, fields: CellFields | null): CellInput | null {
-  const out: Record<string, unknown> = { ...input }
   // a new value or formula, or none, replaces the content whole; a formula removed takes its area along
-  if (fields === null || fields.value !== undefined || typeof fields.formula === 'string') for (const k of CONTENT) delete out[k]
-  if (fields === null) delete out.link
-  if (fields?.formula === null) {
-    delete out.array
-    delete out.held
-  }
+  const whole = fields === null || fields.value !== undefined || typeof fields.formula === 'string'
+  const out: Record<string, unknown> = {}
+  // the input's fields that stay, in their order, copied rather than deleted: a deleted field slows every later read of the object
+  if (input)
+    for (const k in input) {
+      if ((whole && (CONTENT as readonly string[]).includes(k)) || (fields === null && k === 'link') || (fields?.formula === null && (k === 'array' || k === 'held')) || fields?.[k as keyof CellFields] === null) continue
+      out[k] = input[k as keyof CellInput]
+    }
   if (fields)
     for (const k in fields) {
       const v = fields[k as keyof CellFields]
-      if (v === null) delete out[k]
-      else if (v !== undefined) out[k] = v
+      if (v !== null && v !== undefined) out[k] = v
     }
   for (const k in out) if (out[k] !== undefined) return out as CellInput
   return null
@@ -56,11 +55,11 @@ export function checkFieldEdits(v: unknown, sheetIndex: (name: string) => number
 export function resolveEdits(s: EngineState, edits: CellEdit[]): CellReplace[] {
   if (edits.length === 1) {
     const [e] = edits
-    return [{ sheet: e.sheet, cell: e.cell, input: withFields(inputAt(s, s.sheetIdx.get(sheetKey(e.sheet))!, e.cell), e.input) }]
+    return [{ sheet: e.sheet, cell: e.cell, input: withFields(inputAt(s, sheetIndexOf(s, e.sheet)!, e.cell), e.input) }]
   }
   const now = new Map<string, CellInput | null>()
   return edits.map((e) => {
-    const i = s.sheetIdx.get(sheetKey(e.sheet))!
+    const i = sheetIndexOf(s, e.sheet)!
     const k = `${i}!${e.cell}`
     const was = now.has(k) ? now.get(k) : inputAt(s, i, e.cell)
     const input = withFields(was ?? undefined, e.input)

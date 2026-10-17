@@ -17,7 +17,7 @@ import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outValue } from './result.js'
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
-import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, type EngineOptions, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
 import { allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
@@ -183,11 +183,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     }
     return state!
   }
-  // a name spelled as the book spells it is found without its key, which upper-cases it
-  const sheetIndex = (s: EngineState) => (name: string) => {
-    const i = s.sheetNames.indexOf(name)
-    return i >= 0 ? i : s.sheetIdx.get(sheetKey(name))
-  }
+  const sheetIndex = (s: EngineState) => (name: string) => sheetIndexOf(s, name)
   const styleCount = (s: EngineState) => s.input.styles?.length ?? 0
   /** The changes of cells `keys` as a host gets them, with the fields that changed of some and a new format's code. */
   const changes = (s: EngineState, keys: string[], fields: Map<string, FieldChange>) => {

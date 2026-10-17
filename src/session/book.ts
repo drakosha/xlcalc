@@ -1,14 +1,22 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
 import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, RowsFit, SheetInput, SheetLayout } from '../contract.js'
-import { setInput, settled, type EngineState } from '../engine.js'
+import { setInput, settled, sheetIndexOf, type EngineState } from '../engine.js'
 import { InputError } from '../input.js'
 import { hasLooks, inputIn, layerOf } from '../looks/sheet.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'
-import { sheetKey } from '../syntax.js'
 
-/** What a cell computes from: its formula and the value it holds (`held.ts`), or its value (a date as its serial number). */
-const content = (c: CellInput | null | undefined, epoch: number) => (c?.formula !== undefined ? `f${JSON.stringify([c.formula, c.array, c.held])}` : `v${JSON.stringify(bookScalar(c?.value, epoch))}`)
+/** A scalar as JSON writes it: a number's -0 as 0, NaN and the infinities as null. */
+const json = (v: unknown) => (typeof v === 'number' ? (Number.isFinite(v) ? v + 0 : null) : v)
+
+/** Whether two values are written alike in JSON: scalars compared without writing them. */
+const alike = (a: unknown, b: unknown) => (typeof a === 'object' && a !== null) || (typeof b === 'object' && b !== null) ? JSON.stringify(a) === JSON.stringify(b) : json(a) === json(b)
+
+/** Whether two inputs compute from the same: their formula, array area and the value it holds (`held.ts`), or their value (a date as its serial number). */
+function sameContent(a: CellInput | null | undefined, b: CellInput | null | undefined, epoch: number): boolean {
+  if (a?.formula !== undefined) return b?.formula !== undefined && a.formula === b.formula && a.array === b.array && alike(a.held ?? null, b.held ?? null)
+  return b?.formula === undefined && alike(bookScalar(a?.value, epoch), bookScalar(b?.value, epoch))
+}
 
 /**
  * The edits that change a cell's value or formula, the last one per cell; the others (a new style, format or
@@ -17,13 +25,13 @@ const content = (c: CellInput | null | undefined, epoch: number) => (c?.formula 
 export function contentEdits(s: EngineState, edits: CellReplace[]): CellReplace[] {
   const last = new Map<string, [CellReplace, number]>()
   for (const e of edits) {
-    const i = s.sheetIdx.get(sheetKey(e.sheet))!
+    const i = sheetIndexOf(s, e.sheet)!
     last.set(`${i}:${e.cell}`, [e, i])
   }
   const out: CellReplace[] = []
   const quiet: CellReplace[] = []
   for (const [e, i] of last.values()) {
-    if (content(s.input.sheets[i].cells[e.cell], s.ctx.rules.epoch) !== content(e.input, s.ctx.rules.epoch)) out.push(e)
+    if (!sameContent(s.input.sheets[i].cells[e.cell], e.input, s.ctx.rules.epoch)) out.push(e)
     else {
       const { row, col } = parseAddress(e.cell)
       setInput(s, i, e.cell, row, col, e.input)
@@ -38,8 +46,9 @@ export function contentEdits(s: EngineState, edits: CellReplace[]): CellReplace[
 export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]): CellReplace[] {
   const out = new Map<string, CellReplace>()
   for (const { sheet, cell } of refs) {
-    const k = `${sheetKey(sheet)}!${cell}`
-    if (!out.has(k)) out.set(k, { sheet, cell, input: inputAt(s, s.sheetIdx.get(sheetKey(sheet))!, cell) ?? null })
+    const i = sheetIndexOf(s, sheet)!
+    const k = `${i}!${cell}`
+    if (!out.has(k)) out.set(k, { sheet, cell, input: inputAt(s, i, cell) ?? null })
   }
   return [...out.values()]
 }
