@@ -28,3 +28,9 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The prediction Excel for Mac did not confirm: a blank among the values is empty text (`^$` finds A5). The set
+ * `xmatch-regex-held-3` measures blanks.
+ */
+export const MISSED: readonly string[] = ['XMATCH#6']
