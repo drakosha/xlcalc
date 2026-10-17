@@ -67,6 +67,20 @@ Pages contain `revision`, `clock`, `truncated` and, when another page exists, `c
 
 A host that keeps its own texts finds and replaces in them as `findCells` and `replaceInCells` do with `findMatcher(query, opts?)` and `findReplacer(query, by, opts?)` of `xlcalc/text` (`caseSensitive`, `wildcards`, `wholeCell`), without the engine. `compareValues(a, b, { descending })` is the order SORT sorts values of mixed types in: numbers, text in any case, FALSE then TRUE, errors, and blanks last either way, for a host's display filter. To sort many values, `valueComparator({ descending })` checks the options once and gives the comparison itself, which takes the values unchecked: `values.sort(valueComparator())`. Both take a `locale` too, a tag or a locale object, and order text as its books do; ru-RU's order is en-US's, Latin before Cyrillic, as Excel for Windows sorts in every locale (Excel for Mac ru-RU puts Cyrillic first; see [Locales](locale.md)).
 
+### Values of a rectangle
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: 'A1/3' }, A2: { value: 'x' }, B2: { formula: '1/0' } } }] }, { clock: { now: '2026-10-16T12:00:00Z', seed: 1 } })
+console.log(session.getValues('S', 'A1:C2'))
+// → [ [ 1, 0.333333333333333, null ], [ 'x', { error: 'DIV0' }, null ] ]
+console.log(session.getValues('S', 'A:A', { maxCells: 1048576 }).length)
+// → 1048576
+```
+
+`getValues(sheet, range)` gives a rectangle's values as rows, top to bottom, each from left to right, as a chart, an export or another engine takes them: every value as `readCells` gives it in its field `value`, null where a cell holds none. The rectangle is the one asked, its empty cells too, not cut to where the sheet's cells end. A whole column is a million rows, so a rectangle of more than `maxCells` cells, a million by default, is refused with `CalcError` `limit` rather than cut. Each call gives arrays of its own, which a host may change. No object and no address is made for a cell: the 506,594 values of a sheet of 34,001 rows come in about 10 ms, against about 155 ms for `readCells` by pages, and a window of 1,600 cells in about 0.04 ms.
+
 ## Finding as Excel finds
 
 A grid's Find and Replace calls `findCells` with the options of Excel's dialog and gets the cells Excel's Find gives, in its order, without reading the sheet's windows itself.

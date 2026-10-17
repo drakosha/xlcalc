@@ -5,12 +5,12 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { CopyTextOptions } from '../contract.js'
+import type { CellValue, CopyTextOptions, Explanation, ValuesOptions } from '../contract.js'
 import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, ChangingMethod, Clock, ComputeResult, ExplainOptions, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
-import { splitCall, checkCall, checkEditCall } from '../async/options.js'
+import { splitCall, checkCall, checkEditCall, withCall } from '../async/options.js'
 import { checkedMapCell } from '../structure/index.js'
 import { subscribers, withSubscribe } from '../session/subscribers.js'
 import type { SentGeometry } from '../structure/geometry.js'
@@ -427,23 +427,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       getLayout: () => value(call('getLayout', [])),
       getUsedRange: (sheet) => value(call('getUsedRange', [sheet])),
       getEnd: (sheet, cell, direction) => value(call('getEnd', [sheet, cell, direction])),
-      explain: (sheet, cell, eo) => {
-        try {
-          const { signal, timeoutMs, rest } = splitCall<ExplainOptions>(eo)
-          return value(call('explain', [sheet, cell, rest], { signal, timeoutMs }))
-        } catch (e) {
-          return Promise.reject(e)
-        }
-      },
+      explain: (sheet, cell, eo) => withCall<ExplainOptions, Explanation>(eo, (rest, co) => value(call('explain', [sheet, cell, rest], co))),
       getCells: (sheet, range, co) => value(call('getCells', [sheet, range], co)),
-      copyText: (sheet, range, o) => {
-        try {
-          const { signal, timeoutMs, rest } = splitCall<CopyTextOptions>(o)
-          return value(call('copyText', [sheet, range, rest], { signal, timeoutMs }))
-        } catch (e) {
-          return Promise.reject(e)
-        }
-      },
+      copyText: (sheet, range, o) => withCall<CopyTextOptions, string>(o, (rest, co) => value(call('copyText', [sheet, range, rest], co))),
+      getValues: (sheet, range, o) => withCall<ValuesOptions, CellValue[][]>(o, (rest, co) => value(call('getValues', [sheet, range, rest], co))),
       getCell: (sheet, cell) => value(call('getCell', [sheet, cell])),
       getViewport: (sheet, range, vo) => value(call('getViewport', [sheet, range, vo])),
       getCellIssue: (sheet, cell) => value(call('getCellIssue', [sheet, cell])),

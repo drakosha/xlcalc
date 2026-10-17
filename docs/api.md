@@ -982,6 +982,8 @@ interface AsyncSession {
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
   /** As `Session.copyText`; the text is prepared in one read in the session's thread. */
   copyText(sheet: string, range: string, opts?: CopyTextOptions & CalcOptions): Promise<string>
+  /** As `Session.getValues`; from a thread the rows come back in one call. */
+  getValues(sheet: string, range: string, opts?: ValuesOptions & CalcOptions): Promise<CellValue[][]>
   getCell(sheet: string, cell: string): Promise<CellView | undefined>
   /** As `Session.getViewport`; from a thread the window comes back in one call. */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Promise<Viewport>
@@ -3795,6 +3797,14 @@ interface Session {
    * whole rows/columns stop at the used extent, and an empty sheet gives one empty field. Changes nothing.
    */
   copyText(sheet: string, range: string, opts?: CopyTextOptions): string
+  /**
+   * The values of a rectangle of a sheet (`B2:D9`, `B:B`, `2:9`), as rows from top to bottom, each from left to right:
+   * every cell's value as `readCells` gives it in its field `value` (a number to 15 significant digits, a text, a boolean,
+   * an error as `{ error }`), null where a cell holds none. The rectangle is the one asked, its empty cells too, not cut
+   * to where the sheet's cells end; one of more than `maxCells` cells is refused (`CalcError` `limit`). Each call gives
+   * arrays of its own. It costs the rectangle's cells, not a result object and an address for each; changes nothing.
+   */
+  getValues(sheet: string, range: string, opts?: ValuesOptions): CellValue[][]
   /** One cell as `getCells(sheet, cell)` gives it; undefined for a cell `getCells` leaves out. */
   getCell(sheet: string, cell: string): CellView | undefined
   /**
@@ -4464,6 +4474,17 @@ for which a formula (`custom`) is TRUE.
 
 ```ts
 type ValidationType = 'any' | 'whole' | 'decimal' | 'date' | 'time' | 'textLength' | 'list' | 'custom'
+```
+
+### `ValuesOptions`
+
+Options of [`Session.getValues`](#session).
+
+```ts
+interface ValuesOptions {
+  /** The most cells the rectangle may have, 1,000,000 by default. A larger one is refused, never cut. */
+  maxCells?: number
+}
 ```
 
 ### `Viewport`
