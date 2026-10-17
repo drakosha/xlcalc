@@ -88,3 +88,12 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): the binary search compares at the middle of
+ * the positions it still has, both ends included, and an equal value there is found (5 among 1, 9, 5, 2, 3); a blank
+ * counts as greater than the key and the positions run to the reference's end, so over 1, 2, blank, 4, 5, 6 the
+ * search turns at the blank and misses 5, and a whole column searched from the end runs past its last value (the
+ * next smaller #N/A, the next larger the last row). The set `xlookup-ironcalc-held-2` measures the rule they led to.
+ */
+export const MISSED: readonly string[] = ['XLOOKUP#16', 'XLOOKUP#19', 'XLOOKUP#33', 'XLOOKUP#34']
