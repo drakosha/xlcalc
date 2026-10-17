@@ -209,7 +209,7 @@ export interface SessionCore {
   ready(): Steps<EngineState>
   putCells(s: EngineState, edits: CellReplace[], restore?: boolean): Steps<[Outcome, CellReplace[]]>
   rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean, restore?: boolean): Steps<[EngineState, Outcome, BookDiff | null]>
-  relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[Outcome, SheetInput[]]>
+  relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<number, string> | null): Steps<[Outcome, SheetInput[]]>
   display: boolean
   sheetIndex(s: EngineState): (name: string) => number | undefined
 }

@@ -17,7 +17,7 @@ import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outValue } from './result.js'
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
-import { applyClock, applyEdits, applyHidden, applyMerges, buildState, keyParts, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
 import { allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
@@ -51,7 +51,7 @@ import { dropStats } from './cond/stats.js'
 import { fitEdits } from './layout/fit.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
-import { formatAddress, parseAddress, readAddress } from './model.js'
+import { formatAddress, parseAddress, placeOf, placeParts, readAddress } from './model.js'
 import { buildResult, cellAt, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
@@ -186,13 +186,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   const sheetIndex = (s: EngineState) => (name: string) => sheetIndexOf(s, name)
   const styleCount = (s: EngineState) => s.input.styles?.length ?? 0
   /** The changes of cells `keys` as a host gets them, with the fields that changed of some and a new format's code. */
-  const changes = (s: EngineState, keys: string[], fields: Map<string, FieldChange>) => {
+  const changes = (s: EngineState, keys: number[], fields: Map<number, FieldChange>) => {
     // the statistics of conditional formats over changed cells are taken again
     dropStats(s, keys)
     const look = display ? cellLooks(s) : null
     const code = formatCodeIn(s.input.locale)
     return keys.map((k) => {
-      const [i, r, c] = keyParts(k)
+      const [i, r, c] = placeParts(k)
       const value = cellValue(s, i, r, c)
       const f = fields.get(k)
       const format = f?.numberFormat
@@ -242,7 +242,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       // edits that keep a cell's value and formula change its input alone
       const loud = contentEdits(s, edits)
       if (loud.length && (live || controlledClock)) tick(s)
-      let keys: string[]
+      let keys: number[]
       if (loud.length) keys = yield* applyEdits(s, loud, live || controlledClock !== undefined, restore)
       else if (controlledClock) { tick(s); keys = yield* applyClock(s, clockSerial(clock), clock.seed) }
       else keys = []
@@ -272,7 +272,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       // a formula a cycle stops now holds what it showed (`held.ts`): the sheets so changed are the new book's in the diff
       const rewritten = new Set<number>()
       const next = yield* build(book, unlent, { ...(restore ? {} : { prior: priorOf(old, g) }), rewritten })
-      const fields = new Map<string, FieldChange>()
+      const fields = new Map<number, FieldChange>()
       const current = rewritten.size ? { ...book, sheets: book.sheets.map((x, i) => (rewritten.has(i) ? next.input.sheets[i] : x)) } : book
       const pass = back ? new DiffPass(current, old.input) : undefined
       const keys = movedChanges(old, next, g, fields, display && looks ? [cellLooks(old), cellLooks(next)] : undefined, pass)
@@ -290,7 +290,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
    * Sheets of the book replaced by new ones of another layout: the arrays and SUBTOTALs it concerns computed again; the
    * changes and the sheets before, which are put back if the call stops.
    */
-  function* relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[Outcome, SheetInput[]]> {
+  function* relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<number, string> | null): Steps<[Outcome, SheetInput[]]> {
     const sheets = s.input.sheets.slice()
     // a sheet made before cells were written keeps the cells' looks as they are now: a layout never changes them
     for (const [i, x] of next) next.set(i, (s.input.sheets[i] = withLooksOf(x, sheets[i])))
@@ -298,7 +298,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     if (ruled.length) dropStats(s, [], true)
     try {
       // merged areas added or removed: the arrays whose range they meet spill or stop; hidden rows: SUBTOTAL and AGGREGATE count again
-      const keys = new Set<string>()
+      const keys = new Set<number>()
       for (const [i, x] of next) {
         const [was, now] = [new Set(sheets[i].merges ?? []), new Set(x.merges ?? [])]
         const moved = [...was].filter((m) => !now.has(m)).concat([...now].filter((m) => !was.has(m)))
@@ -506,7 +506,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         const impacts = list.map((c) => {
           const i = old.sheetIdx.get(sheetKey(c.sheet))!,
             { row, col } = parseAddress(c.cell),
-            k = `${i}:${row}:${col}`
+            k = placeOf(i, row, col)
           const before = captured.cells.has(k) ? outValue(toCellValue(captured.cells.get(k)!)) : cellValue(old, i, row, col)
           const issue = issueDetail(next, i, row, col)
           return { sheet: c.sheet, cell: c.cell, before, after: c.value, ...(issue ? { issue } : {}) }

@@ -33,13 +33,16 @@ export interface Spills {
   merges: Map<number, Rect[]>
   /** Of two arrays over one cell, the one with the lower rank spills (made when needed, dropped with the graph). */
   rank?: Map<number, number>
-  /** Steps of the current round: a formula's evaluation, a change of spilled cells. */
+  /** Steps so far, counted on across rounds: a formula's evaluation, a change of spilled cells. */
   step: number
-  done: Map<number, number>
+  /** The step the current round began after: a formula's step in `done` before it is of an earlier round. */
+  since: number
+  /** The step each formula (by id) was last computed at; a typed array, written once per formula computed, without a map's hashing. */
+  done: Float64Array
   touched: (Area & { step: number })[]
   claimsChanged: boolean
 }
 
-export const newSpills = (): Spills => ({ on: new Map(), claims: new Map(), wait: new Map(), why: new Map(), occupied: new Occupied(), merges: new Map(), step: 0, done: new Map(), touched: [], claimsChanged: false })
+export const newSpills = (): Spills => ({ on: new Map(), claims: new Map(), wait: new Map(), why: new Map(), occupied: new Occupied(), merges: new Map(), step: 0, since: 0, done: new Float64Array(0), touched: [], claimsChanged: false })
 
 export const equalAreas = (a: Area | undefined, b: Area | undefined) => a === b || (!!a && !!b && a.s === b.s && a.r1 === b.r1 && a.c1 === b.c1 && a.r2 === b.r2 && a.c2 === b.c2)

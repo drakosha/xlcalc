@@ -54,14 +54,15 @@ describe.each(['closures', 'eval'] as const)('incremental work, %s', (execution)
     expect(evaluated.n).toBe(n - 1)
   })
 
-  it('releases spill round bookkeeping after a calculation', () => {
+  it('keeps spill round bookkeeping to one step per formula, however many calculations', () => {
     const cells: Record<string, CellInput> = { A1: { value: 1 } }
     for (let r = 2; r <= 1024; r++) cells[`A${r}`] = { formula: `A${r - 1}+1` }
     const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1, execution })
-    expect(state.spills.done.size).toBe(0)
-    run(applyEdits(state, [{ sheet: 'S', cell: 'A1', input: { value: 2 } }]))
-    expect(state.rt.cell(0, 1023, 0)).toBe(1025)
-    expect(state.spills.done.size).toBe(0)
+    const room = state.spills.done.length
+    expect(room).toBeLessThanOrEqual(2 * 1023)
+    for (let i = 0; i < 20; i++) run(applyEdits(state, [{ sheet: 'S', cell: 'A1', input: { value: 2 + i } }]))
+    expect(state.rt.cell(0, 1023, 0)).toBe(1044)
+    expect(state.spills.done.length).toBe(room)
   })
 
   it('does not reread a shared unchanged short range for every recomputed formula', () => {

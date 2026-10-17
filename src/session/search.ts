@@ -8,9 +8,9 @@
  * which they may read. A state built anew (a structure operation, new names, a call that stopped) starts with none.
  */
 import { writesMark, writesSince } from '../cell-writes.js'
-import { keyParts, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, readAddress } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS, placeParts, readAddress } from '../model.js'
 import { lowerBound } from '../sorted.js'
 import { parseRange } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
@@ -149,7 +149,7 @@ export function textsChanged(state: EngineState, o: Outcome): void {
       x.texts.delete('text folded')
     }
   for (const k of o.keys) {
-    const [i, r, c] = keyParts(k)
+    const [i, r, c] = placeParts(k)
     const x = sheets.get(i)
     if (!x) continue
     x.changed.add(r * MAX_COLS + c)

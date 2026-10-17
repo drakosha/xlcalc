@@ -6,6 +6,7 @@
 import type { ConditionalFormat } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
+import { placeParts } from '../model.js'
 import { caseKey } from '../collate.js'
 import { hasCell, meets, type Rect } from '../structure/area.js'
 import type { Rules } from '../locale/rules.js'
@@ -94,13 +95,13 @@ export function* statsOf(state: EngineState, s: number, rule: ConditionalFormat)
   return stats
 }
 
-/** Drops the statistics of rules whose cells meet the changed cells (`s:r:c` keys); all of them with `all`. */
-export function dropStats(state: EngineState, keys: string[], all = false) {
+/** Drops the statistics of rules whose cells meet the changed cells (their places, `placeOf`); all of them with `all`. */
+export function dropStats(state: EngineState, keys: number[], all = false) {
   const m = kept.get(state)
   if (!m?.size) return
   if (all) return m.clear()
   for (const k of keys) {
-    const [s, r, c] = k.split(':').map(Number)
+    const [s, r, c] = placeParts(k)
     for (const [rule, x] of m) if (x.s === s && x.rects.some((y) => hasCell(y, r, c))) m.delete(rule)
   }
 }

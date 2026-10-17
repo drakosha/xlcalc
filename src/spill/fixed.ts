@@ -54,7 +54,7 @@ const editedOf = (state: EngineState, edits: CellReplace[]) => new Map(edits.map
 
 /** The array formula of the old kind whose area the edits change in part (`partOf`): its sheet, its cell and its area; null when none. */
 export function arrayPart(state: EngineState, edits: CellReplace[]): { sheet: string; cell: string; area: string } | null {
-  if (!state.formulas.some((f) => f?.area)) return null
+  if (!state.arrays) return null
   const p = partOf(state, editedOf(state, edits))
   return p && { sheet: state.sheetNames[p.s], cell: p.top, area: p.area }
 }
@@ -65,7 +65,7 @@ export function arrayPart(state: EngineState, edits: CellReplace[]): { sheet: st
  */
 export function checkArrayEdits(state: EngineState, edits: CellReplace[]) {
   const made = edits.filter((e) => e.input?.array !== undefined)
-  if (!made.length && !state.formulas.some((f) => f?.area)) return
+  if (!made.length && !state.arrays) return
   const at = (s: number, addr: string) => `${s}:${addr}`
   const edited = editedOf(state, edits)
   const p = partOf(state, edited)

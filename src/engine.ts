@@ -102,6 +102,11 @@ export interface EngineState {
   /** Position in the topological order; -1 for cells in a cycle and cells depending on them. */
   topo: number[]
   order: number[]
+  /** A walk of the graph from changed formulas (`ordered`): a vertex it reached holds its mark, so no set is filled. */
+  marks: Uint32Array
+  mark: number
+  /** How many formulas are arrays of the old kind (`Formula.area`): edits of a book with none look at no formula for them. */
+  arrays: number
   /** Formula references indexed by sheet and column, with a separate bucket for wide ranges. */
   listeners: AreaIndex<Area & { id: number }>
   /** Formulas that depend on volatile functions or on `clocked` formulas (directly or through others). */
@@ -297,6 +302,9 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     spillSucc: new Map(),
     topo: [],
     order: [],
+    marks: new Uint32Array(0),
+    mark: 0,
+    arrays: 0,
     listeners: new AreaIndex(),
     volatile: new Set(),
     clocked: new Set(),
@@ -335,6 +343,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       const f = compiled(state, pending.length, s, row, col, cellIn, p)
       if (cellIn.held !== undefined) state.held.set(f.id, heldValue(cellIn.held))
       pending.push(f)
+      if (f.area) state.arrays++
       if (f.nested) mark(ctx, s, row, col, true)
     }
   }
@@ -350,12 +359,12 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
 }
 
 /**
- * Edits applied atomically, one recomputation of dependents; returns the changed cells (`s:r:c`).
+ * Edits applied atomically, one recomputation of dependents; returns the changed cells' places (`placeOf`).
  * `withVolatile`: the clock has changed (live session), volatile cells are recomputed in the same pass. `restore`: the
  * edits put inputs back (an undo, a preview taken back), so a formula a circular reference stops holds what its input
  * gives, as a full computation of the book gives (`held.ts`).
  */
-export function* applyEdits(state: EngineState, edits: CellReplace[], withVolatile = false, restore = false): Steps<string[]> {
+export function* applyEdits(state: EngineState, edits: CellReplace[], withVolatile = false, restore = false): Steps<number[]> {
   const track = tracker()
   const dirty = new Set<number>()
   const fresh: Formula[] = []
@@ -376,6 +385,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     const spilled = old !== undefined && (state.spills.claims.has(old) || state.spills.on.has(old) || state.spills.wait.has(old))
     if (old !== undefined) {
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
+      if (state.formulas[old]!.area) state.arrays--
       endSpill(state, state.formulas[old]!, track, false)
       state.held.delete(old)
       state.formulas[old] = undefined
@@ -404,6 +414,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       const f = compiled(state, state.free.pop() ?? state.formulas.length, s, row, col, input, p)
       if (input.held !== undefined) state.held.set(f.id, heldValue(input.held))
       if (f.nested) mark(state.ctx, s, row, col, true)
+      if (f.area) state.arrays++
       state.formulas[f.id] = f
       state.at.set(k, f.id)
       fresh.push(f)
@@ -467,7 +478,7 @@ export function setNow(state: EngineState, now: number, seed: number) {
 }
 
 /** A new clock: recomputes volatile cells and their dependents. */
-export function* applyClock(state: EngineState, now: number, seed: number): Steps<string[]> {
+export function* applyClock(state: EngineState, now: number, seed: number): Steps<number[]> {
   setNow(state, now, seed)
   const track = tracker()
   yield* recompute(state, new Set(state.volatile), track)
@@ -475,7 +486,7 @@ export function* applyClock(state: EngineState, now: number, seed: number): Step
 }
 
 /** Merged areas of a sheet were added or removed (`rects`): the arrays whose range meets them are computed again. */
-export function* applyMerges(state: EngineState, s: number, rects: Rect[]): Steps<string[]> {
+export function* applyMerges(state: EngineState, s: number, rects: Rect[]): Steps<number[]> {
   const track = tracker()
   const dirty = new Set<number>()
   state.spills.merges.delete(s)
@@ -488,7 +499,7 @@ export function* applyMerges(state: EngineState, s: number, rects: Rect[]): Step
  * Hidden rows or the filter mode of sheet `s` changed: the formulas calling SUBTOTAL or AGGREGATE over the rows hidden
  * before or now are computed again.
  */
-export function* applyHidden(state: EngineState, s: number): Steps<string[]> {
+export function* applyHidden(state: EngineState, s: number): Steps<number[]> {
   const before = state.ctx.hidden.get(s)?.spans ?? []
   setHidden(state.ctx, s, state.input.sheets[s])
   const track = tracker()

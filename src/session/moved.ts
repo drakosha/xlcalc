@@ -3,7 +3,7 @@ import type { CellInput } from '../contract.js'
 import { key, type EngineState } from '../engine.js'
 import { same } from '../evaluate.js'
 import { spend } from '../exec/budget.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, readAddress } from '../model.js'
+import { formatAddress, MAX_COLS, placeOf, readAddress } from '../model.js'
 import { fieldsBetween, formulaText, hasFields, type FieldChange } from './answer.js'
 import type { Looks } from '../shown.js'
 import { shownKey } from './looks.js'
@@ -14,23 +14,10 @@ import { layerOf } from '../looks/sheet.js'
 import { carried, differing } from '../looks/move.js'
 import { inverse, newSheet, placer, type Geometry, type Place } from '../structure/geometry.js'
 
-/** A cell's place as one number, which orders places as addresses: by sheet, row, then column. */
-const placeOf = (s: number, r: number, c: number) => (s * MAX_ROWS + r) * MAX_COLS + c
-
-/** Places (`placeOf`) as `s:r:c` keys in address order, once each. */
-function keysOf(places: number[]): string[] {
+/** Places (`placeOf`) in address order, once each. */
+function inPlaceOrder(places: number[]): number[] {
   places.sort((a, b) => a - b)
-  const out: string[] = []
-  let last = -1
-  for (const n of places) {
-    if (n === last) continue
-    last = n
-    const c = n % MAX_COLS
-    const rest = (n - c) / MAX_COLS
-    const r = rest % MAX_ROWS
-    out.push(`${(rest - r) / MAX_ROWS}:${r}:${c}`)
-  }
-  return out
+  return places.filter((n, i) => i === 0 || n !== places[i - 1])
 }
 
 /**
@@ -38,8 +25,8 @@ function keysOf(places: number[]): string[] {
  * to its new place; a cell nothing came to was empty), and formulas whose spill differs from their old cell's
  * (`describeAt`, which stands for a large array's unstored cells); with the looks of both states, also the cells that
  * show something else than their old cell showed. Into `fields`, the cells whose formula (as each state shows it), own
- * style or own number format differ from their old cell's, by key, found in the same pass. All of them as `s:r:c` keys
- * of the new state in address order, once each. Each cell is found by its numbers both ways: where its old cell went,
+ * style or own number format differ from their old cell's, by place, found in the same pass. All of them as places
+ * (`placeOf`) of the new state in address order, once each. Each cell is found by its numbers both ways: where its old cell went,
  * and where a new cell came from (the geometry's inverse), so no cell is looked up by its key; the cells of a sheet no
  * old cell comes to (a deleted sheet an undo puts back), by the addresses of its inputs.
  *
@@ -49,7 +36,7 @@ function keysOf(places: number[]): string[] {
  * it nowhere), and a new input that came from a place of neither, with the old input there. That meets every input, as
  * an input holds a value or is of a look alone.
  */
-export function movedChanges(old: EngineState, next: EngineState, g: Geometry, fields: Map<string, FieldChange>, looks?: [Looks, Looks], diff?: DiffPass): string[] {
+export function movedChanges(old: EngineState, next: EngineState, g: Geometry, fields: Map<number, FieldChange>, looks?: [Looks, Looks], diff?: DiffPass): number[] {
   const [place, back] = [placer(g), placer(inverse(g))]
   const p: Place = { s: 0, r: 0, c: 0 }
   const input = (st: EngineState, s: number, r: number, c: number) => st.input.sheets[s].cells[formatAddress(r, c)]
@@ -73,7 +60,7 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
     if (was === now && was?.formula === undefined) return
     const f = fieldsBetween(was, from && textOf(old, from.s, from.r, from.c, was), now, textOf(next, j, r, c, now))
     if (!f) return
-    fields.set(key(j, r, c), f)
+    fields.set(placeOf(j, r, c), f)
     out.push(placeOf(j, r, c))
   }
   const valueAt = (st: EngineState, s: number, r: number, c: number) => st.ctx.sheets[s].cols[c]?.[r]
@@ -187,5 +174,5 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
       const [s, r, c] = k.split(':').map(Number)
       out.push(placeOf(s, r, c))
     }
-  return keysOf(out)
+  return inPlaceOrder(out)
 }
