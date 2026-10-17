@@ -69,3 +69,9 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The prediction Excel did not confirm (the Mac and Windows alike): number text of 1E+308 is no number either, as
+ * Excel's largest number is below it. The set `refs-ironcalc-held-2` measures that edge.
+ */
+export const MISSED: readonly string[] = ['VALUE#3']
