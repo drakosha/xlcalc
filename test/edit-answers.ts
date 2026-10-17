@@ -40,7 +40,7 @@ export const BOOK: BookInput = {
 }
 
 /** The calls of the series: each a list of edits. */
-const STEPS: CellEdit[][] = [
+export const STEPS: CellEdit[][] = [
   [{ sheet: 'Data', cell: 'A1', input: { value: 2 } }],
   [{ sheet: 'data', cell: 'A1', input: { formula: 'B2*5' } }],
   [{ sheet: 'Data', cell: 'A1', input: { formula: null } }],
@@ -67,11 +67,11 @@ const STEPS: CellEdit[][] = [
 /** A JSON text, `undefined` for none. */
 const json = (x: unknown) => JSON.stringify(x) ?? 'undefined'
 
-/** The answers of a session of the book: each call's, the book after it, then undo and redo all the way. */
-export async function answers(s: AsyncSession): Promise<Labelled> {
+/** The answers of a session to calls `steps`: each call's, the book after it, then four undos and two redos. */
+export async function series(s: AsyncSession, steps: CellEdit[][]): Promise<Labelled> {
   const out: Labelled = []
   const book = async () => json((await s.getBook()).sheets.map((x) => x.cells))
-  for (const [i, edits] of STEPS.entries()) {
+  for (const [i, edits] of steps.entries()) {
     // a refused call answers with its error
     out.push([`setCells ${i}`, await s.setCells(edits).then(json, (e: Error) => `${e.constructor.name}: ${e.message}`)])
     out.push([`book after ${i}`, await book()])
@@ -84,14 +84,15 @@ export async function answers(s: AsyncSession): Promise<Labelled> {
 /** The recorded answers: by display, each a label and the answer's JSON. */
 export type Recorded = Record<string, Labelled>
 
-async function record(execution: Execution): Promise<Recorded> {
+/** The answers of a synchronous session of `book` to calls `steps`, with display off and on. */
+export async function record(book: BookInput, steps: CellEdit[][], execution: Execution): Promise<Recorded> {
   const out: Recorded = {}
   for (const display of [false, true]) {
-    const s = wrapped(createSession(BOOK, { clock: CLOCK, execution, display }))
-    out[String(display)] = await answers(s)
+    const s = wrapped(createSession(book, { clock: CLOCK, execution, display }))
+    out[String(display)] = await series(s, steps)
     await s.close()
   }
   return out
 }
 
-if (process.argv.includes('--write')) writeFileSync(FIXTURE, JSON.stringify(await record('closures'), null, 1) + '\n')
+if (process.argv[1] === fileURLToPath(import.meta.url) && process.argv.includes('--write')) writeFileSync(FIXTURE, JSON.stringify(await record(BOOK, STEPS, 'closures'), null, 1) + '\n')
