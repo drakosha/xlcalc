@@ -19,7 +19,7 @@ import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
 import { markingClock } from './locale/rules/data.js'
-import { bookScalar, formatAddress, MAX_COLS, parseAddress } from './model.js'
+import { bookScalar, formatAddress, MAX_COLS, parseAddress, placeOf } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
@@ -93,7 +93,7 @@ export interface EngineState {
   /** Reusable formula slots; helpers are rebuilt after every structural edit. */
   free: number[]
   /** `s:r:c` → formula id. */
-  at: Map<string, number>
+  at: Map<number, number>
   invalid: Map<string, Invalid>
   /** Dependency vertices: formula ids first, shared range helpers after the formula slots. */
   succ: number[][]
@@ -319,7 +319,9 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const pending: Formula[] = []
   for (let s = 0; s < input.sheets.length; s++) {
     const sheet = input.sheets[s]
-    for (const [addr, cellIn] of Object.entries(sheet.cells)) {
+    // its own copy of the cells: for...in walks them in the order of their entries without making an entry each
+    for (const addr in sheet.cells) {
+      const cellIn = sheet.cells[addr]
       const { row, col } = parseAddress(addr)
       if (holds(cellIn)) state.spills.occupied.set(s, row, col, true, true)
       // a held value means nothing but in a formula's cell
@@ -350,7 +352,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   state.compiler.link(pending)
   state.formulas = pending
   if (state.links.strict.some(Boolean)) for (const [s, r, c] of strictCells(state.links, ctx.sheets, pending.flatMap((f) => f.refs))) put(ctx.sheets[s], r, c, E.REF)
-  for (const f of state.formulas) state.at.set(key(f!.s, f!.r, f!.c), f!.id)
+  for (const f of state.formulas) state.at.set(placeOf(f!.s, f!.r, f!.c), f!.id)
   rebuildGraph(state)
   state.anew = builtAnew(state, opts.cached, opts.prior)
   yield* evaluateAll(state)
@@ -376,10 +378,10 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     const s = sheetIndexOf(state, e.sheet)
     if (s === undefined) throw new Error(`unknown sheet ${e.sheet}`)
     const { row, col } = parseAddress(e.cell)
-    const k = key(s, row, col)
+    const k = key(s, row, col), n = placeOf(s, row, col)
     setInput(state, s, e.cell, row, col, e.input)
     state.spills.occupied.set(s, row, col, holds(e.input ?? undefined))
-    const old = state.at.get(k)
+    const old = state.at.get(n)
     const previous = old === undefined ? undefined : state.formulas[old]
     const clocked = old !== undefined && state.clocked.has(old)
     const spilled = old !== undefined && (state.spills.claims.has(old) || state.spills.on.has(old) || state.spills.wait.has(old))
@@ -391,7 +393,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       state.formulas[old] = undefined
       state.free.push(old)
       state.clocked.delete(old)
-      state.at.delete(k)
+      state.at.delete(n)
       structural = true
     }
     state.invalid.delete(k)
@@ -416,7 +418,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       if (f.nested) mark(state.ctx, s, row, col, true)
       if (f.area) state.arrays++
       state.formulas[f.id] = f
-      state.at.set(k, f.id)
+      state.at.set(n, f.id)
       fresh.push(f)
       graphChanged ||= !previous || previous.id !== f.id || clocked || spilled || state.spills.claims.size > 0 || state.spills.wait.size > 0 || !sameDependencies(previous, f)
       structural = true

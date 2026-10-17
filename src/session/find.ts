@@ -6,10 +6,10 @@
  * and kept with the session's state (`search.ts`), so another search of the same sheet only matches them.
  */
 import type { CellValue, ColumnInput, FindCellsOptions, RowInput } from '../contract.js'
-import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
+import { toCellValue, valueAt, type EngineState } from '../engine.js'
 import { checkBoolean, InputError } from '../input.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
-import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS, placeOf } from '../model.js'
 import { outValue } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
@@ -94,7 +94,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
     // Look in Formulas reads a text as it is, without the apostrophe the formula bar shows before one that reads as a number
     if (where === 'edit') return own?.formula === undefined && typeof own?.value === 'string' ? own.value : editText(s, r, c, own)
     if (where === 'formula') {
-      const id = own?.formula === undefined ? undefined : state.at.get(key(s, r, c))
+      const id = own?.formula === undefined ? undefined : state.at.get(placeOf(s, r, c))
       return (id === undefined ? own?.formula : state.formulas[id]!.text) ?? ''
     }
     const value = outValue(toCellValue(valueAt(state, s, r, c)))

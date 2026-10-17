@@ -1,11 +1,11 @@
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
 import type { CellReadField, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
-import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
+import { toCellValue, valueAt, type EngineState } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { referencesOf } from '../graph.js'
 import { array, checkAddress, checkBoolean, checkNumber, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
 import { issueDetail } from '../issues.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf } from '../model.js'
 import { cellAt, outValue } from '../result.js'
 import { rectText, meets } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
@@ -105,7 +105,7 @@ function projected(s: EngineState, i: number, r: number, c: number, addr: string
       if (view![f as keyof CellView] !== undefined) (out as unknown as Record<string, unknown>)[f] = view![f as keyof CellView]
     } else if (f === 'value') out.value = cellValue(s, i, r, c)
     else if (f === 'formula') {
-      const id = s.at.get(key(i, r, c))
+      const id = s.at.get(placeOf(i, r, c))
       const text = id === undefined ? input?.formula : s.formulas[id]!.text
       if (text !== undefined) out.formula = text
     } else if (f === 'numberFormat' && input?.numberFormat !== undefined) out.numberFormat = input.numberFormat
@@ -181,7 +181,7 @@ export function* dependentsQuery(s: EngineState, revision: number, clock: Clock,
       if (paced(1)) yield
       if (++at <= from || s.input.sheets[i].cells[addr].formula === undefined) continue
       const { row, col } = parseAddress(addr),
-        id = s.at.get(key(i, row, col)),
+        id = s.at.get(placeOf(i, row, col)),
         f = id === undefined ? undefined : s.formulas[id]
       if (!f) continue
       const matches = referencesOf(s, f).filter((g) => refs.some((x) => x.s === g.s && meets(x, g)))

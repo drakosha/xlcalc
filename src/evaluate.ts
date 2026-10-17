@@ -5,7 +5,7 @@
  */
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
-import { keyParts, type EngineState, type Formula } from './engine.js'
+import type { EngineState, Formula } from './engine.js'
 import { due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress, placeOf, placeParts } from './model.js'
 import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
@@ -35,10 +35,10 @@ export function invalidate(ctx: RuntimeContext, x: Area) {
   ctx.aggregates.invalidate(x)
 }
 
-/** The values cells had before a change (by place, `placeOf`), and the spills of formulas (by their cell's `s:r:c`) as `describeSpill` gives them. */
+/** The values cells had before a change, and the spills of formulas (by their cell) as `describeAt` gives them, by place (`placeOf`). */
 export interface Tracker {
   cells: Map<number, V>
-  spills: Map<string, string>
+  spills: Map<number, string>
 }
 
 export const tracker = (): Tracker => ({ cells: new Map(), spills: new Map() })
@@ -294,10 +294,7 @@ export function changed(state: EngineState, t: Tracker): number[] {
   }
   if (t.spills.size) {
     const seen = new Set(out)
-    for (const [k, old] of t.spills) {
-      const n = placeOf(...keyParts(k))
-      if (old !== describeAt(state, k) && !seen.has(n)) out.push(n)
-    }
+    for (const [k, old] of t.spills) if (old !== describeAt(state, k) && !seen.has(k)) out.push(k)
   }
   return out
 }

@@ -63,7 +63,9 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
     }
   }
   const templates = new Map<string, Template>()
-  const pending = new WeakMap<() => Arg, { template: Template; parameters: Arg[] }>()
+  // formulas walked and not linked yet, by their placeholder function (a formula copies it): a map, emptied by each link,
+  // costs less than a weak map's entry per formula
+  let pending = new Map<() => Arg, { template: Template; parameters: Arg[] }>()
   let bytes = 0, bodies = 0
   const closureFactory = (ctx: CodegenContext, ast: Ast, s: number, r: number, c: number): Factory => {
     const code = walk(ctx, ast, s, r, c, closureBackend(rt, [])).code
@@ -94,14 +96,15 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
       return f
     },
     link(batch) {
-      const missing = [...new Set(batch.flatMap((f) => {
-        const p = pending.get(f.fn)
-        return p && !p.template.factory ? [p.template] : []
-      }))]
-      if (missing.length) {
+      const missing = new Set<Template>()
+      for (const f of batch) {
+        const t = pending.get(f.fn)?.template
+        if (t && !t.factory) missing.add(t)
+      }
+      if (missing.size) {
         try {
-          const factories = compileSources<Factory>(rt, missing.map((t) => t.source))
-          missing.forEach((t, i) => { t.factory = factories[i] })
+          const factories = compileSources<Factory>(rt, [...missing].map((t) => t.source))
+          ;[...missing].forEach((t, i) => { t.factory = factories[i] })
         } catch (e) {
           if (!stackOverflow(e)) throw e
           for (const t of missing) {
@@ -113,9 +116,11 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
       }
       for (const f of batch) {
         const p = pending.get(f.fn)
-        if (p) { pending.delete(f.fn); f.fn = p.template.factory!(p.parameters) }
+        if (p) f.fn = p.template.factory!(p.parameters)
         f.source = undefined
       }
+      // a batch links all it walked; a placeholder no batch took (a formula left unlinked) is dropped with the rest
+      if (pending.size) pending = new Map()
     },
   }
 }

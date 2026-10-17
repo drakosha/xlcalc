@@ -5,7 +5,7 @@
  * structure operation, a table's column renamed) those that differ from the cell that was at their old place.
  */
 import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, RangeRef, SheetInput } from '../contract.js'
-import { key, sheetIndexOf, type EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError, object, onlyOptions } from '../input.js'
 import { inputIn } from '../looks/sheet.js'
@@ -62,7 +62,7 @@ export function joined(a: Outcome, b: Outcome): Outcome {
 
 /** A cell's formula as a result gives it: canonical when it parses, else as written. */
 export function formulaText(s: EngineState, i: number, r: number, c: number, input: CellInput): string | undefined {
-  const id = s.at.get(key(i, r, c))
+  const id = s.at.get(placeOf(i, r, c))
   return id === undefined ? input.formula : s.formulas[id]!.text
 }
 

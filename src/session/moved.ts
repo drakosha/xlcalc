@@ -1,6 +1,6 @@
 /** The values a structure operation changed in a session, and the formulas and looks: compared with those of the cell that moved there. */
 import type { CellInput } from '../contract.js'
-import { key, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { same } from '../evaluate.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, MAX_COLS, placeOf, readAddress } from '../model.js'
@@ -163,16 +163,12 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
       if ((cols[p.c] !== undefined && p.r in cols[p.c]) || bare(next, s, p.r, p.c)) compare(s, p.r, p.c)
     }
   })
-  const spills = new Map<string, string>()
+  const spills = new Map<number, string>()
   for (const x of old.spills.on.values()) {
     at(p, x.s, x.r1, x.c1)
-    if (place(p)) spills.set(key(p.s, p.r, p.c), describeAt(old, key(x.s, x.r1, x.c1)))
+    if (place(p)) spills.set(placeOf(p.s, p.r, p.c), describeAt(old, placeOf(x.s, x.r1, x.c1)))
   }
-  for (const x of next.spills.on.values()) spills.set(key(x.s, x.r1, x.c1), spills.get(key(x.s, x.r1, x.c1)) ?? '')
-  for (const [k, was] of spills)
-    if (was !== describeAt(next, k)) {
-      const [s, r, c] = k.split(':').map(Number)
-      out.push(placeOf(s, r, c))
-    }
+  for (const x of next.spills.on.values()) spills.set(placeOf(x.s, x.r1, x.c1), spills.get(placeOf(x.s, x.r1, x.c1)) ?? '')
+  for (const [k, was] of spills) if (was !== describeAt(next, k)) out.push(k)
   return inPlaceOrder(out)
 }

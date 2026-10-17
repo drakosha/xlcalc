@@ -8,9 +8,9 @@
  * what its inputs give, as a full computation of it does.
  */
 import type { CachedValues, CellReplace, CellValue } from './contract.js'
-import { key, toCellValue, type EngineState, type Formula } from './engine.js'
+import { toCellValue, type EngineState, type Formula } from './engine.js'
 import { putInput } from './looks/sheet.js'
-import { formatAddress, parseAddress } from './model.js'
+import { formatAddress, parseAddress, placeOf } from './model.js'
 import { inverse, placer, type Geometry, type Place } from './structure/geometry.js'
 import { sheetKey } from './syntax.js'
 import { E, type V } from './values.js'
@@ -87,7 +87,7 @@ export function priorOf(old: EngineState, g: Geometry): (f: Formula) => V | unde
     p.r = f.r
     p.c = f.c
     if (!back(p)) return undefined
-    const id = old.at.get(key(p.s, p.r, p.c))
+    const id = old.at.get(placeOf(p.s, p.r, p.c))
     return id === undefined || stopped(old, id) ? undefined : (old.ctx.sheets[p.s].cols[p.c]?.[p.r] ?? undefined)
   }
 }
