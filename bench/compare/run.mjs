@@ -1,4 +1,4 @@
-// node bench/compare/run.mjs [--part engines,structure,xlsx,memory] [--out dir]: each case and library in its own Node
+// node bench/compare/run.mjs [--part engines,structure,xlsx,memory] [--only part:args,...] [--out dir]: each case and library in its own Node
 // process, one after another; the engines' cases as bench/hyperformula runs them (a phase limited to 30 s, a 1024 MiB heap),
 // the others with 60 s and 4096 MiB. Raw results with the load average of each case and `uptime` at the start and end.
 import { execFileSync, fork } from 'node:child_process'
@@ -29,8 +29,12 @@ const jobs = [
   ...(parts.includes('memory') ? WORKLOADS.map((w) => ({ part: 'memory', file: 'iron-memory.mjs', args: [w.id] })) : []),
 ]
 
+// --only memory:fanout,structure:business-34000: the cases whose part and arguments begin so
+const only = args.includes('--only') ? args[args.indexOf('--only') + 1].split(',') : null
+if (only) jobs.splice(0, jobs.length, ...jobs.filter((j) => only.some((o) => `${j.part}:${j.args.join(' ')}`.startsWith(o))))
+
 const report = {
-  started: new Date().toISOString(), uptimeStart: uptime(), node: process.version, engineRoot,
+  started: new Date().toISOString(), uptimeStart: uptime(), node: process.version,
   engineCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: engineRoot, encoding: 'utf8' }).trim(),
   versions: { hyperformula: version('hyperformula'), ironcalc: version('@ironcalc/wasm'), exceljs: version('exceljs'), xlsx: version('xlsx') },
   machine: { cpu: cpus()[0].model, memoryGiB: totalmem() / 2 ** 30 },

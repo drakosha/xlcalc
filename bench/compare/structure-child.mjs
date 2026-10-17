@@ -13,7 +13,7 @@ const phase = (name) => send({ type: 'phase', name })
 const keep = process.env.XLCALC_BENCH_KEEP === '1'
 const rounds = id === 'business-34000' ? 3 : 5
 const sheet = book.sheets[0].name
-const middle = Math.floor(Math.max(...Object.keys(book.sheets[0].cells).map((a) => parseAddress(a).row + 1)) / 2)
+const middle = Math.floor(Object.keys(book.sheets[0].cells).reduce((n, a) => Math.max(n, parseAddress(a).row + 1), 0) / 2)
 const OPS = [
   { name: 'insert 1 row', op: 'insertRows', count: 1 },
   { name: 'delete 1 row', op: 'deleteRows', count: 1 },

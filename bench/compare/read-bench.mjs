@@ -67,6 +67,7 @@ function measure(list, cases) {
   console.log(`values of the data sheet, ${rows} rows`)
   measure(engines({ sheets: [{ name: 'Data', cells }] }, HyperFormula.buildFromSheets({ Data: grid }, { licenseKey: 'gpl-v3' })), [
     ['window A1:P100', (hf) => hf.getRangeValues(box(0, 0, 0, 15, 99)), (s) => s.readCells([{ sheet: 'Data', range: 'A1:P100' }], { fields: ['value'] })],
+    ['window A1:P100, value, text and formula', null, (s) => s.readCells([{ sheet: 'Data', range: 'A1:P100' }])],
     ['column B, its rows', (hf) => hf.getRangeValues(box(0, 1, 0, 1, rows - 1)), (s) => all(s, 'Data', `B1:B${rows}`)],
     ['column B whole', (hf) => hf.getRangeValues(box(0, 1, 0, 1, 1048575)), (s) => all(s, 'Data', 'B:B')],
     ['the sheet by pages of 10,000', (hf) => hf.getSheetValues(0), (s) => all(s, 'Data', `A1:${letters(width)}${rows}`)],
