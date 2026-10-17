@@ -128,6 +128,17 @@ export function addressOrder(a: string): number {
   return row * MAX_COLS + col
 }
 
+/** A cell's place as one number, which orders places as addresses: by sheet, row, then column; no text is made for it. */
+export const placeOf = (s: number, r: number, c: number) => (s * MAX_ROWS + r) * MAX_COLS + c
+
+/** The sheet, row and column of a place (`placeOf`). */
+export function placeParts(n: number): [number, number, number] {
+  const c = n % MAX_COLS
+  const rest = (n - c) / MAX_COLS
+  const r = rest % MAX_ROWS
+  return [(rest - r) / MAX_ROWS, r, c]
+}
+
 /** Addresses in order (row, then column): each address is parsed once, not per comparison. */
 export function sortAddresses(addrs: Iterable<string>): string[] {
   return [...addrs]

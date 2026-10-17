@@ -7,7 +7,7 @@
  * (`sessionSource`), a saved one a book and its result (`saved.ts`); either reads the window's cells, never the whole sheet.
  */
 import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, SavedViewportOptions, SheetExtent, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
-import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
+import { toCellValue, valueAt, type EngineState } from '../engine.js'
 import { checkedEntryText } from '../entry/text.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { array, checkBoolean, checkNumber, checkString, InputError, object, onlyOptions } from '../input.js'
@@ -18,7 +18,7 @@ import { parseMerge } from '../layout/merges.js'
 import { showFormula } from '../locale/index.js'
 import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { formatCodeIn } from '../locale/rules.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { cellResult, outValue, spilled } from '../result.js'
 import { cellLooks } from '../shown.js'
@@ -189,7 +189,7 @@ export function sessionEditTexts(state: EngineState, now: string): (s: number, r
   return (s, r, c, own) => {
     let x = sheets.get(s)
     if (!x) sheets.set(s, (x = { lines: sheetLines(state.input.sheets[s], state), edit: editTexts(state.input, s, state.tables, now) }))
-    const id = state.at.get(key(s, r, c))
+    const id = state.at.get(placeOf(s, r, c))
     const formula = id === undefined ? own?.formula : state.formulas[id]!.text
     // a cell without content of its own in an array's area opens with the array's formula, an old kind's
     const o = holds(own) ? undefined : ownerOf(state, s, r, c)

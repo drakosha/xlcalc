@@ -177,6 +177,8 @@ export class RangeCache<T> implements Map<string, T> {
   }
 
   invalidate(area: Area): void {
+    // every write of a value drops what meets its cell: an empty cache, the usual one, has nothing to look up
+    if (!this.ranges.size) return
     this.index.forEach(area, (entry) => this.delete(entry.key))
   }
 

@@ -2,11 +2,11 @@
 import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
 import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalAppearance, Diagnostic, NumberFormat } from './contract.js'
-import { key, toCellValue, valueAt, type EngineState } from './engine.js'
+import { toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
-import { formatAddress, MAX_COLS, msToSerial, parseAddress } from './model.js'
+import { formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks, type Looks } from './shown.js'
@@ -34,7 +34,7 @@ const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.f
 /** A formula's spill (`spill`, `spillFill`) or a spilled cell's formula (`spillOf`), as results and changes show them. */
 export function spillFields(state: EngineState, s: number, r: number, c: number): Pick<CellResult, 'spill' | 'spillFill' | 'spillOf'> {
   if (!state.spills.on.size) return {}
-  const id = state.at.get(key(s, r, c))
+  const id = state.at.get(placeOf(s, r, c))
   const x = id === undefined ? undefined : state.spills.on.get(id)
   if (x) return anchorFields(x)
   const o = ownerOf(state, s, r, c)
@@ -72,7 +72,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
 function resultAt(state: EngineState, s: number, addr: string, row: number, col: number, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const inCell = inputIn(state.input.sheets[s], addr, row, col) ?? {}
   const value = outValue(toCellValue(valueAt(state, s, row, col)))
-  const id = state.at.get(key(s, row, col))
+  const id = state.at.get(placeOf(s, row, col))
   const out: CellResult = look ? { value, ...look(s, row, col, value, inCell) } : { value }
   const text = id === undefined ? inCell.formula : state.formulas[id]!.text
   if (text !== undefined) out.formula = text
@@ -213,7 +213,7 @@ function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: str
 function fillLines(state: EngineState, s: number, addr: string, value: CellValue | undefined, out: FillLine[]) {
   if (value === undefined) return
   const { row, col } = parseAddress(addr)
-  for (const f of state.spills.on.get(state.at.get(key(s, row, col))!)!.fills) out.push({ sheet: state.sheetNames[s], range: cornersText(f), value })
+  for (const f of state.spills.on.get(state.at.get(placeOf(s, row, col))!)!.fills) out.push({ sheet: state.sheetNames[s], range: cornersText(f), value })
 }
 
 /** The values hasher of a state's configuration, locale and date system; cells are written to it as they are read. */
@@ -228,7 +228,7 @@ export function* stateHash(state: EngineState): Steps<string> {
     yield* eachCell(state, s, (addr) => {
       const { row, col } = parseAddress(addr)
       w.cell(quoted, addr, outValue(toCellValue(valueAt(state, s, row, col))), true)
-      const id = state.at.get(key(s, row, col))
+      const id = state.at.get(placeOf(s, row, col))
       const x = id === undefined ? undefined : state.spills.on.get(id)
       if (x?.fills.length) fillLines(state, s, addr, anchorFields(x).spillFill, fills)
     })

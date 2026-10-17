@@ -30,6 +30,16 @@ export function splitCall<T extends object>(v: unknown, path = 'opts'): CalcOpti
   return { signal: sig === undefined ? undefined : signal(sig, `${path}.signal`), timeoutMs: timeoutMs as number | undefined, rest: rest as T }
 }
 
+/** A call made with its own options (`rest`) apart from its `signal` and `timeoutMs`; options it refuses as a rejected promise. */
+export function withCall<T extends object, R>(v: unknown, go: (rest: T | undefined, call: CalcOptions) => Promise<R>): Promise<R> {
+  try {
+    const { signal, timeoutMs, rest } = splitCall<T>(v)
+    return go(rest, { signal, timeoutMs })
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
+
 /** The options of one session call: `signal` and `timeoutMs` only. */
 export function checkCall(v: unknown, path = 'opts'): CalcOptions {
   if (v === undefined) return {}

@@ -29,16 +29,18 @@ export type V = number | string | boolean | null | CErr
 
 /** A sheet rectangle; a whole column is cut to the occupied rows of the sheet when read. */
 export class Rng {
-  /** Key for the value and criteria-index caches. */
-  readonly key: string
+  private text?: string
   constructor(
     readonly s: number,
     readonly r1: number,
     readonly c1: number,
     readonly r2: number,
     readonly c2: number,
-  ) {
-    this.key = `${s}:${r1}:${c1}:${r2}:${c2}`
+  ) {}
+
+  /** Key for the value and criteria-index caches, made when first asked: most ranges never go to a cache. */
+  get key(): string {
+    return (this.text ??= `${this.s}:${this.r1}:${this.c1}:${this.r2}:${this.c2}`)
   }
 }
 

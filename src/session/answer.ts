@@ -5,20 +5,20 @@
  * structure operation, a table's column renamed) those that differ from the cell that was at their old place.
  */
 import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, RangeRef, SheetInput } from '../contract.js'
-import { key, sheetIndexOf, type EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError, object, onlyOptions } from '../input.js'
 import { inputIn } from '../looks/sheet.js'
-import { parseAddress } from '../model.js'
+import { parseAddress, placeOf } from '../model.js'
 import { sheetKey } from '../syntax.js'
 
 /** What changed of a cell beside its value and shown text. */
 export type FieldChange = Pick<CellChange, 'formula' | 'style' | 'numberFormat' | 'note' | 'link'>
 
-/** What a call changed so far: the cells to list (`s:r:c`, in order) and the rest a host reads again. */
+/** What a call changed so far: the cells to list (their places, `placeOf`, in order) and the rest a host reads again. */
 export interface Outcome {
-  keys: string[]
-  fields: Map<string, FieldChange>
+  keys: number[]
+  fields: Map<number, FieldChange>
   /** Some cell's value changed: the cells of conditional formats may look otherwise. */
   valued: boolean
   /** Sheets whose layout changed, by name. */
@@ -31,18 +31,18 @@ export interface Outcome {
 
 export const nothing = (): Outcome => ({ keys: [], fields: new Map(), valued: false, layout: new Set(), styles: false, moved: [], rules: [] })
 
-/** Keys as the engine orders them, then the others in address order. */
-export function inOrder(keys: string[], more: Iterable<string>): string[] {
-  let seen: Set<string> | undefined
-  const extra: number[][] = []
+/** Places as the engine orders them, then the others in address order (a place's own order). */
+export function inOrder(keys: number[], more: Iterable<number>): number[] {
+  let seen: Set<number> | undefined
+  const extra: number[] = []
   for (const k of more) {
     seen ??= new Set(keys)
     if (!seen.has(k)) {
       seen.add(k)
-      extra.push(k.split(':').map(Number))
+      extra.push(k)
     }
   }
-  return [...keys, ...extra.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).map((k) => k.join(':'))]
+  return extra.length ? [...keys, ...extra.sort((a, b) => a - b)] : [...keys]
 }
 
 /** Two outcomes of one call, the second after the first. */
@@ -62,7 +62,7 @@ export function joined(a: Outcome, b: Outcome): Outcome {
 
 /** A cell's formula as a result gives it: canonical when it parses, else as written. */
 export function formulaText(s: EngineState, i: number, r: number, c: number, input: CellInput): string | undefined {
-  const id = s.at.get(key(i, r, c))
+  const id = s.at.get(placeOf(i, r, c))
   return id === undefined ? input.formula : s.formulas[id]!.text
 }
 
@@ -85,8 +85,8 @@ export const hasFields = (x: CellInput): boolean =>
   x.formula !== undefined || x.style !== undefined || x.numberFormat !== undefined || x.note !== undefined || x.link !== undefined
 
 /** The fields that changed of edited cells, from their inputs before the edits (`was`) to the book's now. */
-export function editFields(s: EngineState, was: { sheet: string; cell: string; input: CellInput | null }[]): Map<string, FieldChange> {
-  const out = new Map<string, FieldChange>()
+export function editFields(s: EngineState, was: { sheet: string; cell: string; input: CellInput | null }[]): Map<number, FieldChange> {
+  const out = new Map<number, FieldChange>()
   for (const { sheet, cell, input } of was) {
     const i = sheetIndexOf(s, sheet)!
     const { row, col } = parseAddress(cell)
@@ -94,7 +94,7 @@ export function editFields(s: EngineState, was: { sheet: string; cell: string; i
     if (now === (input ?? undefined)) continue
     // a formula's text as written before, as the state shows it now: one that changes is listed
     const f = fieldsBetween(input ?? undefined, input?.formula, now, now?.formula === input?.formula ? input?.formula : now?.formula === undefined ? undefined : formulaText(s, i, row, col, now))
-    if (f) out.set(`${i}:${row}:${col}`, f)
+    if (f) out.set(placeOf(i, row, col), f)
   }
   return out
 }

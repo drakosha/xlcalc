@@ -6,7 +6,7 @@
 import type { CellIssueDetail, CellRef, CheckCode, ErrorCode } from './contract.js'
 import { key, valueAt, type EngineState, type Formula } from './engine.js'
 import { stopped } from './held.js'
-import { formatAddress } from './model.js'
+import { formatAddress, placeOf } from './model.js'
 import { runtimeSheet } from './links.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
@@ -108,7 +108,7 @@ export function issues(state: EngineState): Issue[] {
 export function cellIssue(state: EngineState, s: number, r: number, c: number): Issue | null {
   const inv = state.invalid.get(key(s, r, c))
   if (inv) return { s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at }
-  const id = state.at.get(key(s, r, c))
+  const id = state.at.get(placeOf(s, r, c))
   if (id !== undefined && stopped(state, id)) return heldIssue(state.formulas[id]!)
   const v = valueAt(state, s, r, c)
   if (!isErr(v)) return null
@@ -140,7 +140,7 @@ function stoppedSource(state: EngineState, f: Formula): (Place & { ref: number }
     const cols = state.ctx.sheets[g.s].cols
     for (let r = b.r1; r <= b.r2; r++)
       for (let c = b.c1; c <= b.c2; c++) {
-        const id = cols[c]?.[r] === undefined ? undefined : state.at.get(key(g.s, r, c))
+        const id = cols[c]?.[r] === undefined ? undefined : state.at.get(placeOf(g.s, r, c))
         if (id !== undefined && stopped(state, id)) return { s: g.s, r, c, ref: k }
       }
   }
@@ -149,7 +149,7 @@ function stoppedSource(state: EngineState, f: Formula): (Place & { ref: number }
 
 /** The code of the issue of a cell (`cellIssue`): `CYCLE` for a formula a circular reference stops, else its error's, or null. */
 export function issueCode(state: EngineState, s: number, r: number, c: number): ErrorCode | null {
-  const id = state.at.get(key(s, r, c))
+  const id = state.at.get(placeOf(s, r, c))
   if (id !== undefined && stopped(state, id)) return 'CYCLE'
   const v = valueAt(state, s, r, c)
   return isErr(v) ? v.code : null
@@ -162,7 +162,7 @@ export function issueCode(state: EngineState, s: number, r: number, c: number): 
  */
 export function errorStep(state: EngineState, p: Place, code: ErrorCode): (Place & { ref?: number }) | null {
   if (state.invalid.has(key(p.s, p.r, p.c))) return null
-  const id = state.at.get(key(p.s, p.r, p.c))
+  const id = state.at.get(placeOf(p.s, p.r, p.c))
   if (id === undefined) {
     const x = ownerOf(state, p.s, p.r, p.c)
     return x ? { s: x.s, r: x.r1, c: x.c1 } : null

@@ -5,10 +5,10 @@
  */
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
-import { key, keyParts, type EngineState, type Formula } from './engine.js'
+import type { EngineState, Formula } from './engine.js'
 import { due, located, paced, step, type Steps } from './exec/budget.js'
-import { formatAddress } from './model.js'
-import { descendants, markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
+import { formatAddress, placeOf, placeParts } from './model.js'
+import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { heldAt, unhold } from './held.js'
 import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
@@ -18,6 +18,8 @@ import { sheetKey } from './syntax.js'
 import { E, isErr, Rng, type V } from './values.js'
 
 export function same(a: V, b: V): boolean {
+  // two numbers, the most frequent pair, compare without looking for errors (NaN is the same as NaN, as Object.is has it)
+  if (typeof a === 'number' && typeof b === 'number') return a === b || (a !== a && b !== b)
   if (isErr(a) || isErr(b)) return isErr(a) && isErr(b) && a.code === b.code
   return Object.is(a, b) || a === b
 }
@@ -33,10 +35,10 @@ export function invalidate(ctx: RuntimeContext, x: Area) {
   ctx.aggregates.invalidate(x)
 }
 
-/** The values cells had before a change (by `s:r:c`), and the spills of formulas (by their cell) as `describeSpill` gives them. */
+/** The values cells had before a change, and the spills of formulas (by their cell) as `describeAt` gives them, by place (`placeOf`). */
 export interface Tracker {
-  cells: Map<string, V>
-  spills: Map<string, string>
+  cells: Map<number, V>
+  spills: Map<number, string>
 }
 
 export const tracker = (): Tracker => ({ cells: new Map(), spills: new Map() })
@@ -44,7 +46,7 @@ export const tracker = (): Tracker => ({ cells: new Map(), spills: new Map() })
 /** Records a cell's value before it first changes. */
 export function track(state: EngineState, t: Tracker | undefined, s: number, r: number, c: number) {
   if (!t) return
-  const k = key(s, r, c)
+  const k = placeOf(s, r, c)
   if (!t.cells.has(k)) t.cells.set(k, state.rt.cell(s, r, c))
 }
 
@@ -86,7 +88,8 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
     if (due()) yield
     step()
     const f = state.formulas[id]!
-    spills.done.set(id, ++spills.step)
+    if (id >= spills.done.length) spills.done = grown(spills.done, state.formulas.length)
+    spills.done[id] = ++spills.step
     if (clock) clock.read = false
     let v: V, array = false
     const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
@@ -201,10 +204,27 @@ export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, p
 /** A formula in a cycle keeps the range it spilled into (its claim): a cycle runs through a spill range. */
 const spillCycle = (state: EngineState) => [...state.spills.claims.keys()].some((id) => state.topo[id] < 0)
 
-/** The formulas of `dirty` and what depends on them: in topological order, then those in a cycle. */
+/**
+ * The formulas of `dirty` and what depends on them: in topological order, then those in a cycle in the order the walk
+ * reached them (`descendants` would list them so). The walk marks the vertices it reaches (`EngineState.marks`).
+ */
 function ordered(state: EngineState, dirty: Set<number>): [number[], number[]] {
-  const live = [...descendants(state, dirty)].filter((id) => state.formulas[id])
-  return [live.filter((id) => state.topo[id] >= 0).sort((a, b) => state.topo[a] - state.topo[b]), live.filter((id) => state.topo[id] < 0)]
+  const size = Math.max(state.succ.length, state.formulas.length)
+  if (state.marks.length < size) state.marks = new Uint32Array(Math.max(size, state.marks.length * 2))
+  if (state.mark === 0xffffffff) state.marks.fill(state.mark = 0)
+  const { marks, formulas, topo } = state
+  const mark = ++state.mark
+  const live: number[] = [], cycle: number[] = [], stack: number[] = []
+  const reach = (id: number) => {
+    marks[id] = mark
+    stack.push(id)
+    if (formulas[id]) (topo[id] >= 0 ? live : cycle).push(id)
+  }
+  for (const id of dirty) if (marks[id] !== mark) reach(id)
+  while (stack.length) for (const next of successors(state, stack.pop()!)) if (marks[next] !== mark) reach(next)
+  // a large part of the book: the order filtered, which costs less than sorting so many by it
+  if (live.length * 16 >= state.order.length) return [state.order.filter((id) => marks[id] === mark && formulas[id]), cycle]
+  return [live.sort((a, b) => topo[a] - topo[b]), cycle]
 }
 
 /** A guard on rounds: arrays settle in a few (a spill only gives way to one of lower rank, `spill/rank.ts`). */
@@ -216,7 +236,7 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
   for (let round = 0; ; round++) {
     if (round === ROUNDS) throw new Error('spilled arrays did not settle')
     sp.touched = []
-    sp.done.clear()
+    sp.since = sp.step
     sp.claimsChanged = false
     yield* evaluate(state, lists[0], t, false, 0, active)
     // iterative calculation computes every cycle again when any is to be computed: the cycles share their iterations
@@ -233,7 +253,6 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
     }
     if (!next.size) {
       sp.touched.length = 0
-      sp.done.clear()
       unhold(state)
       return
     }
@@ -248,17 +267,29 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
  */
 export function concerned(state: EngineState, x: Area, out: Set<number>, step = Infinity) {
   const sp = state.spills
-  const add = (id: number) => (step === Infinity || (sp.done.get(id) ?? -1) < step) && out.add(id)
-  const readers = new Set<number>()
-  readersOf(state, x, readers)
-  readers.forEach(add)
+  const add = (id: number) => (step === Infinity || (sp.done[id] > sp.since ? sp.done[id] : -1) < step) && out.add(id)
+  // without a step every reader goes, in the order the readers are found
+  if (step === Infinity) readersOf(state, x, out)
+  else {
+    const readers = new Set<number>()
+    readersOf(state, x, readers)
+    readers.forEach(add)
+  }
   for (const m of [sp.wait, sp.on]) for (const [id, a] of m) if (a.s === x.s && meets(a, x)) add(id)
 }
 
-export function changed(state: EngineState, t: Tracker): string[] {
-  const out: string[] = []
+/** A formula's steps in room for `n` formulas, at least twice as many as before. */
+function grown(done: Float64Array, n: number): Float64Array {
+  const out = new Float64Array(Math.max(n, done.length * 2, 64))
+  out.set(done)
+  return out
+}
+
+/** The places (`placeOf`) of the cells whose value or spill differs from the one tracked, in the order they first changed. */
+export function changed(state: EngineState, t: Tracker): number[] {
+  const out: number[] = []
   for (const [k, old] of t.cells) {
-    const [s, r, c] = keyParts(k)
+    const [s, r, c] = placeParts(k)
     if (!same(old, state.rt.cell(s, r, c))) out.push(k)
   }
   if (t.spills.size) {

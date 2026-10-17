@@ -2,7 +2,7 @@
 // both builds and HyperFormula in one process, the order changed each round, each build with display false and true.
 // First the values of the synthetic data sheet alone, then the synthetic book with its formulas (values computed).
 import { createRequire } from 'node:module'
-import { hfInput, HF_OPTIONS } from '../hyperformula/shared.mjs'
+import { hfInput, hfScalar, HF_OPTIONS } from '../hyperformula/shared.mjs'
 const [base, branch, hfDir] = process.argv.slice(2)
 const { HyperFormula } = createRequire(hfDir + '/package.json')('hyperformula')
 const libs = await Promise.all([base, branch].map(async (r) => ({ ...(await import(r + '/dist/index.js')), ...(await import(r + '/dist/synth.js')) })))
@@ -11,6 +11,21 @@ const letters = libs[0].colLetters
 const f = (v) => (v < 10 ? v.toFixed(2) : v.toFixed(0))
 const all = (s, sheet, range) => { let cursor, k = 0; do { const p = s.readCells([{ sheet, range }], { fields: ['value'], maxCells: 10000, ...(cursor ? { cursor } : {}) }); k += p.cells.length; cursor = p.cursor } while (cursor); return k }
 const box = (sheet, c1, r1, c2, r2) => ({ start: { sheet, col: c1, row: r1 }, end: { sheet, col: c2, row: r2 } })
+// a build without `getValues` (a base before it) does not take a case of values
+const NOT = Symbol('not measured')
+const values = (s, sheet, range, o) => (s.getValues ? s.getValues(sheet, range, o) : NOT)
+
+/** Rows of values against HyperFormula's: the same size, numbers within 1e-9 relatively, an error against an error; the cells that differ. */
+function differing(ours, theirs) {
+  let n = ours.length === theirs.length ? 0 : Math.abs(ours.length - theirs.length)
+  for (let r = 0; r < Math.min(ours.length, theirs.length); r++)
+    for (let c = 0; c < Math.max(ours[r].length, theirs[r].length); c++) {
+      const [a, b] = [ours[r][c] ?? null, theirs[r][c] ?? null]
+      const same = typeof a === 'number' && typeof b === 'number' ? Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b)) : typeof a === 'object' && a !== null ? typeof b === 'object' && b !== null : a === b
+      if (!same) n++
+    }
+  return n
+}
 
 /** The sessions of both builds, display false and true, opened on `book`, after HyperFormula's `hf` (null: not measured). */
 function engines(book, hf) {
@@ -37,11 +52,14 @@ function measure(list, cases) {
         const [name, s] = list[i]
         if (name === 'HyperFormula' && !h) continue
         const t = performance.now()
-        name === 'HyperFormula' ? h(s) : x(s)
-        ms[i].push(performance.now() - t)
+        const got = name === 'HyperFormula' ? h(s) : x(s)
+        if (got !== NOT) ms[i].push(performance.now() - t)
       }
     }
-    console.log(`${what}: ${list.map(([n], i) => (ms[i].length ? `${n} ${f(ms[i].sort((a, b) => a - b)[4])} ms` : `${n} not measured`)).join(', ')}`)
+    // the rows of values each build gives, against HyperFormula's, outside the timer
+    const hf = h && list.find(([n]) => n === 'HyperFormula')
+    const checked = hf && what.includes('as values') ? list.filter(([n]) => n !== 'HyperFormula').map(([n, s]) => [n, x(s)]).filter(([, v]) => v !== NOT).map(([n, v]) => `${n} ${differing(v, h(hf[1]))}`) : []
+    console.log(`${what}: ${list.map(([n], i) => (ms[i].length ? `${n} ${f(ms[i].sort((a, b) => a - b)[4])} ms` : `${n} not measured`)).join(', ')}${checked.length ? ` (cells differing from HyperFormula: ${checked.join(', ')})` : ''}`)
   }
 }
 
@@ -58,7 +76,8 @@ function measure(list, cases) {
     const m = /^([A-Z]+)(\d+)$/.exec(addr)
     let col = 0
     for (const ch of m[1]) col = col * 26 + ch.charCodeAt(0) - 64
-    ;(grid[Number(m[2]) - 1] ??= [])[col - 1] = c.value
+    // a text as HyperFormula takes one, after an apostrophe: else '25%' or '001' would be read as a number
+    ;(grid[Number(m[2]) - 1] ??= [])[col - 1] = hfScalar({ value: c.value })
     width = Math.max(width, col)
   }
   for (let r = 0; r < grid.length; r++) grid[r] ??= []
@@ -72,6 +91,10 @@ function measure(list, cases) {
     ['column B whole', (hf) => hf.getRangeValues(box(0, 1, 0, 1, 1048575)), (s) => all(s, 'Data', 'B:B')],
     ['the sheet by pages of 10,000', (hf) => hf.getSheetValues(0), (s) => all(s, 'Data', `A1:${letters(width)}${rows}`)],
     ['10,000 single cells', (hf) => { for (let i = 0; i < 10000; i++) { const [c, r] = at(i); hf.getCellValue({ sheet: 0, col: c, row: r }) } }, (s) => { for (let i = 0; i < 10000; i++) { const [c, r] = at(i); s.getCell('Data', letters(c + 1) + (r + 1)) } }],
+    ['window A1:P100 as values', (hf) => hf.getRangeValues(box(0, 0, 0, 15, 99)), (s) => values(s, 'Data', 'A1:P100')],
+    ['column B, its rows, as values', (hf) => hf.getRangeValues(box(0, 1, 0, 1, rows - 1)), (s) => values(s, 'Data', `B1:B${rows}`)],
+    ['column B whole as values', (hf) => hf.getRangeValues(box(0, 1, 0, 1, 1048575)), (s) => values(s, 'Data', 'B:B', { maxCells: 1048576 })],
+    ['the sheet as values', (hf) => hf.getSheetValues(0), (s) => values(s, 'Data', `A1:${letters(width)}${rows}`)],
   ])
 }
 
@@ -90,5 +113,7 @@ for (const rows of [3400, 34000]) {
     ['the sheets of formulas by pages of 10,000', (hf) => { for (const n of formulas) hf.getSheetValues(id(n)) }, (s) => { for (const n of formulas) all(s, n, 'A1:Z60') }],
     ['the data sheet by pages of 10,000', (hf) => hf.getSheetValues(0), (s) => all(s, data, `A1:O${rows + 1}`)],
     [`10,000 single cells of ${sheet}`, (hf) => { for (let i = 0; i < 10000; i++) { const [c, r] = at(i); hf.getCellValue({ sheet: id(sheet), col: c, row: r }) } }, (s) => { for (let i = 0; i < 10000; i++) { const [c, r] = at(i); s.getCell(sheet, letters(c + 1) + (r + 1)) } }],
+    [`window ${sheet}!A1:P50 as values`, (hf) => hf.getRangeValues(box(id(sheet), 0, 0, 15, 49)), (s) => values(s, sheet, 'A1:P50')],
+    ['the data sheet as values', (hf) => hf.getSheetValues(0), (s) => values(s, data, `A1:O${rows + 1}`)],
   ])
 }

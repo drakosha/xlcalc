@@ -103,6 +103,9 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'copyText':
       value = await s.copyText(args[0] as string, args[1] as string, { ...(args[2] as object | undefined), ...o })
       break
+    case 'getValues':
+      value = await s.getValues(args[0] as string, args[1] as string, { ...(args[2] as object | undefined), ...o })
+      break
     case 'getCell':
       value = await s.getCell(args[0] as string, args[1] as string)
       break

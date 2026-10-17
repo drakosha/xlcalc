@@ -7,6 +7,7 @@ import { spend } from './exec/budget.js'
 import { bySheet, pastEnd } from './exec/walk.js'
 import type { Area } from './spill/state.js'
 import { Rng } from './values.js'
+import { placeOf } from './model.js'
 import { AreaIndex } from './area-index.js'
 import { RangeDependencies } from './graph/ranges.js'
 import { indegrees, releaseReady } from './graph/order.js'
@@ -18,7 +19,7 @@ export function referencesOf(state: EngineState, f: Formula): readonly Rng[] {
   for (const span of f.spans) {
     const reached = [...span.boxes]
     for (const a of span.anchors) {
-      const id = state.at.get(`${a.s}:${a.r1}:${a.c1}`)
+      const id = state.at.get(placeOf(a.s, a.r1, a.c1))
       const x = id === undefined ? undefined : state.spills.claims.get(id)
       if (x) reached.push(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
       // LOOKUP reads on past the array in its direction, or past the cell when it has not spilled
@@ -43,6 +44,8 @@ export function rebuildGraph(state: EngineState) {
       graph.add(g, f.id)
     }
   }
+  // each list of successors as an array of its own length: one filled by pushes keeps room for many more, for each vertex
+  for (let i = 0; i < succ.length; i++) if (succ[i].length) succ[i] = succ[i].slice()
   state.succ = succ
   state.listeners = listeners
   const spillSucc = new Map<number, number[]>()

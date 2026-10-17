@@ -464,5 +464,6 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     }
   }
   const code = go(ast)
-  return { ...info, code }
+  // the references as an array of their own length: pushed one by one, an array keeps room for many more
+  return { ...info, refs: info.refs.slice(), code }
 }

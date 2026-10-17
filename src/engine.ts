@@ -19,7 +19,7 @@ import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
 import { markingClock } from './locale/rules/data.js'
-import { bookScalar, formatAddress, MAX_COLS, parseAddress } from './model.js'
+import { bookScalar, formatAddress, MAX_COLS, parseAddress, placeOf } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
@@ -93,7 +93,7 @@ export interface EngineState {
   /** Reusable formula slots; helpers are rebuilt after every structural edit. */
   free: number[]
   /** `s:r:c` → formula id. */
-  at: Map<string, number>
+  at: Map<number, number>
   invalid: Map<string, Invalid>
   /** Dependency vertices: formula ids first, shared range helpers after the formula slots. */
   succ: number[][]
@@ -102,6 +102,11 @@ export interface EngineState {
   /** Position in the topological order; -1 for cells in a cycle and cells depending on them. */
   topo: number[]
   order: number[]
+  /** A walk of the graph from changed formulas (`ordered`): a vertex it reached holds its mark, so no set is filled. */
+  marks: Uint32Array
+  mark: number
+  /** How many formulas are arrays of the old kind (`Formula.area`): edits of a book with none look at no formula for them. */
+  arrays: number
   /** Formula references indexed by sheet and column, with a separate bucket for wide ranges. */
   listeners: AreaIndex<Area & { id: number }>
   /** Formulas that depend on volatile functions or on `clocked` formulas (directly or through others). */
@@ -297,6 +302,9 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     spillSucc: new Map(),
     topo: [],
     order: [],
+    marks: new Uint32Array(0),
+    mark: 0,
+    arrays: 0,
     listeners: new AreaIndex(),
     volatile: new Set(),
     clocked: new Set(),
@@ -311,7 +319,9 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const pending: Formula[] = []
   for (let s = 0; s < input.sheets.length; s++) {
     const sheet = input.sheets[s]
-    for (const [addr, cellIn] of Object.entries(sheet.cells)) {
+    // its own copy of the cells: for...in walks them in the order of their entries without making an entry each
+    for (const addr in sheet.cells) {
+      const cellIn = sheet.cells[addr]
       const { row, col } = parseAddress(addr)
       if (holds(cellIn)) state.spills.occupied.set(s, row, col, true, true)
       // a held value means nothing but in a formula's cell
@@ -335,13 +345,14 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       const f = compiled(state, pending.length, s, row, col, cellIn, p)
       if (cellIn.held !== undefined) state.held.set(f.id, heldValue(cellIn.held))
       pending.push(f)
+      if (f.area) state.arrays++
       if (f.nested) mark(ctx, s, row, col, true)
     }
   }
   state.compiler.link(pending)
   state.formulas = pending
   if (state.links.strict.some(Boolean)) for (const [s, r, c] of strictCells(state.links, ctx.sheets, pending.flatMap((f) => f.refs))) put(ctx.sheets[s], r, c, E.REF)
-  for (const f of state.formulas) state.at.set(key(f!.s, f!.r, f!.c), f!.id)
+  for (const f of state.formulas) state.at.set(placeOf(f!.s, f!.r, f!.c), f!.id)
   rebuildGraph(state)
   state.anew = builtAnew(state, opts.cached, opts.prior)
   yield* evaluateAll(state)
@@ -350,12 +361,12 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
 }
 
 /**
- * Edits applied atomically, one recomputation of dependents; returns the changed cells (`s:r:c`).
+ * Edits applied atomically, one recomputation of dependents; returns the changed cells' places (`placeOf`).
  * `withVolatile`: the clock has changed (live session), volatile cells are recomputed in the same pass. `restore`: the
  * edits put inputs back (an undo, a preview taken back), so a formula a circular reference stops holds what its input
  * gives, as a full computation of the book gives (`held.ts`).
  */
-export function* applyEdits(state: EngineState, edits: CellReplace[], withVolatile = false, restore = false): Steps<string[]> {
+export function* applyEdits(state: EngineState, edits: CellReplace[], withVolatile = false, restore = false): Steps<number[]> {
   const track = tracker()
   const dirty = new Set<number>()
   const fresh: Formula[] = []
@@ -367,21 +378,22 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     const s = sheetIndexOf(state, e.sheet)
     if (s === undefined) throw new Error(`unknown sheet ${e.sheet}`)
     const { row, col } = parseAddress(e.cell)
-    const k = key(s, row, col)
+    const k = key(s, row, col), n = placeOf(s, row, col)
     setInput(state, s, e.cell, row, col, e.input)
     state.spills.occupied.set(s, row, col, holds(e.input ?? undefined))
-    const old = state.at.get(k)
+    const old = state.at.get(n)
     const previous = old === undefined ? undefined : state.formulas[old]
     const clocked = old !== undefined && state.clocked.has(old)
     const spilled = old !== undefined && (state.spills.claims.has(old) || state.spills.on.has(old) || state.spills.wait.has(old))
     if (old !== undefined) {
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
+      if (state.formulas[old]!.area) state.arrays--
       endSpill(state, state.formulas[old]!, track, false)
       state.held.delete(old)
       state.formulas[old] = undefined
       state.free.push(old)
       state.clocked.delete(old)
-      state.at.delete(k)
+      state.at.delete(n)
       structural = true
     }
     state.invalid.delete(k)
@@ -404,8 +416,9 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       const f = compiled(state, state.free.pop() ?? state.formulas.length, s, row, col, input, p)
       if (input.held !== undefined) state.held.set(f.id, heldValue(input.held))
       if (f.nested) mark(state.ctx, s, row, col, true)
+      if (f.area) state.arrays++
       state.formulas[f.id] = f
-      state.at.set(k, f.id)
+      state.at.set(n, f.id)
       fresh.push(f)
       graphChanged ||= !previous || previous.id !== f.id || clocked || spilled || state.spills.claims.size > 0 || state.spills.wait.size > 0 || !sameDependencies(previous, f)
       structural = true
@@ -467,7 +480,7 @@ export function setNow(state: EngineState, now: number, seed: number) {
 }
 
 /** A new clock: recomputes volatile cells and their dependents. */
-export function* applyClock(state: EngineState, now: number, seed: number): Steps<string[]> {
+export function* applyClock(state: EngineState, now: number, seed: number): Steps<number[]> {
   setNow(state, now, seed)
   const track = tracker()
   yield* recompute(state, new Set(state.volatile), track)
@@ -475,7 +488,7 @@ export function* applyClock(state: EngineState, now: number, seed: number): Step
 }
 
 /** Merged areas of a sheet were added or removed (`rects`): the arrays whose range meets them are computed again. */
-export function* applyMerges(state: EngineState, s: number, rects: Rect[]): Steps<string[]> {
+export function* applyMerges(state: EngineState, s: number, rects: Rect[]): Steps<number[]> {
   const track = tracker()
   const dirty = new Set<number>()
   state.spills.merges.delete(s)
@@ -488,7 +501,7 @@ export function* applyMerges(state: EngineState, s: number, rects: Rect[]): Step
  * Hidden rows or the filter mode of sheet `s` changed: the formulas calling SUBTOTAL or AGGREGATE over the rows hidden
  * before or now are computed again.
  */
-export function* applyHidden(state: EngineState, s: number): Steps<string[]> {
+export function* applyHidden(state: EngineState, s: number): Steps<number[]> {
   const before = state.ctx.hidden.get(s)?.spans ?? []
   setHidden(state.ctx, s, state.input.sheets[s])
   const track = tracker()

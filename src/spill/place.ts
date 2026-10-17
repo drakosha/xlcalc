@@ -11,7 +11,7 @@ import { toCellValue, key, type EngineState, type Formula } from '../engine.js'
 import { allotSpill, spend } from '../exec/budget.js'
 import { invalidate, put, same, shown, track, type Tracker } from '../evaluate.js'
 import { parseMerge } from '../layout/merges.js'
-import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS, placeOf } from '../model.js'
 import { hasCell, meets, type Rect } from '../structure/area.js'
 import { quoteSheet } from '../syntax.js'
 import { tableAt } from '../tables/model.js'
@@ -182,12 +182,12 @@ function clear(state: EngineState, s: number, r: number, c: number, t?: Tracker)
 
 /** Records the spill of a formula's cell before it first changes. */
 function note(state: EngineState, s: number, r: number, c: number, t?: Tracker) {
-  const k = key(s, r, c)
+  const k = placeOf(s, r, c)
   if (t && !t.spills.has(k)) t.spills.set(k, describeAt(state, k))
 }
 
 /** A formula's spill in short (`3×1`, with the value of the unstored cells), '' when none: what changes compare. */
-export function describeAt(state: EngineState, k: string): string {
+export function describeAt(state: EngineState, k: number): string {
   const id = state.at.get(k)
   const x = id === undefined ? undefined : state.spills.on.get(id)
   if (!x) return ''
@@ -197,9 +197,8 @@ export function describeAt(state: EngineState, k: string): string {
 
 /** `E2#`: the range E2's array spilled into, E2 alone when it holds a formula that did not spill, else #REF!. */
 export function spillRef(state: EngineState, s: number, r: number, c: number): Rng | CErr {
-  const k = key(s, r, c)
-  const id = state.at.get(k)
-  if (id === undefined) return state.invalid.has(k) ? new Rng(s, r, c, r, c) : E.REF
+  const id = state.at.get(placeOf(s, r, c))
+  if (id === undefined) return state.invalid.has(key(s, r, c)) ? new Rng(s, r, c, r, c) : E.REF
   const x = state.spills.on.get(id)
   return x ? new Rng(s, x.r1, x.c1, x.r2, x.c2) : new Rng(s, r, c, r, c)
 }

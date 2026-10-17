@@ -6,7 +6,7 @@ import { errorOrigin, errorStep, issueCode, placeText, type Place } from './issu
 import { showFormula } from './locale/index.js'
 import { say, type Message } from './locale/messages.js'
 import { localeOf } from './locale/registry.js'
-import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
+import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS, placeOf } from './model.js'
 import { runtimeSheet } from './links.js'
 import { ownerOf } from './spill/place.js'
 import { quoteSheet } from './syntax.js'
@@ -70,7 +70,7 @@ export function* explainCell(state: EngineState, s: number, r: number, c: number
     if (paced(1)) yield
     nodes++
     const k = key(s, r, c)
-    const id = state.at.get(k)
+    const id = state.at.get(placeOf(s, r, c))
     const f = id === undefined ? undefined : state.formulas[id]
     const v = valueAt(state, s, r, c)
     const location = state.sheetNames[s] === undefined ? undefined : { sheet: state.sheetNames[s], range: formatAddress(r, c) }
