@@ -29,3 +29,10 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): a point and zeros are the second's decimals
+ * after a space, a second time and after AM/PM too, as [MS-XLS] 2.4.126's `NFPartSubSecond` has them anywhere after
+ * a section's first date code. The set `text-date-ironcalc-held-4` measures the rule taken from that grammar.
+ */
+export const MISSED: readonly string[] = ['TEXT#9', 'TEXT#11', 'TEXT#12']
