@@ -212,6 +212,8 @@ IronCalc's tests (`ironcalc/IronCalc` at `297553d`, `xlsx/tests`, 235 files save
 
 The set `accrint-ironcalc-held` (42 cases, predicted) takes 22 of the 187 `ACCRINT` cells, one or two of each kind (every basis, calc_method TRUE and FALSE, negative answers, a fractional frequency, arguments in cells), and 20 cases around the rule: coupon dates stepped one from the other across short months, a first interest date on a month's last day, a settlement on a coupon date, an issue on one or after the first interest date, the issue's own period on each basis. Both Excels gave the same answers, all 42 as predicted, and every one of the 187 cells matches.
 
+The set `countif-ironcalc-held` (23 cases, predicted) takes 7 `COUNTIF` and `COUNTIFS` cells of IronCalc's file, all of the 60 the engine missed being `CONCAT("<>",E26)` with E26 a formula's empty text over ranges holding such text, and 16 cases around them: `<>` written out, joined to a blank, over one cell, in `SUMIF`, `AVERAGEIF`, `SUMIFS` and `COUNTIFS` of two ranges, and `=` against `""` over the same cells. Both Excels gave the same answers, all 23 as predicted: `<>` counts a formula's empty text, `""` takes it for a blank and `=` does not; the 60 cells match.
+
 ### Links to other workbooks
 
 From [Links to other workbooks](links.md).

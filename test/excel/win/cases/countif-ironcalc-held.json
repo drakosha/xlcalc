@@ -1,0 +1,247 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 15.9,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "COUNTIF#1",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!$B$1:$O$1, _xlfn.CONCAT(\"<>\",Ct!I2))"
+  },
+  {
+   "id": "COUNTIF#2",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!$1:$1, _xlfn.CONCAT(\"<>\",Ct!I2))"
+  },
+  {
+   "id": "COUNTIF#3",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!$B$25:$H$25, _xlfn.CONCAT(\"<>\", Ct!E26))"
+  },
+  {
+   "id": "COUNTIF#4",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!$25:$25, _xlfn.CONCAT(\"<>\", Ct!E26))"
+  },
+  {
+   "id": "COUNTIFS#1",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(Ct!$B$25:$H$25, _xlfn.CONCAT(\"<>\", Ct!E26))"
+  },
+  {
+   "id": "COUNTIF#5",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!$B$25:$O$25, Ct!E26)"
+  },
+  {
+   "id": "COUNTIF#6",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!$B$1:$O$1, _xlfn.CONCAT(\"<>\",Ct!B2))"
+  },
+  {
+   "id": "COUNTIF#7",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!B25:O25,\"<>\")"
+  },
+  {
+   "id": "COUNTIF#8",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!B25:O25,\"<>\"&\"\")"
+  },
+  {
+   "id": "COUNTIF#9",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!B25:O25,\"<>\"&Ct!K1)"
+  },
+  {
+   "id": "COUNTIF#10",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!L1,\"<>\")"
+  },
+  {
+   "id": "COUNTIF#11",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!K1,\"<>\")"
+  },
+  {
+   "id": "COUNTIFS#2",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(Ct!B25:O25,\"<>\",Ct!B1:O1,\"<>\")"
+  },
+  {
+   "id": "SUMIF#1",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(Ct!B25:O25,\"<>\",Ct!B27:O27)"
+  },
+  {
+   "id": "AVERAGEIF#1",
+   "group": "AVERAGEIF",
+   "fn": "AVERAGEIF",
+   "formula": "AVERAGEIF(Ct!B25:O25,\"<>\",Ct!B27:O27)"
+  },
+  {
+   "id": "SUMIFS#1",
+   "group": "SUMIFS",
+   "fn": "SUMIFS",
+   "formula": "SUMIFS(Ct!B27:O27,Ct!B25:O25,\"<>\",Ct!B1:O1,\"<>\")"
+  },
+  {
+   "id": "COUNTIF#12",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!B25:O25,\"\")"
+  },
+  {
+   "id": "COUNTIF#13",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!L1,\"\")"
+  },
+  {
+   "id": "COUNTIF#14",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!B25:O25,\"=\")"
+  },
+  {
+   "id": "COUNTIF#15",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Ct!L1,\"=\")"
+  },
+  {
+   "id": "COUNTIFS#3",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(Ct!B25:O25,\"=\")"
+  },
+  {
+   "id": "SUMIF#2",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(Ct!B25:O25,\"=\",Ct!B27:O27)"
+  },
+  {
+   "id": "SUMIF#3",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(Ct!B25:O25,\"\",Ct!B27:O27)"
+  }
+ ],
+ "values": {
+  "COUNTIF#1": {
+   "t": "n",
+   "v": 9
+  },
+  "COUNTIF#2": {
+   "t": "n",
+   "v": 10
+  },
+  "COUNTIF#3": {
+   "t": "n",
+   "v": 7
+  },
+  "COUNTIF#4": {
+   "t": "n",
+   "v": 9
+  },
+  "COUNTIFS#1": {
+   "t": "n",
+   "v": 7
+  },
+  "COUNTIF#5": {
+   "t": "n",
+   "v": 8
+  },
+  "COUNTIF#6": {
+   "t": "n",
+   "v": 13
+  },
+  "COUNTIF#7": {
+   "t": "n",
+   "v": 8
+  },
+  "COUNTIF#8": {
+   "t": "n",
+   "v": 8
+  },
+  "COUNTIF#9": {
+   "t": "n",
+   "v": 8
+  },
+  "COUNTIF#10": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#11": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIFS#2": {
+   "t": "n",
+   "v": 7
+  },
+  "SUMIF#1": {
+   "t": "n",
+   "v": 37
+  },
+  "AVERAGEIF#1": {
+   "t": "n",
+   "v": 4.625
+  },
+  "SUMIFS#1": {
+   "t": "n",
+   "v": 28
+  },
+  "COUNTIF#12": {
+   "t": "n",
+   "v": 8
+  },
+  "COUNTIF#13": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#14": {
+   "t": "n",
+   "v": 6
+  },
+  "COUNTIF#15": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIFS#3": {
+   "t": "n",
+   "v": 6
+  },
+  "SUMIF#2": {
+   "t": "n",
+   "v": 68
+  },
+  "SUMIF#3": {
+   "t": "n",
+   "v": 81
+  }
+ }
+}

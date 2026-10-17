@@ -2,9 +2,9 @@
  * Criteria of SUMIF, SUMIFS, COUNTIFS and an index over them: strings are case-insensitive but
  * accent-sensitive («й» ≠ «и», «ё» ≠ «е»); wildcards `*`, `?`, escaping with `~`; numbers, dates and times in
  * the criterion text are compared as numbers, and a number criterion's `=` also holds for text that reads as
- * that number (as VALUE reads it), while its `<>` holds for all text; `""` matches blanks, `"<>"` non-blanks;
- * an error, or its text, matches that error. Numbers, dates and words in the text and the order of text
- * follow the book's locale (`CritRules`, en-US by default).
+ * that number (as VALUE reads it), while its `<>` holds for all text; `""` matches blanks and empty text,
+ * `"="` blanks alone, `"<>"` the rest; an error, or its text, matches that error. Numbers, dates and words in the
+ * text and the order of text follow the book's locale (`CritRules`, en-US by default).
  */
 import { collator } from './collate.js'
 import { textToNumber } from './dates.js'
@@ -123,7 +123,8 @@ function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
     let n: number | null = null
     let b: boolean | null = null
     let code: string | undefined
-    if (rest === '') c = { op, kind: 'blank' }
+    // `""` and `"="` differ: an operator written out is kept, so `=` takes no empty text (`matches`)
+    if (rest === '') c = { op: m[1] ?? '', kind: 'blank' }
     else if ((code = rules.critError(rest)) !== undefined) c = { op, kind: 'err', code }
     else if ((n = rules.critNumber(rest)) !== null) c = { op, kind: 'num', n }
     else if ((b = rules.critBool(rest)) !== null) c = { op, kind: 'bool', b }
@@ -152,8 +153,10 @@ export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): bool
       if (typeof v !== 'boolean') return c.op === '<>'
       return holds(c.op, ord(Number(v), Number(c.b)))
     case 'blank':
-      if (c.op === '=') return v === null || v === ''
-      if (c.op === '<>') return !(v === null || v === '')
+      // `""` takes a formula's empty text for a blank, `=` and `<>` only an empty cell, as Excel does
+      if (c.op === '') return v === null || v === ''
+      if (c.op === '=') return v === null
+      if (c.op === '<>') return v !== null
       return false
     case 'wild':
       if (typeof v !== 'string') return c.op === '<>'
