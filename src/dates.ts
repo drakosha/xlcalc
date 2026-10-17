@@ -197,7 +197,8 @@ const MAX_TIME = 10_000 / 24
 
 /**
  * A time as Excel en-US reads it, in VALUE and in date and time arguments alike (the `time-text` set; `patterns`):
- * with AM or PM hours to 12 and minutes and seconds below 60, without any minutes and seconds below 10,000 hours.
+ * with AM or PM hours to 12 and minutes and seconds below 60, without any minutes and seconds below 10,000 each and
+ * 10,000 hours in all.
  * The day fraction, past 1 from 24 hours, or null.
  */
 function timeText(s: string, decimal: string): number | null {
@@ -208,6 +209,8 @@ function timeText(s: string, decimal: string): number | null {
     let h = Number(hs)
     const mi = Number(ms)
     const sec = Number(ss.replace(decimal, '.'))
+    // minutes or seconds of five digits are no time (`0:0:86400`), whatever the hours
+    if (mi >= 10_000 || sec >= 10_000) return null
     if (ampm) {
       if (h > 12 || mi > 59 || sec >= 60) return null
       h = (h % 12) + (ampm === 'p' ? 12 : 0)

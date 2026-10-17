@@ -346,6 +346,8 @@ The `TEXT` cells, all `TEXT(x,"mm###")`, took four sets. `text-date-ironcalc-hel
 
 The set `currency-held` (34 cases, predicted) measured what en-US reads as a currency sign in number text besides `$` before a number and `€` before or after it: thirteen other signs before and after a number (`£`, `¥`, `₽`, `₹`, `₩`, `₪`, `₺`, `₴`, `¢`, `฿`, `₫`, `₦`, `₱`), `$` after one, currency codes. Both Excels read none of them, all 34 as predicted.
 
+The set `date-ironcalc-held` (33 cases, predicted) takes IronCalc's 11 date cells (`DAYS360` of moments a hair from midnight, `WEEKDAY` of a date out of range with a return type of text or an error, `WORKDAY` with days a hair under 0 and -1, `TIMEVALUE("0:0:86400")`) and 22 around them: `DAYS360` near the half second before midnight, `WEEKDAY`'s errors in either argument, `WORKDAY`'s fractional days both ways, minutes and seconds of four and five digits. Both Excels gave the same answers, all 33 as predicted; the 12 cells match.
+
 ### Legacy array formulas and implicit intersection
 
 From [Legacy array formulas and implicit intersection](legacy.md).

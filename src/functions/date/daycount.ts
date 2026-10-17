@@ -1,6 +1,6 @@
 /** Day-count conventions (DAYS360, YEARFRAC), shared with the financial functions. */
 import type { FnDef } from '../../args.js'
-import { isLeap, lastDayExcel, serialOf, utcDays, ymd } from '../../dates.js'
+import { isLeap, lastDayExcel, momentOf, serialOf, utcDays, ymd } from '../../dates.js'
 import { atp, need, type AtpOrder } from './atp.js'
 
 export type Ymd = { y: number; m: number; d: number }
@@ -87,6 +87,7 @@ export const basisFirst = (i: number): AtpOrder => ({ first: [i], check: { [i]: 
 export const freqAt = (i: number): AtpOrder => ({ check: { [i]: need(validFreq) } })
 
 export const functions: Record<string, FnDef> = {
-  DAYS360: { args: 'd d b?', fn: (start: number, end: number, european = false) => days360(start, end, european) },
+  // the days of the moments, rounded to the second as DAY reads them (DAYS360(45992.000001,46000.999999) is 9)
+  DAYS360: { args: 't t b?', fn: (start: number, end: number, european = false) => days360(momentOf(start).day, momentOf(end).day, european) },
   YEARFRAC: atp('e e j?', (start: number, end: number, basis = 0) => yearFrac(start, end, basis), basisFirst(2)),
 }

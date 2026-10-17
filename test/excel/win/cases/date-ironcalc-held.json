@@ -1,0 +1,347 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 14.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "DAYS360#1",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(45992.000001,46000.999999)"
+  },
+  {
+   "id": "DAYS360#2",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(DATE(2025,1,1)+0.0000001,DATE(2025,1,1)+0.9999999)"
+  },
+  {
+   "id": "DAYS360#3",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(DATE(2025,1,1)+0.9999999,DATE(2025,1,2)+0.0000001)"
+  },
+  {
+   "id": "DAYS360#4",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(DATE(2025,1,1)+0.9999999,DATE(2025,1,1))"
+  },
+  {
+   "id": "WEEKDAY#1",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(-1,\"abc\")"
+  },
+  {
+   "id": "WEEKDAY#2",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(-1,1/0)"
+  },
+  {
+   "id": "WEEKDAY#3",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(-1,NA())"
+  },
+  {
+   "id": "WORKDAY#1",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,10),-0.9999999)"
+  },
+  {
+   "id": "WORKDAY#2",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,10),-1e-9)"
+  },
+  {
+   "id": "WORKDAY.INTL#1",
+   "group": "WORKDAY.INTL",
+   "fn": "WORKDAY.INTL",
+   "formula": "_xlfn.WORKDAY.INTL(DATE(2025,1,10),-1e-9)"
+  },
+  {
+   "id": "TIMEVALUE#1",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"0:0:86400\")"
+  },
+  {
+   "id": "DAYS360#5",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(DATE(2025,1,1),DATE(2025,1,30)+(86399.4/86400))"
+  },
+  {
+   "id": "DAYS360#6",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(DATE(2025,1,1),DATE(2025,1,30)+(86399.6/86400))"
+  },
+  {
+   "id": "DAYS360#7",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(DATE(2025,1,1)+0.5,DATE(2025,3,1)+0.5)"
+  },
+  {
+   "id": "DAYS360#8",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(DATE(2025,1,30)+0.99999999,DATE(2025,2,28),TRUE)"
+  },
+  {
+   "id": "WEEKDAY#4",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(NA(),1/0)"
+  },
+  {
+   "id": "WEEKDAY#5",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(\"abc\",1/0)"
+  },
+  {
+   "id": "WEEKDAY#6",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(-1,5)"
+  },
+  {
+   "id": "WEEKDAY#7",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(45667,5)"
+  },
+  {
+   "id": "WEEKDAY#8",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(2958466,1)"
+  },
+  {
+   "id": "WEEKDAY#9",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(2958466,\"x\")"
+  },
+  {
+   "id": "WORKDAY#3",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,10),0.9999999)"
+  },
+  {
+   "id": "WORKDAY#4",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,10),1.5)"
+  },
+  {
+   "id": "WORKDAY#5",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,10),-1.5)"
+  },
+  {
+   "id": "WORKDAY#6",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,10),-0.5)"
+  },
+  {
+   "id": "WORKDAY.INTL#2",
+   "group": "WORKDAY.INTL",
+   "fn": "WORKDAY.INTL",
+   "formula": "_xlfn.WORKDAY.INTL(DATE(2025,1,10),-2.0000001,1)"
+  },
+  {
+   "id": "TIMEVALUE#2",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"0:0:9999\")"
+  },
+  {
+   "id": "TIMEVALUE#3",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"0:0:10000\")"
+  },
+  {
+   "id": "TIMEVALUE#4",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"0:9999\")"
+  },
+  {
+   "id": "TIMEVALUE#5",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"0:10000\")"
+  },
+  {
+   "id": "TIMEVALUE#6",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"1:59:9999\")"
+  },
+  {
+   "id": "VALUE#1",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"0:0:86400\")"
+  },
+  {
+   "id": "VALUE#2",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"9999:0:9999\")"
+  }
+ ],
+ "values": {
+  "DAYS360#1": {
+   "t": "n",
+   "v": 9
+  },
+  "DAYS360#2": {
+   "t": "n",
+   "v": 1
+  },
+  "DAYS360#3": {
+   "t": "n",
+   "v": 0
+  },
+  "DAYS360#4": {
+   "t": "n",
+   "v": -1
+  },
+  "WEEKDAY#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEEKDAY#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "WEEKDAY#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "WORKDAY#1": {
+   "t": "n",
+   "v": 45666
+  },
+  "WORKDAY#2": {
+   "t": "n",
+   "v": 45666
+  },
+  "WORKDAY.INTL#1": {
+   "t": "n",
+   "v": 45666
+  },
+  "TIMEVALUE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DAYS360#5": {
+   "t": "n",
+   "v": 29
+  },
+  "DAYS360#6": {
+   "t": "n",
+   "v": 30
+  },
+  "DAYS360#7": {
+   "t": "n",
+   "v": 60
+  },
+  "DAYS360#8": {
+   "t": "n",
+   "v": 28
+  },
+  "WEEKDAY#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "WEEKDAY#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEEKDAY#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "WEEKDAY#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "WEEKDAY#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "WEEKDAY#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WORKDAY#3": {
+   "t": "n",
+   "v": 45667
+  },
+  "WORKDAY#4": {
+   "t": "n",
+   "v": 45670
+  },
+  "WORKDAY#5": {
+   "t": "n",
+   "v": 45665
+  },
+  "WORKDAY#6": {
+   "t": "n",
+   "v": 45666
+  },
+  "WORKDAY.INTL#2": {
+   "t": "n",
+   "v": 45664
+  },
+  "TIMEVALUE#2": {
+   "t": "n",
+   "v": 0.11572916666666666
+  },
+  "TIMEVALUE#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#4": {
+   "t": "n",
+   "v": 0.9437499999999996
+  },
+  "TIMEVALUE#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#6": {
+   "t": "n",
+   "v": 0.19836805555555556
+  },
+  "VALUE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#2": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}
