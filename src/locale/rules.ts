@@ -124,7 +124,7 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
     currency: { symbol: '$', before: true, space: '', negative: '()' },
     valueText,
     dateText: (text) => parseDateWith(text, dates),
-    numberOnly: enNumber,
+    numberOnly: enCritNumber,
     dates,
     numberText: generalText,
     formatText: (value, format) => formatWith(value, format, dialect),

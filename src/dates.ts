@@ -308,7 +308,7 @@ export function unwrap(text: string): { s: string; paren: boolean; percent: bool
  */
 export const enNumber = (text: string) => numberText(text, true)
 
-/** Number text as en-US criteria read their own text: as `enNumber`, without `€` (a cell's `€100` still equals 100 there). */
+/** Number text as en-US criteria read their own text, and typed entry before its own euro sign: as `enNumber`, without `€` (a cell's `€100` still equals 100 under a number criterion). */
 export const enCritNumber = (text: string) => numberText(text, false)
 
 function numberText(text: string, euros: boolean): number | null {
