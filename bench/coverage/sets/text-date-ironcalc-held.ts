@@ -44,3 +44,9 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The prediction Excel did not confirm (the Mac and Windows alike): `mm.00` is minutes and decimals, not a month
+ * and a placeholder (`00.00` at noon). The set `text-date-ironcalc-held-2` measures what the decimals are.
+ */
+export const MISSED: readonly string[] = ['TEXT#11']
