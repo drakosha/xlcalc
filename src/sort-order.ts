@@ -1,7 +1,7 @@
 /**
- * Excel's sort order of values of any type, as SORT and SORTBY sort (`functions/lookup/order.ts`) and a host's display
- * filter does (`compareValues` of `xlcalc/text`): numbers, text, booleans, errors by ERROR.TYPE's number, then blanks,
- * last either way.
+ * Excel's sort order of values of any type, as SORT and SORTBY sort (`functions/lookup/order.ts`) and the Sort command
+ * of a host's display filter does (`compareValues` of `xlcalc/text`): numbers, text, booleans, errors, then blanks, last
+ * either way. SORT orders errors by ERROR.TYPE's number; the Sort command takes them all as equal.
  */
 import { collator } from './collate.js'
 import type { ErrorCode } from './contract.js'
@@ -25,13 +25,14 @@ export const sameType =
 const EN_US = /* @__PURE__ */ sameType(collator.compare)
 
 /**
- * The order of two values, one type by `same` (text by en-US's collation by default), errors by ERROR.TYPE's number
- * (#DIV/0! before #NAME?, as SORT orders them); `desc` reverses it, blanks stay last.
+ * The order of two values, one type by `same` (text by en-US's collation by default), errors equal as the Sort command
+ * takes them or, with `byErrorType`, by ERROR.TYPE's number (#DIV/0! before #NAME?, as SORT orders them); `desc`
+ * reverses it, blanks stay last.
  */
-export function sortOrder<T>(a: T, b: T, desc: boolean, same: (a: T, b: T) => number = EN_US): number {
+export function sortOrder<T>(a: T, b: T, desc: boolean, same: (a: T, b: T) => number = EN_US, byErrorType = false): number {
   const ra = rank(a)
   const rb = rank(b)
   if (ra === 4 || rb === 4) return ra - rb
-  const c = ra !== rb ? ra - rb : ra === 3 ? errorType(a) - errorType(b) : same(a, b)
+  const c = ra !== rb ? ra - rb : ra === 3 ? (byErrorType ? errorType(a) - errorType(b) : 0) : same(a, b)
   return desc ? -c : c
 }

@@ -115,6 +115,8 @@ Replace was measured the same way (`Range.Replace` with Look in Formulas and dyn
 
 `getEnd` gives Excel's cell in all of them, in a synchronous session, in the same thread and in a pool's thread. The keyboard on a screen was not measured: Excel answered through its object model over SSH, without a screen. `test/end.test.ts` checks `getEnd` against a walk cell by cell over the session's result and book on seeded books with spills, empty texts, looks and hidden lines, through edits of cells, of the layout and of the structure and an undo, in every kind of session, and its time on the synthetic book.
 
+The Sort command's order (`compareValues`, `valueComparator`) was measured in Excel 16.114 for Mac (AppleScript's `sort`) and 16.0.20430 for Windows (`Range.Sort`), step `sort` of `bench/coverage` and `bench/windows`, on the set `errors-held` (6 columns, answers in `test/excel/sort/` and `test/excel/win/sort/`, test `test/sort-command-excel.test.ts`): eight errors in the order of ERROR.TYPE's numbers and against it, and errors among numbers, text, booleans and a blank, ascending and descending. Predicted before Excel ran it by Microsoft's words that all errors are equal, it was confirmed in all 6 on both: the Sort command keeps errors in their order either way, where the function SORT orders them by ERROR.TYPE's number (`refs-ironcalc-held`).
+
 ### Cell entry
 
 From [Cell entry](entry.md).
