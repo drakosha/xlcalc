@@ -301,20 +301,27 @@ export function unwrap(text: string): { s: string; paren: boolean; percent: bool
 }
 
 /**
- * Number text as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$`, parentheses,
- * commas, exponent, one `%` at either end (not with `$`: `$1.1%` is text, the set `pct-text`), `1 1/2`, spaces around
- * it. Null if it is none (dates and times are read apart).
+ * Number text as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$` or `€` before it
+ * (`€` after it too: `12€`), parentheses, commas, exponent, one `%` at either end (not with a currency: `$1.1%` is
+ * text, the set `pct-text`), `1 1/2` (`$1 1/2` and `(1 1/2€)` too), spaces around it. Null if it is none (dates and
+ * times are read apart). A criterion's own text reads no `€` (`enCritNumber`).
  */
-export function enNumber(text: string): number | null {
+export const enNumber = (text: string) => numberText(text, true)
+
+/** Number text as en-US criteria read their own text: as `enNumber`, without `€` (a cell's `€100` still equals 100 there). */
+export const enCritNumber = (text: string) => numberText(text, false)
+
+function numberText(text: string, euros: boolean): number | null {
   const t = trimSpaces(text)
   if (t === '') return null
   const { s, paren, percent } = unwrap(t)
+  const euro = euros && s.endsWith('€')
   // `s`: text with a line break is matched whole and read as no number, not left unmatched
-  const sign = /^([+-]?) *(\$?) *([+-]?) *(.*)$/s.exec(s)!
-  if (sign[1] && sign[3]) return null
+  const sign = (euros ? /^([+-]?) *([$€]?) *([+-]?) *(.*)$/s : /^([+-]?) *(\$?) *([+-]?) *(.*)$/s).exec(euro ? trimSpaces(s.slice(0, -1)) : s)!
+  if ((sign[1] && sign[3]) || (euro && sign[2])) return null
   const negative = (sign[1] || sign[3]) === '-'
-  if ((paren && negative) || (sign[2] && percent)) return null
-  return bodyNumber(sign[4], GROUPED, (mant) => mant.replace(/,/g, ''), percent, !sign[2] && !paren, negative || paren)
+  if ((paren && negative) || ((euro || sign[2]) && percent)) return null
+  return bodyNumber(sign[4], GROUPED, (mant) => mant.replace(/,/g, ''), percent, true, negative || paren)
 }
 
 /**
@@ -338,6 +345,9 @@ export function bodyNumber(body: string, grouped: RegExp, plain: (mant: string) 
 
 /** en-US text as a number outside a book, as operators and arguments read it: date text without a year is no date. */
 export const textToNumber = textReaders(enNumber, EN_DATES).argument
+
+/** en-US criterion text as a number outside a book (`textToNumber` without `€`). */
+export const critTextToNumber = textReaders(enCritNumber, EN_DATES).argument
 
 /** How operators and numeric arguments read text: plain decimal text, whitespace around it trimmed (the common case), else as `read` reads it. */
 export const decimalFirst =

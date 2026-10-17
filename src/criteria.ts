@@ -7,7 +7,7 @@
  * text and the order of text follow the book's locale (`CritRules`, en-US by default).
  */
 import { collator } from './collate.js'
-import { textToNumber } from './dates.js'
+import { critTextToNumber, textToNumber } from './dates.js'
 import { spend } from './exec/budget.js'
 import { readsClock, type RulesClock } from './locale/rules/data.js'
 import { holds, to15 } from './values.js'
@@ -62,7 +62,7 @@ export interface CritRules {
 
 /** en-US: numbers, dates and times in criteria and in cell text as VALUE reads them, TRUE and FALSE in any case. */
 export const EN_CRIT: CritRules = {
-  critNumber: textToNumber,
+  critNumber: critTextToNumber,
   critBool: (t) => (/^(TRUE|FALSE)$/i.test(t) ? t.toUpperCase() === 'TRUE' : null),
   cellNumber: (s) => (/\d/.test(s) ? textToNumber(s) : null),
   compareText: collator.compare,
@@ -187,10 +187,13 @@ function eqKey(v: CritValue, rules: CritRules): string | null {
   return typeof v === 'number' || typeof v === 'boolean' ? equalityKey(v) : null
 }
 
-/** Equality key of a criterion, the key of the values it selects; null for one that is no equality. */
+/**
+ * Equality key of a criterion, the key of the values it selects; null for one that is no equality, and for text with
+ * `€`, which en-US reads as a number in a cell (its key) but not in a criterion, so such a criterion scans.
+ */
 export function critKey(c: Crit): string | null {
   if (c.op !== '=') return null
-  return c.kind === 'str' ? equalityKey(c.s) : c.kind === 'num' ? equalityKey(c.n) : c.kind === 'bool' ? equalityKey(c.b) : null
+  return c.kind === 'str' ? (c.s.includes('€') ? null : equalityKey(c.s)) : c.kind === 'num' ? equalityKey(c.n) : c.kind === 'bool' ? equalityKey(c.b) : null
 }
 
 /** One-column COUNTIF uses the same equality keys as the selection index; other criteria use the scan rules. */

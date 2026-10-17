@@ -220,6 +220,8 @@ The set `database-ironcalc-held` (15 cases, predicted) takes the database of Iro
 
 The set `rounding-ironcalc-held` (32 cases, predicted) takes 12 of IronCalc's cells: `FLOOR` of 0 as a number, text, FALSE and a blank to a significance of 0, `FLOOR.MATH` and `CEILING.MATH` of negative numbers with the mode 0.01, `ROUND` of a difference just below 0.00625; and 20 around them: `FLOOR` of other numbers to 0, modes small, negative, as text and booleans, positive numbers, `ROUND` just below a half at other magnitudes. Both Excels gave the same answers, all 32 as predicted; the 54 cells match.
 
+The set `euro-ironcalc-held` (29 cases, predicted) takes 6 of IronCalc's cells, `EXP`, `SIGN` and `VALUE` of `€100`, `100€` and ` €100 `, and 23 around them: a space, a sign and parentheses with the euro sign, groups, an exponent, a percent, the sign twice or with `$`, other currencies, arithmetic, a range of `SUM`, criteria. Both Excels gave the same answers and 26 came out as predicted; the misses showed a fraction after the euro sign and criteria that read no euro sign in their own text. The set `euro-ironcalc-held-2` (13 cases, predicted by that rule) missed 4: a fraction is read after `$` and inside parentheses too, which the engine had refused unmeasured, and a number criterion's equality takes a cell's `€100` for 100. The set `euro-ironcalc-held-3` (16 cases) measured that rule, all as predicted; the 8 cells match.
+
 ### Links to other workbooks
 
 From [Links to other workbooks](links.md).
