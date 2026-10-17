@@ -25,9 +25,9 @@ Functions live in `src/functions/<category>.ts` (`math`, `statistical`, `logical
 
 The measurements behind each guide's "Checked against Excel": the harness steps, the sets, what each predicted set gave and what its misses changed.
 
-### Arrays inside a formula
+### Array operations in formulas
 
-From [Arrays inside a formula](arrays-incell.md).
+From [Array operations in formulas](arrays-incell.md).
 
 The `arrays` case set (`bench/coverage/sets/arrays.ts`) is computed in Excel as dynamic array formulas. The harness writes each formula the way Excel 365 saves one: `<c cm="1"><f t="array" ref="A1">…</f>` plus `xl/metadata.xml` with the `XLDAPR` metadata and `dynamicArrayProperties fDynamic="1"`. Without that metadata Excel reads a formula the old way, with implicit intersection: `SUM(IF(D!B1:B8>0,D!B1:B8))` is 114.75 as an old formula and 118.25 as a dynamic one. The `_xlfn._xlws.` prefixes only name newer functions and do not make a formula dynamic.
 
@@ -78,6 +78,123 @@ From [Asynchronous and threaded computation](async.md).
 #### Explain cancellation
 
 `test/explain-cancel.test.ts` runs both execution modes in inline sessions and pools: already aborted, queued and running calls, soft deadlines, invalid options and successful reuse after cancellation. An expanded range of 12,000 values makes the traversal yield. `test/session-issue.test.ts` checks node locations, errors, ranges, spills and cycles in all three kinds of session. The traversal and text rendering use the same paced budget checks as the other asynchronous methods.
+
+### Batch changes, previews and paged queries in a live session
+
+From [Batch changes, previews and paged queries in a live session](live-books.md).
+
+Find was measured in Excel 16.0.20430 for Windows through its object model (`Range.Find` and `FindNext`, step `find` of `bench/windows`), in en-US and in ru-RU, on three sets held out with their predictions committed before Excel ran them (`bench/coverage/find/`, answers in `test/excel/win/find/`, test `test/find-win.test.ts`):
+
+| set | cases in each locale | predicted by | confirmed | what it settled |
+|---|---:|---|---:|---|
+| `rules-held` | 155 | the grid's own model: the lookup functions' wildcards, Look in Formulas `editText`, Values the shown text | 136 | wildcards and `~`, `?` over a character outside the BMP, the case of letters, what Look in reads, merged areas and arrays, order, hidden cells on a filtered sheet |
+| `rules-held-2` | 64 | `findCells` | 45 | hidden cells on a sheet without a filter, ranges of several areas, narrow columns, more of Look in, the Greek sigma |
+| `rules-held-3` | 32 | `findCells` | 32 | a filter's mode makes Look in Formulas skip hidden cells and take the blocks, even when it hides nothing |
+| `rules-held-4` | 29 | `findCells` | 22 | Find from a cell (`after`): round to it, a cell outside the range refused, a hidden row without a filter; on a filtered sheet a cell of a hidden line stands in the first block, and by columns the first column of the first block is not come back to |
+| `rules-held-5` | 24 | `findCells` | 15 | Find from cells of later blocks and of hidden lines further on a filtered sheet goes on as `rules-held-4` showed, by rows and by columns, in ranges that begin past the first block too |
+
+`findCells` gives Excel's cells in Excel's order in all of them but, in each locale, the seven cases of `rules-held`, the four of `rules-held-4` and the nine of `rules-held-5` listed in [Known differences](live-books.md#known-differences). Excel for Mac's Find was not measured. `test/session-find.test.ts` checks the options in a synchronous session, in the same thread and in a pool's thread, with closures and eval.
+
+Replace was measured the same way (`Range.Replace` with Look in Formulas and dynamic formulas, `FormulaVersion` 1, step `replace` of `bench/windows`), each case in a book of its own, its cells read and the book saved and read back, with the columns' widths from `rules-held-2` (`bench/coverage/replace/`, answers in `test/excel/win/replace/`, test `test/replace-win.test.ts`):
+
+| set | cases in each locale | predicted by | confirmed in en-US, ru-RU | what it settled |
+|---|---:|---|---:|---|
+| `rules-held` | 60 | the grid's own Replace All: Find's cells in formulas, every match with `*` as long as it can be, written by `setCellTexts` | 51, 50 | wildcards in the query and in what is put, `?` over a character outside the BMP, the case, the whole cell, `*` as short as it can be, every cell found entered again, percents and dates, formulas in the book's language and ones that no longer read, arrays whole, hidden cells, a range of one cell |
+| `rules-held-2` | 22 | `replaceInCells` | 20, 20 | where `*` stops, an apostrophe put, a percent begun by a sign, the text format, the list separator, a table's header, no widening |
+| `rules-held-3` | 10 | `replaceInCells` | 9, 9 | a cell of the text format takes a formula and a boolean as typed elsewhere, and a date with a date format; percents, dates' and money's separators |
+
+`replaceInCells` leaves each cell as Excel left it in all of them but the cases listed in [Known differences](live-books.md#known-differences): three of `rules-held` in en-US and four in ru-RU. `test/session-replace.test.ts` checks the rules, the undo and the options in every kind of session, and `test/find-texts.test.ts` the texts kept after a replacement.
+
+`Range.End` was measured the same way (step `end` of `bench/windows`), each case a cell and a direction in a book Excel opened, computed, filtered and typed into, the address it came to; held out with `getEnd`'s predictions committed before Excel ran each set (`bench/coverage/end/`, answers in `test/excel/win/end/`, test `test/end-win.test.ts`):
+
+| set | locale | cases | confirmed | what it settled |
+|---|---|---:|---:|---|
+| `rules-held` | en-US | 167 | 167 | blocks, one empty cell apart and further, to every edge; which cells hold something (14 kinds); spills, a blocked one, an old-kind array, a spill of a whole column; merged areas from each side and from inside; rows and columns hidden by hand and by a filter; every line hidden past a row and a column |
+| `rules-held-2` | en-US | 19 | 19 | from a cell of a hidden row or column, with a value and without; a row of height 0 and a column of width 0 not marked hidden; a merged area whose top-left cell is in a hidden row |
+| `ru-held` | ru-RU | 4 | 4 | blocks, an empty text from a formula, a hidden row and a merged area as in en-US |
+
+`getEnd` gives Excel's cell in all of them, in a synchronous session, in the same thread and in a pool's thread. The keyboard on a screen was not measured: Excel answered through its object model over SSH, without a screen. `test/end.test.ts` checks `getEnd` against a walk cell by cell over the session's result and book on seeded books with spills, empty texts, looks and hidden lines, through edits of cells, of the layout and of the structure and an undo, in every kind of session, and its time on the synthetic book.
+
+### Cell entry
+
+From [Cell entry](entry.md).
+
+The rules were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, in en-US and ru-RU, by the step `entry` of the harness (`bench/coverage/entry.ts`, `bench/windows/entry.ts`). A case types its text into a cell of its own, in General or with a format set before, through the object model as Excel 365 takes typed text in the user's language (`formula2 local` on the Mac, `Formula2Local` on Windows); then the cell's shown text and format codes are read, and the book is saved and read back with `readXlsx` for what the cell holds. On the Mac a set may be typed on the keyboard instead (System Events, an ASCII keyboard layout): the window Excel shows for a formula it does not take ("We found a typo in your formula", then why it is not taken) is answered with No and OK, and Escape leaves the cell as it was. The answers are in `test/excel/entry/` and `test/excel/win/entry/`, and `test/entry-excel.test.ts` and `test/entry-win.test.ts` compare `parseEntry` with every case, on the day of the run.
+
+| set | cases per locale | how | predicted before the run, en-US and ru-RU |
+|---|---:|---|---|
+| `typed` | 552 | object model, Mac and Windows | Mac 385 and 397, Windows 385 and 378 |
+| `typed-keys` | 39 | keyboard, Mac | 30 and 30 |
+| `typed-held` | 257 | object model, Mac and Windows | Mac 181 and 184, Windows 186 and 184 |
+| `typed-keys-held` | 44 | keyboard, Mac | 36 and 36 |
+| `typed-held-2` | 102 | object model, Mac and Windows | 85 and 84 on both |
+| `typed-keys-held-2` | 29 | keyboard, Mac | 25 and 26 |
+| `typed-keys-held-3` | 6 | keyboard, Mac | 3 and 4: `-5%`, `+5%` and `-0.5%` typed over a percent cell are formulas with the editor's second `%` (`-5%%`), where the engine wrote `-5%` |
+| `typed-pct-held` | 47 | object model, Mac and Windows | 45 and 46 on both |
+| `names-held` | 28 (en-US) | object model, Mac and Windows | 21 on both: cells' words as LET's names (`XFD1`, `XFE1`, `A0`) and the words past the sheet alone, refused here and taken by Excel, and an unknown name's case |
+| `let-grid-held` | 14 (en-US) | object model, Mac and Windows | 10 on both: `IV1`, `A65536` and `IV65536` are LET's names too, so the edge predicted, Excel 2003's sheet, is none, and a LET name read after its LET |
+| `let-cells-held` | 25 (en-US) | object model, Mac and Windows | 11 on both: every cell is LET's name but those that read as R1C1's row or column too |
+
+Each set's predictions (`bench/coverage/entry/<set>.predicted.json`) were committed before Excel ran it, and the misses became rules. The engine now gives Excel for Windows's answer on 1,812 of the 1,983 cases of the object model's sets, and the Mac's keyboard answer on 232 of 236; the other cases are the known differences below, pinned in `test/entry-known.ts`.
+
+Values are compared exactly, as the saved file holds every digit. `typed-pct-held` types percents with decimals where moving the point and dividing by 100 give different numbers (`1.1%`, `0.7%`, `1.255%`, `99.9%`, with a sign, parentheses, a leading `%`, groups and an exponent), fractions and plain decimals; each cell's value is also read through the object model (`value` on the Mac, `Value2` on Windows), which equals the number the file holds in every case. Both Excels stored every decimal percent as its decimal text reads; the miss was `$1.1%`, which Excel en-US keeps as text, the other the sign difference of the object model.
+
+Excel for Windows and Excel for Mac answer alike, but where their own built-in codes part: the Mac's en-US short date is `m/d/yy` and its ru-RU short time `hh:mm`, so it keeps the codes `m/d/yyyy` (en-US) and `h:mm` (ru-RU) as formats of the book's own, where Windows takes them as the formats 14 and 20. The engine follows Windows.
+
+The text a cell opens with was measured by the same step on the sets `edit-held` (85 texts) and `edit-numbers-held` (38 numbers around a length of 21 characters), which read each cell's `Formula` and `FormulaLocal` and, on the Mac, its formula bar itself: each cell selected in turn with Excel in front, the bar's text read through the window's accessibility (`Formula Bar. A,1 1/31/2025  6:00:00 PM`). The bar is needed: both Excels' object model gives a date's, a time's and a percent's number there (`45688`, `0.12`), and under other formats the text the bar shows, the apostrophe being the cell's prefix character. `entryText`'s predictions were committed before Excel ran each set: `edit-held` came out as predicted on 72 of 85 cells in en-US and 74 in ru-RU, the misses being numbers of 21 characters written whole, the two spaces before a time, the apostrophe Excel keeps and ru-RU's times, and with the rules fixed `edit-numbers-held` came out as predicted on all 38 numbers in both locales, in Excel for Mac's formula bar and Excel for Windows's `FormulaLocal` alike. `test/entry-text-excel.test.ts` compares `entryText` with the formula bar and with the object model under the other formats, and reads every text back with `parseEntry` to the value Excel saved.
+
+The object model takes some text otherwise than typing, and the keyboard sets settle these: through `Formula2Local` a text begun by `+` or `-` that is no number is text (`-C1`, `+1+2`), a number goes into a percent cell as it is (`5` is 500%), and empty text makes a cell formatted as text hold empty text. Excel for Windows has `AutoPercentEntry` on, as the answers' `meta` records, but takes `Formula2Local` as the Mac does.
+
+Text pasted from the clipboard and a text entered into a selection with Control+Return were measured by the step `ui` (`bench/coverage/ui.ts`; the sets `paste-held`, 25 pastes on both Excels, and `fill-held`, 18 entries on the Mac's keyboard), and the text a cell of an array opens with by the set `arrays-held` (the formula bar selected and once F2 began the editing, on the Mac; `Formula2Local` on both, which is the text F2 opens). The predictions, `setCellTexts` of the texts and `editText`, were committed before Excel ran each set, and the misses became the rules of [A paste and Control+Return](entry.md#a-paste-and-controlreturn) and of the cells of an old-kind array's area; Excel for Mac and Excel for Windows pasted alike in every case. `test/ui-excel.test.ts` compares `pasteText`, `fillCellText` (from the selection's first cell, a call with a stop alert taken back) and `editText` with every case: the engine gives Excel's answer to the 100 pastes (25 in each locale on each Excel), to 33 of the 36 entries into a selection and to the 16 cases of `arrays-held`; the other three are known differences below.
+
+A cell edited in place was measured by the same step on the Mac's keyboard (the set `edit-held`, 20 cases in each locale): the cell selected, F2, what it opened with erased or only its digit changed, the text typed and Return, the formula bar read when F2 began the editing and once more before Return. The prediction, `pasteText` of each text (no percent editor at all), was committed before Excel ran it and came out as predicted on 14 cases in en-US and 13 in ru-RU: the misses were numbers begun by a sign (`-5` is -5%), to which the editor still adds `%`, and in ru-RU a column Excel widened. `test/ui-excel.test.ts` compares `setCellText` with `inPlace` with every case, and the engine gives Excel's answer to all 40.
+
+Line breaks were measured by the step `rows` (`bench/coverage/rows.ts`, `docs/formats.md`, "Fitting rows"): text with a line break set through the object model (the sets `autofit` and `held`, both Excels), typed on the Mac's keyboard with Control+Option+Return, entered into a selection with Control+Return and pasted with Cmd+V (`keys`), and quotes in pasted text (`quotes`, both Excels, Windows through `Worksheet.Paste`; `quotes-ru`, the same pastes in ru-RU on Windows), each cell's content and wrapping read with its row's height. The keyboard, the object model and a paste set `wrap` alike, and the two Excels pasted every quote alike; the predictions, committed before each set ran, had the paste read no quotes, which the answers made the rule above.
+
+Refusing a value a rule does not take (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not measure: the alert is a window, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a refused call leaves the book, the revision and the history as they were, and that a value the rules take is written as without the option.
+
+### Cell entry: A formula left open
+
+From [Cell entry, A formula left open](entry.md#a-formula-left-open).
+
+The step `entry` typed each text on the Mac's keyboard and pressed Return (`keys` sets), in Excel 16.113 and 16.114 for Mac: Excel updated itself between the first set and the rest. The harness answers Excel's windows itself, No to a correction and OK after it, and keeps their texts, so a refused case holds the correction Excel offered. The Russian names were typed in the Russian layout (`input-source.swift com.apple.keylayout.Russian`), the other sets in ABC.
+
+| set | cases | predicted before the run |
+|---|---:|---|
+| `close-held` | 34 in each locale | 29 (en-US) and 32 (ru-RU): two or more functions' brackets left open (`=SUM(MAX(1,2`) get a correction, not closed without a word; a sign before the function (`=-SUM(1`) is closed; an array constant left open in a function's brackets gets no correction |
+| `close-ru-held` | 11 (ru-RU) | 8: as in `close-held` |
+| `close-held-2` | 22 in each locale | 19 and 20: a space before the function (`= SUM(1`) is closed; an array constant after an operator (`=1+{1,2`) gets no correction; and a date format from a reference, a known difference |
+| `close-ru-held-2` | 7 (ru-RU) | 7 |
+| `close-held-3` | 15 in each locale | 11 and 10: a correction drops the spaces after `=` (`= (1+2` to `=(1+2)`); a formula begun by an array constant gets one for a later array left open (`={1,2}+{3`); and the cases below |
+| `close-ru-held-3` | 5 (ru-RU) | 2: as in `close-held-3` |
+
+The rule came from the answers of Point mode's sets, which pressed Return after the arrows (`point-caret-held-2` and `-3`: 62 formulas left open), and each set's misses corrected it; the third set's corrections were taken without a fourth. Five cases differ and are known (`test/entry-known.ts`): `=MAX(C1,C2` takes C2's date format in Excel, and the engine, without a book, none; `=NOW(` in ru-RU, where `NOW` is no Russian name; and three texts with two spaces (`=  SUM(1`), which macOS types as a period and a space (`NSAutomaticPeriodSubstitutionEnabled`), so they tell nothing of Excel. A case typed with Latin letters in the Russian layout (`=ABS(-(1)`, typed as `=ФИЫ(-(1)`) was taken out of `close-ru-held`.
+
+### Cell entry: Copying plain text
+
+From [Cell entry, Copying plain text](entry.md#copying-plain-text).
+
+`bench/coverage/clipboard` commits the predictions before the copies run. The copy set has ten cases in each locale on each platform: grid, controls and quotes, one cell, an empty sheet, narrow numbers and dates, hidden rows and columns, filtering, merges and a spill. `copy range` and `pbpaste` on Mac and `Range.Copy` with `Get-Clipboard -Raw` on Windows read text without bringing Excel forward. The Windows `quotes-held` set copies three rectangles, replaces the rich clipboard with their plain text and pastes them, checking the sentinel below too. `test/clipboard-excel.test.ts` checks the stored text and pins the ambiguity; `test/session-copy-text.test.ts` checks `copyText` from the books against the same stored copies in all three session kinds and both execution modes.
+
+### Cell entry: Point mode
+
+From [Cell entry, Point mode](entry.md#point-mode).
+
+The step `ui` of `bench/coverage` types on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU: a text typed over C3, keys pressed, the formula bar's description read after each (the active cell and its text), then Return, and the cell read back. Three sets, each predicted before Excel ran it:
+
+- `point-held`, 40 cases in each locale, predicted by the sheet component's own model (`bench/coverage/ui/point-model.ts`): 21 of 40 as Excel did it in each. Excel differed where an arrow enters the text (after an operand the component moved the caret), after a leading `+` or `-`, a space after an operand and `=1.`, and in every key the component left to its field (Command and an arrow, Home, Page Down). `refAt` was written from these answers.
+- `point-more-held`, 27 places, predicted by that first `refAt`: 39 of 54 as Excel did it. It entered every formula ending in an operand; Excel enters one only when it reads (`=A1)`, `=1e`, `=1,5` in en-US do nothing) and takes a reference after any point (`=A1.`). `refAt` was revised by them.
+- `point-third-held`, 20 places no set had, predicted by the revised `refAt`: 19 of 20 in each locale. The one left is a reference to a sheet the book does not have (`=Sheet1!A`): Excel takes it for another workbook's and the arrow does nothing, which text alone cannot tell; `test/point-excel.test.ts` keeps it as a known difference.
+
+Then the caret elsewhere than at the end, reached by F2, Home and arrows in Edit mode and F2 again, three sets more, each predicted before Excel ran it:
+
+- `point-caret-held`, 24 cases in each locale: 27 of 48 as predicted. With the caret before the formula's first character Excel puts in its own `=` and the reference (20 cases); `=SUM(A1,` with the caret before the comma is entered in en-US. That the whole formula decides past the caret held.
+- `point-caret-held-2`, 19 cases: 16 of 19 in each locale. A group's bracket left open is not closed (`=(1+2`, `=((1`), a function's is.
+- `point-caret-held-3`, 13 cases: 9 of 13 in en-US, 11 of 13 in ru-RU. Excel does nothing with `=SUM(1)+MAX(2` and `=ABS(-(1)`, and in en-US with `=ROUND(1.5` and `=ROUND(A1*2` (where `ROUND` is known), which `refAt` enters. Measuring stopped at the third set with a correction. The sets of [A formula left open](#cell-entry-a-formula-left-open) gave the rule: the arrow enters a formula left open when Return would close it without a word, so `=SUM(1)+MAX(2` and `=ABS(-(1)` do nothing; the two of `ROUND`, too few arguments, stay known differences (`test/point-excel.test.ts`).
+
+`test/point-excel.test.ts` compares `refAt` with every case that types a text and presses Right, 138 in each locale, the caret read from the keys pressed before the arrow. A case whose formula bar does not show the text it typed is not stored (another keyboard layout, or a key pressed by someone else at the Mac during the run, spoiled 11 cases of one run and 1 of another, which were run again; macOS turns two spaces typed into a point and a space, so no case types two).
+
+Not measured: a mouse press on a cell or on a sheet's tab while pointing (the harness presses keys only), and Excel for Windows, whose keyboard is not reachable over SSH.
 
 ### Circular references
 
@@ -169,7 +286,7 @@ In all, 34 of the 54 cases before `name-case-held` came out as predicted on the 
 
 The words of a formula, TRUE and FALSE, function names and LET's names in the long s, the sharp s, the ligature `ﬁ` and the dotless and dotted i, were measured in a file and typed (the case set `name-case-held` and the entry sets `name-case-held` and `name-case-values-held`): Excel for Windows reads them letter by letter (`falſe` is a name, `gauß(1)` no `GAUSS`, `LET(ß,1,SS)` `#NAME?`), Excel for Mac reads `ſ` as `s`.
 
-LET's names were measured as text typed into cells (the entry sets `names-held`, `let-grid-held` and `let-cells-held`, [Typed entry](entry.md)), predicted before Excel ran them: of the cells' words the engine refused all, and Excel takes every one but those that read as R1C1's row or column too (`R2`, `C100`, `RC5`), on the Mac and Windows alike; `?` and `\` inside, first and after a cell's shape (`A1?x`) are names, as predicted. The engine takes them so now (fixed).
+LET's names were measured as text typed into cells (the entry sets `names-held`, `let-grid-held` and `let-cells-held`, [Cell entry](entry.md)), predicted before Excel ran them: of the cells' words the engine refused all, and Excel takes every one but those that read as R1C1's row or column too (`R2`, `C100`, `RC5`), on the Mac and Windows alike; `?` and `\` inside, first and after a cell's shape (`A1?x`) are names, as predicted. The engine takes them so now (fixed).
 
 ### Editing a grid
 
@@ -187,28 +304,13 @@ The engine's answers to `patch` and `clear` were committed before Excel for Mac 
 
 The seeded test of sessions against full computations (`test/session-fuzz.test.ts`) replaces, clears, formats and types into cells beside its other edits, compares the session's hash with a full computation's after each, and at the end undoes every step and finds the book it opened. `test/session-edit.test.ts`, `test/session-styles.test.ts` and `test/session-text.test.ts` check each call in a synchronous session, in the same thread and in a thread, with closures and eval.
 
-`setCellTexts` adds no rule of its own: each text is read as `setCellText` reads it, whose rules were measured in Excel ([Typed entry](entry.md)). `test/session-texts.test.ts` types a mixed set (numbers, dates and a formula in ru-RU, text that reads as a number, a column of percents, a cell with a rule, two cells that widen one column to different widths, a cell given twice, a table's header) at once and one by one, and finds the same book, values and changes; one undo takes the whole call back.
+`setCellTexts` adds no rule of its own: each text is read as `setCellText` reads it, whose rules were measured in Excel ([Cell entry](entry.md)). `test/session-texts.test.ts` types a mixed set (numbers, dates and a formula in ru-RU, text that reads as a number, a column of percents, a cell with a rule, two cells that widen one column to different widths, a cell given twice, a table's header) at once and one by one, and finds the same book, values and changes; one undo takes the whole call back.
 
-`pasteText` and `fillCellText` follow what Excel for Mac and Excel for Windows did with text pasted from the clipboard and Excel for Mac with Control+Return, measured by the step `ui` ([Typed entry](#typed-entry)); `test/ui-excel.test.ts` compares them with every case. `test/session-paste.test.ts` checks the rectangle, each kind of field, the refusals, the moved formula, the active cell's format and rule, the widths and one undo in a synchronous session, in the same thread and in a thread, with closures and eval.
+`pasteText` and `fillCellText` follow what Excel for Mac and Excel for Windows did with text pasted from the clipboard and Excel for Mac with Control+Return, measured by the step `ui` ([Cell entry](#cell-entry)); `test/ui-excel.test.ts` compares them with every case. `test/session-paste.test.ts` checks the rectangle, each kind of field, the refusals, the moved formula, the active cell's format and rule, the widths and one undo in a synchronous session, in the same thread and in a thread, with closures and eval.
 
-### Formulas of the old kind
+### External references
 
-From [Formulas of the old kind](legacy.md).
-
-- `legacy/params` (3,071 formulas): every whitelisted function with a range and an expression over a range put into each of its arguments, read back as Excel 365 shows them (`formula2`) and computed.
-- `legacy/nesting` (3,469) and `legacy/blocks` (346): the same inside SUMPRODUCT, SUM, INDEX, ROWS and MMULT.
-- `legacy/calls` (113): calls whose answer depends on their arguments, array constants, names.
-- `legacy/ifs-text` (8): `IFS` with a condition of text under `ROWS`, `COLUMNS`, `TYPE`, `SUM` and `VSTACK`, predicted before Excel computed it; 7 came out as predicted, and the miss showed that `TYPE` takes a call with an array answer whole (`TYPE(IFS("x",1))` has no `@` and is 64).
-- The coverage measurement computed with formulas of the old kind: every whitelisted case gives Excel's value at its row.
-- `spill/legacy` and `spill/legacy-held`: intersection by row and column, on other sheets and through names. The 13 cells of `legacy-held` were predicted before Excel computed them, and all came out as predicted.
-- `spill/cse`, `spill/cse-held` and `struct/arrays` for array formulas of the old kind. The 25 cells of `cse-held` were predicted before Excel computed them, all as predicted.
-- `xlsx intersect`: 75 formulas of the old kind in a file Excel computed and saved. Read by `readXlsx`, each computes the value Excel stored, but two with `OFFSET`, which is not in the whitelist.
-
-`fromLegacy` gives Excel's text for every formula of these sets, `@D!B1:B3 D!B2:C2` for the intersection `D!B1:B3 D!B2:C2` among them.
-
-### Links to other workbooks
-
-From [Links to other workbooks](links.md).
+From [External references](links.md).
 
 `npx tsx bench/coverage/run.ts links <set>` writes each case of `bench/coverage/links/<set>.ts` as `writeXlsx` writes its own cells, with the formulas over links and the link parts put in by hand as Excel writes them, and has Excel for Mac open it with `update links do not update links`; `npx tsx bench/windows/run.ts links <set>` has Excel for Windows open it with `UpdateLinks` 0. Neither showed a window about the links. Each reads the rectangles after opening, takes the case's operations (a fill down, a copy, rows inserted, a sheet renamed), reads them again after a full calculation, and saves the book. The answers are in `test/excel/links/` and `test/excel/win/links/` with the files Excel saved; the predictions in each set were committed before Excel ran it.
 
@@ -222,41 +324,54 @@ From [Links to other workbooks](links.md).
 
 Both Excels gave the same values everywhere. `test/links-excel.test.ts` checks, for each platform, the values after opening against `compute` of the case's book, the values after the operations against a session that takes them, the formulas Excel showed against `toLocal` with the links' targets in the opened file's folder, and that Excel's answer was the predicted value or one of its alternatives; the predictions it did not confirm are named there with the reason (a cell not stored was predicted blank, and is, until a formula with the link is entered). Excel also built a link itself, to a book it had open: it stored only the non-empty cells of the source's used part, an empty text as `t="str"` with an empty value, and opened without the source gave the stored values, blank elsewhere. `test/links-session.test.ts` runs an edit under formulas with links, an entered link and a refused new link in a synchronous session, in the same thread and in a pool, in both execution modes, against a full computation of the session's book. `test/links.test.ts` covers the text, the check, the input check, the input hash and structure operations.
 
-### Live workbook operations and bounded queries
+### Functions
 
-From [Live workbook operations and bounded queries](live-books.md).
+From [Functions](functions.md).
 
-Find was measured in Excel 16.0.20430 for Windows through its object model (`Range.Find` and `FindNext`, step `find` of `bench/windows`), in en-US and in ru-RU, on three sets held out with their predictions committed before Excel ran them (`bench/coverage/find/`, answers in `test/excel/win/find/`, test `test/find-win.test.ts`):
+IronCalc's tests (`ironcalc/IronCalc` at `297553d`, `xlsx/tests`, 235 files saved by Excel) were computed with the engine and their cells compared with the values Excel stored; the 468 cells where the engine answered otherwise, with the cells they read, are in `bench/coverage/ironcalc/cases.json`, and Excel for Windows and Excel for Mac computed them again (`win.json`, `mac.json`, steps `bench/windows/ironcalc.ts` and `bench/coverage/ironcalc.ts`). Both answered as the file in 458 of them. Each rule they led to was measured with a set of its own, predicted before Excel ran it.
 
-| set | cases in each locale | predicted by | confirmed | what it settled |
-|---|---:|---|---:|---|
-| `rules-held` | 155 | the grid's own model: the lookup functions' wildcards, Look in Formulas `editText`, Values the shown text | 136 | wildcards and `~`, `?` over a character outside the BMP, the case of letters, what Look in reads, merged areas and arrays, order, hidden cells on a filtered sheet |
-| `rules-held-2` | 64 | `findCells` | 45 | hidden cells on a sheet without a filter, ranges of several areas, narrow columns, more of Look in, the Greek sigma |
-| `rules-held-3` | 32 | `findCells` | 32 | a filter's mode makes Look in Formulas skip hidden cells and take the blocks, even when it hides nothing |
-| `rules-held-4` | 29 | `findCells` | 22 | Find from a cell (`after`): round to it, a cell outside the range refused, a hidden row without a filter; on a filtered sheet a cell of a hidden line stands in the first block, and by columns the first column of the first block is not come back to |
-| `rules-held-5` | 24 | `findCells` | 15 | Find from cells of later blocks and of hidden lines further on a filtered sheet goes on as `rules-held-4` showed, by rows and by columns, in ranges that begin past the first block too |
+The set `accrint-ironcalc-held` (42 cases, predicted) takes 22 of the 187 `ACCRINT` cells, one or two of each kind (every basis, calc_method TRUE and FALSE, negative answers, a fractional frequency, arguments in cells), and 20 cases around the rule: coupon dates stepped one from the other across short months, a first interest date on a month's last day, a settlement on a coupon date, an issue on one or after the first interest date, the issue's own period on each basis. Both Excels gave the same answers, all 42 as predicted, and every one of the 187 cells matches.
 
-`findCells` gives Excel's cells in Excel's order in all of them but, in each locale, the seven cases of `rules-held`, the four of `rules-held-4` and the nine of `rules-held-5` listed in [Known differences](live-books.md#known-differences). Excel for Mac's Find was not measured. `test/session-find.test.ts` checks the options in a synchronous session, in the same thread and in a pool's thread, with closures and eval.
+The set `countif-ironcalc-held` (23 cases, predicted) takes 7 `COUNTIF` and `COUNTIFS` cells of IronCalc's file, all of the 60 the engine missed being `CONCAT("<>",E26)` with E26 a formula's empty text over ranges holding such text, and 16 cases around them: `<>` written out, joined to a blank, over one cell, in `SUMIF`, `AVERAGEIF`, `SUMIFS` and `COUNTIFS` of two ranges, and `=` against `""` over the same cells. Both Excels gave the same answers, all 23 as predicted: `<>` counts a formula's empty text, `""` takes it for a blank and `=` does not; the 60 cells match.
 
-Replace was measured the same way (`Range.Replace` with Look in Formulas and dynamic formulas, `FormulaVersion` 1, step `replace` of `bench/windows`), each case in a book of its own, its cells read and the book saved and read back, with the columns' widths from `rules-held-2` (`bench/coverage/replace/`, answers in `test/excel/win/replace/`, test `test/replace-win.test.ts`):
+The set `xlookup-ironcalc-held` (39 cases, predicted) takes 15 of the 40 `XLOOKUP` cells (binary search over runs of equal values and over another type than the key's, the next value across types in a linear search, wildcards with binary search) and 24 cases around them in `XLOOKUP` and `XMATCH`. Both Excels gave the same answers and 35 came out as predicted; the 4 misses showed how the binary search runs: at the middle of the positions left, both ends included, so it finds 5 among 1, 9, 5, 2, 3 at once, with a blank taken for greater than the key, over every position of a whole column. The set `xlookup-ironcalc-held-2` (30 cases, predicted by that rule) measures it on unsorted data, a blank and an error at the middle, runs of equal values both ways, a reference longer than its values and whole columns both ways: both Excels gave the same answers, all 30 as predicted, and the 40 cells match.
 
-| set | cases in each locale | predicted by | confirmed in en-US, ru-RU | what it settled |
-|---|---:|---|---:|---|
-| `rules-held` | 60 | the grid's own Replace All: Find's cells in formulas, every match with `*` as long as it can be, written by `setCellTexts` | 51, 50 | wildcards in the query and in what is put, `?` over a character outside the BMP, the case, the whole cell, `*` as short as it can be, every cell found entered again, percents and dates, formulas in the book's language and ones that no longer read, arrays whole, hidden cells, a range of one cell |
-| `rules-held-2` | 22 | `replaceInCells` | 20, 20 | where `*` stops, an apostrophe put, a percent begun by a sign, the text format, the list separator, a table's header, no widening |
-| `rules-held-3` | 10 | `replaceInCells` | 9, 9 | a cell of the text format takes a formula and a boolean as typed elsewhere, and a date with a date format; percents, dates' and money's separators |
+Two `INDEX` cells of IronCalc's `XMATCH.xlsx` read `XMATCH` with match mode 3, regular expressions, which Excel for Mac 16.114 has and Excel for Windows 16.0.20430 does not (`#VALUE!`); the engine follows the Mac. The set `xmatch-regex-held` (22 cases, predicted) missed 2, a number among the values being matched by its text; `xmatch-regex-held-2` (9) missed 1, a blank being empty text; `xmatch-regex-held-3` (6, blanks inside the values and past them) came out as predicted on the Mac. Excel for Windows answered `#VALUE!` to the 34 cases where the engine finds a match or answers otherwise, each in `WIN_KNOWN` (reason `winRegexMatch`).
 
-`replaceInCells` leaves each cell as Excel left it in all of them but the cases listed in [Known differences](live-books.md#known-differences): three of `rules-held` in en-US and four in ru-RU. `test/session-replace.test.ts` checks the rules, the undo and the options in every kind of session, and `test/find-texts.test.ts` the texts kept after a replacement.
+The set `database-ironcalc-held` (15 cases, predicted) takes the database of IronCalc's file, whose headers are TRUE, 1 and the text `true`, with its criteria headed TRUE, `true` and 1, and adds a field named `TRUE`, a criteria header `TRUE` in capitals and the text `1`, a database that starts at the text header, and each function of the group. Both Excels gave the same answers, all 15 as predicted: a header names the first column that reads as it in any case, a boolean too; the 21 cells of the database functions match.
 
-`Range.End` was measured the same way (step `end` of `bench/windows`), each case a cell and a direction in a book Excel opened, computed, filtered and typed into, the address it came to; held out with `getEnd`'s predictions committed before Excel ran each set (`bench/coverage/end/`, answers in `test/excel/win/end/`, test `test/end-win.test.ts`):
+The set `rounding-ironcalc-held` (32 cases, predicted) takes 12 of IronCalc's cells: `FLOOR` of 0 as a number, text, FALSE and a blank to a significance of 0, `FLOOR.MATH` and `CEILING.MATH` of negative numbers with the mode 0.01, `ROUND` of a difference just below 0.00625; and 20 around them: `FLOOR` of other numbers to 0, modes small, negative, as text and booleans, positive numbers, `ROUND` just below a half at other magnitudes. Both Excels gave the same answers, all 32 as predicted; the 54 cells match.
 
-| set | locale | cases | confirmed | what it settled |
-|---|---|---:|---:|---|
-| `rules-held` | en-US | 167 | 167 | blocks, one empty cell apart and further, to every edge; which cells hold something (14 kinds); spills, a blocked one, an old-kind array, a spill of a whole column; merged areas from each side and from inside; rows and columns hidden by hand and by a filter; every line hidden past a row and a column |
-| `rules-held-2` | en-US | 19 | 19 | from a cell of a hidden row or column, with a value and without; a row of height 0 and a column of width 0 not marked hidden; a merged area whose top-left cell is in a hidden row |
-| `ru-held` | ru-RU | 4 | 4 | blocks, an empty text from a formula, a hidden row and a merged area as in en-US |
+The set `euro-ironcalc-held` (29 cases, predicted) takes 6 of IronCalc's cells, `EXP`, `SIGN` and `VALUE` of `€100`, `100€` and ` €100 `, and 23 around them: a space, a sign and parentheses with the euro sign, groups, an exponent, a percent, the sign twice or with `$`, other currencies, arithmetic, a range of `SUM`, criteria. Both Excels gave the same answers and 26 came out as predicted; the misses showed a fraction after the euro sign and criteria that read no euro sign in their own text. The set `euro-ironcalc-held-2` (13 cases, predicted by that rule) missed 4: a fraction is read after `$` and inside parentheses too, which the engine had refused unmeasured, and a number criterion's equality takes a cell's `€100` for 100. The set `euro-ironcalc-held-3` (16 cases) measured that rule, all as predicted; the 8 cells match.
 
-`getEnd` gives Excel's cell in all of them, in a synchronous session, in the same thread and in a pool's thread. The keyboard on a screen was not measured: Excel answered through its object model over SSH, without a screen. `test/end.test.ts` checks `getEnd` against a walk cell by cell over the session's result and book on seeded books with spills, empty texts, looks and hidden lines, through edits of cells, of the layout and of the structure and an undo, in every kind of session, and its time on the synthetic book.
+The set `textafter-ironcalc-held` (23 cases, predicted) takes 9 of IronCalc's `TEXTAFTER`, `TEXTBEFORE` and `TEXTSPLIT` cells (a fractional instance from the end, a delimiter longer than the text with if_not_found, `TEXTSPLIT` with neither delimiter) and 14 around them; both Excels gave the same answers, all 23 as predicted, but the rule for long delimiters broke a recorded case (`TEXTBEFORE("A","aBc")` is `#N/A`). The set `textafter-ironcalc-held-2` (10 cases, predicted) measured long delimiters with and without an instance, all as predicted; the 11 cells match.
+
+The `TEXT` cells, all `TEXT(x,"mm###")`, took four sets. `text-date-ironcalc-held` (19 cases, predicted: a digit placeholder makes a date's code invalid) missed `mm.00`, minutes and decimals; `text-date-ironcalc-held-2` (12) missed 4, a point and zeros after a month's name, a year, a day and elapsed minutes being decimals too; `text-date-ironcalc-held-3` (12) missed 3, decimals after a space, a second time and after AM/PM. The rule was then taken from the grammar of [MS-XLS] 2.4.126 rather than from the misses: its `NFDateTime` holds a section's date and time codes, `/`, `:`, AM/PM and `NFPartSubSecond` (a point and one to three zeros) anywhere after the first code, and no other digit placeholder, percent or exponent. The set `text-date-ironcalc-held-4` (27 cases) takes the codes Microsoft's support pages show, that grammar, and edges they leave open (minutes before decimals across a space, decimals of two lengths, a quoted or escaped zero): all 27 as predicted, and the rule gives Excel's answers to the 43 cases of the other three sets and to the 23 cells. Where the guide says `m` without `h` or `ss` is the month, Excel shows minutes before a second's decimals (`mm.00`, `mm .00`). Both Excels gave the same answers to all four sets.
+
+The set `currency-held` (34 cases, predicted) measured what en-US reads as a currency sign in number text besides `$` before a number and `€` before or after it: thirteen other signs before and after a number (`£`, `¥`, `₽`, `₹`, `₩`, `₪`, `₺`, `₴`, `¢`, `฿`, `₫`, `₦`, `₱`), `$` after one, currency codes. Both Excels read none of them, all 34 as predicted.
+
+The set `date-ironcalc-held` (33 cases, predicted) takes IronCalc's 11 date cells (`DAYS360` of moments a hair from midnight, `WEEKDAY` of a date out of range with a return type of text or an error, `WORKDAY` with days a hair under 0 and -1, `TIMEVALUE("0:0:86400")`) and 22 around them: `DAYS360` near the half second before midnight, `WEEKDAY`'s errors in either argument, `WORKDAY`'s fractional days both ways, minutes and seconds of four and five digits. Both Excels gave the same answers, all 33 as predicted; the 12 cells match.
+
+The set `finance-ironcalc-held` (32 cases, predicted) takes 10 of IronCalc's `FV`, `IRR`, `MIRR` and `XNPV` cells (a rate of -1 over a negative number of periods, a guess of -1 or less, outflows alone, a blank among the values) and 22 around them. Both Excels gave the same answers and 28 came out as predicted; the misses showed (1 + rate)^nper taken as Excel's power takes 0^0 (`FV(-1,0,1)` is `#NUM!`, and `PV` alike) and `XNPV`'s first value or date deciding between `#VALUE!` and `#NUM!`, and the rule for `MIRR` broke a recorded case of one value (`#DIV/0!`). The set `finance-ironcalc-held-2` (17 cases, predicted) measured those, all as predicted; the 13 cells match.
+
+The set `math-ironcalc-held` (30 cases, predicted) takes 9 of IronCalc's cells (`GCD` and `LCM` of blanks alone, `CSCH` and `IMCSCH` of a tiny argument, `LOGNORM.INV` of `LOGNORM.DIST` with σ = 1E12, `POISSON.DIST` a hair below 0, `PROB` over text) and 21 around them. Both Excels gave the same answers, all 30 as predicted within the comparison's tolerance; to the last digit `NORM.S.DIST(1E-13,TRUE)` is what erfc gives while `LOGNORM.DIST` next to its median is exact, so erf's series serves `LOGNORM.DIST` alone. The `LOGNORM.INV` cell is ill-conditioned (with σ = 1E12 one unit in the last place of the probability moves the answer by 1E-4): it matches because both the probability and AS 241's quantile are now Excel's to the last digit. The 17 cells match.
+
+The set `refs-ironcalc-held` (35 cases, predicted) takes 11 of IronCalc's cells (`ISREF` of `FILTER`'s if_empty, `INDEX` of an array's row, `SORT`'s order of errors, `IFERROR` and `LEFT` lifted over arrays of other lengths, `"1e400"+1`) and 24 around them, among them the rule that a function reads a position outside a shorter array as `#N/A` in that argument's turn (`IF`, `IFNA`, `ROUND`, `MID`) while an operator answers `#N/A` there. Both Excels gave the same answers and 34 came out as predicted; the miss, `"1e308"+0` being `#VALUE!`, led to `refs-ironcalc-held-2` (10 cases at Excel's largest number, all as predicted). The 13 cells match; the order of errors is the one `compareValues` of `xlcalc/text` keeps too, as it sorts as `SORT` does.
+
+### Legacy array formulas and implicit intersection
+
+From [Legacy array formulas and implicit intersection](legacy.md).
+
+- `legacy/params` (3,071 formulas): every whitelisted function with a range and an expression over a range put into each of its arguments, read back as Excel 365 shows them (`formula2`) and computed.
+- `legacy/nesting` (3,469) and `legacy/blocks` (346): the same inside SUMPRODUCT, SUM, INDEX, ROWS and MMULT.
+- `legacy/calls` (113): calls whose answer depends on their arguments, array constants, names.
+- `legacy/ifs-text` (8): `IFS` with a condition of text under `ROWS`, `COLUMNS`, `TYPE`, `SUM` and `VSTACK`, predicted before Excel computed it; 7 came out as predicted, and the miss showed that `TYPE` takes a call with an array answer whole (`TYPE(IFS("x",1))` has no `@` and is 64).
+- The coverage measurement computed with formulas of the old kind: every whitelisted case gives Excel's value at its row.
+- `spill/legacy` and `spill/legacy-held`: intersection by row and column, on other sheets and through names. The 13 cells of `legacy-held` were predicted before Excel computed them, and all came out as predicted.
+- `spill/cse`, `spill/cse-held` and `struct/arrays` for array formulas of the old kind. The 25 cells of `cse-held` were predicted before Excel computed them, all as predicted.
+- `xlsx intersect`: 75 formulas of the old kind in a file Excel computed and saved. Read by `readXlsx`, each computes the value Excel stored, but two with `OFFSET`, which is not in the whitelist.
+
+`fromLegacy` gives Excel's text for every formula of these sets, `@D!B1:B3 D!B2:C2` for the intersection `D!B1:B3 D!B2:C2` among them.
 
 ### Locales
 
@@ -272,9 +387,9 @@ From [Locales](locale.md).
 
 Excel for Mac and Excel for Windows (16.0.20430) compute ru-RU alike but for their regional data. Where those part, the engine follows Windows: the order of text, month names, the times of built-in formats, `CHAR` and `CODE`. It keeps the Mac's long date `[$-F800]` (`пятница, 31 января 2025 г.`; Windows's has no weekday). Formula text in ru-RU (array constants and the like) was not compared with Windows.
 
-### Number formats and shown text
+### Number formats and displayed text
 
-From [Number formats and shown text](formats.md).
+From [Number formats and displayed text](formats.md).
 
 `test/column-width.test.ts` checks the exported pair against all 666 existing Mac fit answers, the default, every whole point through 1,535 and invalid inputs. `bench/coverage/width` saves the current model's predictions before the object-model probe: ten fixed widths from the file, the default and seven `ColumnWidth` settings, with each platform's `Width`, `ColumnWidth`, `StandardWidth` and the width Excel saved. `test/column-width-excel.test.ts` checks the stored point widths without any screen measurement. Both platforms matched 17 of 18 predictions: only `ColumnWidth = 0.5` differed (6 points on Mac, 4.5 on Windows, against 8 and 6.75 predicted). All ten fixed widths and both defaults held. Setting characters is a different conversion from setting a file width; the exported inverse takes points instead.
 
@@ -459,6 +574,14 @@ From [Reading and writing xlsx, The saved active sheet and view](xlsx.md#the-sav
 
 `test/xlsx-view.test.ts` reads explicit OOXML fields, then writes, reads, writes and reads them again. It checks the first visible sheet default, input validation, both hashes in both execution modes, all three kinds of session, and active-sheet changes through rename, hide, delete and undo. No default XML behavior was changed for books without saved view fields.
 
+### Reference operators
+
+From [Reference operators](references.md).
+
+The set `areas` (1,137 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above; its case ids name the function and the argument (`fn:union:SUBTOTAL#2`). The set `areas-each` (52 cases) measures how `SUBTOTAL`, `AGGREGATE`, `FREQUENCY` and `SORTBY` take them: 40 of its 47 predicted answers came out as predicted, and the misses were all `SORTBY`, which takes neither. The set `intersect` (44 cases) measures the intersection and the range operator, 40 of its 41 predicted answers as predicted (the miss: `'D'!B1:B2:C3`, whose C3 is on the formula's sheet), and `sheet-cells` (13 cases) the sheets named like cells, all 11 predictions as predicted. The set `ref-deps` (11 cases) puts formulas between the ends of ranges, on the middle sheet of a reference across sheets and in the second area of a union, all 11 predictions as predicted. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.
+
+Sheet names were measured in the tables step of the harness (`bench/coverage/tables.ts`, `bench/windows/run.ts tables`): a book of sheets named as above, whose sheet `F` refers to each one's A1 as the engine stores it (in quotes), opened in Excel, its formula text read back (`Range.Formula`, and `Range.FormulaLocal`). The set `sheet-quotes-held` (54 names) came out as predicted on 49; its misses (`R0`, `R1048577` unquoted, `R2D2`, `C3PO`, `RC1C` quoted) showed that Excel reads an R1C1 reference at the start of a name, and the set `sheet-quotes-r1c1-held` (54 more), predicted after them, came out on 48: a `.` after the reference (`C1.x`, `R1.`), the column past the sheet (`R1C0`, `R1C16385`) and names that are A1 cells (`RCC1`, `xR1`) made the rule above. Excel 16.113 for Mac and Excel 16.0.20430 for Windows, in en-US and in ru-RU, wrote every name alike (`test/excel/tables/` and `test/excel/win/tables/`, `test/a1-excel.test.ts`), and the formula text of every other table set is now compared with the names quoted by the same rule.
+
 ### Spilling
 
 From [Spilling](spill.md).
@@ -546,92 +669,3 @@ The predicted sets came out as predicted on 81 of 81 cells (`refs-held`), 424 of
 `test/tables-text.test.ts` shows formulas of a table's cell with `toLocal` and the table, in en-US and ru-RU, reads them back with `toInvariant` and checks the typed text with `validateLocalFormula`, each with the table, and both give the stored text again; the canonical text `validateFormula` gives with the table is the one `compute` stores for the cell.
 
 The xlsx round trip (`run.ts xlsx roundtrip`) sends the 29 distinct books of the sets `refs`, `refs-held`, `ops` and `ops-held`: Excel opens each file `writeXlsx` writes and saves it, the files it saved read back to the books written, and the values Excel stored in them equal the engine's.
-
-### The @ operator, unions, references across sheets, sheet names and the reference operators
-
-From [The @ operator, unions, references across sheets, sheet names and the reference operators](references.md).
-
-The set `areas` (1,137 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above; its case ids name the function and the argument (`fn:union:SUBTOTAL#2`). The set `areas-each` (52 cases) measures how `SUBTOTAL`, `AGGREGATE`, `FREQUENCY` and `SORTBY` take them: 40 of its 47 predicted answers came out as predicted, and the misses were all `SORTBY`, which takes neither. The set `intersect` (44 cases) measures the intersection and the range operator, 40 of its 41 predicted answers as predicted (the miss: `'D'!B1:B2:C3`, whose C3 is on the formula's sheet), and `sheet-cells` (13 cases) the sheets named like cells, all 11 predictions as predicted. The set `ref-deps` (11 cases) puts formulas between the ends of ranges, on the middle sheet of a reference across sheets and in the second area of a union, all 11 predictions as predicted. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.
-
-Sheet names were measured in the tables step of the harness (`bench/coverage/tables.ts`, `bench/windows/run.ts tables`): a book of sheets named as above, whose sheet `F` refers to each one's A1 as the engine stores it (in quotes), opened in Excel, its formula text read back (`Range.Formula`, and `Range.FormulaLocal`). The set `sheet-quotes-held` (54 names) came out as predicted on 49; its misses (`R0`, `R1048577` unquoted, `R2D2`, `C3PO`, `RC1C` quoted) showed that Excel reads an R1C1 reference at the start of a name, and the set `sheet-quotes-r1c1-held` (54 more), predicted after them, came out on 48: a `.` after the reference (`C1.x`, `R1.`), the column past the sheet (`R1C0`, `R1C16385`) and names that are A1 cells (`RCC1`, `xR1`) made the rule above. Excel 16.113 for Mac and Excel 16.0.20430 for Windows, in en-US and in ru-RU, wrote every name alike (`test/excel/tables/` and `test/excel/win/tables/`, `test/a1-excel.test.ts`), and the formula text of every other table set is now compared with the names quoted by the same rule.
-
-### Typed entry
-
-From [Typed entry](entry.md).
-
-The rules were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows, in en-US and ru-RU, by the step `entry` of the harness (`bench/coverage/entry.ts`, `bench/windows/entry.ts`). A case types its text into a cell of its own, in General or with a format set before, through the object model as Excel 365 takes typed text in the user's language (`formula2 local` on the Mac, `Formula2Local` on Windows); then the cell's shown text and format codes are read, and the book is saved and read back with `readXlsx` for what the cell holds. On the Mac a set may be typed on the keyboard instead (System Events, an ASCII keyboard layout): the window Excel shows for a formula it does not take ("We found a typo in your formula", then why it is not taken) is answered with No and OK, and Escape leaves the cell as it was. The answers are in `test/excel/entry/` and `test/excel/win/entry/`, and `test/entry-excel.test.ts` and `test/entry-win.test.ts` compare `parseEntry` with every case, on the day of the run.
-
-| set | cases per locale | how | predicted before the run, en-US and ru-RU |
-|---|---:|---|---|
-| `typed` | 552 | object model, Mac and Windows | Mac 385 and 397, Windows 385 and 378 |
-| `typed-keys` | 39 | keyboard, Mac | 30 and 30 |
-| `typed-held` | 257 | object model, Mac and Windows | Mac 181 and 184, Windows 186 and 184 |
-| `typed-keys-held` | 44 | keyboard, Mac | 36 and 36 |
-| `typed-held-2` | 102 | object model, Mac and Windows | 85 and 84 on both |
-| `typed-keys-held-2` | 29 | keyboard, Mac | 25 and 26 |
-| `typed-keys-held-3` | 6 | keyboard, Mac | 3 and 4: `-5%`, `+5%` and `-0.5%` typed over a percent cell are formulas with the editor's second `%` (`-5%%`), where the engine wrote `-5%` |
-| `typed-pct-held` | 47 | object model, Mac and Windows | 45 and 46 on both |
-| `names-held` | 28 (en-US) | object model, Mac and Windows | 21 on both: cells' words as LET's names (`XFD1`, `XFE1`, `A0`) and the words past the sheet alone, refused here and taken by Excel, and an unknown name's case |
-| `let-grid-held` | 14 (en-US) | object model, Mac and Windows | 10 on both: `IV1`, `A65536` and `IV65536` are LET's names too, so the edge predicted, Excel 2003's sheet, is none, and a LET name read after its LET |
-| `let-cells-held` | 25 (en-US) | object model, Mac and Windows | 11 on both: every cell is LET's name but those that read as R1C1's row or column too |
-
-Each set's predictions (`bench/coverage/entry/<set>.predicted.json`) were committed before Excel ran it, and the misses became rules. The engine now gives Excel for Windows's answer on 1,812 of the 1,983 cases of the object model's sets, and the Mac's keyboard answer on 232 of 236; the other cases are the known differences below, pinned in `test/entry-known.ts`.
-
-Values are compared exactly, as the saved file holds every digit. `typed-pct-held` types percents with decimals where moving the point and dividing by 100 give different numbers (`1.1%`, `0.7%`, `1.255%`, `99.9%`, with a sign, parentheses, a leading `%`, groups and an exponent), fractions and plain decimals; each cell's value is also read through the object model (`value` on the Mac, `Value2` on Windows), which equals the number the file holds in every case. Both Excels stored every decimal percent as its decimal text reads; the miss was `$1.1%`, which Excel en-US keeps as text, the other the sign difference of the object model.
-
-Excel for Windows and Excel for Mac answer alike, but where their own built-in codes part: the Mac's en-US short date is `m/d/yy` and its ru-RU short time `hh:mm`, so it keeps the codes `m/d/yyyy` (en-US) and `h:mm` (ru-RU) as formats of the book's own, where Windows takes them as the formats 14 and 20. The engine follows Windows.
-
-The text a cell opens with was measured by the same step on the sets `edit-held` (85 texts) and `edit-numbers-held` (38 numbers around a length of 21 characters), which read each cell's `Formula` and `FormulaLocal` and, on the Mac, its formula bar itself: each cell selected in turn with Excel in front, the bar's text read through the window's accessibility (`Formula Bar. A,1 1/31/2025  6:00:00 PM`). The bar is needed: both Excels' object model gives a date's, a time's and a percent's number there (`45688`, `0.12`), and under other formats the text the bar shows, the apostrophe being the cell's prefix character. `entryText`'s predictions were committed before Excel ran each set: `edit-held` came out as predicted on 72 of 85 cells in en-US and 74 in ru-RU, the misses being numbers of 21 characters written whole, the two spaces before a time, the apostrophe Excel keeps and ru-RU's times, and with the rules fixed `edit-numbers-held` came out as predicted on all 38 numbers in both locales, in Excel for Mac's formula bar and Excel for Windows's `FormulaLocal` alike. `test/entry-text-excel.test.ts` compares `entryText` with the formula bar and with the object model under the other formats, and reads every text back with `parseEntry` to the value Excel saved.
-
-The object model takes some text otherwise than typing, and the keyboard sets settle these: through `Formula2Local` a text begun by `+` or `-` that is no number is text (`-C1`, `+1+2`), a number goes into a percent cell as it is (`5` is 500%), and empty text makes a cell formatted as text hold empty text. Excel for Windows has `AutoPercentEntry` on, as the answers' `meta` records, but takes `Formula2Local` as the Mac does.
-
-Text pasted from the clipboard and a text entered into a selection with Control+Return were measured by the step `ui` (`bench/coverage/ui.ts`; the sets `paste-held`, 25 pastes on both Excels, and `fill-held`, 18 entries on the Mac's keyboard), and the text a cell of an array opens with by the set `arrays-held` (the formula bar selected and once F2 began the editing, on the Mac; `Formula2Local` on both, which is the text F2 opens). The predictions, `setCellTexts` of the texts and `editText`, were committed before Excel ran each set, and the misses became the rules of [A paste and Control+Return](entry.md#a-paste-and-controlreturn) and of the cells of an old-kind array's area; Excel for Mac and Excel for Windows pasted alike in every case. `test/ui-excel.test.ts` compares `pasteText`, `fillCellText` (from the selection's first cell, a call with a stop alert taken back) and `editText` with every case: the engine gives Excel's answer to the 100 pastes (25 in each locale on each Excel), to 33 of the 36 entries into a selection and to the 16 cases of `arrays-held`; the other three are known differences below.
-
-A cell edited in place was measured by the same step on the Mac's keyboard (the set `edit-held`, 20 cases in each locale): the cell selected, F2, what it opened with erased or only its digit changed, the text typed and Return, the formula bar read when F2 began the editing and once more before Return. The prediction, `pasteText` of each text (no percent editor at all), was committed before Excel ran it and came out as predicted on 14 cases in en-US and 13 in ru-RU: the misses were numbers begun by a sign (`-5` is -5%), to which the editor still adds `%`, and in ru-RU a column Excel widened. `test/ui-excel.test.ts` compares `setCellText` with `inPlace` with every case, and the engine gives Excel's answer to all 40.
-
-Line breaks were measured by the step `rows` (`bench/coverage/rows.ts`, `docs/formats.md`, "Fitting rows"): text with a line break set through the object model (the sets `autofit` and `held`, both Excels), typed on the Mac's keyboard with Control+Option+Return, entered into a selection with Control+Return and pasted with Cmd+V (`keys`), and quotes in pasted text (`quotes`, both Excels, Windows through `Worksheet.Paste`; `quotes-ru`, the same pastes in ru-RU on Windows), each cell's content and wrapping read with its row's height. The keyboard, the object model and a paste set `wrap` alike, and the two Excels pasted every quote alike; the predictions, committed before each set ran, had the paste read no quotes, which the answers made the rule above.
-
-Refusing a value a rule does not take (`refuseInvalid`) follows the buttons of Excel's alert of each style, which the harness does not measure: the alert is a window, and the object model writes a value without one. `test/session-refuse-invalid.test.ts` checks, in each kind of session, that a refused call leaves the book, the revision and the history as they were, and that a value the rules take is written as without the option.
-
-### Typed entry: A formula left open
-
-From [Typed entry, A formula left open](entry.md#a-formula-left-open).
-
-The step `entry` typed each text on the Mac's keyboard and pressed Return (`keys` sets), in Excel 16.113 and 16.114 for Mac: Excel updated itself between the first set and the rest. The harness answers Excel's windows itself, No to a correction and OK after it, and keeps their texts, so a refused case holds the correction Excel offered. The Russian names were typed in the Russian layout (`input-source.swift com.apple.keylayout.Russian`), the other sets in ABC.
-
-| set | cases | predicted before the run |
-|---|---:|---|
-| `close-held` | 34 in each locale | 29 (en-US) and 32 (ru-RU): two or more functions' brackets left open (`=SUM(MAX(1,2`) get a correction, not closed without a word; a sign before the function (`=-SUM(1`) is closed; an array constant left open in a function's brackets gets no correction |
-| `close-ru-held` | 11 (ru-RU) | 8: as in `close-held` |
-| `close-held-2` | 22 in each locale | 19 and 20: a space before the function (`= SUM(1`) is closed; an array constant after an operator (`=1+{1,2`) gets no correction; and a date format from a reference, a known difference |
-| `close-ru-held-2` | 7 (ru-RU) | 7 |
-| `close-held-3` | 15 in each locale | 11 and 10: a correction drops the spaces after `=` (`= (1+2` to `=(1+2)`); a formula begun by an array constant gets one for a later array left open (`={1,2}+{3`); and the cases below |
-| `close-ru-held-3` | 5 (ru-RU) | 2: as in `close-held-3` |
-
-The rule came from the answers of Point mode's sets, which pressed Return after the arrows (`point-caret-held-2` and `-3`: 62 formulas left open), and each set's misses corrected it; the third set's corrections were taken without a fourth. Five cases differ and are known (`test/entry-known.ts`): `=MAX(C1,C2` takes C2's date format in Excel, and the engine, without a book, none; `=NOW(` in ru-RU, where `NOW` is no Russian name; and three texts with two spaces (`=  SUM(1`), which macOS types as a period and a space (`NSAutomaticPeriodSubstitutionEnabled`), so they tell nothing of Excel. A case typed with Latin letters in the Russian layout (`=ABS(-(1)`, typed as `=ФИЫ(-(1)`) was taken out of `close-ru-held`.
-
-### Typed entry: Copying plain text
-
-From [Typed entry, Copying plain text](entry.md#copying-plain-text).
-
-`bench/coverage/clipboard` commits the predictions before the copies run. The copy set has ten cases in each locale on each platform: grid, controls and quotes, one cell, an empty sheet, narrow numbers and dates, hidden rows and columns, filtering, merges and a spill. `copy range` and `pbpaste` on Mac and `Range.Copy` with `Get-Clipboard -Raw` on Windows read text without bringing Excel forward. The Windows `quotes-held` set copies three rectangles, replaces the rich clipboard with their plain text and pastes them, checking the sentinel below too. `test/clipboard-excel.test.ts` checks the stored text and pins the ambiguity; `test/session-copy-text.test.ts` checks `copyText` from the books against the same stored copies in all three session kinds and both execution modes.
-
-### Typed entry: Point mode
-
-From [Typed entry, Point mode](entry.md#point-mode).
-
-The step `ui` of `bench/coverage` types on the Mac's keyboard in Excel 16 for Mac, en-US and ru-RU: a text typed over C3, keys pressed, the formula bar's description read after each (the active cell and its text), then Return, and the cell read back. Three sets, each predicted before Excel ran it:
-
-- `point-held`, 40 cases in each locale, predicted by the sheet component's own model (`bench/coverage/ui/point-model.ts`): 21 of 40 as Excel did it in each. Excel differed where an arrow enters the text (after an operand the component moved the caret), after a leading `+` or `-`, a space after an operand and `=1.`, and in every key the component left to its field (Command and an arrow, Home, Page Down). `refAt` was written from these answers.
-- `point-more-held`, 27 places, predicted by that first `refAt`: 39 of 54 as Excel did it. It entered every formula ending in an operand; Excel enters one only when it reads (`=A1)`, `=1e`, `=1,5` in en-US do nothing) and takes a reference after any point (`=A1.`). `refAt` was revised by them.
-- `point-third-held`, 20 places no set had, predicted by the revised `refAt`: 19 of 20 in each locale. The one left is a reference to a sheet the book does not have (`=Sheet1!A`): Excel takes it for another workbook's and the arrow does nothing, which text alone cannot tell; `test/point-excel.test.ts` keeps it as a known difference.
-
-Then the caret elsewhere than at the end, reached by F2, Home and arrows in Edit mode and F2 again, three sets more, each predicted before Excel ran it:
-
-- `point-caret-held`, 24 cases in each locale: 27 of 48 as predicted. With the caret before the formula's first character Excel puts in its own `=` and the reference (20 cases); `=SUM(A1,` with the caret before the comma is entered in en-US. That the whole formula decides past the caret held.
-- `point-caret-held-2`, 19 cases: 16 of 19 in each locale. A group's bracket left open is not closed (`=(1+2`, `=((1`), a function's is.
-- `point-caret-held-3`, 13 cases: 9 of 13 in en-US, 11 of 13 in ru-RU. Excel does nothing with `=SUM(1)+MAX(2` and `=ABS(-(1)`, and in en-US with `=ROUND(1.5` and `=ROUND(A1*2` (where `ROUND` is known), which `refAt` enters. Measuring stopped at the third set with a correction. The sets of [A formula left open](#typed-entry-a-formula-left-open) gave the rule: the arrow enters a formula left open when Return would close it without a word, so `=SUM(1)+MAX(2` and `=ABS(-(1)` do nothing; the two of `ROUND`, too few arguments, stay known differences (`test/point-excel.test.ts`).
-
-`test/point-excel.test.ts` compares `refAt` with every case that types a text and presses Right, 138 in each locale, the caret read from the keys pressed before the arrow. A case whose formula bar does not show the text it typed is not stored (another keyboard layout, or a key pressed by someone else at the Mac during the run, spoiled 11 cases of one run and 1 of another, which were run again; macOS turns two spaces typed into a point and a space, so no case types two).
-
-Not measured: a mouse press on a cell or on a sheet's tab while pointing (the harness presses keys only), and Excel for Windows, whose keyboard is not reachable over SSH.

@@ -4,12 +4,15 @@ import type { Rules } from '../../locale/rules.js'
 import { E, isErr, Rng, type CErr, type V } from '../../values.js'
 
 const whole = (n: number | CErr) => (isErr(n) ? n : Math.trunc(n))
+const floor = (n: number | CErr) => (isErr(n) ? n : Math.floor(n))
 
 const SCALAR: Record<string, (v: V, rules: Rules) => unknown> = {
   v: (v) => v,
   e: (v, r) => (typeof v === 'boolean' ? E.VALUE : toDate(v, r)),
   x: noBool,
   j: (v, r) => whole(noBool(v, r)),
+  // rounded down: WORKDAY's days (-1E-9 is a day back)
+  f: (v, r) => floor(noBool(v, r)),
   n: (v, r) => r.toNum(v),
   i: (v, r) => whole(r.toNum(v)),
   d: toDate,
@@ -47,7 +50,7 @@ function taken(kind: string, x: unknown, v: V, rules: Rules): unknown {
 }
 
 /**
- * Kinds `e` date, `x` number, `j` integer reject booleans (#VALUE!, as in Excel), `v` takes any value; scalar
+ * Kinds `e` date, `x` number, `j` integer (`f` rounded down) reject booleans (#VALUE!, as in Excel), `v` takes any value; scalar
  * kinds are read here, in argument order unless `order` says otherwise, the first error wins; other kinds go
  * through the shared layer.
  */

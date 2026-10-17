@@ -6,7 +6,7 @@ import { E, to15, type CErr } from '../../values.js'
 import type { FnDef } from '../../args.js'
 import { quotient, roundDigits } from '../common.js'
 
-/** CEILING.MATH and FLOOR.MATH: significance taken as positive; `mode` rounds negative numbers away from zero. */
+/** CEILING.MATH and FLOOR.MATH: significance taken as positive; any `mode` but 0 (0.01 too) turns the rounding of negative numbers. */
 function roundMath(n: number, sig: number | undefined, mode: number | undefined, up: boolean): number {
   const s = Math.abs(sig ?? 1)
   if (s === 0) return 0
@@ -41,21 +41,22 @@ export const functions: Record<string, FnDef> = {
       return Math.ceil(quotient(n, s)) * s
     },
   },
-  'CEILING.MATH': { args: 'n n? w?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, true) },
+  'CEILING.MATH': { args: 'n n? n?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, true) },
   'CEILING.PRECISE': CEILING_PRECISE,
   // the next even number away from zero, exactly (EVEN(2+2^-51) is 4)
   EVEN: { args: 'n', fn: (x: number) => (x < 0 ? -2 : 2) * Math.ceil(Math.abs(x) / 2) },
   FLOOR: {
     args: 'n n',
     fn: (n: number, s: number) => {
-      if (s === 0) return E.DIV0
+      // 0 to a significance of 0 is 0, any other number #DIV/0!
+      if (s === 0) return n === 0 ? 0 : E.DIV0
       if (n > 0 && s < 0) return E.NUM
       return Math.floor(quotient(n, s)) * s
     },
   },
-  'FLOOR.MATH': { args: 'n n? w?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, false) },
+  'FLOOR.MATH': { args: 'n n? n?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, false) },
   'FLOOR.PRECISE': { args: 'n n?', fn: (n: number, s?: number) => roundMath(n, s, 0, false) },
-  // INT, ROUNDDOWN, ROUNDUP and TRUNC read the number to 15 significant digits (INT(1-2^-52) is 1)
+  // INT, ROUND, ROUNDDOWN, ROUNDUP and TRUNC read the number to 15 significant digits (INT(1-2^-52) is 1)
   INT: { args: 'n', fn: (x: number) => Math.floor(to15(x)) },
   'ISO.CEILING': CEILING_PRECISE,
   MROUND: { args: 'x x', fn: mround },
@@ -67,7 +68,7 @@ export const functions: Record<string, FnDef> = {
       return x >= 0 ? t : -t
     },
   },
-  ROUND: { args: 'n w', fn: (x: number, d: number) => roundDigits(x, d, Math.round) },
+  ROUND: { args: 'n w', fn: (x: number, d: number) => roundDigits(to15(x), d, Math.round) },
   ROUNDDOWN: { args: 'n i', fn: roundDown },
   ROUNDUP: { args: 'n i', fn: (x: number, d: number) => roundDigits(to15(x), d, Math.ceil) },
   TRUNC: { args: 'n i?', fn: roundDown },

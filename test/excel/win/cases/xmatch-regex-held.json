@@ -1,0 +1,237 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 14.8,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "XMATCH#1",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"[A-Z][a-z]+y\",Rx!A1:A8,3,1)"
+  },
+  {
+   "id": "XMATCH#2",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"[A-Z][a-z]+y\",Rx!A1:A8,3,-1)"
+  },
+  {
+   "id": "INDEX#1",
+   "group": "INDEX",
+   "fn": "INDEX",
+   "formula": "INDEX(Rx!A1:A8,_xlfn.XMATCH(\"[A-Z][a-z]+y\",Rx!A1:A8,3,1))"
+  },
+  {
+   "id": "XMATCH#3",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(42,Rx!A1:A8,3)"
+  },
+  {
+   "id": "XMATCH#4",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"an\",Rx!A1:A8,3)"
+  },
+  {
+   "id": "XMATCH#5",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^In\",Rx!A1:A8,3)"
+  },
+  {
+   "id": "XMATCH#6",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"ia$\",Rx!A1:A8,3,-1)"
+  },
+  {
+   "id": "XMATCH#7",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"y$\",Rx!A1:A8,3)"
+  },
+  {
+   "id": "XMATCH#8",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"I.a\",Rx!A1:A8,3)"
+  },
+  {
+   "id": "XMATCH#9",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"Ind*\",Rx!A1:A8,3)"
+  },
+  {
+   "id": "XMATCH#10",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\",Rx!A1:A8,3)"
+  },
+  {
+   "id": "XMATCH#11",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"germany\",Rx!A1:A12,3)"
+  },
+  {
+   "id": "XMATCH#12",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"(?i)germany\",Rx!A1:A12,3)"
+  },
+  {
+   "id": "XMATCH#13",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"GERMANY\",Rx!A1:A12,3)"
+  },
+  {
+   "id": "XMATCH#14",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"[\",Rx!A1:A8,3)"
+  },
+  {
+   "id": "XMATCH#15",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(42,Rx!A10:A11,3)"
+  },
+  {
+   "id": "XMATCH#16",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"\\d\",Rx!A10:A12,3)"
+  },
+  {
+   "id": "XMATCH#17",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"Ind.*\",Rx!A1:A8,3,2)"
+  },
+  {
+   "id": "XLOOKUP#1",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(\"^Sp\",Rx!A1:A8,Rx!B1:B8,,3)"
+  },
+  {
+   "id": "XLOOKUP#2",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(\"zzz\",Rx!A1:A8,Rx!B1:B8,\"none\",3)"
+  },
+  {
+   "id": "XLOOKUP#3",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(\"a$\",Rx!A1:A8,Rx!B1:B8,,3,-1)"
+  },
+  {
+   "id": "XLOOKUP#4",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(\"a\",Rx!A1:A8,Rx!B1:B8,,3,-2)"
+  }
+ ],
+ "values": {
+  "XMATCH#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "INDEX#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XLOOKUP#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XLOOKUP#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XLOOKUP#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XLOOKUP#4": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

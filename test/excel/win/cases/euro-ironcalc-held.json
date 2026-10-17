@@ -1,0 +1,307 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 17.4,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "EXP#1",
+   "group": "EXP",
+   "fn": "EXP",
+   "formula": "EXP(Eu!A1)"
+  },
+  {
+   "id": "EXP#2",
+   "group": "EXP",
+   "fn": "EXP",
+   "formula": "EXP(\"100€\")"
+  },
+  {
+   "id": "EXP#3",
+   "group": "EXP",
+   "fn": "EXP",
+   "formula": "EXP(Eu!A2)"
+  },
+  {
+   "id": "SIGN#1",
+   "group": "SIGN",
+   "fn": "SIGN",
+   "formula": "SIGN(Eu!A1)"
+  },
+  {
+   "id": "SIGN#2",
+   "group": "SIGN",
+   "fn": "SIGN",
+   "formula": "SIGN(\"100€\")"
+  },
+  {
+   "id": "VALUE#1",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"12€\")"
+  },
+  {
+   "id": "VALUE#2",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€100\")"
+  },
+  {
+   "id": "VALUE#3",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€ 100\")"
+  },
+  {
+   "id": "VALUE#4",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100 €\")"
+  },
+  {
+   "id": "VALUE#5",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"-€100\")"
+  },
+  {
+   "id": "VALUE#6",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€-100\")"
+  },
+  {
+   "id": "VALUE#7",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"-100€\")"
+  },
+  {
+   "id": "VALUE#8",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"(€100)\")"
+  },
+  {
+   "id": "VALUE#9",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€1,000.50\")"
+  },
+  {
+   "id": "VALUE#10",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1,000.50€\")"
+  },
+  {
+   "id": "VALUE#11",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€1E3\")"
+  },
+  {
+   "id": "VALUE#12",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€100%\")"
+  },
+  {
+   "id": "VALUE#13",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100€%\")"
+  },
+  {
+   "id": "VALUE#14",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€100€\")"
+  },
+  {
+   "id": "VALUE#15",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"$100€\")"
+  },
+  {
+   "id": "VALUE#16",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€1 1/2\")"
+  },
+  {
+   "id": "VALUE#17",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"€\")"
+  },
+  {
+   "id": "VALUE#18",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"£100\")"
+  },
+  {
+   "id": "VALUE#19",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100$\")"
+  },
+  {
+   "id": "VALUE#20",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "\"€100\"+1"
+  },
+  {
+   "id": "SUM#1",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "SUM(Eu!A3,1)"
+  },
+  {
+   "id": "SUM#2",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "SUM(\"€5\",1)"
+  },
+  {
+   "id": "COUNTIF#1",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Eu!B1:B3,\"€100\")"
+  },
+  {
+   "id": "COUNTIF#2",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(Eu!B1:B3,\">€150\")"
+  }
+ ],
+ "values": {
+  "EXP#1": {
+   "t": "n",
+   "v": 2.6881171418161356e+43
+  },
+  "EXP#2": {
+   "t": "n",
+   "v": 2.6881171418161356e+43
+  },
+  "EXP#3": {
+   "t": "n",
+   "v": 2.6881171418161356e+43
+  },
+  "SIGN#1": {
+   "t": "n",
+   "v": 1
+  },
+  "SIGN#2": {
+   "t": "n",
+   "v": 1
+  },
+  "VALUE#1": {
+   "t": "n",
+   "v": 12
+  },
+  "VALUE#2": {
+   "t": "n",
+   "v": 100
+  },
+  "VALUE#3": {
+   "t": "n",
+   "v": 100
+  },
+  "VALUE#4": {
+   "t": "n",
+   "v": 100
+  },
+  "VALUE#5": {
+   "t": "n",
+   "v": -100
+  },
+  "VALUE#6": {
+   "t": "n",
+   "v": -100
+  },
+  "VALUE#7": {
+   "t": "n",
+   "v": -100
+  },
+  "VALUE#8": {
+   "t": "n",
+   "v": -100
+  },
+  "VALUE#9": {
+   "t": "n",
+   "v": 1000.5
+  },
+  "VALUE#10": {
+   "t": "n",
+   "v": 1000.5
+  },
+  "VALUE#11": {
+   "t": "n",
+   "v": 1000
+  },
+  "VALUE#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#16": {
+   "t": "n",
+   "v": 1.5
+  },
+  "VALUE#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#20": {
+   "t": "n",
+   "v": 101
+  },
+  "SUM#1": {
+   "t": "n",
+   "v": 1
+  },
+  "SUM#2": {
+   "t": "n",
+   "v": 6
+  },
+  "COUNTIF#1": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#2": {
+   "t": "n",
+   "v": 0
+  }
+ }
+}

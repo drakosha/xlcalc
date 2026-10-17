@@ -16,6 +16,34 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.49.0 (2026-10-17)
+
+Internal release; not published to npm. Excel's answers in the cells of IronCalc's xlsx tests where the library answered otherwise: 459 of 461 cells now answer as Excel for Mac, each rule checked by a set of cases in Excel for Mac and Windows (25 sets, 570 cases). The synthetic book's values and hashes are as in 0.48.0.
+
+Added:
+
+- `XMATCH` and `XLOOKUP` take match mode 3, regular expressions, as Excel for Mac 16.114 does. The patterns are read by JavaScript's syntax, where Excel reads PCRE2's ([Limitations](docs/limitations.md)); Excel for Windows 16.0.20430 has no such mode and answers `#VALUE!`.
+
+Changed:
+
+- `compareValues` and `valueComparator` order errors by their `ERROR.TYPE` number, as `SORT` now does: `#DIV/0!` sorts before `#N/A`, where before errors were equal and kept their order.
+- A date's format code reads a dot and one to three zeros anywhere after its first date code as the decimals of a second, with `m` or `mm` before them minutes, and any other digit placeholder, `%` or `E` makes the code invalid, as Microsoft's grammar of format codes has it: `TEXT(x,"mm.00")` of 12:17:42.72 is `17.72`, `TEXT(x,"mm###")` is `#VALUE!`.
+- en-US number text reads the euro sign before or after the number, and a fraction after a currency sign or in parentheses (`VALUE("€1,234.5")` is 1234.5). Typed entry reads them as before.
+- The README counts the cases checked in Excel by locale, and the guides' titles use the accepted terms (Legacy array formulas and implicit intersection, Cell entry, External references and others).
+
+Fixed, as Excel answers:
+
+- `ACCRINT` steps its coupon dates one from the other, and with `calc_method` FALSE counts whole periods as 0.
+- Criteria (`COUNTIF`, `COUNTIFS`, `SUMIF` and the others) tell a formula's empty text from a blank: `"<>"` counts it, `"="` takes blanks alone.
+- `XLOOKUP` and `XMATCH` search by halves as Excel does, at the middle with blanks greater than any key, and find the next value across types.
+- The database functions name a column by its header in any case, a boolean header too.
+- `FLOOR` of 0 is 0, any mode but 0 turns `FLOOR.MATH` and `CEILING.MATH`, and `ROUND` reads 15 digits.
+- `TEXTAFTER` and `TEXTBEFORE` round the instance down and answer `#VALUE!` for a delimiter longer than the text once an instance is given; `TEXTSPLIT` needs a delimiter.
+- `DAYS360` takes the days of moments, `WEEKDAY` reads both arguments before its range, `WORKDAY` and `WORKDAY.INTL` round their days down, and time text refuses five-digit minutes and seconds.
+- `FV` and `PV` raise by Excel's power (a rate of -1 over 0 periods is `#NUM!`), `IRR` with a guess of -1 or less is `#VALUE!`, `MIRR` without inflows -1, `XNPV`'s first blank `#VALUE!` and later ones `#NUM!`.
+- `GCD` and `LCM` of blanks alone are `#VALUE!`, `CSCH` and `IMCSCH` keep a tiny argument's digits, `POISSON.DIST` checks x before truncating, `PROB` passes over text, and `LOGNORM.DIST` and `NORM.S.INV` give Excel's last digit next to the median.
+- A function reads a position past a shorter array as `#N/A` in its turn, `SORT` orders errors by `ERROR.TYPE`, `INDEX` takes an array's row, `FILTER` takes `if_empty` by value, and number text from 1E+308 up is not a number.
+
 ## 0.48.0 (2026-10-17)
 
 Internal release; not published to npm. Faster reading and batches of edits, measured against other libraries. The synthetic book's values and hashes are as in 0.47.0.

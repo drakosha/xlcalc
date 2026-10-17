@@ -1,0 +1,207 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 15.9,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "TEXT#1",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"mm###\")"
+  },
+  {
+   "id": "TEXT#2",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1,\"mm###\")"
+  },
+  {
+   "id": "TEXT#3",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(Tx!A1,Tx!B1)"
+  },
+  {
+   "id": "TEXT#4",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"mm0\")"
+  },
+  {
+   "id": "TEXT#5",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"mm?\")"
+  },
+  {
+   "id": "TEXT#6",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"yyyy#\")"
+  },
+  {
+   "id": "TEXT#7",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"0.0 yyyy\")"
+  },
+  {
+   "id": "TEXT#8",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"#,##0 mm\")"
+  },
+  {
+   "id": "TEXT#9",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181.5,\"hh 00\")"
+  },
+  {
+   "id": "TEXT#10",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[h] #\")"
+  },
+  {
+   "id": "TEXT#11",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181.5,\"mm.00\")"
+  },
+  {
+   "id": "TEXT#12",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181.5,\"hh:mm:ss.00\")"
+  },
+  {
+   "id": "TEXT#13",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181.5,\"ss.000\")"
+  },
+  {
+   "id": "TEXT#14",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181.5,\"hh:mm:ss.##\")"
+  },
+  {
+   "id": "TEXT#15",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181.5,\"hh:mm:ss.0#\")"
+  },
+  {
+   "id": "TEXT#16",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"mm\\#\")"
+  },
+  {
+   "id": "TEXT#17",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"mm\"\"#\"\"\")"
+  },
+  {
+   "id": "TEXT#18",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(41181,\"mm;###\")"
+  },
+  {
+   "id": "TEXT#19",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"mm;###\")"
+  }
+ ],
+ "values": {
+  "TEXT#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#11": {
+   "t": "s",
+   "v": "00.00"
+  },
+  "TEXT#12": {
+   "t": "s",
+   "v": "12:00:00.00"
+  },
+  "TEXT#13": {
+   "t": "s",
+   "v": "00.000"
+  },
+  "TEXT#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#16": {
+   "t": "s",
+   "v": "09#"
+  },
+  "TEXT#17": {
+   "t": "s",
+   "v": "09#"
+  },
+  "TEXT#18": {
+   "t": "s",
+   "v": "09"
+  },
+  "TEXT#19": {
+   "t": "s",
+   "v": "5"
+  }
+ }
+}

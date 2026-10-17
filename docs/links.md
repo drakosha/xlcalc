@@ -1,4 +1,4 @@
-# Links to other workbooks
+# External references
 
 A formula can read another workbook: `[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`. Excel stores beside such formulas, in the file itself, what it last read of that workbook: where it is, its sheets, the values of the cells the formulas read and its names. The book keeps the same as `externalBooks`, and the engine computes the references from it, as Excel computes a file it opens without updating its links. The other workbook is never opened: a grid shows a financial model that leans on a dozen other files with the values those files had when the model was saved.
 

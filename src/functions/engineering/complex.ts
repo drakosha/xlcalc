@@ -275,10 +275,8 @@ export const functions: Record<string, FnDef> = {
   IMCOSH: unary(cosh, 'im'),
   IMCOT: unary(cot, 're'),
   IMCSC: unary((x, y) => naive(1, 0, ...sin(x, y)), 're'),
-  IMCSCH: unary((x, y) => {
-    const d = ch(2 * x) - Math.cos(2 * y)
-    return [(2 * sh(x) * Math.cos(y)) / d, (-2 * ch(x) * Math.sin(y)) / d]
-  }, 'im'),
+  // 1 / sinh z by Smith's division, which keeps a small z's digits that cosh 2x − cos 2y loses (IMCSCH("1E-16") is 1E16)
+  IMCSCH: unary((x, y) => divide(1, 0, sh(x) * Math.cos(y), ch(x) * Math.sin(y)), 'im'),
   IMDIV: binary((a, b) => divide(a.re, a.im, b.re, b.im)),
   IMEXP: unary((x, y) => [Math.exp(x) * Math.cos(y), Math.exp(x) * Math.sin(y)], 'im'),
   IMLN: unary(log),

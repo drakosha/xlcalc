@@ -4,11 +4,11 @@
  * occupied rows: past them every row is blank.
  */
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
-import { lifts } from '../../arrays/lift.js'
+import { isArea, lifts } from '../../arrays/lift.js'
 import { Arr, asArray, EMPTY, fromGrid, selectArray } from '../../arrays/value.js'
 import { allot } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
-import { Areas, E, isErr, type CErr, type V } from '../../values.js'
+import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 import { sortOrder } from '../../sort-order.js'
 
@@ -190,7 +190,7 @@ function unique(g: Grid, byCol = false, once = false): V | Arr {
  * FILTER: an include column (row) as long as the array's rows (columns); numbers and booleans, text #VALUE!,
  * an error is the answer. An include array is read lazily: past its occupied part only its fill counts.
  */
-function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
+function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr | Rng): V | Arr {
   if (isErr(inc)) return inc
   const a = fromGrid(g)
   const f = asArray(cx.view(inc))
@@ -207,7 +207,8 @@ function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
     if (isErr(b)) return b
     if (b) kept.push(i)
   }
-  if (!kept.length) return empty === undefined ? EMPTY : empty
+  // if_empty is answered as a value, a reference by its values (ISREF of it is FALSE)
+  if (!kept.length) return empty === undefined ? EMPTY : empty instanceof Rng ? (isArea(empty) ? cx.view(empty) : cx.scalar(empty)) : empty
   return lineArr(a, kept, byCol)
 }
 

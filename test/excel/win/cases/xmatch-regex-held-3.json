@@ -1,0 +1,77 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 14.4,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "XMATCH#1",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Rz!A1:A3,3)"
+  },
+  {
+   "id": "XMATCH#2",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Rz!A1:A3,3,-1)"
+  },
+  {
+   "id": "XMATCH#3",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Rz!A:A,3,-1)"
+  },
+  {
+   "id": "XMATCH#4",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"^$\",Rz!A3:A10,3)"
+  },
+  {
+   "id": "XMATCH#5",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"x*\",Rz!A1:A3,3)"
+  },
+  {
+   "id": "XMATCH#6",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\".\",Rz!A2:A2,3)"
+  }
+ ],
+ "values": {
+  "XMATCH#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XMATCH#6": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

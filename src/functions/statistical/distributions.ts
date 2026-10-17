@@ -7,7 +7,7 @@
 import { gammaln, gammafn } from '../jstat.js'
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { E, type V } from '../../values.js'
-import { betaPrefix, dbinom, dgamma, dpois, gammaPQ, ibeta, lbeta, normCdf, normPdf } from './special.js'
+import { betaPrefix, dbinom, dgamma, dpois, gammaPQ, ibeta, lbeta, lognormCdf, normCdf, normPdf } from './special.js'
 
 /** Excel's ceiling on degrees of freedom of the chi-squared, t and F distributions. */
 const MAX_DF = 1e10
@@ -26,7 +26,7 @@ const normSDist = (z: number, cumulative: boolean) => normDist(z, 0, 1, cumulati
 export function lognormDist(x: number, m: number, sd: number, cumulative: boolean): V {
   if (x <= 0 || sd <= 0) return E.NUM
   const z = (Math.log(x) - m) / sd
-  return cumulative ? normCdf(z)[0] : normPdf(z) / (x * sd)
+  return cumulative ? lognormCdf(z) : normPdf(z) / (x * sd)
 }
 
 function exponDist(x: number, rate: number, cumulative: boolean): V {
@@ -176,8 +176,10 @@ export function hypgeomDist(k: number, n: number, K: number, N: number, cumulati
   return 1 - acc
 }
 
-function poissonDist(x: number, m: number, cumulative: boolean): V {
-  if (x < 0 || m < 0) return E.NUM
+/** A negative x is #NUM! before it is truncated (POISSON.DIST(-0.000001,5,TRUE)). */
+function poissonDist(n: number, m: number, cumulative: boolean): V {
+  if (n < 0 || m < 0) return E.NUM
+  const x = Math.trunc(n)
   if (!cumulative) return dpois(x, m)
   return m === 0 ? 1 : gammaPQ(x + 1, m)[1]
 }
@@ -216,7 +218,7 @@ export const functions: Record<string, FnDef> = {
   PERMUT: { args: 'i i', fn: permut },
   PERMUTATIONA: { args: 'i i', fn: permutationA },
   PHI: { args: 'n', fn: normPdf },
-  'POISSON.DIST': { args: 'i n b', fn: poissonDist },
+  'POISSON.DIST': { args: 'n n b', fn: poissonDist },
   PROB: {
     args: 'M M n n?',
     fn: (xs: Grid, ps: Grid, lo: number, hi = lo) => {
@@ -226,12 +228,13 @@ export const functions: Record<string, FnDef> = {
       for (let i = 0, n = Math.max(xs.h * xs.cols, ps.h * ps.cols); i < n; i++) {
         const x = gridAt(xs, i)
         const p = gridAt(ps, i)
-        if (x === null && p === null) continue
-        if (typeof x !== 'number' || typeof p !== 'number') return E.VALUE
+        // a pair with a blank, text or a boolean is passed over; none left is #DIV/0!
+        if (typeof x !== 'number' || typeof p !== 'number') continue
         if (p <= 0 || p > 1) return E.NUM
         total += p
         if (x >= lo && x <= hi) r += p
       }
+      if (total === 0) return E.DIV0
       return Number(total.toPrecision(15)) === 1 ? r : E.NUM
     },
   },

@@ -1,4 +1,4 @@
-# Arrays inside a formula
+# Array operations in formulas
 
 Operators and functions work on whole arrays and ranges, as in Excel 365 with dynamic arrays: `SUM(B1:B9*C1:C9)`, `SUM(IF(A1:A9>0,A1:A9))`, `INDEX(SORT(A1:A9),1)`. A formula whose final result is an array spills into neighbouring cells, which [spill.md](spill.md) describes.
 
@@ -43,7 +43,7 @@ An operator, or a function argument that takes one value, given an array or a ra
 
 - the result has as many rows and columns as the larger operand;
 - an operand with one row or one column is repeated;
-- any other position outside an operand is `#N/A`: `{1,2,3}+{1,2}` is `{2,4,#N/A}`.
+- any other position outside an operand is `#N/A`: `{1,2,3}+{1,2}` is `{2,4,#N/A}`. A function gets `#N/A` there as that argument's value and reads it in its turn, so an argument before it can answer first: `IFERROR({1;2;3},{7;8})` is `{1;2;3}`, `IF({TRUE;FALSE;FALSE},{1;2},3)` is `{1;2;3}`, and `LEFT(A1:A3,{1;2})` with an error in A3 gives that error in the third row.
 
 Each function declares the kinds of its arguments (`src/args.ts`), and the kind decides what an array does there:
 

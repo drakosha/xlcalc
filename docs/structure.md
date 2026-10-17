@@ -204,7 +204,7 @@ Tables move with their cells and grow and shrink with the rows and columns inser
 
 ## Names, references across sheets and old-kind arrays
 
-Names' formulas change like cells' formulas: each part of a union on its own, a reference without `$` not at all under inserted and deleted lines ([Names](names.md)). A reference across sheets stays under rows and columns and changes with its end sheets ([References](references.md)). The area of an array formula of the old kind moves with its cell; an operation that would change part of it is refused with `array` ([Formulas of the old kind](legacy.md)).
+Names' formulas change like cells' formulas: each part of a union on its own, a reference without `$` not at all under inserted and deleted lines ([Names](names.md)). A reference across sheets stays under rows and columns and changes with its end sheets ([References](references.md)). The area of an array formula of the old kind moves with its cell; an operation that would change part of it is refused with `array` ([Legacy array formulas and implicit intersection](legacy.md)).
 
 ## Styles and layout
 

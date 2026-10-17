@@ -1,7 +1,7 @@
 /**
  * Lifting (`docs/arrays-incell.md`): an operator or a one-value argument applied to arrays is computed
  * element by element. The result has the larger rows and the larger columns of the operands; an operand
- * with one row (column) is repeated down (across), otherwise a position outside it is #N/A. Only the
+ * with one row (column) is repeated down (across), otherwise a position outside it is #N/A (`liftN`). Only the
  * occupied part of the operands is computed, the rest is one `fill` value.
  */
 import { allot, spend } from '../exec/budget.js'
@@ -27,8 +27,12 @@ function extent(size: number, used: number, filled: boolean, n: number): number 
   return n
 }
 
-/** `f` over the operands element by element (arrays among `xs` lifted, the rest repeated). */
-export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V): Arr {
+/**
+ * `f` over the operands element by element (arrays among `xs` lifted, the rest repeated). A position outside a
+ * shorter array is #N/A for an operator; a function (`missing`) gets #N/A there as that argument's value and reads it
+ * in its turn (`IFERROR(G4:G7/H4:H7,G12:G13)` keeps G6/H6, `LEFT(A1:A9,SEQUENCE(5))` gives A6's error).
+ */
+export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V, missing = false): Arr {
   let rows = 1
   let cols = 1
   for (const x of xs)
@@ -53,8 +57,9 @@ export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V): Arr {
       let outside = false
       for (let i = 0; i < xs.length; i++) {
         const v = broadcastAt(xs[i], r, c)
-        if (v === undefined) outside = true
-        else args[i] = v
+        if (v !== undefined) args[i] = v
+        else if (missing) args[i] = E.NA
+        else outside = true
       }
       out[r * w + c] = outside ? E.NA : f(args)
     }

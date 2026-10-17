@@ -24,10 +24,10 @@ it("matches and replaces as the session's Find and Replace", () => {
   expect(() => findMatcher('a', { wholecell: true } as never)).toThrow('opts')
 })
 
-it('compareValues sorts as SORT does: numbers, text, booleans, errors, blanks last either way', () => {
+it('compareValues sorts as SORT does: numbers, text, booleans, errors by ERROR.TYPE, blanks last either way', () => {
   const vals: CellValue[] = [null, 'b', true, { error: 'NA' }, 2, 'A', false, -1, { error: 'DIV0' }]
   const sorted = (descending: boolean) => [...vals].sort((a, b) => compareValues(a, b, { descending }))
-  expect(sorted(false)).toEqual([-1, 2, 'A', 'b', false, true, { error: 'NA' }, { error: 'DIV0' }, null])
+  expect(sorted(false)).toEqual([-1, 2, 'A', 'b', false, true, { error: 'DIV0' }, { error: 'NA' }, null])
   expect(sorted(true)).toEqual([{ error: 'NA' }, { error: 'DIV0' }, true, false, 'b', 'A', 2, -1, null])
   const input = (v: CellValue) => (v === null ? {} : typeof v === 'object' ? { formula: v.error === 'NA' ? 'NA()' : '1/0' } : { value: v })
   const cells = { ...Object.fromEntries(vals.map((v, i) => [`A${i + 1}`, input(v)])), C1: { formula: 'SORT(A1:A9)' } }

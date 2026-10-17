@@ -1,0 +1,167 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 19.7,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "DSUM#1",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(Db!A1:K11,\"Revenue\",Db!I24:I25)"
+  },
+  {
+   "id": "DSUM#2",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(Db!A1:K11,\"Revenue\",Db!J24:J25)"
+  },
+  {
+   "id": "DMIN#1",
+   "group": "DMIN",
+   "fn": "DMIN",
+   "formula": "DMIN(Db!A1:K11,\"Revenue\",Db!I24:I25)"
+  },
+  {
+   "id": "DMAX#1",
+   "group": "DMAX",
+   "fn": "DMAX",
+   "formula": "DMAX(Db!A1:K11,\"Revenue\",Db!I24:I25)"
+  },
+  {
+   "id": "DAVERAGE#1",
+   "group": "DAVERAGE",
+   "fn": "DAVERAGE",
+   "formula": "DAVERAGE(Db!A1:K11,\"Revenue\",Db!J24:J25)"
+  },
+  {
+   "id": "DVAR#1",
+   "group": "DVAR",
+   "fn": "DVAR",
+   "formula": "DVAR(Db!A1:K11,\"Revenue\",Db!I24:I25)"
+  },
+  {
+   "id": "DSUM#3",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(Db!A1:K11,\"Revenue\",Db!K24:K25)"
+  },
+  {
+   "id": "DSUM#4",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(Db!A1:K11,\"Revenue\",Db!M27:M28)"
+  },
+  {
+   "id": "DSUM#5",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(Db!A1:K11,\"Revenue\",Db!M24:M25)"
+  },
+  {
+   "id": "DCOUNTA#1",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(Db!A1:K11,\"TRUE\",Db!K24:K25)"
+  },
+  {
+   "id": "DCOUNT#1",
+   "group": "DCOUNT",
+   "fn": "DCOUNT",
+   "formula": "DCOUNT(Db!A1:K11,\"Units\",Db!J24:J25)"
+  },
+  {
+   "id": "DGET#1",
+   "group": "DGET",
+   "fn": "DGET",
+   "formula": "DGET(Db!A1:K11,\"Salesperson\",Db!I24:I25)"
+  },
+  {
+   "id": "DCOUNTA#2",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(Db!J1:K11,2,Db!I24:I25)"
+  },
+  {
+   "id": "DSTDEVP#1",
+   "group": "DSTDEVP",
+   "fn": "DSTDEVP",
+   "formula": "DSTDEVP(Db!A1:K11,\"Revenue\",Db!J24:J25)"
+  },
+  {
+   "id": "DPRODUCT#1",
+   "group": "DPRODUCT",
+   "fn": "DPRODUCT",
+   "formula": "DPRODUCT(Db!A1:K11,\"Units\",Db!I24:I25)"
+  }
+ ],
+ "values": {
+  "DSUM#1": {
+   "t": "n",
+   "v": 53000
+  },
+  "DSUM#2": {
+   "t": "n",
+   "v": 132400
+  },
+  "DMIN#1": {
+   "t": "n",
+   "v": 6000
+  },
+  "DMAX#1": {
+   "t": "n",
+   "v": 20000
+  },
+  "DAVERAGE#1": {
+   "t": "n",
+   "v": 22066.666666666668
+  },
+  "DVAR#1": {
+   "t": "n",
+   "v": 34250000
+  },
+  "DSUM#3": {
+   "t": "n",
+   "v": 65600
+  },
+  "DSUM#4": {
+   "t": "n",
+   "v": 65600
+  },
+  "DSUM#5": {
+   "t": "n",
+   "v": 53000
+  },
+  "DCOUNTA#1": {
+   "t": "n",
+   "v": 4
+  },
+  "DCOUNT#1": {
+   "t": "n",
+   "v": 6
+  },
+  "DGET#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DCOUNTA#2": {
+   "t": "n",
+   "v": 3
+  },
+  "DSTDEVP#1": {
+   "t": "n",
+   "v": 10029.7335735081
+  },
+  "DPRODUCT#1": {
+   "t": "n",
+   "v": 180000000
+  }
+ }
+}

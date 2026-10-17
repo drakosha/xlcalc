@@ -1,8 +1,8 @@
 /** Calendar functions in Excel's 1900 system (serial 0 is 1900-01-00, 60 the phantom 1900-02-29). */
-import { toDate, type Cx, type FnDef } from '../../args.js'
+import { inCalendar, timeRead, toDate, type Cx, type FnDef } from '../../args.js'
 import { addMonths, daysInMonth, lastDayExcel, MAX_SERIAL, momentOf, serialExcel, serialOf, trimSpaces, ymd } from '../../dates.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, WHOLE, type CErr, type V } from '../../values.js'
+import { E, isErr, whole, WHOLE, type CErr, type V } from '../../values.js'
 import { atp } from './atp.js'
 
 /** 0 is Sunday: Excel takes serial 1 (1900-01-01) for a Sunday. */
@@ -113,17 +113,26 @@ export const functions: Record<string, FnDef> = {
   }, { date: 'calendar' }),
   ISOWEEKNUM: { args: 'd', fn: isoWeek },
   MONTH: { args: 't', fn: (t: number) => ofDay(t, (d) => ymd(d).m) },
+  // both arguments are read before the date's range is checked (WEEKDAY(-1,"abc") is #VALUE!, WEEKDAY(-1,5) #NUM!)
   WEEKDAY: {
-    args: 't w?',
-    fn: (t: number, type = 1) =>
-      ofDay(t, (d) => {
+    args: 'a a?',
+    cx: true,
+    fn: (cx: Cx, v: V, kind?: V) => {
+      const n = timeRead(v, cx.rules)
+      if (isErr(n)) return n
+      const read = kind === undefined ? 1 : cx.rules.toNum(kind)
+      if (isErr(read)) return read
+      const type = whole(read)
+      if (!inCalendar(n, cx.rules)) return E.NUM
+      return ofDay(n + cx.rules.epoch, (d) => {
         const w = weekday(d)
         if (type === 1) return w + 1
         if (type === 2) return ((w + 6) % 7) + 1
         if (type === 3) return (w + 6) % 7
         if (type >= 11 && type <= 17) return ((w - WEEK_START[type] + 7) % 7) + 1
         return E.NUM
-      }),
+      })
+    },
   },
   // week 1 contains January 1 (type 21: ISO weeks), so serial 0 is in week 0
   WEEKNUM: atp('e j?', (s: number, type = 1) => {
