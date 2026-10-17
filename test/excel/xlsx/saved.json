@@ -377,6 +377,15 @@
   "rounding-ironcalc-held-1": {
    "sent": "6873b0990d371c67531cd924082839a454c224743b4ccac945fbc6191ace86d6"
   },
+  "text-date-ironcalc-held-1": {
+   "sent": "c28bd5b2cd935b0fe17c68ff9831b816527e1b280465e13208b1931c0c826a5a"
+  },
+  "text-date-ironcalc-held-2-1": {
+   "sent": "d86f5188f9cef7233d6e6fd5f8797ffa89879f256f1e01d736e78df8111b61de"
+  },
+  "text-date-ironcalc-held-3-1": {
+   "sent": "b3407e983c932e037793004cbde410ff6bb75284e1c724cd97da22f6c1591c56"
+  },
   "textafter-ironcalc-held-1": {
    "sent": "5637720d938507ced6f6646bc12b64250b88b22c9d13b5a8000cb8a5e9663993"
   },
@@ -388,6 +397,12 @@
   },
   "xlookup-ironcalc-held-2-1": {
    "sent": "c8259f07435f72bbcdee6b47ba0b4f1685b84d18e0d68ba53fb1182a5f14f3c2"
+  },
+  "currency-held-1": {
+   "sent": "095e0abe78e4752ea411917e61007f65524bf2c1fb2309209a982476eb3d81f2"
+  },
+  "text-date-ironcalc-held-4-1": {
+   "sent": "2e6404d28f5282b1e3fa5a2b0bc7fdd4686fbddfd56111eb9e59ceb43c0e05fb"
   }
  }
 }
