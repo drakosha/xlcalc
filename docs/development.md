@@ -5,13 +5,15 @@ The commands, the tests and how the rules were checked against Excel.
 ```sh
 npm ci
 npm run typecheck
-npm test                # build, then all tests against src
-npm run test:dist       # build, then all tests against the built dist
+npm test                # build, then all tests against src: first all but the timed ones, then those one at a time
+npm run test:dist       # build, then all tests against the built dist, in the same two runs
 npm run test:oracle     # recalculate the LibreOffice answers with soffice and check them
 npm run check:package   # build, then publint and attw on the packed tarball
 npm run pack:release    # build, then the tarball in release/
 FORMULA_BENCH=1 npx vitest run test/budgets.test.ts   # budgets on the full synthetic book
 ```
+
+Tests that check how long something takes (a slice of a computation in portions, a deadline, a budget, the time of a drag or of `getEnd`) are the project `timed` of `vitest.config.ts`: `npm test` runs them after all the others, one file at a time, so that the load of the full suite does not fail them. `npx vitest run <file>` runs one file in its project, timed or not.
 
 The tests cover the whitelist against Excel's answers on the coverage measurement's cases (`test/excel.test.ts`) and on the probes (`test/excel-probes.test.ts`), the argument layer rule by rule, the semantics cases against Excel's documentation and the stored LibreOffice answers (`test/oracle/libreoffice.json`, refreshed by `npm run test:oracle`, which needs LibreOffice's `soffice` on `PATH`; the usual tests need no office suite); determinism (shuffled input, a child process, three time zones, cents over 3,400 amounts); references, errors, volatile functions, parsing and the canonical form; sessions (200 random edits against full computations) and `explain`; structure operations against Excel's answers in `test/excel/struct/`, on the synthetic book and on seeded books; budgets; SHA-256 against test vectors and `node:crypto`; a browser bundle run in an empty JavaScript context and with code generation disabled; the two execution modes against each other on every case book and over 200 session edits, the closures mode with code generation disabled; computation in portions and in threads against the synchronous engine, threads lost and sessions restored, the pool on Web Workers in headless Chromium, Firefox and WebKit (through `playwright-core`; each skipped where its engine is not found, `CHROME_PATH` names a Chromium); the published package (exports, tarball contents, a consumer importing it by name). The code blocks of this README run as a test too.
 

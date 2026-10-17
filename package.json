@@ -95,8 +95,8 @@
   "scripts": {
     "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.build.json --noEmit",
-    "test": "npm run build && vitest run",
-    "test:dist": "npm run build && FORMULA_TARGET=dist vitest run",
+    "test": "npm run build && node test/suites.mjs",
+    "test:dist": "npm run build && FORMULA_TARGET=dist node test/suites.mjs",
     "test:oracle": "FORMULA_ORACLE=update vitest run test/semantics.test.ts",
     "check:package": "npm run build && publint --strict && attw --pack . --profile esm-only",
     "pack:release": "npm run build && mkdir -p release && npm pack --pack-destination release",
