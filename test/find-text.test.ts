@@ -24,16 +24,18 @@ it("matches and replaces as the session's Find and Replace", () => {
   expect(() => findMatcher('a', { wholecell: true } as never)).toThrow('opts')
 })
 
-it('compareValues sorts as SORT does: numbers, text, booleans, errors by ERROR.TYPE, blanks last either way', () => {
+it('compareValues sorts as the Sort command does: numbers, text, booleans, errors equal, blanks last either way; SORT orders errors by ERROR.TYPE', () => {
   const vals: CellValue[] = [null, 'b', true, { error: 'NA' }, 2, 'A', false, -1, { error: 'DIV0' }]
   const sorted = (descending: boolean) => [...vals].sort((a, b) => compareValues(a, b, { descending }))
-  expect(sorted(false)).toEqual([-1, 2, 'A', 'b', false, true, { error: 'DIV0' }, { error: 'NA' }, null])
+  expect(sorted(false)).toEqual([-1, 2, 'A', 'b', false, true, { error: 'NA' }, { error: 'DIV0' }, null])
   expect(sorted(true)).toEqual([{ error: 'NA' }, { error: 'DIV0' }, true, false, 'b', 'A', 2, -1, null])
   const input = (v: CellValue) => (v === null ? {} : typeof v === 'object' ? { formula: v.error === 'NA' ? 'NA()' : '1/0' } : { value: v })
   const cells = { ...Object.fromEntries(vals.map((v, i) => [`A${i + 1}`, input(v)])), C1: { formula: 'SORT(A1:A9)' } }
   const out = compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells
-  // SORT gives a blank as 0
-  expect(Array.from({ length: 9 }, (_, i) => out[`C${i + 1}`].value)).toEqual(sorted(false).map((v) => v ?? 0))
+  // SORT gives a blank as 0, and #DIV/0! before #N/A
+  const bySort = sorted(false).map((v) => v ?? 0)
+  bySort.splice(6, 2, { error: 'DIV0' }, { error: 'NA' })
+  expect(Array.from({ length: 9 }, (_, i) => out[`C${i + 1}`].value)).toEqual(bySort)
 })
 
 it('valueComparator answers as compareValues on every pair of mixed values, with descending and without, in a locale\'s order of text', () => {
