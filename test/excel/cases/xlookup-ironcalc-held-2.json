@@ -1,0 +1,312 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.749,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "XLOOKUP#1",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(5,Us!A1:A7,Us!B1:B7,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#2",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(8,Us!A1:A7,Us!B1:B7,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#3",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(1,Us!A1:A7,Us!B1:B7,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#4",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(5,Us!A1:A7,Us!B1:B7,,-1,2)"
+  },
+  {
+   "id": "XMATCH#1",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(5,Us!A1:A7,1,2)"
+  },
+  {
+   "id": "XLOOKUP#5",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(6,Bm!A1:A7,Bm!B1:B7,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#6",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(2,Bm!A1:A7,Bm!B1:B7,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#7",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(6,Bm!A1:A7,Bm!B1:B7,,-1,2)"
+  },
+  {
+   "id": "XLOOKUP#8",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(6,Bm!A1:A7,Bm!B1:B7,,1,2)"
+  },
+  {
+   "id": "XLOOKUP#9",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(6,Em!A1:A7,Em!B1:B7,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#10",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(2.5,Em!A1:A7,Em!B1:B7,,1,2)"
+  },
+  {
+   "id": "XLOOKUP#11",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(6,Dd!A1:A5,Dd!B1:B5,,0,-2)"
+  },
+  {
+   "id": "XLOOKUP#12",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(8,Dd!A1:A5,Dd!B1:B5,,0,-2)"
+  },
+  {
+   "id": "XLOOKUP#13",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(3,Ru!A1:A7,Ru!B1:B7,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#14",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(3,Ru!A1:A7,Ru!B1:B7,,1,2)"
+  },
+  {
+   "id": "XLOOKUP#15",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(4,Ru!A1:A7,Ru!B1:B7,,-1,2)"
+  },
+  {
+   "id": "XLOOKUP#16",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(3,Rd!A1:A7,Rd!B1:B7,,0,-2)"
+  },
+  {
+   "id": "XLOOKUP#17",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(4,Rd!A1:A7,Rd!B1:B7,,-1,-2)"
+  },
+  {
+   "id": "XLOOKUP#18",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(4,Rd!A1:A7,Rd!B1:B7,,1,-2)"
+  },
+  {
+   "id": "XLOOKUP#19",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(3,Ab!A1:A10,Ab!B1:B10,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#20",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(10,Ab!A1:A10,Ab!B1:B10,,1,2)"
+  },
+  {
+   "id": "XLOOKUP#21",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(10,Ab!A1:A10,Ab!B1:B10,,-1,2)"
+  },
+  {
+   "id": "XLOOKUP#22",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(3,Aw!A:A,Aw!B:B,,0,2)"
+  },
+  {
+   "id": "XLOOKUP#23",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(10,Aw!A:A,Aw!B:B,,1,2)"
+  },
+  {
+   "id": "XMATCH#2",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(10,Aw!A:A,1,2)"
+  },
+  {
+   "id": "XLOOKUP#24",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(7,Dw!A:A,Dw!B:B,,0,-2)"
+  },
+  {
+   "id": "XLOOKUP#25",
+   "group": "XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(7,Dw!A1:A5,Dw!B1:B5,,0,-2)"
+  },
+  {
+   "id": "XMATCH#3",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(7.1,Dw!A:A,-1,-2)"
+  },
+  {
+   "id": "XMATCH#4",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(7.1,Dw!A:A,1,-2)"
+  },
+  {
+   "id": "XMATCH#5",
+   "group": "XMATCH",
+   "fn": "XMATCH",
+   "formula": "_xlfn.XMATCH(\"a*\",Ab!B1:B10,2,-2)"
+  }
+ ],
+ "values": {
+  "XLOOKUP#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "XLOOKUP#2": {
+   "t": "s",
+   "v": "us2"
+  },
+  "XLOOKUP#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "XLOOKUP#4": {
+   "t": "s",
+   "v": "us1"
+  },
+  "XMATCH#1": {
+   "t": "n",
+   "v": 2
+  },
+  "XLOOKUP#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "XLOOKUP#6": {
+   "t": "s",
+   "v": "bm2"
+  },
+  "XLOOKUP#7": {
+   "t": "s",
+   "v": "bm3"
+  },
+  "XLOOKUP#8": {
+   "t": "s",
+   "v": "bm4"
+  },
+  "XLOOKUP#9": {
+   "t": "e",
+   "v": "NA"
+  },
+  "XLOOKUP#10": {
+   "t": "s",
+   "v": "em3"
+  },
+  "XLOOKUP#11": {
+   "t": "s",
+   "v": "dd4"
+  },
+  "XLOOKUP#12": {
+   "t": "e",
+   "v": "NA"
+  },
+  "XLOOKUP#13": {
+   "t": "s",
+   "v": "ru2"
+  },
+  "XLOOKUP#14": {
+   "t": "s",
+   "v": "ru2"
+  },
+  "XLOOKUP#15": {
+   "t": "s",
+   "v": "ru5"
+  },
+  "XLOOKUP#16": {
+   "t": "s",
+   "v": "rd6"
+  },
+  "XLOOKUP#17": {
+   "t": "s",
+   "v": "rd3"
+  },
+  "XLOOKUP#18": {
+   "t": "s",
+   "v": "rd2"
+  },
+  "XLOOKUP#19": {
+   "t": "s",
+   "v": "ab3"
+  },
+  "XLOOKUP#20": {
+   "t": "s",
+   "v": "ab6"
+  },
+  "XLOOKUP#21": {
+   "t": "s",
+   "v": "ab5"
+  },
+  "XLOOKUP#22": {
+   "t": "s",
+   "v": "aw3"
+  },
+  "XLOOKUP#23": {
+   "t": "n",
+   "v": 0
+  },
+  "XMATCH#2": {
+   "t": "n",
+   "v": 6
+  },
+  "XLOOKUP#24": {
+   "t": "e",
+   "v": "NA"
+  },
+  "XLOOKUP#25": {
+   "t": "s",
+   "v": "dw3"
+  },
+  "XMATCH#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "XMATCH#4": {
+   "t": "n",
+   "v": 1048576
+  },
+  "XMATCH#5": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

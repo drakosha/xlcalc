@@ -214,6 +214,8 @@ The set `accrint-ironcalc-held` (42 cases, predicted) takes 22 of the 187 `ACCRI
 
 The set `countif-ironcalc-held` (23 cases, predicted) takes 7 `COUNTIF` and `COUNTIFS` cells of IronCalc's file, all of the 60 the engine missed being `CONCAT("<>",E26)` with E26 a formula's empty text over ranges holding such text, and 16 cases around them: `<>` written out, joined to a blank, over one cell, in `SUMIF`, `AVERAGEIF`, `SUMIFS` and `COUNTIFS` of two ranges, and `=` against `""` over the same cells. Both Excels gave the same answers, all 23 as predicted: `<>` counts a formula's empty text, `""` takes it for a blank and `=` does not; the 60 cells match.
 
+The set `xlookup-ironcalc-held` (39 cases, predicted) takes 15 of the 40 `XLOOKUP` cells (binary search over runs of equal values and over another type than the key's, the next value across types in a linear search, wildcards with binary search) and 24 cases around them in `XLOOKUP` and `XMATCH`. Both Excels gave the same answers and 35 came out as predicted; the 4 misses showed how the binary search runs: at the middle of the positions left, both ends included, so it finds 5 among 1, 9, 5, 2, 3 at once, with a blank taken for greater than the key, over every position of a whole column. The set `xlookup-ironcalc-held-2` (30 cases, predicted by that rule) measures it on unsorted data, a blank and an error at the middle, runs of equal values both ways, a reference longer than its values and whole columns both ways: both Excels gave the same answers, all 30 as predicted, and the 40 cells match.
+
 ### Links to other workbooks
 
 From [Links to other workbooks](links.md).
