@@ -1,4 +1,4 @@
-# The @ operator, unions, references across sheets, sheet names and the reference operators
+# Reference operators
 
 Kinds of references that Excel files use. `@A1:A10` takes one cell of a range. `(A1:A3,C1:C3)` joins ranges of one sheet. `'Jan:Mar'!A1:B2` is the same rectangle on every sheet from Jan to Mar. `A1:C3 B2:D4` is the cells two ranges share, and `A1:INDEX(B1:B9,3)` the range from one reference to another.
 

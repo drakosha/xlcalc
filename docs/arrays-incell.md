@@ -1,4 +1,4 @@
-# Arrays inside a formula
+# Array operations in formulas
 
 Operators and functions work on whole arrays and ranges, as in Excel 365 with dynamic arrays: `SUM(B1:B9*C1:C9)`, `SUM(IF(A1:A9>0,A1:A9))`, `INDEX(SORT(A1:A9),1)`. A formula whose final result is an array spills into neighbouring cells, which [spill.md](spill.md) describes.
 

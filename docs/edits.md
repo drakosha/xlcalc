@@ -158,7 +158,7 @@ A cell that shows its lines' look without a look of its own takes none: the line
 
 ## Typing text
 
-`setCellText(sheet, cell, text, opts?)` reads text typed into a cell as `parseEntry` reads it ([Typed entry](entry.md)), in the book's locale and date system, by the session's clock (the year of a date typed without one) and by the number format the cell shows: its own, else its row's, else its column's.
+`setCellText(sheet, cell, text, opts?)` reads text typed into a cell as `parseEntry` reads it ([Cell entry](entry.md)), in the book's locale and date system, by the session's clock (the year of a date typed without one) and by the number format the cell shows: its own, else its row's, else its column's.
 
 - A format the cell shows from its line and the entry keeps is not written into the cell: `5` typed into a column of percents is 5% and the cell has no format of its own.
 - A cell's own General stays its own.
@@ -219,4 +219,4 @@ Each call is one step: `clearCells` and `patchCells` whatever their parts (the c
 
 ## Checked against Excel
 
-Formatting and clearing were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows on 34 books (1,967 cells), predicted before Excel ran them; the engine shows what both showed in every cell. Typed text, pastes and Control+Return are checked as [Typed entry](entry.md) says.
+Formatting and clearing were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows on 34 books (1,967 cells), predicted before Excel ran them; the engine shows what both showed in every cell. Typed text, pastes and Control+Return are checked as [Cell entry](entry.md) says.

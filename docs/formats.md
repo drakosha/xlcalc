@@ -1,4 +1,4 @@
-# Number formats and shown text
+# Number formats and displayed text
 
 Besides its value, each cell of a result carries what Excel shows in it: `text`, the same as VBA's `Range.Text`, and `color`, the colour of the format section that was used. The `TEXT` function formats with the same engine.
 

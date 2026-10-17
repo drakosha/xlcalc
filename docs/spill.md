@@ -45,7 +45,7 @@ The formula gives `#SPILL!` and fills nothing when a cell of its range, other th
 - holds a formula, whatever it returns: `""`, an error, or a reference back to the array's own cell (with `A1 = SEQUENCE(3)` and `A3 = A1+1`, both cells are `#SPILL!`);
 - belongs to a merged area inside the range, cut by the range, or holding the formula's own cell (`A1:B1` merged blocks `A1 = SEQUENCE(3)`); a merged area next to the range does not block;
 - lies past the edge of the sheet (`SEQUENCE(3)` in A1048575 does not fit, in A1048574 it does);
-- belongs to the area of an array formula of the old kind ([Formulas of the old kind](legacy.md)).
+- belongs to the area of an array formula of the old kind ([Legacy array formulas and implicit intersection](legacy.md)).
 
 A number format or a fill alone does not block. Typing a value into the range blocks the array, and clearing it lets the array spill again.
 

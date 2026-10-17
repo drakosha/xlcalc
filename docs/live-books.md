@@ -1,6 +1,6 @@
-# Live workbook operations and bounded queries
+# Batch changes, previews and paged queries in a live session
 
-These additions support a grid or an agent editing the same live session. They work in synchronous sessions, `createInlineCalc` and worker pools, with closures and eval. Existing calls keep their behavior.
+A grid or an agent editing a live session applies a batch of mixed changes as one revision and one step of the undo, previews changes with all their effects before applying them, reads and finds cells a page at a time (Excel's Find and Replace among them, and the cell Control and an arrow key go to) and asks which formulas read a range. Each call works in synchronous sessions, `createInlineCalc` and worker pools, with closures and eval.
 
 ## Mixed changes
 
