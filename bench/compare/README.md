@@ -217,6 +217,135 @@ Structure operations at row 10 of the synthetic book, ms, 0.47.0 / branch:
 
 A first run of the synthetic pair was discarded: the host went to sleep with its lid closed during it (`pmset -g log`, 12:28), which the second run, held awake by `caffeinate -i`, did not.
 
+## Parity on the branch `perf/parity`
+
+The aim: in every case above, xlcalc no more than 1.5 times slower than the best other library that gives the same values, and no more than 1.5 times its retained memory. The base is 0.48.0 (`f45c8d0`), measured by both stands at the start (one-minute load average 2 to 10); the branch is `018ab99` (0.49.1 merged in), measured by both stands at the end (load 2 to 5), with xlcalc now beside IronCalc in the comparison's own run, so that a ratio is taken within one run: the best other library and xlcalc's branch figure come from the same run of the same stand. Base and branch are also compared taking turns in one process (`workload-pair.mjs`, `synth-pair.mjs`, `read-bench.mjs`). Each mode of execution has its own figures, closures / eval: a host that forbids `new Function` has closures alone. The raw results are in `results-parity/`.
+
+Every answer stays as it was: `test/edit-answers.test.ts` (with `test/recompute-answers.ts`: a fanout of 120, a chain of 100 with cumulative sums, statistics and a lookup over them, an unchanged INT, a spill sized by the edit, a batch of 70 inputs, two independent roots, a formula replaced in the middle) and `test/read-answers.test.ts` compare each answer's JSON with fixtures written by the base, in every kind of session and both executions; the synthetic hashes are unchanged; a written xlsx has the same bytes.
+
+### What changed
+
+- **An edit's recalculation.** A changed cell is kept by a number of its place instead of an `s:r:c` text, from the tracker of old values to the list an edit answers with; the formulas to recompute are ordered by filtering the book's order when they are a large part of it, after a walk of the graph that marks vertices in a typed array instead of filling a set; a formula's step in a round is a typed array instead of a map; a write does not look up range caches that are empty; the readers of an edited cell go straight into the set to recompute; an edit looks for old-kind array areas only in a book that has them; two numbers compare without looking for errors. The list of changes `setCells` answers with is kept: no option to leave it out was needed.
+- **Opening and memory.** A formula is found by its cell's number; references and successors are arrays of their own length (an array grown by pushes keeps room for 16 more); a range's cache key is made when a cache first asks for it; in closures, an operator over two cells or a cell and a constant is one closure instead of three, and a call of up to three arguments makes no array of them each time.
+- **Reading.** `getValues(sheet, range)` gives a rectangle's values as rows, as HyperFormula's `getRangeValues` and `getSheetValues` give arrays of values (`docs/live-books.md`, "Values of a rectangle").
+- **Writing xlsx.** A sheet's cells' XML is kept by row and column instead of in a map of every cell's place.
+
+### Results
+
+Medians, ms unless named; closures / eval. "Best other" is the fastest (or the smallest) other library that gives the same values, from the branch's run; a library whose values differ is not ranked (IronCalc after structure operations on the business book, ExcelJS on the 3,400-row file, as above). The base column is the base's run, a figure of its own run, not a ratio.
+
+| Opening, ms | base, closures / eval | branch | best other | branch against it |
+|---|---:|---:|---:|---:|
+| business-3400 | 121 / 123 | 109 / 115 | IronCalc 2,112 | 0.05× / 0.05× |
+| prefix-sum | 32.4 / 42.3 | 32 / 33.2 | HF 46.2 | 0.69× / 0.72× |
+| prefix-statistics | 61.6 / 60.8 | 57.2 / 54.1 | HF 77.8 | 0.74× / 0.70× |
+| lookup | 57.9 / 57.8 | 48.5 / 57.7 | HF index 1,215 | 0.04× / 0.05× |
+| chain | 40.1 / 47.8 | 39.1 / 41.5 | IronCalc 24.1 | 1.63× / 1.73× |
+| fanout | 167 / 223 | 140 / 191 | IronCalc 109 | 1.28× / 1.75× |
+| bulk | 16.9 / 18 | 16 / 17.1 | IronCalc 12.3 | 1.30× / 1.39× |
+| sparse | 6.48 / 6.95 | 5.95 / 6.5 | IronCalc 4.28 | 1.39× / 1.52× |
+| business-34000 | 718 / 822 | 600 / 676 |  |  |
+
+| Edit, ms | base, closures / eval | branch | best other | branch against it |
+|---|---:|---:|---:|---:|
+| business-3400, criterion | 0.213 / 0.205 | 0.171 / 0.170 | HF 1.48 | 0.12× / 0.11× |
+| business-3400, data | 18.2 / 18.9 | 17.8 / 16.8 | IronCalc 2,006 | 0.01× / 0.01× |
+| prefix-sum, middle-input | 4.36 / 4.02 | 3.59 / 3.86 | HF 4.59 | 0.78× / 0.84× |
+| prefix-statistics, middle-input | 9.15 / 9.15 | 8.1 / 7.81 | HF 9.56 | 0.85× / 0.82× |
+| lookup, lookup-data | 1.16 / 1.14 | 0.970 / 0.928 | HF index 3.05 | 0.32× / 0.30× |
+| lookup, lookup-key | 0.185 / 0.205 | 0.152 / 0.163 | HF index 0.133 | 1.14× / 1.23× |
+| chain, root | 4.9 / 4.76 | 2.15 / 2.12 | IronCalc 1.9 | 1.13× / 1.11× |
+| fanout, root | 36.1 / 43.2 | 15.7 / 21.1 | IronCalc 15.4 | 1.02× / 1.37× |
+| bulk, 2000-inputs | 3.47 / 3.39 | 2.63 / 2.72 | IronCalc 2.39 | 1.10× / 1.14× |
+| sparse, one-input | 0.051 / 0.051 | 0.052 / 0.050 | HF sparse 0.021 | 2.43× / 2.36× |
+| business-34000, criterion | 0.434 / 0.436 | 0.405 / 0.415 |  |  |
+| business-34000, data | 103 / 104 | 101 / 102 |  |  |
+
+| Retained heap after opening, MiB | base, closures / eval | branch | best other | branch against it |
+|---|---:|---:|---:|---:|
+| business-3400 | 17.6 / 14.5 | 15.7 / 13.2 | HF 17.8 | 0.88× / 0.74× |
+| prefix-sum | 7.37 / 7.5 | 6.64 / 6.72 | IronCalc 5.24 | 1.27× / 1.28× |
+| prefix-statistics | 13.3 / 11.1 | 12.7 / 10.3 | IronCalc 5.71 | 2.22× / 1.80× |
+| lookup | 9.41 / 9.12 | 9.18 / 8.86 | HF 20.4 | 0.45× / 0.43× |
+| chain | 13 / 12.6 | 7.18 / 8.53 | HF 4.77 | 1.51× / 1.79× |
+| fanout | 62.9 / 61 | 37 / 43.8 | IronCalc 41.6 | 0.89× / 1.05× |
+| bulk | 3.93 / 3.09 | 3.1 / 2.6 | HF 2.23 | 1.39× / 1.17× |
+| sparse | 1.52 / 1.48 | 1.04 / 1.18 | HF sparse 0.839 | 1.24× / 1.41× |
+| business-34000 | 52.1 / 48.9 | 50.2 / 47.7 | IronCalc 181 | 0.28× / 0.26× |
+
+| Structure operation, ms | base, closures / eval | branch | best other | branch against it |
+|---|---:|---:|---:|---:|
+| business-3400, insert 1 row | 124 / 131 | 117 / 122 | HF 2,684 | 0.04× / 0.05× |
+| business-3400, undo insert 1 row | 97 / 102 | 86.4 / 93.2 | HF 2,723 | 0.03× / 0.03× |
+| business-3400, delete 1 row | 124 / 127 | 113 / 127 | HF 2,699 | 0.04× / 0.05× |
+| business-3400, undo delete 1 row | 97 / 100 | 89.4 / 95.1 | HF 3,831 | 0.02× / 0.02× |
+| business-3400, insert 100 rows | 125 / 128 | 116 / 119 | HF 2,744 | 0.04× / 0.04× |
+| business-3400, undo insert 100 rows | 94.6 / 102 | 91.8 / 94 | HF 2,692 | 0.03× / 0.03× |
+| prefix-sum, insert 1 row | 28.9 / 33.3 | 25.9 / 31 | HF 6.55 | 3.95× / 4.72× |
+| prefix-sum, undo insert 1 row | 23.1 / 28.4 | 19.5 / 25.8 | HF 8.16 | 2.40× / 3.17× |
+| prefix-sum, delete 1 row | 31.2 / 35 | 28.1 / 31.3 | HF 160 | 0.18× / 0.20× |
+| prefix-sum, undo delete 1 row | 23.6 / 28.4 | 21.1 / 24.3 | HF 173 | 0.12× / 0.14× |
+| prefix-sum, insert 100 rows | 28.1 / 36.4 | 25.9 / 31.4 | HF 163 | 0.16× / 0.19× |
+| prefix-sum, undo insert 100 rows | 22.7 / 29.3 | 20 / 24 | IronCalc 177 | 0.11× / 0.14× |
+| business-34000, insert 1 row | 839 / 838 | 733 / 757 |  |  |
+| business-34000, undo insert 1 row | 800 / 775 | 701 / 694 |  |  |
+| business-34000, delete 1 row | 825 / 836 | 748 / 750 |  |  |
+| business-34000, undo delete 1 row | 783 / 774 | 697 / 701 |  |  |
+| business-34000, insert 100 rows | 842 / 842 | 745 / 730 |  |  |
+| business-34000, undo insert 100 rows | 777 / 779 | 686 / 722 |  |  |
+
+| xlsx | base | branch | best other | branch against it |
+|---|---:|---:|---:|---:|
+| 3400 rows, read, ms | 54.1 | 53.9 | SheetJS 53.3 | 1.01× |
+| 3400 rows, write back, ms | 81.6 | 75.8 | SheetJS 33.3, not compressed | 2.27× |
+| 3400 rows, write back against compressing, ms | 81.6 | 75.8 | SheetJS compressed 50.5 | 1.50× |
+| 3400 rows, retained heap after reading, MiB | 8.48 | 8.48 | SheetJS 9.78 | 0.87× |
+| 3400 rows, written file | | xlcalc 400 KiB, ExcelJS 408 KiB, SheetJS 2,710 KiB, SheetJS compressed 983 KiB | | |
+| 34000 rows, read, ms | 540 | 440 | SheetJS 540 | 0.82× |
+| 34000 rows, write back, ms | 751 | 680 | SheetJS 363, not compressed | 1.88× |
+| 34000 rows, write back against compressing, ms | 751 | 680 | SheetJS compressed 463 | 1.47× |
+| 34000 rows, retained heap after reading, MiB | 58.1 | 58.1 | SheetJS 76.2 | 0.76× |
+| 34000 rows, written file | | xlcalc 3,416 KiB, ExcelJS 3,458 KiB, SheetJS 19,527 KiB, SheetJS compressed 8,486 KiB | | |
+
+Beside the JavaScript heap the branch keeps, in typed arrays, 8 bytes per formula and, after the first edit, 4 per vertex of the graph: about 0.1 MiB for the chain and 0.6 MiB for fanout, which the heap figures above do not count.
+
+SheetJS writes without compression by default, so its files are 5.7 to 6.8 times larger; with `compression: true` they are still 2.5 times larger than xlcalc's. Every library's written file, read back by xlcalc, gives the first file's values.
+
+Reading is one process taking turns (`read-bench.mjs`, display false), the branch's `getValues` beside `readCells`; every value of `getValues` was compared with HyperFormula's arrays, none differs.
+
+| Reading, ms | base | branch | HyperFormula | branch against it |
+|---|---:|---:|---:|---:|
+| window A1:P100, `readCells` | 0.21 | 0.21 | 0.10 | 2.1× |
+| window A1:P100, `getValues` | | 0.04 | 0.05 | 0.8× |
+| column B, its rows, `readCells` by pages | 14 | 13 | 5.12 | 2.5× |
+| column B, its rows, `getValues` | | 0.45 | 4.55 | 0.10× |
+| column B whole, `readCells` by pages | 16 | 14 | 107 | 0.13× |
+| column B whole, `getValues` with `maxCells` | | 57 | 108 | 0.53× |
+| the sheet (506,594 values), `readCells` by pages of 10,000 | 157 | 156 | 14 | 11× |
+| the sheet, `getValues` | | 9.96 | 13 | 0.77× |
+| 10,000 single cells, `getCell` | 5.99 | 4.98 | 2.06 | 2.4× |
+| book with formulas, 3,400 rows: window of a sheet of formulas, `readCells` | 0.22 | 0.22 | 0.06 | 3.7× |
+| the same, `getValues` | | 0.10 | 0.05 | 2.0× |
+| the same: its data sheet, `readCells` by pages | 13 | 10 | 1.72 | 5.8× |
+| the same: its data sheet, `getValues` | | 0.77 | 1.63 | 0.47× |
+| the same: 10,000 single cells of a sheet of formulas, `getCell` | 3.39 | 2.72 | 0.45 | 6.0× |
+
+`readCells` gives an object with the sheet and the address for each cell and `getCell` a cell's whole view: those are their contracts, and `getValues` is the call that gives bare values, as HyperFormula's arrays do.
+
+### Base against branch in one process
+
+`workload-pair.mjs` (seven openings and 30 edits per build) and `synth-pair.mjs` (the synthetic book: cold calculations, 200 edits, structure operations at row 10 with undo and redo), medians: no median is slower than the base by more than 1 %. Opening is up to 1.22 times faster, the chain's and fanout's root edits 1.9 to 2.3 times, the batch of 2,000 inputs 1.13 to 1.23 times, one input of the sparse book 1.6 times, the synthetic book's cold calculation 1.14 to 1.18 times and its structure operations up to 1.12 times (`results-parity/workload-pair.txt`, `synth-pair.txt`).
+
+### Not at parity, and why
+
+- **Opening the chain** (1.63× / 1.73× against IronCalc) **and eval's opening of fanout and sparse** (1.75×, 1.52×): preparing formulas, that is tokenizing, parsing, checking and printing each formula, is 37 % of opening the chain, compiling 13 %, the graph 11 %. HyperFormula's answer is to parse a formula's relative shape once for a column of copied formulas; for xlcalc that is a cache of parsed shapes in `engine.ts: prepare`, about 300 to 400 lines, not done in this round.
+- **One input of the sparse book** (2.4× against HyperFormula's 0.021 ms): the fixed cost of one `setCells` call, which the stand measures cold (20 calls after two). Warm, in one process, the call takes 4.8 µs against HyperFormula's 2.9.
+- **Retained memory of the chain** (1.51× / 1.79× against HyperFormula's 4.77 MiB) **and of prefix-statistics** (2.2× / 1.8× against IronCalc's 5.7): each formula's compiled code (closures, or eval's parameters), its reference and its listener entry; prefix-statistics also keeps the prefix sums of its range caches, which make its edits faster than HyperFormula's.
+- **Inserting a row in the cumulative SUM book** (4.0× / 4.7×) and its undo (2.4× / 3.2×): every structure operation builds the book's state again (70 % of the operation, recomputing every SUM 25 %). Deleting a row or inserting 100 is 5 to 9 times faster than HyperFormula. Shifting references and the graph in place instead is a larger rewrite of the structure operations, planned separately.
+- **Writing xlsx** (1.88× / 2.27× against SheetJS without compression, 1.47× / 1.50× against SheetJS compressing): writing the XML is about 70 % of the time, deflate 25 %. The platform's `CompressionStream` takes no level, so a faster level would need another codec.
+
+IronCalc's native binding for Node, not this stand's WebAssembly build, was measured once on 0.47.0 by another harness: two to three times faster than the WebAssembly build on the chain, fanout and batch edits. It is not ranked here.
+
 ## Not compared
 
 HyperFormula has no Find, no `summarizeRanges` and no text a cell shows by its number format; IronCalc's WebAssembly package reads and writes no xlsx; ExcelJS and SheetJS compute nothing. Browsers and the transfer of pages between threads of a calculation pool are not measured.
