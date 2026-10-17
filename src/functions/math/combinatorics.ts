@@ -67,6 +67,17 @@ function wholes(cx: Cx, args: readonly Arg[]): number[] | CErr {
   return negative ? E.NUM : out
 }
 
+/** GCD or LCM over the arguments' whole numbers; nothing but blank cells is #VALUE!, as in Excel. */
+const ofWholes = (f: (xs: number[]) => number | CErr): FnDef => ({
+  args: 'R',
+  rep: 1,
+  cx: true,
+  fn: (cx: Cx, args: Arg[]) => {
+    const xs = wholes(cx, args)
+    return isErr(xs) ? xs : xs.length ? f(xs) : E.VALUE
+  },
+})
+
 function gcd2(a: number, b: number): number {
   while (b) [a, b] = [b, a % b]
   return a
@@ -77,34 +88,15 @@ export const functions: Record<string, FnDef> = {
   COMBINA: { args: 'n n', fn: combina },
   FACT: { args: 'n', fn: (x: number) => (x < 0 ? E.NUM : fact(whole(x))) },
   FACTDOUBLE: { args: 'x', fn: factdouble },
-  GCD: {
-    args: 'R',
-    rep: 1,
-    cx: true,
-    fn: (cx: Cx, args: Arg[]) => {
-      const xs = wholes(cx, args)
-      if (isErr(xs)) return xs
-      // nothing but blank cells is #VALUE!, as in LCM
-      if (!xs.length) return E.VALUE
-      return xs.some((x) => x > MAX_INT) ? E.NUM : xs.reduce(gcd2, 0)
-    },
-  },
-  LCM: {
-    args: 'R',
-    rep: 1,
-    cx: true,
-    fn: (cx: Cx, args: Arg[]) => {
-      const xs = wholes(cx, args)
-      if (isErr(xs)) return xs
-      if (!xs.length) return E.VALUE
-      let l = 1
-      for (const x of xs) {
-        if (x > MAX_INT) return E.NUM
-        l = x === 0 || l === 0 ? 0 : (l / gcd2(l, x)) * x
-      }
-      return l > MAX_INT ? E.NUM : l
-    },
-  },
+  GCD: ofWholes((xs) => (xs.some((x) => x > MAX_INT) ? E.NUM : xs.reduce(gcd2, 0))),
+  LCM: ofWholes((xs) => {
+    let l = 1
+    for (const x of xs) {
+      if (x > MAX_INT) return E.NUM
+      l = x === 0 || l === 0 ? 0 : (l / gcd2(l, x)) * x
+    }
+    return l > MAX_INT ? E.NUM : l
+  }),
   MULTINOMIAL: {
     args: 'R',
     rep: 1,
