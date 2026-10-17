@@ -16,6 +16,20 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.48.0 (2026-10-17)
+
+Internal release; not published to npm. Faster reading and batches of edits, measured against other libraries. The synthetic book's values and hashes are as in 0.47.0.
+
+Changed:
+
+- `readCells` reads a cell's value, formula, format, style, note and link from its value and input when `text` is not asked, without building the cell's whole result, and goes by the index of the sheet's cells alone where no spill or look meets the range; `getCell` reads its one cell without the work of a rectangle. On the synthetic book's data sheet of 506,594 values: the sheet by pages 358 to 157 ms, 10,000 `getCell` 19 to 8.7 ms, a window of 1,600 cells 0.41 to 0.21 ms.
+- A batch of 2,000 edits in one `setCells` is 1.4 times faster: a cell's fields are copied rather than deleted from a copy, and content is compared without JSON.
+- `bench/compare` compares opening, edits, structure operations, reading, xlsx and retained memory with HyperFormula 3.5.0, IronCalc 0.9.0, ExcelJS 4.4.0 and SheetJS 0.18.5 ([its README](bench/compare/README.md)).
+
+Fixed:
+
+- `readCells` and `findCells` with the field `text` threw on the cells of a large spill's unstored rest, which they list; they give their text now. `getCell` lists none of them, as before.
+
 ## 0.47.0 (2026-10-16)
 
 Internal release; not published to npm. `readCells` in order and faster, and the docs' examples run. The synthetic book's values and hashes are as in 0.46.0.

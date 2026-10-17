@@ -1,12 +1,12 @@
 import { workload } from './workloads.mjs'
-import { HyperFormula, close, hfInput, isHf, measure, median, open, p95, prepareEdit, reference, verify } from './shared.mjs'
+import { HyperFormula, close, isHf, measure, median, open, p95, prepareEdit, prepareInput, reference, verify } from './shared.mjs'
 
 const [id, engine] = process.argv.slice(2)
 const spec = workload(id)
 if (HyperFormula.version !== '3.5.0') throw new Error(`Expected HyperFormula 3.5.0, got ${HyperFormula.version}`)
 const send = (message) => process.send?.(message)
 const phase = (name) => send({ type: 'phase', name })
-const prepared = isHf(engine) ? hfInput(spec.book) : undefined
+const prepared = prepareInput(engine, spec.book)
 phase('reference')
 const initial = reference(spec.book)
 const metadata = {
@@ -16,12 +16,17 @@ const metadata = {
 }
 const samples = [], edits = {}, verification = []
 let held, retainedHeapMb
+// XLCALC_BENCH_KEEP=1 (bench/compare): differing values are recorded and timing goes on, for a time given for reference
+const keep = process.env.XLCALC_BENCH_KEEP === '1'
+let differing
 
 function check(session, expected) {
   phase('verify')
   const result = verify(engine, session, spec.book, expected)
   verification.push({ checked: result.checked, maxRelativeError: result.maxRelativeError })
-  if (result.differences) {
+  if (result.differences && keep) {
+    if (!differing || result.differences > differing.differences) differing = result
+  } else if (result.differences) {
     const error = new Error('Computed values differ from a full calculation')
     error.details = result
     throw error
@@ -64,7 +69,7 @@ try {
     }
   }
   send({ type: 'result', result: {
-    status: 'ok', ...metadata, retainedHeapMb, addressMappingPolicy: isHf(engine) ? held.getConfig().chooseAddressMappingPolicy.constructor.name : undefined, coldMedianMs: median(samples.map((s) => s.wallMs)),
+    status: differing ? 'mismatch' : 'ok', ...metadata, ...(differing ? { details: differing } : {}), retainedHeapMb, addressMappingPolicy: isHf(engine) ? held.getConfig().chooseAddressMappingPolicy.constructor.name : undefined, coldMedianMs: median(samples.map((s) => s.wallMs)),
     coldMedianCpuMs: median(samples.map((s) => s.cpuMs)), samples, edits,
     verification: { comparisons: verification.length, checkedCells: verification.reduce((n, v) => n + v.checked, 0), maxRelativeError: Math.max(...verification.map((v) => v.maxRelativeError)) },
     probeOnly: spec.hfProbe && isHf(engine),

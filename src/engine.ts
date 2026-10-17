@@ -172,9 +172,15 @@ export function setInput(state: EngineState, s: number, addr: string, r: number,
   markBare(state, s, r, c, input && !lookAlone(input) ? input : null)
 }
 
+/** The index of the sheet named `name` in any case; a name spelled as the book spells it is found without its key, which upper-cases it. */
+export function sheetIndexOf(state: EngineState, name: string): number | undefined {
+  const i = state.sheetNames.indexOf(name)
+  return i >= 0 ? i : state.sheetIdx.get(sheetKey(name))
+}
+
 /** The looks of the sheets edited cells were written to, settled (`settle`): the book is as the engine takes it again. */
 export function settled(state: EngineState, edits: { sheet: string }[]) {
-  for (const i of new Set(edits.map((e) => state.sheetIdx.get(sheetKey(e.sheet))))) if (i !== undefined) settle(state.input.sheets[i])
+  for (const i of new Set(edits.map((e) => sheetIndexOf(state, e.sheet)))) if (i !== undefined) settle(state.input.sheets[i])
 }
 
 function emptySheet(name: string): SheetData {
@@ -358,7 +364,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
   let structural = false
   let graphChanged = false
   for (const e of edits) {
-    const s = state.sheetIdx.get(sheetKey(e.sheet))
+    const s = sheetIndexOf(state, e.sheet)
     if (s === undefined) throw new Error(`unknown sheet ${e.sheet}`)
     const { row, col } = parseAddress(e.cell)
     const k = key(s, row, col)

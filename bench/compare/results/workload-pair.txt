@@ -1,0 +1,18 @@
+business-3400, closures: open base 122.9 / branch 125.2 (0.98x); criterion: p50 base 0.059 / branch 0.059 (1.00x), p95 base 0.120 / branch 0.106 (1.13x); data: p50 base 18.0 / branch 17.8 (1.01x), p95 base 20.2 / branch 19.1 (1.06x) ms
+business-3400, eval: open base 130.1 / branch 141.6 (0.92x); criterion: p50 base 0.051 / branch 0.061 (0.85x), p95 base 0.079 / branch 0.082 (0.96x); data: p50 base 18.1 / branch 18.1 (1.00x), p95 base 20.1 / branch 21.3 (0.94x) ms
+prefix-sum, closures: open base 36.3 / branch 37.9 (0.96x); middle-input: p50 base 4.95 / branch 4.80 (1.03x), p95 base 5.55 / branch 5.37 (1.03x) ms
+prefix-sum, eval: open base 41.2 / branch 40.5 (1.02x); middle-input: p50 base 4.54 / branch 4.71 (0.96x), p95 base 5.36 / branch 5.57 (0.96x) ms
+prefix-statistics, closures: open base 62.4 / branch 62.2 (1.00x); middle-input: p50 base 9.98 / branch 9.41 (1.06x), p95 base 10.9 / branch 10.3 (1.06x) ms
+prefix-statistics, eval: open base 65.2 / branch 66.7 (0.98x); middle-input: p50 base 9.15 / branch 8.60 (1.06x), p95 base 10.3 / branch 9.66 (1.07x) ms
+lookup, closures: open base 72.6 / branch 71.5 (1.02x); lookup-key: p50 base 0.018 / branch 0.017 (1.08x), p95 base 0.026 / branch 0.025 (1.01x); lookup-data: p50 base 0.921 / branch 0.803 (1.15x), p95 base 1.51 / branch 1.64 (0.92x) ms
+lookup, eval: open base 71.1 / branch 72.5 (0.98x); lookup-key: p50 base 0.018 / branch 0.017 (1.05x), p95 base 0.026 / branch 0.029 (0.90x); lookup-data: p50 base 0.841 / branch 0.879 (0.96x), p95 base 1.31 / branch 1.92 (0.68x) ms
+chain, closures: open base 54.1 / branch 51.6 (1.05x); root: p50 base 6.95 / branch 7.03 (0.99x), p95 base 9.36 / branch 8.61 (1.09x) ms
+chain, eval: open base 73.5 / branch 75.6 (0.97x); root: p50 base 8.72 / branch 8.07 (1.08x), p95 base 11.0 / branch 9.99 (1.10x) ms
+fanout, closures: open base 192.0 / branch 191.7 (1.00x); root: p50 base 40.7 / branch 38.7 (1.05x), p95 base 56.8 / branch 45.7 (1.24x) ms
+fanout, eval: open base 237.8 / branch 237.9 (1.00x); root: p50 base 48.0 / branch 44.0 (1.09x), p95 base 51.7 / branch 47.9 (1.08x) ms
+bulk, closures: open base 22.4 / branch 22.9 (0.98x); 2000-inputs: p50 base 8.03 / branch 5.89 (1.36x), p95 base 10.1 / branch 8.48 (1.19x) ms
+bulk, eval: open base 23.5 / branch 23.0 (1.02x); 2000-inputs: p50 base 6.53 / branch 4.63 (1.41x), p95 base 8.48 / branch 6.82 (1.24x) ms
+sparse, closures: open base 7.33 / branch 7.23 (1.01x); one-input: p50 base 0.014 / branch 0.012 (1.11x), p95 base 0.026 / branch 0.019 (1.40x) ms
+sparse, eval: open base 7.88 / branch 7.49 (1.05x); one-input: p50 base 0.014 / branch 0.012 (1.13x), p95 base 0.019 / branch 0.024 (0.79x) ms
+business-34000, closures: open base 738.8 / branch 731.3 (1.01x); criterion: p50 base 0.263 / branch 0.262 (1.01x), p95 base 0.278 / branch 0.278 (1.00x); data: p50 base 103.9 / branch 103.5 (1.00x), p95 base 112.1 / branch 110.2 (1.02x) ms
+business-34000, eval: open base 773.7 / branch 760.3 (1.02x); criterion: p50 base 0.265 / branch 0.263 (1.01x), p95 base 0.276 / branch 0.282 (0.98x); data: p50 base 103.5 / branch 103.5 (1.00x), p95 base 105.3 / branch 105.7 (1.00x) ms

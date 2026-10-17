@@ -140,7 +140,12 @@ export function compareWith(text: (a: string, b: string) => number): (a: V, b: V
 export const compareValues = compareWith(collator.compare)
 
 /** A number to 15 significant digits, as Excel compares numbers and reads them in INT and its kin (`1-2^-52` is 1 there). */
-export const to15 = (x: number): number => (Number.isInteger(x) && Math.abs(x) < 1e15 ? x : Number(x.toPrecision(15)))
+export function to15(x: number): number {
+  if (Number.isInteger(x) && Math.abs(x) < 1e15) return x
+  // a count of hundredths below 1e13 has at most 15 digits, so it is its own rounding: money is read without making text
+  if (Math.abs(x) < 1e13 && Math.round(x * 100) / 100 === x) return x
+  return Number(x.toPrecision(15))
+}
 
 /**
  * The order of the comparison operators (`=`, `<` and the rest) over `compare`: numbers equal to 15 significant
