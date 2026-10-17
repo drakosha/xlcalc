@@ -42,6 +42,7 @@ import { join } from 'node:path'
 import { inCaseOrder, loadStored, setModule, took, writeAnswers } from './stored.js'
 import { functionParts, inParts, writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
+import { stepIronCalc } from './ironcalc.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion, halving, runExcel, runExcelWatched, withExcelLock } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
@@ -294,6 +295,7 @@ else if (step === 'report') writeReport(resultFile, REPORT)
 else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], locale))
 else if (step === 'legacy') await withExcelLock(() => stepProbes(process.argv[3], 'en-US', true))
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
+else if (step === 'ironcalc') await withExcelLock(() => stepIronCalc())
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
 else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], locale))
 else if (step === 'xlsx') await withExcelLock(() => stepXlsx(process.argv[3]))
