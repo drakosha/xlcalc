@@ -54,3 +54,10 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): the euro sign takes a fraction after it, as no
+ * sign does and `$` does not (`€1 1/2` is 1.5), and criteria read no euro sign, so `"€100"` is text there. The set
+ * `euro-ironcalc-held-2` measures the rule they led to.
+ */
+export const MISSED: readonly string[] = ['VALUE#16', 'COUNTIF#1', 'COUNTIF#2']
