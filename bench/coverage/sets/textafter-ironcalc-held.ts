@@ -45,3 +45,10 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * All as predicted, but the engine's rule broke a recorded case: `TEXTBEFORE("A","aBc")` is #N/A in Excel, so a
+ * delimiter longer than the text is #VALUE! only once an instance is given. The set `textafter-ironcalc-held-2`
+ * measures that.
+ */
+export const MISSED: readonly string[] = []
