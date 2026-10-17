@@ -1,0 +1,187 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 14.9,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "FV#1",
+   "group": "FV",
+   "fn": "FV",
+   "formula": "FV(-1,0,1,5)"
+  },
+  {
+   "id": "PV#1",
+   "group": "PV",
+   "fn": "PV",
+   "formula": "PV(-1,0,1)"
+  },
+  {
+   "id": "FV#2",
+   "group": "FV",
+   "fn": "FV",
+   "formula": "FV(-1,-0.5,1)"
+  },
+  {
+   "id": "FV#3",
+   "group": "FV",
+   "fn": "FV",
+   "formula": "FV(-2,0.5,1)"
+  },
+  {
+   "id": "FV#4",
+   "group": "FV",
+   "fn": "FV",
+   "formula": "FV(-9,1/3,1)"
+  },
+  {
+   "id": "PV#2",
+   "group": "PV",
+   "fn": "PV",
+   "formula": "PV(-2,1/3,1)"
+  },
+  {
+   "id": "FV#5",
+   "group": "FV",
+   "fn": "FV",
+   "formula": "FV(-0.5,0,1,5)"
+  },
+  {
+   "id": "XNPV#1",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,Xb!A1:A3,Xb!B1:B3)"
+  },
+  {
+   "id": "XNPV#2",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,Xb!C1:C3,Xb!D1:D3)"
+  },
+  {
+   "id": "XNPV#3",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,Xb!A2:A4,Xb!B2:B4)"
+  },
+  {
+   "id": "XNPV#4",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,Xb!C2:C4,Xb!D2:D4)"
+  },
+  {
+   "id": "XNPV#5",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,Xb!A1:A4,Xb!D1:D4)"
+  },
+  {
+   "id": "MIRR#1",
+   "group": "MIRR",
+   "fn": "MIRR",
+   "formula": "MIRR({5},0.1,0.1)"
+  },
+  {
+   "id": "MIRR#2",
+   "group": "MIRR",
+   "fn": "MIRR",
+   "formula": "MIRR({-5},0.1,0.1)"
+  },
+  {
+   "id": "MIRR#3",
+   "group": "MIRR",
+   "fn": "MIRR",
+   "formula": "MIRR({-5,0},0.1,0.1)"
+  },
+  {
+   "id": "MIRR#4",
+   "group": "MIRR",
+   "fn": "MIRR",
+   "formula": "MIRR({0,-5},0.1,0.1)"
+  },
+  {
+   "id": "IRR#1",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-100,110},-1)"
+  }
+ ],
+ "values": {
+  "FV#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PV#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "FV#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "FV#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "FV#4": {
+   "t": "n",
+   "v": -0.3333333333333333
+  },
+  "PV#2": {
+   "t": "n",
+   "v": 1
+  },
+  "FV#5": {
+   "t": "n",
+   "v": -5
+  },
+  "XNPV#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XNPV#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XNPV#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "XNPV#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "XNPV#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MIRR#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "MIRR#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "MIRR#3": {
+   "t": "n",
+   "v": -1
+  },
+  "MIRR#4": {
+   "t": "n",
+   "v": -1
+  },
+  "IRR#1": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

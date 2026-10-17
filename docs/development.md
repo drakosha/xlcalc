@@ -348,6 +348,8 @@ The set `currency-held` (34 cases, predicted) measured what en-US reads as a cur
 
 The set `date-ironcalc-held` (33 cases, predicted) takes IronCalc's 11 date cells (`DAYS360` of moments a hair from midnight, `WEEKDAY` of a date out of range with a return type of text or an error, `WORKDAY` with days a hair under 0 and -1, `TIMEVALUE("0:0:86400")`) and 22 around them: `DAYS360` near the half second before midnight, `WEEKDAY`'s errors in either argument, `WORKDAY`'s fractional days both ways, minutes and seconds of four and five digits. Both Excels gave the same answers, all 33 as predicted; the 12 cells match.
 
+The set `finance-ironcalc-held` (32 cases, predicted) takes 10 of IronCalc's `FV`, `IRR`, `MIRR` and `XNPV` cells (a rate of -1 over a negative number of periods, a guess of -1 or less, outflows alone, a blank among the values) and 22 around them. Both Excels gave the same answers and 28 came out as predicted; the misses showed (1 + rate)^nper taken as Excel's power takes 0^0 (`FV(-1,0,1)` is `#NUM!`, and `PV` alike) and `XNPV`'s first value or date deciding between `#VALUE!` and `#NUM!`, and the rule for `MIRR` broke a recorded case of one value (`#DIV/0!`). The set `finance-ironcalc-held-2` (17 cases, predicted) measured those, all as predicted; the 13 cells match.
+
 ### Legacy array formulas and implicit intersection
 
 From [Legacy array formulas and implicit intersection](legacy.md).
