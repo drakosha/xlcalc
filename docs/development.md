@@ -218,6 +218,8 @@ The set `xlookup-ironcalc-held` (39 cases, predicted) takes 15 of the 40 `XLOOKU
 
 The set `database-ironcalc-held` (15 cases, predicted) takes the database of IronCalc's file, whose headers are TRUE, 1 and the text `true`, with its criteria headed TRUE, `true` and 1, and adds a field named `TRUE`, a criteria header `TRUE` in capitals and the text `1`, a database that starts at the text header, and each function of the group. Both Excels gave the same answers, all 15 as predicted: a header names the first column that reads as it in any case, a boolean too; the 21 cells of the database functions match.
 
+The set `rounding-ironcalc-held` (32 cases, predicted) takes 12 of IronCalc's cells: `FLOOR` of 0 as a number, text, FALSE and a blank to a significance of 0, `FLOOR.MATH` and `CEILING.MATH` of negative numbers with the mode 0.01, `ROUND` of a difference just below 0.00625; and 20 around them: `FLOOR` of other numbers to 0, modes small, negative, as text and booleans, positive numbers, `ROUND` just below a half at other magnitudes. Both Excels gave the same answers, all 32 as predicted; the 54 cells match.
+
 ### Links to other workbooks
 
 From [Links to other workbooks](links.md).

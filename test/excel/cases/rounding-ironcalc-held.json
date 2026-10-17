@@ -1,0 +1,332 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.865,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "FLOOR#1",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(0,0)"
+  },
+  {
+   "id": "FLOOR#2",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(Fl!A2,Fl!A3)"
+  },
+  {
+   "id": "FLOOR#3",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(Fl!A4,Fl!A4)"
+  },
+  {
+   "id": "FLOOR#4",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(Fl!A3,Fl!A2)"
+  },
+  {
+   "id": "FLOOR.MATH#1",
+   "group": "FLOOR.MATH",
+   "fn": "FLOOR.MATH",
+   "formula": "_xlfn.FLOOR.MATH(-7.1,1,0.01)"
+  },
+  {
+   "id": "FLOOR.MATH#2",
+   "group": "FLOOR.MATH",
+   "fn": "FLOOR.MATH",
+   "formula": "_xlfn.FLOOR.MATH(-10,0.21,0.01)"
+  },
+  {
+   "id": "FLOOR.MATH#3",
+   "group": "FLOOR.MATH",
+   "fn": "FLOOR.MATH",
+   "formula": "_xlfn.FLOOR.MATH(-7.9,-7,0.01)"
+  },
+  {
+   "id": "CEILING.MATH#1",
+   "group": "CEILING.MATH",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(-7.1,-1,0.01)"
+  },
+  {
+   "id": "CEILING.MATH#2",
+   "group": "CEILING.MATH",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(-7.9,0.21,0.01)"
+  },
+  {
+   "id": "CEILING.MATH#3",
+   "group": "CEILING.MATH",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(-10,7,0.01)"
+  },
+  {
+   "id": "ROUND#1",
+   "group": "ROUND",
+   "fn": "ROUND",
+   "formula": "ROUND(1.05*(0.0284+0.0046)-0.0284,4)"
+  },
+  {
+   "id": "ROUND#2",
+   "group": "ROUND",
+   "fn": "ROUND",
+   "formula": "ROUND(Fl!B1,4)"
+  },
+  {
+   "id": "FLOOR#5",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(5,0)"
+  },
+  {
+   "id": "FLOOR#6",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(1E-300,0)"
+  },
+  {
+   "id": "FLOOR#7",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(-5,0)"
+  },
+  {
+   "id": "FLOOR#8",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(0,5)"
+  },
+  {
+   "id": "FLOOR#9",
+   "group": "FLOOR",
+   "fn": "FLOOR",
+   "formula": "FLOOR(0,-5)"
+  },
+  {
+   "id": "CEILING#1",
+   "group": "CEILING",
+   "fn": "CEILING",
+   "formula": "CEILING(0,0)"
+  },
+  {
+   "id": "FLOOR.MATH#4",
+   "group": "FLOOR.MATH",
+   "fn": "FLOOR.MATH",
+   "formula": "_xlfn.FLOOR.MATH(-7.1,1,-0.01)"
+  },
+  {
+   "id": "FLOOR.MATH#5",
+   "group": "FLOOR.MATH",
+   "fn": "FLOOR.MATH",
+   "formula": "_xlfn.FLOOR.MATH(-7.1,1,1E-300)"
+  },
+  {
+   "id": "FLOOR.MATH#6",
+   "group": "FLOOR.MATH",
+   "fn": "FLOOR.MATH",
+   "formula": "_xlfn.FLOOR.MATH(-7.1,1,0)"
+  },
+  {
+   "id": "FLOOR.MATH#7",
+   "group": "FLOOR.MATH",
+   "fn": "FLOOR.MATH",
+   "formula": "_xlfn.FLOOR.MATH(7.1,1,0.01)"
+  },
+  {
+   "id": "CEILING.MATH#4",
+   "group": "CEILING.MATH",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(-7.1,1,0.5)"
+  },
+  {
+   "id": "CEILING.MATH#5",
+   "group": "CEILING.MATH",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(-7.1,1,\"0.01\")"
+  },
+  {
+   "id": "CEILING.MATH#6",
+   "group": "CEILING.MATH",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(-7.1,1,TRUE)"
+  },
+  {
+   "id": "CEILING.MATH#7",
+   "group": "CEILING.MATH",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(-7.1,1,FALSE)"
+  },
+  {
+   "id": "CEILING.MATH#8",
+   "group": "CEILING.MATH",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(7.1,1,0.01)"
+  },
+  {
+   "id": "ROUND#3",
+   "group": "ROUND",
+   "fn": "ROUND",
+   "formula": "ROUND(2.5-2^-51,0)"
+  },
+  {
+   "id": "ROUND#4",
+   "group": "ROUND",
+   "fn": "ROUND",
+   "formula": "ROUND(-2.5+2^-51,0)"
+  },
+  {
+   "id": "ROUND#5",
+   "group": "ROUND",
+   "fn": "ROUND",
+   "formula": "ROUND(1234.5-2^-38,0)"
+  },
+  {
+   "id": "ROUND#6",
+   "group": "ROUND",
+   "fn": "ROUND",
+   "formula": "ROUND(1234.5-2^-30,0)"
+  },
+  {
+   "id": "ROUND#7",
+   "group": "ROUND",
+   "fn": "ROUND",
+   "formula": "ROUND(0.125-2^-56,2)"
+  }
+ ],
+ "values": {
+  "FLOOR#1": {
+   "t": "n",
+   "v": 0
+  },
+  "FLOOR#2": {
+   "t": "n",
+   "v": 0
+  },
+  "FLOOR#3": {
+   "t": "n",
+   "v": 0
+  },
+  "FLOOR#4": {
+   "t": "n",
+   "v": 0
+  },
+  "FLOOR.MATH#1": {
+   "t": "n",
+   "v": -7
+  },
+  "FLOOR.MATH#2": {
+   "t": "n",
+   "v": -9.87
+  },
+  "FLOOR.MATH#3": {
+   "t": "n",
+   "v": -7
+  },
+  "CEILING.MATH#1": {
+   "t": "n",
+   "v": -8
+  },
+  "CEILING.MATH#2": {
+   "t": "n",
+   "v": -7.9799999999999995
+  },
+  "CEILING.MATH#3": {
+   "t": "n",
+   "v": -14
+  },
+  "ROUND#1": {
+   "t": "n",
+   "v": 0.0063
+  },
+  "ROUND#2": {
+   "t": "n",
+   "v": 0.0063
+  },
+  "FLOOR#5": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "FLOOR#6": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "FLOOR#7": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "FLOOR#8": {
+   "t": "n",
+   "v": 0
+  },
+  "FLOOR#9": {
+   "t": "n",
+   "v": 0
+  },
+  "CEILING#1": {
+   "t": "n",
+   "v": 0
+  },
+  "FLOOR.MATH#4": {
+   "t": "n",
+   "v": -7
+  },
+  "FLOOR.MATH#5": {
+   "t": "n",
+   "v": -7
+  },
+  "FLOOR.MATH#6": {
+   "t": "n",
+   "v": -8
+  },
+  "FLOOR.MATH#7": {
+   "t": "n",
+   "v": 7
+  },
+  "CEILING.MATH#4": {
+   "t": "n",
+   "v": -8
+  },
+  "CEILING.MATH#5": {
+   "t": "n",
+   "v": -8
+  },
+  "CEILING.MATH#6": {
+   "t": "n",
+   "v": -8
+  },
+  "CEILING.MATH#7": {
+   "t": "n",
+   "v": -7
+  },
+  "CEILING.MATH#8": {
+   "t": "n",
+   "v": 8
+  },
+  "ROUND#3": {
+   "t": "n",
+   "v": 3
+  },
+  "ROUND#4": {
+   "t": "n",
+   "v": -3
+  },
+  "ROUND#5": {
+   "t": "n",
+   "v": 1235
+  },
+  "ROUND#6": {
+   "t": "n",
+   "v": 1234
+  },
+  "ROUND#7": {
+   "t": "n",
+   "v": 0.13
+  }
+ }
+}
