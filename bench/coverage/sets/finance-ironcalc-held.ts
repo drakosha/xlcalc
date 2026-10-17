@@ -71,3 +71,11 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): at a rate of -1, FV and PV over 0 periods are
+ * #NUM!, (1 + rate)^nper taken as Excel's power takes 0^0; XNPV with its first value blank is #VALUE! and with a
+ * blank date after the first #NUM!, so the first value or date decides. The set `finance-ironcalc-held-2` measures
+ * the rule they led to.
+ */
+export const MISSED: readonly string[] = ['FV#4', 'PV#3', 'XNPV#4', 'XNPV#6']
