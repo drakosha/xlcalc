@@ -39,6 +39,16 @@ export function days30(a: Ymd, b: Ymd): number {
   return d360(a, b, d1, d2)
 }
 
+/** US 30/360 as ACCRINT counts it, dates in either order; `both` moves the end's last of February and 31st whatever the start. */
+export function us360(a: Ymd, b: Ymd, both: boolean): number {
+  let d1 = a.d
+  let d2 = b.d
+  if (lastOfFeb(b) && (lastOfFeb(a) || both)) d2 = 30
+  if (d2 === 31 && (d1 >= 30 || both)) d2 = 30
+  if (d1 === 31 || lastOfFeb(a)) d1 = 30
+  return d360(a, b, d1, d2)
+}
+
 /** The actual/actual year between ordered dates: 365 or 366 within a year, else the span's average by the real calendar. */
 export function yearLength(start: number, end: number): number {
   const a = ymd(start)

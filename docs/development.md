@@ -204,6 +204,14 @@ From [Formulas of the old kind](legacy.md).
 
 `fromLegacy` gives Excel's text for every formula of these sets, `@D!B1:B3 D!B2:C2` for the intersection `D!B1:B3 D!B2:C2` among them.
 
+### Functions
+
+From [Functions](functions.md).
+
+IronCalc's tests (`ironcalc/IronCalc` at `297553d`, `xlsx/tests`, 235 files saved by Excel) were computed with the engine and their cells compared with the values Excel stored; the 468 cells where the engine answered otherwise, with the cells they read, are in `bench/coverage/ironcalc/cases.json`, and Excel for Windows and Excel for Mac computed them again (`win.json`, `mac.json`, steps `bench/windows/ironcalc.ts` and `bench/coverage/ironcalc.ts`). Both answered as the file in 458 of them. Each rule they led to was measured with a set of its own, predicted before Excel ran it.
+
+The set `accrint-ironcalc-held` (42 cases, predicted) takes 22 of the 187 `ACCRINT` cells, one or two of each kind (every basis, calc_method TRUE and FALSE, negative answers, a fractional frequency, arguments in cells), and 20 cases around the rule: coupon dates stepped one from the other across short months, a first interest date on a month's last day, a settlement on a coupon date, an issue on one or after the first interest date, the issue's own period on each basis. Both Excels gave the same answers, all 42 as predicted, and every one of the 187 cells matches.
+
 ### Links to other workbooks
 
 From [Links to other workbooks](links.md).

@@ -1,0 +1,437 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 17.8,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "ACCRINT#1",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2017,1,1), DATE(2017,12,1), DATE(2017,4,1), 0.33, 3000, 4, 1)"
+  },
+  {
+   "id": "ACCRINT#2",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2017,1,1), DATE(2017,12,1), DATE(2017,4,1), 0.33, 3000, 4, 2)"
+  },
+  {
+   "id": "ACCRINT#3",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2017,1,1), DATE(2017,12,1), DATE(2017,4,1), 0.33, 3000, 4, 3)"
+  },
+  {
+   "id": "ACCRINT#4",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2016,6,1), DATE(2017,12,1), DATE(2016,9,1), 0.33, 3000, 2, 2)"
+  },
+  {
+   "id": "ACCRINT#5",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2016,6,1), DATE(2017,12,1), DATE(2016,9,1), 0.33, 3000, 2, 1)"
+  },
+  {
+   "id": "ACCRINT#6",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2007,3,1), DATE(2008,8,31), DATE(2008,5,1), 0.1, 1000, 2, 0, FALSE)"
+  },
+  {
+   "id": "ACCRINT#7",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(Ac!A1,Ac!B1,Ac!C1,Ac!D1,Ac!E1,Ac!F1,Ac!G1,Ac!H1)"
+  },
+  {
+   "id": "ACCRINT#8",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(Ac!A1,Ac!B1,Ac!C1,Ac!D1,Ac!E1,Ac!F1,Ac!G1)"
+  },
+  {
+   "id": "ACCRINT#9",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(Ac!A2,Ac!B2,Ac!C2,Ac!D2,Ac!E2,Ac!F2,Ac!G2,Ac!H2)"
+  },
+  {
+   "id": "ACCRINT#10",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(Ac!A3,Ac!B3,Ac!C3,Ac!D3,Ac!E3,Ac!F3,Ac!G3,Ac!H3)"
+  },
+  {
+   "id": "ACCRINT#11",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(39508,39691,39569,0.1,1000,4)"
+  },
+  {
+   "id": "ACCRINT#12",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(42736,43070,42826,0.33,3000,2,1,FALSE)"
+  },
+  {
+   "id": "ACCRINT#13",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(43864,45261,45028,0.33,3000,1,1,FALSE)"
+  },
+  {
+   "id": "ACCRINT#14",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(43864,45261,45028,0.33,3000,2,4,FALSE)"
+  },
+  {
+   "id": "ACCRINT#15",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(43864,45261,45028,0.33,3000,4.7,3)"
+  },
+  {
+   "id": "ACCRINT#16",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(44166,44531,44531,0.1,1000,2,2,FALSE)"
+  },
+  {
+   "id": "ACCRINT#17",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(44191,44531,44256,0.025,5000,2,1,TRUE)"
+  },
+  {
+   "id": "ACCRINT#18",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(44804,45351,45047,0.075,100,2,4,TRUE)"
+  },
+  {
+   "id": "ACCRINT#19",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(43435,44531,43983,0.1,1000,1,0,FALSE)"
+  },
+  {
+   "id": "ACCRINT#20",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(44135,44408,44242,0.025,5000,4,1,TRUE)"
+  },
+  {
+   "id": "ACCRINT#21",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(43845,44166,43922,0.05,1000,4,0,FALSE)"
+  },
+  {
+   "id": "ACCRINT#22",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(43800,44531,44440,0.1,1000,2,3,FALSE)"
+  },
+  {
+   "id": "ACCRINT#23",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,10,1),DATE(2024,8,30),DATE(2025,9,15),0.05,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#24",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,3,15),DATE(2024,8,30),DATE(2025,9,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#25",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2022,9,10),DATE(2024,8,30),DATE(2024,5,1),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#26",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2022,9,10),DATE(2024,8,30),DATE(2024,5,1),0.05,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#27",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,10),DATE(2024,4,30),DATE(2024,11,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#28",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2022,6,1),DATE(2024,2,28),DATE(2025,6,1),0.05,1000,1,1)"
+  },
+  {
+   "id": "ACCRINT#29",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2022,6,1),DATE(2024,2,29),DATE(2025,6,1),0.05,1000,1,1)"
+  },
+  {
+   "id": "ACCRINT#30",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,7,1),0.05,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#31",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,7,1),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#32",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,7,1),DATE(2024,7,1),DATE(2024,3,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#33",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,9,1),DATE(2024,7,1),DATE(2025,3,1),0.05,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#34",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,9,1),DATE(2024,7,1),DATE(2025,3,1),0.05,1000,2,0,FALSE)"
+  },
+  {
+   "id": "ACCRINT#35",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,3,15),DATE(2024,1,31),DATE(2024,9,10),0.06,1000,4,0,FALSE)"
+  },
+  {
+   "id": "ACCRINT#36",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,3,15),DATE(2024,1,31),DATE(2024,9,10),0.06,1000,4,4,FALSE)"
+  },
+  {
+   "id": "ACCRINT#37",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,3,15),DATE(2024,1,31),DATE(2024,9,10),0.06,1000,4,3,TRUE)"
+  },
+  {
+   "id": "ACCRINT#38",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,2,1),DATE(2024,7,1),DATE(2025,3,1),0.05,1000,2,1,FALSE)"
+  },
+  {
+   "id": "ACCRINT#39",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2022,1,1),DATE(2024,6,30),DATE(2023,3,1),0.05,1000,1,0,FALSE)"
+  },
+  {
+   "id": "ACCRINT#40",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,9,15),DATE(2024,8,31),DATE(2024,10,15),0.05,1000,2,2)"
+  },
+  {
+   "id": "ACCRINT#41",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,9,15),DATE(2024,8,31),DATE(2024,10,15),0.05,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#42",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,10,31),DATE(2024,8,31),DATE(2024,9,30),0.05,1000,4,4)"
+  }
+ ],
+ "values": {
+  "ACCRINT#1": {
+   "t": "n",
+   "v": 241.12362637362637
+  },
+  "ACCRINT#2": {
+   "t": "n",
+   "v": 236.5
+  },
+  "ACCRINT#3": {
+   "t": "n",
+   "v": 240.04109589041096
+  },
+  "ACCRINT#4": {
+   "t": "n",
+   "v": 239.25000000000003
+  },
+  "ACCRINT#5": {
+   "t": "n",
+   "v": 251.55737704918027
+  },
+  "ACCRINT#6": {
+   "t": "n",
+   "v": 66.94444444444446
+  },
+  "ACCRINT#7": {
+   "t": "n",
+   "v": -253.8763736263736
+  },
+  "ACCRINT#8": {
+   "t": "n",
+   "v": 241.12362637362637
+  },
+  "ACCRINT#9": {
+   "t": "n",
+   "v": -312.77472527472526
+  },
+  "ACCRINT#10": {
+   "t": "n",
+   "v": -47.73351648351648
+  },
+  "ACCRINT#11": {
+   "t": "n",
+   "v": 16.944444444444446
+  },
+  "ACCRINT#12": {
+   "t": "n",
+   "v": 245.68681318681323
+  },
+  "ACCRINT#13": {
+   "t": "n",
+   "v": 1174.9126431619134
+  },
+  "ACCRINT#14": {
+   "t": "n",
+   "v": 189.75
+  },
+  "ACCRINT#15": {
+   "t": "n",
+   "v": 3153.082191780822
+  },
+  "ACCRINT#16": {
+   "t": "n",
+   "v": 50.83333333333333
+  },
+  "ACCRINT#17": {
+   "t": "n",
+   "v": 22.494070137512765
+  },
+  "ACCRINT#18": {
+   "t": "n",
+   "v": 5.020833333333334
+  },
+  "ACCRINT#19": {
+   "t": "n",
+   "v": -50
+  },
+  "ACCRINT#20": {
+   "t": "n",
+   "v": 37.36413043478261
+  },
+  "ACCRINT#21": {
+   "t": "n",
+   "v": -14.444444444444446
+  },
+  "ACCRINT#22": {
+   "t": "n",
+   "v": 25.205479452054796
+  },
+  "ACCRINT#23": {
+   "t": "n",
+   "v": 47.55341880341881
+  },
+  "ACCRINT#24": {
+   "t": "n",
+   "v": 75.26121419564042
+  },
+  "ACCRINT#25": {
+   "t": "n",
+   "v": 81.70364100736516
+  },
+  "ACCRINT#26": {
+   "t": "n",
+   "v": 81.5491452991453
+  },
+  "ACCRINT#27": {
+   "t": "n",
+   "v": 42.30769230769231
+  },
+  "ACCRINT#28": {
+   "t": "n",
+   "v": 150
+  },
+  "ACCRINT#29": {
+   "t": "n",
+   "v": 149.9651920053896
+  },
+  "ACCRINT#30": {
+   "t": "n",
+   "v": 75
+  },
+  "ACCRINT#31": {
+   "t": "n",
+   "v": 74.86263736263736
+  },
+  "ACCRINT#32": {
+   "t": "n",
+   "v": 35.16483516483516
+  },
+  "ACCRINT#33": {
+   "t": "n",
+   "v": 25
+  },
+  "ACCRINT#34": {
+   "t": "n",
+   "v": 25
+  },
+  "ACCRINT#35": {
+   "t": "n",
+   "v": 59.16666666666667
+  },
+  "ACCRINT#36": {
+   "t": "n",
+   "v": 59.16666666666667
+  },
+  "ACCRINT#37": {
+   "t": "n",
+   "v": 89.3013698630137
+  },
+  "ACCRINT#38": {
+   "t": "n",
+   "v": 54.12087912087912
+  },
+  "ACCRINT#39": {
+   "t": "n",
+   "v": 8.333333333333334
+  },
+  "ACCRINT#40": {
+   "t": "n",
+   "v": 54.44444444444445
+  },
+  "ACCRINT#41": {
+   "t": "n",
+   "v": 54.02777777777777
+  },
+  "ACCRINT#42": {
+   "t": "n",
+   "v": 45.83333333333333
+  }
+ }
+}
