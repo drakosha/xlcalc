@@ -16,6 +16,14 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.49.1 (2026-10-17)
+
+Internal release; not published to npm. The Sort command's order of errors, measured in Excel. The synthetic book's values and hashes are as in 0.49.0.
+
+Fixed:
+
+- `compareValues` and `valueComparator` take all errors as equal again, as Excel's Sort command does: measured in Excel 16.114 for Mac and 16.0.20430 for Windows, errors keep their order ascending and descending. 0.49.0 had given them the order of the function SORT, by ERROR.TYPE's number, which SORT and SORTBY keep.
+
 ## 0.49.0 (2026-10-17)
 
 Internal release; not published to npm. Excel's answers in the cells of IronCalc's xlsx tests where the library answered otherwise: 459 of 461 cells now answer as Excel for Mac, each rule checked by a set of cases in Excel for Mac and Windows (25 sets, 570 cases). The synthetic book's values and hashes are as in 0.48.0.
