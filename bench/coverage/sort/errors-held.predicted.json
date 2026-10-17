@@ -1,0 +1,69 @@
+{
+ "model": "Microsoft's Sort order, errors equal",
+ "answers": {
+  "errors-asc": [
+   "=NA()",
+   "=1/0",
+   "=#REF!",
+   "=#N/A",
+   "=#VALUE!",
+   "=SQRT(-1)",
+   "=#NAME?",
+   "=#NULL!"
+  ],
+  "errors-desc": [
+   "=NA()",
+   "=1/0",
+   "=#REF!",
+   "=#N/A",
+   "=#VALUE!",
+   "=SQRT(-1)",
+   "=#NAME?",
+   "=#NULL!"
+  ],
+  "errors-reversed-asc": [
+   "=#NULL!",
+   "=#NAME?",
+   "=SQRT(-1)",
+   "=#VALUE!",
+   "=#N/A",
+   "=#REF!",
+   "=1/0",
+   "=NA()"
+  ],
+  "errors-reversed-desc": [
+   "=#NULL!",
+   "=#NAME?",
+   "=SQRT(-1)",
+   "=#VALUE!",
+   "=#N/A",
+   "=#REF!",
+   "=1/0",
+   "=NA()"
+  ],
+  "mixed-asc": [
+   "2",
+   "10",
+   "A",
+   "b",
+   "FALSE",
+   "TRUE",
+   "=NA()",
+   "=1/0",
+   "=#REF!",
+   ""
+  ],
+  "mixed-desc": [
+   "=NA()",
+   "=1/0",
+   "=#REF!",
+   "TRUE",
+   "FALSE",
+   "b",
+   "A",
+   "10",
+   "2",
+   ""
+  ]
+ }
+}
