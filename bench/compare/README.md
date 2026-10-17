@@ -142,6 +142,81 @@ Profiles are `node --cpu-prof` self time by function, the operation repeated alo
 - **Writing xlsx** against SheetJS: SheetJS does not compress by default. Against ExcelJS, which does, xlcalc is faster.
 - **Memory** of the chain and of cumulative formulas: compiled code and graph per formula; not profiled here.
 
+## Speed-ups on the branch `perf/speed`
+
+Both against 0.47.0, two builds taking turns in one process, medians. Every answer stays as it was: `test/read-answers.test.ts` and `test/edit-answers.test.ts` compare each answer's JSON (fields, order, pages, cursors, counts, errors, the book after each edit) with fixtures written by 0.47.0, in every kind of session and both executions; the synthetic hashes are unchanged.
+
+### Reading cells
+
+A field that needs no shown text is read from the cell's value and input alone, without a generator per cell or the cell's whole result; with `text`, and in `getCell`, one cell is read by its own path instead of as a one-cell rectangle of `getCells`. Where no spill and no look meets a range, its cells come from the index of the sheet's cells alone, and the address built to check a cell is the one the answer gives. A sheet named as the book spells it is found without upper-casing the name. `to15` keeps a number of hundredths below 1e13 as it is, without making text: it is its own 15-digit rounding (`test/to15.test.ts` checks it against rounding through text).
+
+Median of three runs of `read-bench.mjs` (each nine rounds), display false, field `value` unless named; HyperFormula's figure is its own call in the same runs.
+
+| Case | 0.47.0, ms | branch, ms | Faster | HyperFormula, ms |
+|---|---:|---:|---:|---:|
+| window A1:P100 | 0.41 | 0.21 | 1.95× | 0.12 |
+| window A1:P100, value, text and formula | 1.62 | 0.86 | 1.88× | |
+| column B, its rows | 28 | 14 | 2.0× | 5.48 |
+| column B whole | 31 | 14 | 2.2× | 107 |
+| the sheet (506,594 values) by pages of 10,000 | 358 | 157 | 2.28× | 19 |
+| 10,000 single cells (`getCell`) | 19 | 8.74 | 2.17× | 1.76 |
+| book with formulas, 3,400 rows: window of a sheet of formulas | 0.35 | 0.15 | 2.3× | 0.08 |
+| the same: its six sheets of formulas | 2.15 | 0.88 | 2.4× | 0.65 |
+| the same: its data sheet by pages | 30 | 10 | 3.0× | 1.77 |
+| the same: 10,000 single cells of a sheet of formulas | 14 | 3.69 | 3.8× | 0.57 |
+| book with formulas, 34,000 rows: its data sheet by pages | 355 | 159 | 2.2× | |
+| the same: 10,000 single cells of a sheet of formulas | 10 | 3.83 | 2.6× | |
+
+The single cells take more after the whole sheet's pages in the same process than alone: run alone, 31 rounds, `getCell` goes from 16 to 6.8 ms.
+
+Display true gives the same figures within noise, every case faster than 0.47.0; `results/read-*.txt` holds the three runs. After the change the whole sheet's read spends its time in the walk of the index (`readOrder` 24 %), the page loop (`readQuery` 14 %), reading values with their 15-digit rounding (`valueAt`, `cellValue`, `to15`, about 13 %) and the answer's objects (`projected` 3 %); `getCell` in building the cell's view (`resultAt` 21 %, `cellAt` 11 %, `viewOf` 7 %), its value (12 %), and checking and formatting the address (10 %). The answer's object per cell with its address is the contract.
+
+### 2,000 inputs in one call
+
+An edit's fields go over a cell's input by copying the fields that stay instead of deleting from a copy, so inputs stay fast objects; content is compared without writing JSON; one engine helper finds a sheet by its name for the session's checks, edits, undo inputs and answers.
+
+`workload-pair.mjs` over the nine workloads, 30 edits per build:
+
+| 2,000 inputs, ms | 0.47.0 | branch | Faster |
+|---|---:|---:|---:|
+| closures, p50 | 8.03 | 5.89 | 1.36× |
+| eval, p50 | 6.53 | 4.63 | 1.41× |
+
+A separate run of this workload alone gave 5.34 to 3.62 ms (1.47×) with closures and 5.02 to 3.34 ms (1.50×) with eval. HyperFormula took 3.37 ms and IronCalc 2.49 ms in the comparison above. Evaluating the formulas is now 23 % of the call, against 16 % before; putting fields over inputs fell from 15.5 % to 6 %.
+
+## Other cases on the branch
+
+`workload-pair.mjs` (seven openings and 30 edits per build) and `synth-pair.mjs` (the synthetic book: five cold calculations, 200 edits, and structure operations at row 10 with undo and redo, seven each), medians; 0.47.0 against the branch, ms. None is slower by more than 10 %.
+
+| Case | closures | eval |
+|---|---|---|
+| business-3400 open; criterion; data | 122.9 / 125.2; 0.059 / 0.059; 18.0 / 17.8 | 130.1 / 141.6; 0.051 / 0.061; 18.1 / 18.1 |
+| prefix-sum open; edit | 36.3 / 37.9; 4.95 / 4.80 | 41.2 / 40.5; 4.54 / 4.71 |
+| prefix-statistics open; edit | 62.4 / 62.2; 9.98 / 9.41 | 65.2 / 66.7; 9.15 / 8.60 |
+| lookup open; key; data | 72.6 / 71.5; 0.018 / 0.017; 0.921 / 0.803 | 71.1 / 72.5; 0.018 / 0.017; 0.841 / 0.879 |
+| chain open; root | 54.1 / 51.6; 6.95 / 7.03 | 73.5 / 75.6; 8.72 / 8.07 |
+| fanout open; root | 192.0 / 191.7; 40.7 / 38.7 | 237.8 / 237.9; 48.0 / 44.0 |
+| sparse open; one input | 7.33 / 7.23; 0.014 / 0.012 | 7.88 / 7.49; 0.014 / 0.012 |
+| business-34000 open; criterion; data | 738.8 / 731.3; 0.263 / 0.262; 103.9 / 103.5 | 773.7 / 760.3; 0.265 / 0.263; 103.5 / 103.5 |
+| synthetic 3,400: cold; edit p50 | 181.0 / 187.2; 0.638 / 0.619 | 186.4 / 189.5; 0.636 / 0.626 |
+| synthetic 34,000: cold; edit p50 | 1724.6 / 1618.6; 2.795 / 2.758 | 1751.2 / 1680.3; 2.770 / 2.761 |
+
+The criterion edit of business-3400 with eval (0.051 against 0.061 ms in 30 edits) was measured again alone over 300 pairs: 0.0545 against 0.0520 ms, the branch 0.002 ms faster by the median of paired differences; with closures 0.0547 against 0.0518.
+
+Structure operations at row 10 of the synthetic book, ms, 0.47.0 / branch:
+
+| Operation | 3,400, display false | 3,400, display true | 34,000, display false | 34,000, display true |
+|---|---|---|---|---|
+| insert a row | 125.9 / 124.3 | 167.3 / 158.0 | 883.8 / 882.1 | 1200.0 / 1160.8 |
+| its undo | 100.6 / 95.0 | 133.9 / 130.5 | 809.2 / 818.5 | 1130.3 / 1076.7 |
+| its redo | 100.3 / 97.8 | 133.7 / 131.2 | 822.7 / 824.7 | 1102.9 / 1104.0 |
+| delete a row | 135.0 / 136.4 | 161.5 / 155.1 | 935.2 / 912.5 | 1155.4 / 1162.3 |
+| its undo | 102.9 / 96.3 | 136.3 / 128.5 | 851.1 / 832.9 | 1110.4 / 1068.5 |
+| its redo | 100.4 / 101.0 | 140.8 / 127.4 | 842.7 / 833.0 | 1109.2 / 1091.2 |
+| undo again | 95.5 / 103.5 | 134.1 / 131.6 | 837.3 / 858.5 | 1088.3 / 1076.7 |
+
+A first run of the synthetic pair was discarded: the host went to sleep with its lid closed during it (`pmset -g log`, 12:28), which the second run, held awake by `caffeinate -i`, did not.
+
 ## Not compared
 
 HyperFormula has no Find, no `summarizeRanges` and no text a cell shows by its number format; IronCalc's WebAssembly package reads and writes no xlsx; ExcelJS and SheetJS compute nothing. Browsers and the transfer of pages between threads of a calculation pool are not measured.

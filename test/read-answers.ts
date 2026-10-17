@@ -9,6 +9,7 @@ import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { createSession, type AsyncSession, type BookInput, type CellReadField, type Execution, type RangeRef, type ReadCellsOptions } from '../src/index.js'
 import './locales.js'
+import type { Labelled } from './recorded.js'
 import { wrapped } from './session-kinds.js'
 
 export const CLOCK = { now: '2026-10-16T12:00:00Z', seed: 1 }
@@ -105,7 +106,7 @@ function queries(second: string | undefined): Query[] {
 const json = (x: unknown) => JSON.stringify(x) ?? 'undefined'
 
 /** The answers of the queries, `getCell` of each cell of the window and `getCells` of it, labelled. */
-async function read(s: AsyncSession, sheet: string, second: string | undefined, out: [string, string][]) {
+async function read(s: AsyncSession, sheet: string, second: string | undefined, out: Labelled) {
   const ref = (r: string | RangeRef): RangeRef => (typeof r === 'string' ? { sheet, range: r } : r)
   for (const [ranges, opts] of queries(second)) {
     const label = `readCells ${json(ranges)} ${json(opts)}`
@@ -124,11 +125,11 @@ async function read(s: AsyncSession, sheet: string, second: string | undefined, 
 }
 
 /** The answers of a session of book `name`: read, then after each edit of a series (a cell cleared, cells written, a look, rows inserted and undone). */
-export async function answers(s: AsyncSession, name: string): Promise<[string, string][]> {
+export async function answers(s: AsyncSession, name: string): Promise<Labelled> {
   const book = BOOKS[name]
   const sheet = book.sheets[0].name
   const second = book.sheets[1]?.name
-  const out: [string, string][] = []
+  const out: Labelled = []
   await read(s, sheet, second, out)
   const steps: [string, () => Promise<unknown>][] = [
     ['A3 cleared, D2 and Z5 written', () => s.setCells([{ sheet, cell: 'A3', input: null }, { sheet, cell: 'D2', input: { value: 7 } }, { sheet, cell: 'Z5', input: { formula: 'A1*3' } }])],
@@ -147,7 +148,7 @@ export async function answers(s: AsyncSession, name: string): Promise<[string, s
 }
 
 /** The recorded answers: by book and display, each a label and the answer's JSON. */
-export type Recorded = Record<string, Record<string, [string, string][]>>
+export type Recorded = Record<string, Record<string, Labelled>>
 
 async function record(execution: Execution): Promise<Recorded> {
   const out: Recorded = {}

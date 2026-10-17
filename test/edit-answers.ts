@@ -8,6 +8,7 @@
 import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { createSession, type AsyncSession, type BookInput, type CellEdit, type Execution } from '../src/index.js'
+import type { Labelled } from './recorded.js'
 import { wrapped } from './session-kinds.js'
 
 export const CLOCK = { now: '2026-10-16T12:00:00Z', seed: 1 }
@@ -67,8 +68,8 @@ const STEPS: CellEdit[][] = [
 const json = (x: unknown) => JSON.stringify(x) ?? 'undefined'
 
 /** The answers of a session of the book: each call's, the book after it, then undo and redo all the way. */
-export async function answers(s: AsyncSession): Promise<[string, string][]> {
-  const out: [string, string][] = []
+export async function answers(s: AsyncSession): Promise<Labelled> {
+  const out: Labelled = []
   const book = async () => json((await s.getBook()).sheets.map((x) => x.cells))
   for (const [i, edits] of STEPS.entries()) {
     // a refused call answers with its error
@@ -81,7 +82,7 @@ export async function answers(s: AsyncSession): Promise<[string, string][]> {
 }
 
 /** The recorded answers: by display, each a label and the answer's JSON. */
-export type Recorded = Record<string, [string, string][]>
+export type Recorded = Record<string, Labelled>
 
 async function record(execution: Execution): Promise<Recorded> {
   const out: Recorded = {}
