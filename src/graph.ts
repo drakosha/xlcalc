@@ -44,6 +44,8 @@ export function rebuildGraph(state: EngineState) {
       graph.add(g, f.id)
     }
   }
+  // each list of successors as an array of its own length: one filled by pushes keeps room for many more, for each vertex
+  for (let i = 0; i < succ.length; i++) if (succ[i].length) succ[i] = succ[i].slice()
   state.succ = succ
   state.listeners = listeners
   const spillSucc = new Map<number, number[]>()
