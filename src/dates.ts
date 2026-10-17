@@ -314,10 +314,13 @@ export function unwrap(text: string): { s: string; paren: boolean; percent: bool
  */
 export const enNumber = (text: string) => numberText(text, true)
 
-/** Number text as en-US criteria read their own text, and typed entry before its own euro sign: as `enNumber`, without `€` (a cell's `€100` still equals 100 under a number criterion). */
+/** Number text as en-US criteria read their own text: as `enNumber`, without `€` (a cell's `€100` still equals 100 under a number criterion). */
 export const enCritNumber = (text: string) => numberText(text, false)
 
-function numberText(text: string, euros: boolean): number | null {
+/** Typed number text before entry's own euro sign (`entry/read.ts`): as `enCritNumber`, a fraction neither after `$` nor in parentheses, as before the set `euro-ironcalc-held-2` (typing was not measured). */
+export const enTypedNumber = (text: string) => numberText(text, false, false)
+
+function numberText(text: string, euros: boolean, fractions = true): number | null {
   const t = trimSpaces(text)
   if (t === '') return null
   const { s, paren, percent } = unwrap(t)
@@ -327,7 +330,7 @@ function numberText(text: string, euros: boolean): number | null {
   if ((sign[1] && sign[3]) || (euro && sign[2])) return null
   const negative = (sign[1] || sign[3]) === '-'
   if ((paren && negative) || ((euro || sign[2]) && percent)) return null
-  return bodyNumber(sign[4], GROUPED, (mant) => mant.replace(/,/g, ''), percent, true, negative || paren)
+  return bodyNumber(sign[4], GROUPED, (mant) => mant.replace(/,/g, ''), percent, fractions || (sign[2] !== '$' && !paren), negative || paren)
 }
 
 /**
