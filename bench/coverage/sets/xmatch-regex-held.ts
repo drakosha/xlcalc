@@ -51,3 +51,10 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The predictions Excel for Mac did not confirm: a number among the values is matched by its text too (`42` finds
+ * the number 42). Excel for Windows answers #VALUE! to every case of match mode 3. The set `xmatch-regex-held-2`
+ * measures values that are not text.
+ */
+export const MISSED: readonly string[] = ['XMATCH#15', 'XMATCH#16']
