@@ -5,7 +5,7 @@
  * structure operation, a table's column renamed) those that differ from the cell that was at their old place.
  */
 import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, RangeRef, SheetInput } from '../contract.js'
-import { key, type EngineState } from '../engine.js'
+import { key, sheetIndexOf, type EngineState } from '../engine.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError, object, onlyOptions } from '../input.js'
 import { inputIn } from '../looks/sheet.js'
@@ -88,7 +88,7 @@ export const hasFields = (x: CellInput): boolean =>
 export function editFields(s: EngineState, was: { sheet: string; cell: string; input: CellInput | null }[]): Map<string, FieldChange> {
   const out = new Map<string, FieldChange>()
   for (const { sheet, cell, input } of was) {
-    const i = s.sheetIdx.get(sheetKey(sheet))!
+    const i = sheetIndexOf(s, sheet)!
     const { row, col } = parseAddress(cell)
     const now = inputIn(s.input.sheets[i], cell, row, col)
     if (now === (input ?? undefined)) continue

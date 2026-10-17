@@ -1,17 +1,18 @@
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
-import type { CellReadField, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
+import type { CellReadField, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
 import { key, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { referencesOf } from '../graph.js'
 import { array, checkAddress, checkBoolean, checkNumber, checkSheet, checkString, InputError, object, onlyKeys } from '../input.js'
 import { issueDetail } from '../issues.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
-import { cellResult, cellsIn, outValue } from '../result.js'
+import { cellAt, outValue } from '../result.js'
 import { rectText, meets } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
 import { inputIn } from '../looks/sheet.js'
+import { cellValue } from './looks.js'
 import { checkLineNumbers, checkRange, sessionEditTexts } from './viewport.js'
 import { FIND_CALL_OPTIONS, READ_OPTIONS } from '../strict-args.js'
 import { finderOf, type Finder, type Ref } from './find.js'
@@ -87,10 +88,12 @@ class Page<T> {
   }
 }
 
-function* projected(s: EngineState, i: number, r: number, c: number, fields: CellReadField[], edit: ReturnType<typeof sessionEditTexts> | null): Steps<ReadCell> {
-  const addr = formatAddress(r, c),
-    out: ReadCell = { sheet: s.sheetNames[i], cell: addr }
-  const view = fields.includes('text') ? (yield* cellsIn(s, i, [{ r1: r, c1: c, r2: r, c2: c }], true))[addr] : cellResult(s, i, addr, null, undefined)
+/**
+ * A cell's fields `fields`. Those of its input from its input; the others from `view`, the cell shown as `getCell` gives
+ * it, when `text` is asked; without, from its value and input alone, no result of the cell built (`view` null).
+ */
+function projected(s: EngineState, i: number, r: number, c: number, addr: string, fields: CellReadField[], edit: ReturnType<typeof sessionEditTexts> | null, view: CellView | undefined | null): ReadCell {
+  const out: ReadCell = { sheet: s.sheetNames[i], cell: addr }
   const input = inputIn(s.input.sheets[i], addr, r, c)
   for (const f of fields) {
     if (f === 'issue') out.issue = issueDetail(s, i, r, c)
@@ -98,7 +101,14 @@ function* projected(s: EngineState, i: number, r: number, c: number, fields: Cel
     else if (f === 'style' && input?.style !== undefined) out.style = input.style
     else if (f === 'note' && input?.note) out.note = { ...input.note }
     else if (f === 'link' && input?.link) out.link = { ...input.link }
-    else if (view[f as keyof typeof view] !== undefined) (out as unknown as Record<string, unknown>)[f] = view[f as keyof typeof view]
+    else if (view !== null) {
+      if (view![f as keyof CellView] !== undefined) (out as unknown as Record<string, unknown>)[f] = view![f as keyof CellView]
+    } else if (f === 'value') out.value = cellValue(s, i, r, c)
+    else if (f === 'formula') {
+      const id = s.at.get(key(i, r, c))
+      const text = id === undefined ? input?.formula : s.formulas[id]!.text
+      if (text !== undefined) out.formula = text
+    } else if (f === 'numberFormat' && input?.numberFormat !== undefined) out.numberFormat = input.numberFormat
   }
   return out
 }
@@ -116,13 +126,14 @@ function queryOf(s: EngineState, revision: number, clock: Clock, given: RangeRef
 
 export function* readQuery(s: EngineState, revision: number, clock: Clock, given: RangeRef[], eo?: ReadCellsOptions): Steps<ReadCellsResult> {
   const { refs, fields, rows, page, edit } = queryOf(s, revision, clock, given, checkBase<ReadCellsOptions>(eo, revision, READ_OPTIONS), [])
+  const shown = fields.includes('text')
   for (const cell of readOrder(s, refs, rows, page.from)) {
     if (!cell) {
       yield
       continue
     }
-    const [i, r, c, n] = cell
-    if (page.wanted([n, r * MAX_COLS + c])) page.items.push(yield* projected(s, i, r, c, fields, edit))
+    const [i, r, c, n, addr] = cell
+    if (page.wanted([n, r * MAX_COLS + c])) page.items.push(projected(s, i, r, c, addr, fields, edit, shown ? yield* cellAt(s, i, r, c, true) : null))
     if (page.done) break
   }
   return { ...page.result(), cells: page.items }
@@ -150,7 +161,7 @@ export function* findQuery(s: EngineState, revision: number, clock: Clock, given
       continue
     }
     const [i, r, c, position] = cell
-    if (page.wanted(position)) page.items.push(yield* projected(s, i, r, c, fields, edit))
+    if (page.wanted(position)) page.items.push(projected(s, i, r, c, formatAddress(r, c), fields, edit, fields.includes('text') ? yield* cellAt(s, i, r, c, true) : null))
     if (page.done) break
   }
   return { ...page.result(), cells: page.items }

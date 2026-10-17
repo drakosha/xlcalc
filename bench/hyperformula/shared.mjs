@@ -15,6 +15,9 @@ export const HF_OPTIONS = {
 }
 
 export const isHf = (engine) => engine.startsWith('hf-')
+/** Other engines by name (`bench/compare`): `prepare(book)`, `open(book, prepared)`, `edit(session, edits)`, `close(session)`, `value(session, sheet, row, col)`. */
+export const adapters = new Map()
+export const prepareInput = (engine, book) => adapters.get(engine)?.prepare(book) ?? (isHf(engine) ? hfInput(book) : undefined)
 const inputValue = (cell) => {
   const value = cell?.value ?? null
   return value !== null && typeof value === 'object' ? dateToSerial(value.date) : value
@@ -44,12 +47,14 @@ export function hfInput(book) {
 }
 
 export function open(engine, book, prepared) {
+  if (adapters.has(engine)) return adapters.get(engine).open(book, prepared)
   return isHf(engine)
     ? HyperFormula.buildFromSheets(prepared.sheets, { ...HF_OPTIONS, useColumnIndex: engine === 'hf-index', ...(engine === 'hf-sparse' ? { chooseAddressMappingPolicy: new AlwaysSparse() } : engine === 'hf-auto' ? { chooseAddressMappingPolicy: new DenseSparseChooseBasedOnThreshold(0.5) } : {}) }, prepared.names)
     : createSession(book, { clock: CLOCK, execution: engine === 'xl-eval' ? 'eval' : 'closures', display: false })
 }
 
 export function prepareEdit(engine, session, edits) {
+  if (adapters.has(engine)) return adapters.get(engine).edit(session, edits)
   if (!isHf(engine)) return () => session.setCells(edits)
   const calls = edits.map((e) => ({ address: { sheet: session.getSheetId(e.sheet), ...parseAddress(e.cell) }, values: [[hfScalar(e.input)]] }))
   const first = calls[0]
@@ -60,7 +65,7 @@ export function prepareEdit(engine, session, edits) {
   return () => session.batch(() => { for (const c of calls) session.setCellContents(c.address, c.values) })
 }
 
-export const close = (engine, session) => isHf(engine) ? session.destroy() : session.close()
+export const close = (engine, session) => adapters.has(engine) ? adapters.get(engine).close(session) : isHf(engine) ? session.destroy() : session.close()
 
 export function reference(book, edits = []) {
   const grouped = new Map()
@@ -81,19 +86,21 @@ export function reference(book, edits = []) {
 
 const ERRORS = { DIV_BY_ZERO: 'DIV0', NA: 'NA', NAME: 'NAME', NUM: 'NUM', REF: 'REF', VALUE: 'VALUE', CYCLE: 'CYCLE', SPILL: 'SPILL', ERROR: 'ERROR' }
 const normalize = (value) => value && typeof value === 'object' && 'type' in value ? { error: ERRORS[value.type] ?? value.type } : value
-const equal = (a, b) => typeof a === 'number' && typeof b === 'number'
+export const equal = (a, b) => typeof a === 'number' && typeof b === 'number'
   ? Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b))
   : JSON.stringify(a) === JSON.stringify(b)
 
 export function verify(engine, session, book, expected) {
-  const actual = isHf(engine) ? null : new Map(session.getResult().sheets.map((s) => [s.name, s.cells]))
+  const other = adapters.get(engine)
+  const actual = isHf(engine) || other ? null : new Map(session.getResult().sheets.map((s) => [s.name, s.cells]))
   const mismatches = []
   let checked = 0, maxRelativeError = 0, differences = 0
-  for (const sheet of book.sheets) {
+  for (const [i, sheet] of book.sheets.entries()) {
     const id = isHf(engine) ? session.getSheetId(sheet.name) : undefined
     for (const [addr, cell] of Object.entries(sheet.cells)) {
       const a = cell.formula !== undefined ? expected.formulas.get(`${sheet.name}!${addr}`) : inputValue(expected.grouped.get(sheet.name)?.[addr] ?? cell)
-      const b = actual ? actual.get(sheet.name)[addr]?.value ?? null : normalize(session.getCellValue({ sheet: id, ...parseAddress(addr) }))
+      const { row, col } = parseAddress(addr)
+      const b = other ? other.value(session, i, row, col) : actual ? actual.get(sheet.name)[addr]?.value ?? null : normalize(session.getCellValue({ sheet: id, row, col }))
       checked++
       if (typeof a === 'number' && typeof b === 'number') maxRelativeError = Math.max(maxRelativeError, Math.abs(a - b) / Math.max(1, Math.abs(a), Math.abs(b)))
       if (!equal(a, b)) {
