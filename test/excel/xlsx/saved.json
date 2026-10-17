@@ -355,6 +355,39 @@
   },
   "sum-zero-held-1": {
    "sent": "192cfefe8aa4d1ebfb3d8c758a794a7fcf21124a9bd3addcf99bfe191185920a"
+  },
+  "accrint-ironcalc-held-1": {
+   "sent": "afe4130db2e2f8ce2a2de8a5b19d0c8b3546b0c4a395f7dd1f4f64185661aaa8"
+  },
+  "countif-ironcalc-held-1": {
+   "sent": "15d9d7fcbe348ab76b6007c5d62a3c8442d1553a6c2837640d3c66192e29efe9"
+  },
+  "database-ironcalc-held-1": {
+   "sent": "2dd3a771ea2222f29cca0c9716fda7f762c00945bc455af628a78974b967cc39"
+  },
+  "euro-ironcalc-held-1": {
+   "sent": "9d5ad33b0689c39ccf5a06cf717659669aaa696493925f437a8c3a374dbb4761"
+  },
+  "euro-ironcalc-held-2-1": {
+   "sent": "5e52311eb5092aad09b6a86494f8bbda501287bfbc06c32616cd83bf7d154ae8"
+  },
+  "euro-ironcalc-held-3-1": {
+   "sent": "516d3d1660f3c52533d04b978c1ebbaa733ef96eb7747f7149a3a1ecf52caae7"
+  },
+  "rounding-ironcalc-held-1": {
+   "sent": "6873b0990d371c67531cd924082839a454c224743b4ccac945fbc6191ace86d6"
+  },
+  "textafter-ironcalc-held-1": {
+   "sent": "5637720d938507ced6f6646bc12b64250b88b22c9d13b5a8000cb8a5e9663993"
+  },
+  "textafter-ironcalc-held-2-1": {
+   "sent": "65894affcb5244c0f4e28bcd87edffb0bc9b4b96dff7d92c5d43c379ee80a7a5"
+  },
+  "xlookup-ironcalc-held-1": {
+   "sent": "184fc1bba44a5fa005204b59dc64a8441fdf34c67ccb3fcb3855c74a8de0d428"
+  },
+  "xlookup-ironcalc-held-2-1": {
+   "sent": "c8259f07435f72bbcdee6b47ba0b4f1685b84d18e0d68ba53fb1182a5f14f3c2"
   }
  }
 }
