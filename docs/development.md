@@ -352,6 +352,8 @@ The set `finance-ironcalc-held` (32 cases, predicted) takes 10 of IronCalc's `FV
 
 The set `math-ironcalc-held` (30 cases, predicted) takes 9 of IronCalc's cells (`GCD` and `LCM` of blanks alone, `CSCH` and `IMCSCH` of a tiny argument, `LOGNORM.INV` of `LOGNORM.DIST` with σ = 1E12, `POISSON.DIST` a hair below 0, `PROB` over text) and 21 around them. Both Excels gave the same answers, all 30 as predicted within the comparison's tolerance; to the last digit `NORM.S.DIST(1E-13,TRUE)` is what erfc gives while `LOGNORM.DIST` next to its median is exact, so erf's series serves `LOGNORM.DIST` alone. The `LOGNORM.INV` cell is ill-conditioned (with σ = 1E12 one unit in the last place of the probability moves the answer by 1E-4): it matches because both the probability and AS 241's quantile are now Excel's to the last digit. The 17 cells match.
 
+The set `refs-ironcalc-held` (35 cases, predicted) takes 11 of IronCalc's cells (`ISREF` of `FILTER`'s if_empty, `INDEX` of an array's row, `SORT`'s order of errors, `IFERROR` and `LEFT` lifted over arrays of other lengths, `"1e400"+1`) and 24 around them, among them the rule that a function reads a position outside a shorter array as `#N/A` in that argument's turn (`IF`, `IFNA`, `ROUND`, `MID`) while an operator answers `#N/A` there. Both Excels gave the same answers and 34 came out as predicted; the miss, `"1e308"+0` being `#VALUE!`, led to `refs-ironcalc-held-2` (10 cases at Excel's largest number, all as predicted). The 13 cells match; the order of errors is the one `compareValues` of `xlcalc/text` keeps too, as it sorts as `SORT` does.
+
 ### Legacy array formulas and implicit intersection
 
 From [Legacy array formulas and implicit intersection](legacy.md).

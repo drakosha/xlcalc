@@ -57,7 +57,7 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
     return liftN(xs, (els) => {
       for (let k = 0; k < at.length; k++) args[at[k]] = els[k]
       return first(call(...args), (g) => topLeft(g, cx))
-    })
+    }, true)
   }
 }
 
@@ -79,5 +79,5 @@ export function liftLazy(fn: Call, spec: FunctionSpec, check: readonly number[],
   if (!many) return fn(...thunks.map((t, i) => (done[i] === undefined ? t : () => single(done[i]!, cx))))
   const all = thunks.map((t, i) => (done[i] === undefined ? t() : done[i]!))
   const xs = all.map((x) => cx.view(x))
-  return liftN(xs, (els) => first(fn(...els.map((e) => () => e)), (g) => topLeft(g, cx)))
+  return liftN(xs, (els) => first(fn(...els.map((e) => () => e)), (g) => topLeft(g, cx)), true)
 }

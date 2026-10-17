@@ -282,6 +282,9 @@ export const textReaders = (number: (text: string) => number | null, dates: Date
 
 // ---------- number text (en-US): VALUE's reading, also of text in arithmetic and numeric arguments ----------
 
+/** Number text from this magnitude on is no number: Excel's largest number is 9.99999999999999E+307. */
+const MAX_TEXT_NUMBER = 1e308
+
 /** Digits with commas, each followed by three digits at least (Excel: `1,0000` is 10000, `10,00` and `0,123` are not numbers). */
 const GROUPED = /^((?!0+,)\d+(?:,\d{3,})*|)(\.\d*)?$/
 
@@ -342,7 +345,8 @@ export function bodyNumber(body: string, grouped: RegExp, plain: (mant: string) 
     const frac = /^(\d+) (\d+)\/(\d+)$/.exec(body)
     if (frac && Number(frac[3]) > 0) n = (Number(frac[1]) + Number(frac[2]) / Number(frac[3])) / (percent ? 100 : 1)
   }
-  if (n === null || !Number.isFinite(n)) return null
+  // Excel's largest number is below 1E+308: text of it or more is no number, as a typed one is text (`entry/read.ts`)
+  if (n === null || !(Math.abs(n) < MAX_TEXT_NUMBER)) return null
   return negative ? -n : n
 }
 
@@ -357,5 +361,8 @@ export const decimalFirst =
   (read: (text: string) => number | null) =>
   (text: string): number | null => {
     const t = text.trim()
-    return NUMBER_TEXT.test(t) ? readNumber(t) : read(text)
+    if (!NUMBER_TEXT.test(t)) return read(text)
+    // text of 1E+308 or more is no number (`"1e308"+0` is #VALUE!), as `bodyNumber` has it
+    const n = readNumber(t)
+    return Math.abs(n) < MAX_TEXT_NUMBER ? n : null
   }

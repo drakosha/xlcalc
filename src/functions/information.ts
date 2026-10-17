@@ -5,10 +5,7 @@
 import { lifts } from '../arrays/lift.js'
 import { Areas, E, isErr, Rng, whole, type V } from '../values.js'
 import type { Arg, Cx, FnDef } from '../args.js'
-import type { ErrorCode } from '../contract.js'
-
-/** ERROR.TYPE numbers; #ERROR!, a formula that does not compute, is 1 as #NULL! is. #CYCLE! never reaches a formula. */
-const ERROR_TYPE: Partial<Record<ErrorCode, number>> = { NULL: 1, ERROR: 1, DIV0: 2, VALUE: 3, REF: 4, NAME: 5, NUM: 6, NA: 7, SPILL: 9, CALC: 14 }
+import { ERROR_TYPE } from '../error-type.js'
 
 const typeOf = (v: V) => (typeof v === 'number' || v === null ? 1 : typeof v === 'string' ? 2 : typeof v === 'boolean' ? 4 : 16)
 

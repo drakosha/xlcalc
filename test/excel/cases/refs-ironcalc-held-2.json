@@ -1,0 +1,112 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.854,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "VALUE#1",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "\"9.99999999999999E+307\"+0"
+  },
+  {
+   "id": "VALUE#2",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "\"9.999999999999999E+307\"+0"
+  },
+  {
+   "id": "VALUE#3",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "\"1E+308\"+0"
+  },
+  {
+   "id": "VALUE#4",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "\"-1E+308\"+0"
+  },
+  {
+   "id": "VALUE#5",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "\"1.7976931348623157E+308\"+0"
+  },
+  {
+   "id": "VALUE#6",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1E+308\")"
+  },
+  {
+   "id": "VALUE#7",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"-9.99999999999999E+307\")"
+  },
+  {
+   "id": "VALUE#8",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"$1E+308\")"
+  },
+  {
+   "id": "ABS#1",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"1E+308\")"
+  },
+  {
+   "id": "VALUE#9",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1E+307\")*10"
+  }
+ ],
+ "values": {
+  "VALUE#1": {
+   "t": "n",
+   "v": 9.99999999999999e+307
+  },
+  "VALUE#2": {
+   "t": "n",
+   "v": 9.99999999999999e+307
+  },
+  "VALUE#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#7": {
+   "t": "n",
+   "v": -9.99999999999999e+307
+  },
+  "VALUE#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#9": {
+   "t": "n",
+   "v": 1e+308
+  }
+ }
+}
