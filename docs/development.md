@@ -216,6 +216,8 @@ The set `countif-ironcalc-held` (23 cases, predicted) takes 7 `COUNTIF` and `COU
 
 The set `xlookup-ironcalc-held` (39 cases, predicted) takes 15 of the 40 `XLOOKUP` cells (binary search over runs of equal values and over another type than the key's, the next value across types in a linear search, wildcards with binary search) and 24 cases around them in `XLOOKUP` and `XMATCH`. Both Excels gave the same answers and 35 came out as predicted; the 4 misses showed how the binary search runs: at the middle of the positions left, both ends included, so it finds 5 among 1, 9, 5, 2, 3 at once, with a blank taken for greater than the key, over every position of a whole column. The set `xlookup-ironcalc-held-2` (30 cases, predicted by that rule) measures it on unsorted data, a blank and an error at the middle, runs of equal values both ways, a reference longer than its values and whole columns both ways: both Excels gave the same answers, all 30 as predicted, and the 40 cells match.
 
+The set `database-ironcalc-held` (15 cases, predicted) takes the database of IronCalc's file, whose headers are TRUE, 1 and the text `true`, with its criteria headed TRUE, `true` and 1, and adds a field named `TRUE`, a criteria header `TRUE` in capitals and the text `1`, a database that starts at the text header, and each function of the group. Both Excels gave the same answers, all 15 as predicted: a header names the first column that reads as it in any case, a boolean too; the 21 cells of the database functions match.
+
 ### Links to other workbooks
 
 From [Links to other workbooks](links.md).
