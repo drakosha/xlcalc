@@ -1,8 +1,9 @@
-// node --expose-gc xlsx-child.mjs <rows> <xlcalc|exceljs|sheetjs>: the synthetic book of `rows` rows written by xlcalc's
+// node --expose-gc xlsx-child.mjs <rows> <xlcalc|exceljs|sheetjs|sheetjs-deflate>: the synthetic book of `rows` rows written by xlcalc's
 // writeXlsx, read from its bytes by one library and written back from what it read, in a fresh process. The first read
 // is a cold one whose retained heap is measured; one more warms up, five are timed, then the same for writing. The values
 // read are checked against xlcalc's readXlsx outside the timer: dates as 1900 serials, a formula's cached result, rich
-// text joined, a missing cell and an empty text alike, numbers within 1e-9 relative.
+// text joined, a missing cell and an empty text alike, numbers within 1e-9 relative; so are the values of the file
+// written, read back by xlcalc.
 import { createRequire } from 'node:module'
 import { pathToFileURL } from 'node:url'
 import { resolve } from 'node:path'
@@ -67,7 +68,22 @@ const LIBS = {
     },
   },
 }
+// SheetJS writing compressed, as xlcalc and ExcelJS write by default
+LIBS['sheetjs-deflate'] = { ...LIBS.sheetjs, write: (wb) => XLSX.write(wb, { type: 'buffer', bookType: 'xlsx', compression: true }) }
 const it = LIBS[lib]
+
+/** The cells whose values differ between two reads by `sheet!address`, and up to five of them. */
+function differing(expected, got) {
+  const mismatches = []
+  let differences = 0
+  for (const k of new Set([...expected.keys(), ...got.keys()])) {
+    const a = expected.get(k) ?? null, b = got.get(k) ?? null
+    if (equal(a, b)) continue
+    differences++
+    if (mismatches.length < 5) mismatches.push({ cell: k, expected: a, actual: b })
+  }
+  return { differences, mismatches }
+}
 
 /** The values xlcalc reads, by `sheet!address`: in a frame of their own, so that nothing of the read outlives it. */
 async function valuesOf(data) {
@@ -98,14 +114,7 @@ try {
   phase('verify')
   const got = new Map()
   for (const [sheet, addr, v] of it.cells(read)) got.set(`${sheet}!${formatAddress(parseAddress(addr).row, parseAddress(addr).col)}`, plain(v))
-  const mismatches = []
-  let differences = 0
-  for (const k of new Set([...expected.keys(), ...got.keys()])) {
-    const a = expected.get(k) ?? null, b = got.get(k) ?? null
-    if (equal(a, b)) continue
-    differences++
-    if (mismatches.length < 5) mismatches.push({ cell: k, expected: a, actual: b })
-  }
+  const { differences, mismatches } = differing(expected, got)
   const reads = [], writes = []
   for (let i = 0; i < 6; i++) {
     phase('read')
@@ -114,14 +123,17 @@ try {
     read = t.value
     if (i) reads.push(t.wallMs)
   }
-  let bytes = 0
+  let written
   for (let i = 0; i < 6; i++) {
     phase('write')
     const t = await timed(() => it.write(read))
-    bytes = (t.value.data ?? t.value).byteLength
+    written = t.value.data ?? t.value
     if (i) writes.push(t.wallMs)
   }
-  send({ type: 'result', result: { status: differences ? 'mismatch' : 'ok', file: data.byteLength, cells: expected.size, readMs: median(reads), writeMs: median(writes), written: bytes, retainedHeapMb, reads, writes, differences, mismatches } })
+  // the file written, read back by xlcalc outside the timer: its values against the first file's
+  phase('verify-written')
+  const back = differing(expected, await valuesOf(new Uint8Array(written.buffer, written.byteOffset, written.byteLength)))
+  send({ type: 'result', result: { status: differences || back.differences ? 'mismatch' : 'ok', file: data.byteLength, cells: expected.size, readMs: median(reads), writeMs: median(writes), written: written.byteLength, retainedHeapMb, reads, writes, differences, mismatches, writtenDifferences: back.differences, writtenMismatches: back.mismatches } })
 } catch (error) {
   send({ type: 'result', result: { status: 'error', message: error.message } })
 } finally {

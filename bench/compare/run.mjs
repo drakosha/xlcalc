@@ -26,7 +26,7 @@ const jobs = [
         ...['xl-closures', 'xl-eval'].map((e) => ({ part: 'structure', file: 'structure-child.mjs', args: ['business-34000', e] })),
       ]
     : []),
-  ...(parts.includes('xlsx') ? ['3400', '34000'].flatMap((rows) => ['xlcalc', 'exceljs', 'sheetjs'].map((lib) => ({ part: 'xlsx', file: 'xlsx-child.mjs', args: [rows, lib] }))) : []),
+  ...(parts.includes('xlsx') ? ['3400', '34000'].flatMap((rows) => ['xlcalc', 'exceljs', 'sheetjs', 'sheetjs-deflate'].map((lib) => ({ part: 'xlsx', file: 'xlsx-child.mjs', args: [rows, lib] }))) : []),
   ...(parts.includes('memory') ? WORKLOADS.map((w) => ({ part: 'memory', file: 'iron-memory.mjs', args: [w.id] })) : []),
 ]
 
