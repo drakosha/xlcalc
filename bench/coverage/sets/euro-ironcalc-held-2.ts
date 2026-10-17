@@ -35,3 +35,10 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): a fraction is read after `$` and inside
+ * parentheses too, and a number criterion's equality takes a cell's `€100` for 100, though the criterion's own text
+ * `€100` is text. The set `euro-ironcalc-held-3` measures the rule they led to.
+ */
+export const MISSED: readonly string[] = ['VALUE#5', 'VALUE#6', 'COUNTIF#1', 'SUMIF#1']
