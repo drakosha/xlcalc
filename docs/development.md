@@ -340,6 +340,8 @@ The set `rounding-ironcalc-held` (32 cases, predicted) takes 12 of IronCalc's ce
 
 The set `euro-ironcalc-held` (29 cases, predicted) takes 6 of IronCalc's cells, `EXP`, `SIGN` and `VALUE` of `€100`, `100€` and ` €100 `, and 23 around them: a space, a sign and parentheses with the euro sign, groups, an exponent, a percent, the sign twice or with `$`, other currencies, arithmetic, a range of `SUM`, criteria. Both Excels gave the same answers and 26 came out as predicted; the misses showed a fraction after the euro sign and criteria that read no euro sign in their own text. The set `euro-ironcalc-held-2` (13 cases, predicted by that rule) missed 4: a fraction is read after `$` and inside parentheses too, which the engine had refused unmeasured, and a number criterion's equality takes a cell's `€100` for 100. The set `euro-ironcalc-held-3` (16 cases) measured that rule, all as predicted; the 8 cells match.
 
+The set `textafter-ironcalc-held` (23 cases, predicted) takes 9 of IronCalc's `TEXTAFTER`, `TEXTBEFORE` and `TEXTSPLIT` cells (a fractional instance from the end, a delimiter longer than the text with if_not_found, `TEXTSPLIT` with neither delimiter) and 14 around them; both Excels gave the same answers, all 23 as predicted, but the rule for long delimiters broke a recorded case (`TEXTBEFORE("A","aBc")` is `#N/A`). The set `textafter-ironcalc-held-2` (10 cases, predicted) measured long delimiters with and without an instance, all as predicted; the 11 cells match.
+
 ### Legacy array formulas and implicit intersection
 
 From [Legacy array formulas and implicit intersection](legacy.md).
