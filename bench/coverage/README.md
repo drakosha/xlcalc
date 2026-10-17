@@ -10,6 +10,7 @@ Excel's answers are stored, so the tests run without Excel. Everything the tests
 - `cases/<set>.json`: the case set `sets/<set>.ts` computed in Excel en-US; `cases/ru-RU/<set>.json` the same set in Excel ru-RU. Tests: `test/excel-sets.test.ts`, `test/excel-locales-sets.test.ts`.
 - `probes.json`: the probes of `probes.ts`. Test: `test/excel-probes.test.ts`.
 - `struct/<set>.json`: the structure operations of `struct/<set>.ts`. Test: `test/structure-excel.test.ts`.
+- `sort/<set>.json`: the Sort command over the columns of `sort/<set>.ts`, each column's formulas after the sort. Test: `test/sort-command-excel.test.ts`.
 - `spill/<set>.json`: the spill cases of `spill/<set>.ts`; `order-runs.json` keeps every answer seen for the pairs of arrays whose order Excel varies. Test: `test/spill-excel.test.ts`.
 - `tables/<set>.json`, `tables/ru-RU/<set>.json`: the books with tables of `tables/<set>.ts`, the steps Excel took on them and what it showed after: values, formulas (in Russian too for a ru-RU set) and tables. Test: `test/tables-excel.test.ts`.
 - `workbook/<set>.json`: the books of `workbook/<set>.ts`, whose files hold what the cells alone do not (hidden rows and columns, filters, the 1904 date system, iterative calculation, stored values), and what Excel showed at each step. Test: `test/workbook-excel.test.ts`.

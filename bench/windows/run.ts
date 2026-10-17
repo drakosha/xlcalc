@@ -8,7 +8,7 @@
  *   npx tsx bench/windows/run.ts legacy <name>         a legacy set (en-US) into legacy/<name>.json
  *   npx tsx bench/windows/run.ts display <name> [L]    what cells show into display/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts tables <name> [L]     tables and their references into tables/[<tag>/]<name>.json
- *   npx tsx bench/windows/run.ts spill|workbook|struct <name>   a book set (en-US) into <kind>/<name>.json
+ *   npx tsx bench/windows/run.ts spill|workbook|struct|sort <name>   a book set (en-US) into <kind>/<name>.json
  *   npx tsx bench/windows/run.ts parts <name>          notes, hyperlinks and frozen panes (en-US) into parts/<name>.json and parts/<name>/
  *   npx tsx bench/windows/run.ts hidden <name>         hidden sheets (en-US) into hidden/<name>.json and hidden/<name>/
  *   npx tsx bench/windows/run.ts links <name>          links to other workbooks, opened without updating them (en-US), into links/<name>.json and links/<name>/
@@ -60,13 +60,14 @@ import { stepReplace } from './replace.js'
 import { stepOutline } from './outline.js'
 import { stepEnd } from './end.js'
 import { stepIronCalc } from './ironcalc.js'
+import { stepSort } from './sort.js'
 import { env, withWindowsExcel, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 /** The sets with Mac answers, by their files in `test/excel/<dir>`; none where the directory is not there. */
 const macSets = (dir: string) => (existsSync(join(ROOT, 'test/excel', dir)) ? readdirSync(join(ROOT, 'test/excel', dir)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [])
 
-const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts, hidden: stepHidden, lines: stepLines, links: stepLinks } as const
+const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts, hidden: stepHidden, lines: stepLines, links: stepLinks, sort: stepSort } as const
 /** The parts sets: every set of `bench/coverage/parts/`, `threads` among them, which Windows alone runs. */
 const PARTS_SETS = readdirSync(join(ROOT, 'bench/coverage/parts')).filter((f) => f.endsWith('.ts') && f !== 'cases.ts' && f !== 'predict.ts').map((f) => f.slice(0, -3))
 
@@ -77,7 +78,7 @@ async function functions(tag: Tag, e: WinEnv) {
   await stepFunctions(['measurement', ...(en ? ['probes', ...legacy] : []), ...macSets(`cases/${localeDir(tag)}`)], tag, e)
 }
 
-/** The books with Mac answers in a locale: what cells show, tables, data validation, and in en-US the spill, workbook, struct, parts, hidden and lines sets and the xlsx filters. */
+/** The books with Mac answers in a locale: what cells show, tables, data validation, and in en-US the spill, workbook, struct, parts, hidden, lines and sort sets and the xlsx filters. */
 async function books(tag: Tag, e: WinEnv) {
   const en = tag === 'en-US'
   for (const s of macSets(`display/${localeDir(tag)}`)) await stepDisplay(s, tag, e)
@@ -91,6 +92,7 @@ async function books(tag: Tag, e: WinEnv) {
   for (const s of PARTS_SETS) await stepParts(s, tag, e)
   for (const s of macSets('hidden')) await stepHidden(s, tag, e)
   for (const s of macSets('lines')) await stepLines(s, tag, e)
+  for (const s of macSets('sort')) await stepSort(s, tag, e)
   await stepXlsxFilters(tag, e)
 }
 
@@ -126,7 +128,7 @@ else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functi
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | rows <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | find <name> [locale] | replace <name> [locale] | outline <name> [locale] | end <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts|hidden|lines|links|sort <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | rows <name> [locale] | cond <name> | valid <name> [locale] | ui <name> [locale] | ribbon <name> [locale] | find <name> [locale] | replace <name> [locale] | outline <name> [locale] | end <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

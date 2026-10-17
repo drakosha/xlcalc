@@ -20,7 +20,7 @@ function sortLines(a: Arr, byCol: boolean, key: (line: number, k: number) => V, 
   const n = lineCount(a, byCol)
   const lines = Array.from({ length: n }, (_, i) => i).sort((x, y) => {
     for (let k = 0; k < desc.length; k++) {
-      const c = sortOrder(key(x, k), key(y, k), desc[k], rules.compare)
+      const c = sortOrder(key(x, k), key(y, k), desc[k], rules.compare, true)
       if (c) return c
     }
     return x - y

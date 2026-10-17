@@ -120,9 +120,10 @@ A stored xlsx width in the library's Mac point model; null or undefined is the d
 function compareValues(a: CellValue, b: CellValue, opts?: CompareValuesOptions): number
 ```
 
-Excel's sort order of two cells' values, for a host's display filter: numbers, text in any case (in the order of
-`locale`'s text, en-US's without it), FALSE then TRUE, errors by ERROR.TYPE's number (#DIV/0! before #N/A), and
-blanks (null) last, also with `descending`; negative when `a` comes first.
+Excel's sort order of two cells' values, as the Sort command of a host's display filter sorts: numbers, text in any
+case (in the order of `locale`'s text, en-US's without it), FALSE then TRUE, errors, all equal, and blanks (null)
+last, also with `descending`; negative when `a` comes first, 0 for equal values, which a stable sort keeps in their
+order as Excel does. The function SORT orders errors by ERROR.TYPE's number instead.
 
 ### <a id="xlcalc-compute"></a>`compute`
 

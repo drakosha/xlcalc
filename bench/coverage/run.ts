@@ -29,6 +29,7 @@
  *   npx tsx bench/coverage/run.ts links X   links to other workbooks of links/X.ts, opened without updating them, into test/excel/links/X.json and X/
  *   npx tsx bench/coverage/run.ts lines X   formats of rows and columns and the cells under them, lines/X.ts, into test/excel/lines/X.json and X/ (test: test/lines-excel.test.ts)
  *   npx tsx bench/coverage/run.ts rows X [ru|T]   row heights fitted and texts typed into rows, rows/X.ts, into test/excel/rows/[ru-RU/ or T/]X.json (test: test/rows-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts sort X     the Sort command over the columns of sort/X.ts into test/excel/sort/X.json (test: test/sort-command-excel.test.ts)
  *   npx tsx bench/coverage/run.ts ui X [ru|T]    the formula bar, a paste and Control+Return in Excel's window (Excel in front), ui/X.ts, into test/excel/ui/[ru-RU/ or T/]X.json (test: test/ui-excel.test.ts)
  *
  * A locale is `en`, `ru` or a tag (`locales.ts`); en-US's answers are at the top of their directory, another locale's
@@ -50,6 +51,7 @@ import { localeDir, localeMeta, measurementFile, parseTag } from './locales.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { writeReport } from './report.js'
 import { stepStruct } from './struct.js'
+import { stepSort } from './sort.js'
 import { stepSpill } from './spill.js'
 import { stepDisplay } from './display.js'
 import { stepXlsx } from './xlsx.js'
@@ -296,6 +298,7 @@ else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3]
 else if (step === 'legacy') await withExcelLock(() => stepProbes(process.argv[3], 'en-US', true))
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'ironcalc') await withExcelLock(() => stepIronCalc())
+else if (step === 'sort') await withExcelLock(() => stepSort(process.argv[3]))
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
 else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], locale))
 else if (step === 'xlsx') await withExcelLock(() => stepXlsx(process.argv[3]))
