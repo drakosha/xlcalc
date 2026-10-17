@@ -28,7 +28,8 @@ export const functions: Record<string, FnDef> = {
   COT: trig((x) => 1 / Math.tan(x), E.DIV0),
   COTH: { args: 'n', fn: (x: number) => (x === 0 ? E.DIV0 : 1 / Math.tanh(x)) },
   CSC: trig((x) => 1 / Math.sin(x), E.DIV0),
-  CSCH: { args: 'n', fn: (x: number) => (x === 0 ? E.DIV0 : 2 / (Math.exp(x) - Math.exp(-x))) },
+  // 1/sinh keeps the digits of a small x that the difference of exponentials loses (CSCH(1E-12) is 1E12)
+  CSCH: { args: 'n', fn: (x: number) => (x === 0 ? E.DIV0 : 1 / Math.sinh(x)) },
   DEGREES: { args: 'n', fn: (x: number) => (x * 180) / Math.PI },
   PI: { args: '', fn: () => Math.PI },
   RADIANS: { args: 'n', fn: (x: number) => (x * Math.PI) / 180 },

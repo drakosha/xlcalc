@@ -57,3 +57,10 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * All 30 as predicted within the comparison's tolerance, the Mac and Windows alike. To the last digit NORM.S.DIST of
+ * 1E-13 is not what the prediction said (erf's series) but what erfc gives (3.9968028886505635E-14 above 0.5), while
+ * LOGNORM.DIST next to 0.5 is the series' value: the engine takes the series in LOGNORM.DIST alone.
+ */
+export const MISSED: readonly string[] = []

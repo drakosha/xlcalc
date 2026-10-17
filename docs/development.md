@@ -350,6 +350,8 @@ The set `date-ironcalc-held` (33 cases, predicted) takes IronCalc's 11 date cell
 
 The set `finance-ironcalc-held` (32 cases, predicted) takes 10 of IronCalc's `FV`, `IRR`, `MIRR` and `XNPV` cells (a rate of -1 over a negative number of periods, a guess of -1 or less, outflows alone, a blank among the values) and 22 around them. Both Excels gave the same answers and 28 came out as predicted; the misses showed (1 + rate)^nper taken as Excel's power takes 0^0 (`FV(-1,0,1)` is `#NUM!`, and `PV` alike) and `XNPV`'s first value or date deciding between `#VALUE!` and `#NUM!`, and the rule for `MIRR` broke a recorded case of one value (`#DIV/0!`). The set `finance-ironcalc-held-2` (17 cases, predicted) measured those, all as predicted; the 13 cells match.
 
+The set `math-ironcalc-held` (30 cases, predicted) takes 9 of IronCalc's cells (`GCD` and `LCM` of blanks alone, `CSCH` and `IMCSCH` of a tiny argument, `LOGNORM.INV` of `LOGNORM.DIST` with σ = 1E12, `POISSON.DIST` a hair below 0, `PROB` over text) and 21 around them. Both Excels gave the same answers, all 30 as predicted within the comparison's tolerance; to the last digit `NORM.S.DIST(1E-13,TRUE)` is what erfc gives while `LOGNORM.DIST` next to its median is exact, so erf's series serves `LOGNORM.DIST` alone. The `LOGNORM.INV` cell is ill-conditioned (with σ = 1E12 one unit in the last place of the probability moves the answer by 1E-4): it matches because both the probability and AS 241's quantile are now Excel's to the last digit. The 17 cells match.
+
 ### Legacy array formulas and implicit intersection
 
 From [Legacy array formulas and implicit intersection](legacy.md).

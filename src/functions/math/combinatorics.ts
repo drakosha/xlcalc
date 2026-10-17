@@ -84,6 +84,8 @@ export const functions: Record<string, FnDef> = {
     fn: (cx: Cx, args: Arg[]) => {
       const xs = wholes(cx, args)
       if (isErr(xs)) return xs
+      // nothing but blank cells is #VALUE!, as in LCM
+      if (!xs.length) return E.VALUE
       return xs.some((x) => x > MAX_INT) ? E.NUM : xs.reduce(gcd2, 0)
     },
   },
@@ -94,6 +96,7 @@ export const functions: Record<string, FnDef> = {
     fn: (cx: Cx, args: Arg[]) => {
       const xs = wholes(cx, args)
       if (isErr(xs)) return xs
+      if (!xs.length) return E.VALUE
       let l = 1
       for (const x of xs) {
         if (x > MAX_INT) return E.NUM
