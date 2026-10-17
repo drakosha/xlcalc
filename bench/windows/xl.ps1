@@ -304,6 +304,14 @@ function Step($xl, $wb, $s) {
     'values' { Grid (Rg $wb $s.sheet $s.range).Value2 }
     'formulas' { Grid (Rg $wb $s.sheet $s.range).Formula }
     'formulas2' { Grid (Rg $wb $s.sheet $s.range).Formula2 }
+    # the Sort command over a range by its first column, without a header (Range.Sort: Key1, Order1 1 ascending or 2
+    # descending, Header 2 xlNo)
+    'sort' {
+      $rg = Rg $wb $s.sheet $s.range
+      $order = if ($s.descending) { 2 } else { 1 }
+      [void]$rg.Sort($rg.Cells.Item(1, 1), $order, [Type]::Missing, [Type]::Missing, 1, [Type]::Missing, 1, 2)
+      'null'
+    }
     # every cell of the range holds a formula: a book Excel repaired on opening lost its formulas
     'hasFormula' { Cell (Rg $wb $s.sheet $s.range).HasFormula }
     'shown' {
