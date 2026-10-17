@@ -45,5 +45,20 @@ describe.each(['closures', 'eval'] as Execution[])('readCells by rows, execution
       expect(all).toEqual(['A1', 'B1', 'D1', 'A3', 'C3', 'B4', 'A5', 'B5', 'C5'])
       await s.close()
     })
+
+    it("the cells of a large spill's unstored rest with their text, as Find finds them; getCell lists none of them", async () => {
+      const s = await (await opener(kind))({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, B1: { formula: 'A:A*2' } } }] }, { clock, execution })
+      expect((await s.readCells([{ sheet: 'S', range: 'B2:B4' }], { fields: ['value', 'text'] })).cells).toEqual([
+        { sheet: 'S', cell: 'B2', value: 4, text: '4' },
+        { sheet: 'S', cell: 'B3', value: 0, text: '0' },
+        { sheet: 'S', cell: 'B4', value: 0, text: '0' },
+      ])
+      expect((await s.findCells([{ sheet: 'S', range: 'B2:B4' }], '0', { in: 'text', wholeCell: true, fields: ['text'] })).cells).toEqual([
+        { sheet: 'S', cell: 'B3', text: '0' },
+        { sheet: 'S', cell: 'B4', text: '0' },
+      ])
+      expect(await s.getCell('S', 'B3')).toBeUndefined()
+      await s.close()
+    })
   })
 })

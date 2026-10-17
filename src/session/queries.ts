@@ -133,7 +133,7 @@ export function* readQuery(s: EngineState, revision: number, clock: Clock, given
       continue
     }
     const [i, r, c, n, addr] = cell
-    if (page.wanted([n, r * MAX_COLS + c])) page.items.push(projected(s, i, r, c, addr, fields, edit, shown ? yield* cellAt(s, i, r, c, true) : null))
+    if (page.wanted([n, r * MAX_COLS + c])) page.items.push(projected(s, i, r, c, addr, fields, edit, shown ? yield* cellAt(s, i, r, c, true, true) : null))
     if (page.done) break
   }
   return { ...page.result(), cells: page.items }
@@ -161,7 +161,7 @@ export function* findQuery(s: EngineState, revision: number, clock: Clock, given
       continue
     }
     const [i, r, c, position] = cell
-    if (page.wanted(position)) page.items.push(projected(s, i, r, c, formatAddress(r, c), fields, edit, fields.includes('text') ? yield* cellAt(s, i, r, c, true) : null))
+    if (page.wanted(position)) page.items.push(projected(s, i, r, c, formatAddress(r, c), fields, edit, fields.includes('text') ? yield* cellAt(s, i, r, c, true, true) : null))
     if (page.done) break
   }
   return { ...page.result(), cells: page.items }
