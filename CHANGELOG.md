@@ -16,6 +16,15 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.50.2 (2026-10-18)
+
+Internal release; not published to npm. Structure operations and their undo with less work. The synthetic book's values and hashes are as in 0.50.1.
+
+Changed:
+
+- A structure operation and its undo with `display` make a moved cell's shown text only where its format or room differ on its new place, and no longer read the sheet's new cells again for their looks: on the synthetic book of 34,000 rows, inserting a row 985 to 697 ms and its undo 936 to 669 ms; without `display` 6 to 9 % faster. The answers are as they were, checked against ones recorded on 0.50.0 for eight operations with a spill, an old-kind array formula, held values of a cycle, a merged area, a table, conditional formats, data validation and a hidden row, with every undo and redo, in each kind of session.
+- A test that a pool's closed session leaves no record on the calling side and none in its thread.
+
 ## 0.50.1 (2026-10-18)
 
 Internal release; not published to npm. A closed session's memory. The synthetic book's values and hashes are as in 0.50.0.
