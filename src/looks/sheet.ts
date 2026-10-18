@@ -21,6 +21,8 @@ const WRITTEN = new WeakSet<readonly LookRange[]>()
  * (`putInput`) keep them so, and an operation that gives a book again gives new cells, which are taken anew.
  */
 const TAKEN = new WeakSet<object>()
+/** Cells a step made from cells taken (`TAKEN`), by the addresses of their entries of a look alone: `looksTaken` reads no other entry of them. */
+const MADE = new WeakMap<object, string[]>()
 
 /** Looks of a session's cells written and not yet in the sheet's list, by row · MAX_COLS + column (`putInput`). */
 const PENDING = new WeakMap<object, Map<number, Look | undefined>>()
@@ -107,6 +109,14 @@ export const lookIn = (sheet: Pick<SheetInput, 'looks'>, r: number, c: number): 
 export const inputIn = (sheet: Pick<SheetInput, 'cells' | 'looks'>, addr: string, r: number, c: number): CellInput | undefined =>
   sheet.cells[addr] ?? (hasLooks(sheet) ? lookIn(sheet, r, c) : undefined)
 
+/**
+ * Marks `cells` as made of the entries of cells taken (`from`, each moved or its formula rewritten, which makes no entry
+ * a look alone) and the entries `added`: its entries of a look alone are those of `added` (`looksTaken`).
+ */
+export function madeFrom(from: readonly object[], cells: object, added: Record<string, CellInput | null> = {}): void {
+  if (from.every((x) => TAKEN.has(x))) MADE.set(cells, Object.keys(added).filter((a) => added[a] && lookAlone(added[a]!)))
+}
+
 /** Whether an entry holds a look alone: a style or a number format and no other field (a field of undefined is none); an empty entry holds none. */
 export function lookAlone(cell: CellInput): boolean {
   for (const k in cell) if (k !== 'style' && k !== 'numberFormat' && (cell as Record<string, unknown>)[k] !== undefined) return false
@@ -130,6 +140,7 @@ export function looksTaken(sheet: SheetInput, alone?: string[]): SheetInput {
   // looks in the one form: a layer held, or a list written in it
   const formed = CURRENT.has(sheet) || !sheet.looks || WRITTEN.has(sheet.looks)
   if (TAKEN.has(cells) && formed) return sheet
+  alone ??= MADE.get(cells)
   if (!alone) {
     alone = []
     for (const a in cells) if (lookAlone(cells[a])) alone.push(a)
