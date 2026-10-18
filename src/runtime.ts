@@ -10,7 +10,7 @@ import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
 import type { RefOp } from './syntax/ast.js'
-import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
+import { buildIndex, errorCrit, lowerOf, matches, parseCrit, select, type CritColumn, type CritIndex, type Lower } from './criteria.js'
 import { allot, spend } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
@@ -53,6 +53,8 @@ export interface RuntimeContext {
   /** Hidden rows by sheet, which SUBTOTAL and AGGREGATE skip by their code. */
   hidden: Map<number, HiddenRows>
   index: RangeCache<CritIndex>
+  /** The texts of criteria ranges in lower case, from their second read. */
+  lower: RangeCache<Lower>
   lookup?: RangeCache<LookupIndex>
   aggregates: RangeAggregates
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
@@ -230,6 +232,15 @@ export function makeRuntime(ctx: RuntimeContext) {
     return ix
   }
 
+  /** A criteria range's texts in lower case, kept from its second read; undefined before it. */
+  const lowerTexts = (g: Rng, values: readonly V[]): Lower | undefined => {
+    const hit = ctx.lower.get(g.key)
+    if (hit || !ctx.lower.admits(g.key)) return hit
+    const [low, distinct] = lowerOf(values)
+    ctx.lower.set(g.key, low, low.length * VALUE_BYTES + distinct * KEY_BYTES)
+    return low
+  }
+
   /** A range's values laid out row by row in `w` columns (its occupied part can be narrower). */
   const aligned = (g: Rng, w: number): readonly V[] => {
     const b = bounds(g)
@@ -258,7 +269,8 @@ export function makeRuntime(ctx: RuntimeContext) {
       blank &&= matches(null, c, rules)
       h = Math.max(h, bounds(rg).h)
       const f = aligned(rg, w)
-      cols.push({ flat: f, crit: c, index: bounds(rg).w === w ? () => indexOf(rg, f) : () => buildIndex(f, rules) })
+      const own = bounds(rg).w === w
+      cols.push({ flat: f, crit: c, index: own ? () => indexOf(rg, f) : () => buildIndex(f, rules), lower: own ? () => lowerTexts(rg, f) : undefined })
     }
     const n = h * w
     return { sel: select(cols, n, rules), rest: blank ? rows * w - n : 0, read: (g) => aligned(g, w) }

@@ -138,7 +138,14 @@ function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
 
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
 
-export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): boolean {
+/** A text criterion over texts already in lower case: a range's kept ones (`select`). */
+interface Lowered {
+  op: string
+  kind: 'low'
+  s: string
+}
+
+export function matches(v: CritValue, c: Crit | Lowered, rules: CritRules = EN_CRIT): boolean {
   switch (c.kind) {
     case 'num':
       // equality with a number also holds for text that reads as that number (Excel: 2 matches "2"), while `<>` takes all text
@@ -169,10 +176,34 @@ export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): bool
       return r !== undefined && holds(c.op, ord(r, ERROR_RANK[c.code]))
     }
     case 'str':
+    case 'low':
       if (typeof v !== 'string') return c.op === '<>'
-      if (c.op === '=' || c.op === '<>') return (v.toLowerCase() === c.s) === (c.op === '=')
-      return holds(c.op, rules.compareText(v.toLowerCase(), c.s))
+      return textHolds(c, c.kind === 'str' ? v.toLowerCase() : v, rules)
   }
+}
+
+/** Whether a text criterion holds for a text in lower case. */
+function textHolds(c: { op: string; s: string }, low: string, rules: CritRules): boolean {
+  if (c.op === '=' || c.op === '<>') return (low === c.s) === (c.op === '=')
+  return holds(c.op, rules.compareText(low, c.s))
+}
+
+/** A range's texts in lower case by position; undefined where it holds no text. */
+export type Lower = readonly (string | undefined)[]
+
+/** The texts of `flat` in lower case, each distinct text lowered once, and how many distinct texts it holds. */
+export function lowerOf(flat: readonly CritValue[]): [Lower, number] {
+  const out = new Array<string | undefined>(flat.length)
+  const seen = new Map<string, string>()
+  for (let i = 0; i < flat.length; i++) {
+    if ((i & STRIDE) === 0) spend(Math.min(STRIDE + 1, flat.length - i))
+    const v = flat[i]
+    if (typeof v !== 'string') continue
+    let low = seen.get(v)
+    if (low === undefined) seen.set(v, (low = v.toLowerCase()))
+    out[i] = low
+  }
+  return [out, seen.size]
 }
 
 /** The index's key of what equality matches: text in lower case, a number to 15 digits, a boolean. */
@@ -242,6 +273,8 @@ export interface CritColumn {
   crit: Crit
   /** The index of this range (built lazily and cached by the caller). */
   index: () => CritIndex
+  /** Its texts in lower case, where the caller keeps them (from the range's second read on). */
+  lower?: () => Lower | undefined
 }
 
 /**
@@ -258,9 +291,18 @@ export function select(cols: CritColumn[], n: number, rules: CritRules = EN_CRIT
     used = i
     break
   }
+  // a text criterion checks a range's texts kept in lower case, where they are kept
+  const flats: (readonly CritValue[] | Lower)[] = []
+  const crits: (Crit | Lowered)[] = []
+  for (let i = 0; i < cols.length; i++) {
+    const { flat, crit } = cols[i]
+    const low = i !== used && crit.kind === 'str' ? cols[i].lower?.() : undefined
+    flats.push(low ?? flat)
+    crits.push(low ? { op: crit.op, kind: 'low', s: (crit as Extract<Crit, { kind: 'str' }>).s } : crit)
+  }
   const out: number[] = []
   const check = (p: number) => {
-    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p] ?? null, cols[i].crit, rules)) return
+    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(flats[i][p] ?? null, crits[i], rules)) return
     out.push(p)
   }
   if (cand) {
