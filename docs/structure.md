@@ -203,7 +203,7 @@ A sheet is hidden by `hidden: true`, or very hidden by `hidden: 'very'`, as Exce
 
 A book keeps one visible sheet at least, as Excel does: hiding or deleting the last visible sheet is refused with `last_sheet`, and a book whose every sheet is hidden is an `InputError`. A hidden sheet is renamed, deleted and moved as any other and keeps its state; a very hidden one is renamed alone, and deleting or moving it is refused with `very_hidden`, as Excel's object model refuses both.
 
-Excel moves a sheet by the visible sheets. Moved before a hidden sheet, it goes before the next visible sheet; with none after it, and moved to the end past hidden sheets, it goes after the last visible sheet. With Jan, Feb (hidden) and Mar, Mar moved before Feb stays where it is, and with Mar hidden at the end, Jan moved to the end goes between Feb and Mar. An inserted sheet goes where it is asked, before a hidden sheet too.
+Excel moves a sheet by the visible sheets. Moved before a hidden sheet, it goes before the next visible sheet; with none after it, and moved to the end past hidden sheets, it goes after the last visible sheet. With Jan, Feb (hidden), Mar and Sum, Mar moved before Feb stays where it is, and with Jan, Feb and Mar hidden at the end, Jan moved to the end goes between Feb and Mar. An inserted sheet goes where it is asked, before a hidden sheet too.
 
 ```js
 import { editStructure } from 'xlcalc'
@@ -392,7 +392,7 @@ On a filtered sheet Excel acts on the visible rows:
 
 The values a copy pastes come from the computed book. `session.editStructure` takes the session's values. `editStructure` computes the book first, at the current moment, which matters only for volatile formulas.
 
-`copyRange` over a filtered sheet fills its visible rows, as Excel's Fill Down does. `fillRange` fills the hidden rows too, as Excel's fill handle does ([The fill handle](#the-fill-handle)).
+`copyRange` over a filtered sheet fills its visible rows, as Excel's Fill Down does. Excel's fill handle fills the hidden rows too.
 
 ## Sessions
 
