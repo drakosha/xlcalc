@@ -186,6 +186,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (out.length >= BIG_RANGE && ctx.flat.admits(g.key)) {
       shapes.set(out, b)
       ctx.flat.set(g.key, out, out.length * VALUE_BYTES)
+      ctx.flat.carries(g.key, out)
     }
     return out
   }

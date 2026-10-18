@@ -81,6 +81,14 @@ export class CacheBudget {
 /** The budget of the books computed in this heap (this thread): a pool's thread sets its cap by `maxHeapMb`. */
 export const heapCaches = new CacheBudget()
 
+/** How the cache that keeps an array counts what is kept with it (`RangeCache.carries`), by the array, weakly. */
+const carried = new WeakMap<object, (bytes: number) => void>()
+
+/** Bytes kept with an array (a lookup index over it), counted in the budget of the cache that keeps the array, if one does. */
+export function keptWith(value: object, bytes: number): void {
+  carried.get(value)?.(bytes)
+}
+
 export class RangeCache<T> implements Map<string, T> {
   readonly [Symbol.toStringTag] = 'RangeCache'
   private readonly ranges = new Map<string, Entry<T>>()
@@ -156,6 +164,16 @@ export class RangeCache<T> implements Map<string, T> {
     entry.size = ENTRY_BYTES + size
     if (this.budget) entry.used = ++this.budget.reads
     this.count(entry.size)
+  }
+
+  /** Lets `value`, kept under `key`, count what is kept with it (`keptWith`) while it is kept there; it goes with it. */
+  carries(key: string, value: T & object): void {
+    carried.set(value, (bytes) => {
+      const entry = this.ranges.get(key)
+      if (entry?.value !== value) return
+      entry.size += bytes
+      this.count(bytes)
+    })
   }
 
   delete(key: string): boolean {
