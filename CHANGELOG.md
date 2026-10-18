@@ -16,6 +16,22 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.50.0 (2026-10-18)
+
+Internal release; not published to npm. Edits, opening, memory and xlsx writing nearer the fastest of HyperFormula 3.5.0, IronCalc 0.9.0 and SheetJS 0.18.5, and a rectangle's values without an object for each cell ([the comparison](bench/compare/README.md), "Parity on the branch `perf/parity`"). The synthetic book's values and hashes are as in 0.49.1.
+
+Added:
+
+- `Session.getValues(sheet, range, opts?)` and `AsyncSession.getValues`: a rectangle's values as rows, each cell's value as `readCells` gives it, null where a cell holds none; more than `maxCells` cells (1,000,000 by default) is refused (`CalcError` `limit`), never cut ([Live books](docs/live-books.md), "Values of a rectangle"). The synthetic book's data sheet of 506,594 values reads in 10 ms, HyperFormula's arrays of values in 13.
+
+Changed:
+
+- An edit's recalculation keeps a changed cell by a number of its place and orders the formulas to recompute by the book's order: an edit at the root of a chain of 10,000 formulas 4.9 to 2.2 ms, of 50,000 formulas that read one cell 36 to 16 ms (IronCalc 1.9 and 15.4), 2,000 inputs at once 3.5 to 2.6 ms.
+- Opening finds a formula by its cell's number and an open book holds less: references and successors of their own length, a range's cache key made when a cache asks for it. The chain retains 13 to 7.2 MiB, the 50,000 formulas 63 to 37 MiB; the synthetic book of 34,000 rows computes cold 11 to 15 % faster.
+- In closures, an operator over two cells or a cell and a constant is one function, and a call of up to three arguments takes them without an array.
+- Writing a sheet's xlsx keeps its cells' XML by row and column, the bytes the same: 34,000 rows 751 to 680 ms (SheetJS uncompressed 363, compressed 463).
+- `npm test` and `npm run test:dist` run the tests that time themselves after the others, one file at a time.
+
 ## 0.49.1 (2026-10-17)
 
 Internal release; not published to npm. The Sort command's order of errors, measured in Excel. The synthetic book's values and hashes are as in 0.49.0.
