@@ -16,6 +16,16 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.50.3 (2026-10-18)
+
+Internal release; not published to npm. Conditional formats' code within memory, and SUMIFS and its family faster on edits. The synthetic book's values and hashes are as in 0.50.2.
+
+Changed:
+
+- A conditional format's formula whose references move with its cell has one code for every cell, which reads the cell it runs at. A formula with a name, `@`, a table or a moving reference to another sheet keeps a code per cell, within 8 MB a session, the code read least recently going first. One rule over 200,000 cells, scrolled through by windows of 50 rows, held 205 MiB of code and holds 0.4; its first scroll 307 to 107 ms. A pool's thread of 256 MB ran out of memory after 390 such windows and no longer does.
+- SUMIF, SUMIFS, AVERAGEIF, AVERAGEIFS, MAXIFS, MINIFS, COUNTIF and COUNTIFS keep the rows their criteria select while the criteria's ranges hold the same values, keep a criteria range's texts in lower case, and take the index of the criterion that selects fewer rows. On the synthetic book of 34,000 rows, an edit of a summed cell 105 to 9.9 ms, a cell edit at the median 2.65 to 0.48 ms; 1,000 SUMIFS whose first criterion selects half the rows open in 80 ms rather than 790.
+- The indexes of MATCH, XLOOKUP and XMATCH count in the cache budget with the array they index, as VLOOKUP's did.
+
 ## 0.50.2 (2026-10-18)
 
 Internal release; not published to npm. Structure operations and their undo with less work. The synthetic book's values and hashes are as in 0.50.1.

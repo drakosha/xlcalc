@@ -43,7 +43,7 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](docs/locale.md)) |
 | types alone | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified (18.10.2026, 0.50.2), `compute` alone takes 285 KB (108 KB gzip), `createSession` 490 KB (185 KB), the whole root 553 KB (205 KB), `xlcalc/xlsx` 204 KB (76 KB), `xlcalc/worker` 25 KB (9 KB) in the page and the thread it starts 601 KB (206 KB), `xlcalc/a1` 16 KB (6 KB), `xlcalc/text` 50 KB (20 KB), `xlcalc/entry` 96 KB (36 KB), the ru-RU module 99 KB (16 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled by esbuild for the browser and minified (18.10.2026, 0.50.3), `compute` alone takes 288 KB (110 KB gzip), `createSession` 494 KB (186 KB), the whole root 557 KB (206 KB), `xlcalc/xlsx` 204 KB (76 KB), `xlcalc/worker` 25 KB (9 KB) in the page and the thread it starts 605 KB (207 KB), `xlcalc/a1` 16 KB (6 KB), `xlcalc/text` 50 KB (20 KB), `xlcalc/entry` 96 KB (36 KB), the ru-RU module 99 KB (16 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 
