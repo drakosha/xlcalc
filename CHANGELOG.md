@@ -16,6 +16,14 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.50.4 (2026-10-18)
+
+Internal release; not published to npm. A sheet's values in groups of rows. The synthetic book's values and hashes are as in 0.50.3.
+
+Changed:
+
+- A sheet's column of values is kept in groups of 1,024 rows, each made when a cell of it is first written, as IronCalc keeps its rows. A cell far below the others (row 100,000 under 34,000 rows of data) had turned the whole column into a dictionary, read by hashing: an edit of a summed cell on such a book 14.3 ms, now 8.9, as without the far cell. Opening and edits of dense books as before, a chain of formulas 1.15 to 1.22 times faster.
+
 ## 0.50.3 (2026-10-18)
 
 Internal release; not published to npm. Conditional formats' code within memory, and SUMIFS and its family faster on edits. The synthetic book's values and hashes are as in 0.50.2.
