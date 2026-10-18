@@ -250,9 +250,10 @@ export function criterionMatcher(c: Crit, rules: CritRules): (v: CritValue) => b
 
 export type CritIndex = Map<string, number[]>
 
-/** What tests count of selections (`watchSelections`): the selections made. Nothing is counted unless a test asks. */
+/** What tests count of selections (`watchSelections`): the selections made and the candidates they checked. Nothing is counted unless a test asks. */
 export interface SelectWatch {
   selects: number
+  checks: number
 }
 let watch: SelectWatch | undefined
 
@@ -324,6 +325,7 @@ export function select(cols: CritColumn[], n: number, rules: CritRules = EN_CRIT
     for (let i = 0; i < cols.length; i++) if (i !== used && !matches(flats[i][p] ?? null, crits[i], rules)) return
     out.push(p)
   }
+  if (watch) watch.checks += cand ? cand.length : n
   if (cand) {
     spend(cand.length)
     for (const p of cand) check(p)

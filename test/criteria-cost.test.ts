@@ -3,8 +3,9 @@
  * amount, edits of the amount select again in no formula: the criteria and their ranges did not change. A data sheet of
  * 3,000 rows: A one of two directions, B one of 100 items (30 rows each), C amounts; 50 formulas sum an item's income.
  * After the book opened and one edit, an edit of the directions lowers each distinct text of the criteria columns and
- * criteria at most once, not each candidate a criterion checks. A criterion that is a date without a year selects by
- * the clock's year after the clock moves.
+ * criteria at most once, not each candidate a criterion checks. With the direction's criterion first, an edit of an
+ * item makes the 50 formulas check fewer than a quarter of the 1,500 positions of an income each: the item's index gives
+ * 30. A criterion that is a date without a year selects by the clock's year after the clock moves.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, type BookInput, type CellInput } from '../src/index.js'
@@ -62,7 +63,7 @@ describe.each(['closures', 'eval'] as const)('criteria, %s', (execution) => {
     const s = createSession(synthBook({ seed: 1, rows: 3400 }).book, opts)
     const edit = (k: number) => s.setCells([{ sheet: S.data, cell: 'D1702', input: { value: 100 + k } }])
     edit(1)
-    const counted = { selects: 0 }
+    const counted = { selects: 0, checks: 0 }
     watchSelections(counted)
     try {
       edit(2)
@@ -71,6 +72,20 @@ describe.each(['closures', 'eval'] as const)('criteria, %s', (execution) => {
       watchSelections()
     }
     expect(counted.selects).toBe(0)
+    expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
+  })
+
+  it('a broad criterion written first leaves the candidates to the narrower index', () => {
+    const s = createSession(book(false), opts)
+    const counted = { selects: 0, checks: 0 }
+    watchSelections(counted)
+    try {
+      s.setCells([{ sheet: 'S', cell: 'B3', input: { value: ITEMS[7] } }])
+    } finally {
+      watchSelections()
+    }
+    expect(counted.selects).toBe(50)
+    expect(counted.checks).toBeLessThan((50 * 1500) / 4)
     expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
   })
 
