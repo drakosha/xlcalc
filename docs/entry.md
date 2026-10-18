@@ -271,7 +271,7 @@ The locale's words for TRUE and FALSE in any case are booleans: `ИСТИНА`, 
 A format set on the cell before the entry stays, unless what is typed is of another kind than the format shows:
 
 - A cell in General takes the format of the typed form.
-- A built-in date, time, percent, money, scientific or fraction format gives way to a typed date, time, percent, money, scientific number or fraction of another kind: `18:30` typed into a cell of format 14 sets 20, `15.03.2026` typed into `0%` sets 14, `$5` typed into `0%` sets money. A plain or grouped number, a boolean, text and an error keep it. An accounting format (41 to 44) gives way to any of these forms.
+- A built-in date, time, percent, money, scientific or fraction format gives way to a typed date, time, percent, money, scientific number or fraction of another kind: `18:30` typed into a cell of format 14 sets 20, `15.03.2026` typed into `0.00E+00` sets 14 (into `0%` too when the cell is edited in place, where no `%` is added: [A percent cell](#a-percent-cell)), `$5` typed into `0%` sets money. A plain or grouped number, a boolean, text and an error keep it. An accounting format (41 to 44) gives way to any of these forms.
 - The built-in number formats (1 to 4, `0.00`, `#,##0.00`, and 37 to 40) and the book's own formats (`d mmmm yyyy`, `#,##0.00 "₽"`) are kept whatever is typed.
 - A code counts as a built-in format where Excel takes a file's code so: where it is the code of that format in en-US and in the locale alike (`h:mm` is 20, `0%` is 9; `m/d/yyyy` is 14 in en-US and the book's own format in ru-RU). No code counts as a money or accounting format.
 - A formula's format follows the same rules (`=TODAY()` typed into `0%` sets 14).
