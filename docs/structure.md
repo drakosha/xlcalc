@@ -64,6 +64,7 @@ type StructureOp =
   | { op: 'insertColumns' | 'deleteColumns'; sheet: string; column: string; count?: number } // letters
   | { op: 'moveRange'; from: RangeRef; to: CellRef }                       // cut and paste, `to` is the top-left cell
   | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean }  // copy and paste, fill
+  | { op: 'fillRange'; sheet: string; range: string; to: string; type?: FillType } // the fill handle, `to` holds `range`
   | { op: 'renameSheet'; sheet: string; name: string }
   | { op: 'deleteSheet'; sheet: string }
   | { op: 'insertSheet'; name: string; before?: string }  // an empty sheet, at the end without `before`
@@ -72,11 +73,23 @@ type StructureOp =
   | { op: 'unhideSheet'; sheet: string }
   | { op: 'mergeCells'; sheet: string; range: string; across?: boolean; center?: boolean }
   | { op: 'unmergeCells'; sheet: string; range: string }
+  | { op: 'addTable'; sheet: string; table: TableInput }    // Format as Table
+  | { op: 'renameTable'; table: string; name: string }
+  | { op: 'deleteTable' | 'convertTable'; table: string }   // Delete Table, Convert to Range
+  | { op: 'group' | 'ungroup'; sheet: string; rows: string }        // 5:7, or one row 5
+  | { op: 'group' | 'ungroup'; sheet: string; columns: string }     // B:D, or one column C
+  | { op: 'showDetail' | 'hideDetail'; sheet: string; row: number } // a group's + and − buttons
+  | { op: 'showDetail' | 'hideDetail'; sheet: string; column: string }
+  | { op: 'showLevels'; sheet: string; rows?: number; columns?: number } // the level buttons
 
 type RangeRef = { sheet: string; range: string }       // B2, B2:D9, B:D, 2:9
+type FillType = 'default' | 'series' | 'copy'
 type StructureResult =
-  | { ok: true; book: BookInput; mapCell(ref: CellRef): CellRef | null }
-  | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'very_hidden' | 'merged' | 'filtered' | 'array'; message: string }
+  | { ok: true; book: Book; mapCell(ref: CellRef): CellRef | null }
+  | { ok: false; code: StructureRefusal; message: string }
+type StructureRefusal =
+  | 'off_sheet' | 'sheet_name' | 'last_sheet' | 'very_hidden' | 'merged' | 'filtered' | 'array'
+  | 'table' | 'table_name' | 'outline_deep' | 'not_grouped' | 'detail'
 ```
 
 The types are in `xlcalc/contract`.
@@ -98,7 +111,11 @@ Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fi
 | `merged` | a move whose source cuts a merged area, or a copy that lands on part of one |
 | `filtered` | a copy that left out rows a filter hid, pasted over hidden rows of a filtered sheet |
 | `array` | lines inserted inside the area of an array formula of the old kind, part of one deleted or moved, a paste over part of one, a merge over one |
-| `table` | a merge over cells of a table ([Merging cells](#merging-cells)); for the operations on tables see [docs/tables.md](tables.md) |
+| `table` | rows or columns inserted into two tables at once, or deleted from two tables unless both go whole, a table's header row deleted without the rest, a move that cuts a table, a merge over cells of a table ([Merging cells](#merging-cells)); for the operations on tables see [docs/tables.md](tables.md) |
+| `table_name` | `renameTable` to a name Excel would not take, or one a table or a defined name has ([docs/tables.md](tables.md#tables-themselves)) |
+| `outline_deep` | Group of lines all at the deepest outline level, 7 ([docs/outline.md](outline.md)) |
+| `not_grouped` | Ungroup of lines none of which is grouped; Show or Hide Detail at a line in no group, or in a group without a summary line |
+| `detail` | Show Detail of a group shown already, Hide Detail of one hidden already |
 
 Excel refuses an insert only when a non-empty cell would leave the sheet. Here any cell counts, even one with only a format, style or `meta`, so nothing is dropped silently.
 
