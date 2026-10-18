@@ -24,11 +24,12 @@ import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS, MAX_TEXT } from './model.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
 import { Areas, E, fitNumber, fromCellValue, holds, isErr, nearZero, Rng, type CErr, type V } from './values.js'
+import type { Column } from './column.js'
 
 export interface SheetData {
   name: string
-  /** Columns: cols[c][r]. */
-  cols: V[][]
+  /** Columns of values by row (`Column`). */
+  cols: (Column | undefined)[]
   /** Occupied rows (highest index + 1). */
   rows: number
   /** The unstored cells of large spilled arrays (`spill/fill.ts`). */
@@ -167,7 +168,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     return { r1: g.r1, c1: g.c1, r2, c2, h: r2 - g.r1 + 1, w: c2 - g.c1 + 1 }
   }
 
-  const cell = (s: number, r: number, c: number): V => sheets[s].cols[c]?.[r] ?? fillAt(sheets[s].fills, r, c)
+  const cell = (s: number, r: number, c: number): V => sheets[s].cols[c]?.get(r) ?? fillAt(sheets[s].fills, r, c)
 
   /** Range values row by row; large ones read again are cached until an edit touches them or the budget drops them. */
   const flat = (g: Rng): V[] => {
@@ -180,7 +181,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     const sh = sheets[g.s]
     for (let c = 0; c < b.w; c++) {
       const col = sh.cols[b.c1 + c]
-      for (let r = 0; r < b.h; r++) out[r * b.w + c] = col?.[b.r1 + r] ?? null
+      for (let r = 0; r < b.h; r++) out[r * b.w + c] = col?.get(b.r1 + r) ?? null
     }
     if (sh.fills.length) fillFlat(sh.fills, b, out)
     if (out.length >= BIG_RANGE && ctx.flat.admits(g.key)) {

@@ -88,7 +88,7 @@ export function priorOf(old: EngineState, g: Geometry): (f: Formula) => V | unde
     p.c = f.c
     if (!back(p)) return undefined
     const id = old.at.get(placeOf(p.s, p.r, p.c))
-    return id === undefined || stopped(old, id) ? undefined : (old.ctx.sheets[p.s].cols[p.c]?.[p.r] ?? undefined)
+    return id === undefined || stopped(old, id) ? undefined : (old.ctx.sheets[p.s].cols[p.c]?.get(p.r) ?? undefined)
   }
 }
 

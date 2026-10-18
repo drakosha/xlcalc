@@ -23,7 +23,7 @@ export function sheetExtent(state: EngineState, s: number): SheetExtent {
     if (!col) continue
     const floor = columns ? rows : 0
     let r = col.length - 1
-    while (r >= floor && (col[r] === null || col[r] === undefined)) r--
+    while (r >= floor && (col.get(r) ?? null) === null) r--
     if (r >= floor) reach(r, c)
   }
   // the whole range of each spill, its cells past the stored ones (`spillFill`) too

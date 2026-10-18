@@ -40,7 +40,7 @@ export function* valuesIn(state: EngineState, s: number, x: Rect, o: ValuesOptio
     if (paced(width)) yield
     const row: CellValue[] = []
     // the cells a large spill does not store hold its fill
-    for (let c = x.c1; c <= x.c2; c++) row.push(valueOf(cols[c]?.[r] ?? (fills.length ? fillAt(fills, r, c) : null)))
+    for (let c = x.c1; c <= x.c2; c++) row.push(valueOf(cols[c]?.get(r) ?? (fills.length ? fillAt(fills, r, c) : null)))
     out.push(row)
   }
   return out

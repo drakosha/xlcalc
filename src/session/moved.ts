@@ -60,7 +60,7 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
     fields.set(placeOf(j, r, c), f)
     out.push(placeOf(j, r, c))
   }
-  const valueAt = (st: EngineState, s: number, r: number, c: number) => st.ctx.sheets[s].cols[c]?.[r]
+  const valueAt = (st: EngineState, s: number, r: number, c: number) => st.ctx.sheets[s].cols[c]?.get(r)
   /** An input that holds no value (`EngineState.bare`): the diff's. */
   const bare = (st: EngineState, s: number, r: number, c: number) => st.bare.get(s)?.has(r * MAX_COLS + c) === true
   /** A cell of a look alone: an input of one, or a cell of the sheet's looks. */
@@ -168,7 +168,7 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
     for (const addr in cells) {
       if (!hasFields(cells[addr])) continue
       readAddress(addr, p)
-      if ((cols[p.c] !== undefined && p.r in cols[p.c]) || bare(next, s, p.r, p.c)) compare(s, p.r, p.c)
+      if (cols[p.c]?.has(p.r) || bare(next, s, p.r, p.c)) compare(s, p.r, p.c)
     }
   })
   const spills = new Map<number, string>()

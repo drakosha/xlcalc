@@ -140,7 +140,7 @@ function stoppedSource(state: EngineState, f: Formula): (Place & { ref: number }
     const cols = state.ctx.sheets[g.s].cols
     for (let r = b.r1; r <= b.r2; r++)
       for (let c = b.c1; c <= b.c2; c++) {
-        const id = cols[c]?.[r] === undefined ? undefined : state.at.get(placeOf(g.s, r, c))
+        const id = cols[c]?.get(r) === undefined ? undefined : state.at.get(placeOf(g.s, r, c))
         if (id !== undefined && stopped(state, id)) return { s: g.s, r, c, ref: k }
       }
   }

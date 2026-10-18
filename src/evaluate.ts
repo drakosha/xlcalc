@@ -10,6 +10,7 @@ import { due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress, placeOf, placeParts } from './model.js'
 import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
+import { Column } from './column.js'
 import { heldAt, unhold } from './held.js'
 import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
 import type { Area } from './spill/state.js'
@@ -53,13 +54,13 @@ export function track(state: EngineState, t: Tracker | undefined, s: number, r: 
 }
 
 export function put(sh: SheetData, r: number, c: number, v: V) {
-  ;(sh.cols[c] ??= [])[r] = v
+  ;(sh.cols[c] ??= new Column()).set(r, v)
   if (r + 1 > sh.rows) sh.rows = r + 1
 }
 
 export function write(state: EngineState, s: number, r: number, c: number, v: V, t?: Tracker): boolean {
   const sh = state.ctx.sheets[s]
-  if (same(sh.cols[c]?.[r] ?? null, v)) return false
+  if (same(sh.cols[c]?.get(r) ?? null, v)) return false
   track(state, t, s, r, c)
   if (state.capture) track(state, state.capture, s, r, c)
   put(sh, r, c, v)
@@ -94,7 +95,7 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
     spills.done[id] = ++spills.step
     if (clock) clock.read = false
     let v: V, array = false
-    const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
+    const was = state.ctx.sheets[f.s].cols[f.c]?.get(f.r) ?? null
     if (state.topo[id] < 0 && !iterating) {
       endSpill(state, f, t, true)
       v = heldAt(state, f, shown(was))
