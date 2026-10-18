@@ -2,7 +2,7 @@
  * What a session's cells show, compared before and after a change that recomputes nothing (a cell's format, a
  * column's width, a row's or a column's format, merged areas): the cells whose shown text or colour changed.
  */
-import type { CellValue, LayoutEdit } from '../contract.js'
+import type { CellInput, CellValue, LayoutEdit } from '../contract.js'
 import { toCellValue, valueAt, type EngineState } from '../engine.js'
 import { parseMerge } from '../layout/merges.js'
 import { parseSpan } from '../layout/spans.js'
@@ -14,9 +14,9 @@ import { sheetKey } from '../syntax.js'
 /** A cell's value as a result shows it. */
 export const cellValue = (s: EngineState, i: number, r: number, c: number): CellValue => outValue(toCellValue(valueAt(s, i, r, c)))
 
-/** What a cell shows, as one comparable string. */
-export const shownKey = (look: Looks, s: EngineState, i: number, r: number, c: number): string => {
-  const d = look(i, r, c, cellValue(s, i, r, c))
+/** What a cell shows, as one comparable string; `own`, its input when the caller has it. */
+export const shownKey = (look: Looks, s: EngineState, i: number, r: number, c: number, own?: CellInput): string => {
+  const d = look(i, r, c, cellValue(s, i, r, c), own)
   return d.color === undefined ? d.text : `${d.text}\u0000${d.color}`
 }
 
