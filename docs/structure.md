@@ -392,7 +392,7 @@ On a filtered sheet Excel acts on the visible rows:
 
 The values a copy pastes come from the computed book. `session.editStructure` takes the session's values. `editStructure` computes the book first, at the current moment, which matters only for volatile formulas.
 
-`copyRange` over a filtered sheet fills its visible rows, as Excel's Fill Down does. Excel's fill handle fills the hidden rows too.
+`copyRange` over a filtered sheet fills its visible rows, as Excel's Fill Down does. `fillRange` fills the hidden rows too, as Excel's fill handle does ([The fill handle](#the-fill-handle)).
 
 ## Sessions
 
