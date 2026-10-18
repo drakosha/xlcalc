@@ -276,6 +276,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     cache,
     flat: new RangeCache(cache),
     index: new RangeCache(cache),
+    lower: new RangeCache(cache),
+    selections: new RangeCache(cache),
     aggregates: new RangeAggregates(cache),
     nested: new Map(),
     hidden: new Map(),

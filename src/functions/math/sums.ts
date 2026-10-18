@@ -11,7 +11,7 @@ import { aggregateIf, aggregateIfs } from '../criteria.js'
 import { numberPairs } from '../statistical/common.js'
 
 /** The sum of the numbers at the selected positions; an error there is the answer. */
-function sumAt(values: readonly V[], sel: number[]): V {
+function sumAt(values: readonly V[], sel: readonly number[]): V {
   let acc = 0
   for (const p of sel) {
     const v = values[p]

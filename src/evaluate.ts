@@ -31,6 +31,8 @@ export const shown = (v: V): V => (v === null || v === undefined ? 0 : typeof v 
 export function invalidate(ctx: RuntimeContext, x: Area) {
   ctx.flat.invalidate(x)
   ctx.index.invalidate(x)
+  ctx.lower.invalidate(x)
+  ctx.selections.invalidate(x)
   ctx.lookup?.invalidate(x)
   ctx.aggregates.invalidate(x)
 }

@@ -96,8 +96,15 @@ export function wildRe(s: string, tilde = false): RegExp | null {
   return (tilde ? /[*?~]/ : /[*?]/).test(s) ? new RegExp(`^${wildSource(s)}$`, 'iu') : null
 }
 
+/** Criteria of error values by code, one each, so that a criterion is found by itself (kept selections). */
+const errorCrits = new Map<string, Crit>()
+
 /** A criterion that is an error value: it matches the cells holding that error (Excel: COUNTIF(A1:A9,NA())). */
-export const errorCrit = (code: string): Crit => ({ op: '=', kind: 'err', code })
+export function errorCrit(code: string): Crit {
+  let c = errorCrits.get(code)
+  if (!c) errorCrits.set(code, (c = { op: '=', kind: 'err', code }))
+  return c
+}
 
 /** A criterion from a value (the scalar after evaluating the argument). */
 export function parseCrit(v: number | string | boolean | null, rules: CritRules = EN_CRIT): Crit {
@@ -138,7 +145,14 @@ function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
 
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
 
-export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): boolean {
+/** A text criterion over texts already in lower case: a range's kept ones (`select`). */
+interface Lowered {
+  op: string
+  kind: 'low'
+  s: string
+}
+
+export function matches(v: CritValue, c: Crit | Lowered, rules: CritRules = EN_CRIT): boolean {
   switch (c.kind) {
     case 'num':
       // equality with a number also holds for text that reads as that number (Excel: 2 matches "2"), while `<>` takes all text
@@ -169,10 +183,34 @@ export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): bool
       return r !== undefined && holds(c.op, ord(r, ERROR_RANK[c.code]))
     }
     case 'str':
+    case 'low':
       if (typeof v !== 'string') return c.op === '<>'
-      if (c.op === '=' || c.op === '<>') return (v.toLowerCase() === c.s) === (c.op === '=')
-      return holds(c.op, rules.compareText(v.toLowerCase(), c.s))
+      return textHolds(c, c.kind === 'str' ? v.toLowerCase() : v, rules)
   }
+}
+
+/** Whether a text criterion holds for a text in lower case. */
+function textHolds(c: { op: string; s: string }, low: string, rules: CritRules): boolean {
+  if (c.op === '=' || c.op === '<>') return (low === c.s) === (c.op === '=')
+  return holds(c.op, rules.compareText(low, c.s))
+}
+
+/** A range's texts in lower case by position; undefined where it holds no text. */
+export type Lower = readonly (string | undefined)[]
+
+/** The texts of `flat` in lower case, each distinct text lowered once, and how many distinct texts it holds. */
+export function lowerOf(flat: readonly CritValue[]): [Lower, number] {
+  const out = new Array<string | undefined>(flat.length)
+  const seen = new Map<string, string>()
+  for (let i = 0; i < flat.length; i++) {
+    if ((i & STRIDE) === 0) spend(Math.min(STRIDE + 1, flat.length - i))
+    const v = flat[i]
+    if (typeof v !== 'string') continue
+    let low = seen.get(v)
+    if (low === undefined) seen.set(v, (low = v.toLowerCase()))
+    out[i] = low
+  }
+  return [out, seen.size]
 }
 
 /** The index's key of what equality matches: text in lower case, a number to 15 digits, a boolean. */
@@ -212,6 +250,18 @@ export function criterionMatcher(c: Crit, rules: CritRules): (v: CritValue) => b
 
 export type CritIndex = Map<string, number[]>
 
+/** What tests count of selections (`watchSelections`): the selections made and the candidates they checked. Nothing is counted unless a test asks. */
+export interface SelectWatch {
+  selects: number
+  checks: number
+}
+let watch: SelectWatch | undefined
+
+/** Counts the selections made from now on into `w`; undefined stops. For tests. */
+export function watchSelections(w?: SelectWatch): void {
+  watch = w
+}
+
 /** Values between two checks of the computation's budget in long loops (65,536 − 1, a mask). */
 const STRIDE = 0xffff
 
@@ -242,27 +292,51 @@ export interface CritColumn {
   crit: Crit
   /** The index of this range (built lazily and cached by the caller). */
   index: () => CritIndex
+  /** Its texts in lower case, where the caller keeps them (from the range's second read on). */
+  lower?: () => Lower | undefined
+  /** Its index where the caller keeps one, else, with `build`, where it read the range before (then built and kept). */
+  ready?: (build: boolean) => CritIndex | undefined
 }
 
+/** Positions of a criterion past which the indexes of the other equality criteria are worth looking at. */
+const WIDE = 64
+
 /**
- * Positions where all criteria hold. The first equality criterion goes through the index, the rest are
- * checked on its candidates; without an equality criterion it is a full scan.
+ * Positions where all criteria hold. The first equality criterion goes through the index, the rest are checked on its
+ * candidates; where it gives `WIDE` positions or more, another equality criterion's index at hand that gives fewer does,
+ * one built for it where the first gives a sixteenth of the positions or more; without an equality criterion it is a
+ * full scan. The positions come in order either way.
  */
 export function select(cols: CritColumn[], n: number, rules: CritRules = EN_CRIT): number[] {
+  if (watch) watch.selects++
   let cand: number[] | null = null
   let used = -1
   for (let i = 0; i < cols.length; i++) {
     const k = critKey(cols[i].crit)
     if (k === null) continue
-    cand = cols[i].index().get(k) ?? []
-    used = i
-    break
+    if (cand && cand.length < WIDE) break
+    const ix: CritIndex | undefined = cand ? cols[i].ready?.(cand.length * 16 >= n) : cols[i].index()
+    const list: number[] | null = ix ? (ix.get(k) ?? []) : null
+    if (list && (!cand || list.length < cand.length)) {
+      cand = list
+      used = i
+    }
+  }
+  // a text criterion checks a range's texts kept in lower case, where they are kept
+  const flats: (readonly CritValue[] | Lower)[] = []
+  const crits: (Crit | Lowered)[] = []
+  for (let i = 0; i < cols.length; i++) {
+    const { flat, crit } = cols[i]
+    const low = i !== used && crit.kind === 'str' ? cols[i].lower?.() : undefined
+    flats.push(low ?? flat)
+    crits.push(low ? { op: crit.op, kind: 'low', s: (crit as Extract<Crit, { kind: 'str' }>).s } : crit)
   }
   const out: number[] = []
   const check = (p: number) => {
-    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p] ?? null, cols[i].crit, rules)) return
+    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(flats[i][p] ?? null, crits[i], rules)) return
     out.push(p)
   }
+  if (watch) watch.checks += cand ? cand.length : n
   if (cand) {
     spend(cand.length)
     for (const p of cand) check(p)

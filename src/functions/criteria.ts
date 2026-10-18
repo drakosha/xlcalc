@@ -18,7 +18,7 @@ export function criteriaPairs(rest: (V | Rng)[]): [V | Rng, V | Rng][] {
   return out
 }
 
-type Aggregate = (values: readonly V[], selected: number[]) => V
+type Aggregate = (values: readonly V[], selected: readonly number[]) => V
 
 /** SUMIF/AVERAGEIF share reference validation, range resizing and selection; their reductions stay distinct. */
 export const aggregateIf = (reduce: Aggregate) => (cx: Cx, range: V | Rng, crit: V | Rng, values?: V | Rng): V => {

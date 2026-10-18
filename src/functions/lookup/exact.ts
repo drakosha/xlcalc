@@ -2,7 +2,7 @@
 import { spend } from '../../exec/budget.js'
 import type { V } from '../../values.js'
 import type { Compare, Key, Line } from './search.js'
-import { KEY_BYTES, POSITION_BYTES } from '../../range-cache.js'
+import { KEY_BYTES, POSITION_BYTES, keptWith } from '../../range-cache.js'
 
 interface Positions { first: number; last: number }
 interface TextPosition extends Positions { value: string }
@@ -11,6 +11,8 @@ export interface Index {
   text?: TextPosition[]
   scalarWork: number
   textWork: number
+  /** Bytes counted with the values it is over so far (`keptWith`). */
+  counted?: number
 }
 
 export interface ExactStore {
@@ -18,8 +20,16 @@ export interface ExactStore {
   write(index: Index, bytes: number): void
 }
 
-const storedBytes = (index: Index) => 128 + (index.scalar ? index.scalar.size * (KEY_BYTES + POSITION_BYTES) : 0)
+export const storedBytes = (index: Index) => 128 + (index.scalar ? index.scalar.size * (KEY_BYTES + POSITION_BYTES) : 0)
   + (index.text?.reduce((n, x) => n + KEY_BYTES + POSITION_BYTES + x.value.length * 2, 0) ?? 0)
+
+/** A built index counted in the budget: in its range's store, or with the values it is over, which it goes with. */
+function counted(line: Line, index: Index): void {
+  const bytes = storedBytes(index)
+  if (line.store) return line.store.write(index, bytes)
+  keptWith(line.values!, bytes - (index.counted ?? 0))
+  index.counted = bytes
+}
 
 // Range arrays are immutable and replaced on invalidation; their indexes disappear with them.
 const caches = new WeakMap<readonly V[], WeakMap<Compare, Map<string, Index>>>()
@@ -67,7 +77,7 @@ export function indexedExact(line: Line, key: Key, compare: Compare, last: boole
     if (!index.text && index.textWork < length * 4) return undefined
     if (!index.text) {
       index.text = textIndex(line, compare)
-      line.store?.write(index, storedBytes(index))
+      counted(line, index)
     }
     let lo = 0, hi = index.text.length - 1
     while (lo <= hi) {
@@ -92,7 +102,7 @@ export function indexedExact(line: Line, key: Key, compare: Compare, last: boole
         else map.set(value, { first: i, last: i })
       }
       index.scalar ??= map
-      line.store?.write(index, storedBytes(index))
+      counted(line, index)
     }
     if (index.scalar === false) return undefined
     position = index.scalar.get(key)
