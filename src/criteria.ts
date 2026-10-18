@@ -243,6 +243,17 @@ export function criterionMatcher(c: Crit, rules: CritRules): (v: CritValue) => b
 
 export type CritIndex = Map<string, number[]>
 
+/** What tests count of selections (`watchSelections`): the selections made. Nothing is counted unless a test asks. */
+export interface SelectWatch {
+  selects: number
+}
+let watch: SelectWatch | undefined
+
+/** Counts the selections made from now on into `w`; undefined stops. For tests. */
+export function watchSelections(w?: SelectWatch): void {
+  watch = w
+}
+
 /** Values between two checks of the computation's budget in long loops (65,536 − 1, a mask). */
 const STRIDE = 0xffff
 
@@ -282,6 +293,7 @@ export interface CritColumn {
  * checked on its candidates; without an equality criterion it is a full scan.
  */
 export function select(cols: CritColumn[], n: number, rules: CritRules = EN_CRIT): number[] {
+  if (watch) watch.selects++
   let cand: number[] | null = null
   let used = -1
   for (let i = 0; i < cols.length; i++) {

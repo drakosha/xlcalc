@@ -1,10 +1,15 @@
 /**
- * What SUMIFS costs when it selects again. A data sheet of 3,000 rows: A one of two directions, B one of 100 items (30
- * rows each), C amounts; 50 formulas sum an item's income. After the book opened and one edit, an edit of the directions
- * lowers each distinct text of the criteria columns and criteria at most once, not each candidate a criterion checks.
+ * What SUMIFS costs when it selects again. In the synthetic book of 3,400 rows, after the book opened and one edit of an
+ * amount, edits of the amount select again in no formula: the criteria and their ranges did not change. A data sheet of
+ * 3,000 rows: A one of two directions, B one of 100 items (30 rows each), C amounts; 50 formulas sum an item's income.
+ * After the book opened and one edit, an edit of the directions lowers each distinct text of the criteria columns and
+ * criteria at most once, not each candidate a criterion checks. A criterion that is a date without a year selects by
+ * the clock's year after the clock moves.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, type BookInput, type CellInput } from '../src/index.js'
+import { watchSelections } from '../src/criteria.js'
+import { S, synthBook } from '../src/synth.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const DIRS = ['Доход', 'Расход']
@@ -51,5 +56,38 @@ describe.each(['closures', 'eval'] as const)('criteria, %s', (execution) => {
     // the texts of the directions and items, and of the criteria: two directions, 100 items, 51 criteria
     expect(n).toBeLessThanOrEqual(DIRS.length + ITEMS.length + 51)
     expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
+  })
+
+  it('edits of an amount select again in no formula once each selection was made twice', () => {
+    const s = createSession(synthBook({ seed: 1, rows: 3400 }).book, opts)
+    const edit = (k: number) => s.setCells([{ sheet: S.data, cell: 'D1702', input: { value: 100 + k } }])
+    edit(1)
+    const counted = { selects: 0 }
+    watchSelections(counted)
+    try {
+      edit(2)
+      edit(3)
+    } finally {
+      watchSelections()
+    }
+    expect(counted.selects).toBe(0)
+    expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
+  })
+
+  it("a criterion of a date without a year selects by the clock's year after the clock moves", () => {
+    const serial = (y: number) => (Date.UTC(y, 0, 5) - Date.UTC(1899, 11, 30)) / 86400000
+    const cells: Record<string, CellInput> = {}
+    for (let r = 1; r <= 300; r++) {
+      cells[`A${r}`] = { value: serial(2025 + (r % 3)) }
+      cells[`B${r}`] = { value: r }
+    }
+    cells.C1 = cells.C2 = { formula: 'SUMIFS(B1:B300,A1:A300,"1/5")' }
+    const s = createSession({ sheets: [{ name: 'S', cells }] }, opts)
+    for (const y of [2026, 2027, 2025, 2027, 2026]) {
+      s.setClock({ now: `${y}-10-04T12:00:00Z`, seed: 7 })
+      let sum = 0
+      for (let r = 1; r <= 300; r++) if (2025 + (r % 3) === y) sum += r
+      expect([s.getCell('S', 'C1')?.value, s.getCell('S', 'C2')?.value]).toEqual([sum, sum])
+    }
   })
 })
