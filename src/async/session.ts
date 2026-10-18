@@ -21,6 +21,8 @@ export interface InlineDefaults {
   limits?: CalcLimits
   /** The budgets of the calls running now, which closing the calculator stops. */
   running?: Set<Budget>
+  /** The calculator's open sessions, which closing it stops; a session leaves them once it is closed. */
+  sessions?: Set<InlineSession>
 }
 
 export interface InlineSession extends AsyncSession {
@@ -102,7 +104,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     }
   }
   const plain = <T>(f: () => T): Promise<T> => turn(async () => after(f()))
-  return withSubscribe(strictMethods<InlineSession>({
+  const session = withSubscribe(strictMethods<InlineSession>({
     get clock() {
       return { ...clock }
     },
@@ -162,8 +164,12 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     close() {
       subs.clear()
       if (ended) return Promise.resolve()
-      // closing waits for the calls made before it, and closes the session whatever stops them
-      const done = queue.run(async () => core.close())
+      // closing waits for the calls made before it, and closes the session whatever stops them; till then closing the
+      // calculator stops them, after it the calculator lets the session go
+      const done = queue.run(async () => {
+        core.close()
+        d.sessions?.delete(session)
+      })
       ended = new CalcError('closed', 'the session is closed')
       return done
     },
@@ -175,4 +181,5 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       core.close()
     },
   }, true), subs)
+  return session
 }
