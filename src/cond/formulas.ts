@@ -3,7 +3,7 @@
  * cell of the rule's first range and moves from there to each cell as a copied formula does (`origin` of the walk).
  * Where only its references and the functions of their cell move it, one code serves every cell and reads the cell it
  * runs at (`here` of the walk); otherwise its code is made once per cell along the axes it moves and kept with the
- * session's state, the earliest going past `KEEP` bytes.
+ * session's state up to `KEEP` bytes, the code read least recently going first.
  */
 import { codegenContext, type EngineState } from '../engine.js'
 import { closureBackend } from '../exec/closures.js'
@@ -60,19 +60,28 @@ function movesAlong(ast: Ast): { rows: boolean; cols: boolean; shared: boolean; 
   return out
 }
 
-/** Per state: the formulas as functions of the cell (`evaluator`), by sheet, origin and text; the code per cell kept (`keep`). */
+/** A cell's code kept: in its formula's map by its cell, with its bytes, and between the codes read before and after it. */
+interface Code {
+  fn: () => Arg
+  fns: Map<number, Code>
+  i: number
+  bytes: number
+  prev?: Code
+  next?: Code
+}
+
+/** Per state: the formulas as functions of the cell (`evaluator`), by sheet, origin and text; the code per cell kept. */
 interface Kept {
   formulas: Map<string, (r: number, c: number) => V>
-  /** The code per cell in the order made: its formula's map, its cell there and its bytes. */
-  order: { fns: Map<number, () => Arg>; i: number; bytes: number }[]
-  /** The first of `order` still kept. */
-  head: number
-  /** The bytes of the code per cell kept. */
+  /** The ends of the list of the code per cell kept: the code read least recently and the code read last. */
+  oldest?: Code
+  newest?: Code
+  /** Its bytes. */
   held: number
 }
 const kept = new WeakMap<EngineState, Kept>()
 
-/** The code per cell a state keeps, in bytes: past them the earliest made goes. */
+/** The code per cell a state keeps, in bytes: past them the code read least recently goes. */
 const KEEP = 8 * 2 ** 20
 
 /** Bytes of a cell's code besides its nodes', and per node of its formula, as measured on Node (`A1>lim` 1.1 KB, 39 nodes 5.9 KB). */
@@ -82,12 +91,12 @@ const NODE_BYTES = 135
 /**
  * A formula of sheet `s` written for `origin`, as a function of the cell: its value there. Its code is made once for all
  * cells where only its references and the functions of their cell move it, or nothing does; otherwise once per cell
- * along the axes it moves (`movesAlong`), kept with the state up to `KEEP` bytes. Null when the formula does not parse or
- * names what the book lacks.
+ * along the axes it moves (`movesAlong`), kept with the state up to `KEEP` bytes, the code read least recently going
+ * first. Null when the formula does not parse or names what the book lacks.
  */
 export function evaluator(state: EngineState, s: number, ast: Ast, text: string, origin: { r: number; c: number }): (r: number, c: number) => V {
   let m = kept.get(state)
-  if (!m) kept.set(state, (m = { formulas: new Map(), order: [], head: 0, held: 0 }))
+  if (!m) kept.set(state, (m = { formulas: new Map(), held: 0 }))
   const k = `${s}\n${origin.r}:${origin.c}\n${text}`
   let f = m.formulas.get(k)
   if (!f) m.formulas.set(k, (f = made(state, s, ast, origin, m)))
@@ -110,32 +119,41 @@ function made(state: EngineState, s: number, ast: Ast, origin: { r: number; c: n
       return first(state, fn())
     }
   }
-  const fns = new Map<number, () => Arg>()
+  const fns = new Map<number, Code>()
   const bytes = CODE_BYTES + NODE_BYTES * nodes
   return (r, c) => {
     const i = (rows ? r : 0) * MAX_COLS + (cols ? c : 0)
-    let fn = fns.get(i)
-    if (!fn) {
-      fns.set(i, (fn = compileAt(state, s, ast, origin, rows ? r : origin.r, cols ? c : origin.c)))
-      keep(m, fns, i, bytes)
+    let code = fns.get(i)
+    if (!code) {
+      fns.set(i, (code = { fn: compileAt(state, s, ast, origin, rows ? r : origin.r, cols ? c : origin.c), fns, i, bytes }))
+      m.held += bytes
     }
-    return first(state, fn())
+    if (code !== m.newest) read(m, code)
+    if (m.held > KEEP) drop(m)
+    return first(state, code.fn())
   }
 }
 
-/** A cell's code just made, kept in order: the earliest go while the state keeps more than `KEEP` bytes (the last stays). */
-function keep(m: Kept, fns: Map<number, () => Arg>, i: number, bytes: number) {
-  m.order.push({ fns, i, bytes })
-  m.held += bytes
-  while (m.held > KEEP && m.head < m.order.length - 1) {
-    const o = m.order[m.head++]
-    o.fns.delete(o.i)
-    m.held -= o.bytes
-  }
-  // the gone head of the queue is cut off once it is half of it
-  if (m.head > 1024 && m.head * 2 > m.order.length) {
-    m.order = m.order.slice(m.head)
-    m.head = 0
+/** A cell's code just read goes to the end of the state's list, from its place in it or as new. */
+function read(m: Kept, code: Code) {
+  if (code.prev) code.prev.next = code.next
+  else if (m.oldest === code) m.oldest = code.next
+  if (code.next) code.next.prev = code.prev
+  code.prev = m.newest
+  code.next = undefined
+  if (m.newest) m.newest.next = code
+  else m.oldest = code
+  m.newest = code
+}
+
+/** The code read least recently goes until the state keeps `KEEP` bytes; the code read last stays. */
+function drop(m: Kept) {
+  while (m.held > KEEP && m.oldest !== m.newest) {
+    const code = m.oldest!
+    m.oldest = code.next
+    m.oldest!.prev = undefined
+    code.fns.delete(code.i)
+    m.held -= code.bytes
   }
 }
 
