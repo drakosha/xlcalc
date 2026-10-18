@@ -64,7 +64,7 @@ console.log(sheets[0].cells.D2.value) // → 80
 console.log(sheets[0].cells.D3.value, diagnostics[0].reason) // → { error: 'NAME' } unknown function INDIRECT
 ```
 
-A formula is stored without the leading `=` in `formula` (one given is dropped: `{ formula: '=SUM(A1:A2)' }` is `SUM(A1:A2)`, the same input and `inputHash`), separately from `value`, so a string from your data never turns into a formula. So are the formulas of names, tables, conditional formats and data validation. Dates are passed explicitly as `{ date: '2026-01-31' }` and become Excel serial numbers; `numberFormat` and `meta` pass through to the result untouched, and the result's `text` shows the value by its `numberFormat`.
+A formula is stored without the leading `=` in `formula` (one given is dropped: `{ formula: '=SUM(A1:A2)' }` is `SUM(A1:A2)`, the same input and `inputHash`), separately from `value`, so a string from your data never turns into a formula. So are the formulas of names, tables, conditional formats and data validation. Dates are passed explicitly as a value `{ date: '2026-01-31' }` (`{ value: { date: '2026-01-31' } }`) and become Excel serial numbers; `numberFormat` and `meta` pass through to the result untouched, and the result's `text` shows the value by its `numberFormat`.
 
 ## Recipes
 
