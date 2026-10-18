@@ -11,6 +11,7 @@ import { describe, expect, it } from 'vitest'
 import { compute, createSession, type BookInput, type CellInput } from '../src/index.js'
 import { watchSelections } from '../src/criteria.js'
 import { S, synthBook } from '../src/synth.js'
+import { datedRows, followsClockYear } from './clock-years.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const DIRS = ['Доход', 'Расход']
@@ -90,19 +91,8 @@ describe.each(['closures', 'eval'] as const)('criteria, %s', (execution) => {
   })
 
   it("a criterion of a date without a year selects by the clock's year after the clock moves", () => {
-    const serial = (y: number) => (Date.UTC(y, 0, 5) - Date.UTC(1899, 11, 30)) / 86400000
-    const cells: Record<string, CellInput> = {}
-    for (let r = 1; r <= 300; r++) {
-      cells[`A${r}`] = { value: serial(2025 + (r % 3)) }
-      cells[`B${r}`] = { value: r }
-    }
+    const cells = datedRows(1, 300)
     cells.C1 = cells.C2 = { formula: 'SUMIFS(B1:B300,A1:A300,"1/5")' }
-    const s = createSession({ sheets: [{ name: 'S', cells }] }, opts)
-    for (const y of [2026, 2027, 2025, 2027, 2026]) {
-      s.setClock({ now: `${y}-10-04T12:00:00Z`, seed: 7 })
-      let sum = 0
-      for (let r = 1; r <= 300; r++) if (2025 + (r % 3) === y) sum += r
-      expect([s.getCell('S', 'C1')?.value, s.getCell('S', 'C2')?.value]).toEqual([sum, sum])
-    }
+    followsClockYear(createSession({ sheets: [{ name: 'S', cells }] }, opts), ['C1', 'C2'], 1, 300)
   })
 })
