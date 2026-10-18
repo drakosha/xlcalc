@@ -105,6 +105,20 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
       return (p) => f(...thunks(p))
     },
     external: (text) => () => ext(text),
+    moving: (at, read) => {
+      if (read === 'range') return at
+      if (read === 'value')
+        return () => {
+          const g = at()
+          return g.r1 === g.r2 && g.c1 === g.c2 ? scalar(g) : g
+        }
+      const f = read === 'cell' ? cell : spill
+      return () => {
+        const g = at()
+        return f(g.s, g.r1, g.c1)
+      }
+    },
+    computed: (f) => f,
     read: (a) => (p) => scalar(a(p)),
     areas: (list) => {
       const a = new Areas(list, true)

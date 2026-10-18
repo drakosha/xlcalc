@@ -13,21 +13,12 @@
 const mode = process.argv[2] ?? 'series'
 const { libUrl } = await import('./target.js')
 const { createInlineCalc, createSession } = (await import(libUrl('index.js'))) as typeof import('../../src/index.js')
+const { heap } = await import('./heap.js')
 
 const cells: Record<string, { value?: number; formula?: string }> = { A1: { value: 1 } }
 for (let r = 2; r <= 10_000; r++) cells[`A${r}`] = { formula: `A${r - 1}+1` }
 const book = { sheets: [{ name: 'S', cells }] }
 const opts = { clock: { now: '2026-10-04T12:00:00Z', seed: 7 }, display: false }
-
-const gc = (globalThis as { gc: () => void }).gc
-const turn = () => new Promise((done) => setImmediate(done))
-const heap = async () => {
-  await turn()
-  await turn()
-  gc()
-  gc()
-  return process.memoryUsage().heapUsed / 2 ** 20
-}
 
 const pool = mode === 'pool' ? await (await import('./pool.js')).inside({ threads: 1, maxHeapMb: 64 }) : undefined
 const calc = mode === 'inline' ? createInlineCalc() : pool?.calc
