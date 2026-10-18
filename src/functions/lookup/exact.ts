@@ -18,7 +18,7 @@ export interface ExactStore {
   write(index: Index, bytes: number): void
 }
 
-const storedBytes = (index: Index) => 128 + (index.scalar ? index.scalar.size * (KEY_BYTES + POSITION_BYTES) : 0)
+export const storedBytes = (index: Index) => 128 + (index.scalar ? index.scalar.size * (KEY_BYTES + POSITION_BYTES) : 0)
   + (index.text?.reduce((n, x) => n + KEY_BYTES + POSITION_BYTES + x.value.length * 2, 0) ?? 0)
 
 // Range arrays are immutable and replaced on invalidation; their indexes disappear with them.
