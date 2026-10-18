@@ -18,7 +18,7 @@ import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from 
 import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
-import { firstLook } from '../looks/sheet.js'
+import { firstLook, madeFrom } from '../looks/sheet.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
@@ -113,6 +113,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     } else {
       cells = rewriteCells(s.cells, s.name, s.name, t, names)
       changed = cells !== s.cells
+      if (changed) madeFrom([s.cells], cells)
     }
     const list = s.tables?.map((ti) => {
       const first = parseRange(ti.range)!.r1 + (ti.headers !== false ? 1 : 0)
@@ -132,7 +133,9 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     const validations = moving ? shiftValidations(s.validations, s.name, axis, at, n, t, names) : rewriteValidations(s.validations, s.name, s.name, t, names)
     if (!moving) return changed || validations !== s.validations ? { ...s, cells, ...tableFields, ...(validations ? { validations } : {}) } : s
     // the new lines take the format of the line before them
-    if (n > 0) Object.assign(cells, formatBefore(s, axis, at, n))
+    const before = n > 0 ? formatBefore(s, axis, at, n) : {}
+    Object.assign(cells, before)
+    madeFrom([s.cells], cells, before)
     const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
     const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, frozen: shiftFrozen(s.frozen, axis, at, n), validations }
     for (const k of ['columns', 'rows', 'merges', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]

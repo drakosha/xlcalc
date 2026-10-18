@@ -7,7 +7,7 @@
  */
 import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { createSession, type AsyncSession, type BookInput, type CellEdit, type Execution } from '../src/index.js'
+import { createSession, type AsyncSession, type BookInput, type CellEdit, type Execution, type StructureOp } from '../src/index.js'
 import type { Labelled } from './recorded.js'
 import { wrapped } from './session-kinds.js'
 
@@ -67,17 +67,32 @@ export const STEPS: CellEdit[][] = [
 /** A JSON text, `undefined` for none. */
 const json = (x: unknown) => JSON.stringify(x) ?? 'undefined'
 
-/** The answers of a session to calls `steps`: each call's, the book after it, then four undos and two redos. */
-export async function series(s: AsyncSession, steps: CellEdit[][]): Promise<Labelled> {
+/** A call of a series: edits of cells (`setCells`) or a structure operation (`editStructure`). */
+export type Step = CellEdit[] | StructureOp
+
+/** How a series ends and what it records of the book: its undos and redos (four and two), the whole book or its cells (the default). */
+export interface SeriesOptions {
+  undos?: number
+  redos?: number
+  whole?: boolean
+}
+
+/** A value with its objects' keys in order, but a sheet's cells, whose order is the book's: a thread gives a sheet's fields in another order. */
+const ordered = (x: unknown, key = ''): unknown =>
+  Array.isArray(x) ? x.map((v) => ordered(v)) : x && typeof x === 'object' && key !== 'cells' ? Object.fromEntries(Object.keys(x).sort().map((k) => [k, ordered((x as Record<string, unknown>)[k], k)])) : x
+
+/** The answers of a session to calls `steps`: each call's, the book after it, then the undos and redos. */
+export async function series(s: AsyncSession, steps: Step[], o: SeriesOptions = {}): Promise<Labelled> {
   const out: Labelled = []
-  const book = async () => json((await s.getBook()).sheets.map((x) => x.cells))
-  for (const [i, edits] of steps.entries()) {
+  const book = async () => json(o.whole ? ordered(await s.getBook()) : (await s.getBook()).sheets.map((x) => x.cells))
+  for (const [i, step] of steps.entries()) {
+    const [name, call] = Array.isArray(step) ? ['setCells', () => s.setCells(step)] : ['editStructure', () => s.editStructure(step)]
     // a refused call answers with its error
-    out.push([`setCells ${i}`, await s.setCells(edits).then(json, (e: Error) => `${e.constructor.name}: ${e.message}`)])
+    out.push([`${name} ${i}`, await (call() as Promise<unknown>).then(json, (e: Error) => `${e.constructor.name}: ${e.message}`)])
     out.push([`book after ${i}`, await book()])
   }
-  for (let i = 0; i < 4; i++) out.push([`undo ${i}`, json(await s.undo())], [`book after undo ${i}`, await book()])
-  for (let i = 0; i < 2; i++) out.push([`redo ${i}`, json(await s.redo())], [`book after redo ${i}`, await book()])
+  for (let i = 0; i < (o.undos ?? 4); i++) out.push([`undo ${i}`, json(await s.undo())], [`book after undo ${i}`, await book()])
+  for (let i = 0; i < (o.redos ?? 2); i++) out.push([`redo ${i}`, json(await s.redo())], [`book after redo ${i}`, await book()])
   return out
 }
 
@@ -85,11 +100,11 @@ export async function series(s: AsyncSession, steps: CellEdit[][]): Promise<Labe
 export type Recorded = Record<string, Labelled>
 
 /** The answers of a synchronous session of `book` to calls `steps`, with display off and on. */
-export async function record(book: BookInput, steps: CellEdit[][], execution: Execution): Promise<Recorded> {
+export async function record(book: BookInput, steps: Step[], execution: Execution, o?: SeriesOptions): Promise<Recorded> {
   const out: Recorded = {}
   for (const display of [false, true]) {
     const s = wrapped(createSession(book, { clock: CLOCK, execution, display }))
-    out[String(display)] = await series(s, steps)
+    out[String(display)] = await series(s, steps, o)
     await s.close()
   }
   return out

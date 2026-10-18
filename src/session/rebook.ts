@@ -11,6 +11,7 @@
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { formatAddress, MAX_COLS, readAddress } from '../model.js'
+import { madeFrom } from '../looks/sheet.js'
 import { cellCount, type Rect } from '../structure/area.js'
 import { inverse, placer, vanishing, type Geometry, type Place } from '../structure/geometry.js'
 import { sheetKey } from '../syntax.js'
@@ -206,6 +207,7 @@ export function* applyDiff(current: BookInput, d: BookDiff): Steps<BookInput> {
       if (input) cells[addr] = input
       else delete cells[addr]
     }
+    madeFrom(d.moved.map((i) => current.sheets[i].cells), cells, x.put)
     return { ...x.rest, cells }
   })
   return { ...d.head, sheets }

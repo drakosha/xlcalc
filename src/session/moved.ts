@@ -5,7 +5,7 @@ import { same } from '../evaluate.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, MAX_COLS, placeOf, readAddress } from '../model.js'
 import { fieldsBetween, formulaText, hasFields, type FieldChange } from './answer.js'
-import type { Looks } from '../shown.js'
+import { lookParts, type Looks } from '../shown.js'
 import { shownKey } from './looks.js'
 import type { DiffPass } from './rebook.js'
 import { describeAt } from '../spill/place.js'
@@ -48,10 +48,7 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
    * The fields of the new cell at `j`, `r`, `c` against those of the old cell at `from` that came to it (none: an empty
    * one); with `pair`, the two inputs go to the diff.
    */
-  const compare = (j: number, r: number, c: number, from?: Place, pair = false) => {
-    const entry = input(next, j, r, c)
-    const addr = from && formatAddress(from.r, from.c)
-    const held = addr === undefined ? undefined : old.input.sheets[from!.s].cells[addr]
+  const compare = (j: number, r: number, c: number, from?: Place, pair = false, addr = from && formatAddress(from.r, from.c), held = addr === undefined ? undefined : old.input.sheets[from!.s].cells[addr], entry = input(next, j, r, c)) => {
     if (pair) diff?.pair(from!.s, addr!, held, j, entry)
     // a cell of the sheet's looks compares as an input of its look alone; the diff takes the inputs alone, the looks go back whole
     const now = entry ?? layered(next, j, r, c)
@@ -76,6 +73,15 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
     const addr = formatAddress(p.r, p.c)
     diff.pair(p.s, addr, old.input.sheets[p.s].cells[addr], s, input(next, s, r, c))
   }
+  /**
+   * Whether the new cell at `p` shows something else than the old one at `s`, `r`, `c` (their inputs `held` and
+   * `entry`), which holds the same value: its text is made only where its format or room differ.
+   */
+  const parts = looks && [lookParts(old), lookParts(next)]
+  const shows = (s: number, r: number, c: number, held: CellInput | undefined, entry: CellInput | undefined) => {
+    const [a, b] = [parts![0](s, r, c, held), parts![1](p.s, p.r, p.c, entry)]
+    return (a[0] !== b[0] || a[1] !== b[1]) && shownKey(looks![0], old, s, r, c, held) !== shownKey(looks![1], next, p.s, p.r, p.c, entry)
+  }
   // the places of the cells listed, sorted at the end
   const out: number[] = []
   const from: Place = { s: 0, r: 0, c: 0 }
@@ -97,8 +103,10 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
           return
         }
         const w = valueAt(next, p.s, p.r, p.c) ?? null
-        compare(p.s, p.r, p.c, at(from, s, r, c), true)
-        if (!same(v, w) || (looks && w !== null && shownKey(looks[0], old, s, r, c) !== shownKey(looks[1], next, p.s, p.r, p.c))) out.push(placeOf(p.s, p.r, p.c))
+        const addr = formatAddress(r, c)
+        const [held, entry] = [old.input.sheets[s].cells[addr], input(next, p.s, p.r, p.c)]
+        compare(p.s, p.r, p.c, at(from, s, r, c), true, addr, held, entry)
+        if (!same(v, w) || (looks && w !== null && shows(s, r, c, held, entry))) out.push(placeOf(p.s, p.r, p.c))
       }),
     ),
   )
