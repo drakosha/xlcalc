@@ -31,6 +31,12 @@ export interface CodegenContext {
   area?: Rect
   /** The cell a conditional format's formula is written for: its references without `$` move from there to the formula's cell, wrapping round the sheet's edges. */
   origin?: { r: number; c: number }
+  /**
+   * With `origin`: the cell the code runs at, read each time it runs, so that one code serves every cell of a conditional
+   * format: its references without `$` move to it and the functions of their cell get it. Not for a formula with a
+   * name, `@`, a structured reference, a relative reference across sheets or LOOKUP's widened result (`cond/formulas.ts`).
+   */
+  here?: { r: number; c: number }
   /** A structured reference in the formula's row `r`: its sheet and rectangle, or the error it gives (`tables/model.ts`). */
   table?(n: Extract<Ast, { k: 'table' }>, r: number): (Rect & { s: number }) | ErrorCode
   /** The runtime index of a linked workbook's sheet (`links.ts`), undefined for none: the reference is `#REF!`. */
@@ -79,6 +85,13 @@ export interface Backend<T> {
   at(a: T, r: number, c: number): T
   /** An external function, by the canonical text of its call. */
   external(text: string): T
+  /**
+   * With `CodegenContext.here` (closures only): a reference that `at` finds at the cell the code runs at, read as a cell,
+   * a spill, a range, or a range that is one value where it is one cell (`value`).
+   */
+  moving?(at: () => Rng, read: 'cell' | 'spill' | 'range' | 'value'): T
+  /** With `CodegenContext.here` (closures only): a value found each time the code runs. */
+  computed?(f: () => V): T
   /**
    * A LET of `count` names: `build` gets the code of a use of its i-th name and gives the code of the values
    * and of the result. A value is computed on its first use, once in each computation of the LET.
@@ -149,6 +162,13 @@ function lines(x: Rect, rows: boolean): Arr {
 /** One axis of a name's relative bound used at index `at`: moved by it, wrapping round the sheet. */
 const moved = (b: Bound, at: number, max: number) => (b.abs ? b.i : (b.i + at) % max)
 
+/** The rectangle of an area with relative bounds moved by `dr` rows and `dc` columns. */
+function placed(a: Area, dr: number, dc: number): Rect {
+  const [r1, r2] = [moved(a.r.lo, dr, MAX_ROWS), moved(a.r.hi, dr, MAX_ROWS)]
+  const [c1, c2] = [moved(a.c.lo, dc, MAX_COLS), moved(a.c.hi, dc, MAX_COLS)]
+  return { r1: Math.min(r1, r2), r2: Math.max(r1, r2), c1: Math.min(c1, c2), c2: Math.max(c1, c2) }
+}
+
 /** The bounds of a name's references, read once: a name's formula is walked at every use. */
 const bounds = new WeakMap<RangeRef, Area | null>()
 function relative(ref: RangeRef): Area | null {
@@ -190,9 +210,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     const a = inside.size || ctx.origin ? relative(n.ref) : null
     if (!a) return n.ref
     const [dr, dc] = inside.size || !ctx.origin ? [r, c] : [r - ctx.origin.r + MAX_ROWS, c - ctx.origin.c + MAX_COLS]
-    const [r1, r2] = [moved(a.r.lo, dr, MAX_ROWS), moved(a.r.hi, dr, MAX_ROWS)]
-    const [c1, c2] = [moved(a.c.lo, dc, MAX_COLS), moved(a.c.hi, dc, MAX_COLS)]
-    return { r1: Math.min(r1, r2), r2: Math.max(r1, r2), c1: Math.min(c1, c2), c2: Math.max(c1, c2) }
+    return placed(a, dr, dc)
   }
   /**
    * The rectangles a node can answer as a reference, for the cells between the ends of the range operator: the
@@ -350,6 +368,16 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const x = rect(n)
         const g = new Rng(ctx.sheet(n.sheet), x.r1, x.c1, x.r2, x.c2)
         info.refs.push(g)
+        // one code for every cell: a reference without `$` finds its rectangle at the cell the code runs at
+        const a = ctx.here && relative(n.ref)
+        if (a) {
+          const [here, o] = [ctx.here!, ctx.origin!]
+          const at = () => {
+            const x = placed(a, here.r - o.r + MAX_ROWS, here.c - o.c + MAX_COLS)
+            return new Rng(g.s, x.r1, x.c1, x.r2, x.c2)
+          }
+          return b.moving!(at, n.ref.spill ? 'spill' : n.ref.kind === 'cell' && !rangeOk ? 'cell' : rangeOk ? 'range' : 'value')
+        }
         if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
@@ -440,8 +468,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           // lifted when a lifting argument is an array
           code = b.lazy(n.name, args, n.args.flatMap((a, i) => (many(a) && spec.liftAt(i, n.args.length) ? [i] : [])))
         } else {
-          // RAND gets its cell
-          if (spec.cell) args.unshift(b.value(s), b.value(r), b.value(c))
+          // RAND gets its cell, or the cell the code runs at
+          const here = ctx.here
+          if (spec.cell) args.unshift(b.value(s), here ? b.computed!(() => here.r) : b.value(r), here ? b.computed!(() => here.c) : b.value(c))
           code = b.call(n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
         }
         // a reference answered where one value goes is read here; a range position takes it as a reference
