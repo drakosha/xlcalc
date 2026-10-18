@@ -11,6 +11,17 @@ import { E, isErr, Rng, whole, type CErr, type V } from '../values.js'
 import { max, min, product, sum } from './common.js'
 import { meanOrDiv0, numbersOf, stdev, variance } from './statistical/common.js'
 
+/** What tests count of the database functions (`watchRecords`): the records checked one by one. Nothing is counted unless a test asks. */
+export interface RecordWatch {
+  records: number
+}
+let watch: RecordWatch | undefined
+
+/** Counts the records the database functions check one by one from now on into `w`; undefined stops. For tests. */
+export function watchRecords(w?: RecordWatch): void {
+  watch = w
+}
+
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V, rules: Rules): Crit | null {
   if (v === null) return null
@@ -68,6 +79,7 @@ function selected(db: Grid, field: V | undefined, criteria: Grid, rules: Rules):
     tests.push(row)
   }
   const out: V[] = []
+  if (watch) watch.records += Math.max(0, db.h - 1)
   for (let r = 1; r < db.h; r++) {
     const rec = (c: number) => gridAt(db, r * db.cols + c)
     if (tests.some((row) => row.every((t) => t.col >= 0 && matches(rec(t.col), t.crit, rules)))) out.push(col < 0 ? 0 : rec(col))
