@@ -3,6 +3,7 @@ import { compute, createSession, type BookInput, type CellInput } from '../src/i
 import { createState } from '../src/engine.js'
 import { CalcError } from '../src/exec/budget.js'
 import { Rng } from '../src/values.js'
+import { Column } from '../src/column.js'
 import { columnReads } from './engine-counts.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -71,11 +72,16 @@ describe.each(['closures', 'eval'] as const)('range aggregates, %s', (execution)
 
   it('keeps horizontal prefixes and column extensions in their original addition order', () => {
     const state = createState({ sheets: [{ name: 'S', cells: {} }] }, { now: 0, seed: 1, execution })
-    state.ctx.sheets[0].cols = Array.from({ length: 600 }, (_, c) => [c % 3 === 0 ? 1e16 : c % 3 === 1 ? 1 : -1e16, 0])
+    state.ctx.sheets[0].cols = Array.from({ length: 600 }, (_, c) => {
+      const col = new Column()
+      col.set(0, c % 3 === 0 ? 1e16 : c % 3 === 1 ? 1 : -1e16)
+      col.set(1, 0)
+      return col
+    })
     state.ctx.sheets[0].rows = 2
     for (let end = 599; end >= 0; end--) {
       let expected = 0
-      for (let c = 0; c <= end; c++) expected += state.ctx.sheets[0].cols[c][0] as number
+      for (let c = 0; c <= end; c++) expected += state.ctx.sheets[0].cols[c]!.get(0) as number
       expect(state.rt.F.SUM(new Rng(0, 0, 0, 0, end))).toBe(expected)
     }
     const book: BookInput = { sheets: [{ name: 'S', cells: {

@@ -53,7 +53,11 @@ function* stateCells(s: EngineState, i: number, lo: number, hi: number): Generat
   const data = s.ctx.sheets[i]
   for (let c = lo; c <= Math.min(hi, data.cols.length - 1); c++) {
     const col = data.cols[c]
-    if (col) for (let r = 0; r < col.length; r++) if (col[r] !== undefined && col[r] !== null) yield [r, c, outValue(toCellValue(col[r]))]
+    if (col)
+      for (let r = 0; r < col.length; r++) {
+        const v = col.get(r)
+        if (v !== undefined && v !== null) yield [r, c, outValue(toCellValue(v))]
+      }
   }
   for (const f of data.fills) for (let c = Math.max(lo, f.c1); c <= Math.min(hi, f.c2); c++) yield [f.r1, c, outValue(toCellValue(f.v))]
 }

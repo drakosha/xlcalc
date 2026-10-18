@@ -17,11 +17,11 @@ export function evaluations(state: EngineState): { n: number } {
 /** Counts the reads of the cells of column `col` of the first sheet of `state` from now on: the count so far. */
 export function columnReads(state: EngineState, col: number): () => number {
   let reads = 0
-  state.ctx.sheets[0].cols[col] = new Proxy(state.ctx.sheets[0].cols[col], {
-    get(target, k, receiver) {
-      if (typeof k === 'string' && /^\d+$/.test(k)) reads++
-      return Reflect.get(target, k, receiver)
-    },
-  })
+  const column = state.ctx.sheets[0].cols[col]!
+  const get = column.get.bind(column)
+  column.get = (r) => {
+    reads++
+    return get(r)
+  }
   return () => reads
 }

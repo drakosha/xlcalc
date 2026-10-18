@@ -28,7 +28,7 @@ export function endOf(state: EngineState, s: number, r: number, c: number, d: En
   // the cells of a large spill past its stored ones, as spans of the line
   const fills = data.fills.flatMap((f) => (vertical ? (f.c1 <= c && c <= f.c2 ? [[f.r1, f.r2]] : []) : f.r1 <= r && r <= f.r2 ? [[f.c1, f.c2]] : []))
   const col = data.cols[c]
-  const held = (i: number) => (vertical ? col?.[i] : data.cols[i]?.[r]) != null || fills.some(([lo, hi]) => lo <= i && i <= hi)
+  const held = (i: number) => (vertical ? col?.get(i) : data.cols[i]?.get(r)) != null || fills.some(([lo, hi]) => lo <= i && i <= hi)
   // past `last` the line holds nothing
   const last = fills.reduce((m, [, hi]) => Math.max(m, hi), (vertical ? (col?.length ?? 0) : data.cols.length) - 1)
   // line `i` if it is shown, else the first shown one beyond it going `by`; -1 past the sheet's edge

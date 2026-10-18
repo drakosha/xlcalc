@@ -177,11 +177,15 @@ export function stateRows(s: EngineState, i: number, lo: number, hi: number): { 
   const cells: Placed[] = []
   for (let c = 0; c < data.cols.length; c++) {
     const col = data.cols[c]
-    if (col) for (let r = lo; r <= Math.min(hi, col.length - 1); r++) if (col[r] !== undefined && col[r] !== null) cells.push([r, c, outValue(toCellValue(col[r]))])
+    if (col)
+      for (let r = lo; r <= Math.min(hi, col.length - 1); r++) {
+        const v = col.get(r)
+        if (v !== undefined && v !== null) cells.push([r, c, outValue(toCellValue(v))])
+      }
   }
   for (const a in sheet.cells) {
     const { row, col } = parseAddress(a)
-    if (row >= lo && row <= hi && (data.cols[col]?.[row] ?? null) === null) cells.push([row, col, null])
+    if (row >= lo && row <= hi && (data.cols[col]?.get(row) ?? null) === null) cells.push([row, col, null])
   }
   const spans = data.fills.flatMap((f) => Array.from({ length: f.c2 - f.c1 + 1 }, (_, k): [number, number, number, CellValue] => [f.r1, f.r2, f.c1 + k, outValue(toCellValue(f.v))]))
   return { cells, spans }

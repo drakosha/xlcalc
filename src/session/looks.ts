@@ -54,7 +54,7 @@ export function layoutCells(s: EngineState, edits: LayoutEdit[]): Set<number> {
     } else if ('rows' in e) {
       const [lo, hi] = parseSpan(e.rows, 'r')!
       cols.forEach((col, c) => {
-        for (let r = lo; r <= Math.min(hi, col.length - 1); r++) if (col[r] !== undefined) out.add(placeOf(i, r, c))
+        if (col) for (let r = lo; r <= Math.min(hi, col.length - 1); r++) if (col.get(r) !== undefined) out.add(placeOf(i, r, c))
       })
     }
   }
