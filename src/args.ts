@@ -22,10 +22,11 @@
  *      boolean argument are #VALUE!: GCD, LCM, MULTINOMIAL);
  *    - `V` values in order, errors included, each range as one segment, so a function can tell a range
  *      from a direct argument (COUNTA counts every direct argument); `G` a range as a grid with its
- *      referenced size, errors inside kept; `C` the same, but a reference to one cell is read first, its error the
- *      answer and a blank cell #VALUE!, as Excel reads a function's arrays before comparing them (SUMX2MY2,
- *      CORREL, CHISQ.TEST; an array of one is an array); `M` a numeric grid (an error inside is the answer); `R` the
- *      argument itself, a reference or a value (criteria functions, which work on the reference through
+ *      referenced size, errors inside kept; `D` a reference kept as it is, anything else as `G` (the database
+ *      functions read a reference's columns through the function context); `C` the same as `G`, but a reference to
+ *      one cell is read first, its error the answer and a blank cell #VALUE!, as Excel reads a function's arrays
+ *      before comparing them (SUMX2MY2, CORREL, CHISQ.TEST; an array of one is an array); `M` a numeric grid (an
+ *      error inside is the answer); `R` the argument itself, a reference or a value (criteria functions, which work on the reference through
  *      the function context); `r` one value that may be a reference (the function gets a reference to one
  *      or more cells as it is; an array is lifted); `p` any value, reference or array, passed as it is
  *      unless the call is lifted, a one-cell reference as its value (IFERROR's alternative, FILTER's
@@ -223,11 +224,11 @@ export interface FunctionSpec {
   cell?: boolean
 }
 
-const RANGE_KINDS = 'NAYZVGCMRrP'
+const RANGE_KINDS = 'NAYZVGDCMRrP'
 const LIST_KINDS = 'NAYZ'
-const WHOLE_KINDS = 'NAYZVGCMR'
+const WHOLE_KINDS = 'NAYZVGDCMR'
 /** Kinds of an array or a reference: an argument left out there is #VALUE!. */
-const ARRAY_KINDS = 'GCMR'
+const ARRAY_KINDS = 'GDCMR'
 
 interface Kind {
   k: string
@@ -411,6 +412,7 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x instanceof Areas ? x.list.flatMap((g) => cx.flat(g)) : x instanceof Arr ? x.values().map((v) => (v === null ? '' : v)) : x),
   // several areas where one rectangle is wanted: #REF! of a union (ROWS), else #VALUE!
   G: (x, cx) => (isErr(x) ? x : cx.grid(x)),
+  D: (x, cx) => (isErr(x) || x instanceof Rng ? x : cx.grid(x)),
   C: (x, cx) => (isErr(x) ? x : (oneCell(x, cx) ?? cx.grid(x))),
   M: (x, cx) => {
     if (isErr(x)) return x
@@ -446,7 +448,7 @@ function areasArg(own: FnDef['areas'], p: number, k: string, x: Areas, cx: Cx): 
   if (error) return k === 'V' && errors.inside ? [E[error]] : E[error]
   if (LIST_KINDS.includes(k) || k === 'V') return COERCE[k](x, cx)
   if (k === 'p' || k === 'P') return x
-  return x.cube && 'GCM'.includes(k) ? E.REF : E.VALUE
+  return x.cube && 'GDCM'.includes(k) ? E.REF : E.VALUE
 }
 
 /** An argument coerced by kind inside a function that reads it after others (FVSCHEDULE's schedule after the principal). */
