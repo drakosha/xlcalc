@@ -292,11 +292,15 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   // ---------- criteria ----------
 
+  /** Values whose index read the clock's year: not offered as another criterion's choice (`ready`), built again each time. */
+  const clockedValues = new WeakSet<readonly V[]>()
+
   // an index that read the clock's year (text dates without one) is built again by each formula, so each reads it
   const indexOf = (g: Rng, values: readonly V[]): CritIndex => {
     const hit = ctx.index.get(g.key)
     if (hit) return hit
     const [ix, clocked] = readsClock(rules.clock, () => buildIndex(values, rules))
+    if (clocked) clockedValues.add(values)
     if (!clocked && ctx.index.admits(g.key)) {
       let positions = 0
       for (const list of ix.values()) positions += list.length
@@ -378,7 +382,9 @@ export function makeRuntime(ctx: RuntimeContext) {
       const cols: CritColumn[] = ranges.map((rg, i) => {
         const f = flats[i]
         const own = bounds(rg).w === w
-        return { flat: f, crit: list[i], index: own ? () => indexOf(rg, f) : () => buildIndex(f, rules), lower: own ? () => lowerTexts(rg, f) : undefined }
+        if (!own) return { flat: f, crit: list[i], index: () => buildIndex(f, rules) }
+        const ready = (build: boolean) => ctx.index.get(rg.key) ?? (build && !clockedValues.has(f) && ctx.index.admits(rg.key) ? indexOf(rg, f) : undefined)
+        return { flat: f, crit: list[i], index: () => indexOf(rg, f), lower: () => lowerTexts(rg, f), ready }
       })
       const made = select(cols, n, rules)
       return { list, sel: made, made, kept, key, hash }

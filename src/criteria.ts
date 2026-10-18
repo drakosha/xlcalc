@@ -294,11 +294,18 @@ export interface CritColumn {
   index: () => CritIndex
   /** Its texts in lower case, where the caller keeps them (from the range's second read on). */
   lower?: () => Lower | undefined
+  /** Its index where the caller keeps one, else, with `build`, where it read the range before (then built and kept). */
+  ready?: (build: boolean) => CritIndex | undefined
 }
 
+/** Positions of a criterion past which the indexes of the other equality criteria are worth looking at. */
+const WIDE = 64
+
 /**
- * Positions where all criteria hold. The first equality criterion goes through the index, the rest are
- * checked on its candidates; without an equality criterion it is a full scan.
+ * Positions where all criteria hold. The first equality criterion goes through the index, the rest are checked on its
+ * candidates; where it gives `WIDE` positions or more, another equality criterion's index at hand that gives fewer does,
+ * one built for it where the first gives a sixteenth of the positions or more; without an equality criterion it is a
+ * full scan. The positions come in order either way.
  */
 export function select(cols: CritColumn[], n: number, rules: CritRules = EN_CRIT): number[] {
   if (watch) watch.selects++
@@ -307,9 +314,13 @@ export function select(cols: CritColumn[], n: number, rules: CritRules = EN_CRIT
   for (let i = 0; i < cols.length; i++) {
     const k = critKey(cols[i].crit)
     if (k === null) continue
-    cand = cols[i].index().get(k) ?? []
-    used = i
-    break
+    if (cand && cand.length < WIDE) break
+    const ix: CritIndex | undefined = cand ? cols[i].ready?.(cand.length * 16 >= n) : cols[i].index()
+    const list: number[] | null = ix ? (ix.get(k) ?? []) : null
+    if (list && (!cand || list.length < cand.length)) {
+      cand = list
+      used = i
+    }
   }
   // a text criterion checks a range's texts kept in lower case, where they are kept
   const flats: (readonly CritValue[] | Lower)[] = []
