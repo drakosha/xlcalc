@@ -10,7 +10,7 @@ import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
 import type { RefOp } from './syntax/ast.js'
-import { buildIndex, errorCrit, lowerOf, matches, parseCrit, select, type CritColumn, type CritIndex, type Lower } from './criteria.js'
+import { buildIndex, errorCrit, lowerOf, matches, parseCrit, select, type Crit, type CritColumn, type CritIndex, type Lower } from './criteria.js'
 import { allot, spend } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
@@ -55,6 +55,8 @@ export interface RuntimeContext {
   index: RangeCache<CritIndex>
   /** The texts of criteria ranges in lower case, from their second read. */
   lower: RangeCache<Lower>
+  /** Selections of criteria (`Kept`), by their first criteria range. */
+  selections: RangeCache<Selections>
   lookup?: RangeCache<LookupIndex>
   aggregates: RangeAggregates
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
@@ -62,6 +64,77 @@ export interface RuntimeContext {
 }
 
 export const BIG_RANGE = 256
+
+/** Selections kept under their first criteria range, by the hash of their key (`keyHash`), several where hashes meet; their bytes by the budget's estimate. */
+export interface Selections {
+  byHash: Map<number, Kept | Kept[]>
+  bytes: number
+}
+
+/**
+ * A selection made before, by its key (its size, then each criteria range and its criterion): marked the first time;
+ * from the second on, with its positions and the arrays of its ranges' values they were made on.
+ */
+interface Kept {
+  key: unknown[]
+  flats?: WeakRef<readonly V[]>[]
+  sel?: readonly number[]
+}
+
+/**
+ * Bytes of a selection made once and per criteria range of its key; what its positions add, per range (its array's
+ * weak reference) and per position. As measured on Node: the 2,841 selections of the synthetic book of 34,000 rows
+ * held 2.17 MiB, estimated 2.04.
+ */
+const MARK_BYTES = 120
+const KEY_RANGE_BYTES = 16
+const KEPT_BYTES = 96
+const WEAK_BYTES = 48
+const SELECTED_BYTES = 8
+
+/** Numbers of criteria by the criterion itself, for the hash of a selection's key. */
+const critIds = new WeakMap<Crit, number>()
+let crits = 0
+const critId = (c: Crit) => {
+  let id = critIds.get(c)
+  if (id === undefined) critIds.set(c, (id = ++crits))
+  return id
+}
+
+/** A selection's key: its size, then each criteria range and its criterion. */
+function keyOf(ranges: Rng[], list: Crit[], n: number): unknown[] {
+  // as long as it is: pushed one by one, an array keeps room for more
+  const key = new Array<unknown>(1 + 2 * ranges.length)
+  key[0] = n
+  for (let i = 0; i < ranges.length; i++) {
+    key[1 + 2 * i] = ranges[i]
+    key[2 + 2 * i] = list[i]
+  }
+  return key
+}
+
+/** The hash of a selection's key: criteria by their numbers, ranges by their bounds. */
+function keyHash(key: unknown[]): number {
+  let h = key[0] as number
+  const mix = (x: number) => (h = Math.imul(h ^ x, 0x01000193))
+  for (let i = 1; i < key.length; i += 2) {
+    const g = key[i] as Rng
+    mix(critId(key[i + 1] as Crit))
+    mix(g.s)
+    mix(g.r1)
+    mix(g.c1)
+    mix(g.r2)
+    mix(g.c2)
+  }
+  return h
+}
+
+/** Whether two selections' keys are the same: their sizes and criteria, and ranges of the same bounds. */
+function sameKey(a: unknown[], b: unknown[]): boolean {
+  if (a.length !== b.length || a[0] !== b[0]) return false
+  for (let i = 1; i < a.length; i += 2) if ((a[i] as Rng).key !== (b[i] as Rng).key || a[i + 1] !== b[i + 1]) return false
+  return true
+}
 
 /** Pseudo-random [0, 1) from the seed, the cell address and an array element (RANDARRAY): the same for the same clock. */
 export function randAt(seed: number, sheet: string, row: number, col: number, k?: number): number {
@@ -252,6 +325,32 @@ export function makeRuntime(ctx: RuntimeContext) {
     return out
   }
 
+  /** The selection kept for a key, made once or again, and the key's hash. */
+  const keptSelection = (first: Rng, key: unknown[]): [Kept | undefined, number] => {
+    const hash = keyHash(key)
+    const at = ctx.selections.get(first.key)?.byHash.get(hash)
+    return [Array.isArray(at) ? at.find((k) => sameKey(k.key, key)) : at && sameKey(at.key, key) ? at : undefined, hash]
+  }
+
+  /** A selection just made, kept: marked the first time, with its positions from the second on; its bytes in the budget. */
+  const keepSelection = (first: Rng, kept: Kept | undefined, hash: number, key: unknown[], flats: (readonly V[])[], sel: number[]) => {
+    const top = ctx.selections.get(first.key) ?? { byHash: new Map(), bytes: 0 }
+    const count = flats.length
+    if (!kept) {
+      const at = top.byHash.get(hash)
+      const mark = { key }
+      top.byHash.set(hash, at === undefined ? mark : Array.isArray(at) ? [...at, mark] : [at, mark])
+      top.bytes += MARK_BYTES + KEY_RANGE_BYTES * count
+    } else {
+      if (kept.sel) top.bytes -= KEPT_BYTES + WEAK_BYTES * count + SELECTED_BYTES * kept.sel.length
+      kept.flats = flats.map((f) => new WeakRef(f))
+      // the positions as long as they are: pushed one by one, an array keeps room for many more
+      kept.sel = sel.slice()
+      top.bytes += KEPT_BYTES + WEAK_BYTES * count + SELECTED_BYTES * sel.length
+    }
+    ctx.selections.set(first.key, top, top.bytes)
+  }
+
   const select_: Cx['select'] = (pairs, sum) => {
     const ref = sum ?? pairs[0]?.[0]
     if (!(ref instanceof Rng)) return isErr(ref) ? ref : E.VALUE
@@ -259,21 +358,34 @@ export function makeRuntime(ctx: RuntimeContext) {
     const w = ref.c2 - ref.c1 + 1
     // the part any range occupies; past it every range is blank
     let h = sum ? bounds(sum).h : 0
-    const cols: CritColumn[] = []
-    let blank = true
+    const ranges: Rng[] = []
+    const given: V[] = []
     for (const [rg, crit] of pairs) {
       if (!(rg instanceof Rng)) return isErr(rg) ? rg : E.VALUE
       if (rg.r2 - rg.r1 + 1 !== rows || rg.c2 - rg.c1 + 1 !== w) return E.VALUE
-      const v = scalar(crit)
-      const c = isErr(v) ? errorCrit(v.code) : parseCrit(v, rules)
-      blank &&= matches(null, c, rules)
+      ranges.push(rg)
+      given.push(scalar(crit))
       h = Math.max(h, bounds(rg).h)
-      const f = aligned(rg, w)
-      const own = bounds(rg).w === w
-      cols.push({ flat: f, crit: c, index: own ? () => indexOf(rg, f) : () => buildIndex(f, rules), lower: own ? () => lowerTexts(rg, f) : undefined })
     }
     const n = h * w
-    return { sel: select(cols, n, rules), rest: blank ? rows * w - n : 0, read: (g) => aligned(g, w) }
+    const flats = ranges.map((rg) => aligned(rg, w))
+    // the criteria read and the positions selected read the clock's year together: a selection that read it is not kept
+    const [{ list, sel, made, kept, key, hash }, clocked] = readsClock(rules.clock, () => {
+      const list = given.map((v) => (isErr(v) ? errorCrit(v.code) : parseCrit(v, rules)))
+      const key = keyOf(ranges, list, n)
+      const [kept, hash] = keptSelection(ranges[0], key)
+      if (kept?.sel && kept.flats!.every((f, i) => f.deref() === flats[i])) return { list, sel: kept.sel, made: undefined, kept, key, hash }
+      const cols: CritColumn[] = ranges.map((rg, i) => {
+        const f = flats[i]
+        const own = bounds(rg).w === w
+        return { flat: f, crit: list[i], index: own ? () => indexOf(rg, f) : () => buildIndex(f, rules), lower: own ? () => lowerTexts(rg, f) : undefined }
+      })
+      const made = select(cols, n, rules)
+      return { list, sel: made, made, kept, key, hash }
+    })
+    if (made && !clocked) keepSelection(ranges[0], kept, hash, key, flats, made)
+    const blank = list.every((c) => matches(null, c, rules))
+    return { sel, rest: blank ? rows * w - n : 0, read: (g) => aligned(g, w) }
   }
 
   const cx: Cx = {

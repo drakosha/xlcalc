@@ -96,8 +96,15 @@ export function wildRe(s: string, tilde = false): RegExp | null {
   return (tilde ? /[*?~]/ : /[*?]/).test(s) ? new RegExp(`^${wildSource(s)}$`, 'iu') : null
 }
 
+/** Criteria of error values by code, one each, so that a criterion is found by itself (kept selections). */
+const errorCrits = new Map<string, Crit>()
+
 /** A criterion that is an error value: it matches the cells holding that error (Excel: COUNTIF(A1:A9,NA())). */
-export const errorCrit = (code: string): Crit => ({ op: '=', kind: 'err', code })
+export function errorCrit(code: string): Crit {
+  let c = errorCrits.get(code)
+  if (!c) errorCrits.set(code, (c = { op: '=', kind: 'err', code }))
+  return c
+}
 
 /** A criterion from a value (the scalar after evaluating the argument). */
 export function parseCrit(v: number | string | boolean | null, rules: CritRules = EN_CRIT): Crit {

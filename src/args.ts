@@ -85,7 +85,7 @@ export interface Bounds {
 }
 
 export interface Selection {
-  sel: number[]
+  sel: readonly number[]
   rest: number
   read(g: Rng): readonly V[]
 }

@@ -7,7 +7,7 @@ import { meanOrDiv0, numbersOf } from './common.js'
 
 /** A statistical function of the selected numbers, with reference errors kept in selection order. */
 function over(f: (xs: number[]) => V) {
-  return (values: readonly V[], selected: number[]): V => {
+  return (values: readonly V[], selected: readonly number[]): V => {
     const xs = numbersOf(values, selected)
     return isErr(xs) ? xs : f(xs)
   }

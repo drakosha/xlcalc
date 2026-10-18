@@ -32,6 +32,7 @@ export function invalidate(ctx: RuntimeContext, x: Area) {
   ctx.flat.invalidate(x)
   ctx.index.invalidate(x)
   ctx.lower.invalidate(x)
+  ctx.selections.invalidate(x)
   ctx.lookup?.invalidate(x)
   ctx.aggregates.invalidate(x)
 }
