@@ -4,7 +4,8 @@
  * computes it at; the heap a scroll of 200,000 cells leaves stays under 30 MB and within 5 MB of the heap 100,000 leave
  * (code made per cell once kept about 1 KB a cell: 205 MB); a pool's thread of 256 MB scrolls the 200,000 cells (it ran
  * out of memory after 387 windows). A rule with a name (`A1>lim`) makes its code per cell, and keeps it within the same
- * heap. The heap in fresh processes with `--expose-gc` (`fixtures/cond-scroll-child.ts`).
+ * heap, the code read least recently going first: a window read again between the windows of a long scroll keeps its
+ * code. The heap in fresh processes with `--expose-gc` (`fixtures/cond-scroll-child.ts`).
  */
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -33,6 +34,17 @@ it.each(['A1>50', 'MOD(ROW(),2)=0'])('the rule %s makes its code once however ma
     return made.backends - before
   }
   expect(backends(2000)).toBe(backends(1000))
+})
+
+it('a window read again between the windows of a long scroll keeps its code per cell', () => {
+  const s = createSession(condBlock(2000, 'A1>lim'), opts)
+  const before = made.backends
+  for (const w of windows(2000)) {
+    s.getViewport('S', w)
+    s.getViewport('S', 'A1:J50')
+  }
+  s.close()
+  expect(made.backends - before).toBe(20_000)
 })
 
 it.each(['A1>50', 'MOD(ROW(),2)=0', 'A1>lim'])('a scroll with the rule %s keeps under 30 MB, not growing with the cells', (formula) => {
