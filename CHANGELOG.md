@@ -16,6 +16,16 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.50.1 (2026-10-18)
+
+Internal release; not published to npm. A closed session's memory. The synthetic book's values and hashes are as in 0.50.0.
+
+Fixed:
+
+- `createInlineCalc` kept every session it had opened until the calculator itself was closed: about 47 KB for each closed session, more with its undo history, without a bound in a calculator that lives long. A session leaves its calculator once it is closed. A test opens and closes sessions in a fresh process, synchronous, in the same thread and in a pool's thread, and waits for the heap and the session object to be given back.
+
+A session closed at once after it opened can look held for a few milliseconds: the JavaScript engine's background compilation of its formulas keeps it until it finishes (8 MiB for a chain of 10,000 formulas, gone within 10 ms). The library holds nothing then.
+
 ## 0.50.0 (2026-10-18)
 
 Internal release; not published to npm. Edits, opening, memory and xlsx writing nearer the fastest of HyperFormula 3.5.0, IronCalc 0.9.0 and SheetJS 0.18.5, and a rectangle's values without an object for each cell ([the comparison](bench/compare/README.md), "Parity on the branch `perf/parity`"). The synthetic book's values and hashes are as in 0.49.1.

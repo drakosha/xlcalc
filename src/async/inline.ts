@@ -20,8 +20,8 @@ export const SLICE_MS = 10
 export function createInlineCalc(opts?: InlineCalcOptions): Calc {
   const o = checkInlineOptions(opts)
   const running = new Set<Budget>()
-  const d: InlineDefaults = { sliceMs: o.sliceMs ?? SLICE_MS, timeoutMs: o.timeoutMs, limits: o.limits, running }
   const sessions = new Set<InlineSession>()
+  const d: InlineDefaults = { sliceMs: o.sliceMs ?? SLICE_MS, timeoutMs: o.timeoutMs, limits: o.limits, running, sessions }
   let closed: CalcError | null = null
   return strictMethods<Calc>({
     async compute(book, copts) {
