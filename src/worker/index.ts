@@ -17,8 +17,8 @@ declare const URL: new (url: string, base: string) => ScriptUrl
 declare const Worker: new (url: ScriptUrl, opts: { type: 'module' }) => WorkerLike
 
 /**
- * A pool of threads. Node runs `worker_threads` with `maxHeapMb` as each thread's heap; a browser runs Web Workers,
- * started by `spawn` or by the thread's module next to this one, and has no memory limit.
+ * A pool of threads. In Node it runs `worker_threads` with `maxHeapMb` as each thread's heap; in a browser it runs Web
+ * Workers, started by `spawn` or from the thread module next to this one, without a memory limit.
  */
 export const createCalcPool = /* @__PURE__ */ strict(function createCalcPool(opts?: CalcPoolOptions): Calc {
   const o = checkPoolOptions(opts)

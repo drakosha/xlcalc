@@ -26,7 +26,7 @@ const book = (): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 2 }
 const METHODS = { book: 'getBook', layout: 'getLayout', extent: 'getUsedRange', cells: 'getCells', validation: 'getValidation', result: 'getResult', hash: 'getHash', restructure: 'editStructure' }
 
 /** The functions and objects the root exported by their old names. */
-const ROOT = ['openSession', 'restructure', 'engine', 'fromLegacy']
+const ROOT = ['openSession', 'restructure', 'engine', 'fromLegacy', 'liveWorkbook']
 
 /** The hint of a refusal of the old field. */
 const HINT = '(format is the old name of numberFormat)'
@@ -44,6 +44,8 @@ type R4 = import('../src/index.js').ConditionalLook
 type R5 = import('../src/index.js').FormulaEngine
 // @ts-expect-error LegacyContext is xlcalc/xlsx's
 type R6 = import('../src/index.js').LegacyContext
+// @ts-expect-error the name is LiveBook
+type R7 = import('../src/index.js').LiveWorkbook
 
 describe('no entry of the package exports an old name', () => {
   it('the root has none of them; fromLegacy is xlcalc/xlsx\'s alone', () => {

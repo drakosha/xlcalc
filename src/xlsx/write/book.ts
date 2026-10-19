@@ -115,8 +115,8 @@ function iterationAttrs(it: BookInput['iteration']): string {
 }
 
 /**
- * Writes a book as an xlsx file: its formulas with the values of `snapshot.result` that `opts.values` asks for, or its
- * values alone (`opts.mode: 'values'`).
+ * Writes a workbook as an xlsx file: its formulas with the values from `snapshot.result` that `opts.values` requests,
+ * or only its values (`opts.mode: 'values'`).
  */
 export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
   const { book, cells, mode, unasked, locale } = writeArgs(snapshot, opts)

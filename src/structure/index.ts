@@ -65,8 +65,8 @@ const FIELDS: Record<string, string[]> = {
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
 
 /**
- * Restructures a book; the input book is not changed. A copy that pastes values (from a filtered sheet) computes
- * the book at the current moment.
+ * Restructures a workbook; the input workbook is not modified. A copy that pastes values (from a filtered sheet)
+ * calculates the workbook at the current time.
  */
 export function editStructure(book: BookInput, op: StructureOp): StructureResult {
   book = checkBook(book)

@@ -54,7 +54,7 @@ export type { DateSystemOptions } from './date-serial.js'
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses
 export const createSession = /* @__PURE__ */ strict(sessions.createSession)
 export const createInlineCalc = /* @__PURE__ */ strict(inline.createInlineCalc)
-export const liveWorkbook = /* @__PURE__ */ strict(live.liveWorkbook)
+export const liveBook = /* @__PURE__ */ strict(live.liveBook)
 export const viewportOf = /* @__PURE__ */ strict(saved.viewportOf)
 // in the root alone: its names would take `xlcalc/text` past its 55 KB (`text-bundle.test.ts`)
 export const functionSignature = /* @__PURE__ */ strict(signatures.functionSignature)
@@ -82,9 +82,9 @@ export const serialToDate = /* @__PURE__ */ strict(serials.serialToDate)
 export const internStyle = /* @__PURE__ */ strict(styleTable.internStyle)
 
 /**
- * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
+ * Calculates the entire workbook. Without `opts.clock`, the clock is the current time and a random seed; the
  * result records it in `clock`, and passing that clock again reproduces the result. Input of the wrong
- * shape throws `InputError`; invalid formulas do not throw, they give error values with reasons in `diagnostics`.
+ * shape throws `InputError`; invalid formulas do not throw, they produce error values with reasons in `diagnostics`.
  */
 export const compute = /* @__PURE__ */ strict(function compute(book: BookInput, opts?: ComputeOptions): ComputeResult {
   const o = checkComputeOptions(opts)
@@ -92,9 +92,9 @@ export const compute = /* @__PURE__ */ strict(function compute(book: BookInput, 
 })
 
 /**
- * Checks formula text as a cell stores it (without `=`, en-US syntax): its canonical text and the functions, sheets, names,
- * external books and tables it names, or why it does not read and where (`ValidateResult`). With `ctx`, the sheets, names
- * and tables it names are checked against the book's.
+ * Checks formula text as a cell stores it (without `=`, en-US syntax): returns its canonical text and the functions,
+ * sheets, names, external workbooks and tables it refers to, or why and where it fails to parse (`ValidateResult`).
+ * With `ctx`, the sheets, names and tables it refers to are checked against the workbook's.
  */
 export const validateFormula = /* @__PURE__ */ strict(function validateFormula(text: string, ctx?: ValidateContext): ValidateResult {
   const r = validate(checkString(text, 'text'), checkValidateContext(ctx))
@@ -104,14 +104,14 @@ export const validateFormula = /* @__PURE__ */ strict(function validateFormula(t
 })
 
 /**
- * Excel's rules for a name (`NameInput.name`) in a book of `opts.locale` (en-US without one; a locale's words for TRUE
- * and FALSE are refused too, ИСТИНА and ЛОЖЬ in ru-RU).
+ * Checks a name (`NameInput.name`) against Excel's rules in a workbook of `opts.locale` (en-US without one; a locale's
+ * words for TRUE and FALSE are also rejected, ИСТИНА and ЛОЖЬ in ru-RU).
  */
 export const validateName = /* @__PURE__ */ strict(function validateName(name: string, opts?: NameOptions): NameCheck {
   return checkName(checkString(name, 'name'), localeBooleans(checkNameOptions(opts).locale))
 })
 
-/** The issues of a book's names, by the same check as a book's (`prepareNames`), without the book. */
+/** The issues of a workbook's names, found by the same check a workbook gets (`prepareNames`), without the workbook. */
 export const validateNames = /* @__PURE__ */ strict(function validateNames(names: NameInput[], ctx: NamesContext): NameIssue[] {
   const c = checkNamesContext(ctx)
   const sheetIdx = new Map(c.sheets.map((name, i) => [sheetKey(name), i]))
@@ -119,7 +119,7 @@ export const validateNames = /* @__PURE__ */ strict(function validateNames(names
   return prepareNames(sheetIdx, checkNames(names, 'names'), externalFunctions, c.tables ?? [], localeBooleans(c.locale), c.externalBooks).issues
 })
 
-/** The `eval` mode's generated code of the book in evaluation order, for reading while debugging; not part of the contract. */
+/** The code that `eval` mode generates for the workbook, in evaluation order, for reading while debugging; not part of the contract. */
 export const debugGeneratedCode = /* @__PURE__ */ strict(function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): string {
   const o = checkComputeOptions(opts)
   book = checkBook(book)
@@ -128,9 +128,9 @@ export const debugGeneratedCode = /* @__PURE__ */ strict(function debugGenerated
 })
 
 /**
- * A value as a cell shows it without a book (a cell being edited, say): by `numberFormat` (General without one), in
- * `locale` and `dateSystem`, in a column of `width` (no limit without one: a value is not narrowed to a column it was
- * not given), as `CellResult.text` and `color` show it.
+ * A value as a cell would display it, without a workbook (for example, a cell being edited): in `numberFormat` (General
+ * without one), in `locale` and `dateSystem`, in a column of `width` (no limit without one: a value is not shortened to
+ * fit a column it was not given), as `CellResult.text` and `color` display it.
  */
 export const displayValue = /* @__PURE__ */ strict(function displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay {
   const o = checkDisplayOptions(opts)

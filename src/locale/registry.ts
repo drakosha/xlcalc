@@ -17,7 +17,7 @@ export const PACKAGE_LOCALES: readonly string[] = ['en-US', 'ru-RU']
 const loaded = new Map<string, Locale>([[DEFAULT_LOCALE, EN_US]])
 const listeners = new Set<(locale: Locale) => void>()
 
-/** The loaded locales by tag, en-US and those registered, in the order they were loaded. The map is for reading. */
+/** The loaded locales by tag, en-US and the registered ones, in the order they were loaded. The map is for reading only. */
 export const LOCALES: ReadonlyMap<string, Locale> = loaded
 
 /** Loads a checked locale and tells the listeners (a pool sends it to its threads). */

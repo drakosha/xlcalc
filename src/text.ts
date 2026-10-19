@@ -36,17 +36,18 @@ export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormat
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
 
 /**
- * A column's name in a structured reference as Excel writes it: `'` before each `[`, `]`, `#` and `'` in it and before
- * an `@` it starts with (`x#y` is `x'#y`, `@at` is `'@at`), the rest as it is (`Unit Price`).
+ * A column's name in a structured reference as Excel writes it: `'` before each `[`, `]`, `#` and `'` in it, and before
+ * a leading `@` (`x#y` becomes `x'#y`, `@at` becomes `'@at`), everything else as is (`Unit Price`).
  */
 export const escapeColumn = /* @__PURE__ */ strict(function escapeColumn(name: string): string {
   return escaped(checkString(name, 'name'))
 })
 
 /**
- * Text from the clipboard as the rectangle Excel pastes (`Session.pasteText`): its rows, at line breaks, of its fields, at
- * tabs, each row as wide as the longest; a field begun by a quote runs to its closing quote, line breaks and tabs inside
- * it, a doubled quote one; an empty field clears its cell, and a line break after the last row is a row of empty fields.
+ * Text from the clipboard as the rectangle Excel pastes (`Session.pasteText`): rows split at line breaks, made of fields
+ * split at tabs, each row as wide as the longest; a field that begins with a quote runs to its closing quote, with line
+ * breaks and tabs inside it, and a doubled quote stands for one; an empty field clears its cell, and a line break after
+ * the last row is a row of empty fields.
  */
 export const parseClipboard = /* @__PURE__ */ strict(function parseClipboard(text: string): string[][] {
   return clipboardRows(checkString(text, 'text'))
@@ -91,15 +92,16 @@ export const columnWidthFromPoints = /* @__PURE__ */ strict(function columnWidth
 })
 
 /**
- * A stored xlsx width as Excel for Mac's Column Width box shows it, in characters of the book's default font to two
- * decimals (the default column, null or undefined, is 8); in the library's Mac point model, as `columnWidthToPoints`.
+ * A stored xlsx width as Excel for Mac's Column Width box displays it, in characters of the workbook's default font, to
+ * two decimal places (the default column, null or undefined, is 8); in the library's Mac point model, like
+ * `columnWidthToPoints`.
  */
 export const columnWidthToChars = /* @__PURE__ */ strict(function columnWidthToChars(width?: number | null): number {
   if (width !== undefined && width !== null) checkNumber(width, 'width', 0, 255.83203125)
   return charsOfPoints(columnPoints(width ?? undefined))
 })
 
-/** A width in characters, as typed into Excel for Mac's Column Width box (0 to 255), to the stored xlsx width Excel makes of it. */
+/** Converts a width in characters, as typed into Excel for Mac's Column Width box (0 to 255), to the stored xlsx width Excel makes of it. */
 export const columnWidthFromChars = /* @__PURE__ */ strict(function columnWidthFromChars(chars: number): number {
   checkNumber(chars, 'chars', 0, 255)
   return widthOf(pointsOfChars(chars))
@@ -107,14 +109,14 @@ export const columnWidthFromChars = /* @__PURE__ */ strict(function columnWidthF
 
 const FIND = ['caseSensitive', 'wildcards', 'wholeCell'] as const
 
-/** Excel's Find over a host's texts, as `findCells` matches a cell's: the test of a text, null when nothing can match (an empty query, `~` alone). */
+/** Excel's Find over a host's own texts, matching as `findCells` matches a cell's text: a test for a text, or null when nothing can match (an empty query, `~` alone). */
 export const findMatcher = /* @__PURE__ */ strict(function findMatcher(query: string, opts?: FindTextOptions): ((text: string) => boolean) | null {
   const o = flags(opts, FIND, 'Find options such as { wildcards: true }')
   const test = matcher(checkString(query, 'query'), o)
   return test && ((text) => test(o.caseSensitive ? text : folded(text)))
 })
 
-/** Excel's Replace over a host's texts, as `replaceInCells` replaces in a cell's: a text with each match put as `by`, null where nothing matches. */
+/** Excel's Replace over a host's own texts, as `replaceInCells` replaces in a cell's text: the text with each match replaced by `by`, or null where nothing matches. */
 export const findReplacer = /* @__PURE__ */ strict(function findReplacer(query: string, by: string, opts?: FindTextOptions): ((text: string) => string | null) | null {
   return replacer(checkString(query, 'query'), checkString(by, 'by'), flags(opts, FIND, 'Find options such as { wildcards: true }'))
 })
@@ -133,10 +135,11 @@ function compareOptions(opts: CompareValuesOptions | undefined): [boolean, ((a: 
 }
 
 /**
- * Excel's sort order of two cells' values, as the Sort command of a host's display filter sorts: numbers, text in any
- * case (in the order of `locale`'s text, en-US's without it), FALSE then TRUE, errors, all equal, and blanks (null)
- * last, also with `descending`; negative when `a` comes first, 0 for equal values, which a stable sort keeps in their
- * order as Excel does. The function SORT orders errors by ERROR.TYPE's number instead.
+ * Excel's sort order for two cells' values, as the Sort command of a host's display filter sorts them: numbers, then
+ * text in any case (in `locale`'s text order, en-US's without it), then FALSE and TRUE, then errors, all equal to each
+ * other, and blanks (null) last, even with `descending`; negative when `a` comes first, 0 for equal values, which a
+ * stable sort keeps in their original order, as Excel does. The SORT function instead orders errors by their
+ * ERROR.TYPE number.
  */
 export const compareValues = /* @__PURE__ */ strict(function compareValues(a: CellValue, b: CellValue, opts?: CompareValuesOptions): number {
   return sortOrder(checkCellValue(a, 'a'), checkCellValue(b, 'b'), ...compareOptions(opts))
@@ -144,7 +147,7 @@ export const compareValues = /* @__PURE__ */ strict(function compareValues(a: Ce
 
 /**
  * `compareValues` with its options checked once, for `Array.prototype.sort` over many values: the order of two cells'
- * values, which it takes as `CellValue`s unchecked (`values.sort(valueComparator({ descending: true }))`).
+ * values, which it accepts as `CellValue`s without checking them (`values.sort(valueComparator({ descending: true }))`).
  */
 export const valueComparator = /* @__PURE__ */ strict(function valueComparator(opts?: CompareValuesOptions): (a: CellValue, b: CellValue) => number {
   const [desc, same] = compareOptions(opts)

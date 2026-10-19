@@ -844,8 +844,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
 }
 
 /**
- * Opens a session. Without options it keeps the clock of the moment it was opened (with a random seed)
- * until `setClock`; `{ live: true }` takes a fresh clock on every recomputation.
+ * Opens a session. Without options, it keeps the clock of the time it was opened (with a random seed)
+ * until `setClock`; `{ live: true }` takes a fresh clock on every recalculation.
  */
 export function createSession(book: BookInput, opts?: SessionOptions): Session {
   const budget = limitsBudget(checkSessionOptions(opts).limits)

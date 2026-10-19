@@ -121,7 +121,7 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   return { ok: true, book: out, geometry }
 }
 
-/** What `copyFormula` reads of a book: its sheets' names and their tables; a `BookInput` is one. */
+/** What `copyFormula` reads from a workbook: its sheet names and their tables; a `BookInput` qualifies. */
 export interface CopyContext {
   sheets: { name: string; tables?: TableInput[] }[]
 }
@@ -172,10 +172,10 @@ export function formulaCopier(book: CopyContext, tables = tablesOf(book as BookI
 }
 
 /**
- * The text of a formula copied from cell `from` to cell `to`, as `copyRange` pastes it: relative parts move by the
- * offset, absolute ones stay, a reference pushed past the sheet's edge is `#REF!`, only the changed references are
- * rewritten. With the book (its sheets' names and tables), a formula copied out of a table names the table in its
- * references to it, as Excel pastes it; without it the formula's own sheet names are taken as written.
+ * The text of a formula copied from cell `from` to cell `to`, as `copyRange` pastes it: relative parts shift by the
+ * offset, absolute ones stay, a reference pushed beyond the sheet's edge becomes `#REF!`, and only the changed
+ * references are rewritten. With the workbook (its sheet names and tables), a formula copied out of a table names the
+ * table in its references to it, as Excel pastes it; without it, the sheet names in the formula are taken as written.
  */
 export function copyFormula(text: string, from: CellRef, to: CellRef, book?: CopyContext): string {
   const formula = checkString(text, 'text')

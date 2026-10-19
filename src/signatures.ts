@@ -527,8 +527,8 @@ function translated(name: string, words: Readonly<Record<string, string>> | unde
 }
 
 /**
- * The signature of a function, by its name in English or in the locale (any case), for a tip of its arguments while a
- * formula is typed; null for a name that is no function of the whitelist.
+ * The signature of a function, by its name in English or in the locale (in any case), for an argument tooltip while a
+ * formula is being typed; null for a name that is not a function in the whitelist.
  */
 export function functionSignature(name: string, locale?: string | Locale): FunctionSignature | null {
   checkString(name, 'name')

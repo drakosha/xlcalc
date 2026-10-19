@@ -14,8 +14,8 @@ import { strictMethods } from '../strict-args.js'
 export const SLICE_MS = 10
 
 /**
- * A calculator in the same thread (`Calc`): it computes in portions of `sliceMs` that give way to the event loop, with the
- * deadlines, cancellation and limits of a pool's calls; its sessions answer the same as a pool's.
+ * A calculator on the same thread (`Calc`): it calculates in slices of `sliceMs` that yield to the event loop, with the
+ * same deadlines, cancellation and limits as a pool's calls; its sessions return the same results as a pool's.
  */
 export function createInlineCalc(opts?: InlineCalcOptions): Calc {
   const o = checkInlineOptions(opts)

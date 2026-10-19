@@ -13,9 +13,9 @@ import type { TableItem } from '../syntax/table.js'
 
 export type { TableItem }
 
-/** A locale (`ruRU` of `xlcalc/locales/ru-RU`): its formula text and, for a book that computes in it, its rules of computation and messages. */
+/** A locale (`ruRU` from `xlcalc/locales/ru-RU`): how formulas are written in it and, for a workbook calculated in it, its calculation rules and messages. */
 export interface Locale {
-  /** BCP 47 tag: `en-US`, `ru-RU`. A locale without messages of its own takes those of the loaded locale of its tag (English for another tag). */
+  /** BCP 47 tag: `en-US`, `ru-RU`. A locale without messages of its own uses those of the loaded locale with its tag (English for any other tag). */
   readonly tag: string
   /** Decimal separator of number literals: `.` in en-US, `,` in ru-RU. */
   readonly decimalSeparator: string
@@ -32,37 +32,39 @@ export interface Locale {
   /** Function names by invariant name (`SUM: 'СУММ'`); a function not listed keeps its English name. */
   readonly functions: Readonly<Record<string, string>>
   /**
-   * The specifiers of structured references by their invariant text (`'#Data': '#Данные'`); without them, or for one
-   * not listed, the English one. Between a reference's items the list separator stands (`[#Данные];[Qty]` in ru-RU).
+   * The item specifiers of structured references by their invariant text (`'#Data': '#Данные'`); without them, or for a
+   * specifier not listed, the English one is used. A reference's items are separated by the list separator
+   * (`[#Данные];[Qty]` in ru-RU).
    */
   readonly tableItems?: Readonly<Partial<Record<TableItem, string>>>
   /**
-   * The words of the arguments' names in the tips of functions (`functionSignature`) by their English word (`number:
-   * 'число'`, so `number1` is `число1`); a word not listed stays English. The package's locales leave them, and
-   * `functionText`, to modules of their own (`xlcalc/function-text/ru-RU`), which a host joins to the locale.
+   * The words used in argument names in function tooltips (`functionSignature`), by their English word (`number:
+   * 'число'`, so `number1` becomes `число1`); a word not listed stays in English. The package's locales keep them, and
+   * `functionText`, in separate modules (`xlcalc/function-text/ru-RU`), which a host merges into the locale.
    */
   readonly argumentWords?: Readonly<Record<string, string>>
   /**
-   * The words of Excel's Insert Function window: the categories' names (`functionSignature`) and what each function does
-   * (`functionDescription`), by its English name; what is not listed stays English.
+   * The text of Excel's Insert Function dialog: the category names (`functionSignature`) and what each function does
+   * (`functionDescription`), by its English name; anything not listed stays in English.
    */
   readonly functionText?: { readonly categories: Readonly<Partial<Record<FunctionCategory, string>>>; readonly descriptions: Readonly<Record<string, string>> }
   /**
-   * The rules of computation as data: number and date text, names, `TEXT`'s codes, the text order, the code page. A
-   * locale a book computes in has them, but en-US, whose rules are the engine's own code; a locale without them reads
-   * and shows values as en-US does.
+   * The calculation rules as data: number and date text, names, `TEXT` format codes, text sort order, the code page.
+   * Every locale a workbook is calculated in has them, except en-US, whose rules are built into the engine's code; a
+   * locale without them parses and displays values as en-US does.
    */
   readonly regional?: RegionalData
   /**
-   * Messages for people in the locale's language (`messages.ts`): why a formula does not read, why a structure operation
-   * is refused, the words of `explain`, what an xlsx file lost. A message the locale lacks is English. They are functions, the one part of a
-   * locale a structured clone does not carry: a pool's thread imports the package's module of the tag itself.
+   * Messages for users in the locale's language (`messages.ts`): why a formula does not parse, why a structure operation
+   * is rejected, the words of `explain`, what was lost from an xlsx file. A message the locale lacks is in English. They
+   * are functions, the only part of a locale that a structured clone cannot carry: a pool's thread imports the package's
+   * module for the tag itself.
    */
   readonly messages?: Partial<Messages>
 }
 
 /**
  * The result of translating formula text: the text, or a check code with a message in the locale's language and the
- * position in the given text: `syntax`, or `external_ref` for a reference to a workbook the given links do not hold.
+ * position in the given text: `syntax`, or `external_ref` for a reference to a workbook not among the given links.
  */
 export type Translation = { ok: true; formula: string } | (Refusal<'syntax' | 'external_ref'> & { at: number })

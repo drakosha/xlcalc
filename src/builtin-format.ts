@@ -11,9 +11,9 @@ import type { Locale } from './locale/types.js'
 import { isBuiltin } from './numfmt.js'
 
 /**
- * The code a built-in number format (0 to 49, `NumberFormat` as a number) shows by in `locale` (a loaded locale's tag
- * or a locale object; en-US without one), in en-US syntax as a cell's `numberFormat` takes it; undefined for a number that
- * is not a built-in format's.
+ * The format code with which a built-in number format (0 to 49, `NumberFormat` as a number) is displayed in `locale` (a
+ * loaded locale's tag or a locale object; en-US without one), in en-US syntax as a cell's `numberFormat` accepts it;
+ * undefined for a number that is not a built-in format.
  */
 export function builtinFormatCode(id: number, locale?: string | Locale): string | undefined {
   if (typeof id !== 'number') throw new InputError('id', `expected the number of a built-in format, 0 to 49, got ${what(id)}`)

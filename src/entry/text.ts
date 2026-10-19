@@ -58,20 +58,21 @@ function readsOtherwise(text: string, o: EntryTextOptions): boolean {
 }
 
 /**
- * Whether text typed into a cell would read as something else than that text, so the cell needs an apostrophe before it
- * to hold it: a number, a date, a boolean, an error or a formula in the locale (`007`, `1.5` in ru-RU, `=A1`), a number
- * in a percent cell, text that begins with an apostrophe, empty text.
+ * Whether text typed into a cell would be parsed as something other than that text, so the cell needs an apostrophe
+ * before it to keep it as text: a number, a date, a boolean, an error or a formula in the locale (`007`, `1.5` in
+ * ru-RU, `=A1`), a number in a percentage cell, text that begins with an apostrophe, or empty text.
  */
 export function needsApostrophe(text: string, opts?: EntryTextOptions): boolean {
   return readsOtherwise(checkString(text, 'text'), checkEntryTextOptions(opts))
 }
 
 /**
- * The text a cell holding `value` opens with for editing, as Excel's formula bar shows it, in `opts.locale` by the cell's
- * `opts.numberFormat`: a number with its 15 significant digits and the locale's decimal separator (`1234.5`, `1234,5`), a
- * percent cell's number as a percent (`12%`), a date or a time cell's by the locale's short date and long time
- * (`1/31/2025  6:00:00 PM`, `31.01.2025  18:00:00`), a boolean and an error in the locale's words, text with an
- * apostrophe where typing it would read otherwise (`'007`). The value reads back from the text (`parseEntry`).
+ * The text a cell holding `value` opens with in edit mode, as Excel's formula bar displays it, in `opts.locale` and
+ * according to the cell's `opts.numberFormat`: a number to 15 significant digits with the locale's decimal separator
+ * (`1234.5`, `1234,5`), a percentage cell's number as a percentage (`12%`), a date or time cell's value in the locale's
+ * short date and long time formats (`1/31/2025  6:00:00 PM`, `31.01.2025  18:00:00`), a boolean or an error in the
+ * locale's words, and text with an apostrophe where typing it would otherwise be parsed as something else (`'007`).
+ * Parsing the text gives back the value (`parseEntry`).
  */
 export function entryText(value: CellValue, opts?: EntryTextOptions): string {
   return checkedEntryText(checkCellValue(value, 'value'), checkEntryTextOptions(opts))

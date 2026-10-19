@@ -245,9 +245,9 @@ function savedSource(f: Found, s: number, w: WindowLines, appearance: boolean): 
 }
 
 /**
- * A window over a saved book and its result, as `Session.getViewport` gives it over a session of that book, without
- * computing its formulas: the result's values, text and colour, the book's formats, styles and layout; with
- * `appearance`, its conditional formats computed over the result's values.
+ * A viewport over a saved workbook and its result, as `Session.getViewport` returns it over a session of that workbook,
+ * without calculating its formulas: the result's values, text and color, and the workbook's formats, styles and
+ * layout; with `appearance`, its conditional formats calculated over the result's values.
  */
 export function viewportOf(saved: BookSnapshot, sheet: string, range: string, opts?: SavedViewportOptions): SavedViewport {
   const f = found(saved)

@@ -90,8 +90,8 @@ export function fitEdits(s: EngineState, edits: LayoutEdit[]): SetLayoutEdit[] {
 }
 
 /**
- * The widths AutoFit gives columns `C` or `B:D` of the sheet `sheet` of a computed book, from the values of its result
- * (`compute(book)`), by column letter: null for the default width; a column with nothing to show is left out.
+ * The widths AutoFit gives columns `C` or `B:D` of the sheet `sheet` of a calculated workbook, from the values of its
+ * result (`compute(book)`), by column letter: null for the default width; a column with nothing to display is left out.
  */
 export function fitColumns(book: BookInput, result: ComputeResult, sheet: string, columns: string): Record<string, number | null> {
   const x = resultSheet(book, result, sheet, columns, 'c')
@@ -99,10 +99,11 @@ export function fitColumns(book: BookInput, result: ComputeResult, sheet: string
 }
 
 /**
- * The width Excel gives a column as `value`, shown by `opts.numberFormat`, is typed into one of its cells (`test/excel/fit/`):
- * a number AutoFit would give more room widens a column whose width is the default or one Excel fitted (`bestFit`), as
- * AutoFit fits it, though the default width (Excel keeps a fitted width that equals it); undefined when the column keeps
- * its width (text overflows, General drops decimals, a width set by hand stays, a column never narrows).
+ * The width Excel gives a column when `value`, displayed in `opts.numberFormat`, is typed into one of its cells
+ * (`test/excel/fit/`): a number for which AutoFit would make more room widens a column whose width is the default or
+ * was fitted by Excel (`bestFit`), as AutoFit fits it, even to the default width (Excel keeps a fitted width that
+ * equals it); undefined when the column keeps its width (text overflows, General drops decimals, a manually set width
+ * stays, a column never narrows).
  */
 export function entryWidth(value: CellValue, opts?: EntryWidthOptions): number | undefined {
   const o = checkEntryWidthOptions(opts)
