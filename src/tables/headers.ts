@@ -5,7 +5,7 @@
  * free one. Columns are named from left to right, so a typed name keeps it and the column to its right gives way.
  */
 import type { BookInput, CellInput, CellReplace, NumberFormat, Scalar } from '../contract.js'
-import { InputError } from '../input.js'
+import { InputError } from '../input-error.js'
 import { formatAddress, inputScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { rewriteBookTables } from './rewrite.js'

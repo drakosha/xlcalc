@@ -4,7 +4,7 @@
  * apart from the engine, so that a host that only computes takes none of them.
  */
 import type { Locale } from '../locale/types.js'
-import { checkString } from '../input.js'
+import { checkString } from '../input/basic.js'
 import { checkLocaleArg } from '../locale/load.js'
 import { strict } from '../strict-args.js'
 

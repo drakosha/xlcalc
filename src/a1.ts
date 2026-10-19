@@ -3,11 +3,12 @@
  * lines and their maps patched, a sheet's outline groups and Excel's commands on them, rectangles, a sheet's name in a
  * reference as Excel writes it and the rule names compare by. Rows and columns are numbered from 1, as A1 numbers them;
  * the parts reused are the engine's own (`model.ts`, `structure/area.ts`, `layout/spans.ts`, `layout/outline.ts`,
- * `structure/outline-command.ts`, `collate.ts`), which compute nothing. Each function refuses options it does not take (`strict-args.ts`).
+ * `structure/outline-command.ts`, `collate.ts`, `input/basic.ts`), which compute nothing. Each function refuses options it does not take (`strict-args.ts`).
  */
 import type { CellPosition, CellRect, LinePatch, LineSpan, OutlineEditOp, OutlineEditResult, OutlineGroup, RangeRect, SheetInput, SheetOutline } from './contract.js'
 import { caseKey } from './collate.js'
 import { InputError, what } from './input-error.js'
+import { checkString, isObject } from './input/basic.js'
 import { groupsOf, type OutlineEntry } from './layout/outline.js'
 import { lines, parseSpan, patchLines as patchSpans, spanKey } from './layout/spans.js'
 import type { Locale } from './locale/types.js'
@@ -20,15 +21,10 @@ import { strict } from './strict-args.js'
 
 export { MAX_COLS, MAX_ROWS }
 
-/** A whole number from 1 to `max`, else `InputError` naming `path`. */
+/** A whole number from 1 to `max`, else `InputError` naming `path`: `checkNumber`'s rule written out, which costs the `./a1` bundle 80 bytes fewer than the general check. */
 function line(n: unknown, max: number, path: string): number {
   if (typeof n !== 'number' || !Number.isInteger(n) || n < 1 || n > max) throw new InputError(path, `expected an integer from 1 to ${max}, got ${what(n)}`)
   return n
-}
-
-const text = (v: unknown, path: string): string => {
-  if (typeof v !== 'string') throw new InputError(path, `expected a string, got ${what(v)}`)
-  return v
 }
 
 /** Column letters of column `n` (1 is `A`, 16,384 is `XFD`). */
@@ -38,7 +34,7 @@ export const colLetters = /* @__PURE__ */ strict(function colLetters(n: number):
 
 /** The number of a column by its letters in any case (`B` is 2), or null when they are no column of the sheet (`XFE`). */
 export const colNumber = /* @__PURE__ */ strict(function colNumber(letters: string): number | null {
-  if (!/^[A-Za-z]{1,3}$/.test(text(letters, 'letters'))) return null
+  if (!/^[A-Za-z]{1,3}$/.test(checkString(letters, 'letters'))) return null
   const n = colToIndex(letters) + 1
   return n <= MAX_COLS ? n : null
 })
@@ -60,7 +56,7 @@ const ROWS = /^\d+:\d+$/
  */
 export const parseRange = /* @__PURE__ */ strict(function parseRange(range: string): RangeRect | null {
   // letters of other scripts stay out: some come to Latin ones in upper case (`ß` is `SS`)
-  if (!/^[A-Za-z0-9$:]+$/.test(text(range, 'range'))) return null
+  if (!/^[A-Za-z0-9$:]+$/.test(checkString(range, 'range'))) return null
   const t = range.replace(DOLLAR, '$1$2').toUpperCase()
   const x = rangeArg(t)
   if (!x) return null
@@ -70,7 +66,7 @@ export const parseRange = /* @__PURE__ */ strict(function parseRange(range: stri
 
 /** A cell's row and column (`B12`, `$B$12`, `b12`), or null when the text is no cell of the sheet (`ZZZ1`, `A0`, `B2:C3`). */
 export const parseCell = /* @__PURE__ */ strict(function parseCell(cell: string): CellPosition | null {
-  const r = text(cell, 'cell').includes(':') ? null : parseRange(cell)
+  const r = checkString(cell, 'cell').includes(':') ? null : parseRange(cell)
   return r?.kind === 'cells' ? { row: r.top, col: r.left } : null
 })
 
@@ -122,7 +118,7 @@ const axisOf = (axis: 'columns' | 'rows') => {
  * take: lower case, a span of one line (`C:C`) or the other way round, past the sheet.
  */
 export const parseLines = /* @__PURE__ */ strict(function parseLines(key: string, axis: 'columns' | 'rows'): LineSpan | null {
-  const s = parseSpan(text(key, 'key'), axisOf(axis))
+  const s = parseSpan(checkString(key, 'key'), axisOf(axis))
   return s && { first: s[0] + 1, last: s[1] + 1 }
 })
 
@@ -134,8 +130,6 @@ export const linesKey = /* @__PURE__ */ strict(function linesKey(first: number, 
   return spanKey(Math.min(a, b) - 1, Math.max(a, b) - 1, ax)
 })
 
-const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
-
 /**
  * A map of `SheetInput.columns` or `rows` with `patch` applied to lines `span` (`C`, `B:D`; `5`, `5:9`, the axis by the
  * key's shape), as `setLayout` applies it: a value sets a field, null removes it, a field left out stays; spans the patch
@@ -143,7 +137,7 @@ const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'obj
  * a book's: an object under each span of the axis, no two spans overlapping.
  */
 export const patchLines = /* @__PURE__ */ strict(function patchLines<T extends object>(map: Record<string, T> | undefined, span: string, patch: LinePatch<T>): Record<string, T> {
-  const axis: Axis = /^[A-Z]/.test(text(span, 'span')) ? 'c' : 'r'
+  const axis: Axis = /^[A-Z]/.test(checkString(span, 'span')) ? 'c' : 'r'
   const s = parseSpan(span, axis)
   if (!s) throw new InputError('span', `expected columns or rows ("B:D", "5:9"), got ${what(span)}`)
   checkMap(map, axis, 'map', `a span of the axis of "${span}"`)
@@ -240,7 +234,7 @@ function booleans(locale: unknown): Locale['booleans'] {
  * stored formulas quote every sheet: this is the text a person reads.
  */
 export const quoteSheetIfNeeded = /* @__PURE__ */ strict(function quoteSheetIfNeeded(name: string, locale?: Pick<Locale, 'booleans'>): string {
-  const n = text(name, 'name')
+  const n = checkString(name, 'name')
   const words = booleans(locale)
   const cell = CELL.exec(n)
   const quote =
@@ -257,7 +251,7 @@ export const quoteSheetIfNeeded = /* @__PURE__ */ strict(function quoteSheetIfNe
  * Unicode's upper case in every locale (`straße` is `STRASSE`).
  */
 export const nameKey = /* @__PURE__ */ strict(function nameKey(name: string): string {
-  return caseKey(text(name, 'name'))
+  return caseKey(checkString(name, 'name'))
 })
 
 /** Whether two names of sheets, tables or defined names are the same name (`nameKey`). */

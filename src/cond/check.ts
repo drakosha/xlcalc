@@ -4,8 +4,10 @@
  * parse never holds, as a cell's formula computes an error.
  */
 import type { ConditionalFormat, IconSetName } from '../contract.js'
-import { array, checkBoolean, checkBorder, checkColor, checkFill, checkFont, checkFormat, checkNumber, checkOneOf, checkString, InputError, object, onlyKeys, type Given } from '../input.js'
-import { parseRange } from '../structure/area.js'
+import { InputError } from '../input-error.js'
+import { array, checkBoolean, checkNumber, checkOneOf, checkString, object, onlyKeys } from '../input/basic.js'
+import { checkRange } from '../input/range.js'
+import { checkBorder, checkColor, checkFill, checkFont, checkFormat, type Given } from '../input/styles.js'
 
 /** The icon sets by name, with their number of icons. */
 export const ICON_SETS: Record<IconSetName, number> = {
@@ -100,9 +102,7 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
   onlyKeys(o, p, [...BASE, ...FIELDS[type]])
   const ranges = array(o.ranges, `${p}.ranges`, 'an array of ranges such as ["B2:B9"]')
   if (!ranges.length) throw new InputError(`${p}.ranges`, 'a conditional format applies to one range at least')
-  ranges.forEach((r, i) => {
-    if (typeof r !== 'string' || !parseRange(r)) throw new InputError(`${p}.ranges[${i}]`, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(r)}`)
-  })
+  ranges.forEach((r, i) => checkRange(r, `${p}.ranges[${i}]`, false))
   if (o.stopIfTrue !== undefined) checkBoolean(o.stopIfTrue, `${p}.stopIfTrue`)
   if (o.style !== undefined) checkStyle(o.style, `${p}.style`)
   if (o.formula !== undefined) checkString(o.formula, `${p}.formula`)

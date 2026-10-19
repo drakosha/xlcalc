@@ -3,7 +3,10 @@
  * shape throws `InputError`; an operation Excel would refuse returns `{ ok: false, code, message }`.
  */
 import type { BookInput, CellRef, FillType, StructureResult, StructureOp } from '../contract.js'
-import { checkAddress, checkBook, checkOneOf, checkString, InputError, onlyKeys } from '../input.js'
+import { checkBook } from '../input.js'
+import { InputError } from '../input-error.js'
+import { checkOneOf, checkString, integer, isObject, onlyKeys } from '../input/basic.js'
+import { checkAddress, checkRange } from '../input/range.js'
 import { opTaken } from '../taken.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { say } from '../locale/messages.js'
@@ -11,7 +14,7 @@ import { sheetKey } from '../syntax.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockSerial } from '../result.js'
-import { areaText, parseRange } from './area.js'
+import { areaText } from './area.js'
 import { looksTaken } from '../looks/sheet.js'
 import { linesMoved, overLooks } from './looks.js'
 import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry.js'
@@ -31,8 +34,8 @@ import { copyTables, moveTables } from '../tables/moves.js'
 import { rewriteBookTables } from '../tables/rewrite.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
-  if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
-  return v as Record<string, unknown>
+  if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
+  return v
 }
 
 /** The operation's fields: `op` and the ones each operation takes. */
@@ -60,11 +63,6 @@ const FIELDS: Record<string, string[]> = {
 }
 
 const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
-
-function integer(v: unknown, path: string, min: number, max: number): number {
-  if (typeof v !== 'number' || !Number.isInteger(v) || v < min || v > max) throw new InputError(path, `expected an integer from ${min} to ${max}, got ${JSON.stringify(v)}`)
-  return v
-}
 
 /**
  * Restructures a book; the input book is not changed. A copy that pastes values (from a filtered sheet) computes
@@ -140,11 +138,6 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
   onlyKeys(o, 'op', ['op', ...allowed])
   const sheets = namesOf(book)
   const named = (v: unknown, path: string) => sheetOf(sheets, v, path)
-  const rangeOf = (v: unknown, path: string) => {
-    const r = parseRange(checkString(v, path))
-    if (!r) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(v)}`)
-    return r
-  }
   const count = (max: number) => (o.count === undefined ? 1 : integer(o.count, 'op.count', 1, max))
   let r: Applied
   switch (o.op as StructureOp['op']) {
@@ -173,11 +166,11 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       onlyKeys(from, 'op.from', ['sheet', 'range'])
       onlyKeys(to, 'op.to', ['sheet', o.op === 'copyRange' ? 'range' : 'cell'])
       const fromSheet = named(from.sheet, 'op.from.sheet')
-      const src = rangeOf(from.range, 'op.from.range')
+      const src = checkRange(from.range, 'op.from.range')
       const toSheet = named(to.sheet, 'op.to.sheet')
       if (o.withMeta !== undefined && typeof o.withMeta !== 'boolean') throw new InputError('op.withMeta', `expected a boolean, got ${JSON.stringify(o.withMeta)}`)
       if (o.op === 'copyRange') {
-        const target = rangeOf(to.range, 'op.to.range')
+        const target = checkRange(to.range, 'op.to.range')
         const withMeta = o.withMeta === true
         r = copyTables(book, fromSheet, src, toSheet, target).after(whole ? copyRange(book, fromSheet, src, toSheet, target, withMeta) : copyRows(book, fromSheet, src, toSheet, target, withMeta, values))
       } else {
@@ -230,7 +223,7 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'mergeCells':
     case 'unmergeCells': {
       const sheet = named(o.sheet, 'op.sheet')
-      const range = rangeOf(o.range, 'op.range')
+      const range = checkRange(o.range, 'op.range')
       const flag = (k: 'across' | 'center') => {
         if (o[k] !== undefined && typeof o[k] !== 'boolean') throw new InputError(`op.${k}`, `expected a boolean, got ${JSON.stringify(o[k])}`)
         return o[k] === true
@@ -243,7 +236,7 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       const sheet = named(o.sheet, 'op.sheet')
       // the fill handle is no copy and paste: Excel's fills the rows a filter hid too (the struct set `hidden`)
       const copy: Copier = (b, from, at) => applyOp(b, { op: 'copyRange', from: { sheet, range: areaText(from) }, to: { sheet, range: areaText(at) } }, values, true)
-      r = fillRange(book, sheet, rangeOf(o.range, 'op.range'), rangeOf(o.to, 'op.to'), String(o.to), (o.type ?? 'default') as FillType, copy)
+      r = fillRange(book, sheet, checkRange(o.range, 'op.range'), checkRange(o.to, 'op.to'), String(o.to), (o.type ?? 'default') as FillType, copy)
       break
     }
   }

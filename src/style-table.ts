@@ -4,7 +4,7 @@
  * fields set to undefined do not count).
  */
 import type { CellStyle } from './contract.js'
-import { checkStyle, checkStyles } from './input.js'
+import { checkStyle, checkStyles } from './input/styles.js'
 
 /** A key of a value independent of the order of its fields. */
 function keyOf(v: unknown): string {

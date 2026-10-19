@@ -7,9 +7,8 @@
 import type { BookInput, CellValue, ColumnInput, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, RowInput, SheetInput } from '../contract.js'
 import { epochOf } from '../dates.js'
 import { toCellValue, type EngineState } from '../engine.js'
-import { checkBook, checkCellValue, checkEntryWidthOptions, checkSheet, InputError } from '../input.js'
+import { checkCellValue, checkEntryWidthOptions } from '../input.js'
 import { displayRules, type Rules } from '../locale/rules.js'
-import { parseAddress } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { outValue } from '../result.js'
 import { applyLayout, type SetLayoutEdit } from '../session/book.js'
@@ -19,9 +18,7 @@ import { parseMerge } from './merges.js'
 import { hasCell } from '../structure/area.js'
 import { parseSpan, spanKey } from './spans.js'
 import { fitHeights, stateRows } from './heights.js'
-
-/** A cell of a sheet and its value: zero-based row and column. */
-export type Placed = readonly [r: number, c: number, v: CellValue]
+import { resultSheet, type Placed } from './result-sheet.js'
 
 /** The widest column of the model (`ColumnInput.width`); Excel's widest is 255.83, 255 digits and the padding. */
 const MAX_WIDTH = 255
@@ -90,29 +87,6 @@ export function fitEdits(s: EngineState, edits: LayoutEdit[]): SetLayoutEdit[] {
     out.push(...set)
   }
   return out
-}
-
-/**
- * A sheet of a computed book and its result's values, its lines `C`, `B:D` (`5`, `2:9` along rows) checked: the book as
- * checked, the sheet's index, the cells and the span; for `fitColumns` and `fitRows`.
- */
-export function resultSheet(book: BookInput, result: ComputeResult, sheet: string, span: string, axis: 'c' | 'r'): { book: BookInput; i: number; cells: Placed[]; lo: number; hi: number } {
-  book = checkBook(book)
-  const index = (name: string) => {
-    const i = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(name))
-    return i < 0 ? undefined : i
-  }
-  const i = checkSheet(sheet, index, 'sheet')
-  const lines = typeof span === 'string' ? parseSpan(span, axis) : null
-  const [path, example] = axis === 'c' ? ['columns', '"C" or "B:D"'] : ['rows', '"5" or "2:9"']
-  if (!lines) throw new InputError(path, `expected ${path} such as ${example}, got ${JSON.stringify(span)}`)
-  const values = result.sheets.find((x) => sheetKey(x.name) === sheetKey(book.sheets[i].name))
-  if (!values) throw new InputError('result', `the result has no sheet ${JSON.stringify(book.sheets[i].name)}`)
-  const cells = Object.entries(values.cells).map(([a, x]): Placed => {
-    const { row, col } = parseAddress(a)
-    return [row, col, x.value]
-  })
-  return { book, i, cells, lo: lines[0], hi: lines[1] }
 }
 
 /**

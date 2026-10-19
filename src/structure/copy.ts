@@ -6,40 +6,25 @@
  */
 import type { BookInput, CellInput, CellRef, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
-import { checkAddress, checkString, InputError } from '../input.js'
+import { InputError } from '../input-error.js'
+import { checkString } from '../input/basic.js'
+import { checkAddress } from '../input/range.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { FormulaError, sheetKey, tokenize } from '../syntax.js'
 import { tableAt, tablesOf } from '../tables/model.js'
 import { rewriteTableRefs } from '../tables/rewrite.js'
-import { isFull, LIMIT, shiftRect, span, type Area, type Axis, type Bound, type Rect } from './area.js'
+import { LIMIT, shiftRect, type Rect } from './area.js'
 import { carryNames } from './move.js'
 import { copiedCells, relocated } from './arrays.js'
 import { placer, type Applied, type Geometry } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { pasteLayout, pasteRefusal, type Paste } from './paste.js'
-import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Outcome, type Transform } from './rewrite.js'
+import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Transform } from './rewrite.js'
+import { copyTransform } from './transform.js'
 import { linksIn, markedLinks } from '../syntax/links.js'
 import { copyConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
-
-/** Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. */
-export function copyTransform(dr: number, dc: number): Transform {
-  return {
-    copy: true,
-    ref({ sheet, area }): Outcome {
-      const next: Area = { ...area }
-      for (const [axis, d] of [['r', dr], ['c', dc]] as [Axis, number][]) {
-        if (d === 0 || isFull(area[axis], axis)) continue
-        const move = (b: Bound): Bound => (b.abs ? b : { i: b.i + d, abs: false })
-        const s = span(move(area[axis].lo), move(area[axis].hi))
-        if (s.lo.i < 0 || s.hi.i >= LIMIT[axis]) return 'lost'
-        next[axis] = s
-      }
-      return { sheet, area: next }
-    },
-  }
-}
 
 /** The copies of `src` a paste lays in `target`: as many as fit when the target is a whole multiple of the source, else one. */
 export function tileCount(src: Rect, target: Rect): number {

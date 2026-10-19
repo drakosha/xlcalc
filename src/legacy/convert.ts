@@ -17,7 +17,7 @@ import type { NameInput } from '../contract.js'
 import { canonical, FormulaError, isRefOp, parse, type Ast } from '../syntax.js'
 import { caseKey } from '../collate.js'
 import { inputNameFor } from '../names.js'
-import { object, onlyKeys } from '../input.js'
+import { object, onlyKeys } from '../input/basic.js'
 import { strict } from '../strict-args.js'
 import { PARAMS } from './params.js'
 

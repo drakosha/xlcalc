@@ -10,7 +10,7 @@
 import { englishName } from './call-at.js'
 import type { FunctionArgument, FunctionSignature } from './contract.js'
 import { CATEGORY_NAMES, CATEGORY_OF } from './function-info.js'
-import { checkString } from './input.js'
+import { checkString } from './input/basic.js'
 import { checkLocaleArg } from './locale/load.js'
 import { localeOf } from './locale/registry.js'
 import type { Locale } from './locale/types.js'

@@ -5,7 +5,9 @@
  * cell an array fills has its value in it, as a result of the book has.
  */
 import type { BookInput, CellResult } from '../../contract.js'
-import { checkBook, InputError, object, onlyKeys, what } from '../../input.js'
+import { checkBook } from '../../input.js'
+import { InputError, what } from '../../input-error.js'
+import { object, onlyKeys } from '../../input/basic.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { sheetKey } from '../../syntax/print.js'

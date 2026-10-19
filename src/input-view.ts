@@ -1,5 +1,7 @@
 /** Saved view metadata checked at the book boundary; it does not enter computation. */
-import { array, checkAddress, checkNumber, InputError, object, onlyKeys } from './input.js'
+import { InputError } from './input-error.js'
+import { array, checkNumber, object, onlyKeys } from './input/basic.js'
+import { checkAddress } from './input/range.js'
 
 export function checkSheetView(v: unknown, path: string): void {
   const view = object(v, path, 'a sheet view such as { activeCell: "B2", zoom: 125 }')

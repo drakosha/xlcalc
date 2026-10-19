@@ -13,7 +13,7 @@ const bundle = () => browserBundle('a1.js', 'A1')
 describe('a1 without the engine', () => {
   it('the bundle holds the address modules alone, in a few kilobytes', async () => {
     const { code, used } = await bundle()
-    expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/outline', 'layout/spans', 'locale/outline-messages', 'model', 'sheet-pattern', 'strict-args', 'structure/area', 'structure/outline-command'])
+    expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'input/basic', 'layout/outline', 'layout/spans', 'locale/outline-messages', 'model', 'sheet-pattern', 'strict-args', 'structure/area', 'structure/outline-command'])
     // the list above keeps the engine out; this, that the address modules stay small (8,182 with the case of names as
     // Excel compares them, 10,957 with a sheet's outline groups)
     // 11.8 KB with mergedArea (16.10); 16.6 KB with outlineEdit, the engine's own outline commands and their English

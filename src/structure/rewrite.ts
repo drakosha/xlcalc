@@ -7,8 +7,6 @@ import { spend } from '../exec/budget.js'
 import { FormulaError, parse, quoteSheet, sheetKey, type Tok } from '../syntax.js'
 import { eachToken } from '../syntax/links.js'
 import { decode, encode, sameArea, type Area } from './area.js'
-import { rewriteConditional } from '../cond/structure.js'
-import { rewriteValidations } from '../validation/structure.js'
 
 /** A reference as a transform sees it: the sheet it points to (as the book spells it) and its rectangle. */
 export interface Site {
@@ -180,26 +178,4 @@ export function rewriteTemplates(tables: TableInput[] | undefined, host: string,
     if (columns) (out ??= [...tables])[i] = { ...table, columns }
   })
   return out ?? tables
-}
-
-/**
- * Every formula of the book (the names and the calculated columns too) rewritten in place, for operations that move
- * no cells; `rename` gives a sheet's new name.
- */
-export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, string>, rename = (name: string) => name): BookInput {
-  const out: BookInput = {
-    ...book,
-    sheets: book.sheets.map((s) => {
-      const name = rename(s.name)
-      const cells = rewriteCells(s.cells, s.name, name, t, sheets)
-      const tables = rewriteTemplates(s.tables, s.name, () => name, t, sheets)
-      const cf = rewriteConditional(s.conditionalFormats, s.name, name, t, sheets)
-      const validations = rewriteValidations(s.validations, s.name, name, t, sheets)
-      return cells !== s.cells || name !== s.name || tables !== s.tables || cf !== s.conditionalFormats || validations !== s.validations
-        ? { ...s, name, cells, ...(tables ? { tables } : {}), ...(cf ? { conditionalFormats: cf } : {}), ...(validations ? { validations } : {}) }
-        : s
-    }),
-  }
-  const names = rewriteNames(book.names, t, sheets)
-  return names ? { ...out, names } : out
 }

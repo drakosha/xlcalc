@@ -3,7 +3,8 @@
  * of a locale given by the tag of a loaded one or as an object, whose shape is checked once.
  */
 import { wordKey } from '../collate.js'
-import { checkString, InputError, object, onlyKeys } from '../input.js'
+import { InputError } from '../input-error.js'
+import { checkString, isObject, object, onlyKeys } from '../input/basic.js'
 import { EN_MESSAGES } from '../locales/en-US.js'
 import { XLSX_MESSAGE_KEYS } from './messages.js'
 import { LOCALE_ERRORS } from '../syntax/errors.js'
@@ -24,7 +25,7 @@ function separator(loc: Record<string, unknown>, path: string, key: string, inAr
 }
 
 function words(v: unknown, path: string, keys: readonly string[] | null, rule: RegExp, expected: string): void {
-  if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, 'expected an object')
+  if (!isObject(v)) throw new InputError(path, 'expected an object')
   const seen = new Map<string, string>()
   for (const [k, w] of Object.entries(v)) {
     if (keys && !keys.includes(k)) throw new InputError(path, `unknown key ${JSON.stringify(k)} (expected ${keys.join(', ')})`)
@@ -55,7 +56,7 @@ function checkText(locale: unknown, path: string): void {
 
 /** The words of arguments' names: two English words may share one (`criteria` and `condition` are `условие`). */
 function argumentWords(v: unknown, path: string): void {
-  if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, 'expected an object')
+  if (!isObject(v)) throw new InputError(path, 'expected an object')
   for (const [k, w] of Object.entries(v))
     if (typeof w !== 'string' || !/^[\p{L}_][\p{L}\p{N}_]*$/u.test(w)) throw new InputError(`${path}[${JSON.stringify(k)}]`, `expected a word of an argument's name, got ${JSON.stringify(w)}`)
 }

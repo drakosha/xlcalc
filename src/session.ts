@@ -23,7 +23,10 @@ import { journaled, priorOf } from './held.js'
 import { allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
-import { checkAddress, checkBook, checkBoolean, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkNumber, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
+import { checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet } from './input.js'
+import { checkBoolean, checkNumber, checkString } from './input/basic.js'
+import { checkAddress, checkRange } from './input/range.js'
+import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
 import { typedHeights, wrapTyped } from './session/wrap.js'
@@ -36,7 +39,7 @@ import { checkDirection, endOf } from './session/end.js'
 import { textsChanged } from './session/search.js'
 import { replacedTexts } from './session/replace.js'
 import { snapshotBook } from './session/snapshot.js'
-import { checkRange, checkViewportOptions, viewport } from './session/viewport.js'
+import { checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
 import { checkPatches } from './session/patch.js'
@@ -338,19 +341,22 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const [next, out, cellsBack] = yield* write(s, plan.edits)
     let o = out
     const steps = [cellsBack]
-    if (plan.sheets.size) {
-      const shown = display ? snapshot(next, layoutCells(next, plan.touched)) : null
-      const [lo, before] = yield* relayout(next, plan.sheets, shown)
-      o = joined(o, lo)
-      steps.push(() => layoutStep(call, before, plan.sheets))
-    }
-    if (plan.styles) {
-      const was = next.input.styles
-      next.input.styles = plan.styles
-      o = { ...o, styles: true }
-      steps.push(() => stylesStep(was, call))
-    }
+    if (plan.sheets.size) o = yield* laidOut(next, plan.sheets, display ? snapshot(next, layoutCells(next, plan.touched)) : null, o, steps, call)
+    if (plan.styles) o = restyled(next, plan.styles, o, steps, call)
     return [next, o, steps]
+  }
+  /** Sheets of a prepared layout put in (`relayout`) after the changes `o`: the changes of both, and the step back added to `steps`. */
+  function* laidOut(s: EngineState, sheets: Map<number, SheetInput>, shown: Map<number, string> | null, o: Outcome, steps: (() => Step | null)[], call: Step['call']): Steps<Outcome> {
+    const [lo, before] = yield* relayout(s, sheets, shown)
+    steps.push(() => layoutStep(call, before, sheets))
+    return joined(o, lo)
+  }
+  /** The book's style table replaced by `styles` after the changes `o`: those and the styles changed, and the step back added to `steps`. */
+  function restyled(s: EngineState, styles: CellStyle[] | undefined, o: Outcome, steps: (() => Step | null)[], call: Step['call']): Outcome {
+    const was = s.input.styles
+    s.input.styles = styles
+    steps.push(() => stylesStep(was, call))
+    return { ...o, styles: true }
   }
   /** Look-only edits (a patch, cleared formats): they keep every cell's content, so nothing is renamed or computed. */
   function* lookCells(s: EngineState, edits: CellReplace[]): Steps<[EngineState, Outcome, () => Step | null]> {
@@ -368,21 +374,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const [next, out, back] = yield* writeCells(s, cells.map((x) => x.edit), call)
     let o = out
     const steps = [back]
-    if (wrapped) {
-      const was = next.input.styles
-      next.input.styles = wrapped
-      o = { ...o, styles: true }
-      steps.push(() => stylesStep(was, call))
-    }
+    if (wrapped) o = restyled(next, wrapped, o, steps, call)
     // a number that does not fit its column widens it, and a row whose cell wraps fits it, as Excel does, in the same step
     const widths = pasted ? [] : textWidths(next, cells)
     const edits: SetLayoutEdit[] = [...(widen ? widths.map((w) => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } })) : []), ...(pasted ? [] : typedHeights(next, cells))]
     if (edits.length) {
       const shown = display ? snapshot(next, layoutCells(next, edits)) : null
       const sheets = applyLayout({ ...next.input, sheets: next.input.sheets.slice() }, edits, (name) => sheetIndex(next)(name)!)
-      const [lo, before] = yield* relayout(next, sheets, shown)
-      o = joined(o, lo)
-      steps.push(() => layoutStep(call, before, sheets))
+      o = yield* laidOut(next, sheets, shown, o, steps, call)
     }
     if (cells.length) keep(() => manyStep(call, steps.map((f) => f())))
     return [next, o, widths]
@@ -488,16 +487,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         const steps: (() => Step | null)[] = [cellsBack]
         if (plan.layout.size) {
           const layouts = new Map([...plan.layout].map(([i, sh]): [number, SheetInput] => [i, withLooksOf({ ...sh, cells: next.input.sheets[i].cells }, next.input.sheets[i])]))
-          const [lo, before] = yield* relayout(next, layouts, null)
-          outcome = joined(outcome, lo)
-          steps.push(() => layoutStep('applyChanges', before, layouts))
+          outcome = yield* laidOut(next, layouts, null, outcome, steps, 'applyChanges')
         }
-        if (plan.styles) {
-          const was = next.input.styles
-          next.input.styles = plan.book.styles
-          outcome = { ...outcome, styles: true }
-          steps.push(() => stylesStep(was, 'applyChanges'))
-        }
+        if (plan.styles) outcome = restyled(next, plan.book.styles, outcome, steps, 'applyChanges')
         back = () => manyStep('applyChanges', steps.map((f) => f()))
       }
       const used = { ...clock }

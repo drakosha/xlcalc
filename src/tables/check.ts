@@ -4,7 +4,8 @@
  * table over another, no merged area or array area of several cells in a table.
  */
 import type { BookInput, CellInput, TableColumn, TableInput, TotalsFunction } from '../contract.js'
-import { InputError, isObject, onlyKeys } from '../input.js'
+import { InputError } from '../input-error.js'
+import { isObject, onlyKeys } from '../input/basic.js'
 import { parseMerge } from '../layout/merges.js'
 import { formatAddress } from '../model.js'
 import { arrayArea } from '../array-areas.js'

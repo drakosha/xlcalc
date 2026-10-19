@@ -5,7 +5,9 @@
  */
 import type { CellEdit, CellFields, CellInput, CellReplace } from '../contract.js'
 import { sheetIndexOf, type EngineState } from '../engine.js'
-import { CELL_FIELDS, checkCell, checkEditList, InputError, object, onlyKeys } from '../input.js'
+import { CELL_FIELDS, checkCell, checkEditList } from '../input.js'
+import { InputError } from '../input-error.js'
+import { object, onlyKeys } from '../input/basic.js'
 import { inputAt } from './book.js'
 
 /** The fields of a cell's content: a formula's value held while a circular reference stops it goes with the formula. */

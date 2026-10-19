@@ -6,7 +6,7 @@
  * column formula, as of a cell's. A column formula that differs from its cells' is kept as it is, as Excel keeps it.
  */
 import type { CellInput, TableColumn, TableInput, TotalsFunction } from '../../contract.js'
-import { InputError } from '../../input.js'
+import { InputError } from '../../input-error.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { checkTables, TOTALS } from '../../tables/check.js'

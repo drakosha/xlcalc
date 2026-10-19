@@ -5,7 +5,8 @@
  * takes the tag of a loaded locale or a locale object, which needs no loading.
  */
 import type { ExternalBook, ValidateContext, ValidateResult } from '../contract.js'
-import { checkExternalBooks, checkString, checkValidateContext, object, onlyOptions } from '../input.js'
+import { checkExternalBooks, checkValidateContext } from '../input.js'
+import { checkString, object, onlyOptions } from '../input/basic.js'
 import { FormulaError, parse, sheetKey, validate, type Tok } from '../syntax.js'
 import { eachToken, numberLinks, showLinks } from '../syntax/links.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'

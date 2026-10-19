@@ -10,7 +10,7 @@
  * this says what an arrow does with no reference pointed since the text was typed.
  */
 import type { PointAction, ScanOptions } from './contract.js'
-import { checkNumber, checkString, object, onlyKeys } from './input.js'
+import { checkNumber, checkString, object, onlyKeys } from './input/basic.js'
 import { sidesOf } from './locale/index.js'
 import { checkLocaleArg } from './locale/load.js'
 import { ownErrors, translate } from './locale/translate.js'

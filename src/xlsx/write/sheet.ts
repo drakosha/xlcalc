@@ -14,7 +14,7 @@
  * whole format. Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows
  * and columns carry their outline levels.
  */
-import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, ExternalBook, RowInput, SheetInput } from '../../contract.js'
+import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput } from '../../contract.js'
 import { sheetViewXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { normalized } from '../../layout/outline.js'
@@ -23,15 +23,12 @@ import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress, readAd
 import { NONE, type Layer } from '../../looks/layer.js'
 import { inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
-import { ERROR_TEXT, FormulaError, type Ast } from '../../syntax/ast.js'
-import { parse } from '../../syntax/parse.js'
-import { sheetKey, walk } from '../../syntax/print.js'
-import { bindTables } from '../../syntax/check.js'
-import { bindLinks } from '../../syntax/links.js'
+import { ERROR_TEXT } from '../../syntax/ast.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
+import { fileTree, type FileNames } from './formula.js'
 import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { StyleWriter } from './styles.js'
@@ -49,16 +46,6 @@ const DEFAULT_WIDTH = '8.83203125'
  * meets. Excel takes the sheet as filtered by them and leaves its rows as the file has them; its Reapply shows every row.
  */
 export const KEEP_ALL = '<filterColumn colId="0"><customFilters><customFilter val=""/><customFilter operator="notEqual" val=""/></customFilters></filterColumn>'
-
-/** What a formula of the book may name in its file. */
-export interface FileNames {
-  /** Upper-case names (`sheetKey`) of the book's sheets. */
-  sheets: Set<string>
-  /** The book's tables with their columns. */
-  tables: { name: string; columns: string[] }[]
-  /** The book's links to other workbooks, which `[1]Sheet1!A1` names. */
-  externalBooks?: ExternalBook[]
-}
 
 export interface SheetContext extends FileNames {
   styles: StyleWriter
@@ -129,35 +116,6 @@ export function errorXml(code: ErrorCode, cycle: () => void, richError?: SheetCo
   }
   if (code === 'SPILL' || code === 'CALC') return { t: ` t="e"${richError ? ` vm="${richError(code)}"` : ''}`, v: '#VALUE!' }
   return { t: ' t="e"', v: code === 'ERROR' ? '#NULL!' : ERROR_TEXT[code] }
-}
-
-/**
- * The formula's tree when the file can hold it: it parses, names only the book's sheets, its structured references name
- * the book's tables and columns (a file names a reference's table always: `[@Qty]` is written `Sales[[#This Row],[Qty]]`),
- * and its references to other workbooks the book's links and their sheets.
- */
-export function fileTree(formula: string, names: FileNames, enclosing?: string): Ast | null {
-  let ast: Ast
-  try {
-    ast = parse(formula)
-  } catch (e) {
-    if (e instanceof FormulaError) return null
-    throw e
-  }
-  const bound = bindTables(ast, formula, { tables: names.tables, ...(enclosing ? { table: enclosing } : {}) })
-  if (!bound.ok) return null
-  ast = bound.ast
-  let ok = true
-  let linked = false
-  const known = (sheet: string | null | undefined) => sheet == null || names.sheets.has(sheetKey(sheet))
-  walk(ast, (n) => {
-    // a reference into another workbook, one Excel lost too (`[1]Sheet1!#REF!`, of any sheet of its link)
-    if (n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined)) linked = true
-    else if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
-  })
-  if (!ok || !linked) return ok ? ast : null
-  const links = bindLinks(ast, names.externalBooks, [...names.sheets])
-  return links.ok ? links.ast : null
 }
 
 export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext): SheetWritten {

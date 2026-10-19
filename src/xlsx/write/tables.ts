@@ -12,7 +12,8 @@ import { cornersText, parseRange } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { fileTree, KEEP_ALL, type FileNames } from './sheet.js'
+import { fileTree, type FileNames } from './formula.js'
+import { KEEP_ALL } from './sheet.js'
 import { HEAD, MAIN } from './xml.js'
 
 /** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode. */

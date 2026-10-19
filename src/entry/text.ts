@@ -7,7 +7,8 @@
  */
 import type { CellValue, EntryTextOptions, NumberFormat } from '../contract.js'
 import { epochOf } from '../dates.js'
-import { checkCellValue, checkEntryTextOptions, checkString } from '../input.js'
+import { checkCellValue, checkEntryTextOptions } from '../input.js'
+import { checkString } from '../input/basic.js'
 import { DEFAULT_LOCALE } from '../locale/registry.js'
 import { displayRules, type Rules } from '../locale/rules.js'
 import { EN_BUILTIN, EN_CODES, generalText } from '../numfmt.js'

@@ -4,7 +4,7 @@
  */
 import { checkPoolOptions } from '../async/options.js'
 import type { Calc, CalcPoolOptions, WorkerLike } from '../contract.js'
-import { InputError } from '../input.js'
+import { InputError } from '../input-error.js'
 import { strict } from '../strict-args.js'
 import { nodeSpawn, webSpawn, workerThreads, type ScriptUrl } from './platform.js'
 import { createPool } from './pool.js'

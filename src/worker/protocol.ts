@@ -4,7 +4,7 @@
  */
 import type { CalcLimits, CellRef, Clock, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
-import { InputError } from '../input.js'
+import { InputError } from '../input-error.js'
 import type { Locale } from '../locale/types.js'
 import type { HistoryData } from '../session/undo.js'
 import type { Sent } from './pack.js'

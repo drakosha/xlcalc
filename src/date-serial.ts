@@ -6,7 +6,8 @@
  * it is an `InputError`.
  */
 import { EPOCH_1904, epochOf, MAX_SERIAL, ymd } from './dates.js'
-import { checkOneOf, checkString, InputError, object, onlyKeys, what } from './input.js'
+import { InputError, what } from './input-error.js'
+import { checkOneOf, checkString, object, onlyKeys } from './input/basic.js'
 import { DAY_MS, dateToSerial as serialOfText } from './model.js'
 
 /** The book's date system, as `BookInput.dateSystem`: 1900 without one. */

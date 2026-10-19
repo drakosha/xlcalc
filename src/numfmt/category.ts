@@ -11,7 +11,7 @@
  * (`0,00`), so it shows Custom for nearly every code: the package follows Excel for Windows there.
  */
 import type { FormatCategory, FormatChoice, FormatChoiceKey, NumberFormat, NumberFormatCategory } from '../contract.js'
-import { checkFormat } from '../input.js'
+import { checkFormat } from '../input/styles.js'
 import { checkLocaleArg } from '../locale/load.js'
 import type { FormatNames } from '../locale/rules/data.js'
 import type { Locale } from '../locale/types.js'

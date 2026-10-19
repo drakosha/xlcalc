@@ -5,7 +5,7 @@
  * protection, a font's outline or shadow) is named per cell format, for the reader to report on the cells that use it.
  */
 import type { AlignmentStyle, BorderLine, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
-import { HORIZONTAL, LINES, VERTICAL } from '../../input.js'
+import { HORIZONTAL, LINES, VERTICAL } from '../../input/styles.js'
 import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'

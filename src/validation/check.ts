@@ -3,7 +3,8 @@
  * range of the sheet's cells, the formulas its type takes, and no two rules over one cell.
  */
 import { overlapping } from '../layout/merges.js'
-import { checkBoolean, checkOneOf, checkString, InputError, object, onlyKeys } from '../input.js'
+import { InputError } from '../input-error.js'
+import { checkBoolean, checkOneOf, checkString, object, onlyKeys } from '../input/basic.js'
 import type { Rect } from '../structure/area.js'
 import { areasOf, COMPARED, twoBounds } from './rules.js'
 import type { DataValidation, ValidationOperator, ValidationType } from '../contract.js'

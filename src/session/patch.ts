@@ -4,7 +4,11 @@
  * link. On whole rows and columns meta, notes and links can only be removed.
  */
 import type { CellLink, CellNote, JsonValue, NumberFormat, StylePatch } from '../contract.js'
-import { array, checkAddress, checkCell, checkFormat, checkSheet, checkString, checkStyle, checkStyleIndex, InputError, object, onlyKeys } from '../input.js'
+import { checkCell, checkSheet } from '../input.js'
+import { InputError } from '../input-error.js'
+import { array, object, onlyKeys } from '../input/basic.js'
+import { checkAddress, checkRange } from '../input/range.js'
+import { checkFormat, checkStyle, checkStyleIndex } from '../input/styles.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { parseRange, type Rect } from '../structure/area.js'
 
@@ -39,13 +43,6 @@ const FIELDS = ['style', 'numberFormat', 'meta', 'note', 'link'] as const
 
 /** Whole rows, whole columns, or neither: a rectangle across the sheet's width is rows, as Excel takes it. */
 export const linesOf = (x: Rect): 'r' | 'c' | undefined => (x.c1 === 0 && x.c2 === MAX_COLS - 1 ? 'r' : x.r1 === 0 && x.r2 === MAX_ROWS - 1 ? 'c' : undefined)
-
-/** A range of a sheet (`B2`, `B2:D9`, `B:D`, `2:9`). */
-export function checkRange(v: unknown, path: string): Rect {
-  const x = parseRange(checkString(v, path))
-  if (!x) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(v)}`)
-  return x
-}
 
 /** Patches of a book with `styles` styles, each with its target and what it does there. */
 export function checkPatches(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'patches'): CheckedPatch[] {
