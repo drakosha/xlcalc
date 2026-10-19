@@ -90,13 +90,13 @@ Pass the locale the person reading the messages chose. A file does not say it: E
 
 A file that is not a zip archive, an encrypted one, a ZIP64 archive and a file without a workbook part are errors. Data that is no bytes, such as the file's path, is an `InputError` that says to pass the bytes.
 
-`opts.limits` bounds how large the file's parts may be once inflated, in bytes: `entryBytes` for one part, 256 MiB by default, and `totalBytes` for the parts read together, 1 GiB by default. A file past them is an error, as a damaged file is. A host that reads files people upload passes lower ones:
+`opts.limits` bounds how large the file's parts may be once inflated: `entryBytes` for one part, 512 MiB by default, `totalBytes` for the parts read together, 1 GiB by default, and `ratio`, how many times its size in the file a part over 16 MiB may inflate to, 200 by default. A file past them is an error, as a damaged file is. A host that reads files people upload passes lower ones:
 
 ```js
 const read = await readXlsx(data, { limits: { entryBytes: 16 * 2 ** 20, totalBytes: 64 * 2 ** 20 } })
 ```
 
-A zip archive can hold a part that inflates to a thousand times its size in the file: a file of 400 KB can hold 400 MB of spaces. The reader stops inflating a part as soon as it passes the size the file declares for it, so a part that holds more than it declares is refused having taken no more memory than it declared. A part declared larger than `entryBytes`, and a part that would take the parts read past `totalBytes`, are refused before they are inflated. Two records of the archive over the same bytes, which let a small file inflate many times over, are refused too. So a part over 256 MiB is refused unless `limits.entryBytes` raises the bound, and a part over about 512 MiB is not read even then: the reader reads a part as one JavaScript string, and Node and Chromium hold a string of at most 536,870,888 characters. The largest part of the files measured here is about 112 MiB, the sheet of the book of the wide shape ([Speed](#speed)).
+A zip archive can hold a part that inflates to a thousand times its size in the file: a file of 400 KB can hold 400 MB of spaces. The reader stops inflating a part as soon as it passes the size the file declares for it, so a part that holds more than it declares is refused having taken no more memory than it declared. A part declared larger than `entryBytes`, a part that would take the parts read past `totalBytes`, and a part over 16 MiB declared more than `ratio` times its size in the file are refused before they are inflated: the parts of xlsx files inflate some 5 to 40 times, a bomb's a thousand times, so a file of 400 KB that honestly declares 400 MB of spaces is refused at once. Two records of the archive over the same bytes, which let a small file inflate many times over, are refused too. A part over about 512 MiB is not read whatever the bounds: the reader reads a part as one JavaScript string, and Node and Chromium hold a string of at most 536,870,888 characters. The largest part of the files measured here is about 112 MiB, the sheet of the book of the wide shape ([Speed](#speed)).
 
 ### Cells
 

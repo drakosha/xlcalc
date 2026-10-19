@@ -28,9 +28,14 @@ export const EOCD = 0x06054b50
 export const CENTRAL = 0x02014b50
 export const LOCAL = 0x04034b50
 
-/** The bounds of a file once inflated by default: 256 MiB a part, 1 GiB the parts read together. */
-export const ENTRY_BYTES = 2 ** 28
+/**
+ * The bounds of a file once inflated by default: 512 MiB a part (about what a JavaScript string holds), 1 GiB the parts
+ * read together, and a part over 16 MiB no more than 200 times its size in the file (xlsx parts inflate 5 to 40 times).
+ */
+export const ENTRY_BYTES = 2 ** 29
 export const TOTAL_BYTES = 2 ** 30
+export const RATIO = 200
+const RATIO_FROM = 2 ** 24
 
 function fail(why: string): never {
   throw new Error(`xlsx: not a readable zip archive: ${why}`)
@@ -77,7 +82,7 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     if (a.offset + span(v, a) > b.offset) fail(`entries ${a.name} and ${b.name} overlap`)
   }
   const byName = new Map(list.map((e) => [e.name.toLowerCase(), e]))
-  const { entryBytes = ENTRY_BYTES, totalBytes = TOTAL_BYTES } = limits
+  const { entryBytes = ENTRY_BYTES, totalBytes = TOTAL_BYTES, ratio = RATIO } = limits
   let spent = 0
   const bytesOf = async (name: string): Promise<Uint8Array | undefined> => {
     const e = byName.get(name.toLowerCase())
@@ -91,6 +96,7 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     if (size > entryBytes) fail(`entry ${e.name} is larger than ${entryBytes} bytes (limits.entryBytes)`)
     if ((spent += size) > totalBytes) fail(`the parts read are larger than ${totalBytes} bytes together (limits.totalBytes)`)
     if (e.method === 0) return raw
+    if (e.usize > RATIO_FROM && e.usize > ratio * e.csize) fail(`entry ${e.name} inflates to ${e.usize} bytes from ${e.csize}, more than ${ratio} times its size (limits.ratio)`)
     const out = await inflate(raw, e.usize)
     if (!out) fail(`entry ${e.name} inflates to more than the ${e.usize} bytes it declares`)
     if (out.length !== e.usize) fail(`entry ${e.name} inflates to ${out.length} bytes, not ${e.usize}`)

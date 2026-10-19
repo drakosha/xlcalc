@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
+import type { XlsxLimits } from '../src/xlsx/types.js'
 import { rawZip } from './fixtures/raw-zip.js'
 
 const child = fileURLToPath(new URL('./fixtures/zip-bomb-child.ts', import.meta.url))
@@ -36,6 +37,23 @@ describe('xlsx: the bounds of a file once inflated', () => {
     const read = await readXlsx(data, { limits: { entryBytes: most, totalBytes: all } })
     expect(read.book.sheets[0].cells.A200).toEqual({ formula: 'ROW()*199' })
     expect(read).toEqual(await readXlsx(data))
+  })
+
+  it('a part over 16 MiB that inflates more than limits.ratio times its size is refused before it is inflated; a part past 512 MiB by default', async () => {
+    const spaces = (mib: number) => ({ name: 'xl/workbook.xml', data: new Uint8Array(deflateRawSync(Buffer.alloc(mib * 2 ** 20, 0x20))), method: 8, usize: mib * 2 ** 20 })
+    // the length a part reads to, or its refusal: a short answer either way, which a failed expectation prints whole
+    const read = (file: Uint8Array, limits?: XlsxLimits) => openArchive(file, limits).bytes('xl/workbook.xml').then((b) => b?.length, (e: Error) => e.message)
+    const big = spaces(17)
+    const refusal = `xlsx: not a readable zip archive: entry xl/workbook.xml inflates to ${big.usize} bytes from ${big.data.length}, more than 200 times its size (limits.ratio)`
+    expect(await read(rawZip([big]))).toBe(refusal)
+    expect(await readXlsx(rawZip([big])).then(() => 'read', (e: Error) => e.message)).toBe(refusal)
+    expect(await read(rawZip([big]), { ratio: 1e6 })).toBe(big.usize)
+    // a part of 16 MiB inflates whatever its ratio
+    const small = spaces(16)
+    expect(await read(rawZip([small]))).toBe(small.usize)
+    // a part is bounded at 512 MiB by default, which a JavaScript string could hardly hold anyway
+    expect(await read(rawZip([{ ...small, usize: 2 ** 29 + 1 }]), { ratio: 1e9 })).toBe(`xlsx: not a readable zip archive: entry xl/workbook.xml is larger than ${2 ** 29} bytes (limits.entryBytes)`)
+    expect(await read(rawZip([{ ...small, usize: 2 ** 29 }]), { ratio: 1e9 })).toBe(`xlsx: not a readable zip archive: entry xl/workbook.xml inflates to ${small.usize} bytes, not ${2 ** 29}`)
   })
 
   it('records of the central directory whose bytes overlap', async () => {
