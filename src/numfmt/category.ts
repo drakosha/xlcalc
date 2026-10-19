@@ -52,9 +52,9 @@ const codesOf = (loc: Locale | undefined) => builtinCodes(loc?.regional?.builtin
 const MONEY = /^(?:[5-8]|4[1-4])$/
 
 /**
- * The category of a number format in `locale` (a loaded locale's tag or a locale object; en-US without one) as the
- * ribbon's Number Format box shows it, with its name there: a code as an xlsx file stores it, or a built-in format by
- * its number.
+ * The category of a number format in `locale` (a loaded locale's tag or a locale object; en-US without one), as the
+ * ribbon's Number Format box displays it, with the category's name there: for a format code as stored in an xlsx file,
+ * or a built-in format by its number.
  */
 export function numberFormatCategory(format: NumberFormat, locale?: string | Locale): NumberFormatCategory {
   checkFormat(format, 'format')
@@ -65,7 +65,7 @@ export function numberFormatCategory(format: NumberFormat, locale?: string | Loc
   return { category, name: namesOf(loc).categories[category] }
 }
 
-/** The items of the Number Format list in `locale`, in its order: each one's key, name, the format it applies and that format's code in the locale. */
+/** The items of the Number Format list in `locale`, in list order: each item's key, name, the format it applies and that format's code in the locale. */
 export function numberFormatChoices(locale?: string | Locale): FormatChoice[] {
   const loc = optLocale(locale)
   const names = namesOf(loc)

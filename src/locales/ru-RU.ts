@@ -425,7 +425,7 @@ const MESSAGES: Messages = {
   filterModeOut: () => 'Режим фильтра листа, у таблиц которого нет строки заголовков, не записан: автофильтр по ячейкам листа задел бы эти таблицы',
 }
 
-/** ru-RU, for `registerLocale`, and for `toLocal` and the functions without a book as it is. */
+/** ru-RU, for `registerLocale`, or to pass as is to `toLocal` and the other functions that work without a workbook. */
 export const ruRU: Locale = {
   tag: 'ru-RU',
   ...FORMULA_TEXT,

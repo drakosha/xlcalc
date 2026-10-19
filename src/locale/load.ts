@@ -124,9 +124,10 @@ const REGIONAL_KEYS: readonly (keyof RegionalData)[] = ['decimal', 'group', 'dat
 const REGIONAL_OPTIONAL: readonly (keyof RegionalData)[] = ['formats']
 
 /**
- * Loads a locale for books in it (`BookInput.locale`) and for its tag wherever a locale is taken: one of the package's
- * locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, then `registerLocale(ruRU)`). Loading the same object
- * again does nothing; another object with a loaded tag is an `InputError`. A pool's threads load it too.
+ * Loads a locale for workbooks in that locale (`BookInput.locale`) and for its tag wherever a locale is accepted: one
+ * of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, then `registerLocale(ruRU)`). Loading
+ * the same object again does nothing; a different object with an already loaded tag throws an `InputError`. A pool's
+ * threads load it too.
  */
 export function registerLocale(locale: Locale): void {
   const l = checkLocaleObject(locale, 'locale')

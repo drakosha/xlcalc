@@ -3,9 +3,9 @@ import type { CellInput, Scalar } from './contract.js'
 
 // ---------- addresses ----------
 
-/** A sheet's rows, as Excel's: 1,048,576. */
+/** The number of rows on a sheet, as in Excel: 1,048,576. */
 export const MAX_ROWS = 1_048_576
-/** A sheet's columns, as Excel's: 16,384, A to XFD. */
+/** The number of columns on a sheet, as in Excel: 16,384, A to XFD. */
 export const MAX_COLS = 16_384
 /** Excel's limit on the length of a text value: a cell's, a formula's text, a note's. */
 export const MAX_TEXT = 32_767

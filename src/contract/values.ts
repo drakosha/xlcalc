@@ -7,19 +7,20 @@ export type Scalar = number | string | boolean | null
 export type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
 
 /**
- * `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`).
- * `SPILL`: an array that cannot spill from its formula's cell (its range is not empty, meets a merged area or
- * leaves the sheet). `NULL`: Excel's #NULL!, ranges that do not meet under the intersection operator (`A1:A3 C1:C3`).
- * `ERROR`: a formula that does not compute (it does not parse, say).
+ * `CALC`: Excel's #CALC!, an empty array (`FILTER` that matches nothing) or text longer than 32,767 characters
+ * (`CONCAT`). `SPILL`: an array that cannot spill from its formula's cell (the range is not empty, overlaps a merged
+ * area or runs off the sheet). `NULL`: Excel's #NULL!, ranges that do not intersect under the intersection operator
+ * (`A1:A3 C1:C3`). `ERROR`: a formula that cannot be calculated (for example, one that does not parse).
  */
 export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'NULL' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR'
 
-/** A computed value. Dates come out as serial numbers, numbers are rounded to 15 significant digits. */
+/** A calculated value. Dates are returned as serial numbers, and numbers are rounded to 15 significant digits. */
 export type CellValue = Scalar | { error: ErrorCode }
 
 /**
  * Formula check codes. `unsupported`: an external function called with arguments that are not literals.
- * `unknown_name` covers tables too: an unknown table or column, a structured reference without a table outside one.
+ * `unknown_name` also covers tables: an unknown table or column, or a structured reference without a table name outside
+ * a table.
  */
 export type CheckCode =
   | 'empty'
@@ -32,25 +33,25 @@ export type CheckCode =
   | 'unknown_name'
   | 'unsupported'
 
-/** The moment (ISO) and the random seed that TODAY, NOW, RAND and RANDBETWEEN are computed from. */
+/** The point in time (ISO) and the random seed from which TODAY, NOW, RAND and RANDBETWEEN are calculated. */
 export interface Clock {
   now: string
   seed: number
 }
 
-/** A cell of a book: its sheet's name and its A1 address (`B2`). */
+/** A cell of a workbook: its sheet's name and its A1 address (`B2`). */
 export interface CellRef {
   sheet: string
   cell: string
 }
 
-/** A cell's row and column, numbered from 1 as A1 numbers them: `B12` is row 12, column 2. */
+/** A cell's row and column, numbered from 1 as in A1 notation: `B12` is row 12, column 2. */
 export interface CellPosition {
   row: number
   col: number
 }
 
-/** A rectangle of a sheet: rows and columns numbered from 1, bounds inclusive; a whole column runs from row 1 to `MAX_ROWS`. */
+/** A rectangle on a sheet: rows and columns numbered from 1, bounds inclusive; an entire column runs from row 1 to `MAX_ROWS`. */
 export interface CellRect {
   top: number
   left: number
@@ -58,21 +59,21 @@ export interface CellRect {
   right: number
 }
 
-/** A range's rectangle and what its text names: cells (`B2:D9`, `B2`), whole columns (`B:D`) or whole rows (`2:9`). */
+/** A range's rectangle and what its text refers to: cells (`B2:D9`, `B2`), entire columns (`B:D`) or entire rows (`2:9`). */
 export interface RangeRect extends CellRect {
   kind: 'cells' | 'columns' | 'rows'
 }
 
-/** The lines a key of `SheetInput.columns` or `rows` names (`C`, `B:D`, `5`, `5:9`), numbered from 1. */
+/** The columns or rows a key of `SheetInput.columns` or `rows` refers to (`C`, `B:D`, `5`, `5:9`), numbered from 1. */
 export interface LineSpan {
   first: number
   last: number
 }
 
 /**
- * A check or an edit that did not pass: a code a program reads, a message for people (in the book's locale where the
- * call has one, English otherwise) and, for typed text, the position in it. Every check answers `{ ok: true, … }` or
- * a `Refusal` with its own codes.
+ * A check or an edit that failed: a code for programs, a message for users (in the workbook's locale when the call has
+ * one, otherwise in English) and, for typed text, the position in that text. Every check returns either
+ * `{ ok: true, … }` or a `Refusal` with its own codes.
  */
 export interface Refusal<Code extends string = string> {
   ok: false
@@ -81,7 +82,7 @@ export interface Refusal<Code extends string = string> {
   at?: number
 }
 
-/** A rectangle on a sheet: `B2`, `B2:D9`, whole columns `B:D` or whole rows `2:9` (no `$`, no sheet). */
+/** A rectangle on a sheet: `B2`, `B2:D9`, entire columns `B:D` or entire rows `2:9` (no `$`, no sheet name). */
 export interface RangeRef {
   sheet: string
   range: string

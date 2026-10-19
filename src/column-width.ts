@@ -19,11 +19,11 @@ export const charsOfPoints = (points: number): number => Math.round((points < 11
 /** The whole points of a column Excel for Mac's Column Width box makes of a width in characters. */
 export const pointsOfChars = (chars: number): number => Math.round(chars < 1 ? chars * 11 : chars * 6 + 5)
 
-/** The height of a row without its own, in points: a line of Calibri 11, the book's default font. */
+/** The height of a row without a height of its own, in points: one line of Calibri 11, the workbook's default font. */
 export const DEFAULT_ROW_HEIGHT = 15
 
-/** The highest row Excel makes, in points. */
+/** The maximum row height Excel allows, in points. */
 export const MAX_ROW_HEIGHT = 409.5
 
-/** The deepest outline of rows or columns Excel makes: seven levels of groups below the sheet's own. */
+/** The deepest outline of rows or columns Excel allows: seven levels of groups below the sheet's own level. */
 export const MAX_OUTLINE = 7

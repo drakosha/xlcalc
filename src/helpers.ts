@@ -18,9 +18,9 @@ import { ERROR_TEXT, errorIn } from './syntax/errors.js'
 const SHEET_CODES: Partial<Record<MessageKey, SheetNameCode>> = { sheetNameEmpty: 'empty', sheetNameLong: 'too_long', sheetNameChar: 'character', sheetNameApostrophe: 'apostrophe', sheetNameHistory: 'reserved' }
 
 /**
- * Whether Excel takes a sheet name, by the rules a book's sheets are checked by: 1 to 31 characters, none of
- * `: \ / ? * [ ]`, no apostrophe at either end, not `History` in any case. A refusal's message is in `opts.locale`'s
- * language, English without one; `at` is the place of the character Excel does not take.
+ * Whether Excel accepts a sheet name, by the rules a workbook's sheets are checked against: 1 to 31 characters, none of
+ * `: \ / ? * [ ]`, no apostrophe at either end, not `History` in any case. A rejection's message is in `opts.locale`'s
+ * language, English without one; `at` is the position of the character Excel rejects.
  */
 export function validateSheetName(name: string, opts?: NameOptions): SheetNameCheck {
   const o = checkNameOptions(opts)
@@ -30,7 +30,7 @@ export function validateSheetName(name: string, opts?: NameOptions): SheetNameCh
   return { ok: false, code: SHEET_CODES[problem.key]!, message: say(o.locale, problem), ...(at === undefined ? {} : { at }) }
 }
 
-/** An error as a cell shows it in `locale` (a loaded locale's tag or a locale object, en-US without one): `#DIV/0!`, `#ДЕЛ/0!` in ru-RU. */
+/** An error as a cell displays it in `locale` (a loaded locale's tag or a locale object, en-US without one): `#DIV/0!`, `#ДЕЛ/0!` in ru-RU. */
 export function errorText(code: ErrorCode, locale?: string | Locale): string {
   if (!Object.hasOwn(ERROR_TEXT, code)) throw new InputError('code', `expected an error code (${Object.keys(ERROR_TEXT).join(', ')}), got ${JSON.stringify(code)}`)
   return errorIn(code, (locale === undefined ? EN_US : checkLocaleArg(locale, 'locale')).errors)
@@ -40,14 +40,14 @@ export function errorText(code: ErrorCode, locale?: string | Locale): string {
 const valueOf = (v: CellValue | undefined, path: string): CellValue => (v === undefined ? null : checkCellValue(v, path))
 
 /**
- * A value's canonical text, the one its line in the values hash holds: `n 1234.5` (15 significant digits, `-0` as 0),
+ * A value's canonical text, as its line in the values hash holds it: `n 1234.5` (15 significant digits, `-0` as 0),
  * `s "text"`, `b TRUE`, `e DIV0`, `_` for an empty cell.
  */
 export const canonValue = (value: CellValue): string => canonText(valueOf(value, 'value'))
 
 /**
- * Whether two values are the same value to the values hash: numbers equal to 15 significant digits (`0.1 + 0.2` is
- * `0.3`, `-0` is 0), errors by their code; an absent value (`undefined`) is an empty cell, as null.
+ * Whether two values are the same for the values hash: numbers equal to 15 significant digits (`0.1 + 0.2` is `0.3`,
+ * `-0` is 0), errors by their code; an absent value (`undefined`) is an empty cell, like null.
  */
 export function sameValue(a: CellValue | undefined, b: CellValue | undefined): boolean {
   const [x, y] = [valueOf(a, 'a'), valueOf(b, 'b')]

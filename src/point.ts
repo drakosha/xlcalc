@@ -50,9 +50,9 @@ export function typedArgs(text: string, caret: number | undefined, opts: ScanOpt
 }
 
 /**
- * What an arrow does at `caret` (the end of the text by default) of `text` typed over a cell: a reference put in at the
- * caret, the text entered, or nothing (`PointAction`). `opts.locale`: the locale the text is typed in, a loaded locale's
- * tag or a locale object; without it the text is en-US's.
+ * What an arrow key does at `caret` (the end of the text by default) in `text` typed over a cell: insert a reference at
+ * the caret, enter the text, or nothing (`PointAction`). `opts.locale`: the locale the text is typed in, a loaded
+ * locale's tag or a locale object; without it, the text is treated as en-US.
  */
 export function refAt(text: string, caret?: number, opts?: ScanOptions): PointAction {
   const { t, at, locale } = typedArgs(text, caret, opts)

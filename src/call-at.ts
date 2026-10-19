@@ -20,9 +20,10 @@ export function englishName(name: string, locale: Locale | undefined): string {
 }
 
 /**
- * The innermost call whose brackets hold `caret` (the end of the text by default) of formula text `text`, and the argument
- * it is in; null outside any call, and for text that is no formula (not begun by `=`, `+` or `-`). `opts.locale`: the
- * locale the text is typed in (its list separator and names); without it the text is en-US's.
+ * The innermost call whose brackets enclose `caret` (the end of the text by default) in formula text `text`, and the
+ * argument the caret is in; null outside any call, and for text that is not a formula (not beginning with `=`, `+` or
+ * `-`). `opts.locale`: the locale the text is typed in (its list separator and names); without it, the text is treated
+ * as en-US.
  */
 export function callAt(text: string, caret?: number, opts?: ScanOptions): CallAt | null {
   const { t, at, locale } = typedArgs(text, caret, opts)
@@ -46,12 +47,12 @@ export function callAt(text: string, caret?: number, opts?: ScanOptions): CallAt
 const BEFORE_NAME = /[=+\-*/^&<>@(\s]/
 
 /**
- * The name of a function being typed at `caret` (the end of the text by default) of formula text `text`, for the list
- * of Formula AutoComplete: the characters of a name around the caret, begun by a letter or `_`, where an operand may
- * begin (after the formula's first character, an operator, `(`, the locale's list separator, a space); null where no
- * function can stand: no name at the caret, in a string, a quoted sheet's name or a table's brackets, after a sheet's
- * `!` or a `$`, and for text that is no formula. `opts.locale`: the locale the text is typed in (its list separator);
- * without it the text is en-US's.
+ * The name of a function being typed at `caret` (the end of the text by default) in formula text `text`, for the
+ * Formula AutoComplete list: the name characters around the caret, starting with a letter or `_`, where an operand may
+ * begin (after the formula's first character, an operator, `(`, the locale's list separator or a space); null where no
+ * function can appear: no name at the caret, inside a string, a quoted sheet name or a table's brackets, after a
+ * sheet's `!` or a `$`, and for text that is not a formula. `opts.locale`: the locale the text is typed in (its list
+ * separator); without it, the text is treated as en-US.
  */
 export function nameAt(text: string, caret?: number, opts?: ScanOptions): NameAt | null {
   const { t, at, locale } = typedArgs(text, caret, opts)

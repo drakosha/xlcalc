@@ -8,7 +8,7 @@ import type { AbortSignalLike, CalcErrorCode, CalcLimits, CellRef } from '../con
 import { nowMs } from '../env.js'
 import { say } from '../locale/messages.js'
 
-/** Why an asynchronous or limited call failed, by `code`; a `limit` names the limit, its maximum, the size and the formula's cell. */
+/** Why an asynchronous or limited call failed, by `code`; a `limit` error names the limit, its maximum, the size and the formula's cell. */
 export class CalcError extends Error {
   readonly code: CalcErrorCode
   // declared only: a field without a value is no property of the error

@@ -91,8 +91,9 @@ const plusNumber = (text: string, decimal: string) => text.startsWith('+') && /^
 const PASTED_EURO = '[$€-2]\\ #,##0;[Red]\\-[$€-2]\\ #,##0'
 
 /**
- * Text typed into a cell as Excel takes it in the book's locale: the cell's new input, with the cell's style, meta, note
- * and link and the format Excel leaves it, or a formula Excel does not take. Empty text clears the value and keeps the rest.
+ * Text typed into a cell, as Excel interprets it in the workbook's locale: the cell's new input, with the cell's style,
+ * meta, note and link and the format Excel leaves it, or a formula Excel would reject. Empty text clears the value and
+ * keeps the rest.
  */
 export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   checkString(text, 'text')

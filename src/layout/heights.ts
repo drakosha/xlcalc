@@ -192,8 +192,8 @@ export function stateRows(s: EngineState, i: number, lo: number, hi: number): { 
 }
 
 /**
- * The heights AutoFit gives rows `5` or `2:9` of the sheet `sheet` of a computed book, from the values of its result
- * (`compute(book)`), by spans of rows of one height (`2:4`): null for the default height.
+ * The heights AutoFit gives rows `5` or `2:9` of the sheet `sheet` of a calculated workbook, from the values of its
+ * result (`compute(book)`), by spans of rows with the same height (`2:4`): null for the default height.
  */
 export function fitRows(book: BookInput, result: ComputeResult, sheet: string, rows: string): Record<string, number | null> {
   const x = resultSheet(book, result, sheet, rows, 'r')

@@ -10,7 +10,7 @@ import { InputError, what } from './input-error.js'
 import { checkOneOf, checkString, object, onlyKeys } from './input/basic.js'
 import { DAY_MS, dateToSerial as serialOfText } from './model.js'
 
-/** The book's date system, as `BookInput.dateSystem`: 1900 without one. */
+/** The workbook's date system, as in `BookInput.dateSystem`: 1900 without one. */
 export interface DateSystemOptions {
   dateSystem?: 1900 | 1904
 }
@@ -31,8 +31,8 @@ const last = (e: number) => MAX_SERIAL - e + 1
 const pad = (n: number, width = 2) => String(n).padStart(width, '0')
 
 /**
- * The serial number of a date and time as `CellInput.date` takes it (`2026-01-31` is 46053, `2026-01-31T18:00`
- * 46053.75), in `opts.dateSystem` (1900 without one; 1904 counts from 1904-01-01).
+ * The serial number of a date and time in the form `CellInput.date` accepts (`2026-01-31` is 46053, `2026-01-31T18:00`
+ * is 46053.75), in `opts.dateSystem` (1900 without one; 1904 counts from 1904-01-01).
  */
 export function dateToSerial(text: string, opts?: DateSystemOptions): number {
   checkString(text, 'text')
@@ -48,9 +48,9 @@ export function dateToSerial(text: string, opts?: DateSystemOptions): number {
 }
 
 /**
- * The date and time of a serial number in `opts.dateSystem`, as `CellInput.date` takes it and with no time zone: the
- * date alone for a whole number (`2026-01-31`), with the time to the millisecond otherwise (`2026-01-31T18:00`,
- * `2026-01-31T18:00:30.5`). Serial 0 of the 1900 system is `1900-01-00` and 60 is `1900-02-29`, as Excel shows them.
+ * The date and time of a serial number in `opts.dateSystem`, in the form `CellInput.date` accepts, without a time zone:
+ * just the date for a whole number (`2026-01-31`), otherwise with the time to the millisecond (`2026-01-31T18:00`,
+ * `2026-01-31T18:00:30.5`). Serial 0 of the 1900 system is `1900-01-00` and 60 is `1900-02-29`, as Excel displays them.
  */
 export function serialToDate(serial: number, opts?: DateSystemOptions): string {
   const e = epoch(opts)

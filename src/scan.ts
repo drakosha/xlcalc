@@ -90,11 +90,11 @@ function storedText(text: string, offset: number, locale: Locale): Translated {
 const KIND = { cell: 'cells', range: 'cells', cols: 'columns', rows: 'rows' } as const
 
 /**
- * The references to cells, whole columns and rows, and tables in formula text, in order, with their place in it (`at` to
- * `end`), for colouring them as they are typed. `formula` is a stored formula, or typed text in `opts.locale`; a leading
- * `=` is skipped. A token that does not read (a stray character, an error literal half typed, a sheet with nothing after
- * it) is skipped and the text read on past it; an open string, quoted sheet name or bracket takes the rest of the text.
- * Strings, function names and defined names are no references.
+ * The references to cells, entire columns and rows, and tables in formula text, in order, with their positions in it
+ * (`at` to `end`), for coloring them as they are typed. `formula` is a stored formula, or text typed in `opts.locale`;
+ * a leading `=` is skipped. A token that does not parse (a stray character, a half-typed error literal, a sheet name
+ * with nothing after it) is skipped and parsing continues past it; an unclosed string, quoted sheet name or bracket
+ * takes up the rest of the text. Strings, function names and defined names are not references.
  */
 export function scanReferences(formula: string, opts?: ScanOptions): FormulaReference[] {
   const text = checkString(formula, 'formula')

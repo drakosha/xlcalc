@@ -87,10 +87,10 @@ function indexed(styles: readonly CellStyle[]): Indexed {
 const unchanged = (styles: readonly CellStyle[], items: readonly CellStyle[]) => styles.length === items.length && styles.every((s, i) => s === items[i])
 
 /**
- * A style's number in a style table, as `patchCells` finds it: the first equal style's number and the same array, or a
- * new array with a copy of the style at the end and its number. Equal styles have the same fields with the same values,
- * in any order. A table is read once per array: the next call given the answer's table reads only the style added. A
- * table changed in place (a style added, replaced or removed) is read again; a style changed in place is not seen.
+ * A style's index in a style table, as `patchCells` finds it: the index of the first equal style and the same array, or
+ * a new array with a copy of the style appended and its index. Equal styles have the same fields with the same values,
+ * in any order. A table is read once per array: the next call, given the returned table, reads only the added style. A
+ * table changed in place (a style added, replaced or removed) is read again; a style changed in place goes unnoticed.
  */
 export function internStyle(styles: readonly CellStyle[], style: CellStyle): { index: number; styles: CellStyle[] } {
   const k = keyOf(checkStyle(style, 'style'))

@@ -19,7 +19,7 @@ export type * from './contract/structure.js'
 export type * from './contract/reading.js'
 export type * from './contract/session.js'
 
-/** Excel's limit of a formula's text: 8,192 characters. */
+/** Excel's limit on the length of a formula's text: 8,192 characters. */
 export const MAX_FORMULA_LENGTH = 8_192
-/** Excel's limit of calls nested in a formula: 64. */
+/** Excel's limit on nested function calls in a formula: 64. */
 export const MAX_FORMULA_DEPTH = 64

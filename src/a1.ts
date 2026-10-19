@@ -27,12 +27,12 @@ function line(n: unknown, max: number, path: string): number {
   return n
 }
 
-/** Column letters of column `n` (1 is `A`, 16,384 is `XFD`). */
+/** The letters of column `n` (1 is `A`, 16,384 is `XFD`). */
 export const colLetters = /* @__PURE__ */ strict(function colLetters(n: number): string {
   return indexToCol(line(n, MAX_COLS, 'n') - 1)
 })
 
-/** The number of a column by its letters in any case (`B` is 2), or null when they are no column of the sheet (`XFE`). */
+/** The number of a column from its letters, in any case (`B` is 2), or null when they are not a column of the sheet (`XFE`). */
 export const colNumber = /* @__PURE__ */ strict(function colNumber(letters: string): number | null {
   if (!/^[A-Za-z]{1,3}$/.test(checkString(letters, 'letters'))) return null
   const n = colToIndex(letters) + 1
@@ -50,9 +50,9 @@ const COLUMNS = /^[A-Z]+:[A-Z]+$/
 const ROWS = /^\d+:\d+$/
 
 /**
- * A range's rectangle and kind: `B2:D9` and `B2` are cells, `B:D` whole columns, `2:9` whole rows, with `$` and letters
- * in any case; corners given the other way round are put in order, as Excel orders a reference typed so. Null for
- * anything else or a range that leaves the sheet.
+ * A range's rectangle and kind: `B2:D9` and `B2` are cells, `B:D` entire columns, `2:9` entire rows, with `$` and
+ * letters in any case; corners given in reverse order are swapped, as Excel reorders such a typed reference. Null for
+ * anything else, or for a range that extends beyond the sheet.
  */
 export const parseRange = /* @__PURE__ */ strict(function parseRange(range: string): RangeRect | null {
   // letters of other scripts stay out: some come to Latin ones in upper case (`ß` is `SS`)
@@ -64,7 +64,7 @@ export const parseRange = /* @__PURE__ */ strict(function parseRange(range: stri
   return { kind, top: x.r1 + 1, left: x.c1 + 1, bottom: x.r2 + 1, right: x.c2 + 1 }
 })
 
-/** A cell's row and column (`B12`, `$B$12`, `b12`), or null when the text is no cell of the sheet (`ZZZ1`, `A0`, `B2:C3`). */
+/** A cell's row and column (`B12`, `$B$12`, `b12`), or null when the text is not a cell of the sheet (`ZZZ1`, `A0`, `B2:C3`). */
 export const parseCell = /* @__PURE__ */ strict(function parseCell(cell: string): CellPosition | null {
   const r = checkString(cell, 'cell').includes(':') ? null : parseRange(cell)
   return r?.kind === 'cells' ? { row: r.top, col: r.left } : null
@@ -78,7 +78,7 @@ function areaOf(r: CellRect, path = 'rect'): Area {
   return { kind: top === bottom && left === right ? 'cell' : 'range', r: span(b(top), b(bottom)), c: span(b(left), b(right)) }
 }
 
-/** A rectangle's address as Excel writes it: `B2` for one cell, `B2:D9`, `B:D` over every row, `2:9` over every column. */
+/** A rectangle's address as Excel writes it: `B2` for a single cell, `B2:D9`, `B:D` when it spans every row, `2:9` when it spans every column. */
 export const rangeAddress = /* @__PURE__ */ strict(function rangeAddress(rect: CellRect): string {
   return encode(areaOf(rect))
 })
@@ -96,8 +96,8 @@ export const rectContains = /* @__PURE__ */ strict(function rectContains(outer: 
 })
 
 /**
- * The rectangle a merge takes in (`mergeCells`, Merge Cells): `rect` grown by each merged area of `merges` it meets,
- * taken in whole, again for each it then meets, until it meets no other.
+ * The rectangle a merge covers (`mergeCells`, Merge Cells): `rect` extended to include each merged area of `merges`
+ * that it overlaps, repeated for each area it then overlaps, until it overlaps no other.
  */
 export const mergedArea = /* @__PURE__ */ strict(function mergedArea(r: CellRect, merges: readonly CellRect[]): CellRect {
   areaOf(r)
@@ -114,15 +114,15 @@ const axisOf = (axis: 'columns' | 'rows') => {
 }
 
 /**
- * The lines a key of `SheetInput.columns` or `rows` names (`C`, `B:D`; `5`, `5:9`), or null for a key a book does not
- * take: lower case, a span of one line (`C:C`) or the other way round, past the sheet.
+ * The lines that a key of `SheetInput.columns` or `rows` refers to (`C`, `B:D`; `5`, `5:9`), or null for a key a
+ * workbook does not accept: lowercase, a span of a single line (`C:C`) or in reverse order, or beyond the sheet.
  */
 export const parseLines = /* @__PURE__ */ strict(function parseLines(key: string, axis: 'columns' | 'rows'): LineSpan | null {
   const s = parseSpan(checkString(key, 'key'), axisOf(axis))
   return s && { first: s[0] + 1, last: s[1] + 1 }
 })
 
-/** The key of lines `first` to `last` (`C`, `B:D`; `5`, `5:9`), in order whichever comes first. */
+/** The key for lines `first` to `last` (`C`, `B:D`; `5`, `5:9`), in ascending order regardless of which bound is given first. */
 export const linesKey = /* @__PURE__ */ strict(function linesKey(first: number, last: number, axis: 'columns' | 'rows'): string {
   const ax = axisOf(axis)
   const max = ax === 'c' ? MAX_COLS : MAX_ROWS
@@ -131,10 +131,11 @@ export const linesKey = /* @__PURE__ */ strict(function linesKey(first: number, 
 })
 
 /**
- * A map of `SheetInput.columns` or `rows` with `patch` applied to lines `span` (`C`, `B:D`; `5`, `5:9`, the axis by the
- * key's shape), as `setLayout` applies it: a value sets a field, null removes it, a field left out stays; spans the patch
- * cuts are split, lines left without a field are dropped. A new map; the one given is not changed. The map is checked as
- * a book's: an object under each span of the axis, no two spans overlapping.
+ * A map of `SheetInput.columns` or `rows` with `patch` applied to the lines `span` (`C`, `B:D`; `5`, `5:9`; the axis
+ * follows from the key's shape), as `setLayout` applies it: a value sets a field, null removes it, and an omitted field
+ * is left unchanged; spans that the patch cuts through are split, and lines left without fields are dropped. Returns a
+ * new map; the given one is not modified. The map is checked as a workbook's would be: an object for each span of the
+ * axis, with no two spans overlapping.
  */
 export const patchLines = /* @__PURE__ */ strict(function patchLines<T extends object>(map: Record<string, T> | undefined, span: string, patch: LinePatch<T>): Record<string, T> {
   const axis: Axis = /^[A-Z]/.test(checkString(span, 'span')) ? 'c' : 'r'
@@ -161,9 +162,10 @@ function checkAxes(sheet: OutlineAxes) {
 
 /**
  * A sheet's groups of rows and columns as Excel draws them (`SheetOutline`), from its lines' outline levels, hidden
- * state and collapsed marks and its summary settings: a `SheetInput`, or a `SheetLayout` as `getLayout()` gives it. Each
- * axis's groups by first line, the outer before the inner where two begin together; a group is collapsed when Excel
- * keeps the mark on its summary line (`RowInput.collapsed`), whatever marks the sheet holds.
+ * state and collapsed markers and its summary settings: a `SheetInput`, or a `SheetLayout` as `getLayout()` returns it.
+ * Each axis's groups are ordered by first line, the outer before the inner when two start together; a group is
+ * collapsed when Excel would keep the marker on its summary line (`RowInput.collapsed`), whatever markers the sheet
+ * holds.
  */
 export const outlineGroups = /* @__PURE__ */ strict(function outlineGroups(sheet: Pick<SheetInput, 'rows' | 'columns' | 'outline'>): SheetOutline {
   checkAxes(sheet)
@@ -174,10 +176,11 @@ export const outlineGroups = /* @__PURE__ */ strict(function outlineGroups(sheet
 })
 
 /**
- * Excel's outline commands on a sheet alone, as `editStructure` does them in a book (`OutlineEditOp`: Group, Ungroup,
- * Show and Hide Detail, the level buttons): the sheet's rows and columns after the command, its summary settings read,
- * or why Excel refuses it, in English (`{ ok: false, code: 'detail', message: 'the detail of row 11 is shown already' }`).
- * The sheet is checked as `outlineGroups` checks it, the operation as `editStructure` checks it.
+ * Excel's outline commands on a standalone sheet, as `editStructure` performs them in a workbook (`OutlineEditOp`:
+ * Group, Ungroup, Show and Hide Detail, the level buttons): the sheet's rows and columns after the command, taking its
+ * summary settings into account, or why Excel rejects the command, in English
+ * (`{ ok: false, code: 'detail', message: 'the detail of row 11 is shown already' }`). The sheet is checked as
+ * `outlineGroups` checks it, and the operation as `editStructure` checks it.
  */
 export const outlineEdit = /* @__PURE__ */ strict(function outlineEdit(sheet: Pick<SheetInput, 'rows' | 'columns' | 'outline'>, op: OutlineEditOp): OutlineEditResult {
   checkAxes(sheet)
@@ -226,12 +229,12 @@ function booleans(locale: unknown): Locale['booleans'] {
 }
 
 /**
- * A sheet's name in a reference as Excel writes it: in quotes, an apostrophe inside doubled, when it is not a plain name
- * (`'Q1 data'`, `'2024'`, `'O''Brien'`), when it is a cell of the sheet (`'A1'`, `'XFD1048576'`; not `XFE1`), when it
- * begins with an R1C1 reference (`'R'`, `'R1C1'`, `'R2D2'`) or when it is one of the locale's booleans (`'TRUE'`;
- * `'ИСТИНА'` with ru-RU). `locale` gives the booleans, en-US's (the stored text, `Range.Formula`) without one: a locale
- * object (`ruRU`), not a tag, so that `xlcalc/a1` carries no list of locales; a tag is an `InputError`. The engine's
- * stored formulas quote every sheet: this is the text a person reads.
+ * A sheet's name in a reference as Excel writes it: quoted, with any apostrophe inside doubled, when it is not a plain
+ * name (`'Q1 data'`, `'2024'`, `'O''Brien'`), when it is a cell address on the sheet (`'A1'`, `'XFD1048576'`; not
+ * `XFE1`), when it begins with an R1C1 reference (`'R'`, `'R1C1'`, `'R2D2'`) or when it is one of the locale's booleans
+ * (`'TRUE'`; `'ИСТИНА'` with ru-RU). `locale` provides the booleans, en-US's (the stored text, `Range.Formula`) without
+ * one: a locale object (`ruRU`), not a tag, so that `xlcalc/a1` carries no list of locales; a tag throws an
+ * `InputError`. The engine's stored formulas quote every sheet name: this is the text a user reads.
  */
 export const quoteSheetIfNeeded = /* @__PURE__ */ strict(function quoteSheetIfNeeded(name: string, locale?: Pick<Locale, 'booleans'>): string {
   const n = checkString(name, 'name')
@@ -247,8 +250,8 @@ export const quoteSheetIfNeeded = /* @__PURE__ */ strict(function quoteSheetIfNe
 })
 
 /**
- * The key a name compares by: sheets, tables and defined names are the same name in any case (`Sales`, `SALES`), by
- * Unicode's upper case in every locale (`straße` is `STRASSE`).
+ * The key by which names are compared: sheet, table and defined names are the same name in any case (`Sales`,
+ * `SALES`), by Unicode uppercase in every locale (`straße` is `STRASSE`).
  */
 export const nameKey = /* @__PURE__ */ strict(function nameKey(name: string): string {
   return caseKey(checkString(name, 'name'))

@@ -133,8 +133,8 @@ function checkLimits(v: unknown): XlsxLimits {
 }
 
 /**
- * Reads an xlsx file (bytes of the file) into a book, the values Excel stored and what the book could not hold, its
- * messages in `opts.locale` (en-US by default).
+ * Reads an xlsx file (the file's bytes) into a workbook, the values Excel stored, and what the workbook could not hold,
+ * with messages in `opts.locale` (en-US by default).
  */
 export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxRead> {
   const bytes = fileBytes(data)

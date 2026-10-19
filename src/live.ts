@@ -72,7 +72,7 @@ function watchIn(set: Set<Watch>, listener: Listener, gone?: () => void): () => 
 
 /**
  * The live workbook of a synchronous session (`LiveBook`): the same object for the same session. An asynchronous
- * session throws `InputError`; its writes cannot answer what they computed.
+ * session throws `InputError`: its writes cannot return what they calculated.
  */
 export function liveBook(session: Session): LiveBook {
   const s = checkSession(session)

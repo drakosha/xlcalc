@@ -483,8 +483,9 @@ const DESCRIPTIONS: Readonly<Record<string, string>> = {
 }
 
 /**
- * What a function does, by its English name (`FunctionSignature.fn`, `CallAt.fn`) in any case: one line in the locale's
- * words when the locale has them (`{ ...ruRU, ...ruRUFunctionText }`), else in en-US; null for a name outside the whitelist.
+ * What a function does, looked up by its English name (`FunctionSignature.fn`, `CallAt.fn`) in any case: one line in
+ * the locale's language when the locale has descriptions (`{ ...ruRU, ...ruRUFunctionText }`), otherwise in en-US; null
+ * for a name outside the whitelist.
  */
 export const functionDescription = /* @__PURE__ */ strict(function functionDescription(fn: string, locale?: string | Locale): string | null {
   const name = checkString(fn, 'fn').toUpperCase()

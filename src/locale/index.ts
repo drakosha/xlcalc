@@ -18,7 +18,7 @@ import type { Locale, Translation } from './types.js'
 
 export type { Locale, Translation } from './types.js'
 
-/** en-US's formula text, the invariant syntax; the package's other locales are modules (`xlcalc/locales/ru-RU`). */
+/** en-US formula text, the invariant syntax; the package's other locales are separate modules (`xlcalc/locales/ru-RU`). */
 export const enUS: Locale = EN_US
 
 const cache = new WeakMap<object, Sides>()
@@ -41,12 +41,12 @@ const result = (r: Translated | Fail, locale: Locale): Translation => (r.ok ? { 
 const refusal = (r: Fail, locale: Locale) => ({ ok: false as const, code: 'syntax' as const, message: say(locale, r.msg), at: r.at })
 
 /**
- * A stored formula as a locale shows it (a loaded locale's tag, or a locale object): `SUM(A1:A3,1.5)` is
- * `СУММ(A1:A3;1,5)` in ru-RU, and a sheet is in quotes only where Excel puts them (`'Data'!B2` is `Data!B2`, in en-US
- * too; `quoteSheetIfNeeded` with the locale's booleans). Structured references are shown as Excel shows them, the formula's row as `@`
- * (`Sales[[#This Row],[Qty]]` is `Sales[@Qty]`) and a table alone by its name (`Sales[]` is `Sales`); `opts.table`, the
- * table of the formula's cell, drops its name before a column of its own (`[@Qty]`, `SUM([Qty])`), as Excel shows a
- * formula inside a table.
+ * A stored formula as displayed in a locale (a loaded locale's tag, or a locale object): `SUM(A1:A3,1.5)` becomes
+ * `СУММ(A1:A3;1,5)` in ru-RU, and a sheet name is quoted only where Excel quotes it (`'Data'!B2` becomes `Data!B2`, in
+ * en-US too; `quoteSheetIfNeeded` with the locale's booleans). Structured references are displayed as Excel displays
+ * them, the formula's own row as `@` (`Sales[[#This Row],[Qty]]` becomes `Sales[@Qty]`) and an entire table by its name
+ * alone (`Sales[]` becomes `Sales`); `opts.table`, the table containing the formula's cell, drops that table's name
+ * before its own columns (`[@Qty]`, `SUM([Qty])`), as Excel displays a formula inside a table.
  */
 export function toLocal(formula: string, where: string | Locale, opts?: TranslateOptions): Translation {
   const sides = localeSides(where)
@@ -105,11 +105,12 @@ const eachTable = (formula: string, f: (tok: Extract<Tok, { t: 'table' }>, text:
   formula.includes('[') ? eachToken(formula, (tok, text) => (tok.t === 'table' ? f(tok, text) : undefined)) : formula
 
 /**
- * Text typed in a locale (a loaded locale's tag, or a locale object) as a stored formula: `=СУММ(A1:A3;1,5)` is
- * `SUM(A1:A3,1.5)`. A leading `=` is dropped, as stored formulas have none; English function names, TRUE/FALSE and
- * error texts are read too, and a sheet's name with quotes or without, kept as typed. Positions of errors are in `text`, their messages in the locale's language. `opts.table`, the
- * table of the formula's cell, names it before a structured reference without a table name (`[@Qty]` is `Sales[@Qty]`),
- * as `toLocal` drops it, so the formula reads outside the table too.
+ * Text typed in a locale (a loaded locale's tag, or a locale object) as a stored formula: `=СУММ(A1:A3;1,5)` becomes
+ * `SUM(A1:A3,1.5)`. A leading `=` is removed, since stored formulas have none; English function names, TRUE/FALSE and
+ * error texts are also accepted, and a sheet name with or without quotes is kept as typed. Error positions refer to
+ * `text`, and error messages are in the locale's language. `opts.table`, the table containing the formula's cell, adds
+ * that table's name before a structured reference without one (`[@Qty]` becomes `Sales[@Qty]`), the reverse of
+ * `toLocal` dropping it, so the formula also works outside the table.
  */
 export function toInvariant(text: string, where: string | Locale, opts?: TranslateOptions): Translation {
   const [locale, s] = localeSides(where)
@@ -125,7 +126,8 @@ export function toInvariant(text: string, where: string | Locale, opts?: Transla
 
 /**
  * `validateFormula` for text typed in a locale (a loaded locale's tag, or a locale object): the same result, with the
- * canonical stored text, positions of errors in `text` (a leading `=` is allowed) and messages in the locale's language.
+ * canonical stored text, error positions referring to `text` (a leading `=` is allowed) and messages in the locale's
+ * language.
  */
 export function validateLocalFormula(text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult {
   const sides = localeSides(where)

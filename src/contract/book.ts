@@ -6,42 +6,43 @@ import type { CellStyle, ConditionalFormat, DataValidation } from './looks.js'
 export interface CellInput {
   value?: Scalar | { date: string }
   /**
-   * Formula text without `=`; a single leading `=` is dropped as the book is taken (`=SUM(A1:A2)` is `SUM(A1:A2)`, the
-   * same input and `inputHash`; `==1` stays an error). When present, `value` is ignored.
+   * Formula text without `=`; a single leading `=` is removed on input (`=SUM(A1:A2)` becomes `SUM(A1:A2)`, with the
+   * same input and `inputHash`; `==1` remains an error). When present, `value` is ignored.
    */
   formula?: string
   /**
-   * Number format, an Excel format code as an xlsx file stores it (en-US syntax: `#,##0.00`, `dd.mm.yyyy`, `[Red]`),
-   * shown in the book's locale (`CellResult.text`), or a built-in format by its number (`NumberFormat`). Without it
-   * a cell shows its row's format, else its column's.
+   * Number format: an Excel format code as stored in an xlsx file (en-US syntax: `#,##0.00`, `dd.mm.yyyy`, `[Red]`),
+   * displayed in the workbook's locale (`CellResult.text`), or the number of a built-in format (`NumberFormat`).
+   * Without it, a cell uses its row's format, or else its column's.
    */
   numberFormat?: NumberFormat
-  /** A style of the book's `styles`, by index. Without it a cell shows its row's style, else its column's. */
+  /** An index into the workbook's `styles`. Without it, a cell uses its row's style, or else its column's. */
   style?: number
   /** Arbitrary cell data (for example ids of source rows), passed through untouched. */
   meta?: JsonValue
   /**
-   * An array formula of the old kind (entered with Ctrl+Shift+Enter; in xlsx `<f t="array" ref="B2:C5">` without
-   * dynamic array metadata), on the top-left cell of its area: the area (`B2:C5`, or the cell alone, `B2`). The
-   * formula is computed as an array, with no implicit intersection, and fills the area, which it never leaves:
-   * a smaller array is repeated when it has one row or one column, else the cells past it are #N/A, a larger one is
-   * cut, one value fills every cell; nothing spills and nothing blocks it. `ROW()` and `COLUMN()` give the rows and
-   * columns of the area. The other cells of the area hold no input, and a session refuses to change some of them
-   * without the rest (`Session.setCells`). Only with `formula`.
+   * A legacy array formula (entered with Ctrl+Shift+Enter; in xlsx, `<f t="array" ref="B2:C5">` without dynamic array
+   * metadata), set on the top-left cell of its range: the range (`B2:C5`, or just the cell, `B2`). The formula is
+   * calculated as an array, without implicit intersection, and fills its range without ever extending past it: a
+   * smaller array is repeated when it has one row or one column, otherwise the cells beyond it are #N/A; a larger one
+   * is truncated; a single value fills every cell. Nothing spills, and nothing blocks it. `ROW()` and `COLUMN()` return
+   * the rows and columns of the range. The other cells of the range hold no input, and a session does not allow
+   * changing some of them without the rest (`Session.setCells`). Only with `formula`.
    */
   array?: string
-  /** A note on the cell (Excel's comment of the old kind). Like a style, it goes with the cell and takes no part in computation. */
+  /** A note on the cell (what Excel used to call a comment). Like a style, it stays with the cell and plays no part in calculation. */
   note?: CellNote
-  /** A hyperlink on the cell; the cell shows its value. Like a style, it goes with the cell and takes no part in computation. */
+  /** A hyperlink on the cell; the cell displays its value. Like a style, it stays with the cell and plays no part in calculation. */
   link?: CellLink
   /**
-   * The value a formula holds while a circular reference stops it. In a book without `iteration` a formula in a cycle,
-   * or one that reads a cycle (through other cells too), is not computed, as Excel computes none of them: it shows
-   * `held`, or 0 without it (a formula entered there shows 0 in Excel). Elsewhere the field has no effect, and the book
-   * as the engine takes it leaves it out, so it counts in `inputHash` in such a cell alone. A session keeps it as Excel
-   * keeps such cells: a cell that another edit brings into a cycle's way holds what it showed, a formula entered there
-   * holds 0, a cell out of the way is computed again and holds nothing; `getBook()` gives it (`docs/cycles.md`). The
-   * values a file stores come in as `held` through `cached` (`ComputeOptions.cached`).
+   * The value a formula keeps while a circular reference prevents its calculation. In a workbook without `iteration`, a
+   * formula in a cycle, or one that depends on a cycle (including through other cells), is not calculated, just as Excel
+   * calculates none of them: it displays `held`, or 0 without it (a formula entered there displays 0 in Excel).
+   * Elsewhere the field has no effect and is dropped on input, so it counts toward `inputHash` only in such cells. A
+   * session maintains it the way Excel treats such cells: a cell that another edit puts in a cycle's path keeps the
+   * value it displayed, a formula entered there keeps 0, and a cell no longer in the path is recalculated and keeps
+   * nothing; `getBook()` returns it (`docs/cycles.md`). The values stored in a file are loaded as `held` through
+   * `cached` (`ComputeOptions.cached`).
    */
   held?: Exclude<CellValue, null>
 }
@@ -53,150 +54,153 @@ export interface CellNote {
 }
 
 /**
- * A hyperlink, at least one of `url` and `location`. `url`: an address outside the book, as Excel's Address
- * (`https://example.com/`, `mailto:a@example.com`, a file). `location`: a place in the book, as Excel's SubAddress
- * (`'Sheet 2'!B12`, `Data!A1:C3`, a defined name), or with `url` a place in what it points to (the part after `#`).
+ * A hyperlink, with at least one of `url` and `location`. `url`: an address outside the workbook, like Excel's Address
+ * (`https://example.com/`, `mailto:a@example.com`, a file). `location`: a place in the workbook, like Excel's
+ * SubAddress (`'Sheet 2'!B12`, `Data!A1:C3`, a defined name), or, together with `url`, a place within the target (the
+ * part after `#`).
  */
 export interface CellLink {
   url?: string
   location?: string
-  /** The text Excel shows when the pointer rests on the cell (ScreenTip). */
+  /** The text Excel displays when the pointer hovers over the cell (ScreenTip). */
   tooltip?: string
 }
 
 /**
- * A number format: a format code as an xlsx file stores it, or the number of one of Excel's built-in formats, 0 to
- * 49, as a file stores a cell's format with no code of its own (`numFmtId`). Excel shows some built-in formats by the
- * locale: 14 is the locale's short date (`m/d/yyyy` in en-US, `dd.mm.yyyy` in ru-RU), 5 to 8 and 37 to 44 its money
- * and number formats, 15 to 22 its other dates and times. A code is shown as written whatever the locale.
+ * A number format: a format code as stored in an xlsx file, or the number of one of Excel's built-in formats, 0 to
+ * 49, which is how a file stores the format of a cell that has no code of its own (`numFmtId`). Excel displays some
+ * built-in formats according to the locale: 14 is the locale's short date (`m/d/yyyy` in en-US, `dd.mm.yyyy` in
+ * ru-RU), 5 to 8 and 37 to 44 its currency and number formats, 15 to 22 its other date and time formats. A format code
+ * is displayed as written, regardless of the locale.
  */
 export type NumberFormat = string | number
 
-/** Columns of a sheet, as xlsx `<col>`: the width, and the style and format of their cells that have none. */
+/** Columns of a sheet, like xlsx `<col>`: the width, and the style and number format for their cells that have none of their own. */
 export interface ColumnInput {
   /**
-   * In characters of the default font's digit with the cell's padding, as xlsx stores it, 0 to 255. Without it a
-   * column has Excel's default width (8 digits and the padding; Excel for Windows shows it as 8.43).
+   * In widths of the default font's digit, plus the cell padding, as xlsx stores it, 0 to 255. Without it, a column has
+   * Excel's default width (8 digits plus padding; Excel for Windows displays it as 8.43).
    */
   width?: number
   /**
-   * The width is one Excel fitted, by AutoFit or as a number typed into the column widened it, not one set by hand (xlsx
-   * `bestFit`): a number typed into the column widens it again (`entryWidth`), as into a column of the default width.
+   * The width was set by Excel, by AutoFit or by widening the column for a number typed into it, rather than manually
+   * (xlsx `bestFit`): a number typed into the column widens it again (`entryWidth`), as in a column of the default width.
    */
   bestFit?: boolean
   style?: number
   numberFormat?: NumberFormat
-  /** Hidden (xlsx `hidden`); a column of width 0 is hidden too. SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
+  /** Hidden (xlsx `hidden`); a column of width 0 is also hidden. SUBTOTAL and AGGREGATE still include the cells of hidden columns, as Excel does. */
   hidden?: boolean
   /** The outline level (Excel's Group, xlsx `outlineLevel`), 1 to 7; a column without one is not grouped. */
   outlineLevel?: number
-  /** The mark of a collapsed group on its summary column (xlsx `collapsed`), as `RowInput.collapsed`. */
+  /** The collapsed marker on a group's summary column (xlsx `collapsed`), like `RowInput.collapsed`. */
   collapsed?: boolean
 }
 
-/** Rows of a sheet, as xlsx `<row>`: the height, and the style and format of their cells that have none. */
+/** Rows of a sheet, like xlsx `<row>`: the height, and the style and number format for their cells that have none of their own. */
 export interface RowInput {
-  /** Points, 0 to 409.5. Without it a row has Excel's default height, 15 points (a line of Calibri 11). */
+  /** In points, 0 to 409.5. Without it, a row has Excel's default height, 15 points (one line of Calibri 11). */
   height?: number
   /**
-   * The height is one Excel fitted, by AutoFit or as text that wraps was typed into the row, not one set by hand (xlsx
-   * writes it without `customHeight`): text typed into the row fits it again (`fitRows`), as a row of the default height.
+   * The height was set by Excel, by AutoFit or when wrapping text was typed into the row, rather than manually (xlsx
+   * writes it without `customHeight`): text typed into the row fits it again (`fitRows`), as for a row of the default
+   * height.
    */
   bestFit?: boolean
   style?: number
   numberFormat?: NumberFormat
   /**
-   * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
-   * and 7 skip the row's cells, and on a `filtered` sheet SUBTOTAL with codes 1–11 too, as Excel does. A row of
-   * `height` 0 is hidden too, as Excel takes it. A collapsed group's rows are hidden rows.
+   * Hidden (xlsx `hidden`), manually or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
+   * and 7 ignore the row's cells, and on a `filtered` sheet so does SUBTOTAL with codes 1–11, as in Excel. A row with
+   * `height` 0 is also hidden, as Excel treats it. The rows of a collapsed group are hidden rows.
    */
   hidden?: boolean
   /** The outline level (Excel's Group, xlsx `outlineLevel`), 1 to 7; a row without one is not grouped. */
   outlineLevel?: number
   /**
-   * The mark of a collapsed group on its summary row (xlsx `collapsed`). Excel keeps it on every summary row whose group
-   * has all its rows hidden, however they were hidden, and drops it when one shows; a summary row inside a group whose rows
-   * are all hidden keeps the mark it had, so an inner group stays collapsed when the outer one is shown again. A book may
-   * hold other marks (`setLayout` sets the field as given): `outlineGroups` and the commands read the marks as Excel
-   * keeps them, and `writeXlsx` writes them so.
+   * The collapsed marker on a group's summary row (xlsx `collapsed`). Excel sets it on every summary row whose group has
+   * all its rows hidden, however they were hidden, and clears it when one of them is shown; a summary row inside a group
+   * whose rows are all hidden keeps the marker it had, so an inner group stays collapsed when the outer one is expanded
+   * again. A workbook may hold other markers (`setLayout` sets the field as given): `outlineGroups` and the outline
+   * commands read the markers as Excel would keep them, and `writeXlsx` writes them that way.
    */
   collapsed?: boolean
 }
 
-/** A sheet of a book (`BookInput.sheets`): its name, its cells by address, and what else a sheet keeps (rows, columns, merged areas, tables, looks, rules, frozen panes). */
+/** A sheet of a workbook (`BookInput.sheets`): its name, its cells by address, and everything else a sheet holds (rows, columns, merged areas, tables, formatting, rules, frozen panes). */
 export interface SheetInput {
   name: string
   /** Cells by A1 address (`B12`). */
   cells: Record<string, CellInput>
   /**
-   * The look of the cells that have no entry in `cells`, by rectangles, each over those before it: a sheet formatted
-   * across many empty cells (whole rows to XFD) is held without an object per cell. A cell without an entry shows the
-   * style and the number format of the last rectangle that covers it, both from it (a rectangle without a field gives
-   * the cell none of its own); a cell with an entry shows its own fields, whatever the rectangles say. A field a cell
-   * has none of comes from its row, else its column, as for an entry. `[{ range: 'A20:XFD22', style: 0 },
-   * { range: 'R20:R22', style: 1, numberFormat: '0.0%' }]` is the same sheet as an entry `{ style: 0 }` in each cell of
-   * A20:XFD22 but R20:R22, which hold `{ style: 1, numberFormat: '0.0%' }`. A book is taken with every entry that has
-   * only a style or a number format moved here, and the calls that give a book back give this list in a form of their
-   * own (`LookRange`).
+   * The formatting of the cells that have no entry in `cells`, as rectangles, each applied over those before it: a sheet
+   * formatted across many empty cells (entire rows out to XFD) is stored without an object per cell. A cell without an
+   * entry uses the style and the number format of the last rectangle that covers it, both from that rectangle (a
+   * rectangle without a field gives the cell none of its own); a cell with an entry uses its own fields, whatever the
+   * rectangles say. A field the cell lacks comes from its row, or else its column, as for an entry.
+   * `[{ range: 'A20:XFD22', style: 0 }, { range: 'R20:R22', style: 1, numberFormat: '0.0%' }]` is the same sheet as an
+   * entry `{ style: 0 }` in each cell of A20:XFD22 except R20:R22, which hold `{ style: 1, numberFormat: '0.0%' }`. On
+   * input, every entry that has only a style or a number format is moved here, and the calls that return a workbook
+   * return this list in a form of their own (`LookRange`).
    */
   looks?: LookRange[]
-  /** Columns by letters, one (`C`) or a span (`B:D`) as xlsx `<col min max>`; spans do not overlap. */
+  /** Columns by letter, a single column (`C`) or a span (`B:D`) like xlsx `<col min max>`; spans do not overlap. */
   columns?: Record<string, ColumnInput>
-  /** Rows by number, one (`5`) or a span (`5:9`); spans do not overlap. */
+  /** Rows by number, a single row (`5`) or a span (`5:9`); spans do not overlap. */
   rows?: Record<string, RowInput>
-  /** Merged areas (`B2:D3`), as xlsx `<mergeCell>`: two cells or more each, none overlapping another. */
+  /** Merged areas (`B2:D3`), like xlsx `<mergeCell>`: two or more cells each, none overlapping another. */
   merges?: string[]
   /**
-   * A filter of the sheet has criteria, its autofilter's or a table's (Excel's filter mode): every hidden row of the
-   * sheet counts as one a filter hid, which SUBTOTAL skips with codes 1–11 too and a copy leaves out, as Excel does
+   * A filter on the sheet has criteria, the sheet's AutoFilter or a table's (Excel's filter mode): every hidden row of
+   * the sheet counts as filtered out, so SUBTOTAL ignores it with codes 1–11 too and a copy skips it, as Excel does
    * whatever hid the row.
    */
   filtered?: boolean
-  /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or array area of several cells meets one. */
+  /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or multi-cell array range overlaps one. */
   tables?: TableInput[]
   /**
-   * Frozen panes (Excel's Freeze Panes): the first `rows` rows and the first `columns` columns stay in view as the sheet
-   * scrolls, one of them at least (`{ rows: 1 }` freezes the top row). Not part of computation.
+   * Frozen panes (Excel's Freeze Panes): the first `rows` rows and the first `columns` columns stay visible while the
+   * sheet scrolls; at least one of the two is set (`{ rows: 1 }` freezes the top row). Not part of calculation.
    */
   frozen?: FrozenPanes
-  /** Saved window state from xlsx; does not affect computation or inputHash. */
+  /** The saved sheet view from xlsx; it does not affect calculation or inputHash. */
   view?: SheetView
   /**
-   * The sheet's conditional formats (Excel's conditional formatting rules) in priority order, the first one first. They
-   * do not change values: a session gives what they show in `CellView.appearance` (`docs/conditional-formats.md`).
+   * The sheet's conditional formats (Excel's conditional formatting rules) in priority order, highest first. They do not
+   * change values: a session returns their effect on display in `CellView.appearance` (`docs/conditional-formats.md`).
    */
   conditionalFormats?: ConditionalFormat[]
   /**
-   * Data validation (Excel's Data Validation): the rules of the sheet's cells, at most one rule over a cell. Not part of
-   * computation: a session gives a cell's rule and its list (`Session.getValidation`) and checks a value against it
+   * Data validation (Excel's Data Validation): the rules for the sheet's cells, at most one rule per cell. Not part of
+   * calculation: a session returns a cell's rule and its list (`Session.getValidation`) and checks a value against it
    * (`Session.validateEntry`).
    */
   validations?: DataValidation[]
-  /** Where the summary rows and columns of the sheet's groups are (`RowInput.outlineLevel`); below and right by default. */
+  /** Where the summary rows and columns of the sheet's groups are placed (`RowInput.outlineLevel`); below and to the right by default. */
   outline?: OutlineSettings
   /**
-   * The sheet is hidden (Excel's Hide, xlsx `state="hidden"`), or very hidden (`'very'`, xlsx `state="veryHidden"`, a
-   * sheet Excel's window does not offer to show again, only its object model). Not part of computation: formulas read a
-   * hidden sheet as any other. A book keeps one visible sheet at least.
+   * The sheet is hidden (Excel's Hide, xlsx `state="hidden"`) or very hidden (`'very'`, xlsx `state="veryHidden"`, a
+   * sheet that Excel's interface does not offer to unhide; only its object model can). Not part of calculation: formulas
+   * read a hidden sheet like any other. A workbook always has at least one visible sheet.
    */
   hidden?: boolean | 'very'
 }
 
 /**
- * A rectangle of a sheet's looks (`SheetInput.looks`): a cell (`B2`), a range (`B2:D9`), whole columns (`B:D`) or whole
- * rows (`2:9`), and the style and the number format its cells without an entry show; neither field, and its cells show
- * none of their own. The books the engine gives back hold the looks in one form for one set of them: rows in blocks, the
- * runs of a group of rows as rectangles across the group, then the rows of the group that differ, its rows without looks
- * as rows of none.
+ * A rectangle of a sheet's formatting (`SheetInput.looks`): a cell (`B2`), a range (`B2:D9`), entire columns (`B:D`)
+ * or entire rows (`2:9`), and the style and number format used by its cells that have no entry; with neither field,
+ * its cells have none of their own. The workbooks the engine returns hold the same formatting in a single canonical
+ * form: rows in blocks, the runs shared by a group of rows as rectangles across the group, then the rows of the group
+ * that differ, and its rows without formatting as rectangles with neither field.
  */
 export interface LookRange {
   range: string
-  /** A style of the book's `styles`, by index. */
+  /** An index into the workbook's `styles`. */
   style?: number
   numberFormat?: NumberFormat
 }
 
-/** A sheet's frozen panes (`SheetInput.frozen`, Excel's Freeze Panes): the rows above the split and the columns left of it. */
+/** A sheet's frozen panes (`SheetInput.frozen`, Excel's Freeze Panes): the rows above the split and the columns to the left of it. */
 export interface FrozenPanes {
   /** 1 to 1,048,575. */
   rows?: number
@@ -204,29 +208,31 @@ export interface FrozenPanes {
   columns?: number
 }
 
-/** The summary of a group of rows is the row below it (`summaryBelow`, true by default) or above; of columns, right of it or left. */
+/** A group of rows has its summary row below it (`summaryBelow`, true by default) or above it; a group of columns, to the right or to the left. */
 export interface OutlineSettings {
   summaryBelow?: boolean
   summaryRight?: boolean
 }
 
 /**
- * A table (Excel's list object): a rectangle of a sheet with a header row of column names, data rows and a totals row.
+ * A table (Excel's list object): a rectangle on a sheet with a header row of column names, data rows and a totals row.
  * Formulas refer to its parts by name with structured references (`Sales[Amount]`, `SUM(Sales[[#Totals],[Qty]])`),
- * which follow the table as rows and columns are inserted and deleted in it. A formula stores a reference to its own
- * row as an xlsx file does, `Sales[[#This Row],[Amount]]`; `Sales[@Amount]`, and `[@Amount]` inside the table, are read too.
+ * which follow the table as rows and columns are inserted into it and deleted from it. A formula stores a reference to
+ * its own row the way an xlsx file does, `Sales[[#This Row],[Amount]]`; `Sales[@Amount]`, and `[@Amount]` inside the
+ * table, are also accepted.
  */
 export interface TableInput {
   /**
    * Excel's rules for names: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, at
-   * most 255 characters; not a cell address (`T2`) or R1C1 (`R`, `C`, `R1C1`), not TRUE or FALSE, and not the book's
-   * locale's words for them either, in any case (ИСТИНА and ЛОЖЬ in ru-RU, as Excel for Windows ru-RU refuses them).
-   * Tables and defined names share one namespace: no other table and no defined name of the book has the name, in any case.
+   * most 255 characters; not a cell address (`T2`) or an R1C1 reference (`R`, `C`, `R1C1`), not TRUE or FALSE, nor the
+   * workbook locale's words for them, in any case (ИСТИНА and ЛОЖЬ in ru-RU, which Excel for Windows ru-RU rejects).
+   * Tables and defined names share one namespace: no other table and no defined name in the workbook may have the same
+   * name, compared case-insensitively.
    */
   name: string
-  /** The table's rectangle, its header and totals rows included (`B2:E10`), with one data row at least. */
+  /** The table's rectangle, including its header and totals rows (`B2:E10`), with at least one data row. */
   range: string
-  /** The first row is a header row (true by default): its cells hold the columns' names as text, and no formulas. */
+  /** The first row is a header row (true by default): its cells hold the column names as text, not formulas. */
   headers?: boolean
   /** The last row is a totals row (false by default). */
   totals?: boolean
@@ -234,19 +240,19 @@ export interface TableInput {
   columns: TableColumn[]
 }
 
-/** A column of a table (`TableInput.columns`): its header's name and what its cells and totals row compute. */
+/** A column of a table (`TableInput.columns`): its header name and what its cells and its totals row calculate. */
 export interface TableColumn {
-  /** 1 to 255 characters, unique in the table in any case; the header cell's text. */
+  /** 1 to 255 characters, unique within the table, compared case-insensitively; the header cell's text. */
   name: string
   /**
-   * The formula of a calculated column (stored text, `Sales[[#This Row],[Qty]]*2`; a leading `=` is dropped), which a row
-   * inserted into the table gets in this column, as Excel fills it. The column's cells hold their own formulas.
+   * The formula of a calculated column (as stored, `Sales[[#This Row],[Qty]]*2`; a leading `=` is removed), which a row
+   * inserted into the table receives in this column, as Excel fills it. The column's cells hold their own formulas.
    */
   formula?: string
   /**
-   * What the column's cell of the totals row is, as an xlsx file records it: one of Excel's totals functions, a
+   * What the column's cell in the totals row contains, as an xlsx file records it: one of Excel's totals functions, a
    * SUBTOTAL over the column that the cell holds as its formula (`custom`: a formula of its own), or a label. The cell
-   * computes what it holds.
+   * calculates whatever it holds.
    */
   totals?: { function: TotalsFunction } | { label: string }
 }
@@ -254,24 +260,25 @@ export interface TableColumn {
 /** Excel's totals functions of a table column (xlsx `totalsRowFunction`). */
 export type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' | 'min' | 'stdDev' | 'var' | 'custom'
 
-/** A defined name of a book (`BookInput.names`): the name, what it refers to and its scope. */
+/** A defined name of a workbook (`BookInput.names`): the name, what it refers to and its scope. */
 export interface NameInput {
   /**
-   * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`,
-   * `\` and `?`, at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE, and
-   * not the book's locale's words for them either, in any case (ИСТИНА and ЛОЖЬ in ru-RU, which Excel ru-RU refuses;
-   * `Ставка`, `НДС_2025`, `АБ12` and `Став?ка` are names). Compared in any case: `ставка` is the name `Ставка`.
+   * Excel's rules for names, the same as for tables: a letter of any script, `_` or `\` first, then letters, digits,
+   * `_`, `.`, `\` and `?`, at most 255 characters; not a cell address (`Q1`) or an R1C1 reference (`R`, `C`, `R2C3`),
+   * not TRUE or FALSE, nor the workbook locale's words for them, in any case (ИСТИНА and ЛОЖЬ in ru-RU, which Excel
+   * ru-RU rejects; `Ставка`, `НДС_2025`, `АБ12` and `Став?ка` are valid names). Names are compared case-insensitively:
+   * `ставка` is the name `Ставка`.
    */
   name: string
   /**
-   * What the name refers to: a formula without `=` (a leading one is dropped), as Excel's "Refers to" and xlsx
-   * `<definedName>` hold it. A reference with a sheet (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`,
-   * `"text"`, `{1,2,3}`), a formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which is a
-   * reference), a union of references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference has its sheet.
-   * A reference without `$` is relative to A1, as a file stores it: used in a cell it moves by that cell's offset from
-   * A1, wrapping round the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, `'Data'!A1048576` is the row above).
-   * Names in it are the global ones (a sheet's own as `'Sheet'!name`), as a file stores a name's formula. The formula is
-   * computed where the name is used, as part of that formula.
+   * What the name refers to: a formula without `=` (a leading one is removed), as Excel's "Refers to" box and xlsx
+   * `<definedName>` hold it. A reference with a sheet name (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`,
+   * `"text"`, `{1,2,3}`), a formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which returns
+   * a reference), or a union of references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference includes
+   * its sheet. A reference without `$` is relative to A1, as a file stores it: used in a cell, it shifts by that cell's
+   * offset from A1, wrapping around the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, and `'Data'!A1048576` is
+   * the row above). Names in it are global names (a sheet-level name is written as `'Sheet'!name`), as a file stores a
+   * name's formula. The formula is calculated where the name is used, as part of the formula that uses it.
    */
   ref: string
   /** The sheet where the name is visible; a local name shadows a global one. Without it the name is global. */
@@ -287,92 +294,93 @@ export interface SheetView {
   zoom?: number
 }
 
-/** A workbook as the engine takes it: its sheets with their cells, names, styles, locale and date system; what `compute`, `createSession` and `writeXlsx` take and `readXlsx` gives. */
+/** A workbook as the engine accepts it: its sheets with their cells, names, styles, locale and date system; what `compute`, `createSession` and `writeXlsx` accept and `readXlsx` returns. */
 export interface BookInput {
   /** The saved active visible sheet, by name; the writer defaults to the first visible sheet. Not part of inputHash. */
   activeSheet?: string
-  /** Excel's rules for sheet names: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end; one visible sheet at least. */
+  /** Excel's rules for sheet names: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end; at least one visible sheet. */
   sheets: SheetInput[]
   names?: NameInput[]
   /** The cell styles that cells, rows and columns refer to by index. */
   styles?: CellStyle[]
   /**
-   * The locale the book is computed in, the BCP 47 tag of a loaded locale, `LOCALES` (`'en-US'` by default; another
-   * of the package's locales is loaded by `registerLocale`). It changes computed values as Excel's regional settings do
-   * (text read as a number or a date, numbers and booleans turned into text, `TEXT` format codes, currency), not the
-   * formula text: formulas stay invariant, and `toLocal` shows them in a locale. A tag that is not loaded is an
-   * `InputError` that names the module to import.
+   * The locale the workbook is calculated in: the BCP 47 tag of a loaded locale, `LOCALES` (`'en-US'` by default; the
+   * package's other locales are loaded with `registerLocale`). It changes calculated values as Excel's regional settings
+   * do (text parsed as a number or a date, numbers and booleans converted to text, `TEXT` format codes, currency), but
+   * not the formula text: formulas stay invariant, and `toLocal` displays them in a locale. A tag that is not loaded
+   * throws an `InputError` that names the module to import.
    */
   locale?: string
   /**
-   * The date system, as xlsx `workbookPr date1904`: 1900 (the default) counts days from 1900-01-00 with Excel's
-   * phantom 1900-02-29, 1904 from 1904-01-01, serial 0. It changes the serial numbers of the dates typed in and
-   * computed, TODAY and NOW, date text and how dates show: a 1904 book shows a negative date or time with a minus
-   * (`-12:00`). It goes into both hashes only when it is 1904.
+   * The date system, like xlsx `workbookPr date1904`: 1900 (the default) counts days from 1900-01-00, including Excel's
+   * phantom 1900-02-29; 1904 counts from 1904-01-01 as serial 0. It changes the serial numbers of typed and calculated
+   * dates, TODAY and NOW, date text and how dates are displayed: a 1904 workbook displays a negative date or time with a
+   * minus sign (`-12:00`). It is included in both hashes only when it is 1904.
    */
   dateSystem?: 1900 | 1904
   /**
-   * Iterative calculation of circular references, as Excel's setting and xlsx `calcPr iterate`. Without it the cells of a
-   * cycle and the cells that read it are not computed and hold their values (`CellInput.held`). With it the cells of
-   * every cycle and the cells that depend on them are computed from 0, again and again, sheet by sheet in the order of
-   * the sheets' names (in any case), row by row. That stops after `maxIterations` rounds (100 by default, 1 to 32,767)
-   * or when no value changes by `maxChange` or more (0.001 by default). Each computation starts from 0 again, so a
-   * session gives what a full computation gives, and `held` has no effect. Excel goes on from the values it holds
-   * instead.
+   * Iterative calculation of circular references, like Excel's setting and xlsx `calcPr iterate`. Without it, the cells
+   * of a cycle and the cells that depend on it are not calculated and keep their values (`CellInput.held`). With it, the
+   * cells of every cycle and the cells that depend on them are calculated from 0, repeatedly, sheet by sheet in order of
+   * sheet name (case-insensitively), row by row. Iteration stops after `maxIterations` rounds (100 by default, 1 to
+   * 32,767) or when no value changes by `maxChange` or more (0.001 by default). Each calculation starts again from 0, so
+   * a session returns what a full calculation returns, and `held` has no effect. Excel instead continues from the values
+   * it holds.
    */
   iteration?: { maxIterations?: number; maxChange?: number }
   /**
-   * The other workbooks the book's formulas refer to (`[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`): element `i`
-   * answers `[i+1]`. They are computed from the values stored here, as Excel computes a file it opens without updating
-   * its links; the other book itself is never read. It goes into `inputHash` when it is not empty.
+   * The other workbooks that the workbook's formulas refer to (`[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`):
+   * element `i` is `[i+1]`. References to them use the values stored here, as Excel calculates a file it opens without
+   * updating its links; the other workbook itself is never read. The list is included in `inputHash` when it is not
+   * empty.
    */
   externalBooks?: ExternalBook[]
 }
 
 /**
- * Another workbook as a book keeps it beside the formulas that read it (xlsx `externalLinkN.xml`): where it is, and
- * the values Excel stored of it when it last read it.
+ * An external workbook, as stored alongside the formulas that refer to it (xlsx `externalLinkN.xml`): its location, and
+ * the values Excel saved from it when it last read it.
  */
 export interface ExternalBook {
-  /** Where the link points, as the file holds it: a file name, a relative or an absolute path, a `file:` or web address. */
+  /** Where the link points, as stored in the file: a file name, a relative or absolute path, or a `file:` or web address. */
   target: string
   /** Its sheets in the order the file lists them. */
   sheets: ExternalSheet[]
-  /** Its defined names the book's formulas use: of the book, or of one of its sheets. */
+  /** Its defined names that the workbook's formulas use: workbook-level ones, or ones local to one of its sheets. */
   names?: ExternalName[]
 }
 
-/** A sheet of another workbook and the values stored of it. */
+/** A sheet of an external workbook and the values stored from it. */
 export interface ExternalSheet {
   name: string
   /**
-   * The stored values by A1 address, null for a cell stored empty. A cell they do not hold is blank, or `#REF!` with
-   * `refreshError`. Without `cells` nothing of the sheet is stored, and every cell of it is `#REF!`.
+   * The stored values by A1 address, null for a cell stored as empty. A cell missing from them is blank, or `#REF!` with
+   * `refreshError`. Without `cells`, nothing from the sheet is stored, and every cell on it is `#REF!`.
    */
   cells?: Record<string, ExternalValue | null>
   /**
-   * Excel's mark that the last update of the sheet's values failed (`refreshError`): a cell they do not hold is `#REF!`
-   * instead of blank. Excel sets it on every sheet of a closed book when a formula referring to that book is entered,
-   * and so does a session.
+   * Excel's flag that the last update of the sheet's values failed (`refreshError`): a cell missing from them is `#REF!`
+   * instead of blank. Excel sets it on every sheet of a closed workbook when a formula referring to that workbook is
+   * entered, and so does a session.
    */
   refreshError?: true
 }
 
-/** A value stored of another workbook's cell. */
+/** A stored value of an external workbook's cell. */
 export type ExternalValue = number | string | boolean | { error: ErrorCode }
 
-/** A defined name of another workbook. */
+/** A defined name of an external workbook. */
 export interface ExternalName {
   name: string
-  /** What it refers to, as the file holds it without `=`: a reference into its book (`Sheet1!$B$1`), `#REF!`. */
+  /** What it refers to, as stored in the file without `=`: a reference into its workbook (`Sheet1!$B$1`) or `#REF!`. */
   ref: string
-  /** The index in `sheets` of the sheet whose own name it is; a name of the book has none. */
+  /** The index in `sheets` of the sheet the name is local to; a workbook-level name has none. */
   sheet?: number
 }
 
 /**
- * A book as the calls that give one answer it (`Session.getBook`, `getSnapshot`, `getLayout`, `editStructure`,
- * `readXlsx`): a `BookInput`, which goes back into every call that takes a book.
+ * A workbook as returned by the calls that return one (`Session.getBook`, `getSnapshot`, `getLayout`, `editStructure`,
+ * `readXlsx`): a `BookInput`, which can be passed back to any call that accepts a workbook.
  */
 export type Book = BookInput
 
@@ -382,8 +390,8 @@ export type Sheet = SheetInput
 /** A cell of a `Book`. */
 export type Cell = CellInput
 
-/** A sheet without its cells and their looks (`Session.getLayout`). */
+/** A sheet without its cells and their formatting (`Session.getLayout`). */
 export type SheetLayout = Omit<Sheet, 'cells' | 'looks'>
 
-/** A book without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
+/** A workbook without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
