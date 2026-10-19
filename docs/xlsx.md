@@ -96,6 +96,8 @@ A file that is not a zip archive, an encrypted one, a ZIP64 archive and a file w
 const read = await readXlsx(data, { limits: { entryBytes: 16 * 2 ** 20, totalBytes: 64 * 2 ** 20 } })
 ```
 
+A zip archive can hold a part that inflates to a thousand times its size in the file: a file of 400 KB can hold 400 MB of spaces. The reader stops inflating a part as soon as it passes the size the file declares for it, so a part that holds more than it declares is refused having taken no more memory than it declared. A part declared larger than `entryBytes`, and a part that would take the parts read past `totalBytes`, are refused before they are inflated. Two records of the archive over the same bytes, which let a small file inflate many times over, are refused too. So a part over 256 MiB is refused unless `limits.entryBytes` raises the bound, and a part over about 512 MiB is not read even then: the reader reads a part as one JavaScript string, and Node and Chromium hold a string of at most 536,870,888 characters. The largest part of the files measured here is about 112 MiB, the sheet of the book of the wide shape ([Speed](#speed)).
+
 ### Cells
 
 Text, numbers and booleans become values. Dates stay numbers, as Excel stores them, and their number format makes them dates on screen. The ISO dates of Strict files (`t="d"`) become serial numbers too.

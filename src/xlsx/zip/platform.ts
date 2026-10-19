@@ -5,7 +5,7 @@
  */
 
 interface Pair {
-  readable: { getReader(): { read(): Promise<{ done: boolean; value?: Uint8Array }> } }
+  readable: { getReader(): { read(): Promise<{ done: boolean; value?: Uint8Array }>; cancel(): Promise<void> } }
   writable: { getWriter(): { write(chunk: Uint8Array): Promise<void>; close(): Promise<void> } }
 }
 
@@ -24,8 +24,11 @@ function need<K extends keyof Globals>(name: K): NonNullable<Globals[K]> {
   return v as NonNullable<Globals[K]>
 }
 
-/** All bytes a stream pair gives for `data`; the write runs alongside the read so neither side blocks. */
-async function through(pair: Pair, data: Uint8Array): Promise<Uint8Array> {
+/**
+ * All bytes a stream pair gives for `data`, or undefined as soon as they pass `max`: the stream is cancelled then, so no
+ * more is made. The write runs alongside the read so neither side blocks.
+ */
+async function through(pair: Pair, data: Uint8Array, max = Infinity): Promise<Uint8Array | undefined> {
   const writer = pair.writable.getWriter()
   const written = writer.write(data).then(() => writer.close())
   const reader = pair.readable.getReader()
@@ -34,8 +37,14 @@ async function through(pair: Pair, data: Uint8Array): Promise<Uint8Array> {
   for (;;) {
     const { done, value } = await reader.read()
     if (done) break
-    parts.push(value!)
     size += value!.length
+    if (size > max) {
+      // the cancelled stream fails the write, or leaves it waiting: it is not awaited
+      written.catch(() => {})
+      await reader.cancel()
+      return undefined
+    }
+    parts.push(value!)
   }
   await written
   return concat(parts, size)
@@ -52,9 +61,10 @@ export function concat(parts: Uint8Array[], size = parts.reduce((n, p) => n + p.
   return out
 }
 
-export const inflate = (data: Uint8Array): Promise<Uint8Array> => through(new (need('DecompressionStream'))('deflate-raw'), data)
+/** The inflated bytes of `data`, undefined when they are more than `max`. */
+export const inflate = (data: Uint8Array, max: number): Promise<Uint8Array | undefined> => through(new (need('DecompressionStream'))('deflate-raw'), data, max)
 
-export const deflate = (data: Uint8Array): Promise<Uint8Array> => through(new (need('CompressionStream'))('deflate-raw'), data)
+export const deflate = (data: Uint8Array): Promise<Uint8Array> => through(new (need('CompressionStream'))('deflate-raw'), data) as Promise<Uint8Array>
 
 let encoder: { encode(s: string): Uint8Array } | undefined
 let decoder: { decode(b: Uint8Array): string } | undefined

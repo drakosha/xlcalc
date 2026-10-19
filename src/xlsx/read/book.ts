@@ -138,8 +138,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
   onlyOptions(o, 'opts', ['locale', 'limits'])
   const language = issueLocale(o)
-  if (o.limits !== undefined) checkLimits(o.limits)
-  const archive = openArchive(bytes)
+  const archive = openArchive(bytes, o.limits === undefined ? undefined : checkLimits(o.limits))
   const issues = new Issues()
   const root = await relsOf(archive, '')
   const wbPath = root.find((r) => r.kind === 'officeDocument' && !r.external)?.target ?? 'xl/workbook.xml'
