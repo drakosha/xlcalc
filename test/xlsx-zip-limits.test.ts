@@ -33,7 +33,7 @@ describe('xlsx: the bounds of a file once inflated', () => {
     const all = sizes.reduce((n, [, s]) => n + s, 0)
     expect(largest).toBe('xl/worksheets/sheet1.xml')
     await expect(readXlsx(data, { limits: { entryBytes: most - 1 } })).rejects.toThrow(`xlsx: not a readable zip archive: entry xl/worksheets/sheet1.xml is larger than ${most - 1} bytes (limits.entryBytes)`)
-    await expect(readXlsx(data, { limits: { totalBytes: most } })).rejects.toThrow(`xlsx: not a readable zip archive: the parts read are larger than ${most} bytes together (limits.totalBytes)`)
+    await expect(readXlsx(data, { limits: { totalBytes: most } })).rejects.toThrow(`xlsx: not a readable zip archive: the parts read add up to more than ${most} bytes (limits.totalBytes)`)
     const read = await readXlsx(data, { limits: { entryBytes: most, totalBytes: all } })
     expect(read.book.sheets[0].cells.A200).toEqual({ formula: 'ROW()*199' })
     expect(read).toEqual(await readXlsx(data))

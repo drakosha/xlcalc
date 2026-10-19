@@ -158,7 +158,7 @@ describe('conditional formats in xlsx', () => {
     expect(r.issues.map((i) => i.message)).toEqual([
       "a conditional format's font sz is not in the model",
       "a conditional format's pattern fill is not in the model",
-      'an average rule with both equal and standard deviations is read with equal alone, as Excel keeps it',
+      'an average rule with both equal and standard deviations is read with equal only, as Excel keeps it',
       'a conditional format of type unknownKind is not in the model',
       "a pivot table's conditional formatting is not in the model",
     ])

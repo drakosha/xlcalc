@@ -42,7 +42,7 @@ describe('xlsx filters: reading the filter mode', () => {
     expect(await filtered({ before: mark, after: `<autoFilter ref="A1:B6">${CRITERIA}</autoFilter>` })).toEqual({
       filtered: true,
       values: SKIPPED,
-      issues: ["an autofilter's range, criteria and sort are not in the model: the sheet is read as filtered, the rows it hid as hidden"],
+      issues: ["an autofilter's range, criteria and sort are not in the model: the sheet is read as filtered, and the rows it hid as hidden"],
     })
     expect((await filtered({ after: `<autoFilter ref="A1:B6">${CRITERIA}</autoFilter>` })).values).toEqual(SKIPPED)
   })
@@ -60,14 +60,14 @@ describe('xlsx filters: reading the filter mode', () => {
     const r = await filtered({ before: '<sheetPr filterMode="1"><tabColor rgb="FFFF0000"/></sheetPr>', workbook: '<definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">S!$A$1:$B$6</definedName></definedNames>' })
     expect(r.filtered).toBe(true)
     expect(r.values).toEqual(SKIPPED)
-    expect(r.issues).toContain('an advanced filter is not in the model: the sheet is read as filtered, the rows it hid as hidden')
+    expect(r.issues).toContain('an advanced filter is not in the model: the sheet is read as filtered, and the rows it hid as hidden')
   })
 
   it("a table's filter with criteria makes its sheet filtered; one without criteria does not", async () => {
     expect(await filtered({ table: `<autoFilter ref="A1:B6">${CRITERIA}</autoFilter>` })).toEqual({
       filtered: true,
       values: SKIPPED,
-      issues: ["a table's filter criteria are not in the model: the sheet is read as filtered, the rows they hid as hidden"],
+      issues: ["a table's filter criteria are not in the model: the sheet is read as filtered, and the rows they hid as hidden"],
     })
     expect(await filtered({ before: '<sheetPr filterMode="1"/>', table: `<autoFilter ref="A1:B6">${KEEP_ALL}</autoFilter>` })).toMatchObject({ filtered: true, values: SKIPPED })
     expect(await filtered({ table: '<autoFilter ref="A1:B6"/>' })).toEqual({ filtered: false, values: COUNTED, issues: [] })

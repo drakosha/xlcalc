@@ -34,8 +34,8 @@ export interface WriteArgs {
 
 const RESULT = "a result: compute's, a session's getSnapshot().result or readXlsx's cached, { sheets: [{ name, cells }] }"
 const SESSION = 'a session is not a snapshot: pass session.getSnapshot() (awaited for an asynchronous session)'
-const RESULT_ALONE = 'a result is not a snapshot: pass { book, result } with the book it was computed from'
-const BOOK_ALONE = ' (a book is not a snapshot: pass { book, result })'
+const RESULT_ALONE = 'a result is not a snapshot: pass { book, result } with the workbook it was calculated from'
+const BOOK_ALONE = ' (a workbook is not a snapshot: pass { book, result })'
 const PRESERVE = '(values: "preserve" writes the values it has)'
 
 /** A session or its proxy, which a snapshot is taken of. */
@@ -51,7 +51,7 @@ function resultCells(book: BookInput, result: unknown, path: string): Record<str
   if (!Array.isArray(r.sheets)) throw new InputError(path, `expected ${RESULT}, got an object without sheets`)
   const sheets = r.sheets as { name?: unknown; cells?: unknown }[]
   if (sheets.length !== book.sheets.length || sheets.some((s, i) => typeof s?.name !== 'string' || sheetKey(s.name) !== sheetKey(book.sheets[i].name)))
-    throw new InputError(path, "expected the book's result: its sheets differ from the book's")
+    throw new InputError(path, "expected the result of this workbook: its sheets differ from the workbook's")
   return sheets.map((s, i) => {
     const p = `${path}.sheets[${i}].cells`
     const cells = object(s.cells, p, "the result's cells by address, such as { B1: { value: 200 } }")
@@ -81,7 +81,7 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   const values = o.values ?? (has ? 'require' : 'omit')
   if (values !== 'require' && values !== 'omit' && values !== 'preserve') throw new InputError('opts.values', `expected "require", "omit" or "preserve", got ${JSON.stringify(values)}`)
   if (mode === 'values' && !has) throw new InputError(path, `the values mode takes the values from the result: pass { book, result }`)
-  if (mode === 'values' && values === 'omit') throw new InputError('opts.values', `the values mode writes values only: "omit" would leave the cells of formulas empty`)
+  if (mode === 'values' && values === 'omit') throw new InputError('opts.values', `the values mode writes values only: "omit" would leave formula cells empty`)
   if (values !== 'omit' && !has) throw new InputError(path, `values: "${values}" takes the values of formulas from the result: pass { book, result }`)
   const cells = has ? resultCells(book, result, path) : undefined
   if (values === 'require') requireValues(book, cells!, path)
@@ -91,7 +91,7 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
 
 /** Every formula of the book and every cell of an array's range (but past a large array's `spillFill`) has its value. */
 function requireValues(book: BookInput, cells: Record<string, ResultCell>[], path: string): void {
-  const missing = (where: string) => new InputError(path, `expected the book's result: ${where} has no value in the result ${PRESERVE}`)
+  const missing = (where: string) => new InputError(path, `expected the result of this workbook: ${where} has no value in the result ${PRESERVE}`)
   book.sheets.forEach((s, i) => {
     const r = cells[i]
     for (const a in s.cells) if (s.cells[a].formula !== undefined && r[a] === undefined) throw missing(`the formula of '${s.name}'!${a}`)

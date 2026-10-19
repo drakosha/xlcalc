@@ -43,7 +43,7 @@ describe('xlsx: zip', () => {
     expect(() => openArchive(stored('a', enc.encode('x'), 1))).toThrow(/encrypted entry a/)
     const broken = stored('a', enc.encode('x'))
     new DataView(broken.buffer).setUint32(broken.length - 6, 3, true)
-    expect(() => openArchive(broken)).toThrow(/broken central directory/)
+    expect(() => openArchive(broken)).toThrow(/corrupt central directory/)
   })
 
   it('refuses names that are not ASCII', async () => {

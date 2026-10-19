@@ -99,7 +99,7 @@ describe('a call by an old name fails at once', () => {
 
   it('writeXlsx refuses a book with its result in the options: the book and its result go as one snapshot', async () => {
     const b = book()
-    await expect(xlsx.writeXlsx(b as never, { result: compute(b, { clock: CLOCK }) } as never)).rejects.toThrow(new InputError('snapshot', 'unknown field "sheets" (expected book, result) (a book is not a snapshot: pass { book, result })'))
+    await expect(xlsx.writeXlsx(b as never, { result: compute(b, { clock: CLOCK }) } as never)).rejects.toThrow(new InputError('snapshot', 'unknown field "sheets" (expected book, result) (a workbook is not a snapshot: pass { book, result })'))
   })
 })
 

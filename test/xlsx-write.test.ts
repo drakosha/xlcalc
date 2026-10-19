@@ -117,10 +117,10 @@ describe('xlsx writer', () => {
     const { data, issues } = await writeXlsx({ book: odd, result })
     expect(codes(issues)).toEqual(['meta A1', 'textLength A3', 'formula A4 A5 A6', 'errorValue A7', 'name', 'name', 'name', 'name'])
     expect(issues.filter((i) => i.code === 'name').map((i) => `${i.name}: ${i.message}`)).toEqual([
-      'A1: a name Excel does not take is left out of the file',
-      'ok: a name given twice is left out of the file',
-      'gone: a name of a sheet the book does not have is left out of the file',
-      'bad: a name whose reference does not parse or names a table, a column or a link to another workbook the book does not have is left out of the file',
+      'A1: a name Excel does not accept is left out of the file',
+      'ok: a name defined twice is left out of the file',
+      'gone: a name scoped to a sheet the workbook does not have is left out of the file',
+      'bad: a name whose reference does not parse or names a table, a column or a link to another workbook the workbook does not have is left out of the file',
     ])
     const r = await readXlsx(data)
     expect(r.book.sheets[0].cells).toMatchObject({ A2: { formula: 'A2+1' }, A3: { value: 'x'.repeat(32_767) }, A4: { formula: '#REF!' }, A5: { formula: '#NULL!' } })
@@ -134,6 +134,6 @@ describe('xlsx writer', () => {
     await expect(writeXlsx({ book }, { mode: 'values' })).rejects.toThrow(/values mode takes the values from the result/)
     await expect(writeXlsx({ book }, { mode: 'other' as 'values' })).rejects.toThrow(/expected "formulas" or "values"/)
     const other = compute({ sheets: [{ name: 'X', cells: {} }] }, { clock })
-    await expect(writeXlsx({ book, result: other })).rejects.toThrow(/its sheets differ from the book's/)
+    await expect(writeXlsx({ book, result: other })).rejects.toThrow(/its sheets differ from the workbook's/)
   })
 })

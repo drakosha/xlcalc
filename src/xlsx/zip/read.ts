@@ -44,7 +44,7 @@ function fail(why: string): never {
 /** The end of the central directory: searched backwards over a comment of up to 65,535 bytes. */
 function endRecord(v: DataView): number {
   for (let i = v.byteLength - 22; i >= Math.max(0, v.byteLength - 22 - 0xffff); i--) if (v.getUint32(i, true) === EOCD) return i
-  fail('no end of central directory')
+  fail('no end of central directory record')
 }
 
 function entries(bytes: Uint8Array): Entry[] {
@@ -55,7 +55,7 @@ function entries(bytes: Uint8Array): Entry[] {
   if (count === 0xffff || at === 0xffffffff) fail('ZIP64 archives are not supported')
   const out: Entry[] = []
   for (let k = 0; k < count; k++) {
-    if (at + 46 > v.byteLength || v.getUint32(at, true) !== CENTRAL) fail('broken central directory')
+    if (at + 46 > v.byteLength || v.getUint32(at, true) !== CENTRAL) fail('corrupt central directory')
     const flags = v.getUint16(at + 8, true)
     const nameLen = v.getUint16(at + 28, true)
     const name = text(bytes.subarray(at + 46, at + 46 + nameLen))
@@ -90,11 +90,11 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     if (v.getUint32(e.offset, true) !== LOCAL) fail(`no local header for ${e.name}`)
     const start = e.offset + 30 + v.getUint16(e.offset + 26, true) + v.getUint16(e.offset + 28, true)
     const raw = bytes.subarray(start, start + e.csize)
-    if (e.method !== 0 && e.method !== 8) fail(`entry ${e.name} uses compression method ${e.method}`)
+    if (e.method !== 0 && e.method !== 8) fail(`entry ${e.name} uses the unsupported compression method ${e.method}`)
     // a stored part is its bytes in the file; a deflated one is refused as it inflates past the size it declares
     const size = e.method === 0 ? raw.length : e.usize
     if (size > entryBytes) fail(`entry ${e.name} is larger than ${entryBytes} bytes (limits.entryBytes)`)
-    if ((spent += size) > totalBytes) fail(`the parts read are larger than ${totalBytes} bytes together (limits.totalBytes)`)
+    if ((spent += size) > totalBytes) fail(`the parts read add up to more than ${totalBytes} bytes (limits.totalBytes)`)
     if (e.method === 0) return raw
     if (e.usize > RATIO_FROM && e.usize > ratio * e.csize) fail(`entry ${e.name} inflates to ${e.usize} bytes from ${e.csize}, more than ${ratio} times its size (limits.ratio)`)
     const out = await inflate(raw, e.usize)
