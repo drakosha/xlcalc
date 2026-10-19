@@ -5,9 +5,9 @@ import { arityFor, isFunction } from '../arity.js'
 import { english } from '../locale/english.js'
 import type { Message, NameRule } from '../locale/messages.js'
 import { FormulaError, type Ast } from './ast.js'
-import { boolWord, parse } from './parse.js'
+import { boolWord, parseTokens } from './parse.js'
 import { IDENT_FIRST, IDENT_NEXT } from './scan.js'
-import { readsAsCell } from './tokens.js'
+import { readsAsCell, type Tok } from './tokens.js'
 import { bindLinks } from './links.js'
 import { canonical, mapAst, sheetKey, walk } from './print.js'
 
@@ -121,12 +121,19 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
   return fail ?? { ok: true, ast: out, tables: [...used] }
 }
 
+type Checked = ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }>
+
 /** Formula check: parsing, whitelisted or external functions, sheets, names, argument counts. */
-export function validate(text: string, ctx: ValidateContext & BookCheck = {}): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
+export function validate(text: string, ctx: ValidateContext & BookCheck = {}): Checked {
+  return validateTokens(text, null, ctx)
+}
+
+/** `validate` over the tokens of `text` read already (`toks`), or null to read them. */
+export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateContext & BookCheck = {}): Checked {
   const say = ctx.say ?? english
   let ast: Ast
   try {
-    ast = parse(text, { union: ctx.union })
+    ast = parseTokens(text, toks, { union: ctx.union })
   } catch (e) {
     if (e instanceof FormulaError) return { ok: false, code: e.code, message: say(e.msg), at: e.at }
     throw e

@@ -30,9 +30,14 @@ export function boolWord(word: string): boolean | undefined {
 
 /** `union`: a top-level comma joins references (a name's formula: `'S'!A1:A3,'S'!C1:C3`). */
 export function parse(src: string, opts: { union?: boolean } = {}): Ast {
+  return parseTokens(src, null, opts)
+}
+
+/** `parse` over the tokens of `src` read already (`given`, a formula's shape reads them first), or null to read them. */
+export function parseTokens(src: string, given: Tok[] | null, opts: { union?: boolean } = {}): Ast {
   if (src.trim() === '') bad(0, { key: 'emptyFormula' }, 'empty')
   if (src.length > MAX_FORMULA_LENGTH) bad(MAX_FORMULA_LENGTH, { key: 'tooLong', max: MAX_FORMULA_LENGTH }, 'too_long')
-  const toks = tokenize(src)
+  const toks = given ?? tokenize(src)
   let p = 0
   let depth = 0
   const peek = () => toks[p]
