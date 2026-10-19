@@ -12,7 +12,9 @@ import { sheetNameProblem } from '../input.js'
 import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import type { Applied } from './geometry.js'
-import { rewriteBook, sheetIndex, sheetNames, type Transform } from './rewrite.js'
+import { rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Transform } from './rewrite.js'
+import { rewriteConditional } from '../cond/structure.js'
+import { rewriteValidations } from '../validation/structure.js'
 
 export function renameSheet(book: BookInput, sheet: string, name: string): Applied {
   const key = sheetKey(sheet)
@@ -127,4 +129,26 @@ export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'ver
   })
   const activeSheet = hidden && book.activeSheet !== undefined && sheetKey(book.activeSheet) === key ? sheets.find((s) => !s.hidden)!.name : book.activeSheet
   return { ok: true, book: { ...book, sheets, ...(activeSheet !== undefined ? { activeSheet } : {}) }, geometry: [] }
+}
+
+/**
+ * Every formula of the book (the names and the calculated columns too) rewritten in place, for operations that move
+ * no cells; `rename` gives a sheet's new name.
+ */
+function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, string>, rename = (name: string) => name): BookInput {
+  const out: BookInput = {
+    ...book,
+    sheets: book.sheets.map((s) => {
+      const name = rename(s.name)
+      const cells = rewriteCells(s.cells, s.name, name, t, sheets)
+      const tables = rewriteTemplates(s.tables, s.name, () => name, t, sheets)
+      const cf = rewriteConditional(s.conditionalFormats, s.name, name, t, sheets)
+      const validations = rewriteValidations(s.validations, s.name, name, t, sheets)
+      return cells !== s.cells || name !== s.name || tables !== s.tables || cf !== s.conditionalFormats || validations !== s.validations
+        ? { ...s, name, cells, ...(tables ? { tables } : {}), ...(cf ? { conditionalFormats: cf } : {}), ...(validations ? { validations } : {}) }
+        : s
+    }),
+  }
+  const names = rewriteNames(book.names, t, sheets)
+  return names ? { ...out, names } : out
 }

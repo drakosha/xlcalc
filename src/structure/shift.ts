@@ -10,38 +10,16 @@ import { formatAddress } from '../model.js'
 import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
-import { copyTransform } from './copy.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
 import { gridOf } from './grid.js'
 import { relocated, shiftRefusal } from './arrays.js'
 import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { copyTransform, deleteSpan, insertSpan } from './transform.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
 import { firstLook, madeFrom } from '../looks/sheet.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
-
-/** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
-export function insertSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {
-  if (!cell && lo === 0 && hi === max - 1) return [lo, hi]
-  const a = lo >= at ? lo + n : lo
-  const b = hi >= at ? hi + n : hi
-  if (a > max - 1 || (cell && b > max - 1)) return null
-  return [a, Math.min(b, max - 1)]
-}
-
-/** One axis of a reference after `n` rows (columns) from index `at` are deleted; null when nothing of it is left. */
-export function deleteSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {
-  const end = at + n
-  // an index in the deleted rows goes to `gone`: the first row after them, or the last before them
-  const map = (i: number, gone: number) => (i < at ? i : i >= end ? i - n : gone)
-  if (lo >= at && hi < end) return null
-  if (cell) return [map(lo, lo), map(lo, lo)]
-  const a = map(lo, at)
-  // a range ending on the sheet's last row keeps ending there
-  const b = hi === max - 1 ? hi : map(hi, at - 1)
-  return a > b ? null : [a, b]
-}
 
 type SpanFn = (lo: number, hi: number, at: number, n: number, max: number, cell: boolean) => [number, number] | null
 

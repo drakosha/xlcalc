@@ -9,10 +9,9 @@ import type { BookInput, ConditionalFormat, ConditionalValue, SheetInput } from 
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { sheetKey, tokenize } from '../syntax.js'
 import { hasCell, hi, intersect, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
-import { copyTransform } from '../structure/copy.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
-import { deleteSpan } from '../structure/shift.js'
+import { copyTransform, deleteSpan } from '../structure/transform.js'
 import { originOf, rangesOf, rectsOf } from './rules.js'
 
 type Cell = { r: number; c: number }

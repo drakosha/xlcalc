@@ -9,10 +9,9 @@
  */
 import type { BookInput, DataValidation } from '../contract.js'
 import { hi, intersect, LIMIT, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
-import { copyTransform } from '../structure/copy.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
-import { deleteSpan, insertSpan } from '../structure/shift.js'
+import { copyTransform, deleteSpan, insertSpan } from '../structure/transform.js'
 import { sheetKey } from '../syntax.js'
 import { anchorOf, areasOf, rangeText } from './rules.js'
 
