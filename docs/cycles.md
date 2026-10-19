@@ -15,7 +15,7 @@ const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'B1/2+1' }, B1: { f
 const cached = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, B1: { value: 2 } } }] }
 const r = compute(book, { cached })
 console.log(r.sheets[0].cells.A1.value, r.sheets[0].cells.C1.value, r.sheets[0].cells.E1.value) // → 2  6
-console.log(r.diagnostics.map((d) => `${d.cell} ${d.error}`), r.diagnostics[0].reason) // → [ 'A1 CYCLE', 'B1 CYCLE', 'C1 CYCLE' ] circular reference: not computed, the value is held
+console.log(r.diagnostics.map((d) => `${d.cell} ${d.error}`), r.diagnostics[0].reason) // → [ 'A1 CYCLE', 'B1 CYCLE', 'C1 CYCLE' ] circular reference: not calculated, the value is held
 
 const session = createSession(book, { cached })
 session.setCells([{ sheet: 'S', cell: 'B1', input: { value: 4 } }])
@@ -87,7 +87,7 @@ A session keeps the stopped cells as Excel keeps them, and writes what each one 
 
 ## What the result reports
 
-A stopped cell's value is the value it holds, not an error. The result's `diagnostics`, `getCellIssue`, `readCells` with `issue` and a viewport with `diagnostics` list it with `error: 'CYCLE'` and the reason `circular reference: not computed, the value is held`; its `origin` is the first cell of a cycle its references reach. `explain` reports the same in the workbook's language; for the workbook above, `explain('S', 'C1', { depth: 1 })` returns:
+A stopped cell's value is the value it holds, not an error. The result's `diagnostics`, `getCellIssue`, `readCells` with `issue` and a viewport with `diagnostics` list it with `error: 'CYCLE'` and the reason `circular reference: not calculated, the value is held`; its `origin` is the first cell of a cycle its references reach. `explain` reports the same in the workbook's language; for the workbook above, `explain('S', 'C1', { depth: 1 })` returns:
 
 ```
 S!C1 = 20  ← A1*10  (held by a circular reference through S!A1)

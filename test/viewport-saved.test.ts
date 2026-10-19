@@ -114,7 +114,7 @@ describe('a window over a saved book and its result', () => {
   it("a cycle's reasons name no cell: its cells' errors begin where they are", () => {
     const b: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'B1' }, B1: { formula: 'A1' }, C1: { formula: 'A1+1' } } }] }
     const v = viewportOf({ book: b, result: compute(b, { clock: CLOCK }) }, 'S', 'A1:C1', { diagnostics: true })
-    expect(Object.values(v.cells).map((c) => [c.issue?.reason, c.issue?.origin.cell])).toEqual(['A1', 'B1', 'C1'].map((a) => ['circular reference: not computed, the value is held', a]))
+    expect(Object.values(v.cells).map((c) => [c.issue?.reason, c.issue?.origin.cell])).toEqual(['A1', 'B1', 'C1'].map((a) => ['circular reference: not calculated, the value is held', a]))
   })
 
   it('the objects are read once and kept with them; the answer has its own', () => {

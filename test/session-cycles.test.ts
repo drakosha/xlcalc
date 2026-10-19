@@ -108,7 +108,7 @@ describe.each(['closures', 'eval'] as Execution[])('circular references in a ses
         // B2 = A2 holds 2; pasted, D2 = C2 reads the cycle too and holds 0
         await s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'B2' }, to: { sheet: 'S', range: 'D2' } })
         expect(await at(s, 'D2')).toEqual({ D2: 0 })
-        expect(await s.getCellIssue('S', 'C2')).toEqual({ error: 'CYCLE', reason: 'circular reference: not computed, the value is held', origin: { sheet: 'S', cell: 'A2' } })
+        expect(await s.getCellIssue('S', 'C2')).toEqual({ error: 'CYCLE', reason: 'circular reference: not calculated, the value is held', origin: { sheet: 'S', cell: 'A2' } })
         expect(await s.getCellIssue('S', 'E2')).toBeNull()
         await s.undo()
         await s.undo()

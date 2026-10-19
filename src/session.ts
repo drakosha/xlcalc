@@ -176,7 +176,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   // a call stopped while changing the state in place: the state is built again from its book before the next one
   let stale = false
   const st = () => {
-    if (!state) throw new Error('session is closed')
+    if (!state) throw new Error('the session is closed')
     return state
   }
   function* ready(): Steps<EngineState> {

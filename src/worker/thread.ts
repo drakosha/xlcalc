@@ -178,7 +178,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
         for (const e of journal as Entry[]) {
           h.planned = e.clock
           const a = await invoke(h, e.op, e.args, { signal })
-          if (a.clock.now !== e.clock.now || a.clock.seed !== e.clock.seed) throw new CalcError('restore_failed', `the replay of call ${e.seq} took another clock`)
+          if (a.clock.now !== e.clock.now || a.clock.seed !== e.clock.seed) throw new CalcError('restore_failed', `the replay of call ${e.seq} used a different clock`)
           h.seq = e.seq
           h.last = a
         }

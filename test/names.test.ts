@@ -21,7 +21,7 @@ const values = (b: BookInput, sheet = 'S') => Object.fromEntries(Object.entries(
 describe('names of any formula', () => {
   it('a formula that does not parse, or a reference without its sheet, leaves the name out with its issue', () => {
     const r = compute(book({ B1: 'bad', B2: 'nosheet' }, [{ name: 'bad', ref: "'S'!A1+" }, { name: 'nosheet', ref: 'A1*2' }]), { display: false })
-    expect(nameIssues(r).map((i) => `${i.name}: ${i.reason}`)).toEqual([expect.stringMatching(/^bad: bad formula/), 'nosheet: a reference in a name needs its sheet'])
+    expect(nameIssues(r).map((i) => `${i.name}: ${i.reason}`)).toEqual([expect.stringMatching(/^bad: invalid formula/), 'nosheet: a reference in a name must include its sheet'])
     expect(cellIssues(r).map((i) => `${i.cell} ${i.check}`)).toEqual(['B1 unknown_name', 'B2 unknown_name'])
   })
 

@@ -72,7 +72,7 @@ describe('tables', () => {
     const r = values(book)
     expect([v(r, 0, 'J1'), v(r, 0, 'J3'), v(r, 0, 'B2'), v(r, 0, 'G1')]).toEqual([1, 3, { error: 'SPILL' }, { error: 'SPILL' }])
     expect(cellIssues(r).find((i) => i.cell === 'B2')?.reason).toMatch(/its cell is in the table Sales/)
-    expect(cellIssues(r).find((i) => i.cell === 'G1')?.reason).toMatch(/it meets the table Small/)
+    expect(cellIssues(r).find((i) => i.cell === 'G1')?.reason).toMatch(/it overlaps the table Small/)
   })
 
   it('without a header row or with a totals row', () => {

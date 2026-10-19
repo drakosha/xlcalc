@@ -74,15 +74,15 @@ export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
   if (area.r2 >= MAX_ROWS || area.c2 >= MAX_COLS) return blocked(state, f, t, `${cannot}: it would go past the edge of the sheet`)
   // Excel spills no array inside a table, nor into one
   const inside = tableAt(state.tables, f.s, f.r, f.c) ?? state.tables.list.find((x) => x.s === f.s && meets(x, area))
-  if (inside) return blocked(state, f, t, `${cannot}: ${meets(inside, { r1: f.r, c1: f.c, r2: f.r, c2: f.c }) ? 'its cell is in' : 'it meets'} the table ${inside.name}`)
+  if (inside) return blocked(state, f, t, `${cannot}: ${meets(inside, { r1: f.r, c1: f.c, r2: f.r, c2: f.c }) ? 'its cell is in' : 'it overlaps'} the table ${inside.name}`)
   const merge = mergesOf(state, f.s).find((m) => meets(m, area))
-  if (merge) return blocked(state, f, t, `${cannot}: it meets the merged area ${cellText(state, f.s, merge.r1, merge.c1)}:${formatAddress(merge.r2, merge.c2)}`, area)
+  if (merge) return blocked(state, f, t, `${cannot}: it overlaps the merged area ${cellText(state, f.s, merge.r1, merge.c1)}:${formatAddress(merge.r2, merge.c2)}`, area)
   const cell = sp.occupied.first(f.s, area, f.r, f.c)
   if (cell) return blocked(state, f, t, `${cannot}: ${cellText(state, f.s, cell[0], cell[1])} is not empty`, area)
   const over = [...sp.on.values()].filter((x) => x.id !== f.id && x.s === f.s && meets(x, area))
   // an old-kind array formula's area is never spilled over
   const first = over.find((x) => state.formulas[x.id]?.area || !beats(state, f.id, x.id))
-  if (first) return blocked(state, f, t, `${cannot}: it meets the spilled array of ${cellText(state, f.s, first.r1, first.c1)}`, area)
+  if (first) return blocked(state, f, t, `${cannot}: it overlaps the spilled array of ${cellText(state, f.s, first.r1, first.c1)}`, area)
   // the arrays this one wins over stop spilling and wait for their range
   for (const x of over) {
     release(state, x.id, t)

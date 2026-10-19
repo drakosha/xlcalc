@@ -63,8 +63,8 @@ export class Budget {
   /** The reason to stop now, or null. */
   stopped(now = nowMs()): CalcError | null {
     if (this.halted) return this.halted
-    if (this.signal?.aborted) return new CalcError('aborted', 'the computation was aborted', { cause: this.signal.reason })
-    if (now > this.deadline) return new CalcError('soft_timeout', 'the computation ran past its timeoutMs')
+    if (this.signal?.aborted) return new CalcError('aborted', 'the calculation was aborted', { cause: this.signal.reason })
+    if (now > this.deadline) return new CalcError('soft_timeout', 'the calculation ran past its timeoutMs')
     return null
   }
 
