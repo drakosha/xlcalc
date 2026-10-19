@@ -1,6 +1,6 @@
 # Quick start
 
-Common uses of the engine, each with an example that runs as written and prints what its `// →` comments show. The README's [Recipes](../README.md#recipes) cover single calls; each section here links to the full documentation.
+Common uses of the engine, each with an example that runs as written and prints what its `// →` comments show. Single calls are in [Recipes](#recipes) at the end and in the README's [Recipes](../README.md#recipes); each section links to the full documentation.
 
 ## A calculator on a server
 
@@ -246,3 +246,111 @@ console.log(toInvariant('=СУММ(B2:B9;1,5)', ruRU).formula) // → SUM(B2:B9,
 ```
 
 Calculating a workbook or opening a session on one whose locale is not loaded throws an `InputError` that names the import to add. An xlsx file does not record which locale it is calculated in, so the same file gives different values in Excel on a Russian machine and on an English one (`3/4/2026` above); a workbook that carries its `locale` gives the same values everywhere. A session in ru-RU parses typed text as Russian Excel does (`1 234,5`, `15.03.2026`) and explains in Russian why input is rejected and where a value comes from (`explain`); the reasons in `diagnostics` stay in English. `toLocal`, `toInvariant` and `validateLocalFormula` accept the locale object without loading it, so users can read and enter formulas in Russian in a workbook that calculates in en-US. [Locales](locale.md) covers what changes in calculation, which messages are translated and how to add a locale.
+
+## Recipes
+
+Single calls, each with the result it prints.
+
+### Enter text in a cell as Excel parses it, in ru-RU
+
+```js
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: {} }] })
+session.setCellText('S', 'A1', '15.03.2026')
+session.setCellText('S', 'A2', '1 234,5')
+console.log(Object.values(session.getCells('S', 'A1:A2')).map((c) => [c.value, c.text, c.numberFormat])) // → [ [ 46096, '15.03.2026', 14 ], [ 1234.5, '1 234,50', 4 ] ]
+```
+
+### Paste text from the clipboard
+
+```js
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { B2: { value: 'old' } } }] })
+const pasted = session.pasteText('S', 'A1', "15.03.2026\t1 234,5\t=B1*2\r\n'007\r\n")
+console.log(pasted.range, pasted.changes.map((c) => `${c.cell} ${c.text}`)) // → A1:C3 [ 'A1 #########', 'B1 1 234,50', "A2 '007", 'B2 ', 'C1 2469' ]
+console.log(session.undo().call, session.getCell('S', 'A1')) // → pasteText undefined
+```
+
+### Copy a range as plain text
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', columns: { A: { width: 3 } }, cells: { A1: { value: 46096, numberFormat: 'yyyy-mm-dd' }, A2: { value: 1.23456789 } } }] })
+console.log(JSON.stringify(session.copyText('S', 'A1:A2', { trailingNewline: false }))) // → "2026-03-15\r\n1.23456789"
+```
+
+`copyText` copies the calculated values in their formats, without clipping to the column width, and skips hidden rows and columns; the host writes the string to its clipboard. Windows ends a copy with CRLF; on the Mac pass `{ trailingNewline: false }`. [Copying plain text](entry.md#copying-plain-text) covers the bounds, merges and spills, and why a copy cannot always be read back.
+
+### Enter text into a selection (Control+Return)
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { value: 3 }, A3: { value: 4 }, C1: { numberFormat: '0%' } } }] })
+console.log(session.fillCellText('S', 'B1:B3', '=A1*2').changes.map((c) => `${c.cell} ${c.formula} ${c.value}`)) // → [ 'B3 A3*2 8', 'B2 A2*2 6', 'B1 A1*2 4' ]
+console.log(session.fillCellText('S', 'C1:C2', '5').changes.map((c) => `${c.cell} ${c.text}`), session.getBook().sheets[0].cells.C2) // → [ 'C1 5%', 'C2 5%' ] { value: 0.05, numberFormat: '0%' }
+```
+
+### Read a viewport for a grid
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 'Total', style: 0 }, B1: { value: 1234.5, numberFormat: '#,##0.00' } }, columns: { B: { width: 12 } } }] })
+const v = session.getViewport('S', 'A1:B2')
+console.log(v.cells.A1.effectiveStyle, v.styles[v.cells.A1.effectiveStyle], v.cells.B1.text, v.columns.map((c) => c.width), v.usedRange) // → 0 { font: { bold: true } } 1,234.50 [ 8.83203125, 12 ] { rows: 1, columns: 2 }
+```
+
+### Read a viewport of a saved version of a workbook
+
+```js
+import { compute, viewportOf } from 'xlcalc'
+
+const rule = { type: 'cellIs', ranges: ['A1:A2'], operator: 'greaterThan', formulas: ['1000'], style: { fill: { color: '#FFC7CE' } } }
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 1234.5 }, A2: { formula: 'A1/0' } }, columns: { A: { numberFormat: '#,##0.00' } }, conditionalFormats: [rule] }] }
+const saved = JSON.parse(JSON.stringify({ book, result: compute(book) })) // as a host stores a version
+const v = viewportOf(saved, 'S', 'A1:A2', { diagnostics: true, editText: true, appearance: true })
+console.log(v.cells.A1.text, v.cells.A1.editText, v.cells.A1.appearance, v.cells.A2.issue.reason) // → 1,234.50 1234.5 { style: { fill: { color: '#FFC7CE' } } } division by zero
+```
+
+### Make a range bold and set its number format
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 0.25 }, B1: { value: 0.5 } } }] })
+const r = session.patchCells([{ sheet: 'S', range: 'A1:B1', set: { style: { font: { bold: true } }, numberFormat: '0%' } }])
+console.log(r.changes.map((c) => [c.cell, c.text, c.style]), r.styles) // → [ [ 'A1', '25%', 0 ], [ 'B1', '50%', 0 ] ] [ { font: { bold: true } } ]
+```
+
+### Insert a row and shift the viewport by `moved`
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, A3: { formula: 'SUM(A1:A2)' } } }] })
+const { moved } = session.editStructure({ op: 'insertRows', sheet: 'S', row: 2 })
+const rowAfter = (row) => moved.reduce((x, m) => (m.kind === 'lines' && m.axis === 'rows' && x >= m.at ? x + m.count : x), row)
+console.log(moved, rowAfter(1), rowAfter(3)) // → [ { kind: 'lines', sheet: 'S', axis: 'rows', at: 2, count: 1 } ] 1 4
+```
+
+### Find out why a cell has an error
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 0 }, A2: { formula: '1/A1' }, A3: { formula: 'A2*2' } } }] })
+console.log(session.getCellIssue('S', 'A3'))
+// → {
+//     error: 'DIV0',
+//     reason: "division by zero, from 'S'!A2",
+//     origin: { sheet: 'S', cell: 'A2' }
+//   }
+```
