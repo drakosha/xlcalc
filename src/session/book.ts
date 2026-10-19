@@ -1,7 +1,7 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
 import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, RowsFit, SheetInput, SheetLayout } from '../contract.js'
 import { setInput, settled, sheetIndexOf, type EngineState } from '../engine.js'
-import { InputError } from '../input.js'
+import { InputError } from '../input-error.js'
 import { hasLooks, inputIn, layerOf } from '../looks/sheet.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'

@@ -3,7 +3,7 @@
  * the area's top-left, nothing else in it. Apart from the computation, so the xlsx subpath checks books without it.
  */
 import type { CellInput } from './contract.js'
-import { InputError } from './input.js'
+import { InputError } from './input-error.js'
 import { parseAddress } from './model.js'
 import { cornersText, hasCell, parseRange, type Rect } from './structure/area.js'
 

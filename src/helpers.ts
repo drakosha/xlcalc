@@ -5,7 +5,9 @@
  */
 import type { CellValue, ErrorCode, NameOptions, SheetNameCheck, SheetNameCode } from './contract.js'
 import { canonValue as canonText, outNumber } from './canon.js'
-import { checkCellValue, checkNameOptions, checkString, InputError, sheetNameProblem } from './input.js'
+import { checkCellValue, checkNameOptions, sheetNameProblem } from './input.js'
+import { InputError } from './input-error.js'
+import { checkString } from './input/basic.js'
 import { checkLocaleArg } from './locale/load.js'
 import { say, type MessageKey } from './locale/messages.js'
 import { EN_US } from './locales/en-US.js'

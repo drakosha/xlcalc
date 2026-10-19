@@ -8,7 +8,7 @@
  */
 import type { CellInput, CellReplace, CellStyle, ColumnInput, LayoutEdit, LinePatch, RowInput, SheetInput, StylePatch } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { InputError } from '../input.js'
+import { InputError } from '../input-error.js'
 import { sheetLines, type SheetLines } from '../layout/lines.js'
 import { lines as spansOf, patchLines, spanKey } from '../layout/spans.js'
 import { formatAddress, parseAddress } from '../model.js'

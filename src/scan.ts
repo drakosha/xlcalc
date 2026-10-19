@@ -5,7 +5,7 @@
  * back to the typed ones.
  */
 import type { FormulaReference, ScanOptions } from './contract.js'
-import { checkString, object, onlyKeys } from './input.js'
+import { checkString, object, onlyKeys } from './input/basic.js'
 import { sidesOf } from './locale/index.js'
 import { checkLocaleArg } from './locale/load.js'
 import { translate, type Translated } from './locale/translate.js'

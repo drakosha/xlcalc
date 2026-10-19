@@ -10,7 +10,8 @@ import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, Sa
 import { toCellValue, valueAt, type EngineState } from '../engine.js'
 import { checkedEntryText } from '../entry/text.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { array, checkBoolean, checkNumber, checkString, InputError, object, onlyOptions } from '../input.js'
+import { InputError } from '../input-error.js'
+import { array, checkBoolean, checkNumber, object, onlyOptions } from '../input/basic.js'
 import { issueDetail, type Place } from '../issues.js'
 import { isHiddenRow } from '../layout/hidden.js'
 import { formatSource, lookOf, sheetLines, type SheetLines } from '../layout/lines.js'
@@ -23,7 +24,7 @@ import { columnPoints, widthOf } from '../numfmt.js'
 import { cellResult, outValue, spilled } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { lowerBound } from '../sorted.js'
-import { parseRange, rectText, type Rect } from '../structure/area.js'
+import { rectText, type Rect } from '../structure/area.js'
 import { tableAt, type Tables } from '../tables/model.js'
 import { holds } from '../array-areas.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
@@ -45,13 +46,6 @@ export function checkLineNumbers(v: unknown, path: string, max: number) {
     checkNumber(n, `${path}[${i}]`, 1, max, true)
     if (i && (n as number) <= (xs[i - 1] as number)) throw new InputError(`${path}[${i}]`, `expected numbers in ascending order, each once: ${n} comes after ${xs[i - 1]}`)
   })
-}
-
-/** A rectangle of a sheet given as text (`B2`, `B2:D9`, `B:D`, `2:9`). */
-export function checkRange(text: unknown, path: string): Rect {
-  const x = parseRange(checkString(text, path))
-  if (!x) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(text)}`)
-  return x
 }
 
 /** `getViewport`'s options; with `saved`, `viewportOf`'s (`appearance` too). */

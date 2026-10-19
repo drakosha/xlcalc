@@ -3,95 +3,26 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { AlignmentStyle, BookInput, BorderLine, CachedValues, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, ExternalBook, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CachedValues, CalcLimits, CellEdit, CellInput, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, ExternalBook, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { checkSpan, SPAN_KEY } from './layout/spans.js'
 import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
 import { checkBookLocale, checkLocaleArg } from './locale/load.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
-import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { hasLooks, lookAlone, looksTaken } from './looks/sheet.js'
-import { parseRange } from './structure/area.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
-import { optionHint } from './strict-args.js'
+import { array, checkBoolean, checkNumber, checkOneOf, checkString, isObject, object, onlyKeys, onlyOptions } from './input/basic.js'
+import { checkAddress, checkRange } from './input/range.js'
+import { checkFormat, checkStyleIndex, checkStyles } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
-
-export { InputError, what } from './input-error.js'
-
-/** A plain object: not null, not an array. */
-export const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
-
-export function object(v: unknown, path: string, expected: string): Record<string, unknown> {
-  if (!isObject(v)) throw new InputError(path, `expected ${expected}, got ${what(v)}`)
-  return v
-}
-
-export function array(v: unknown, path: string, expected: string): unknown[] {
-  if (!Array.isArray(v)) throw new InputError(path, `expected ${expected}, got ${what(v)}`)
-  return v
-}
-
-export function checkString(v: unknown, path: string): string {
-  if (typeof v !== 'string') throw new InputError(path, `expected a string, got ${what(v)}`)
-  return v
-}
-
-/** Fields by their old names, refused since they were renamed, and the name of each now. */
-const RENAMED: Record<string, string> = { format: 'numberFormat' }
-
-/** The fields of `o` are of `allowed`: an unknown one is refused, with the name now of a field by its old name (`format`). */
-export function onlyKeys(o: Record<string, unknown>, path: string, allowed: readonly string[], hint = '') {
-  for (const k of Object.keys(o))
-    if (!allowed.includes(k)) {
-      const now = Object.hasOwn(RENAMED, k) && allowed.includes(RENAMED[k]) ? ` (${k} is the old name of ${RENAMED[k]})` : ''
-      throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${allowed.join(', ')})${hint}${now}`)
-    }
-}
-
-/** An options object's fields, as `onlyKeys`: an unknown one that another call takes says which call (`optionHint`). */
-export const onlyOptions = (o: Record<string, unknown>, path: string, allowed: readonly string[], hint = '') => onlyKeys(o, path, allowed, hint + optionHint(o, allowed))
-
-const ADDRESS = /^([A-Z]{1,3})([1-9][0-9]*)$/
-const MAX_ADDRESS = 'XFD1048576'
-
-/** A cell address in A1 style within the Excel grid. */
-export function checkAddress(addr: unknown, path: string): string {
-  if (typeof addr !== 'string') throw new InputError(path, `expected a cell address such as "B12", got ${what(addr)}`)
-  const m = ADDRESS.exec(addr)
-  if (!m) {
-    const hint = ADDRESS.test(addr.toUpperCase()) ? ` (column letters must be upper-case: "${addr.toUpperCase()}")` : ''
-    throw new InputError(path, `invalid cell address ${JSON.stringify(addr)}: expected A1 style such as "B12"${hint}`)
-  }
-  if (m[1].length < 3 && m[2].length < 7) return addr
-  let col = 0
-  for (const ch of m[1]) col = col * 26 + (ch.charCodeAt(0) - 64)
-  if (col > MAX_COLS || Number(m[2]) > MAX_ROWS) throw new InputError(path, `cell address ${JSON.stringify(addr)} is outside the sheet (the last cell is ${MAX_ADDRESS})`)
-  return addr
-}
-
-/** A number format: a code, or the number of a built-in format (0 to 49). */
-export function checkFormat(v: unknown, path: string) {
-  if (typeof v !== 'string' && !(typeof v === 'number' && isBuiltin(v))) throw new InputError(path, `expected a format code or the number of a built-in format, 0 to 49, got ${what(v)}`)
-}
-
-/** A style's fields where a cell takes its number: where such a style goes. */
-const STYLE_HINT = " (a cell names a style of the book's styles by its index; a session's patchCells takes one by its fields)"
-
-/** A style number of a book with `styles` styles. */
-export function checkStyleIndex(v: unknown, path: string, styles: number) {
-  if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles) {
-    const hint = isObject(v) ? STYLE_HINT : ''
-    throw new InputError(path, (styles ? `expected the index of a style of the book, 0 to ${styles - 1}, got ${what(v)}` : `the book has no styles, got ${what(v)}`) + hint)
-  }
-}
 
 /** A cell of a book with `styles` styles. */
 export function checkCell(v: unknown, path: string, styles: number): CellInput {
@@ -182,92 +113,7 @@ export function sheetNameProblem(name: string): Message | null {
   return null
 }
 
-const COLOR = /^#[0-9A-Fa-f]{6}$/
-
-export function checkColor(v: unknown, path: string) {
-  if (typeof v !== 'string' || !COLOR.test(v)) throw new InputError(path, `expected a colour such as "#FF0000", got ${what(v)}`)
-}
-
-export function checkOneOf(v: unknown, path: string, values: readonly (string | number)[]) {
-  if (!values.includes(v as string)) throw new InputError(path, `expected one of ${values.map((x) => JSON.stringify(x)).join(', ')}, got ${what(v)}`)
-}
-
 const DATE_SYSTEMS = [1900, 1904]
-
-export function checkBoolean(v: unknown, path: string) {
-  if (typeof v !== 'boolean') throw new InputError(path, `expected a boolean, got ${what(v)}`)
-}
-
-export function checkNumber(v: unknown, path: string, min: number, max: number, integer = false) {
-  if (typeof v !== 'number' || !Number.isFinite(v) || v < min || v > max || (integer && !Number.isInteger(v)))
-    throw new InputError(path, `expected ${integer ? 'an integer' : 'a number'} from ${min} to ${max}, got ${what(v)}`)
-}
-
-/** The lines of a border (`BorderLine`), as xlsx names them; the xlsx reader takes these and names any other lost. */
-export const LINES: readonly BorderLine['style'][] = ['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
-
-/** A cell's alignments (`AlignmentStyle`), as xlsx names them. */
-export const HORIZONTAL: readonly NonNullable<AlignmentStyle['horizontal']>[] = ['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed']
-export const VERTICAL: readonly NonNullable<AlignmentStyle['vertical']>[] = ['top', 'center', 'bottom', 'justify', 'distributed']
-
-/** Whether a field of a style is given: an undefined one never is, as no field of input is; in a patch a null one neither (`checkStyle`). */
-export type Given = (o: Record<string, unknown>, k: string) => boolean
-
-/** A font's fields: a cell's (`named`) has a name and a size too, which a conditional style (a dxf) has not. */
-export function checkFont(v: unknown, p: string, given: Given, named: boolean) {
-  const f = object(v, p, 'a font such as { bold: true }')
-  onlyKeys(f, p, [...(named ? ['name', 'size'] : []), 'bold', 'italic', 'underline', 'strike', 'color'])
-  if (given(f, 'name')) checkString(f.name, `${p}.name`)
-  if (given(f, 'size')) checkNumber(f.size, `${p}.size`, 1, 409)
-  for (const k of ['bold', 'italic', 'strike']) if (given(f, k)) checkBoolean(f[k], `${p}.${k}`)
-  if (given(f, 'underline')) checkOneOf(f.underline, `${p}.underline`, ['single', 'double'])
-  if (given(f, 'color')) checkColor(f.color, `${p}.color`)
-}
-
-/** A solid fill; `example` is the colour its message shows. */
-export function checkFill(v: unknown, p: string, example: string) {
-  const f = object(v, p, `a fill such as { color: "${example}" }`)
-  onlyKeys(f, p, ['color'])
-  checkColor(f.color, `${p}.color`)
-}
-
-/** A border's sides; `side` says which of those it names are given. */
-export function checkBorder(v: unknown, p: string, side: Given) {
-  const b = object(v, p, 'a border such as { bottom: { style: "thin" } }')
-  onlyKeys(b, p, ['top', 'right', 'bottom', 'left'])
-  for (const [k, l] of Object.entries(b)) {
-    if (!side(b, k)) continue
-    const lp = `${p}.${k}`
-    const line = object(l, lp, 'a line such as { style: "thin", color: "#000000" }')
-    onlyKeys(line, lp, ['style', 'color'])
-    checkOneOf(line.style, `${lp}.style`, LINES)
-    if (line.color !== undefined) checkColor(line.color, `${lp}.color`)
-  }
-}
-
-/** A style, or with `patch` the fields of one to change (`StylePatch`), where null removes a field. */
-export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
-  const s = object(v, p, 'a style such as { font: { bold: true } }')
-  onlyKeys(s, p, ['font', 'fill', 'border', 'alignment'])
-  // a field given: in a patch, null is a field removed
-  const given: Given = (o, k) => o[k] !== undefined && !(patch && o[k] === null)
-  if (given(s, 'font')) checkFont(s.font, `${p}.font`, given, true)
-  if (given(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC000')
-  if (given(s, 'border')) checkBorder(s.border, `${p}.border`, given)
-  if (given(s, 'alignment')) {
-    const a = object(s.alignment, `${p}.alignment`, 'an alignment such as { horizontal: "center" }')
-    onlyKeys(a, `${p}.alignment`, ['horizontal', 'vertical', 'wrap', 'indent'])
-    if (given(a, 'horizontal')) checkOneOf(a.horizontal, `${p}.alignment.horizontal`, HORIZONTAL)
-    if (given(a, 'vertical')) checkOneOf(a.vertical, `${p}.alignment.vertical`, VERTICAL)
-    if (given(a, 'wrap')) checkBoolean(a.wrap, `${p}.alignment.wrap`)
-    if (given(a, 'indent')) checkNumber(a.indent, `${p}.alignment.indent`, 0, 250, true)
-  }
-  return s as CellStyle
-}
-
-export function checkStyles(v: unknown, path: string): CellStyle[] {
-  return array(v, path, 'an array of styles').map((s, i) => checkStyle(s, `${path}[${i}]`))
-}
 
 const LINE = { c: { size: 'width', max: 255, what: 'columns', key: SPAN_KEY.c }, r: { size: 'height', max: 409.5, what: 'rows', key: SPAN_KEY.r } } as const
 
@@ -408,7 +254,7 @@ function checkLooks(v: unknown, path: string, styles: number) {
     const p = `${path}[${k}]`
     const o = object(x, p, 'a look such as { range: "A2:XFD9", style: 0, numberFormat: "0.00" }')
     onlyKeys(o, p, ['range', 'style', 'numberFormat'])
-    if (typeof o.range !== 'string' || !parseRange(o.range)) throw new InputError(`${p}.range`, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(o.range)}`)
+    checkRange(o.range, `${p}.range`, false)
     if (o.style !== undefined) checkStyleIndex(o.style, `${p}.style`, styles)
     if (o.numberFormat !== undefined) checkFormat(o.numberFormat, `${p}.numberFormat`)
   })

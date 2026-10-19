@@ -6,7 +6,9 @@
  */
 import type { BookInput, CellInput, CellRef, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
-import { checkAddress, checkString, InputError } from '../input.js'
+import { InputError } from '../input-error.js'
+import { checkString } from '../input/basic.js'
+import { checkAddress } from '../input/range.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { FormulaError, sheetKey, tokenize } from '../syntax.js'

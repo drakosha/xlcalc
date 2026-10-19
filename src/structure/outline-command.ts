@@ -6,6 +6,7 @@
  */
 import type { SheetInput, StructureOp } from '../contract.js'
 import { InputError } from '../input-error.js'
+import { integer } from '../input/basic.js'
 import { outlineCommand, type OutlineCommand, type OutlineRefusal } from '../layout/outline.js'
 import { checkSpan, spanKey } from '../layout/spans.js'
 import type { OutlineMessageKey } from '../locale/outline-messages.js'
@@ -30,12 +31,6 @@ function oneOf(o: Record<string, unknown>, a: string, b: string): Axis {
   return o[a] !== undefined ? 'r' : 'c'
 }
 
-/** A whole number from `min` to `max`, else `InputError` naming `path`. */
-function integer(v: unknown, path: string, max: number, min = 1): number {
-  if (typeof v !== 'number' || !Number.isInteger(v) || v < min || v > max) throw new InputError(path, `expected an integer from ${min} to ${max}, got ${JSON.stringify(v)}`)
-  return v
-}
-
 /** The commands of the operation, by axis. */
 function commands(o: Record<string, unknown>): [Axis, OutlineCommand][] {
   switch (o.op as OutlineOp['op']) {
@@ -50,7 +45,7 @@ function commands(o: Record<string, unknown>): [Axis, OutlineCommand][] {
     case 'hideDetail': {
       const axis = oneOf(o, 'row', 'column')
       const kind = o.op === 'showDetail' ? 'show' : 'hide'
-      if (axis === 'r') return [['r', { kind, at: integer(o.row, 'op.row', MAX_ROWS) - 1 }]]
+      if (axis === 'r') return [['r', { kind, at: integer(o.row, 'op.row', 1, MAX_ROWS) - 1 }]]
       const at = typeof o.column === 'string' && /^[A-Z]{1,3}$/.test(o.column) ? colToIndex(o.column) : MAX_COLS
       if (at >= MAX_COLS) throw new InputError('op.column', `expected column letters from A to XFD, got ${JSON.stringify(o.column)}`)
       return [['c', { kind, at }]]
@@ -58,8 +53,8 @@ function commands(o: Record<string, unknown>): [Axis, OutlineCommand][] {
     case 'showLevels': {
       if (o.rows === undefined && o.columns === undefined) throw new InputError('op', 'expected rows, columns or both')
       const out: [Axis, OutlineCommand][] = []
-      if (o.rows !== undefined) out.push(['r', { kind: 'levels', level: integer(o.rows, 'op.rows', 8) }])
-      if (o.columns !== undefined) out.push(['c', { kind: 'levels', level: integer(o.columns, 'op.columns', 8) }])
+      if (o.rows !== undefined) out.push(['r', { kind: 'levels', level: integer(o.rows, 'op.rows', 1, 8) }])
+      if (o.columns !== undefined) out.push(['c', { kind: 'levels', level: integer(o.columns, 'op.columns', 1, 8) }])
       return out
     }
   }

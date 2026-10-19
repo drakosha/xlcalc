@@ -8,7 +8,8 @@
  * cell computes `#NAME?`. Text pasted from the clipboard is read so too, but where Excel reads it otherwise (`readEntry`).
  */
 import type { CellInput, CheckCode, EntryOptions, EntryResult, ExternalBook, NumberFormat } from '../contract.js'
-import { checkEntryOptions, checkString } from '../input.js'
+import { checkEntryOptions } from '../input.js'
+import { checkString } from '../input/basic.js'
 import { validateTyped, toInvariant } from '../locale/index.js'
 import { validate } from '../syntax.js'
 import { localeOf } from '../locale/registry.js'

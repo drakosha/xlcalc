@@ -1,7 +1,7 @@
 /** `explain`: where a cell's value comes from, as a tree of its precedents and as indented text in the book's locale. */
 import type { CellValue, ExplainOptions, ExternalBook, RangeRef } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
-import { object, onlyOptions } from './input.js'
+import { object, onlyOptions } from './input/basic.js'
 import { errorOrigin, errorStep, issueCode, placeText, type Place } from './issues.js'
 import { showFormula } from './locale/index.js'
 import { say, type Message } from './locale/messages.js'

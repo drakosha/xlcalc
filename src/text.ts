@@ -7,7 +7,9 @@
  * and no locale's data comes with them but en-US's messages, which the tokenizer's errors carry: another locale is given
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
-import { array, checkBoolean, checkCellValue, checkNumber, checkString, InputError, object, onlyOptions } from './input.js'
+import { checkCellValue } from './input.js'
+import { InputError } from './input-error.js'
+import { array, checkBoolean, checkNumber, checkString, object, onlyOptions } from './input/basic.js'
 import type { CellValue, CompareValuesOptions, FindTextOptions } from './contract.js'
 import { clipboardRows } from './entry/clipboard.js'
 import { folded, matcher, replacer } from './find-text.js'

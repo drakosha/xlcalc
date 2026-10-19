@@ -4,7 +4,7 @@
  * shows the formats by (`numfmt/builtin.ts`, a locale's `builtin`, through `builtinIn`), in en-US syntax as a cell's
  * `numberFormat` takes a code.
  */
-import { InputError, what } from './input.js'
+import { InputError, what } from './input-error.js'
 import { checkLocaleArg } from './locale/load.js'
 import { builtinIn } from './locale/rules.js'
 import type { Locale } from './locale/types.js'

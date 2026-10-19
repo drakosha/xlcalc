@@ -11,7 +11,7 @@
 import type { CellRef, CellTextRefusal, RangeRef, Refusal, ReplaceOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { allotWrites, type Steps } from '../exec/budget.js'
-import { checkString } from '../input.js'
+import { checkString } from '../input/basic.js'
 import { inputIn } from '../looks/sheet.js'
 import { formatAddress, MAX_ROWS } from '../model.js'
 import { ownerOf } from '../spill/place.js'

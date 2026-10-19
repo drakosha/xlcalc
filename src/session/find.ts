@@ -7,7 +7,8 @@
  */
 import type { CellValue, ColumnInput, FindCellsOptions, RowInput } from '../contract.js'
 import { toCellValue, valueAt, type EngineState } from '../engine.js'
-import { checkBoolean, InputError } from '../input.js'
+import { InputError } from '../input-error.js'
+import { checkBoolean } from '../input/basic.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, placeOf } from '../model.js'
 import { outValue } from '../result.js'

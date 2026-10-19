@@ -5,7 +5,7 @@
  */
 import type { EndDirection } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { InputError, what } from '../input.js'
+import { InputError, what } from '../input-error.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { lowerBound } from '../sorted.js'

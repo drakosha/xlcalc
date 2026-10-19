@@ -8,13 +8,15 @@
  */
 import type { ClearKind, RangeRef } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { checkOneOf, checkSheet, object, onlyKeys, array } from '../input.js'
+import { checkSheet } from '../input.js'
+import { checkOneOf, object, onlyKeys, array } from '../input/basic.js'
+import { checkRange } from '../input/range.js'
 import { clearConditional } from '../cond/structure.js'
 import { sheetNames } from '../structure/rewrite.js'
 import type { Rect } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
 import { clearValidations } from '../validation/structure.js'
-import { checkRange, linesOf, type Look } from './patch.js'
+import { linesOf, type Look } from './patch.js'
 import { Draft, lookAt, type Plan } from './styles.js'
 
 const LOOKS: Record<ClearKind, Look> = {

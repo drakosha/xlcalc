@@ -4,7 +4,7 @@
  */
 import type { BookInput, StructureOp, TableInput } from '../contract.js'
 import { checkTables } from './check.js'
-import { InputError } from '../input.js'
+import { InputError } from '../input-error.js'
 import { formatAddress } from '../model.js'
 import { say, type Message } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'

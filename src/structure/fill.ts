@@ -13,7 +13,7 @@
 import type { BookInput, CellInput, FillType } from '../contract.js'
 import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
 import { dateToSerial, serialToDate } from '../date-serial.js'
-import { InputError } from '../input.js'
+import { InputError } from '../input-error.js'
 import { lineAt } from '../layout/spans.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
