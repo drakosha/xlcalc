@@ -90,6 +90,12 @@ Pass the locale the person reading the messages chose. A file does not say it: E
 
 A file that is not a zip archive, an encrypted one, a ZIP64 archive and a file without a workbook part are errors. Data that is no bytes, such as the file's path, is an `InputError` that says to pass the bytes.
 
+`opts.limits` bounds how large the file's parts may be once inflated, in bytes: `entryBytes` for one part, 256 MiB by default, and `totalBytes` for the parts read together, 1 GiB by default. A file past them is an error, as a damaged file is. A host that reads files people upload passes lower ones:
+
+```js
+const read = await readXlsx(data, { limits: { entryBytes: 16 * 2 ** 20, totalBytes: 64 * 2 ** 20 } })
+```
+
 ### Cells
 
 Text, numbers and booleans become values. Dates stay numbers, as Excel stores them, and their number format makes them dates on screen. The ISO dates of Strict files (`t="d"`) become serial numbers too.

@@ -3478,6 +3478,12 @@ interface ReadXlsxOptions {
    * does not say what language its reader reads, so the host passes the locale the person chose.
    */
   locale?: string | Locale
+  /**
+   * How large the file's parts may be once inflated: one part, 256 MiB by default, and the parts read together, 1 GiB by
+   * default. A file past them is refused, and so is a part that inflates to more than the file says it holds. A host
+   * that reads files people upload sets them lower.
+   */
+  limits?: XlsxLimits
 }
 ```
 
@@ -4795,6 +4801,22 @@ type XlsxIssueCode =
   | 'textLength'
   | 'noCachedValues'
   | 'part'
+```
+
+### `XlsxLimits`
+
+The bounds of [`readXlsx`](#xlcalcxlsx-readxlsx) on a file's parts once inflated ([`ReadXlsxOptions.limits`](#readxlsxoptions)), in bytes, whole numbers of at least 1.
+
+```ts
+interface XlsxLimits {
+  /**
+   * One part: 268,435,456 (256 MiB) by default. A part is read as one JavaScript string, so a part over about 512 MiB is
+   * not read whatever the bound.
+   */
+  entryBytes?: number
+  /** The parts read, together: 1,073,741,824 (1 GiB) by default. */
+  totalBytes?: number
+}
 ```
 
 ### `XlsxRead`
