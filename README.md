@@ -22,7 +22,7 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (19.10.2026, 0.52.1), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (20.10.2026, 0.53.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 | import | for | size |
 |---|---|---:|

@@ -16,6 +16,14 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.53.0 (2026-10-20)
+
+Internal release; not published to npm. The engine's English messages in plain English. The synthetic book's values and hashes are as in 0.52.1.
+
+Changed:
+
+- 166 English messages are rewritten in plain English with the words of the guides (workbook, returns, formatting, color): the en-US catalog of formula checks and entries, the reasons in `diagnostics` and `getCellIssue`, `explain`, the outline commands, the input checks behind `InputError`, `CalcError`, and the issues of `readXlsx` and `writeXlsx`. Codes, fields and behavior are the same, and so are the ends of a reason that name its source (`, from 'S'!A2`). Code that matches a message's text rather than its `code` needs the new text: `is in no group` is now `is not in a group`, `shown already` is `already shown`, and so on.
+
 ## 0.52.1 (2026-10-19)
 
 Internal release; not published to npm. Workbooks open faster. The synthetic book's values and hashes are as in 0.52.0.
