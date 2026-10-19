@@ -16,6 +16,22 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.51.0 (2026-10-19)
+
+Internal release; not published to npm. `readXlsx` within bounds of memory, the system's date and time tags and the calendar prefixes of number formats as Excel shows them, the fill handle over hidden rows, measured in Excel for Mac and Windows. The synthetic book's values and hashes are as in 0.50.5.
+
+Added:
+
+- `readXlsx(data, { limits })`: `entryBytes`, the bound of one part once inflated, 512 MiB by default; `totalBytes`, of the parts read together, 1 GiB; `ratio`, how many times its size in the file a part over 16 MiB may inflate to, 200 ([Reading and writing xlsx](docs/xlsx.md)).
+
+Fixed:
+
+- `readXlsx` inflated a part whole before it checked its size: a file of 400 KB holding 400 MB of spaces took over 1 GB of memory. It stops a part as soon as it inflates past the size it declares, refuses a part past the bounds before inflating it, and refuses records of the archive over the same bytes.
+- `[$-x-sysdate]` and `[$-x-systime]`, which Excel for Mac writes for Long Date and Time, showed `-x` before the date; they show the system's long date and time as `[$-F800]` and `[$-F400]` do. A currency tag with a culture (`[$€-x-euro2]`, `[$$-en-US]`) shows its symbol alone.
+- The calendar prefixes at the start of a date code: `B1` the Gregorian calendar with English names, `B2` the Hijri (tabular) calendar with Arabic names, as Excel shows them in en-US and ru-RU (`B2dd/mm/yyyy` of 1 January 2000 is `25/09/1420`). They showed as text.
+- `fillRange`'s copies go into hidden rows, on a filtered sheet too, as Excel's fill handle lays them, and a source over hidden rows is copied whole; its series did so already. `copyRange` (copy and Fill Down) fills the visible rows, as before.
+- `quoteSheetIfNeeded` with a locale of the wrong shape, a tag such as `'ru-RU'` among them, is an `InputError`; it was ignored, and the name came back without the quotes ru-RU's booleans need.
+
 ## 0.50.5 (2026-10-19)
 
 Internal release; not published to npm. The database functions faster on edits, and a quick start. The synthetic book's values and hashes are as in 0.50.4.
