@@ -120,6 +120,16 @@ describe('names', () => {
     expect(quoteSheetIfNeeded('ИСТИНА', ruRU)).toBe("'ИСТИНА'")
     expect(quoteSheetIfNeeded('TRUE', ruRU)).toBe('TRUE')
   })
+
+  it("takes the locale's object alone: a tag, which would need the list of locales, and an object without booleans are refused", () => {
+    const refused = (got: string, hint = '') => new InputError('locale', `expected a locale object such as ruRU, with its booleans, got ${got}${hint}`)
+    expect(() => quoteSheetIfNeeded('ИСТИНА', 'ru-RU' as never)).toThrow(refused('the string "ru-RU"', " (it takes no tag, so that the a1 subpath carries no list of locales)"))
+    expect(() => quoteSheetIfNeeded('TRUE', null as never)).toThrow(refused('null'))
+    expect(() => quoteSheetIfNeeded('TRUE', {} as never)).toThrow(refused('an object'))
+    expect(() => quoteSheetIfNeeded('TRUE', { booleans: { TRUE: 'ИСТИНА' } } as never)).toThrow(refused('an object'))
+    expect(quoteSheetIfNeeded('ЛОЖЬ', { booleans: ruRU.booleans })).toBe("'ЛОЖЬ'")
+    expect(quoteSheetIfNeeded('TRUE', undefined)).toBe("'TRUE'")
+  })
 })
 
 describe('the root exports the same functions', () => {

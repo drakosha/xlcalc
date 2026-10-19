@@ -571,7 +571,8 @@ function quoteSheetIfNeeded(name: string, locale?: Pick<Locale, "booleans"> | un
 A sheet's name in a reference as Excel writes it: in quotes, an apostrophe inside doubled, when it is not a plain name
 (`'Q1 data'`, `'2024'`, `'O''Brien'`), when it is a cell of the sheet (`'A1'`, `'XFD1048576'`; not `XFE1`), when it
 begins with an R1C1 reference (`'R'`, `'R1C1'`, `'R2D2'`) or when it is one of the locale's booleans (`'TRUE'`;
-`'ИСТИНА'` with ru-RU). `locale` gives the booleans, en-US's (the stored text, `Range.Formula`) without one. The engine's
+`'ИСТИНА'` with ru-RU). `locale` gives the booleans, en-US's (the stored text, `Range.Formula`) without one: a locale
+object ([`ruRU`](#xlcalclocalesru-ru-ruru)), not a tag, so that `xlcalc/a1` carries no list of locales; a tag is an [`InputError`](#xlcalc-inputerror). The engine's
 stored formulas quote every sheet: this is the text a person reads.
 
 ### <a id="xlcalc-rangeaddress"></a>`rangeAddress`
@@ -1394,7 +1395,7 @@ interface CellImpact extends CellRef {
 
 ### `CellInput`
 
-An input cell. A date is passed explicitly (`{ date: '2025-01-31' }`) and becomes an Excel serial number.
+An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number.
 
 ```ts
 interface CellInput {

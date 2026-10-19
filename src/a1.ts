@@ -222,16 +222,26 @@ function r1c1Start(name: string): boolean {
   return end === name.length || (numbered && name[end] !== '.')
 }
 
+/** The booleans of `locale`, en-US's without one; its object alone, as a tag needs the list of locales this subpath does not carry. */
+function booleans(locale: unknown): Locale['booleans'] {
+  if (locale === undefined) return { TRUE: 'TRUE', FALSE: 'FALSE' }
+  const b = (locale as Partial<Locale> | null)?.booleans
+  if (typeof locale === 'object' && typeof b?.TRUE === 'string' && typeof b.FALSE === 'string') return b
+  const hint = typeof locale === 'string' ? ' (it takes no tag, so that the a1 subpath carries no list of locales)' : ''
+  throw new InputError('locale', `expected a locale object such as ruRU, with its booleans, got ${what(locale)}${hint}`)
+}
+
 /**
  * A sheet's name in a reference as Excel writes it: in quotes, an apostrophe inside doubled, when it is not a plain name
  * (`'Q1 data'`, `'2024'`, `'O''Brien'`), when it is a cell of the sheet (`'A1'`, `'XFD1048576'`; not `XFE1`), when it
  * begins with an R1C1 reference (`'R'`, `'R1C1'`, `'R2D2'`) or when it is one of the locale's booleans (`'TRUE'`;
- * `'ИСТИНА'` with ru-RU). `locale` gives the booleans, en-US's (the stored text, `Range.Formula`) without one. The engine's
+ * `'ИСТИНА'` with ru-RU). `locale` gives the booleans, en-US's (the stored text, `Range.Formula`) without one: a locale
+ * object (`ruRU`), not a tag, so that `xlcalc/a1` carries no list of locales; a tag is an `InputError`. The engine's
  * stored formulas quote every sheet: this is the text a person reads.
  */
 export const quoteSheetIfNeeded = /* @__PURE__ */ strict(function quoteSheetIfNeeded(name: string, locale?: Pick<Locale, 'booleans'>): string {
   const n = text(name, 'name')
-  const words = locale?.booleans ?? { TRUE: 'TRUE', FALSE: 'FALSE' }
+  const words = booleans(locale)
   const cell = CELL.exec(n)
   const quote =
     !PLAIN.test(n) ||
