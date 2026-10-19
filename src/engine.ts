@@ -32,10 +32,11 @@ import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
 import { arrayArea, holds } from './array-areas.js'
 import { lookAlone, looksTaken, putInput, settle } from './looks/sheet.js'
-import { printFormula, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
+import { quoteSheet, sheetKey } from './syntax.js'
+import { prepare, prepareShaped, type Prepared, type Shapes } from './prepare.js'
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
-import { specRect, tableAt, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
+import { specRect, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
 import { E, isErr, type V } from './values.js'
 
 export interface Formula extends FormulaCode {
@@ -49,7 +50,7 @@ export interface Formula extends FormulaCode {
   area?: Rect
 }
 
-interface Invalid {
+export interface Invalid {
   code: CheckCode
   message: string
   at: number
@@ -193,12 +194,6 @@ function emptySheet(name: string): SheetData {
 }
 
 
-export function invalidError(code: CheckCode): ErrorCode {
-  if (code === 'unknown_function' || code === 'unknown_name') return 'NAME'
-  if (code === 'unknown_sheet' || code === 'external_ref') return 'REF'
-  return 'ERROR'
-}
-
 // ---------- preparation ----------
 
 export const codegenContext = (state: EngineState, s: number, area?: Rect): CodegenContext => ({
@@ -227,20 +222,6 @@ function sameDependencies(a: Formula, b: Formula): boolean {
       const h = b.refs[i]
       return g.s === h.s && g.r1 === h.r1 && g.c1 === h.c1 && g.r2 === h.r2 && g.c2 === h.c2
     })
-}
-
-type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
-
-function prepare(state: EngineState, s: number, row: number, col: number, text: string): Prepared {
-  const named = (name: string, sheet: string | undefined) => nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
-  const known = (name: string, sheet: string | undefined) => !!named(name, sheet)
-  const enclosing = tableAt(state.tables, s, row, col)?.name
-  const books = state.input.externalBooks
-  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: books ?? [], ...(enclosing ? { table: enclosing } : {}) })
-  if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
-  // sheets and names spelled as the book has them, as Excel shows them (`ставка*2` is `Ставка*2`)
-  const sheetOf = (sh: string) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]
-  return { ok: true, text: printFormula(r.ast, { sheetOf, nameOf: (name, sheet) => named(name, sheet)?.name ?? name }), ast: expandLinkNames(r.ast, state.links, books) }
 }
 
 // ---------- assembly ----------
@@ -319,6 +300,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     links: linked.links,
   }
   const pending: Formula[] = []
+  // the formulas of one shape are prepared once while this state is built
+  const shapes: Shapes = new Map()
   for (let s = 0; s < input.sheets.length; s++) {
     const sheet = input.sheets[s]
     // its own copy of the cells: for...in walks them in the order of their entries without making an entry each
@@ -337,7 +320,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       if (due()) yield
       step()
       count(pending.length + state.invalid.size + 1)
-      const p = prepare(state, s, row, col, cellIn.formula)
+      const p = prepareShaped(state, shapes, s, row, col, cellIn.formula)
       if (!p.ok) {
         state.invalid.set(key(s, row, col), p.invalid)
         put(ctx.sheets[s], row, col, E[p.invalid.error])

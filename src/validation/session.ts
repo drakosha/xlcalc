@@ -5,7 +5,8 @@
  */
 import type { CellInput, CellReplace, CellValidation, DataValidation, NumberFormat } from '../contract.js'
 import type { Arg } from '../args.js'
-import { applyEdits, codegenContext, invalidError, toCellValue, valueAt, type EngineState } from '../engine.js'
+import { applyEdits, codegenContext, toCellValue, valueAt, type EngineState } from '../engine.js'
+import { invalidError } from '../prepare.js'
 import { closureBackend } from '../exec/closures.js'
 import { walk } from '../exec/walk.js'
 import type { Steps } from '../exec/budget.js'

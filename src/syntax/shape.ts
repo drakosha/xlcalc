@@ -1,0 +1,133 @@
+/**
+ * Formula shapes: formulas whose tokens differ only in their references (a formula copied down a column, `A2+1`,
+ * `A3+1`) read, check and print alike, so one of them is parsed, checked and printed as the shape's template and each
+ * other is the template with its own references put in. A reference's place changes nothing but the reference: no
+ * check reads where it points, and its text is printed as written. A LET has no shape, since a cell's word in it may be a name.
+ */
+import type { Ast, RangeRef } from './ast.js'
+import { mapAst, printFormula, walk, type PrintOptions } from './print.js'
+import type { Tok } from './tokens.js'
+
+/** What a formula of a shape puts in its template: its references, and its numbers outside array constants (`numbers`). */
+export type Hole = RangeRef | number
+
+/** A shape's template: the AST of its first formula and that formula's holes, which the AST holds. */
+export interface Template {
+  ast: Ast
+  holes: Hole[]
+  /** Set at the first formula that takes the template: where each hole is, by a reference or a number's node. */
+  at?: Map<RangeRef | Ast, number>
+  /** The text around the holes, and the holes in the order the text prints them. */
+  pieces?: string[]
+  order?: number[]
+}
+
+const sized = (x: string) => `${x.length}:${x}`
+const bookText = (b: number | string) => (typeof b === 'number' ? `#${b}` : sized(b))
+
+/** A formula's shape by its tokens: a key every token but a hole is spelled into, and the holes in the text's order; null for a LET. */
+export function shapeOf(toks: Tok[], numbers: boolean): { key: string; holes: Hole[] } | null {
+  let key = ''
+  const holes: Hole[] = []
+  let braces = 0
+  for (const t of toks) {
+    switch (t.t) {
+      case 'num':
+        if (numbers && !braces) {
+          holes.push(t.v)
+          key += 'n'
+        } else key += `n${t.v};`
+        break
+      case 'str':
+        key += `s${sized(t.v)}`
+        break
+      case 'err':
+        key += `e${t.code};${t.sheet === undefined ? '-' : sized(t.sheet)}${t.ref === undefined ? '-' : sized(t.ref)}${t.book === undefined ? '-' : bookText(t.book)}`
+        break
+      case 'ref':
+        holes.push(t.ref)
+        key += `r${t.sheet === null ? '-' : sized(t.sheet)}${t.last === undefined ? '-' : sized(t.last)}`
+        break
+      case 'ident':
+        key += `i${sized(t.v)}${t.sheet === undefined ? '-' : sized(t.sheet)}`
+        break
+      case 'xref':
+        holes.push(t.ref)
+        key += `x${bookText(t.book)}${sized(t.sheet)}`
+        break
+      case 'xname':
+        key += `y${bookText(t.book)}${t.sheet === undefined ? '-' : sized(t.sheet)}${sized(t.v)}`
+        break
+      case 'table':
+        key += `t${t.table === null ? '-' : sized(t.table)}${t.spec.areas.join(',')};${t.spec.cols ? t.spec.cols.map(sized).join('') : '-'}`
+        break
+      case 'fn':
+        if (t.v === 'LET') return null
+        key += `f${sized(t.v)}`
+        break
+      case 'op':
+        key += `o${t.v};`
+        break
+      case 'eof':
+        break
+      default:
+        if (t.t === '{') braces++
+        else if (t.t === '}') braces--
+        key += t.t
+    }
+  }
+  return { key, holes }
+}
+
+/** A mark in the template's text where a hole goes; a text that holds it has no pieces. */
+const MARK = '\u0000'
+
+const filled = (h: Hole) => (typeof h === 'number' ? String(h) : h.text + (h.spill ? '#' : ''))
+
+/**
+ * Makes the template ready to be taken (`instance`), printing it with `print`; false when its AST does not hold each
+ * hole once or its text cannot be cut at them.
+ */
+export function ready(t: Template, print: PrintOptions): boolean {
+  const at = new Map<RangeRef | Ast, number>()
+  const nums: number[] = []
+  t.holes.forEach((h, i) => (typeof h === 'number' ? nums.push(i) : at.set(h, i)))
+  let refs = 0, k = 0
+  walk(t.ast, (n) => {
+    if ((n.k === 'ref' || n.k === 'ref3d' || n.k === 'xref') && at.has(n.ref)) refs++
+    else if (n.k === 'num' && nums.length) at.set(n, nums[k++] ?? -1)
+  })
+  if (refs !== t.holes.length - nums.length || k !== nums.length) return false
+  const order: number[] = []
+  const text = printFormula(t.ast, {
+    ...print,
+    node: (n, _go, usual) => {
+      const i = n.k === 'ref' || n.k === 'ref3d' || n.k === 'xref' ? at.get(n.ref) : n.k === 'num' ? at.get(n) : undefined
+      if (i === undefined) return undefined
+      order.push(i)
+      const u = usual(n), f = filled(t.holes[i])
+      return u.endsWith(f) ? u.slice(0, u.length - f.length) + MARK : u
+    },
+  })
+  const pieces = text.split(MARK)
+  if (pieces.length !== order.length + 1 || order.length !== t.holes.length) return false
+  Object.assign(t, { at, pieces, order })
+  return true
+}
+
+/** The AST and text of a formula of the template's shape (`ready`), whose holes are `holes`. */
+export function instance(t: Template, holes: Hole[]): { ast: Ast; text: string } {
+  const at = t.at!, pieces = t.pieces!, order = t.order!
+  const ast = mapAst(t.ast, (n) => {
+    if (n.k === 'ref' || n.k === 'ref3d' || n.k === 'xref') {
+      const i = at.get(n.ref)
+      return i === undefined ? undefined : { ...n, ref: holes[i] as RangeRef }
+    }
+    if (n.k !== 'num') return undefined
+    const i = at.get(n)
+    return i === undefined ? undefined : { k: 'num', v: holes[i] as number }
+  })
+  let text = pieces[0]
+  for (let j = 0; j < order.length; j++) text += filled(holes[order[j]]) + pieces[j + 1]
+  return { ast, text }
+}
