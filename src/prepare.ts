@@ -54,33 +54,31 @@ export type Shapes = Map<string, Template | null>
 /** At most this many shapes are kept for a build: a book of formulas that share none keeps no more. */
 const SHAPES = 4096
 
-/** Prototype switch for a measurement: numbers are holes of a shape too. */
-const NUMBERS = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env?.XL_SHAPE_NUMBERS === '1'
-
 /** `prepare` through the formula's shape: the shape's template taken when `shapes` holds it, else the formula prepared and its shape kept. */
 export function prepareShaped(state: EngineState, shapes: Shapes, s: number, row: number, col: number, text: string): Prepared {
-  let toks: Tok[]
   // a text too long fails before it is read; a text that does not read fails as on its own
   if (text.length > MAX_FORMULA_LENGTH) return prepare(state, s, row, col, text)
+  let toks: Tok[]
   try {
     toks = tokenize(text)
   } catch (e) {
     if (e instanceof FormulaError) return prepare(state, s, row, col, text)
     throw e
   }
-  const shape = shapeOf(toks, NUMBERS)
+  const shape = shapeOf(toks)
   if (!shape) return prepare(state, s, row, col, text, toks)
   const table = tableAt(state.tables, s, row, col)?.name
   const key = `${s}:${table === undefined ? '-' : `${table.length}:${table}`}:${shape.key}`
   const t = shapes.get(key)
-  if (t) {
-    if (t.at || ready(t, spelling(state, namedFrom(state, s)))) {
-      const x = instance(t, shape.holes)
-      return accepted(state, x.text, x.ast)
-    }
-    shapes.set(key, null)
+  if (t && (t.at || ready(t, spelling(state, namedFrom(state, s))))) {
+    const x = instance(t, shape.holes)
+    return accepted(state, x.text, x.ast)
   }
-  if (t !== undefined) return prepare(state, s, row, col, text, toks)
+  if (t !== undefined) {
+    // a refused shape, or a template its formula's AST or text cannot take holes in
+    shapes.set(key, null)
+    return prepare(state, s, row, col, text, toks)
+  }
   const named = namedFrom(state, s)
   const r = checked(state, table, text, toks, named)
   if (shapes.size < SHAPES) shapes.set(key, r.ok ? { ast: r.ast, holes: shape.holes } : null)

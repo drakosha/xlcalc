@@ -1,14 +1,15 @@
 /**
- * Formula shapes: formulas whose tokens differ only in their references (a formula copied down a column, `A2+1`,
- * `A3+1`) read, check and print alike, so one of them is parsed, checked and printed as the shape's template and each
- * other is the template with its own references put in. A reference's place changes nothing but the reference: no
- * check reads where it points, and its text is printed as written. A LET has no shape, since a cell's word in it may be a name.
+ * Formula shapes: formulas whose tokens differ only in their references and numbers (a formula copied down a column,
+ * `A2*1.1+1`, `A3*1.1+2`) read, check and print alike, so one of them is parsed, checked and printed as the shape's
+ * template and each other is the template with its own references and numbers put in. No check reads where a reference
+ * points or what a number is, and both print as written (a number as Excel prints it). The numbers of an array constant
+ * stay in the key, as one literal with a sign; a LET has no shape, since a cell's word in it may be a name.
  */
 import type { Ast, RangeRef } from './ast.js'
 import { mapAst, printFormula, walk, type PrintOptions } from './print.js'
 import type { Tok } from './tokens.js'
 
-/** What a formula of a shape puts in its template: its references, and its numbers outside array constants (`numbers`). */
+/** What a formula of a shape puts in its template: its references, and its numbers outside array constants. */
 export type Hole = RangeRef | number
 
 /** A shape's template: the AST of its first formula and that formula's holes, which the AST holds. */
@@ -26,17 +27,18 @@ const sized = (x: string) => `${x.length}:${x}`
 const bookText = (b: number | string) => (typeof b === 'number' ? `#${b}` : sized(b))
 
 /** A formula's shape by its tokens: a key every token but a hole is spelled into, and the holes in the text's order; null for a LET. */
-export function shapeOf(toks: Tok[], numbers: boolean): { key: string; holes: Hole[] } | null {
+export function shapeOf(toks: Tok[]): { key: string; holes: Hole[] } | null {
   let key = ''
   const holes: Hole[] = []
   let braces = 0
   for (const t of toks) {
     switch (t.t) {
       case 'num':
-        if (numbers && !braces) {
+        if (braces) key += `n${t.v};`
+        else {
           holes.push(t.v)
           key += 'n'
-        } else key += `n${t.v};`
+        }
         break
       case 'str':
         key += `s${sized(t.v)}`
@@ -95,7 +97,7 @@ export function ready(t: Template, print: PrintOptions): boolean {
   let refs = 0, k = 0
   walk(t.ast, (n) => {
     if ((n.k === 'ref' || n.k === 'ref3d' || n.k === 'xref') && at.has(n.ref)) refs++
-    else if (n.k === 'num' && nums.length) at.set(n, nums[k++] ?? -1)
+    else if (n.k === 'num') at.set(n, nums[k++] ?? -1)
   })
   if (refs !== t.holes.length - nums.length || k !== nums.length) return false
   const order: number[] = []
