@@ -4810,7 +4810,7 @@ The bounds of [`readXlsx`](#xlcalcxlsx-readxlsx) on a file's parts once inflated
 ```ts
 interface XlsxLimits {
   /**
-   * One part: 268,435,456 (256 MiB) by default. A part is read as one JavaScript string, so a part over about 512 MiB is
+   * One part: 536,870,912 (512 MiB) by default. A part is read as one JavaScript string, so a part over about 512 MiB is
    * not read whatever the bound.
    */
   entryBytes?: number

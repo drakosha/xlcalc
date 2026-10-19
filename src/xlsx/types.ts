@@ -152,7 +152,7 @@ export interface ReadXlsxOptions {
 /** The bounds of `readXlsx` on a file's parts once inflated (`ReadXlsxOptions.limits`): sizes in bytes, whole numbers of at least 1, and a ratio. */
 export interface XlsxLimits {
   /**
-   * One part: 268,435,456 (256 MiB) by default. A part is read as one JavaScript string, so a part over about 512 MiB is
+   * One part: 536,870,912 (512 MiB) by default. A part is read as one JavaScript string, so a part over about 512 MiB is
    * not read whatever the bound.
    */
   entryBytes?: number
