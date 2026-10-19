@@ -227,7 +227,7 @@ In en-US, 14 shows 2025-01-31 as `1/31/2025` and 38 shows −1234.5 as `(1,235)`
 
 The codes are those Excel for Windows shows. Excel for Mac shows the short date of en-US as `m/d/yy` (`1/31/25`) and the times of ru-RU with a leading zero (`06:00`); the engine follows Windows there.
 
-A format written as a code always shows as written. `numberFormat: 'm/d/yy'` shows `1/31/25` in ru-RU too.
+A format written as a code always shows as written, the order of its parts too: `numberFormat: 'm/d/yy'` shows `1.31.25` in ru-RU, a bare `/` being the locale's date separator ([Dates and times](#dates-and-times)), and `m\/d\/yy` shows `1/31/25`.
 
 ## Locales
 
