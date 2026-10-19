@@ -16,6 +16,19 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.50.5 (2026-10-19)
+
+Internal release; not published to npm. The database functions faster on edits, and a quick start. The synthetic book's values and hashes are as in 0.50.4.
+
+Changed:
+
+- The database functions (DSUM, DCOUNT, DCOUNTA, DAVERAGE, DMAX, DMIN, DGET, DPRODUCT, DSTDEV, DSTDEVP, DVAR, DVARP) over a reference select their records through the criteria selection SUMIFS uses, kept while the database's columns hold the same values; records and the order of adding them are as before. 100 DSUM over 34,000 records: an edit of an amount 158 to 0.77 ms, of a product 158 to 2.2 ms, opening 223 to 64 ms.
+
+Documentation:
+
+- [Quick start](docs/quick-start.md): the engine's main uses, from a calculator on a server to a grid, xlsx files, external values and threads, each with an example that runs.
+- [Structure operations](docs/structure.md) lists every operation and refusal code in its API.
+
 ## 0.50.4 (2026-10-18)
 
 Internal release; not published to npm. A sheet's values in groups of rows. The synthetic book's values and hashes are as in 0.50.3.
