@@ -386,7 +386,7 @@ Most cells are text or General numbers in a default column, and their text is th
 
 ## Checked against Excel
 
-Measured in Excel 16.113 for Mac, en-US and ru-RU, and checked again in Excel for Windows: the shown text of 13,063 cells, column widths, AutoFit and row heights, the later sets predicted before Excel ran them.
+Measured in Excel 16.113 for Mac, en-US and ru-RU, and checked again in Excel for Windows: the shown text of 13,351 cells, column widths, AutoFit and row heights, the later sets predicted before Excel ran them.
 
 ## Known differences
 
