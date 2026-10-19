@@ -1,0 +1,814 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 17.3
+ },
+ "cases": [
+  {
+   "id": "sysdate#1",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-sysdate]dddd, mmmm dd, yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "f800#1",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F800]dddd, mmmm dd, yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "sysdate#2",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-sysdate]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "f800#2",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F800]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "sysdate#3",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-sysdate]d mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "f800#3",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F800]d mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "sysdate#4",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-sysdate]mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "f800#4",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F800]mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "sysdate#5",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-sysdate]h:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "f800#5",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F800]h:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, January 31, 2025"
+   }
+  },
+  {
+   "id": "sysdate#6",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-sysdate]dddd, mmmm dd, yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "f800#6",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F800]dddd, mmmm dd, yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "sysdate#7",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-sysdate]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "f800#7",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F800]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "sysdate#8",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-sysdate]d mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "f800#8",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F800]d mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "sysdate#9",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-sysdate]mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "f800#9",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F800]mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "sysdate#10",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-sysdate]h:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "f800#10",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F800]h:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "sysdate#11",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-sysdate]dddd, mmmm dd, yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "f800#11",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F800]dddd, mmmm dd, yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "sysdate#12",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-sysdate]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "f800#12",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F800]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "sysdate#13",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-sysdate]d mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "f800#13",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F800]d mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "sysdate#14",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-sysdate]mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "f800#14",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F800]mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "sysdate#15",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-sysdate]h:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "f800#15",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F800]h:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, January 1, 2022"
+   }
+  },
+  {
+   "id": "systime#1",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-systime]h:mm:ss AM/PM"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "f400#1",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F400]h:mm:ss AM/PM"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "systime#2",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-systime]hh:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "f400#2",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F400]hh:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "systime#3",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-systime]h:mm:ss"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "f400#3",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F400]h:mm:ss"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "systime#4",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-x-systime]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "f400#4",
+   "cell": {
+    "value": 45688.5,
+    "format": "[$-F400]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "systime#5",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-systime]h:mm:ss AM/PM"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "f400#5",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F400]h:mm:ss AM/PM"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "systime#6",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-systime]hh:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "f400#6",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F400]hh:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "systime#7",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-systime]h:mm:ss"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "f400#7",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F400]h:mm:ss"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "systime#8",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-x-systime]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "f400#8",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F400]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "systime#9",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-systime]h:mm:ss AM/PM"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 PM"
+   }
+  },
+  {
+   "id": "f400#9",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F400]h:mm:ss AM/PM"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 PM"
+   }
+  },
+  {
+   "id": "systime#10",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-systime]hh:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 PM"
+   }
+  },
+  {
+   "id": "f400#10",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F400]hh:mm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 PM"
+   }
+  },
+  {
+   "id": "systime#11",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-systime]h:mm:ss"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 PM"
+   }
+  },
+  {
+   "id": "f400#11",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F400]h:mm:ss"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 PM"
+   }
+  },
+  {
+   "id": "systime#12",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-x-systime]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 PM"
+   }
+  },
+  {
+   "id": "f400#12",
+   "cell": {
+    "value": 44562.75,
+    "format": "[$-F400]yyyy-mm-dd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "6:00:00 PM"
+   }
+  },
+  {
+   "id": "currency#1",
+   "cell": {
+    "value": 1.5,
+    "format": "[$€-x-euro2] #,##0.00"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "€ 1.50"
+   }
+  },
+  {
+   "id": "currency#2",
+   "cell": {
+    "value": 1.5,
+    "format": "#,##0.00 [$₽-ru-RU]"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "1.50 ₽"
+   }
+  },
+  {
+   "id": "currency#3",
+   "cell": {
+    "value": 1.5,
+    "format": "[$$-en-US]#,##0.00"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "$1.50"
+   }
+  }
+ ],
+ "answers": {
+  "sysdate#1": {
+   "text": "Friday, January 31, 2025"
+  },
+  "f800#1": {
+   "text": "Friday, January 31, 2025"
+  },
+  "sysdate#2": {
+   "text": "Friday, January 31, 2025"
+  },
+  "f800#2": {
+   "text": "Friday, January 31, 2025"
+  },
+  "sysdate#3": {
+   "text": "Friday, January 31, 2025"
+  },
+  "f800#3": {
+   "text": "Friday, January 31, 2025"
+  },
+  "sysdate#4": {
+   "text": "Friday, January 31, 2025"
+  },
+  "f800#4": {
+   "text": "Friday, January 31, 2025"
+  },
+  "sysdate#5": {
+   "text": "Friday, January 31, 2025"
+  },
+  "f800#5": {
+   "text": "Friday, January 31, 2025"
+  },
+  "sysdate#6": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "f800#6": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "sysdate#7": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "f800#7": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "sysdate#8": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "f800#8": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "sysdate#9": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "f800#9": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "sysdate#10": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "f800#10": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "sysdate#11": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "f800#11": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "sysdate#12": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "f800#12": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "sysdate#13": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "f800#13": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "sysdate#14": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "f800#14": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "sysdate#15": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "f800#15": {
+   "text": "Saturday, January 1, 2022"
+  },
+  "systime#1": {
+   "text": "12:00:00 PM"
+  },
+  "f400#1": {
+   "text": "12:00:00 PM"
+  },
+  "systime#2": {
+   "text": "12:00:00 PM"
+  },
+  "f400#2": {
+   "text": "12:00:00 PM"
+  },
+  "systime#3": {
+   "text": "12:00:00 PM"
+  },
+  "f400#3": {
+   "text": "12:00:00 PM"
+  },
+  "systime#4": {
+   "text": "12:00:00 PM"
+  },
+  "f400#4": {
+   "text": "12:00:00 PM"
+  },
+  "systime#5": {
+   "text": "6:00:00 AM"
+  },
+  "f400#5": {
+   "text": "6:00:00 AM"
+  },
+  "systime#6": {
+   "text": "6:00:00 AM"
+  },
+  "f400#6": {
+   "text": "6:00:00 AM"
+  },
+  "systime#7": {
+   "text": "6:00:00 AM"
+  },
+  "f400#7": {
+   "text": "6:00:00 AM"
+  },
+  "systime#8": {
+   "text": "6:00:00 AM"
+  },
+  "f400#8": {
+   "text": "6:00:00 AM"
+  },
+  "systime#9": {
+   "text": "6:00:00 PM"
+  },
+  "f400#9": {
+   "text": "6:00:00 PM"
+  },
+  "systime#10": {
+   "text": "6:00:00 PM"
+  },
+  "f400#10": {
+   "text": "6:00:00 PM"
+  },
+  "systime#11": {
+   "text": "6:00:00 PM"
+  },
+  "f400#11": {
+   "text": "6:00:00 PM"
+  },
+  "systime#12": {
+   "text": "6:00:00 PM"
+  },
+  "f400#12": {
+   "text": "6:00:00 PM"
+  },
+  "currency#1": {
+   "text": "€ 1.50"
+  },
+  "currency#2": {
+   "text": "1.50 ₽"
+  },
+  "currency#3": {
+   "text": "$1.50"
+  }
+ }
+}

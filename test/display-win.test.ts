@@ -46,7 +46,7 @@ const atSomeWidth = (s: Shown) => {
 const WIN_SHOWN: readonly [string, (s: Shown) => boolean][] = [
   ['Excel for Windows lays text out in pixels (a digit of Calibri 11 is 7 pixels at 96 dpi), the engine in the Mac\'s points: near the edge of a column the cell shows `#`, fewer digits of General, or a fill, as the engine shows it at another width', atSomeWidth],
   ['General with an exponent of three digits (below 1E-99) in a narrow column: Excel for Windows shows `#`, Excel for Mac and the engine `0` or the number', (s) => typeof s.value === 'number' && s.value !== 0 && Math.abs(s.value) < 1e-99 && /^#+$/.test(s.win.text)],
-  ['`[$-F800]` is the system\'s long date: Windows ru-RU writes `31 января 2025 г.` without the weekday', (s) => /\[\$-F800\]/i.test(String(s.c.cell.format))],
+  ['`[$-F800]` (and `[$-x-sysdate]`) is the system\'s long date: Windows ru-RU writes `31 января 2025 г.` without the weekday', (s) => /\[\$-(F800|x-sysdate)\]/i.test(String(s.c.cell.format))],
   [ROUNDED_MOMENT[0], (s) => ROUNDED_MOMENT[1](s.c, s.locale, s.win.text)],
 ]
 
