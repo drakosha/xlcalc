@@ -1,18 +1,18 @@
 # formula.js against Excel
 
-This report is the measurement the function library started from. It asked how many functions of `@formulajs/formulajs` 4.6.1 give Excel's answer, called bare and through an adapter that converts arguments by the engine's rules. Excel en-US was the reference; Excel ru-RU and LibreOffice en-US were computed alongside. The functions that matched went into the library almost as they were, and the rest were fixed or written anew against the same answers, as the proposal at the end suggested.
+This report is the measurement the function library started from. It asked how many functions of `@formulajs/formulajs` 4.6.1 return Excel's result, called directly and through an adapter that converts arguments by the engine's rules. Excel en-US was the reference; Excel ru-RU and LibreOffice en-US were calculated alongside it. The functions that matched went into the library almost unchanged, and the rest were fixed or rewritten against the same results, as the proposal at the end suggested.
 
-Every function got edge cases besides its typical calls, because formula.js tended to fail at the edges rather than on plain calls: wildcards and date text in criteria, text and booleans in ranges, case, JS dates in the local time zone.
+Every function got edge cases in addition to its typical calls, because formula.js tended to fail at the edges rather than on plain calls: wildcards and date text in criteria, text and booleans in ranges, case, and JS dates in the local time zone.
 
-The code and the rules for working with Excel are in `bench/coverage/README.md`. The cases and Excel's answers are in `test/excel/coverage/`, the answers of formula.js and LibreOffice and the verdicts in `bench/coverage/data/`. `npx tsx bench/coverage/run.ts report` rebuilds the tables between the `auto` marks.
+The code and the rules for working with Excel are in `bench/coverage/README.md`. The cases and Excel's results are in `test/excel/coverage/`, and the results of formula.js and LibreOffice, with the verdicts, in `bench/coverage/data/`. `npx tsx bench/coverage/run.ts report` regenerates the tables between the `auto` markers.
 
 ## Summary
 
-The set has 402 functions and 5,275 cases. Through the adapter all cases match Excel for 105 functions; for 213 the typical cases match and some edge cases differ; for 81 even typical cases differ; 3 functions hang on a huge argument. Bare formula.js matches fully for 55 functions. By case, the adapter raises the match from 3,355 to 3,976, from 64 to 75 percent: 817 of 965 typical cases and 3,159 of 4,310 edge cases.
+The set has 402 functions and 5,275 cases. Through the adapter, all cases match Excel for 105 functions; for 213, the typical cases match and some edge cases differ; for 81, even typical cases differ; and 3 functions hang on a huge argument. formula.js called directly matches fully for 55 functions. By case, the adapter raises the match rate from 3,355 to 3,976, from 64 to 75 percent: 817 of 965 typical cases and 3,159 of 4,310 edge cases.
 
-Excel's interface language changes computation, not only display. Computed with the Russian interface, the en-US column differed in 32 cases of 23 functions (see "The interface language").
+Excel's interface language affects calculation, not only display. Calculated with the Russian interface, the en-US column differed in 32 cases of 23 functions (see "The interface language").
 
-The Excel columns are computed as dynamic array formulas, as Excel 365 saves them. An earlier run with formulas of the old kind differed in 9 answers per column, all where the old formula intersected a range with its own row or showed the first value of an array: ROW and COLUMN of a range, INDEX with 0 or a blank as the number, TYPE of a range.
+The Excel columns are calculated as dynamic array formulas, as Excel 365 saves them. An earlier run with legacy formulas differed in 9 results per column, all where the legacy formula intersected a range with its own row or displayed the first value of an array: ROW and COLUMN of a range, INDEX with 0 or a blank as the number, and TYPE of a range.
 
 <!-- auto:summary -->
 | | through the adapter | bare formulajs |
@@ -29,17 +29,17 @@ The adapter brought 50 functions to a full match where bare formulajs differs: A
 Worse through the adapter than bare: 15: DAYS360 (9 against 10), GCD (8 against 10), IMCSC (6 against 7), IMCSCH (6 against 7), IRR (4 against 5), LCM (6 against 8), MULTINOMIAL (5 against 8), NETWORKDAYS (5 against 6), NETWORKDAYS.INTL (7 against 9), TBILLEQ (11 against 12), TEXT (8 against 9), VALUE (10 against 11), VLOOKUP (11 against 12), WEEKDAY (9 against 11), WEEKNUM (11 against 12).
 <!-- /auto:summary -->
 
-Most of the adapter's gain comes from the SUM rule for folds (only numbers from a range, a direct argument converted), JS Date to a serial number, NaN and infinity to `#NUM!` and exceptions to `#VALUE!`. Bare formulajs gives NaN or infinity 228 times, throws 132 times and gives a JS Date instead of a number 65 times. Through the adapter no NaN or JS Date is left; exceptions become `#VALUE!`, and in 94 cases Excel answers otherwise.
+Most of the adapter's gain comes from the SUM rule for aggregations (only numbers from a range, with a direct argument converted), converting a JS Date to a serial number, NaN and infinity to `#NUM!`, and exceptions to `#VALUE!`. formula.js called directly returns NaN or infinity 228 times, throws 132 times, and returns a JS Date instead of a number 65 times. Through the adapter, no NaN or JS Date remains; exceptions become `#VALUE!`, and in 94 cases Excel returns something else.
 
-For 15 functions the adapter is worse than bare formulajs, and these show directly which runtime rules must not be applied to everything:
-- a date argument through `toNum` does not take date text (`YEAR("2025-01-31")` is 2025 in Excel, `#VALUE!` through the adapter), while bare formulajs reads such text itself; these are DAY, MONTH, YEAR, WEEKDAY, WEEKNUM, ISOWEEKNUM, DAYS, DAYS360, ACCRINT, COUPDAYS, TBILL* and others;
+For 15 functions the adapter is worse than calling formula.js directly, and these show which runtime rules must not be applied to everything:
+- a date argument converted through `toNum` does not accept date text (`YEAR("2025-01-31")` is 2025 in Excel and `#VALUE!` through the adapter), while formula.js called directly parses such text itself; these are DAY, MONTH, YEAR, WEEKDAY, WEEKNUM, ISOWEEKNUM, DAYS, DAYS360, ACCRINT, COUPDAYS, TBILL* and others;
 - truncating whole-number arguments is wrong for the bit functions: `BITAND(1,2.7)` is `#NUM!` in Excel;
-- the SUM rule is wrong for GCD, LCM and MULTINOMIAL: Excel gives `#VALUE!` on text in a range and on a boolean, 0 or 1 on a blank range;
-- formulajs takes the holidays of NETWORKDAYS and WORKDAY as serial numbers and refuses a two-dimensional array of JS Dates (`#VALUE!` on a typical case).
+- the SUM rule is wrong for GCD, LCM and MULTINOMIAL: Excel returns `#VALUE!` for text in a range and for a boolean, and 0 or 1 for a blank range;
+- formula.js takes the holidays of NETWORKDAYS and WORKDAY as serial numbers and rejects a two-dimensional array of JS Dates (`#VALUE!` on a typical case).
 
-The runtime's `toBool` takes the text `"TRUE"`, and so does Excel en-US with the English interface: `IF("TRUE","yes","no")` is `"yes"`, `NOT("TRUE")` is FALSE. The engine's own IF (`compute` gives `"yes"`) matches the reference. With the Russian interface Excel answers `#VALUE!` to the same text and takes `"ИСТИНА"` instead.
+The runtime's `toBool` accepts the text `"TRUE"`, and so does Excel en-US with the English interface: `IF("TRUE","yes","no")` is `"yes"`, and `NOT("TRUE")` is FALSE. The engine's own IF (`compute` returns `"yes"`) matches the reference. With the Russian interface, Excel returns `#VALUE!` for the same text and accepts `"ИСТИНА"` instead.
 
-Kinds of difference by case and function:
+Kinds of difference, by case and by function:
 
 <!-- auto:kinds -->
 | kind of difference | cases through the adapter | functions through the adapter | cases bare | functions bare |
@@ -59,39 +59,39 @@ Kinds of difference by case and function:
 | JS Date | 0 | 0 | 65 | 6 |
 <!-- /auto:kinds -->
 
-"value instead of an error" and "other error code" are almost all edge cases: Excel checks the domain and answers `#NUM!`, `#DIV/0!` or `#N/A`, while formulajs computes on or answers with another code. "number" falls in two parts: at the edges it is a different reading of the input (a boolean, a blank cell, the dates 0 and 60), on typical cases a wrong formula or an old name with another function's semantics (section "Where typical cases differ"). "string: number format" means the same numbers written differently (formulajs prints a real IM* answer with 17 digits, Excel with 15; a complex one with an imaginary unit is compared by parts), "string: case" means hexadecimal digits in lower case.
+"value instead of an error" and "other error code" are almost all edge cases: Excel checks the domain and returns `#NUM!`, `#DIV/0!` or `#N/A`, while formula.js keeps calculating or returns a different code. "number" falls into two groups: at the edges, it is a different interpretation of the input (a boolean, a blank cell, the dates 0 and 60); on typical cases, it is a wrong formula or an old name with another function's semantics (section "Where typical cases differ"). "string: number format" means the same numbers written differently (formula.js prints a real IM* result with 17 digits and Excel with 15; a complex one with an imaginary unit is compared by parts), and "string: case" means hexadecimal digits in lowercase.
 
-Within the soft tolerance 1e-6 three more functions match fully: F.INV.RT, GAMMA and TDIST (GAMMA in formulajs is accurate to about 1e-8). XIRR matches its typical cases only softly (0.3733625352 against 0.3733625335) and differs at the edges too.
+Within the soft tolerance of 1e-6, three more functions match fully: F.INV.RT, GAMMA and TDIST (GAMMA in formula.js is accurate to about 1e-8). XIRR matches its typical cases only within the soft tolerance (0.3733625352 against 0.3733625335), and differs at the edges too.
 
 ## How it was measured
 
 ### The set
 
-formula.js has 406 of the names on Microsoft's "Excel functions (alphabetical)" list as functions (dotted names by path, as in `fj.NORM.S.DIST`). The four volatile ones (NOW, RAND, RANDBETWEEN, TODAY) are left out. formula.js has no environment functions such as CELL and INFO. Names that formula.js has and Excel lacks, such as CEILINGMATH, are listed at the end and not measured. The list of 521 Excel functions, `*B` variants included, is `bench/coverage/excel-functions.json`.
+formula.js has 406 of the names on Microsoft's "Excel functions (alphabetical)" list as functions (dotted names by path, as in `fj.NORM.S.DIST`). The four volatile ones (NOW, RAND, RANDBETWEEN, TODAY) are left out. formula.js has no environment functions such as CELL and INFO. Names that formula.js has and Excel does not, such as CEILINGMATH, are listed at the end and not measured. The list of 521 Excel functions, including the `*B` variants, is `bench/coverage/excel-functions.json`.
 
 ### The cases
 
-The signature table (`bench/coverage/signatures.ts`) gives each function its argument kinds and one to seven typical calls, mostly the examples from Excel's reference. From the first typical call the generator makes edge cases by putting values of the argument's kind into it:
+The signature table (`bench/coverage/signatures.ts`) gives each function its argument kinds and one to seven typical calls, mostly the examples from Excel's reference. From the first typical call, the generator creates edge cases by substituting values of the argument's kind:
 
 - numbers: numeric text, a boolean, a blank cell, an error, text, a negative number, zero, a fraction, a large number, numeric text from a cell, a date, `"1.5"`;
-- dates: ISO text, `"1/2/2025"`, 2024-02-29, 1900-02-28, the false 1900-02-29 (60), 1900-03-01, 0, −1, a date with a time;
+- dates: ISO text, `"1/2/2025"`, 2024-02-29, 1900-02-28, the nonexistent 1900-02-29 (60), 1900-03-01, 0, −1, a date with a time;
 - text: Cyrillic, case, a number, a boolean, blanks, spaces;
-- folds: a mixed range, a range with an error, a blank range, a boolean and text as arguments, a reference to numeric text.
+- aggregations: a mixed range, a range with an error, a blank range, a boolean and text as arguments, a reference to numeric text.
 
-Criteria (SUMIF and its relatives) and the database functions follow a shared hand-written template: the wildcards `*`, `?`, `~*`, Cyrillic in any case, "й" against "и", date text, `<>`, an empty criterion, an error in the range, a field name in any case, field number 0. The choice is deterministic (seed 20261005), with up to 15 cases per function plus the elements of an array answer: 965 typical cases and 4,310 edge cases in all.
+Criteria (SUMIF and related functions) and the database functions follow a shared handwritten template: the wildcards `*`, `?` and `~*`, Cyrillic in any case, "й" against "и", date text, `<>`, an empty criterion, an error in the range, a field name in any case, and field number 0. The selection is deterministic (seed 20261005), with up to 15 cases per function plus the elements of an array result: 965 typical cases and 4,310 edge cases in all.
 
 ### The columns
 
-- **formula.js through the adapter.** The engine's argument rules by kind: an error in a one-value argument or a numeric array is the answer at once; numbers, text and booleans are converted as the engine converts them; a date becomes a JS Date at local midnight; a fold of numbers follows SUM's rule; other ranges are passed as two-dimensional arrays. The answer: an error to its code, a Date to its serial number, NaN and infinity to `#NUM!`, an exception or anything else unexpected to `#VALUE!`.
-- **Bare formula.js.** Arguments as they lie in the cells, the answer as it is.
-- **Excel en-US and ru-RU.** The same book in Excel 16.113 for Mac, en-US with the English interface and locale (`-AppleLanguages (en) -AppleLocale en_US`), ru-RU with the system's Russian ones.
-- **LibreOffice en-US.** The same xlsx with an en-US profile, computed from a book of the old kind.
+- **formula.js through the adapter.** The engine's argument rules by kind: an error in a single-value argument or a numeric array is returned immediately; numbers, text and booleans are converted as the engine converts them; a date becomes a JS Date at local midnight; an aggregation of numbers follows SUM's rule; other ranges are passed as two-dimensional arrays. The result: an error is mapped to its code, a Date to its serial number, NaN and infinity to `#NUM!`, and an exception or anything else unexpected to `#VALUE!`.
+- **formula.js called directly.** Arguments as they are in the cells, and the result as it is.
+- **Excel en-US and ru-RU.** The same workbook in Excel 16.113 for Mac: en-US with the English interface and locale (`-AppleLanguages (en) -AppleLocale en_US`), and ru-RU with the system's Russian ones.
+- **LibreOffice en-US.** The same xlsx with an en-US profile, calculated from a workbook of legacy formulas.
 
 ### Comparison
 
 Numbers match within |a−b| ≤ 1e-9·max(1,|a|), with a second, soft tolerance of 1e-6. Strings and booleans must be equal, and errors are compared by code (`ERROR.TYPE` in Excel, not the error's text). A complex number written as text is compared by parts with the same tolerance as numbers.
 
-Functions newer than Excel 2007 are written with the `_xlfn.` prefix (SORT with `_xlfn._xlws.`); no function gave `#NAME?` in Excel, so the prefix list is right. An array answer is compared element by element (`INDEX(F(…),i,j)`) and by size (`ROWS`, `COLUMNS`). A one-dimensional formula.js array counts as a column.
+Functions newer than Excel 2007 are written with the `_xlfn.` prefix (SORT with `_xlfn._xlws.`); no function returned `#NAME?` in Excel, so the prefix list is correct. An array result is compared element by element (`INDEX(F(…),i,j)`) and by size (`ROWS`, `COLUMNS`). A one-dimensional formula.js array counts as a column.
 
 <!-- auto:meta -->
 - formulajs 4.6.1, Node v26.7.0, time zone Europe/Moscow, 15.914 s to compute;
@@ -575,26 +575,26 @@ For the 206 functions whose typical cases match: the edge cases they differ on, 
 <!-- /auto:tags -->
 
 Recurring causes, from a sample of the differing cases:
-- a boolean literal in a numeric argument: the functions of the former Analysis ToolPak (BESSEL*, COMPLEX, CONVERT, the base conversions, ACCRINT, CUMIPMT, CUMPRINC, DOLLARDE and others) give `#VALUE!` in Excel (37 cases), while the ordinary math functions take TRUE as 1;
-- the domain: a negative number, zero, a probability above 1, a blank cell as 0 give `#NUM!` in Excel's distribution and inverse distribution functions, where formulajs computes a number (40 cases on a negative number, 22 on a blank cell, 20 on zero); trigonometry of 1E10 is `#NUM!` in Excel and a number in formulajs;
-- a blank range: Excel answers `#DIV/0!`, `#NUM!` or `#N/A` depending on the function, formulajs with another code or a number;
-- a mix in paired ranges (CORREL, SLOPE, PEARSON, COVARIANCE.*): Excel drops the pairs where at least one value is not a number, formulajs answers `#VALUE!`; on ranges of different sizes Excel gives `#N/A`, formulajs computes over the matching part or answers `#NUM!`;
-- date text in a date argument, and dates at the 1900 boundary: serial number 60 (the false 1900-02-29) cannot be a JS Date and becomes 1 March, and Excel reads 0 as 0 January 1900;
-- the error code on wrong input: the complex functions (IM*) give `#NUM!` in Excel on text that is not a complex number (Cyrillic, spaces), `#VALUE!` in formulajs; Excel refuses an empty string (`#NUM!`), formulajs reads it as zero.
+- a boolean literal in a numeric argument: the former Analysis ToolPak functions (BESSEL*, COMPLEX, CONVERT, the base conversions, ACCRINT, CUMIPMT, CUMPRINC, DOLLARDE and others) return `#VALUE!` in Excel (37 cases), while the ordinary math functions treat TRUE as 1;
+- the domain: a negative number, zero, a probability above 1, or a blank cell as 0 gives `#NUM!` in Excel's distribution and inverse distribution functions, where formula.js calculates a number (40 cases with a negative number, 22 with a blank cell, 20 with zero); trigonometric functions of 1E10 are `#NUM!` in Excel and a number in formula.js;
+- a blank range: Excel returns `#DIV/0!`, `#NUM!` or `#N/A` depending on the function, and formula.js another code or a number;
+- mixed values in paired ranges (CORREL, SLOPE, PEARSON, COVARIANCE.*): Excel drops the pairs where at least one value is not a number, while formula.js returns `#VALUE!`; on ranges of different sizes, Excel returns `#N/A`, while formula.js calculates over the matching part or returns `#NUM!`;
+- date text in a date argument, and dates at the 1900 boundary: serial number 60 (the nonexistent 1900-02-29) cannot be a JS Date and becomes 1 March, and Excel reads 0 as January 0, 1900;
+- the error code on invalid input: the complex-number functions (IM*) return `#NUM!` in Excel for text that is not a complex number (Cyrillic, spaces), and `#VALUE!` in formula.js; Excel rejects an empty string (`#NUM!`), while formula.js reads it as zero.
 
 ## Where typical cases differ
 
-Typical cases differ through the adapter for 82 functions: the 81 of the row "typical cases differ already" and CHIINV, which hangs. For three of them only the writing of the answer differs: hexadecimal digits in lower case (BIN2HEX, DEC2HEX, OCT2HEX); the proposal puts them with the adapter. A complex number with 17 significant digits instead of 15 (15 IM* functions) now matches by parts. The rest by group:
-- old names: formulajs puts in the new functions with other semantics. CHIDIST and CHIINV (the right tail in Excel, CHISQ.DIST and CHISQ.INV in formulajs), FDIST and FINV, TINV (two-tailed in Excel), NORMSDIST and LOGNORMDIST (the old names have no cumulative argument, and without it formulajs computes the density); TTEST and T.TEST ignore the number of tails and the test type, FTEST and F.TEST do not give a probability, CHITEST and CHISQ.TEST round the answer to six digits (as LOGEST does);
-- databases: all 12 D functions. formulajs expects the database and the criteria by column (`database[column][row]`), while Excel's range goes by row; the field number is off by one;
-- criteria: SUMIF, SUMIFS, COUNTIF, COUNTIFS, AVERAGEIF, AVERAGEIFS, MAXIFS (and MINIFS at the edges): case counts, and there are no wildcards or date text. The engine has its own versions of these already;
-- dates and times: DATE (years 0 to 1899 and 1900-02-29), TIME (hours over 24 do not wrap), TIMEVALUE (`"2:24 AM"`, `"18:30"` give `#VALUE!`), DAYS360 (the end of February), NETWORKDAYS (dates in reverse order), NETWORKDAYS.INTL, WORKDAY, WORKDAY.INTL (holidays);
+Typical cases differ through the adapter for 82 functions: the 81 in the row "typical cases differ already", plus CHIINV, which hangs. For three of them, only the formatting of the result differs: hexadecimal digits in lowercase (BIN2HEX, DEC2HEX, OCT2HEX); the proposal groups them with the adapter. A complex number with 17 significant digits instead of 15 (15 IM* functions) now matches by parts. The rest, by group:
+- old names: formula.js maps them to the new functions, which have different semantics. CHIDIST and CHIINV (the right tail in Excel, CHISQ.DIST and CHISQ.INV in formula.js), FDIST and FINV, TINV (two-tailed in Excel), NORMSDIST and LOGNORMDIST (the old names have no cumulative argument, and without it formula.js calculates the density); TTEST and T.TEST ignore the number of tails and the test type, FTEST and F.TEST do not return a probability, and CHITEST and CHISQ.TEST round the result to six digits (as LOGEST does);
+- databases: all 12 D functions. formula.js expects the database and the criteria by column (`database[column][row]`), while Excel's range is organized by row, and the field number is off by one;
+- criteria: SUMIF, SUMIFS, COUNTIF, COUNTIFS, AVERAGEIF, AVERAGEIFS, MAXIFS (and MINIFS at the edges): matching is case-sensitive, and there are no wildcards or date text. The engine already has its own versions of these;
+- dates and times: DATE (years 0 to 1899, and 1900-02-29), TIME (hours over 24 do not wrap), TIMEVALUE (`"2:24 AM"` and `"18:30"` return `#VALUE!`), DAYS360 (the end of February), NETWORKDAYS (dates in reverse order), NETWORKDAYS.INTL, WORKDAY, WORKDAY.INTL (holidays);
 - financial: DB (the seventh period with month 7), DISC, TBILLEQ, TBILLPRICE, TBILLYIELD (the day count), XIRR;
-- arrays and references: COLUMN and ROW (formulajs gets values and does not know the address), LOOKUP in its array form, SORT (numbers sorted as text), UNIQUE, MODE.MULT (another order), LINEST and LOGEST (a one-dimensional array instead of a row), TREND without new x, AGGREGATE (option 6 does not skip errors), IFERROR (a reference to a blank cell gives `null`, which the adapter turns into `#VALUE!`; Excel gives 0);
-- math and statistics: ARABIC (lower case), ISO.CEILING (0 without a significance), MOD (a negative divisor), ROMAN (forms 1 and 4), BETA.DIST (the density with bounds twice as large), T.DIST (`#NUM!`), TRIMMEAN, QUARTILE.INC (quarts 0 and 4), PERCENTRANK.INC (the error code), ERF with two arguments, CONVERT (`"F"` to `"C"`), GAMMA and CONFIDENCE.T (softly only);
-- text: PROPER (a capital after a digit and a hyphen; formulajs leaves Cyrillic alone: `PROPER("привет мир")` stays lower case), UPPER (`ß` stays `ß` in Excel and becomes `SS` in formulajs), CHAR and CODE (Excel for Mac takes the Mac encoding, `CHAR(200)` is `»`; `CODE("Ж")` is 95 with the English interface and 134 with the Russian one), DOLLAR (a negative number in parentheses), NUMBERVALUE (percentages, a space as separator), SUBSTITUTE (the instance number), TEXT (date formats), VALUE (time and date text, `"1,5"`).
+- arrays and references: COLUMN and ROW (formula.js receives values and does not know the address), LOOKUP in its array form, SORT (numbers sorted as text), UNIQUE, MODE.MULT (a different order), LINEST and LOGEST (a one-dimensional array instead of a row), TREND without new x values, AGGREGATE (option 6 does not skip errors), IFERROR (a reference to a blank cell returns `null`, which the adapter turns into `#VALUE!`, while Excel returns 0);
+- math and statistics: ARABIC (lowercase), ISO.CEILING (0 without a significance), MOD (a negative divisor), ROMAN (forms 1 and 4), BETA.DIST (the density with bounds twice as large), T.DIST (`#NUM!`), TRIMMEAN, QUARTILE.INC (quarts 0 and 4), PERCENTRANK.INC (the error code), ERF with two arguments, CONVERT (`"F"` to `"C"`), GAMMA and CONFIDENCE.T (within the soft tolerance only);
+- text: PROPER (a capital after a digit and a hyphen; formula.js leaves Cyrillic unchanged: `PROPER("привет мир")` stays lowercase), UPPER (`ß` stays `ß` in Excel and becomes `SS` in formula.js), CHAR and CODE (Excel for Mac uses the Mac encoding: `CHAR(200)` is `»`, and `CODE("Ж")` is 95 with the English interface and 134 with the Russian one), DOLLAR (a negative number in parentheses), NUMBERVALUE (percentages, a space as a separator), SUBSTITUTE (the instance number), TEXT (date formats), VALUE (time and date text, `"1,5"`).
 
-## formulajs hangs
+## formula.js hangs
 
 <!-- auto:hangs -->
 | case | formula | what | Excel en-US |
@@ -604,7 +604,7 @@ Typical cases differ through the adapter for 82 functions: the 81 of the row "ty
 | CHISQ.INV.RT#15 | `_xlfn.CHISQ.INV.RT(0.050001,10000000000)` | hangs over 5 s | #NUM |
 <!-- /auto:hangs -->
 
-In the current set formulajs hangs on three inverse distributions with 1E10 degrees of freedom; Excel answers `#NUM!`. Before edge values were capped, `BESSELJ(1.9,1E10)`, `CUMPRINC(…,13,1E10,0)`, `WORKDAY(39722,1E10)`, `BIN2OCT("1001",45688)`, `DEC2OCT(58,45688)`, `HEX2BIN("F",45688)`, `HEX2OCT("F",45688)` and `MUNIT(45688)` hung or ran out of memory too. Excel checks these arguments at once; in formulajs they are loops over the number of digits, days or the order, and arrays of that size. Such functions need an argument guard before the call if they go into the whitelist.
+In the current set, formula.js hangs on three inverse distributions with 1E10 degrees of freedom; Excel returns `#NUM!`. Before edge values were capped, `BESSELJ(1.9,1E10)`, `CUMPRINC(…,13,1E10,0)`, `WORKDAY(39722,1E10)`, `BIN2OCT("1001",45688)`, `DEC2OCT(58,45688)`, `HEX2BIN("F",45688)`, `HEX2OCT("F",45688)` and `MUNIT(45688)` also hung or ran out of memory. Excel checks these arguments immediately; in formula.js they drive loops over the number of digits, days or the order, and arrays of that size. Such functions need an argument guard before the call if they go into the whitelist.
 
 ## LibreOffice against Excel
 
@@ -1000,7 +1000,7 @@ Every function where LibreOffice differs in at least one case:
 | WORKDAY | 1 of 15 | `WORKDAY(-1,151)`: Excel #NUM, LibreOffice 212 |
 <!-- /auto:libreoffice -->
 
-LibreOffice is no oracle for edge cases: it differs from Excel in 1,337 of 5,275 cases, 772 of them by error code (569 times `#VALUE!` where Excel gives `#NUM!`). LibreOffice does not know twelve functions with the `_xlfn.` prefix (BINOM.DIST.RANGE, ISO.CEILING, NETWORKDAYS.INTL, WORKDAY.INTL and eight IM*) and answers `#NAME?`. On typical cases it differs 56 times for 36 functions; besides those twelve, these are the precision of BESSELJ and CONVERT, CHAR and CODE (another encoding), DATE near 1900, ACCRINT with the calc_method argument, DOLLAR (a minus instead of parentheses), FLOOR and GAMMA (the error code), XIRR. Among the engine's whitelisted functions LibreOffice differs from Excel where an earlier comparison found it (a boolean in SUM's range, numeric text as SUM's argument, DATE near 1900), and also in SUMIF, SUMIFS and COUNTIFS on a number criterion against numeric text in the range and on a boolean criterion; ROUND matched everywhere, EOMONTH on typical cases, TEXT everywhere except on a boolean.
+LibreOffice is not an oracle for edge cases: it differs from Excel in 1,337 of 5,275 cases, 772 of them by error code (569 times `#VALUE!` where Excel returns `#NUM!`). LibreOffice does not know twelve functions with the `_xlfn.` prefix (BINOM.DIST.RANGE, ISO.CEILING, NETWORKDAYS.INTL, WORKDAY.INTL and eight IM* functions) and returns `#NAME?`. On typical cases it differs 56 times for 36 functions; besides those twelve, these are the precision of BESSELJ and CONVERT, CHAR and CODE (a different encoding), DATE near 1900, ACCRINT with the calc_method argument, DOLLAR (a minus sign instead of parentheses), FLOOR and GAMMA (the error code), and XIRR. Among the engine's whitelisted functions, LibreOffice differs from Excel where an earlier comparison found it does (a boolean in SUM's range, numeric text as SUM's argument, DATE near 1900), and also in SUMIF, SUMIFS and COUNTIFS for a number criterion against numeric text in the range and for a boolean criterion; ROUND matched everywhere, EOMONTH on typical cases, and TEXT everywhere except for a boolean.
 
 ## Excel ru-RU against en-US
 
@@ -1320,20 +1320,20 @@ Excel ru-RU (Russian interface and locale) differs from en-US (English ones) in 
 </details>
 <!-- /auto:ru -->
 
-For an interface with Russian input the difference comes down to a few rules:
-- text like `"1.5"` becomes a date in ru-RU (1 May of the current year, 46143), so any numeric text with a point turns into a number near 46,000 on the Russian side (101 cases of 94 functions); `"1/2/2025"` reads as 1 February, not 2 January (17 cases of 16 date functions);
-- a number turned into text is written with a comma: CONCATENATE, CONCAT, TEXTJOIN, the complex functions (`"-27,0349456030742+3,85115333481178i"`), string functions of a number;
-- DOLLAR and FIXED give roubles and a space between thousands in ru-RU (`"1 235 ₽"` instead of `"$1,235"`);
-- TEXT in ru-RU does not know the English codes: `TEXT(45658,"YYYY-MM-DD")` returns `"YYYY-MM-DD"`, and `"$#,##0.00"`, `"0.00"` and `"0.0%"` give `#VALUE!`;
-- NUMBERVALUE, VALUE, DATEVALUE and TIMEVALUE read text by the locale;
+For an interface with Russian input, the difference comes down to a few rules:
+- text such as `"1.5"` becomes a date in ru-RU (1 May of the current year, 46143), so any numeric text with a point turns into a number near 46,000 on the Russian side (101 cases of 94 functions); `"1/2/2025"` is parsed as 1 February, not 2 January (17 cases of 16 date functions);
+- a number converted to text is written with a comma: CONCATENATE, CONCAT, TEXTJOIN, the complex-number functions (`"-27,0349456030742+3,85115333481178i"`), and string functions of a number;
+- DOLLAR and FIXED return rubles and a space between thousands in ru-RU (`"1 235 ₽"` instead of `"$1,235"`);
+- TEXT in ru-RU does not know the English codes: `TEXT(45658,"YYYY-MM-DD")` returns `"YYYY-MM-DD"`, and `"$#,##0.00"`, `"0.00"` and `"0.0%"` return `#VALUE!`;
+- NUMBERVALUE, VALUE, DATEVALUE and TIMEVALUE parse text according to the locale;
 - SORT orders a mix of Cyrillic and Latin differently;
-- from the interface language: a boolean turned into text comes out as `ИСТИНА`/`ЛОЖЬ` (20 cases: CONCATENATE, TEXTJOIN, LEFT, LEN and other string functions of TRUE), the text `"TRUE"` in a boolean argument gives `#VALUE!` (IF, IFS, NOT, CHISQ.DIST, POISSON.DIST), CODE of Cyrillic takes the Mac Cyrillic encoding.
+- from the interface language: a boolean converted to text comes out as `ИСТИНА`/`ЛОЖЬ` (20 cases: CONCATENATE, TEXTJOIN, LEFT, LEN and other string functions of TRUE), the text `"TRUE"` in a boolean argument returns `#VALUE!` (IF, IFS, NOT, CHISQ.DIST, POISSON.DIST), and CODE of Cyrillic uses the Mac Cyrillic encoding.
 
 ## The interface language
 
-Excel uses its interface language for computation, not only for the texts of errors: it decides how a boolean becomes text, which text counts as a boolean, and which encoding CODE uses. With the English interface `IF("TRUE",1,2)` is 1 and `IF("ИСТИНА",1,2)` is `#VALUE!`; with the Russian interface it is the other way round. A first run computed the en-US column with the en_US locale but the Russian interface; its answers are kept in git history as `docs/coverage-formulajs/excel-en-ru-ui.json`. The difference on the measurement's cases, both columns with formulas of the old kind (this table is not rebuilt):
+Excel uses its interface language for calculation, not only for the text of errors: it decides how a boolean is converted to text, which text counts as a boolean, and which encoding CODE uses. With the English interface, `IF("TRUE",1,2)` is 1 and `IF("ИСТИНА",1,2)` is `#VALUE!`; with the Russian interface, it is the other way round. A first run calculated the en-US column with the en_US locale but the Russian interface; its results are kept in the git history as `docs/coverage-formulajs/excel-en-ru-ui.json`. The difference on the coverage run's cases, with both columns calculated as legacy formulas (this table is not regenerated):
 
-With the Russian interface Excel en-US's answer was different in 32 cases of 23 functions. Through the adapter 3950 cases matched the former column and 3975 the one with the English interface; bare, 3342 and 3354.
+With the Russian interface, Excel en-US's result was different in 32 cases of 23 functions. Through the adapter, 3950 cases matched the earlier column and 3975 the one with the English interface; called directly, 3342 and 3354.
 
 | case | formula | Russian interface | English interface |
 |---|---|---|---|
@@ -1370,7 +1370,7 @@ With the Russian interface Excel en-US's answer was different in 32 cases of 23 
 | UNICODE#8 | `_xlfn.UNICODE(TRUE)` | 1048 | 84 |
 | UPPER#7 | `UPPER(TRUE)` | "ИСТИНА" | "TRUE" |
 
-## Excel functions formulajs lacks
+## Excel functions formula.js lacks
 
 <!-- auto:missing -->
 115 of the reference's 521 functions. An asterisk: formulajs has the name, but as an object of subfunctions, not a function (it cannot be called).
@@ -1391,9 +1391,9 @@ With the Russian interface Excel en-US's answer was different in 32 cases of 23 
 | Engineering | 2 | ERF.PRECISE, ERFC.PRECISE |
 <!-- /auto:missing -->
 
-Of what the engine needs, these are XLOOKUP and XMATCH, OFFSET and INDIRECT, SEQUENCE, FILTER and SORTBY, LET and LAMBDA. Ten old statistical names (STDEV, VAR, MODE, RANK and others) cannot be called in formulajs: under these names it has an object with the subfunctions `.S`, `.P` and so on.
+Of those the engine needs, these are XLOOKUP and XMATCH, OFFSET and INDIRECT, SEQUENCE, FILTER and SORTBY, and LET and LAMBDA. Ten old statistical names (STDEV, VAR, MODE, RANK and others) cannot be called in formula.js: under these names it has an object with the subfunctions `.S`, `.P` and so on.
 
-formulajs names Excel lacks (not measured):
+formula.js names that Excel does not have (not measured):
 
 <!-- auto:notinexcel -->
 | formulajs name | same implementation as the Excel function |
@@ -1444,7 +1444,7 @@ formulajs names Excel lacks (not measured):
 
 The library followed this plan in October 2026, and its whitelist is the result (README, "Functions"). The plan as written:
 
-The classes are set automatically by what the function differs on through the adapter: "adapter" means every difference is in argument conversion, blank input, errors inside ranges, date text or the answer's format; "adapter and a domain check" means there are also differences on values outside the domain, on dates at the 1900 boundary or only in the error code; "own" means typical cases differ, or edge cases differ in meaning (wildcards, case, Cyrillic, the order of dates).
+The classes are assigned automatically by what the function differs on through the adapter: "adapter" means every difference is in argument conversion, blank input, errors inside ranges, date text or the result's format; "adapter and a domain check" means there are also differences on values outside the domain, on dates at the 1900 boundary, or only in the error code; "own" means typical cases differ, or edge cases differ in meaning (wildcards, case, Cyrillic, the order of dates).
 
 <!-- auto:plan -->
 | proposal | functions | which |
@@ -1459,45 +1459,45 @@ The classes are set automatically by what the function differs on through the ad
 
 ### As is, 105 functions
 
-Take them into the whitelist with a test against Excel, as SUM. Among them SUM, PRODUCT, AVERAGE, MIN, MAX, MEDIAN, COUNTA, ROUNDDOWN, ROUNDUP, TRUNC, INT, ABS, POWER, SQRT, LN, LOG, EXP, CHOOSE, IF, IFS, NOT, AND, OR, ISBLANK, ISERROR and the other IS* except ISEVEN and ISODD, TRIM, FIND, LEFT, RIGHT, LEN, LOWER, CONCATENATE, CONCAT, REPT, FIXED, MMULT, TRANSPOSE and the array shape functions (CHOOSECOLS, DROP, EXPAND, HSTACK, TAKE, VSTACK). After any change to the adapter they need checking again by the same measurement.
+Add them to the whitelist with a test against Excel, as with SUM. Among them are SUM, PRODUCT, AVERAGE, MIN, MAX, MEDIAN, COUNTA, ROUNDDOWN, ROUNDUP, TRUNC, INT, ABS, POWER, SQRT, LN, LOG, EXP, CHOOSE, IF, IFS, NOT, AND, OR, ISBLANK, ISERROR and the other IS* functions except ISEVEN and ISODD, TRIM, FIND, LEFT, RIGHT, LEN, LOWER, CONCATENATE, CONCAT, REPT, FIXED, MMULT, TRANSPOSE and the array shape functions (CHOOSECOLS, DROP, EXPAND, HSTACK, TAKE, VSTACK). After any change to the adapter, they need to be checked again with the same measurement.
 
 ### Fixing the adapter, 39 functions
 
-These rules are needed by this group and the next; each comes from observed differences:
-1. Conversion by group, not one for all. The Analysis ToolPak functions (engineering, some financial) do not take a boolean literal: `#VALUE!`. Folds like COUNT, AVERAGEA, MAXA, STDEVA convert numeric text and booleans given directly as arguments, but not from a reference. GCD, LCM and MULTINOMIAL do not let text and booleans from a range through. The text `"TRUE"` in a boolean argument is taken, as by the runtime's `toBool` (Excel en-US with the English interface).
-2. Date text in a date argument: read it by the locale (`"2025-01-31"` and `"1/2/2025"` in en-US) before turning it into a JS Date.
-3. Blank input: a blank range in statistics gives `#DIV/0!` (CORREL, SLOPE, COVARIANCE, KURT, SKEW), `#NUM!` (LARGE, SMALL, PERCENTILE, QUARTILE, GEOMEAN, DEVSQ) or `#N/A` (MODE, HARMEAN, PERCENTRANK); a formulajs answer `null` (a reference to a blank cell in IF and IFERROR) is 0, not `#VALUE!`.
+This group and the next need these rules; each comes from observed differences:
+1. Conversion by group, not one conversion for all. The Analysis ToolPak functions (engineering and some financial ones) do not accept a boolean literal: `#VALUE!`. Aggregations such as COUNT, AVERAGEA, MAXA and STDEVA convert numeric text and booleans given directly as arguments, but not from a reference. GCD, LCM and MULTINOMIAL do not let text and booleans from a range through. The text `"TRUE"` in a boolean argument is accepted, as by the runtime's `toBool` (Excel en-US with the English interface).
+2. Date text in a date argument: parse it by the locale (`"2025-01-31"` and `"1/2/2025"` in en-US) before converting it to a JS Date.
+3. Blank input: a blank range in statistics returns `#DIV/0!` (CORREL, SLOPE, COVARIANCE, KURT, SKEW), `#NUM!` (LARGE, SMALL, PERCENTILE, QUARTILE, GEOMEAN, DEVSQ) or `#N/A` (MODE, HARMEAN, PERCENTRANK); a formula.js result of `null` (a reference to a blank cell in IF and IFERROR) is 0, not `#VALUE!`.
 4. Pairs in paired arrays (CORREL, SLOPE, INTERCEPT, PEARSON, RSQ, STEYX, COVARIANCE.*, FORECAST, SUMX2*): drop the pairs where at least one value is not a number; different sizes are `#N/A`.
-5. The answer's format: hexadecimal digits in upper case (BIN2HEX, DEC2HEX, OCT2HEX), a complex number as a string of 15 significant digits (IM*).
+5. The result's format: hexadecimal digits in uppercase (BIN2HEX, DEC2HEX, OCT2HEX), and a complex number as a string of 15 significant digits (IM*).
 6. Holidays and payment dates as a flat list of serial numbers, not a two-dimensional array of JS Dates.
 
-The rules come from the differences; no run checked them: before a function goes into the whitelist, its rule is checked by the same measurement.
+The rules come from the differences, and no run verified them: before a function goes into the whitelist, its rule is checked with the same measurement.
 
 ### Adapter and a domain check, 169 functions
 
-The same rules plus an argument check before the call and the error code for wrong input: the domains of distributions (a probability in (0,1), positive parameters, whole numbers where Excel requires one), trigonometry of large arguments (1E10 in the measurement), whole-number arguments of the bit functions without truncation, the dates 0 and 60, `#NUM!` instead of `#VALUE!` on text that is not a number in the form needed (the complex IM*, the base conversions). The check is per function, but short; formulajs still computes.
+The same rules, plus an argument check before the call and the right error code for invalid input: the domains of distributions (a probability in (0,1), positive parameters, whole numbers where Excel requires one), trigonometric functions of large arguments (1E10 in the measurement), whole-number arguments of the bit functions without truncation, the dates 0 and 60, and `#NUM!` instead of `#VALUE!` for text that is not a number in the required form (the complex-number IM* functions, the base conversions). The check is per function, but short; formula.js still does the calculation.
 
 ### Own implementation, 86 functions
 
-Typical cases differ (78 functions) or the meaning at the edges (8), and no input rule fixes that: the old statistics names, the D functions, criteria (the engine's own already), DATE, TIME, TIMEVALUE, DAYS360, NETWORKDAYS, WORKDAY, TEXT, VALUE, NUMBERVALUE, DOLLAR, CHAR, CODE, PROPER, UPPER, SUBSTITUTE, MOD, ROMAN, ARABIC, ISO.CEILING, SORT, UNIQUE, LOOKUP, COLUMN, ROW, AGGREGATE, LINEST, LOGEST, TREND, MODE.MULT, XIRR; at the edges SWITCH (case), MATCH, VLOOKUP and SEARCH (wildcards, error input), DECIMAL, TYPE, XNPV, MINIFS. For some of them (the D functions: transpose the database and shift the field number; LINEST, LOGEST, TREND: the answer's shape) an adapter for one function would do, but that is a wrapper per function rather than a shared adapter.
+Typical cases differ (78 functions), or the meaning at the edges differs (8), and no input rule fixes that: the old statistical names, the D functions, criteria (already the engine's own), DATE, TIME, TIMEVALUE, DAYS360, NETWORKDAYS, WORKDAY, TEXT, VALUE, NUMBERVALUE, DOLLAR, CHAR, CODE, PROPER, UPPER, SUBSTITUTE, MOD, ROMAN, ARABIC, ISO.CEILING, SORT, UNIQUE, LOOKUP, COLUMN, ROW, AGGREGATE, LINEST, LOGEST, TREND, MODE.MULT, XIRR; and at the edges SWITCH (case), MATCH, VLOOKUP and SEARCH (wildcards, invalid input), DECIMAL, TYPE, XNPV, MINIFS. For some of them (the D functions: transpose the database and shift the field number; LINEST, LOGEST, TREND: the result's shape), a per-function adapter would do, but that is a wrapper for each function rather than a shared adapter.
 
 ### Hangs, 3 functions
 
-CHIINV, CHISQ.INV, CHISQ.INV.RT: a guard on the degrees of freedom or an own implementation.
+CHIINV, CHISQ.INV, CHISQ.INV.RT: a guard on the degrees of freedom, or an own implementation.
 
 ## What could not be checked
 
-- Excel for Mac only. CHAR and CODE on the Mac work in the Mac encoding, which depends on the interface language (`CHAR(200)` is `»`, `CODE("Ж")` 95 or 134); Excel for Windows answers otherwise, and the verdict on them is the Mac's.
-- Two pairs of language and locale: English (en-US) and Russian (ru-RU). Mixed pairs, except the former column (en_US with the Russian interface), and other locales were not measured.
+- Excel for Mac only. CHAR and CODE on the Mac use the Mac encoding, which depends on the interface language (`CHAR(200)` is `»`, and `CODE("Ж")` is 95 or 134); Excel for Windows returns different results, and the verdict on them is the Mac's.
+- Two pairs of language and locale: English (en-US) and Russian (ru-RU). Mixed pairs, except the earlier column (en_US with the Russian interface), and other locales were not measured.
 - Volatile functions are left out. ROW and COLUMN without arguments (they depend on the formula's cell) were not checked.
-- Array sizes from an argument (MUNIT, EXPAND, TAKE, DROP) were checked with small literals only; large sizes and dates in that position were not: `MUNIT(45688)` and `MUNIT("1.5")` in ru-RU ran Excel out of resources and raised a modal dialog. For the other size and count arguments "large" is 1000.
-- The Europe/Moscow time zone only. Bare formulajs gives midnight UTC for `DATEVALUE("2025-01-31")` (03:00 in Moscow); in a zone with a negative offset that would be the day before, and no such run was made.
-- Array answers were compared by element and size, not as spilled ranges.
-- Up to 15 cases per function (up to 19 with the answer's elements for functions with an array answer): rare argument modes (day-count bases, week types) are covered by one or two calls.
+- Array sizes taken from an argument (MUNIT, EXPAND, TAKE, DROP) were checked with small literals only; large sizes and dates in that position were not: `MUNIT(45688)` and `MUNIT("1.5")` in ru-RU exhausted Excel's resources and raised a modal dialog. For the other size and count arguments, "large" is 1000.
+- The Europe/Moscow time zone only. formula.js called directly returns midnight UTC for `DATEVALUE("2025-01-31")` (03:00 in Moscow); in a time zone with a negative offset that would be the previous day, and no such run was made.
+- Array results were compared by element and size, not as spilled ranges.
+- Up to 15 cases per function (up to 19 including the result's elements, for functions that return arrays): rare argument modes (day-count bases, week types) are covered by one or two calls.
 - The adapter rules of the proposal come from the differences and were not run.
-- LibreOffice: the character `CHAR(0)` is written as `_x0000_` in its xlsx and is not decoded; this does not change the verdict (Excel gives `#VALUE!`).
+- LibreOffice: the character `CHAR(0)` is written as `_x0000_` in its xlsx and is not decoded; this does not change the verdict (Excel returns `#VALUE!`).
 
-## Repeating it
+## Reproducing it
 
 From the repository root:
 
@@ -1505,4 +1505,4 @@ From the repository root:
 npx tsx bench/coverage/run.ts all
 ```
 
-It needs LibreOffice (`soffice`), Excel for Mac and permission to control Excel and System Events. Excel must have no open books before the run; the step restarts Excel with the interface language and locale it needs and leaves it running without arguments. Details and the rules for working with Excel: `bench/coverage/README.md`.
+It needs LibreOffice (`soffice`), Excel for Mac, and permission to control Excel and System Events. Excel must have no open workbooks before the run; the step restarts Excel with the interface language and locale it needs, and leaves it running without arguments afterwards. Details and the rules for working with Excel are in `bench/coverage/README.md`.

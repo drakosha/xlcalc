@@ -1,8 +1,8 @@
 # Legacy array formulas and implicit intersection
 
-Files saved before dynamic arrays hold formulas of the old kind. Excel 365 computes them with implicit intersection and shows them with `@`. The engine computes every formula as a dynamic one, so a reader turns an old formula into the dynamic formula Excel shows for it with `fromLegacy`. Array formulas entered with Ctrl+Shift+Enter keep their own kind in the book: `CellInput.array`.
+Files saved before dynamic arrays contain legacy formulas. Excel 365 calculates them with implicit intersection and displays them with `@`. The engine calculates every formula as a dynamic one, so a reader converts a legacy formula into the dynamic formula Excel displays for it with `fromLegacy`. Array formulas entered with Ctrl+Shift+Enter keep their own kind in the workbook: `CellInput.array`.
 
-The rules below were measured in Excel 16.113 for Mac (en-US).
+The rules below were verified in Excel 16.113 for Mac (en-US).
 
 ## fromLegacy
 
@@ -19,60 +19,60 @@ console.log(fromLegacy('rng*2', { names, sheet: 'S' }), fromLegacy('rate*2', { n
 // → @rng*2 rate*2
 ```
 
-An xlsx cell formula without dynamic array metadata (`cm`) is of the old kind. `fromLegacy` takes its text after the prefixes of newer functions are dropped and returns canonical text. A formula it does not read comes back as it is.
+An xlsx cell formula without dynamic array metadata (`cm`) is a legacy formula. `fromLegacy` takes its text after the prefixes of newer functions are removed, and returns canonical text. A formula it cannot parse is returned unchanged.
 
-`readXlsx` does this for every formula of the old kind in a file and keeps the text as written where no `@` is needed. It reads an array formula without the metadata into `CellInput.array`, and `writeXlsx` writes it back so.
+`readXlsx` does this for every legacy formula in a file and keeps the text as written where no `@` is needed. It reads an array formula without the metadata into `CellInput.array`, and `writeXlsx` writes it back the same way.
 
-## Where Excel puts @
+## Where Excel inserts @
 
-An old formula is computed by values. Where one value goes, a range gives the cell in the formula's row or column, and an array gives its top-left value. Only an argument that takes an array keeps a range whole.
+A legacy formula is calculated value by value. Where a single value is expected, a range gives the cell in the formula's row or column, and an array gives its top-left value. Only an argument that accepts an array keeps a range intact.
 
-| old formula | Excel 365 shows |
+| legacy formula | Excel 365 displays |
 |---|---|
 | `A1:A10`, `A:A`, `A1:A1` | `@A1:A10`, `@A:A`, `@A1:A1` (a single cell stays `A1`) |
 | `ABS(A1:A10)`, `IF(A1:A10>5,1,0)` | the range with `@` |
-| `SUM(A1:A10)`, `SUMIF(A1:A10,">3")` | as it is: these arguments take a reference |
-| `SUM(A1:A10*2)` | `SUM(@A1:A10*2)`: an expression is computed by values there |
-| `SUMPRODUCT(A1:A10*2)`, `ROWS(A1:A10*2)` | as it is: these arguments take an array |
+| `SUM(A1:A10)`, `SUMIF(A1:A10,">3")` | unchanged: these arguments accept a reference |
+| `SUM(A1:A10*2)` | `SUM(@A1:A10*2)`: an expression there is calculated value by value |
+| `SUMPRODUCT(A1:A10*2)`, `ROWS(A1:A10*2)` | unchanged: these arguments accept an array |
 | `SUMPRODUCT(IF(A1:A10>5,1,0))` | `SUMPRODUCT(IF(@A1:A10>5,1,0))`: IF's condition stops the array |
 | `={1,2,3}*2`, `ABS({-1,-2})` | `@{1,2,3}*2`, `ABS(@{-1,-2})` |
-| `SUM(ABS({-1,-2}))` | as it is: an array stays an array inside SUM |
+| `SUM(ABS({-1,-2}))` | unchanged: an array stays an array inside SUM |
 | `SEQUENCE(3)`, `TRANSPOSE(A1)`, `IFS(…)`, `SWITCH(…)` | `@` before the call |
-| `INDEX(A1:C3,2,2)`, `INDEX(A1:C3,2)` | as it is: one cell |
-| `INDEX(A1:C3,0,1)`, `INDEX(A1:C3,B1,1)` | `@INDEX(…)`: a row or column index that is not a positive number may give several |
-| `IF(TRUE,A1:A10)`, `CHOOSE(1,A1:A10)` | `@IF(…)`, `@CHOOSE(…)`: the call can answer a range |
-| `ROW(A1:A3)`, `SUM(ROW(A1:A3))` | `@ROW(…)`, `SUM(@ROW(…))`: ROW gives several values only inside an array |
+| `INDEX(A1:C3,2,2)`, `INDEX(A1:C3,2)` | unchanged: one cell |
+| `INDEX(A1:C3,0,1)`, `INDEX(A1:C3,B1,1)` | `@INDEX(…)`: a row or column index that is not a positive number may return several cells |
+| `IF(TRUE,A1:A10)`, `CHOOSE(1,A1:A10)` | `@IF(…)`, `@CHOOSE(…)`: the call can return a range |
+| `ROW(A1:A3)`, `SUM(ROW(A1:A3))` | `@ROW(…)`, `SUM(@ROW(…))`: ROW returns several values only inside an array |
 | `LET(x,A1:A10,x)`, `LET(x,A1:A10,x*2)` | `@LET(…)`, `LET(x,A1:A10,@x*2)` |
-| a name over a range or an array | `@name`; a name of one value stays |
+| a name that refers to a range or an array | `@name`; a name with a single value stays as it is |
 
-Each argument of each whitelisted function has its class: one value, a reference, or an array, and whether an array evaluation goes on into it. `src/legacy/params.ts` holds the classes, written from Excel's text of the `legacy/params` and `legacy/nesting` sets by `bench/coverage/legacy/table.ts`.
+Each argument of each whitelisted function has a class: a single value, a reference, or an array, plus whether array evaluation continues into it. `src/legacy/params.ts` holds the classes, generated by `bench/coverage/legacy/table.ts` from Excel's text of the `legacy/params` and `legacy/nesting` sets.
 
-## Array formulas of the old kind
+## Legacy array formulas
 
-A cell with `array: 'B2:C5'` holds an array formula entered over B2:C5. The formula is computed as an array, without implicit intersection, and fills its area:
+A cell with `array: 'B2:C5'` contains an array formula entered over B2:C5. The formula is calculated as an array, without implicit intersection, and fills its range:
 
-| answer | B2:C5 shows |
+| result | B2:C5 displays |
 |---|---|
-| an array of the area's size | the array |
+| an array of the range's size | the array |
 | a smaller array of one row or one column | that row or column repeated |
-| a smaller array of several rows and columns | the array, `#N/A` past it |
+| a smaller array of several rows and columns | the array, with `#N/A` beyond it |
 | a larger array | its top-left part |
-| one value | that value in every cell |
+| a single value | that value in every cell |
 
-`ROW()` and `COLUMN()` give the rows and columns of the area: `{=ROW()}` over E1:E3 shows 1, 2, 3. A single cell (`array: 'B2'`) shows the top-left value: `{=A1:A3}` shows A1, where an old plain formula would intersect.
+`ROW()` and `COLUMN()` return the rows and columns of the range: `{=ROW()}` over E1:E3 displays 1, 2, 3. A single cell (`array: 'B2'`) displays the top-left value: `{=A1:A3}` displays A1, where a plain legacy formula would use implicit intersection.
 
-The area never spills and never gives `#SPILL!`. A dynamic array that meets it gives `#SPILL!`. In the result the formula's cell has `spill`, the area, and the other cells `spillOf`. `B2#` refers to the area.
+The range never spills and never returns `#SPILL!`. A dynamic array that runs into it returns `#SPILL!`. In the result, the formula's cell has `spill`, the range, and the other cells have `spillOf`. `B2#` refers to the range.
 
-The other cells of the area hold no input. A session refuses edits that change some cells of an area without the rest: `setCells` throws `InputError` and changes nothing, as Excel does. Clearing every cell of the area removes the formula. An edit of the formula's cell that keeps an array over the same area changes the whole array.
+The other cells of the range have no input. A session rejects edits that change some cells of a range but not the rest: `setCells` throws `InputError` and changes nothing, as Excel does. Clearing every cell of the range removes the formula. An edit of the formula's cell that keeps an array over the same range changes the whole array.
 
-`editStructure` moves an area with its cell. It refuses with `array` to insert lines inside an area, to delete part of one, to move part of one and to paste over part of one. A copy of a whole area copies the array; a copy of part of an area pastes each cell as an array formula of its own, the area's formula shifted from the area's cell.
+`editStructure` moves a range together with its cell. It rejects with `array` inserting rows or columns inside a range, deleting part of one, moving part of one and pasting over part of one. Copying an entire range copies the array; copying part of a range pastes each cell as an array formula of its own, with the range's formula adjusted from the range's first cell.
 
 ## Checked against Excel
 
-Measured in Excel 365: about 7,000 formulas of the old kind read back as Excel shows them and computed, and held-out sets predicted before Excel computed them.
+Tested in Excel 365: about 7,000 legacy formulas read back as Excel displays them and calculated, plus held-out sets predicted before Excel calculated them.
 
 ## Known differences
 
-- Excel computes an old formula by its old rules, and in a few places the dynamic text it shows computes otherwise: a range where an argument takes one value and Excel shows no `@` (GROWTH's and TREND's last argument, MATCH's type) is an error in the old formula and lifted in the dynamic one. The engine gives the dynamic formula's value.
-- Inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument; the engine lifts them.
-- An error as NETWORKDAYS.INTL's weekend is `#VALUE!` in Excel and `#NUM!` here; XIRR's guess given a range is `#VALUE!` in Excel and lifted here.
+- Excel calculates a legacy formula by its legacy rules, and in a few places the dynamic text it displays calculates differently: a range where an argument expects a single value and Excel shows no `@` (the last argument of GROWTH and TREND, the match type of MATCH) is an error in the legacy formula and is lifted to an array in the dynamic one. The engine returns the dynamic formula's value.
+- Inside SUMPRODUCT, Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a single-value argument; the engine lifts them.
+- An error as the weekend argument of NETWORKDAYS.INTL is `#VALUE!` in Excel and `#NUM!` here; XIRR's guess given as a range is `#VALUE!` in Excel and lifted to an array here.
