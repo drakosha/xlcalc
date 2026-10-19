@@ -76,7 +76,7 @@ describe('locales in a pool', () => {
     const calc = open[0]
     registerLocale({ ...ruRU, tag: 'xx-XX', messages: undefined })
     const want = sync(book('xx-XX'), 'closures')
-    expect(want.refusal).toMatchObject({ ok: false, message: 'a book keeps at least one sheet' })
+    expect(want.refusal).toMatchObject({ ok: false, message: 'a workbook must contain at least one sheet' })
     expect(await threaded(calc, book('xx-XX'), 'closures')).toEqual(want)
     expect((await calc.compute(book('xx-XX'), { clock })).sheets[0].cells).toEqual(compute(book('ru-RU'), { clock }).sheets[0].cells)
   })

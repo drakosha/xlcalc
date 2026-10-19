@@ -55,8 +55,8 @@ describe('LET', () => {
     for (const f of [...REFUSED, ...HELD_REFUSED].filter((f) => f !== 'LET(A1,1,A1)')) expect(validateFormula(engineFormula(f)), f).toMatchObject({ ok: false, code: 'syntax' })
     expect(validateFormula('LET(A1,1,A1)')).toMatchObject({ ok: true, canonical: 'LET(A1,1,A1)' })
     expect(validateFormula('LET(R2,1,R2)')).toMatchObject({ ok: false, code: 'syntax' })
-    expect(validateFormula('LET(x,1,X,2,x)')).toMatchObject({ message: 'LET names X twice' })
-    expect(validateFormula('LET(1,2,3)')).toMatchObject({ message: 'LET takes a name as its argument 1' })
+    expect(validateFormula('LET(x,1,X,2,x)')).toMatchObject({ message: 'LET defines the name X twice' })
+    expect(validateFormula('LET(1,2,3)')).toMatchObject({ message: 'LET expects a name as argument 1' })
     expect(validateFormula('LET(TRUE,1,2)').ok).toBe(false)
   })
 

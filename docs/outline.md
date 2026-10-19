@@ -77,7 +77,7 @@ console.log(outlineEdit({ rows }, { op: 'showDetail', row: 11 }))
 // → {
 //     ok: false,
 //     code: 'detail',
-//     message: 'the detail of row 11 is shown already'
+//     message: 'the detail of row 11 is already shown'
 //   }
 ```
 

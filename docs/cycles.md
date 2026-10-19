@@ -90,9 +90,9 @@ A session keeps the stopped cells as Excel keeps them, and writes what each one 
 A stopped cell's value is the value it holds, not an error. The result's `diagnostics`, `getCellIssue`, `readCells` with `issue` and a viewport with `diagnostics` list it with `error: 'CYCLE'` and the reason `circular reference: not computed, the value is held`; its `origin` is the first cell of a cycle its references reach. `explain` reports the same in the workbook's language; for the workbook above, `explain('S', 'C1', { depth: 1 })` returns:
 
 ```
-S!C1 = 20  ← A1*10  (held: a circular reference through S!A1)
-  S!A1 = 0  ← B1/2+K1  (held: a circular reference)
-    S!B1 = 0  ← A1  (held: a circular reference)
+S!C1 = 20  ← A1*10  (held by a circular reference through S!A1)
+  S!A1 = 0  ← B1/2+K1  (held by a circular reference)
+    S!B1 = 0  ← A1  (held by a circular reference)
 ```
 
 `#CYCLE!` itself is reserved for a defined name that refers to itself, directly or through other names ([names.md](names.md)).

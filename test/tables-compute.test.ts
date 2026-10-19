@@ -94,7 +94,7 @@ describe('tables', () => {
       expect(() => compute(b)).toThrow(message)
     }
     fails((b) => (b.sheets[0].tables![0].name = 'T2'), /must not look like a cell address/)
-    fails((b) => (b.sheets[0].tables![0].name = 'Bad Name'), /has only letters/)
+    fails((b) => (b.sheets[0].tables![0].name = 'Bad Name'), /contain only letters/)
     fails((b) => (b.names = [{ name: 'sales', ref: "'S'!A1" }]), /also a defined name/)
     fails((b) => {
       b.sheets[1].cells.A1 = { value: 'x' }

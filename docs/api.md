@@ -497,7 +497,7 @@ function outlineEdit(sheet: Pick<SheetInput, "columns" | "rows" | "outline">, op
 Excel's outline commands on a standalone sheet, as [`editStructure`](#xlcalc-editstructure) performs them in a workbook ([`OutlineEditOp`](#outlineeditop):
 Group, Ungroup, Show and Hide Detail, the level buttons): the sheet's rows and columns after the command, taking its
 summary settings into account, or why Excel rejects the command, in English
-(`{ ok: false, code: 'detail', message: 'the detail of row 11 is shown already' }`). The sheet is checked as
+(`{ ok: false, code: 'detail', message: 'the detail of row 11 is already shown' }`). The sheet is checked as
 [`outlineGroups`](#xlcalc-outlinegroups) checks it, and the operation as [`editStructure`](#xlcalc-editstructure) checks it.
 
 ### <a id="xlcalc-outlinegroups"></a>`outlineGroups`

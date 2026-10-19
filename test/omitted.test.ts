@@ -38,7 +38,7 @@ describe('arguments left out', () => {
 
   it('Excel does not load one where it takes only a reference (the omit sets)', () => {
     for (const f of [...REFUSED, ...HELD_REFUSED]) expect(validateFormula(engineFormula(f)), f).toMatchObject({ ok: false, code: 'syntax' })
-    expect(validateFormula('SUMIF(A1:A3,">1",)')).toMatchObject({ message: 'SUMIF takes a reference as its argument 3, which cannot be left out' })
+    expect(validateFormula('SUMIF(A1:A3,">1",)')).toMatchObject({ message: 'SUMIF expects a reference as argument 3, which cannot be omitted' })
     // AGGREGATE's references and the database functions' ranges load: #VALUE!
     for (const f of ['AGGREGATE(9,0,)', 'DSUM(A1:B3,"x",)']) expect(validateFormula(f).ok, f).toBe(true)
   })

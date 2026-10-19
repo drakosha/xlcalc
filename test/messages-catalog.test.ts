@@ -189,8 +189,8 @@ describe('the catalog of messages', () => {
 
   it('a locale without its own text of a message takes the loaded locale\'s of its tag, else the English one', () => {
     const own = { ...ruRU, tag: 'xx-YY', messages: undefined }
-    expect(say(own, { key: 'lastSheet' })).toBe('a book keeps at least one sheet')
-    expect(say('xx-YY', { key: 'lastSheet' })).toBe('a book keeps at least one sheet')
+    expect(say(own, { key: 'lastSheet' })).toBe('a workbook must contain at least one sheet')
+    expect(say('xx-YY', { key: 'lastSheet' })).toBe('a workbook must contain at least one sheet')
     expect(say({ ...ruRU, messages: undefined }, { key: 'lastSheet' })).toBe('В книге должен остаться хотя бы один лист')
     expect(say({ ...ruRU, tag: 'xx-YY' }, { key: 'lastSheet' })).toBe('В книге должен остаться хотя бы один лист')
   })

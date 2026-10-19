@@ -286,7 +286,7 @@ describe('explain', () => {
     const cells = { A1: { formula: 'B1+1', held: 2.5 }, B1: { formula: 'A1' }, C1: { formula: 'A1*2' } }
     const [r, e] = [createSession({ sheets: [{ name: 'План', cells }], locale: 'ru-RU' }), createSession({ sheets: [{ name: 'План', cells }] })]
     expect(r.explain('План', 'C1').text).toBe('План!C1 = 0  ← A1*2  (значение удержано: циклическая ссылка через План!A1)\n  План!A1 = 2,5  ← B1+1  (значение удержано: циклическая ссылка)\n    План!B1 = 0  ← A1  (значение удержано: циклическая ссылка)\n      План!A1 = 2,5  ← B1+1  (значение удержано: циклическая ссылка)')
-    expect(e.explain('План', 'C1').text).toBe('План!C1 = 0  ← A1*2  (held: a circular reference through План!A1)\n  План!A1 = 2.5  ← B1+1  (held: a circular reference)\n    План!B1 = 0  ← A1  (held: a circular reference)\n      План!A1 = 2.5  ← B1+1  (held: a circular reference)')
+    expect(e.explain('План', 'C1').text).toBe('План!C1 = 0  ← A1*2  (held by a circular reference through План!A1)\n  План!A1 = 2.5  ← B1+1  (held by a circular reference)\n    План!B1 = 0  ← A1  (held by a circular reference)\n      План!A1 = 2.5  ← B1+1  (held by a circular reference)')
   })
 
   it('the same text in the same thread and in threads', async () => {

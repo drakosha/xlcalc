@@ -46,7 +46,7 @@ describe.each(['closures', 'eval'] as Execution[])('outline commands in a sessio
       expect((await s.getLayout()).sheets[0].rows).toEqual({ '3:4': { outlineLevel: 1 }, '5:7': { outlineLevel: 2, hidden: true }, 8: { outlineLevel: 1, collapsed: true }, '9:10': { outlineLevel: 1 } })
       expect([s.revision, s.history]).toEqual([3, { undo: 3, redo: 0 }])
       // refused as Excel refuses: the detail shown already, nothing changes
-      expect(await s.editStructure({ op: 'showDetail', sheet: 'S', row: 11 })).toEqual({ ok: false, code: 'detail', message: 'the detail of row 11 is shown already' })
+      expect(await s.editStructure({ op: 'showDetail', sheet: 'S', row: 11 })).toEqual({ ok: false, code: 'detail', message: 'the detail of row 11 is already shown' })
       expect(s.revision).toBe(3)
       const u = await s.undo()
       expect(u && [u.call, u.changes.map((c) => [c.cell, c.value])]).toEqual(['editStructure', [['B1', 0]]])

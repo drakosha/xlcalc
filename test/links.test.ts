@@ -31,8 +31,8 @@ describe('the text of a reference to another workbook', () => {
     expect(canon("'C:\\other\\[data.XLSX]Data'!A1")).toBe("'[2]Data'!A1")
     expect(canon('Book2.xlsx!Rate')).toBe('[1]!Rate')
     expect(canon("'../data/Data.xlsx'!Rate")).toBe('[2]!Rate')
-    expect(canon('[3]Sheet1!A1')).toBe('external_ref: the book has no link to the workbook [3]')
-    expect(canon('[Other.xlsx]Sheet1!A1')).toBe('external_ref: the book has no link to the workbook Other.xlsx')
+    expect(canon('[3]Sheet1!A1')).toBe('external_ref: the workbook has no link to [3]')
+    expect(canon('[Other.xlsx]Sheet1!A1')).toBe('external_ref: the workbook has no link to Other.xlsx')
     expect(canon('[1]Nope!A1')).toBe('external_ref: the workbook Book2.xlsx has no sheet Nope')
     expect(canon('[1]Sheet1:Sheet2!A1')).toBe('external_ref: a reference across the sheets of another workbook is not supported')
     expect(canon("[1]Sheet1!#REF!+'[Book2.xlsx]My Sheet'!#REF!")).toBe("'[1]Sheet1'!#REF!+'[1]My Sheet'!#REF!")
@@ -116,7 +116,7 @@ describe('a book’s links', () => {
   })
 
   it('names of the book refer to links as the check takes them', () => {
-    expect(validateNames([{ name: 'Ext', ref: "'[1]Sheet1'!$A$1" }, { name: 'Bad', ref: "'[3]Sheet1'!$A$1" }], { sheets: ['S'], externalBooks: LINKS })).toEqual([{ name: 'Bad', reason: 'the book has no link to the workbook [3]', dropped: false }])
+    expect(validateNames([{ name: 'Ext', ref: "'[1]Sheet1'!$A$1" }, { name: 'Bad', ref: "'[3]Sheet1'!$A$1" }], { sheets: ['S'], externalBooks: LINKS })).toEqual([{ name: 'Bad', reason: 'the workbook has no link to [3]', dropped: false }])
   })
 })
 

@@ -43,8 +43,8 @@ describe('outlineEdit: the commands as editStructure does them', () => {
     ])
     expect(codes(answers)).toEqual(['ok', 'ok', 'detail', 'ok', 'detail', 'ok', 'ok'])
     expect(answers[3]).toEqual({ ok: true, rows: { '3:4': { outlineLevel: 1 }, '5:7': { outlineLevel: 2, hidden: true }, 8: { outlineLevel: 1, collapsed: true }, '9:10': { outlineLevel: 1 } } })
-    expect(answers[4]).toEqual({ ok: false, code: 'detail', message: 'the detail of row 11 is shown already' })
-    expect(answers[2]).toEqual({ ok: false, code: 'detail', message: 'the detail of row 11 is hidden already' })
+    expect(answers[4]).toEqual({ ok: false, code: 'detail', message: 'the detail of row 11 is already shown' })
+    expect(answers[2]).toEqual({ ok: false, code: 'detail', message: 'the detail of row 11 is already hidden' })
   })
 
   it('Group, Ungroup and the level buttons; a line in no group, a group with no summary line, the deepest level', () => {
@@ -62,8 +62,8 @@ describe('outlineEdit: the commands as editStructure does them', () => {
       { op: 'ungroup', rows: '1:4' },
     ])
     expect(codes(answers)).toEqual(['ok', 'ok', 'ok', 'ok', 'ok', 'not_grouped', 'not_grouped', 'not_grouped', 'ok', 'ok', 'ok', 'ok', 'ok', 'ok', 'outline_deep', 'not_grouped'])
-    expect(answers.slice(5, 8).map((a) => (a as { message: string }).message)).toEqual(['the columns A:C are in no group', 'row 20 is in no group with a summary row', 'column C is in no group with a summary column'])
-    expect(answers[14]).toEqual({ ok: false, code: 'outline_deep', message: 'the rows 6 are at the deepest outline level, 7, and are not grouped further' })
+    expect(answers.slice(5, 8).map((a) => (a as { message: string }).message)).toEqual(['the columns A:C are not in a group', 'row 20 is not in a group with a summary row', 'column C is not in a group with a summary column'])
+    expect(answers[14]).toEqual({ ok: false, code: 'outline_deep', message: 'the rows 6 are already at the deepest outline level, 7, and cannot be grouped further' })
   })
 
   it('columns, summaries above and left, groups at the sheet\'s edge, both axes at once; an axis left with no lines is out', () => {
