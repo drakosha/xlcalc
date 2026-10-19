@@ -4805,7 +4805,7 @@ type XlsxIssueCode =
 
 ### `XlsxLimits`
 
-The bounds of [`readXlsx`](#xlcalcxlsx-readxlsx) on a file's parts once inflated ([`ReadXlsxOptions.limits`](#readxlsxoptions)), in bytes, whole numbers of at least 1.
+The bounds of [`readXlsx`](#xlcalcxlsx-readxlsx) on a file's parts once inflated ([`ReadXlsxOptions.limits`](#readxlsxoptions)): sizes in bytes, whole numbers of at least 1, and a ratio.
 
 ```ts
 interface XlsxLimits {
@@ -4816,6 +4816,11 @@ interface XlsxLimits {
   entryBytes?: number
   /** The parts read, together: 1,073,741,824 (1 GiB) by default. */
   totalBytes?: number
+  /**
+   * How many times its size in the file a part over 16 MiB may inflate to, at least 1: 200 by default. The parts of
+   * xlsx files inflate some 5 to 40 times; a zip bomb's, a thousand times.
+   */
+  ratio?: number
 }
 ```
 

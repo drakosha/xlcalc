@@ -149,7 +149,7 @@ export interface ReadXlsxOptions {
   limits?: XlsxLimits
 }
 
-/** The bounds of `readXlsx` on a file's parts once inflated (`ReadXlsxOptions.limits`), in bytes, whole numbers of at least 1. */
+/** The bounds of `readXlsx` on a file's parts once inflated (`ReadXlsxOptions.limits`): sizes in bytes, whole numbers of at least 1, and a ratio. */
 export interface XlsxLimits {
   /**
    * One part: 268,435,456 (256 MiB) by default. A part is read as one JavaScript string, so a part over about 512 MiB is
@@ -158,6 +158,11 @@ export interface XlsxLimits {
   entryBytes?: number
   /** The parts read, together: 1,073,741,824 (1 GiB) by default. */
   totalBytes?: number
+  /**
+   * How many times its size in the file a part over 16 MiB may inflate to, at least 1: 200 by default. The parts of
+   * xlsx files inflate some 5 to 40 times; a zip bomb's, a thousand times.
+   */
+  ratio?: number
 }
 
 /** Options of `writeXlsx`: the language of its issues, which values of formulas the file stores, formulas or values alone. */

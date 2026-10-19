@@ -119,13 +119,14 @@ function fileBytes(data: unknown): Uint8Array {
   throw new InputError('data', `expected the file's bytes, got ${what(data)}: pass the file's bytes: Uint8Array, ArrayBuffer or Buffer, e.g. ${hint}`)
 }
 
-const LIMITS = ['entryBytes', 'totalBytes'] as const
+const BYTES = ['entryBytes', 'totalBytes'] as const
 
-/** `opts.limits`: whole numbers of bytes of at least 1. */
+/** `opts.limits`: whole numbers of bytes of at least 1, and a ratio of at least 1. */
 function checkLimits(v: unknown): XlsxLimits {
   const o = object(v, 'opts.limits', 'limits such as { entryBytes: 16777216, totalBytes: 67108864 }')
-  onlyKeys(o, 'opts.limits', LIMITS)
-  for (const k of LIMITS) if (o[k] !== undefined) checkNumber(o[k], `opts.limits.${k}`, 1, Number.MAX_SAFE_INTEGER, true)
+  onlyKeys(o, 'opts.limits', [...BYTES, 'ratio'])
+  for (const k of BYTES) if (o[k] !== undefined) checkNumber(o[k], `opts.limits.${k}`, 1, Number.MAX_SAFE_INTEGER, true)
+  if (o.ratio !== undefined) checkNumber(o.ratio, 'opts.limits.ratio', 1, Number.MAX_SAFE_INTEGER)
   return o as XlsxLimits
 }
 
