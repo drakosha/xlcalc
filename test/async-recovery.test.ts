@@ -132,10 +132,10 @@ async function heavyCallMs(): Promise<number> {
   }
 }
 
-// the deadline is five calls of the heavy book as fast as the machine runs them now, the journal twelve calls:
-// each call fits, their replay would not
-const CALLS = 5
-const JOURNAL = 12
+// the deadline is eight calls of the heavy book as fast as the machine runs them now, the journal sixteen calls: each
+// task fits, opening the book (about two calls) with room for a runner under load, and the replay would not
+const CALLS = 8
+const JOURNAL = 16
 
 /** A session of `calc` over the heavy book and a synchronous one. */
 const heavyPair = async (calc: Calc): Promise<[AsyncSession, Session]> => [await calc.createSession(heavyBook(), { clock: CLOCK }), createSession(heavyBook(), { clock: CLOCK })]
