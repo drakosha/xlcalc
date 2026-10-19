@@ -1,12 +1,12 @@
 # Circular references
 
-A circular reference is a formula that reads itself, directly or through other cells. Without iterative calculation, Excel computes neither the cells of a cycle nor the cells that read one: it keeps the values they show and computes the rest of the book. The engine does the same. With iterative calculation (`iteration`, [Iterative calculation](#iterative-calculation-in-short)) the cycles are computed instead, and nothing below applies.
+A circular reference is a formula that reads itself, directly or through other cells. Without iterative calculation, Excel calculates neither the cells of a cycle nor the cells that depend on one: it keeps the values they display and calculates the rest of the workbook. The engine does the same. With iterative calculation (`iteration`, [Iterative calculation](#iterative-calculation-in-short)), the cycles are calculated instead, and nothing below applies.
 
-The rules below were measured in Excel 16 for Windows (en-US). Excel for Mac shows a warning window when it opens such a book, so it was not measured.
+The rules below were verified in Excel 16 for Windows (en-US). Excel for Mac shows a warning dialog when it opens such a workbook, so it was not tested.
 
 ## In short
 
-A formula in a circular reference, and every formula that reads one, is not computed in a book without iterative calculation, as Excel computes none of them: each holds its value, the cell's `held` or 0 without it, and the rest of the book is computed. `cached`, the values a file stores (`readXlsx`'s `cached`), opens such a book as Excel opens the file: a cell holds the value stored for it, empty text where the file stores none. A session keeps the values as Excel keeps them: an edit that does not break the cycle changes none of them, a formula entered there holds 0, a cell another edit brings into the cycle's way holds what it showed, and a value typed into a cell of the cycle breaks it, and everything computes again. `getBook()` gives the values in `held`, so a full computation of the session's book gives what the session shows, and `writeXlsx` stores them. Each such cell is in `diagnostics` with `error: 'CYCLE'`. The rules and how they were measured: [docs/cycles.md](cycles.md).
+In a workbook without iterative calculation, a formula in a circular reference, and every formula that depends on one, is not calculated, just as Excel calculates none of them: each keeps its value, the cell's `held`, or 0 without it, and the rest of the workbook is calculated. `cached`, the values a file stores (`readXlsx`'s `cached`), opens such a workbook as Excel opens the file: a cell keeps the value stored for it, or empty text where the file stores none. A session keeps the values as Excel keeps them: an edit that does not break the cycle changes none of them, a formula entered there keeps 0, a cell that another edit pulls into the cycle keeps what it displayed, and a value typed into a cell of the cycle breaks it, and everything is calculated again. `getBook()` returns the values in `held`, so a full calculation of the session's workbook produces what the session displays, and `writeXlsx` stores them. Each such cell appears in `diagnostics` with `error: 'CYCLE'`. The rules and how they were verified: [docs/cycles.md](cycles.md).
 
 ```js
 import { compute, createSession } from 'xlcalc'
@@ -26,7 +26,7 @@ console.log(session.getCell('S', 'B1').value, session.getBook().sheets[0].cells.
 
 ## Iterative calculation in short
 
-With `iteration`, as Excel's setting "Enable iterative calculation" stores it in a file, the cells of every cycle, and the cells that depend on them, are computed again and again from 0, as Excel computes a book it opens, and `held` has no effect. The rounds stop after `maxIterations` (100 by default) or when no number changes by `maxChange` (0.001 by default) or more.
+With `iteration`, which corresponds to Excel's "Enable iterative calculation" setting as a file stores it, the cells of every cycle and the cells that depend on them are calculated repeatedly, starting from 0, as Excel calculates a workbook it opens, and `held` has no effect. The iterations stop after `maxIterations` (100 by default) or when no number changes by `maxChange` (0.001 by default) or more.
 
 ```js
 import { compute } from 'xlcalc'
@@ -37,17 +37,17 @@ console.log(r.B3.value, r.B4.value) // → 99.999984375 999.999984375
 console.log(compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells.B3.value) // → 0
 ```
 
-Cells are computed sheet by sheet in the order of the sheets' names, row by row. A change of text, a boolean or an error into another of them does not count as a change. Every computation starts from 0, so a session gives what a full computation gives. Excel goes on from the values it holds when it recalculates, which the engine does not do (see [Limitations](limitations.md)).
+Cells are calculated sheet by sheet in the order of the sheet names, row by row. A change of text, a boolean or an error into another one does not count as a change. Every calculation starts from 0, so a session produces what a full calculation produces. Excel continues from the values it holds when it recalculates, which the engine does not do (see [Limitations](limitations.md)).
 
 ## Which cells a cycle stops
 
 A cycle stops each formula in it and each formula that reads a cell of it, directly or through other formulas, wherever they are: above the cycle, below it or on another sheet. A cycle runs through anything a formula refers to: a cell, a range, a defined name, a spilled array's range.
 
-A formula that does not read the cycle is computed as usual, even when it reads a precedent of the cycle or sits next to it. A book without a cycle is computed when it opens, whatever values its file stores.
+A formula that does not read the cycle is calculated as usual, even when it reads a precedent of the cycle or sits next to it. A workbook without a cycle is calculated when it opens, whatever values its file stores.
 
 ## What a stopped cell holds
 
-A stopped cell holds a value, the cell's `held`, or 0 without it. It is not computed, so a change of a precedent changes nothing, and neither does a full calculation.
+A stopped cell holds a value, the cell's `held`, or 0 without it. It is not calculated, so changing a precedent changes nothing, and neither does a full calculation.
 
 ```js
 import { compute, createSession } from 'xlcalc'
@@ -63,31 +63,31 @@ console.log(session.getCell('S', 'A1').value, session.getCell('S', 'C1').value)
 // → 0 20
 ```
 
-A file stores the values Excel showed when it saved it, and `readXlsx` gives them as `cached`. `compute(read.book, { cached: read.cached })` and `createSession(read.book, { cached: read.cached })` open the book as Excel opens the file: a stopped cell without a `held` of its own holds the value stored for it, and empty text where the file stores none. Nothing else is read from `cached`.
+A file stores the values Excel displayed when it saved the file, and `readXlsx` returns them as `cached`. `compute(read.book, { cached: read.cached })` and `createSession(read.book, { cached: read.cached })` open the workbook as Excel opens the file: a stopped cell without a `held` of its own keeps the value stored for it, or empty text where the file stores none. Nothing else is read from `cached`.
 
-| the file stores | A1 = B1/2+1, B1 = A1, C1 = A1*10 show |
+| the file stores | A1 = B1/2+1, B1 = A1, C1 = A1*10 display |
 |---|---|
 | 2, 2 and 0 | 2, 2 and 0 |
 | 50, 7 and 0 | 50, 7 and 0 |
-| 2 for A1 alone | 2, empty text and empty text |
+| 2 for A1 only | 2, empty text and empty text |
 | nothing | empty text in each |
 
 ## Edits in a session
 
-A session keeps the stopped cells as Excel keeps them, and writes what each holds into its `held`, so `getBook()` gives it and a full computation of the session's book gives what the session shows.
+A session keeps the stopped cells as Excel keeps them, and writes what each one holds into its `held`, so `getBook()` returns it and a full calculation of the session's workbook produces what the session displays.
 
-- An edit that does not break the cycle changes none of them: a precedent changed (C1 from 1 to 5 under A1 = B1/2+C1), a formula elsewhere.
-- A formula entered into a stopped cell, or one entered elsewhere that reads the cycle, holds 0, also when it is the formula the cell had (B1 = A1 typed again). Pasting a formula enters it: a copy holds 0.
-- A cell that another edit brings into a cycle's way holds what it showed. With A1 = 2, B1 = A1 and C1 = B1*10, typing A1 = B1/2+1 closes the cycle: A1 holds 0, as a formula entered, B1 holds 2 and C1 20.
-- A value typed into a cell of the cycle, or the cell cleared, breaks it: each cell it stopped is computed again and holds nothing (B1 = 4 under A1 = B1/2+1 gives A1 3 and C1 30). A cell that also reads another cycle stays stopped.
-- Closing the cycle again stops the cells once more: the formula entered holds 0, the others what they show (B1 = A1 typed back: A1 3, B1 0, C1 30).
-- A formula changed so that it reads no cycle is computed (C1 = K1*2 gives 6).
-- A look (a style, a number format, a note) keeps the value. A row or a column inserted or deleted, or a range moved, takes the held values with their cells; a cell an operation or new names bring into a cycle's way holds what it showed.
-- Undo and redo give the held values back, and so does a preview taken back: the book after an undo holds what it held before the edit.
+- An edit that does not break the cycle changes none of them: a changed precedent (C1 from 1 to 5 under A1 = B1/2+C1), or a formula elsewhere.
+- A formula entered into a stopped cell, or one entered elsewhere that reads the cycle, holds 0, even when it is the formula the cell already had (B1 = A1 typed again). Pasting a formula enters it: a copy holds 0.
+- A cell that another edit pulls into a cycle keeps what it displayed. With A1 = 2, B1 = A1 and C1 = B1*10, typing A1 = B1/2+1 closes the cycle: A1 holds 0, as a newly entered formula, B1 holds 2 and C1 20.
+- A value typed into a cell of the cycle, or clearing the cell, breaks it: each cell it stopped is calculated again and holds nothing (B1 = 4 under A1 = B1/2+1 gives A1 3 and C1 30). A cell that also depends on another cycle stays stopped.
+- Closing the cycle again stops the cells once more: the entered formula holds 0 and the others what they display (B1 = A1 typed back: A1 3, B1 0, C1 30).
+- A formula changed so that it no longer reads a cycle is calculated (C1 = K1*2 gives 6).
+- Formatting (a style, a number format, a note) keeps the value. Inserting or deleting a row or a column, or moving a range, takes the held values along with their cells; a cell that an operation or new names pull into a cycle keeps what it displayed.
+- Undo and redo restore the held values, and so does a preview that is discarded: the workbook after an undo holds what it held before the edit.
 
-## What the result says
+## What the result reports
 
-A stopped cell's value is the one it holds, not an error. The result's `diagnostics`, `getCellIssue`, `readCells` with `issue` and a window with `diagnostics` list it with `error: 'CYCLE'` and the reason `circular reference: not computed, the value is held`; its `origin` is the first cell of a cycle its references reach. `explain` says the same in the book's language; of the book above, `explain('S', 'C1', { depth: 1 })` gives:
+A stopped cell's value is the value it holds, not an error. The result's `diagnostics`, `getCellIssue`, `readCells` with `issue` and a viewport with `diagnostics` list it with `error: 'CYCLE'` and the reason `circular reference: not computed, the value is held`; its `origin` is the first cell of a cycle its references reach. `explain` reports the same in the workbook's language; for the workbook above, `explain('S', 'C1', { depth: 1 })` returns:
 
 ```
 S!C1 = 20  ← A1*10  (held: a circular reference through S!A1)
@@ -95,18 +95,18 @@ S!C1 = 20  ← A1*10  (held: a circular reference through S!A1)
     S!B1 = 0  ← A1  (held: a circular reference)
 ```
 
-`#CYCLE!` itself is left for a defined name that uses itself, directly or through other names ([names.md](names.md)).
+`#CYCLE!` itself is reserved for a defined name that refers to itself, directly or through other names ([names.md](names.md)).
 
 ## Saving
 
-`writeXlsx` stores a stopped cell's value as Excel does: the result's value, and the cell's `held` where the result gives none, also with `values: 'omit'`. Excel opens the file holding it, and so does `compute` with the `cached` of the file read back.
+`writeXlsx` stores a stopped cell's value as Excel does: the result's value, or the cell's `held` where the result has none, even with `values: 'omit'`. Excel opens the file with that value, and so does `compute` with the `cached` of the file read back.
 
 ## Arrays
 
-An array formula a cycle stops spills nothing and holds one value. A cycle through a spill range (`A1 = SEQUENCE(3)*B5` with `B5 = SUM(A1:A3)`) holds the stored values, as Excel does: A1 holds its stored 0 and A2:A3 are empty.
+An array formula that a cycle stops spills nothing and holds a single value. A cycle through a spill range (`A1 = SEQUENCE(3)*B5` with `B5 = SUM(A1:A3)`) keeps the stored values, as Excel does: A1 keeps its stored 0 and A2:A3 are empty.
 
-An array that spilled and that an edit brings into a cycle's way holds its first value here and spills no more, as `held` is one value a cell. Excel keeps its whole spill as it was: with `A1 = SEQUENCE(3)+D1` and D1 = A3*0 typed, Excel keeps 1, 2 and 3 in A1:A3, the engine 1 in A1 and nothing below.
+An array that has spilled and that an edit pulls into a cycle keeps only its first value here and no longer spills, since `held` is a single value per cell. Excel keeps its entire spill as it was: with `A1 = SEQUENCE(3)+D1` and D1 = A3*0 typed, Excel keeps 1, 2 and 3 in A1:A3, while the engine keeps 1 in A1 and nothing below.
 
 ## Checked against Excel
 
-Measured in Excel 16 for Windows, en-US, on 27 books, 6 of them predicted before Excel ran them. The engine matches all but the cycles through `INDIRECT` and `OFFSET`, which are not in the whitelist, and the iteration from stored values ([Limitations](limitations.md)).
+Tested in Excel 16 for Windows, en-US, on 27 workbooks, 6 of them predicted before Excel ran them. The engine matches all of them except the cycles through `INDIRECT` and `OFFSET`, which are not in the whitelist, and iteration from stored values ([Limitations](limitations.md)).

@@ -1,21 +1,21 @@
 # xlcalc
 
-A formula engine for spreadsheet-like workbooks in JavaScript. You give it a book (sheets of cells with values and Excel formulas, plus named ranges); it gives back the computed values, the errors with their reasons, and a deterministic hash of the values. Formulas use Excel syntax: English function names, commas between arguments, a decimal point; [Localization](docs/locale.md) shows them and reads them in another language, as Excel does.
+A formula engine for spreadsheet workbooks in JavaScript. You pass it a workbook (sheets of cells with values and Excel formulas, plus named ranges), and it returns the calculated values, the errors with their reasons, and a deterministic hash of the values. Formulas use Excel syntax: English function names, commas between arguments and a decimal point. [Localization](docs/locale.md) displays and parses them in another language, as Excel does.
 
 What it does differently:
 
-- **Compiles each formula once.** By default a formula becomes a tree of JavaScript closures, with no code generated, so a strict Content Security Policy does not stand in the way; with `execution: 'eval'` it becomes JavaScript text, and one `new Function` call compiles the book. A formula that exceeds the JS compiler's nesting limit falls back to closures, preserving evaluation order. Both modes give the same values and hashes, and the tests compute every case book both ways. Cells are evaluated over the reference graph in topological order. A session keeps the compiled book and recomputes only the cells that depend on an edit. On a synthetic book with 3,400 data rows and 3,907 formulas, mostly SUMIFS over whole columns, a cold compute takes about 0.3 s with the cells' shown text (0.28 s without) and an edit of a criterion cell under 10 ms (p95) in either mode on an Apple M5 Pro with Node 26; `test/budgets.test.ts` enforces 1.5 s and 100 ms.
-- **Deterministic values and hashes.** The same book with the same clock gives the same values and the same `hash` (SHA-256 of a canonical text of all values plus the engine configuration version), regardless of input order, process or time zone. `inputHash` identifies the input.
-- **A clock for volatile functions.** `TODAY` and `NOW` come from `clock.now` (UTC), `RAND` and `RANDBETWEEN` from `clock.seed` and the cell address. Without a clock the engine takes the current moment and a random seed, and `result.clock` reproduces the result.
-- **A whitelist of functions, checked against Microsoft Excel.** A function is admitted when it gives Excel's answers on its test cases, typical calls and edge cases (text and booleans in numeric arguments, blanks, errors, date text, ranges with mixed content), computed in Excel 16: 43,778 cases, 36,132 of them in the en-US locale and 7,646 in ru-RU, with Excel's answers stored in this repository ([Functions](docs/functions.md) has the list and the counts). Where an admitted function still answers otherwise than Excel, the difference is listed in [Limitations](docs/limitations.md). Inputs outside these cases can differ too. Any other function is reported as `unknown_function` (`#NAME?`) rather than computed with different semantics.
-- **Arrays inside a formula.** Operators and functions work element by element over ranges and arrays with Excel 365's rules (`SUM(B:B*C:C)`, `SUMPRODUCT((A1:A9="x")*B1:B9)`, `SUM(IF(A1:A9>0,A1:A9))`), array constants `{1,2;3,4}` are read, and functions with an array answer (`SORT`, `FILTER`, `UNIQUE`, `SEQUENCE`, `MMULT`, …) can be used inside a formula. A formula whose result is an array spills into the cells to its right and below, as in Excel 365 (`#SPILL!` where they are taken), and `E2#` refers to the range it filled (see [Arrays](docs/formulas.md#arrays)).
-- **Cells shown as Excel shows them.** Each cell of a result carries, beside its value, the text Excel shows in it: its number format in the book's locale, General narrowed to the column's width, `#` across a column a number does not fit, the colour of the format's section (see [Showing values](docs/formats.md)). The value stays the number; `display: false` leaves the text out. A session also gives what a sheet's conditional formats show in each cell of a window: fills, fonts, colour scales, data bars and icons by the current values.
-- **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and the result's `diagnostics` say why, with a check code and the position in the formula.
-- **xlsx in and out.** `xlcalc/xlsx` reads an xlsx file into a book, with the values Excel stored and a list of what the book cannot hold, and writes a book with its computed values back to xlsx. It has no dependencies and loads none of the engine's computation (see [Reading and writing xlsx](docs/xlsx.md)).
-- **Computing without blocking.** `createInlineCalc` computes in the same thread in portions that give way to the event loop, `createCalcPool` from `xlcalc/worker` in Node worker threads or Web Workers, with soft and hard deadlines, cancellation, a thread's memory limit and limits on the size of a book; a session survives the loss of its thread (see [Computing without blocking](docs/async.md)).
+- **Compiles each formula once.** By default a formula is compiled to a tree of JavaScript closures without generating code, so it works under a strict Content Security Policy. With `execution: 'eval'` it is compiled to JavaScript source, and a single `new Function` call compiles the whole workbook. A formula that exceeds the JS compiler's nesting limit falls back to closures, preserving evaluation order. Both modes produce the same values and hashes, and the tests calculate every test workbook both ways. Cells are evaluated in topological order of the reference graph. A session keeps the compiled workbook and recalculates only the cells that depend on an edit. On a synthetic workbook with 3,400 data rows and 3,907 formulas, mostly SUMIFS over entire columns, a cold calculation takes about 0.3 s including the cells' displayed text (0.28 s without it), and an edit of a criteria cell takes under 10 ms (p95) in either mode on an Apple M5 Pro with Node 26. `test/budgets.test.ts` enforces limits of 1.5 s and 100 ms.
+- **Deterministic values and hashes.** The same workbook with the same clock produces the same values and the same `hash` (SHA-256 of a canonical text of all values plus the engine configuration version), regardless of input order, process or time zone. `inputHash` identifies the input.
+- **A clock for volatile functions.** `TODAY` and `NOW` come from `clock.now` (UTC), `RAND` and `RANDBETWEEN` from `clock.seed` and the cell address. Without a clock the engine uses the current time and a random seed, and `result.clock` reproduces the result.
+- **A whitelist of functions, checked against Microsoft Excel.** A function is admitted when it matches Excel's results on its test cases, typical calls and edge cases (text and booleans in numeric arguments, blanks, errors, date text, ranges with mixed content), calculated in Excel 16: 43,778 cases, 36,132 of them in the en-US locale and 7,646 in ru-RU, with Excel's results stored in this repository ([Functions](docs/functions.md) has the list and the counts). Where an admitted function still differs from Excel, the difference is listed in [Limitations](docs/limitations.md). Results for inputs outside these cases can differ too. Any other function is reported as `unknown_function` (`#NAME?`) rather than calculated with different semantics.
+- **Arrays inside a formula.** Operators and functions work element-wise over ranges and arrays by Excel 365's rules (`SUM(B:B*C:C)`, `SUMPRODUCT((A1:A9="x")*B1:B9)`, `SUM(IF(A1:A9>0,A1:A9))`), array constants such as `{1,2;3,4}` are supported, and functions that return arrays (`SORT`, `FILTER`, `UNIQUE`, `SEQUENCE`, `MMULT`, …) can be used inside a formula. A formula whose result is an array spills into the cells to the right and below, as in Excel 365 (`#SPILL!` if they are occupied), and `E2#` refers to the spilled range (see [Arrays](docs/formulas.md#arrays)).
+- **Cells displayed as Excel displays them.** Besides its value, each cell of a result carries the text Excel displays in it: the value formatted by its number format in the workbook's locale, the General format shortened to fit the column width, `#` across a column that is too narrow for the number, and the color of the format section (see [Number formats and displayed text](docs/formats.md)). The value itself stays a number; `display: false` omits the text. A session also returns what a sheet's conditional formats display in each cell of a viewport: fills, fonts, color scales, data bars and icons for the current values.
+- **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and the result's `diagnostics` say why, with an error code and the position in the formula.
+- **xlsx in and out.** `xlcalc/xlsx` reads an xlsx file into a workbook, along with the values Excel stored and a list of what the workbook cannot keep, and writes a workbook with its calculated values back to xlsx. It has no dependencies and does not load the calculation engine (see [Reading and writing xlsx](docs/xlsx.md)).
+- **Calculating without blocking.** `createInlineCalc` calculates on the same thread in slices that yield to the event loop, and `createCalcPool` from `xlcalc/worker` calculates in Node worker threads or Web Workers, with soft and hard deadlines, cancellation, a per-thread memory limit and limits on workbook size. A session survives the loss of its thread (see [Asynchronous and threaded computation](docs/async.md)).
 - **No Node APIs.** It runs in Node 20.19 or newer and in browsers (see [Limitations](docs/limitations.md) about Content Security Policy).
 
-Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT), [jStat](https://github.com/jstat/jstat) (MIT) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0), with fixes verified against Microsoft Excel; the rest (criteria and database functions, the lookups, `TEXT` and `VALUE`, dates, `IF`, the volatile functions) are written here.
+Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT), [jStat](https://github.com/jstat/jstat) (MIT) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0), with fixes verified against Microsoft Excel; the rest (criteria and database functions, the lookups, `TEXT` and `VALUE`, dates, `IF`, the volatile functions) were written for this library.
 
 ## Install
 
@@ -27,23 +27,23 @@ The package is ESM with TypeScript types included. From CommonJS use `await impo
 
 ### What to import
 
-The package is split where hosts' needs part, so a bundle takes only what it uses:
+The package is split into entry points by what hosts need, so a bundle includes only what it uses:
 
 | for | import |
 |---|---|
-| computing a book | `compute` from `xlcalc` |
-| a session over a book: edits, structure operations, undo, AutoFit, conditional formats, data validation, what cells show | `createSession` from `xlcalc` |
-| objects of a session's cells: `cells.A1.value = 100`, a listener of a cell | `liveWorkbook` from `xlcalc` ([Live objects](docs/live-objects.md)) |
+| calculating a workbook | `compute` from `xlcalc` |
+| a session over a workbook: edits, structure operations, undo, AutoFit, conditional formats, data validation, displayed text | `createSession` from `xlcalc` |
+| live objects for a session's cells: `cells.A1.value = 100`, cell listeners | `liveWorkbook` from `xlcalc` ([Live objects](docs/live-objects.md)) |
 | reading and writing xlsx files | `readXlsx`, `writeXlsx` and `fromLegacy` from `xlcalc/xlsx` |
-| computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
-| cell addresses in A1 style and a sheet's outline commands, without the engine | `xlcalc/a1` |
-| the references of formula text as it is typed, for colouring them, the name being typed for AutoComplete, a number format's category as the ribbon shows it, Find over a host's texts and the sort order of values, without the engine | `xlcalc/text` |
-| typed entry, and the text a cell opens with for editing, without the engine | `parseEntry`, `needsApostrophe`, `entryText` from `xlcalc/entry` ([Cell entry](docs/entry.md)) |
-| the tips of functions' arguments, and their categories, without the engine's computation | `functionSignature` and `FUNCTION_CATEGORIES` from `xlcalc`; what a function does, `functionDescription` from `xlcalc/function-text`; their Russian words, `ruRUFunctionText` from `xlcalc/function-text/ru-RU` ([Addresses and formula text](docs/addresses.md)) |
-| books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](docs/locale.md)) |
-| types alone | `xlcalc/contract` |
+| calculating in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for slices on the same thread |
+| A1-style cell addresses and a sheet's outline commands, without the engine | `xlcalc/a1` |
+| the references in formula text as the user types it, for coloring them; the name being typed, for AutoComplete; a number format's category as the ribbon displays it; Find over a host's text; the sort order of values; all without the engine | `xlcalc/text` |
+| parsing typed entries, and the text a cell opens with in edit mode, without the engine | `parseEntry`, `needsApostrophe`, `entryText` from `xlcalc/entry` ([Cell entry](docs/entry.md)) |
+| argument tooltips and categories of functions, without the calculation engine | `functionSignature` and `FUNCTION_CATEGORIES` from `xlcalc`; function descriptions, `functionDescription` from `xlcalc/function-text`; their Russian text, `ruRUFunctionText` from `xlcalc/function-text/ru-RU` ([Addresses and formula text](docs/addresses.md)) |
+| workbooks and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](docs/locale.md)) |
+| types only | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified (19.10.2026, 0.51.0), `compute` alone takes 291 KB (111 KB gzip), `createSession` 497 KB (188 KB), the whole root 560 KB (207 KB), `xlcalc/xlsx` 205 KB (77 KB), `xlcalc/worker` 33 KB (12 KB) in the page and the thread it starts 608 KB (208 KB), `xlcalc/a1` 16 KB (6 KB), `xlcalc/text` 51 KB (20 KB), `xlcalc/entry` 97 KB (37 KB), the ru-RU module 99 KB (16 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled for the browser with esbuild and minified (19.10.2026, 0.51.0), `compute` alone is 291 KB (111 KB gzipped), `createSession` 497 KB (188 KB), the entire root entry 560 KB (207 KB), `xlcalc/xlsx` 205 KB (77 KB), `xlcalc/worker` 33 KB (12 KB) on the page plus 608 KB (208 KB) for the worker it starts, `xlcalc/a1` 16 KB (6 KB), `xlcalc/text` 51 KB (20 KB), `xlcalc/entry` 97 KB (37 KB), the ru-RU module 99 KB (16 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 
@@ -64,13 +64,13 @@ console.log(sheets[0].cells.D2.value) // → 80
 console.log(sheets[0].cells.D3.value, diagnostics[0].reason) // → { error: 'NAME' } unknown function INDIRECT
 ```
 
-A formula is stored without the leading `=` in `formula` (one given is dropped: `{ formula: '=SUM(A1:A2)' }` is `SUM(A1:A2)`, the same input and `inputHash`), separately from `value`, so a string from your data never turns into a formula. So are the formulas of names, tables, conditional formats and data validation. Dates are passed explicitly as a value `{ date: '2026-01-31' }` (`{ value: { date: '2026-01-31' } }`) and become Excel serial numbers; `numberFormat` and `meta` pass through to the result untouched, and the result's `text` shows the value by its `numberFormat`.
+A formula is stored in `formula` without the leading `=` (a leading `=` is dropped: `{ formula: '=SUM(A1:A2)' }` is `SUM(A1:A2)`, with the same input and `inputHash`), separately from `value`, so a string from your data never turns into a formula. The same applies to formulas in defined names, tables, conditional formats and data validation. Dates are passed explicitly as `{ date: '2026-01-31' }` (`{ value: { date: '2026-01-31' } }`) and become Excel serial numbers. `numberFormat` and `meta` pass through to the result unchanged, and the result's `text` is the value formatted by its `numberFormat`.
 
 ## Recipes
 
-Common tasks, each with the calls it takes; [Documentation](#documentation) has the rules.
+Common tasks and the calls they need; [Documentation](#documentation) has the details.
 
-### Compute a book and read a cell
+### Calculate a workbook and read a cell
 
 ```js
 import { compute } from 'xlcalc'
@@ -79,7 +79,7 @@ const r = compute({ sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formu
 console.log(r.sheets[0].cells.A2.value, r.diagnostics) // → 42 []
 ```
 
-### Open a session, edit a cell and take the changes
+### Open a session, edit a cell and get the changes
 
 ```js
 import { createSession } from 'xlcalc'
@@ -89,7 +89,7 @@ const { revision, changes } = session.setCells([{ sheet: 'S', cell: 'A1', input:
 console.log(revision, changes.map((c) => `${c.cell}=${c.value}`)) // → 1 [ 'A1=3', 'A2=63' ]
 ```
 
-### Assign to a cell and follow another
+### Assign to a cell and watch another
 
 ```js
 import { createSession, liveWorkbook } from 'xlcalc'
@@ -103,7 +103,7 @@ console.log(s.cells.A2.text)
 // → 63
 ```
 
-### Type text into a cell as Excel reads it, in ru-RU
+### Enter text in a cell as Excel parses it, in ru-RU
 
 ```js
 import { createSession, registerLocale } from 'xlcalc'
@@ -129,7 +129,7 @@ console.log(pasted.range, pasted.changes.map((c) => `${c.cell} ${c.text}`)) // �
 console.log(session.undo().call, session.getCell('S', 'A1')) // → pasteText undefined
 ```
 
-### Copy a rectangle as plain text
+### Copy a range as plain text
 
 ```js
 import { createSession } from 'xlcalc'
@@ -138,9 +138,9 @@ const session = createSession({ sheets: [{ name: 'S', columns: { A: { width: 3 }
 console.log(JSON.stringify(session.copyText('S', 'A1:A2', { trailingNewline: false }))) // → "2026-03-15\r\n1.23456789"
 ```
 
-`copyText` prepares the selection from computed values and effective formats without column clipping, skipping hidden rows and columns. The host writes the returned string to its clipboard. Windows ends the copy with CRLF; Mac uses `{ trailingNewline: false }`. Copies over `maxCells` (20,000 by default) or `maxChars` (16 Mi characters) are refused rather than truncated. `formatClipboard` from `xlcalc/text` remains available for a host that already has a rectangle of full formatted texts. [Copying plain text](docs/entry.md#copying-plain-text) covers merges, spills and why every plain-text copy cannot be read back without ambiguity.
+`copyText` builds the copy from calculated values and effective formats without clipping to column width, and skips hidden rows and columns. The host writes the returned string to its clipboard. Windows ends the copy with CRLF; on the Mac use `{ trailingNewline: false }`. Copies larger than `maxCells` (20,000 by default) or `maxChars` (16 Mi characters) are rejected rather than truncated. `formatClipboard` from `xlcalc/text` is still available for a host that already has a range of fully formatted text. [Copying plain text](docs/entry.md#copying-plain-text) covers merges, spills, and why a plain-text copy cannot always be read back unambiguously.
 
-### Enter a text into a selection (Control+Return)
+### Enter text into a selection (Control+Return)
 
 ```js
 import { createSession } from 'xlcalc'
@@ -150,7 +150,7 @@ console.log(session.fillCellText('S', 'B1:B3', '=A1*2').changes.map((c) => `${c.
 console.log(session.fillCellText('S', 'C1:C2', '5').changes.map((c) => `${c.cell} ${c.text}`), session.getBook().sheets[0].cells.C2) // → [ 'C1 5%', 'C2 5%' ] { value: 0.05, numberFormat: '0%' }
 ```
 
-### Read a window for a grid
+### Read a viewport for a grid
 
 ```js
 import { createSession } from 'xlcalc'
@@ -160,7 +160,7 @@ const v = session.getViewport('S', 'A1:B2')
 console.log(v.cells.A1.effectiveStyle, v.styles[v.cells.A1.effectiveStyle], v.cells.B1.text, v.columns.map((c) => c.width), v.usedRange) // → 0 { font: { bold: true } } 1,234.50 [ 8.83203125, 12 ] { rows: 1, columns: 2 }
 ```
 
-### Read a window over a saved version of a book
+### Read a viewport of a saved version of a workbook
 
 ```js
 import { compute, viewportOf } from 'xlcalc'
@@ -182,7 +182,7 @@ const r = session.patchCells([{ sheet: 'S', range: 'A1:B1', set: { style: { font
 console.log(r.changes.map((c) => [c.cell, c.text, c.style]), r.styles) // → [ [ 'A1', '25%', 0 ], [ 'B1', '50%', 0 ] ] [ { font: { bold: true } } ]
 ```
 
-### Insert a row and move the window by `moved`
+### Insert a row and shift the viewport by `moved`
 
 ```js
 import { createSession } from 'xlcalc'
@@ -206,7 +206,7 @@ const saved = await writeXlsx(session.getSnapshot())
 console.log((await readXlsx(saved.data)).cached.sheets[0].cells.A2) // → { value: 63 }
 ```
 
-The reader also keeps `book.activeSheet` and each sheet's `view` (`activeCell`, `selection`, `topLeft`, `zoom`), so a grid can restore the saved window. `getLayout()` retains them; overlay live view state on the book when saving. They do not affect `inputHash`. [Saved views](docs/xlsx.md#the-saved-active-sheet-and-view) has the file mapping and limits.
+The reader also keeps `book.activeSheet` and each sheet's `view` (`activeCell`, `selection`, `topLeft`, `zoom`), so a grid can restore the saved view. `getLayout()` keeps them as well; apply the live view state to the workbook before saving. They do not affect `inputHash`. [Saved views](docs/xlsx.md#the-saved-active-sheet-and-view) describes how they map to the file and their limits.
 
 ### Show a formula in a locale
 
@@ -217,7 +217,7 @@ import { ruRU } from 'xlcalc/locales/ru-RU'
 console.log(toLocal(`IF(A1>0.5,SUM('Data'!B1:B3),"none")`, ruRU).formula) // → ЕСЛИ(A1>0,5;СУММ(Data!B1:B3);"none")
 ```
 
-### Say why a cell holds an error
+### Find out why a cell has an error
 
 ```js
 import { createSession } from 'xlcalc'
@@ -231,7 +231,7 @@ console.log(session.getCellIssue('S', 'A3'))
 //   }
 ```
 
-### Compute in a pool of threads with a deadline
+### Calculate in a thread pool with a deadline
 
 ```js
 import { createCalcPool } from 'xlcalc/worker'
@@ -246,12 +246,12 @@ await pool.close()
 
 ## Documentation
 
-- [Quick start](docs/quick-start.md): the main uses, from a calculator on a server to a grid, xlsx files and threads, each with an example.
-- [API reference](docs/api.md): every function, value and type of the package, entry by entry.
+- [Quick start](docs/quick-start.md): the main use cases, from a calculator on a server to a grid, xlsx files and threads, each with an example.
+- [API reference](docs/api.md): every function, constant and type the package exports.
 
-Books and formulas:
+Workbooks and formulas:
 
-- [Formulas](docs/formulas.md): arrays inside formulas, checking formula text, errors, external functions, hidden rows, date systems.
+- [Formulas](docs/formulas.md): arrays inside formulas, validating formula text, errors, external functions, hidden rows, date systems.
 - [Functions](docs/functions.md): the whitelist by category.
 - [Array operations in formulas](docs/arrays-incell.md) and [Spilling](docs/spill.md).
 - [Defined names](docs/names.md), [Tables](docs/tables.md), [References](docs/references.md) (`@`, unions, references across sheets).
@@ -259,10 +259,10 @@ Books and formulas:
 
 Sessions and grids:
 
-- [Sessions](docs/sessions.md): opening one, undo and redo, following changes, the clock.
-- [Rendering a grid from a session](docs/grid.md): windows, layout, looks of many cells.
+- [Sessions](docs/sessions.md): opening a session, undo and redo, tracking changes, the clock.
+- [Rendering a grid from a session](docs/grid.md): viewports, layout, formatting many cells.
 - [Editing a grid](docs/edits.md), [Cell entry](docs/entry.md), [Batch changes, previews and paged queries in a live session](docs/live-books.md).
-- [Live sheet and cell objects](docs/live-objects.md): `cells.A1.value = 100`, batches, listeners of a cell or a sheet, a Vue `customRef`.
+- [Live sheet and cell objects](docs/live-objects.md): `cells.A1.value = 100`, batches, cell and sheet listeners, a Vue `customRef`.
 - [Structure operations](docs/structure.md): rows and columns, moves and copies, the fill handle, merged cells, sheets.
 - [Conditional formats](docs/conditional-formats.md), [Data validation](docs/validation.md), [Outlines](docs/outline.md).
 - [Addresses and formula text](docs/addresses.md): `xlcalc/a1` and `xlcalc/text`, without the engine.

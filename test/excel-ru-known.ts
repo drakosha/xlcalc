@@ -9,11 +9,11 @@ import { BOTH_KNOWN, type REASONS } from './excel-cases.js'
 /** Reasons of differences that only ru-RU cases show; each is a line of docs/limitations.md's "Known differences from Excel". */
 export const RU_REASONS = {
   secondDecimal:
-    'A second decimal separator among the decimals of a number format (`#,##0,00` in ru-RU) is a literal between digits; Excel shows one digit fewer before it in some numbers (`TEXT(-0.5,"#,##0,00")` is `-,50,00` in Excel and `-,500,00` here).',
+    'A second decimal separator among the decimals of a number format (`#,##0,00` in ru-RU) is a literal between digits; Excel displays one digit fewer before it for some numbers (`TEXT(-0.5,"#,##0,00")` is `-,50,00` in Excel and `-,500,00` here).',
   macCollation:
-    'Excel for Mac puts Cyrillic before Latin in ru-RU (`"a"<"а"` is FALSE there); the engine puts Latin first, as Excel for Windows does in every locale, in comparisons, criteria, lookups and SORT.',
+    'Excel for Mac sorts Cyrillic before Latin in ru-RU (`"a"<"а"` is FALSE there); the engine sorts Latin first, as Excel for Windows does in every locale, in comparisons, criteria, lookups and SORT.',
   macMonthShort:
-    'Excel for Mac writes the short month names of ru-RU (`МММ`) `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`; the engine takes three letters, as Excel for Windows does (`фев`, `мар`, `июн`, `июл`, `сен`, `ноя`).',
+    'Excel for Mac writes the short month names of ru-RU (`МММ`) as `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`; the engine uses three letters, as Excel for Windows does (`фев`, `мар`, `июн`, `июл`, `сен`, `ноя`).',
 } as const
 
 type Reason = keyof typeof REASONS | keyof typeof RU_REASONS

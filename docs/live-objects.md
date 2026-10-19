@@ -1,6 +1,6 @@
 # Live sheet and cell objects
 
-`liveWorkbook(session)` gives objects of a session's sheets and cells. Reading a cell's property reads what the session computed; assigning one is the session's edit, recomputed before the next line runs, with a step of the undo; and a listener of a cell, a sheet or the book is called when a change touched it, whoever made the change. The objects hold no copy of the book and need nothing besides the package, so a framework's reactivity (Vue's `customRef`, a signal) can sit on top of them.
+`liveWorkbook(session)` returns objects for a session's sheets and cells. Reading a cell's property reads what the session calculated; assigning to one is an edit of the session, recalculated before the next line runs and recorded as an undo step; and a listener on a cell, a sheet or the workbook is called whenever a change affects it, whoever made the change. The objects keep no copy of the workbook and depend on nothing outside the package, so a framework's reactivity (Vue's `customRef`, a signal) can be built on top of them.
 
 ```js
 import { createSession, liveWorkbook } from 'xlcalc'
@@ -15,21 +15,21 @@ console.log(plan.cells.B1.value, plan.cells.B1.text, session.history.undo) // �
 
 ## Reading and assigning
 
-A cell is `sheet.cells.A1` or `sheet.cell('A1')`, by its address in any case and without `$`. Its properties read the session as it is now, through `getCell`; nothing is computed apart from the session:
+A cell is `sheet.cells.A1` or `sheet.cell('A1')`, by its address in any case and without `$`. Its properties read the session's current state through `getCell`; nothing is calculated outside the session:
 
-- `value`: the computed value, null for an empty cell.
-- `text`: the text the cell shows; undefined for an empty cell, and in a session opened with `display: false`.
-- `formula`: the formula without `=`, as the session spells it (sheets quoted, functions in upper case).
-- `numberFormat` and `style`: the cell's own, as `getCell` gives them; not those it shows from its row or column.
+- `value`: the calculated value, null for an empty cell.
+- `text`: the text the cell displays; undefined for an empty cell, and in a session created with `display: false`.
+- `formula`: the formula without `=`, in the session's canonical form (sheets quoted, functions in upper case).
+- `numberFormat` and `style`: the cell's own, as `getCell` returns them, not those it displays from its row or column.
 
-An assignment is the session's call:
+An assignment is a call to the session:
 
-- `value = x` is `setCells` with a value: the content is replaced and a formula goes, the look stays, as when a value is typed over a cell in Excel. `value = null` clears the content and the hyperlink, as `clearCells` with `contents`.
+- `value = x` is `setCells` with a value: the contents are replaced and a formula is removed, while the formatting stays, as when a value is typed over a cell in Excel. `value = null` clears the contents and the hyperlink, like `clearCells` with `contents`.
 - `formula = 'A1*2'` is `setCells` with a formula; `formula = null` removes it.
-- `numberFormat` and `style` are `patchCells`: the value and formula stay. A style by its fields goes over the style the cell shows ([Editing a grid](edits.md)).
-- `cell.type('5%')` is text typed into the cell, read as Excel reads it in the book's locale (`setCellText`), and answers what `setCellText` answers.
+- `numberFormat` and `style` are `patchCells`: the value and formula stay. A style given by its fields is applied on top of the style the cell displays ([Editing a grid](edits.md)).
+- `cell.type('5%')` is text typed into the cell, parsed as Excel parses it in the workbook's locale (`setCellText`), and returns what `setCellText` returns.
 
-What the session refuses throws its own error from the assignment, and the book stays as it was: part of an array of the old kind, a value of the wrong shape, an edit over the session's `limits`. The objects always edit the book as it is now: they take no `baseRevision`.
+An assignment the session rejects throws the session's own error, and the workbook stays unchanged: part of a legacy array formula, a value of the wrong shape, an edit beyond the session's `limits`. The objects always edit the workbook in its current state: they take no `baseRevision`.
 
 ```js
 import { createSession, liveWorkbook } from 'xlcalc'
@@ -47,12 +47,12 @@ console.log(a.B1.type('5%').ok, a.B1.value, a.B1.text) // → true 0.05 5%
 
 ## Batches
 
-`book.batch(fn)` applies the assignments `fn` makes as one `applyChanges` ([Batch changes, previews and paged queries in a live session](live-books.md)): one recomputation, one revision, one step of the undo and one change told to listeners.
+`book.batch(fn)` applies the assignments `fn` makes as a single `applyChanges` ([Batch changes, previews and paged queries in a live session](live-books.md)): one recalculation, one revision, one undo step and one change reported to listeners.
 
-- Until `fn` returns, the cells read as they were before the batch: the assignments wait for its end.
-- A batch inside another is part of the outer one.
-- When `fn` throws, none of its assignments is applied and the error goes on; an inner batch that throws loses only its own.
-- Typed text (`type`) cannot be part of a batch, since `applyChanges` takes no typed text, and `fn` must not answer a promise: an assignment after an `await` would be outside the batch. Both throw `InputError`.
+- Until `fn` returns, cells read as they were before the batch: the assignments are deferred to its end.
+- A batch inside another batch is part of the outer one.
+- When `fn` throws, none of its assignments are applied and the error propagates; an inner batch that throws discards only its own assignments.
+- Typed text (`type`) cannot be part of a batch, since `applyChanges` does not accept typed text, and `fn` must not return a promise: an assignment after an `await` would fall outside the batch. Both throw `InputError`.
 
 ```js
 import { createSession, liveWorkbook } from 'xlcalc'
@@ -68,16 +68,16 @@ book.batch(() => {
 console.log(plan.cells.A3.value, session.revision, session.history.undo) // → 3 1 1
 ```
 
-## Following changes
+## Tracking changes
 
-`cell.watch(listener)`, `sheet.watch(listener)` and `book.watch(listener)` call the listener with the session's `SessionChange` ([Sessions](sessions.md), "Following changes") and answer the function that unsubscribes. They hear every change of the book, made through the objects or past them: `session.setCells`, typed text, a structure operation, `undo` and `redo`.
+`cell.watch(listener)`, `sheet.watch(listener)` and `book.watch(listener)` call the listener with the session's `SessionChange` ([Sessions](sessions.md#tracking-changes)) and return the function that unsubscribes. They receive every change of the workbook, whether made through the objects or not: `session.setCells`, typed text, a structure operation, `undo` and `redo`.
 
-- A cell's listener is called when the change touched the cell: its value, shown text, formula or own look changed (`changes`, which lists the cells a recomputation changed too), or a structure operation may have brought another cell to its address (`moved`). A rule of conditional formatting that paints the cell otherwise (`repaint`) does not call it: the objects do not read a cell's conditional look.
-- A sheet's listener is called for a change of its cells, its layout, a structure operation on it, its rename or move, the cells to repaint on it, and a change of the book's style table.
-- The book's listener is called for every change.
-- A listener given to several watches is called once a change; each watch unsubscribes alone. A listener that throws stops neither the edit nor the other listeners, and its error is thrown again in a microtask, as `subscribe` does.
+- A cell's listener is called when the change affected the cell: its value, displayed text, formula or own formatting changed (`changes`, which also lists the cells a recalculation changed), or a structure operation may have moved another cell to its address (`moved`). A conditional formatting rule that changes how the cell is displayed (`repaint`) does not call it: the objects do not read a cell's conditional formatting.
+- A sheet's listener is called for a change of its cells or its layout, a structure operation on it, its rename or move, cells to repaint on it, and a change of the workbook's style table.
+- The workbook's listener is called for every change.
+- A listener passed to several `watch` calls is called once per change; each `watch` unsubscribes separately. A listener that throws stops neither the edit nor the other listeners, and its error is rethrown in a microtask, as with `subscribe`.
 
-The workbook subscribes to its session once and finds a cell's listeners by its address, so an edit costs the cells it changed, not the number of cells watched. A structure operation wakes the watched cells of its sheet from the inserted or deleted line on, and of both areas of a move, even those empty before and after.
+The workbook object subscribes to its session once and finds a cell's listeners by address, so an edit costs as much as the cells it changed, not the number of cells watched. A structure operation notifies the watched cells of its sheet from the inserted or deleted row or column onward, and of both ranges of a move, even cells that were empty before and after.
 
 ```js
 import { createSession, liveWorkbook } from 'xlcalc'
@@ -98,9 +98,9 @@ plan.cells.A1.value = 7
 
 ## Cells keep their address, sheets follow their name
 
-A cell object is its address: `const c = plan.cells.A5`, then a row inserted above it, and `c` is the cell now at A5, its listener called because what is there changed. A host that follows a cell as it moves maps it with `mapCell` of `editStructure`'s answer or with `moved`. The same address gives the same object while it is held; objects not held are collected, and a listener stays with its address all the same.
+A cell object stands for its address: with `const c = plan.cells.A5` and a row then inserted above it, `c` is the cell now at A5, and its listener is called because what is there changed. A host that wants to follow a cell as it moves maps it with the `mapCell` of `editStructure`'s result or with `moved`. The same address returns the same object while the object is held; objects that are not held are garbage-collected, and a listener stays attached to its address regardless.
 
-A sheet object follows its sheet through a rename or a move: `sheet.name` is the name now, and `book.sheet` takes the new name, in any case. After the sheet is deleted, every use of its object and of its cells throws `InputError`, and their listeners are called no more; a sheet brought back by `undo` is a new object, from `book.sheet`.
+A sheet object follows its sheet through a rename or a move: `sheet.name` is the current name, and `book.sheet` accepts the new name, in any case. After the sheet is deleted, every use of its object and of its cells throws `InputError`, and their listeners are no longer called; a sheet restored by `undo` is a new object, obtained from `book.sheet`.
 
 ```js
 import { createSession, liveWorkbook } from 'xlcalc'
@@ -121,11 +121,11 @@ console.log(plan.name, book.sheet('budget') === plan)
 
 ## Which sessions
 
-`liveWorkbook` takes a synchronous session (`createSession`) and gives the same object for the same session again. An asynchronous session (`createInlineCalc`, `createCalcPool`) cannot answer an assignment with the recomputed value before the next line, so it throws `InputError`; its objects would need writes that answer promises.
+`liveWorkbook` accepts a synchronous session (`createSession`) and returns the same object for the same session each time. An asynchronous session (`createInlineCalc`, `createCalcPool`) cannot deliver the recalculated value of an assignment before the next line runs, so `liveWorkbook` throws `InputError` for it; its objects would need assignments that return promises.
 
 ## With Vue
 
-The objects know nothing of Vue. A `customRef` tracks a cell's reads and triggers on its `watch`; the cell's own value stays the session's:
+The objects do not depend on Vue. A `customRef` tracks a cell's reads and triggers on its `watch`; the cell's value itself stays in the session:
 
 ```ts
 import { customRef, onScopeDispose } from 'vue'
@@ -143,8 +143,8 @@ export function useCell(cell: LiveCell) {
 }
 ```
 
-`<input v-model.number="a1">` with `const a1 = useCell(plan.cells.A1)` then writes into the session, and a `computed` over another cell's ref follows the recomputation.
+`<input v-model.number="a1">` with `const a1 = useCell(plan.cells.A1)` then writes into the session, and a `computed` over another cell's ref follows the recalculation.
 
 ## How it is tested
 
-Not against Excel: the objects are a rule of this library over a session, and the session's own calls are what is checked against Excel. The tests (`test/live-objects.test.ts`, both modes of execution) read after assignments and batches, compare a refused assignment's error and the book's hash with the session's call, count the steps of the undo and the changes told, and check which listeners each kind of change calls: through the objects, through the session, `undo`, `redo`, inserted rows and columns, a move, a rename and a deletion of a sheet. The Vue example is not run.
+Not against Excel: the objects are this library's own layer over a session, and the session's calls are what is checked against Excel. The tests (`test/live-objects.test.ts`, in both execution modes) read cells after assignments and batches, compare the error and the workbook's hash of a rejected assignment with those of the session's call, count the undo steps and reported changes, and check which listeners each kind of change calls: through the objects, through the session, `undo`, `redo`, inserted rows and columns, a move, and a sheet's rename and deletion. The Vue example is not run.

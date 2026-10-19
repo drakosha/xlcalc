@@ -1,6 +1,6 @@
 # Tables
 
-A table is Excel's list object: a rectangle of a sheet with a header row of column names, rows of data and, if you want one, a totals row. Formulas refer to its parts by name, `SUM(Sales[Amount])` rather than `SUM(C2:C40)`, and such a reference follows the table as rows and columns are inserted and deleted in it. A book's tables are computed, restructured, read from xlsx files and written back as Excel does it.
+A table is Excel's list object: a rectangle of a sheet with a header row of column names, rows of data and, optionally, a totals row. Formulas refer to its parts by name, `SUM(Sales[Amount])` rather than `SUM(C2:C40)`, and such a reference follows the table as rows and columns are inserted and deleted in it. A workbook's tables are calculated, restructured, read from xlsx files and written back as Excel does it.
 
 ```js
 import { compute } from 'xlcalc'
@@ -18,7 +18,7 @@ console.log(r.sheets[0].cells.F1.value, r.sheets[0].cells.F2.value) // → 80 2
 console.log(r.sheets[0].cells.D2.formula) // → Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]
 ```
 
-The rules below were measured in Excel 16.113 for Mac (en-US and ru-RU).
+The rules below were verified in Excel 16.113 for Mac (en-US and ru-RU).
 
 ## In short
 
@@ -40,9 +40,9 @@ console.log(out.F1.value, out.F2.value, out.F3.value) // → 80 3 Price
 console.log(out.D2.formula) // → Orders[[#This Row],[Qty]]*Orders[[#This Row],[Price]]
 ```
 
-A formula stores its references as an xlsx file does (`Orders[[#This Row],[Qty]]` for `[@Qty]`), and `toLocal` shows them as Excel does, in Russian too (`#Данные`). Structure operations grow, shrink and move tables as Excel does, an edit of a header cell renames its column, and `editStructure` adds, renames, deletes and converts tables. [docs/tables.md](tables.md) has the rules.
+A formula stores its references as an xlsx file does (`Orders[[#This Row],[Qty]]` for `[@Qty]`), and `toLocal` displays them as Excel does, in Russian too (`#Данные`). Structure operations grow, shrink and move tables as Excel does, editing a header cell renames its column, and `editStructure` adds, renames, deletes and converts tables. [docs/tables.md](tables.md) has the rules.
 
-A formula typed in a cell of a table refers to it without its name, `[@Qty]`. Without the book, the table of the cell is an option: `toLocal(formula, locale, { table })` drops the name as Excel shows such a formula, `toInvariant(text, locale, { table })` puts it back, and `validateFormula` and `validateLocalFormula` with `ctx.table` check the formula as in the table and give the text the book stores. `escapeColumn` writes a column's name in a reference, `'` before the characters that mean something there (`[`, `]`, `#`, `'`, a leading `@`).
+A formula typed in a cell of a table refers to it without its name, `[@Qty]`. Without the workbook, the table of the cell is an option: `toLocal(formula, locale, { table })` drops the name as Excel displays such a formula, `toInvariant(text, locale, { table })` adds it back, and `validateFormula` and `validateLocalFormula` with `ctx.table` check the formula as if it were in the table and return the text the workbook stores. `escapeColumn` writes a column's name for use in a reference, with `'` before the characters that have a special meaning there (`[`, `]`, `#`, `'`, a leading `@`).
 
 ```js
 import { escapeColumn, toInvariant, validateFormula } from 'xlcalc'
@@ -53,66 +53,66 @@ console.log(validateFormula('[@Qty]*[@Price]', { table: 'Orders' }).canonical) /
 console.log(`Orders[${escapeColumn('Price #2')}]`) // → Orders[Price '#2]
 ```
 
-## A table in a book
+## A table in a workbook
 
 A sheet lists its tables in `tables` (`TableInput`):
 
 | field | |
 |---|---|
 | `name` | the table's name |
-| `range` | its rectangle, the header and totals rows included (`B2:E10`) |
+| `range` | its rectangle, including the header and totals rows (`B2:E10`) |
 | `headers` | the first row is a header row; true by default |
 | `totals` | the last row is a totals row; false by default |
 | `columns` | one entry for each column of the range, left to right: its `name`, the `formula` of a calculated column, its `totals` |
 
-A table's name follows Excel's rules for names, the rules of a defined name ([Defined names](names.md) has them, with how they were measured): a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, not a cell address (`T2` is the cell T2), not `R`, `C` or an R1C1 reference, not TRUE or FALSE, and in a ru-RU book not `ИСТИНА` or `ЛОЖЬ`. Tables and defined names share one namespace: no table has the name of another table or of a defined name, in any case, Cyrillic too (a table `Продажи` and a name `ПРОДАЖИ` cannot both be). A table has one data row at least.
+A table's name follows Excel's naming rules, the same as for a defined name ([Defined names](names.md) has them, and how they were verified): it starts with a letter of any script, `_` or `\`, continues with letters, digits, `_`, `.`, `\` and `?`, and is not a cell address (`T2` is the cell T2), not `R`, `C` or an R1C1 reference, not TRUE or FALSE, and in a ru-RU workbook not `ИСТИНА` or `ЛОЖЬ`. Tables and defined names share one namespace: no table can have the name of another table or of a defined name, in any case, Cyrillic included (a table `Продажи` and a name `ПРОДАЖИ` cannot coexist). A table has at least one data row.
 
-With a header row, its cells hold the columns' names as text: `B1` holds `"Qty"` when the second column is named `Qty`. Column names are unique in a table, in any case, and may hold any characters.
+With a header row, its cells contain the column names as text: `B1` contains `"Qty"` when the second column is named `Qty`. Column names are unique within a table, case-insensitively, and can contain any characters.
 
-A calculated column's `formula` is the formula Excel gives a row inserted into the table. The cells of the column hold their own formulas, which compute as any other. A column's `totals` records what its cell of the totals row is, as an xlsx file records it: one of Excel's functions (`sum`, `average`, `count`, `countNums`, `max`, `min`, `stdDev`, `var`), `custom` for a formula of its own, or a label. The cell holds the formula or the text, and that is what computes.
+A calculated column's `formula` is the formula Excel gives a row inserted into the table. The cells of the column contain their own formulas, which calculate like any other. A column's `totals` records what its cell in the totals row is, as an xlsx file records it: one of Excel's functions (`sum`, `average`, `count`, `countNums`, `max`, `min`, `stdDev`, `var`), `custom` for a formula of its own, or a label. The cell contains the formula or the text, and that is what is calculated.
 
-What Excel does not allow is an `InputError` with the place and the reason: a table over another, a merged area or an array formula of the old kind over several cells inside a table, a name taken, a header cell that does not hold its column's name.
+What Excel does not allow throws an `InputError` with the location and the reason: a table overlapping another, a merged area or a legacy array formula over several cells inside a table, a name already in use, or a header cell that does not contain its column's name.
 
 ## Structured references
 
-| reference | takes |
+| reference | refers to |
 |---|---|
 | `Sales` or `Sales[]` | the data rows |
 | `Sales[Qty]` | the data of a column |
 | `Sales[[Qty]:[Price]]` | the data of the columns from Qty to Price |
-| `Sales[#All]` | the whole table, header and totals rows included |
+| `Sales[#All]` | the entire table, including the header and totals rows |
 | `Sales[#Data]` | the data rows |
 | `Sales[#Headers]` | the header row |
 | `Sales[#Totals]` | the totals row |
 | `Sales[[#Headers],[#Data]]`, `Sales[[#Data],[#Totals]]` | both parts |
-| `Sales[[#Headers],[Qty]]` | the header cell of a column; any part goes with a column or a span of columns |
+| `Sales[[#Headers],[Qty]]` | the header cell of a column; any part can be combined with a column or a span of columns |
 | `Sales[@Qty]`, `Sales[[#This Row],[Qty]]` | the column's cell in the formula's own row |
-| `Sales[@]`, `Sales[#This Row]` | the formula's row of the table |
+| `Sales[@]`, `Sales[#This Row]` | the table's row in the formula's row |
 | `[@Qty]`, `[Qty]` | in a cell of the table, the same in its own table |
 
-A reference gives a range like any other: `SUM` sums it, `ROWS` counts its rows, an operator works on each of its cells, and a formula whose result is a column of a table spills it (`=Sales[Qty]`).
+A reference returns a range like any other: `SUM` sums it, `ROWS` counts its rows, an operator works on each of its cells, and a formula whose result is a column of a table spills it (`=Sales[Qty]`).
 
-A part the table lacks gives `#REF!`: `Sales[#Totals]` without a totals row, `Sales[#Headers]` without a header row. `[@Qty]` in a row outside the data rows, above or below the table or in its totals row, gives `#VALUE!`. From another sheet the formula's row is its row number: `Sales[@Qty]` in `Other!B3` takes the table's cell in row 3.
+A part the table does not have returns `#REF!`: `Sales[#Totals]` without a totals row, `Sales[#Headers]` without a header row. `[@Qty]` in a row outside the data rows, above or below the table or in its totals row, returns `#VALUE!`. From another sheet, the formula's row is its row number: `Sales[@Qty]` in `Other!B3` refers to the table's cell in row 3.
 
-`Sales[[#Data],[#Totals],[Qty]]` without a totals row is the data alone, and `Sales[[#Headers],[#Data]]` without a header row too.
+`Sales[[#Data],[#Totals],[Qty]]` without a totals row refers to the data alone, and so does `Sales[[#Headers],[#Data]]` without a header row.
 
-A name can hold a structured reference (`Sales[Qty]`). `Sales[[#This Row],[Price]]` in a name takes the row of the cell that uses the name.
+A name can contain a structured reference (`Sales[Qty]`). `Sales[[#This Row],[Price]]` in a name refers to the row of the cell that uses the name.
 
 ### How they are written
 
-Names of tables, columns and specifiers are read in any case and stored as the table spells them. Spaces may stand inside the outer brackets and after the commas between items (`Sales[ [Qty]:[Price] ]`, `Sales[[#Data], [Qty]]`), not around `:`. A column written alone is all the text up to `]`, so `Sales[ Qty ]` is a column named ` Qty `.
+Names of tables, columns and specifiers are parsed case-insensitively and stored as the table spells them. Spaces are allowed inside the outer brackets and after the commas between items (`Sales[ [Qty]:[Price] ]`, `Sales[[#Data], [Qty]]`), but not around `:`. A column written alone is all the text up to `]`, so `Sales[ Qty ]` is a column named ` Qty `.
 
-A column name with `[`, `]`, `#` or `'` in it takes `'` before each: the column `x#y` is `Sales[x'#y]`, `[br]` is `Sales['[br']]`, `it's` is `Sales[it''s]`. A name that starts with `@` takes one before it too, `Sales['@at]`, since `@` there means the formula's row. Spaces, digits, `$` and letters of any script need nothing: `Sales[Total $]`, `Sales[2024]`. `escapeColumn(name)` (from `xlcalc` and `xlcalc/text`) writes a name so.
+A column name containing `[`, `]`, `#` or `'` gets `'` before each of them: the column `x#y` is `Sales[x'#y]`, `[br]` is `Sales['[br']]`, and `it's` is `Sales[it''s]`. A name that starts with `@` gets one before it too, `Sales['@at]`, since `@` there means the formula's row. Spaces, digits, `$` and letters of any script need nothing: `Sales[Total $]`, `Sales[2024]`. `escapeColumn(name)` (from `xlcalc` and `xlcalc/text`) escapes a name this way.
 
-Excel refuses some forms, and so does the engine, with the check code `syntax`: two specifiers it does not combine (`[#Headers],[#Totals]`, `#All` or `#This Row` with another), two columns that are not a span (`[[Qty],[Price]]`), an unknown specifier. An unknown table or column, or `[@Qty]` outside a table, is the check code `unknown_name`, `#NAME?`.
+Excel rejects some forms, and so does the engine, with the error code `syntax`: two specifiers it does not combine (`[#Headers],[#Totals]`, or `#All` or `#This Row` with another), two columns that are not a span (`[[Qty],[Price]]`), and an unknown specifier. An unknown table or column, or `[@Qty]` outside a table, has the error code `unknown_name` and evaluates to `#NAME?`.
 
-A sheet before a table's name is dropped, as Excel drops it: `S!Sales[Qty]` is `Sales[Qty]`.
+A sheet name before a table's name is dropped, as Excel drops it: `S!Sales[Qty]` becomes `Sales[Qty]`.
 
-### Stored text and what Excel shows
+### Stored text and what Excel displays
 
-A formula stores its structured references as an xlsx file does, whatever form was typed: the table named, the formula's row as `[#This Row]`, a table alone as `Sales[]`. `[@Qty]*[@Price]` in a cell of Sales is stored `Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]`. This is the canonical text of a result's `formula` and of `validateFormula` given the tables.
+A formula stores its structured references as an xlsx file does, whatever form was typed: with the table named, the formula's row as `[#This Row]`, and a table alone as `Sales[]`. `[@Qty]*[@Price]` in a cell of Sales is stored as `Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]`. This is the canonical text of a result's `formula` and of `validateFormula` given the tables.
 
-`toLocal` shows a formula as Excel shows it: `Sales[@Qty]`, `Sales[@[Unit Price]]`, `Sales[@]`, `Sales` for the table alone. Given the table of the formula's cell, `toLocal(formula, locale, { table: 'Sales' })` drops the name where Excel drops it in a cell of that table: before one column or a span of columns of the data or of the formula's row (`[@Qty]`, `SUM([Qty])`). A reference with another specifier keeps it (`Sales[#Headers]`, `Sales[[#Totals],[Qty]]`).
+`toLocal` displays a formula as Excel displays it: `Sales[@Qty]`, `Sales[@[Unit Price]]`, `Sales[@]`, and `Sales` for the table alone. Given the table of the formula's cell, `toLocal(formula, locale, { table: 'Sales' })` drops the name where Excel drops it in a cell of that table: before a single column or a span of columns of the data or of the formula's row (`[@Qty]`, `SUM([Qty])`). A reference with another specifier keeps it (`Sales[#Headers]`, `Sales[[#Totals],[Qty]]`).
 
 ```js
 import { toLocal, enUS } from 'xlcalc'
@@ -124,7 +124,7 @@ console.log(toLocal(f, enUS, { table: 'Sales' }).formula) // → [@Qty]*SUM(Sale
 console.log(toLocal(f, ruRU, { table: 'Sales' }).formula) // → [@Qty]*СУММ(Sales[[#Итоги];[Price]])
 ```
 
-The way back takes the table too. `toInvariant(text, locale, { table: 'Sales' })` puts the name before each structured reference without one, so the formula reads outside the table (`[@Qty]` is `Sales[@Qty]`), and `validateFormula` and `validateLocalFormula` with `ctx.table` check a formula as in a cell of the table: a reference without a table name is to it, and the canonical text is the one the book stores. With `ctx.tables` the columns are checked as well; without `ctx.table` such a reference is refused with `ctx.tables`, as outside a table.
+The reverse direction needs the table too. `toInvariant(text, locale, { table: 'Sales' })` adds the name before each structured reference that lacks one, so the formula parses outside the table (`[@Qty]` becomes `Sales[@Qty]`), and `validateFormula` and `validateLocalFormula` with `ctx.table` check a formula as if it were in a cell of the table: a reference without a table name refers to that table, and the canonical text is the one the workbook stores. With `ctx.tables` the columns are checked as well; without `ctx.table`, such a reference is rejected when `ctx.tables` is given, as outside a table.
 
 ```js
 import { toInvariant, validateLocalFormula } from 'xlcalc'
@@ -146,15 +146,15 @@ Excel with the Russian interface writes the specifiers in Russian and separates 
 | `#Totals` | `#Итоги` |
 | `#This Row` | `#Эта строка` |
 
-`Sales[[#Заголовки];[Qty]]`, `ЧСТРОК(Sales[#Все])`. The formula's row is shown as `@` in either language. A column whose name holds a comma (`1,5`, a number typed into a header cell in ru-RU) is written alone with it, `Sales[1,5]`; after `@` en-US puts it in brackets, as it does a name with any character that means something in a formula (`[@[1,5]]`), and ru-RU, whose list separator is `;`, does not (`[@1,5]`). `toInvariant` reads the Russian specifiers in any case, and the English ones too. A locale gives its words in `tableItems`; without them a locale writes the English ones.
+`Sales[[#Заголовки];[Qty]]`, `ЧСТРОК(Sales[#Все])`. The formula's row is displayed as `@` in either language. A column whose name contains a comma (`1,5`, a number typed into a header cell in ru-RU) is written as is when alone, `Sales[1,5]`; after `@`, en-US puts it in brackets, as it does with any name containing a character that has a meaning in a formula (`[@[1,5]]`), while ru-RU, whose list separator is `;`, does not (`[@1,5]`). `toInvariant` parses the Russian specifiers in any case, and the English ones too. A locale provides its words in `tableItems`; without them, a locale uses the English ones.
 
 ## Arrays and tables
 
-No array spills inside a table, nor into one: a formula in a table whose result is several values gives `#SPILL!`, and so does a formula beside a table whose array would land on it. A formula in a table may give an array of one value.
+No array spills inside a table, nor into one: a formula in a table whose result is several values returns `#SPILL!`, and so does a formula next to a table whose array would land on it. A formula in a table can return an array with a single value.
 
 ## Structure operations
 
-Structured references name tables and columns, so inserted and deleted rows and columns do not change their text; the table changes, and they follow it.
+Structured references name tables and columns, so inserting and deleting rows and columns does not change their text; the table changes, and the references follow it.
 
 ### Rows
 
@@ -162,7 +162,7 @@ Structured references name tables and columns, so inserted and deleted rows and 
 |---|---|
 | inside the data, at its first data row, or at the totals row | grows; each new row gets the formulas of the calculated columns |
 | at or above the header row | moves down |
-| right below the table | stays as it is |
+| immediately below the table | stays unchanged |
 
 A reference written by address into a table's data grows at its edges as the table does: `SUM(B2:B5)` over the data of a column becomes `SUM(B2:B6)` when a row is inserted at the first data row (row 2) or at the totals row (row 6).
 
@@ -171,23 +171,23 @@ A reference written by address into a table's data grows at its edges as the tab
 | some data rows | shrinks |
 | every data row | keeps its first data row, cleared; the rows after it are deleted |
 | the totals row | loses it |
-| the whole table | is deleted; references to it become `#REF!` |
+| the entire table | is deleted; references to it become `#REF!` |
 
-Excel refuses some, and `editStructure` returns `{ ok: false, code: 'table' }`: rows inserted at a row inside two tables at once (side by side), rows that meet two tables deleted unless both go whole (one table gone with a single row of another is refused too), a header row deleted without the rest of its table.
+Excel rejects some of these, and `editStructure` returns `{ ok: false, code: 'table' }`: inserting rows at a row that belongs to two tables at once (side by side); deleting rows that intersect two tables unless both are deleted entirely (deleting one table along with a single row of another is rejected too); and deleting a header row without the rest of its table.
 
 ### Columns
 
-A column inserted inside a table, after its first column, adds a column named `Column1`, or the next free number (`Column2`), and its header cell takes the name. A span such as `Sales[[Region]:[Price]]` takes the new column in when it lies between the ends. A column inserted at the first column moves the table, and one right of it changes nothing.
+A column inserted inside a table, after its first column, adds a column named `Column1`, or with the next free number (`Column2`), and its header cell gets the name. A span such as `Sales[[Region]:[Price]]` includes the new column when it falls between the ends. A column inserted at the first column moves the table, and one inserted to its right changes nothing.
 
-A deleted column takes the references to it: `Sales[Price]`, `Sales[@Price]` and a span ending on it become `#REF!`, and so does `[@Price]` in a calculated column (`[@Qty]*#REF!`). A span over the deleted column keeps the rest. All the columns of a table deleted delete the table.
+A deleted column removes the references to it: `Sales[Price]`, `Sales[@Price]` and a span ending on it become `#REF!`, and so does `[@Price]` in a calculated column (`[@Qty]*#REF!`). A span that covers the deleted column keeps the rest. Deleting all the columns of a table deletes the table.
 
-Columns inserted into two tables one above the other at once are refused with `table`, and so are columns that meet two tables deleted unless both go whole.
+Inserting columns into two tables stacked one above the other at once is rejected with `table`, and so is deleting columns that intersect two tables, unless both are deleted entirely.
 
-In a ru-RU book a new column is named `Столбец1`.
+In a ru-RU workbook, a new column is named `Столбец1`.
 
 ### Header cells
 
-Typing over a header cell renames its column, and `Session.setCells` does this: every reference to the column follows, calculated columns too.
+Typing over a header cell renames its column, and `Session.setCells` does this: every reference to the column follows, including in calculated columns.
 
 ```js
 import { createSession } from 'xlcalc'
@@ -198,42 +198,42 @@ s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 'Quantity' } }])
 console.log(s.getBook().sheets[0].cells.C1.formula, s.getBook().sheets[0].tables[0].columns[0].name) // → SUM(T[Quantity]) Quantity
 ```
 
-A number or a boolean typed into a header cell becomes its text (`2024`, `1,5` in ru-RU), as the cell's own number format shows it when it has one, whatever the column's width (`1,50` by `0.00`, `31.01.2025` by the short date in ru-RU); where that format shows it as General does, the text is the one `&` writes (`0,000000001`, not `1E-09`). A cleared header cell names the column `Column1`, the first free number. A name another column already has gives a number to the column further right: typing `Price` over `Qty` when the next column is `Price` leaves `Price` and `Price2`. A formula in a header cell is an `InputError`.
+A number or a boolean typed into a header cell becomes its text (`2024`, or `1,5` in ru-RU), as the cell's own number format displays it, if it has one, whatever the column's width (`1,50` with `0.00`, or `31.01.2025` with the short date in ru-RU); where that format displays it as General does, the text is what `&` produces (`0,000000001`, not `1E-09`). A cleared header cell names the column `Column1`, or with the first free number. A name another column already has gets a number on the column further to the right: typing `Price` over `Qty` when the next column is `Price` leaves `Price` and `Price2`. A formula in a header cell throws an `InputError`.
 
 ### Copies and moves
 
-A formula copied or moved out of its table gets the table's name in its references: `[@Qty]*[@Price]` pasted outside is `Sales[@Qty]*Sales[@Price]`. A copy of a whole table is a new table, named after it with a number (`Sales3` from a book of one table, as Excel numbers it), whose formulas refer to the new table. A whole table cut and pasted moves, to another sheet too. The formula of a calculated column, which a row inserted into the table gets, is copied and moved with the table as the formulas of its cells are: `A2*2` in a table pasted ten rows down becomes `A12*2`, and a reference to a cell left behind gets its sheet when the table moves to another sheet.
+A formula copied or moved out of its table gets the table's name in its references: `[@Qty]*[@Price]` pasted outside becomes `Sales[@Qty]*Sales[@Price]`. A copy of an entire table is a new table, named after the original with a number (`Sales3` in a workbook with one table, as Excel numbers it), whose formulas refer to the new table. An entire table cut and pasted moves, to another sheet too. The formula of a calculated column, which a row inserted into the table gets, is copied and moved with the table, like the formulas of its cells: `A2*2` in a table pasted ten rows down becomes `A12*2`, and a reference to a cell left behind gets its sheet name when the table moves to another sheet.
 
-A paste over header cells renames their columns to what lands there: the text of a value, or of a formula's value (a copy of `=SUM(Sales[Qty])` over a header gives the column the name `11`). Header cells cut away leave their columns named `Column1` and on. A target that is no multiple of the copied cells gets one copy at its top-left cell, as any copy does ([Structure operations](structure.md)), and its other cells keep their formulas, one in another table's calculated column too.
+Pasting over header cells renames their columns to what lands there: the text of a value, or of a formula's value (pasting a copy of `=SUM(Sales[Qty])` over a header names the column `11`). Header cells that are cut away leave their columns named `Column1` and so on. A destination that is not a multiple of the copied cells gets one copy at its top-left cell, as with any copy ([Structure operations](structure.md)), and its other cells keep their formulas, including one in another table's calculated column.
 
 ### Tables themselves
 
 | operation | |
 |---|---|
-| `addTable` | a table over cells of a sheet; with a header row, its header cells take the columns' names |
-| `renameTable` | every reference follows; a name Excel would not take, or one a table or a defined name has, is refused with `table_name` |
-| `deleteTable` | the table and its cells go; references to it become `#REF!` |
-| `convertTable` | the table becomes plain cells; references become references to its cells with `$` and the sheet |
+| `addTable` | creates a table over cells of a sheet; with a header row, its header cells get the column names |
+| `renameTable` | every reference follows; a name Excel would not accept, or one a table or a defined name already has, is rejected with `table_name` |
+| `deleteTable` | removes the table and its cells; references to it become `#REF!` |
+| `convertTable` | turns the table into plain cells; references become references to its cells with `$` and the sheet name |
 
-`convertTable` writes what Excel's Convert to Range writes: `Sales[Qty]` becomes `'S'!$B$2:$B$5`, `Sales[@Qty]` in row 4 becomes `'S'!$B4` (the row relative), `Sales[#All]` the whole range. A part the table lacks becomes the whole table (`Sales[[#Totals],[Qty]]` without a totals row is `'S'!$A$1:$D$5`), and in a name the formula's row of a column becomes the whole row of the table, as Excel converts them.
+`convertTable` writes what Excel's Convert to Range writes: `Sales[Qty]` becomes `'S'!$B$2:$B$5`, `Sales[@Qty]` in row 4 becomes `'S'!$B4` (with the row relative), and `Sales[#All]` the entire range. A part the table does not have becomes the entire table (`Sales[[#Totals],[Qty]]` without a totals row becomes `'S'!$A$1:$D$5`), and in a name, the formula's row of a column becomes the entire row of the table, as Excel converts them.
 
-Deleting a sheet takes the references to its tables: they become `#REF!`. Renaming it changes nothing, as tables are named without their sheet. A reference by address in the formula of a calculated column follows a renamed, moved or deleted sheet as in a cell's formula: `'S'!A2` becomes `'Data'!A2` when S is renamed to Data, and `#REF!A2` when S is deleted.
+Deleting a sheet removes the references to its tables: they become `#REF!`. Renaming it changes nothing, as tables are referenced without their sheet. A reference by address in the formula of a calculated column follows a renamed, moved or deleted sheet as in a cell's formula: `'S'!A2` becomes `'Data'!A2` when S is renamed to Data, and `#REF!A2` when S is deleted.
 
 ## xlsx
 
-`readXlsx` reads a sheet's table parts into its `tables`: the name formulas use (`displayName`), the range, the header and totals rows, the columns with their calculated column formulas and totals. Formulas come in the file's spelling, which is the stored one but for a column name starting with `@`, which a file writes without its escape. A header cell that does not hold its column's name as text is given it, and a table the model cannot hold is left out; both are reported with the code `table`.
+`readXlsx` reads a sheet's table parts into its `tables`: the name formulas use (`displayName`), the range, the header and totals rows, and the columns with their calculated column formulas and totals. Formulas come in the file's spelling, which is the stored one, except for a column name starting with `@`, which a file writes without its escape. A header cell that does not contain its column's name as text is given it, and a table the model cannot represent is left out; both are reported with the code `table`.
 
-`writeXlsx` writes each table as a table part, as Excel does. A formula of a totals row is written as a plain formula, the only kind Excel opens there, and recorded in the table part as its column's custom totals formula. A table's name alone in a defined name is written `Sales[]`.
+`writeXlsx` writes each table as a table part, as Excel does. A formula in a totals row is written as a plain formula, the only kind Excel accepts there, and recorded in the table part as its column's custom totals formula. A table's name alone in a defined name is written as `Sales[]`.
 
 ## Checked against Excel
 
-Measured in Excel 16.113 for Mac, en-US and ru-RU, on 176 books, and checked in Excel for Windows; the held-out sets came out as predicted in all but a few cases, which became the rules above or known differences.
+Tested in Excel 16.113 for Mac, en-US and ru-RU, on 176 workbooks, and checked in Excel for Windows; the held-out sets came out as predicted in all but a few cases, which became the rules above or known differences.
 
 ## Known differences
 
-- Excel's AutoCorrect extends a table when a value is typed right below it or right of it, and fills a calculated column when a formula is typed into an empty column of a table. `setCells` leaves the table and the other cells as they are; a host extends a table with `editStructure` (`insertRows` inside it fills the calculated columns). Formulas pasted into part of a calculated column fill the whole column in Excel too; `copyRange` pastes the cells alone.
-- A table renamed to a name Excel does not take (`AB12`, `1Ставка`, `?Продажи`) or to a defined name: Excel's object model makes the name one it takes (`AB12_`, `_1Ставка`, `_?Продажи`, `Rate_1`), as its name box refuses it; `renameTable` refuses with `table_name`.
-- In ru-RU Excel for Mac keeps a table renamed `ИСТИНА` or `ложь` and makes `TRUE_` of `TRUE`; Excel for Windows makes `ИСТИНА_` and keeps `TRUE`, as both do with a defined name. `renameTable` refuses all three: it follows Windows for `ИСТИНА`, and keeps formulas in en-US text, where `TRUE` is the boolean.
-- Text typed into a cell is read by Excel as a number, a date or a boolean where it can be (`2025-01-31` in ru-RU is a date, shown `31.01.2025`), and a header cell typed so names its column by what it shows; `setCells` takes a value as given, so the column is named `2025-01-31`.
-- Excel's Fill Right and fill handle move the column of a structured reference (`SUM(Sales[Qty])` filled right is `SUM(Sales[Price])`); `copyRange`, as copy and paste, keeps it.
-- An array formula of the old kind over several cells cannot be in a table, as in Excel; one over a single cell computes `[#This Row]` by its own row.
+- Excel's AutoCorrect extends a table when a value is typed immediately below or to the right of it, and fills a calculated column when a formula is typed into an empty column of a table. `setCells` leaves the table and the other cells unchanged; a host extends a table with `editStructure` (`insertRows` inside it fills the calculated columns). Formulas pasted into part of a calculated column fill the entire column in Excel too; `copyRange` pastes only the cells.
+- A table renamed to a name Excel does not accept (`AB12`, `1Ставка`, `?Продажи`) or to an existing defined name: Excel's object model adjusts the name to one it accepts (`AB12_`, `_1Ставка`, `_?Продажи`, `Rate_1`), while its Name Box rejects it; `renameTable` rejects it with `table_name`.
+- In ru-RU, Excel for Mac keeps a table renamed `ИСТИНА` or `ложь` and turns `TRUE` into `TRUE_`; Excel for Windows turns `ИСТИНА` into `ИСТИНА_` and keeps `TRUE`, as both do with a defined name. `renameTable` rejects all three: it follows Windows for `ИСТИНА`, and stores formulas in en-US syntax, where `TRUE` is the boolean.
+- Excel parses text typed into a cell as a number, a date or a boolean where it can (`2025-01-31` in ru-RU is a date, displayed as `31.01.2025`), and a header cell typed this way names its column by what it displays; `setCells` takes a value as given, so the column is named `2025-01-31`.
+- Excel's Fill Right and fill handle shift the column of a structured reference (`SUM(Sales[Qty])` filled right becomes `SUM(Sales[Price])`); `copyRange`, like copy and paste, keeps it.
+- A legacy array formula over several cells cannot be in a table, as in Excel; one over a single cell evaluates `[#This Row]` by its own row.

@@ -1,6 +1,6 @@
 # External references
 
-A formula can read another workbook: `[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`. Excel stores beside such formulas, in the file itself, what it last read of that workbook: where it is, its sheets, the values of the cells the formulas read and its names. The book keeps the same as `externalBooks`, and the engine computes the references from it, as Excel computes a file it opens without updating its links. The other workbook is never opened: a grid shows a financial model that leans on a dozen other files with the values those files had when the model was saved.
+A formula can read another workbook: `[1]Sheet1!A1`, `'[1]My Sheet'!A1:B9`, `[1]!Rate`. Alongside such formulas, Excel stores in the file itself what it last read from that workbook: where it is, its sheets, the values of the cells the formulas read, and its names. The workbook keeps the same data as `externalBooks`, and the engine calculates the references from it, as Excel calculates a file it opens without updating its links. The other workbook is never opened: a grid displays a financial model that depends on a dozen other files with the values those files had when the model was saved.
 
 ```js
 const externalBooks = [
@@ -12,7 +12,7 @@ const externalBooks = [
 ]
 ```
 
-Element `i` of `externalBooks` answers `[i+1]`. `target` is where the link points, as the file holds it: a file name, a relative or an absolute path, a `file:` or web address. A sheet's `cells` are its stored values by address (a number, text, a boolean or an error), `null` for a cell stored empty. `readXlsx` reads them from the file's links and `writeXlsx` writes them back ([docs/xlsx.md](xlsx.md)).
+Element `i` of `externalBooks` corresponds to `[i+1]`. `target` is where the link points, as the file stores it: a file name, a relative or an absolute path, a `file:` or web address. A sheet's `cells` are its stored values by address (a number, text, a boolean or an error), with `null` for a cell stored as empty. `readXlsx` reads them from the file's links and `writeXlsx` writes them back ([docs/xlsx.md](xlsx.md)).
 
 ## In short
 
@@ -26,35 +26,35 @@ console.log(cells.A1.value, cells.A2.value, cells.A3.value, cells.A1.formula) //
 console.log(toLocal(cells.A1.formula, 'en-US', { externalBooks })) // → { ok: true, formula: '[Prices.xlsx]Sheet1!A1+1' }
 ```
 
-A cell the stored values do not hold is blank, as Excel takes it, unless the sheet's last update failed (`refreshError`) or nothing of the sheet is stored: then it is `#REF!`. The criteria functions' ranges (`SUMIF`, `COUNTIFS` and the others), `COUNTBLANK` and the database functions take only an open book's reference and give `#VALUE!` over a link, as in Excel; `INDEX`, `MATCH`, `VLOOKUP`, `XLOOKUP`, `SUMPRODUCT` and the rest read the stored values. A formula with a link entered in a session makes Excel mark that workbook as it cannot read it, and so does the session: its cells the stored values lack are `#REF!` from then on. Formulas are stored with the link's number; `toLocal`, `toInvariant`, `parseEntry`, a window's `formulaLocal` and `editText` show and read them as Excel does, by the file name (`[Prices.xlsx]Sheet1!A1`), and refuse a workbook the book has no link to. [docs/links.md](links.md) has the rules and how they were measured.
+A cell the stored values do not include is blank, as Excel treats it, unless the sheet's last update failed (`refreshError`) or nothing from the sheet is stored: then it is `#REF!`. The criteria functions' ranges (`SUMIF`, `COUNTIFS` and the others), `COUNTBLANK` and the database functions accept only a reference to an open workbook and return `#VALUE!` over a link, as in Excel; `INDEX`, `MATCH`, `VLOOKUP`, `XLOOKUP`, `SUMPRODUCT` and the rest read the stored values. Entering a formula with a link in a session makes Excel mark that workbook as unreadable, and the session does the same: from then on, its cells that the stored values do not include are `#REF!`. Formulas are stored with the link's number; `toLocal`, `toInvariant`, `parseEntry`, a viewport's `formulaLocal` and `editText` display and parse them as Excel does, by file name (`[Prices.xlsx]Sheet1!A1`), and reject a workbook the workbook has no link to. [docs/links.md](links.md) has the rules and how they were verified.
 
 ## Values
 
-- A cell the link stores gives its value: `[1]Sheet1!A1+1` is 6. Excel stores `#SPILL!` and `#CALC!` of another workbook as `#VALUE!`, and so does the engine compute them (and its own `#CYCLE!`, which a name that uses itself gives, and `#ERROR!`).
-- A cell the link does not store is blank, as Excel takes it: `[1]Sheet1!A9` is 0, `[1]Sheet1!A9&"|"` is `|`, and `SUM([1]Sheet1!A:A)` sums the stored cells of the column. Excel stores the non-empty cells of the part of a sheet the formulas read, so the cells it leaves out were empty.
-- On a sheet whose last update failed, which Excel marks `refreshError` (`ExternalSheet.refreshError`), a cell the link does not store is `#REF!`: `SUM([1]Sheet1!A:A)` is `#REF!`, `MATCH(3,[1]Sheet1!A:A,0)` still finds a stored 3. A sheet the link names but stores nothing of (no `cells`) is `#REF!` everywhere.
-- A range is read cell by cell, so `INDEX`, `MATCH`, `VLOOKUP`, `HLOOKUP`, `XLOOKUP`, `LOOKUP`, `SUMPRODUCT`, `COUNT`, `COUNTA`, `AVERAGE`, `RANK`, `SUBTOTAL`, `AGGREGATE`, `ROWS`, `ROW`, `ISREF` and a dynamic array such as `[1]Sheet1!A1:A3*2` work over a link as over a sheet of the book.
-- The criteria functions' ranges (`SUMIF`, `SUMIFS`, `COUNTIF`, `COUNTIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`), `COUNTBLANK` and the database functions' range take only an open book's reference: over a link they give `#VALUE!`, as Excel gives them over a closed book, directly, through a name or a LET name. A linked value as a criterion is read as any value: `COUNTIF(A1:A3,[1]Sheet1!A1)` counts.
-- A name of the linked workbook gives what it refers to: `[1]!Rate` its book's name, `[1]Sheet1!Local` the sheet's own name, else the book's. A name that holds a constant (`=5`) or a lost reference is `#REF!`, as in Excel. A name of this book over a link (`Ext` = `'[1]Sheet1'!$A$2`) is a reference like any other. A reference Excel lost into a linked book (`[1]Sheet1!#REF!`) is `#REF!`.
-- A reference to a book the links do not hold, or to a sheet its link lacks, is `#REF!` with the check code `external_ref`.
+- A cell stored in the link returns its value: `[1]Sheet1!A1+1` is 6. Excel stores `#SPILL!` and `#CALC!` from another workbook as `#VALUE!`, and the engine calculates them the same way (along with its own `#CYCLE!`, which a self-referencing name returns, and `#ERROR!`).
+- A cell not stored in the link is blank, as Excel treats it: `[1]Sheet1!A9` is 0, `[1]Sheet1!A9&"|"` is `|`, and `SUM([1]Sheet1!A:A)` sums the stored cells of the column. Excel stores the non-empty cells of the part of a sheet that the formulas read, so the cells it leaves out were empty.
+- On a sheet whose last update failed, which Excel marks as `refreshError` (`ExternalSheet.refreshError`), a cell not stored in the link is `#REF!`: `SUM([1]Sheet1!A:A)` is `#REF!`, while `MATCH(3,[1]Sheet1!A:A,0)` still finds a stored 3. A sheet the link names but stores nothing from (no `cells`) is `#REF!` everywhere.
+- A range is read cell by cell, so `INDEX`, `MATCH`, `VLOOKUP`, `HLOOKUP`, `XLOOKUP`, `LOOKUP`, `SUMPRODUCT`, `COUNT`, `COUNTA`, `AVERAGE`, `RANK`, `SUBTOTAL`, `AGGREGATE`, `ROWS`, `ROW`, `ISREF` and a dynamic array such as `[1]Sheet1!A1:A3*2` work over a link as over a sheet of the workbook.
+- The criteria functions' ranges (`SUMIF`, `SUMIFS`, `COUNTIF`, `COUNTIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`), `COUNTBLANK` and the database functions' range accept only a reference to an open workbook: over a link they return `#VALUE!`, as Excel does over a closed workbook, whether referenced directly, through a name or through a LET name. A linked value used as a criterion is read like any value: `COUNTIF(A1:A3,[1]Sheet1!A1)` counts.
+- A name in the linked workbook returns what it refers to: `[1]!Rate` the workbook-level name, `[1]Sheet1!Local` the sheet's own name, otherwise the workbook-level one. A name that contains a constant (`=5`) or a lost reference is `#REF!`, as in Excel. A name in this workbook that refers to a link (`Ext` = `'[1]Sheet1'!$A$2`) is a reference like any other. A reference that Excel lost in a linked workbook (`[1]Sheet1!#REF!`) is `#REF!`.
+- A reference to a workbook that is not among the links, or to a sheet missing from its link, is `#REF!` with the error code `external_ref`.
 
-The error of a cell that reads a stored error names the linked cell: `value not found, from '[1]Sheet1'!C1`. `getCellIssue` gives the formula that reads the link as the cell the error began in, and `explain` shows the linked cell as Excel shows it.
+The error of a cell that reads a stored error names the linked cell: `value not found, from '[1]Sheet1'!C1`. `getCellIssue` reports the formula that reads the link as the cell where the error originated, and `explain` shows the linked cell as Excel shows it.
 
 ## Editing
 
-The stored values are not edited: no edit of the book reaches them, and inserting or deleting rows and columns, moving a range and renaming or deleting a sheet leave a link's references as written, a sheet of the book named like the link's sheet too.
+The stored values are not editable: no edit of the workbook changes them, and inserting or deleting rows and columns, moving a range, and renaming or deleting a sheet leave a link's references as written, even when a sheet of the workbook has the same name as the link's sheet.
 
-A copy moves a link's relative references, as Excel moves them: `[1]Sheet1!A1` filled a row down is `[1]Sheet1!A2`, `[1]Sheet1!$A$1` stays. Off the sheet it is `#REF!`.
+A copy adjusts a link's relative references, as Excel adjusts them: `[1]Sheet1!A1` filled one row down becomes `[1]Sheet1!A2`, while `[1]Sheet1!$A$1` stays. Beyond the edge of the sheet it becomes `#REF!`.
 
-Entering a formula that refers to a linked book, typed, set or pasted (`setCells`, `setCellText`, `pasteText`, `copyRange` and the rest), makes Excel try to read that book, which is closed: it marks every sheet of that link `refreshError`, and its cells the stored values lack are `#REF!` from then on, in the formulas that read them already too. A session does the same: its book's link takes the mark, and `getBook()` gives it, so a full computation of the session's book agrees with the session. Other links keep their state. Renaming a sheet or inserting rows marks nothing.
+Entering a formula that refers to a linked workbook, whether typed, set or pasted (`setCells`, `setCellText`, `pasteText`, `copyRange` and the rest), makes Excel try to read that workbook, which is closed: it marks every sheet of that link as `refreshError`, and from then on its cells that the stored values do not include are `#REF!`, including in formulas that already read them. A session does the same: its workbook's link gets the marker, and `getBook()` returns it, so a full calculation of the session's workbook matches the session. Other links keep their state. Renaming a sheet or inserting rows does not set the marker.
 
 ## Formula text
 
-The stored formula numbers the link and quotes its sheet, as every stored reference is quoted: `'[1]Sheet1'!A1`, `'[1]My Sheet'!A1:B9`, the book's own name `[1]!Rate`, a sheet's `'[1]Sheet1'!Local`. A file writes `[1]Sheet1!A1`, with quotes only where the sheet needs them, and reading it gives the same formula.
+The stored formula numbers the link and quotes its sheet, as every stored reference is quoted: `'[1]Sheet1'!A1`, `'[1]My Sheet'!A1:B9`, the workbook-level name `[1]!Rate`, and a sheet-level name `'[1]Sheet1'!Local`. A file writes `[1]Sheet1!A1`, with quotes only where the sheet name needs them, and reading it back produces the same formula.
 
-`toLocal` with `externalBooks`, a window's `formulaLocal` and `editText` and the text of `explain` show a link's reference as Excel shows it, by the link's file in brackets, with the path the link holds:
+`toLocal` with `externalBooks`, a viewport's `formulaLocal` and `editText`, and the text of `explain` display a link's reference as Excel displays it, with the link's file name in brackets and the path the link stores:
 
-| stored | link's target | shown |
+| stored | link's target | displayed |
 |---|---|---|
 | `'[1]Sheet1'!A1` | `Prices.xlsx` | `[Prices.xlsx]Sheet1!A1` |
 | `'[1]My Sheet'!A1` | `Prices.xlsx` | `'[Prices.xlsx]My Sheet'!A1` |
@@ -63,17 +63,17 @@ The stored formula numbers the link and quotes its sheet, as every stored refere
 | `[1]!Rate` | `Prices.xlsx` | `Prices.xlsx!Rate` |
 | `[1]!Rate` | `../data/Prices.xlsx` | `'../data/Prices.xlsx'!Rate` |
 
-Typed text reads either form and the number: `toInvariant` with `externalBooks`, `parseEntry` with `externalBooks` and a session's `setCellText` find the link by its file name, the whole path first, in any case, and number it (`=[Prices.xlsx]Sheet1!A1` is `'[1]Sheet1'!A1`). A person who opens a cell for editing and presses Enter keeps the formula. A workbook the book has no link to is refused with `external_ref` and a message in the book's language: making a new link would need the other file, which is outside the model. `validateFormula` and `validateNames` check references against `ctx.externalBooks`; without it a reference to another workbook is refused.
+Typed text can use either form or the number: `toInvariant` with `externalBooks`, `parseEntry` with `externalBooks` and a session's `setCellText` find the link by its file name, matching the full path first, in any case, and number it (`=[Prices.xlsx]Sheet1!A1` becomes `'[1]Sheet1'!A1`). A user who opens a cell for editing and presses Enter keeps the formula. A workbook that the workbook has no link to is rejected with `external_ref` and a message in the workbook's language: creating a new link would require the other file, which is outside the model. `validateFormula` and `validateNames` check references against `ctx.externalBooks`; without it, a reference to another workbook is rejected.
 
 ## Known differences
 
-- Excel shows a closed book's reference with the absolute path it resolves from the folder of the opened file (`'/Users/…/[Prices.xlsx]Sheet1'!A1`, `'C:\work\[Prices.xlsx]Sheet1'!A1`), which a browser does not know: the engine shows the path the link holds, a file name alone without one.
-- Only entering or pasting a formula with a link was measured to mark the link. Whether moving such a formula, undoing the edit or entering a formula that reads a link only through a name marks it was not: the engine marks for the formulas whose text names the link, on entering and pasting, and an undo keeps the mark.
-- On a marked sheet a range is read to one row and one column past the stored values, so that a whole column stays cheap; a sum over it is `#REF!` as in Excel, but a count of errors over it (`COUNTA`) counts one `#REF!` where Excel counts every cell the values lack.
-- A reference across another workbook's sheets (`[1]Jan:Mar!A1`) and a spill reference into one (`[1]Sheet1!A1#`) are refused.
-- `INDIRECT`, `OFFSET` and `CELL` are not in the engine (`#NAME?` in any book): over a closed book Excel gives `#REF!`, `#VALUE!` and no text.
-- A link of another kind than a workbook (DDE, OLE) keeps its number and is reported by `readXlsx`; its references are `#REF!`.
+- Excel displays a reference to a closed workbook with the absolute path it resolves from the folder of the opened file (`'/Users/…/[Prices.xlsx]Sheet1'!A1`, `'C:\work\[Prices.xlsx]Sheet1'!A1`), which a browser does not know: the engine displays the path the link stores, or just the file name if it stores none.
+- Only entering or pasting a formula with a link was verified to mark the link. Whether moving such a formula, undoing the edit, or entering a formula that reads a link only through a name marks it was not verified: the engine marks the link for formulas whose text names it, on entering and pasting, and an undo keeps the marker.
+- On a marked sheet, a range is read only to one row and one column beyond the stored values, so that an entire column stays cheap; a sum over it is `#REF!` as in Excel, but a count of errors over it (`COUNTA`) counts one `#REF!` where Excel counts every cell missing from the values.
+- A reference across sheets of another workbook (`[1]Jan:Mar!A1`) and a spill reference into one (`[1]Sheet1!A1#`) are rejected.
+- `INDIRECT`, `OFFSET` and `CELL` are not in the engine (`#NAME?` in any workbook): over a closed workbook Excel returns `#REF!`, `#VALUE!` and no text, respectively.
+- A link of a kind other than a workbook (DDE, OLE) keeps its number and is reported by `readXlsx`; its references are `#REF!`.
 
 ## Checked against Excel
 
-Measured in Excel for Mac and Excel for Windows, which opened each file without updating its links and gave the same values everywhere; the engine gives their values and their formulas' text.
+Tested in Excel for Mac and Excel for Windows, each opening every file without updating its links and returning the same values everywhere; the engine returns their values and their formula text.
