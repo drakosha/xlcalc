@@ -166,7 +166,7 @@ describe.each(['closures', 'eval'] as const)('a paste and an entry into a select
     it('arguments: the active cell within the range, a range of a million cells at most, the options each call takes', async () => {
       const s = await open()
       await expect(s.fillCellText('S', 'B1:B3', '1', { active: 'C1' })).rejects.toThrow(new InputError('opts.active', 'expected a cell of the range B1:B3, got "C1"'))
-      await expect(s.fillCellText('S', 'A:B', '1')).rejects.toThrow(new InputError('range', 'a range of 2097152 cells: an entry goes into 1048576 cells at most'))
+      await expect(s.fillCellText('S', 'A:B', '1')).rejects.toThrow(new InputError('range', 'a range of 2097152 cells: an entry can fill at most 1048576 cells'))
       await expect(s.previewFillCellText('S', 'B1:B0', '1')).rejects.toThrow(InputError)
       await expect(s.pasteText('S', 'B1', 5 as never)).rejects.toThrow('text: expected a string, got number 5')
       await expect(s.pasteText('S', 'B1', '1', { active: 'B1' } as never)).rejects.toThrow('(active is an option of fillCellText and previewFillCellText)')

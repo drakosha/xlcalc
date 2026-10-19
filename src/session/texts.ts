@@ -131,7 +131,7 @@ export function checkActive(v: unknown, x: Rect, path = 'opts.active'): { r: num
  * stops the entry, with the cell.
  */
 export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c: number }, text: string, now: string, way: EntryWay = 'typed'): TypedTexts {
-  if (cellCount(x) > MAX_CELLS) throw new InputError('range', `a range of ${cellCount(x)} cells: an entry goes into ${MAX_CELLS} cells at most`)
+  if (cellCount(x) > MAX_CELLS) throw new InputError('range', `a range of ${cellCount(x)} cells: an entry can fill at most ${MAX_CELLS} cells`)
   allotWrites(cellCount(x), s.input.locale)
   const sheet = s.sheetNames[i]
   const typed = readText(s, i, a.r, a.c, inputAt(s, i, formatAddress(a.r, a.c)), text, now, way)

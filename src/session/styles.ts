@@ -182,7 +182,7 @@ function lookRect(d: Draft, t: Target, look: Look) {
   const lined = reset && (looked(sh.rows, 'r', x.r1, x.r2) || looked(sh.columns, 'c', x.c1, x.c2))
   if (gives(look) || lined) {
     const area = cellCount(x)
-    if (area > MAX_CELLS) throw new InputError('range', `a rectangle of ${area} cells: a look goes to ${MAX_CELLS} cells of a rectangle at most, or to whole columns or rows (B:D, 2:9)`)
+    if (area > MAX_CELLS) throw new InputError('range', `a rectangle of ${area} cells: formatting applies to at most ${MAX_CELLS} cells of a rectangle, or to whole columns or rows (B:D, 2:9)`)
     for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) d.set(t.i, formatAddress(r, c), lookOver(d, d.input(t.i, formatAddress(r, c)), r, c, look, ls, ls, true))
     return
   }
@@ -243,7 +243,7 @@ function lookLines(d: Draft, t: Target, look: Look) {
   if (st || ft) {
     const crossing = spansOf((axis === 'r' ? sh.columns : sh.rows) as Record<string, Line> | undefined, axis === 'r' ? 'c' : 'r').filter(([, , e]) => (st && e.style !== undefined) || (ft && e.numberFormat !== undefined))
     const count = crossing.reduce((n, [a, b]) => n + (b - a + 1) * (hi - lo + 1), 0)
-    if (count > MAX_CELLS) throw new InputError('range', `the lines cross formatted lines in ${count} cells, past ${MAX_CELLS}`)
+    if (count > MAX_CELLS) throw new InputError('range', `the lines cross formatted lines in ${count} cells, more than ${MAX_CELLS}`)
     for (const [a, b] of crossing)
       for (let k = a; k <= b; k++)
         for (let j = lo; j <= hi; j++) {

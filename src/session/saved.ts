@@ -67,14 +67,14 @@ const kept = new WeakMap<object, WeakMap<object, Found>>()
 
 /** The result checked as one of `book`: its sheets the book's, in order, each with its cells; its reasons (`diagnostics`); its clock. */
 function checkResult(v: unknown, book: BookInput, path: string): ComputeResult {
-  const r = object(v, path, 'a result such as compute or getResult gives')
+  const r = object(v, path, 'a result such as compute or getResult returns')
   const sheets = array(r.sheets, `${path}.sheets`, 'an array of the sheets of the result')
-  if (sheets.length !== book.sheets.length) throw new InputError(`${path}.sheets`, `expected the ${book.sheets.length} sheets of the book, got ${sheets.length}: the result is not of this book`)
+  if (sheets.length !== book.sheets.length) throw new InputError(`${path}.sheets`, `expected the ${book.sheets.length} sheets of the workbook, got ${sheets.length}: the result is not from this workbook`)
   sheets.forEach((x, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(x, p, 'a sheet such as { name: "Sheet1", cells: {} }')
     if (sheetKey(checkString(sheet.name, `${p}.name`)) !== sheetKey(book.sheets[i].name))
-      throw new InputError(`${p}.name`, `expected the book's sheet ${JSON.stringify(book.sheets[i].name)}, got ${JSON.stringify(sheet.name)}: the result is not of this book`)
+      throw new InputError(`${p}.name`, `expected the workbook's sheet ${JSON.stringify(book.sheets[i].name)}, got ${JSON.stringify(sheet.name)}: the result is not from this workbook`)
     object(sheet.cells, `${p}.cells`, 'an object of cells by address')
   })
   array(r.diagnostics, `${path}.diagnostics`, 'an array of reasons')
@@ -90,7 +90,7 @@ function displayed(result: ComputeResult): boolean {
 
 /** What `saved` gives beside its cells, checked and found once for its book and result. */
 function found(saved: unknown): Found {
-  const o = object(saved, 'saved', 'a saved book such as { book, result }')
+  const o = object(saved, 'saved', 'a saved workbook such as { book, result }')
   const byResult = typeof o.book === 'object' && o.book !== null ? kept.get(o.book) : undefined
   const hit = typeof o.result === 'object' && o.result !== null ? byResult?.get(o.result) : undefined
   if (hit) return hit

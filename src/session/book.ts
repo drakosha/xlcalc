@@ -70,11 +70,11 @@ export function bookLayout(book: BookInput): BookLayout {
 /** Every style that cells, rows and columns use must be in a table of `count` styles. */
 export function checkStylesUsed(book: BookInput, count: number) {
   const check = (style: number | undefined, where: string) => {
-    if (style !== undefined && style >= count) throw new InputError('styles', `${where} uses style ${style}, the new table has ${count}`)
+    if (style !== undefined && style >= count) throw new InputError('styles', `${where} uses style ${style}, but the new style table has ${count}`)
   }
   for (const s of book.sheets) {
     for (const [addr, c] of Object.entries(s.cells)) check(c.style, `${s.name}!${addr}`)
-    for (const x of layerOf(s)?.used() ?? []) check(x.style, `the looks of ${s.name}`)
+    for (const x of layerOf(s)?.used() ?? []) check(x.style, `the formatting of ${s.name}`)
     for (const [k, c] of Object.entries(s.columns ?? {})) check(c.style, `columns ${k} of ${s.name}`)
     for (const [k, r] of Object.entries(s.rows ?? {})) check(r.style, `rows ${k} of ${s.name}`)
   }

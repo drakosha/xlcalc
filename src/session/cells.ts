@@ -49,7 +49,7 @@ export function checkFieldEdits(v: unknown, sheetIndex: (name: string) => number
         break
       }
     checkCell(given, p, styles)
-    if (given.array !== undefined && typeof f.formula !== 'string') throw new InputError(`${p}.array`, 'an array area goes with its formula')
+    if (given.array !== undefined && typeof f.formula !== 'string') throw new InputError(`${p}.array`, 'an array area needs its formula')
   })
 }
 

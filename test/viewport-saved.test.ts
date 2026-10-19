@@ -132,7 +132,7 @@ describe('a window over a saved book and its result', () => {
     const call = (saved: unknown, sheet = 'Данные', range = 'A1', opts?: unknown) => () => viewportOf(saved as never, sheet, range, opts as never)
     expect(call(null)).toThrow(InputError)
     expect(call({ book: { sheets: 'x' }, result })).toThrow('saved.book.sheets')
-    expect(call({ book: book(), result: { ...result, sheets: result.sheets.slice(1) } })).toThrow('saved.result.sheets: expected the 2 sheets of the book, got 1: the result is not of this book')
+    expect(call({ book: book(), result: { ...result, sheets: result.sheets.slice(1) } })).toThrow('saved.result.sheets: expected the 2 sheets of the workbook, got 1: the result is not from this workbook')
     expect(call({ book: book(), result: { ...result, sheets: [...result.sheets].reverse() } })).toThrow('saved.result.sheets[0].name')
     expect(call({ book: book(), result: { ...result, clock: undefined } })).toThrow('saved.result.clock')
     // a book or a result in an earlier version's form: the number format by its old name, the reasons by theirs

@@ -157,7 +157,7 @@ describe.each(['closures', 'eval'] as const)('live objects, %s', (execution: Exe
     expect([plan.cells.A1.value, plan.cells.C1.value, session.revision]).toEqual([7, 'c', 1])
     // typed text and an fn that answers a promise are not part of a batch
     expect(() => live.batch(() => void plan.cells.A1.type('1'))).toThrow(new InputError('type', 'text typed into a cell cannot be part of a batch (applyChanges takes no typed text): type it before or after the batch'))
-    expect(() => live.batch((async () => (plan.cells.A1.value = 9)) as never)).toThrow(new InputError('batch', 'fn must not answer a promise: an assignment after an await is not part of the batch'))
+    expect(() => live.batch((async () => (plan.cells.A1.value = 9)) as never)).toThrow(new InputError('batch', 'fn must not return a promise: an assignment after an await is not part of the batch'))
     expect([plan.cells.A1.value, session.revision]).toEqual([7, 1])
     session.close()
   })

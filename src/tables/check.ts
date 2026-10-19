@@ -45,12 +45,12 @@ function table(v: unknown, path: string, cells: Record<string, CellInput>, boole
   if (x.r2 - x.r1 + 1 < (headers ? 1 : 0) + (t.totals ? 1 : 0) + 1) throw new InputError(`${path}.range`, `${t.range} has no row for data between its header and totals rows`)
   if (!Array.isArray(v.columns)) throw new InputError(`${path}.columns`, 'expected an array of columns')
   const width = x.c2 - x.c1 + 1
-  if (v.columns.length !== width) throw new InputError(`${path}.columns`, `${t.range} has ${width} columns, the table lists ${v.columns.length}`)
+  if (v.columns.length !== width) throw new InputError(`${path}.columns`, `${t.range} has ${width} columns, but the table lists ${v.columns.length}`)
   const seen = new Map<string, number>()
   v.columns.forEach((c, i) => {
     const col = column(c, `${path}.columns[${i}]`)
     const k = tableKey(col.name)
-    if (seen.has(k)) throw new InputError(`${path}.columns[${i}].name`, `${JSON.stringify(col.name)} is also the name of column ${seen.get(k)! + 1} (column names are unique in a table, in any case)`)
+    if (seen.has(k)) throw new InputError(`${path}.columns[${i}].name`, `${JSON.stringify(col.name)} is also the name of column ${seen.get(k)! + 1} (column names are unique in a table, regardless of case)`)
     seen.set(k, i)
     if (!headers) return
     const addr = formatAddress(x.r1, x.c1 + i)
@@ -76,18 +76,18 @@ export function checkTables(book: BookInput, path = 'book'): void {
       const x = table(t, tp, sheet.cells, booleans)
       const { name, range } = t as TableInput
       const k = tableKey(name)
-      if (taken.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also the name of the table ${taken.get(k)} (table names are unique in a book, in any case)`)
-      if (names.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also a defined name (tables and names share one namespace, in any case)`)
+      if (taken.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also the name of the table ${taken.get(k)} (table names are unique in a workbook, regardless of case)`)
+      if (names.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also a defined name (tables and names share one namespace, regardless of case)`)
       taken.set(k, name)
       const over = rects.find(([y]) => meets(x, y))
       if (over) throw new InputError(`${tp}.range`, `${range} overlaps the table ${over[1]}`)
       rects.push([x, name])
       const merge = (sheet.merges ?? []).find((m) => meets(parseMerge(m)!, x))
-      if (merge) throw new InputError(`${tp}.range`, `the merged area ${merge} meets the table ${name} (Excel has no merged cells in tables)`)
+      if (merge) throw new InputError(`${tp}.range`, `the merged area ${merge} overlaps the table ${name} (Excel does not allow merged cells in tables)`)
       for (const [addr, cell] of Object.entries(sheet.cells)) {
         if (cell.array === undefined) continue
         const a = arrayArea(addr, cell.array)
-        if (a && (a.r2 > a.r1 || a.c2 > a.c1) && meets(a, x)) throw new InputError(`${tp}.range`, `the array formula over ${cell.array} meets the table ${name} (Excel has no array formulas of several cells in tables)`)
+        if (a && (a.r2 > a.r1 || a.c2 > a.c1) && meets(a, x)) throw new InputError(`${tp}.range`, `the array formula over ${cell.array} overlaps the table ${name} (Excel does not allow array formulas of several cells in tables)`)
       }
     })
   })

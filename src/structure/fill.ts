@@ -54,7 +54,7 @@ interface Run {
  */
 export function fillRange(book: BookInput, sheet: string, src: Rect, target: Rect, to: string, type: FillType, copy: Copier): Applied {
   const way = wayOf(src, target)
-  if (!way) throw new InputError('op.to', `expected a range that holds op.range and reaches past it down, up, right or left, got ${JSON.stringify(to)}`)
+  if (!way) throw new InputError('op.to', `expected a range that contains op.range and extends past it down, up, right or left, got ${JSON.stringify(to)}`)
   const { axis, forward } = way
   const [a, b] = [lo(src, axis), hi(src, axis)]
   const h = b - a + 1
