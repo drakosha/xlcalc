@@ -11,6 +11,7 @@ import { DIGIT, fitText, glyph, hashes, MAX_SHOWN, room, textWidth } from './num
 import { formatNumber } from './numfmt/number.js'
 import { EN_CODES, parseFormat, type Codes, type Section } from './numfmt/parse.js'
 import { choose, kind, textSection } from './numfmt/select.js'
+import { HIJRI_NAMES } from './numfmt/hijri.js'
 import { FILL, plain, type Style } from './numfmt/style.js'
 
 export { builtinCodes, EN_BUILTIN, isBuiltin } from './numfmt/builtin.js'
@@ -27,10 +28,10 @@ export interface Dialect {
   number(text: string): number | null
 }
 
-/** A section with the locale's long date or time in place of `[$-F800]` and `[$-F400]`, and its month names. */
+/** A section with the locale's long date or time in place of `[$-F800]` and `[$-F400]`, and its month names (the Hijri calendar's Arabic ones). */
 function dated(sec: Section, style: Style) {
   const long = sec.lcid === 'F800' ? style.longDate : sec.lcid === 'F400' ? style.longTime : undefined
-  const names = (sec.lcid && style.names(sec.lcid)) || style
+  const names = sec.hijri ? HIJRI_NAMES : (sec.lcid && style.names(sec.lcid)) || style
   if (long === undefined) return { sec, names }
   return { sec: parseFormat(long, EN_CODES)![0], names: sec.lcid === 'F800' && style.longMonths ? { ...names, months: style.longMonths } : names }
 }

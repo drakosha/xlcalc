@@ -41,6 +41,8 @@ export interface Section {
   cond?: Cond
   /** The locale of `[$-409]`, upper-case hex (`409`, `F800`; `[$-x-sysdate]` is `F800`), or the tag after the hyphen in upper case. */
   lcid?: string
+  /** `B2` before the code: the Hijri calendar (`numfmt/hijri.ts`). */
+  hijri?: true
 }
 
 /** How a dialect writes format codes. */
@@ -158,6 +160,14 @@ function parseSection(text: string, codes: Codes): Section | null {
       const j = text.indexOf(']', i)
       if (j < 0 || !bracket(text.slice(i + 1, j), sec, toks, codes)) return null
       i = j + 1
+      continue
+    }
+    // the calendar first in a section (ECMA-376 numFmts): B1 the Gregorian, which names months and days in English as
+    // `[$-409]` does, B2 the Hijri (Excel for Mac in en-US and ru-RU)
+    if (!toks.length && /^b[12]/i.test(rest)) {
+      if (rest[1] === '1') sec.lcid = '409'
+      else sec.hijri = true
+      i += 2
       continue
     }
     if (rest.toLowerCase().startsWith(codes.general)) {

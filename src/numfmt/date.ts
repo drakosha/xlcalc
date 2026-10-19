@@ -6,6 +6,7 @@
  * elapsed time alone gives null (TEXT answers #VALUE!, a cell shows `#`), and so does a digit placeholder in it.
  */
 import { momentOf, ymd } from '../dates.js'
+import { hijri } from './hijri.js'
 import type { Ph, Section, Tok } from './parse.js'
 import { plain, type Names, type Style } from './style.js'
 
@@ -70,7 +71,7 @@ export function formatDate(v: number, sec: Section, style: Style, names: Names):
   const secs = Math.floor(ticks / 10 ** k)
   const ampm = toks.some((t) => t.t === 'ampm')
   // Excel's calendar: day 0 is 1900-01-00, day 60 the phantom 1900-02-29, day 1 a Sunday; a 1904 book's day 0 is 1462
-  const { y: Y, m, d: D } = ymd(day + epoch)
+  const { y: Y, m, d: D } = sec.hijri ? hijri(day + epoch) : ymd(day + epoch)
   const W = (day + epoch + 6) % 7
   const h = Math.floor(secs / 3600)
   const mi = Math.floor(secs / 60) % 60

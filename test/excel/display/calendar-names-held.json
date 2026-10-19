@@ -1,0 +1,459 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 5.3
+ },
+ "cases": [
+  {
+   "id": "b1n#1",
+   "cell": {
+    "value": 36526,
+    "format": "B1d mmmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "1 January 2000"
+   }
+  },
+  {
+   "id": "b1n#2",
+   "cell": {
+    "value": 36526,
+    "format": "B1dddd, d mmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, 1 Jan 2000"
+   }
+  },
+  {
+   "id": "b1n#3",
+   "cell": {
+    "value": 36526,
+    "format": "B1mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Jan"
+   }
+  },
+  {
+   "id": "b1n#4",
+   "cell": {
+    "value": 36526,
+    "format": "B1ddd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Sat"
+   }
+  },
+  {
+   "id": "b1n#5",
+   "cell": {
+    "value": 45688.5,
+    "format": "B1d mmmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "31 January 2025"
+   }
+  },
+  {
+   "id": "b1n#6",
+   "cell": {
+    "value": 45688.5,
+    "format": "B1dddd, d mmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday, 31 Jan 2025"
+   }
+  },
+  {
+   "id": "b1n#7",
+   "cell": {
+    "value": 45688.5,
+    "format": "B1mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Jan"
+   }
+  },
+  {
+   "id": "b1n#8",
+   "cell": {
+    "value": 45688.5,
+    "format": "B1ddd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Fri"
+   }
+  },
+  {
+   "id": "b1n#9",
+   "cell": {
+    "value": 45001.25,
+    "format": "B1d mmmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "16 March 2023"
+   }
+  },
+  {
+   "id": "b1n#10",
+   "cell": {
+    "value": 45001.25,
+    "format": "B1dddd, d mmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday, 16 Mar 2023"
+   }
+  },
+  {
+   "id": "b1n#11",
+   "cell": {
+    "value": 45001.25,
+    "format": "B1mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Mar"
+   }
+  },
+  {
+   "id": "b1n#12",
+   "cell": {
+    "value": 45001.25,
+    "format": "B1ddd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thu"
+   }
+  },
+  {
+   "id": "b1n#13",
+   "cell": {
+    "value": 44562.75,
+    "format": "B1d mmmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "1 January 2022"
+   }
+  },
+  {
+   "id": "b1n#14",
+   "cell": {
+    "value": 44562.75,
+    "format": "B1dddd, d mmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday, 1 Jan 2022"
+   }
+  },
+  {
+   "id": "b1n#15",
+   "cell": {
+    "value": 44562.75,
+    "format": "B1mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Jan"
+   }
+  },
+  {
+   "id": "b1n#16",
+   "cell": {
+    "value": 44562.75,
+    "format": "B1ddd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Sat"
+   }
+  },
+  {
+   "id": "b2n#1",
+   "cell": {
+    "value": 36526,
+    "format": "B2mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Ramadan"
+   }
+  },
+  {
+   "id": "b2n#2",
+   "cell": {
+    "value": 36526,
+    "format": "B2mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Ramadan"
+   }
+  },
+  {
+   "id": "b2n#3",
+   "cell": {
+    "value": 36526,
+    "format": "B2d mmmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "25 Ramadan 1420"
+   }
+  },
+  {
+   "id": "b2n#4",
+   "cell": {
+    "value": 36526,
+    "format": "B2dddd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday"
+   }
+  },
+  {
+   "id": "b2n#5",
+   "cell": {
+    "value": 45688.5,
+    "format": "B2mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Shaʻban"
+   }
+  },
+  {
+   "id": "b2n#6",
+   "cell": {
+    "value": 45688.5,
+    "format": "B2mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Shaʻban"
+   }
+  },
+  {
+   "id": "b2n#7",
+   "cell": {
+    "value": 45688.5,
+    "format": "B2d mmmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "2 Shaʻban 1446"
+   }
+  },
+  {
+   "id": "b2n#8",
+   "cell": {
+    "value": 45688.5,
+    "format": "B2dddd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Friday"
+   }
+  },
+  {
+   "id": "b2n#9",
+   "cell": {
+    "value": 45001.25,
+    "format": "B2mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Shaʻban"
+   }
+  },
+  {
+   "id": "b2n#10",
+   "cell": {
+    "value": 45001.25,
+    "format": "B2mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Shaʻban"
+   }
+  },
+  {
+   "id": "b2n#11",
+   "cell": {
+    "value": 45001.25,
+    "format": "B2d mmmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "24 Shaʻban 1444"
+   }
+  },
+  {
+   "id": "b2n#12",
+   "cell": {
+    "value": 45001.25,
+    "format": "B2dddd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Thursday"
+   }
+  },
+  {
+   "id": "b2n#13",
+   "cell": {
+    "value": 44562.75,
+    "format": "B2mmmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Jumada I"
+   }
+  },
+  {
+   "id": "b2n#14",
+   "cell": {
+    "value": 44562.75,
+    "format": "B2mmm"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Jumada I"
+   }
+  },
+  {
+   "id": "b2n#15",
+   "cell": {
+    "value": 44562.75,
+    "format": "B2d mmmm yyyy"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "28 Jumada I 1443"
+   }
+  },
+  {
+   "id": "b2n#16",
+   "cell": {
+    "value": 44562.75,
+    "format": "B2dddd"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "Saturday"
+   }
+  }
+ ],
+ "answers": {
+  "b1n#1": {
+   "text": "1 January 2000"
+  },
+  "b1n#2": {
+   "text": "Saturday, 1 Jan 2000"
+  },
+  "b1n#3": {
+   "text": "Jan"
+  },
+  "b1n#4": {
+   "text": "Sat"
+  },
+  "b1n#5": {
+   "text": "31 January 2025"
+  },
+  "b1n#6": {
+   "text": "Friday, 31 Jan 2025"
+  },
+  "b1n#7": {
+   "text": "Jan"
+  },
+  "b1n#8": {
+   "text": "Fri"
+  },
+  "b1n#9": {
+   "text": "16 March 2023"
+  },
+  "b1n#10": {
+   "text": "Thursday, 16 Mar 2023"
+  },
+  "b1n#11": {
+   "text": "Mar"
+  },
+  "b1n#12": {
+   "text": "Thu"
+  },
+  "b1n#13": {
+   "text": "1 January 2022"
+  },
+  "b1n#14": {
+   "text": "Saturday, 1 Jan 2022"
+  },
+  "b1n#15": {
+   "text": "Jan"
+  },
+  "b1n#16": {
+   "text": "Sat"
+  },
+  "b2n#1": {
+   "text": "رمضان"
+  },
+  "b2n#2": {
+   "text": "رمضان"
+  },
+  "b2n#3": {
+   "text": "25 رمضان 1420"
+  },
+  "b2n#4": {
+   "text": "السبت"
+  },
+  "b2n#5": {
+   "text": "شعبان"
+  },
+  "b2n#6": {
+   "text": "شعبان"
+  },
+  "b2n#7": {
+   "text": "2 شعبان 1446"
+  },
+  "b2n#8": {
+   "text": "الجمعة"
+  },
+  "b2n#9": {
+   "text": "شعبان"
+  },
+  "b2n#10": {
+   "text": "شعبان"
+  },
+  "b2n#11": {
+   "text": "24 شعبان 1444"
+  },
+  "b2n#12": {
+   "text": "الخميس"
+  },
+  "b2n#13": {
+   "text": "جمادى الأولى"
+  },
+  "b2n#14": {
+   "text": "جمادى الأولى"
+  },
+  "b2n#15": {
+   "text": "28 جمادى الأولى 1443"
+  },
+  "b2n#16": {
+   "text": "السبت"
+  }
+ }
+}
