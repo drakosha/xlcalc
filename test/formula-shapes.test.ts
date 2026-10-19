@@ -1,10 +1,10 @@
 /**
  * Formulas prepared through their shape (`src/prepare.ts`, `src/syntax/shape.ts`) against each prepared on its own, on a
- * book of traps: one shape on two sheets whose names of one spelling differ, a shape a name of one sheet makes valid
+ * workbook of traps: one shape on two sheets whose names of one spelling differ, a shape a name of one sheet makes valid
  * there alone, `[@Qty]` in two tables and outside them, texts that differ in case, spaces and sheet quotes, references
  * at the sheet's edges, whole columns and rows, `$` mixed, spill references, references across sheets, other workbooks,
- * LET, array constants, numbers written otherwise than printed, strings with digits, unions, `@`, refusals. Each
- * formula's text and AST, or its whole refusal, are the same either way; the formulas meant to share a shape share it.
+ * LET, array constants, numbers written otherwise than printed, strings with digits, unions, `@`, rejections. Each
+ * formula's text and AST, or its whole rejection, are the same either way; the formulas meant to share a shape share it.
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput, CellInput } from '../src/contract.js'
@@ -30,7 +30,7 @@ const groups: { sheet: string; sharing?: Sharing; formulas: string[] }[] = [
   { sheet: 'Data', sharing: 'one', formulas: ['A2*rate', 'A3*rate', 'A4*rate'] },
   { sheet: 'Calc', sharing: 'one', formulas: ['A2*rate', 'A3*rate', 'A4*rate'] },
   { sheet: 'Data', sharing: 'one', formulas: ['A1*Calc!rate', 'A2*Calc!rate'] },
-  // a name only Data sees: valid there, refused on Other
+  // a name only Data sees: valid there, rejected on Other
   { sheet: 'Data', sharing: 'one', formulas: ['B2+only', 'B3+only'] },
   { sheet: 'Other', sharing: 'one', formulas: ['B2+only', 'B3+only'] },
   { sheet: 'Other', formulas: ['B4+nope', 'Tax*2'] },
@@ -68,7 +68,7 @@ const groups: { sheet: string; sharing?: Sharing; formulas: string[] }[] = [
   { sheet: 'Calc', sharing: 'one', formulas: ['A1%', 'A2%'] },
   { sheet: 'Calc', sharing: 'one', formulas: ['#REF!+A1', '#REF!+A2'] },
   { sheet: 'Calc', formulas: ["'Data'!#REF!", '#N/A', '#REF!A1+1', "'Data'!#REF!#"] },
-  // refusals: one shape refused at each of its formulas, and texts that do not read or are too long
+  // rejections: one shape rejected at each of its formulas, and texts that do not read or are too long
   { sheet: 'Calc', sharing: 'one', formulas: ["'Nope'!A1+1", "'Nope'!A2+1"] },
   { sheet: 'Calc', formulas: ['FOO(A1)', 'A1+', 'SUM(A1', 'SUM(A1,)', 'IF()', '', '   ', 'A1+"open'] },
   { sheet: 'Calc', sharing: 'none', formulas: [`A1${' '.repeat(9000)}+1`] },
@@ -89,8 +89,8 @@ function tableCells(): Record<string, CellInput> {
   return cells
 }
 
-/** The formulas of the book refused: sheet, text (a long run of spaces shortened), check code. */
-const REFUSED = [
+/** The formulas of the workbook rejected: sheet, text (a long run of spaces shortened), check code. */
+const REJECTED = [
   'Data "[@Qty]*2" unknown_name',
   'Data "T1[@Qty]*2" syntax',
   'Calc "[3]Sheet1!A1" external_ref',
@@ -163,14 +163,14 @@ describe('formulas prepared through their shape', () => {
       }),
   )
 
-  it('gives each formula the text and AST, or the refusal, it has on its own', () => {
+  it('gives each formula the text and AST, or the rejection, it has on its own', () => {
     expect(seen.length).toBe(places.length + 8)
     for (const x of seen) expect(x.shaped, `${x.sheet}!${x.cell}`).toStrictEqual(x.alone)
   })
 
-  it('refuses where a formula on its own is refused, and takes the rest', () => {
-    const refused = seen.flatMap((x) => (x.alone.ok ? [] : [`${x.sheet} ${JSON.stringify(x.text.replace(/ {4,}/, ' … '))} ${x.alone.invalid.code}`]))
-    expect(refused).toEqual(REFUSED)
+  it('rejects where a formula on its own is rejected, and takes the rest', () => {
+    const rejected = seen.flatMap((x) => (x.alone.ok ? [] : [`${x.sheet} ${JSON.stringify(x.text.replace(/ {4,}/, ' … '))} ${x.alone.invalid.code}`]))
+    expect(rejected).toEqual(REJECTED)
     expect(seen.find((x) => x.sheet === 'Data' && x.cell === 'F2')!.shaped).toMatchObject({ ok: true, text: 'T1[[#This Row],[Qty]]*2' })
     expect(seen.find((x) => x.sheet === 'Data' && x.cell === 'J2')!.shaped).toMatchObject({ ok: true, text: 'T2[[#This Row],[Qty]]*2' })
   })
@@ -182,7 +182,7 @@ describe('formulas prepared through their shape', () => {
     else {
       expect(new Set(keys).size).toBe(1)
       const t = shapes.get(keys[0]!)
-      // a refused shape keeps no template; a taken one is ready
+      // a rejected shape keeps no template; a taken one is ready
       if (t !== null) expect(t?.at).toBeDefined()
     }
   })

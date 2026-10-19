@@ -1,7 +1,7 @@
 /**
- * A formula prepared for the engine: checked against the book (its sheets, names, tables, functions and links), its
- * canonical text, its AST with linked books' names put in their place (`expandLinkNames`). While a book's state is
- * built, the formulas of one shape (`syntax/shape.ts`) are prepared once.
+ * A formula prepared for the engine: checked against the workbook (its sheets, names, tables, functions and links), its
+ * canonical text, its AST with linked workbooks' names put in their place (`expandLinkNames`). While a workbook's state
+ * is built, the formulas of one shape (`syntax/shape.ts`) are prepared once.
  */
 import { MAX_FORMULA_LENGTH, type CheckCode, type ErrorCode } from './contract.js'
 import type { EngineState, Invalid } from './engine.js'
@@ -25,7 +25,7 @@ type Named = (name: string, sheet: string | undefined) => ReturnType<typeof name
 /** The names a formula of sheet `s` sees, by a name and the sheet it is seen from (undefined: `s`). */
 const namedFrom = (state: EngineState, s: number): Named => (name, sheet) => nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
 
-/** Sheets and names spelled as the book has them, as Excel shows them (`ставка*2` is `Ставка*2`). */
+/** Sheets and names spelled as the workbook has them, as Excel shows them (`ставка*2` is `Ставка*2`). */
 const spelling = (state: EngineState, named: Named): PrintOptions => ({
   sheetOf: (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!],
   nameOf: (name, sheet) => named(name, sheet)?.name ?? name,
@@ -38,7 +38,7 @@ function checked(state: EngineState, enclosing: string | undefined, text: string
   return r.ok ? r : { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
 }
 
-/** A formula's AST checked, with its text and linked books' names put in their place. */
+/** A formula's AST checked, with its text and linked workbooks' names put in their place. */
 const accepted = (state: EngineState, text: string, ast: Ast): Prepared => ({ ok: true, text, ast: expandLinkNames(ast, state.links, state.input.externalBooks) })
 
 /** A formula of sheet `s` at `row`, `col` prepared on its own. */
@@ -51,7 +51,7 @@ export function prepare(state: EngineState, s: number, row: number, col: number,
 /** The shapes of one build of a state, by their key: a template, or null for a shape prepared formula by formula. */
 export type Shapes = Map<string, Template | null>
 
-/** At most this many shapes are kept for a build: a book of formulas that share none keeps no more. */
+/** At most this many shapes are kept for a build: a workbook of formulas that share none keeps no more. */
 const SHAPES = 4096
 
 /** `prepare` through the formula's shape: the shape's template taken when `shapes` holds it, else the formula prepared and its shape kept. */
@@ -75,7 +75,7 @@ export function prepareShaped(state: EngineState, shapes: Shapes, s: number, row
     return accepted(state, x.text, x.ast)
   }
   if (t !== undefined) {
-    // a refused shape, or a template its formula's AST or text cannot take holes in
+    // a rejected shape, or a template its formula's AST or text cannot take holes in
     shapes.set(key, null)
     return prepare(state, s, row, col, text, toks)
   }
