@@ -171,7 +171,7 @@ describe.each(['closures', 'eval'] as const)('snapshot and cell attachments, %s'
 
     it.each(['row', 'column'] as const)('the documented entry context accounts for an inherited %s format without changing parsing', async (source) => {
       const readme = readFileSync(new URL('../docs/entry.md', import.meta.url), 'utf8')
-      const contract = readFileSync(new URL('../src/contract.ts', import.meta.url), 'utf8')
+      const contract = readFileSync(new URL('../src/contract/text.ts', import.meta.url), 'utf8')
       expect(contract.slice(contract.indexOf('export interface EntryOptions'), contract.indexOf('export type EntryResult'))).toContain('getViewport')
       expect(readme).toContain("const shown = session.getViewport('S', 'A1').cells.A1")
       const s = await session({ sheets: [{ name: 'S', cells: { A1: { value: 0.1 } }, ...(source === 'row' ? { rows: { 1: { numberFormat: '0%' } } } : { columns: { A: { numberFormat: '0%' } } }) }] })
