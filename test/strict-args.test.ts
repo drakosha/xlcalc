@@ -151,4 +151,12 @@ describe('the functions of the package take no options they do not', () => {
     expect([1, 2].map(root.colLetters)).toEqual(['A', 'B'])
     expect(() => compute(book(), { clock: CLOCK, formulaLocal: true } as never)).toThrow('opts: unknown field "formulaLocal" (expected clock, externals, execution, display, limits, cached) (formulaLocal is an option of getViewport)')
   })
+
+  it("readXlsx's limits by their fields, and where a stray limits goes", async () => {
+    const { data } = await xlsx.writeXlsx({ book: book() })
+    await expect(xlsx.readXlsx(data, { limits: { entry: 1 } } as never)).rejects.toThrow('opts.limits: unknown field "entry" (expected entryBytes, totalBytes)')
+    await expect(xlsx.readXlsx(data, { limits: { totalBytes: 0.5 } })).rejects.toThrow(new InputError('opts.limits.totalBytes', 'expected an integer from 1 to 9007199254740991, got number 0.5'))
+    expect(() => toLocal('SUM(A1)', ruRU, { limits: {} } as never)).toThrow('(limits is an option of compute, createSession, the calculators and readXlsx)')
+    expect((await xlsx.readXlsx(data, { limits: { entryBytes: 1e6, totalBytes: 1e7 } })).book.sheets[0].cells.A2).toEqual({ formula: 'A1*21' })
+  })
 })

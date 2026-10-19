@@ -6,42 +6,12 @@ import { describe, expect, it } from 'vitest'
 import { decodeEscapes, decodeXml, escapeAttr, escapeChars, escapeText, needsPreserve, readText } from '../src/xlsx/xml/text.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { zip } from '../src/xlsx/zip/write.js'
+import { rawZip } from './fixtures/raw-zip.js'
 
 const enc = new TextEncoder()
 
 /** A zip of one stored (not deflated) entry, written by hand. */
-function stored(name: string, data: Uint8Array, flags = 0): Uint8Array {
-  const n = enc.encode(name)
-  const local = new Uint8Array(30 + n.length + data.length)
-  const lv = new DataView(local.buffer)
-  lv.setUint32(0, 0x04034b50, true)
-  lv.setUint16(6, flags, true)
-  lv.setUint32(18, data.length, true)
-  lv.setUint32(22, data.length, true)
-  lv.setUint16(26, n.length, true)
-  local.set(n, 30)
-  local.set(data, 30 + n.length)
-  const dir = new Uint8Array(46 + n.length)
-  const dv = new DataView(dir.buffer)
-  dv.setUint32(0, 0x02014b50, true)
-  dv.setUint16(8, flags, true)
-  dv.setUint32(20, data.length, true)
-  dv.setUint32(24, data.length, true)
-  dv.setUint16(28, n.length, true)
-  dir.set(n, 46)
-  const end = new Uint8Array(22)
-  const ev = new DataView(end.buffer)
-  ev.setUint32(0, 0x06054b50, true)
-  ev.setUint16(8, 1, true)
-  ev.setUint16(10, 1, true)
-  ev.setUint32(12, dir.length, true)
-  ev.setUint32(16, local.length, true)
-  const out = new Uint8Array(local.length + dir.length + end.length)
-  out.set(local)
-  out.set(dir, local.length)
-  out.set(end, local.length + dir.length)
-  return out
-}
+const stored = (name: string, data: Uint8Array, flags = 0): Uint8Array => rawZip([{ name, data, flags }])
 
 describe('xlsx: zip', () => {
   it('writes and reads back deflated entries; the same parts give the same bytes', async () => {

@@ -8,14 +8,14 @@
 import { caseKey } from '../../collate.js'
 import type { BookInput, NameInput, SheetInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
-import { checkBook, InputError, ITERATION, object, onlyOptions, SHEET_STATES, what } from '../../input.js'
+import { checkBook, checkNumber, InputError, ITERATION, object, onlyKeys, onlyOptions, SHEET_STATES, what } from '../../input.js'
 import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
 import { issueLocale, Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
 import { readDxfs } from '../styles/dxf.js'
-import type { ReadXlsxOptions, XlsxRead } from '../types.js'
+import type { ReadXlsxOptions, XlsxLimits, XlsxRead } from '../types.js'
 import { attr, attributes, element, elements, flag, has, ownEntry } from '../xml/scan.js'
 import { decodeXml, readText } from '../xml/text.js'
 import { openArchive, type Archive } from '../zip/read.js'
@@ -119,6 +119,16 @@ function fileBytes(data: unknown): Uint8Array {
   throw new InputError('data', `expected the file's bytes, got ${what(data)}: pass the file's bytes: Uint8Array, ArrayBuffer or Buffer, e.g. ${hint}`)
 }
 
+const LIMITS = ['entryBytes', 'totalBytes'] as const
+
+/** `opts.limits`: whole numbers of bytes of at least 1. */
+function checkLimits(v: unknown): XlsxLimits {
+  const o = object(v, 'opts.limits', 'limits such as { entryBytes: 16777216, totalBytes: 67108864 }')
+  onlyKeys(o, 'opts.limits', LIMITS)
+  for (const k of LIMITS) if (o[k] !== undefined) checkNumber(o[k], `opts.limits.${k}`, 1, Number.MAX_SAFE_INTEGER, true)
+  return o as XlsxLimits
+}
+
 /**
  * Reads an xlsx file (bytes of the file) into a book, the values Excel stored and what the book could not hold, its
  * messages in `opts.locale` (en-US by default).
@@ -126,9 +136,9 @@ function fileBytes(data: unknown): Uint8Array {
 export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxRead> {
   const bytes = fileBytes(data)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
-  onlyOptions(o, 'opts', ['locale'])
+  onlyOptions(o, 'opts', ['locale', 'limits'])
   const language = issueLocale(o)
-  const archive = openArchive(bytes)
+  const archive = openArchive(bytes, o.limits === undefined ? undefined : checkLimits(o.limits))
   const issues = new Issues()
   const root = await relsOf(archive, '')
   const wbPath = root.find((r) => r.kind === 'officeDocument' && !r.external)?.target ?? 'xl/workbook.xml'

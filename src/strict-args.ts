@@ -52,7 +52,7 @@ const TAKEN_BY: Record<string, string> = {
   execution: 'compute and createSession',
   display: 'compute and createSession',
   cached: 'compute and createSession',
-  limits: 'compute, createSession and the calculators',
+  limits: 'compute, createSession, the calculators and readXlsx',
   live: 'createSession',
   undo: 'createSession',
   values: 'writeXlsx',

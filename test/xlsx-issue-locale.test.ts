@@ -117,7 +117,7 @@ describe('the issues of a file read, in the language of opts.locale', () => {
     const data = await LOSSES
     expect((await readXlsx(data, { locale: ruRU })).issues.find((i) => i.code === 'richText')?.message).toBe('Форматированный текст прочитан как простой')
     await expect(readXlsx(data, { locale: 'ru-RU' })).rejects.toThrow("opts.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)")
-    await expect(readXlsx(data, { lang: 'ru-RU' } as never)).rejects.toThrow('opts: unknown field "lang" (expected locale)')
+    await expect(readXlsx(data, { lang: 'ru-RU' } as never)).rejects.toThrow('opts: unknown field "lang" (expected locale, limits)')
     await expect(readXlsx(data, 'ru-RU' as never)).rejects.toThrow("opts: expected options such as { locale: 'ru-RU' }, got the string \"ru-RU\"")
     await expect(writeXlsx({ book: WRITTEN }, { locale: 'ru-RU' })).rejects.toThrow('opts.locale: the locale ru-RU is not loaded')
     registerLocale(ruRU)
