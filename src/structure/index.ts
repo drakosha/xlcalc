@@ -16,6 +16,7 @@ import { looksTaken } from '../looks/sheet.js'
 import { linesMoved, overLooks } from './looks.js'
 import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry.js'
 import { withGrids } from './grid.js'
+import { copyRange } from './copy.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
@@ -122,16 +123,17 @@ function lazyValues(book: BookInput): ValuesIn {
  * Its steps read each sheet's cells once (`withGrids`); a copy or a move over `limits.writes` stops first. The sheets'
  * looks move with their lines as the lines do; those of the cells it copies, moves or writes otherwise are given to it as
  * entries (`overLooks`), so the book it gives may hold entries of a look alone: the engine takes it as it takes a host's.
+ * `whole` is a copy of the fill handle, which takes its source whole and lays it over the rows a filter hid too.
  */
-export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn): Applied =>
+export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whole = false): Applied =>
   withGrids(() => {
-    checkWrites(book, op, values)
+    checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
-    const r = applied(input, op, values)
+    const r = applied(input, op, values, whole)
     return r.ok ? linesMoved(input, r) : r
   })
 
-function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
+function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: boolean): Applied {
   const o = object(op, 'op')
   const allowed = FIELDS[o.op as string]
   if (typeof o.op !== 'string' || !allowed) throw new InputError('op.op', `expected one of ${Object.keys(FIELDS).join(', ')}, got ${JSON.stringify(o.op)}`)
@@ -176,7 +178,8 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
       if (o.withMeta !== undefined && typeof o.withMeta !== 'boolean') throw new InputError('op.withMeta', `expected a boolean, got ${JSON.stringify(o.withMeta)}`)
       if (o.op === 'copyRange') {
         const target = rangeOf(to.range, 'op.to.range')
-        r = copyTables(book, fromSheet, src, toSheet, target).after(copyRows(book, fromSheet, src, toSheet, target, o.withMeta === true, values))
+        const withMeta = o.withMeta === true
+        r = copyTables(book, fromSheet, src, toSheet, target).after(whole ? copyRange(book, fromSheet, src, toSheet, target, withMeta) : copyRows(book, fromSheet, src, toSheet, target, withMeta, values))
       } else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         const tables = moveTables(book, fromSheet, src, toSheet, at.row - src.r1, at.col - src.c1)
@@ -238,7 +241,8 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
     case 'fillRange': {
       if (o.type !== undefined) checkOneOf(o.type, 'op.type', FILL_TYPES)
       const sheet = named(o.sheet, 'op.sheet')
-      const copy: Copier = (b, from, at) => applyOp(b, { op: 'copyRange', from: { sheet, range: areaText(from) }, to: { sheet, range: areaText(at) } }, values)
+      // the fill handle is no copy and paste: Excel's fills the rows a filter hid too (the struct set `hidden`)
+      const copy: Copier = (b, from, at) => applyOp(b, { op: 'copyRange', from: { sheet, range: areaText(from) }, to: { sheet, range: areaText(at) } }, values, true)
       r = fillRange(book, sheet, rangeOf(o.range, 'op.range'), rangeOf(o.to, 'op.to'), String(o.to), (o.type ?? 'default') as FillType, copy)
       break
     }
