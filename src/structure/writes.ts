@@ -48,19 +48,19 @@ function contentIn(sheet: SheetInput, x: Rect): number {
   return n
 }
 
-/** The cells a copy writes: its source's cells with content, from the clip of a filtered sheet's visible rows, times its tiles. */
-function copyWrites(book: BookInput, p: PasteOp, target: Rect, values: ValuesIn): number {
-  const clip = clipped(book, book.sheets[p.fs].name, p.src, values)
+/** The cells a copy writes: its source's cells with content, from the clip of a filtered sheet's visible rows, times its tiles; a fill handle's copy (`whole`) the source's own over every row. */
+function copyWrites(book: BookInput, p: PasteOp, target: Rect, values: ValuesIn, whole: boolean): number {
+  const clip = whole ? null : clipped(book, book.sheets[p.fs].name, p.src, values)
   const [sheet, src] = clip ? [clip.book.sheets.at(-1)!, clip.src] : [book.sheets[p.fs], p.src]
-  const runs = pasteRuns(book, book.sheets[p.ts].name, target)
+  const runs = whole ? null : pasteRuns(book, book.sheets[p.ts].name, target)
   const laid = runs ? runs.reduce((n, [r1, r2]) => n + tileCount(src, { ...target, r1, r2 }), 0) : tileCount(src, target)
   return contentIn(sheet, src) * laid
 }
 
 /** A copy or a move over `limits.writes` stops before anything is built; the cells are counted only under the limit. */
-export function checkWrites(book: BookInput, op: StructureOp, values: ValuesIn): void {
+export function checkWrites(book: BookInput, op: StructureOp, values: ValuesIn, whole = false): void {
   const p = pasteOf(book, op)
   const target = p?.at
   if (!p || !target || p.fs < 0 || p.ts < 0) return
-  allotWrites(() => (p.copy ? copyWrites(book, p, target, values) : contentIn(book.sheets[p.fs], p.src)), book.locale)
+  allotWrites(() => (p.copy ? copyWrites(book, p, target, values, whole) : contentIn(book.sheets[p.fs], p.src)), book.locale)
 }

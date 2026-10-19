@@ -11,15 +11,15 @@ import { formulaCell as f } from '../stored.js'
 /** The keys of rows 2:16 an autofilter reads: `x` kept, `y` hidden by the filter. */
 const KEYS = 'xxxxxyyxxyxxxxx'
 
-/** S: a header, A2:A16 the row numbers, B2:B16 the keys, C2:C16 `=A*10`; D2:E2 the top row of the fills. T: empty. */
-function sheets(rows: Record<string, RowInput>, filtered = false): SheetInput[] {
-  const cells: Record<string, CellInput> = { A1: { value: 'n' }, B1: { value: 'k' }, C1: { value: 'f' }, D2: { value: 'top' }, E2: f('A2+1000') }
+/** S: a header, A2:A16 the row numbers, B2:B16 the keys, C2:C16 `=A*10`; D2:E2 the top row of the fills, and `extra`. T: empty. */
+export function sheets(rows: Record<string, RowInput>, filtered = false, extra: Record<string, CellInput> = {}): SheetInput[] {
+  const cells: Record<string, CellInput> = { A1: { value: 'n' }, B1: { value: 'k' }, C1: { value: 'f' }, D2: { value: 'top' }, E2: f('A2+1000'), ...extra }
   for (let r = 2; r <= 16; r++) Object.assign(cells, { [`A${r}`]: { value: r }, [`B${r}`]: { value: KEYS[r - 2] }, [`C${r}`]: f(`A${r}*10`) })
   return [{ name: 'S', cells, rows, ...(filtered ? { filtered: true } : {}) }, { name: 'T', cells: {} }]
 }
 
 /** Rows 7:8 and 11 (keys `y`) hidden, and row 4 (`x`). */
-const HIDDEN: Record<string, RowInput> = { '4': { hidden: true }, '7:8': { hidden: true }, '11': { hidden: true } }
+export const HIDDEN: Record<string, RowInput> = { '4': { hidden: true }, '7:8': { hidden: true }, '11': { hidden: true } }
 
 /** Columns C:D hidden (10 wide), values in A1:F3. */
 function columnsBook(): BookInput {
@@ -29,13 +29,15 @@ function columnsBook(): BookInput {
   return { sheets: [{ name: 'S', cells, columns: { 'C:D': { width: 10, hidden: true } } }, { name: 'T', cells: {} }] }
 }
 
+/** The autofilter of the book `filtered`: the rows of key `x` kept. */
+export const FILES = { filtered: { sheets: { S: { filter: { range: 'A1:C16', keep: { 1: ['x'] } } } } } }
+
 export function buildStructCases(): StructCases {
   const books: Record<string, BookInput> = {
     manual: { sheets: sheets(HIDDEN) },
     filtered: { sheets: sheets(HIDDEN, true) },
     columns: columnsBook(),
   }
-  const files = { filtered: { sheets: { S: { filter: { range: 'A1:C16', keep: { 1: ['x'] } } } } } }
   const from = (range: string) => ({ sheet: 'S', range })
   const cases: StructCase[] = []
   for (const book of ['manual', 'filtered']) {
@@ -70,5 +72,5 @@ export function buildStructCases(): StructCases {
     { id: 'columns-delete', book: 'columns', op: { op: 'deleteColumns', sheet: 'S', column: 'C' } },
     { id: 'columns-copy', book: 'columns', op: { op: 'copyRange', from: { sheet: 'S', range: 'A1:F3' }, to: { sheet: 'S', range: 'A10:F12' } } },
   )
-  return { books, cases, files }
+  return { books, cases, files: FILES }
 }

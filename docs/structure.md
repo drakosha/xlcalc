@@ -392,7 +392,7 @@ On a filtered sheet Excel acts on the visible rows:
 
 The values a copy pastes come from the computed book. `session.editStructure` takes the session's values. `editStructure` computes the book first, at the current moment, which matters only for volatile formulas.
 
-`copyRange` over a filtered sheet fills its visible rows, as Excel's Fill Down does. Excel's fill handle fills the hidden rows too.
+`copyRange` over a filtered sheet fills its visible rows, as Excel's Fill Down does. `fillRange`, the fill handle, is no copy and paste: it fills the rows a filter hid as it fills rows hidden by hand, copies and series alike, and takes a source that holds hidden rows whole. `x`, `y` filled from `A1:A2` to `A6` over a hidden row 3 gives `x`, `y`, `x`, `y` in rows 3 to 6, as Excel's fill handle does.
 
 ## Sessions
 
@@ -422,12 +422,11 @@ Only two of these recompute values. A merged area added or removed over an array
 
 ## Checked against Excel
 
-Measured in Excel 16 for Mac, en-US, on 317 books; merging cells (61 cases) and the fill handle (122 cases) in Excel for Windows, hidden sheets in both. All match but the known differences below. Not measured: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment and the notes and links of the cells it clears; the fill handle in Excel for Mac and with a ru-RU Excel's lists.
+Measured in Excel 16 for Mac, en-US, on 317 books; merging cells (61 cases) and the fill handle (138 cases) in Excel for Windows, hidden sheets in both. All match but the known differences below. Not measured: a move that does not fit, most moves to another sheet, fonts other than bold, borders and alignment; for merging, borders, the vertical alignment and the notes and links of the cells it clears; the fill handle in Excel for Mac and with a ru-RU Excel's lists.
 
 ## Known differences and limits
 
 - Whole columns copied onto part of a merged area: Excel pastes them and keeps the area, the engine refuses with `merged` (two observations).
-- Excel's fill handle fills the hidden rows of a filtered sheet. `copyRange` fills the visible rows only, as Fill Down does, and so does `fillRange`, whose copies are `copyRange`'s.
 - The fill handle was not measured in Excel for Mac, nor in a ru-RU Excel (its lists of names), nor with the types other than default, series and copy. Not measured either: whether a number at the end of text keeps its zeros past one width (`Item001`, here `Item002`), and a time beside a number alone (here it makes the number go on, as a date does).
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
 - Charts are not part of a book. Threads of comments are notes in a book ([docs/xlsx.md](xlsx.md#threads-of-comments)).
