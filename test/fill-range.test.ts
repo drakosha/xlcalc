@@ -1,9 +1,14 @@
 /**
  * `fillRange` beside Excel's answers (`structure-win.test.ts`): in a session it gives the book `editStructure` gives and
  * undoes and redoes it in one step, in every kind of session; dates given as text stay text, in the 1904 system too;
- * formulas, styles and the part of the source at the far end go as copies take them; the operation's input is checked.
+ * formulas, styles and the part of the source at the far end go as copies take them; copies and series land in rows
+ * hidden by hand and by a filter, as Excel's fill handle filled them (the set `hidden`, Excel for Mac and for Windows);
+ * the operation's input is checked.
  */
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import type { ExcelStructAnswer } from '../bench/coverage/struct.js'
+import { buildStructCases } from '../bench/coverage/struct/hidden.js'
 import { compute, createSession, editStructure, type BookInput, type StructureOp } from '../src/index.js'
 import { clock, hashes, inOtherSessions, inputErrorPath, opCases } from './struct-sessions.js'
 
@@ -71,6 +76,27 @@ describe('fillRange', () => {
     expect(shown(up.book)).toMatchObject({ C2: -2, C3: -1, C4: 0 })
     expect(shown(left.book)).toMatchObject({ D5: 'Sun' })
     expect(shown(copy.book)).toMatchObject({ C7: 1, C8: 2, C9: 1 })
+  })
+
+  it("fills rows hidden by hand and by a filter, text, formulas and copies alike, as Excel's fill handle did", () => {
+    const { books } = buildStructCases()
+    for (const file of ['excel/struct/hidden.json', 'excel/win/struct/hidden.json']) {
+      const answers = JSON.parse(readFileSync(new URL(file, import.meta.url), 'utf8')).answers as Record<string, ExcelStructAnswer>
+      for (const book of ['manual', 'filtered'])
+        for (const type of ['default', 'copy'] as const) {
+          const r = editStructure(books[book], fill('D2:E2', 'D2:E16', { type }))
+          const excel = answers[`${book}-fill-handle`].sheets[0].cells
+          const rows = Array.from({ length: 15 }, (_, i) => i + 2)
+          expect(r.ok && rows.map((n) => [shown(r.book)[`D${n}`], shown(r.book)[`E${n}`]]), `${file} ${book} ${type}`).toEqual(rows.map((n) => [excel[`D${n}`], excel[`E${n}`]]))
+        }
+    }
+  })
+
+  it('a series and copies of texts over a row a filter hid', () => {
+    for (const [a, b, then] of [[1, 2, [3, 4, 5, 6]], ['x', 'y', ['x', 'y', 'x', 'y']]] as const) {
+      const r = editStructure({ sheets: [{ name: 'S', cells: { A1: { value: a }, A2: { value: b } }, rows: { '3': { hidden: true } }, filtered: true }] }, fill('A1:A2', 'A1:A6'))
+      expect(r.ok && [3, 4, 5, 6].map((n) => shown(r.book)[`A${n}`])).toEqual(then)
+    }
   })
 
   it('checks its input', () => {
