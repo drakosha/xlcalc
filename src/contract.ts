@@ -17,7 +17,7 @@ export type Scalar = number | string | boolean | null
 /** Data a host keeps on a cell (`CellInput.meta`), as JSON. */
 export type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
 
-/** An input cell. A date is passed explicitly (`{ date: '2025-01-31' }`) and becomes an Excel serial number. */
+/** An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number. */
 export interface CellInput {
   value?: Scalar | { date: string }
   /**

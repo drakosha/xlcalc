@@ -1395,7 +1395,7 @@ interface CellImpact extends CellRef {
 
 ### `CellInput`
 
-An input cell. A date is passed explicitly (`{ date: '2025-01-31' }`) and becomes an Excel serial number.
+An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number.
 
 ```ts
 interface CellInput {
