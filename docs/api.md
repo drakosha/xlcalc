@@ -359,13 +359,13 @@ function linesKey(first: number, last: number, axis: "columns" | "rows"): string
 
 The key of lines `first` to `last` (`C`, `B:D`; `5`, `5:9`), in order whichever comes first.
 
-### <a id="xlcalc-liveworkbook"></a>`liveWorkbook`
+### <a id="xlcalc-livebook"></a>`liveBook`
 
 ```ts
-function liveWorkbook(session: Session): LiveWorkbook
+function liveBook(session: Session): LiveBook
 ```
 
-The live workbook of a synchronous session ([`LiveWorkbook`](#liveworkbook)): the same object for the same session. An asynchronous
+The live workbook of a synchronous session ([`LiveBook`](#livebook)): the same object for the same session. An asynchronous
 session throws [`InputError`](#xlcalc-inputerror); its writes cannot answer what they computed.
 
 ### <a id="xlcalc-locales"></a>`LOCALES`
@@ -2950,6 +2950,33 @@ interface LineSpan {
 }
 ```
 
+### `LiveBook`
+
+Objects of a synchronous session's sheets and cells ([`liveBook`](#xlcalc-livebook)): a cell reads what the session computed, an
+assignment to it is the session's edit (recomputed, one step of the undo), and a listener learns of the changes of a
+cell, a sheet or the book, whoever makes them. One per session: [`liveBook`](#xlcalc-livebook) gives the same object for it again.
+
+```ts
+interface LiveBook {
+  /** The session the objects read and edit. */
+  readonly session: Session
+  /**
+   * The sheet by its name in any case: the same object while the sheet lives, renamed or moved. `InputError` for a name
+   * the book has no sheet by; a sheet deleted and brought back by `undo` is a new object.
+   */
+  sheet(name: string): LiveSheet
+  /**
+   * Runs `fn` and applies the assignments it makes to cells as one `applyChanges`: one recomputation, one revision, one
+   * step of the undo, one change told. Until `fn` returns, the cells read as they were before it. A batch inside another
+   * is part of the outer one; when `fn` throws, none of its assignments is applied and the error goes on. Text typed
+   * (`LiveCell.type`) cannot be part of a batch, nor an `fn` that answers a promise.
+   */
+  batch(fn: () => void): void
+  /** Calls `listener` after each change of the book, as `Session.subscribe` does; answers the function that unsubscribes. */
+  watch(listener: (change: SessionChange) => void): () => void
+}
+```
+
 ### `LiveCell`
 
 A cell of a [`LiveSheet`](#livesheet), by its address: after rows are inserted above it, it is the cell now at that address. Each
@@ -2992,7 +3019,7 @@ interface LiveCell {
 
 ### `LiveSheet`
 
-A sheet of a [`LiveWorkbook`](#liveworkbook). After the sheet is deleted, every use of the object throws [`InputError`](#xlcalc-inputerror).
+A sheet of a [`LiveBook`](#livebook). After the sheet is deleted, every use of the object throws [`InputError`](#xlcalc-inputerror).
 
 ```ts
 interface LiveSheet {
@@ -3010,33 +3037,6 @@ interface LiveSheet {
    * rename or move, the book's style table. Answers the function that unsubscribes; after the sheet is deleted it is
    * called no more.
    */
-  watch(listener: (change: SessionChange) => void): () => void
-}
-```
-
-### `LiveWorkbook`
-
-Objects of a synchronous session's sheets and cells ([`liveWorkbook`](#xlcalc-liveworkbook)): a cell reads what the session computed, an
-assignment to it is the session's edit (recomputed, one step of the undo), and a listener learns of the changes of a
-cell, a sheet or the book, whoever makes them. One per session: [`liveWorkbook`](#xlcalc-liveworkbook) gives the same object for it again.
-
-```ts
-interface LiveWorkbook {
-  /** The session the objects read and edit. */
-  readonly session: Session
-  /**
-   * The sheet by its name in any case: the same object while the sheet lives, renamed or moved. `InputError` for a name
-   * the book has no sheet by; a sheet deleted and brought back by `undo` is a new object.
-   */
-  sheet(name: string): LiveSheet
-  /**
-   * Runs `fn` and applies the assignments it makes to cells as one `applyChanges`: one recomputation, one revision, one
-   * step of the undo, one change told. Until `fn` returns, the cells read as they were before it. A batch inside another
-   * is part of the outer one; when `fn` throws, none of its assignments is applied and the error goes on. Text typed
-   * (`LiveCell.type`) cannot be part of a batch, nor an `fn` that answers a promise.
-   */
-  batch(fn: () => void): void
-  /** Calls `listener` after each change of the book, as `Session.subscribe` does; answers the function that unsubscribes. */
   watch(listener: (change: SessionChange) => void): () => void
 }
 ```

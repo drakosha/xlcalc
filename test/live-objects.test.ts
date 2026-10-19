@@ -1,12 +1,12 @@
 /**
- * Live objects of a synchronous session's sheets and cells (`liveWorkbook`, `src/live.ts`), in both modes of execution:
+ * Live objects of a synchronous session's sheets and cells (`liveBook`, `src/live.ts`), in both modes of execution:
  * a read after an assignment gives what the session recomputed, an assignment is the session's call (its refusal too,
  * the book unchanged), a batch is one `applyChanges`; a cell's listener is called for the changes that touched it,
  * whoever made them, and not for others; a structure operation wakes the cells of its sheet whose address other cells
  * came to; a sheet follows its rename and ends with its deletion.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CalcError, createInlineCalc, createSession, InputError, liveWorkbook, type BookInput, type Execution, type CalcLimits, type SessionChange } from '../src/index.js'
+import { CalcError, createInlineCalc, createSession, InputError, liveBook, type BookInput, type Execution, type CalcLimits, type SessionChange } from '../src/index.js'
 import { clock } from './struct-sessions.js'
 
 const book = (): BookInput => ({
@@ -27,7 +27,7 @@ afterEach(() => vi.unstubAllGlobals())
 describe.each(['closures', 'eval'] as const)('live objects, %s', (execution: Execution) => {
   const open = (opts: { display?: boolean; limits?: CalcLimits } = {}) => {
     const session = createSession(book(), { clock, execution, ...opts })
-    const live = liveWorkbook(session)
+    const live = liveBook(session)
     return { session, live, plan: live.sheet('Plan') }
   }
 
@@ -288,17 +288,17 @@ describe.each(['closures', 'eval'] as const)('live objects, %s', (execution: Exe
     expect(() => live.sheet('Nope')).toThrow(new InputError('name', 'unknown sheet "Nope"'))
     expect(() => plan.cells.A1.watch('x' as never)).toThrow(new InputError('watch', 'listener must be a function, got the string "x"'))
     expect(() => (plan.cells.A1.watch as (...a: unknown[]) => unknown)(() => {}, {})).toThrow(new InputError('watch', 'takes 1 argument, got an object as argument 2'))
-    expect([liveWorkbook(session) === live, live.session === session, live.sheet('PLAN') === plan]).toEqual([true, true, true])
+    expect([liveBook(session) === live, live.session === session, live.sheet('PLAN') === plan]).toEqual([true, true, true])
     session.close()
   })
 })
 
-describe('liveWorkbook takes a synchronous session only', () => {
+describe('liveBook takes a synchronous session only', () => {
   it('an asynchronous session or anything else throws InputError at session', async () => {
     const calc = createInlineCalc()
     const s = await calc.createSession(book(), { clock })
-    expect(() => liveWorkbook(s as never)).toThrow(new InputError('session', 'expected a synchronous session (createSession), got an asynchronous one (createInlineCalc, createCalcPool)'))
-    for (const bad of [null, {}, 'session']) expect(() => liveWorkbook(bad as never)).toThrow(/^session: expected a synchronous session \(createSession\), got /)
+    expect(() => liveBook(s as never)).toThrow(new InputError('session', 'expected a synchronous session (createSession), got an asynchronous one (createInlineCalc, createCalcPool)'))
+    for (const bad of [null, {}, 'session']) expect(() => liveBook(bad as never)).toThrow(/^session: expected a synchronous session \(createSession\), got /)
     expect(s.revision).toBe(0)
     await s.close()
     await calc.close()

@@ -264,11 +264,11 @@ export interface Session {
 // ---------- live objects over a session (`docs/live-objects.md`) ----------
 
 /**
- * Objects of a synchronous session's sheets and cells (`liveWorkbook`): a cell reads what the session computed, an
+ * Objects of a synchronous session's sheets and cells (`liveBook`): a cell reads what the session computed, an
  * assignment to it is the session's edit (recomputed, one step of the undo), and a listener learns of the changes of a
- * cell, a sheet or the book, whoever makes them. One per session: `liveWorkbook` gives the same object for it again.
+ * cell, a sheet or the book, whoever makes them. One per session: `liveBook` gives the same object for it again.
  */
-export interface LiveWorkbook {
+export interface LiveBook {
   /** The session the objects read and edit. */
   readonly session: Session
   /**
@@ -287,7 +287,7 @@ export interface LiveWorkbook {
   watch(listener: (change: SessionChange) => void): () => void
 }
 
-/** A sheet of a `LiveWorkbook`. After the sheet is deleted, every use of the object throws `InputError`. */
+/** A sheet of a `LiveBook`. After the sheet is deleted, every use of the object throws `InputError`. */
 export interface LiveSheet {
   /** The sheet's name now: a rename changes it. */
   readonly name: string

@@ -1,11 +1,11 @@
 /**
- * Live objects of a synchronous session's sheets and cells (`liveWorkbook`, `docs/live-objects.md`): a cell reads the
+ * Live objects of a synchronous session's sheets and cells (`liveBook`, `docs/live-objects.md`): a cell reads the
  * session, an assignment is its edit, a batch is one `applyChanges`. One subscription to the session tells the
  * workbook's listeners: the book's all, a sheet's those of the changes that touched it, a cell's by a map of addresses,
  * so that an edit of cells costs the cells it changed, not the listeners; a structure operation wakes the cells of its
  * sheet whose address other cells may have come to.
  */
-import type { CellTextOptions, CellTextResult, CellValue, LiveCell, LiveSheet, LiveWorkbook, NumberFormat, Scalar, Session, SessionChange, SessionOperation, StylePatch } from './contract.js'
+import type { CellTextOptions, CellTextResult, CellValue, LiveCell, LiveSheet, LiveBook, NumberFormat, Scalar, Session, SessionChange, SessionOperation, StylePatch } from './contract.js'
 import { nameKey, parseCell, parseRange } from './a1.js'
 import { InputError, what } from './input-error.js'
 import { strict } from './strict-args.js'
@@ -35,7 +35,7 @@ interface SheetState {
 }
 
 /** The workbook of each session: one subscription to it, the same objects for it. */
-const books = new WeakMap<Session, LiveWorkbook>()
+const books = new WeakMap<Session, LiveBook>()
 
 /** A key of `cells` that may be the address of a cell, without `$` (`parseCell` checks it is on the sheet). */
 const ADDRESS = /^[A-Za-z]{1,3}[1-9]\d{0,6}$/
@@ -71,10 +71,10 @@ function watchIn(set: Set<Watch>, listener: Listener, gone?: () => void): () => 
 }
 
 /**
- * The live workbook of a synchronous session (`LiveWorkbook`): the same object for the same session. An asynchronous
+ * The live workbook of a synchronous session (`LiveBook`): the same object for the same session. An asynchronous
  * session throws `InputError`; its writes cannot answer what they computed.
  */
-export function liveWorkbook(session: Session): LiveWorkbook {
+export function liveBook(session: Session): LiveBook {
   const s = checkSession(session)
   const known = books.get(s)
   if (known) return known
@@ -283,7 +283,7 @@ export function liveWorkbook(session: Session): LiveWorkbook {
   }
   s.subscribe(tell)
 
-  const book: LiveWorkbook = {
+  const book: LiveBook = {
     session: s,
     sheet: strict(function sheet(name: string) {
       if (typeof name !== 'string') throw new InputError('name', `expected a sheet's name, got ${what(name)}`)

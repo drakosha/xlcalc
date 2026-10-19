@@ -33,7 +33,7 @@ The package is split into entry points by what hosts need, so a bundle includes 
 |---|---|
 | calculating a workbook | `compute` from `xlcalc` |
 | a session over a workbook: edits, structure operations, undo, AutoFit, conditional formats, data validation, displayed text | `createSession` from `xlcalc` |
-| live objects for a session's cells: `cells.A1.value = 100`, cell listeners | `liveWorkbook` from `xlcalc` ([Live objects](docs/live-objects.md)) |
+| live objects for a session's cells: `cells.A1.value = 100`, cell listeners | `liveBook` from `xlcalc` ([Live objects](docs/live-objects.md)) |
 | reading and writing xlsx files | `readXlsx`, `writeXlsx` and `fromLegacy` from `xlcalc/xlsx` |
 | calculating in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for slices on the same thread |
 | A1-style cell addresses and a sheet's outline commands, without the engine | `xlcalc/a1` |
@@ -92,10 +92,10 @@ console.log(revision, changes.map((c) => `${c.cell}=${c.value}`)) // → 1 [ 'A1
 ### Assign to a cell and watch another
 
 ```js
-import { createSession, liveWorkbook } from 'xlcalc'
+import { createSession, liveBook } from 'xlcalc'
 
 const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*21' } } }] })
-const s = liveWorkbook(session).sheet('S')
+const s = liveBook(session).sheet('S')
 s.cells.A2.watch(() => console.log('A2 is now', s.cells.A2.value))
 s.cells.A1.value = 3
 console.log(s.cells.A2.text)

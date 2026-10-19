@@ -76,7 +76,7 @@ session.undo()
 console.log(session.getCell('Loan', 'B5').text, session.history) // → 1,432.86 { undo: 0, redo: 1 }
 ```
 
-For a form bound to cells, `liveWorkbook(session)` returns objects where an assignment is an edit (`cells.B2.value = 0.05`) and a cell accepts listeners, a basis for a Vue `customRef` or a signal ([Live sheet and cell objects](live-objects.md)). [Sessions](sessions.md) documents the session's methods, and [Batch changes, previews and paged queries](live-books.md) the preview.
+For a form bound to cells, `liveBook(session)` returns objects where an assignment is an edit (`cells.B2.value = 0.05`) and a cell accepts listeners, a basis for a Vue `customRef` or a signal ([Live sheet and cell objects](live-objects.md)). [Sessions](sessions.md) documents the session's methods, and [Batch changes, previews and paged queries](live-books.md) the preview.
 
 ## A spreadsheet grid
 

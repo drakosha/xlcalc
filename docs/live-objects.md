@@ -1,12 +1,12 @@
 # Live sheet and cell objects
 
-`liveWorkbook(session)` returns objects for a session's sheets and cells. Reading a cell's property reads what the session calculated; assigning to one is an edit of the session, recalculated before the next line runs and recorded as an undo step; and a listener on a cell, a sheet or the workbook is called whenever a change affects it, whoever made the change. The objects keep no copy of the workbook and depend on nothing outside the package, so a framework's reactivity (Vue's `customRef`, a signal) can be built on top of them.
+`liveBook(session)` returns objects for a session's sheets and cells. Reading a cell's property reads what the session calculated; assigning to one is an edit of the session, recalculated before the next line runs and recorded as an undo step; and a listener on a cell, a sheet or the workbook is called whenever a change affects it, whoever made the change. The objects keep no copy of the workbook and depend on nothing outside the package, so a framework's reactivity (Vue's `customRef`, a signal) can be built on top of them.
 
 ```js
-import { createSession, liveWorkbook } from 'xlcalc'
+import { createSession, liveBook } from 'xlcalc'
 
 const session = createSession({ sheets: [{ name: 'Plan', cells: { A1: { value: 100 } } }] })
-const book = liveWorkbook(session)
+const book = liveBook(session)
 const plan = book.sheet('Plan')
 plan.cells.B1.formula = 'A1*1.2'
 plan.cells.A1.value = 200
@@ -32,10 +32,10 @@ An assignment is a call to the session:
 An assignment the session rejects throws the session's own error, and the workbook stays unchanged: part of a legacy array formula, a value of the wrong shape, an edit beyond the session's `limits`. The objects always edit the workbook in its current state: they take no `baseRevision`.
 
 ```js
-import { createSession, liveWorkbook } from 'xlcalc'
+import { createSession, liveBook } from 'xlcalc'
 
 const session = createSession({ sheets: [{ name: 'Plan', cells: { A1: { value: 0.25, numberFormat: '0%' }, A2: { formula: 'A1*4' } } }] })
-const a = liveWorkbook(session).sheet('Plan').cells
+const a = liveBook(session).sheet('Plan').cells
 a.A1.value = 0.5
 console.log(a.A1.text, a.A2.value) // → 50% 2
 a.A2.value = 'total'
@@ -55,10 +55,10 @@ console.log(a.B1.type('5%').ok, a.B1.value, a.B1.text) // → true 0.05 5%
 - Typed text (`type`) cannot be part of a batch, since `applyChanges` does not accept typed text, and `fn` must not return a promise: an assignment after an `await` would fall outside the batch. Both throw `InputError`.
 
 ```js
-import { createSession, liveWorkbook } from 'xlcalc'
+import { createSession, liveBook } from 'xlcalc'
 
 const session = createSession({ sheets: [{ name: 'Plan', cells: { A3: { formula: 'A1+A2' } } }] })
-const book = liveWorkbook(session)
+const book = liveBook(session)
 const plan = book.sheet('Plan')
 book.batch(() => {
   plan.cells.A1.value = 1
@@ -80,10 +80,10 @@ console.log(plan.cells.A3.value, session.revision, session.history.undo) // → 
 The workbook object subscribes to its session once and finds a cell's listeners by address, so an edit costs as much as the cells it changed, not the number of cells watched. A structure operation notifies the watched cells of its sheet from the inserted or deleted row or column onward, and of both ranges of a move, even cells that were empty before and after.
 
 ```js
-import { createSession, liveWorkbook } from 'xlcalc'
+import { createSession, liveBook } from 'xlcalc'
 
 const session = createSession({ sheets: [{ name: 'Plan', cells: { A1: { value: 1 }, A2: { formula: 'A1*2' }, C1: { value: 'x' } } }] })
-const plan = liveWorkbook(session).sheet('Plan')
+const plan = liveBook(session).sheet('Plan')
 const stop = plan.cells.A2.watch((change) => console.log(change.method, plan.cells.A2.value))
 plan.cells.C1.watch(() => console.log('C1'))
 plan.cells.A1.value = 5
@@ -103,10 +103,10 @@ A cell object stands for its address: with `const c = plan.cells.A5` and a row t
 A sheet object follows its sheet through a rename or a move: `sheet.name` is the current name, and `book.sheet` accepts the new name, in any case. After the sheet is deleted, every use of its object and of its cells throws `InputError`, and their listeners are no longer called; a sheet restored by `undo` is a new object, obtained from `book.sheet`.
 
 ```js
-import { createSession, liveWorkbook } from 'xlcalc'
+import { createSession, liveBook } from 'xlcalc'
 
 const session = createSession({ sheets: [{ name: 'Plan', cells: { A5: { value: 5 } } }] })
-const book = liveWorkbook(session)
+const book = liveBook(session)
 const plan = book.sheet('Plan')
 const a5 = plan.cells.A5
 a5.watch(() => console.log('A5 changed'))
@@ -121,7 +121,7 @@ console.log(plan.name, book.sheet('budget') === plan)
 
 ## Which sessions
 
-`liveWorkbook` accepts a synchronous session (`createSession`) and returns the same object for the same session each time. An asynchronous session (`createInlineCalc`, `createCalcPool`) cannot deliver the recalculated value of an assignment before the next line runs, so `liveWorkbook` throws `InputError` for it; its objects would need assignments that return promises.
+`liveBook` accepts a synchronous session (`createSession`) and returns the same object for the same session each time. An asynchronous session (`createInlineCalc`, `createCalcPool`) cannot deliver the recalculated value of an assignment before the next line runs, so `liveBook` throws `InputError` for it; its objects would need assignments that return promises.
 
 ## With Vue
 
