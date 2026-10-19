@@ -11,7 +11,7 @@ import { rectText } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { fileTree, type FileNames } from './sheet.js'
+import { fileTree, type FileNames } from './formula.js'
 import { clip } from './xml.js'
 
 /** Excel's limits on a rule's texts: it does not load a file with longer ones. */
