@@ -129,7 +129,8 @@ export function instance(t: Template, holes: Hole[]): { ast: Ast; text: string }
     const i = at.get(n)
     return i === undefined ? undefined : { k: 'num', v: holes[i] as number }
   })
-  let text = pieces[0]
-  for (let j = 0; j < order.length; j++) text += filled(holes[order[j]]) + pieces[j + 1]
-  return { ast, text }
+  // joined, not concatenated: a formula's text is kept, and a long one concatenated hole by hole keeps a node per piece
+  const parts = [pieces[0]]
+  for (let j = 0; j < order.length; j++) parts.push(filled(holes[order[j]]), pieces[j + 1])
+  return { ast, text: parts.join('') }
 }
