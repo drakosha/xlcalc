@@ -66,7 +66,7 @@ describe('notes, links and frozen panes as input', () => {
     }
     fails({ A1: { note: { author: 'Ann' } as never } }, undefined, 'cells["A1"].note.text')
     fails({ A1: { note: { text: 'x', by: 'Ann' } as never } }, undefined, 'unknown field "by"')
-    fails({ A1: { link: {} } }, undefined, 'a hyperlink has a url, a location or both')
+    fails({ A1: { link: {} } }, undefined, 'a hyperlink needs a url, a location or both')
     fails({ A1: { link: { url: 'x', tip: 'y' } as never } }, undefined, 'unknown field "tip"')
     fails({ A1: { link: { location: 5 } as never } }, undefined, 'cells["A1"].link.location')
     fails({}, {}, 'expected rows, columns or both')

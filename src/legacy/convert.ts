@@ -277,7 +277,7 @@ export function legacyConverter(names: readonly NameInput[] = []): (ast: Ast, sh
  * returned as is. The API function (`strict-args.ts`), the same from `xlcalc/xlsx` and from the root.
  */
 export const fromLegacy = /* @__PURE__ */ strict(function fromLegacy(formula: string, ctx?: LegacyContext): string {
-  if (ctx !== undefined) onlyKeys(object(ctx, 'ctx', "the book's names and the formula's sheet, such as { names, sheet: 'Sales' }"), 'ctx', ['names', 'sheet'])
+  if (ctx !== undefined) onlyKeys(object(ctx, 'ctx', "the workbook's names and the formula's sheet, such as { names, sheet: 'Sales' }"), 'ctx', ['names', 'sheet'])
   let ast: Ast
   try {
     ast = parse(formula)

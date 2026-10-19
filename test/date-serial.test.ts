@@ -20,7 +20,7 @@ describe('dateToSerial', () => {
   })
 
   it('refuses text it cannot read and a date before the system\'s day 0, as InputError', () => {
-    expect(() => dateToSerial('31.01.2026')).toThrow(new InputError('text', 'invalid date "31.01.2026": expected ISO such as "2025-01-31" or "2025-01-31T18:00:00"'))
+    expect(() => dateToSerial('31.01.2026')).toThrow(new InputError('text', 'invalid date "31.01.2026": expected an ISO date such as "2025-01-31" or "2025-01-31T18:00:00"'))
     expect(() => dateToSerial('10000-01-01')).toThrow(/invalid date/)
     expect(() => dateToSerial('1899-12-30')).toThrow(new InputError('text', `"1899-12-30" is before the 1900 date system's day 0 (1900-01-00): Excel has no such date`))
     expect(() => dateToSerial('1903-12-31', { dateSystem: 1904 })).toThrow(/before the 1904 date system's day 0 \(1904-01-01\)/)

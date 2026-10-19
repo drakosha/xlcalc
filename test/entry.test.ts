@@ -97,7 +97,7 @@ describe('parseEntry', () => {
     expect(input(en('=SUM(1,2)', { link }))).toEqual({ formula: 'SUM(1,2)', link })
     expect(en('', { note })).toEqual({ ok: true, input: { note } })
     expect(() => parseEntry('1', { cell: { note: { author: 'Ann' } as never } })).toThrow(new InputError('opts.cell.note.text', 'expected a string, got undefined'))
-    expect(() => parseEntry('1', { cell: { link: { tooltip: 'x' } } })).toThrow(new InputError('opts.cell.link', 'a hyperlink has a url, a location or both'))
+    expect(() => parseEntry('1', { cell: { link: { tooltip: 'x' } } })).toThrow(new InputError('opts.cell.link', 'a hyperlink needs a url, a location or both'))
   })
 
   it('clears the value of empty text and keeps the rest of the cell, null when nothing is left', () => {

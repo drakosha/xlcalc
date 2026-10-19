@@ -35,7 +35,7 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
     try {
       dateToSerial(value.date)
     } catch {
-      throw new InputError(`${path}.value.date`, `invalid date ${JSON.stringify(value.date)}: expected ISO such as "2025-01-31" or "2025-01-31T18:00:00"`)
+      throw new InputError(`${path}.value.date`, `invalid date ${JSON.stringify(value.date)}: expected an ISO date such as "2025-01-31" or "2025-01-31T18:00:00"`)
     }
   }
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
@@ -62,7 +62,7 @@ function checkLink(v: unknown, path: string) {
   const l = object(v, path, 'a hyperlink such as { url: "https://example.com/" } or { location: "Sheet2!B12" }')
   onlyKeys(l, path, ['url', 'location', 'tooltip'])
   for (const k of ['url', 'location', 'tooltip']) if (l[k] !== undefined) checkString(l[k], `${path}.${k}`)
-  if (!l.url && !l.location) throw new InputError(path, 'a hyperlink has a url, a location or both')
+  if (!l.url && !l.location) throw new InputError(path, 'a hyperlink needs a url, a location or both')
 }
 
 /** Names, their formulas without a leading `=`. */
@@ -180,7 +180,7 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  * with `looked`, those of the sheets that have looks only (a writer keeps a sheet without looks as it is given).
  */
 export function checkBook(v: unknown, path = 'book', looked = false): BookInput {
-  const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
+  const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
   onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks', 'activeSheet'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
   if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
@@ -234,11 +234,11 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
   })
   // Excel keeps one visible sheet at least
   const sheets = book.sheets as { hidden?: unknown }[]
-  if (sheets.length && sheets.every((s) => s.hidden !== undefined && s.hidden !== false)) throw new InputError(`${path}.sheets`, 'a book keeps one visible sheet at least: every sheet is hidden')
+  if (sheets.length && sheets.every((s) => s.hidden !== undefined && s.hidden !== false)) throw new InputError(`${path}.sheets`, 'a workbook must contain at least one visible sheet: every sheet is hidden')
   if (book.activeSheet !== undefined) {
     const name = checkString(book.activeSheet, `${path}.activeSheet`)
     const active = (book.sheets as BookInput['sheets']).find((s) => sheetKey(s.name) === sheetKey(name))
-    if (!active || active.hidden) throw new InputError(`${path}.activeSheet`, 'expected the name of a visible sheet of the book')
+    if (!active || active.hidden) throw new InputError(`${path}.activeSheet`, 'expected the name of a visible sheet of the workbook')
   }
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   if (book.externalBooks !== undefined) checkExternalBooks(book.externalBooks, `${path}.externalBooks`)
@@ -250,9 +250,9 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
 
 /** A sheet's looks: rectangles in A1 style (`B2:D9`, `B:D`, `2:9`, `B2`), each with a style of the book and a number format, both optional. */
 function checkLooks(v: unknown, path: string, styles: number) {
-  array(v, path, 'an array of looks such as [{ range: "A2:XFD9", style: 0 }]').forEach((x, k) => {
+  array(v, path, 'an array of formatting ranges such as [{ range: "A2:XFD9", style: 0 }]').forEach((x, k) => {
     const p = `${path}[${k}]`
-    const o = object(x, p, 'a look such as { range: "A2:XFD9", style: 0, numberFormat: "0.00" }')
+    const o = object(x, p, 'a formatting range such as { range: "A2:XFD9", style: 0, numberFormat: "0.00" }')
     onlyKeys(o, p, ['range', 'style', 'numberFormat'])
     checkRange(o.range, `${p}.range`, false)
     if (o.style !== undefined) checkStyleIndex(o.style, `${p}.style`, styles)
@@ -501,7 +501,7 @@ export function checkNameOptions(v: unknown, path = 'opts'): NameOptions {
 export function checkNamesContext(v: unknown, path = 'ctx'): NamesContext {
   const o = object(v, path, "a context such as { sheets: ['Data'], locale: 'ru-RU' }")
   onlyKeys(o, path, ['sheets', 'tables', 'externalFunctions', 'locale', 'externalBooks'])
-  if (o.sheets === undefined) throw new InputError(`${path}.sheets`, "expected the book's sheet names, an array of strings")
+  if (o.sheets === undefined) throw new InputError(`${path}.sheets`, "expected the workbook's sheet names as an array of strings")
   const { locale, ...rest } = o
   checkValidateContext(rest, path)
   if (locale !== undefined) checkLocaleArg(locale, `${path}.locale`)

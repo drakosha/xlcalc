@@ -38,7 +38,7 @@ describe('hidden sheets in the book', () => {
 
   it('a book keeps one visible sheet; hidden is true, false or "very"', () => {
     const all: BookInput = { sheets: [{ name: 'A', cells: {}, hidden: true }, { name: 'B', cells: {}, hidden: 'very' }] }
-    expect(() => compute(all)).toThrow(new InputError('book.sheets', 'a book keeps one visible sheet at least: every sheet is hidden'))
+    expect(() => compute(all)).toThrow(new InputError('book.sheets', 'a workbook must contain at least one visible sheet: every sheet is hidden'))
     expect(() => compute({ sheets: [{ name: 'A', cells: {}, hidden: 'yes' as never }] })).toThrow(new InputError('book.sheets[0].hidden', 'expected true, false or "very", got the string "yes"'))
     expect(compute({ sheets: [{ name: 'A', cells: {}, hidden: false }, { name: 'B', cells: {}, hidden: true }] }).sheets.length).toBe(2)
   })

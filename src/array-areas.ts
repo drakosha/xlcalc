@@ -31,6 +31,6 @@ export function checkArrays(cells: Record<string, CellInput>, tops: string[], pa
     const { row, col } = parseAddress(addr)
     for (const [top, x] of areas)
       if (top !== addr && hasCell(x, row, col))
-        throw new InputError(`${path}.cells[${JSON.stringify(addr)}]`, `the cell is in the area of the array formula at ${top} (${cornersText(x)}), which holds nothing else`)
+        throw new InputError(`${path}.cells[${JSON.stringify(addr)}]`, `the cell is inside the area of the array formula at ${top} (${cornersText(x)}), so it cannot hold anything else`)
   }
 }

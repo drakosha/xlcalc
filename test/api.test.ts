@@ -42,7 +42,7 @@ describe('input errors', () => {
   }
 
   it('the book: wrong types, cell addresses, duplicate sheets, cell fields, dates', () => {
-    fails(() => compute(null as unknown as BookInput), 'book: expected a book such as { sheets: [{ name: "Sheet1", cells: {} }] }, got null')
+    fails(() => compute(null as unknown as BookInput), 'book: expected a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }, got null')
     fails(() => compute({ sheets: 'S' } as unknown as BookInput), 'book.sheets: expected an array of sheets, got the string "S"')
     fails(() => compute(sheet({ A1: 5 })), 'book.sheets[0].cells["A1"]: expected a cell object such as { value: 1 } or { formula: "A1*2" }, got number 5')
     fails(() => compute(sheet({ b2: { value: 1 } })), 'book.sheets[0].cells["b2"]: invalid cell address "b2": expected A1 style such as "B12" (column letters must be upper-case: "B2")')
