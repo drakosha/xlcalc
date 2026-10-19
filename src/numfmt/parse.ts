@@ -39,7 +39,7 @@ export interface Section {
   /** `#RRGGBB`. */
   color?: string
   cond?: Cond
-  /** The locale of `[$-409]`, upper-case hex (`409`, `F800`). */
+  /** The locale of `[$-409]`, upper-case hex (`409`, `F800`; `[$-x-sysdate]` is `F800`), or the tag after the hyphen in upper case. */
   lcid?: string
 }
 
@@ -99,13 +99,20 @@ export function splitSections(fmt: string): string[] {
 
 const COND = /^(<>|<=|>=|<|>|=)\s*(-?\d*[.,]?\d+(?:[eE][+-]?\d+)?)$/
 
+/** The culture tags of the system's long date and time ([MS-XLSX] formatCode16), by the locale codes they stand for. */
+const SYSTEM_TAGS: Record<string, string> = { 'X-SYSDATE': 'F800', 'X-SYSTIME': 'F400' }
+
 /** A bracket's meaning for the section, or false when it means nothing (the code is invalid). */
 function bracket(inner: string, sec: Section, out: Tok[], codes: Codes): boolean {
   if (inner[0] === '$') {
-    const dash = inner.lastIndexOf('-')
+    // `[$<symbol>-<culture>]`: the culture after the first hyphen is a locale code (`409`) or a tag (`x-sysdate`, `ru-RU`)
+    const dash = inner.indexOf('-')
     const symbol = dash < 0 ? inner.slice(1) : inner.slice(1, dash)
     if (symbol) out.push({ t: 'lit', s: symbol })
-    if (dash >= 0) sec.lcid = inner.slice(dash + 1).toUpperCase()
+    if (dash >= 0) {
+      const culture = inner.slice(dash + 1).toUpperCase()
+      sec.lcid = SYSTEM_TAGS[culture] ?? culture
+    }
     return true
   }
   const unit = inner ? codes.letter(inner[0]) : undefined
