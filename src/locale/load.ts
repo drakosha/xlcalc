@@ -94,7 +94,7 @@ function howToLoad(tag: string): string {
  * the locale as an object; once the root is loaded (`rootLoaded`), import its module and load it. So the subpaths without
  * the engine (`./text`) carry neither the root's hint nor the package's name, which a host looks for as the engine's sign.
  */
-let toLoad = (tag: string) => `give the locale as an object, ${nameOf(tag)} of the package's module locales/${tag}`
+let toLoad = (tag: string) => `pass the locale as an object: ${nameOf(tag)} from the package's module locales/${tag}`
 
 /** The root is loaded: a package's locale not loaded is refused with its module to import and `registerLocale`. */
 export function rootLoaded(): void {
@@ -133,8 +133,8 @@ export function registerLocale(locale: Locale): void {
   const l = checkLocaleObject(locale, 'locale')
   const had = LOCALES.get(l.tag)
   if (had === l) return
-  if (had) throw new InputError('locale.tag', `the locale ${l.tag} is loaded already${l.tag === DEFAULT_LOCALE ? ': it is built in' : ', as another object'}`)
-  const regional = object(l.regional, 'locale.regional', "the rules a book computes by, as the package's locale modules have them")
+  if (had) throw new InputError('locale.tag', `the locale ${l.tag} is already loaded${l.tag === DEFAULT_LOCALE ? ': it is built in' : ', as another object'}`)
+  const regional = object(l.regional, 'locale.regional', "the rules a workbook is calculated by, as the package's locale modules have them")
   onlyKeys(regional, 'locale.regional', [...REGIONAL_KEYS, ...REGIONAL_OPTIONAL])
   for (const k of REGIONAL_KEYS) if (regional[k] === undefined) throw new InputError(`locale.regional.${k}`, 'expected a value')
   if (l.messages !== undefined) {

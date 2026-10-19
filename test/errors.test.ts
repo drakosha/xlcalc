@@ -41,7 +41,7 @@ describe('errors', () => {
     const { v, issue } = run({ A1: { formula: 'A2+1', held: 4 }, A2: { formula: 'A1+1' }, A3: { formula: 'A1*2', held: 'x' }, A4: { formula: '5' }, B1: { formula: 'B1' } })
     expect([v('A1'), v('A2'), v('A3'), v('B1')]).toEqual([4, 0, 'x', 0])
     expect(v('A4')).toBe(5)
-    for (const a of ['A1', 'A2', 'A3', 'B1']) expect(issue(a)).toMatchObject({ error: 'CYCLE', reason: 'circular reference: not computed, the value is held' })
+    for (const a of ['A1', 'A2', 'A3', 'B1']) expect(issue(a)).toMatchObject({ error: 'CYCLE', reason: 'circular reference: not calculated, the value is held' })
     expect(issue('A4')).toBeUndefined()
   })
 

@@ -43,12 +43,12 @@ describe('writeXlsx with a snapshot', () => {
   it('the old form, a book with its result in the options, is refused: the book and its result go as one snapshot', async () => {
     const result = compute(book, { clock })
     expect((await writeXlsx({ book, result })).issues).toEqual([])
-    await expect(writeXlsx(book as never, { result } as never)).rejects.toThrow(new InputError('snapshot', 'unknown field "sheets" (expected book, result) (a book is not a snapshot: pass { book, result })'))
-    await expect(writeXlsx(book as never)).rejects.toThrow(/a book is not a snapshot: pass \{ book, result \}/)
+    await expect(writeXlsx(book as never, { result } as never)).rejects.toThrow(new InputError('snapshot', 'unknown field "sheets" (expected book, result) (a workbook is not a snapshot: pass { book, result })'))
+    await expect(writeXlsx(book as never)).rejects.toThrow(/a workbook is not a snapshot: pass \{ book, result \}/)
   })
 
   it("require, the default with a result: every formula and every cell of an array has its value, else it is not the book's result", async () => {
-    await expect(writeXlsx({ book, result: without(['B1']) })).rejects.toThrow(new InputError('snapshot.result', `expected the book's result: the formula of 'S'!B1 has no value in the result (values: "preserve" writes the values it has)`))
+    await expect(writeXlsx({ book, result: without(['B1']) })).rejects.toThrow(new InputError('snapshot.result', `expected the result of this workbook: the formula of 'S'!B1 has no value in the result (values: "preserve" writes the values it has)`))
     await expect(writeXlsx({ book, result: without(['C2']) })).rejects.toThrow(/'S'!C2 of the array of C1 has no value in the result/)
     await expect(writeXlsx({ book, result: without(['D2']) }, { values: 'require' })).rejects.toThrow(/'S'!D2 of the array of D1 has no value/)
   })
@@ -56,7 +56,7 @@ describe('writeXlsx with a snapshot', () => {
   it('preserve: the values the result has; a formula without one is written without it, and reported', async () => {
     const { data, issues } = await writeXlsx({ book, result: without(['B1', 'E1']) }, { values: 'preserve' })
     expect(codes(issues)).toEqual(['noCachedValues B1 E1'])
-    expect(issues[0].message).toBe('a formula without a value in the result is written without one: Excel computes it when it opens the file')
+    expect(issues[0].message).toBe('a formula without a value in the result is written without one: Excel calculates it when it opens the file')
     expect(await part(data, 'xl/worksheets/sheet1.xml')).toContain('<c r="B1" cm="1"><f t="array" ref="B1">SUM(A1:A2)</f></c>')
     expect(storedValues(await readXlsx(data))).toEqual({ C1: 1, C2: 2, D1: 1200, D2: 800 })
     const values = await writeXlsx({ book, result: without(['B1']) }, { mode: 'values', values: 'preserve' })
@@ -66,7 +66,7 @@ describe('writeXlsx with a snapshot', () => {
 
   it('omit, the default without a result: no values of formulas, reported when the book has formulas; asked for, not reported', async () => {
     const plain = await writeXlsx({ book })
-    expect(plain.issues).toEqual([{ code: 'noCachedValues', message: 'no result was given: the file stores no values of formulas, and Excel computes them when it opens the file' }])
+    expect(plain.issues).toEqual([{ code: 'noCachedValues', message: 'no result was passed: the file stores no formula values, and Excel calculates them when it opens the file' }])
     expect(await part(plain.data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1"/>')
     expect((await writeXlsx({ book }, { values: 'omit' })).issues).toEqual([])
     expect((await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } })).issues).toEqual([])
@@ -89,12 +89,12 @@ describe('writeXlsx with a snapshot', () => {
     await expect(writeXlsx({ book, result: [{ name: 'S', cells: { B1: 200 } }] as never })).rejects.toThrow(new InputError('snapshot.result', `expected ${result}, got an array`))
     await expect(writeXlsx({ book, result: { cells: {} } as never })).rejects.toThrow(new InputError('snapshot.result', `expected ${result}, got an object without sheets`))
     await expect(writeXlsx({ book, result: { sheets: [{ name: 'S', cells: { B1: 200 } }, { name: 'T', cells: {} }] } as never })).rejects.toThrow(new InputError('snapshot.result.sheets[0].cells["B1"]', 'expected a cell of a result, such as { value: 200 }, got number 200'))
-    await expect(writeXlsx({ book, result: compute({ sheets: [{ name: 'X', cells: {} }] }) })).rejects.toThrow(/its sheets differ from the book's/)
+    await expect(writeXlsx({ book, result: compute({ sheets: [{ name: 'X', cells: {} }] }) })).rejects.toThrow(/its sheets differ from the workbook's/)
     await expect(writeXlsx({ book, result: compute(book) }, { result: compute(book) } as never)).rejects.toThrow(/the result goes in the snapshot: writeXlsx\(\{ book, result \}\)/)
     const read = await readXlsx((await writeXlsx({ book, result: compute(book) })).data)
     await expect(writeXlsx(read as never)).rejects.toThrow(/a file read: pass \{ book: read\.book, result: read\.cached \}/)
     // a result alone, a computation's or a session's, is no book: it takes its book beside it
-    const alone = new InputError('snapshot', 'a result is not a snapshot: pass { book, result } with the book it was computed from')
+    const alone = new InputError('snapshot', 'a result is not a snapshot: pass { book, result } with the workbook it was calculated from')
     await expect(writeXlsx(compute(book) as never)).rejects.toThrow(alone)
     await expect(writeXlsx(createSession(book, { clock }).getResult() as never)).rejects.toThrow(alone)
     await expect(writeXlsx(compute(book) as never, { values: 'omit' })).rejects.toThrow(alone)
@@ -139,8 +139,8 @@ describe('readXlsx', () => {
     const copy = new ArrayBuffer(data.byteLength + 8)
     new Uint8Array(copy, 8).set(data)
     for (const bytes of [Buffer.from(data), data.slice().buffer, new DataView(copy, 8), new Uint8Array(copy, 8)]) expect((await readXlsx(bytes as Uint8Array)).book).toEqual(expected)
-    await expect(readXlsx('book.xlsx' as never)).rejects.toThrow(new InputError('data', `expected the file's bytes, got the string "book.xlsx": pass the file's bytes: Uint8Array, ArrayBuffer or Buffer, e.g. await readFile(path)`))
-    await expect(readXlsx(new Blob([data]) as never)).rejects.toThrow(/e\.g\. await blob\.arrayBuffer\(\)/)
+    await expect(readXlsx('book.xlsx' as never)).rejects.toThrow(new InputError('data', `expected the file's bytes as a Uint8Array, ArrayBuffer or Buffer, got the string "book.xlsx": pass, for example, await readFile(path)`))
+    await expect(readXlsx(new Blob([data]) as never)).rejects.toThrow(/for example, await blob\.arrayBuffer\(\)/)
     await expect(readXlsx(undefined as never)).rejects.toThrow(InputError)
   })
 })

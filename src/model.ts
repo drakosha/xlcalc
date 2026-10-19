@@ -32,7 +32,7 @@ const ADDR = /^([A-Z]{1,3})([1-9][0-9]*)$/
 /** `B12` → { row: 11, col: 1 } (zero-based). */
 export function parseAddress(addr: string): { row: number; col: number } {
   const m = ADDR.exec(addr)
-  if (!m) throw new Error(`bad address: ${addr}`)
+  if (!m) throw new Error(`invalid address: ${addr}`)
   return { row: Number(m[2]) - 1, col: colToIndex(m[1]) }
 }
 
@@ -91,7 +91,7 @@ export const fromUtcDays = (days: number) => (days < 61 ? days - 1 : days)
 
 export function dateToSerial(iso: string): number {
   const m = /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?)?/.exec(iso)
-  if (!m) throw new Error(`bad date: ${iso}`)
+  if (!m) throw new Error(`invalid date: ${iso}`)
   const ms = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] ?? 0), Number(m[5] ?? 0), 0) + Number(m[6] ?? 0) * 1000
   const days = (ms - EPOCH_MS) / DAY_MS
   // the phantom 1900-02-29 is serial 60 (Date.UTC rolls it to 1900-03-01)

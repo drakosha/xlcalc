@@ -48,7 +48,7 @@ export interface Place {
 export const placeText = (state: EngineState, p: Place) => `${quoteSheet(runtimeSheet(state.sheetNames, state.links, p.s))}!${formatAddress(p.r, p.c)}`
 
 /** The reason of a formula a circular reference stops: it is not computed and holds its value (`held.ts`). */
-const HELD = 'circular reference: not computed, the value is held'
+const HELD = 'circular reference: not calculated, the value is held'
 
 /** The issue of a formula a circular reference stops, whatever value it holds. */
 const heldIssue = (f: Formula): Issue => ({ s: f.s, r: f.r, c: f.c, error: 'CYCLE', reason: HELD })

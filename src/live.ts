@@ -296,7 +296,7 @@ export function liveBook(session: Session): LiveBook {
       const mark = ops.length
       try {
         const r = fn() as unknown as { then?: unknown } | undefined
-        if (r && typeof r.then === 'function') throw new InputError('batch', 'fn must not answer a promise: an assignment after an await is not part of the batch')
+        if (r && typeof r.then === 'function') throw new InputError('batch', 'fn must not return a promise: an assignment after an await is not part of the batch')
       } catch (e) {
         if (outer) pending = null
         else ops.length = mark

@@ -38,7 +38,7 @@ describe('hidden sheets in the book', () => {
 
   it('a book keeps one visible sheet; hidden is true, false or "very"', () => {
     const all: BookInput = { sheets: [{ name: 'A', cells: {}, hidden: true }, { name: 'B', cells: {}, hidden: 'very' }] }
-    expect(() => compute(all)).toThrow(new InputError('book.sheets', 'a book keeps one visible sheet at least: every sheet is hidden'))
+    expect(() => compute(all)).toThrow(new InputError('book.sheets', 'a workbook must contain at least one visible sheet: every sheet is hidden'))
     expect(() => compute({ sheets: [{ name: 'A', cells: {}, hidden: 'yes' as never }] })).toThrow(new InputError('book.sheets[0].hidden', 'expected true, false or "very", got the string "yes"'))
     expect(compute({ sheets: [{ name: 'A', cells: {}, hidden: false }, { name: 'B', cells: {}, hidden: true }] }).sheets.length).toBe(2)
   })
@@ -58,7 +58,7 @@ describe('hideSheet and unhideSheet', () => {
     expect(op(book(), { op: 'unhideSheet', sheet: 'Feb' })).toBe('Jan Feb Mar Sum')
     const one: BookInput = { sheets: [{ name: 'A', cells: {}, hidden: true }, { name: 'B', cells: {} }, { name: 'C', cells: {}, hidden: 'very' }] }
     expect(editStructure(one, { op: 'hideSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet' })
-    expect(editStructure(one, { op: 'deleteSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet, and "B" is its last' })
+    expect(editStructure(one, { op: 'deleteSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet', message: 'a workbook must contain at least one visible sheet, and "B" is the last one' })
     expect(op(one, { op: 'hideSheet', sheet: 'A', very: true })).toBe('A!! B C!!')
     expect(op(one, { op: 'deleteSheet', sheet: 'A' })).toBe('B C!!')
     expect(() => editStructure(book(), { op: 'hideSheet', sheet: 'Feb', very: 1 } as never)).toThrow(new InputError('op.very', 'expected a boolean, got 1'))

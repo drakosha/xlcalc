@@ -184,10 +184,10 @@ describe('the issues of a file written, in the language of opts.locale', () => {
     const book = { sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }
     const message = async (locale: typeof ruRU) => (await writeXlsx({ book }, { locale })).issues[0].message
     expect(await message({ ...ruRU, messages: undefined })).toBe('Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла')
-    expect(await message({ ...ruRU, tag: 'xx-YY', messages: undefined })).toBe('no result was given: the file stores no values of formulas, and Excel computes them when it opens the file')
+    expect(await message({ ...ruRU, tag: 'xx-YY', messages: undefined })).toBe('no result was passed: the file stores no formula values, and Excel calculates them when it opens the file')
     const engineOnly = { ...ruRU, tag: 'xx-ZZ', messages: { lastSheet: () => 'Последний лист' } }
     registerLocale(engineOnly)
-    expect(await message(engineOnly)).toBe('no result was given: the file stores no values of formulas, and Excel computes them when it opens the file')
-    expect((await writeXlsx({ book }, { locale: 'xx-ZZ' })).issues[0].message).toBe('no result was given: the file stores no values of formulas, and Excel computes them when it opens the file')
+    expect(await message(engineOnly)).toBe('no result was passed: the file stores no formula values, and Excel calculates them when it opens the file')
+    expect((await writeXlsx({ book }, { locale: 'xx-ZZ' })).issues[0].message).toBe('no result was passed: the file stores no formula values, and Excel calculates them when it opens the file')
   })
 })

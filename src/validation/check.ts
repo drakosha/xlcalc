@@ -34,18 +34,18 @@ export function checkValidations(v: unknown, path: string): DataValidation[] {
     checkOneOf(o.type, `${p}.type`, TYPES)
     const rule = o as unknown as DataValidation
     if (o.operator !== undefined) {
-      if (!COMPARED.has(rule.type)) throw new InputError(`${p}.operator`, `a rule of type ${rule.type} has no operator`)
+      if (!COMPARED.has(rule.type)) throw new InputError(`${p}.operator`, `a rule of type ${rule.type} takes no operator`)
       checkOneOf(o.operator, `${p}.operator`, OPERATORS)
     }
     for (const k of ['formula1', 'formula2', 'promptTitle', 'prompt', 'errorTitle', 'error']) if (o[k] !== undefined) checkString(o[k], `${p}.${k}`)
     if (rule.type !== 'any' && o.formula1 === undefined) throw new InputError(`${p}.formula1`, `a rule of type ${rule.type} needs formula1`)
-    if (rule.type === 'any' && o.formula1 !== undefined) throw new InputError(`${p}.formula1`, 'a rule of type any has no formula')
+    if (rule.type === 'any' && o.formula1 !== undefined) throw new InputError(`${p}.formula1`, 'a rule of type any takes no formula')
     if (twoBounds(rule) !== (o.formula2 !== undefined)) throw new InputError(`${p}.formula2`, twoBounds(rule) ? 'between and notBetween need formula2' : 'only between and notBetween take formula2')
     for (const k of ['allowBlank', 'dropdown', 'showPrompt', 'showError']) if (o[k] !== undefined) checkBoolean(o[k], `${p}.${k}`)
     if (o.errorStyle !== undefined) checkOneOf(o.errorStyle, `${p}.errorStyle`, ['stop', 'warning', 'information'])
   })
   const o = overlapping(areas)
-  if (o) throw new InputError(`${path}[${owner[o[1]][0]}].range`, `${owner[o[1]][1]} meets ${owner[o[0]][1]}: a cell has one rule at most`)
+  if (o) throw new InputError(`${path}[${owner[o[1]][0]}].range`, `${owner[o[1]][1]} overlaps ${owner[o[0]][1]}: a cell can have at most one rule`)
   return v as DataValidation[]
 }
 

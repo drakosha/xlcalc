@@ -40,14 +40,14 @@ describe('conditional formats as input', () => {
 
   it('wrong rules throw InputError with the path', () => {
     bad([{ type: 'cellIs', ranges: ['A1'], operator: 'greaterThan', formulas: ['1', '2'] }], /conditionalFormats\[0\]\.formulas: greaterThan takes 1 formula, got 2/)
-    bad([{ type: 'cellIs', ranges: [], operator: 'equal', formulas: ['1'] }], /ranges: a conditional format applies to one range at least/)
+    bad([{ type: 'cellIs', ranges: [], operator: 'equal', formulas: ['1'] }], /ranges: a conditional format applies to at least one range/)
     bad([{ type: 'cellIs', ranges: ['a1'], operator: 'equal', formulas: ['1'] }], /ranges\[0\]: expected a range/)
-    bad([{ type: 'colorScale', ranges: ['A1'], points: [{ value: { type: 'min' }, color: '#000000' }] }], /a colour scale has two or three points, got 1/)
+    bad([{ type: 'colorScale', ranges: ['A1'], points: [{ value: { type: 'min' }, color: '#000000' }] }], /a color scale has two or three points, got 1/)
     bad([{ type: 'iconSet', ranges: ['A1'], icons: '3Arrows', points: [{ value: { type: 'min' } }] }], /the set 3Arrows has 3 icons, so 3 thresholds; got 1/)
     bad([{ type: 'dataBar', ranges: ['A1'], min: { type: 'num' }, max: { type: 'max' }, color: '#000000' }], /min\.value: expected a string/)
-    bad([{ type: 'dataBar', ranges: ['A1'], min: { type: 'min', value: '1' }, max: { type: 'max' }, color: '#000000' }], /a threshold of type min has no value/)
+    bad([{ type: 'dataBar', ranges: ['A1'], min: { type: 'min', value: '1' }, max: { type: 'max' }, color: '#000000' }], /a threshold of type min takes no value/)
     bad([{ type: 'dataBar', ranges: ['A1'], min: { type: 'min' }, max: { type: 'max' }, color: '#000000', minLength: 60, maxLength: 40 }], /the shortest bar \(60\) is longer than the longest \(40\)/)
-    bad([{ type: 'aboveAverage', ranges: ['A1'], equal: true, stdDev: 1 }], /a rule over standard deviations has no equal/)
+    bad([{ type: 'aboveAverage', ranges: ['A1'], equal: true, stdDev: 1 }], /a rule over standard deviations takes no equal/)
     bad([{ type: 'top10', ranges: ['A1'], rank: 101, percent: true }], /rank: expected an integer from 1 to 100/)
     bad([{ type: 'expression', ranges: ['A1'], formula: 'A1', style: { alignment: {} } }], /unknown field "alignment"/)
     bad([{ type: 'expression', ranges: ['A1'], formula: 'A1', operator: 'equal' }], /unknown field "operator"/)

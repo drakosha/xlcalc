@@ -112,8 +112,8 @@ describe('xlsx reader: names', () => {
       { name: 'ext', ref: '[1]Data!$A$1' },
     ])
     expect(r.issues.map((i) => `${i.code} ${i.name}: ${i.message.split(':')[0]}`)).toEqual([
-      'name _xlnm.Print_Area: a built-in name (a print area or titles, the range of a filter) is not in the model',
-      'name _xlnm._FilterDatabase: a built-in name (a print area or titles, the range of a filter) is not in the model',
+      'name _xlnm.Print_Area: a built-in name (a print area, print titles, a filter range) is not in the model',
+      'name _xlnm._FilterDatabase: a built-in name (a print area, print titles, a filter range) is not in the model',
       'name secret: a hidden name is read as a visible one',
       'externalLink ext: a reference to another workbook that is not one of the links the file holds, or that the engine does not parse',
     ])
@@ -141,11 +141,11 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     expect(await calc('iterateCount="7" iterateDelta="0.5"')).toEqual({ iteration: undefined, issues: [] })
     expect(await calc('iterate="1" iterateCount="0" iterateDelta="-1"')).toEqual({
       iteration: {},
-      issues: ['the maximum of iterations "0" is not one of 1 to 32,767: the default, 100, is read', 'the maximum change of iterations "-1" is not a number from 0: the default, 0.001, is read'],
+      issues: ['the maximum number of iterations "0" is not between 1 and 32,767: the default, 100, is used', 'the maximum change of iterations "-1" is not a number of 0 or more: the default, 0.001, is used'],
     })
     expect(await calc('calcMode="autoNoTable" fullPrecision="0"')).toEqual({
       iteration: undefined,
-      issues: ['the calculation mode "automatic except for data tables" is not kept', 'precision as displayed is not in the engine: values keep their full precision'],
+      issues: ['the calculation mode "automatic except for data tables" is not kept', 'the engine does not support precision as displayed: values keep their full precision'],
     })
   })
 
@@ -192,7 +192,7 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     expect((await read({ sheets: [{ name: 'S', body: one(1) }], parts: custom('ru-RU') })).book.locale).toBe('ru-RU')
     const unknown = await read({ sheets: [{ name: 'S', body: one(1) }], parts: custom('de-DE'), styles: '<fonts count="1"><font><sz val="10"/><name val="Arial"/></font></fonts>' })
     expect(unknown.book.locale).toBeUndefined()
-    expect(unknown.issues.map((i) => i.message)).toEqual(["the default font Arial 10 is read as Calibri 11, the model's default", 'the locale "de-DE" is not one of the package\'s, left out'])
+    expect(unknown.issues.map((i) => i.message)).toEqual(["the default font Arial 10 is read as Calibri 11, the model's default", 'the locale "de-DE" is not one of the package\'s locales and is left out'])
   })
 
   it('a sheet without sheetData is an empty sheet', async () => {

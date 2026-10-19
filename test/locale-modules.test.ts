@@ -141,9 +141,9 @@ describe('registerLocale', () => {
   it('loading the same object again does nothing; another object of a loaded tag, en-US, or a locale a book cannot compute in is an InputError', () => {
     expect(() => registerLocale(ruRU)).not.toThrow()
     const bad = (locale: unknown) => refusal(() => registerLocale(locale as Locale)).message
-    expect(bad({ ...ruRU })).toBe('locale.tag: the locale ru-RU is loaded already, as another object')
-    expect(bad({ ...enUS })).toBe('locale.tag: the locale en-US is loaded already: it is built in')
-    expect(bad({ ...ruRU, tag: 'xx-XX', regional: undefined })).toMatch(/^locale\.regional: expected the rules a book computes by/)
+    expect(bad({ ...ruRU })).toBe('locale.tag: the locale ru-RU is already loaded, as another object')
+    expect(bad({ ...enUS })).toBe('locale.tag: the locale en-US is already loaded: it is built in')
+    expect(bad({ ...ruRU, tag: 'xx-XX', regional: undefined })).toMatch(/^locale\.regional: expected the rules a workbook is calculated by/)
     expect(bad({ ...ruRU, tag: 'xx-XX', regional: { ...ruRU.regional, columnWord: undefined } })).toBe('locale.regional.columnWord: expected a value')
     expect(bad({ ...ruRU, tag: 'xx-XX', regional: { ...ruRU.regional, extra: 1 } })).toMatch(/^locale\.regional: unknown field "extra"/)
     expect(bad({ ...ruRU, tag: 'xx-XX', messages: { lastSheet: 'В книге…' } })).toBe('locale.messages.lastSheet: expected a function')

@@ -121,7 +121,7 @@ describe('xlsx links: reading', () => {
     const r = await readXlsx(data)
     expect(r.book.externalBooks).toEqual([{ target: '', sheets: [] }, { target: 'Book2.xlsx', sheets: [{ name: 'Sheet1' }] }, { target: '', sheets: [] }])
     expect(r.issues.map((i) => i.message)).toEqual([
-      'a link to the data of another program (DDE, OLE), not to a workbook, or a link whose part is missing, is not in the model: its number is kept by a book without sheets, and formulas that refer to it compute to an error',
+      'a link to the data of another program (DDE, OLE) rather than a workbook, or a link whose part is missing, is not in the model: a linked workbook without sheets keeps its number, and formulas that refer to it evaluate to an error',
     ])
     expect((await readXlsx(data, { locale: ruRU })).issues.map((i) => i.message)).toEqual([
       'Связь с данными другой программы (DDE, OLE), а не с книгой, или связь, чьей части нет в файле, не поддерживается: её номер занят книгой без листов, формулы с ней дают ошибку',

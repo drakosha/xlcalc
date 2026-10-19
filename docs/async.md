@@ -141,7 +141,7 @@ A spill costs more than its array, because each of its cells gets entries in the
 
 Formatting alone goes to the sheet's `looks` and costs little, so `patchCells` and the formatting a copy or a move carries do not count. What writes no more than the workbook already holds is not bounded: inserting and deleting rows and columns, the other structure operations, `clearCells`, `undo` and `redo`. An edit over `writes` throws `CalcError` with `limit: 'writes'`, `max` and `size` (the cells it would write), and changes nothing: the workbook, its revision, its history and its hash stay as they were. `compute` writes nothing, so `writes` applies to sessions only.
 
-Since a user's edit triggers it, its message is in the workbook's language: `1048576 cells written by one edit, over the limit of 100000`, or in a ru-RU workbook `Правка записывает слишком много ячеек: 1048576 при пределе 100000`. The other limits' messages, which come from a host's own settings, are in English.
+Since a user's edit triggers it, its message is in the workbook's language: `one edit writes 1048576 cells, over the limit of 100000`, or in a ru-RU workbook `Правка записывает слишком много ячеек: 1048576 при пределе 100000`. The other limits' messages, which come from a host's own settings, are in English.
 
 ```js
 import { createSession } from 'xlcalc'

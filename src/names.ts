@@ -44,11 +44,11 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], 
       ast = parse(n.ref, { union: true })
     } catch (e) {
       if (!(e instanceof FormulaError)) throw e
-      issue(`bad formula: ${e.message}`)
+      issue(`invalid formula: ${e.message}`)
       continue
     }
     if (withoutSheet(ast)) {
-      issue('a reference in a name needs its sheet')
+      issue('a reference in a name must include its sheet')
       continue
     }
     // a formula Excel would not compute stays a name giving its error, as a lost reference does (#REF!)

@@ -72,7 +72,7 @@ describe('tables', () => {
     const r = values(book)
     expect([v(r, 0, 'J1'), v(r, 0, 'J3'), v(r, 0, 'B2'), v(r, 0, 'G1')]).toEqual([1, 3, { error: 'SPILL' }, { error: 'SPILL' }])
     expect(cellIssues(r).find((i) => i.cell === 'B2')?.reason).toMatch(/its cell is in the table Sales/)
-    expect(cellIssues(r).find((i) => i.cell === 'G1')?.reason).toMatch(/it meets the table Small/)
+    expect(cellIssues(r).find((i) => i.cell === 'G1')?.reason).toMatch(/it overlaps the table Small/)
   })
 
   it('without a header row or with a totals row', () => {
@@ -94,7 +94,7 @@ describe('tables', () => {
       expect(() => compute(b)).toThrow(message)
     }
     fails((b) => (b.sheets[0].tables![0].name = 'T2'), /must not look like a cell address/)
-    fails((b) => (b.sheets[0].tables![0].name = 'Bad Name'), /has only letters/)
+    fails((b) => (b.sheets[0].tables![0].name = 'Bad Name'), /contain only letters/)
     fails((b) => (b.names = [{ name: 'sales', ref: "'S'!A1" }]), /also a defined name/)
     fails((b) => {
       b.sheets[1].cells.A1 = { value: 'x' }
@@ -102,9 +102,9 @@ describe('tables', () => {
     }, /also the name of the table Sales/)
     fails((b) => (b.sheets[0].cells.B1 = { value: 'Quantity' }), /header cell B1 holds "Quantity"/)
     fails((b) => (b.sheets[0].tables![0].columns[1].name = 'region'), /also the name of column 1/)
-    fails((b) => (b.sheets[0].tables![0].range = 'A1:E5'), /has 5 columns, the table lists 4/)
+    fails((b) => (b.sheets[0].tables![0].range = 'A1:E5'), /has 5 columns, but the table lists 4/)
     fails((b) => (b.sheets[0].tables![0].range = 'A1:D1'), /no row for data/)
-    fails((b) => (b.sheets[0].merges = ['C3:D3']), /merged area C3:D3 meets the table Sales/)
+    fails((b) => (b.sheets[0].merges = ['C3:D3']), /merged area C3:D3 overlaps the table Sales/)
     fails((b) => b.sheets[0].tables!.push({ name: 'More', range: 'D5:E6', headers: false, columns: [{ name: 'Total' }, { name: 'x' }] }), /overlaps the table Sales/)
   })
 })

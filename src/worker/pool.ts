@@ -313,7 +313,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     if (signal?.aborted) return Promise.reject(abortError(signal))
     // a task an idle thread takes at once does not wait
     const idle = at ? !at.slot.busy && !at.slot.queue.length : !jobs.length && slots.some((s) => !s.busy && !s.queue.length)
-    if (!internal && !idle && o.maxQueue !== undefined && waiting() >= o.maxQueue) return Promise.reject(new CalcError('queue_full', `${o.maxQueue} tasks already wait for a thread`))
+    if (!internal && !idle && o.maxQueue !== undefined && waiting() >= o.maxQueue) return Promise.reject(new CalcError('queue_full', `${o.maxQueue} tasks are already waiting for a thread`))
     return new Promise((resolve, reject) => {
       const task: Task = { id: ++ids, msg, session: at?.session, signal, internal, resolve, reject }
       const queue = at ? at.slot.queue : jobs
@@ -465,7 +465,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     },
     async createSession(book, sopts) {
       if (closed) throw closed
-      if (o.maxSessions !== undefined && recs.size >= o.maxSessions) throw new CalcError('too_many_sessions', `the pool holds ${o.maxSessions} sessions already`)
+      if (o.maxSessions !== undefined && recs.size >= o.maxSessions) throw new CalcError('too_many_sessions', `the pool already holds ${o.maxSessions} sessions`)
       const { signal, timeoutMs, rest } = splitCall<SessionOptions>(sopts)
       const opts = { ...rest } as SessionOptions & { clock?: Clock }
       // a session without a budget of its own for its history takes its share of the thread's heap; wrong input stays for the thread to refuse

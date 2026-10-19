@@ -118,7 +118,7 @@ function fileBytes(data: unknown): Uint8Array {
   if (ArrayBuffer.isView(data)) return new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
   if (data instanceof ArrayBuffer || Object.prototype.toString.call(data) === '[object ArrayBuffer]') return new Uint8Array(data as ArrayBuffer)
   const hint = typeof (data as { arrayBuffer?: unknown } | null)?.arrayBuffer === 'function' ? 'await blob.arrayBuffer()' : 'await readFile(path)'
-  throw new InputError('data', `expected the file's bytes, got ${what(data)}: pass the file's bytes: Uint8Array, ArrayBuffer or Buffer, e.g. ${hint}`)
+  throw new InputError('data', `expected the file's bytes as a Uint8Array, ArrayBuffer or Buffer, got ${what(data)}: pass, for example, ${hint}`)
 }
 
 const BYTES = ['entryBytes', 'totalBytes'] as const
@@ -239,7 +239,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   try {
     checkBook({ ...book, locale: tag && LOCALES.has(tag) ? tag : undefined, sheets: sheets.map((s) => ({ ...s, cells: headerCells(s) })) })
   } catch (e) {
-    if (e instanceof InputError) throw new Error(`xlsx: the file's book is not valid: ${e.message}`)
+    if (e instanceof InputError) throw new Error(`xlsx: the file's workbook is not valid: ${e.message}`)
     throw e
   }
   return { book, cached, issues: issues.list(language) }

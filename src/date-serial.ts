@@ -41,7 +41,7 @@ export function dateToSerial(text: string, opts?: DateSystemOptions): number {
   try {
     serial = serialOfText(text) - e
   } catch {
-    throw new InputError('text', `invalid date ${JSON.stringify(text)}: expected ISO such as "2025-01-31" or "2025-01-31T18:00:00"`)
+    throw new InputError('text', `invalid date ${JSON.stringify(text)}: expected an ISO date such as "2025-01-31" or "2025-01-31T18:00:00"`)
   }
   if (serial < 0) throw new InputError('text', `${JSON.stringify(text)} is before the ${e === EPOCH_1904 ? '1904' : '1900'} date system's day 0 (${e === EPOCH_1904 ? '1904-01-01' : '1900-01-00'}): Excel has no such date`)
   return serial

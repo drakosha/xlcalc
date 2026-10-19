@@ -113,7 +113,7 @@ describe.each(['closures', 'eval'] as Execution[])('limits.writes, execution %s'
 
     it("the refusal says it in the book's language, as a person's edit brings it", async () => {
       const open = await opener(kind)
-      for (const [locale, message] of [[undefined, '1048576 cells written by one edit, over the limit of 100000'], ['ru-RU', 'Правка записывает слишком много ячеек: 1048576 при пределе 100000']] as const) {
+      for (const [locale, message] of [[undefined, 'one edit writes 1048576 cells, over the limit of 100000'], ['ru-RU', 'Правка записывает слишком много ячеек: 1048576 при пределе 100000']] as const) {
         const s = await open({ ...(locale ? { locale } : {}), sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] }, { clock, execution, limits: { writes: 100_000 } })
         const e = await s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', range: 'B:B' } }).catch((x: unknown) => x)
         expect((e as CalcError).message).toBe(message)

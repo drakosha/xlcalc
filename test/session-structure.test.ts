@@ -161,12 +161,12 @@ describe('styles and layout in a session', () => {
 
   it('wrong styles and layout edits throw InputError and change nothing', () => {
     const s = createSession(book(), { clock })
-    expect(() => s.setStyles([])).toThrow(new InputError('styles', 'S!A2 uses style 0, the new table has 0'))
-    expect(() => s.setLayout([{ sheet: 'S', columns: 'B', set: { width: 10 } }, { sheet: 'S', columns: 'C', set: { style: 1 } }])).toThrow('edits[1].set.style: expected the index of a style of the book, 0 to 0, got number 1')
+    expect(() => s.setStyles([])).toThrow(new InputError('styles', 'S!A2 uses style 0, but the new style table has 0'))
+    expect(() => s.setLayout([{ sheet: 'S', columns: 'B', set: { width: 10 } }, { sheet: 'S', columns: 'C', set: { style: 1 } }])).toThrow('edits[1].set.style: expected the index of a style of the workbook, 0 to 0, got number 1')
     expect(() => s.setLayout([{ sheet: 'T', rows: '1', set: {} }])).toThrow('edits[0].sheet: unknown sheet "T"')
     expect(() => s.setLayout([{ sheet: 'S', merges: ['A1:B2', 'B2:C3'] }])).toThrow('edits[0].merges[1]: B2:C3 overlaps A1:B2')
     expect(() => s.setLayout([{ sheet: 'S', cols: 'A', set: {} } as never])).toThrow('edits[0]: unknown field "cols" (expected sheet, columns, set) (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations or outline)')
-    expect(() => s.setCells([{ sheet: 'S', cell: 'A1', input: { style: 1 } }])).toThrow('edits[0].input.style: expected the index of a style of the book, 0 to 0, got number 1')
+    expect(() => s.setCells([{ sheet: 'S', cell: 'A1', input: { style: 1 } }])).toThrow('edits[0].input.style: expected the index of a style of the workbook, 0 to 0, got number 1')
     expect(s.getBook()).toEqual(book())
   })
 })

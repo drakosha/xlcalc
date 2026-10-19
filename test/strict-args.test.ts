@@ -103,7 +103,7 @@ describe.each(['closures', 'eval'] as const)('arguments a call does not take, ex
 
     it("a style by its fields where a cell takes its number says where such a style goes", async () => {
       const s = await open()
-      await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { style: { font: { bold: true } } as never } }])).rejects.toThrow("edits[0].input.style: expected the index of a style of the book, 0 to 0, got an object (a cell names a style of the book's styles by its index; a session's patchCells takes one by its fields)")
+      await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { style: { font: { bold: true } } as never } }])).rejects.toThrow("edits[0].input.style: expected the index of a style of the workbook, 0 to 0, got an object (a cell refers to one of the workbook's styles by its index; a session's patchCells takes a style by its fields)")
       expect((await s.patchCells([{ sheet: 'S', cell: 'A1', set: { style: { font: { bold: true } } } }])).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 2, text: '2', style: 0 }])
       await s.close()
     })

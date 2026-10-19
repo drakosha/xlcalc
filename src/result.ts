@@ -20,7 +20,7 @@ import { cellCount, cornersText, meets, type Rect } from './structure/area.js'
 /** The clock moment as a serial number (UTC); an invalid moment is a caller error. */
 export function clockSerial(clock: Clock): number {
   const ms = Date.parse(clock.now)
-  if (Number.isNaN(ms)) throw new Error(`bad clock.now: ${clock.now}`)
+  if (Number.isNaN(ms)) throw new Error(`invalid clock.now: ${clock.now}`)
   return msToSerial(ms)
 }
 

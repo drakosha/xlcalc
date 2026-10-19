@@ -51,7 +51,7 @@ export function checkPatches(v: unknown, sheetIndex: (name: string) => number | 
     const o = object(e, p, 'a patch such as { sheet: "Sheet1", range: "B2:D9", set: { numberFormat: "0.00" } }')
     onlyKeys(o, p, ['sheet', 'cell', 'range', 'set'])
     const i = checkSheet(o.sheet, sheetIndex, `${p}.sheet`)
-    if ((o.cell === undefined) === (o.range === undefined)) throw new InputError(p, 'expected a cell or a range, one of them')
+    if ((o.cell === undefined) === (o.range === undefined)) throw new InputError(p, 'expected either a cell or a range')
     const rect = o.cell !== undefined ? parseRange(checkAddress(o.cell, `${p}.cell`))! : checkRange(o.range, `${p}.range`)
     const set = object(o.set, `${p}.set`, 'the fields to change, such as { style: { font: { bold: true } }, numberFormat: "0.00", note: null }')
     onlyKeys(set, `${p}.set`, FIELDS)

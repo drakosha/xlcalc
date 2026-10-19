@@ -122,7 +122,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
       [[{ sheet: 'Nope', cell: 'A1', set: {} }], 'patches[0].sheet: unknown sheet "Nope"'],
       [[{ sheet: 'S', cell: 'a1', set: {} }], 'patches[0].cell'],
       [[{ sheet: 'S', cell: 'A1' }], 'patches[0].set'],
-      [[{ sheet: 'S', cell: 'A1', set: { link: { tooltip: 'x' } } }], 'patches[0].set.link: a hyperlink has a url, a location or both'],
+      [[{ sheet: 'S', cell: 'A1', set: { link: { tooltip: 'x' } } }], 'patches[0].set.link: a hyperlink needs a url, a location or both'],
       [[{ sheet: 'S', cell: 'A1', set: { numberFormat: 99 } }], 'patches[0].set.numberFormat'],
       [{}, 'patches: expected an array'],
     ]

@@ -45,7 +45,7 @@ const TAKEN_BY: Record<string, string> = {
   byColumns: 'findCells',
   skipHidden: 'findCells and replaceInCells',
   after: 'findCells',
-  baseRevision: "a session's calls that change its book",
+  baseRevision: "a session's calls that change its workbook",
   table: 'toLocal and toInvariant',
   clock: 'compute and createSession',
   externals: 'compute and createSession',

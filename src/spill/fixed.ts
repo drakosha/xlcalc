@@ -79,7 +79,7 @@ export function checkArrayEdits(state: EngineState, edits: CellReplace[]) {
       for (let c = x.c1; c <= x.c2; c++) {
         const addr = formatAddress(r, c)
         const k = at(s, addr)
-        if (addr !== e.cell && holds(edited.has(k) ? (edited.get(k) ?? undefined) : state.input.sheets[s].cells[addr])) throw new InputError('edits', `${e.sheet}!${addr} is in the area of the array formula at ${e.cell} (${e.input!.array}), which holds nothing else`)
+        if (addr !== e.cell && holds(edited.has(k) ? (edited.get(k) ?? undefined) : state.input.sheets[s].cells[addr])) throw new InputError('edits', `${e.sheet}!${addr} is inside the area of the array formula at ${e.cell} (${e.input!.array}), so it cannot hold anything else`)
       }
   }
 }

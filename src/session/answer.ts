@@ -137,6 +137,6 @@ export function checkBase<T extends EditOptions>(v: unknown, revision: number, a
   onlyOptions(o, path, ['baseRevision', ...allowed])
   const b = o.baseRevision
   if (b !== undefined && !(typeof b === 'number' && Number.isInteger(b) && b >= 0)) throw new InputError(`${path}.baseRevision`, `expected a revision, a whole number of at least 0, got ${JSON.stringify(b)}`)
-  if (b !== undefined && b !== revision) throw new CalcError('stale_revision', `the edit is made over revision ${b}, the session is at revision ${revision}: it changed nothing`)
+  if (b !== undefined && b !== revision) throw new CalcError('stale_revision', `the edit was made against revision ${b}, but the session is at revision ${revision}: nothing was changed`)
   return o as T
 }

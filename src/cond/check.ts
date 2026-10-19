@@ -83,7 +83,7 @@ function checkValue(v: unknown, p: string) {
   onlyKeys(o, p, ['type', 'value'])
   checkOneOf(o.type, `${p}.type`, VALUE_TYPES)
   if (WITH_VALUE.has(o.type as string)) checkString(o.value, `${p}.value`)
-  else if (o.value !== undefined) throw new InputError(`${p}.value`, `a threshold of type ${o.type} has no value`)
+  else if (o.value !== undefined) throw new InputError(`${p}.value`, `a threshold of type ${o.type} takes no value`)
 }
 
 function checkIcon(v: unknown, p: string) {
@@ -101,7 +101,7 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
   const type = o.type as ConditionalFormat['type']
   onlyKeys(o, p, [...BASE, ...FIELDS[type]])
   const ranges = array(o.ranges, `${p}.ranges`, 'an array of ranges such as ["B2:B9"]')
-  if (!ranges.length) throw new InputError(`${p}.ranges`, 'a conditional format applies to one range at least')
+  if (!ranges.length) throw new InputError(`${p}.ranges`, 'a conditional format applies to at least one range')
   ranges.forEach((r, i) => checkRange(r, `${p}.ranges[${i}]`, false))
   if (o.stopIfTrue !== undefined) checkBoolean(o.stopIfTrue, `${p}.stopIfTrue`)
   if (o.style !== undefined) checkStyle(o.style, `${p}.style`)
@@ -134,11 +134,11 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
     case 'aboveAverage':
       for (const k of ['below', 'equal']) if (o[k] !== undefined) checkBoolean(o[k], `${p}.${k}`)
       if (o.stdDev !== undefined) checkNumber(o.stdDev, `${p}.stdDev`, 1, 3, true)
-      if (o.stdDev !== undefined && o.equal === true) throw new InputError(`${p}.equal`, 'a rule over standard deviations has no equal (Excel keeps one or the other)')
+      if (o.stdDev !== undefined && o.equal === true) throw new InputError(`${p}.equal`, 'a rule over standard deviations takes no equal (Excel keeps one or the other)')
       break
     case 'colorScale': {
       const pts = array(o.points, `${p}.points`, 'an array of two or three points such as [{ value: { type: "min" }, color: "#F8696B" }, { value: { type: "max" }, color: "#63BE7B" }]')
-      if (pts.length < 2 || pts.length > 3) throw new InputError(`${p}.points`, `a colour scale has two or three points, got ${pts.length}`)
+      if (pts.length < 2 || pts.length > 3) throw new InputError(`${p}.points`, `a color scale has two or three points, got ${pts.length}`)
       pts.forEach((x, i) => {
         const pp = `${p}.points[${i}]`
         const pt = object(x, pp, 'a point such as { value: { type: "min" }, color: "#F8696B" }')

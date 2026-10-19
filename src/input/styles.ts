@@ -13,20 +13,20 @@ export function checkFormat(v: unknown, path: string) {
 }
 
 /** A style's fields where a cell takes its number: where such a style goes. */
-const STYLE_HINT = " (a cell names a style of the book's styles by its index; a session's patchCells takes one by its fields)"
+const STYLE_HINT = " (a cell refers to one of the workbook's styles by its index; a session's patchCells takes a style by its fields)"
 
 /** A style number of a book with `styles` styles. */
 export function checkStyleIndex(v: unknown, path: string, styles: number) {
   if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles) {
     const hint = isObject(v) ? STYLE_HINT : ''
-    throw new InputError(path, (styles ? `expected the index of a style of the book, 0 to ${styles - 1}, got ${what(v)}` : `the book has no styles, got ${what(v)}`) + hint)
+    throw new InputError(path, (styles ? `expected the index of a style of the workbook, 0 to ${styles - 1}, got ${what(v)}` : `the workbook has no styles, got ${what(v)}`) + hint)
   }
 }
 
 const COLOR = /^#[0-9A-Fa-f]{6}$/
 
 export function checkColor(v: unknown, path: string) {
-  if (typeof v !== 'string' || !COLOR.test(v)) throw new InputError(path, `expected a colour such as "#FF0000", got ${what(v)}`)
+  if (typeof v !== 'string' || !COLOR.test(v)) throw new InputError(path, `expected a color such as "#FF0000", got ${what(v)}`)
 }
 
 /** The lines of a border (`BorderLine`), as xlsx names them; the xlsx reader takes these and names any other lost. */

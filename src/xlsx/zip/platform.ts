@@ -20,7 +20,7 @@ const g = globalThis as unknown as Globals
 
 function need<K extends keyof Globals>(name: K): NonNullable<Globals[K]> {
   const v = g[name]
-  if (!v) throw new Error(`xlsx: this platform has no ${name} (Node 20.19 or later, or a current browser, is needed)`)
+  if (!v) throw new Error(`xlsx: this platform has no ${name} (it needs Node 20.19 or later, or a current browser)`)
   return v as NonNullable<Globals[K]>
 }
 

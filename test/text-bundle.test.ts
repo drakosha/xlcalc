@@ -42,7 +42,7 @@ describe('text without the engine', () => {
       { key: 'currency', name: 'Денежный', format: '#,##0.00\\ "₽"', code: '#,##0.00\\ "₽"' },
     ])
     expect(out(`(() => { try { TEXT.scanReferences('=A1', { locale: 'ru-RU' }) } catch (e) { return e.message } })()`)).toBe(
-      "opts.locale: the locale ru-RU is not loaded: give the locale as an object, ruRU of the package's module locales/ru-RU (loaded: en-US)",
+      "opts.locale: the locale ru-RU is not loaded: pass the locale as an object: ruRU from the package's module locales/ru-RU (loaded: en-US)",
     )
   }, 60_000)
 })

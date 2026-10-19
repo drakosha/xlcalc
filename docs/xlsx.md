@@ -74,7 +74,7 @@ registerLocale(ruRU)
 const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }] }
 const { data, issues } = await writeXlsx({ book }, { locale: 'ru-RU' })
 console.log(issues[0].code, issues[0].message) // → noCachedValues Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла
-console.log((await writeXlsx({ book })).issues[0].message) // → no result was given: the file stores no values of formulas, and Excel computes them when it opens the file
+console.log((await writeXlsx({ book })).issues[0].message) // → no result was passed: the file stores no formula values, and Excel calculates them when it opens the file
 console.log((await readXlsx(data, { locale: ruRU })).book.locale) // → ru-RU
 ```
 
@@ -295,8 +295,8 @@ An issue's `message` is in English by default. `readXlsx(data, { locale })` and 
 |---|---|---|
 | `richText` | formatted runs of text are read as plain text | Форматированный текст прочитан как простой |
 | `style` | a style's text rotation is not in the model | Поворот текста в стиле не поддерживается |
-| `calculation` | the maximum of iterations "0" is not one of 1 to 32,767: the default, 100, is read | Предельное число итераций «0» вне пределов от 1 до 32 767: прочитано значение по умолчанию, 100 |
-| `noCachedValues` | no result was given: the file stores no values of formulas, and Excel computes them when it opens the file | Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла |
+| `calculation` | the maximum number of iterations "0" is not between 1 and 32,767: the default, 100, is used | Предельное число итераций «0» вне пределов от 1 до 32 767: прочитано значение по умолчанию, 100 |
+| `noCachedValues` | no result was passed: the file stores no formula values, and Excel calculates them when it opens the file | Результат не передан: файл не хранит значения формул, Excel вычислит их при открытии файла |
 
 The host passes the language the user reading the messages has chosen. A file does not record it: Excel stores no language in xlsx, and the locale the writer stores in `xlcalc.locale` is the workbook's, the rules it calculates by, and a user working in another language may open the same workbook. So neither function takes the language from the workbook.
 

@@ -60,7 +60,7 @@ export function* copyText(state: EngineState, s: number, asked: Rect, o: CopyTex
   const hiddenCols = hiddenSpansOf(sheet.columns, 'c')
   const size = visibleCount(x.r1, x.r2, hiddenRows) * visibleCount(x.c1, x.c2, hiddenCols)
   const max = o.maxCells ?? MAX_CELLS
-  if (size > max) throw new CalcError('limit', `copy contains ${size} cells, over the limit of ${max}`, { limit: 'cells', max, size })
+  if (size > max) throw new CalcError('limit', `the copy contains ${size} cells, over the limit of ${max}`, { limit: 'cells', max, size })
   allot(size)
   if (!size) return ''
   const rows = [...visibleLines(x.r1, x.r2, hiddenRows)]
@@ -82,7 +82,7 @@ export function* copyText(state: EngineState, s: number, asked: Rect, o: CopyTex
   let chars = o.trailingNewline === false ? 0 : 2
   const countText = (text: string, separator: number) => {
     chars += separator + text.length + (/[\t\r\n]/.test(text) ? 2 + (text.match(/"/g)?.length ?? 0) : 0)
-    if (chars > maxChars) throw new CalcError('limit', `copy text exceeds ${maxChars} characters`, { max: maxChars, size: chars })
+    if (chars > maxChars) throw new CalcError('limit', `the copied text exceeds ${maxChars} characters`, { max: maxChars, size: chars })
   }
   for (const r of rows) {
     countText('', lines.length ? 2 : 0)
