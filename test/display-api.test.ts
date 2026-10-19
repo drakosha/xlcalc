@@ -121,6 +121,23 @@ describe("the system's long date and time by their culture tags", () => {
   })
 })
 
+describe('the calendar prefixes B1 and B2', () => {
+  const shown = (v: number, numberFormat: string, locale?: string) => displayValue(v, { numberFormat, locale }).text
+
+  it('B1 shows the Gregorian date with English names, B2 the tabular Hijri date with Arabic names, in any locale', () => {
+    expect([shown(45688.5, 'B1dd/mm/yyyy'), shown(45688.5, 'B1d mmmm yyyy', 'ru-RU'), shown(36526, 'b1dddd', 'ru-RU')]).toEqual(['31/01/2025', '31 January 2025', 'Saturday'])
+    expect([shown(36526, 'B2dd/mm/yyyy'), shown(45479, 'B2dd/mm/yyyy h:mm'), shown(45480, 'b2d/m/yy', 'ru-RU')]).toEqual(['25/09/1420', '30/12/1445 0:00', '1.1.46'])
+    expect([shown(45688.5, 'B2d mmmm yyyy', 'ru-RU'), shown(45628, 'B2dddd'), shown(45569, 'B2mmm')]).toEqual(['2 شعبان 1446', 'الإثنين', 'ربيع\u00a0الثاني'])
+  })
+
+  it('in a file read and computed', async () => {
+    const cells = { A1: { value: 36526, numberFormat: 'B2dd/mm/yyyy' }, A2: { value: 45688.5, numberFormat: 'B1d mmmm yyyy' } }
+    const { data } = await writeXlsx({ book: { locale: 'ru-RU', sheets: [{ name: 'S', cells, columns: { A: { width: 40 } } }] } })
+    const got = compute((await readXlsx(data)).book, { clock }).sheets[0].cells
+    expect([got.A1.text, got.A2.text]).toEqual(['25.09.1420', '31 January 2025'])
+  })
+})
+
 describe("colours the screen shows where Excel's AppleScript reads none", () => {
   // read from a screenshot of Excel 16.113 for Mac (docs/formats.md): the section's colour on a zero and on text
   it.each([

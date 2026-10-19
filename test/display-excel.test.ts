@@ -57,6 +57,10 @@ const MISSED: readonly string[] = [
   'en-US:held:condition#6',
   'ru-RU:held-ru:condition#6',
   ...[9, 12, 17, 18, 19, 22, 25, 26, 28, 29, 31, 32, 33, 34, 35].map((n) => `en-US:seconds-held:day#${n}`),
+  // B1's names are English in ru-RU too; B2's Arabic in both locales, three of them not CLDR's
+  ...[3, 7, 11, 15].map((n) => `ru-RU:calendar-held-ru:b1#${n}`),
+  ...['en-US:calendar-names-held', 'ru-RU:calendar-names-held-ru'].flatMap((set) => Array.from({ length: 16 }, (_, i) => `${set}:b2n#${i + 1}`)),
+  ...['en-US:calendar-hijri-held', 'ru-RU:calendar-hijri-held-ru'].flatMap((set) => [7, 11, 12, 22, 30, 33].map((n) => `${set}:hijri#${n}`)),
 ]
 
 for (const set of DISPLAY_SETS) {
