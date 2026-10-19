@@ -16,6 +16,14 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.52.1 (2026-10-19)
+
+Internal release; not published to npm. Workbooks open faster. The synthetic book's values and hashes are as in 0.52.0.
+
+Changed:
+
+- Formulas that differ only in their references and numbers, such as a formula copied down a column, are parsed, checked and printed once per shape while a workbook is built; each takes the shape's template with its own references and numbers, so formula texts, values and hashes are the same. Opening is faster, with closures and with eval: the chain of 10,000 formulas 1.18 and 1.15 times, the batch workbook 1.37 and 1.31 times, the cumulative sums 1.29 and 1.14 times, the 3,400-row SUMIFS workbook 1.15 and 1.09 times. Structure operations and `fillRange`, which build the workbook again, gain the same way (`fillRange` of 10,000 formulas 1.23 times). Against IronCalc 0.9.0 the chain now opens 1.35 and 1.55 times slower, down from 1.63 and 1.73 ([the comparison](bench/compare/README.md)).
+
 ## 0.52.0 (2026-10-19)
 
 Internal release; not published to npm. `liveWorkbook` is `liveBook`, and the API reference in idiomatic English. The synthetic book's values and hashes are as in 0.51.1.

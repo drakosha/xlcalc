@@ -22,16 +22,16 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (19.10.2026, 0.52.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (19.10.2026, 0.52.1), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 291 KB (111) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 496 KB (187) |
+| `compute` from `xlcalc` | calculating a workbook | 294 KB (112) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 499 KB (188) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 559 KB (207) |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 562 KB (208) |
 | `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 205 KB (77) |
-| `xlcalc/worker` | `createCalcPool`: worker threads | 33 KB (12), its worker 607 KB (208) |
+| `xlcalc/worker` | `createCalcPool`: worker threads | 33 KB (12), its worker 610 KB (209) |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
 | `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Find over a host's text, sort order | 51 KB (20) |
 | `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 97 KB (37) |
