@@ -1,13 +1,14 @@
 // node --expose-gc --max-old-space-size=8192 workload-pair.mjs <base> <branch> [workload ...]: bench/hyperformula's
-// workloads in two builds of xlcalc in one process, taking turns, the order changed each round: opening (median of 7)
-// and each edit operation (median and p95 of 30, the two states alternating), closures and eval, display false. After
-// the rounds the branch's values are checked against the base's full calculation.
+// workloads in two builds of xlcalc in one process, taking turns, the order changed each round: opening (median of 7, or
+// of the environment's OPEN_ROUNDS) and each edit operation (median and p95 of 30, the two states alternating), closures
+// and eval, display false. After the rounds the branch's values are checked against the base's full calculation.
 import { WORKLOADS, workload } from '../hyperformula/workloads.mjs'
 
 const [base, branch, ...ids] = process.argv.slice(2)
 const libs = await Promise.all([base, branch].map((r) => import(r + '/dist/index.js')))
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const names = ['base', 'branch']
+const openRounds = Number(process.env.OPEN_ROUNDS ?? 7)
 const f = (v) => (v < 1 ? v.toFixed(3) : v < 10 ? v.toFixed(2) : v.toFixed(1))
 const at = (xs, q) => [...xs].sort((a, b) => a - b)[Math.min(xs.length - 1, Math.floor(xs.length * q))]
 const pair = (round) => (round % 2 ? [1, 0] : [0, 1])
@@ -18,7 +19,7 @@ for (const id of ids.length ? ids : WORKLOADS.map((w) => w.id)) {
   for (const execution of ['closures', 'eval']) {
     const options = { clock, execution, display: false }
     const open = [[], []]
-    for (let round = 0; round < 8; round++)
+    for (let round = 0; round <= openRounds; round++)
       for (const i of pair(round)) {
         global.gc()
         const t = performance.now()
