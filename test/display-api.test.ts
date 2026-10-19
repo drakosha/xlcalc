@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/contract.js'
 import { compute, displayValue, entryWidth, fitColumns, InputError, LOCALES } from '../src/index.js'
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import './locales.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -99,6 +100,24 @@ describe('displayValue', () => {
     fails(() => displayValue(Number.NaN), 'value: expected a number, text, a boolean, null or { error: code }, got number NaN')
     fails(() => displayValue({ error: 'OOPS' } as never), 'value: expected a number, text, a boolean, null or { error: code }, got an object')
     fails(() => compute({ sheets: [] }, { display: 'yes' } as never), 'opts.display: expected a boolean, got the string "yes"')
+  })
+})
+
+describe("the system's long date and time by their culture tags", () => {
+  const LONG = '[$-x-sysdate]dddd, mmmm dd, yyyy'
+  const TIME = '[$-x-systime]h:mm:ss AM/PM'
+
+  it('show as [$-F800] and [$-F400] do, whatever the code after the tag; a currency shows its symbol, not the culture', () => {
+    const shown = (v: number, numberFormat: string, locale?: string) => displayValue(v, { numberFormat, locale }).text
+    expect([LONG, '[$-x-sysdate]yyyy-mm-dd', TIME, '[$-X-SYSTIME]yyyy'].map((f) => shown(45688.5, f))).toEqual(['Friday, January 31, 2025', 'Friday, January 31, 2025', '12:00:00 PM', '12:00:00 PM'])
+    expect([LONG, TIME].map((f) => shown(45001.25, f, 'ru-RU'))).toEqual(['четверг, 16 марта 2023 г.', '6:00:00'])
+    expect(['[$€-x-euro2] #,##0.00', '#,##0.00 [$₽-ru-RU]', '[$$-en-US]#,##0.00'].map((f) => shown(1.5, f))).toEqual(['€ 1.50', '1.50 ₽', '$1.50'])
+  })
+
+  it('in a file read and computed', async () => {
+    const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 45688.5, numberFormat: LONG }, A2: { value: 45688.5, numberFormat: TIME } }, columns: { A: { width: 40 } } }] } })
+    const cells = compute((await readXlsx(data)).book, { clock }).sheets[0].cells
+    expect([cells.A1.text, cells.A2.text]).toEqual(['Friday, January 31, 2025', '12:00:00 PM'])
   })
 })
 
