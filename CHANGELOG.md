@@ -16,6 +16,15 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.51.1 (2026-10-19)
+
+Internal release; not published to npm. The code in modules by what they do, and the guides in idiomatic English. The synthetic book's values and hashes are as in 0.51.0, and so are the answers, the refusals of wrong input and the public types.
+
+Changed:
+
+- Input checks, the public types (`xlcalc/contract` re-exports ten modules by area), structure's transforms, the formulas xlsx writes and the criteria's selections moved to modules of their own; five cycles of imports are gone. No call answers otherwise: 7,861 refusals of wrong input, the API's 669 types and 1,099 xlsx readings and writings are as in 0.51.0.
+- README and every guide in `docs/` rewritten in idiomatic English with the terms of Excel and JavaScript (workbook, returns, displayed text); their code is as it was, but for the quick start's section on locales, which now shows the same cells under each locale's rules and `toLocal` and `toInvariant`.
+
 ## 0.51.0 (2026-10-19)
 
 Internal release; not published to npm. `readXlsx` within bounds of memory, the system's date and time tags and the calendar prefixes of number formats as Excel shows them, the fill handle over hidden rows, measured in Excel for Mac and Windows. The synthetic book's values and hashes are as in 0.50.5.
