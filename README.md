@@ -116,6 +116,49 @@ console.log(r.sheets[0].cells.A100.value, late.code) // → 5050 soft_timeout
 await pool.close()
 ```
 
+## Compared with other libraries
+
+Each library calculated the 5,275 formulas of xlcalc's coverage run over the same data, and its results were compared with Excel 16's, which this repository stores, by the same tolerance and with no allowance for known differences:
+
+| | xlcalc | Univer 1.0.4 | IronCalc 0.9.0 | HyperFormula 3.5.0 |
+|---|---:|---:|---:|---:|
+| Formulas with Excel's result | 99.5% | 94.5% | 93.0% | 80.5% |
+| Functions with Excel's result in every case (of 402) | 395 | 240 | 241 | 171 |
+
+These are the cases xlcalc's functions were checked against, so they favor it.
+
+Speed and memory on Node 26.7 and an Apple M5 Pro, each case in its own process, with xlcalc's faster mode of execution, HyperFormula's best configuration and IronCalc's WebAssembly build; IronCalc's memory is its heap with the WebAssembly memory it grew to, an upper bound. A dash marks values that differ from xlcalc's full calculation: IronCalc's after a row is inserted in the SUMIFS workbook. The protocol and every case are in `bench/compare` in the repository.
+
+| Milliseconds, median | xlcalc | HyperFormula | IronCalc |
+|---|---:|---:|---:|
+| Open a 3,400-row workbook of 3,907 SUMIFS formulas | 98.6 | 3,765 | 2,207 |
+| Edit a criterion of its SUMIFS | 0.151 | 0.956 | 2,070 |
+| Edit an amount it sums | 8.51 | 2,810 | 2,134 |
+| Open 50,000 lookups | 46.9 | 1,119 | 13,648 |
+| Edit a lookup key | 0.156 | 0.095 | 12,875 |
+| Open a chain of 10,000 formulas | 32.8 | 30.2 | 24.9 |
+| Edit its first cell | 2.21 | 4.51 | 2.30 |
+| Open 50,000 formulas over one cell | 128 | 362 | 111 |
+| Edit that cell | 15.2 | 40.6 | 16.1 |
+| Set 2,000 inputs at once | 2.58 | 2.92 | 2.50 |
+| Insert a row in the SUMIFS workbook | 107 | 2,669 | – |
+| Insert a row among 5,000 cumulative SUMs | 24.3 | 6.36 | 187 |
+
+| Retained heap after opening, MB | xlcalc | HyperFormula | IronCalc |
+|---|---:|---:|---:|
+| The SUMIFS workbook | 13.6 | 17.7 | 22.0 |
+| 50,000 lookups | 8.66 | 20.4 | 26.5 |
+| A chain of 10,000 formulas | 7.19 | 4.76 | 6.52 |
+| 1,000 values 97 rows apart | 1.16 | 0.842 | 3.77 |
+
+| xlsx, 34,000 rows | xlcalc | SheetJS | ExcelJS |
+|---|---:|---:|---:|
+| Read, ms | 446 | 546 | 596 |
+| Write, ms | 664 | 347 (compressed 461) | 1,068 |
+| File written, MB | 3.50 | 20.0 (compressed 8.69) | 3.54 |
+
+SheetJS writes without compression by default.
+
 ## Documentation
 
 - [Quick start](docs/quick-start.md): the main uses, from a calculator on a server to a grid, with examples.
