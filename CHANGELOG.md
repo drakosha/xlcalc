@@ -16,6 +16,18 @@ What is in it:
 - The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
 
+## 0.53.1 (2026-10-20)
+
+Internal release; not published to npm. A sparse sheet's memory, and a comparison with other libraries in the README. The synthetic book's values and hashes are as in 0.53.0.
+
+Fixed:
+
+- Since 0.50.4 a sheet whose values lie far apart kept the empty rows between them: 1,000 values 97 rows apart, each read by a formula, took 8.6 MiB, where 0.50.3 took 2.1. A column's chunk of 1,024 rows with fewer than 20 values now keeps them as pairs of a row and its value and becomes an array by row at the 20th, so the sheet takes 2.2 MiB, and dense columns read and take memory as before.
+
+Documentation:
+
+- [Compared with other libraries](README.md#compared-with-other-libraries): agreement with Excel on the coverage run's formulas next to Univer, IronCalc and HyperFormula, and the speed of opening, edits and structure operations, memory and xlsx next to HyperFormula, IronCalc, SheetJS and ExcelJS.
+
 ## 0.53.0 (2026-10-20)
 
 Internal release; not published to npm. The engine's English messages in plain English. The synthetic book's values and hashes are as in 0.52.1.
