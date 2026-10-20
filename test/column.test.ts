@@ -1,5 +1,5 @@
 /**
- * A sheet's column of values (`src/column.ts`): chunks of 256 rows, kept as pairs of a row and a value until they hold
+ * A sheet's column of values (`src/column.ts`): chunks of 1,024 rows, kept as pairs of a row and a value until they hold
  * 20 values, read and written in any order against a plain map of the same writes, holes kept apart from written nulls;
  * and a sparse sheet keeps a heap of its cells, not of their chunks' empty rows (in a fresh process,
  * `fixtures/column-heap-child.ts`).
@@ -44,6 +44,6 @@ it("a sparse sheet keeps its cells' heap, not its chunks' empty rows", () => {
   const child = fileURLToPath(new URL('./fixtures/column-heap-child.ts', import.meta.url))
   const out = JSON.parse(execFileSync(process.execPath, ['--expose-gc', '--import', 'tsx', child], { encoding: 'utf8' })) as { heap: number; sum: number }
   expect(out.sum).toBe(3)
-  // chunks of 1,024 rows by index kept about 8.6 MB here; the cells and formulas take about 2
+  // chunks indexed by row kept about 8.6 MB here; the cells and formulas take about 2
   expect(out.heap).toBeLessThan(5)
 }, 60_000)

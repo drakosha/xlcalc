@@ -1,12 +1,12 @@
 /**
- * A column of a sheet's values by row, in chunks of 256 rows, each made when one of its rows is first written. A chunk of
+ * A column of a sheet's values by row, in chunks of 1,024 rows, each made when one of its rows is first written. A chunk of
  * fewer than `FEW` values keeps them as pairs of a row and its value, read by a short scan; at `FEW` it becomes an array
  * by row, read by index. A JavaScript array with a value far below the rest is kept by the engine as a dictionary, read
  * by hashing, and a dense chunk is never sparser than its own rows; a sparse sheet holds its cells, not empty rows.
  */
 import type { V } from './values.js'
 
-const BITS = 8
+const BITS = 10
 const MASK = (1 << BITS) - 1
 /** A chunk with this many values becomes an array by row. */
 const FEW = 20
