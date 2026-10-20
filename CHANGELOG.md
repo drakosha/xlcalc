@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.54.1 (2026-10-20)
+## 0.54.2 (2026-10-20)
 
 The first public release. The versions below it were internal builds used by our own applications and were not published to npm; their entries are kept as written, and the README describes the package as it is now.
 
@@ -16,7 +16,11 @@ What it includes:
 - Formula bar tooltips: a function's arguments (`functionSignature`) with argument names of the library's own in English and Russian, its category as Excel's Insert Function dialog lists it (`FUNCTION_CATEGORIES`), and a one-line description (`functionDescription` from `xlcalc/function-text`, in Russian from `xlcalc/function-text/ru-RU`), without the engine.
 - `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and their commands (`outlineEdit`), the references in formula text, what an arrow key does in it as Excel's Point mode decides (`refAt`), the call and argument the caret is in (`callAt`), and number format categories, without the engine.
 
-The code is that of 0.53.1.
+The code is that of 0.53.1. The README says that the package is under heavy development and AI-engineered.
+
+## 0.54.1 (2026-10-20)
+
+The internal build of the first public release, without the README's line on its status.
 
 ## 0.53.1 (2026-10-20)
 

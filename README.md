@@ -2,6 +2,8 @@
 
 A formula engine for spreadsheet workbooks in JavaScript. You pass it a workbook (sheets of cells with values and Excel formulas, plus defined names), and it returns the calculated values, the errors with their reasons and a deterministic hash of the values. Formulas use Excel syntax with English function names; [Localization](docs/locale.md) displays and parses them in another language, as Excel does.
 
+Under heavy development. AI-engineered.
+
 - **Checked against Excel.** A function is admitted only after it matches Excel 16 on all of its cases: 43,778, with Excel's results stored in this repository ([Functions](docs/functions.md)). Any other function is `#NAME?`. Known differences are in [Limitations](docs/limitations.md); other inputs can differ too.
 - **Compiled once, recalculated incrementally.** Closures by default, so it runs under a strict Content Security Policy, or `new Function` with `execution: 'eval'`, with the same values either way. A session recalculates only what an edit affects: under 10 ms (p95) for an edit of a criteria cell on a 3,400-row SUMIFS workbook ([Compiling and recalculating](docs/sessions.md#compiling-and-recalculating)).
 - **Deterministic.** The same workbook and clock give the same values and SHA-256 `hash` in any process or time zone; `TODAY`, `NOW` and `RAND` read the clock ([The clock](docs/sessions.md#the-clock-and-volatile-functions)).
@@ -22,7 +24,7 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (20.10.2026, 0.54.1), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (20.10.2026, 0.54.2), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 | import | for | size |
 |---|---|---:|
