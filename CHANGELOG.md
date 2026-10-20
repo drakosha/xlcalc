@@ -1,20 +1,22 @@
 # Changelog
 
-## Unreleased
+## 0.54.1 (2026-10-20)
 
-The first public release. The versions below it were internal builds, used by our own applications and not published to npm; their entries stay as they were written, and the README describes the package as it is.
+The first public release. The versions below it were internal builds used by our own applications and were not published to npm; their entries are kept as written, and the README describes the package as it is now.
 
-What is in it:
+What it includes:
 
-- `compute` and `createSession`: a book's formulas compiled once, to closures or with `execution: 'eval'`, recalculated incrementally, with deterministic values and a SHA-256 `hash` of them (configuration version `xlcalc/1;canon15`), and `inputHash` of the input.
-- A whitelist of functions, each admitted after giving Excel's answer on all of its cases, computed in Excel 16 for Mac and checked again in Excel for Windows; arrays inside formulas and spilled arrays as in Excel 365; tables and structured references; names; links to other workbooks from their stored values.
-- Sessions: edits, undo and redo, subscribers told of every change of the book (`subscribe`), structure operations (insert, delete and move rows, columns and sheets, merge and unmerge cells as Excel's Merge Cells, Merge Across and Merge & Center do, the fill handle with the series Excel continues), typed entry as Excel reads it, fill and paste, Find and Replace, outline, AutoFit, conditional formats, data validation, and the text each cell shows in its number format.
-- `liveBook(session)`: a synchronous session's sheets and cells as objects to read and assign (`sheet.cells.A1.value = 100`), batches as one edit, and changes followed by cell, sheet or book.
-- `xlcalc/xlsx`: reading and writing xlsx without dependencies, with what a book cannot hold listed as issues.
-- `createInlineCalc` and `createCalcPool` from `xlcalc/worker`: computing without blocking, in portions on the same thread or in worker threads, with deadlines, cancellation and limits.
+- `compute` and `createSession`: a workbook's formulas are compiled once, to closures or with `execution: 'eval'`, and recalculated incrementally, with deterministic values, a SHA-256 `hash` of them (configuration version `xlcalc/1;canon15`) and an `inputHash` of the input.
+- A whitelist of functions, each admitted only after it matched Excel's results on all of its cases, calculated in Excel 16 for Mac and checked again in Excel for Windows; arrays inside formulas and spilled arrays as in Excel 365; tables and structured references; defined names; links to other workbooks through their stored values.
+- Sessions: edits, undo and redo, subscribers notified of every change (`subscribe`), structure operations (inserting, deleting and moving rows, columns and sheets; merging and unmerging cells as Excel's Merge Cells, Merge Across and Merge & Center do; the fill handle with the series Excel continues), typed entry parsed as Excel parses it, fill and paste, Find and Replace, outlines, AutoFit, conditional formats, data validation, and the text each cell displays in its number format.
+- `liveBook(session)`: a synchronous session's sheets and cells as objects to read and assign (`sheet.cells.A1.value = 100`), batches as one edit, and changes followed by cell, sheet or workbook.
+- `xlcalc/xlsx`: reading and writing xlsx without dependencies, with what a workbook cannot keep listed as issues.
+- `createInlineCalc` and `createCalcPool` from `xlcalc/worker`: calculating without blocking, in slices on the same thread or in worker threads, with deadlines, cancellation and limits.
 - Localization: formulas, number formats and messages in ru-RU through `xlcalc/locales/ru-RU`.
-- The tips of a formula bar: a function's arguments (`functionSignature`) with names of the library's own in English and Russian, its category as Excel's Insert Function lists it (`FUNCTION_CATEGORIES`), and what it does in a line (`functionDescription` from `xlcalc/function-text`, the Russian words in `xlcalc/function-text/ru-RU`), apart from the engine.
-- `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and the commands on them (`outlineEdit`), references of formula text, what an arrow does in it as Excel's Point mode decides (`refAt`), the call and argument a caret stands in (`callAt`) and number format categories, without the engine.
+- Formula bar tooltips: a function's arguments (`functionSignature`) with argument names of the library's own in English and Russian, its category as Excel's Insert Function dialog lists it (`FUNCTION_CATEGORIES`), and a one-line description (`functionDescription` from `xlcalc/function-text`, in Russian from `xlcalc/function-text/ru-RU`), without the engine.
+- `xlcalc/a1` and `xlcalc/text`: addresses, a sheet's outline groups and their commands (`outlineEdit`), the references in formula text, what an arrow key does in it as Excel's Point mode decides (`refAt`), the call and argument the caret is in (`callAt`), and number format categories, without the engine.
+
+The code is that of 0.53.1.
 
 ## 0.53.1 (2026-10-20)
 
