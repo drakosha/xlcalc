@@ -13,7 +13,7 @@ import { areaText } from '../../structure/area.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
-import { ATTRS, attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
+import { attributes, element, elements, flag, outside, ownEntry, placed, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula, type FormulaOptions } from './formulas.js'
 import { sqrefRanges } from './refs.js'
@@ -37,17 +37,10 @@ interface Context {
   formulas: FormulaOptions
 }
 
-/** The worksheet's own `<conditionalFormatting>` blocks: without a prefix, as 2010's (`x14:`) are not. */
-const OWN = new RegExp(`<conditionalFormatting(${ATTRS})(?:/>|>([\\s\\S]*?)</conditionalFormatting\\s*>)`, 'g')
-
-/** The worksheet's own `<conditionalFormatting>` blocks (not 2010's), and the rest of the tail. */
+/** The worksheet's own `<conditionalFormatting>` blocks (without a prefix, as 2010's, `x14:`, are not), and the rest of the tail. */
 function split(tail: string): { blocks: Element[]; rest: string } {
-  const blocks: Element[] = []
-  const rest = tail.replace(OWN, (_, attrs: string, body: string | undefined) => {
-    blocks.push({ attrs, body: body ?? null })
-    return ''
-  })
-  return { blocks, rest }
+  const blocks = placed(tail, 'conditionalFormatting', false, true)
+  return { blocks, rest: outside(tail, blocks) }
 }
 
 /** The worksheet's tail without its `<conditionalFormatting>` blocks, whose 2007 data bars hold an extension list of their own: the sheet's extension list is then the one left. */
