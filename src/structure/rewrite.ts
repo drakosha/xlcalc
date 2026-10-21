@@ -66,8 +66,16 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
         ? errText(tok.sheet, tok.ref ?? '', t, sheets)
         : tok.t === 'xref' && t.copy
           ? copiedLink(tok, written, t)
-          : undefined,
+          : tok.t === 'ident' && tok.sheet !== undefined
+            ? nameText(tok.sheet, tok.v, t, sheets)
+            : undefined,
   )
+}
+
+/** A sheet's own name (`'S'!loc`) on a renamed sheet; a deleted sheet's stays as written, as it is `#REF!` already. */
+function nameText(sheet: string, name: string, t: Transform, sheets: Map<string, string>): string | undefined {
+  const next = t.sheet?.(sheets.get(sheetKey(sheet)) ?? sheet)
+  return next ? `${quoteSheet(next)}!${name}` : undefined
 }
 
 /**

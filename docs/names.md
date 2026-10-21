@@ -118,7 +118,7 @@ A function that accepts only a reference (SUMIF's range) and gets an array throu
 
 ## Structure operations
 
-Operations rewrite the references in names' formulas as in cells' formulas: each part of a union separately, and a reference across sheets by its ends. A reference without `$` is an offset, so inserted and deleted rows and columns leave it unchanged (`'S'!XFD1` stays when row 1 is deleted).
+Operations rewrite the references in names' formulas as in cells' formulas: each part of a union separately, and a reference across sheets by its ends. A reference without `$` is an offset, so inserted and deleted rows and columns leave it unchanged (`'S'!XFD1` stays when row 1 is deleted). Renaming a sheet rewrites its local names written with it (`'S'!rate`).
 
 ## Checked against Excel
 
