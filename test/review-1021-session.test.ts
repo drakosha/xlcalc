@@ -99,4 +99,60 @@ describe.each(['closures', 'eval'] as const)('a session stopped part way, %s', (
       }
     }, 60_000)
   })
+
+  describe("fix-u312: an undo or a redo of a merge stopped in the merge's computation", () => {
+    it('in the same thread, stopped at each point: the book, hash and history stay; undo and redo then give the books before', async () => {
+      const calc = inline()
+      let stops = 0
+      for (const way of ['undo', 'redo'] as const) {
+        for (let n = 1; ; n++) {
+          const s = await calc.createSession(mergeBook(), o)
+          const original = await held(s)
+          await s.editStructure(MERGE)
+          const merged = await held(s)
+          if (way === 'redo') await s.undo()
+          const before = await held(s)
+          const code = await stopped(s[way]({ signal: stopsAt(n) }))
+          if (!code) break
+          stops++
+          expect(await held(s), `${way} poll ${n}`).toEqual(before)
+          await consistent(s, execution)
+          if (way === 'undo') {
+            await s.undo()
+            expect((await held(s)).book).toEqual(original.book)
+            await s.redo()
+            expect(await held(s)).toEqual(merged)
+          } else {
+            await s.redo()
+            expect(await held(s)).toEqual(merged)
+            await s.undo()
+            expect(await held(s)).toEqual(before)
+          }
+          await consistent(s, execution)
+          await s.close()
+        }
+      }
+      expect(stops).toBeGreaterThan(6)
+    })
+
+    it('in a thread, by its deadline', async () => {
+      const calc = await threads()
+      const s = await calc.createSession(chainedMerge(), o)
+      const original = await held(s)
+      await s.editStructure(MERGE)
+      const merged = await held(s)
+      expect(await stopped(s.undo({ timeoutMs: 1 }))).toBe('soft_timeout')
+      expect(await held(s)).toEqual(merged)
+      await consistent(s, execution)
+      await s.undo()
+      expect((await held(s)).book).toEqual(original.book)
+      const undone = await held(s)
+      expect(await stopped(s.redo({ timeoutMs: 1 }))).toBe('soft_timeout')
+      expect(await held(s)).toEqual(undone)
+      await consistent(s, execution)
+      await s.redo()
+      expect(await held(s)).toEqual(merged)
+      await s.close()
+    }, 60_000)
+  })
 })

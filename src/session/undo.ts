@@ -31,8 +31,8 @@ export type Step =
   | { kind: 'styles'; call: UndoCall; styles: CellStyle[] | undefined; size: number }
   | { kind: 'book'; call: UndoCall; diff: BookDiff; size: number }
   /**
-   * Several of one call, taken in their order either way: they change different parts of the book, and the first, the
-   * cells' inputs, is the only one that recomputes, so a step stopped there has changed nothing.
+   * Several of one call, taken in their order either way: they change different parts of the book, and one stopped
+   * after the first puts back what those before it changed (`SessionCore.kept`), so a step stopped has changed nothing.
    */
   | { kind: 'many'; call: UndoCall; steps: Step[]; size: number }
 
@@ -273,11 +273,18 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       let outcome = nothing()
       let cells: CellRef[] | undefined
       const others: Step[] = []
-      for (const x of step.steps) {
-        const [one, other] = yield* take(core, x)
-        outcome = joined(outcome, one.outcome)
-        if (one.cells) cells = [...(cells ?? []), ...one.cells]
-        others.push(other)
+      const back = core.kept(s)
+      try {
+        for (const x of step.steps) {
+          const [one, other] = yield* take(core, x)
+          outcome = joined(outcome, one.outcome)
+          if (one.cells) cells = [...(cells ?? []), ...one.cells]
+          others.push(other)
+        }
+      } catch (e) {
+        // a merged area's arrays computed after its cells: the cells taken go back, the first step's inputs last
+        if (others.length) back([...others].reverse().flatMap((x) => (x.kind === 'cells' ? x.edits : [])))
+        throw e
       }
       return [{ call: step.call, outcome, ...(cells ? { cells } : {}) }, manyStep(step.call, others)]
     }
