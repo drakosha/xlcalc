@@ -38,6 +38,7 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
       throw new InputError(`${path}.value.date`, `invalid date ${JSON.stringify(value.date)}: expected an ISO date such as "2025-01-31" or "2025-01-31T18:00:00"`)
     }
   }
+  if (c.meta !== undefined) checkMeta(c.meta, `${path}.meta`)
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
   if (c.numberFormat !== undefined && typeof c.numberFormat !== 'string') checkFormat(c.numberFormat, `${path}.numberFormat`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
@@ -82,6 +83,19 @@ export function checkNames(v: unknown, path: string): NameInput[] {
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
+/**
+ * A cell's meta, which the input hash writes as JSON and a thread takes by structured clone: a BigInt or a cycle breaks
+ * both, so it is refused; what JSON turns into null or `{}` (a function, NaN, a Date) passes, as it did.
+ */
+function checkMeta(v: unknown, path: string, open: object[] = []) {
+  if (typeof v === 'bigint') throw new InputError(path, `expected JSON, got a BigInt`)
+  if (v === null || typeof v !== 'object') return
+  if (open.includes(v)) throw new InputError(path, 'expected JSON, got a cycle: an object inside itself')
+  open.push(v)
+  for (const k of Object.keys(v)) checkMeta((v as Record<string, unknown>)[k], `${path}${Array.isArray(v) ? `[${k}]` : `.${k}`}`, open)
+  open.pop()
+}
+
 /** The fields of a cell (`CellInput`). */
 export const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'style', 'meta', 'array', 'note', 'link', 'held']
 
@@ -90,7 +104,8 @@ function plainCell(c: unknown, styles: number): boolean {
   if (!isObject(c)) return false
   for (const k in c) {
     const v = c[k]
-    if (k === 'meta') continue
+    // meta that is an object takes the full check, for BigInts and cycles
+    if (k === 'meta' && (v === null || (typeof v !== 'object' && typeof v !== 'bigint'))) continue
     if (k === 'value' && (v === null || v === undefined || typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean')) continue
     // a formula with a leading `=` takes the full check, which marks it
     if (k === 'formula' && (v === undefined || (typeof v === 'string' && !leadingEquals(v)))) continue

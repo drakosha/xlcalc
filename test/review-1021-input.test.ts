@@ -1,6 +1,6 @@
-/** Input the contract types but did not check: the values of external functions, refused at the boundary as InputError. */
+/** Input the contract types but did not check: the values of external functions and a cell's meta, refused at the boundary as InputError. */
 import { describe, expect, it } from 'vitest'
-import { compute, createSession, InputError, type BookInput } from '../src/index.js'
+import { compute, createInlineCalc, createSession, InputError, type BookInput } from '../src/index.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const BALANCE = 'BALANCE("x")'
@@ -38,5 +38,25 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     const a2 = (v: unknown) => compute(book, withValue(v)).sheets[0].cells.A2.value
     expect([a2(3), a2('7'), a2(true), a2(null), a2({ error: 'DIV0' })]).toEqual([4, 8, 2, 1, { error: 'DIV0' }])
     expect([a2(NaN), a2(Infinity)]).toEqual([{ error: 'NUM' }, { error: 'NUM' }])
+  })
+
+  it("a cell's meta that is cyclic or holds a BigInt is refused, in compute, a session's edits and on the same thread", async () => {
+    const cyclic: Record<string, unknown> = { row: 1 }
+    cyclic.self = { back: cyclic }
+    for (const [meta, why] of [[cyclic, /cycle/], [{ id: 10n }, /BigInt/], [[1, { n: 2n }], /BigInt/]] as const) {
+      const b: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1, meta: meta as never } } }] }
+      expect(refusal(() => compute(b, { clock, execution }))).toEqual({ path: expect.stringMatching(/^book\.sheets\[0\]\.cells\["A1"\]\.meta/), message: expect.stringMatching(why) })
+      expect(() => createSession(b, { clock, execution })).toThrow(InputError)
+      const s = createSession(book, { clock, execution })
+      expect(() => s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 1, meta: meta as never } }])).toThrow(InputError)
+      s.close()
+      const calc = createInlineCalc()
+      await expect(calc.compute(b, { clock, execution })).rejects.toThrow(InputError)
+      calc.close()
+    }
+    // JSON meta, shared but not cyclic, stays as it was
+    const shared = { tag: 'x' }
+    const r = compute({ sheets: [{ name: 'S', cells: { A1: { value: 1, meta: { a: shared, b: shared } }, A2: { value: 2, meta: 'm' } } }] }, { clock, execution })
+    expect(r.sheets[0].cells.A1.meta).toEqual({ a: shared, b: shared })
   })
 })

@@ -176,7 +176,7 @@ console.log(session.revision, session.getBook().sheets[0].cells)
 | `closed` | the calculator or the session is closed |
 | `stale_revision` | an edit's `baseRevision` is not the session's revision; it changed nothing ([Editing a grid](edits.md#revisions)) |
 
-Invalid input still throws `InputError`, from a thread too. A workbook or an argument that structured cloning cannot transfer to a thread (a function in a cell's `meta`, which the contract types as JSON) is rejected by the pool with an `InputError` naming the argument (`book`, `edits`); the synchronous and same-thread calls pass `meta` through untouched, as before.
+Invalid input still throws `InputError`, from a thread too. A workbook or an argument that structured cloning cannot transfer to a thread (a function in a cell's `meta`, which the contract types as JSON) is rejected by the pool with an `InputError` naming the argument (`book`, `edits`); the synchronous and same-thread calls pass `meta` through untouched, as before. A `meta` that holds a BigInt or a cycle, which neither the input hash nor a thread can take, is refused with `InputError`.
 
 ## On the same thread
 
