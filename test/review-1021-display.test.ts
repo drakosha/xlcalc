@@ -6,6 +6,7 @@
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, displayValue, type BookInput } from '../src/index.js'
+import { closestFraction } from '../src/numfmt/number.js'
 import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 import './locales.js'
 
@@ -16,6 +17,17 @@ const decimals = (n: number) => '0.' + '0'.repeat(n)
 // a book keeps 15 significant digits of a value
 const third = 0.333333333333333
 const fmtBook = (numberFormat: string): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: third, numberFormat }, B1: { value: 2 } }, columns: { A: { width: 255 }, C: { width: 255, numberFormat } } }] })
+
+/** The old search for the closest fraction: every denominator in turn. */
+function scan(x: number, max: number): [number, number] {
+  let [best, num, den] = [Infinity, 0, 0]
+  for (let d = 1; d <= max; d++) {
+    const n = Math.round(x * d)
+    const err = Math.abs(x - n / d)
+    if (err < best - 1e-12) [best, num, den] = [err, n, d]
+  }
+  return [num, den]
+}
 
 describe('more than 100 decimals in a number format', () => {
   it('shows the decimals past 100 as zeros, in positional and scientific notation and with # and ?', () => {
@@ -52,5 +64,46 @@ describe('more than 100 decimals in a number format', () => {
       expect((await s.getCells('S', 'C2')).C2).toMatchObject({ value: 0.25, text: '0.25' + '0'.repeat(99) })
       await s.close()
     })
+  })
+})
+
+describe('a fraction format with many denominator digits', () => {
+  it('takes the fraction the old scan over every denominator took, for 1 to 5 digits', () => {
+    let seed = 1
+    const rnd = () => ((seed = (seed * 48271) % 2147483647), seed / 2147483647)
+    const values = [0, 0.5, 1 / 3, Math.PI - 3, 0.999999, 1e-7, 123.456, 2 / 7, 0.1 + 0.2, 1e15]
+    for (let i = 0; i < 600; i++) values.push(rnd(), rnd() * 100, Math.floor(rnd() * 100) / (1 + Math.floor(rnd() * 99)), rnd() ** 8)
+    for (const v of values) for (let k = 1; k <= 5; k++) expect(closestFraction(v, 10 ** k - 1), `${v} in ${k} digits`).toEqual(scan(v, 10 ** k - 1))
+  })
+
+  it.each(['closures', 'eval'] as const)('TEXT and a cell answer at once with 15 and 200 places, %s', (execution) => {
+    // the old scan took 0.7 s at 9 places and grew tenfold with each one
+    const started = performance.now()
+    const r = compute(
+      {
+        sheets: [
+          {
+            name: 'S',
+            cells: {
+              A1: { formula: `TEXT(PI(),"# ?/${'?'.repeat(15)}")` },
+              A2: { formula: `TEXT(1E+15,"?/${'?'.repeat(15)}")` },
+              A3: { formula: `TEXT(1E-9,"# ?/${'?'.repeat(15)}")` },
+              A4: { value: 1e-7, numberFormat: `?/${'?'.repeat(200)}` },
+              A5: { value: Math.E, numberFormat: `# ?/${'?'.repeat(15)}` },
+            },
+            columns: { A: { width: 255 } },
+          },
+        ],
+      },
+      { clock, execution },
+    )
+    expect(performance.now() - started).toBeLessThan(2000)
+    const c = r.sheets[0].cells
+    expect(c.A1.value).toBe('3 192583/1360120' + ' '.repeat(8))
+    expect(c.A2.value).toEqual({ error: 'VALUE' })
+    // the old scan's answers (9 s and 0.9 s of it): from an error of 1e-12 no denominator is taken
+    expect(c.A3.value).toBe(' 1/999002167' + ' '.repeat(6))
+    expect(c.A4.text).toBe('1/9999994' + ' '.repeat(193))
+    expect(c.A5.text?.trimEnd()).toMatch(/^2 \d+\/\d+$/)
   })
 })
