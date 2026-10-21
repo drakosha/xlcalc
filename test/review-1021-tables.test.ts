@@ -108,3 +108,45 @@ describe.each(EXECUTIONS)('lines inserted before a table at the sheet edge (fix-
     expect(after.sheets[0].tables![0].range).toBe('A1048574:A1048576')
   })
 })
+
+/** A table whose second header continues as a series: `Col1` over the column names `x` and `y`. */
+const seriesHeaders = (): BookInput => ({
+  sheets: [{
+    name: 'S',
+    cells: { A1: { value: 'Item' }, B1: { value: 'Col1' }, C1: { value: 'x' }, D1: { value: 'y' }, A2: { value: 'a' }, B2: { value: 1 }, C2: { value: 2 }, D2: { value: 3 }, E1: { formula: 'SUM(T[Col3])' } },
+    tables: [{ name: 'T', range: 'A1:D3', columns: [{ name: 'Item' }, { name: 'Col1' }, { name: 'x' }, { name: 'y' }] }],
+  }],
+})
+const fillHeaders: StructureOp = { op: 'fillRange', sheet: 'S', range: 'B1:B2', to: 'B1:D2' }
+const headersOf = (b: BookInput) => {
+  const t = b.sheets[0].tables![0]
+  return { columns: t.columns.map((c) => c.name), cells: t.columns.map((_, i) => b.sheets[0].cells[`${String.fromCharCode(65 + 2 + i)}1`]?.value) }
+}
+
+describe.each(EXECUTIONS)('a fill continuing a series over header cells (x-fuzz-session-9), %s', (execution) => {
+  it('names the columns by the text the series writes', () => {
+    const r = editStructure(seriesHeaders(), fillHeaders)
+    if (!r.ok) throw new Error(r.message)
+    expect(r.book.sheets[0].tables![0].columns.map((c) => c.name)).toEqual(['Item', 'Col1', 'Col2', 'Col3'])
+    expect([r.book.sheets[0].cells.C1.value, r.book.sheets[0].cells.D1.value, r.book.sheets[0].cells.C2.value]).toEqual(['Col2', 'Col3', 2])
+    expect(compute(r.book, { execution, clock }).sheets[0].cells.E1.value).toBe(3)
+    // a copy fill keeps the copy's names, as before
+    const copied = editStructure(seriesHeaders(), { ...fillHeaders, type: 'copy' })
+    expect(copied.ok && copied.book.sheets[0].tables![0].columns.map((c) => c.name)).toEqual(['Item', 'Col1', 'Col12', 'Col13'])
+  })
+
+  it('writes a number series into header cells as text', () => {
+    const book: BookInput = {
+      sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { value: 2 }, C1: { value: 'a' }, D1: { value: 'b' }, C2: { value: 5 } }, tables: [{ name: 'T', range: 'C1:D3', columns: [{ name: 'a' }, { name: 'b' }] }] }],
+    }
+    const r = editStructure(book, { op: 'fillRange', sheet: 'S', range: 'A1:B1', to: 'A1:D1' })
+    if (!r.ok) throw new Error(r.message)
+    expect(headersOf(r.book)).toEqual({ columns: ['3', '4'], cells: ['3', '4'] })
+    compute(r.book, { execution, clock })
+  })
+
+  inSessions(execution, seriesHeaders, fillHeaders, (r, after) => {
+    expect(r.ok).toBe(true)
+    expect(after.sheets[0].tables![0].columns.map((c) => c.name)).toEqual(['Item', 'Col1', 'Col2', 'Col3'])
+  })
+})

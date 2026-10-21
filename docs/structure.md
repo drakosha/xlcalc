@@ -333,6 +333,8 @@ Each column of a fill down or up, and each row of a fill right or left, is conti
 
 `type` changes this as Excel's `XlAutoFillType` does: `'series'` makes a single number increase by 1 as well (Excel's drag with Ctrl over a number), and `'copy'` copies every cell.
 
+A series that continues over a table's header cells renames their columns to the text it writes there, as a paste over them does (`Col1` filled right over two headers gives the columns `Col2` and `Col3`; numbers become their text). How Excel names such columns was not recorded.
+
 `mapCell` of a fill is the same as for a copy: the cells it overwrites are cleared, and the others stay.
 
 ## Notes, hyperlinks and frozen panes

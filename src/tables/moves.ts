@@ -31,7 +31,7 @@ const headerRow = (t: Table): Rect | null => (t.headers ? { r1: t.r1, r2: t.r1, 
  * paste left there, as Excel renames them: a value's text, a formula's value as text (the book is computed for it), a
  * cleared cell `Column1`. `still` are the tables whose header cells moved along with them.
  */
-function renamedByPaste(tables: Tables, after: BookInput, areas: [number, Rect][], still: (t: Table) => boolean): BookInput {
+export function renamedByPaste(tables: Tables, after: BookInput, areas: [number, Rect][], still: (t: Table) => boolean): BookInput {
   const cells: { s: number; addr: string }[] = []
   for (const t of tables.list) {
     const head = headerRow(t)
