@@ -40,6 +40,8 @@ function endsWithout(book: BookInput, key: string): Transform['ends'] {
   const order = book.sheets.map((s) => s.name)
   const at = (s: string) => order.findIndex((n) => sheetKey(n) === sheetKey(s))
   return (a, b) => {
+    // an end that is no sheet of the book leaves the reference as written: it is #REF! already
+    if (at(a) < 0 || at(b) < 0) return undefined
     let [lo, hi] = [Math.min(at(a), at(b)), Math.max(at(a), at(b))]
     if (sheetKey(order[lo]) !== key && sheetKey(order[hi]) !== key) return undefined
     if (sheetKey(order[lo]) === key) lo++
