@@ -1,0 +1,34 @@
+/** Reproductions from the 21.10 review of the functions: sizes past the argument limit and work outside the budget. */
+import { describe, expect, it } from 'vitest'
+import { compute, type BookInput } from '../src/index.js'
+
+type Cells = BookInput['sheets'][number]['cells']
+const book = (cells: Cells): BookInput => ({ sheets: [{ name: 'S', cells }] })
+
+describe.each(['closures', 'eval'] as const)('review 21.10 functions, %s', (execution) => {
+  it('fits LINEST, TREND, LOGEST and GROWTH over more observations than one call can take as arguments', () => {
+    const n = 140000
+    const cells: Cells = {}
+    for (let i = 1; i <= n; i++) {
+      cells[`A${i}`] = { value: 2 * i + 1 }
+      cells[`B${i}`] = { value: i }
+      cells[`C${i}`] = { value: Math.exp(i / n) }
+    }
+    const [ya, xb, yc] = ['A', 'B', 'C'].map((c) => `${c}1:${c}${n}`)
+    Object.assign(cells, {
+      D1: { formula: `INDEX(LINEST(${ya},${xb}),1,1)` },
+      D2: { formula: `INDEX(LINEST(${ya},${xb}),1,2)` },
+      D3: { formula: `TREND(${ya},${xb},${n + 1})` },
+      D4: { formula: `INDEX(LOGEST(${yc},${xb}),1,1)` },
+      D5: { formula: `GROWTH(${yc},${xb},${n + 1})` },
+      D6: { formula: `SLOPE(${ya},${xb})` },
+    })
+    const out = compute(book(cells), { execution, display: false }).sheets[0].cells
+    expect(out.D1.value).toBeCloseTo(2, 9)
+    expect(out.D2.value).toBeCloseTo(1, 6)
+    expect(out.D3.value).toBeCloseTo(2 * (n + 1) + 1, 6)
+    expect(out.D4.value).toBeCloseTo(Math.exp(1 / n), 9)
+    expect(out.D5.value).toBeCloseTo(Math.exp((n + 1) / n), 9)
+    expect(out.D6.value).toBeCloseTo(2, 9)
+  })
+})
