@@ -315,7 +315,11 @@ function checkExternals(v: unknown, path: string): Externals {
   const e = object(v, path, 'externals such as { functions: ["BALANCE"], values: {} }')
   onlyKeys(e, path, ['functions', 'values'])
   array(e.functions, `${path}.functions`, 'an array of function names').forEach((f, i) => checkString(f, `${path}.functions[${i}]`))
-  if (e.values !== undefined) object(e.values, `${path}.values`, 'an object of values by call text')
+  if (e.values !== undefined) {
+    const values = object(e.values, `${path}.values`, 'an object of values by call text')
+    // a non-finite number stays the #NUM! it computes to
+    for (const k in values) if (typeof values[k] !== 'number') checkCellValue(values[k], `${path}.values[${JSON.stringify(k)}]`)
+  }
   return e as unknown as Externals
 }
 
@@ -511,7 +515,7 @@ export function checkNamesContext(v: unknown, path = 'ctx'): NamesContext {
 /** `displayValue`'s value: a number, text, a boolean, null or an error `{ error: code }`. */
 export function checkCellValue(v: unknown, path: string): CellValue {
   if (v === null || typeof v === 'string' || typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v))) return v
-  if (typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 1 && (v as { error?: unknown }).error as string in ERROR_TEXT) return v as CellValue
+  if (typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 1 && Object.hasOwn(ERROR_TEXT, (v as { error?: unknown }).error as string)) return v as CellValue
   throw new InputError(path, `expected a number, text, a boolean, null or { error: code }, got ${what(v)}`)
 }
 

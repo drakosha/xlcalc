@@ -84,7 +84,7 @@ const result = compute(book, { externals: { functions: ['BALANCE'], values: { 'B
 console.log(result.sheets[0].cells.A1.value) // → 42
 ```
 
-Arguments of an external function must be literals; a call without a value evaluates to `#N/A`.
+Arguments of an external function must be literals; a call without a value evaluates to `#N/A`. A value is a cell's value: a number, text, a boolean, `null` or `{ error: code }`; anything else (an unknown error code, a date input, an array, `undefined`) throws `InputError` instead of computing as 0.
 
 ## Hidden rows and filters
 
