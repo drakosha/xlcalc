@@ -55,3 +55,26 @@ describe.each(['closures', 'eval'] as const)('legacy arrays, execution %s', (exe
     expect(s.getHash()).toBe(compute(s.getBook(), { clock, execution }).hash)
   })
 })
+
+describe.each(['closures', 'eval'] as const)('a legacy array whose formula does not prepare, execution %s', (execution) => {
+  const edit = (cell: string, input: CellInput | null) => [{ sheet: 'S', cell, input }]
+  it.each(['TRANSPOSE(Nope!B2:D3)', 'SUM(A1', 'FOO(A1)'])('%s keeps its area: an edit inside it is refused (x-fuzz-session-2)', async (formula) => {
+    const b = book({ A1: { value: 1 }, N1: { formula, array: 'N1:O3' } })
+    const s = createSession(b, { clock, execution })
+    expect(() => s.setCells(edit('O2', { value: 5 }))).toThrow(/O2 is part of the array formula at S!N1 \(N1:O3\)/)
+    expect(() => s.replaceCells(edit('O2', { value: 5 }))).toThrow(/part of the array formula/)
+    expect(() => s.setCells(edit('M2', { formula: '1', array: 'M2:N2' }))).toThrow(/overlaps the area of the array formula at S!N1/)
+    expect(compute(s.getBook(), { clock, execution }).hash).toBe(s.getHash())
+    const calc = createInlineCalc({ sliceMs: 1 })
+    const inline = await calc.createSession(b, { clock, execution })
+    await expect(inline.setCells(edit('O2', { value: 5 }))).rejects.toThrow(/part of the array formula/)
+    await inline.close()
+    // entered by an edit, then cleared whole: the area goes with it
+    const t = createSession(book({}), { clock, execution })
+    t.setCells(edit('N1', { formula, array: 'N1:O3' }))
+    expect(() => t.setCells(edit('N3', { value: 'x' }))).toThrow(/part of the array formula/)
+    t.setCells(['N1', 'N2', 'N3', 'O1', 'O2', 'O3'].map((cell) => ({ sheet: 'S', cell, input: null })))
+    t.setCells(edit('O2', { value: 5 }))
+    expect(compute(t.getBook(), { clock, execution }).hash).toBe(t.getHash())
+  })
+})
