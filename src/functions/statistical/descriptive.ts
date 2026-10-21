@@ -5,6 +5,7 @@
  */
 import { eachValue, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
+import { spend } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { max, min, NEWER_MAX_ARGS, sum, sumZeroed } from '../common.js'
@@ -129,9 +130,17 @@ function frequency(cx: Cx, data: Arg, bins: Arg): V | Arr {
   const bs = found.length ? found : [0]
   const order = bs.map((_, i) => i).sort((a, b) => bs[a] - bs[b] || a - b)
   const counts = new Array<number>(bs.length + 1).fill(0)
+  spend(xs.length)
   for (const x of xs) {
-    const k = order.find((i) => x <= bs[i])
-    counts[k ?? bs.length]++
+    // the first bin in sorted order at or above x, by halves: bs[order[p]] never decreases in p
+    let lo = 0
+    let hi = order.length
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1
+      if (x <= bs[order[mid]]) hi = mid
+      else lo = mid + 1
+    }
+    counts[lo < order.length ? order[lo] : bs.length]++
   }
   return new Arr(counts.length, 1, counts.length, 1, counts)
 }

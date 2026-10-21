@@ -33,12 +33,12 @@ function indexes(segs: readonly Segment[], n: number, rules: Rules): number[] | 
   return out
 }
 
-/** TAKE and DROP: the first (last, when negative) `n` of `size`, as zero-based indexes. */
-function part(size: number, n: number | undefined, take: boolean): number[] {
-  if (n === undefined) return range(0, size)
+/** TAKE and DROP: the first (last, when negative) `n` of `size`, as the zero-based span [from, to): a reference needs only its ends. */
+function part(size: number, n: number | undefined, take: boolean): [from: number, to: number] {
+  if (n === undefined) return [0, size]
   const k = Math.min(Math.abs(Math.trunc(n)), size)
-  if (take) return n >= 0 ? range(0, k) : range(size - k, size)
-  return n >= 0 ? range(k, size) : range(0, size - k)
+  if (take) return n >= 0 ? [0, k] : [size - k, size]
+  return n >= 0 ? [k, size] : [0, size - k]
 }
 
 /** TAKE and DROP: of a reference a reference (COUNTA skips its blank cells), of an array an array. */
@@ -51,11 +51,11 @@ function takeDrop(take: boolean): FnDef {
       if (isErr(x)) return x
       if (take && ((rows !== undefined && Math.trunc(rows) === 0) || (cols !== undefined && Math.trunc(cols) === 0))) return EMPTY
       const g = cx.grid(x)
-      const rs = part(g.rows, rows, take)
-      const cs = part(g.cols, cols, take)
-      if (!rs.length || !cs.length) return EMPTY
-      if (x instanceof Rng) return new Rng(x.s, x.r1 + rs[0], x.c1 + cs[0], x.r1 + rs[rs.length - 1], x.c1 + cs[cs.length - 1])
-      return pick(fromGrid(g), rs, cs)
+      const [r0, r1] = part(g.rows, rows, take)
+      const [c0, c1] = part(g.cols, cols, take)
+      if (r1 <= r0 || c1 <= c0) return EMPTY
+      if (x instanceof Rng) return new Rng(x.s, x.r1 + r0, x.c1 + c0, x.r1 + r1 - 1, x.c1 + c1 - 1)
+      return pick(fromGrid(g), range(r0, r1), range(c0, c1))
     },
   }
 }

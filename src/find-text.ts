@@ -5,7 +5,7 @@
  * in its own.
  */
 import type { FindCellsOptions } from './contract.js'
-import { literal, wildSource } from './criteria.js'
+import { Wildcard } from './criteria.js'
 
 /**
  * Each character's lower case as one UTF-16 unit or two as it was, so `?` keeps its place: `İ` stays (its lower case is
@@ -25,10 +25,9 @@ export const folded = (t: string) => {
 export function matcher(query: string, o: FindCellsOptions): ((text: string) => boolean) | null {
   const q = o.caseSensitive ? query : folded(query)
   if (!o.wildcards) return q ? (t) => (o.wholeCell ? t === q : t.includes(q)) : null
-  const source = wildSource(q)
-  if (!source) return null
-  const re = new RegExp(o.wholeCell ? `^(?:${source})$` : source)
-  return (t) => t !== '' && re.test(t)
+  const w = new Wildcard(q, '')
+  if (w.empty) return null
+  return o.wholeCell ? (t) => t !== '' && w.test(t) : (t) => t !== '' && w.find(t) !== null
 }
 
 /**
@@ -38,16 +37,23 @@ export function matcher(query: string, o: FindCellsOptions): ((text: string) => 
  */
 export function replacer(query: string, by: string, o: Pick<FindCellsOptions, 'caseSensitive' | 'wildcards' | 'wholeCell'>): ((text: string) => string | null) | null {
   const q = o.caseSensitive ? query : folded(query)
-  const source = o.wildcards ? wildSource(q).replace(/\[\\s\\S\]\*(?!$)/g, '$&?') : [...q].map(literal).join('')
-  if (!source) return null
-  const re = new RegExp(o.wholeCell ? `^(?:${source})$` : source, 'g')
+  const w = new Wildcard(o.wildcards ? q : q.replace(/[*?~]/g, '~$&'), '')
+  if (w.empty) return null
   return (text) => {
+    const t = o.caseSensitive ? text : folded(text)
+    if (o.wholeCell) return t !== '' && w.test(t) ? by : null
     let out = ''
     let last = 0
-    for (const m of (o.caseSensitive ? text : folded(text)).matchAll(re)) {
-      if (m[0] === '') continue
-      out += text.slice(last, m.index) + by
-      last = m.index + m[0].length
+    for (let from = 0; from <= t.length; ) {
+      const m = w.find(t, from)
+      if (!m) break
+      // an empty match puts nothing, and the next one is looked for a character on
+      if (m[1] === m[0]) {
+        from = m[0] + 1
+        continue
+      }
+      out += text.slice(last, m[0]) + by
+      last = from = m[1]
     }
     return last ? out + text.slice(last) : null
   }

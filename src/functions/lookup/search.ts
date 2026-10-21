@@ -3,7 +3,7 @@
  * `Rules.compare`), blanks and errors in the data never match.
  */
 import { isArea } from '../../arrays/lift.js'
-import { wildRe } from '../../criteria.js'
+import { wildMatcher } from '../../criteria.js'
 import { E, isErr, Rng, sameType, type CErr, type V } from '../../values.js'
 import type { Cx } from '../../args.js'
 import { indexedExact, scannedExact, type ExactStore } from './exact.js'
@@ -21,7 +21,7 @@ export const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(
 
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
 export function exactMatch(line: Line, k: Key, wild: boolean, compare: Compare, last = false): number {
-  const re = wild && typeof k === 'string' ? wildRe(k, true) : null
+  const re = wild && typeof k === 'string' ? wildMatcher(k, true) : null
   if (!re && (line.values || line.store)) {
     const hit = indexedExact(line, k, compare, last)
     if (hit !== undefined) return hit
