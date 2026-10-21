@@ -243,10 +243,12 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
     sp.claimsChanged = false
     yield* evaluate(state, lists[0], t, false, 0, active)
     // iterative calculation computes every cycle again when any is to be computed: the cycles share their iterations
-    if (state.input.iteration && lists[1].length) yield* iterate(state, t)
+    const iterated = state.input.iteration && lists[1].length ? sp.step : Infinity
+    if (iterated < Infinity) yield* iterate(state, t)
     else yield* evaluate(state, lists[1], t)
     const next = new Set<number>()
-    for (const x of sp.touched) concerned(state, x, next, x.step)
+    // what the iteration spilled concerns no formula it computed: computed again, each starts from 0 and comes out the same
+    for (const x of sp.touched) concerned(state, x, next, x.step, x.step > iterated)
     if (sp.claimsChanged) {
       const was = state.topo
       rebuildGraph(state)
@@ -266,11 +268,12 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
 
 /**
  * Formulas a change of an area's cells concerns: those that read them, arrays waiting for them, arrays spilled
- * over them (a cell typed there stops them). With `step`, only those computed before that step of the round.
+ * over them (a cell typed there stops them). With `step`, only those computed before that step of the round, and none
+ * waiting for cells the input still blocks; `acyclic`, none in a cycle or over one.
  */
-export function concerned(state: EngineState, x: Area, out: Set<number>, step = Infinity) {
+export function concerned(state: EngineState, x: Area, out: Set<number>, step = Infinity, acyclic = false) {
   const sp = state.spills
-  const add = (id: number) => (step === Infinity || (sp.done[id] > sp.since ? sp.done[id] : -1) < step) && out.add(id)
+  const add = (id: number) => (step === Infinity || (sp.done[id] > sp.since ? sp.done[id] : -1) < step) && !(acyclic && state.topo[id] < 0) && out.add(id)
   // without a step every reader goes, in the order the readers are found
   if (step === Infinity) readersOf(state, x, out)
   else {
@@ -278,7 +281,14 @@ export function concerned(state: EngineState, x: Area, out: Set<number>, step = 
     readersOf(state, x, readers)
     readers.forEach(add)
   }
-  for (const m of [sp.wait, sp.on]) for (const [id, a] of m) if (a.s === x.s && meets(a, x)) add(id)
+  for (const [id, a] of sp.wait) if (a.s === x.s && meets(a, x) && (step === Infinity || !blockedByInput(state, id, a))) add(id)
+  for (const [id, a] of sp.on) if (a.s === x.s && meets(a, x)) add(id)
+}
+
+/** An array waiting for `a` that a value or formula of the input still blocks: it cannot spill before an edit frees that cell. */
+function blockedByInput(state: EngineState, id: number, a: Area): boolean {
+  const f = state.formulas[id]
+  return !!f && !!state.spills.occupied.first(a.s, a, f.r, f.c)
 }
 
 /** A formula's steps in room for `n` formulas, at least twice as many as before. */
