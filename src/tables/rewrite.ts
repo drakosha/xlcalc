@@ -11,6 +11,10 @@ import { eachToken } from '../syntax/links.js'
 import { caseKey } from '../collate.js'
 import { specText, type TableSpec } from '../syntax/table.js'
 import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
+import { mapFormulas } from '../cond/structure.js'
+import { originOf } from '../cond/rules.js'
+import { withFormulas } from '../validation/structure.js'
+import { anchorOf } from '../validation/rules.js'
 
 /** What becomes of a reference: unchanged, a new name for its table or columns, lost (#REF!), or other text. */
 export type TableChange = undefined | { table?: string; cols?: [string] | [string, string] } | 'lost' | { text: string }
@@ -57,8 +61,8 @@ export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table 
 }
 
 /**
- * Every formula of the book rewritten by `edit` (cells, names, the formulas of calculated columns), with the tables of
- * `book` itself; the same objects where nothing changed.
+ * Every formula of the book rewritten by `edit` (cells, names, the formulas of calculated columns, of conditional formats
+ * and of data validation), with the tables of `book` itself; the same objects where nothing changed.
  */
 export function rewriteBookTables(book: BookInput, edit: TableEdit): BookInput {
   const tables = tablesOf(book)
@@ -85,9 +89,18 @@ export function rewriteBookTables(book: BookInput, edit: TableEdit): BookInput {
       })
       if (columns.some((c, j) => c !== ti.columns[j])) (list ??= [...sheet.tables!])[i] = { ...ti, columns }
     })
-    if (!cells && !list) return sheet
+    // rules' formulas as formulas of their first cell
+    const conditionalFormats = mapList(sheet.conditionalFormats, (rule) => {
+      const o = originOf(rule)
+      return changedFormulas(rule, mapFormulas, (text) => rewriteTableRefs(text, tables, tableAt(tables, s, o.r, o.c), { s, r: o.r }, edit))
+    })
+    const validations = mapList(sheet.validations, (v) => {
+      const o = anchorOf(v)
+      return withFormulas(v, (text) => rewriteTableRefs(text, tables, tableAt(tables, s, o.r, o.c), { s, r: o.r }, edit))
+    })
+    if (!cells && !list && conditionalFormats === sheet.conditionalFormats && validations === sheet.validations) return sheet
     changed = true
-    return { ...sheet, ...(cells ? { cells } : {}), ...(list ? { tables: list } : {}) }
+    return { ...sheet, ...(cells ? { cells } : {}), ...(list ? { tables: list } : {}), ...(conditionalFormats ? { conditionalFormats } : {}), ...(validations ? { validations } : {}) }
   })
   let names = book.names
   const nm = book.names?.map((n) => {
@@ -99,6 +112,23 @@ export function rewriteBookTables(book: BookInput, edit: TableEdit): BookInput {
     changed = true
   }
   return changed ? { ...book, sheets, ...(names ? { names } : {}) } : book
+}
+
+/** Each item through `f`; the same array when none changes. */
+function mapList<T>(xs: T[] | undefined, f: (x: T) => T): T[] | undefined {
+  const out = xs?.map(f)
+  return out && out.some((x, i) => x !== xs![i]) ? out : xs
+}
+
+/** The item with its formulas through `f` by `map`; the same item when no formula changes. */
+function changedFormulas<T>(x: T, map: (x: T, f: (text: string) => string) => T, f: (text: string) => string): T {
+  let hit = false
+  const next = map(x, (text) => {
+    const out = f(text)
+    hit ||= out !== text
+    return out
+  })
+  return hit ? next : x
 }
 
 const abs = (r: number, c: number) => formatAddress(r, c).replace(/^([A-Z]+)(\d+)$/, '$$$1$$$2')

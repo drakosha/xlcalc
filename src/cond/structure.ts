@@ -22,7 +22,7 @@ const corner = (xs: Rect[]): Cell => ({ r: Math.min(...xs.map((x) => x.r1)), c: 
 const valueWith = (v: ConditionalValue, f: (text: string) => string): ConditionalValue => (v.value === undefined ? v : { ...v, value: f(v.value) })
 
 /** The rule with each of its formulas through `f`. */
-function mapFormulas(rule: ConditionalFormat, f: (text: string) => string): ConditionalFormat {
+export function mapFormulas(rule: ConditionalFormat, f: (text: string) => string): ConditionalFormat {
   switch (rule.type) {
     case 'cellIs':
       return { ...rule, formulas: rule.formulas.map(f) }

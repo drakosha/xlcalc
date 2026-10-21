@@ -4,7 +4,7 @@
  * book an operation gives, and a session's `getBook()`, computes, and the session's hash is a full computation's.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, editStructure, type BookInput, type Execution, type StructureOp } from '../src/index.js'
+import { compute, createSession, editStructure, type BookInput, type Execution, type StructureOp } from '../src/index.js'
 import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -179,5 +179,60 @@ describe.each(EXECUTIONS)('a table converted to cells with a reference to a colu
   inSessions(execution, unknownColumn, convert, (r, after) => {
     expect(r.ok).toBe(true)
     expect(after.sheets[0].cells.E1.formula).toBe('SUM(#REF!)')
+  })
+})
+
+/** Table Tab on S, and conditional formats and data validation on S and T whose formulas refer to it. */
+const rulesOverTable = (): BookInput => ({
+  sheets: [
+    {
+      name: 'S',
+      cells: { A1: { value: 'Qty' }, B1: { value: 'Price' }, A2: { value: 3 }, B2: { value: 1.5 }, A3: { value: 4 }, B3: { value: 2.5 }, D1: { formula: 'SUM(Tab[Qty])' } },
+      tables: [{ name: 'Tab', range: 'A1:B3', columns: [{ name: 'Qty' }, { name: 'Price' }] }],
+      conditionalFormats: [{ type: 'expression', ranges: ['A2:A3'], formula: 'A2>AVERAGE(Tab[Qty])', style: { fill: { color: '#FF0000' } } }],
+      validations: [{ range: 'E1', type: 'list', formula1: 'Tab[Qty]' }, { range: 'F1', type: 'custom', formula1: 'F1>SUM(Tab[Price])' }],
+    },
+    {
+      name: 'T',
+      cells: { A1: { value: 10 } },
+      conditionalFormats: [{ type: 'cellIs', ranges: ['A1'], operator: 'greaterThan', formulas: ['SUM(Tab[Qty])'], style: { fill: { color: '#00FF00' } } }],
+      validations: [{ range: 'B1', type: 'list', formula1: 'Tab[Qty]' }],
+    },
+  ],
+})
+/** The formulas of each sheet's rules: conditional formats, then validations. */
+const ruleFormulas = (b: BookInput) => Object.fromEntries(b.sheets.map((s) => [s.name, [
+  ...(s.conditionalFormats ?? []).map((x) => (x.type === 'cellIs' ? x.formulas[0] : 'formula' in x ? x.formula : '')),
+  ...(s.validations ?? []).map((v) => v.formula1),
+]]))
+
+describe.each(EXECUTIONS)('table operations rewrite structured references in rules (x-fix-structure-looks-2), %s', (execution) => {
+  it.each([
+    [{ op: 'renameTable', table: 'Tab', name: 'Sales' }, { S: ['A2>AVERAGE(Sales[Qty])', 'Sales[Qty]', 'F1>SUM(Sales[Price])'], T: ['SUM(Sales[Qty])', 'Sales[Qty]'] }],
+    [{ op: 'deleteTable', table: 'Tab' }, { S: ['A2>AVERAGE(#REF!)', '#REF!', 'F1>SUM(#REF!)'], T: ['SUM(#REF!)', '#REF!'] }],
+    [{ op: 'convertTable', table: 'Tab' }, { S: ["A2>AVERAGE('S'!$A$2:$A$3)", "'S'!$A$2:$A$3", "F1>SUM('S'!$B$2:$B$3)"], T: ["SUM('S'!$A$2:$A$3)", "'S'!$A$2:$A$3"] }],
+    [{ op: 'deleteColumns', sheet: 'S', column: 'A' }, { S: ['#REF!', 'E1>SUM(Tab[Price])'], T: ['SUM(#REF!)', '#REF!'] }],
+    [{ op: 'deleteSheet', sheet: 'S' }, { T: ['SUM(#REF!)', '#REF!'] }],
+  ] as [StructureOp, Record<string, string[]>][])('%j', (op, want) => {
+    const r = editStructure(rulesOverTable(), op)
+    if (!r.ok) throw new Error(r.message)
+    expect(ruleFormulas(r.book)).toEqual(want)
+    compute(r.book, { execution, clock })
+  })
+
+  it('keeps the rules working in a session after a rename', () => {
+    const s = createSession(rulesOverTable(), { execution, clock })
+    const looks = () => [!!s.getCells('S', 'A2:A3').A3.appearance, !!s.getCells('T', 'A1').A1.appearance]
+    expect(looks()).toEqual([true, true])
+    expect(s.editStructure({ op: 'renameTable', table: 'Tab', name: 'Sales' }).ok).toBe(true)
+    expect(looks()).toEqual([true, true])
+    expect(s.getValidation('S', 'E1')!.list).toMatchObject([{ value: 3 }, { value: 4 }])
+    expect(s.validateEntry('S', 'F1', { value: 100 })).toEqual({ ok: true })
+    expect(s.getHash()).toBe(compute(s.getBook(), { execution, clock }).hash)
+  })
+
+  inSessions(execution, rulesOverTable, { op: 'renameTable', table: 'Tab', name: 'Sales' }, (r, after) => {
+    expect(r.ok).toBe(true)
+    expect(ruleFormulas(after).T).toEqual(['SUM(Sales[Qty])', 'Sales[Qty]'])
   })
 })
