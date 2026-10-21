@@ -31,6 +31,8 @@ function need<K extends keyof Globals>(name: K): NonNullable<Globals[K]> {
 async function through(pair: Pair, data: Uint8Array, max = Infinity): Promise<Uint8Array | undefined> {
   const writer = pair.writable.getWriter()
   const written = writer.write(data).then(() => writer.close())
+  // damaged data fails the read and the write alike: the read's error is the one thrown, the write's is not left unhandled
+  written.catch(() => {})
   const reader = pair.readable.getReader()
   const parts: Uint8Array[] = []
   let size = 0
@@ -40,7 +42,6 @@ async function through(pair: Pair, data: Uint8Array, max = Infinity): Promise<Ui
     size += value!.length
     if (size > max) {
       // the cancelled stream fails the write, or leaves it waiting: it is not awaited
-      written.catch(() => {})
       await reader.cancel()
       return undefined
     }

@@ -37,8 +37,8 @@ export const TOTAL_BYTES = 2 ** 30
 export const RATIO = 200
 const RATIO_FROM = 2 ** 24
 
-function fail(why: string): never {
-  throw new Error(`xlsx: not a readable zip archive: ${why}`)
+function fail(why: string, cause?: unknown): never {
+  throw new Error(`xlsx: not a readable zip archive: ${why}`, cause === undefined ? undefined : { cause })
 }
 
 /** The end of the central directory: searched backwards over a comment of up to 65,535 bytes. */
@@ -97,7 +97,14 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     if ((spent += size) > totalBytes) fail(`the parts read add up to more than ${totalBytes} bytes (limits.totalBytes)`)
     if (e.method === 0) return raw
     if (e.usize > RATIO_FROM && e.usize > ratio * e.csize) fail(`entry ${e.name} inflates to ${e.usize} bytes from ${e.csize}, more than ${ratio} times its size (limits.ratio)`)
-    const out = await inflate(raw, e.usize)
+    // a platform without the codec throws as it is; damaged data fails the stream
+    const inflating = inflate(raw, e.usize)
+    let out: Uint8Array | undefined
+    try {
+      out = await inflating
+    } catch (x) {
+      fail(`entry ${e.name} is not valid deflate data`, x)
+    }
     if (!out) fail(`entry ${e.name} inflates to more than the ${e.usize} bytes it declares`)
     if (out.length !== e.usize) fail(`entry ${e.name} inflates to ${out.length} bytes, not ${e.usize}`)
     return out
