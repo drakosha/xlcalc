@@ -1,6 +1,7 @@
 /** The first workbook and sheet views, passed between the file and presentation metadata. */
-import type { BookInput, SheetInput, SheetView } from '../contract.js'
+import type { BookInput, FrozenPanes, SheetInput, SheetView } from '../contract.js'
 import { checkSheetView } from '../input-view.js'
+import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { attributes, element, elements } from './xml/scan.js'
 import { escapeAttr } from './xml/text.js'
@@ -10,11 +11,13 @@ export function readSheetView(head: string): SheetView | undefined {
   if (!first) return undefined
   const attrs = attributes(first.attrs)
   const body = first.body ?? ''
-  const activePane = attributes(element(body, 'pane')?.attrs ?? '').activePane
+  const pane = attributes(element(body, 'pane')?.attrs ?? '')
+  const activePane = pane.activePane
   const selections = elements(body, 'selection').map((s) => attributes(s.attrs))
   const selected = selections.find((s) => s.pane === activePane) ?? selections[0] ?? {}
   const out: SheetView = {}
-  if (attrs.topLeftCell !== undefined) out.topLeft = attrs.topLeftCell
+  const topLeft = scrollOf(attrs.topLeftCell, pane)
+  if (topLeft !== undefined) out.topLeft = topLeft
   if (attrs.zoomScale !== undefined) out.zoom = Number(attrs.zoomScale)
   if (selected.activeCell !== undefined) out.activeCell = selected.activeCell
   if (selected.sqref?.trim()) out.selection = selected.sqref.trim().split(/\s+/)
@@ -23,6 +26,36 @@ export function readSheetView(head: string): SheetView | undefined {
     try { checkSheetView({ [key]: out[key] }, 'view') } catch { delete out[key] }
   }
   return Object.keys(out).length ? out : undefined
+}
+
+const CELL = /^[A-Z]{1,3}[1-9]\d*$/
+
+/**
+ * The scroll position a view saved: its top left cell, but over frozen panes whose pane after the split is scrolled past
+ * it, that pane's top left cell on each frozen axis (as `frozenScroll` writes it and Excel keeps it).
+ */
+function scrollOf(top: string | undefined, pane: Record<string, string>): string | undefined {
+  if ((pane.state !== 'frozen' && pane.state !== 'frozenSplit') || !CELL.test(pane.topLeftCell ?? '')) return top
+  const p = parseAddress(pane.topLeftCell!)
+  const v = top !== undefined && CELL.test(top) ? parseAddress(top) : { row: 0, col: 0 }
+  const [ys, xs] = [Math.trunc(Number(pane.ySplit ?? 0)), Math.trunc(Number(pane.xSplit ?? 0))]
+  // a pane at the split is not scrolled past it
+  if ((!(ys > 0) || p.row === v.row + ys) && (!(xs > 0) || p.col === v.col + xs)) return top
+  return formatAddress(ys > 0 ? p.row : v.row, xs > 0 ? p.col : v.col)
+}
+
+/**
+ * A saved scroll position over frozen panes as Excel keeps it: on a frozen axis the view starts at the first row or
+ * column (frozen panes count from there, as the reader counts them) and the pane after the split holds the scroll, at
+ * the split or past it; on an axis not frozen the view holds it. The view's and the pane's top left cells.
+ */
+export function frozenScroll(topLeft: string | undefined, f: FrozenPanes): { view?: string; pane: string } {
+  const [rows, cols] = [f.rows ?? 0, f.columns ?? 0]
+  const t = topLeft === undefined ? undefined : parseAddress(topLeft)
+  return {
+    ...(t ? { view: formatAddress(rows ? 0 : t.row, cols ? 0 : t.col) } : {}),
+    pane: formatAddress(rows ? Math.max(t?.row ?? 0, rows) : 0, cols ? Math.max(t?.col ?? 0, cols) : 0),
+  }
 }
 
 export function readActiveSheet(xml: string, declared: { name: string }[], sheets: SheetInput[]): string | undefined {

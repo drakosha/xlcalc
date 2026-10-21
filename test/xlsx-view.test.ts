@@ -1,7 +1,7 @@
 /** Saved sheet views roundtrip without participating in either computation hash. */
 import JSZip from 'jszip'
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, InputError, type BookInput, type Execution } from '../src/index.js'
+import { compute, InputError, type BookInput, type Execution, type FrozenPanes } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 afterAll(closeCalcs)
@@ -88,4 +88,49 @@ it('roundtrips an explicitly saved first active sheet', async () => {
   const book: BookInput = { activeSheet: 'S', sheets: [{ name: 'S', cells: {} }, { name: 'Other', cells: {} }] }
   const data = (await writeXlsx({ book })).data
   expect((await readXlsx(data)).book.activeSheet).toBe('S')
+})
+
+describe.each(['closures', 'eval'] as const)('frozen panes with a saved scroll position (fix-u325), %s', (execution: Execution) => {
+  const book = (frozen: FrozenPanes, topLeft: string): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 } }, frozen, view: { topLeft } }] })
+  const cycle = async (b: BookInput) => {
+    const r = await readXlsx((await writeXlsx({ book: b })).data)
+    return { book: r.book, issues: r.issues }
+  }
+
+  it.each([
+    [{ rows: 2, columns: 1 }, 'C5'],
+    [{ rows: 1 }, 'A3'],
+    [{ columns: 2 }, 'F1'],
+    [{ rows: 1 }, 'C40'],
+    [{ rows: 3, columns: 2 }, 'A1'],
+  ] as [FrozenPanes, string][])('%j over %s round-trips, again and again, and keeps inputHash', async (frozen, topLeft) => {
+    const b = book(frozen, topLeft)
+    let r = await cycle(b)
+    const view = r.book.sheets[0].view
+    for (let i = 0; i < 3; i++) {
+      expect([r.book.sheets[0].frozen, r.book.sheets[0].view?.topLeft, r.issues]).toEqual([frozen, topLeft, []])
+      expect(r.book.sheets[0].view).toEqual(view)
+      r = await cycle(r.book)
+    }
+    expect(compute(r.book, { execution }).inputHash).toBe(compute(b, { execution }).inputHash)
+  })
+
+  it('the scroll goes to the pane after the split, the view starts at the first row and column', async () => {
+    const zip = await JSZip.loadAsync((await writeXlsx({ book: book({ rows: 2, columns: 1 }, 'C5') })).data)
+    const xml = await zip.file('xl/worksheets/sheet1.xml')!.async('string')
+    expect(xml).toContain('<sheetView workbookViewId="0" tabSelected="1" topLeftCell="A1"><pane xSplit="1" ySplit="2" topLeftCell="C5" activePane="bottomRight" state="frozen"/>')
+  })
+
+  it('a file frozen over a scrolled sheet is read once from the first row, and written so', async () => {
+    const zip = await JSZip.loadAsync((await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } })).data)
+    const path = 'xl/worksheets/sheet1.xml'
+    zip.file(path, (await zip.file(path)!.async('string')).replace(/<sheetView[^>]*\/>/, '<sheetView workbookViewId="0" topLeftCell="A5"><pane ySplit="2" topLeftCell="A7" activePane="bottomLeft" state="frozen"/></sheetView>'))
+    const first = await readXlsx(await zip.generateAsync({ type: 'uint8array' }))
+    expect(first.book.sheets[0].frozen).toEqual({ rows: 6 })
+    expect(first.issues.map((i) => i.code)).toEqual(['frozenPanes'])
+    const second = await cycle(first.book)
+    const third = await cycle(second.book)
+    expect([second.book.sheets[0].frozen, third.book.sheets[0].frozen, second.issues, third.issues]).toEqual([{ rows: 6 }, { rows: 6 }, [], []])
+    expect(third.book.sheets[0].view).toEqual(second.book.sheets[0].view)
+  })
 })
