@@ -170,7 +170,7 @@ console.log(refused.code, refused.cell, refused.at, session.revision) // → syn
 `parseEntry(text, opts?)` returns `{ ok: true, input }` or `{ ok: false, code, message, at }`.
 
 - `input` is a `CellInput`: `value` or `formula`, `numberFormat` if the cell has one after the entry, and the `style`, `meta`, `note` and `link` of the cell typed into, which Excel keeps whatever is typed. It is `null` when nothing is left of the cell: empty text typed into a cell with none of these.
-- `ok: false` means a formula Excel does not accept as typed (its alert says "There's a problem with this formula"): the error code `syntax`, `empty`, `too_long` or `too_deep`, a message and the position in `text`. Nothing else stops an entry.
+- `ok: false` means a formula Excel does not accept as typed (its alert says "There's a problem with this formula"): the error code `syntax`, `empty`, `too_long` or `too_deep`, or `external_ref` for a workbook that `externalBooks` has no link to, a message and the position in `text`. Nothing else stops an entry.
 
 The options:
 

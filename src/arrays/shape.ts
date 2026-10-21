@@ -148,7 +148,11 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
     const passed: Shape[] = []
     args.forEach((a, i) => {
       const mode = spec.mode(i)
-      if (mode === 'whole') return
+      // an array (not a reference) in a range of criteria makes the call an array of #VALUE!, as the call answers at run time
+      if (mode === 'whole') {
+        if (!a.ref && a.s > 0 && spec.criteriaAt(i)) lifted.push(a.s)
+        return
+      }
       if (mode === 'pass') passed.push(a.s)
       else if (!a.ref || (mode === 'lift' && spec.rangeAt(i) === 'lift')) lifted.push(a.s)
     })

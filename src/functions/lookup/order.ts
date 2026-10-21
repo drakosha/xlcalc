@@ -30,8 +30,9 @@ function sortLines(a: Arr, byCol: boolean, key: (line: number, k: number) => V, 
   return byCol ? new Arr(a.rows, a.cols, a.rows, n, out.v, a.fill) : new Arr(a.rows, a.cols, n, a.cols, out.v, a.fill)
 }
 
-/** The given rows (columns `byCol`) of an array, in that order. */
+/** The given rows (columns `byCol`) of an array, in that order; within `limits.cells` (FILTER can keep every row of a whole column). */
 function lineArr(a: Arr, lines: readonly number[], byCol: boolean): Arr {
+  allot(lines.length * (byCol ? a.rows : a.cols))
   return selectArray(a, byCol ? undefined : lines, byCol ? lines : undefined)
 }
 

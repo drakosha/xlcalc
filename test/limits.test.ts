@@ -129,3 +129,31 @@ describe('limits', () => {
     expect(() => compute(book({}), { limits: { rows: 1 } as never })).toThrow('opts.limits: unknown field "rows"')
   })
 })
+
+describe.each(['closures', 'eval'] as const)('limits and diagnostics, %s', (execution) => {
+  it('cells: the reason of an error formula over a tall range is found without reading the range in full', async () => {
+    const b = book({
+      A2: { formula: '1/0' },
+      B1: { formula: 'INDEX(A2:A1000000,1,1)' },
+      B2: { formula: 'INDEX(A2:A1000000,1,1)/0' },
+      C1: { formula: 'VLOOKUP("zz",A2:B200000,2,FALSE)' },
+      D1: { formula: 'INDEX(A3:A1000000,1,1)/0' },
+    })
+    const limits = { cells: 1_000 }
+    const free = compute(b, { clock, execution })
+    const r = compute(b, { clock, execution, limits })
+    expect(r.hash).toBe(free.hash)
+    expect(r.diagnostics).toEqual(free.diagnostics)
+    const reason = (cell: string) => r.diagnostics.find((d) => d.kind === 'cell' && d.cell === cell)
+    expect(reason('B1')).toMatchObject({ error: 'DIV0', reason: "division by zero, from 'S'!A2" })
+    expect(reason('B2')).toMatchObject({ error: 'DIV0', reason: "division by zero, from 'S'!A2" })
+    expect(reason('C1')).toMatchObject({ error: 'NA' })
+    expect(reason('D1')).toMatchObject({ error: 'DIV0', reason: 'division by zero' })
+    const s = createSession(b, { clock, execution, limits })
+    expect(s.getResult().hash).toBe(free.hash)
+    expect(s.getSnapshot().result.hash).toBe(free.hash)
+    const calc = createInlineCalc({ limits })
+    expect((await calc.compute(b, { clock, execution })).hash).toBe(free.hash)
+    await calc.close()
+  })
+})

@@ -4,8 +4,11 @@
  * such (it never swallows the next element). Elements of the same name are not nested in the parts read here.
  */
 
-/** Attributes of a tag up to its end, quoted values skipped whole. */
-export const ATTRS = `(?:\\s(?:"[^"]*"|'[^']*'|[^>"'])*?)?`
+/**
+ * Attributes of a tag up to its end, quoted values skipped whole. They never hold `<` (XML refuses it in an attribute
+ * value), so a tag left open costs no more than the text up to the next tag.
+ */
+const ATTRS = `(?:\\s(?:"[^"<]*"|'[^'<]*'|[^>"'<])*?)?`
 
 export interface Element {
   /** The attribute text of the opening tag. */
@@ -14,28 +17,79 @@ export interface Element {
   body: string | null
 }
 
-const cache = new Map<string, RegExp>()
-
-function elementRe(local: string): RegExp {
-  let re = cache.get(local)
-  if (!re) cache.set(local, (re = new RegExp(`<(?:[\\w.-]+:)?${local}(${ATTRS})(?:/>|>([\\s\\S]*?)</(?:[\\w.-]+:)?${local}\\s*>)`, 'g')))
-  return re
+/** An element and where it lies in the text: from its opening tag to the end of its closing tag. */
+export interface Placed extends Element {
+  start: number
+  end: number
 }
 
-/** Every element of a local name, in document order. */
-export function elements(xml: string, local: string): Element[] {
-  const out: Element[] = []
-  for (const m of xml.matchAll(elementRe(local))) out.push({ attrs: m[1], body: m[2] ?? null })
+const cache = new Map<string, [RegExp, RegExp]>()
+
+/** The opening tag of a local name (its last group `/` when the element closes itself) and its closing tag; `bare`, without a namespace prefix. */
+function tags(local: string, bare: boolean): [RegExp, RegExp] {
+  // a local name holds no colon
+  const key = bare ? `:${local}` : local
+  let r = cache.get(key)
+  if (!r) {
+    const prefix = bare ? '' : '(?:[\\w.-]+:)?'
+    cache.set(key, (r = [new RegExp(`<${prefix}${local}(${ATTRS})(/?)>`, 'g'), new RegExp(`</${prefix}${local}\\s*>`, 'g')]))
+  }
+  return r
+}
+
+/**
+ * The elements of a local name in document order (with `first`, the first alone), as `<local …(?:/>|>(…)</local>)`
+ * matches them, in time linear in the text: an opening tag without a closing tag after it costs one search for the
+ * closing tag, where the regex searched to the end of the text once for each such tag.
+ */
+export function placed(xml: string, local: string, first = false, bare = false): Placed[] {
+  const [open, close] = tags(local, bare)
+  const out: Placed[] = []
+  // the first closing tag at or after `from` lies from `at` to `to`; `at` -1: there is none
+  let from = Infinity
+  let at = -1
+  let to = -1
+  open.lastIndex = 0
+  for (let m = open.exec(xml); m; m = open.exec(xml)) {
+    const body = open.lastIndex
+    if (m[2]) out.push({ attrs: m[1], body: null, start: m.index, end: body })
+    else {
+      if (body < from || (at >= 0 && body > at)) {
+        close.lastIndex = body
+        const c = close.exec(xml)
+        from = body
+        at = c ? c.index : -1
+        to = c ? close.lastIndex : -1
+      }
+      // without its closing tag the element is none; the text after its name is searched again
+      if (at < 0) {
+        open.lastIndex = m.index + 1
+        continue
+      }
+      out.push({ attrs: m[1], body: xml.slice(body, at), start: m.index, end: to })
+      open.lastIndex = to
+    }
+    if (first) break
+  }
+  open.lastIndex = 0
   return out
 }
 
+/** Every element of a local name, in document order. */
+export const elements = (xml: string, local: string): Element[] => placed(xml, local)
+
 /** The first element of a local name, or undefined. */
-export function element(xml: string, local: string): Element | undefined {
-  const re = elementRe(local)
-  re.lastIndex = 0
-  const m = re.exec(xml)
-  re.lastIndex = 0
-  return m ? { attrs: m[1], body: m[2] ?? null } : undefined
+export const element = (xml: string, local: string): Element | undefined => placed(xml, local, true)[0]
+
+/** The text without the elements `placed` gave for it. */
+export function outside(xml: string, parts: Placed[]): string {
+  let out = ''
+  let at = 0
+  for (const p of parts) {
+    out += xml.slice(at, p.start)
+    at = p.end
+  }
+  return out + xml.slice(at)
 }
 
 /** Whether the text has an element of the local name. */

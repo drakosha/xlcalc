@@ -222,6 +222,8 @@ export interface FunctionSpec {
   volatile?: boolean
   lazy?: boolean
   cell?: boolean
+  /** A range of criteria (`FnDef.criteria`): an array there makes the call an array of #VALUE!. */
+  criteriaAt: (i: number) => boolean
 }
 
 const RANGE_KINDS = 'NAYZVGDCMRrP'
@@ -277,6 +279,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
     volatile: def.volatile,
     lazy: def.lazy,
     cell: def.cell,
+    criteriaAt: (i) => def.criteria === true && kindAt(i) === 'R',
     array: def.array,
     liftAt: def.liftAt ?? ((i) => i === 0),
     refs: kinds.some((k) => k.k === 'P'),

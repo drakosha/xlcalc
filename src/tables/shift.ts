@@ -12,7 +12,7 @@ import type { BookInput, SheetInput, TableInput } from '../contract.js'
 import type { Message } from '../locale/messages.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
-import { cornersText, hi, lo, rectOf, type Area, type Axis } from '../structure/area.js'
+import { cornersText, hi, LIMIT, lo, rectOf, type Area, type Axis } from '../structure/area.js'
 import { copyTransform } from '../structure/transform.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteBookTables } from './rewrite.js'
@@ -30,6 +30,8 @@ export function freeColumnName(taken: string[], locale: string | undefined): str
 /** The effect of a shift on the tables of `sheet`: a refusal, or the book prepared before the shift and finished after it. */
 export interface TableShift {
   refuse?: Message
+  /** The last cell of a table that inserted lines would push off the sheet (its last lines may hold no cell). */
+  offSheet?: string
   /** References to deleted tables and columns made #REF!, before the cells move. */
   before(book: BookInput): BookInput
   /** The tables' new ranges and columns, the cells of inserted rows and columns, after the cells moved. */
@@ -99,6 +101,8 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
     plan.set(t.name, { lo: nlo, hi: nlo + (t.headers ? 1 : 0) + Math.max(1, data) + (totals ? 1 : 0) - 1, columns: cols, totals, grown: [] })
   }
   if (!plan.size) return none
+  const off = n > 0 && tables.find((t) => (plan.get(t.name)?.hi ?? 0) >= LIMIT[axis])
+  if (off) return { ...none, offSheet: formatAddress(off.r2, off.c2) }
   const growing = n > 0 && axis === 'r' ? tables.filter((t) => plan.get(t.name)?.grown.length) : []
   const edge = (area: Area): [number, number] | undefined => {
     const x = rectOf(area)

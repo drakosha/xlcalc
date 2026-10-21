@@ -58,8 +58,9 @@ export interface EntryOptions {
 
 /**
  * Text typed into a cell, as Excel interprets it (`parseEntry`): the cell's new input, `null` when nothing is left of the
- * cell; or a formula Excel would reject, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
- * language of `opts.locale` (English for en-US) and the position in the typed text. When a formula is typed with
+ * cell; or a formula Excel would reject, with a check code (`syntax`, `empty`, `too_long`, `too_deep`, and `external_ref`
+ * for a workbook not among `opts.externalBooks`), a message in the language of `opts.locale` (English for en-US) and the
+ * position in the typed text. When a formula is typed with
  * brackets, quotes or array braces left open at its end, Excel closes them on Return if the formula begins with a
  * function, has no `)` and leaves only function brackets open (`=SUM(1,2` becomes `=SUM(1,2)`); any other such formula
  * it rejects and offers to correct, provided the closed formula parses and every function in it is known: `correction`

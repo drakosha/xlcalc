@@ -176,7 +176,7 @@ console.log(session.revision, session.getBook().sheets[0].cells)
 | `closed` | the calculator or the session is closed |
 | `stale_revision` | an edit's `baseRevision` is not the session's revision; it changed nothing ([Editing a grid](edits.md#revisions)) |
 
-Invalid input still throws `InputError`, from a thread too. A workbook or an argument that structured cloning cannot transfer to a thread (a function in a cell's `meta`, which the contract types as JSON) is rejected by the pool with an `InputError` naming the argument (`book`, `edits`); the synchronous and same-thread calls pass `meta` through untouched, as before.
+Invalid input still throws `InputError`, from a thread too. A workbook or an argument that structured cloning cannot transfer to a thread (a function in a cell's `meta`, which the contract types as JSON) is rejected by the pool with an `InputError` naming the argument (`book`, `edits`); the synchronous and same-thread calls pass `meta` through untouched, as before. A `meta` that holds a BigInt or a cycle, which neither the input hash nor a thread can take, is refused with `InputError`.
 
 ## On the same thread
 
@@ -219,7 +219,7 @@ A snapshot grows by what the history holds, which `maxMb` bounds. On the synthet
 
 ### In a browser
 
-The same pool runs on Web Workers with the same messages, started as `new Worker(new URL('./thread.js', import.meta.url), { type: 'module' })`, the form bundlers recognize. Where a bundler puts the thread's script elsewhere, `spawn` starts it. A hard deadline terminates the worker. There is no memory limit: `maxHeapMb` throws `InputError` there.
+The same pool runs on Web Workers with the same messages, started as `new Worker(new URL('./thread.js', import.meta.url), { type: 'module' })`, the form bundlers recognize. A bundler that keeps that URL as written (esbuild) takes the thread's module, `xlcalc/worker/thread`, as a second entry point named `thread` in the same directory (`entryPoints: { app: 'src/app.js', thread: 'xlcalc/worker/thread' }`), for a Node app too; in a browser, where the thread's script lands elsewhere, `spawn` starts it: `spawn: () => new Worker(new URL('./xlcalc-thread.js', import.meta.url), { type: 'module' })`. A hard deadline terminates the worker. There is no memory limit: `maxHeapMb` throws `InputError` there.
 
 `xlcalc` imports none of the thread code: a page that calculates on its own thread does not load it.
 

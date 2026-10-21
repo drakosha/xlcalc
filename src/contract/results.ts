@@ -7,7 +7,8 @@ import type { Color } from './looks.js'
 /**
  * External functions (host functions evaluated outside the workbook): their values are resolved in
  * advance, in a single request, and passed to the calculation. The key of a call is its canonical text
- * (`BALANCE("2025-01")`); arguments must be literals.
+ * (`BALANCE("2025-01")`); arguments must be literals. They are options of the calculation, not part of the
+ * workbook, so `inputHash` does not include them.
  */
 export interface Externals {
   functions: string[]
