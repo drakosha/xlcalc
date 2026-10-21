@@ -156,8 +156,9 @@ function viewOf(state: EngineState, s: number, addr: string, r: number, c: numbe
   const view: CellView = resultAt(state, s, addr, r, c, look, spillOf)
   const input = state.input.sheets[s].cells[addr] ?? (layer && layer.lookAt(r, c))
   if (input?.style !== undefined) view.style = input.style
-  if (input?.note !== undefined) view.note = input.note
-  if (input?.link !== undefined) view.link = input.link
+  // copies, as a pool's are: a host that edits them does not change the workbook
+  if (input?.note !== undefined) view.note = { ...input.note }
+  if (input?.link !== undefined) view.link = { ...input.link }
   if (input?.array !== undefined) view.array = input.array
   if (view.numberFormat !== undefined) view.numberFormatCode = code(view.numberFormat)
   if (cf) withLook(view, cf, look && ((format) => look(s, r, c, view.value, { ...input, numberFormat: format })))
