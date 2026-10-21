@@ -5,9 +5,11 @@
  */
 import type { CellIssueDetail, CellRef, CheckCode, ErrorCode } from './contract.js'
 import { key, valueAt, type EngineState, type Formula } from './engine.js'
+import { canAllot } from './exec/budget.js'
 import { stopped } from './held.js'
 import { formatAddress, placeOf } from './model.js'
 import { runtimeSheet } from './links.js'
+import { fillBounds } from './spill/fill.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
 import { quoteSheet } from './syntax.js'
@@ -121,8 +123,19 @@ export function cellIssue(state: EngineState, s: number, r: number, c: number): 
 function errorSource(state: EngineState, f: Formula, code: ErrorCode): (Place & { ref: number }) | null {
   for (let k = 0; k < f.refs.length; k++) {
     const g = f.refs[k]
-    const flat = state.rt.flat(g)
     const b = state.rt.bounds(g)
+    // a range over limits.cells is scanned cell by cell, over its occupied rows: the formula may have read one cell of it
+    if (!canAllot(b.h * b.w)) {
+      const sh = state.ctx.sheets[g.s]
+      const [r2] = fillBounds(sh.fills, g, Math.min(b.r2, Math.max(sh.rows - 1, g.r1)), b.c2)
+      for (let r = b.r1; r <= r2; r++)
+        for (let c = b.c1; c <= b.c2; c++) {
+          const v = state.rt.cell(g.s, r, c)
+          if (isErr(v) && v.code === code) return { s: g.s, r, c, ref: k }
+        }
+      continue
+    }
+    const flat = state.rt.flat(g)
     for (let i = 0; i < flat.length; i++) {
       const v = flat[i]
       if (isErr(v) && v.code === code) return { s: g.s, r: b.r1 + Math.floor(i / b.w), c: b.c1 + (i % b.w), ref: k }
