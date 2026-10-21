@@ -5,7 +5,7 @@
  * session parts in a synchronous session, in the same thread and in a thread.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, displayValue, type BookInput } from '../src/index.js'
+import { compute, displayValue, editStructure, type BookInput, type StructureOp } from '../src/index.js'
 import { createState } from '../src/engine.js'
 import { closestFraction } from '../src/numfmt/number.js'
 import { typedHeights } from '../src/session/wrap.js'
@@ -122,5 +122,45 @@ describe.each(['closures', 'eval'] as const)('rows fitted for many wrapping cell
     const heights = new Set(edits.map((e) => ('rows' in e ? e.set.height : undefined)))
     expect(heights.size).toBe(1)
     expect([...heights][0]).toBeGreaterThan(15)
+  })
+})
+
+describe('a reference across sheets to a sheet the book does not have', () => {
+  const book = (formula: string, on = 'Calc'): BookInput => ({
+    sheets: [
+      { name: 'Calc', cells: on === 'Calc' ? { A1: { formula } } : {} },
+      { name: 'Misc', cells: {} },
+      { name: 'Other', cells: on === 'Other' ? { A1: { formula } } : {} },
+    ],
+    names: [{ name: 'X', ref: formula }],
+  })
+  const kept = (b: BookInput, sheet: string) => b.sheets.find((s) => s.name === sheet)!.cells.A1.formula
+
+  it('stays as written when a sheet is deleted or moved', () => {
+    for (const formula of ['SUM(Data:Calc!B2)', 'SUM(Nope:Zip!B2)', "SUM('Calc:Nope'!B2)"])
+      for (const on of ['Calc', 'Other'])
+        for (const op of [
+          { op: 'deleteSheet', sheet: 'Misc' },
+          ...(on === 'Other' ? [{ op: 'deleteSheet', sheet: 'Calc' } as const] : []),
+          { op: 'moveSheet', sheet: 'Calc' },
+          { op: 'moveSheet', sheet: 'Misc', before: 'Calc' },
+        ] satisfies StructureOp[]) {
+          const r = editStructure(book(formula, on), op)
+          expect(r.ok, `${formula} on ${on}, ${JSON.stringify(op)}`).toBe(true)
+          if (!r.ok) continue
+          expect(kept(r.book, on)).toBe(compute(book(formula, on), { clock, display: false }).sheets.find((s) => s.name === on)!.cells.A1.formula)
+          expect(r.book.names?.[0].ref).toBe(formula)
+        }
+  })
+
+  describe.each(KINDS)('in %s', (kind) => {
+    const open = openerFor(kind)
+    it.each(['closures', 'eval'] as const)('a session deletes the sheet and the formula stays #REF!, %s', async (execution) => {
+      const s = await open(book('SUM(Data:Calc!B2)', 'Other'), { clock, execution })
+      expect((await s.editStructure({ op: 'deleteSheet', sheet: 'Misc' })).ok).toBe(true)
+      expect((await s.getCells('Other', 'A1')).A1).toMatchObject({ value: { error: 'REF' } })
+      expect(s.history).toMatchObject({ undo: 1 })
+      await s.close()
+    })
   })
 })
