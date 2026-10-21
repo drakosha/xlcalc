@@ -91,4 +91,15 @@ describe.each(['closures', 'eval'] as const)('review 21.10 functions, %s', (exec
     expect(compute(fits, { execution, display: false }).sheets[0].cells.E5.value).toBe(1048576)
   })
 
+  it('TAKE and DROP of a whole column answer a reference without an index per row', () => {
+    const cells: Cells = { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 4 }, B2: { value: 8 } }
+    const formulas = ['SUM(DROP(A:A,1))', 'SUM(TAKE(A:B,,1))', 'ROWS(DROP(A:A,-2))', 'SUM(TAKE(A:A,-1048575))', 'ROWS(DROP(A:B,1048576))', 'SUM(DROP(A:B,1,-1))']
+    for (const [i, formula] of formulas.entries()) cells[`D${i + 1}`] = { formula }
+    const out = compute(book(cells), { execution, display: false }).sheets[0].cells
+    expect(formulas.map((_, i) => out[`D${i + 1}`].value)).toEqual([6, 7, 1048574, 6, { error: 'CALC' }, 6])
+    // each of these built a 1,048,576-entry index array per evaluation (20 ms); 200 of them took seconds
+    const many: Cells = { A1: { value: 1 } }
+    for (let r = 1; r <= 200; r++) many[`C${r}`] = { formula: r % 2 ? 'SUM(DROP(A:A,1))' : 'SUM(TAKE(A:A,,1))' }
+    expect(took(() => compute(book(many), { execution, display: false }))).toBeLessThan(1000)
+  })
 })
