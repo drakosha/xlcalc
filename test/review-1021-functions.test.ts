@@ -59,4 +59,17 @@ describe.each(['closures', 'eval'] as const)('review 21.10 functions, %s', (exec
     expect(v).toBe(100000)
     expect(ms).toBeLessThan(1500)
   })
+
+  it('AMORDEGRC over millions of periods with a non-zero depreciation is fast and stops at the deadline', async () => {
+    // each period used to round through decimal text: 10^7 periods took about 3 s
+    let v: unknown
+    const ms = took(() => (v = one('AMORDEGRC(1E15,40000,40001,0,1E7,1E-9,0)', execution)))
+    expect(typeof v).toBe('number')
+    expect(ms).toBeLessThan(1000)
+    const calc = createInlineCalc()
+    const t0 = performance.now()
+    const e = await stopped(calc.compute(book({ A1: { formula: 'AMORDEGRC(1E15,40000,40001,0,9E8,1E-9,0)' } }), { execution, timeoutMs: 100 }))
+    expect(e.code).toBe('soft_timeout')
+    expect(performance.now() - t0).toBeLessThan(1500)
+  })
 })

@@ -4,12 +4,15 @@
  */
 import { E } from '../../values.js'
 import type { FnDef } from '../../args.js'
+import { spend } from '../../exec/budget.js'
 import { roundDigits } from '../common.js'
 import { atp, need } from '../date/atp.js'
 import { isLeap, ymd } from '../../dates.js'
 import { validBasis, yearFrac } from '../date/daycount.js'
 
 const round = (x: number, digits: number) => roundDigits(x, digits, Math.round)
+// roundDigits to 0 digits without its decimal text: AMORDEGRC rounds once per period
+const round0 = (x: number) => Math.sign(x) * Math.round(Math.abs(x))
 
 /** Double-declining balance for a (possibly fractional) period, never below salvage. */
 function ddb(cost: number, salvage: number, life: number, period: number, factor: number): number {
@@ -44,20 +47,21 @@ export const functions: Record<string, FnDef> = {
     const r = rate * coefficient(1 / rate)
     if (Number.isNaN(r)) return E.NUM
     const last = Math.floor(1 / rate)
-    let dep = Math.min(round(amorFirst(purchased, first, basis) * r * cost, 0), cost - salvage)
+    let dep = Math.min(round0(amorFirst(purchased, first, basis) * r * cost), cost - salvage)
     let book = cost - dep
     let rest = book - salvage
     const n = Math.trunc(period)
     // past the life's end nothing is left
     if (n > last) return 0
     for (let k = 0; k < n; k++) {
+      spend(1)
       // once the rounded amount is 0 nothing changes until the last two years
       if (dep === 0 && k > 0 && k + 2 < last) k = Math.min(n, last - 2) - 1
       if (k + 1 === last) {
         book = 0
         continue
       }
-      dep = round(k + 2 === last ? book * 0.5 : r * book, 0)
+      dep = round0(k + 2 === last ? book * 0.5 : r * book)
       rest -= dep
       if (rest < 0) return n - k <= 1 ? dep : 0
       book -= dep
