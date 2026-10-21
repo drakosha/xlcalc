@@ -47,7 +47,7 @@ import { patchPlan, type Plan } from './session/styles.js'
 import { bookDiff, DiffPass, type BookDiff } from './session/rebook.js'
 import { columnWidening, entryCheck, validationAlert } from './session/text.js'
 import { alertRefusal, checkActive, checkTextEntries, filledText, pastedText, previewCells, strictestRefusal, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
-import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
+import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, rebased, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
 import { issueDetail } from './issues.js'
@@ -356,8 +356,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const [next, out, cellsBack] = yield* write(s, plan.edits)
     let o = out
     const steps = [cellsBack]
+    // a header cell written renamed its column and built the book again: the plan's sheets, made on the book before, go on the new one
+    const sheets = next === s ? plan.sheets : new Map([...plan.sheets].map(([i, x]) => [i, rebased(s.input.sheets[i], x, next.input.sheets[i])]))
     try {
-      if (plan.sheets.size) o = yield* laidOut(next, plan.sheets, display ? snapshot(next, layoutCells(next, plan.touched)) : null, o, steps, call)
+      if (sheets.size) o = yield* laidOut(next, sheets, display ? snapshot(next, layoutCells(next, plan.touched)) : null, o, steps, call)
     } catch (e) {
       // stopped computing a merged area's arrays: the cells written go back too
       const cells = cellsBack()

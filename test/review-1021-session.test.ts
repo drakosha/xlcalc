@@ -215,4 +215,40 @@ describe.each(['closures', 'eval'] as const)('a session stopped part way, %s', (
       await afterLimit(await calc.createSession(limited(), { ...o, limits: { spill: 100 } }))
     }, 60_000)
   })
+
+  describe('x-fuzz-session-7: clearing all of whole lines through a table header', () => {
+    const book = (): BookInput => ({
+      sheets: [
+        { name: 'Data', cells: { A1: { value: 'Item' }, B1: { value: 'Qty' }, C1: { value: 'Price' }, A2: { value: 'x' }, B2: { value: 2 }, C2: { value: 3 }, A3: { value: 'y' }, B3: { value: 4 }, C3: { value: 5 } }, tables: [{ name: 'Sales', range: 'A1:C3', columns: [{ name: 'Item' }, { name: 'Qty' }, { name: 'Price' }] }] },
+        { name: 'Other', cells: { A1: { formula: 'COUNTA(Sales[Qty])' } } },
+      ],
+    })
+
+    /** Clears of whole columns and of whole rows: the book holds what the session computes, and undo and redo go back and forth. */
+    async function clears(s: () => Promise<Session | AsyncSession> | Session | AsyncSession) {
+      for (const [range, header] of [['B:C', ['Item', 'Column1', 'Column2']], ['1:1', ['Column1', 'Column2', 'Column3']]] as const) {
+        const x = await s()
+        const original = await held(x)
+        await x.clearCells([{ sheet: 'Data', range }], 'all')
+        const cleared = await held(x)
+        const data = (await x.getBook()).sheets[0]
+        expect(data.tables![0].columns.map((c) => c.name), range).toEqual(header)
+        expect(header.map((_, c) => data.cells[`${'ABC'[c]}1`]?.value)).toEqual(header)
+        await consistent(x, execution)
+        await x.undo()
+        expect(await held(x), range).toEqual({ ...original, history: { undo: 0, redo: 1 } })
+        await consistent(x, execution)
+        await x.redo()
+        expect(await held(x), range).toEqual(cleared)
+        await x.close()
+      }
+    }
+
+    it('synchronous', () => clears(() => createSession(book(), o)))
+    it('in the same thread', () => clears(() => inline().createSession(book(), o)))
+    it('in a thread', async () => {
+      const calc = await threads()
+      await clears(() => calc.createSession(book(), o))
+    }, 60_000)
+  })
 })
