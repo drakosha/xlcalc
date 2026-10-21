@@ -1699,10 +1699,10 @@ type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; wi
 
 ### `CellTextRefusal`
 
-Why [`Session.setCellText`](#session) rejected the text: a formula Excel would reject ([`CheckCode`](#checkcode)), part of an array formula, or a formula in a table's header cell.
+Why [`Session.setCellText`](#session) rejected the text: a formula Excel would reject ([`CheckCode`](#checkcode)) or one that refers to a workbook not among the links (`external_ref`), part of an array formula, or a formula in a table's header cell.
 
 ```ts
-type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'array' | 'header'
+type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'external_ref' | 'array' | 'header'
 ```
 
 ### `CellTextRefused`
@@ -2341,7 +2341,8 @@ interface EditResult {
   /**
    * The cells whose value, displayed text, formula, formatting, note or hyperlink changed, as `CellChange`; a cell whose
    * value changed because of another cell is listed with its value only. After a structure operation, the cells whose
-   * value or formula differs from that of the cell previously at their old position (`moved`).
+   * value or formula differs from that of the cell previously at their old position (`moved`); a rectangle of more than
+   * 65,536 cells whose formatting alone changed (a merge of entire columns, its undo) is in `repaint` instead of here.
    */
   changes: CellChange[]
   /** The sheets whose layout changed (rows, columns, merged areas, tables, conditional formats, validation…): a host reads `getLayout()` again. */
@@ -2353,7 +2354,8 @@ interface EditResult {
   /**
    * Rectangles where cells may look different without being in `changes`: the cells covered by the workbook's
    * conditional formats, after a call that changed a value or the rules (a rule's formatting depends on values wherever
-   * its formulas point).
+   * its formulas point), and after a structure operation, its undo or redo, a rectangle of more than 65,536 cells whose
+   * formatting changed, which a host reads again where it overlaps its viewport.
    */
   repaint?: RangeRef[]
 }
@@ -2413,8 +2415,9 @@ interface EntryOptions {
 ### `EntryResult`
 
 Text typed into a cell, as Excel interprets it ([`parseEntry`](#xlcalcentry-parseentry)): the cell's new input, `null` when nothing is left of the
-cell; or a formula Excel would reject, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
-language of `opts.locale` (English for en-US) and the position in the typed text. When a formula is typed with
+cell; or a formula Excel would reject, with a check code (`syntax`, `empty`, `too_long`, `too_deep`, and `external_ref`
+for a workbook not among `opts.externalBooks`), a message in the language of `opts.locale` (English for en-US) and the
+position in the typed text. When a formula is typed with
 brackets, quotes or array braces left open at its end, Excel closes them on Return if the formula begins with a
 function, has no `)` and leaves only function brackets open (`=SUM(1,2` becomes `=SUM(1,2)`); any other such formula
 it rejects and offers to correct, provided the closed formula parses and every function in it is known: `correction`
@@ -2583,7 +2586,8 @@ interface ExternalName {
 
 External functions (host functions evaluated outside the workbook): their values are resolved in
 advance, in a single request, and passed to the calculation. The key of a call is its canonical text
-(`BALANCE("2025-01")`); arguments must be literals.
+(`BALANCE("2025-01")`); arguments must be literals. They are options of the calculation, not part of the
+workbook, so `inputHash` does not include them.
 
 ```ts
 interface Externals {
@@ -3802,8 +3806,8 @@ interface Session {
   /**
    * Column widths, row heights, row and column styles and formats, hidden rows and columns, outline levels, merged
    * areas, the filter mode, frozen panes, conditional formats, data validation rules and outline settings, applied
-   * atomically. Merged areas block arrays from spilling over them: the formulas whose spill range overlaps an added or
-   * removed area are recalculated. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE include: their
+   * atomically. A merged area over a table is rejected with an `InputError`, as in a workbook. Merged areas block arrays
+   * from spilling over them: the formulas whose spill range overlaps an added or removed area are recalculated. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE include: their
    * formulas over the affected rows are recalculated. Nothing else is recalculated. With `display`, the cells whose
    * displayed text or color changed because of a width, a format or a merged area are listed too. Setting or removing a
    * row height without bestFit clears its previous fitted marker; an explicitly given bestFit is honored.

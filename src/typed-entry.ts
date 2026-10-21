@@ -5,15 +5,12 @@
  * edits without loading the computation. The functions' arguments come by their declared kinds (`function-arity.ts`),
  * not their implementations; a locale other than en-US is given as an object (`ruRU` of `xlcalc/locales/ru-RU`).
  */
-import { aritiesOf, useArities } from './arity.js'
+import { withDeclaredArities } from './declared-arity.js'
 import * as entry from './entry/index.js'
 import * as entryTexts from './entry/text.js'
-import { FUNCTION_ARITY } from './function-arity.js'
 import { strict } from './strict-args.js'
 
 // without the engine, the check of a formula's calls counts by the functions' declared arguments
-useArities(aritiesOf(FUNCTION_ARITY))
-
-export const parseEntry = /* @__PURE__ */ strict(entry.parseEntry)
-export const entryText = /* @__PURE__ */ strict(entryTexts.entryText)
-export const needsApostrophe = /* @__PURE__ */ strict(entryTexts.needsApostrophe)
+export const parseEntry = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entry.parseEntry))
+export const entryText = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.entryText))
+export const needsApostrophe = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.needsApostrophe))

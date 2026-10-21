@@ -158,8 +158,8 @@ export interface Session {
   /**
    * Column widths, row heights, row and column styles and formats, hidden rows and columns, outline levels, merged
    * areas, the filter mode, frozen panes, conditional formats, data validation rules and outline settings, applied
-   * atomically. Merged areas block arrays from spilling over them: the formulas whose spill range overlaps an added or
-   * removed area are recalculated. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE include: their
+   * atomically. A merged area over a table is rejected with an `InputError`, as in a workbook. Merged areas block arrays
+   * from spilling over them: the formulas whose spill range overlaps an added or removed area are recalculated. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE include: their
    * formulas over the affected rows are recalculated. Nothing else is recalculated. With `display`, the cells whose
    * displayed text or color changed because of a width, a format or a merged area are listed too. Setting or removing a
    * row height without bestFit clears its previous fitted marker; an explicitly given bestFit is honored.

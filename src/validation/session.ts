@@ -5,7 +5,7 @@
  */
 import type { CellInput, CellReplace, CellValidation, DataValidation, NumberFormat } from '../contract.js'
 import type { Arg } from '../args.js'
-import { applyEdits, codegenContext, toCellValue, valueAt, type EngineState } from '../engine.js'
+import { applyEdits, codegenContext, sheetIndexOf, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { invalidError } from '../prepare.js'
 import { closureBackend } from '../exec/closures.js'
 import { walk } from '../exec/walk.js'
@@ -18,7 +18,7 @@ import { readEntry } from '../entry/index.js'
 import { formatAddress } from '../model.js'
 import { ERROR_TEXT } from '../syntax/ast.js'
 import { inputAt } from '../session/book.js'
-import { inputIn } from '../looks/sheet.js'
+import { inputIn, putInputs } from '../looks/sheet.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
 import { decode } from '../structure/area.js'
 import { tableAt, tableNames } from '../tables/model.js'
@@ -252,6 +252,10 @@ export function* withInputs<T>(state: EngineState, edits: CellReplace[], read: (
     try {
       yield* applyEdits(state, put)
       back = journaled(back, state.journal)
+    } catch (e) {
+      // stopped while it computed: the inputs put in go back, so the state built again on the next call is of the book as it was
+      putInputs(state.input.sheets, (name) => sheetIndexOf(state, name)!, journaled(back, state.journal))
+      throw e
     } finally {
       state.journal = undefined
     }

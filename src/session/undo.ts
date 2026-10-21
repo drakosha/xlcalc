@@ -31,8 +31,8 @@ export type Step =
   | { kind: 'styles'; call: UndoCall; styles: CellStyle[] | undefined; size: number }
   | { kind: 'book'; call: UndoCall; diff: BookDiff; size: number }
   /**
-   * Several of one call, taken in their order either way: they change different parts of the book, and the first, the
-   * cells' inputs, is the only one that recomputes, so a step stopped there has changed nothing.
+   * Several of one call, taken in their order either way: they change different parts of the book, and one stopped
+   * after the first puts back what those before it changed (`SessionCore.kept`), so a step stopped has changed nothing.
    */
   | { kind: 'many'; call: UndoCall; steps: Step[]; size: number }
 
@@ -171,6 +171,12 @@ export function sheetWith(sheet: SheetInput, back: SheetBack): SheetInput {
   return out as unknown as SheetInput
 }
 
+/** Sheet `to`, a change of the layout of `from`, made on `onto` instead, the same sheet built again since: `onto` with the fields and lines that changed. */
+export function rebased(from: SheetInput, to: SheetInput, onto: SheetInput): SheetInput {
+  const back = sheetBack(0, from, to)
+  return back ? sheetWith(onto, back) : onto
+}
+
 /** The fields of `a` that `b` does not share, as `weigh` counts them. */
 const own = (a: object, b: object | undefined): number => {
   let n = 32
@@ -210,6 +216,8 @@ export interface SessionCore {
   putCells(s: EngineState, edits: CellReplace[], restore?: boolean): Steps<[Outcome, CellReplace[]]>
   rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean, restore?: boolean): Steps<[EngineState, Outcome, BookDiff | null]>
   relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<number, string> | null): Steps<[Outcome, SheetInput[]]>
+  /** The book of `s` as it is now, put back by the function given the inputs the cells written since replaced; built again on the next call. */
+  kept(s: EngineState): (cells: CellReplace[]) => void
   display: boolean
   sheetIndex(s: EngineState): (name: string) => number | undefined
 }
@@ -271,11 +279,18 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       let outcome = nothing()
       let cells: CellRef[] | undefined
       const others: Step[] = []
-      for (const x of step.steps) {
-        const [one, other] = yield* take(core, x)
-        outcome = joined(outcome, one.outcome)
-        if (one.cells) cells = [...(cells ?? []), ...one.cells]
-        others.push(other)
+      const back = core.kept(s)
+      try {
+        for (const x of step.steps) {
+          const [one, other] = yield* take(core, x)
+          outcome = joined(outcome, one.outcome)
+          if (one.cells) cells = [...(cells ?? []), ...one.cells]
+          others.push(other)
+        }
+      } catch (e) {
+        // a merged area's arrays computed after its cells: the cells taken go back, the first step's inputs last
+        if (others.length) back([...others].reverse().flatMap((x) => (x.kind === 'cells' ? x.edits : [])))
+        throw e
       }
       return [{ call: step.call, outcome, ...(cells ? { cells } : {}) }, manyStep(step.call, others)]
     }

@@ -207,7 +207,7 @@ Every call that changes the workbook (`setCells`, `replaceCells`, `clearCells`, 
 - `layout`: the sheets whose layout changed (rows and columns, merged areas, tables, rules): a host calls `getLayout()` again.
 - `styles`: the workbook's style table, when the call changed it.
 - `moved`: after a structure operation and its undo, how addresses moved, in order: `{ kind: 'lines', sheet, axis, at, count }` (the rows or columns from `at` onward move by `count`, up or left when it is negative), `{ kind: 'range', from, to }`, and a sheet renamed, deleted, inserted or moved. Rows deleted on a filtered sheet are one `lines` move for each run of visible rows, from the bottom up. A host shifts its viewport by them rather than mapping each cell with `mapCell`.
-- `repaint`: the ranges of the workbook's conditional formats, after a call that changed a value or a rule. A rule's formatting depends on values wherever its formulas refer, so a host reads its viewport again where it overlaps them.
+- `repaint`: the ranges of the workbook's conditional formats, after a call that changed a value or a rule. A rule's formatting depends on values wherever its formulas refer, so a host reads its viewport again where it overlaps them. A large change of formatting comes the same way: after a structure operation, its undo or redo, a rectangle of more than 65,536 cells whose formatting changed (Merge Cells on entire columns) is a range of `repaint`, not cells of `changes`.
 
 ## Revisions
 

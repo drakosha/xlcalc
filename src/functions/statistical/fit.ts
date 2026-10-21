@@ -77,9 +77,18 @@ const DEPENDENT = 1e-10
 /** Residual norms this close count as a tie. */
 const TIE = 1e-9
 
+const NORM_CHUNK = 16384
+/** Math.hypot of a column in chunks: spreading a whole column can exceed the call argument limit; short columns make the same call. */
+function columnNorm(xs: readonly number[]): number {
+  if (xs.length <= NORM_CHUNK) return Math.hypot(...xs)
+  let h = 0
+  for (let i = 0; i < xs.length; i += NORM_CHUNK) h = Math.hypot(h, ...xs.slice(i, i + NORM_CHUNK))
+  return h
+}
+
 /** The variables Excel keeps: by the largest norm left after projecting out those kept (`cols` centered with a constant). */
 function independent(cols: number[][], constant: boolean): number[] {
-  const scale = cols.map((c) => Math.hypot(...c))
+  const scale = cols.map(columnNorm)
   const basis: number[][] = []
   const kept: number[] = []
   let left = cols.map((_, j) => j)
@@ -92,7 +101,7 @@ function independent(cols: number[][], constant: boolean): number[] {
       }
       return r
     })
-    const norms = res.map((r) => Math.hypot(...r))
+    const norms = res.map(columnNorm)
     let best = -1
     for (let i = 0; i < left.length; i++) {
       if (!(norms[i] > DEPENDENT * scale[left[i]])) continue

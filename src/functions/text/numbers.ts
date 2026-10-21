@@ -11,8 +11,7 @@ import { roundDigits } from '../common.js'
 /** Rounded on the decimal representation (1.005 → 1.01); negative decimals round left of the point; grouped by threes with `group`. */
 function fixedDigits(x: number, decimals: number, rules: Rules, group: boolean): { text: string; zero: boolean } {
   const k = Math.max(decimals, 0)
-  // toFixed stops at 100 decimals; a double has no further digits
-  const text = roundHalfUp(Math.abs(roundDigits(x, decimals, Math.round)), Math.min(k, 100)) + '0'.repeat(Math.max(k - 100, 0))
+  const text = roundHalfUp(Math.abs(roundDigits(x, decimals, Math.round)), k)
   const [ip, fp] = text.split('.')
   const grouped = group ? ip.replace(/\B(?=(\d{3})+$)/g, rules.group) : ip
   return { text: grouped + (fp === undefined ? '' : rules.decimal + fp), zero: Number(text) === 0 }

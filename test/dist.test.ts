@@ -6,8 +6,10 @@
  * `dist` and the documents, every link between which leads to a file it holds.
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join, posix } from 'node:path'
+import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { compute, FUNCTION_NAMES, createSession } from '../src/index.js'
@@ -24,7 +26,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './worker', './locales/ru-RU'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './worker', './worker/thread', './locales/ru-RU'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {
@@ -37,7 +39,8 @@ describe('built package', () => {
 
   it('each subpath loads on its own in a fresh process', () => {
     // a consumer may import any subpath first; module cycles must not depend on the root entry loading before it
-    for (const sub of Object.keys(pkg.exports).filter((k) => k !== './package.json')) {
+    // the thread's module runs in a thread of the pool (below)
+    for (const sub of Object.keys(pkg.exports).filter((k) => k !== './package.json' && k !== './worker/thread')) {
       const spec = sub === '.' ? pkg.name : `${pkg.name}/${sub.slice(2)}`
       expect(() => execFileSync(process.execPath, ['--input-type=module', '-e', `await import(${JSON.stringify(spec)})`], { cwd: root, stdio: 'pipe' }), spec).not.toThrow()
     }
@@ -65,6 +68,20 @@ describe('built package', () => {
     // the root's functions of formula text and the clipboard's are the subpath's own
     expect(out.text).toEqual({ keys: ['DEFAULT_ROW_HEIGHT', 'FUNCTION_CATEGORIES', 'MAX_OUTLINE', 'MAX_ROW_HEIGHT', 'callAt', 'columnWidthFromChars', 'columnWidthFromPoints', 'columnWidthToChars', 'columnWidthToPoints', 'compareValues', 'escapeColumn', 'findMatcher', 'findReplacer', 'formatClipboard', 'nameAt', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences', 'valueComparator'], same: true })
     expect(out.closed).toEqual(Array(3).fill('ERR_PACKAGE_PATH_NOT_EXPORTED'))
+  }, 60_000)
+
+  it('an app bundled by esbuild, which keeps the URL of the thread as written, runs the pool with the thread as a second entry point', async () => {
+    const out = mkdtempSync(join(tmpdir(), 'xlcalc-thread-'))
+    try {
+      const app = `import { createCalcPool } from 'xlcalc/worker'
+const pool = createCalcPool({ threads: 1 })
+console.log((await pool.compute({ sheets: [{ name: 'S', cells: { A1: { value: 40 }, B1: { formula: 'A1+2' } } }] })).sheets[0].cells.B1.value)`
+      await build({ stdin: { contents: app, resolveDir: root, sourcefile: 'app.js' }, entryPoints: { thread: 'xlcalc/worker/thread' }, entryNames: '[name]', bundle: true, format: 'esm', platform: 'node', outdir: out, absWorkingDir: root, logLevel: 'silent' })
+      expect(readdirSync(out).sort()).toEqual(['stdin.js', 'thread.js'])
+      expect(execFileSync(process.execPath, [join(out, 'stdin.js')], { encoding: 'utf8' }).trim()).toBe('42')
+    } finally {
+      rmSync(out, { recursive: true, force: true })
+    }
   }, 60_000)
 
   it('the attribution of ported code stays at the top of its built file', () => {
