@@ -214,7 +214,8 @@ function column(xs: Rect[]): Rect | null {
  * The rules after a copy (`p`, copy and paste or fill; `source`, the book copied from): the cells pasted on lose their
  * rules; the copied cells' rules come as new rules over the pasted cells, first in the target's order, their formulas
  * copied as the cells' are; a rule of the same sheet whose cells and the pasted ones make one rectangle down its columns
- * (a fill down) grows over them instead (the sets `cond/struct-held`, `held`).
+ * (a fill down) grows over them instead (the sets `cond/struct-held`, `held`). A rule whose first cell moves has its
+ * formulas made for the new one.
  */
 export function copyConditional(source: BookInput, out: BookInput, p: Paste, names: Map<string, string>) {
   const [fk, tk] = [sheetKey(p.from), sheetKey(p.to)]
@@ -239,6 +240,7 @@ export function copyConditional(source: BookInput, out: BookInput, p: Paste, nam
     const copy = copyTransform(to.r - o.r, to.c - o.c)
     added.push({ ...mapFormulas(rule, (text) => rewriteFormula(text, p.to, p.to, copy, names)), ranges: rangesOf(next, []) })
   }
-  const list = [...added, ...kept.flatMap(({ rule, stay }) => (stay.length ? [rangesOf(stay, rule.ranges) === rule.ranges ? rule : { ...rule, ranges: rangesOf(stay, rule.ranges) }] : []))]
+  // a rule whose first cell the paste took or a fill up moved has its formulas made for the new one, as clearConditional does
+  const list = [...added, ...kept.flatMap(({ rule, stay }) => (stay.length ? [placed(rule, stay, corner(stay), p.to, p.to, KEEP, names).rule] : []))]
   out.sheets = out.sheets.map((s) => (s === target ? withRules(s, list) : s))
 }
