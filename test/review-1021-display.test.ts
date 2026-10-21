@@ -6,7 +6,9 @@
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, displayValue, type BookInput } from '../src/index.js'
+import { createState } from '../src/engine.js'
 import { closestFraction } from '../src/numfmt/number.js'
+import { typedHeights } from '../src/session/wrap.js'
 import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 import './locales.js'
 
@@ -105,5 +107,20 @@ describe('a fraction format with many denominator digits', () => {
     expect(c.A3.value).toBe(' 1/999002167' + ' '.repeat(6))
     expect(c.A4.text).toBe('1/9999994' + ' '.repeat(193))
     expect(c.A5.text?.trimEnd()).toMatch(/^2 \d+\/\d+$/)
+  })
+})
+
+describe.each(['closures', 'eval'] as const)('rows fitted for many wrapping cells, %s', (execution) => {
+  it('fits 200,000 rows of one call', () => {
+    const rows = 200_000
+    const cells: BookInput['sheets'][number]['cells'] = {}
+    for (let r = 1; r <= rows; r++) cells[`A${r}`] = { value: 'a\nb' }
+    const state = createState({ styles: [{ alignment: { wrap: true } }], sheets: [{ name: 'S', cells, columns: { A: { style: 0 } } }] }, { now: 0, seed: 1, execution })
+    const typed = Array.from({ length: rows }, (_, r) => ({ i: 0, r, c: 0, edit: { sheet: 'S', cell: `A${r + 1}`, input: { value: 'a\nb' } } }))
+    const edits = typedHeights(state, typed as Parameters<typeof typedHeights>[1])
+    expect(edits.length).toBe(rows)
+    const heights = new Set(edits.map((e) => ('rows' in e ? e.set.height : undefined)))
+    expect(heights.size).toBe(1)
+    expect([...heights][0]).toBeGreaterThan(15)
   })
 })
