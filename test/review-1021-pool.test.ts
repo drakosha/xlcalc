@@ -48,6 +48,27 @@ describe.each(['closures', 'eval'] as const)('the pool, %s', (execution) => {
     expect(await settled(job)).toEqual(['resolved', expect.anything()])
   }, 30_000)
 
+  it('a restore that cannot be sent closes its session with restore_failed, once, and the thread goes on', async () => {
+    const { calc, inside: x } = await inside({ threads: 1, maxSessionsPerThread: 1 })
+    keep(calc)
+    const a = await calc.createSession(chainBook(2), { execution })
+    // b takes the full thread: a leaves it, to come back from its snapshot on its next call
+    const b = await calc.createSession(chainBook(3), { execution })
+    const ra = [...x.recs][0]
+    ra.snapshot = { ...ra.snapshot, book: { sheets: [{ name: 'S', cells: { A1: { value: 1, meta: { f() {} } } } }] } as never }
+    const t = x.slots[0].thread!
+    const post = t.post
+    let restores = 0
+    // the old pool posted the same restore for ever: past 50 the post goes through, so that the test ends
+    t.post = (m) => post(m.t === 'restore' && ++restores > 50 ? { ...m, snapshot: { ...m.snapshot, book: chainBook(2) as never } } : m)
+    const e = await fails(a.getCell('S', 'B1'))
+    expect(restores).toBe(1)
+    expect(e.code).toBe('restore_failed')
+    expect(e.message).toMatch(/cannot be sent to a thread/)
+    expect((await fails(a.setCells(setA1(3)))).code).toBe('restore_failed')
+    expect((await b.getCell('S', 'B3'))?.value).toBe(4)
+  }, 30_000)
+
   it('a thread that cannot start fails one task at a time, out of a lost thread and a restore too', async () => {
     let failing = false
     const wrap = (s: Spawn): Spawn => (m, l) => {

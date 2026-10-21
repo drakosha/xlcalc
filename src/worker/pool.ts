@@ -171,7 +171,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     }
   }
 
-  /** A task that did not reach its thread (`e`, why): it fails alone, and pump does not build the same restore again for a thread that cannot start. */
+  /** A task that did not reach its thread (`e`, why): it fails alone, and pump does not build the same restore again. */
   function unsent(slot: Slot, task: Task, e: unknown) {
     const m = task.msg
     const r = task.session
@@ -181,7 +181,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       if (r && m.t === 'restore' && slot.queue[0]?.session === r) fail(slot.queue.shift()!, why)
       return refuse(task, why)
     }
-    refuse(task, unsendable(m.t === 'call' ? m.op : m.t, e))
+    const why = unsendable(m.t === 'call' ? m.op : m.t, e)
+    // a restore that cannot be sent closes its session, as a restore that fails does
+    if (r && m.t === 'restore') bury(r, new CalcError('restore_failed', `the session could not be restored: ${why.message}`, { cause: why }))
+    refuse(task, why)
   }
 
   function send(slot: Slot, task: Task) {
