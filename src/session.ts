@@ -318,7 +318,21 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       throw e
     }
   }
-  const core: SessionCore = { ready, putCells, rebuild, relayout, display, sheetIndex }
+  /**
+   * The book of state `s` as it is now, for a call or a step that changes it in parts and stops after one of them: its
+   * sheets and fields put back, the inputs `cells` the cells written replaced too, and built again on the next call.
+   */
+  const kept = (s: EngineState) => {
+    const book = { ...s.input, sheets: s.input.sheets.slice() }
+    const at = clock
+    return (cells: CellReplace[]) => {
+      putInputs(book.sheets, (name) => sheetIndex(s)(name)!, cells)
+      st().input = book
+      clock = at
+      stale = true
+    }
+  }
+  const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display, sheetIndex }
   /**
    * Cells' new inputs (checked) written, as `call`: a table's header cell typed over renames its column and the
    * references to it, which builds the book again; the state after and what changed, and the way back.
@@ -334,14 +348,22 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     return [s, out, () => (was.length ? cellsStep(call, was) : null)]
   }
   /**
-   * A plan of looks applied after the cells it writes (`write`, which alone may recompute and stop): the style table and
-   * the sheets' lines and rules, which compute nothing. The state after, what changed and the steps to take it back.
+   * A plan of looks applied after the cells it writes (`write`): the style table and the sheets' lines, rules and merged
+   * areas, which compute the arrays and SUBTOTALs they concern. The state after, what changed and the steps to take it back.
    */
   function* applyPlan(s: EngineState, plan: Plan, call: Step['call'], write: (s: EngineState, edits: CellReplace[]) => Steps<[EngineState, Outcome, () => Step | null]>): Steps<[EngineState, Outcome, (() => Step | null)[]]> {
+    const back = kept(s)
     const [next, out, cellsBack] = yield* write(s, plan.edits)
     let o = out
     const steps = [cellsBack]
-    if (plan.sheets.size) o = yield* laidOut(next, plan.sheets, display ? snapshot(next, layoutCells(next, plan.touched)) : null, o, steps, call)
+    try {
+      if (plan.sheets.size) o = yield* laidOut(next, plan.sheets, display ? snapshot(next, layoutCells(next, plan.touched)) : null, o, steps, call)
+    } catch (e) {
+      // stopped computing a merged area's arrays: the cells written go back too
+      const cells = cellsBack()
+      back(cells?.kind === 'cells' ? cells.edits : [])
+      throw e
+    }
     if (plan.styles) o = restyled(next, plan.styles, o, steps, call)
     return [next, o, steps]
   }

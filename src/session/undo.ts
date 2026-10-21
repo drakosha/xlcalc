@@ -210,6 +210,8 @@ export interface SessionCore {
   putCells(s: EngineState, edits: CellReplace[], restore?: boolean): Steps<[Outcome, CellReplace[]]>
   rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean, restore?: boolean): Steps<[EngineState, Outcome, BookDiff | null]>
   relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<number, string> | null): Steps<[Outcome, SheetInput[]]>
+  /** The book of `s` as it is now, put back by the function given the inputs the cells written since replaced; built again on the next call. */
+  kept(s: EngineState): (cells: CellReplace[]) => void
   display: boolean
   sheetIndex(s: EngineState): (name: string) => number | undefined
 }
