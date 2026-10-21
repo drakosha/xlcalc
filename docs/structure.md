@@ -121,7 +121,7 @@ Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fi
 | `filtered` | a copy that left out rows hidden by a filter, pasted over hidden rows of a filtered sheet |
 | `array` | rows or columns inserted inside the range of a legacy array formula, part of one deleted or moved, a paste over part of one, or a merge over one |
 | `table` | rows or columns inserted into two tables at once, or deleted from two tables unless both are deleted entirely, a table's header row deleted without the rest, a move that cuts a table, or a merge over cells of a table ([Merging cells](#merging-cells)); for operations on tables, see [docs/tables.md](tables.md) |
-| `table_name` | `renameTable` to a name Excel would not accept, or one a table or a defined name already has ([docs/tables.md](tables.md#tables-themselves)) |
+| `table_name` | `renameTable` to a name Excel would not accept, or one a table or a defined name already has ([docs/tables.md](tables.md#tables-themselves)); a copy of an entire table whose numbered name Excel would not accept (`Tab3`, [docs/tables.md](tables.md#copies-and-moves)) |
 | `outline_deep` | Group on rows or columns that are all at the deepest outline level, 7 ([docs/outline.md](outline.md)) |
 | `not_grouped` | Ungroup on rows or columns none of which is grouped; Show or Hide Detail at a row or column in no group, or in a group without a summary row or column |
 | `detail` | Show Detail on a group that is already expanded, or Hide Detail on one that is already collapsed |
