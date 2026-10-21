@@ -317,15 +317,26 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     return new Promise((resolve, reject) => {
       const task: Task = { id: ++ids, msg, session: at?.session, signal, internal, resolve, reject }
       const queue = at ? at.slot.queue : jobs
+      const go = () => (at ? pump(at.slot) : slots.forEach(pump))
       // a book written between turns: the task keeps its place in the queue, and goes when the text is ready
       if (book) {
         task.pending = true
-        void book.then((sent) => {
-          task.pending = false
-          Object.assign(task.msg, sent)
-          if (at) pump(at.slot)
-          else for (const s of slots) pump(s)
-        })
+        void book.then(
+          (sent) => {
+            task.pending = false
+            Object.assign(task.msg, sent)
+            go()
+          },
+          (e) => {
+            // the text could not be written (a meta that throws when read): the call fails as it does for a small book, and the queue moves on
+            const i = queue.indexOf(task)
+            if (i >= 0) {
+              queue.splice(i, 1)
+              fail(task, e)
+            }
+            go()
+          },
+        )
       }
       if (signal) {
         const onAbort = () => {
@@ -342,8 +353,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         task.unlisten = () => signal.removeEventListener('abort', onAbort)
       }
       queue.push(task)
-      if (at) pump(at.slot)
-      else for (const s of slots) pump(s)
+      go()
     })
   }
 
