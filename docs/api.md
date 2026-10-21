@@ -1699,10 +1699,10 @@ type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; wi
 
 ### `CellTextRefusal`
 
-Why [`Session.setCellText`](#session) rejected the text: a formula Excel would reject ([`CheckCode`](#checkcode)), part of an array formula, or a formula in a table's header cell.
+Why [`Session.setCellText`](#session) rejected the text: a formula Excel would reject ([`CheckCode`](#checkcode)) or one that refers to a workbook not among the links (`external_ref`), part of an array formula, or a formula in a table's header cell.
 
 ```ts
-type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'array' | 'header'
+type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'external_ref' | 'array' | 'header'
 ```
 
 ### `CellTextRefused`
@@ -2415,8 +2415,9 @@ interface EntryOptions {
 ### `EntryResult`
 
 Text typed into a cell, as Excel interprets it ([`parseEntry`](#xlcalcentry-parseentry)): the cell's new input, `null` when nothing is left of the
-cell; or a formula Excel would reject, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
-language of `opts.locale` (English for en-US) and the position in the typed text. When a formula is typed with
+cell; or a formula Excel would reject, with a check code (`syntax`, `empty`, `too_long`, `too_deep`, and `external_ref`
+for a workbook not among `opts.externalBooks`), a message in the language of `opts.locale` (English for en-US) and the
+position in the typed text. When a formula is typed with
 brackets, quotes or array braces left open at its end, Excel closes them on Return if the formula begins with a
 function, has no `)` and leaves only function brackets open (`=SUM(1,2` becomes `=SUM(1,2)`); any other such formula
 it rejects and offers to correct, provided the closed formula parses and every function in it is known: `correction`
@@ -2585,7 +2586,8 @@ interface ExternalName {
 
 External functions (host functions evaluated outside the workbook): their values are resolved in
 advance, in a single request, and passed to the calculation. The key of a call is its canonical text
-(`BALANCE("2025-01")`); arguments must be literals.
+(`BALANCE("2025-01")`); arguments must be literals. They are options of the calculation, not part of the
+workbook, so `inputHash` does not include them.
 
 ```ts
 interface Externals {

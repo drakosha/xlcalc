@@ -19,6 +19,17 @@ describe('dateToSerial', () => {
     expect([dateToSerial('2026-01-31'), dateToSerial('2026-01-31T18:00'), dateToSerial('1900-02-29'), dateToSerial('2026-01-31', { dateSystem: 1904 })]).toEqual([46053, 46053.75, 60, 44591])
   })
 
+  it('refuses a date or time that does not exist, which a cell\'s { date } refuses too, instead of rolling it into another', () => {
+    const none = ['2025-02-30', '2025-13-01', '2025-00-10', '2025-01-00', '2025-04-31', '2023-02-29', '1900-02-30', '9999-12-32', '0050-06-01', '2025-01-31T25:00', '2025-01-31T24:00', '2025-01-31T18:75', '2025-01-31T18:00:60', '2025-01-31x']
+    for (const t of none) {
+      expect(() => dateToSerial(t), t).toThrow(new InputError('text', `invalid date ${JSON.stringify(t)}: expected an ISO date such as "2025-01-31" or "2025-01-31T18:00:00"`))
+      for (const execution of ['closures', 'eval'] as const)
+        expect(() => compute({ sheets: [{ name: 'S', cells: { A1: { value: { date: t } } } }] }, { execution }), t).toThrow(new InputError('book.sheets[0].cells["A1"].value.date', `invalid date ${JSON.stringify(t)}: expected an ISO date such as "2025-01-31" or "2025-01-31T18:00:00"`))
+    }
+    // Excel's day 0 and 1900-02-29 are its dates; a time zone after the time, as xlsx may write it, is passed over as before
+    expect(['1900-01-00', '1900-01-00T12:00', '1900-02-29', '2024-02-29', '2025-01-31T23:59:59.5', '2025-01-31T18:00:00.000Z', '2025-01-31T18:00+03:00'].map((t) => dateToSerial(t))).toEqual([0, 0.5, 60, 45351, 45688 + 86399.5 / 86400, 45688.75, 45688.75])
+  })
+
   it('refuses text it cannot read and a date before the system\'s day 0, as InputError', () => {
     expect(() => dateToSerial('31.01.2026')).toThrow(new InputError('text', 'invalid date "31.01.2026": expected an ISO date such as "2025-01-31" or "2025-01-31T18:00:00"'))
     expect(() => dateToSerial('10000-01-01')).toThrow(/invalid date/)

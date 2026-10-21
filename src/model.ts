@@ -89,13 +89,21 @@ export const EPOCH_MS = /* @__PURE__ */ Date.UTC(1899, 11, 30)
 /** Days from 1899-12-30 as Excel's serial number: before 1900-03-01 Excel is one day behind (the phantom 1900-02-29). */
 export const fromUtcDays = (days: number) => (days < 61 ? days - 1 : days)
 
+/**
+ * The serial number of an ISO date and time without a time zone (a `Z` or an offset after it, as xlsx may write, is
+ * passed over); a date or time that is not one, which `Date.UTC` would roll into another (`2025-02-30`, `T25:00`),
+ * throws, but Excel's day 0 (`1900-01-00`) and its phantom 1900-02-29.
+ */
 export function dateToSerial(iso: string): number {
-  const m = /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?)?/.exec(iso)
+  const m = /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?)?(?:Z|[+-]\d{2}:?\d{2})?$/.exec(iso)
   if (!m) throw new Error(`invalid date: ${iso}`)
-  const ms = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] ?? 0), Number(m[5] ?? 0), 0) + Number(m[6] ?? 0) * 1000
-  const days = (ms - EPOCH_MS) / DAY_MS
+  const [y, mo, d, h, min, s] = [Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] ?? 0), Number(m[5] ?? 0), Number(m[6] ?? 0)]
+  const at = new Date(Date.UTC(y, mo, d, h, min))
+  const excel = y === 1900 && ((mo === 0 && d === 0) || (mo === 1 && d === 29))
+  if (!(s < 60 && at.getUTCHours() === h && at.getUTCMinutes() === min && (excel || (at.getUTCFullYear() === y && at.getUTCMonth() === mo && at.getUTCDate() === d)))) throw new Error(`invalid date: ${iso}`)
+  const days = (at.getTime() + s * 1000 - EPOCH_MS) / DAY_MS
   // the phantom 1900-02-29 is serial 60 (Date.UTC rolls it to 1900-03-01)
-  return m[1] === '1900' && m[2] === '02' && m[3] === '29' ? days - 1 : fromUtcDays(days)
+  return y === 1900 && mo === 1 && d === 29 ? days - 1 : fromUtcDays(days)
 }
 
 /** The moment (UTC ms) of a serial number, the inverse of `msToSerial`. */
