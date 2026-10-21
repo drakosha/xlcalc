@@ -1,9 +1,27 @@
 /** Reproductions from the 21.10 review of the functions: sizes past the argument limit and work outside the budget. */
 import { describe, expect, it } from 'vitest'
-import { compute, type BookInput } from '../src/index.js'
+import { CalcError, compute, createInlineCalc, type BookInput } from '../src/index.js'
 
 type Cells = BookInput['sheets'][number]['cells']
 const book = (cells: Cells): BookInput => ({ sheets: [{ name: 'S', cells }] })
+const one = (formula: string, execution: 'closures' | 'eval') => compute(book({ A1: { formula } }), { execution, display: false }).sheets[0].cells.A1.value
+
+/** Milliseconds a call takes. */
+function took(f: () => unknown): number {
+  const t0 = performance.now()
+  f()
+  return performance.now() - t0
+}
+
+async function stopped(p: Promise<unknown>): Promise<CalcError> {
+  try {
+    await p
+  } catch (e) {
+    expect(e).toBeInstanceOf(CalcError)
+    return e as CalcError
+  }
+  throw new Error('expected CalcError')
+}
 
 describe.each(['closures', 'eval'] as const)('review 21.10 functions, %s', (execution) => {
   it('fits LINEST, TREND, LOGEST and GROWTH over more observations than one call can take as arguments', () => {
@@ -30,5 +48,15 @@ describe.each(['closures', 'eval'] as const)('review 21.10 functions, %s', (exec
     expect(out.D4.value).toBeCloseTo(Math.exp(1 / n), 9)
     expect(out.D5.value).toBeCloseTo(Math.exp((n + 1) / n), 9)
     expect(out.D6.value).toBeCloseTo(2, 9)
+  })
+
+  it('FREQUENCY counts by a search over the sorted bins: the answers of the scan, 100,000 values and bins at once', () => {
+    expect(one('TEXTJOIN(",",,FREQUENCY({1,2,2,3,5,7},{3,2,2,9,0}))', execution)).toBe('1,3,0,2,0,0')
+    expect(one('TEXTJOIN(",",,FREQUENCY({-1,0,4,4,8,9.5},{4,-0.5,4,9}))', execution)).toBe('3,1,0,1,1')
+    // the scan made 5·10^9 comparisons here (seconds); the search 1.7·10^6
+    let v: unknown
+    const ms = took(() => (v = one('SUM(FREQUENCY(SEQUENCE(100000),SEQUENCE(100000)))', execution)))
+    expect(v).toBe(100000)
+    expect(ms).toBeLessThan(1500)
   })
 })
