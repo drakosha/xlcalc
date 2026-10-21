@@ -25,15 +25,10 @@ export interface Placed extends Element {
 
 const cache = new Map<string, [RegExp, RegExp]>()
 
-/** The opening tag of a local name (its last group `/` when the element closes itself) and its closing tag; `bare`, without a namespace prefix. */
-function tags(local: string, bare: boolean): [RegExp, RegExp] {
-  // a local name holds no colon
-  const key = bare ? `:${local}` : local
-  let r = cache.get(key)
-  if (!r) {
-    const prefix = bare ? '' : '(?:[\\w.-]+:)?'
-    cache.set(key, (r = [new RegExp(`<${prefix}${local}(${ATTRS})(/?)>`, 'g'), new RegExp(`</${prefix}${local}\\s*>`, 'g')]))
-  }
+/** The opening tag of a local name (its last group `/` when the element closes itself) and its closing tag. */
+function tags(local: string): [RegExp, RegExp] {
+  let r = cache.get(local)
+  if (!r) cache.set(local, (r = [new RegExp(`<(?:[\\w.-]+:)?${local}(${ATTRS})(/?)>`, 'g'), new RegExp(`</(?:[\\w.-]+:)?${local}\\s*>`, 'g')]))
   return r
 }
 
@@ -42,8 +37,8 @@ function tags(local: string, bare: boolean): [RegExp, RegExp] {
  * matches them, in time linear in the text: an opening tag without a closing tag after it costs one search for the
  * closing tag, where the regex searched to the end of the text once for each such tag.
  */
-export function placed(xml: string, local: string, first = false, bare = false): Placed[] {
-  const [open, close] = tags(local, bare)
+export function placed(xml: string, local: string, first = false): Placed[] {
+  const [open, close] = tags(local)
   const out: Placed[] = []
   // the first closing tag at or after `from` lies from `at` to `to`; `at` -1: there is none
   let from = Infinity
@@ -99,7 +94,7 @@ export function lastChild(xml: string, local: string): Placed | undefined {
     else i = lt
   }
   // its opening tag: the last one before it that no closing tag of the name between them closes
-  const [open, closing] = tags(local, false)
+  const [open, closing] = tags(local)
   const marks: [at: number, depth: number, attrs: string, end: number][] = []
   open.lastIndex = 0
   for (let m = open.exec(xml); m && m.index < close; m = open.exec(xml)) if (!m[2]) marks.push([m.index, 1, m[1], open.lastIndex])

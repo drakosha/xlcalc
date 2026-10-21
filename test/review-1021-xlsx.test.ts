@@ -127,3 +127,21 @@ describe('xlsx: the worksheet\'s own extension list (fix-u327)', () => {
     expect(rulesOf(r).cf?.map((x) => x.ranges[0])).toEqual(['C1:C3', 'D1:D3'])
   })
 })
+
+/** The sheet's XML with SpreadsheetML bound to the prefix `x:`, as the Open XML SDK writes it: other prefixes stay. */
+const prefixed = (xml: string) => xml.replace(' xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"', ' xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main"').replace(/<(\/?)([A-Za-z][\w.-]*)(?=[\s/>])/g, '<$1x:$2')
+
+describe('xlsx: a worksheet whose SpreadsheetML elements have a prefix (fix-u324)', () => {
+  it('keeps its conditional formats, 2007 and 2010, and its validations', async () => {
+    const plain = await rewritten(ruled, (x) => x)
+    const r = await rewritten(ruled, prefixed)
+    expect(r.book.sheets[0].cells).toEqual(plain.book.sheets[0].cells)
+    expect(rulesOf(r)).toEqual(rulesOf(plain))
+    expect(r.issues).toEqual([])
+  })
+
+  it('a sheet of 2007 rules alone keeps them', async () => {
+    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 2 } }, conditionalFormats: [{ ranges: ['A1:A3'], type: 'cellIs', operator: 'greaterThan', formulas: ['1'], style: { font: { bold: true } } }] }] }
+    expect((await rewritten(book, prefixed)).book.sheets[0].conditionalFormats).toEqual([{ ranges: ['A1:A3'], type: 'cellIs', operator: 'greaterThan', formulas: ['1'], style: { font: { bold: true } } }])
+  })
+})

@@ -13,7 +13,7 @@ import { areaText } from '../../structure/area.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
-import { attributes, element, elements, flag, ownEntry, placed, type Element } from '../xml/scan.js'
+import { attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula, type FormulaOptions } from './formulas.js'
 import { sqrefRanges } from './refs.js'
@@ -215,7 +215,8 @@ function joinBar(base: Extract<ConditionalFormat, { type: 'dataBar' }>, x: Eleme
  */
 export function readConditional(tail: string, ext: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues, formulas: FormulaOptions): ConditionalFormat[] | undefined {
   const ctx: Context = { sheet, dxfs, palette, issues, formulas }
-  const blocks = placed(tail, 'conditionalFormatting', false, true)
+  // 2007's blocks, with whatever prefix the file gives SpreadsheetML (2010's are in the extension list)
+  const blocks = elements(tail, 'conditionalFormatting')
   const found: Read[] = []
   for (const b of blocks) {
     const a = attributes(b.attrs)
