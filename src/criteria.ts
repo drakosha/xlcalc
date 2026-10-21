@@ -96,8 +96,8 @@ export function wildSource(s: string): string {
  * own (`iu` in criteria, lookups and SEARCH; none in Find, which folds the text itself).
  */
 export class Wildcard {
-  /** The pattern without `*`, anchored at both ends; else null. */
-  private readonly only: RegExp | null
+  /** The whole pattern as one expression anchored at both ends, with one `*` at most (it backtracks once, over a part's length); else null. */
+  private readonly whole: RegExp | null
   /** The first part at the start (sticky), the parts found anywhere, and the last part at the end; null for an empty part. */
   private readonly head: RegExp | null
   private readonly parts: (RegExp | null)[]
@@ -116,15 +116,15 @@ export class Wildcard {
     const k = sources.length - 1
     this.empty = !k && !sources[0]
     const re = (source: string, more: string, after = '') => (source ? new RegExp(`(?:${source})${after}`, flags + more) : null)
-    this.only = k ? null : new RegExp(`^(?:${sources[0]})$`, flags)
-    this.head = k ? re(sources[0], 'y') : null
+    this.whole = k > 1 ? null : new RegExp(`^(?:${sources.join('[\\s\\S]*')})$`, flags)
+    this.head = k > 1 ? re(sources[0], 'y') : null
     this.parts = sources.map((x) => re(x, 'g'))
-    this.tail = k ? re(sources[k], 'g', '$') : null
+    this.tail = k > 1 ? re(sources[k], 'g', '$') : null
   }
 
   /** Whether the whole text matches. */
   test(text: string): boolean {
-    if (this.only) return this.only.test(text)
+    if (this.whole) return this.whole.test(text)
     let p = 0
     if (this.head) {
       this.head.lastIndex = 0
@@ -152,7 +152,7 @@ export class Wildcard {
       start = m.index
       p = first.lastIndex
     }
-    if (this.only) return [start, p]
+    if (this.parts.length === 1) return [start, p]
     p = this.middle(text, p)
     if (p < 0) return null
     const last = this.parts[this.parts.length - 1]

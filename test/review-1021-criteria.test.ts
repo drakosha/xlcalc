@@ -61,7 +61,7 @@ describe.each(['closures', 'eval'] as const)('review 21.10 criteria, %s', (execu
       ['SEARCH("?a*c",A2,3990)', 3990],
     ]
     for (const [i, [formula]] of formulas.entries()) cells[`B${i + 1}`] = { formula }
-    let out: Cells = {}
+    let out: Record<string, { value: unknown }> = {}
     expect(took(() => (out = compute(book(cells), { execution, display: false }).sheets[0].cells))).toBeLessThan(1000)
     expect(formulas.map((_, i) => out[`B${i + 1}`].value)).toEqual(formulas.map(([, v]) => v))
   })
