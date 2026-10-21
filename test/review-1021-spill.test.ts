@@ -39,3 +39,19 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
     expect((await sameEverywhere(book(cells, { iteration: {} }), execution)).G4.value).toBe(42)
   })
 })
+
+describe.each(['closures', 'eval'] as const)('legacy arrays, execution %s', (execution) => {
+  it('two array areas that cross with neither top inside the other are refused (x-fuzz-session-6)', () => {
+    const crossed = book({ J18: { formula: '{1;2}', array: 'J18:J19' }, I19: { formula: '{3,4}', array: 'I19:J19' } })
+    expect(() => compute(crossed, { clock, execution })).toThrow(/I19:J19\) overlaps the area of the array formula at J18/)
+    const s = createSession(book({ J18: { formula: '{1;2}', array: 'J18:J19' } }), { clock, execution })
+    const before = s.getBook()
+    expect(() => s.setCells([{ sheet: 'S', cell: 'I19', input: { formula: '{3,4}', array: 'I19:J19' } }])).toThrow(/overlaps the area of the array formula at S!J18/)
+    // two new areas of one edit
+    expect(() => s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: '1', array: 'A2:B2' } }, { sheet: 'S', cell: 'B1', input: { formula: '2', array: 'B1:B3' } }])).toThrow(/overlaps/)
+    expect(s.getBook()).toEqual(before)
+    // an array entered again over a new area that crosses its old one replaces it
+    s.setCells([{ sheet: 'S', cell: 'J18', input: { formula: '{5,6}', array: 'J18:K18' } }, { sheet: 'S', cell: 'J19', input: null }])
+    expect(s.getHash()).toBe(compute(s.getBook(), { clock, execution }).hash)
+  })
+})
