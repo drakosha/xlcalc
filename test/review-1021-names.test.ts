@@ -1,6 +1,7 @@
 /**
  * Names under structure operations, from the review of 21.10: a sheet rename rewrites a reference to a sheet's own name
- * (`S!loc`).
+ * (`S!loc`), and inserted or deleted lines leave the relative part of a name's mixed reference as an offset, as they
+ * leave a reference without `$`, so the cells that use the name keep their values.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, editStructure, type BookInput, type CellValue, type StructureOp } from '../src/index.js'
@@ -45,6 +46,38 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       expect(s.editStructure({ op: 'renameSheet', sheet: 'S', name: 'U' }).ok).toBe(true)
       expect(s.getCells('T', 'A1:A3')).toMatchObject({ A1: { value: 84 }, A2: { value: 42 }, A3: { value: 43 } })
       expect(s.getHash()).toBe(compute(s.getBook(), { execution, clock }).hash)
+    })
+  })
+
+  describe('inserted and deleted lines leave the relative part of a name mixed reference', () => {
+    const mixed = (): BookInput => {
+      const cells: BookInput['sheets'][number]['cells'] = { C5: { formula: 'mix' }, E5: { formula: '$A5' }, C14: { formula: 'mixc' }, E14: { formula: 'C$12' } }
+      for (let r = 1; r <= 10; r++) cells[`A${r}`] = { value: r * 100 }
+      'ABCDEF'.split('').forEach((c, i) => (cells[`${c}12`] = { value: (i + 1) * 7 }))
+      return { names: [{ name: 'mix', ref: 'S!$A1' }, { name: 'mixc', ref: 'S!A$12' }, { name: 'rel', ref: 'S!XFD1' }], sheets: [{ name: 'S', cells }] }
+    }
+    const cases: [StructureOp, string[], [string, string][]][] = [
+      [{ op: 'insertRows', sheet: 'S', row: 1 }, ['S!$A1', 'S!A$13', 'S!XFD1'], [['C6', 'E6'], ['C15', 'E15']]],
+      [{ op: 'deleteRows', sheet: 'S', row: 1 }, ['S!$A1', 'S!A$11', 'S!XFD1'], [['C4', 'E4'], ['C13', 'E13']]],
+      [{ op: 'insertColumns', sheet: 'S', column: 'A' }, ['S!$B1', 'S!A$12', 'S!XFD1'], [['D5', 'F5'], ['D14', 'F14']]],
+      [{ op: 'deleteColumns', sheet: 'S', column: 'A' }, ['S!#REF!', 'S!A$12', 'S!XFD1'], [['B5', 'D5'], ['B14', 'D14']]],
+      [{ op: 'insertRows', sheet: 'S', row: 3 }, ['S!$A1', 'S!A$13', 'S!XFD1'], [['C6', 'E6'], ['C15', 'E15']]],
+    ]
+
+    it.each(cases)('%j', (op, names, pairs) => {
+      const b = edited(mixed(), op)
+      expect(b.names!.map((n) => n.ref)).toEqual(names)
+      for (const [used, control] of pairs) {
+        const [a, c] = values(b, 'S', [used, control])
+        expect(a).toEqual(c)
+      }
+    })
+
+    it('an area with a fixed and a relative bound on the shifted axis moves the fixed one only', () => {
+      const book: BookInput = { names: [{ name: 'part', ref: 'S!$A$2:A3' }], sheets: [{ name: 'S', cells: {} }] }
+      expect(edited(book, { op: 'insertRows', sheet: 'S', row: 1 }).names![0].ref).toBe('S!$A$3:A3')
+      expect(edited(book, { op: 'insertRows', sheet: 'S', row: 5, count: 2 }).names![0].ref).toBe('S!$A$2:A3')
+      expect(edited(book, { op: 'deleteRows', sheet: 'S', row: 2 }).names![0].ref).toBe('S!#REF!')
     })
   })
 })

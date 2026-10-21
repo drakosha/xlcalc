@@ -6,7 +6,7 @@ import type { BookInput, CellInput, NameInput, TableColumn, TableInput } from '.
 import { spend } from '../exec/budget.js'
 import { FormulaError, parse, quoteSheet, sheetKey, type Tok } from '../syntax.js'
 import { eachToken } from '../syntax/links.js'
-import { decode, encode, sameArea, type Area } from './area.js'
+import { decode, encode, sameArea, span, withSpan, type Area, type Axis } from './area.js'
 
 /** A reference as a transform sees it: the sheet it points to (as the book spells it) and its rectangle. */
 export interface Site {
@@ -153,8 +153,24 @@ export function rewriteCells(cells: Record<string, CellInput>, host: string, mov
   return out ?? cells
 }
 
-/** A transform for names' formulas under inserted or deleted rows and columns: a reference without `$`, an offset from the cell using the name, stays. */
-export const offsetsStay = (t: Transform): Transform => ({ ...t, ref: (site) => (site.area.r.lo.abs || site.area.r.hi.abs || site.area.c.lo.abs || site.area.c.hi.abs ? t.ref(site) : undefined) })
+/**
+ * A transform for names' formulas under rows or columns (`axis`) inserted or deleted: a bound without `$`, an offset from
+ * the cell using the name, stays; a bound with `$` moves, alone when the other bound on the axis is an offset.
+ */
+export function offsetsStay(t: Transform, axis: Axis): Transform {
+  return {
+    ...t,
+    ref(site) {
+      const s = site.area[axis]
+      if (s.lo.abs === s.hi.abs) return s.lo.abs ? t.ref(site) : undefined
+      const [fixed, offset] = s.lo.abs ? [s.lo, s.hi] : [s.hi, s.lo]
+      const o = t.ref({ sheet: site.sheet, area: withSpan(site.area, axis, fixed.i, fixed.i) })
+      if (typeof o !== 'object') return o
+      const next = span({ i: o.area[axis].lo.i, abs: true }, offset)
+      return { sheet: o.sheet, area: axis === 'r' ? { ...site.area, r: next } : { ...site.area, c: next } }
+    },
+  }
+}
 
 /** The references of names rewritten; the same array when nothing changed. */
 export function rewriteNames(names: NameInput[] | undefined, t: Transform, sheets: Map<string, string>): NameInput[] | undefined {
