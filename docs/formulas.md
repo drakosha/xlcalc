@@ -118,7 +118,7 @@ console.log(c.A1.value, c.A2.value, c.A3.text) // → 44226 2025 -12:00
 
 `displayValue` accepts `dateSystem` too. A workbook in the 1904 system has a values hash of its own.
 
-`dateToSerial(text, { dateSystem })` returns the serial number of a date in the form `{ date }` accepts, and `serialToDate(serial, { dateSystem })` returns the date of a serial number in that form, without a time zone: the date only, or with the time to the millisecond. Serial 60 in the 1900 system is Excel's phantom 1900-02-29. Neither function accepts a date before the system's day 0 or after 9999-12-31, which Excel does not have: they throw `InputError`. A `Date` object is not accepted, because its time zone could shift the day.
+`dateToSerial(text, { dateSystem })` returns the serial number of a date in the form `{ date }` accepts, and `serialToDate(serial, { dateSystem })` returns the date of a serial number in that form, without a time zone: the date only, or with the time to the millisecond. Serial 60 in the 1900 system is Excel's phantom 1900-02-29. Neither function accepts a date before the system's day 0 or after 9999-12-31, which Excel does not have: they throw `InputError`. A date or time that does not exist, such as `2025-02-30`, `2025-13-01` or `T25:00`, or text after it, also throws `InputError`, from `dateToSerial` and in a cell's `{ date }`, instead of becoming another date (Excel's day 0, `1900-01-00`, and its 1900-02-29 are dates). A `Date` object is not accepted, because its time zone could shift the day.
 
 ```js
 import { dateToSerial, serialToDate } from 'xlcalc'
