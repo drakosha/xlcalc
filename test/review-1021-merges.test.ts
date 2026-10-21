@@ -4,7 +4,7 @@
  * `getBook()` computes, and the session's hash is a full computation's.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, editStructure, InputError, type BookInput, type Execution, type StructureOp } from '../src/index.js'
+import { compute, createSession, editStructure, InputError, type AsyncSession, type BookInput, type EditResult, type Execution, type StructureOp } from '../src/index.js'
 import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -38,9 +38,11 @@ describe.each(EXECUTIONS)('setLayout merges over a table (x-fuzz-session-8), %s'
   })
 })
 
+const oneCell = (): BookInput => ({ styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }], sheets: [{ name: 'S', cells: { B6: { value: 'x y', style: 1 } } }] })
+
 /** A sheet of one styled cell whose columns A:H are merged: its looks over the whole merged area. */
 function mergedColumns(): BookInput {
-  const r = editStructure({ styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }], sheets: [{ name: 'S', cells: { B6: { value: 'x y', style: 1 } } }] }, { op: 'mergeCells', sheet: 'S', range: 'A:H' })
+  const r = editStructure(oneCell(), { op: 'mergeCells', sheet: 'S', range: 'A:H' })
   if (!r.ok) throw new Error(r.message)
   return r.book
 }
@@ -71,6 +73,47 @@ describe.each(EXECUTIONS)('a merge inside a merged area of entire columns (x-fuz
       expect(compute(after, { execution, clock }).hash).toBe(await s.getHash())
       await s.undo()
       expect([s.revision, (await s.getBook()).sheets[0].merges]).toEqual([2, ['A1:H1048576']])
+      await s.close()
+    })
+  })
+})
+
+describe.each(EXECUTIONS)('a session merging entire columns of a sheet of one cell (x-fuzz-session-4), %s', (execution) => {
+  /** The session's hash a full computation's, and a window inside the rectangles to repaint as a session opened on its book shows it. */
+  async function sameAsFull(s: AsyncSession, r: EditResult, repaint: string, display: boolean) {
+    expect(r.repaint).toEqual([{ sheet: 'S', range: repaint }])
+    const book = await s.getBook()
+    expect(compute(book, { execution, clock }).hash).toBe(await s.getHash())
+    const full = createSession(book, { execution, clock, display }).getViewport('S', 'C99999:D100000')
+    const view = await s.getViewport('S', 'C99999:D100000')
+    expect([view.cells, view.styles]).toEqual([full.cells, full.styles])
+  }
+
+  /** The result of a call that went through. */
+  const done = (r: object | null): EditResult => {
+    if (!r || ('ok' in r && r.ok === false)) throw new Error(`refused: ${JSON.stringify(r)}`)
+    return r as EditResult
+  }
+
+  describe.each(KINDS)('in %s', (kind) => {
+    const open = openerFor(kind)
+    it.each([false, true])('display %s: the merge, its undo and redo list the first rows by cell and repaint the rest', async (display) => {
+      const s = await open(oneCell(), { execution, clock, display })
+      const t = performance.now()
+      const r = done(await s.editStructure({ op: 'mergeCells', sheet: 'S', range: 'A:H' }))
+      // listed by cell, the call took 10-16 s and returned 8,388,607 changes
+      expect(performance.now() - t).toBeLessThan(1500)
+      expect(r.changes.map((c) => [c.cell, c.style])).toEqual(['B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1'].map((a) => [a, 1]))
+      await sameAsFull(s, r, 'A2:H1048576', display)
+      expect((await s.getViewport('S', 'C99999')).cells.C99999.style).toBe(1)
+      const undo = done(await s.undo())
+      // the rows above the moved cell are listed, those below it repainted
+      expect(undo.changes.length).toBe(6 * 8 - 2)
+      await sameAsFull(s, undo, 'A7:H1048576', display)
+      expect((await s.getViewport('S', 'C99999')).cells.C99999).toBeUndefined()
+      const redo = done(await s.redo())
+      expect(redo.changes).toEqual(r.changes)
+      await sameAsFull(s, redo, 'A2:H1048576', display)
       await s.close()
     })
   })

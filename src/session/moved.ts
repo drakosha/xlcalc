@@ -1,5 +1,5 @@
 /** The values a structure operation changed in a session, and the formulas and looks: compared with those of the cell that moved there. */
-import type { CellInput } from '../contract.js'
+import type { CellInput, RangeRef } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { same } from '../evaluate.js'
 import { spend } from '../exec/budget.js'
@@ -13,6 +13,13 @@ import type { Layer } from '../looks/layer.js'
 import { layerOf } from '../looks/sheet.js'
 import { carried, differing } from '../looks/move.js'
 import { inverse, newSheet, placer, type Geometry, type Place } from '../structure/geometry.js'
+import { areaText } from '../structure/area.js'
+
+/**
+ * A rectangle whose look changed is listed by cell up to this many cells; a larger one (a merge of entire columns) is
+ * given whole as a rectangle to read again (`EditResult.repaint`).
+ */
+export const LISTED_LOOKS = 65_536
 
 /** Places (`placeOf`) in address order, once each. */
 function inPlaceOrder(places: number[]): number[] {
@@ -24,7 +31,8 @@ function inPlaceOrder(places: number[]): number[] {
  * Cells of the new state whose value differs from the one their old cell had (the geometry `g` carries each old value
  * to its new place; a cell nothing came to was empty), and formulas whose spill differs from their old cell's
  * (`describeAt`, which stands for a large array's unstored cells); with the looks of both states, also the cells that
- * show something else than their old cell showed. Into `fields`, the cells whose formula (as each state shows it), own
+ * show something else than their old cell showed. A rectangle of the looks that changed beyond `LISTED_LOOKS` cells goes
+ * into `repaint` instead of its cells. Into `fields`, the cells whose formula (as each state shows it), own
  * style or own number format differ from their old cell's, by place, found in the same pass. All of them as places
  * (`placeOf`) of the new state in address order, once each. Each cell is found by its numbers both ways: where its old cell went,
  * and where a new cell came from (the geometry's inverse), so no cell is looked up by its key; the cells of a sheet no
@@ -36,7 +44,7 @@ function inPlaceOrder(places: number[]): number[] {
  * it nowhere), and a new input that came from a place of neither, with the old input there. That meets every input, as
  * an input holds a value or is of a look alone.
  */
-export function movedChanges(old: EngineState, next: EngineState, g: Geometry, fields: Map<number, FieldChange>, looks?: [Looks, Looks], diff?: DiffPass): number[] {
+export function movedChanges(old: EngineState, next: EngineState, g: Geometry, fields: Map<number, FieldChange>, repaint: RangeRef[], looks?: [Looks, Looks], diff?: DiffPass): number[] {
   const [place, back] = [placer(g), placer(inverse(g))]
   const p: Place = { s: 0, r: 0, c: 0 }
   const input = (st: EngineState, s: number, r: number, c: number) => st.input.sheets[s].cells[formatAddress(r, c)]
@@ -152,12 +160,21 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
     }
   }
   // the cells of the sheets' looks whose look is another than the one the geometry carried to them from the old looks
-  // (`looks/move.ts`): each against the old cell that came to it, or none; the rest of the looks moved as they were
+  // (`looks/move.ts`): each against the old cell that came to it, or none; the rest of the looks moved as they were. A
+  // rectangle of more than LISTED_LOOKS cells goes to `repaint` whole: its cells of content were compared above
   const carriedLooks = carried(layers.get(old)!, g)
   layers.get(next)!.forEach((layer, s) => {
-    for (const [r, c] of differing(carriedLooks[s], layer)) {
+    for (const x of differing(carriedLooks[s], layer)) {
       spend(1)
-      compare(s, r, c, !fresh[s] && back(at(p, s, r, c)) ? at(from, p.s, p.r, p.c) : undefined)
+      if ((x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) > LISTED_LOOKS) {
+        repaint.push({ sheet: next.sheetNames[s], range: areaText(x) })
+        continue
+      }
+      for (let r = x.r1; r <= x.r2; r++)
+        for (let c = x.c1; c <= x.c2; c++) {
+          spend(1)
+          compare(s, r, c, !fresh[s] && back(at(p, s, r, c)) ? at(from, p.s, p.r, p.c) : undefined)
+        }
     }
   })
   // the cells of a new sheet met above (with a value or of a look alone) whose input has a field beside its value
