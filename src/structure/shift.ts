@@ -63,6 +63,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     // a cell of the sheet's looks in the lines pushed off, as an entry of a look alone
     const edge = firstLook(target, axis === 'r' ? { r1: LIMIT.r - count, r2: LIMIT.r - 1, c1: 0, c2: LIMIT.c - 1 } : { r1: 0, r2: LIMIT.r - 1, c1: LIMIT.c - count, c2: LIMIT.c - 1 })
     if (edge) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: edge })
+    if (tables.offSheet) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: tables.offSheet })
   }
   const cut = shiftRefusal(target, axis, at, n)
   if (cut) return refuse('array', cut)

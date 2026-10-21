@@ -67,3 +67,44 @@ describe.each(EXECUTIONS)('a copy of a whole table (x-fix-structure-looks-1), %s
     expect(tableNames(after)).toEqual(['Sales', 'Sales4'])
   })
 })
+
+/** A table of one column at the bottom of the sheet: its header and one value above an empty last row. */
+const edgeRows = (headers = true): BookInput => ({
+  sheets: [{
+    name: 'S',
+    cells: headers ? { A1048574: { value: 'h' }, A1048575: { value: 1 } } : { A1048574: { value: 1 }, A1048575: { value: 2 } },
+    tables: [{ name: 'T', range: 'A1048574:A1048576', columns: [{ name: 'h' }], ...(headers ? {} : { headers: false }) }],
+  }],
+})
+/** A table without headers at the right edge of the sheet, its last column empty. */
+const edgeColumns = (): BookInput => ({
+  sheets: [{ name: 'S', cells: { XFC1: { value: 1 }, XFC2: { value: 2 } }, tables: [{ name: 'T', range: 'XFC1:XFD2', columns: [{ name: 'a' }, { name: 'b' }], headers: false }] }],
+})
+
+describe.each(EXECUTIONS)('lines inserted before a table at the sheet edge (fix-u297), %s', (execution) => {
+  it.each([
+    ['rows above the table', edgeRows(), { op: 'insertRows', sheet: 'S', row: 1 }, 'A1048576'],
+    ['a row into the table at its last row', edgeRows(), { op: 'insertRows', sheet: 'S', row: 1048576 }, 'A1048576'],
+    ['rows above a table without headers', edgeRows(false), { op: 'insertRows', sheet: 'S', row: 1 }, 'A1048576'],
+    ['columns before a table without headers', edgeColumns(), { op: 'insertColumns', sheet: 'S', column: 'A' }, 'XFD2'],
+  ] as [string, BookInput, StructureOp, string][])('refuses %s with off_sheet, naming the table\'s last cell', (_, book, op, cell) => {
+    compute(book, { execution, clock })
+    const r = editStructure(book, op)
+    expect(r.ok ? r.book.sheets[0].tables : r.code).toBe('off_sheet')
+    expect(!r.ok && r.message).toContain(`S!${cell}`)
+  })
+
+  it('takes rows inserted above a table that ends before the edge', () => {
+    const book = edgeRows()
+    book.sheets[0].tables![0].range = 'A1048574:A1048575'
+    const r = editStructure(book, { op: 'insertRows', sheet: 'S', row: 1 })
+    if (!r.ok) throw new Error(r.message)
+    expect(r.book.sheets[0].tables![0].range).toBe('A1048575:A1048576')
+    compute(r.book, { execution, clock })
+  })
+
+  inSessions(execution, edgeRows, { op: 'insertRows', sheet: 'S', row: 1 }, (r, after) => {
+    expect(r).toMatchObject({ ok: false, code: 'off_sheet' })
+    expect(after.sheets[0].tables![0].range).toBe('A1048574:A1048576')
+  })
+})
