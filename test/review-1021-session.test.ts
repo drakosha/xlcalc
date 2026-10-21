@@ -155,4 +155,64 @@ describe.each(['closures', 'eval'] as const)('a session stopped part way, %s', (
       await s.close()
     }, 60_000)
   })
+
+  describe('fix-u305: a preview or a check of an entry stopped while it computes', () => {
+    // A1 under a rule, and a long chain on it
+    const chain = (n = 20_000): BookInput => {
+      const cells: BookInput['sheets'][number]['cells'] = { A1: { value: 1 } }
+      for (let r = 2; r <= n; r++) cells[`A${r}`] = { formula: `A${r - 1}+1` }
+      return { sheets: [{ name: 'S', cells, validations: [{ range: 'A1', type: 'whole', operator: 'between', formula1: '0', formula2: '10' }] }] }
+    }
+    type Stop = (s: AsyncSession, opts: CalcOptions) => Promise<unknown>
+    const CALLS: [string, Stop][] = [
+      ['validateEntry', (s, opts) => s.validateEntry('S', 'A1', { value: 5 }, opts)],
+      ['previewCellText', (s, opts) => s.previewCellText('S', 'A1', '7', opts)],
+    ]
+    const limited = (): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })
+
+    /** After a preview over the spill limit the session goes on, with its book as before. */
+    async function afterLimit(s: Session | AsyncSession) {
+      await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }])
+      const before = await held(s)
+      expect(await stopped(() => s.previewCellText('S', 'C1', '=SEQUENCE(1000)'))).toBe('limit')
+      expect(await held(s)).toEqual(before)
+      await consistent(s, execution)
+      expect((await s.undo())!.changes).toEqual([{ sheet: 'S', cell: 'A1', value: 1, text: '1' }])
+      await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 3 } }])
+      expect((await s.getBook()).sheets[0].cells).toEqual({ A1: { value: 1 }, C1: { value: 3 } })
+    }
+
+    it('synchronous: a preview over a limit leaves the book and the session usable', async () => {
+      await afterLimit(createSession(limited(), { ...o, limits: { spill: 100 } }))
+    })
+
+    it('in the same thread, by its deadline, its signal and a limit', async () => {
+      const calc = inline()
+      for (const [name, call] of CALLS) {
+        for (const opts of [{ timeoutMs: 1 }, { signal: stopsAt(3) }] as CalcOptions[]) {
+          const s = await calc.createSession(chain(), o)
+          const before = await held(s)
+          expect(await stopped(call(s, opts)), name).not.toBeNull()
+          expect(await held(s), name).toEqual(before)
+          expect((await s.getCells('S', ['A20000'])).A20000.value).toBe(20_000)
+          await consistent(s, execution)
+          await s.close()
+        }
+      }
+      await afterLimit(await calc.createSession(limited(), { ...o, limits: { spill: 100 } }))
+    }, 60_000)
+
+    it('in a thread, by its deadline and a limit', async () => {
+      const calc = await threads()
+      for (const [name, call] of CALLS) {
+        const s = await calc.createSession(chain(), o)
+        const before = await held(s)
+        expect(await stopped(call(s, { timeoutMs: 1 })), name).toBe('soft_timeout')
+        expect(await held(s), name).toEqual(before)
+        await consistent(s, execution)
+        await s.close()
+      }
+      await afterLimit(await calc.createSession(limited(), { ...o, limits: { spill: 100 } }))
+    }, 60_000)
+  })
 })
