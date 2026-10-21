@@ -171,16 +171,29 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     }
   }
 
+  /** A task that did not reach its thread (`e`, why): it fails alone, and pump does not build the same restore again for a thread that cannot start. */
+  function unsent(slot: Slot, task: Task, e: unknown) {
+    const m = task.msg
+    const r = task.session
+    if (!slot.thread) {
+      const why = new CalcError('thread_failed', `the thread could not start: ${e instanceof Error ? e.message : String(e)}`, { cause: e })
+      // a restore's thread did not start: the call waiting on it fails, and the session comes back on its next call
+      if (r && m.t === 'restore' && slot.queue[0]?.session === r) fail(slot.queue.shift()!, why)
+      return refuse(task, why)
+    }
+    refuse(task, unsendable(m.t === 'call' ? m.op : m.t, e))
+  }
+
   function send(slot: Slot, task: Task) {
     // a changing call gets the session's next sequence number when it reaches the thread
     const m = task.msg
     if (m.t === 'call' && task.session && (CHANGING as readonly string[]).includes(m.op)) task.msg = { ...m, seq: task.session.seq + 1 }
-    slot.thread ??= start(slot)
     try {
+      slot.thread ??= start(slot)
       slot.thread.post({ ...task.msg, task: task.id } as ToThread)
     } catch (e) {
       // nothing reached the thread: the task fails alone, the thread stays free
-      return refuse(task, unsendable(m.t === 'call' ? m.op : m.t, e))
+      return unsent(slot, task, e)
     }
     slot.busy = task
     slot.thread.hold(true)

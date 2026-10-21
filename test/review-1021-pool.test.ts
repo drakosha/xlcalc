@@ -4,10 +4,11 @@
  */
 import { describe, expect, it } from 'vitest'
 import { type BookInput, type CellInput } from '../src/index.js'
-import { chainBook } from './async-books.js'
-import { closedAfter } from './fixtures/pool.js'
+import type { Spawn } from '../src/worker/platform.js'
+import { chainBook, fails, setA1 } from './async-books.js'
+import { closedAfter, inside } from './fixtures/pool.js'
 
-const { made } = closedAfter()
+const { keep, made } = closedAfter()
 
 /** What `p` settles to, or 'hung' when it has not within `ms`. */
 const settled = (p: Promise<unknown>, ms = 3000): Promise<unknown> =>
@@ -47,4 +48,35 @@ describe.each(['closures', 'eval'] as const)('the pool, %s', (execution) => {
     expect(await settled(job)).toEqual(['resolved', expect.anything()])
   }, 30_000)
 
+  it('a thread that cannot start fails one task at a time, out of a lost thread and a restore too', async () => {
+    let failing = false
+    const wrap = (s: Spawn): Spawn => (m, l) => {
+      if (failing) throw Object.assign(new Error('The Worker initialization failed: EAGAIN'), { code: 'ERR_WORKER_INIT_FAILED' })
+      return s(m, l)
+    }
+    const { calc, crash } = await inside({ threads: 1 }, wrap)
+    keep(calc)
+    const busy = calc.compute(chainBook(2), { execution })
+    const queued = [calc.compute(chainBook(2), { execution }), calc.compute(chainBook(2), { execution })]
+    failing = true
+    expect(() => crash(0)).not.toThrow()
+    expect((await fails(busy)).code).toBe('thread_failed')
+    for (const q of queued) {
+      const r = await settled(q)
+      expect(r).toEqual(['rejected', expect.objectContaining({ code: 'thread_failed', message: expect.stringMatching(/could not start.*EAGAIN/) })])
+    }
+    failing = false
+    expect(await settled(calc.compute(chainBook(2), { execution }))).toEqual(['resolved', expect.anything()])
+
+    // a session whose thread was lost: its call fails while no thread starts, and changes nothing
+    const s = await calc.createSession(chainBook(3), { execution })
+    crash(0)
+    failing = true
+    expect((await fails(s.setCells(setA1(2)))).code).toBe('thread_failed')
+    failing = false
+    expect((await s.getCell('S', 'A1'))?.value).toBe(1)
+    expect(s.revision).toBe(0)
+    expect(s.history).toEqual({ undo: 0, redo: 0 })
+    expect((await s.setCells(setA1(5))).changes.map((c) => c.cell)).toEqual(['A1', 'B1', 'B2', 'B3'])
+  }, 30_000)
 })
