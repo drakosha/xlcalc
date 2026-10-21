@@ -23,8 +23,8 @@ export interface CellTextOptions extends EditOptions {
   inPlace?: boolean
 }
 
-/** Why `Session.setCellText` rejected the text: a formula Excel would reject (`CheckCode`), part of an array formula, or a formula in a table's header cell. */
-export type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'array' | 'header'
+/** Why `Session.setCellText` rejected the text: a formula Excel would reject (`CheckCode`) or one that refers to a workbook not among the links (`external_ref`), part of an array formula, or a formula in a table's header cell. */
+export type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'external_ref' | 'array' | 'header'
 
 /** A value that a cell's data validation rule does not allow (`Session.setCellText`): the rule, and its alert's style and message. */
 export interface ValidationAlert {
