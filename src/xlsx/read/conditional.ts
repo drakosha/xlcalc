@@ -13,7 +13,7 @@ import { areaText } from '../../structure/area.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
-import { attributes, element, elements, flag, outside, ownEntry, placed, type Element } from '../xml/scan.js'
+import { attributes, element, elements, flag, ownEntry, placed, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula, type FormulaOptions } from './formulas.js'
 import { sqrefRanges } from './refs.js'
@@ -36,15 +36,6 @@ interface Context {
   issues: Issues
   formulas: FormulaOptions
 }
-
-/** The worksheet's own `<conditionalFormatting>` blocks (without a prefix, as 2010's, `x14:`, are not), and the rest of the tail. */
-function split(tail: string): { blocks: Element[]; rest: string } {
-  const blocks = placed(tail, 'conditionalFormatting', false, true)
-  return { blocks, rest: outside(tail, blocks) }
-}
-
-/** The worksheet's tail without its `<conditionalFormatting>` blocks, whose 2007 data bars hold an extension list of their own: the sheet's extension list is then the one left. */
-export const outsideConditional = (tail: string): string => split(tail).rest
 
 /** The ranges of a `sqref`, those the model takes, as the model writes them (`A1:A1048576`, Excel's whole column, is `A:A`). */
 function ranges(sqref: string, ctx: Context): string[] {
@@ -218,10 +209,13 @@ function joinBar(base: Extract<ConditionalFormat, { type: 'dataBar' }>, x: Eleme
   return out
 }
 
-/** The sheet's conditional formats in priority order, from its tail (the worksheet after `<sheetData>`). */
-export function readConditional(tail: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues, formulas: FormulaOptions): ConditionalFormat[] | undefined {
+/**
+ * The sheet's conditional formats in priority order, from its tail (the worksheet after `<sheetData>`, without its own
+ * extension list, whose content is `ext`: Excel 2010's rules are there).
+ */
+export function readConditional(tail: string, ext: string, sheet: string, dxfs: Dxf[], palette: Palette, issues: Issues, formulas: FormulaOptions): ConditionalFormat[] | undefined {
   const ctx: Context = { sheet, dxfs, palette, issues, formulas }
-  const { blocks, rest } = split(tail)
+  const blocks = placed(tail, 'conditionalFormatting', false, true)
   const found: Read[] = []
   for (const b of blocks) {
     const a = attributes(b.attrs)
@@ -236,9 +230,9 @@ export function readConditional(tail: string, sheet: string, dxfs: Dxf[], palett
       if (r) found.push(r)
     }
   }
-  // Excel 2010's rules: in the extension of the sheet's own extension list
-  const ext = elements(element(rest, 'extLst')?.body ?? '', 'ext').find((e) => attributes(e.attrs).uri?.toUpperCase() === X14_CF.toUpperCase())
-  for (const b of elements(ext?.body ?? '', 'conditionalFormatting')) {
+  // Excel 2010's rules: in their extension of the sheet's own extension list
+  const x14 = elements(ext, 'ext').find((e) => attributes(e.attrs).uri?.toUpperCase() === X14_CF.toUpperCase())
+  for (const b of elements(x14?.body ?? '', 'conditionalFormatting')) {
     const body = b.body ?? ''
     const sqref = ranges(readText(element(body, 'sqref')?.body ?? ''), ctx)
     if (!sqref.length) continue

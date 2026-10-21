@@ -81,6 +81,40 @@ export const elements = (xml: string, local: string): Element[] => placed(xml, l
 /** The first element of a local name, or undefined. */
 export const element = (xml: string, local: string): Element | undefined => placed(xml, local, true)[0]
 
+/**
+ * The element of a local name the text ends with, but for spaces and closing tags after it: the last child of the
+ * element the text closes (a worksheet's own `<extLst>`, where its other children may hold an `<extLst>` of their own).
+ * Elements of its name inside it are passed over by depth; undefined when the text ends with another element.
+ */
+export function lastChild(xml: string, local: string): Placed | undefined {
+  // back over spaces and closing tags to the closing tag of the name
+  let i = xml.length
+  let close = -1
+  while (close < 0) {
+    while (i > 0 && xml.charCodeAt(i - 1) <= 32) i--
+    const lt = xml.lastIndexOf('<', i - 1)
+    if (lt < 0 || xml[i - 1] !== '>' || xml[lt + 1] !== '/') return undefined
+    const name = xml.slice(lt + 2, i - 1).trimEnd()
+    if (name === local || name.endsWith(`:${local}`)) close = lt
+    else i = lt
+  }
+  // its opening tag: the last one before it that no closing tag of the name between them closes
+  const [open, closing] = tags(local, false)
+  const marks: [at: number, depth: number, attrs: string, end: number][] = []
+  open.lastIndex = 0
+  for (let m = open.exec(xml); m && m.index < close; m = open.exec(xml)) if (!m[2]) marks.push([m.index, 1, m[1], open.lastIndex])
+  closing.lastIndex = 0
+  for (let m = closing.exec(xml); m && m.index < close; m = closing.exec(xml)) marks.push([m.index, -1, '', 0])
+  open.lastIndex = closing.lastIndex = 0
+  marks.sort((a, b) => b[0] - a[0])
+  let depth = 0
+  for (const [start, d, attrs, end] of marks) {
+    depth += d
+    if (depth === 1) return { attrs, body: xml.slice(end, close), start, end: i }
+  }
+  return undefined
+}
+
 /** The text without the elements `placed` gave for it. */
 export function outside(xml: string, parts: Placed[]): string {
   let out = ''

@@ -18,13 +18,13 @@ import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
-import { attributes, element, elements, flag, has, ownEntry, type Element } from '../xml/scan.js'
+import { attributes, element, elements, flag, has, lastChild, ownEntry, type Element } from '../xml/scan.js'
 import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
 import { readTables } from './tables.js'
-import { outsideConditional, readConditional } from './conditional.js'
+import { readConditional } from './conditional.js'
 import type { Dxf } from '../styles/dxf.js'
 import type { Palette } from '../styles/color.js'
 import { readValidations } from './validation.js'
@@ -353,9 +353,13 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (view) sheet.view = view
   const frozen = readFrozen(head, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
-  const cf = readConditional(tail, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)
+  // the worksheet's own extension list is its last element: autofilters, sorts and rules may hold lists of their own
+  const ext = lastChild(tail, 'extLst')
+  const own = ext ? tail.slice(0, ext.start) : tail
+  const extensions = ext?.body ?? ''
+  const cf = readConditional(own, extensions, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)
   if (cf) sheet.conditionalFormats = cf
-  const validations = readValidations(outsideConditional(tail), name, src.sheets, ctx.issues, src.formulas)
+  const validations = readValidations(own, extensions, name, src.sheets, ctx.issues, src.formulas)
   if (validations) sheet.validations = validations
   const settings = outline(head, name, ctx.issues)
   if (settings) sheet.outline = settings

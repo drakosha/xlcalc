@@ -5,10 +5,11 @@
  */
 import { deflateRawSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
+import type { BookInput } from '../src/contract.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { rawZip, type RawEntry } from './fixtures/raw-zip.js'
-import { read } from './xlsx-fixtures.js'
+import { pack, read } from './xlsx-fixtures.js'
 
 /** The rejections nobody handled while `f` ran, and a moment after, when Node reports them. */
 async function unhandledDuring(f: () => Promise<void>): Promise<unknown[]> {
@@ -70,4 +71,59 @@ describe('xlsx: elements left open', () => {
     check(r)
     expect(ms).toBeLessThan(1000)
   }, 120_000)
+})
+
+/** The book written, its first sheet's XML changed by `edit`, and read back. */
+async function rewritten(book: BookInput, edit: (xml: string) => string) {
+  const archive = openArchive((await writeXlsx({ book })).data)
+  const text = new TextDecoder()
+  const parts = Object.fromEntries(await Promise.all(archive.names.map(async (n) => [n, text.decode((await archive.bytes(n))!)] as const)))
+  parts['xl/worksheets/sheet1.xml'] = edit(parts['xl/worksheets/sheet1.xml'])
+  return readXlsx(await pack(parts))
+}
+
+/** A sheet with Excel 2010 rules (a 3Stars icon set, a data bar's 2010 part) and 2007 ones, and two validations. */
+const ruled: BookInput = {
+  sheets: [
+    {
+      name: 'S',
+      cells: { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 } },
+      conditionalFormats: [
+        { ranges: ['A1:A3'], type: 'iconSet', icons: '3Stars', points: [{ value: { type: 'percent', value: '0' } }, { value: { type: 'percent', value: '33' } }, { value: { type: 'percent', value: '67' } }] },
+        { ranges: ['C1:C3'], type: 'dataBar', min: { type: 'min' }, max: { type: 'max' }, color: '#638EC6', direction: 'rightToLeft' },
+        { ranges: ['D1:D3'], type: 'cellIs', operator: 'greaterThan', formulas: ['1'], style: { font: { bold: true } } },
+      ],
+      validations: [
+        { range: 'B1:B3', type: 'whole', operator: 'greaterThan', formula1: '0' },
+        { range: 'E1:E3', type: 'list', formula1: 'T!$A$1:$A$2' },
+      ],
+    },
+    { name: 'T', cells: { A1: { value: 'x' } } },
+  ],
+}
+
+const rulesOf = (r: Awaited<ReturnType<typeof readXlsx>>) => ({ cf: r.book.sheets[0].conditionalFormats, dv: r.book.sheets[0].validations })
+
+describe('xlsx: the worksheet\'s own extension list (fix-u327)', () => {
+  const nested = '<extLst><ext uri="{DEADBEEF-0000-4000-8000-000000000000}"/></extLst>'
+  it.each([
+    ['an autofilter', (x: string) => x.replace('</sheetData>', `</sheetData><autoFilter ref="A1:A3">${nested}</autoFilter>`)],
+    ['a filter column', (x: string) => x.replace('</sheetData>', `</sheetData><autoFilter ref="A1:A3"><filterColumn colId="0"><filters><filter val="1"/></filters>${nested}</filterColumn></autoFilter>`)],
+    ['a sort state', (x: string) => x.replace('</sheetData>', `</sheetData><sortState ref="A1:A3"><sortCondition ref="A1:A3"/>${nested}</sortState>`)],
+    ['a custom sheet view', (x: string) => x.replace('</sheetData>', `</sheetData><customSheetViews><customSheetView guid="{00000000-0000-4000-8000-000000000001}">${nested}</customSheetView></customSheetViews>`)],
+    ['ignored errors', (x: string) => x.replace(/<extLst><ext uri="\{78C0/, `<ignoredErrors><ignoredError sqref="A1" numberStoredAsText="1"/>${nested}</ignoredErrors>$&`)],
+  ])('an extension list inside %s is not the sheet\'s: rules and validations are read', async (_, edit) => {
+    const plain = rulesOf(await rewritten(ruled, (x) => x))
+    expect(plain.cf?.map((x) => x.type)).toEqual(['iconSet', 'dataBar', 'cellIs'])
+    expect(plain.cf?.[1]).toMatchObject({ direction: 'rightToLeft' })
+    expect(plain.dv).toHaveLength(2)
+    const r = await rewritten(ruled, edit)
+    expect(rulesOf(r)).toEqual(plain)
+    expect(r.issues.filter((i) => i.code !== 'autoFilter')).toEqual([])
+  })
+
+  it('a sheet whose last element is no extension list has no Excel 2010 rules: a nested list is not taken for its own', async () => {
+    const r = await rewritten(ruled, (x) => x.replace(/<extLst><ext uri="\{78C0[\s\S]*<\/extLst>(?=<\/worksheet>)/, '').replace('</sheetData>', `</sheetData><autoFilter ref="A1:A3"><extLst><ext uri="{78C0D931-6437-407d-A8EE-F0AAD7539E65}"><x14:conditionalFormattings xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main"><x14:conditionalFormatting xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main"><x14:cfRule type="expression" priority="9"><xm:f>1</xm:f></x14:cfRule><xm:sqref>F1</xm:sqref></x14:conditionalFormatting></x14:conditionalFormattings></ext></extLst></autoFilter>`))
+    expect(rulesOf(r).cf?.map((x) => x.ranges[0])).toEqual(['C1:C3', 'D1:D3'])
+  })
 })
