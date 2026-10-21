@@ -30,6 +30,9 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
     expect([d.B12.value, d.D13.value, d.D15.value]).toEqual([{ error: 'SPILL' }, { error: 'SPILL' }, { error: 'SPILL' }])
     const e = await sameEverywhere(book({ A1: { formula: 'SEQUENCE(2)' }, A2: { formula: 'IFERROR(A1,0)+{1;2}' } }), execution)
     expect([e.A1.value, e.A2.value, e.A3.value]).toEqual([{ error: 'SPILL' }, 1, 2])
+    // a legacy array over the range, reading the array it blocks, is placed again the same each round
+    const f = await sameEverywhere(book({ B7: { formula: 'TRANSPOSE($C$5:D6)', array: 'B7:C7' }, C6: { formula: 'SEQUENCE(2,1)', held: 1 } }), execution)
+    expect([f.C6.value, f.B7.value, f.C7.value]).toEqual([{ error: 'SPILL' }, 0, { error: 'SPILL' }])
   })
 
   it('a reader of an array in a cycle through its spill settles under iterative calculation (x-fuzz-modes-4)', async () => {

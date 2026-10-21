@@ -99,6 +99,13 @@ function place(state: EngineState, f: Formula, a: Arr, area: Area, t?: Tracker) 
   const { h, w, fill } = listing(a)
   allotSpill(h * w)
   const old = sp.on.get(f.id)
+  const fills: Fill[] = []
+  if (fill !== undefined) {
+    if (h < a.rows) fills.push({ r1: f.r + h, c1: f.c, r2: area.r2, c2: area.c2, v: fill })
+    if (w < a.cols) fills.push({ r1: f.r, c1: f.c + w, r2: f.r + h - 1, c2: area.c2, v: fill })
+  }
+  // the same array placed again over the same cells changes nothing: its readers and the arrays waiting are not concerned
+  let changed = !old || !equalAreas(old, area) || old.h !== h || old.w !== w || !sameFills(old.fills, fills)
   note(state, f.s, f.r, f.c, t)
   // cells of the old spill that the new one does not store, then the new ones (read before the old fills go)
   if (old) eachCell(old, (r, c) => (r >= f.r + h || c >= f.c + w) && clear(state, f.s, r, c, t))
@@ -106,17 +113,14 @@ function place(state: EngineState, f: Formula, a: Arr, area: Area, t?: Tracker) 
     spend(w)
     for (let c = 0; c < w; c++) {
       if (r === 0 && c === 0) continue
+      const v = shown(a.at(r, c))
+      if (!changed && !same(sh.cols[f.c + c]?.get(f.r + r) ?? null, v)) changed = true
       track(state, t, f.s, f.r + r, f.c + c)
-      put(sh, f.r + r, f.c + c, shown(a.at(r, c)))
+      put(sh, f.r + r, f.c + c, v)
     }
   }
   if (old) sh.fills = sh.fills.filter((x) => !old.fills.includes(x))
-  const fills: Fill[] = []
-  if (fill !== undefined) {
-    if (h < a.rows) fills.push({ r1: f.r + h, c1: f.c, r2: area.r2, c2: area.c2, v: fill })
-    if (w < a.cols) fills.push({ r1: f.r, c1: f.c + w, r2: f.r + h - 1, c2: area.c2, v: fill })
-    sh.fills.push(...fills)
-  }
+  sh.fills.push(...fills)
   sp.on.set(f.id, { ...area, id: f.id, h, w, fills })
   if (old) invalidate(state.ctx, old)
   invalidate(state.ctx, area)
@@ -124,8 +128,11 @@ function place(state: EngineState, f: Formula, a: Arr, area: Area, t?: Tracker) 
   sp.wait.delete(f.id)
   sp.why.delete(f.id)
   if (old && !equalAreas(old, area)) sp.touched.push({ ...old, step: sp.step })
-  sp.touched.push({ ...area, step: sp.step })
+  if (changed) sp.touched.push({ ...area, step: sp.step })
 }
+
+/** Two spills' fills: the same rectangles holding the same values. */
+const sameFills = (a: Fill[], b: Fill[]) => a.length === b.length && a.every((x, i) => equalAreas({ s: 0, ...x }, { s: 0, ...b[i] }) && same(x.v, b[i].v))
 
 /** The formula's array does not spill: #SPILL!, with the reason and, unless the edge stops it, the range it waits for. */
 function blocked(state: EngineState, f: Formula, t: Tracker | undefined, why: string, wait?: Area): CErr {
