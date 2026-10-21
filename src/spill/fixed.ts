@@ -10,7 +10,7 @@ import { keyParts, type EngineState } from '../engine.js'
 import { allot } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import { formatAddress } from '../model.js'
-import { cellCount, rectCells, type Rect } from '../structure/area.js'
+import { cellCount, meets, rectCells, type Rect } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
 import { Areas, E, Rng, type V } from '../values.js'
 
@@ -71,7 +71,7 @@ export function arrayPart(state: EngineState, edits: CellReplace[]): { sheet: st
 
 /**
  * Edits of a session that change part of an array formula's area throw `InputError` (`partOf`). A new array formula's
- * area must hold nothing else after the edits and cross no other array formula's area. A book without such formulas, and edits that make none, are not looked at.
+ * area must hold nothing else after the edits, cross no other array formula's area and, of several cells, no table. A book without such formulas, and edits that make none, are not looked at.
  */
 export function checkArrayEdits(state: EngineState, edits: CellReplace[]) {
   const made = edits.filter((e) => e.input?.array !== undefined)
@@ -92,6 +92,8 @@ export function checkArrayEdits(state: EngineState, edits: CellReplace[]) {
         const k = at(s, addr)
         if (addr !== e.cell && holds(edited.has(k) ? (edited.get(k) ?? undefined) : state.input.sheets[s].cells[addr])) throw new InputError('edits', `${e.sheet}!${addr} is inside the area of the array formula at ${e.cell} (${e.input!.array}), so it cannot hold anything else`)
       }
+    const table = (x.r2 > x.r1 || x.c2 > x.c1) && state.tables.list.find((t) => t.s === s && meets(t, x))
+    if (table) throw new InputError('edits', `${e.sheet}!${e.cell}: the array formula over ${e.input!.array} overlaps the table ${table.name} (Excel does not allow array formulas of several cells in tables)`)
     for (const a of kept) {
       const why = a.s === s && crossing(x, `${e.sheet}!${e.cell}`, a.area, `${state.sheetNames[s]}!${a.top}`)
       if (why) throw new InputError('edits', why)

@@ -78,3 +78,23 @@ describe.each(['closures', 'eval'] as const)('a legacy array whose formula does 
     expect(compute(t.getBook(), { clock, execution }).hash).toBe(t.getHash())
   })
 })
+
+describe.each(['closures', 'eval'] as const)('a legacy array over a table, execution %s', (execution) => {
+  const b: BookInput = { sheets: [{ name: 'S', cells: { F13: { value: 'Name' }, G13: { value: 'Qty' } }, tables: [{ name: 'Sales', range: 'F13:G15', columns: [{ name: 'Name' }, { name: 'Qty' }] }] }] }
+  const edit = (cell: string, array: string) => [{ sheet: 'S', cell, input: { formula: 'H16:I16*2', array } }]
+  it('of several cells is refused by the session as by the book check (x-fuzz-session-5)', async () => {
+    const s = createSession(b, { clock, execution })
+    for (const area of ['F14:G14', 'E14:F14']) {
+      expect(() => s.setCells(edit(area.slice(0, 3), area))).toThrow(/overlaps the table Sales \(Excel does not allow array formulas of several cells in tables\)/)
+      expect(() => s.replaceCells(edit(area.slice(0, 3), area))).toThrow(/overlaps the table Sales/)
+      expect(() => s.validateEntry('S', area.slice(0, 3), edit(area.slice(0, 3), area)[0].input)).toThrow(/overlaps the table Sales/)
+    }
+    const calc = createInlineCalc({ sliceMs: 1 })
+    const inline = await calc.createSession(b, { clock, execution })
+    await expect(inline.setCells(edit('F14', 'F14:G14'))).rejects.toThrow(/overlaps the table Sales/)
+    await inline.close()
+    // one cell is allowed, as the book check allows it
+    s.setCells(edit('F14', 'F14'))
+    expect(compute(s.getBook(), { clock, execution }).hash).toBe(s.getHash())
+  })
+})
