@@ -51,7 +51,9 @@ export function typedHeights(s: EngineState, cells: Typed[]): SetLayoutEdit[] {
   }
   const out: SetLayoutEdit[] = []
   for (const [i, set] of rows) {
-    const [lo, hi] = [Math.min(...set), Math.max(...set)]
+    // one pass, not a spread: a call can wrap more rows than a function call takes arguments
+    let [lo, hi] = [Infinity, -Infinity]
+    for (const r of set) [lo, hi] = [Math.min(lo, r), Math.max(hi, r)]
     const { cells: values, spans } = stateRows(s, i, lo, hi)
     const lines = sheetLines(s.input.sheets[i], s)
     for (const [key, height] of Object.entries(fitHeights(styles, s.input.sheets[i], values, lo, hi, spans))) {
