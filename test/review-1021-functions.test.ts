@@ -72,4 +72,23 @@ describe.each(['closures', 'eval'] as const)('review 21.10 functions, %s', (exec
     expect(e.code).toBe('soft_timeout')
     expect(performance.now() - t0).toBeLessThan(1500)
   })
+
+  it('FILTER keeps its answer within limits.cells: an include true past the occupied rows selects the whole column', () => {
+    const cells: Cells = { A1: { value: 1 }, A2: { value: 2 }, B1: { value: 'x' }, C1: { value: 'done' } }
+    for (const formula of ['ROWS(FILTER(A:A,B:B=B:B))', 'FILTER(A:A,ISBLANK(B:B))', 'SUM(FILTER(A:C,C:C<>"done"))']) {
+      let e: unknown
+      try {
+        compute(book({ ...cells, E5: { formula } }), { execution, limits: { cells: 100_000 } })
+      } catch (x) {
+        e = x
+      }
+      expect(e, formula).toBeInstanceOf(CalcError)
+      const c = e as CalcError
+      expect([c.code, c.limit, c.max, c.cell], formula).toEqual(['limit', 'cells', 100_000, { sheet: 'S', cell: 'E5' }])
+    }
+    const fits = book({ ...cells, E5: { formula: 'ROWS(FILTER(A:A,B:B=B:B))' }, E6: { formula: 'SUM(FILTER(A1:A2,A1:A2>1))' }, E7: { formula: 'ROWS(UNIQUE(A:A))' } })
+    expect(compute(fits, { execution, limits: { cells: 2_000_000 } }).hash).toBe(compute(fits, { execution }).hash)
+    expect(compute(fits, { execution, display: false }).sheets[0].cells.E5.value).toBe(1048576)
+  })
+
 })
