@@ -3,7 +3,7 @@
  * cannot be sent, a thread that cannot start, and the deadline and signal of reads in a thread.
  */
 import { describe, expect, it } from 'vitest'
-import { type BookInput, type CellInput } from '../src/index.js'
+import { createInlineCalc, type BookInput, type Calc, type CellInput } from '../src/index.js'
 import type { Spawn } from '../src/worker/platform.js'
 import { chainBook, fails, setA1 } from './async-books.js'
 import { closedAfter, inside } from './fixtures/pool.js'
@@ -100,4 +100,39 @@ describe.each(['closures', 'eval'] as const)('the pool, %s', (execution) => {
     expect(s.history).toEqual({ undo: 0, redo: 0 })
     expect((await s.setCells(setA1(5))).changes.map((c) => c.cell)).toEqual(['A1', 'B1', 'B2', 'B3'])
   }, 30_000)
+})
+
+/** 5 × 20,000 values: reading them all takes far longer than a millisecond, in slices. */
+const wide = (): BookInput => {
+  const cells: Record<string, CellInput> = {}
+  for (let r = 1; r <= 20_000; r++) for (const c of 'ABCDE') cells[`${c}${r}`] = { value: r }
+  return { sheets: [{ name: 'S', cells }] }
+}
+
+const CALCS = [
+  ['in the same thread', (timeoutMs?: number): Promise<Calc> => Promise.resolve(keep(createInlineCalc({ sliceMs: 5, timeoutMs })))],
+  ['in a thread', (timeoutMs?: number): Promise<Calc> => made({ threads: 1, sliceMs: 5, timeoutMs })],
+] as const
+
+describe.each(['closures', 'eval'] as const)('reads of a session %s', (execution) => {
+  describe.each(CALCS)('%s', (_, make) => {
+    it('getCells stops at its deadline and at its signal', async () => {
+      const calc = await make()
+      const s = await calc.createSession(wide(), { execution })
+      expect((await fails(s.getCells('S', 'A1:E20000', { timeoutMs: 1 }))).code).toBe('soft_timeout')
+      const ac = new AbortController()
+      setTimeout(() => ac.abort(), 1)
+      expect((await fails(s.getCells('S', 'A1:E20000', { signal: ac.signal }))).code).toBe('aborted')
+      expect(Object.keys(await s.getCells('S', 'A1:B2', { timeoutMs: 5000 }))).toEqual(['A1', 'B1', 'A2', 'B2'])
+    }, 30_000)
+
+    it("the calculator's timeoutMs bounds the reads that take no options", async () => {
+      const calc = await make(0)
+      const s = await calc.createSession(chainBook(2), { execution, timeoutMs: 60_000 })
+      for (const read of [() => s.getCells('S', 'A1:B2'), () => s.getCell('S', 'B1'), () => s.getViewport('S', 'A1:B2'), () => s.getUsedRange('S'), () => s.getEnd('S', 'A1', 'down'), () => s.getCellIssue('S', 'B1'), () => s.getValidation('S', 'B1')])
+        expect((await fails(read())).code).toBe('soft_timeout')
+      // a call's own deadline overrides it
+      expect((await s.getCells('S', 'B1', { timeoutMs: 5000 })).B1).toMatchObject({ value: 2 })
+    }, 30_000)
+  })
 })
