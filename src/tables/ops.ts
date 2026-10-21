@@ -33,7 +33,7 @@ function withTable(book: BookInput, key: string, next: TableInput | null): BookI
 }
 
 /** A name a table can take in the book: Excel's rules, not another table's or a defined name (but `own`). */
-function nameRefusal(book: BookInput, name: string, own?: string): Message | null {
+export function nameRefusal(book: BookInput, name: string, own?: string): Message | null {
   // not ИСТИНА in ru-RU, as Excel for Windows (Excel for Mac keeps such a table's name)
   const rule = nameRule(name, localeBooleans(book.locale))
   if (rule) return { key: 'tableName', name, rule }

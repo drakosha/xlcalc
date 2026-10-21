@@ -66,10 +66,12 @@ export const ERRORS: Record<string, ErrorCode> = Object.fromEntries(CELL_ERRORS.
 /** Errors the engine reads in a formula: what an error stored as a cell's value is read as. */
 const LITERAL = new Set(FORMULA_ERRORS)
 
-const TAG = /<([\w.-]+:)?(row|c)((?:\s[^>]*?)?)(\/?)>/g
-const V = /<(?:[\w.-]+:)?v(?:\s[^>]*?)?(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?v>)/
-const F = /<(?:[\w.-]+:)?f((?:\s[^>]*?)?)(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?f>)/
-const IS = /<(?:[\w.-]+:)?is(?:\s[^>]*)?>([\s\S]*?)<\/(?:[\w.-]+:)?is>/
+// a tag holds no `<`, nor a value, formula or inline string the opening tag of its name: an element left open fails at
+// the next tag, where searching the rest of the cell for its closing tag made a cell of them quadratic
+const TAG = /<([\w.-]+:)?(row|c)((?:\s[^<>]*?)?)(\/?)>/g
+const V = /<(?:[\w.-]+:)?v(?:\s[^<>]*?)?(?:\/>|>((?:[^<]|<(?!(?:[\w.-]+:)?v[\s/>]))*?)<\/(?:[\w.-]+:)?v>)/
+const F = /<(?:[\w.-]+:)?f((?:\s[^<>]*?)?)(?:\/>|>((?:[^<]|<(?!(?:[\w.-]+:)?f[\s/>]))*?)<\/(?:[\w.-]+:)?f>)/
+const IS = /<(?:[\w.-]+:)?is(?:\s[^<>]*)?>((?:[^<]|<(?!(?:[\w.-]+:)?is[\s/>]))*?)<\/(?:[\w.-]+:)?is>/
 const ADDR = /^([A-Za-z]{1,3})([1-9][0-9]*)$/
 
 

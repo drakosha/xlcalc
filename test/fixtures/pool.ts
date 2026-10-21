@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import type { Calc, CalcPoolOptions } from '../../src/contract.js'
-import type { Thread, ThreadLoss } from '../../src/worker/platform.js'
+import type { Spawn, Thread, ThreadLoss } from '../../src/worker/platform.js'
 import type { PoolInside } from '../../src/worker/pool.js'
 import { libUrl, TARGET } from './target.js'
 
@@ -49,10 +49,10 @@ export function closedAfter() {
   return { open, keep, made: async (...a: Parameters<typeof pool>) => keep(await pool(...a)) }
 }
 
-/** A pool with its inside, and a crash of thread `i` as Node reports a thread that exited by itself. */
-export async function inside(opts?: CalcPoolOptions): Promise<{ calc: Calc; inside: PoolInside; crash(i: number): void }> {
+/** A pool with its inside, and a crash of thread `i` as Node reports a thread that exited by itself; `wrap` stands between the pool and Node's threads. */
+export async function inside(opts?: CalcPoolOptions, wrap: (s: Spawn) => Spawn = (s) => s): Promise<{ calc: Calc; inside: PoolInside; crash(i: number): void }> {
   const o = checkPoolOptions(opts)
-  const base = nodeSpawn(workerThreads()!, await threadScript(), o.maxHeapMb)
+  const base = wrap(nodeSpawn(workerThreads()!, await threadScript(), o.maxHeapMb))
   const losses = new Map<Thread, (l: ThreadLoss) => void>()
   let seen: PoolInside | undefined
   const calc = createPool(
