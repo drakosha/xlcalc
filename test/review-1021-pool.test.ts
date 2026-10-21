@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { createInlineCalc, type BookInput, type Calc, type CellInput } from '../src/index.js'
 import type { Spawn } from '../src/worker/platform.js'
 import { chainBook, fails, setA1 } from './async-books.js'
-import { closedAfter, inside } from './fixtures/pool.js'
+import { closedAfter, inside, pool } from './fixtures/pool.js'
 
 const { keep, made } = closedAfter()
 
@@ -46,6 +46,11 @@ describe.each(['closures', 'eval'] as const)('the pool, %s', (execution) => {
     expect(await settled(opening)).toEqual(['rejected', expect.objectContaining({ message: 'getter boom' })])
     expect(await settled(after)).toEqual(['resolved', expect.anything()])
     expect(await settled(job)).toEqual(['resolved', expect.anything()])
+    // refused before it waits: its text, still written, fails unseen
+    const closed = await pool({ threads: 1 })
+    await closed.close()
+    await expect(closed.compute(throwingBook(LARGE), { execution })).rejects.toMatchObject({ code: 'closed' })
+    await new Promise((resolve) => setTimeout(resolve, 100))
   }, 30_000)
 
   it('a restore that cannot be sent closes its session with restore_failed, once, and the thread goes on', async () => {

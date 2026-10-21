@@ -324,6 +324,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
 
   /** A task in the queue of `slot` (a session's) or in the shared one; `book`, its book and stored values while they are written as text. */
   function submit(msg: Message, at?: { slot: Slot; session: Rec }, signal?: AbortSignalLike, internal = false, book?: Promise<Texts>): Promise<unknown> {
+    // a task refused here leaves its text being written: a failure of it is not left unhandled
+    void book?.catch(() => {})
     if (closed) return Promise.reject(closed)
     if (at?.session.gone) return Promise.reject(at.session.gone)
     if (signal?.aborted) return Promise.reject(abortError(signal))
