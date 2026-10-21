@@ -150,3 +150,34 @@ describe.each(EXECUTIONS)('a fill continuing a series over header cells (x-fuzz-
     expect(after.sheets[0].tables![0].columns.map((c) => c.name)).toEqual(['Item', 'Col1', 'Col2', 'Col3'])
   })
 })
+
+/** Table T (Qty, Price) and formulas that name a column it lacks, beside one that names Price. */
+const unknownColumn = (): BookInput => ({
+  sheets: [{
+    name: 'S',
+    cells: {
+      A1: { value: 'Qty' }, B1: { value: 'Price' }, A2: { value: 2 }, B2: { value: 3 }, A3: { value: 4 }, B3: { value: 6 },
+      E1: { formula: 'SUM(T[Nope])' }, E2: { formula: 'SUM(T[Price])' }, E3: { formula: 'SUM(T[[Nope]:[Price]])' }, E4: { formula: 'SUM(T[[#Headers],[Nope]])' }, E5: { formula: 'T[@Nope]' },
+    },
+    tables: [{ name: 'T', range: 'A1:B3', columns: [{ name: 'Qty' }, { name: 'Price' }] }],
+  }],
+})
+const convert: StructureOp = { op: 'convertTable', table: 'T' }
+
+describe.each(EXECUTIONS)('a table converted to cells with a reference to a column it lacks (fix-u304), %s', (execution) => {
+  it('turns that reference into #REF!, so the formula stays an error', () => {
+    const before = compute(unknownColumn(), { execution, clock }).sheets[0].cells
+    expect(['E1', 'E3', 'E4', 'E5'].map((c) => before[c].value)).toEqual(Array(4).fill({ error: 'NAME' }))
+    const r = editStructure(unknownColumn(), convert)
+    if (!r.ok) throw new Error(r.message)
+    const cells = r.book.sheets[0].cells
+    expect(['E1', 'E2', 'E3', 'E4', 'E5'].map((c) => cells[c].formula)).toEqual(['SUM(#REF!)', "SUM('S'!$B$2:$B$3)", 'SUM(#REF!)', 'SUM(#REF!)', '#REF!'])
+    const after = compute(r.book, { execution, clock }).sheets[0].cells
+    expect(['E1', 'E2', 'E3', 'E4', 'E5'].map((c) => after[c].value)).toEqual([{ error: 'REF' }, 9, { error: 'REF' }, { error: 'REF' }, { error: 'REF' }])
+  })
+
+  inSessions(execution, unknownColumn, convert, (r, after) => {
+    expect(r.ok).toBe(true)
+    expect(after.sheets[0].cells.E1.formula).toBe('SUM(#REF!)')
+  })
+})

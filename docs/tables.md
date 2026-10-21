@@ -215,7 +215,7 @@ Pasting over header cells renames their columns to what lands there: the text of
 | `deleteTable` | removes the table and its cells; references to it become `#REF!` |
 | `convertTable` | turns the table into plain cells; references become references to its cells with `$` and the sheet name |
 
-`convertTable` writes what Excel's Convert to Range writes: `Sales[Qty]` becomes `'S'!$B$2:$B$5`, `Sales[@Qty]` in row 4 becomes `'S'!$B4` (with the row relative), and `Sales[#All]` the entire range. A part the table does not have becomes the entire table (`Sales[[#Totals],[Qty]]` without a totals row becomes `'S'!$A$1:$D$5`), and in a name, the formula's row of a column becomes the entire row of the table, as Excel converts them.
+`convertTable` writes what Excel's Convert to Range writes: `Sales[Qty]` becomes `'S'!$B$2:$B$5`, `Sales[@Qty]` in row 4 becomes `'S'!$B4` (with the row relative), and `Sales[#All]` the entire range. A part the table does not have becomes the entire table (`Sales[[#Totals],[Qty]]` without a totals row becomes `'S'!$A$1:$D$5`), and in a name, the formula's row of a column becomes the entire row of the table, as Excel converts them. A column the table does not have, which is `#NAME?` before the conversion, becomes `#REF!`.
 
 Deleting a sheet removes the references to its tables: they become `#REF!`. Renaming it changes nothing, as tables are referenced without their sheet. A reference by address in the formula of a calculated column follows a renamed, moved or deleted sheet as in a cell's formula: `'S'!A2` becomes `'Data'!A2` when S is renamed to Data, and `#REF!A2` when S is deleted.
 
