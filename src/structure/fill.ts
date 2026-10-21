@@ -25,6 +25,8 @@ import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetIndex } from './rewrite.js'
+import { renamedByPaste } from '../tables/moves.js'
+import { tablesOf } from '../tables/model.js'
 
 /** A copy of part of the sheet over another part, as `editStructure` applies one (`copyRange`). */
 export type Copier = (book: BookInput, from: Rect, to: Rect) => Applied
@@ -78,11 +80,14 @@ export function fillRange(book: BookInput, sheet: string, src: Rect, target: Rec
   }
   if (type === 'copy') return { ok: true, book: out, geometry }
   const s = sheetIndex(book, sheet)
-  const written = seriesCells(book, s, src, axis, forward ? [b + 1, b + n] : [a - n, a - 1], type)
+  const added: [number, number] = forward ? [b + 1, b + n] : [a - n, a - 1]
+  const written = seriesCells(book, s, src, axis, added, type)
   if (!written.length) return { ok: true, book: out, geometry }
   const cells = { ...out.sheets[s].cells }
   for (const [addr, value] of written) cells[addr] = { ...cells[addr], value }
-  return { ok: true, book: { ...out, sheets: out.sheets.map((x, i) => (i === s ? { ...x, cells } : x)) }, geometry }
+  const filled = { ...out, sheets: out.sheets.map((x, i) => (i === s ? { ...x, cells } : x)) }
+  // a series over a table's header cells renames their columns to what it wrote, as a paste over them does
+  return { ok: true, book: renamedByPaste(tablesOf(filled), filled, [[s, withBounds(src, axis, ...added)]], () => true), geometry }
 }
 
 /** The axis and the way a fill goes: `target` holds `src`, has its width across, and reaches past one of its ends. */

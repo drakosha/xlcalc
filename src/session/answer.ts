@@ -28,9 +28,11 @@ export interface Outcome {
   moved: AddressMove[]
   /** The cells of rules of conditional formats that changed, as they were. */
   rules: RangeRef[]
+  /** Rectangles whose look changed, too large to list by cell (`LISTED_LOOKS`). */
+  looks: RangeRef[]
 }
 
-export const nothing = (): Outcome => ({ keys: [], fields: new Map(), valued: false, layout: new Set(), styles: false, moved: [], rules: [] })
+export const nothing = (): Outcome => ({ keys: [], fields: new Map(), valued: false, layout: new Set(), styles: false, moved: [], rules: [], looks: [] })
 
 /** Places as the engine orders them, then the others in address order (a place's own order). */
 export function inOrder(keys: number[], more: Iterable<number>): number[] {
@@ -58,6 +60,7 @@ export function joined(a: Outcome, b: Outcome): Outcome {
     styles: a.styles || b.styles,
     moved: [...a.moved, ...b.moved],
     rules: [...a.rules, ...b.rules],
+    looks: [...a.looks, ...b.looks],
   }
 }
 
@@ -122,11 +125,14 @@ export function layoutChanged(old: BookInput, next: BookInput): string[] {
 /** The rectangles of a sheet's conditional formats. */
 export const ruleRanges = (sheet: SheetInput): RangeRef[] => (sheet.conditionalFormats ?? []).flatMap((f) => f.ranges.map((range) => ({ sheet: sheet.name, range })))
 
-/** What a host paints again: the cells of the rules that changed, and of every rule when a value changed; none without rules. */
+/**
+ * What a host paints again: the rectangles whose look changed too widely to list by cell, the cells of the rules that
+ * changed, and of every rule when a value changed; none without them.
+ */
 export function repaintOf(book: BookInput, o: Outcome): RangeRef[] | undefined {
-  if (!o.valued && !o.rules.length) return undefined
+  if (!o.valued && !o.rules.length && !o.looks.length) return undefined
   const out = new Map<string, RangeRef>()
-  for (const x of [...o.rules, ...(o.valued ? book.sheets.flatMap(ruleRanges) : [])]) out.set(`${sheetKey(x.sheet)}!${x.range}`, x)
+  for (const x of [...o.looks, ...o.rules, ...(o.valued ? book.sheets.flatMap(ruleRanges) : [])]) out.set(`${sheetKey(x.sheet)}!${x.range}`, x)
   return out.size ? [...out.values()] : undefined
 }
 

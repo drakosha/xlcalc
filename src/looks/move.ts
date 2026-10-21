@@ -180,8 +180,8 @@ function differingRuns(pa: Pattern, ta: LookTable, pb: Pattern, tb: LookTable): 
 
 const NO_RUNS: Pattern = new Int32Array(0)
 
-/** Each cell to which two layers (none for no looks) give other looks, row by row. */
-export function* differing(a: Layer | undefined, b: Layer | undefined): Generator<[number, number]> {
+/** The rectangles of cells to which two layers (none for no looks) give other looks: a run of columns over a block of rows, row by row. */
+export function* differing(a: Layer | undefined, b: Layer | undefined): Generator<Rect> {
   if (a === b) return
   const cuts = new Set<number>()
   for (const x of [a, b]) for (let k = 0; k < (x?.blocks ?? 0); k++) cuts.add(x!.r1[k]).add(x!.r2[k] + 1)
@@ -196,6 +196,6 @@ export function* differing(a: Layer | undefined, b: Layer | undefined): Generato
     if (!byB) memo.set(pa, (byB = new Map()))
     let runs = byB.get(pb)
     if (!runs) byB.set(pb, (runs = differingRuns(pa, a?.looks ?? empty, pb, b?.looks ?? empty)))
-    for (let r = lo; r <= hi; r++) for (let x = 0; x < runs.length; x += 2) for (let c = runs[x]; c <= runs[x + 1]; c++) yield [r, c]
+    for (let x = 0; x < runs.length; x += 2) yield { r1: lo, r2: hi, c1: runs[x], c2: runs[x + 1] }
   }
 }

@@ -58,13 +58,21 @@ export function arityOf(def: ArityDef): Arity {
   return { min, max, takes: (k) => k >= min && k <= max && whole(k), counts, omits: (i) => !holds(def.notOmitted, i) }
 }
 
-/** Where the arity of a whitelisted function comes from: the engine's specs (`functions.ts`), or without the engine its declared arguments (`typed-entry.ts`). */
-let arities = (name: string): Arity | undefined => {
-  throw new Error(`no arities to check ${name}'s arguments by: an entry gives them (useArities)`)
-}
+/** Where the arity of a whitelisted function comes from: the engine's specs (`functions.ts`), or without the engine its declared arguments (`declared-arity.ts`). */
+let given: ((name: string) => Arity | undefined) | undefined
 
 export function useArities(f: (name: string) => Arity | undefined) {
-  arities = f
+  given = f
+}
+
+/** Gives the check `f()`'s arities where no entry gave it any (`useArities`). */
+export function useAritiesUnlessGiven(f: () => (name: string) => Arity | undefined) {
+  given ??= f()
+}
+
+const arities = (name: string): Arity | undefined => {
+  if (!given) throw new Error(`no arities to check ${name}'s arguments by: an entry gives them (useArities)`)
+  return given(name)
 }
 
 /** The arities of a table of declared arguments, each made once, by name. */

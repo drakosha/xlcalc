@@ -5,6 +5,9 @@ import { InputError } from '../input-error.js'
 import { hasLooks, inputIn, layerOf } from '../looks/sheet.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'
+import { parseMerge } from '../layout/merges.js'
+import { meets } from '../structure/area.js'
+import { tablesOf } from '../tables/model.js'
 
 /** A scalar as JSON writes it: a number's -0 as 0, NaN and the infinities as null. */
 const json = (v: unknown) => (typeof v === 'number' ? (Number.isFinite(v) ? v + 0 : null) : v)
@@ -78,6 +81,20 @@ export function checkStylesUsed(book: BookInput, count: number) {
     for (const [k, c] of Object.entries(s.columns ?? {})) check(c.style, `columns ${k} of ${s.name}`)
     for (const [k, r] of Object.entries(s.rows ?? {})) check(r.style, `rows ${k} of ${s.name}`)
   }
+}
+
+/** Merged areas of checked layout edits refused over a table, as `checkBook` refuses them in a book. */
+export function checkMergesOutsideTables(book: BookInput, edits: LayoutEdit[], sheetIndex: (name: string) => number): void {
+  const tables = tablesOf(book).list
+  if (!tables.length) return
+  edits.forEach((e, i) => {
+    if (!('merges' in e)) return
+    const s = sheetIndex(e.sheet)
+    e.merges.forEach((m, j) => {
+      const t = tables.find((x) => x.s === s && meets(parseMerge(m)!, x))
+      if (t) throw new InputError(`edits[${i}].merges[${j}]`, `the merged area ${m} overlaps the table ${t.name} (Excel does not allow merged cells in tables)`)
+    })
+  })
 }
 
 /** A layout edit that sets what it gives, AutoFit turned into the sizes it sets (`fitEdits`). */

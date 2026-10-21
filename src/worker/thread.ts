@@ -98,7 +98,7 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
       value = await s.getHash(o)
       break
     case 'getCells':
-      value = await s.getCells(args[0] as string, args[1] as string | string[])
+      value = await s.getCells(args[0] as string, args[1] as string | string[], o)
       break
     case 'copyText':
       value = await s.copyText(args[0] as string, args[1] as string, { ...(args[2] as object | undefined), ...o })
@@ -162,7 +162,15 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
         if (m.seq === h.seq && h.last) return h.last
         if (m.seq !== h.seq + 1) throw new CalcError('thread_failed', `call ${m.seq} of session ${m.sid} out of order (the last was ${h.seq})`)
       }
-      const a = await invoke(h, m.op, m.args, { signal, timeoutMs: m.timeoutMs })
+      // a read without options is bounded by the thread's default, as createInlineCalc's reads are by its own: here the
+      // call's deadline (the pool's timeoutMs), for this call alone, as the thread runs one task at a time
+      d.timeoutMs = m.timeoutMs
+      let a: Answer
+      try {
+        a = await invoke(h, m.op, m.args, { signal, timeoutMs: m.timeoutMs })
+      } finally {
+        d.timeoutMs = undefined
+      }
       if (m.seq !== undefined && (CHANGING as readonly string[]).includes(m.op)) {
         h.seq = m.seq
         h.last = a

@@ -171,16 +171,32 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     }
   }
 
+  /** A task that did not reach its thread (`e`, why): it fails alone, and pump does not build the same restore again. */
+  function unsent(slot: Slot, task: Task, e: unknown) {
+    const m = task.msg
+    const r = task.session
+    if (!slot.thread) {
+      const why = new CalcError('thread_failed', `the thread could not start: ${e instanceof Error ? e.message : String(e)}`, { cause: e })
+      // a restore's thread did not start: the call waiting on it fails, and the session comes back on its next call
+      if (r && m.t === 'restore' && slot.queue[0]?.session === r) fail(slot.queue.shift()!, why)
+      return refuse(task, why)
+    }
+    const why = unsendable(m.t === 'call' ? m.op : m.t, e)
+    // a restore that cannot be sent closes its session, as a restore that fails does
+    if (r && m.t === 'restore') bury(r, new CalcError('restore_failed', `the session could not be restored: ${why.message}`, { cause: why }))
+    refuse(task, why)
+  }
+
   function send(slot: Slot, task: Task) {
     // a changing call gets the session's next sequence number when it reaches the thread
     const m = task.msg
     if (m.t === 'call' && task.session && (CHANGING as readonly string[]).includes(m.op)) task.msg = { ...m, seq: task.session.seq + 1 }
-    slot.thread ??= start(slot)
     try {
+      slot.thread ??= start(slot)
       slot.thread.post({ ...task.msg, task: task.id } as ToThread)
     } catch (e) {
       // nothing reached the thread: the task fails alone, the thread stays free
-      return refuse(task, unsendable(m.t === 'call' ? m.op : m.t, e))
+      return unsent(slot, task, e)
     }
     slot.busy = task
     slot.thread.hold(true)
@@ -308,6 +324,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
 
   /** A task in the queue of `slot` (a session's) or in the shared one; `book`, its book and stored values while they are written as text. */
   function submit(msg: Message, at?: { slot: Slot; session: Rec }, signal?: AbortSignalLike, internal = false, book?: Promise<Texts>): Promise<unknown> {
+    // a task refused here leaves its text being written: a failure of it is not left unhandled
+    void book?.catch(() => {})
     if (closed) return Promise.reject(closed)
     if (at?.session.gone) return Promise.reject(at.session.gone)
     if (signal?.aborted) return Promise.reject(abortError(signal))
@@ -317,15 +335,26 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     return new Promise((resolve, reject) => {
       const task: Task = { id: ++ids, msg, session: at?.session, signal, internal, resolve, reject }
       const queue = at ? at.slot.queue : jobs
+      const go = () => (at ? pump(at.slot) : slots.forEach(pump))
       // a book written between turns: the task keeps its place in the queue, and goes when the text is ready
       if (book) {
         task.pending = true
-        void book.then((sent) => {
-          task.pending = false
-          Object.assign(task.msg, sent)
-          if (at) pump(at.slot)
-          else for (const s of slots) pump(s)
-        })
+        void book.then(
+          (sent) => {
+            task.pending = false
+            Object.assign(task.msg, sent)
+            go()
+          },
+          (e) => {
+            // the text could not be written (a meta that throws when read): the call fails as it does for a small book, and the queue moves on
+            const i = queue.indexOf(task)
+            if (i >= 0) {
+              queue.splice(i, 1)
+              fail(task, e)
+            }
+            go()
+          },
+        )
       }
       if (signal) {
         const onAbort = () => {
@@ -342,8 +371,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         task.unlisten = () => signal.removeEventListener('abort', onAbort)
       }
       queue.push(task)
-      if (at) pump(at.slot)
-      else for (const s of slots) pump(s)
+      go()
     })
   }
 

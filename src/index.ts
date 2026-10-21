@@ -22,6 +22,7 @@ import * as styleTable from './style-table.js'
 import * as builtin from './builtin-format.js'
 import * as serials from './date-serial.js'
 import { strict } from './strict-args.js'
+import { withDeclaredArities } from './declared-arity.js'
 import * as signatures from './signatures.js'
 import { epochOf } from './dates.js'
 import { createState, debugSource } from './engine.js'
@@ -51,7 +52,8 @@ export * from './a1.js'
 export { callAt, compareValues, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, escapeColumn, findMatcher, findReplacer, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, refAt, scanReferences, valueComparator } from './text.js'
 export type { DateSystemOptions } from './date-serial.js'
 
-// the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses
+// the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses;
+// those that check a formula's calls count by the functions' declared arguments in a bundle without the engine (`declared-arity.ts`)
 export const createSession = /* @__PURE__ */ strict(sessions.createSession)
 export const createInlineCalc = /* @__PURE__ */ strict(inline.createInlineCalc)
 export const liveBook = /* @__PURE__ */ strict(live.liveBook)
@@ -60,15 +62,15 @@ export const viewportOf = /* @__PURE__ */ strict(saved.viewportOf)
 export const functionSignature = /* @__PURE__ */ strict(signatures.functionSignature)
 export const toLocal = /* @__PURE__ */ strict(locales.toLocal)
 export const toInvariant = /* @__PURE__ */ strict(locales.toInvariant)
-export const validateLocalFormula = /* @__PURE__ */ strict(locales.validateLocalFormula)
+export const validateLocalFormula = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(locales.validateLocalFormula))
 export const registerLocale = /* @__PURE__ */ strict(load.registerLocale)
 // a locale not loaded is refused with the module to import, where registerLocale is at hand
 load.rootLoaded()
 export const editStructure = /* @__PURE__ */ strict(structure.editStructure)
 export const copyFormula = /* @__PURE__ */ strict(copy.copyFormula)
-export const parseEntry = /* @__PURE__ */ strict(entry.parseEntry)
-export const entryText = /* @__PURE__ */ strict(entryTexts.entryText)
-export const needsApostrophe = /* @__PURE__ */ strict(entryTexts.needsApostrophe)
+export const parseEntry = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entry.parseEntry))
+export const entryText = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.entryText))
+export const needsApostrophe = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(entryTexts.needsApostrophe))
 export const entryWidth = /* @__PURE__ */ strict(fit.entryWidth)
 export const fitColumns = /* @__PURE__ */ strict(fit.fitColumns)
 export const fitRows = /* @__PURE__ */ strict(heights.fitRows)
@@ -96,12 +98,12 @@ export const compute = /* @__PURE__ */ strict(function compute(book: BookInput, 
  * sheets, names, external workbooks and tables it refers to, or why and where it fails to parse (`ValidateResult`).
  * With `ctx`, the sheets, names and tables it refers to are checked against the workbook's.
  */
-export const validateFormula = /* @__PURE__ */ strict(function validateFormula(text: string, ctx?: ValidateContext): ValidateResult {
+export const validateFormula = /* @__PURE__ */ strict(/* @__PURE__ */ withDeclaredArities(function validateFormula(text: string, ctx?: ValidateContext): ValidateResult {
   const r = validate(checkString(text, 'text'), checkValidateContext(ctx))
   if (!r.ok) return r
   const { ast: _ast, ...rest } = r
   return rest
-})
+}))
 
 /**
  * Checks a name (`NameInput.name`) against Excel's rules in a workbook of `opts.locale` (en-US without one; a locale's
