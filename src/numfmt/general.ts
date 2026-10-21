@@ -7,7 +7,9 @@ import { DIGIT, glyph, hashes, textWidth } from './glyphs.js'
 
 /** Round half away from zero on the decimal representation (1.005 → 1.01). */
 export function roundHalfUp(abs: number, k: number): string {
-  return roundDigits(abs, k, Math.round).toFixed(k)
+  if (k <= 100) return roundDigits(abs, k, Math.round).toFixed(k)
+  // toFixed stops at 100 decimals; a double has no further digits
+  return roundDigits(abs, 100, Math.round).toFixed(100) + '0'.repeat(k - 100)
 }
 
 /** `abs` with `k` decimals, rounded half away from zero; from 10^21 on, its 15 significant digits and zeros. */

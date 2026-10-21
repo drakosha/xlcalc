@@ -69,6 +69,50 @@ const isDigitLit = (t: Tok | undefined) => t?.t === 'lit' && /^[0-9]$/.test(t.s)
 const MAX_NUMERATOR = 2 ** 31 - 2
 
 /**
+ * The fraction num/den with den from 1 to `max` that a fraction format shows for `x` ≥ 0: going up the denominators,
+ * each one closer to `x` than the last taken by more than 1e-12 is taken. Such a denominator is closer than every smaller
+ * one, so it is a convergent or an intermediate fraction of `x`'s continued fraction; only those are tried, in increasing
+ * order, and within a run of intermediate fractions (the error falls as they grow) the next taken one is found by halving.
+ */
+export function closestFraction(x: number, max: number): [number, number] {
+  let [best, num, den] = [Infinity, 0, 1]
+  const beats = (d: number) => Math.abs(x - Math.round(x * d) / d) < best - 1e-12
+  const take = (d: number) => {
+    const n = Math.round(x * d)
+    ;[best, num, den] = [Math.abs(x - n / d), n, d]
+  }
+  take(1)
+  // the continued fraction of the double itself: x = m / 2^e exactly, its terms by Euclid's algorithm on integers
+  let [m, e] = [x, 0]
+  while (!Number.isInteger(m)) [m, e] = [m * 2, e + 1]
+  const whole = 1n << BigInt(e)
+  let [p, q] = [whole, BigInt(m) % whole]
+  // the denominators of run k are j·q_k + q_(k-1) for j = 1 to a_(k+1), the last of them q_(k+1); with no error left above 1e-12 none is taken
+  for (let [before, qk] = [0, 1]; q !== 0n && best > 1e-12; ) {
+    const a = p / q
+    ;[p, q] = [q, p % q]
+    const terms = Number(a)
+    const top = Math.min(terms, Math.floor((max - before) / qk))
+    const d = (j: number) => j * qk + before
+    for (let j = 1; j <= top && best > 1e-12 && beats(d(top)); j++) {
+      if (!beats(d(j))) {
+        let hi = top
+        for (let lo = j + 1; lo < hi; ) {
+          const mid = Math.floor((lo + hi) / 2)
+          if (beats(d(mid))) hi = mid
+          else lo = mid + 1
+        }
+        j = hi
+      }
+      take(d(j))
+    }
+    if (!(top >= terms)) break
+    ;[before, qk] = [qk, d(terms)]
+  }
+  return [num, den]
+}
+
+/**
  * A fraction: placeholders right before `/` are the numerator, placeholders before them (if any) the integer
  * part; after `/` either placeholders (the denominator has at most that many digits, the closest fraction is
  * taken) or a fixed denominator (`?/8`). With an integer part a negative number keeps its minus even when it
@@ -95,14 +139,7 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, 
   let num = 0
   let den = fixed
   if (fixed) num = Math.round(frac * fixed)
-  else {
-    let best = Infinity
-    for (let d = 1, max = 10 ** denPh.length - 1; d <= max; d++) {
-      const n = Math.round(frac * d)
-      const err = Math.abs(frac - n / d)
-      if (err < best - 1e-12) [best, num, den] = [err, n, d]
-    }
-  }
+  else [num, den] = closestFraction(frac, 10 ** denPh.length - 1)
   if (hasInt && num === den) [ip, num] = [ip + 1, 0]
   if (num > MAX_NUMERATOR) return null
   // unused digit places: `0` gives a zero before the digits, `?` a space (after the denominator's digits)
