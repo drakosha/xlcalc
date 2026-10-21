@@ -8,12 +8,13 @@ import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.j
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { spend } from '../exec/budget.js'
-import type { Message } from '../locale/messages.js'
+import { say, type Message } from '../locale/messages.js'
 import { formatAddress, parseAddress, readAddress } from '../model.js'
 import { clockSerial } from '../result.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { isErr } from '../values.js'
 import { headerEdits } from './headers.js'
+import { nameRefusal } from './ops.js'
 import { contains, cornersText, hasCell, meets, shiftRect, type Rect } from '../structure/area.js'
 import { tiles } from '../structure/copy.js'
 import { copyTransform } from '../structure/transform.js'
@@ -30,7 +31,7 @@ const headerRow = (t: Table): Rect | null => (t.headers ? { r1: t.r1, r2: t.r1, 
  * paste left there, as Excel renames them: a value's text, a formula's value as text (the book is computed for it), a
  * cleared cell `Column1`. `still` are the tables whose header cells moved along with them.
  */
-function renamedByPaste(tables: Tables, after: BookInput, areas: [number, Rect][], still: (t: Table) => boolean): BookInput {
+export function renamedByPaste(tables: Tables, after: BookInput, areas: [number, Rect][], still: (t: Table) => boolean): BookInput {
   const cells: { s: number; addr: string }[] = []
   for (const t of tables.list) {
     const head = headerRow(t)
@@ -112,9 +113,9 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
 
 /**
  * A copy of `src` of sheet `from` pasted over `target` of `to`: a table the copy takes whole becomes a new table at each
- * paste, named after it with the book's count of tables and two (`Sales3` from a book of one table), its formulas'
- * references to the table taken to the new one; the other pasted formulas that leave their source's table name it, and header cells pasted over rename their
- * columns.
+ * paste, named after it with the book's count of tables and two (`Sales3` from a book of one table; refused with
+ * `table_name` where Excel would not take that name), its formulas' references to the table taken to the new one; the
+ * other pasted formulas that leave their source's table name it, and header cells pasted over rename their columns.
  */
 export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect): { after(r: Applied): Applied } {
   const tables = tablesOf(book)
@@ -133,11 +134,16 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
     for (const t of whole) {
       const x = shiftRect(t, dr, dc)
       if (tables.list.some((o) => o.s === ts && meets(o, x)) || copies.some((o) => meets(o.x, x))) continue
-      // Excel numbers a copy by the book's count of tables and two (the set `more`: Sales3 in a book of one table)
+      // Excel numbers a copy by the book's count of tables and two (the set `more`: Sales3 in a book of one table), past
+      // the names of tables and defined names
       let n = taken.length + 2
-      while (taken.some((k) => tableKey(k) === tableKey(`${t.name}${n}`))) n++
-      taken.push(`${t.name}${n}`)
-      copies.push({ t, x, name: `${t.name}${n}` })
+      while (taken.some((k) => tableKey(k) === tableKey(`${t.name}${n}`)) || nameRefusal(book, `${t.name}${n}`)?.key === 'tableNameDefined') n++
+      const name = `${t.name}${n}`
+      // a numbered name Excel would not take (`Tab3` is a cell) is refused, as renameTable refuses it
+      const why = nameRefusal(book, name)
+      if (why) return { after: () => ({ ok: false, code: 'table_name', message: say(book.locale, why) }) }
+      taken.push(name)
+      copies.push({ t, x, name })
     }
   return {
     after(r) {

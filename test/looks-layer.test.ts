@@ -150,7 +150,8 @@ describe('the layer of a sheet\'s looks', () => {
       }
       expect(without(shown(got!))).toEqual(new Map([...want].filter(([p]) => Number(p.split(':')[0]) <= ROWS + 2 && Number(p.split(':')[1]) <= COLS + 2)))
       // the cells whose look differs from the layer before, found by blocks and runs
-      const differs = [...differing(layer, got)].map(([r, c]) => key(r, c)).filter((p) => Number(p.split(':')[0]) <= ROWS + 2 && Number(p.split(':')[1]) <= COLS + 2)
+      const differs: string[] = []
+      for (const x of differing(layer, got)) for (let r = x.r1; r <= Math.min(x.r2, ROWS + 2); r++) for (let c = x.c1; c <= Math.min(x.c2, COLS + 2); c++) differs.push(key(r, c))
       const now = without(shown(got!))
       expect(new Set(differs)).toEqual(new Set([...new Set([...was.keys(), ...now.keys()])].filter((p) => was.get(p) !== now.get(p))))
     }
