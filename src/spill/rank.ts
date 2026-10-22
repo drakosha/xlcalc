@@ -17,7 +17,7 @@ export function beats(state: EngineState, a: number, b: number, area?: Area): bo
   const [la, lb] = [looped(state, a, area), looped(state, b)]
   if (la !== lb) return lb
   const rank = (state.spills.rank ??= ranks(state))
-  return rank.get(a)! < rank.get(b)!
+  return (rank.get(a) ?? Infinity) < (rank.get(b) ?? Infinity)
 }
 
 /** The range formula `id` spilled into or keeps in a cycle (its claim), else the one it waits for. */
