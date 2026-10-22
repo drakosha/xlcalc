@@ -6,7 +6,7 @@
  * land on are gone. A move that cuts a merged area at its source, and a copy that lands on part of one, are
  * refused, as Excel refuses them.
  */
-import type { BookInput, ColumnInput, RowInput, SheetInput } from '../contract.js'
+import type { BookInput, CellInput, ColumnInput, RowInput, SheetInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { lookOf, type Look } from '../layout/lines.js'
 import { mergesOf, parseMerge } from '../layout/merges.js'
@@ -18,6 +18,8 @@ import { arrayRefusal } from './arrays.js'
 import type { Applied } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetOf } from './rewrite.js'
+import type { Layer } from '../looks/layer.js'
+import { layerOf } from '../looks/sheet.js'
 
 export interface Paste {
   from: string
@@ -60,6 +62,7 @@ const lineLook = (rows: Line<RowInput>[], cols: Line<ColumnInput>[], r: number, 
 
 /** The bounds of segments of [a, b] where the source's lines and the destination's (shifted by `d`) do not change. */
 function segments(src: Line<unknown>[], dst: Line<unknown>[], a: number, b: number, d: number): [number, number][] {
+  if (!src.length && !dst.length) return [[a, b]]
   const at = new Set([a, b + 1])
   for (const [x, y] of src) at.add(x).add(y + 1)
   for (const [x, y] of dst) at.add(x - d).add(y + 1 - d)
@@ -67,7 +70,10 @@ function segments(src: Line<unknown>[], dst: Line<unknown>[], a: number, b: numb
   return bs.slice(0, -1).map((x, i) => [x, bs[i + 1] - 1])
 }
 
-/** The lines of a paste's old source sheet and of its target, and the source's cells with the look each shows there. */
+/**
+ * The lines of a paste's old source sheet and of its target, the source's cells with the look each shows there, the
+ * looks of its cells without an entry and the target's after the paste (`looks/move.ts`).
+ */
 interface Source {
   sr: Line<RowInput>[]
   sc: Line<ColumnInput>[]
@@ -76,11 +82,13 @@ interface Source {
   cells: { row: number; col: number; look: Look }[]
   /** The positions of `cells`, as `row * MAX_COLS + col`. */
   own: Set<number>
+  looks: Layer | undefined
+  pasted: Layer | undefined
 }
 
 /** The cells of `src` on the old sheet `from`, found once for all the offsets of a paste (a fill pastes one row thousands of times). */
 function sourceOf(from: SheetInput, to: SheetInput, src: Rect): Source {
-  const out: Source = { sr: lines(from.rows, 'r'), sc: lines(from.columns, 'c'), tr: lines(to.rows, 'r'), tc: lines(to.columns, 'c'), cells: [], own: new Set() }
+  const out: Source = { sr: lines(from.rows, 'r'), sc: lines(from.columns, 'c'), tr: lines(to.rows, 'r'), tc: lines(to.columns, 'c'), cells: [], own: new Set(), looks: layerOf(from), pasted: layerOf(to) }
   const g = gridOf(from)
   for (const i of cellsIn(g, src)) {
     const [row, col, cell] = [g.row[i], g.col[i], g.cell[i]]
@@ -98,8 +106,7 @@ function sourceOf(from: SheetInput, to: SheetInput, src: Rect): Source {
  */
 function keepLooks(to: SheetInput, src: Rect, source: Source, dr: number, dc: number, plain: () => number) {
   const { sr, sc, tr, tc } = source
-  const spell = (addr: string, s: Look, t: Look) => {
-    const cell = to.cells[addr] ?? {}
+  const spell = (addr: string, s: Look, t: Look, cell: CellInput = to.cells[addr] ?? {}) => {
     const style = (cell.style ?? t.style) !== s.style ? { style: s.style ?? plain() } : {}
     const format = (cell.numberFormat ?? t.numberFormat) !== s.numberFormat ? { numberFormat: s.numberFormat ?? 'General' } : {}
     if (Object.keys(style).length || Object.keys(format).length) to.cells[addr] = { ...cell, ...style, ...format }
@@ -115,7 +122,12 @@ function keepLooks(to: SheetInput, src: Rect, source: Source, dr: number, dc: nu
       for (let r = ra; r <= rb; r++)
         for (let c = ca; c <= cb; c++) {
           spend(1)
-          if (!source.own.has(r * MAX_COLS + c)) spell(formatAddress(r + dr, c + dc), s, t)
+          if (source.own.has(r * MAX_COLS + c)) continue
+          // a cell of the source's looks shows its look over the lines', laid on the target's looks
+          const look = source.looks?.lookAt(r, c)
+          const shown = look ? { style: look.style ?? s.style, numberFormat: look.numberFormat ?? s.numberFormat } : s
+          const addr = formatAddress(r + dr, c + dc)
+          spell(addr, shown, t, to.cells[addr] ?? source.pasted?.lookAt(r + dr, c + dc))
         }
     }
 }

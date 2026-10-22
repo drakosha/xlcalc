@@ -104,7 +104,7 @@ export function clearing(xs: Rect[]): RowsEdit[] {
 }
 
 /** The cells of `src` of layer `from` cut and pasted `dr` rows and `dc` columns away on layer `to` (the same or another), as a range move: the place they land on cleared, the rest of the sheet kept. */
-function moved(from: Layer | undefined, src: Rect, to: Layer | undefined, dr: number, dc: number, same: boolean): [Layer | undefined, Layer | undefined] {
+export function movedLooks(from: Layer | undefined, src: Rect, to: Layer | undefined, dr: number, dc: number, same: boolean): [Layer | undefined, Layer | undefined] {
   const dst = shiftRect(src, dr, dc)
   const inside = { r1: Math.max(dst.r1, 0), r2: Math.min(dst.r2, LIMIT.r - 1), c1: Math.max(dst.c1, 0), c2: Math.min(dst.c2, LIMIT.c - 1) }
   const left = from && edited(from, clearing([src]))
@@ -125,6 +125,35 @@ function moved(from: Layer | undefined, src: Rect, to: Layer | undefined, dr: nu
   return same ? [landed, landed] : [left, landed]
 }
 
+/**
+ * Layer `to` with the looks of `src` of layer `from` laid on each tile of a copy, which cover `area` from its top-left
+ * cell (`tiles`), the area cleared first: as `copyRange` lays its cells, by rectangles. A source whose rows show one
+ * pattern across it is laid once over every tile's rows. Undefined when neither layer has looks.
+ */
+export function pastedLooks(from: Layer | undefined, src: Rect, to: Layer | undefined, area: Rect): Layer | undefined {
+  const base = to && edited(to, clearing([area]))
+  const looks = new LookTable(base?.looks)
+  // the source's bands of rows of one pattern, each with its runs across the source
+  const bands: { lo: number; hi: number; runs: number[] }[] = []
+  for (const x of from?.pieces(src) ?? []) {
+    const last = bands.at(-1)
+    const id = looks.of(from!.looks.list[x.look])
+    if (last && last.lo === x.r1) last.runs.push(x.c1, x.c2, id)
+    else bands.push({ lo: x.r1, hi: x.r2, runs: [x.c1, x.c2, id] })
+  }
+  if (!bands.length) return base
+  // the tiles by rows, each row of tiles with the runs of every band across its columns
+  const [h, w] = [src.r2 - src.r1 + 1, src.c2 - src.c1 + 1]
+  const dcs: number[] = []
+  for (let c = area.c1; c <= area.c2; c += w) dcs.push(c - src.c1)
+  const tops = bands.map((b) => dcs.flatMap((dc) => b.runs.map((v, k) => (k % 3 === 2 ? v : v + dc))))
+  const whole = bands.length === 1 && bands[0].lo === src.r1 && bands[0].hi === src.r2
+  const edits: RowsEdit[] = []
+  if (whole) edits.push({ lo: area.r1, hi: area.r2, top: tops[0] })
+  else for (let r = area.r1; r <= area.r2; r += h) for (let k = 0; k < bands.length; k++) edits.push({ lo: bands[k].lo + r - src.r1, hi: bands[k].hi + r - src.r1, top: tops[k] })
+  return edited(base ?? new LayerBuilder().build(), edits, looks)
+}
+
 /** The layers of a book's sheets (by index) carried by a geometry: each cell's look where the geometry takes the cell, none where no cell comes. */
 export function carried(layers: (Layer | undefined)[], g: Geometry): (Layer | undefined)[] {
   const out = layers.slice()
@@ -137,7 +166,7 @@ export function carried(layers: (Layer | undefined)[], g: Geometry): (Layer | un
         out[m.s] = out[m.s] && edited(out[m.s]!, clearing([m.area]))
         break
       case 'range': {
-        const [a, b] = moved(out[m.from], m.src, out[m.to], m.dr, m.dc, m.from === m.to)
+        const [a, b] = movedLooks(out[m.from], m.src, out[m.to], m.dr, m.dc, m.from === m.to)
         out[m.from] = a
         out[m.to] = b
         break

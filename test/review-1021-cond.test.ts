@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ConditionalFormat, StructureOp } from '../src/contract.js'
-import { createSession, editStructure } from '../src/index.js'
+import { compute, createSession, editStructure } from '../src/index.js'
 
 const RED = { fill: { color: '#FF0000' } }
 const B = [0, 10, 10, 0, 10, 0, 0, 10, 0, 10, 0, 0]
@@ -85,5 +85,25 @@ describe('a rule formula made for a new first cell wraps round the sheet edge, a
     expect(s.editStructure(fill).ok).toBe(true)
     const got = s.getCells('S', 'A1:A8')
     expect([1, 2, 3, 4, 5, 6, 7, 8].map((r) => (got[`A${r}`]?.appearance?.style?.fill ? 'R' : '-')).join('')).toBe('RR-R-R-R')
+  })
+})
+
+describe.each(['closures', 'eval'] as const)('a rule over 200,000 ranges, as a file may give one (cond-spread), %s', (execution) => {
+  const ranges = Array.from({ length: 200_000 }, (_, i) => `${i % 2 ? 'C' : 'A'}${i + 1}`)
+  const many = (): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 } }, conditionalFormats: [{ type: 'expression', ranges, formula: 'A1>0', style: RED }] }] })
+  const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
+  it.each<StructureOp>([
+    { op: 'insertRows', sheet: 'S', row: 1 },
+    { op: 'copyRange', from: { sheet: 'S', range: 'A1:C9' }, to: { sheet: 'S', range: 'E1' } },
+    { op: 'moveRange', from: { sheet: 'S', range: 'A1:C9' }, to: { sheet: 'S', cell: 'E1' } },
+  ])('$op keeps it, its first cell found without spreading the ranges', (op) => {
+    const r = editStructure(many(), op)
+    if (!r.ok) throw new Error(r.message)
+    expect(compute(r.book, { execution, clock }).hash).toBeTypeOf('string')
+  })
+  it('a session opens it and shows it', () => {
+    const s = createSession(many(), { execution, clock })
+    expect(s.getCells('S', 'A1').A1.appearance).toBeDefined()
+    expect(s.getHash()).toBe(compute(s.getBook(), { execution, clock }).hash)
   })
 })

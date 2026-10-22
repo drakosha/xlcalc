@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.114",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 23.3
+  "seconds": 3.7
  },
  "cases": [
   {
@@ -3798,14 +3798,39 @@
        "t": "n",
        "v": 0
       },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
       "Q data!F5": {
        "t": "e",
        "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
       }
      },
      "formulas": {
       "Sheet2!E5": "='Q data'!E5:F8*2",
       "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
       "Q data!F5": "=#DIV/0!"
      }
     },
@@ -3847,14 +3872,39 @@
        "t": "n",
        "v": 0
       },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
       "Q data!F5": {
        "t": "e",
        "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
       }
      },
      "formulas": {
       "Sheet2!E5": "='Q data'!E5:F8*2",
       "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
       "Q data!F5": "=#DIV/0!"
      }
     },
@@ -3896,14 +3946,39 @@
        "t": "n",
        "v": 0
       },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
       "Q data!F5": {
        "t": "e",
        "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
       }
      },
      "formulas": {
       "Sheet2!E5": "='Q data'!E5:F8*2",
       "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
       "Q data!F5": "=#DIV/0!"
      }
     }
@@ -3954,14 +4029,39 @@
        "t": "n",
        "v": 0
       },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
       "Q data!F5": {
        "t": "e",
        "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
       }
      },
      "formulas": {
       "Sheet2!E5": "='Q data'!E5:F8*2",
       "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
       "Q data!F5": "=#DIV/0!"
      }
     },
@@ -4003,14 +4103,39 @@
        "t": "n",
        "v": 0
       },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
       "Q data!F5": {
        "t": "e",
        "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
       }
      },
      "formulas": {
       "Sheet2!E5": "='Q data'!E5:F8*2",
       "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
       "Q data!F5": "=#DIV/0!"
      }
     },
@@ -4052,14 +4177,39 @@
        "t": "n",
        "v": 0
       },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
       "Q data!F5": {
        "t": "e",
        "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
       }
      },
      "formulas": {
       "Sheet2!E5": "='Q data'!E5:F8*2",
       "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
       "Q data!F5": "=#DIV/0!"
      }
     }
