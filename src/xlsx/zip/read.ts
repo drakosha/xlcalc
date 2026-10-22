@@ -42,10 +42,10 @@ const RATIO_FROM = 2 ** 24
 
 let tables: Uint32Array | undefined
 
-/** The CRC-32 of bytes, as a zip stores it for each entry: eight bytes a step by eight tables (slicing-by-8). */
-export function crc32(data: Uint8Array): number {
+/** The CRC-32 of bytes, as a zip stores it for each entry, continued from `crc` of the bytes before them: eight bytes a step by eight tables (slicing-by-8). */
+export function crc32(data: Uint8Array, crc = 0): number {
   const t = (tables ??= crcTables())
-  let c = 0xffffffff
+  let c = ~crc
   let i = 0
   for (const end = data.length - 7; i < end; i += 8) {
     const a = (data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24)) ^ c
@@ -106,8 +106,8 @@ function span(v: DataView, e: Entry): number {
 }
 
 /** An entry's bytes, once their CRC-32 is the one the archive records: damaged bytes that still inflate are refused. */
-function checked(e: Entry, data: Uint8Array): Uint8Array {
-  if (crc32(data) !== e.crc) fail(`entry ${e.name} is damaged (its CRC-32 does not match)`)
+function checked(e: Entry, data: Uint8Array, crc = crc32(data)): Uint8Array {
+  if (crc !== e.crc) fail(`entry ${e.name} is damaged (its CRC-32 does not match)`)
   return data
 }
 
@@ -145,7 +145,9 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     if (e.method === 0) return checked(e, raw)
     if (e.usize > RATIO_FROM && e.usize > ratio * e.csize) fail(`entry ${e.name} inflates to ${e.usize} bytes from ${e.csize}, more than ${ratio} times its size (limits.ratio)`)
     // a platform without the codec throws as it is; damaged data fails the stream
-    const inflating = inflate(raw, e.usize)
+    // the CRC-32 of each chunk as it comes, while the next one inflates
+    let crc = 0
+    const inflating = inflate(raw, e.usize, (chunk) => (crc = crc32(chunk, crc)))
     let out: Uint8Array | undefined
     try {
       out = await inflating
@@ -154,7 +156,7 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     }
     if (!out) fail(`entry ${e.name} inflates to more than the ${e.usize} bytes it declares`)
     if (out.length !== e.usize) fail(`entry ${e.name} inflates to ${out.length} bytes, not ${e.usize}`)
-    return checked(e, out)
+    return checked(e, out, crc)
   }
   return {
     names: list.map((e) => e.name),

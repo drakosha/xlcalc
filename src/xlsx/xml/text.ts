@@ -6,7 +6,9 @@
 
 const NAMED: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&apos;': "'" }
 
-// comments and CDATA sections, whose content is no markup; character references outside CDATA sections
+// comments and CDATA sections, whose content is no markup; character references outside CDATA sections; whether a
+// part has either (one search: two `includes` of a large part take five times as long)
+const MARKED = /<!--|&#/
 const COMMENTS = /<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>/g
 const REFERENCES = /<!\[CDATA\[[\s\S]*?\]\]>|&#(x[0-9A-Fa-f]+|\d+);/g
 
@@ -17,6 +19,7 @@ const REFERENCES = /<!\[CDATA\[[\s\S]*?\]\]>|&#(x[0-9A-Fa-f]+|\d+);/g
  */
 export function xmlText(s: string, part: string): string {
   if (s.includes('\r')) s = s.replace(/\r\n?/g, '\n')
+  if (!MARKED.test(s)) return s
   if (s.includes('<!--')) s = s.replace(COMMENTS, (m) => (m[2] === '-' ? '' : m))
   if (s.includes('&#'))
     for (const [m, ref] of s.matchAll(REFERENCES))

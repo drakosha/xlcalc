@@ -59,10 +59,12 @@ describe('xlsx: a damaged zip archive (x-xlsx-3, x-xlsx-12, x-xlsx-13)', () => {
     expect(await openArchive(rawZip([entry('a.xml', text)])).text('a.xml')).toBe(text)
   })
 
-  it("the reader's CRC-32 is zlib's", () => {
+  it("the reader's CRC-32 is zlib's, whole or chunk by chunk", () => {
     for (const n of [0, 1, 7, 8, 9, 16, 17, 1000]) {
       const data = Uint8Array.from({ length: n }, (_, i) => (i * 131 + n) & 0xff)
       expect(crc32(data)).toBe(zlibCrc32(data))
+      // continued over the chunks of an inflated part
+      expect(crc32(data.subarray(n >> 1), crc32(data.subarray(0, n >> 1)))).toBe(zlibCrc32(data))
     }
   })
 })
