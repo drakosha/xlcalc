@@ -4462,6 +4462,19 @@ Excel's totals functions of a table column (xlsx `totalsRowFunction`).
 type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' | 'min' | 'stdDev' | 'var' | 'custom'
 ```
 
+### `TranslateOptions`
+
+[`toLocal`](#xlcalc-tolocal)'s and [`toInvariant`](#xlcalc-toinvariant)'s options: `table`, the table of the formula's cell; `externalBooks`, the book's links to
+other workbooks, by which a reference to one is shown as Excel shows it (`'[1]Sheet1'!A1` is `[Book2.xlsx]Sheet1!A1`,
+`'../data/[Book3.xlsx]Sheet1'!A1` with the path the link holds) and read back by its file name.
+
+```ts
+interface TranslateOptions {
+  table?: string
+  externalBooks?: ExternalBook[]
+}
+```
+
 ### `Translation`
 
 The result of translating formula text: the text, or a check code with a message in the locale's language and the
