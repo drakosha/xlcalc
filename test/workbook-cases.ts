@@ -80,6 +80,16 @@ export function differences(c: WorkbookCase, excel: Record<string, Val>, shown: 
   return [...out, ...readDifferences(c.read, excel, r, (x, engine) => compare(x, engine).ok)]
 }
 
+/** Whether the engine throws on the case or differs from Excel's reads `excel` at some read. */
+export function differsOrThrows(c: WorkbookCase, excel: WorkbookAnswer['reads']): boolean {
+  try {
+    const reads = engineReads(c)
+    return excel.some((a, i) => differences(c, a.values, a.shown, reads[i]).length > 0)
+  } catch {
+    return true
+  }
+}
+
 /** A predicted read as Excel's answer: the values, and the shown text of `show:` keys. */
 const predictedRead = (p: Record<string, Val | string>): [Record<string, Val>, Record<string, string>] => [
   Object.fromEntries(Object.entries(p).filter(([k]) => !k.startsWith('show:'))) as Record<string, Val>,

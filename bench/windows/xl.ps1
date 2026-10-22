@@ -301,6 +301,7 @@ function Step($xl, $wb, $s) {
   switch ($s.do) {
     'full' { $xl.CalculateFull(); 'null' }
     'calc' { $xl.Calculate(); 'null' }
+    'rebuild' { $xl.CalculateFullRebuild(); 'null' }
     'values' { Grid (Rg $wb $s.sheet $s.range).Value2 }
     'formulas' { Grid (Rg $wb $s.sheet $s.range).Formula }
     'formulas2' { Grid (Rg $wb $s.sheet $s.range).Formula2 }
@@ -446,6 +447,8 @@ function Step($xl, $wb, $s) {
           's' { $rg.Value2 = [string]$s.value }
           'f' { $rg.Formula = [string]$s.value }
           'f2' { $rg.Formula2 = [string]$s.value }
+          # an array formula of the old kind over the range (Ctrl+Shift+Enter)
+          'fa' { $rg.FormulaArray = [string]$s.value }
           # typed text, as Excel 365 takes it in the user's language
           'l2' { $rg.Formula2Local = [string]$s.value }
           'x' { [void]$rg.ClearContents() }
