@@ -1,6 +1,10 @@
-/** Input the contract types but did not check: the values of external functions and a cell's meta, refused at the boundary as InputError. */
-import { describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, createSession, InputError, type BookInput } from '../src/index.js'
+/**
+ * Input the contract types but did not check: the values of external functions, a cell's meta and a value that is not a
+ * finite number, refused at the boundary as InputError.
+ */
+import { afterAll, describe, expect, it } from 'vitest'
+import { compute, createInlineCalc, createSession, InputError, type BookInput, type CellInput } from '../src/index.js'
+import { ASYNC_CALCS, closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const BALANCE = 'BALANCE("x")'
@@ -58,5 +62,48 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     const shared = { tag: 'x' }
     const r = compute({ sheets: [{ name: 'S', cells: { A1: { value: 1, meta: { a: shared, b: shared } }, A2: { value: 2, meta: 'm' } } }] }, { clock, execution })
     expect(r.sheets[0].cells.A1.meta).toEqual({ a: shared, b: shared })
+  })
+})
+
+describe.each(['closures', 'eval'] as const)('a value that is not a finite number is refused (fix-u373), %s', (execution) => {
+  afterAll(closeCalcs)
+  const cell = (v: number): CellInput => ({ value: v })
+  const at = (v: number): BookInput => ({ sheets: [{ name: 'S', cells: { A1: cell(v), A2: { formula: 'A1+1' } } }] })
+  const BAD = [NaN, Infinity, -Infinity]
+  const why = { path: 'book.sheets[0].cells["A1"].value', message: expect.stringMatching(/expected a finite number/) }
+
+  it('compute and createSession, for each value', () => {
+    for (const v of BAD) {
+      expect(refusal(() => compute(at(v), { clock, execution })), String(v)).toEqual(why)
+      expect(refusal(() => createSession(at(v), { clock, execution })), String(v)).toEqual(why)
+    }
+    expect(compute(at(-0), { clock, execution }).sheets[0].cells.A2.value).toBe(1)
+  })
+
+  it.each(ASYNC_CALCS)('compute and createSession %s', async (_, make) => {
+    const calc = await make()
+    for (const v of BAD) {
+      await expect(calc.compute(at(v), { clock, execution })).rejects.toMatchObject(why)
+      await expect(calc.createSession(at(v), { clock, execution })).rejects.toMatchObject(why)
+    }
+    await calc.close()
+  })
+
+  describe.each(KINDS)('the edits of %s', (kind) => {
+    const open = openerFor(kind)
+    it('setCells, replaceCells and applyChanges refuse it and change nothing', async () => {
+      const s = await open(at(5), { clock, execution })
+      const before = (await s.getResult()).hash
+      for (const v of BAD) {
+        const edit = [{ sheet: 'S', cell: 'A1', input: cell(v) }]
+        await expect(s.setCells(edit), String(v)).rejects.toMatchObject({ path: 'edits[0].input.value' })
+        await expect(s.replaceCells(edit), String(v)).rejects.toMatchObject({ path: 'edits[0].input.value' })
+        await expect(s.applyChanges([{ op: 'setCells', edits: edit }]), String(v)).rejects.toMatchObject({ path: 'operations[0].edits[0].input.value' })
+        await expect(s.applyChanges([{ op: 'replaceCells', edits: edit }]), String(v)).rejects.toMatchObject({ path: 'operations[0].edits[0].input.value' })
+        await expect(s.validateEntry('S', 'A1', cell(v)), String(v)).rejects.toMatchObject({ path: 'input.value' })
+      }
+      expect((await s.getResult()).hash).toBe(before)
+      await s.close()
+    })
   })
 })

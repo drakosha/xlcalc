@@ -29,6 +29,8 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
   const c = object(v, path, 'a cell object such as { value: 1 } or { formula: "A1*2" }')
   onlyKeys(c, path, CELL_FIELDS)
   const value = c.value
+  // NaN and infinities have no place in a workbook, as for held and cached values
+  if (typeof value === 'number' && !Number.isFinite(value)) throw new InputError(`${path}.value`, `expected a finite number, got ${what(value)}`)
   if (value !== undefined && value !== null && typeof value !== 'number' && typeof value !== 'string' && typeof value !== 'boolean') {
     if (!isObject(value) || Object.keys(value).length !== 1 || typeof value.date !== 'string')
       throw new InputError(`${path}.value`, `expected a number, string, boolean, null or { date: "YYYY-MM-DD" }, got ${what(value)}`)
@@ -106,7 +108,7 @@ function plainCell(c: unknown, styles: number): boolean {
     const v = c[k]
     // meta that is an object takes the full check, for BigInts and cycles
     if (k === 'meta' && (v === null || (typeof v !== 'object' && typeof v !== 'bigint'))) continue
-    if (k === 'value' && (v === null || v === undefined || typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean')) continue
+    if (k === 'value' && (v === null || v === undefined || Number.isFinite(v) || typeof v === 'string' || typeof v === 'boolean')) continue
     // a formula with a leading `=` takes the full check, which marks it
     if (k === 'formula' && (v === undefined || (typeof v === 'string' && !leadingEquals(v)))) continue
     if (k === 'numberFormat' && (v === undefined || typeof v === 'string')) continue
