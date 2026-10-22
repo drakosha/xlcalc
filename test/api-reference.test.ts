@@ -26,14 +26,16 @@ describe('docs/api.md', () => {
 
 // xlcalc/xlsx keeps its own types (`ReadXlsxOptions` and the rest) outside the contract on purpose
 describe('xlcalc/contract', () => {
+  const root = resolve(import.meta.dirname, '..')
+  const files = ENTRIES.filter(([entry]) => entry !== 'xlcalc/xlsx').map(([, f]) => join(root, f))
+  const program = ts.createProgram(files, { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, strict: true, skipLibCheck: true })
+  const checker = program.getTypeChecker()
+  const resolved = (s: ts.Symbol) => (s.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(s) : s)
+  const exportsOf = (f: string) => checker.getExportsOfModule(checker.getSymbolAtLocation(program.getSourceFile(f)!)!).map(resolved)
+  const contract = new Set(exportsOf(join(root, 'src/contract.ts')))
+  const typeOf = (name: string) => checker.getDeclaredTypeOfSymbol([...contract].find((s) => s.name === name)!)
+
   it("names every type the root exports and every type of an entry's function signatures", () => {
-    const root = resolve(import.meta.dirname, '..')
-    const files = ENTRIES.filter(([entry]) => entry !== 'xlcalc/xlsx').map(([, f]) => join(root, f))
-    const program = ts.createProgram(files, { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, strict: true, skipLibCheck: true })
-    const checker = program.getTypeChecker()
-    const resolved = (s: ts.Symbol) => (s.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(s) : s)
-    const exportsOf = (f: string) => checker.getExportsOfModule(checker.getSymbolAtLocation(program.getSourceFile(f)!)!).map(resolved)
-    const contract = new Set(exportsOf(join(root, 'src/contract.ts')))
     const isOwnType = (s: ts.Symbol) => !!(s.flags & (ts.SymbolFlags.Interface | ts.SymbolFlags.TypeAlias)) && !!s.declarations?.[0].getSourceFile().fileName.startsWith(join(root, 'src'))
     const missing = new Set<string>()
     for (const f of files) {
@@ -55,4 +57,10 @@ describe('xlcalc/contract', () => {
     }
     expect([...missing]).toEqual([])
   }, 60_000)
+
+  it('types ReadCell with the fields readCells and findCells return: the address and each CellReadField', () => {
+    const fields = (typeOf('CellReadField') as ts.UnionType).types.map((t) => (t as ts.StringLiteralType).value)
+    const declared = typeOf('ReadCell').getProperties().filter((p) => !p.declarations?.some((d) => ts.getJSDocDeprecatedTag(d)))
+    expect(declared.map((p) => p.name).sort()).toEqual(['cell', 'sheet', ...fields].sort())
+  })
 })
