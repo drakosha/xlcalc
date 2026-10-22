@@ -1,6 +1,6 @@
 {
   "generator": "LibreOffice 26.2.4.2 0229ac93fcf0d7cbc6376066c6f35021cef002dc, soffice --headless, en-US profile",
-  "input": "f012b22f40a8cfde60515d1d89877db50edfd24a1d7e1f1ba80f4d68d013fb6a",
+  "input": "346788810a3f6b33d4b58edbeb4f61d51c4895f3ebac29392255586ad74d865a",
   "cases": {
     "s1": {
       "formula": "SUMIFS(Sem!B1:B7,Sem!C1:C7,\">=2025-01-01\")",

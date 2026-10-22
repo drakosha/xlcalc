@@ -347,6 +347,8 @@ console.log(later.issues, (await writeXlsx({ book })).issues.map((i) => i.code))
 
 A session is not a snapshot: an asynchronous session is a proxy for a thread, and its workbook and result are obtained there with `await session.getSnapshot()`. Given a session, a result alone (`writeXlsx(compute(book))`, recognized by its hashes) or a result of another shape, `writeXlsx` throws an `InputError` saying what to pass. The older form, with the workbook first and its result in the options (`writeXlsx(book, { result, mode })`), throws an `InputError` too: a workbook is not a snapshot.
 
+A workbook written and read back keeps its values and their `hash`, but usually gets another `inputHash`, since the input comes back in the file's form: formulas in canonical text (`sum(a1)` as `SUM(A1)`, sheet names quoted), typed dates as serial numbers, number formats by their built-in ids and the style table renumbered. To tell whether a workbook's data changed since it was saved, compare `hash`, or keep the `inputHash` of the workbook as it was read back.
+
 ### Formulas
 
 Every formula is written as a dynamic array formula, as Excel 365 saves one: with cell metadata and the range its array spilled into. The engine calculates every formula by the rules of dynamic arrays, and so does Excel with this mark. Excel 2019 and older display such formulas as array formulas in braces.

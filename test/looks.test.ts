@@ -317,6 +317,6 @@ describe('the looks\' cells in a session', () => {
 describe('a book without looks', () => {
   it('the synthetic book keeps its hashes', () => {
     const r = compute(synthBook({ seed: 1, rows: 3400 }).book, { clock: { now: '2026-10-04T12:00:00Z', seed: 7 } })
-    expect([r.hash.slice(0, 16), r.inputHash.slice(0, 16)]).toEqual(['101578a9c6b600b1', '1fb3575501a5acbf'])
+    expect([r.hash.slice(0, 16), r.inputHash.slice(0, 16)]).toEqual(['101578a9c6b600b1', '3ea383325f632b2f'])
   })
 })

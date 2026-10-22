@@ -143,14 +143,16 @@ function lineEntries(tag: string, map: Record<string, object> | undefined, axis:
  * rows, merged areas (in order), the filter mode, tables (in order), frozen panes, conditional formats (in order), rules
  * of data validation, outline settings, a hidden sheet's state, the style table, a locale other than en-US, the 1904 date
  * system, iterative calculation and the linked workbooks come after their sheet and the names when there are any, so a
- * book without them hashes as before.
+ * book without them hashes as before. The book order of the sheets comes after them when it is not their order by name,
+ * so a book whose sheets are in name order hashes as before.
  */
 export const inputHash = (book: BookInput): string => run(inputHashSteps(book))
 
 /** `inputHash` in steps: the cells yield when the computation's slice is used up. */
 export function* inputHashSteps(book: BookInput): Steps<string> {
   const h = new Sha256()
-  for (const s of [...book.sheets].sort((a, b) => byText(a.name, b.name))) {
+  const sheets = [...book.sheets].sort((a, b) => byText(a.name, b.name))
+  for (const s of sheets) {
     h.update(`S ${JSON.stringify(s.name)}\n`)
     for (const addr of yield* sortedSteps(Object.keys(s.cells))) {
       if (paced(1)) yield
@@ -170,6 +172,8 @@ export function* inputHashSteps(book: BookInput): Steps<string> {
     if (s.outline) h.update(`O ${stableJson(s.outline)}\n`)
     if (s.hidden) h.update(`H ${JSON.stringify(s.hidden)}\n`)
   }
+  // the book's order of the sheets when it is not by name: a 3-D reference covers the sheets between its ends in that order
+  if (sheets.some((s, i) => s !== book.sheets[i])) h.update(`Q ${JSON.stringify(book.sheets.map((s) => s.name))}\n`)
   const names = [...(book.names ?? [])].sort((a, b) => byText(`${a.scope ?? ''}\u0000${a.name}`, `${b.scope ?? ''}\u0000${b.name}`))
   for (const n of names) h.update(`N ${stableJson([n.scope ?? null, n.name, n.ref])}\n`)
   if (book.styles?.length) h.update(`Y ${stableJson(book.styles)}\n`)
