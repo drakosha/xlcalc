@@ -18,7 +18,7 @@ import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, s
 import { copyTransform, deleteSpan, insertSpan } from './transform.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
-import { firstLook, madeFrom } from '../looks/sheet.js'
+import { madeFrom } from '../looks/sheet.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
 
 type SpanFn = (lo: number, hi: number, at: number, n: number, max: number, cell: boolean) => [number, number] | null
@@ -41,8 +41,8 @@ function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: Sp
 
 /**
  * Inserts (`n` > 0) or deletes (`n` < 0) rows or columns at index `at` of `sheet`, with the sheet's layout.
- * Inserting refuses when a cell or a merged area would leave the sheet (Excel refuses for cells that are
- * not empty).
+ * Inserting refuses when an entry or a merged area would leave the sheet (Excel refuses for cells that are
+ * not empty); the sheet's looks pushed off are dropped, as Excel drops formatting (`linesMoved`).
  */
 export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n: number): Applied {
   const emptied = axis === 'r' && n < 0 ? emptiedTable(input, sheet, at, -n) : null
@@ -60,9 +60,6 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   if (n > 0) {
     const off = line.findIndex((i) => i >= LIMIT[axis] - count)
     if (off >= 0) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: grid.addr[off] })
-    // a cell of the sheet's looks in the lines pushed off, as an entry of a look alone
-    const edge = firstLook(target, axis === 'r' ? { r1: LIMIT.r - count, r2: LIMIT.r - 1, c1: 0, c2: LIMIT.c - 1 } : { r1: 0, r2: LIMIT.r - 1, c1: LIMIT.c - count, c2: LIMIT.c - 1 })
-    if (edge) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: edge })
     if (tables.offSheet) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: tables.offSheet })
   }
   const cut = shiftRefusal(target, axis, at, n)
