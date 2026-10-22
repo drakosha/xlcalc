@@ -115,3 +115,18 @@ describe.each(['closures', 'eval'] as const)('a code ending in a text section, %
     expect(displayValue(-1, { numberFormat: 'm/d/yy;@' }).text).toMatch(/^#+$/)
   })
 })
+
+describe.each(['closures', 'eval'] as const)('an elapsed total of 1E+21 and more, %s', (execution) => {
+  // Excel for Mac and for Windows, the set low-values-held: digits, 15 significant and zeros, as `0` shows the number
+  it('is written in digits, not in JavaScript\'s exponent form', () => {
+    expect(values(['TEXT(1E+20,"[h]")', 'TEXT(1E+17,"[ss]")', 'TEXT(-1E+20,"[mm]")', 'TEXT(4.2E+19,"[h]")', 'TEXT(1E+16,"[h]")', 'LEN(TEXT(1E+250,"[h]"))', 'TEXT(1E+300,"[h]")'], execution)).toEqual([
+      '2400000000000000000000', '8640000000000000000000', '-144000000000000000000000', '1008000000000000000000', '240000000000000000', 252, { error: 'VALUE' },
+    ])
+  })
+
+  it('so in a cell and displayValue', () => {
+    const r = compute({ sheets: [{ name: 'S', cells: { A1: { value: 1e20, numberFormat: '[h]' } } }] }, { execution })
+    expect(r.sheets[0].cells.A1.text).not.toMatch(/e/)
+    expect(displayValue(1e20, { numberFormat: '[h]' })).toEqual({ text: '2400000000000000000000' })
+  })
+})

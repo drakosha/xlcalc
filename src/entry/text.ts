@@ -29,24 +29,32 @@ function shownAs(n: number, format: NumberFormat | undefined): 'date' | 'time' |
   return sec.toks.some((t: Tok) => t.t === 'pct') ? 'percent' : 'number'
 }
 
+/** A number as the bar writes it: positional up to 21 characters, the locale's decimal separator. */
+const whole = (n: number, r: Rules) => generalText(n, 21).replace('.', r.decimal)
+
 /** A date and time as the formula bar shows it: the short date (built-in format 14) and, past midnight, two spaces and the long time. */
 function dateTime(n: number, time: boolean, r: Rules): string {
   // the fraction rounded half up, not `momentOf`: the formula bar was not measured at a second's edge (the set `seconds-held`)
   let day = Math.floor(n)
   let secs = Math.round((n - day) * 86_400)
   if (secs === 86_400) [day, secs] = [day + 1, 0]
+  // rounded past 9999-12-31, the value is past the calendar: the number, as for any value there
+  if (day + r.epoch >= END) return whole(n, r)
   const clock = r.display(secs / 86_400, '[$-F400]h:mm:ss AM/PM', Infinity).text
   if (time && day === 0) return clock
   const date = r.display(day, 14, Infinity).text
   return secs || time ? `${date}  ${clock}` : date
 }
 
-/** A number as the bar writes it: positional up to 21 characters, the locale's decimal separator. */
-const whole = (n: number, r: Rules) => generalText(n, 21).replace('.', r.decimal)
+/** A percent cell's number times 100; where the product overflows, the exponent moved by two in the text (1E+307 is 1E+309%). */
+function percentText(n: number, r: Rules): string {
+  const p = n * 100
+  return Number.isFinite(p) ? whole(p, r) : whole(n, r).replace(/E\+(\d+)$/, (_, e: string) => `E+${Number(e) + 2}`)
+}
 
 function numberText(n: number, format: NumberFormat | undefined, r: Rules): string {
   const as = shownAs(n, format)
-  if (as === 'percent') return `${whole(n * 100, r)}%`
+  if (as === 'percent') return `${percentText(n, r)}%`
   if ((as === 'date' || as === 'time') && n >= 0 && n + r.epoch < END) return dateTime(n, as === 'time', r)
   return whole(n, r)
 }

@@ -115,7 +115,7 @@ describe('xlsx writer', () => {
     }
     const result = compute(odd, { clock })
     const { data, issues } = await writeXlsx({ book: odd, result })
-    expect(codes(issues)).toEqual(['meta A1', 'textLength A3', 'formula A4 A5 A6', 'errorValue A7', 'name', 'name', 'name', 'name'])
+    expect(codes(issues)).toEqual(['meta A1', 'textLength A3', 'formula A4 A5 A6', 'errorValue A5', 'errorValue A7', 'name', 'name', 'name', 'name'])
     expect(issues.filter((i) => i.code === 'name').map((i) => `${i.name}: ${i.message}`)).toEqual([
       'A1: a name Excel does not accept is left out of the file',
       'ok: a name defined twice is left out of the file',

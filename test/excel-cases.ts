@@ -131,6 +131,8 @@ export const REASONS = {
     '`LINEST` and `TREND` over y far from 0 relative to its spread return Excel\'s coefficients, but Excel\'s intercept and regression sum of squares follow the mean it computes by plain summation: for 10,000 values 1E12 + 0, 0.01, 0.02 on their steps 0, 1, 2, the slope is 0.0100098 in both (0.010009765625 exactly), the intercept is 1E12 − 0.0096 in Excel and 1E12 here, and the regression sum of squares is 1.598 in Excel and 0.668 here (the exact value, `DEVSQ` of the values), so `TREND` at step 3 is 1E12 + 0.0204 in Excel and 1E12 + 0.0300 here.',
   growthRange:
     '`GROWTH` far from 0 in x is `#NUM!` in Excel even where the fitted value fits in a double: for 100·1.1^k rounded to cents on x = 1E10 + k, k = 0…11, the value at 1E10 + 12 is 313.84 here, where b·m^x has the b of `LOGEST` equal to 0 and m^x beyond the largest double.',
+  textEquivalence:
+    'Text that differs only in code points Unicode treats alike: Excel takes é written as one code point and as e with a combining accent as equal in `=`, `COUNTIF` and `UNIQUE`, but not in `MATCH` (the second spelling looked up finds itself), and tells `a` from `a` followed by a soft hyphen (U+00AD) with `=`; the engine compares text with `Intl.Collator` in `=` and lookups, which also ignores the soft hyphen, and criteria by lower-cased code points, so `=` takes the soft hyphen\'s pair as equal, `MATCH` finds the first spelling and `COUNTIF` counts one.',
   macLongS:
     'Excel for Mac reads the long s (`ſ`) as `s`: `falſe` is FALSE in a formula, both typed and as text (`IF("falſe",1,2)` is 2), `=ſum(1,2)` typed is `SUM`, and `ſ` matches the name `S` (a LET name, a defined name, a table, a sheet); the engine follows Excel for Windows, where `ſ` is a separate letter (`falſe` is a name, so `#NAME?`, and the text `"falſe"` is not a boolean).',
   excelContext:
@@ -208,6 +210,9 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'lookup-own-held:LOOKUP#7': { reason: 'lookupReadZone', engine: { t: 'n', v: 0 } },
   'lookup-own-held:LOOKUP#8': { reason: 'lookupReadZone', engine: { t: 'n', v: 0 } },
   'lookup-own-held:LOOKUP#9': { reason: 'lookupReadZone', engine: { t: 'n', v: 0 } },
+  'low-values-held:unique-text#8': { reason: 'textEquivalence', engine: { t: 'b', v: true } },
+  'low-values-held:unique-text#9': { reason: 'textEquivalence', engine: { t: 'n', v: 1 } },
+  'low-values-held:unique-text#10': { reason: 'textEquivalence', engine: { t: 'n', v: 1 } },
   'stat-edges-held:VAR.P#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'stat-edges-held:VAR.P#2': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668002774232626 } },
   'stat-edges-held:VAR.S#1': { reason: 'momentRounding', engine: { t: 'n', v: 0.0000668069581190745 } },

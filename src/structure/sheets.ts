@@ -9,7 +9,7 @@
  */
 import type { BookInput } from '../contract.js'
 import { sheetNameProblem } from '../input.js'
-import { say, type Message } from '../locale/messages.js'
+import { say, type EngineMessage } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import type { Applied } from './geometry.js'
 import { renaming, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Transform } from './rewrite.js'
@@ -46,7 +46,7 @@ function endsWithout(book: BookInput, key: string): Transform['ends'] {
 }
 
 /** Excel's rules for a new sheet name, which no sheet but `own` has; null when it is fine. */
-function nameProblem(book: BookInput, name: string, own?: string): Message | null {
+function nameProblem(book: BookInput, name: string, own?: string): EngineMessage | null {
   const taken = book.sheets.some((s) => sheetKey(s.name) === sheetKey(name) && (own === undefined || sheetKey(s.name) !== sheetKey(own)))
   return sheetNameProblem(name) ?? (taken ? { key: 'sheetNameTaken', name } : null)
 }

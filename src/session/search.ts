@@ -3,7 +3,7 @@
  * (`readCells`), the cells a search reads (its cells and those its arrays spill into) by their places, row by row, and
  * each kind's text of them, read when a search first needs it. A call that changes the book has the cells its answer
  * lists read again when a search next needs them, and the cells written since (the sheet's log of writes,
- * `cell-writes.ts`) put in their places (a place whose cell is gone stays, with no text); a change of a sheet's layout drops the sheet's texts, a change of the styles all of them,
+ * `cell-writes.ts`) put in their places (a place whose cell is gone stays, with no text); a change of a sheet's layout or of its looks too wide to list drops the sheet's texts, a change of the styles all of them,
  * a move of cells the places too, and the texts conditional formats show are read again after any change of a value,
  * which they may read. A state built anew (a structure operation, new names, a call that stopped) starts with none.
  */
@@ -141,6 +141,8 @@ export function textsChanged(state: EngineState, o: Outcome): void {
   // a sheet's layout and the styles change what its cells show, not where its cells are
   for (const x of o.styles ? sheets.values() : []) x.texts.clear()
   for (const name of o.layout) sheets.get(state.sheetIdx.get(sheetKey(name))!)?.texts.clear()
+  // a rectangle of looks too large to list (`Outcome.looks`)
+  for (const x of o.looks) sheets.get(state.sheetIdx.get(sheetKey(x.sheet))!)?.texts.clear()
   // what conditional formats show reads values anywhere
   const shown = new Set(o.rules.map((x) => state.sheetIdx.get(sheetKey(x.sheet))))
   for (const [i, x] of sheets)

@@ -447,7 +447,7 @@ function nameAt(text: string, caret?: number, opts?: ScanOptions): NameAt | null
 
 The name of a function being typed at `caret` (the end of the text by default) in formula text `text`, for the
 Formula AutoComplete list: the name characters around the caret, starting with a letter or `_`, where an operand may
-begin (after the formula's first character, an operator, `(`, the locale's list separator or a space); null where no
+begin (after the formula's first character, an operator, the range's `:` included, `(`, the locale's list separator or a space); null where no
 function can appear: no name at the caret, inside a string, a quoted sheet name or a table's brackets, after a
 sheet's `!` or a `$`, and for text that is not a formula. `opts.locale`: the locale the text is typed in (its list
 separator); without it, the text is treated as en-US.
@@ -2356,8 +2356,9 @@ interface EditResult {
   /**
    * The cells whose value, displayed text, formula, formatting, note or hyperlink changed, as `CellChange`; a cell whose
    * value changed because of another cell is listed with its value only. After a structure operation, the cells whose
-   * value or formula differs from that of the cell previously at their old position (`moved`); a rectangle of more than
-   * 65,536 cells whose formatting alone changed (a merge of entire columns, its undo) is in `repaint` instead of here.
+   * value or formula differs from that of the cell previously at their old position (`moved`). A rectangle of more than
+   * 65,536 cells without an entry of their own whose formatting changed (`patchCells` or `clearCells` over formatted
+   * ranges, a merge of entire columns, their undo and redo) is in `repaint` instead of here, spilled values included.
    */
   changes: CellChange[]
   /** The sheets whose layout changed (rows, columns, merged areas, tables, conditional formats, validation…): a host reads `getLayout()` again. */
@@ -2369,8 +2370,8 @@ interface EditResult {
   /**
    * Rectangles where cells may look different without being in `changes`: the cells covered by the workbook's
    * conditional formats, after a call that changed a value or the rules (a rule's formatting depends on values wherever
-   * its formulas point), and after a structure operation, its undo or redo, a rectangle of more than 65,536 cells whose
-   * formatting changed, which a host reads again where it overlaps its viewport.
+   * its formulas point), and a rectangle of more than 65,536 cells whose formatting changed (`patchCells`, `clearCells`, a
+   * structure operation, their undo and redo), which a host reads again where it overlaps its viewport.
    */
   repaint?: RangeRef[]
 }
@@ -4885,10 +4886,11 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
   the engine cannot parse.
 - `userFunction`: a call to a function the file marks as user-defined (`_xludf.`), a macro or add-in function.
 - `formula`: a formula the engine cannot parse, read as written (its cell calculates to an error), or a formula the
-  writer could not write (its value is written instead).
+  writer could not write (its value is written instead, or an empty cell when it has none).
 - `errorConstant`: an error typed into a cell as its value, read as a formula of that error.
 - `errorValue`: an error the model has no code for (`#GETTING_DATA`, `#FIELD!`, `#BLOCKED!` and the like), read
-  as `#ERROR!`; or, when writing, `#CYCLE!` written as 0, as Excel stores a circular reference.
+  as `#ERROR!`; or, when writing, `#CYCLE!` written as 0, as Excel stores a circular reference, and `#ERROR!`
+  written as `#NULL!`, which Excel has.
 - `dataTable`: a what-if data table (`TABLE()`), read as its stored values.
 - `calculation`: calculation settings the workbook does not keep: manual mode, automatic except for data tables,
   precision as displayed; an iteration count or maximum change out of range, read as Excel's default.

@@ -91,6 +91,14 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     expect(s.history).toEqual({ undo: 1, redo: 0 })
   })
 
+  it('clearing formats is undone and redone as clearCells, not as the patchCells it is made of', () => {
+    const s = createSession(book(), o)
+    s.patchCells([{ sheet: 'S', range: 'E9', set: { style: 0 } }])
+    s.clearCells([{ sheet: 'S', range: 'E9' }], 'formats')
+    expect(s.undo()!.call).toBe('clearCells')
+    expect(s.redo()!.call).toBe('clearCells')
+  })
+
   it('an old-kind array formula made, changed and cleared: each undone and redone, the whole area with it', () => {
     const s = createSession(book(), o)
     const books = [structuredClone(s.getBook())]

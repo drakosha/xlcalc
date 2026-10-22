@@ -186,7 +186,9 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   const links = await readLinks(archive, wb, rels, issues)
   const all = worksheets.map((d) => d.name)
   const formulas: FormulaOptions = { links: links.known, ...(repaired.renamed.size ? { rename: renamedIn(repaired.renamed) } : {}) }
-  const names = readNames(wb, decls, new Set(all), issues, formulas)
+  // a sheet whose part is missing is left out below, and so is a name scoped to it
+  const parts = new Set(archive.names.map((n) => n.toLowerCase()))
+  const names = readNames(wb, decls, new Set(worksheets.filter((d) => d.part !== undefined && parts.has(d.part.toLowerCase())).map((d) => d.name)), issues, formulas)
   const legacy = legacyConverter(names)
   const sheets: SheetInput[] = []
   const cached: XlsxRead['cached'] = { sheets: [] }

@@ -9,6 +9,8 @@ export const MAX_ROWS = 1_048_576
 export const MAX_COLS = 16_384
 /** Excel's limit on the length of a text value: a cell's, a formula's text, a note's. */
 export const MAX_TEXT = 32_767
+/** The smallest positive normal double: Excel has no smaller numbers (subnormal results are 0). */
+export const MIN_NORMAL = 2.2250738585072014e-308
 
 export function colToIndex(letters: string): number {
   let n = 0

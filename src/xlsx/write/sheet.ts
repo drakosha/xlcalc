@@ -101,20 +101,22 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
     const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, where)
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
-  return errorXml(v.error, () => ctx.issues.add('errorValue', { key: 'cycleZero' }, where), ctx.richError)
+  return errorXml(v.error, (key) => ctx.issues.add('errorValue', { key }, where), ctx.richError)
 }
 
 /**
  * An error as a file's cell stores it, its attributes and the content of `<v>`: #SPILL! and #CALC! as `#VALUE!`, with a
  * rich value (`vm`) that names them where `richError` gives one, as Excel 365 stores them in a sheet; the engine's
- * #CYCLE! as 0, as Excel stores a circular reference, which `cycle` reports.
+ * #CYCLE! as 0, as Excel stores a circular reference, and #ERROR!, which Excel does not have, as #NULL!: `changed`
+ * reports both.
  */
-export function errorXml(code: ErrorCode, cycle: () => void, richError?: SheetContext['richError']): { t: string; v: string } {
+export function errorXml(code: ErrorCode, changed: (key: 'cycleZero' | 'errorNull') => void, richError?: SheetContext['richError']): { t: string; v: string } {
   if (code === 'CYCLE') {
-    cycle()
+    changed('cycleZero')
     return { t: '', v: '0' }
   }
   if (code === 'SPILL' || code === 'CALC') return { t: ` t="e"${richError ? ` vm="${richError(code)}"` : ''}`, v: '#VALUE!' }
+  if (code === 'ERROR') changed('errorNull')
   return { t: ' t="e"', v: code === 'ERROR' ? '#NULL!' : ERROR_TEXT[code] }
 }
 
@@ -180,7 +182,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     // a result without the formula's value (`values: 'preserve'`)
     if (result && !res && c.held === undefined) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
     const tree = mode === 'formulas' ? fileTree(c.formula, ctx, ctx.tableAt(addr)) : null
-    if (mode === 'formulas' && !tree) issues.add('formula', { key: 'formulaAsValue' }, where(addr))
+    // without a value (no result), the cell is written empty
+    if (mode === 'formulas' && !tree) issues.add('formula', { key: value === undefined ? 'formulaLeftOut' : 'formulaAsValue' }, where(addr))
     if (!tree) {
       put(addr, cellXml(addr, c, value))
       continue

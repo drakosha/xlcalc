@@ -79,3 +79,29 @@ describe.each(['closures', 'eval'] as const)('review 21.10 criteria, %s', (execu
     expect([find(text), replace(text), replace('xaabcac'), findReplacer('a*', '#', { wildcards: true })!('baab')]).toEqual([false, null, 'x#ac', 'b#'])
   })
 })
+
+describe.each(['closures', 'eval'] as const)('SUMIF and AVERAGEIF with a sum range resized past the sheet edge, %s', (execution) => {
+  // Excel for Mac and for Windows, the set low-values-held: the cells that exist, positions past the edge blank
+  it('add or average the cells that exist', () => {
+    const cases: [string, unknown][] = [
+      ['SUMIF(A1:A3,">0",B1048575)', 30],
+      ['SUMIF(A1:A3,">2",B1048575)', 0],
+      ['SUMIF(A1:A3,">1",B1048575)', 20],
+      ['SUMIF(A1:A3,">0",B1048576)', 20],
+      ['SUMIF(H1:J1,">0",XFC1)', 3000],
+      ['AVERAGEIF(A1:A3,">0",B1048575)', 15],
+      ['AVERAGEIF(A1:A3,">2",B1048575)', { error: 'DIV0' }],
+    ]
+    const cells: Cells = { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 }, B1048575: { value: 10 }, B1048576: { value: 20 }, H1: { value: 1 }, I1: { value: 2 }, J1: { value: 3 }, XFC1: { value: 1000 }, XFD1: { value: 2000 } }
+    cases.forEach(([f], i) => (cells[`D${i + 1}`] = { formula: f }))
+    const r = compute(book(cells), { execution }).sheets[0].cells
+    expect(cases.map((_, i) => r[`D${i + 1}`].value)).toEqual(cases.map(([, v]) => v))
+  })
+
+  it('follow an edit of a cell at the edge in a session', () => {
+    const s = createSession(book({ A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 }, B1048576: { value: 20 }, D1: { formula: 'SUMIF(A1:A3,">0",B1048575)' } }), { execution })
+    s.setCells([{ sheet: 'S', cell: 'B1048576', input: { value: 5 } }])
+    expect(s.getCells('S', 'D1').D1.value).toBe(5)
+    s.close()
+  })
+})
