@@ -1,8 +1,8 @@
 /**
  * A sheet's looks (`SheetInput.looks`) under a structure operation. Lines inserted and deleted move the layer by its
  * blocks and patterns (`looks/move.ts`), the new lines taking the look of the line before them as the operation gives
- * their entries; the cells an operation copies, moves or writes otherwise (a range, a table's cells) are given to it as
- * entries of a look alone, which the engine takes back into the looks.
+ * their entries, and a copied or moved range's looks go with it as rectangles; the cells an operation writes otherwise (a
+ * table's cells) are given to it as entries of a look alone, which the engine takes back into the looks.
  */
 import type { BookInput, CellInput, StructureOp } from '../contract.js'
 import { edited, emptyLayer, LookTable, type Layer } from '../looks/layer.js'
@@ -11,15 +11,15 @@ import { expanded, hasLooks, layerOf, withLayer } from '../looks/sheet.js'
 import { sheetKey } from '../syntax.js'
 import { tableKey, tablesOf } from '../tables/model.js'
 import { readAddress } from '../model.js'
-import { parseRange, shiftRect, type Axis, type Rect } from './area.js'
-import { tiles } from './copy.js'
+import { parseRange, type Axis, type Rect } from './area.js'
 import type { Applied } from './geometry.js'
 import { lookBefore } from './layout.js'
 import { pasteOf } from './writes.js'
 
 /**
- * The rectangles of a sheet whose looks an operation reads, moves or writes as entries, by sheet: its tables, a range's
- * source and target. A merge reads none: it gives each area one look rectangle over the sheet's (`merge.ts`).
+ * The rectangles of a sheet whose looks an operation reads, moves or writes as entries, by sheet: its tables. A copy or
+ * a move lays the looks of its range by rectangles (`looks/move.ts`), a merge gives each area one look rectangle over the
+ * sheet's (`merge.ts`).
  */
 function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
   const out = new Map<number, Rect[]>()
@@ -43,11 +43,9 @@ function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
       break
     case 'moveRange':
     case 'copyRange': {
+      // the looks of the range move and are laid by rectangles (`copyRange`, `moveRange`)
       const p = pasteOf(book, op)
       if (!p) break
-      const { src, at } = p
-      add(p.fs, src)
-      if (at) add(p.ts, p.copy ? tiles(src, at).area : shiftRect(src, at.r1 - src.r1, at.c1 - src.c1))
       tables(p.fs)
       tables(p.ts)
       break

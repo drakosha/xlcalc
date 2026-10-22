@@ -134,3 +134,55 @@ describe.each(EXECUTIONS)('inserted lines take the look of the line before them 
     })
   })
 })
+
+describe.each(EXECUTIONS)('a copy, a fill and a move lay looks as rectangles (fix-u299, copy-looks), %s', (execution) => {
+  const formatted = () => sheet({}, [{ range: 'A1:AD1', style: 0 }])
+  const columns = () => sheet({ A1: { value: 1 } }, [{ range: 'A:H', style: 0 }])
+
+  it('a row of looks copied onto A2:AD1048576 and filled down a million rows: one look, in a fraction of a second', () => {
+    const t0 = performance.now()
+    const copy = edited(formatted(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:AD1' }, to: { sheet: 'S', range: 'A2:AD1048576' } }, execution)
+    expect(copy.sheets[0].looks).toEqual([{ range: 'A:AD', style: 0 }])
+    const fill = edited(formatted(), { op: 'fillRange', sheet: 'S', range: 'A1:AD1', to: 'A1:AD1000000' }, execution)
+    expect(fill.sheets[0].looks).toEqual([{ range: 'A1:AD1000000', style: 0 }])
+    expect(performance.now() - t0).toBeLessThan(3000)
+  })
+
+  it('entire formatted columns copied and moved', () => {
+    expect(edited(columns(), { op: 'copyRange', from: { sheet: 'S', range: 'A:B' }, to: { sheet: 'S', range: 'J:K' } }, execution).sheets[0]).toEqual({
+      name: 'S', cells: { A1: { value: 1 }, J1: { value: 1 } }, looks: [{ range: 'B1:H1', style: 0 }, { range: 'K1', style: 0 }, { range: 'A2:H1048576', style: 0 }, { range: 'J2:K1048576', style: 0 }],
+    })
+    expect(edited(columns(), { op: 'moveRange', from: { sheet: 'S', range: 'A:B' }, to: { sheet: 'S', cell: 'J1' } }, execution).sheets[0]).toEqual({
+      name: 'S', cells: { J1: { value: 1 } }, looks: [{ range: 'C1:H1', style: 0 }, { range: 'K1', style: 0 }, { range: 'C2:H1048576', style: 0 }, { range: 'J2:K1048576', style: 0 }],
+    })
+  })
+
+  it('a source over rows a filter hid copies the looks of its visible rows, a spilled value over a look taking it', () => {
+    const book: BookInput = {
+      styles,
+      sheets: [{
+        name: 'S',
+        cells: { A1: { value: 'k' }, A2: { value: 1 }, A3: { value: 2 }, A4: { value: 3 }, C1: { formula: 'SEQUENCE(4)' } },
+        rows: { 3: { hidden: true } },
+        looks: [{ range: 'A2:A4', style: 1 }, { range: 'B2', numberFormat: '0.0' }, { range: 'B4', style: 0 }, { range: 'C2:C4', numberFormat: '0.00' }],
+        filtered: true,
+      }],
+    }
+    const out = edited(book, { op: 'copyRange', from: { sheet: 'S', range: 'A2:C4' }, to: { sheet: 'S', range: 'E2' } }, execution)
+    expect(out.sheets[0].cells).toMatchObject({ E2: { value: 1 }, E3: { value: 3 }, G2: { value: 2, numberFormat: '0.00' }, G3: { value: 4, numberFormat: '0.00' } })
+    expect(out.sheets[0].looks).toContainEqual({ range: 'F2', numberFormat: '0.0' })
+    expect(out.sheets[0].looks).toContainEqual({ range: 'F3', style: 0 })
+  })
+
+  describe.each(KINDS)('in %s', (kind) => {
+    const open = openerFor(kind)
+    it('copies, fills and moves under limits.writes, with undo and redo', async () => {
+      const limited = (book: BookInput, opts: SessionOptions) => open(book, { ...opts, limits: { writes: 100_000 } })
+      const copied = await inSession(limited, formatted(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:AD1' }, to: { sheet: 'S', range: 'A2:AD1048576' } }, execution)
+      expect(copied.sheets[0].looks).toEqual([{ range: 'A:AD', style: 0 }])
+      await inSession(limited, formatted(), { op: 'fillRange', sheet: 'S', range: 'A1:AD1', to: 'A1:AD100000' }, execution)
+      await inSession(limited, columns(), { op: 'copyRange', from: { sheet: 'S', range: 'A:B' }, to: { sheet: 'S', range: 'J:K' } }, execution)
+      await inSession(limited, columns(), { op: 'moveRange', from: { sheet: 'S', range: 'A:B' }, to: { sheet: 'S', cell: 'J1' } }, execution)
+    })
+  })
+})

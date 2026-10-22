@@ -9,6 +9,8 @@ import { formatAddress } from '../model.js'
 import { ERROR_TEXT } from '../syntax.js'
 import type { Rect } from './area.js'
 import { visibleRows } from './visible.js'
+import { LayerBuilder } from '../looks/layer.js'
+import { layerOf, withLayer } from '../looks/sheet.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetOf } from './rewrite.js'
 import type { ValuesIn } from './values.js'
@@ -34,11 +36,15 @@ export function clipped(book: BookInput, from: string, src: Rect, values: Values
     const { value: _v, formula: _f, held: _h, ...look } = g.cell[i]
     if (Object.keys(look).length) cells[formatAddress(r, g.col[i])] = look
   }
+  // the looks of the cells without an entry, by rows; a value over one of them (a spilled one) takes it as its own
+  const layer = layerOf(sheet)
+  const shown = layer && new LayerBuilder(layer.looks)
+  if (shown) for (const [r, at] of row) shown.rows(at, at, layer!.row(r))
   for (const [r, c, v] of values(sheet.name, src)) {
     const at = row.get(r)
     if (at === undefined || v === null) continue
     const addr = formatAddress(at, c)
-    cells[addr] = { ...cells[addr], ...pasted(v) }
+    cells[addr] = { ...(cells[addr] ?? layer?.lookAt(r, c)), ...pasted(v) }
   }
   const rows: Line<RowInput>[] = []
   const sheetRows = lines(sheet.rows, 'r')
@@ -46,6 +52,7 @@ export function clipped(book: BookInput, from: string, src: Rect, values: Values
     const e = entryAt(sheetRows, r)
     if (e) rows.push([at, at, e])
   }
-  const clip: SheetInput = { name: CLIP, cells, ...(rows.length ? { rows: toMap(rows, 'r') } : {}), ...(sheet.columns ? { columns: sheet.columns } : {}) }
+  const bare: SheetInput = { name: CLIP, cells, ...(rows.length ? { rows: toMap(rows, 'r') } : {}), ...(sheet.columns ? { columns: sheet.columns } : {}) }
+  const clip = shown ? withLayer(bare, cells, shown.build()) : bare
   return { book: { ...book, sheets: [...book.sheets, clip] }, src: { ...src, r2: src.r1 + visible.length - 1 } }
 }
