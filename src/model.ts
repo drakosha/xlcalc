@@ -132,11 +132,18 @@ export function msToSerial(ms: number): number {
   return fromUtcDays((ms - EPOCH_MS) / DAY_MS)
 }
 
-/** An address's place in the order of `sortAddresses`: row, then column. */
+/** An address's place in the order of `sortAddresses`: row, then column (`row * MAX_COLS + col`). */
 export function addressOrder(a: string): number {
-  const { row, col } = parseAddress(a)
-  return row * MAX_COLS + col
+  // an address of a row read exactly by characters (15 digits at most) is read without a match and an object
+  if (!SHORT_ADDR.test(a)) {
+    const { row, col } = parseAddress(a)
+    return row * MAX_COLS + col
+  }
+  readAddress(a, at)
+  return at.r * MAX_COLS + at.c
 }
+const SHORT_ADDR = /^[A-Z]{1,3}[1-9]\d{0,14}$/
+const at = { r: 0, c: 0 }
 
 /** A cell's place as one number, which orders places as addresses: by sheet, row, then column; no text is made for it. */
 export const placeOf = (s: number, r: number, c: number) => (s * MAX_ROWS + r) * MAX_COLS + c

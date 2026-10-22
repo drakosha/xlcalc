@@ -31,14 +31,19 @@ export function canonValue(v: CellValue): string {
 
 const byText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
-/** `sortAddresses` in steps: reading the addresses yields when the computation's slice is used up; the sort itself is one step. */
-export function* sortedSteps(addrs: string[]): Steps<string[]> {
+/**
+ * `sortAddresses` in steps: reading the addresses yields when the computation's slice is used up; the sort itself is one
+ * step. `places` gets each address's place in the same order (`addressOrder`).
+ */
+export function* sortedSteps(addrs: string[], places?: number[]): Steps<string[]> {
   const keyed: (readonly [number, string])[] = []
   for (const a of addrs) {
     if (paced(1)) yield
     keyed.push([addressOrder(a), a])
   }
-  return keyed.sort((x, y) => x[0] - y[0]).map((x) => x[1])
+  keyed.sort((x, y) => x[0] - y[0])
+  if (places) for (const x of keyed) places.push(x[0])
+  return keyed.map((x) => x[1])
 }
 
 /** A range of a sheet whose cells all hold one value: the unstored cells of a large spilled array. */
@@ -148,13 +153,13 @@ function lineEntries(tag: string, map: Record<string, object> | undefined, axis:
  */
 export const inputHash = (book: BookInput): string => run(inputHashSteps(book))
 
-/** `inputHash` in steps: the cells yield when the computation's slice is used up. */
-export function* inputHashSteps(book: BookInput): Steps<string> {
+/** `inputHash` in steps: the cells yield when the computation's slice is used up. `sorted`: addresses of cells objects in order already. */
+export function* inputHashSteps(book: BookInput, sorted?: Map<object, string[]>): Steps<string> {
   const h = new Sha256()
   const sheets = [...book.sheets].sort((a, b) => byText(a.name, b.name))
   for (const s of sheets) {
     h.update(`S ${JSON.stringify(s.name)}\n`)
-    for (const addr of yield* sortedSteps(Object.keys(s.cells))) {
+    for (const addr of sorted?.get(s.cells) ?? (yield* sortedSteps(Object.keys(s.cells)))) {
       if (paced(1)) yield
       h.update(`${addr} ${stableJson(hashed(s.cells[addr]))}\n`)
     }

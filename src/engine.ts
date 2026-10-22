@@ -19,7 +19,7 @@ import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
 import { markingClock } from './locale/rules/data.js'
-import { bookScalar, formatAddress, MAX_COLS, parseAddress, placeOf } from './model.js'
+import { addressOrder, bookScalar, formatAddress, MAX_COLS, parseAddress, placeOf } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
@@ -316,7 +316,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     // its own copy of the cells: for...in walks them in the order of their entries without making an entry each
     for (const addr in sheet.cells) {
       const cellIn = sheet.cells[addr]
-      const { row, col } = parseAddress(addr)
+      const place = addressOrder(addr), col = place % MAX_COLS, row = (place - col) / MAX_COLS
       if (holds(cellIn)) state.spills.occupied.set(s, row, col, true, true)
       // a held value means nothing but in a formula's cell
       if (cellIn.formula === undefined) {

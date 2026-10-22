@@ -190,7 +190,7 @@ export function* cellAt(state: EngineState, s: number, r: number, c: number, dis
  * spilled from; the steps yield between cells when the computation's slice is used up. A cell of the sheet's looks is
  * listed where an input of a look alone was apart from the spills' stored cells: in the unstored part of a large spill.
  */
-function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined) => void): Steps<void> {
+function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined, row: number, col: number) => void, sorted?: Map<object, string[]>): Steps<void> {
   const spill = yield* spilled(state, s)
   const layer = state.spills.on.size ? layerOf(state.input.sheets[s]) : undefined
   const unstored: string[] = []
@@ -200,13 +200,21 @@ function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: str
         for (const fill of x.fills)
           for (const p of layer.pieces(fill))
             for (let r = p.r1; r <= p.r2; r++) for (let c = p.c1; c <= p.c2; c++) unstored.push(formatAddress(r, c))
+  const cells = state.input.sheets[s].cells
+  const only = !spill.size && !unstored.length
+  const places: number[] = []
+  const addrs = yield* sortedSteps(only ? Object.keys(cells) : [...Object.keys(cells), ...spill.keys(), ...unstored], places)
+  // the input cells alone: the input hash takes them in this order too
+  if (only) sorted?.set(cells, addrs)
   let last: string | undefined
-  for (const addr of yield* sortedSteps([...Object.keys(state.input.sheets[s].cells), ...spill.keys(), ...unstored])) {
+  for (let i = 0; i < addrs.length; i++) {
     if (paced(1)) yield
+    const addr = addrs[i]
     // once: an input cell that does not block a spill (a format or a style alone) is a spilled one too
     if (addr === last) continue
     last = addr
-    f(addr, spill.get(addr))
+    const col = places[i] % MAX_COLS
+    f(addr, spill.get(addr), (places[i] - col) / MAX_COLS, col)
   }
 }
 
@@ -226,8 +234,7 @@ export function* stateHash(state: EngineState): Steps<string> {
   const fills: FillLine[] = []
   for (const s of sheetOrder(state.input.sheets.map((x) => x.name))) {
     const quoted = JSON.stringify(state.input.sheets[s].name)
-    yield* eachCell(state, s, (addr) => {
-      const { row, col } = parseAddress(addr)
+    yield* eachCell(state, s, (addr, _, row, col) => {
       w.cell(quoted, addr, outValue(toCellValue(valueAt(state, s, row, col))), true)
       const id = state.at.get(placeOf(s, row, col))
       const x = id === undefined ? undefined : state.spills.on.get(id)
@@ -246,19 +253,20 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
   const fills: FillLine[] = []
   const look = display ? cellLooks(state) : null
   const sheets = state.input.sheets.map(({ name }) => ({ name, cells: {} as Record<string, CellResult> }))
+  const sorted = new Map<object, string[]>()
   for (const s of sheetOrder(sheets.map((x) => x.name))) {
     const { name, cells } = sheets[s]
     const quoted = JSON.stringify(name)
-    yield* eachCell(state, s, (addr, spillOf) => {
-      const out = cellResult(state, s, addr, look, spillOf)
+    yield* eachCell(state, s, (addr, spillOf, row, col) => {
+      const out = resultAt(state, s, addr, row, col, look, spillOf)
       // A snapshot's result takes its metadata from the detached book, not from the session's live input.
       if (out.meta !== undefined && book !== state.input) out.meta = book.sheets[s].cells[addr].meta
       fillLines(state, s, addr, out.spillFill, fills)
       cells[addr] = out
       w.cell(quoted, addr, out.value, true)
-    })
+    }, sorted)
   }
-  const inputHash = yield* inputHashSteps(state.input)
+  const inputHash = yield* inputHashSteps(state.input, sorted)
   const volatile = [...state.volatile]
     .map((id) => state.formulas[id]!)
     .sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
