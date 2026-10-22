@@ -111,7 +111,7 @@ The operations change rules as Excel changes them:
 - Deleted rows and columns are removed from its ranges, and a rule with nothing left is removed; a range that ends on the sheet's last row or column keeps ending there, even a single cell (`B1048576` becomes `B1048575:B1048576` after a row above it is deleted). A statistics rule (a color scale, a data bar, an icon set, or a top, average or duplicate rule) that loses rows or columns moves after the others, as Excel removes it and adds it back.
 - A move takes the rules of its cells along; the destination cells keep their own rules too. On another sheet, the moved part becomes a rule of that sheet, first in its order. A rule whose formula the move rewrote moves after the others.
 - A copy pastes its cells' rules as new rules over the pasted cells, first in the destination's order, and the pasted cells lose the destination's rules; a paste that continues down a rule's own columns (a fill down) extends the rule instead.
-- Formulas change as the formula of a cell at the rule's first cell would, and are rewritten for a new first cell as a copy would rewrite them. A reference to a deleted sheet becomes `#REF!`.
+- Formulas change as the formula of a cell at the rule's first cell would, and are rewritten for a new first cell as a copy would rewrite them, except that a reference moved past the sheet's edge comes round the other edge (`$B3<>$B2` filled up to A1 becomes `$B1<>$B1048576`), as the rule computes it, instead of becoming `#REF!`. A reference to a deleted sheet becomes `#REF!`.
 
 ## Checked against Excel
 

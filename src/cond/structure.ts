@@ -52,7 +52,8 @@ const texts = (r: ConditionalFormat): string => JSON.stringify(r)
 function placed(rule: ConditionalFormat, next: Rect[], from: Cell, host: string, moved: string, t: Transform, names: Map<string, string>): Placed {
   const o = originOf(rule)
   const [dr, dc] = [from.r - o.r, from.c - o.c]
-  const copy = dr || dc ? copyTransform(dr, dc) : null
+  // the formula as at another cell of the rule, wrapping round the sheet's edges as it computes
+  const copy = dr || dc ? copyTransform(dr, dc, true) : null
   const anchored = copy ? mapFormulas(rule, (text) => rewriteFormula(text, host, host, copy, names)) : rule
   const out = mapFormulas(anchored, (text) => plainLost(rewriteFormula(text, host, moved, t, names)))
   const ranges = rangesOf(next, rule.ranges)
@@ -237,7 +238,7 @@ export function copyConditional(source: BookInput, out: BookInput, p: Paste, nam
       continue
     }
     const [o, to] = [originOf(rule), corner(next)]
-    const copy = copyTransform(to.r - o.r, to.c - o.c)
+    const copy = copyTransform(to.r - o.r, to.c - o.c, true)
     added.push({ ...mapFormulas(rule, (text) => rewriteFormula(text, p.to, p.to, copy, names)), ranges: rangesOf(next, []) })
   }
   // a rule whose first cell the paste took or a fill up moved has its formulas made for the new one, as clearConditional does

@@ -60,3 +60,30 @@ describe.each(['closures', 'eval'] as const)('a session keeps the looks of the c
     expect(looks(expr('A5:A10', '$B5>3'), fillUp, [3, 4, 5, 6, 7, 8, 9, 10])).toBe('R-R--R-R')
   })
 })
+
+describe('a rule formula made for a new first cell wraps round the sheet edge, as the rule computes', () => {
+  /** B1:B8 = h a a b b c c d, the rule over A3:A8 comparing each row with the one above. */
+  const above = (): BookInput => {
+    const cells: BookInput['sheets'][number]['cells'] = {}
+    ;['h', 'a', 'a', 'b', 'b', 'c', 'c', 'd'].forEach((v, i) => (cells[`B${i + 1}`] = { value: v }))
+    return { sheets: [{ name: 'S', cells, conditionalFormats: [expr('A3:A8', '$B3<>$B2')] }] }
+  }
+  const fill: StructureOp = { op: 'copyRange', from: { sheet: 'S', range: 'A3' }, to: { sheet: 'S', range: 'A1:A2' } }
+  const text = (op: StructureOp) => {
+    const r = editStructure(above(), op)
+    if (!r.ok) throw new Error(r.code)
+    return r.book.sheets[0].conditionalFormats!.map((x) => `${x.ranges.join(' ')} ${'formula' in x ? x.formula : ''}`)
+  }
+
+  it('a fill up over the sheet first row, and a copy of the rule to the first rows elsewhere', () => {
+    expect(text(fill)).toEqual(['A1:A8 $B1<>$B1048576'])
+    expect(text({ op: 'copyRange', from: { sheet: 'S', range: 'A3:A4' }, to: { sheet: 'S', range: 'D1' } })).toEqual(['D1:D2 $B1<>$B1048576', 'A3:A8 $B3<>$B2'])
+  })
+
+  it.each(['closures', 'eval'] as const)('the cells the rule covers show as the rule computes them (%s)', (execution) => {
+    const s = createSession(above(), { execution })
+    expect(s.editStructure(fill).ok).toBe(true)
+    const got = s.getCells('S', 'A1:A8')
+    expect([1, 2, 3, 4, 5, 6, 7, 8].map((r) => (got[`A${r}`]?.appearance?.style?.fill ? 'R' : '-')).join('')).toBe('RR-R-R-R')
+  })
+})

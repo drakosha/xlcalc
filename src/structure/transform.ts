@@ -6,15 +6,19 @@
 import { isFull, LIMIT, span, type Area, type Axis, type Bound } from './area.js'
 import type { Outcome, Transform } from './rewrite.js'
 
-/** Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. */
-export function copyTransform(dr: number, dc: number): Transform {
+/**
+ * Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. Off the sheet a
+ * reference is lost, or with `wrap` comes round its other edge, as a conditional format's formula computes.
+ */
+export function copyTransform(dr: number, dc: number, wrap = false): Transform {
   return {
     copy: true,
     ref({ sheet, area }): Outcome {
       const next: Area = { ...area }
       for (const [axis, d] of [['r', dr], ['c', dc]] as [Axis, number][]) {
         if (d === 0 || isFull(area[axis], axis)) continue
-        const move = (b: Bound): Bound => (b.abs ? b : { i: b.i + d, abs: false })
+        const at = (i: number) => (wrap ? (((i + d) % LIMIT[axis]) + LIMIT[axis]) % LIMIT[axis] : i + d)
+        const move = (b: Bound): Bound => (b.abs ? b : { i: at(b.i), abs: false })
         const s = span(move(area[axis].lo), move(area[axis].hi))
         if (s.lo.i < 0 || s.hi.i >= LIMIT[axis]) return 'lost'
         next[axis] = s
