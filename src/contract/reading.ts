@@ -47,7 +47,10 @@ export interface PageOptions extends EditOptions {
 }
 /** Options of `readCells`: the fields to read and which rows and columns. */
 export interface ReadCellsOptions extends PageOptions {
-  /** value, text and formula by default. Address and sheet are always returned. */
+  /**
+   * value, text and formula by default. Address and sheet are always returned. `text` is the displayed text in a session
+   * opened with `display: false` too; `['value', 'formula']` reads without formatting.
+   */
   fields?: CellReadField[]
   /**
    * Only the cells in these rows (for example, the rows a host's filter displays), as in `ViewportOptions.rows`: their

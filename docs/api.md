@@ -2015,7 +2015,10 @@ interface ComputeOptions {
   externals?: Externals
   /** `closures` by default. */
   execution?: Execution
-  /** Each cell's displayed text and color (`CellResult.text`, `color`); true by default, false calculates values only. */
+  /**
+   * Each cell's displayed text and color (`CellResult.text`, `color`); true by default, false calculates values only.
+   * `readCells` and `findCells` still return `text` when their fields ask for it.
+   */
   display?: boolean
   /** None by default. */
   limits?: CalcLimits
@@ -3513,7 +3516,10 @@ Options of `readCells`: the fields to read and which rows and columns.
 
 ```ts
 interface ReadCellsOptions extends PageOptions {
-  /** value, text and formula by default. Address and sheet are always returned. */
+  /**
+   * value, text and formula by default. Address and sheet are always returned. `text` is the displayed text in a session
+   * opened with `display: false` too; `['value', 'formula']` reads without formatting.
+   */
   fields?: CellReadField[]
   /**
    * Only the cells in these rows (for example, the rows a host's filter displays), as in `ViewportOptions.rows`: their
