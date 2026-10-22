@@ -68,6 +68,10 @@ function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: 
 /** The tables of a sheet's table parts; `cells` (the sheet's) get the header names they lack; `opts` read their formulas. */
 export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions): TableInput[] {
   const out: TableInput[] = []
+  if (!parts.length) return out
+  // what checkTables reads of the cells, the array formulas and the header cells, not a copy of all of them per part
+  const view: Record<string, CellInput> = {}
+  for (const [addr, cell] of Object.entries(cells)) if (cell.array !== undefined) view[addr] = cell
   for (const xml of parts) {
     const read = tableOf(xml, opts)
     if (!read) {
@@ -82,12 +86,13 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
       t.columns.forEach((c, i) => {
         const addr = formatAddress(x.r1, x.c1 + i)
         const cell = cells[addr]
+        if (cell) view[addr] = cell
         if (cell?.formula === undefined && cell?.value === c.name) return
         const { formula: _, value: __, array: ___, ...look } = cell ?? {}
         fixed.push([addr, { ...look, value: c.name }])
       })
     try {
-      checkTables({ sheets: [{ name: sheet, cells: { ...cells, ...Object.fromEntries(fixed) }, merges, tables: [...out, t] }] }, 'file')
+      checkTables({ sheets: [{ name: sheet, cells: { ...view, ...Object.fromEntries(fixed) }, merges, tables: [...out, t] }] }, 'file')
     } catch (e) {
       if (!(e instanceof InputError)) throw e
       issues.add('table', { key: 'tableLeftOut', table: t.name, reason: e.message.replace(/^[^:]*: /, '') }, { sheet })
@@ -97,6 +102,7 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
     for (const [addr, cell] of fixed) {
       issues.add('table', { key: 'headerGiven', name: cell.value as string }, { sheet, cell: addr })
       cells[addr] = cell
+      view[addr] = cell
     }
     // a calculated column formula reports what the engine cannot take of it as a cell's would, at the column's first cell
     if (x) formulas.forEach((f, i) => f && reportFormula(f, issues, { sheet, cell: formatAddress(x.r1, x.c1 + i) }))

@@ -84,6 +84,17 @@ function table(v: unknown, path: string, cells: Record<string, CellInput>, boole
   return x
 }
 
+/** A sheet's array formulas of several cells: each area with its text, in the order of the sheet's cells. */
+function wideArrays(cells: Record<string, CellInput>): [Rect, string][] {
+  const out: [Rect, string][] = []
+  for (const [addr, cell] of Object.entries(cells)) {
+    if (cell.array === undefined) continue
+    const a = arrayArea(addr, cell.array)
+    if (a && (a.r2 > a.r1 || a.c2 > a.c1)) out.push([a, cell.array])
+  }
+  return out
+}
+
 /** The tables of a checked book's sheets, and their names against each other and against the defined names. */
 export function checkTables(book: BookInput, path = 'book'): void {
   const names = new Map((book.names ?? []).map((n) => [tableKey(n.name), n.name]))
@@ -94,6 +105,8 @@ export function checkTables(book: BookInput, path = 'book'): void {
     const p = `${path}.sheets[${s}].tables`
     if (!Array.isArray(sheet.tables)) throw new InputError(p, 'expected an array of tables')
     const rects: [Rect, string][] = []
+    // walked once for all the sheet's tables, where the first table gets to it
+    let arrays: [Rect, string][] | undefined
     sheet.tables.forEach((t, i) => {
       const tp = `${p}[${i}]`
       const x = table(t, tp, sheet.cells, booleans)
@@ -107,11 +120,8 @@ export function checkTables(book: BookInput, path = 'book'): void {
       rects.push([x, name])
       const merge = (sheet.merges ?? []).find((m) => meets(parseMerge(m)!, x))
       if (merge) throw new InputError(`${tp}.range`, `the merged area ${merge} overlaps the table ${name} (Excel does not allow merged cells in tables)`)
-      for (const [addr, cell] of Object.entries(sheet.cells)) {
-        if (cell.array === undefined) continue
-        const a = arrayArea(addr, cell.array)
-        if (a && (a.r2 > a.r1 || a.c2 > a.c1) && meets(a, x)) throw new InputError(`${tp}.range`, `the array formula over ${cell.array} overlaps the table ${name} (Excel does not allow array formulas of several cells in tables)`)
-      }
+      const array = (arrays ??= wideArrays(sheet.cells)).find(([a]) => meets(a, x))
+      if (array) throw new InputError(`${tp}.range`, `the array formula over ${array[1]} overlaps the table ${name} (Excel does not allow array formulas of several cells in tables)`)
     })
   })
 }
