@@ -1,4 +1,4 @@
--- Open a spill case's book, compute it fully, apply the case's edits (a value typed into a cell, a formula
+-- Open a spill case's book (a link to another book left as it is, as "Don't Update" leaves it), compute it fully, apply the case's edits (a value typed into a cell, a formula
 -- entered as Excel 365 enters it, or the cells cleared, Excel recalculating after each), read its rectangles and
 -- close without saving. An edit Excel refuses (part of an old-kind array) leaves its error and changes nothing.
 -- For every rectangle: the values of its mirrors on the mirror sheets (formulas that never give an error), the
@@ -26,7 +26,7 @@ on run argv
 	set editsOut to {}
 	tell application "Microsoft Excel"
 		with timeout of 90 seconds
-			set wb to open workbook workbook file name hfs
+			set wb to open workbook workbook file name hfs update links do not update links
 			calculate full
 			repeat with ln in edits
 				if (length of ln) > 0 then

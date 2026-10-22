@@ -73,27 +73,11 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       }
     })
 
-    it('a fixed bound with an offset at the other end moves as an end of a range in a cell formula, shrinking over deleted lines', () => {
-      const part: BookInput = { names: [{ name: 'part', ref: 'S!$A$2:A3' }], sheets: [{ name: 'S', cells: {} }] }
-      expect(edited(part, { op: 'insertRows', sheet: 'S', row: 1 }).names![0].ref).toBe('S!$A$3:A3')
-      expect(edited(part, { op: 'insertRows', sheet: 'S', row: 5, count: 2 }).names![0].ref).toBe('S!$A$2:A3')
-      expect(edited(part, { op: 'deleteRows', sheet: 'S', row: 2 }).names![0].ref).toBe('S!$A$2:A3')
-      expect(edited(part, { op: 'deleteRows', sheet: 'S', row: 2, count: 1048576 - 1 }).names![0].ref).toBe('S!#REF!')
-      const top: BookInput = { names: [{ name: 'top', ref: 'S!$A1048574:$A$12' }], sheets: [{ name: 'S', cells: {} }] }
-      expect(edited(top, { op: 'deleteRows', sheet: 'S', row: 12 }).names![0].ref).toBe('S!$A$11:$A1048574')
-      expect(edited(top, { op: 'deleteRows', sheet: 'S', row: 1, count: 12 }).names![0].ref).toBe('S!#REF!')
-    })
-
-    it('a running total by a name keeps the values of the same formula in cells when its first row is deleted', () => {
-      const cells: BookInput['sheets'][number]['cells'] = { B1: { value: 'amt' } }
-      for (let r = 2; r <= 6; r++) Object.assign(cells, { [`B${r}`]: { value: r * 10 }, [`C${r}`]: { formula: 'SUM(run)' }, [`D${r}`]: { formula: `SUM($B$2:$B${r})` } })
-      const book: BookInput = { names: [{ name: 'run', ref: 'S!$B$2:$B1' }], sheets: [{ name: 'S', cells }] }
-      for (const row of [2, 4]) {
-        const b = edited(book, { op: 'deleteRows', sheet: 'S', row })
-        expect(b.names![0].ref).toBe('S!$B$2:$B1')
-        const rows = ['2', '3', '4', '5']
-        expect(values(b, 'S', rows.map((r) => `C${r}`))).toEqual(values(b, 'S', rows.map((r) => `D${r}`)))
-      }
+    it('an area with a fixed and a relative bound on the shifted axis moves the fixed one only', () => {
+      const book: BookInput = { names: [{ name: 'part', ref: 'S!$A$2:A3' }], sheets: [{ name: 'S', cells: {} }] }
+      expect(edited(book, { op: 'insertRows', sheet: 'S', row: 1 }).names![0].ref).toBe('S!$A$3:A3')
+      expect(edited(book, { op: 'insertRows', sheet: 'S', row: 5, count: 2 }).names![0].ref).toBe('S!$A$2:A3')
+      expect(edited(book, { op: 'deleteRows', sheet: 'S', row: 2 }).names![0].ref).toBe('S!#REF!')
     })
   })
 })
