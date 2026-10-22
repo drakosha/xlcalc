@@ -13,7 +13,7 @@ import { checkString } from '../input/basic.js'
 import { validateTyped, toInvariant } from '../locale/index.js'
 import { validate } from '../syntax.js'
 import { localeOf } from '../locale/registry.js'
-import { markingClock, type RulesClock } from '../locale/rules/data.js'
+import { markingClock } from '../locale/rules/data.js'
 import { rulesOf, type Rules } from '../locale/rules.js'
 import type { Locale } from '../locale/types.js'
 import { englishName } from '../call-at.js'
@@ -23,17 +23,17 @@ import { msToSerial } from '../model.js'
 import { formatAfter, shows } from './forms.js'
 import { closeTyped } from './close.js'
 import { formulaFormat } from './formula.js'
-import { moneyFormat, readTyped, type Form } from './read.js'
+import { moneyFormat, readTyped, type Form, type YearClock } from './read.js'
 
 /** The rules of each locale object and date system, with a clock whose year is set for each entry (entries are synchronous). */
-const RULES = new WeakMap<Locale, Map<number, { rules: Rules; clock: RulesClock & { y: number } }>>()
+const RULES = new WeakMap<Locale, Map<number, { rules: Rules; clock: YearClock }>>()
 
 function rulesFor(locale: Locale, epoch: number, year: number) {
   let byEpoch = RULES.get(locale)
   if (!byEpoch) RULES.set(locale, (byEpoch = new Map()))
   let r = byEpoch.get(epoch)
   if (!r) {
-    const clock: RulesClock & { y: number } = Object.assign(markingClock(() => clock.y), { y: year })
+    const clock: YearClock = Object.assign(markingClock(() => clock.y), { y: year })
     byEpoch.set(epoch, (r = { rules: rulesOf(locale, clock, epoch), clock }))
   }
   r.clock.y = year

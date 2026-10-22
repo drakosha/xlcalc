@@ -8,7 +8,7 @@
  * again for its new first cell.
  */
 import type { BookInput, DataValidation } from '../contract.js'
-import { hi, intersect, LIMIT, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
+import { cornerOf, hi, intersect, LIMIT, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
 import { copyTransform, deleteSpan, insertSpan } from '../structure/transform.js'
@@ -29,8 +29,8 @@ export function formulaAt(text: string, sheet: string, from: Cell, to: Cell, she
 }
 
 /**
- * The rule over the ranges `areas`: its formulas as at the cell that was `old` before the operation (the new first
- * cell's), then through `t` as a formula of that cell (`host` its sheet before, `moved` after); null without ranges.
+ * The rule over the ranges `areas`: its formulas as at the cell that was `old` before the operation (the new corner's),
+ * then through `t` as a formula of that cell (`host` its sheet before, `moved` after); null without ranges.
  */
 function placed(v: DataValidation, areas: Rect[], sheet: string, old: Cell, host: string, moved: string, t: Transform | null, sheets: Map<string, string>): DataValidation | null {
   if (!areas.length) return null
@@ -49,6 +49,22 @@ export function rewriteValidations(rules: DataValidation[] | undefined, host: st
   let out: DataValidation[] | undefined
   rules.forEach((v, i) => {
     const next = withFormulas(v, (text) => rewriteFormula(text, host, moved, t, sheets))
+    if (next !== v) (out ??= [...rules])[i] = next
+  })
+  return out ?? rules
+}
+
+/**
+ * The references of the rules' formulas through a move's `t`, each rule's taken as at its first cell, which the move
+ * leaves where it is, and written back for its corner, which may lie in the moved cells without being the rule's; the
+ * same array when none changes.
+ */
+function movedValidations(rules: DataValidation[], sheet: string, t: Transform, sheets: Map<string, string>): DataValidation[] {
+  let out: DataValidation[] | undefined
+  rules.forEach((v, i) => {
+    const x = areasOf(v.range)![0]
+    const [corner, first] = [anchorOf(v), { r: x.r1, c: x.c1 }]
+    const next = withFormulas(v, (text) => formulaAt(rewriteFormula(formulaAt(text, sheet, corner, first, sheets), sheet, sheet, t, sheets), sheet, first, corner, sheets))
     if (next !== v) (out ??= [...rules])[i] = next
   })
   return out ?? rules
@@ -75,9 +91,9 @@ export function shiftValidations(rules: DataValidation[] | undefined, sheet: str
       const s = n > 0 ? (b === at - 1 ? [a, Math.min(b + count, LIMIT[axis] - 1)] : insertSpan(a, b, at, count, LIMIT[axis], one)) : deleteSpan(a, b, at, count, LIMIT[axis], false)
       return s ? [withBounds(x, axis, s[0], s[1])] : []
     })
-    const first = areas[0]
-    const old = first && (axis === 'r' ? { r: back(first.r1), c: first.c1 } : { r: first.r1, c: back(first.c1) })
-    const next = first ? placed(v, areas, sheet, old!, sheet, sheet, t, sheets) : null
+    const corner = areas.length ? cornerOf(areas) : null
+    const old = corner && (axis === 'r' ? { r: back(corner.r), c: corner.c } : { r: corner.r, c: back(corner.c) })
+    const next = old ? placed(v, areas, sheet, old, sheet, sheet, t, sheets) : null
     changed ||= next !== v
     if (next) out.push(next)
   }
@@ -101,19 +117,18 @@ function coalesce(xs: Rect[]): Rect[] {
   return out
 }
 
-/** A rule with its ranges joined where they touch, its formulas written for its first cell when that moves up or left. */
+/** A rule with its ranges joined where they touch (its corner, the cell its formulas are written for, stays). */
 function tidy(v: DataValidation, sheet: string, sheets: Map<string, string>): DataValidation {
   const xs = areasOf(v.range)!
   const ys = coalesce(xs)
   if (ys.length === xs.length) return v
-  const [from, to] = [anchorOf(v), { r: ys[0].r1, c: ys[0].c1 }]
-  return { ...withFormulas(v, (text) => formulaAt(text, sheet, from, to, sheets)), range: rangeText(ys) }
+  return { ...v, range: rangeText(ys) }
 }
 
 /** The settings of a rule but its range and formulas, to find rules that are one. */
 const settings = ({ range: _, formula1: __, formula2: ___, ...rest }: DataValidation) => JSON.stringify(Object.entries(rest).sort(([a], [b]) => (a < b ? -1 : 1)))
 
-/** Rules of a sheet joined where they are one rule: the same settings, and formulas that are the first one's at the other's first cell. */
+/** Rules of a sheet joined where they are one rule: the same settings, and formulas that are the first one's at the other's corner; the joined rule's formulas written for the corner of both. */
 function joined(rules: DataValidation[], sheet: string, sheets: Map<string, string>): DataValidation[] {
   const out: DataValidation[] = []
   for (const v of rules) {
@@ -123,18 +138,22 @@ function joined(rules: DataValidation[], sheet: string, sheets: Map<string, stri
       return (['formula1', 'formula2'] as const).every((k) => (w[k] === undefined ? v[k] === undefined : v[k] !== undefined && formulaAt(w[k], sheet, a, b, sheets) === v[k]))
     })
     if (same < 0) out.push(v)
-    else out[same] = { ...out[same], range: `${out[same].range} ${v.range}` }
+    else {
+      const w = out[same]
+      const range = `${w.range} ${v.range}`
+      const [from, to] = [anchorOf(w), cornerOf(areasOf(range)!)]
+      out[same] = { ...withFormulas(w, (text) => formulaAt(text, sheet, from, to, sheets)), range }
+    }
   }
   return out
 }
 
-/** Rules without the cells of `holes`: a rule whose first cell goes has its formulas written for its new first cell, one left without cells goes. */
+/** Rules without the cells of `holes`: a rule whose corner moves has its formulas written for its new corner, one left without cells goes. */
 function withoutAreas(rules: DataValidation[], holes: Rect[], sheet: string, sheets: Map<string, string>): DataValidation[] {
   const kept: DataValidation[] = []
   for (const v of rules) {
     const areas = areasOf(v.range)!.flatMap((x) => holes.reduce(subtract, [x]))
-    const first = areas[0]
-    const next = first ? placed(v, areas, sheet, { r: first.r1, c: first.c1 }, sheet, sheet, null, sheets) : null
+    const next = areas.length ? placed(v, areas, sheet, cornerOf(areas), sheet, sheet, null, sheets) : null
     if (next) kept.push(next)
   }
   return kept
@@ -166,7 +185,7 @@ export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t:
       landed.push(...areas)
       // a move's formulas as a moved cell's (`t`), a copy's and a move's to another sheet as a copied cell's (the set `struct-held-2`)
       const moved = p.move && fk === tk
-      const next = placed(v, areas, p.from, { r: pieces[0].r1, c: pieces[0].c1 }, moved ? p.from : p.to, p.to, moved ? t : copyTransform(dr, dc), sheets)
+      const next = placed(v, areas, p.from, cornerOf(pieces), moved ? p.from : p.to, p.to, moved ? t : copyTransform(dr, dc), sheets)
       if (next) pasted.push(next)
     }
   const gone = (k: string) => [...(k === tk ? (p.move ? landed : [p.area]) : []), ...(p.move && k === fk ? [p.src] : [])]
@@ -175,7 +194,7 @@ export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t:
     const holes = gone(k)
     let rules = s.validations
     if (rules && holes.length) rules = withoutAreas(rules, holes, s.name, sheets)
-    if (t && rules) rules = rewriteValidations(rules, s.name, s.name, t, sheets)
+    if (t && rules) rules = movedValidations(rules, s.name, t, sheets)
     if (k === tk && pasted.length) rules = joined([...(rules ?? []), ...pasted], s.name, sheets)
     if (rules === s.validations) return s
     rules = rules?.map((v) => tidy(v, s.name, sheets))

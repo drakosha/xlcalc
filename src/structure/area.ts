@@ -161,6 +161,19 @@ export function minus(x: Rect, y: Rect): Rect[] {
 /** Rectangles without the cells of `cut`. */
 export const subtract = (rects: Rect[], cut: Rect): Rect[] => rects.flatMap((x) => minus(x, cut))
 
+/**
+ * The top-left cell of the rectangle around `xs`, which need not be a cell of theirs: the cell a rule's formulas are
+ * written for. In one pass, as a rule read from a file may have hundreds of thousands of rectangles.
+ */
+export function cornerOf(xs: Rect[]): { r: number; c: number } {
+  let [r, c] = [Infinity, Infinity]
+  for (const x of xs) {
+    if (x.r1 < r) r = x.r1
+    if (x.c1 < c) c = x.c1
+  }
+  return { r, c }
+}
+
 /** A rectangle's text from corner to corner, `B2:D9`, one cell too (`B2:B2`): a merged area, a table, a spill. */
 export const cornersText = (x: Rect) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`
 

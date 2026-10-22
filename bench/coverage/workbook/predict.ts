@@ -13,8 +13,16 @@ import { shownValue } from '../../../test/spill-shown.js'
 const set = process.argv[2]
 const { buildWorkbookCases } = await setModule<WorkbookSet>('workbook', set)
 const out: Record<string, Record<string, unknown>[]> = {}
-for (const c of buildWorkbookCases())
-  out[c.id] = engineReads(c).map((r) => {
+for (const c of buildWorkbookCases()) {
+  let reads
+  try {
+    reads = engineReads(c)
+  } catch (e) {
+    // a case the engine does not compute is predicted as its error
+    out[c.id] = [{ thrown: String(e) }]
+    continue
+  }
+  out[c.id] = reads.map((r) => {
     const vals: Record<string, unknown> = {}
     for (const g of c.read) for (const a of cellsOf(g.range).addrs) {
       const v = shownValue(r, g.sheet, a)
@@ -24,4 +32,5 @@ for (const c of buildWorkbookCases())
     for (const g of c.show ?? []) for (const a of cellsOf(g.range).addrs) vals[`show:${g.sheet}!${a}`] = r.sheets.find((s) => s.name === g.sheet)!.cells[a]?.text ?? ''
     return vals
   })
+}
 writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)

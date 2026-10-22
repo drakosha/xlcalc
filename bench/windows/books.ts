@@ -199,11 +199,13 @@ export async function stepSpill(set: string, tag: Tag, e: WinEnv): Promise<void>
 function bookSteps(s: BookStep, c: WorkbookCase, shows: { sheet: string; cell: string }[]): Step[] {
   if (s === 'full' || s === 'calc') return [{ do: s }]
   if (s === 'save') return [{ do: 'saveAs' }]
+  if (s === 'rebuild') throw new Error(`${c.id}: the workbook step rebuild is Excel for Mac's alone`)
   if (s === 'read') return [...readSteps(c.read), ...shows.map((x) => ({ do: 'shown', sheet: x.sheet, cells: [x.cell] }))]
   if ('set' in s) {
     const { sheet, cell, value } = s.set
     return [{ do: 'set', sheet, cell, ...comEdit(value) }]
   }
+  if ('formula' in s && s.formula.array) throw new Error(`${c.id}: an array formula typed is Excel for Mac's alone`)
   if ('formula' in s) return [{ do: 'set', sheet: s.formula.sheet, cell: s.formula.cell, kind: 'f', value: `=${s.formula.formula.replace(/^=/, '')}` }]
   if ('hide' in s) {
     const { sheet, rows, hidden } = s.hide

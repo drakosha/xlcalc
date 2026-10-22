@@ -97,7 +97,7 @@ const VALUES: (CellInput['value'])[] = [
   '', 'текст\n"', '🐻 \\ \t   \r\n', '\ud800 lone', 'TRUE', '1.5', true, false, null, { date: '2026-10-04' },
 ]
 
-const FORMULAS = ['1/0', 'NA()', 'SQRT(-1)', '0.1+0.2', '1E308*10', '"ы"&"é"', 'TRUE', '1/3', 'RAND()', 'NOW()', 'Q1*1', 'Q1+Q1', 'X1', 'X2']
+const FORMULAS = ['1/0', 'NA()', 'SQRT(-1)', '0.1+0.2', '1E307*100', '"ы"&"é"', 'TRUE', '1/3', 'RAND()', 'NOW()', 'Q1*1', 'Q1+Q1', 'X1', 'X2']
 
 const EDGE: [string, BookInput][] = [
   ['sheet and address order', { sheets: NAMES.map((n, i) => sheet(n, Object.fromEntries(ADDRS.map((a, j) => [a, { value: i * 100 + j }])))) }],

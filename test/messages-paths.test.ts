@@ -27,6 +27,7 @@ const TABLES = { tables: [{ name: 'Т', columns: ['Кол'] }] }
 const TYPED: [string, Message, ValidateContext?][] = [
   ['=$A$0', { key: 'rowOutOfRange', row: '0' }],
   ['=$XFE$1', { key: 'columnOutOfRange', column: 'XFE' }],
+  ['=1E400', { key: 'numberOutOfRange', number: '1E400' }],
   ['=A:B#', { key: 'spillAfterRange' }],
   ['=Лист1:Лист3!A1#', { key: 'spillAcrossSheets' }],
   ['="abc', { key: 'unterminatedString' }],

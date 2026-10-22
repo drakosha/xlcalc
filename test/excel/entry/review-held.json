@@ -1,0 +1,180 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-22",
+  "seconds": 2.6
+ },
+ "cases": [
+  {
+   "id": "lit-1",
+   "text": "=1E400"
+  },
+  {
+   "id": "lit-2",
+   "text": "=-1E400"
+  },
+  {
+   "id": "lit-3",
+   "text": "=1E+309"
+  },
+  {
+   "id": "lit-4",
+   "text": "=ISNUMBER(1E400)"
+  },
+  {
+   "id": "lit-5",
+   "text": "=1.8E308"
+  },
+  {
+   "id": "lit-6",
+   "text": "=1E-400"
+  },
+  {
+   "id": "lit-7",
+   "text": "=1E308*10"
+  },
+  {
+   "id": "leap-1",
+   "text": "2/29"
+  },
+  {
+   "id": "leap-2",
+   "text": "2/30"
+  },
+  {
+   "id": "leap-3",
+   "text": "5/2026"
+  },
+  {
+   "id": "leap-4",
+   "text": "Feb 29"
+  },
+  {
+   "id": "leap-5",
+   "text": "2-29"
+  },
+  {
+   "id": "leap-6",
+   "text": "2/28"
+  },
+  {
+   "id": "leap-7",
+   "text": "4/31"
+  }
+ ],
+ "answers": {
+  "lit-1": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "lit-2": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "lit-3": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "lit-4": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "lit-5": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "lit-6": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "lit-7": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "leap-1": {
+   "cell": {
+    "value": 47150,
+    "format": 17
+   },
+   "text": "Feb-29",
+   "code": "mmm-yy",
+   "local": "mmm-yy"
+  },
+  "leap-2": {
+   "cell": {
+    "value": 10990,
+    "format": 17
+   },
+   "text": "Feb-30",
+   "code": "mmm-yy",
+   "local": "mmm-yy"
+  },
+  "leap-3": {
+   "cell": {
+    "value": 46143,
+    "format": 17
+   },
+   "text": "May-26",
+   "code": "mmm-yy",
+   "local": "mmm-yy"
+  },
+  "leap-4": {
+   "cell": {
+    "value": 47150,
+    "format": 17
+   },
+   "text": "Feb-29",
+   "code": "mmm-yy",
+   "local": "mmm-yy"
+  },
+  "leap-5": {
+   "cell": {
+    "value": 47150,
+    "format": 17
+   },
+   "text": "Feb-29",
+   "code": "mmm-yy",
+   "local": "mmm-yy"
+  },
+  "leap-6": {
+   "cell": {
+    "value": 46081,
+    "format": 16
+   },
+   "text": "28-Feb",
+   "code": "d-mmm",
+   "local": "d-mmm"
+  },
+  "leap-7": {
+   "cell": {
+    "value": 11414,
+    "format": 17
+   },
+   "text": "Apr-31",
+   "code": "mmm-yy",
+   "local": "mmm-yy"
+  }
+ }
+}

@@ -16,6 +16,7 @@ import { XLSX_SAMPLES } from './fixtures/xlsx-messages.js'
 const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   rowOutOfRange: [{ row: '0' }],
   columnOutOfRange: [{ column: 'XFE' }],
+  numberOutOfRange: [{ number: '1E400' }],
   spillAfterRange: [{}],
   spillAcrossSheets: [{}],
   unterminatedString: [{}],

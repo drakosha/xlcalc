@@ -6,7 +6,7 @@
  * the valid set `struct-held-2`), an IME mode is not kept, a list's items holding commas are split, and each is reported.
  */
 import type { DataValidation, ValidationOperator, ValidationType } from '../../contract.js'
-import { subtract, type Rect } from '../../structure/area.js'
+import { cornerOf, subtract, type Rect } from '../../structure/area.js'
 import { FILE_TYPES, OPERATORS } from '../../validation/check.js'
 import { COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
 import { formulaAt } from '../../validation/structure.js'
@@ -111,7 +111,7 @@ export function readValidations(tail: string, ext: string, sheet: string, sheets
     if (own.length !== areas.length || own.some((x, i) => x !== areas[i])) issues.add('dataValidation', { key: 'ruleShared' }, where)
     if (!own.length) continue
     taken.push(...own)
-    const [from, to] = [{ r: areas[0].r1, c: areas[0].c1 }, { r: own[0].r1, c: own[0].c1 }]
+    const [from, to] = [cornerOf(areas), cornerOf(own)]
     for (const k of ['formula1', 'formula2'] as const) if (r[k] !== undefined) r[k] = formulaAt(r[k], sheet, from, to, names)
     out.push({ ...r, range: rangeText(own) })
   }

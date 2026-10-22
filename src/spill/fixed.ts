@@ -6,7 +6,7 @@ import type { Arg } from '../args.js'
 import { Arr, broadcastAt } from '../arrays/value.js'
 import { arrayArea, crossing, holds } from '../array-areas.js'
 import type { CellInput, CellReplace } from '../contract.js'
-import { keyParts, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { allot } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import { formatAddress } from '../model.js'
@@ -50,13 +50,7 @@ function partOf(state: EngineState, edited: Map<string, CellInput | null>): { s:
 /** The areas of the book's array formulas of the old kind, by sheet and top-left cell. */
 function arrayAreas(state: EngineState): { s: number; top: string; area: Rect }[] {
   const out: { s: number; top: string; area: Rect }[] = []
-  if (!state.arrays) return out
-  for (const f of state.formulas) if (f?.area) out.push({ s: f.s, top: formatAddress(f.r, f.c), area: f.area })
-  // a formula that does not prepare keeps its area too
-  for (const [k, inv] of state.invalid) if (inv.area) {
-    const [s, r, c] = keyParts(k)
-    out.push({ s, top: formatAddress(r, c), area: inv.area })
-  }
+  if (state.arrays) for (const f of state.formulas) if (f?.area) out.push({ s: f.s, top: formatAddress(f.r, f.c), area: f.area })
   return out
 }
 

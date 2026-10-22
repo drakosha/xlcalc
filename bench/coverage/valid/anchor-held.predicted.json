@@ -1,0 +1,236 @@
+{
+ "made": [
+  {
+   "name": "S",
+   "rules": {
+    "H3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A3>2"
+    },
+    "H4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A4>2"
+    },
+    "H5": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A5>2"
+    },
+    "H6": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A6>2"
+    },
+    "J1": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A1>2"
+    },
+    "J2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A2>2"
+    },
+    "J3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A3>2"
+    }
+   },
+   "meets": {
+    "H3": true,
+    "H4": true,
+    "H5": true,
+    "H6": true,
+    "J1": false,
+    "J2": false,
+    "J3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "written": [
+  {
+   "name": "S",
+   "rules": {
+    "H3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A3>2"
+    },
+    "H4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A4>2"
+    },
+    "H5": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A5>2"
+    },
+    "H6": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A6>2"
+    },
+    "J1": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A1>2"
+    },
+    "J2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A2>2"
+    },
+    "J3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A3>2"
+    }
+   },
+   "meets": {
+    "H3": true,
+    "H4": true,
+    "H5": true,
+    "H6": true,
+    "J1": false,
+    "J2": false,
+    "J3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "written-corner-last": [
+  {
+   "name": "S",
+   "rules": {
+    "J1": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A3>2"
+    },
+    "J2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A4>2"
+    },
+    "J3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A5>2"
+    },
+    "H3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A5>2"
+    },
+    "H4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A6>2"
+    },
+    "H5": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A7>2"
+    },
+    "H6": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$A8>2"
+    }
+   },
+   "meets": {
+    "J1": true,
+    "J2": true,
+    "J3": true,
+    "H3": true,
+    "H4": true,
+    "H5": true,
+    "H6": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ]
+}

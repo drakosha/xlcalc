@@ -64,6 +64,8 @@ console.log(validateNames(names, { sheets: ['Sales', 'Q1 data'] }).map((x) => `$
 
 Every check returns `{ ok: true, … }` or a rejection of type `Refusal`: `{ ok: false, code, message, at? }`, with a code for programs, a message for users and, for text, the position in it. This applies to `validateFormula`, `validateLocalFormula`, `toLocal`, `toInvariant`, `parseEntry`, `validateName` and `editStructure`.
 
+A number literal is refused as Excel refuses it typed (`syntax`): from `1E308` on, and one that is not 0 below `1E-309`; one up to the smallest normal number (2.2250738585072014E-308) is 0, and its text `0` (`=1E-309+1` is stored as `0+1`).
+
 Error codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to a workbook that `ctx.externalBooks` has no link to, see [External references](links.md)), `unknown_function`, `unknown_sheet`, `unknown_name` and `unsupported` (an external function called with non-literal arguments). In `compute`, an invalid formula evaluates to `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise. A formula whose result is an array is valid: it spills.
 
 ## Errors

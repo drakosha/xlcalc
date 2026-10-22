@@ -1,0 +1,177 @@
+{
+ "now": "2026-10-22",
+ "locales": {
+  "en-US": {
+   "exp-1": {
+    "ok": true,
+    "input": {
+     "formula": "1e+307"
+    }
+   },
+   "exp-2": {
+    "ok": true,
+    "input": {
+     "formula": "1e+308"
+    }
+   },
+   "exp-3": {
+    "ok": true,
+    "input": {
+     "formula": "1e+308"
+    }
+   },
+   "exp-4": {
+    "ok": true,
+    "input": {
+     "formula": "1e-309"
+    }
+   },
+   "exp-5": {
+    "ok": true,
+    "input": {
+     "formula": "1e-309"
+    }
+   },
+   "exp-6": {
+    "ok": true,
+    "input": {
+     "formula": "1e-310"
+    }
+   },
+   "exp-7": {
+    "ok": true,
+    "input": {
+     "formula": "1e-310"
+    }
+   },
+   "exp-8": {
+    "ok": true,
+    "input": {
+     "formula": "1e-312"
+    }
+   },
+   "exp-9": {
+    "ok": true,
+    "input": {
+     "formula": "1e-315"
+    }
+   },
+   "exp-10": {
+    "ok": true,
+    "input": {
+     "formula": "1e-318"
+    }
+   },
+   "exp-11": {
+    "ok": true,
+    "input": {
+     "formula": "1e-319"
+    }
+   },
+   "exp-12": {
+    "ok": true,
+    "input": {
+     "formula": "1e-323"
+    }
+   },
+   "exp-13": {
+    "ok": true,
+    "input": {
+     "formula": "1e-308+1"
+    }
+   },
+   "exp-14": {
+    "ok": true,
+    "input": {
+     "formula": "ISNUMBER(1e-309)"
+    }
+   }
+  },
+  "ru-RU": {
+   "exp-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "exp-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "exp-3": {
+    "ok": true,
+    "input": {
+     "formula": "1e+308"
+    }
+   },
+   "exp-4": {
+    "ok": true,
+    "input": {
+     "formula": "1e-309"
+    }
+   },
+   "exp-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "exp-6": {
+    "ok": true,
+    "input": {
+     "formula": "1e-310"
+    }
+   },
+   "exp-7": {
+    "ok": true,
+    "input": {
+     "formula": "1e-310"
+    }
+   },
+   "exp-8": {
+    "ok": true,
+    "input": {
+     "formula": "1e-312"
+    }
+   },
+   "exp-9": {
+    "ok": true,
+    "input": {
+     "formula": "1e-315"
+    }
+   },
+   "exp-10": {
+    "ok": true,
+    "input": {
+     "formula": "1e-318"
+    }
+   },
+   "exp-11": {
+    "ok": true,
+    "input": {
+     "formula": "1e-319"
+    }
+   },
+   "exp-12": {
+    "ok": true,
+    "input": {
+     "formula": "1e-323"
+    }
+   },
+   "exp-13": {
+    "ok": true,
+    "input": {
+     "formula": "1e-308+1"
+    }
+   },
+   "exp-14": {
+    "ok": true,
+    "input": {
+     "formula": "ISNUMBER(1e-309)"
+    }
+   }
+  }
+ }
+}

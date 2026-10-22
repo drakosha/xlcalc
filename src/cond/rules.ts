@@ -5,7 +5,7 @@
  */
 import type { ConditionalFormat } from '../contract.js'
 import { formatAddress } from '../model.js'
-import { areaText, parseRange, type Rect } from '../structure/area.js'
+import { areaText, cornerOf, parseRange, type Rect } from '../structure/area.js'
 
 /** The rectangles of a rule's ranges. */
 export const rectsOf = (f: ConditionalFormat): Rect[] => f.ranges.map((x) => parseRange(x)!)
@@ -22,17 +22,7 @@ export function rangesOf(rects: Rect[], was: string[]): string[] {
  * (the set `cond/looks`: Excel computes `$A3>2` over `H3:H6 J1:J3` for H1, and saves the ranges as `J1:J3 H3:H6` with
  * the same formula).
  */
-export const originOf = (f: ConditionalFormat): { r: number; c: number } => corner(rectsOf(f))
-
-/** The top-left of the rectangle around rectangles, the cell a rule over them has its formulas written for: in one pass, as a rule read from a file may have hundreds of thousands. */
-export function corner(xs: Rect[]): { r: number; c: number } {
-  let [r, c] = [Infinity, Infinity]
-  for (const x of xs) {
-    if (x.r1 < r) r = x.r1
-    if (x.c1 < c) c = x.c1
-  }
-  return { r, c }
-}
+export const originOf = (f: ConditionalFormat): { r: number; c: number } => cornerOf(rectsOf(f))
 
 const quoted = (text: string) => `"${text.replaceAll('"', '""')}"`
 

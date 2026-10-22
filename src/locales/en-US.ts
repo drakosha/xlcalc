@@ -25,6 +25,7 @@ const NAME_RULES: Record<NameRule, (name: string) => string> = {
 export const EN_MESSAGES: EnglishMessages = {
   rowOutOfRange: (p) => `row ${p.row} out of range`,
   columnOutOfRange: (p) => `column ${p.column} out of range`,
+  numberOutOfRange: (p) => `number ${p.number} out of range`,
   spillAfterRange: () => 'a spill reference (#) must follow a single cell',
   spillAcrossSheets: () => 'a spill reference (#) must follow a single cell on one sheet',
   unterminatedString: () => 'unterminated string',

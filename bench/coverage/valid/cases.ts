@@ -13,7 +13,7 @@ import { formatAddress, indexToCol } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { sheetKey } from '../../../src/syntax.js'
 import { anchorOf, areasOf } from '../../../src/validation/rules.js'
-import { formulaAt } from '../../../src/validation/structure.js'
+import { formulaAt, withFormulas } from '../../../src/validation/structure.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { rawFile, type RawEdit } from '../xlsx/sent.js'
 
@@ -272,7 +272,13 @@ export function made(book: BookInput, make: ValidMake[] = []): BookInput {
   const sheet = (name: string) => sheets.find((s) => s.name === name)!
   for (const m of make) {
     const s = sheet(m.sheet)
-    if ('rule' in m) s.validations = [...(s.validations ?? []), { range: m.range, ...m.rule }]
+    if ('rule' in m) {
+      // typed with the range's first cell active, the formulas are written for the rule's corner
+      const rule = { range: m.range, ...m.rule }
+      const first = areasOf(m.range)![0]
+      const names = new Map(sheets.map((x) => [sheetKey(x.name), x.name]))
+      s.validations = [...(s.validations ?? []), withFormulas(rule, (text) => formulaAt(text, s.name, { r: first.r1, c: first.c1 }, anchorOf(rule), names))]
+    }
     else if ('summary' in m) s.outline = { ...s.outline, ...m.summary }
     else {
       const text = 'group' in m ? m.group : m.collapse

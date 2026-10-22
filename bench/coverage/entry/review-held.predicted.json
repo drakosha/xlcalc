@@ -1,0 +1,190 @@
+{
+ "now": "2026-10-22",
+ "locales": {
+  "en-US": {
+   "lit-1": {
+    "ok": true,
+    "input": {
+     "formula": "Infinity"
+    }
+   },
+   "lit-2": {
+    "ok": true,
+    "input": {
+     "formula": "-Infinity"
+    }
+   },
+   "lit-3": {
+    "ok": true,
+    "input": {
+     "formula": "Infinity"
+    }
+   },
+   "lit-4": {
+    "ok": true,
+    "input": {
+     "formula": "ISNUMBER(Infinity)"
+    }
+   },
+   "lit-5": {
+    "ok": true,
+    "input": {
+     "formula": "Infinity"
+    }
+   },
+   "lit-6": {
+    "ok": true,
+    "input": {
+     "formula": "0"
+    }
+   },
+   "lit-7": {
+    "ok": true,
+    "input": {
+     "formula": "1e+308*10"
+    }
+   },
+   "leap-1": {
+    "ok": true,
+    "input": {
+     "value": 47150,
+     "numberFormat": 16
+    }
+   },
+   "leap-2": {
+    "ok": true,
+    "input": {
+     "value": 10990,
+     "numberFormat": 17
+    }
+   },
+   "leap-3": {
+    "ok": true,
+    "input": {
+     "value": 46143,
+     "numberFormat": 17
+    }
+   },
+   "leap-4": {
+    "ok": true,
+    "input": {
+     "value": 47150,
+     "numberFormat": 16
+    }
+   },
+   "leap-5": {
+    "ok": true,
+    "input": {
+     "value": 47150,
+     "numberFormat": 16
+    }
+   },
+   "leap-6": {
+    "ok": true,
+    "input": {
+     "value": 46081,
+     "numberFormat": 16
+    }
+   },
+   "leap-7": {
+    "ok": true,
+    "input": {
+     "value": 11414,
+     "numberFormat": 17
+    }
+   }
+  },
+  "ru-RU": {
+   "lit-1": {
+    "ok": true,
+    "input": {
+     "formula": "Infinity"
+    }
+   },
+   "lit-2": {
+    "ok": true,
+    "input": {
+     "formula": "-Infinity"
+    }
+   },
+   "lit-3": {
+    "ok": true,
+    "input": {
+     "formula": "Infinity"
+    }
+   },
+   "lit-4": {
+    "ok": true,
+    "input": {
+     "formula": "ISNUMBER(Infinity)"
+    }
+   },
+   "lit-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "lit-6": {
+    "ok": true,
+    "input": {
+     "formula": "0"
+    }
+   },
+   "lit-7": {
+    "ok": true,
+    "input": {
+     "formula": "1e+308*10"
+    }
+   },
+   "leap-1": {
+    "ok": true,
+    "input": {
+     "value": 47150,
+     "numberFormat": 17
+    }
+   },
+   "leap-2": {
+    "ok": true,
+    "input": {
+     "value": 10990,
+     "numberFormat": 17
+    }
+   },
+   "leap-3": {
+    "ok": true,
+    "input": {
+     "value": 46143,
+     "numberFormat": 17
+    }
+   },
+   "leap-4": {
+    "ok": true,
+    "input": {
+     "value": "Feb 29"
+    }
+   },
+   "leap-5": {
+    "ok": true,
+    "input": {
+     "value": 47150,
+     "numberFormat": 17
+    }
+   },
+   "leap-6": {
+    "ok": true,
+    "input": {
+     "value": 46784,
+     "numberFormat": 17
+    }
+   },
+   "leap-7": {
+    "ok": true,
+    "input": {
+     "value": 11414,
+     "numberFormat": 17
+    }
+   }
+  }
+ }
+}

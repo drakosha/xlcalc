@@ -12,7 +12,7 @@ import ExcelJS from 'exceljs'
 import JSZip from 'jszip'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { anchorArray, markDynamic, READ_COLUMNS } from './book.js'
-import { runWatched, settleRejected, typedValue } from './excel.js'
+import { declineElsewhere, runWatched, settleRejected, typedValue } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
@@ -282,6 +282,13 @@ export async function runOnBook(id: string, script: string, book: BookInput, rea
       await stop()
       await settleRejected()
       throw new BookRejected(`${id}: Excel did not load the book (repair window declined)`)
+    },
+    // the book did not open (the AppleEvent timed out): the repair window on another Space, which the watch does not see
+    failed: async (err, stop) => {
+      if (!/-1712|\bwb\b/.test(err) || !(await declineElsewhere())) return undefined
+      await stop()
+      await settleRejected()
+      throw new BookRejected(`${id}: Excel did not load the book (repair window declined on another Space)`)
     },
     done: (out) => out,
   })

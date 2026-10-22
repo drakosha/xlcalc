@@ -197,6 +197,14 @@ export const STRUCT_KNOWN: Readonly<Record<string, string[]>> = {
   'styles-checks:copy-S!C:C-S!I1': ['engine refused (merged): the pasted cells would cover part of the merged area S!I2:J2'],
   // Excel's fill handle (Range.AutoFill) fills the hidden rows of a filtered sheet too, as fillRange does (the set
   // fill-hidden-held); the case is a copyRange, copy and paste, which, as Fill Down, fills the visible rows only
+  // a sheet deleted under references to its own name (S!loc): Excel writes the book's file name for the sheet and keeps
+  // the name as a workbook name over #REF!; the engine leaves the text and drops the name, the values #REF! in both
+  'names-held:qualified-delete-S': [
+    `'T'!A1: Excel "='book.xlsx'!loc*2", engine "='S'!loc*2"`,
+    `'T'!A2: Excel "=SUM('book.xlsx'!loc)", engine "=SUM('S'!loc)"`,
+    `name |G: Excel "'book.xlsx'!loc+1", engine "'S'!loc+1"`,
+    `name |LOC: Excel "#REF!$A$1", engine null`,
+  ],
   'hidden:filtered-fill-handle': ['D4', 'E4', 'D7', 'E7', 'D8', 'E8', 'D11', 'E11'].map((a) => `'S'!${a}: Excel ${JSON.stringify(a[0] === 'D' ? 'top' : `=A${a.slice(1)}+1000`)}, engine ""`),
 }
 

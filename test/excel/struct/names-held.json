@@ -1,0 +1,1190 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "read": "A1:Z60",
+  "seconds": 22.7
+ },
+ "books": {
+  "qualified": {
+   "names": [
+    {
+     "name": "loc",
+     "ref": "'S'!$A$1",
+     "scope": "S"
+    },
+    {
+     "name": "g",
+     "ref": "S!loc+1"
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 42
+      },
+      "B1": {
+       "formula": "loc*3"
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "formula": "S!loc*2"
+      },
+      "A2": {
+       "formula": "SUM('S'!loc)"
+      },
+      "A3": {
+       "formula": "g"
+      },
+      "A4": {
+       "formula": "S!A1"
+      }
+     }
+    }
+   ]
+  },
+  "mixed": {
+   "names": [
+    {
+     "name": "mix",
+     "ref": "'S'!$A1"
+    },
+    {
+     "name": "mixc",
+     "ref": "'S'!A$12"
+    },
+    {
+     "name": "mrow",
+     "ref": "'S'!A$1"
+    },
+    {
+     "name": "rel",
+     "ref": "'S'!XFD1"
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "C5": {
+       "formula": "mix"
+      },
+      "E5": {
+       "formula": "$A5"
+      },
+      "C14": {
+       "formula": "mixc"
+      },
+      "E14": {
+       "formula": "C$12"
+      },
+      "C16": {
+       "formula": "mrow"
+      },
+      "E16": {
+       "formula": "C$1"
+      },
+      "C7": {
+       "formula": "rel"
+      },
+      "A1": {
+       "value": 100
+      },
+      "A2": {
+       "value": 200
+      },
+      "A3": {
+       "value": 300
+      },
+      "A4": {
+       "value": 400
+      },
+      "A5": {
+       "value": 500
+      },
+      "A6": {
+       "value": 600
+      },
+      "A7": {
+       "value": 700
+      },
+      "A8": {
+       "value": 800
+      },
+      "A9": {
+       "value": 900
+      },
+      "A10": {
+       "value": 1000
+      },
+      "A12": {
+       "value": 7
+      },
+      "B12": {
+       "value": 14
+      },
+      "C12": {
+       "value": 21
+      },
+      "D12": {
+       "value": 28
+      },
+      "E12": {
+       "value": 35
+      },
+      "F12": {
+       "value": 42
+      },
+      "B1": {
+       "value": 11
+      },
+      "C1": {
+       "value": 22
+      },
+      "D1": {
+       "value": 33
+      },
+      "E1": {
+       "value": 44
+      },
+      "F1": {
+       "value": 55
+      }
+     }
+    }
+   ]
+  },
+  "run": {
+   "names": [
+    {
+     "name": "run",
+     "ref": "'S'!$B$2:$B1"
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B1": {
+       "value": "amt"
+      },
+      "B2": {
+       "value": 20
+      },
+      "C2": {
+       "formula": "SUM(run)"
+      },
+      "D2": {
+       "formula": "SUM($B$2:$B2)"
+      },
+      "B3": {
+       "value": 30
+      },
+      "C3": {
+       "formula": "SUM(run)"
+      },
+      "D3": {
+       "formula": "SUM($B$2:$B3)"
+      },
+      "B4": {
+       "value": 40
+      },
+      "C4": {
+       "formula": "SUM(run)"
+      },
+      "D4": {
+       "formula": "SUM($B$2:$B4)"
+      },
+      "B5": {
+       "value": 50
+      },
+      "C5": {
+       "formula": "SUM(run)"
+      },
+      "D5": {
+       "formula": "SUM($B$2:$B5)"
+      },
+      "B6": {
+       "value": 60
+      },
+      "C6": {
+       "formula": "SUM(run)"
+      },
+      "D6": {
+       "formula": "SUM($B$2:$B6)"
+      }
+     }
+    }
+   ]
+  },
+  "area": {
+   "names": [
+    {
+     "name": "part",
+     "ref": "'S'!$A$2:$A3"
+    },
+    {
+     "name": "top",
+     "ref": "'S'!$A1048574:$A$12"
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "C10": {
+       "formula": "SUM(part)"
+      },
+      "D10": {
+       "formula": "SUM($A$2:$A12)"
+      },
+      "F10": {
+       "formula": "SUM(top)"
+      },
+      "G10": {
+       "formula": "SUM($A7:$A$12)"
+      },
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "A7": {
+       "value": 7
+      },
+      "A8": {
+       "value": 8
+      },
+      "A9": {
+       "value": 9
+      },
+      "A10": {
+       "value": 10
+      },
+      "A11": {
+       "value": 11
+      },
+      "A12": {
+       "value": 12
+      },
+      "A13": {
+       "value": 13
+      },
+      "A14": {
+       "value": 14
+      },
+      "A15": {
+       "value": 15
+      },
+      "A16": {
+       "value": 16
+      },
+      "A17": {
+       "value": 17
+      },
+      "A18": {
+       "value": 18
+      },
+      "A19": {
+       "value": 19
+      },
+      "A20": {
+       "value": 20
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "qualified-rename-U",
+   "book": "qualified",
+   "op": {
+    "op": "renameSheet",
+    "sheet": "S",
+    "name": "U"
+   }
+  },
+  {
+   "id": "qualified-rename-quoted",
+   "book": "qualified",
+   "op": {
+    "op": "renameSheet",
+    "sheet": "S",
+    "name": "My Sheet"
+   }
+  },
+  {
+   "id": "qualified-delete-S",
+   "book": "qualified",
+   "op": {
+    "op": "deleteSheet",
+    "sheet": "S"
+   }
+  },
+  {
+   "id": "mixed-insert-row-1",
+   "book": "mixed",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 1
+   }
+  },
+  {
+   "id": "mixed-delete-row-1",
+   "book": "mixed",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 1
+   }
+  },
+  {
+   "id": "mixed-insert-column-A",
+   "book": "mixed",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "A"
+   }
+  },
+  {
+   "id": "mixed-delete-column-A",
+   "book": "mixed",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "A"
+   }
+  },
+  {
+   "id": "mixed-insert-row-3",
+   "book": "mixed",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 3
+   }
+  },
+  {
+   "id": "run-delete-row-2",
+   "book": "run",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 2
+   }
+  },
+  {
+   "id": "run-delete-row-4",
+   "book": "run",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 4
+   }
+  },
+  {
+   "id": "run-insert-row-2",
+   "book": "run",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 2
+   }
+  },
+  {
+   "id": "area-delete-row-2",
+   "book": "area",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 2
+   }
+  },
+  {
+   "id": "area-delete-rows-2-3",
+   "book": "area",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 2,
+    "count": 2
+   }
+  },
+  {
+   "id": "area-delete-row-12",
+   "book": "area",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 12
+   }
+  },
+  {
+   "id": "area-insert-row-2",
+   "book": "area",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 2
+   }
+  },
+  {
+   "id": "area-insert-row-1",
+   "book": "area",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 1
+   }
+  },
+  {
+   "id": "area-delete-rows-1-12",
+   "book": "area",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 1,
+    "count": 12
+   }
+  }
+ ],
+ "answers": {
+  "qualified-rename-U": {
+   "sheets": [
+    {
+     "name": "U",
+     "used": "$A$1:$B$1",
+     "cells": {
+      "A1": "42",
+      "B1": "=loc*3"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$4",
+     "cells": {
+      "A1": "=U!loc*2",
+      "A2": "=SUM(U!loc)",
+      "A3": "=g",
+      "A4": "=U!A1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SINGLE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "g",
+     "ref": "=U!loc+1"
+    },
+    {
+     "name": "U!loc",
+     "ref": "=U!$A$1"
+    }
+   ]
+  },
+  "qualified-rename-quoted": {
+   "sheets": [
+    {
+     "name": "My Sheet",
+     "used": "$A$1:$B$1",
+     "cells": {
+      "A1": "42",
+      "B1": "=loc*3"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$A$4",
+     "cells": {
+      "A1": "='My Sheet'!loc*2",
+      "A2": "=SUM('My Sheet'!loc)",
+      "A3": "=g",
+      "A4": "='My Sheet'!A1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SINGLE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "g",
+     "ref": "='My Sheet'!loc+1"
+    },
+    {
+     "name": "'My Sheet'!loc",
+     "ref": "='My Sheet'!$A$1"
+    }
+   ]
+  },
+  "qualified-delete-S": {
+   "sheets": [
+    {
+     "name": "T",
+     "used": "$A$1:$A$4",
+     "cells": {
+      "A1": "=book.xlsx!loc*2",
+      "A2": "=SUM(book.xlsx!loc)",
+      "A3": "=g",
+      "A4": "=#REF!A1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.SINGLE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "g",
+     "ref": "=book.xlsx!loc+1"
+    },
+    {
+     "name": "loc",
+     "ref": "=#REF!$A$1"
+    }
+   ]
+  },
+  "mixed-insert-row-1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$2:$F$17",
+     "cells": {
+      "A2": "100",
+      "B2": "11",
+      "C2": "22",
+      "D2": "33",
+      "E2": "44",
+      "F2": "55",
+      "A3": "200",
+      "A4": "300",
+      "A5": "400",
+      "A6": "500",
+      "C6": "=mix",
+      "E6": "=$A6",
+      "A7": "600",
+      "A8": "700",
+      "C8": "=rel",
+      "A9": "800",
+      "A10": "900",
+      "A11": "1000",
+      "A13": "7",
+      "B13": "14",
+      "C13": "21",
+      "D13": "28",
+      "E13": "35",
+      "F13": "42",
+      "C15": "=mixc",
+      "E15": "=C$13",
+      "C17": "=mrow",
+      "E17": "=C$2"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "mix",
+     "ref": "=S!$A1"
+    },
+    {
+     "name": "mixc",
+     "ref": "=S!A$13"
+    },
+    {
+     "name": "mrow",
+     "ref": "=S!A$2"
+    },
+    {
+     "name": "rel",
+     "ref": "=S!XFD1"
+    }
+   ]
+  },
+  "mixed-delete-row-1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$F$15",
+     "cells": {
+      "A1": "200",
+      "A2": "300",
+      "A3": "400",
+      "A4": "500",
+      "C4": "=mix",
+      "E4": "=$A4",
+      "A5": "600",
+      "A6": "700",
+      "C6": "=rel",
+      "A7": "800",
+      "A8": "900",
+      "A9": "1000",
+      "A11": "7",
+      "B11": "14",
+      "C11": "21",
+      "D11": "28",
+      "E11": "35",
+      "F11": "42",
+      "C13": "=mixc",
+      "E13": "=C$11",
+      "C15": "=mrow",
+      "E15": "=#REF!"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "mix",
+     "ref": "=S!$A1"
+    },
+    {
+     "name": "mixc",
+     "ref": "=S!A$11"
+    },
+    {
+     "name": "mrow",
+     "ref": "=S!#REF!"
+    },
+    {
+     "name": "rel",
+     "ref": "=S!XFD1"
+    }
+   ]
+  },
+  "mixed-insert-column-A": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$B$1:$G$16",
+     "cells": {
+      "B1": "100",
+      "C1": "11",
+      "D1": "22",
+      "E1": "33",
+      "F1": "44",
+      "G1": "55",
+      "B2": "200",
+      "B3": "300",
+      "B4": "400",
+      "B5": "500",
+      "D5": "=mix",
+      "F5": "=$B5",
+      "B6": "600",
+      "B7": "700",
+      "D7": "=rel",
+      "B8": "800",
+      "B9": "900",
+      "B10": "1000",
+      "B12": "7",
+      "C12": "14",
+      "D12": "21",
+      "E12": "28",
+      "F12": "35",
+      "G12": "42",
+      "D14": "=mixc",
+      "F14": "=D$12",
+      "D16": "=mrow",
+      "F16": "=D$1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "mix",
+     "ref": "=S!$B1"
+    },
+    {
+     "name": "mixc",
+     "ref": "=S!A$12"
+    },
+    {
+     "name": "mrow",
+     "ref": "=S!A$1"
+    },
+    {
+     "name": "rel",
+     "ref": "=S!XFD1"
+    }
+   ]
+  },
+  "mixed-delete-column-A": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "11",
+      "B1": "22",
+      "C1": "33",
+      "D1": "44",
+      "E1": "55",
+      "B5": "=mix",
+      "D5": "=#REF!",
+      "B7": "=rel",
+      "A12": "14",
+      "B12": "21",
+      "C12": "28",
+      "D12": "35",
+      "E12": "42",
+      "B14": "=mixc",
+      "D14": "=B$12",
+      "B16": "=mrow",
+      "D16": "=B$1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "mix",
+     "ref": "=S!#REF!"
+    },
+    {
+     "name": "mixc",
+     "ref": "=S!A$12"
+    },
+    {
+     "name": "mrow",
+     "ref": "=S!A$1"
+    },
+    {
+     "name": "rel",
+     "ref": "=S!XFD1"
+    }
+   ]
+  },
+  "mixed-insert-row-3": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$F$17",
+     "cells": {
+      "A1": "100",
+      "B1": "11",
+      "C1": "22",
+      "D1": "33",
+      "E1": "44",
+      "F1": "55",
+      "A2": "200",
+      "A4": "300",
+      "A5": "400",
+      "A6": "500",
+      "C6": "=mix",
+      "E6": "=$A6",
+      "A7": "600",
+      "A8": "700",
+      "C8": "=rel",
+      "A9": "800",
+      "A10": "900",
+      "A11": "1000",
+      "A13": "7",
+      "B13": "14",
+      "C13": "21",
+      "D13": "28",
+      "E13": "35",
+      "F13": "42",
+      "C15": "=mixc",
+      "E15": "=C$13",
+      "C17": "=mrow",
+      "E17": "=C$1"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "mix",
+     "ref": "=S!$A1"
+    },
+    {
+     "name": "mixc",
+     "ref": "=S!A$13"
+    },
+    {
+     "name": "mrow",
+     "ref": "=S!A$1"
+    },
+    {
+     "name": "rel",
+     "ref": "=S!XFD1"
+    }
+   ]
+  },
+  "run-delete-row-2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$B$1:$D$5",
+     "cells": {
+      "B1": "amt",
+      "B2": "30",
+      "C2": "=SUM(run)",
+      "D2": "=SUM($B$2:$B2)",
+      "B3": "40",
+      "C3": "=SUM(run)",
+      "D3": "=SUM($B$2:$B3)",
+      "B4": "50",
+      "C4": "=SUM(run)",
+      "D4": "=SUM($B$2:$B4)",
+      "B5": "60",
+      "C5": "=SUM(run)",
+      "D5": "=SUM($B$2:$B5)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "run",
+     "ref": "=S!#REF!"
+    }
+   ]
+  },
+  "run-delete-row-4": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$B$1:$D$5",
+     "cells": {
+      "B1": "amt",
+      "B2": "20",
+      "C2": "=SUM(run)",
+      "D2": "=SUM($B$2:$B2)",
+      "B3": "30",
+      "C3": "=SUM(run)",
+      "D3": "=SUM($B$2:$B3)",
+      "B4": "50",
+      "C4": "=SUM(run)",
+      "D4": "=SUM($B$2:$B4)",
+      "B5": "60",
+      "C5": "=SUM(run)",
+      "D5": "=SUM($B$2:$B5)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "run",
+     "ref": "=S!$B$2:$B1"
+    }
+   ]
+  },
+  "run-insert-row-2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$B$1:$D$7",
+     "cells": {
+      "B1": "amt",
+      "B3": "20",
+      "C3": "=SUM(run)",
+      "D3": "=SUM($B$3:$B3)",
+      "B4": "30",
+      "C4": "=SUM(run)",
+      "D4": "=SUM($B$3:$B4)",
+      "B5": "40",
+      "C5": "=SUM(run)",
+      "D5": "=SUM($B$3:$B5)",
+      "B6": "50",
+      "C6": "=SUM(run)",
+      "D6": "=SUM($B$3:$B6)",
+      "B7": "60",
+      "C7": "=SUM(run)",
+      "D7": "=SUM($B$3:$B7)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "run",
+     "ref": "=S!$B$3:$B1"
+    }
+   ]
+  },
+  "area-delete-row-2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$19",
+     "cells": {
+      "A1": "1",
+      "A2": "3",
+      "A3": "4",
+      "A4": "5",
+      "A5": "6",
+      "A6": "7",
+      "A7": "8",
+      "A8": "9",
+      "A9": "10",
+      "C9": "=SUM(part)",
+      "D9": "=SUM($A$2:$A11)",
+      "F9": "=SUM(top)",
+      "G9": "=SUM($A6:$A$11)",
+      "A10": "11",
+      "A11": "12",
+      "A12": "13",
+      "A13": "14",
+      "A14": "15",
+      "A15": "16",
+      "A16": "17",
+      "A17": "18",
+      "A18": "19",
+      "A19": "20"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "part",
+     "ref": "=S!#REF!"
+    },
+    {
+     "name": "top",
+     "ref": "=S!$A1048574:$A$11"
+    }
+   ]
+  },
+  "area-delete-rows-2-3": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$18",
+     "cells": {
+      "A1": "1",
+      "A2": "4",
+      "A3": "5",
+      "A4": "6",
+      "A5": "7",
+      "A6": "8",
+      "A7": "9",
+      "A8": "10",
+      "C8": "=SUM(part)",
+      "D8": "=SUM($A$2:$A10)",
+      "F8": "=SUM(top)",
+      "G8": "=SUM($A5:$A$10)",
+      "A9": "11",
+      "A10": "12",
+      "A11": "13",
+      "A12": "14",
+      "A13": "15",
+      "A14": "16",
+      "A15": "17",
+      "A16": "18",
+      "A17": "19",
+      "A18": "20"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "part",
+     "ref": "=S!#REF!"
+    },
+    {
+     "name": "top",
+     "ref": "=S!$A1048574:$A$10"
+    }
+   ]
+  },
+  "area-delete-row-12": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$19",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "A3": "3",
+      "A4": "4",
+      "A5": "5",
+      "A6": "6",
+      "A7": "7",
+      "A8": "8",
+      "A9": "9",
+      "A10": "10",
+      "C10": "=SUM(part)",
+      "D10": "=SUM($A$2:$A11)",
+      "F10": "=SUM(top)",
+      "G10": "=SUM($A7:$A$11)",
+      "A11": "11",
+      "A12": "13",
+      "A13": "14",
+      "A14": "15",
+      "A15": "16",
+      "A16": "17",
+      "A17": "18",
+      "A18": "19",
+      "A19": "20"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "part",
+     "ref": "=S!$A$2:$A3"
+    },
+    {
+     "name": "top",
+     "ref": "=S!#REF!"
+    }
+   ]
+  },
+  "area-insert-row-2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$21",
+     "cells": {
+      "A1": "1",
+      "A3": "2",
+      "A4": "3",
+      "A5": "4",
+      "A6": "5",
+      "A7": "6",
+      "A8": "7",
+      "A9": "8",
+      "A10": "9",
+      "A11": "10",
+      "C11": "=SUM(part)",
+      "D11": "=SUM($A$3:$A13)",
+      "F11": "=SUM(top)",
+      "G11": "=SUM($A8:$A$13)",
+      "A12": "11",
+      "A13": "12",
+      "A14": "13",
+      "A15": "14",
+      "A16": "15",
+      "A17": "16",
+      "A18": "17",
+      "A19": "18",
+      "A20": "19",
+      "A21": "20"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "part",
+     "ref": "=S!$A$3:$A3"
+    },
+    {
+     "name": "top",
+     "ref": "=S!$A1048574:$A$13"
+    }
+   ]
+  },
+  "area-insert-row-1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$2:$G$21",
+     "cells": {
+      "A2": "1",
+      "A3": "2",
+      "A4": "3",
+      "A5": "4",
+      "A6": "5",
+      "A7": "6",
+      "A8": "7",
+      "A9": "8",
+      "A10": "9",
+      "A11": "10",
+      "C11": "=SUM(part)",
+      "D11": "=SUM($A$3:$A13)",
+      "F11": "=SUM(top)",
+      "G11": "=SUM($A8:$A$13)",
+      "A12": "11",
+      "A13": "12",
+      "A14": "13",
+      "A15": "14",
+      "A16": "15",
+      "A17": "16",
+      "A18": "17",
+      "A19": "18",
+      "A20": "19",
+      "A21": "20"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "part",
+     "ref": "=S!$A$3:$A3"
+    },
+    {
+     "name": "top",
+     "ref": "=S!$A1048574:$A$13"
+    }
+   ]
+  },
+  "area-delete-rows-1-12": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$A$8",
+     "cells": {
+      "A1": "13",
+      "A2": "14",
+      "A3": "15",
+      "A4": "16",
+      "A5": "17",
+      "A6": "18",
+      "A7": "19",
+      "A8": "20"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "part",
+     "ref": "=S!#REF!"
+    },
+    {
+     "name": "top",
+     "ref": "=S!#REF!"
+    }
+   ]
+  }
+ }
+}

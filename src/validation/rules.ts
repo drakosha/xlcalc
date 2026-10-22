@@ -3,7 +3,7 @@
  * spaces), the rule over a cell, the cell its formulas are written for, the types that compare with bounds.
  */
 import type { DataValidation } from '../contract.js'
-import { areaText, hasCell, parseRange, type Rect } from '../structure/area.js'
+import { areaText, cornerOf, hasCell, parseRange, type Rect } from '../structure/area.js'
 
 /** The rectangles of a rule's range in order (`B2:B9 D2`), or null when a part is no range of the sheet. */
 export function areasOf(range: string): Rect[] | null {
@@ -25,11 +25,12 @@ export function ruleAt(rules: DataValidation[] | undefined, r: number, c: number
   return rules.findIndex((v) => areasOf(v.range)?.some((x) => hasCell(x, r, c)))
 }
 
-/** The cell a rule's formulas are written for: the top-left cell of its first range. */
-export function anchorOf(rule: DataValidation): { r: number; c: number } {
-  const x = areasOf(rule.range)![0]
-  return { r: x.r1, c: x.c1 }
-}
+/**
+ * The cell a rule's formulas are written for: the top-left of the rectangle around its ranges, whatever their order, as
+ * for a conditional format (the set `valid/anchor-held`: `$A3>2` over `H3:H6 J1:J3` read from a file is computed for H1,
+ * and Excel saves the rule it makes with H3 active as `$A1>2`).
+ */
+export const anchorOf = (rule: DataValidation): { r: number; c: number } => cornerOf(areasOf(rule.range)!)
 
 /** The types whose value compares with the formulas by `operator`. */
 export const COMPARED = new Set(['whole', 'decimal', 'date', 'time', 'textLength'])

@@ -92,7 +92,7 @@ describe('data validation under structure operations', () => {
   })
 
   it("a move takes rules along and keeps the target's where the moved cells have none; a copy pastes them, a plain copy clears them", () => {
-    expect(rules(after({ op: 'moveRange', from: { sheet: 'S', range: 'E2:E3' }, to: { sheet: 'S', cell: 'J5' } }))).toEqual(['C2:C9 "Yes,No"', 'D2:D9 $H$1', 'E4:E9 G2 E4>A4', 'F2:F9 Fruits', 'J5:J6 J5>A2'])
+    expect(rules(after({ op: 'moveRange', from: { sheet: 'S', range: 'E2:E3' }, to: { sheet: 'S', cell: 'J5' } }))).toEqual(['C2:C9 "Yes,No"', 'D2:D9 $H$1', 'E4:E9 G2 E2>A2', 'F2:F9 Fruits', 'J5:J6 J5>A2'])
     expect(rules(after({ op: 'moveRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', cell: 'C4' } }))).toEqual(['C2:C9 "Yes,No"', 'D2:D9 $H$1', 'E2:E9 G2 E2>A2', 'F2:F9 Fruits'])
     expect(rules(after({ op: 'copyRange', from: { sheet: 'S', range: 'E2' }, to: { sheet: 'S', range: 'J2:J4' } }))).toEqual(['C2:C9 "Yes,No"', 'D2:D9 $H$1', 'E2:E9 G2 J2:J4 E2>A2', 'F2:F9 Fruits'])
     expect(rules(after({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', range: 'C3' } }))).toEqual(['C2 C4:C9 "Yes,No"', 'D2:D9 $H$1', 'E2:E9 G2 E2>A2', 'F2:F9 Fruits'])

@@ -184,6 +184,7 @@ export interface MessageParams extends XlsxMessageParams {
   // reading a formula: the tokens
   rowOutOfRange: { row: string }
   columnOutOfRange: { column: string }
+  numberOutOfRange: { number: string }
   spillAfterRange: object
   spillAcrossSheets: object
   unterminatedString: object
