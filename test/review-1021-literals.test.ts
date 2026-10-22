@@ -61,3 +61,13 @@ describe('the leap day typed in a year that is not leap (fix-u380)', () => {
     expect(s.getCells('S', 'A1').A1).toMatchObject({ text: 'Feb-29' })
   })
 })
+
+describe.each(['closures', 'eval'] as const)('the percent operator near the smallest normal number, %s', (execution) => {
+  // Excel for Mac and for Windows, the set low-values-held: a subnormal hundredth is 0, as `/` gives it
+  it('gives 0 where the hundredth is subnormal, as A1/100 does', () => {
+    const formulas = ['"a"&(K1%)', 'K1%=0', 'K2%*1E300', '-K1%=0', '"a"&(K3%)', '(K1%)=(K1/100)', '1E-307%=0', 'INDEX(K1:K2%,1)=0']
+    const cells = Object.fromEntries(formulas.map((f, i) => [`B${i + 1}`, { formula: f }]))
+    const r = compute({ sheets: [{ name: 'S', cells: { K1: { value: 1e-307 }, K2: { value: 2e-306 }, K3: { value: 3e-306 }, ...cells } }] }, { execution, clock })
+    expect(formulas.map((_, i) => r.sheets[0].cells[`B${i + 1}`].value)).toEqual(['a0', true, 0, true, 'a3E-308', true, true, true])
+  })
+})
