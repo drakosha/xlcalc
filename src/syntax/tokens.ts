@@ -9,6 +9,7 @@ import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
 import { ERROR_CODE, FORMULA_ERRORS } from './errors.js'
+import { MIN_NORMAL } from '../values.js'
 import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_CHAR, IDENT_RULE, isSpace, numberSource } from './scan.js'
 import { readSpec, type TableSpec } from './table.js'
 
@@ -121,6 +122,18 @@ const BEGINS = new Set(['ref', 'xref', 'ident', 'xname', 'table', 'fn', '('])
 
 /** A link's number as a file writes it (`1`), else the path and file name it is shown with. */
 const bookOf = (path: string, file: string): number | string => (path === '' && /^[1-9][0-9]*$/.test(file) ? Number(file) : path + file)
+
+/**
+ * A number literal as Excel takes it typed into a formula: refused from 1E+308 on, not 0 and below 1E-309, or all zeros
+ * with an exponent past 308 (`0E-400`); 0 up to the smallest normal number, whose text then reads `0` (the entry sets
+ * `review-held`, `-2`, `-3`).
+ */
+function literal(text: string, at: number): number {
+  const v = readNumber(text)
+  const e = Math.abs(Number(/[eE]([+-]?\d+)$/.exec(text)?.[1] ?? 0))
+  if (v >= 1e308 || (v !== 0 && v < 1e-309) || (v === 0 && e > 308)) bad(at, { key: 'numberOutOfRange', number: text })
+  return v <= MIN_NORMAL ? 0 : v
+}
 
 /** A quoted sheet with a book in brackets (`'C:\data\[Book2.xlsx]My Sheet'`, `'[1]My Sheet'`): the path, the book, the sheet. */
 const BOOK_IN_QUOTES = /^([^[\]]*)\[([^[\]]+)\]([^[\]]*)$/
@@ -260,7 +273,7 @@ export function tokenize(src: string): Tok[] {
     }
     const nm = NUMBER.exec(rest)
     if (nm) {
-      push({ t: 'num', v: readNumber(nm[0]), at: i })
+      push({ t: 'num', v: literal(nm[0], i), at: i })
       i += nm[0].length
       continue
     }

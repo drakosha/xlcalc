@@ -226,6 +226,7 @@ const RULE_TEXTS: Record<RuleText, [string, string]> = {
 const MESSAGES: Messages = {
   rowOutOfRange: (p) => `Строки ${p.row} нет на листе`,
   columnOutOfRange: (p) => `Столбца ${p.column} нет на листе`,
+  numberOutOfRange: (p) => `Число ${p.number} вне допустимого диапазона`,
   spillAfterRange: () => 'Знак # ставится только после ссылки на одну ячейку',
   spillAcrossSheets: () => 'Знак # ставится только после ссылки на одну ячейку одного листа',
   unterminatedString: () => 'Текст не закрыт кавычкой',

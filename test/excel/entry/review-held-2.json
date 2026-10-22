@@ -1,0 +1,226 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-22",
+  "seconds": 3.1
+ },
+ "cases": [
+  {
+   "id": "big-1",
+   "text": "=1E307"
+  },
+  {
+   "id": "big-2",
+   "text": "=9.99999999999999E307"
+  },
+  {
+   "id": "big-3",
+   "text": "=9.999999999999999E307"
+  },
+  {
+   "id": "big-4",
+   "text": "=1E308"
+  },
+  {
+   "id": "big-5",
+   "text": "=1.7976931348623157E308"
+  },
+  {
+   "id": "big-6",
+   "text": "=SUM(1E308,1)"
+  },
+  {
+   "id": "big-7",
+   "text": "=1E307*10"
+  },
+  {
+   "id": "small-1",
+   "text": "=1E-307"
+  },
+  {
+   "id": "small-2",
+   "text": "=2.2250738585072014E-308"
+  },
+  {
+   "id": "small-3",
+   "text": "=2.2E-308"
+  },
+  {
+   "id": "small-4",
+   "text": "=1E-308"
+  },
+  {
+   "id": "small-5",
+   "text": "=1E-309"
+  },
+  {
+   "id": "small-6",
+   "text": "=1E-320"
+  },
+  {
+   "id": "small-7",
+   "text": "=4.9E-324"
+  },
+  {
+   "id": "small-8",
+   "text": "=1E-324"
+  },
+  {
+   "id": "small-9",
+   "text": "=0E-400"
+  },
+  {
+   "id": "small-10",
+   "text": "=0.0E400"
+  }
+ ],
+ "answers": {
+  "big-1": {
+   "cell": {
+    "formula": "1E+307"
+   },
+   "computed": 1e+307,
+   "text": "1E+307",
+   "code": "General",
+   "local": "General",
+   "value2": 1e+307
+  },
+  "big-2": {
+   "cell": {
+    "formula": "9.99999999999999E+307"
+   },
+   "computed": 9.99999999999999e+307,
+   "text": "1E+308",
+   "code": "General",
+   "local": "General",
+   "value2": 9.99999999999999e+307
+  },
+  "big-3": {
+   "cell": {
+    "formula": "9.99999999999999E+307"
+   },
+   "computed": 9.99999999999999e+307,
+   "text": "1E+308",
+   "code": "General",
+   "local": "General",
+   "value2": 9.99999999999999e+307
+  },
+  "big-4": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "big-5": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "big-6": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "big-7": {
+   "cell": {
+    "formula": "1E+307*10"
+   },
+   "computed": 1e+308,
+   "text": "1E+308",
+   "code": "General",
+   "local": "General",
+   "value2": 1e+308
+  },
+  "small-1": {
+   "cell": {
+    "formula": "1E-307"
+   },
+   "computed": 1e-307,
+   "text": "1E-307",
+   "code": "General",
+   "local": "General",
+   "value2": 1e-307
+  },
+  "small-2": {
+   "cell": {
+    "formula": "0"
+   },
+   "computed": 0,
+   "text": "0",
+   "code": "General",
+   "local": "General",
+   "value2": 0
+  },
+  "small-3": {
+   "cell": {
+    "formula": "0"
+   },
+   "computed": 0,
+   "text": "0",
+   "code": "General",
+   "local": "General",
+   "value2": 0
+  },
+  "small-4": {
+   "cell": {
+    "formula": "0"
+   },
+   "computed": 0,
+   "text": "0",
+   "code": "General",
+   "local": "General",
+   "value2": 0
+  },
+  "small-5": {
+   "cell": {
+    "formula": "0"
+   },
+   "computed": 0,
+   "text": "0",
+   "code": "General",
+   "local": "General",
+   "value2": 0
+  },
+  "small-6": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "small-7": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "small-8": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "small-9": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "small-10": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  }
+ }
+}
