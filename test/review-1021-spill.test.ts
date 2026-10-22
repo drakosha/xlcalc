@@ -43,6 +43,28 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
   })
 })
 
+describe.each(['closures', 'eval'] as const)('two arrays over one cell, execution %s', (execution) => {
+  // B1 and A2 meet at B2; the edit gives A2 a formula to follow (directly, or one reading B1), and B1 now ranks first
+  it.each([
+    ['A1', { formula: '1' }, 'SEQUENCE(1,3)+0*A1'],
+    ['D1', { formula: 'ROWS(B1)' }, 'SEQUENCE(1,3)+0*D1'],
+  ] as const)('an edit of %s turns the winner while the loser places the same array again', async (cell, input, a2) => {
+    const b = book({ B1: { formula: 'SEQUENCE(3)' }, A2: { formula: a2 }, [cell]: { value: 1 } })
+    const edit = [{ sheet: 'S', cell, input }]
+    const s = createSession(b, { clock, execution })
+    expect(s.getCell('S', 'A2')?.value).toBe(1)
+    s.setCells(edit)
+    const full = compute(s.getBook(), { clock, execution })
+    expect([full.sheets[0].cells.B1.value, full.sheets[0].cells.B3.value, full.sheets[0].cells.A2.value]).toEqual([1, 3, { error: 'SPILL' }])
+    expect(s.getHash()).toBe(full.hash)
+    const calc = createInlineCalc({ sliceMs: 1 })
+    const inline = await calc.createSession(b, { clock, execution })
+    await inline.setCells(edit)
+    expect(await inline.getHash()).toBe(full.hash)
+    await inline.close()
+  })
+})
+
 describe.each(['closures', 'eval'] as const)('legacy arrays, execution %s', (execution) => {
   it('two array areas that cross with neither top inside the other are refused (x-fuzz-session-6)', () => {
     const crossed = book({ J18: { formula: '{1;2}', array: 'J18:J19' }, I19: { formula: '{3,4}', array: 'I19:J19' } })

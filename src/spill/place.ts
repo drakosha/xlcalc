@@ -82,11 +82,12 @@ export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
   const over = [...sp.on.values()].filter((x) => x.id !== f.id && x.s === f.s && meets(x, area))
   // an old-kind array formula's area is never spilled over
   const first = over.find((x) => state.formulas[x.id]?.area || !beats(state, f.id, x.id))
-  if (first) return blocked(state, f, t, `${cannot}: it overlaps the spilled array of ${cellText(state, f.s, first.r1, first.c1)}`, area)
+  if (first) return blocked(state, f, t, `${cannot}: it overlaps the spilled array of ${cellText(state, f.s, first.r1, first.c1)}`, area, first.id)
   // the arrays this one wins over stop spilling and wait for their range
   for (const x of over) {
     release(state, x.id, t)
     sp.wait.set(x.id, { s: x.s, r1: x.r1, c1: x.c1, r2: x.r2, c2: x.c2 })
+    sp.by.set(x.id, f.id)
   }
   place(state, f, a, area, t)
   return shown(a.at(0, 0))
@@ -127,17 +128,22 @@ function place(state: EngineState, f: Formula, a: Arr, area: Area, t?: Tracker) 
   claim(state, f.id, area)
   sp.wait.delete(f.id)
   sp.why.delete(f.id)
+  sp.by.delete(f.id)
   if (old && !equalAreas(old, area)) sp.touched.push({ ...old, step: sp.step })
+  // an array that gave way to this one and now ranks before it (the graph changed) takes the cells: it is computed again
+  // (an old-kind array formula gives way to none)
+  if (!changed && !f.area) for (const [id, by] of sp.by) if (by === f.id && beats(state, id, f.id)) changed = true
   if (changed) sp.touched.push({ ...area, step: sp.step })
 }
 
 /** Two spills' fills: the same rectangles holding the same values. */
 const sameFills = (a: Fill[], b: Fill[]) => a.length === b.length && a.every((x, i) => equalAreas({ s: 0, ...x }, { s: 0, ...b[i] }) && same(x.v, b[i].v))
 
-/** The formula's array does not spill: #SPILL!, with the reason and, unless the edge stops it, the range it waits for. */
-function blocked(state: EngineState, f: Formula, t: Tracker | undefined, why: string, wait?: Area): CErr {
+/** The formula's array does not spill: #SPILL!, with the reason, unless the edge stops it the range it waits for, and the spill it gives way to. */
+function blocked(state: EngineState, f: Formula, t: Tracker | undefined, why: string, wait?: Area, by?: number): CErr {
   endSpill(state, f, t, false)
   if (wait) state.spills.wait.set(f.id, wait)
+  if (by !== undefined) state.spills.by.set(f.id, by)
   state.spills.why.set(f.id, why)
   return E.SPILL
 }
@@ -151,6 +157,7 @@ export function endSpill(state: EngineState, f: Formula, t: Tracker | undefined,
   if (!cycle) claim(state, f.id, undefined)
   state.spills.wait.delete(f.id)
   state.spills.why.delete(f.id)
+  state.spills.by.delete(f.id)
 }
 
 /** Sets the area the graph puts the readers of after the formula. */

@@ -199,7 +199,7 @@ export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, p
   yield* settle(state, lists, t, active)
   if (!before && !spillCycle(state)) return
   for (const id of [...state.spills.on.keys()]) release(state, id, t)
-  for (const m of [state.spills.claims, state.spills.wait, state.spills.why]) m.clear()
+  for (const m of [state.spills.claims, state.spills.wait, state.spills.why, state.spills.by]) m.clear()
   rebuildGraph(state)
   yield* evaluateAll(state, t)
 }
