@@ -6,10 +6,9 @@
 import { PLAIN_SHEET } from '../sheet-pattern.js'
 import { wordKey } from '../collate.js'
 import type { ErrorCode } from '../contract.js'
-import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
+import { colToIndex, MAX_COLS, MAX_ROWS, MIN_NORMAL, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
 import { ERROR_CODE, FORMULA_ERRORS } from './errors.js'
-import { MIN_NORMAL } from '../values.js'
 import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_CHAR, IDENT_RULE, isSpace, numberSource } from './scan.js'
 import { readSpec, type TableSpec } from './table.js'
 
