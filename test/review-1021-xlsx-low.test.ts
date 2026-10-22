@@ -1,12 +1,14 @@
 /**
  * Reproductions from the review of 21.10 on reading xlsx files that are damaged or written by hand: a zip archive whose
- * entries are cut short, named twice or do not match their CRC-32 is refused with the reader's error. Reading a file
+ * entries are cut short, named twice or do not match their CRC-32 is refused with the reader's error; XML comments are
+ * no content, and a character reference past U+10FFFF is refused as XML refuses it. Reading a file
  * does not calculate, so the execution modes do not apply here.
  */
 import { deflateRawSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { rawZip, type RawEntry } from './fixtures/raw-zip.js'
+import { read, sheet } from './xlsx-fixtures.js'
 
 const enc = new TextEncoder()
 const entry = (name: string, text: string): RawEntry => ({ name, data: enc.encode(text) })
@@ -49,5 +51,28 @@ describe('xlsx: a damaged zip archive (x-xlsx-3, x-xlsx-12, x-xlsx-13)', () => {
     expect(await refusal(rawZip([{ ...entry('a.xml', text), usize: 5 }]))).toBe('Error: xlsx: not a readable zip archive: entry a.xml is stored in 12 bytes but says it holds 5')
     expect(await openArchive(rawZip([deflated])).text('a.xml')).toBe(text)
     expect(await openArchive(rawZip([entry('a.xml', text)])).text('a.xml')).toBe(text)
+  })
+})
+
+describe('xlsx: XML comments (x-xlsx-15)', () => {
+  it('a cell, a row or a sheet commented out is not read; a CDATA section keeps what looks like a comment', async () => {
+    const r = await sheet('<row r="1"><c r="A1"><v>1</v></c><!-- <c r="B1"><v>2</v></c> --><c r="C1" t="str"><f>"x"</f><v><![CDATA[<!-- y -->]]></v></c></row><!-- <row r="2"><c r="A2"><v>9</v></c></row> -->')
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1 }, C1: { formula: '"x"' } })
+    expect(r.cached.sheets[0].cells.C1).toEqual({ value: '<!-- y -->' })
+    const wb = await read({ sheets: [{ name: 'S', body: '<sheetData/>' }, { name: 'T', body: '<sheetData/>' }], workbook: { before: '<!-- <sheets><sheet name="X" sheetId="9" r:id="rId1"/></sheets> -->' } })
+    expect(wb.book.sheets.map((s) => s.name)).toEqual(['S', 'T'])
+    expect(wb.issues).toEqual([])
+  })
+})
+
+describe('xlsx: a character reference past U+10FFFF (x-xlsx-2)', () => {
+  it("refuses the part with the reader's error, in any text of the file; within U+10FFFF and in a CDATA section it reads", async () => {
+    const shared = (t: string) => sheet('<row r="1"><c r="A1" t="s"><v>0</v></c></row>', { strings: [t] })
+    for (const ref of ['&#1114112;', '&#x110000;', `&#${'9'.repeat(400)};`]) {
+      await expect(shared(`a${ref}`)).rejects.toThrow(`xlsx: the part xl/sharedStrings.xml is not valid XML: the character reference ${ref} is past U+10FFFF`)
+      await expect(read({ sheets: [{ name: `S${ref}`, body: '<sheetData/>' }] })).rejects.toThrow(/^xlsx: the part xl\/workbook\.xml is not valid XML/)
+    }
+    expect((await shared('a&#x10FFFF;&#128512;')).book.sheets[0].cells.A1).toEqual({ value: 'a\u{10FFFF}😀' })
+    expect((await shared('<t><![CDATA[a&#1114112;]]></t>')).book.sheets[0].cells.A1).toEqual({ value: 'a&#1114112;' })
   })
 })

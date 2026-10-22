@@ -5,6 +5,7 @@
  * `ReadXlsxOptions.limits` once inflated.
  */
 import type { XlsxLimits } from '../types.js'
+import { xmlText } from '../xml/text.js'
 import { inflate, text } from './platform.js'
 
 export interface Archive {
@@ -12,7 +13,7 @@ export interface Archive {
   readonly names: readonly string[]
   /** The bytes of an entry by name in any case; undefined when there is none. */
   bytes(name: string): Promise<Uint8Array | undefined>
-  /** The text of an entry (UTF-8, line ends as XML reads them), undefined when there is none. */
+  /** The text of an entry as XML reads it (`xmlText`), undefined when there is none. */
   text(name: string): Promise<string | undefined>
 }
 
@@ -161,9 +162,7 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     async text(name) {
       const b = await bytesOf(name)
       if (!b) return undefined
-      // XML's end-of-line handling: CRLF and a lone CR are a line feed (Excel writes CRLF inside text)
-      const s = text(b)
-      return s.includes('\r') ? s.replace(/\r\n?/g, '\n') : s
+      return xmlText(text(b), name)
     },
   }
 }

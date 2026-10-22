@@ -6,6 +6,25 @@
 
 const NAMED: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&apos;': "'" }
 
+// comments and CDATA sections, whose content is no markup; character references outside CDATA sections
+const COMMENTS = /<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>/g
+const REFERENCES = /<!\[CDATA\[[\s\S]*?\]\]>|&#(x[0-9A-Fa-f]+|\d+);/g
+
+/**
+ * A part's text as XML reads it: CRLF and a lone CR are a line feed (Excel writes CRLF inside text), and comments
+ * are no content (a cell, a row or a sheet commented out is not read). A character reference past U+10FFFF is not
+ * XML: the part is refused, as an XML parser refuses it.
+ */
+export function xmlText(s: string, part: string): string {
+  if (s.includes('\r')) s = s.replace(/\r\n?/g, '\n')
+  if (s.includes('<!--')) s = s.replace(COMMENTS, (m) => (m[2] === '-' ? '' : m))
+  if (s.includes('&#'))
+    for (const [m, ref] of s.matchAll(REFERENCES))
+      if (ref !== undefined && (ref[0] === 'x' ? parseInt(ref.slice(1), 16) : Number(ref)) > 0x10ffff)
+        throw new Error(`xlsx: the part ${part} is not valid XML: the character reference ${m} is past U+10FFFF`)
+  return s
+}
+
 /** Entities to characters in one pass: a character reference gives data that is not read again (`&#38;amp;` is `&amp;`). */
 export function decodeXml(s: string): string {
   if (!s.includes('&')) return s
