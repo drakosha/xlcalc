@@ -30,6 +30,23 @@ const manyRows = (n: number, entry: (r: number) => RowInput = () => ({})): Recor
   Object.fromEntries(Array.from({ length: n }, (_, i) => [String(i + 1), { height: 15 + (i % 3), ...entry(i + 1) }]))
 
 describe.each(EXECUTIONS)('review 21.10 rows and columns, %s', (execution) => {
+
+  describe.each(KINDS)('in %s', (kind) => {
+    const open = openerFor(kind)
+
+    it('typing text with a line break into 20,000 rows patches the rows map once (speed-u116)', async () => {
+      const s = await open({ sheets: [{ name: 'S', cells: {} }] }, { execution, clock, display: false, undo: { depth: 0 } })
+      const edits = Array.from({ length: 20_000 }, (_, i) => ({ sheet: 'S', cell: `A${i + 1}`, text: 'a\nb' }))
+      // one patch of the whole map per row: 22 s
+      expect(await took(() => s.setCellTexts(edits))).toBeLessThan(4000)
+      const rows = (await s.getLayout()).sheets[0].rows!
+      expect(Object.keys(rows).length).toBe(20_000)
+      expect(rows['20000']).toEqual({ height: 32, bestFit: true })
+      await s.close()
+    })
+
+  })
+
   it.each([
     ['8,000 rows of their own entries in one group', manyRows(8000, () => ({ outlineLevel: 1 }))],
     ['3,000 groups of three rows', Object.fromEntries(Array.from({ length: 3000 }, (_, i) => [`${4 * i + 1}:${4 * i + 3}`, { outlineLevel: 1 }]))],
