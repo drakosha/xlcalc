@@ -25,4 +25,18 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     expect(ms).toBeLessThan(3000)
     expect(s.getBook().sheets[0].validations).toEqual([{ range: `A1:A${n}`, type: 'whole', operator: 'greaterThan', formula1: 'B1' }])
   })
+
+  it('a fill over rows with their own entries looks up only the lines of each tile (speed-u91)', () => {
+    const n = 12_000
+    const [cells, rows]: [BookInput['sheets'][0]['cells'], Record<string, { height: number }>] = [{ B1: { formula: 'A1*2' } }, {}]
+    for (let r = 1; r <= n; r++) {
+      cells[`A${r}`] = { value: r }
+      rows[String(r)] = { height: 15 + (r % 3) }
+    }
+    const s = createSession({ sheets: [{ name: 'S', cells, rows }] }, { execution, clock, display: false })
+    // the old fill walked every row entry per tile: 9-10 s at 12,000 rows
+    const ms = timed(() => expect(s.editStructure({ op: 'fillRange', sheet: 'S', range: 'B1', to: `B1:B${n}`, type: 'copy' }).ok).toBe(true))
+    expect(ms).toBeLessThan(3000)
+    expect(s.getCell('S', `B${n}`)).toMatchObject({ formula: `A${n}*2`, value: n * 2 })
+  })
 })
