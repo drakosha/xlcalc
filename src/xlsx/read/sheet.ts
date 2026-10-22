@@ -18,13 +18,13 @@ import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
-import { attributes, element, elements, flag, has, ownEntry, type Element } from '../xml/scan.js'
+import { attributes, element, elements, flag, has, lastChild, ownEntry, type Element } from '../xml/scan.js'
 import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
 import { readTables } from './tables.js'
-import { outsideConditional, readConditional } from './conditional.js'
+import { readConditional } from './conditional.js'
 import type { Dxf } from '../styles/dxf.js'
 import type { Palette } from '../styles/color.js'
 import { readValidations } from './validation.js'
@@ -183,7 +183,11 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     if (!(lo >= 0 && hi >= lo && hi < 16384)) continue
     const col: ColumnInput = {}
     const where = { sheet: read.sheet, cell: `${spanKey(lo, hi, 'c').replace(/^([A-Z]+)$/, '$1:$1')}` }
-    if (a.width !== undefined && flag(a.customWidth)) col.width = Math.min(255, Number(a.width))
+    if (a.width !== undefined && flag(a.customWidth)) {
+      const width = Number(a.width)
+      if (Number.isFinite(width) && width >= 0) col.width = Math.min(255, width)
+      else read.issues.add('part', { key: 'widthBad' }, where)
+    }
     // a width Excel fitted, which typing widens again
     if (col.width !== undefined && flag(a.bestFit)) col.bestFit = true
     // Excel hides a column of width 0 whatever its flag
@@ -311,7 +315,10 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const closeAt = open < 0 ? -1 : xml.indexOf('sheetData>', open + 10)
   const head = open < 0 ? xml : xml.slice(0, open)
   const dataEnd = closeAt < 0 ? open : closeAt + 10
-  const data = open < 0 ? '' : xml.slice(open, dataEnd)
+  // cells left open (no `</sheetData>`, the tag not closing itself) are read to the end of the part
+  const unclosed = open >= 0 && closeAt < 0 && xml[xml.indexOf('>', open) - 1] !== '/'
+  if (unclosed) ctx.issues.add('part', { key: 'sheetDataOpen' }, { sheet: name })
+  const data = open < 0 ? '' : xml.slice(open, unclosed ? xml.length : dataEnd)
   const tail = open < 0 ? '' : xml.slice(dataEnd)
   const cols = columns(head, ctx)
   const read = readCells(data, ctx, lines(cols, 'c'))
@@ -353,9 +360,13 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (view) sheet.view = view
   const frozen = readFrozen(head, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
-  const cf = readConditional(tail, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)
+  // the worksheet's own extension list is its last element: autofilters, sorts and rules may hold lists of their own
+  const ext = lastChild(tail, 'extLst')
+  const own = ext ? tail.slice(0, ext.start) : tail
+  const extensions = ext?.body ?? ''
+  const cf = readConditional(own, extensions, name, src.cond.dxfs, src.cond.palette, ctx.issues, src.formulas)
   if (cf) sheet.conditionalFormats = cf
-  const validations = readValidations(outsideConditional(tail), name, src.sheets, ctx.issues, src.formulas)
+  const validations = readValidations(own, extensions, name, src.sheets, ctx.issues, src.formulas)
   if (validations) sheet.validations = validations
   const settings = outline(head, name, ctx.issues)
   if (settings) sheet.outline = settings

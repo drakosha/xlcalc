@@ -54,7 +54,7 @@ export class StyleWriter {
   private readonly borders = new Table('<border><left/><right/><top/><bottom/><diagonal/></border>')
   private readonly formats = new Map<string, number>()
   private readonly xfs = new Table('<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>')
-  private readonly byKey = new Map<string, number>([['\n', 0]])
+  private readonly byKey = new Map<string, number>([['\n0', 0]])
   private readonly dxfs = new Table()
 
   constructor(private readonly styles: CellStyle[] = []) {}
@@ -72,11 +72,13 @@ export class StyleWriter {
 
   /** The cell format of a style (by index) and a number format; 0 is the default. */
   xf(style: number | undefined, format: NumberFormat | undefined): number {
-    const key = `${style ?? ''}\n${format ?? ''}`
+    // by the format's id: 0 (General) and '0' (whole numbers) are two formats, 14 and '14' too; an empty code stays
+    // General, as it was written before (whether Excel opens an empty formatCode is not measured)
+    const numFmt = format === '' ? 0 : this.numFmt(format)
+    const key = `${style ?? ''}\n${numFmt}`
     let i = this.byKey.get(key)
     if (i !== undefined) return i
     const s = style === undefined ? {} : this.styles[style]
-    const numFmt = this.numFmt(format)
     const font = s.font ? this.fonts.of(fontXml(s.font)) : 0
     const fill = s.fill ? this.fills.of(`<fill><patternFill patternType="solid"><fgColor rgb="${rgb(s.fill.color)}"/><bgColor indexed="64"/></patternFill></fill>`) : 0
     const border = s.border ? this.borders.of(borderXml(s.border)) : 0

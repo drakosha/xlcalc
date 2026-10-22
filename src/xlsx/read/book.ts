@@ -173,7 +173,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     const r = byId.get(attr(a, 'id') ?? '')
     return { name: readText(a.name ?? ''), kind: r?.kind, part: r?.external ? undefined : r?.target, ...(STATES.has(a.state) ? { hidden: STATES.get(a.state) } : {}) }
   })
-  const strings = readStrings(stringsXml)
+  const strings = readStrings(stringsXml, issues)
   const meta = cellMetadata(metaXml, richValues, richStructures)
   const links = await readLinks(archive, wb, rels, issues)
   const all = decls.filter((d) => d.kind === 'worksheet').map((d) => d.name)

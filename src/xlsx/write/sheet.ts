@@ -15,7 +15,7 @@
  * and columns carry their outline levels.
  */
 import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput } from '../../contract.js'
-import { sheetViewXml } from '../view.js'
+import { frozenScroll, sheetViewXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { normalized } from '../../layout/outline.js'
 import { lines, type Line } from '../../layout/spans.js'
@@ -261,7 +261,10 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   }
   const urls = new Map<string, string>()
   const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
-  const pane = paneXml(sheet.frozen)
+  // over frozen panes the scroll goes to the pane after the split: the view's top left cell is where they start
+  const scroll = sheet.frozen && frozenScroll(sheet.view?.topLeft, sheet.frozen)
+  const pane = scroll ? paneXml(sheet.frozen, scroll.pane) : ''
+  const view = scroll && sheet.view ? { ...sheet.view, topLeft: scroll.view } : sheet.view
   const names: FileNames = { sheets: ctx.sheets, tables: ctx.tables, externalBooks: ctx.externalBooks }
   const cond = conditionalXml(sheet, index, { styles, issues, ...names })
   // the outline: where its summaries are, and its deepest levels, which Excel reserves room for
@@ -274,7 +277,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const xml =
     `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
     (filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '') +
-    `<dimension ref="${dim}"/>${sheetViewXml(sheet.view, pane, ctx.active)}` +
+    `<dimension ref="${dim}"/>${sheetViewXml(view, pane, ctx.active)}` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
     `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>` +
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +
