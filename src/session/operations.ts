@@ -39,6 +39,8 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
   const edits = new Map<string, CellReplace>(),
     back = new Map<string, CellReplace>()
   const overlays = new Map<number, Map<string, CellInput | null>>()
+  // each overlay's cells beneath it and the proxy over them: a rebuild copies them without going through the proxy's traps
+  const wrapped = new Map<number, [base: Record<string, CellInput>, proxy: Record<string, CellInput>]>()
   const layers = new Map<number, Layer>()
   let rebuild = false,
     styles = false
@@ -58,6 +60,7 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
       getOwnPropertyDescriptor: (target, k) => (typeof k === 'string' && own.has(k) ? (own.get(k) === null ? undefined : { configurable: true, enumerable: true, writable: true, value: own.get(k) }) : Reflect.getOwnPropertyDescriptor(target, k)),
     })
     book.sheets[i] = { ...book.sheets[i], cells: proxy }
+    wrapped.set(i, [base, proxy])
     return changes
   }
   const put = (items: CellReplace[]) => {
@@ -194,6 +197,18 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
     if (JSON.stringify(a) !== JSON.stringify(b)) layout.set(i, sh)
     if ((old.merges !== sh.merges && JSON.stringify(old.merges ?? []) !== JSON.stringify(sh.merges ?? [])) || (old.rows !== sh.rows && JSON.stringify(hiddenRows(old) ?? null) !== JSON.stringify(hiddenRows(sh) ?? null)) || old.filtered !== sh.filtered) rebuild = true
   })
-  if (rebuild) book.sheets = book.sheets.map((sh) => ({ ...sh, cells: { ...sh.cells } }))
+  if (rebuild)
+    book.sheets = book.sheets.map((sh, i) => {
+      const [base, proxy] = wrapped.get(i) ?? []
+      const own = overlays.get(i)
+      if (!own || sh.cells !== proxy) return { ...sh, cells: { ...sh.cells } }
+      // the proxy's cells in its order: the base's, then those the overlay adds, the cells it empties left out
+      const cells = { ...base }
+      for (const [k, v] of own) {
+        if (v === null) delete cells[k]
+        else cells[k] = v
+      }
+      return { ...sh, cells }
+    })
   return { book, edits: final, back: [...back.values()], rebuild, layout, layers, styles }
 }
