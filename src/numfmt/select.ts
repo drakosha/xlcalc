@@ -1,9 +1,10 @@
 /**
  * Which section shows a value, as measured in Excel (`test/excel/cases/text-format.json`): without conditions
  * the first for positives (and zero with fewer than three sections), the second for negatives, the third for
- * zero, the fourth (or a section with `@`) for text; with conditions the first section whose condition holds or
- * that has none, else General when the code has one section and nothing otherwise (TEXT answers #VALUE!, a cell
- * shows `#`). A section writes its own minus when every value it can receive is negative.
+ * zero, the fourth (or a section with `@`, which ending a code of two or three sections takes no number) for text;
+ * with conditions the first section whose condition holds or that has none, else General when the code has one
+ * section and nothing otherwise (TEXT answers #VALUE!, a cell shows `#`). A section writes its own minus when every
+ * value it can receive is negative.
  */
 import type { Cond, Section, Tok } from './parse.js'
 
@@ -24,10 +25,12 @@ function negativeOnly(secs: Section[], i: number): boolean {
 }
 
 export function choose(secs: Section[], v: number): Choice | null {
-  const ordered = secs.slice(0, 3)
+  // a text section ending a code of two or three sections takes no number (`h:mm;@` shows a negative as `h:mm` does)
+  const n = secs.length > 1 && secs.length < 4 && secs[secs.length - 1].toks.some((t) => t.t === 'text') ? secs.length - 1 : secs.length
+  const ordered = secs.slice(0, Math.min(3, n))
   if (!ordered.some((s) => s.cond)) {
-    if (v < 0 && secs.length >= 2) return { sec: secs[1], signed: false }
-    return { sec: v === 0 && secs.length >= 3 ? secs[2] : secs[0], signed: true }
+    if (v < 0 && n >= 2) return { sec: secs[1], signed: false }
+    return { sec: v === 0 && n >= 3 ? secs[2] : secs[0], signed: true }
   }
   const i = ordered.findIndex((s) => !s.cond || holds(s.cond, v))
   if (i < 0) return secs.length === 1 ? { sec: null, signed: true } : null

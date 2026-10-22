@@ -72,3 +72,44 @@ describe.each(['closures', 'eval'] as const)('ru-RU TEXT with a colour name, %s'
     expect(values(cases.map((c) => c[0]), execution, 'ru-RU')).toEqual(cases.map((c) => c[1]))
   })
 })
+
+describe.each(['closures', 'eval'] as const)('a code ending in a text section, %s', (execution) => {
+  const value = { error: 'VALUE' }
+
+  it('gives numbers the sections before the text section, as the code without it', () => {
+    const cases: [string, unknown][] = [
+      ['TEXT(-0.25,"h:mm;@")', value],
+      ['TEXT(-1,"m/d/yyyy;@")', value],
+      ['TEXT(-0.25,"[$-409]h:mm AM/PM;@")', value],
+      ['TEXT(-5,"0;@")', '-5'],
+      ['TEXT(-5,"0.00;""t""@")', '-5.00'],
+      ['TEXT(0,"0.00;-0.00;@")', '0.00'],
+      ['TEXT(-5,"[>10]0;@")', value],
+      ['TEXT(5,"[<0]0;[>10]0;@")', value],
+    ]
+    expect(values(cases.map((c) => c[0]), execution)).toEqual(cases.map((c) => c[1]))
+  })
+
+  it('keeps what Excel already gave', () => {
+    const cases: [string, unknown][] = [
+      ['TEXT(1.5,"h:mm;@")', '12:00'],
+      ['TEXT("a","h:mm;@")', 'a'],
+      ['TEXT(-5,"0;0;@")', '5'],
+      ['TEXT(0,"0.00;@")', '0.00'],
+      ['TEXT(0,"0;@")', '0'],
+      ['TEXT(-5,"0.00;-0.00;@")', '-5.00'],
+      ['TEXT(-1235,"0;-0;;@")', '-1235'],
+      ['TEXT(-5,"[<0]0;[>10]0;@")', '5'],
+      ['TEXT(20,"[<0]0;[>10]0;@")', '20'],
+      ['TEXT(-5,"@")', '-5'],
+    ]
+    expect(values(cases.map((c) => c[0]), execution)).toEqual(cases.map((c) => c[1]))
+  })
+
+  it('displays a negative date or time under it as # in a cell', () => {
+    const r = compute({ sheets: [{ name: 'S', cells: { A1: { value: -0.25, numberFormat: 'h:mm;@' }, A2: { value: -5, numberFormat: '0;@' } } }] }, { execution })
+    expect(r.sheets[0].cells.A1.text).toMatch(/^#+$/)
+    expect(r.sheets[0].cells.A2.text).toBe('-5')
+    expect(displayValue(-1, { numberFormat: 'm/d/yy;@' }).text).toMatch(/^#+$/)
+  })
+})

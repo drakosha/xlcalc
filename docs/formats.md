@@ -179,7 +179,7 @@ A number in the General format displays what `TEXT(x,"General")` returns (at mos
 
 ## Sections
 
-A format has up to four sections separated by `;`. Without conditions, the first is for positive numbers (and zero, when there are fewer than three sections), the second for negative numbers, the third for zero, and the fourth, or a section with `@`, for text. A negative number in the second section gets no minus sign of its own.
+A format has up to four sections separated by `;`. Without conditions, the first is for positive numbers (and zero, when there are fewer than three sections), the second for negative numbers, the third for zero, and the fourth, or a section with `@`, for text. A negative number in the second section gets no minus sign of its own. A text section that ends a format of two or three sections takes no number, so Excel's own date and time formats, which end in `;@`, display a negative number as the format without it does: `h:mm;@` displays −0.25 as `#` (`#VALUE!` in `TEXT`), and `0;@` displays −5 as `-5`.
 
 With conditions (`[>100]`, `[<=-5]`, `[=1]`, `[<>0]`), the value goes to the first of the first three sections whose condition is true or that has no condition. A value that no section accepts is displayed as General when the format has one section; otherwise it displays `#` in a cell and returns `#VALUE!` in `TEXT`.
 
