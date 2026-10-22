@@ -10,7 +10,8 @@ import { describe, expect, it } from 'vitest'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { rawZip, type RawEntry } from './fixtures/raw-zip.js'
 import { compute } from '../src/index.js'
-import { read, sheet } from './xlsx-fixtures.js'
+import { readXlsx } from '../src/xlsx.js'
+import { pack, parts, read, sheet } from './xlsx-fixtures.js'
 
 const enc = new TextEncoder()
 const entry = (name: string, text: string): RawEntry => ({ name, data: enc.encode(text) })
@@ -130,5 +131,19 @@ describe('xlsx: a value that is not a number, or a boolean that is not 0 or 1 (x
     expect(r.book.sheets[0].cells).toEqual({ I1: { value: 12 }, J1: { value: -1500 }, K1: { value: 0.5 }, L1: { value: true }, M1: { value: false }, O1: { formula: '1/0' } })
     expect(r.cached.sheets[0].cells).toEqual({})
     expect(issuesOf(r)).toEqual([['part', ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'O1'], 'a value that is not a number, or a boolean that is not 0 or 1, is left out']])
+  })
+})
+
+describe('xlsx: a name scoped to a sheet whose part is missing (fix-u331)', () => {
+  it('is left out with the sheet, and reported', async () => {
+    const f = parts({ sheets: [{ name: 'S', body: '<sheetData><row r="1"><c r="A1"><v>1</v></c></row></sheetData>' }, { name: 'T', body: '<sheetData/>' }], workbook: { after: '<definedNames><definedName name="loc" localSheetId="1">\'T\'!$A$1</definedName><definedName name="own" localSheetId="0">S!$A$1</definedName><definedName name="all">S!$A$1</definedName></definedNames>' } })
+    delete f['xl/worksheets/sheet2.xml']
+    const r = await readXlsx(await pack(f))
+    expect(r.book.sheets.map((s) => s.name)).toEqual(['S'])
+    expect(r.book.names).toEqual([{ name: 'own', ref: 'S!$A$1', scope: 'S' }, { name: 'all', ref: 'S!$A$1' }])
+    expect(r.issues.map((i) => [i.code, i.name ?? i.sheet, i.message])).toEqual([
+      ['name', 'loc', 'a name scoped to a sheet that was left out is left out too'],
+      ['part', 'T', 'a sheet whose part is missing is left out'],
+    ])
   })
 })
