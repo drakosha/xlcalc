@@ -50,3 +50,25 @@ it('displays a cell the same as TEXT writes it', () => {
   expect(displayValue(0.333333333333333, { numberFormat: '0.' + '0'.repeat(20), width: 255 }).text).toBe('0.33333333333333300000')
   expect(displayValue(1 / 3 * 1e6, { numberFormat: '#,##0.0000000000', width: 255 }).text).toBe('333,333.3333333330')
 })
+
+describe.each(['closures', 'eval'] as const)('ru-RU TEXT with a colour name, %s', (execution) => {
+  const value = { error: 'VALUE' }
+
+  it('refuses a point before a digit placeholder whatever the colour, as without one', () => {
+    const colours = ['Красный', 'Синий', 'Черный', 'Голубой', 'Зеленый', 'Желтый', 'Белый', 'Цвет10']
+    const formulas = ['TEXT(1234.5,"0.00")', ...colours.map((c) => `TEXT(1234.5,"[${c}]0.00")`), 'TEXT(1234.5,"[Красный]#.##")']
+    expect(values(formulas, execution, 'ru-RU')).toEqual(formulas.map(() => value))
+  })
+
+  it('keeps colours on numbers, dates and elapsed time', () => {
+    const cases: [string, string][] = [
+      ['TEXT(1234.567,"[Красный]0")', '1235'],
+      ['TEXT(1234.5,"[Красный]0,00")', '1234,50'],
+      ['TEXT(1234.5,"[Синий]# ##0,00")', '1 234,50'],
+      ['TEXT(45688,"[Красный]ДД.ММ.ГГГГ")', '31.01.2025'],
+      ['TEXT(1.25,"[ч]:мм:сс")', '30:00:00'],
+      ['TEXT(1.25,"[Черный][ч]:мм")', '30:00'],
+    ]
+    expect(values(cases.map((c) => c[0]), execution, 'ru-RU')).toEqual(cases.map((c) => c[1]))
+  })
+})
