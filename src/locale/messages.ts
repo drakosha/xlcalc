@@ -111,6 +111,10 @@ export interface XlsxMessageParams {
   cellOutside: object
   widthBad: object
   heightBad: object
+  rowNumberBad: object
+  styleIndexBad: object
+  stringIndexBad: object
+  valueBad: object
   dateInvalid: object
   cellOpen: object
   valueMetadata: object
@@ -304,7 +308,7 @@ export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
   sheetKind: 0, sheetPartMissing: 0, sheetNameRepaired: 0, stringsOpen: 0, allSheetsHidden: 0, tableNameTwice: 0, sharedWithoutMaster: 0, sharedCopy: 0, outlineStyles: 0,
   mergeOverlap: 0, autoFilterCriteria: 0, autoFilterPlain: 0, advancedFilter: 0, tableFilter: 0, sheetProtection: 0, drawings: 0, sparklines: 0,
   printSettings: 0, defaultWidth: 0, errorTyped: 0, sheetDataOpen: 0, userFunction: 0, tableRefWithoutTable: 0, formulaExternal: 0, letPrefix: 0, formulaUnparsed: 0,
-  cellOutside: 0, widthBad: 0, heightBad: 0, dateInvalid: 0, cellOpen: 0, valueMetadata: 0, richText: 0, errorUnknown: 0, errorUnspelled: 0, dataTable: 0, styleLost: 0, eastAsianFormat: 0, unknownFormat: 0,
+  cellOutside: 0, widthBad: 0, heightBad: 0, rowNumberBad: 0, styleIndexBad: 0, stringIndexBad: 0, valueBad: 0, dateInvalid: 0, cellOpen: 0, valueMetadata: 0, richText: 0, errorUnknown: 0, errorUnspelled: 0, dataTable: 0, styleLost: 0, eastAsianFormat: 0, unknownFormat: 0,
   tablePartBad: 0, tableLeftOut: 0, headerGiven: 0, tableStyleCustom: 0, condRangeOutside: 0, condStyleLost: 0, condOperator: 0, condNoFormulas: 0, condNoFormula: 0,
   condPeriod: 0, condAverage: 0, condColorScale: 0, condDataBar: 0, condIconSet: 0, condIcons: 0, condType: 0, condPivot: 0, ruleListCommas: 0,
   ruleType: 0, ruleNoFormula: 0, ruleNoSecond: 0, ruleIme: 0, ruleNoRange: 0, ruleShared: 0, splitPanes: 0, frozenScrolled: 0, noteCell: 0,

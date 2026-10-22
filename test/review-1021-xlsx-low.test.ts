@@ -1,13 +1,15 @@
 /**
  * Reproductions from the review of 21.10 on reading xlsx files that are damaged or written by hand: a zip archive whose
  * entries are cut short, named twice or do not match their CRC-32 is refused with the reader's error; XML comments are
- * no content, and a character reference past U+10FFFF is refused as XML refuses it. Reading a file
+ * no content, and a character reference past U+10FFFF is refused as XML refuses it; a row number, a style index, a
+ * shared string's index or a value the reader cannot take is reported, and leaves a valid workbook. Reading a file
  * does not calculate, so the execution modes do not apply here.
  */
 import { deflateRawSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { rawZip, type RawEntry } from './fixtures/raw-zip.js'
+import { compute } from '../src/index.js'
 import { read, sheet } from './xlsx-fixtures.js'
 
 const enc = new TextEncoder()
@@ -74,5 +76,59 @@ describe('xlsx: a character reference past U+10FFFF (x-xlsx-2)', () => {
     }
     expect((await shared('a&#x10FFFF;&#128512;')).book.sheets[0].cells.A1).toEqual({ value: 'a\u{10FFFF}😀' })
     expect((await shared('<t><![CDATA[a&#1114112;]]></t>')).book.sheets[0].cells.A1).toEqual({ value: 'a&#1114112;' })
+  })
+})
+
+/** The issues of a read as [code, cells, message]. */
+const issuesOf = (r: { issues: { code: string; cells?: string[]; message: string }[] }) => r.issues.map((i) => [i.code, i.cells, i.message])
+
+describe('xlsx: a row number that is no whole number (x-xlsx-5)', () => {
+  it('places the row after the previous one with an issue; the workbook computes', async () => {
+    const rows = ['1.5', 'abc', '1e3'].map((r, i) => `<row r="${r}" ht="20" customHeight="1"><c><v>${i + 1}</v></c></row>`).join('')
+    const r = await sheet(`<row r="2"><c r="A2"><v>0</v></c></row>${rows}<row r=" 7 "><c><v>7</v></c></row>`)
+    const s = r.book.sheets[0]
+    expect(s.cells).toEqual({ A2: { value: 0 }, A3: { value: 1 }, A4: { value: 2 }, A5: { value: 3 }, A7: { value: 7 } })
+    expect(s.rows).toEqual({ '3:5': { height: 20 } })
+    expect(issuesOf(r)).toEqual([['part', ['3:3', '4:4', '5:5'], 'a row whose number is not a whole number is read as the row after the previous one']])
+    expect(() => compute(r.book)).not.toThrow()
+  })
+
+  it('a row outside the sheet with a height or a format is reported, and the file reads', async () => {
+    const r = await sheet('<row r="0" ht="20" customHeight="1"><c><v>1</v></c></row><row r="1048577" hidden="1"/><row r="1"><c r="A1"><v>2</v></c></row>')
+    expect(r.book.sheets[0]).toMatchObject({ cells: { A1: { value: 2 } } })
+    expect(r.book.sheets[0].rows).toBeUndefined()
+    expect(issuesOf(r)).toEqual([['part', ['0:0', '0:1', '1048577:1048577'], 'a cell outside the sheet (past its last row or column) is left out']])
+  })
+})
+
+describe('xlsx: a shared string the file does not have (x-xlsx-9)', () => {
+  it('leaves the value out with an issue; an empty <v/> is no first string', async () => {
+    const cells = ['999', '-1', 'abc', '1.5', '', '1e400', ' 1 '].map((v, i) => `<c r="${String.fromCharCode(65 + i)}1" t="s"><v>${v}</v></c>`).join('')
+    const r = await sheet(`<row r="1">${cells}<c r="H1" s="1" t="s"><v>9</v></c></row>`, { strings: ['hello', 'x'], styles: '<cellXfs count="2"><xf/><xf numFmtId="10" applyNumberFormat="1"/></cellXfs>' })
+    expect(r.book.sheets[0].cells).toEqual({ G1: { value: 'x' } })
+    expect(r.book.sheets[0].looks).toEqual([{ range: 'H1', numberFormat: 10 }])
+    expect(issuesOf(r)).toEqual([['part', ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'H1'], 'a value that names a shared string the file does not have is left out']])
+  })
+})
+
+describe('xlsx: a style index past the cell formats (x-xlsx-10)', () => {
+  it("is read as no style with an issue, for a cell, a row and a column; index 0 of a file without styles is the default", async () => {
+    const styles = '<cellXfs count="2"><xf/><xf numFmtId="10" applyNumberFormat="1"/></cellXfs>'
+    const cells = ['999', '-1', 'abc', '1e3', '1.5', '1'].map((s, i) => `<c r="${String.fromCharCode(65 + i)}1" s="${s}"><v>${i}</v></c>`).join('')
+    const r = await read({ sheets: [{ name: 'S', body: `<cols><col min="8" max="8" style="7" width="9"/></cols><sheetData><row r="1" s="999" customFormat="1">${cells}</row></sheetData>` }], styles })
+    expect(r.book.sheets[0].cells.F1).toEqual({ value: 5, numberFormat: 10 })
+    expect(issuesOf(r)).toEqual([['part', ['H:H', '1:1', 'A1', 'B1', 'C1', 'D1', 'E1'], 'a style index that names no cell format of the file is read as no style']])
+    expect((await sheet('<row r="1"><c r="A1" s="0"><v>1</v></c></row>')).issues).toEqual([])
+  })
+})
+
+describe('xlsx: a value that is not a number, or a boolean that is not 0 or 1 (x-xlsx-11)', () => {
+  it('is left out with an issue, not coerced', async () => {
+    const values: [string, string][] = [['n', 'abc'], ['n', 'Infinity'], ['n', '1e999'], ['n', '1_000'], ['n', 'NaN'], ['n', '0x10'], ['b', 'maybe'], ['b', ''], ['n', ' 12 '], ['n', '-1.5e3'], ['n', '.5'], ['b', '1'], ['b', 'false'], ['n', '']]
+    const cells = values.map(([t, v], i) => `<c r="${String.fromCharCode(65 + i)}1" t="${t}"><v>${v}</v></c>`).join('')
+    const r = await sheet(`<row r="1">${cells}<c r="O1"><f>1/0</f><v>zzz</v></c></row>`)
+    expect(r.book.sheets[0].cells).toEqual({ I1: { value: 12 }, J1: { value: -1500 }, K1: { value: 0.5 }, L1: { value: true }, M1: { value: false }, O1: { formula: '1/0' } })
+    expect(r.cached.sheets[0].cells).toEqual({})
+    expect(issuesOf(r)).toEqual([['part', ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'O1'], 'a value that is not a number, or a boolean that is not 0 or 1, is left out']])
   })
 })

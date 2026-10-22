@@ -38,6 +38,10 @@ export function readStrings(xml: string | undefined, issues: Issues): Strings {
   let opened = 0
   OPEN_SI.lastIndex = 0
   while (OPEN_SI.exec(xml)) opened++
-  if (opened > out.text.length) issues.add('part', { key: 'stringsOpen' })
+  if (opened > out.text.length) {
+    issues.add('part', { key: 'stringsOpen' })
+    // the items left open count: a cell that names one reads empty text, as the issue says
+    while (out.text.length < opened) out.text.push('')
+  }
   return out
 }

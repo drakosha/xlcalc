@@ -73,6 +73,11 @@ const V = /<(?:[\w.-]+:)?v(?:\s[^<>]*?)?(?:\/>|>((?:[^<]|<(?!(?:[\w.-]+:)?v[\s/>
 const F = /<(?:[\w.-]+:)?f((?:\s[^<>]*?)?)(?:\/>|>((?:[^<]|<(?!(?:[\w.-]+:)?f[\s/>]))*?)<\/(?:[\w.-]+:)?f>)/
 const IS = /<(?:[\w.-]+:)?is(?:\s[^<>]*)?>((?:[^<]|<(?!(?:[\w.-]+:)?is[\s/>]))*?)<\/(?:[\w.-]+:)?is>/
 const ADDR = /^([A-Za-z]{1,3})([1-9][0-9]*)$/
+// a row number and a shared string's index, whole numbers (spaces about them as XML collapses them); a number's value
+const ROW = /^\s*\+?\d+\s*$/
+const INDEX = /^\s*\d+\s*$/
+const DECIMAL = /^\s*[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?\s*$/
+const BOOLEANS = new Map([['1', true], ['true', true], ['0', false], ['false', false]])
 // the opening tags of a cell, a value, a formula and an inline string, which a body holds when one was left open
 const OPEN_C = /<(?:[\w.-]+:)?c[\s/>]/
 const OPEN_V = /<(?:[\w.-]+:)?v[\s/>]/
@@ -121,7 +126,10 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     const a = attributes(m[3])
     if (m[2] === 'row') {
       endRow()
-      row = a.r ? Number(a.r) - 1 : row + 1
+      // a row number that is no whole number places the row after the previous one, as a row without one
+      const numbered = !!a.r && ROW.test(a.r)
+      row = numbered ? Number(a.r) - 1 : row + 1
+      if (a.r && !numbered) issues.add('part', { key: 'rowNumberBad' }, { sheet, cell: `${row + 1}:${row + 1}` })
       col = -1
       line = {}
       lineRow = row
@@ -134,10 +142,18 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       // Excel hides a row of height 0 whatever its flag
       if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) {
-        Object.assign(line, look(ctx.xfs[Number(a.s)], issues, { sheet, cell: `${row + 1}:${row + 1}` }))
+        const where = { sheet, cell: `${row + 1}:${row + 1}` }
+        Object.assign(line, look(xfAt(a.s, ctx, where), issues, where))
         formatted = []
       }
       Object.assign(line, outlineOf(a))
+      if (row < 0 || row >= MAX_ROWS) {
+        // a row outside the sheet: its cells are reported as they come, what it gives them here
+        if (formatted || Object.keys(line).length) issues.add('part', { key: 'cellOutside' }, { sheet, cell: `${row + 1}:${row + 1}` })
+        line = undefined
+        formatted = undefined
+        continue
+      }
       if (!formatted && Object.keys(line).length) out.rows.set(row + 1, line)
       continue
     }
@@ -162,7 +178,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     }
     // the address as written when it is already the model's spelling (upper case), else spelled out
     const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
-    const xf = a.s === undefined ? undefined : ctx.xfs[Number(a.s)]
+    const xf = a.s === undefined ? undefined : xfAt(a.s, ctx, { sheet, cell: addr })
     const own = look(xf, issues, { sheet, cell: addr })
     // a cell of a formatted row takes its look when the row ends
     formatted?.push({ addr, col, own })
@@ -178,9 +194,10 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     let value: Scalar | undefined
     if (t === 's') {
       if (raw !== undefined) {
-        const k = Number(raw)
-        value = ctx.strings.text[k] ?? ''
-        if (ctx.strings.rich.has(k)) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })
+        const k = INDEX.test(raw) ? Number(raw) : -1
+        value = ctx.strings.text[k]
+        if (value === undefined) issues.add('part', { key: 'stringIndexBad' }, { sheet, cell: addr })
+        else if (ctx.strings.rich.has(k)) issues.add('richText', { key: 'richText' }, { sheet, cell: addr })
       }
     } else if (t === 'inlineStr') {
       const is = IS.exec(body)
@@ -192,9 +209,13 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       }
     } else if (raw !== undefined && t !== 'e') {
       if (t === 'str') value = readText(raw)
-      else if (t === 'b') value = raw === '1' || raw === 'true'
       else if (t === 'd') value = isoDate(raw, ctx, addr)
-      else if (raw !== '' && Number.isFinite(Number(raw))) value = Number(raw)
+      else if (raw !== '' || t === 'b') {
+        // a number in decimal notation (xsd:double: no hex, no infinity), a boolean as 1, 0, true or false
+        const v = t === 'b' ? BOOLEANS.get(raw.trim()) : DECIMAL.test(raw) ? Number(raw) : NaN
+        if (v === undefined || (typeof v === 'number' && !Number.isFinite(v))) issues.add('part', { key: 'valueBad' }, { sheet, cell: addr })
+        else value = v
+      }
     }
     const errText = t === 'e' && raw !== undefined ? (rich ?? readText(raw).trim()) : undefined
     const f = body.includes('f') ? F.exec(body) : null
@@ -269,6 +290,17 @@ function ownLook(own: Look, line: Look, ctx: Pick<CellsContext, 'plain' | 'isPla
   if (own.style !== style) out.style = own.style ?? ctx.plain()
   if (own.numberFormat !== format) out.numberFormat = own.numberFormat ?? 'General'
   return out
+}
+
+/**
+ * The cell format a cell, a row or a column names by its index; one the styles part does not have is reported (the
+ * first of a file without cell formats is the default, which needs none).
+ */
+export function xfAt(index: string, ctx: Pick<CellsContext, 'xfs' | 'issues'>, where: Where): Xf | undefined {
+  const k = Number(index)
+  const xf = ctx.xfs[k]
+  if (xf === undefined && !(k === 0 && !ctx.xfs.length)) ctx.issues.add('part', { key: 'styleIndexBad' }, where)
+  return xf
 }
 
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */
