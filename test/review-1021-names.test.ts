@@ -79,5 +79,21 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       expect(edited(book, { op: 'insertRows', sheet: 'S', row: 5, count: 2 }).names![0].ref).toBe('S!$A$2:A3')
       expect(edited(book, { op: 'deleteRows', sheet: 'S', row: 2 }).names![0].ref).toBe('S!#REF!')
     })
+
+    it('deleting the line of the fixed bound loses the name, as in Excel (struct names-held, tables name-values-held)', () => {
+      const cells: BookInput['sheets'][number]['cells'] = { B1: { value: 'amt' } }
+      for (let r = 2; r <= 6; r++) Object.assign(cells, { [`B${r}`]: { value: r * 10 }, [`C${r}`]: { formula: 'SUM(run)' }, [`D${r}`]: { formula: `SUM($B$2:$B${r})` } })
+      const book: BookInput = { names: [{ name: 'run', ref: 'S!$B$2:$B1' }], sheets: [{ name: 'S', cells }] }
+      const lost = edited(book, { op: 'deleteRows', sheet: 'S', row: 2 })
+      expect(lost.names![0].ref).toBe('S!#REF!')
+      expect(values(lost, 'S', ['C2', 'C5'])).toEqual([{ error: 'REF' }, { error: 'REF' }])
+      // a line between the bounds: the name stays, the running total as the cells' sums
+      const kept = edited(book, { op: 'deleteRows', sheet: 'S', row: 4 })
+      expect(kept.names![0].ref).toBe('S!$B$2:$B1')
+      expect(values(kept, 'S', ['C2', 'C3', 'C4', 'C5'])).toEqual(values(kept, 'S', ['D2', 'D3', 'D4', 'D5']))
+      const top: BookInput = { names: [{ name: 'top', ref: 'S!$A1048574:$A$12' }], sheets: [{ name: 'S', cells: {} }] }
+      expect(edited(top, { op: 'deleteRows', sheet: 'S', row: 12 }).names![0].ref).toBe('S!#REF!')
+      expect(edited(top, { op: 'deleteRows', sheet: 'S', row: 2 }).names![0].ref).toBe('S!$A$11:$A1048574')
+    })
   })
 })

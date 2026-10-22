@@ -45,6 +45,7 @@ const KNOWN: Readonly<Record<string, string>> = {
   'name-case-sheets-held:table-long-s': "the long s (ſ): Excel for Mac takes it for S in a defined name, a table's name and a sheet's (Names.Add of ſ beside S replaces it, a sheet is not renamed ſ beside S); the engine, as Excel for Windows, keeps ſ a letter of its own",
   'name-case-sheets-held:sheet-sharp-s': "a sheet renamed ß beside a sheet SS (ﬁ beside FI): Excel, for Mac and for Windows, compares sheet names letter by letter and takes it; the engine compares sheets as defined names and tables, where ß is SS, and refuses the name",
   'name-case-sheets-held:sheet-ligature-fi': "a sheet renamed ß beside a sheet SS (ﬁ beside FI): Excel, for Mac and for Windows, compares sheet names letter by letter and takes it; the engine compares sheets as defined names and tables, where ß is SS, and refuses the name",
+  'name-values-held:qualified-delete-S': "a sheet deleted under references to its own name (S!loc): Excel writes the book's file name for the sheet ('book.xlsx'!loc), the engine leaves the text; the values are #REF! in both",
   'headers-ru-held:text-iso': 'text typed into a header cell that Excel reads as a date (2025-01-31): Excel names the column by the date as it shows it (31.01.2025); setCells takes text as text, and the column is named 2025-01-31',
 }
 
