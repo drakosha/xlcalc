@@ -141,3 +141,29 @@ describe.each(['closures', 'eval'] as const)('reads of a session %s', (execution
     }, 30_000)
   })
 })
+
+describe.each(['closures', 'eval'] as const)("a cell's cyclic meta (pool-meta) %s", (execution) => {
+  /** The path and class name of what `p` rejects with. */
+  const refusal = (p: Promise<unknown>) => p.then(() => 'no refusal', (e: { name?: string; path?: string; message?: string }) => ({ name: e.name, path: e.path, message: e.message }))
+  const cyclic = () => {
+    const meta: Record<string, unknown> = { row: 1 }
+    meta.self = { back: meta }
+    return meta
+  }
+  const book = (n: number): BookInput => {
+    const cells: Record<string, CellInput> = {}
+    for (let r = 1; r <= n; r++) cells[`A${r}`] = { value: r }
+    cells[`A${n}`] = { value: n, meta: cyclic() as never }
+    return { sheets: [{ name: 'S', cells }] }
+  }
+  // one chunk of cells, and more than one, which goes a chunk at a time
+  it.each([1, 20_000])('is refused as the same thread refuses it, in compute and createSession (%i cells)', async (n) => {
+    const same = await refusal(keep(createInlineCalc()).compute(book(n), { execution }))
+    expect(same).toEqual({ name: 'InputError', path: `book.sheets[0].cells["A${n}"].meta.self.back`, message: expect.stringMatching(/cycle/) })
+    const calc = await made({ threads: 1 })
+    expect(await refusal(calc.compute(book(n), { execution }))).toEqual(same)
+    expect(await refusal(calc.createSession(book(n), { execution }))).toEqual(same)
+    // the thread is still there
+    expect((await calc.compute(chainBook(2), { execution })).sheets[0].cells.B1).toMatchObject({ value: 2 })
+  }, 30_000)
+})
