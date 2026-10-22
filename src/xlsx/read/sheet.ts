@@ -126,6 +126,9 @@ function convert(src: SheetSource, read: SheetCells, issues: Issues): Map<string
  */
 function arrays(read: SheetCells, added?: Set<string>): [looked: string[], dropped: string[]] {
   const keys = () => Object.keys(read.cells)
+  // the sheet's cell count, taken at the first large area: listing an area up to it costs less than parsing every key,
+  // and lists the cells in their order when the file gives them in order
+  let count = -1
   const looked: string[] = []
   const dropped: string[] = []
   for (const a of read.arrays) {
@@ -135,7 +138,8 @@ function arrays(read: SheetCells, added?: Set<string>): [looked: string[], dropp
     if (!a.dynamic && anchor?.formula !== undefined) anchor.array = a.ref
     const top = read.cached[a.anchor]
     if (top && (!a.dynamic || r.r2 > r.r1 || r.c2 > r.c1)) top.spill = cornersText(r)
-    for (const addr of cellsWithin(r, keys)) {
+    if (count < 0 && !read.unordered && cellCount(r) > 4096) count = keys().length
+    for (const addr of cellsWithin(r, keys, Math.max(4096, count))) {
       const cell = read.cells[addr]
       // an error the array spilled is stored as the cell's value, which the reader took for a formula of it
       const spilled = read.errors.delete(addr)
