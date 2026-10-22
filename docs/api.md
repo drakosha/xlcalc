@@ -2199,8 +2199,9 @@ interface DataBarFormat extends ConditionalBase {
 ### `DataValidation`
 
 A data validation rule, like xlsx `<dataValidation>`. Its formulas are stored formula text without `=` (en-US, like a
-cell's; a leading `=` is removed), relative to the rule's first cell, the top-left cell of the first range in
-`range`: a rule over `B2:B9` with `formula1: 'A2>0'` checks `A5>0` for B5. A literal list is a text constant of
+cell's; a leading `=` is removed), relative to the top-left cell of the rectangle enclosing the ranges in `range`,
+whatever their order, as in a conditional format: a rule over `B2:B9` with `formula1: 'A2>0'` checks `A5>0` for B5,
+and one over `H3:H6 J1:J3` with `$A1>2` checks `$A3>2` for H3. A literal list is a text constant of
 comma-separated items (`'"Yes,No,Maybe"'`), as a file stores it in every locale; a list from cells is a reference
 (`'$D$2:$D$9'`, `"'Lists'!$A$1:$A$20"`), a defined name, or a formula that returns a reference.
 
