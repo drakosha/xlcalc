@@ -25,6 +25,8 @@ import { copyTransform } from './transform.js'
 import { linksIn, markedLinks } from '../syntax/links.js'
 import { copyConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
+import { pastedLooks } from '../looks/move.js'
+import { layerOf, withLayer } from '../looks/sheet.js'
 
 /** The copies of `src` a paste lays in `target`: as many as fit when the target is a whole multiple of the source, else one. */
 export function tileCount(src: Rect, target: Rect): number {
@@ -103,7 +105,9 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
         cells[dest] = relocated(formula === cell.formula ? cell : { ...cell, formula }, addr, dest)
       }
     }
-    return { ...s, cells }
+    // the looks of the source's cells without an entry, laid by rectangles over the tiles
+    const looks = pastedLooks(layerOf(sheet), src, layerOf(s), pasted)
+    return looks ? withLayer(s, cells, looks) : { ...s, cells }
   })
   const out: BookInput = { ...book, sheets }
   // formulas pasted with links: Excel marks their books as it cannot read them (`markedLinks`)

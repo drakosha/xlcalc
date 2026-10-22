@@ -106,9 +106,13 @@ describe('editStructure', () => {
   })
 
   it('refuses what Excel refuses', () => {
-    const edge: BookInput = { sheets: [{ name: 'S', cells: { A1048576: { numberFormat: '0' }, XFD1: { meta: 1 } } }] }
+    const edge: BookInput = { sheets: [{ name: 'S', cells: { A1048576: { meta: 1 }, XFD1: { meta: 1 }, B1048576: { numberFormat: '0' } } }] }
     expect(editStructure(edge, { op: 'insertRows', sheet: 'S', row: 1 })).toMatchObject({ ok: false, code: 'off_sheet' })
     expect(editStructure(edge, { op: 'insertColumns', sheet: 'S', column: 'B' })).toMatchObject({ ok: false, code: 'off_sheet' })
+    // formatting alone pushed off is dropped, as Excel drops it
+    const formatted = ok({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1048576: { numberFormat: '0' } } }] }, { op: 'insertRows', sheet: 'S', row: 1 })
+    expect(formatted.book.sheets[0]).toMatchObject({ cells: { A2: { value: 1 } } })
+    expect(formatted.book.sheets[0].looks).toBeUndefined()
     expect(editStructure(edge, { op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, code: 'last_sheet' })
     expect(editStructure(book(), { op: 'renameSheet', sheet: 'S', name: 'лист 2' })).toMatchObject({ ok: false, code: 'sheet_name' })
     expect(editStructure(book(), { op: 'renameSheet', sheet: 'S', name: '' })).toMatchObject({ ok: false, code: 'sheet_name' })

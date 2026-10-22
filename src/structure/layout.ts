@@ -1,13 +1,13 @@
 /**
  * The layout of a sheet under inserted and deleted rows and columns, as Excel changes it (checked in
  * `test/excel/struct/styles.json`): columns and rows keep their entries as they move, new lines take the
- * entry and the cells' style and format of the line before them, merged areas grow, shrink and move as
+ * entry and the cells' style and format of the line before them (`lookBefore`), merged areas grow, shrink and move as
  * ranges do and are gone when one cell or none is left, frozen panes follow the lines above their split.
  */
-import type { CellInput, FrozenPanes, SheetInput } from '../contract.js'
+import type { FrozenPanes, SheetInput } from '../contract.js'
 import { entryAt, lines, patchLines, toMap, type Line } from '../layout/spans.js'
 import { parseMerge } from '../layout/merges.js'
-import { formatAddress } from '../model.js'
+import type { LookTable, RowsEdit } from '../looks/layer.js'
 import { cornersText, hi, LIMIT, lo, withBounds, type Axis } from './area.js'
 import { gridOf } from './grid.js'
 
@@ -105,19 +105,23 @@ export function shiftFrozen(frozen: FrozenPanes | undefined, axis: Axis, at: num
 }
 
 /**
- * The cells that inserted lines get from the line before them, `at - 1`: the style and format of each of its
- * cells that has one, no value; nothing before the first line.
+ * The looks that inserted lines get from the entries of the line before them, `at - 1`: the style and format of each of
+ * its cells that has one, no value, as edits of the sheet's looks (`looks/layer.ts`) over the new lines, one rectangle per
+ * cell however many lines come in; nothing before the first line. The looks of its cells without an entry come with the
+ * sheet's looks (`looks/move.ts`).
  */
-export function formatBefore(sheet: SheetInput, axis: Axis, at: number, n: number): Record<string, CellInput> {
-  const out: Record<string, CellInput> = {}
-  if (at === 0) return out
+export function lookBefore(sheet: SheetInput, axis: Axis, at: number, n: number, looks: LookTable): RowsEdit[] {
+  if (at === 0) return []
   const g = gridOf(sheet)
   const line = axis === 'r' ? g.row : g.col
+  const found: [number, number][] = []
   for (let k = 0; k < line.length; k++) {
     const cell = g.cell[k]
     if (line[k] !== at - 1 || (cell.style === undefined && cell.numberFormat === undefined)) continue
-    const copy: CellInput = { ...(cell.numberFormat !== undefined ? { numberFormat: cell.numberFormat } : {}), ...(cell.style !== undefined ? { style: cell.style } : {}) }
-    for (let i = at; i < at + n; i++) out[axis === 'r' ? formatAddress(i, g.col[k]) : formatAddress(g.row[k], i)] = copy
+    found.push([axis === 'r' ? g.col[k] : g.row[k], looks.id(cell.style, cell.numberFormat)])
   }
-  return out
+  found.sort((a, b) => a[0] - b[0])
+  // a row's cells as runs of one edit over the new rows, a column's as one edit of each row over the new columns
+  if (axis === 'r') return found.length ? [{ lo: at, hi: at + n - 1, top: found.flatMap(([c, id]) => [c, c, id]) }] : []
+  return found.map(([r, id]) => ({ lo: r, hi: r, top: [at, at + n - 1, id] }))
 }

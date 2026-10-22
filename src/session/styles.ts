@@ -15,10 +15,13 @@ import { formatAddress, parseAddress } from '../model.js'
 import { cellCount, hasCell, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import { StyleTable } from '../style-table.js'
-import { layerOf } from '../looks/sheet.js'
+import { layerOf, lookAlone } from '../looks/sheet.js'
 import { inputAt } from './book.js'
 import { CONTENT } from './cells.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
+
+/** A rectangle of at most so many cells is read cell by cell. */
+const SMALL = 65_536
 
 /** The cells a rectangle may give a look to: as many as a whole column has. Past them, whole columns or rows cost what their cells hold. */
 export const MAX_CELLS = 1_048_576
@@ -97,10 +100,18 @@ export class Draft {
     return sh === this.s.input.sheets[i] ? sheetLines(sh, this.s) : sheetLines({ cells: {}, rows: sh.rows, columns: sh.columns })
   }
 
-  /** The cells of a rectangle that hold an input or a look of the sheet's looks, as `[row, column, address]`. */
-  *stored(i: number, x: Rect): Generator<[number, number, string]> {
+  /** Whether the draft holds a cell's input. */
+  has(i: number, addr: string): boolean {
+    return !!this.drafted.get(i)?.has(addr)
+  }
+
+  /**
+   * The cells of a rectangle that hold an input or a look of the sheet's looks, as `[row, column, address]`; past
+   * SMALL cells without those of the looks when `looks` is false (`changedLooks` reads them by pieces).
+   */
+  *stored(i: number, x: Rect, looks = true): Generator<[number, number, string]> {
     const area = cellCount(x)
-    if (area <= 65_536) {
+    if (area <= SMALL) {
       for (let r = x.r1; r <= x.r2; r++)
         for (let c = x.c1; c <= x.c2; c++) {
           const a = formatAddress(r, c)
@@ -120,6 +131,7 @@ export class Draft {
       if (hasCell(x, row, col) && this.input(i, a)) yield [row, col, a]
     }
     // the cells of a look of the sheet's looks alone
+    if (!looks) return
     for (const p of layerOf(sheet)?.pieces(x) ?? [])
       for (let r = p.r1; r <= p.r2; r++)
         for (let c = p.c1; c <= p.c2; c++) {
@@ -144,13 +156,13 @@ export class Draft {
  * them. `own`: the cell is of a rectangle, which gives every cell the look; a cell of formatted lines takes a style or a
  * format of its own only where its lines would not show it.
  */
-function lookOver(d: Draft, input: CellInput | undefined, r: number, c: number, look: Look, before: SheetLines, after: SheetLines, own: boolean): CellInput | null {
+function lookOver(table: StyleTable, input: CellInput | undefined, r: number, c: number, look: Look, before: SheetLines, after: SheetLines, own: boolean): CellInput | null {
   const out: Record<string, unknown> = { ...input }
   if (look.content) for (const k of CONTENT) delete out[k]
   const st = look.style
   if (st) {
     const shown = after.row(r)?.style ?? after.column(c)?.style
-    const want = 'set' in st ? st.set : 'merge' in st ? d.table.indexOf(patchStyle(d.table.at(input?.style ?? before.row(r)?.style ?? before.column(c)?.style), st.merge)) : 'reset' in st && !d.table.isPlain(shown) ? d.table.indexOf({}) : undefined
+    const want = 'set' in st ? st.set : 'merge' in st ? table.indexOf(patchStyle(table.at(input?.style ?? before.row(r)?.style ?? before.column(c)?.style), st.merge)) : 'reset' in st && !table.isPlain(shown) ? table.indexOf({}) : undefined
     if (want === undefined) delete out.style
     else if (input?.style !== undefined || own || want !== shown) out.style = want
   }
@@ -183,10 +195,10 @@ function lookRect(d: Draft, t: Target, look: Look) {
   if (gives(look) || lined) {
     const area = cellCount(x)
     if (area > MAX_CELLS) throw new InputError('range', `a rectangle of ${area} cells: formatting applies to at most ${MAX_CELLS} cells of a rectangle, or to whole columns or rows (B:D, 2:9)`)
-    for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) d.set(t.i, formatAddress(r, c), lookOver(d, d.input(t.i, formatAddress(r, c)), r, c, look, ls, ls, true))
+    for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) d.set(t.i, formatAddress(r, c), lookOver(d.table, d.input(t.i, formatAddress(r, c)), r, c, look, ls, ls, true))
     return
   }
-  for (const [r, c, a] of [...d.stored(t.i, x)]) d.set(t.i, a, lookOver(d, d.input(t.i, a), r, c, look, ls, ls, true))
+  for (const [r, c, a] of [...d.stored(t.i, x)]) d.set(t.i, a, lookOver(d.table, d.input(t.i, a), r, c, look, ls, ls, true))
 }
 
 /** The style a line takes from a change: one of the table, fields over its own, or none. */
@@ -236,7 +248,9 @@ function lookLines(d: Draft, t: Target, look: Look) {
   }
   const after = d.lines(t.i)
   const cells = new Map<string, [number, number]>()
-  for (const [r, c, a] of d.stored(t.i, t.rect)) cells.set(a, [r, c])
+  const big = cellCount(t.rect) > SMALL
+  for (const [r, c, a] of d.stored(t.i, t.rect, !big)) cells.set(a, [r, c])
+  if (big) for (const [r, c, a] of changedLooks(d, t, look, [sh, d.sheet(t.i)], before, after)) cells.set(a, [r, c])
   // where the lines cross lines of the other direction that show a style or a format the look changes
   const st = look.style && !('remove' in look.style)
   const ft = look.format && !('remove' in look.format)
@@ -251,7 +265,47 @@ function lookLines(d: Draft, t: Target, look: Look) {
           cells.set(formatAddress(r, c), [r, c])
         }
   }
-  for (const [a, [r, c]] of cells) d.set(t.i, a, lookOver(d, d.input(t.i, a), r, c, look, before, after, false))
+  for (const [a, [r, c]] of cells) d.set(t.i, a, lookOver(d.table, d.input(t.i, a), r, c, look, before, after, false))
+}
+
+/**
+ * The cells of the sheet's looks in whole lines (none with an entry, none the draft holds) whose input the look changes:
+ * a piece of the looks under the same rows and columns, before and after (`sheets`), changes each of its cells alike,
+ * so it is tried once, and a piece the look leaves as it is costs nothing per cell.
+ */
+function* changedLooks(d: Draft, t: Target, look: Look, sheets: SheetInput[], before: SheetLines, after: SheetLines): Generator<[number, number, string]> {
+  const sheet = d.s.input.sheets[t.i]
+  const layer = layerOf(sheet)
+  if (!layer) return
+  const cuts = (axis: 'r' | 'c') => [...new Set(sheets.flatMap((x) => spansOf((axis === 'r' ? x.rows : x.columns) as Record<string, Line> | undefined, axis).flatMap(([a, b]) => [a, b + 1])))].sort((a, b) => a - b)
+  const [rows, cols] = [cuts('r'), cuts('c')]
+  // the segments of [lo, hi] between the cuts
+  const segments = (at: number[], lo: number, hi: number) => {
+    const out: [number, number][] = []
+    let from = lo
+    for (const k of at) {
+      if (k <= from || k > hi) continue
+      out.push([from, k - 1])
+      from = k
+    }
+    out.push([from, hi])
+    return out
+  }
+  // a piece tried on a copy of the style table, so that the styles take their numbers in the order of the cells
+  const probe = new StyleTable(d.table.table ?? d.s.input.styles)
+  for (const p of layer.pieces(t.rect)) {
+    const was = layer.looks.list[p.look]
+    for (const [r1, r2] of segments(rows, p.r1, p.r2))
+      for (const [c1, c2] of segments(cols, p.c1, p.c2)) {
+        const next = lookOver(probe, was, r1, c1, look, before, after, false)
+        if (next && lookAlone(next) && next.style === was.style && next.numberFormat === was.numberFormat) continue
+        for (let r = r1; r <= r2; r++)
+          for (let c = c1; c <= c2; c++) {
+            const a = formatAddress(r, c)
+            if (!(a in sheet.cells) && !d.has(t.i, a)) yield [r, c, a]
+          }
+      }
+  }
 }
 
 /** A target with a look, in the draft. */
