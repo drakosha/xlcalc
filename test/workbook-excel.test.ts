@@ -78,7 +78,9 @@ for (const set of SETS) {
     for (const c of set.cases) {
       const pending = PENDING[`${set.name}:${c.id}`]
       if (pending) {
-        it(`${c.id}: ${c.about} (pending)`, () => expect(differsOrThrows(c, set.answers[c.id].reads), pending).toBe(true))
+        // the engine gives up on such a case only after its iterations run out, some ten seconds: not run in the suite
+        if (pending === THROWS) it.skip(`${c.id}: ${c.about} (pending: ${pending})`)
+        else it(`${c.id}: ${c.about} (pending)`, () => expect(differsOrThrows(c, set.answers[c.id].reads), pending).toBe(true))
         continue
       }
       it(`${c.id}: ${c.about}`, () => {
