@@ -81,13 +81,22 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
   /** A plan's looks set whole over the draft's sheets, as they are laid before its cells. */
   const relaid = (p: Plan) =>
     p.layers?.size ? { ...book, sheets: book.sheets.map((sh, i) => (p.layers!.has(i) ? withLayer(sh, sh.cells, p.layers!.get(i)!) : sh)) } : book
+  /** A plan staged: its sheets' lines and rules over the draft's sheets, which keep their looks, then its looks set whole, then its cells. */
   const looks = (p: Plan) => {
+    for (const [i, sh] of p.sheets) book.sheets[i] = withLooksOf({ ...sh, cells: book.sheets[i].cells }, book.sheets[i])
     for (const [i, layer] of p.layers ?? []) {
       book.sheets[i] = withLayer(book.sheets[i], book.sheets[i].cells, layer)
       layers.set(i, layer)
+      // a cell an operation before left without an entry (its edit is laid after the looks) takes the look these give it
+      const own = overlays.get(i)
+      for (const [k, e] of edits) {
+        if (index(e.sheet) !== i || own?.get(e.cell) !== null) continue
+        const { row, col } = parseAddress(e.cell)
+        const look = layer.lookAt(row, col)
+        edits.set(k, { ...e, input: look ? { ...look } : null })
+      }
     }
     put(p.edits)
-    for (const [i, sh] of p.sheets) book.sheets[i] = { ...sh, cells: book.sheets[i].cells }
     if (p.styles) {
       book.styles = p.styles
       styles = true
