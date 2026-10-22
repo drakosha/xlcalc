@@ -12,7 +12,7 @@
  */
 import type { BookInput, CellInput, FillType } from '../contract.js'
 import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
-import { dateToSerial, serialToDate } from '../date-serial.js'
+import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
 import { lineAt } from '../layout/spans.js'
 import { localeOf } from '../locale/registry.js'
@@ -144,7 +144,9 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
         const [r, c] = axis === 'r' ? [pos, across] : [across, pos]
         const value = next(e, run.items[d])
         const own = line.get(run.at[d])!.value
-        out.push([formatAddress(r, c), typeof own === 'object' && own !== null && typeof value === 'number' ? { date: serialToDate(value, { dateSystem: book.dateSystem }) } : value])
+        // a date past the date system is written as its serial number, as a fill over numbers in a date format writes it
+        const date = typeof own === 'object' && own !== null && typeof value === 'number' && isDateSerial(value, epoch)
+        out.push([formatAddress(r, c), date ? { date: serialToDate(value, { dateSystem: book.dateSystem }) } : value])
       }
     }
   }
