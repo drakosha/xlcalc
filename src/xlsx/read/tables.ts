@@ -11,6 +11,7 @@ import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { checkTables, DEFAULT_TABLE_STYLE, STYLE_OPTIONS, TABLE_STYLE, TOTALS } from '../../tables/check.js'
 import type { Issues } from '../issues.js'
+import { setCell } from './cells.js'
 import { parseFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import { attributes, element, elements, flag } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -65,8 +66,8 @@ function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: 
   return { t, formulas, ...(typeof style === 'string' ? { custom: style } : {}) }
 }
 
-/** The tables of a sheet's table parts; `cells` (the sheet's) get the header names they lack; `opts` read their formulas. */
-export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions): TableInput[] {
+/** The tables of a sheet's table parts; `cells` (the sheet's) get the header names they lack, a cell made going to `added`; `opts` read their formulas. */
+export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions, added?: Set<string>): TableInput[] {
   const out: TableInput[] = []
   if (!parts.length) return out
   // what checkTables reads of the cells, the array formulas and the header cells, not a copy of all of them per part
@@ -101,7 +102,7 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
     if (custom !== undefined) issues.add('table', { key: 'tableStyleCustom', table: t.name, name: custom }, { sheet })
     for (const [addr, cell] of fixed) {
       issues.add('table', { key: 'headerGiven', name: cell.value as string }, { sheet, cell: addr })
-      cells[addr] = cell
+      setCell(cells, addr, cell, added)
       view[addr] = cell
     }
     // a calculated column formula reports what the engine cannot take of it as a cell's would, at the column's first cell

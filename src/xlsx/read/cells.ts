@@ -58,6 +58,11 @@ export interface SheetCells {
   old: Set<string>
   /** Cells holding an error as their value, read as a formula of it (unless an array spilled it there). */
   errors: Set<string>
+  /**
+   * Whether a cell comes at or before one given before it, as a second `<c>` of an address does, or lies outside the
+   * formatted row it is given in, which takes its look: a cell with content may then lie under a look.
+   */
+  unordered: boolean
 }
 
 /** The model's codes of the errors a cell may hold. */
@@ -91,13 +96,15 @@ const OPEN_IS = /<(?:[\w.-]+:)?is[\s/>]/
  * style or a format the row has not, the row gets the plain style or General (Excel and the writer write those cells).
  */
 export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInput>[] = []): SheetCells {
-  const out: SheetCells = { cells: {}, looks: new CellsLayer(), cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set() }
+  const out: SheetCells = { cells: {}, looks: new CellsLayer(), cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set(), unordered: false }
   const { looks } = out
   const { issues, sheet } = ctx
   const looked = cols.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
   const column = (c: number) => (looked.length ? entryAt(looked, c) : undefined)
   let row = -1
   let col = -1
+  // the place of the last cell in order
+  let [lastRow, lastCol] = [-1, -1]
   // the current row, and when it has a cell format of its own its cells with their own looks, until it ends
   let line: RowInput | undefined
   let lineRow = -1
@@ -175,6 +182,11 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     if (row < 0 || row >= MAX_ROWS || col >= MAX_COLS) {
       issues.add('part', { key: 'cellOutside' }, { sheet, cell: a.r ?? `${row + 1}:${col + 1}` })
       continue
+    }
+    if (row < lastRow || (row === lastRow && col <= lastCol) || (formatted && row !== lineRow)) out.unordered = true
+    else {
+      lastRow = row
+      lastCol = col
     }
     // the address as written when it is already the model's spelling (upper case), else spelled out
     const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
@@ -270,6 +282,12 @@ function isoDate(raw: string, ctx: CellsContext, cell: string): number | undefin
     ctx.issues.add('part', { key: 'dateInvalid' }, { sheet: ctx.sheet, cell })
     return undefined
   }
+}
+
+/** Sets a cell's entry; an address the cells did not have goes to `added`, the cells the reader adds to the file's. */
+export function setCell(cells: Record<string, CellInput>, addr: string, cell: CellInput, added?: Set<string>): void {
+  if (added && cells[addr] === undefined) added.add(addr)
+  cells[addr] = cell
 }
 
 /** A row's or a column's outline level (1 to 7) and its collapsed mark, as fields of its entry. */
