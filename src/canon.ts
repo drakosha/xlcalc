@@ -12,7 +12,7 @@ import { layerLines, layerOf } from './looks/sheet.js'
 import { DEFAULT_LOCALE } from './locale/registry.js'
 import { addressOrder, compareAddress, sortAddresses } from './model.js'
 import type { Axis } from './structure/area.js'
-import { Sha256 } from './sha256.js'
+import { sha256 } from './sha256.js'
 import { to15 } from './values.js'
 
 /** A number for output and hashing: 15 significant digits, no `-0`. */
@@ -64,7 +64,7 @@ const PORTION = 1024
 
 /** The values hash written as the lines come, without the canonical text or a map of the values: lines joined by `\n`, none after the last. */
 export class ValuesHasher {
-  private readonly h = new Sha256()
+  private readonly h = sha256()
   /** Lines not hashed yet: a portion is hashed as one joined string, faster than a string per line. */
   private pending: string[] = []
   private started = false
@@ -155,7 +155,7 @@ export const inputHash = (book: BookInput): string => run(inputHashSteps(book))
 
 /** `inputHash` in steps: the cells yield when the computation's slice is used up. `sorted`: addresses of cells objects in order already. */
 export function* inputHashSteps(book: BookInput, sorted?: Map<object, string[]>): Steps<string> {
-  const h = new Sha256()
+  const h = sha256()
   const sheets = [...book.sheets].sort((a, b) => byText(a.name, b.name))
   for (const s of sheets) {
     h.update(`S ${JSON.stringify(s.name)}\n`)

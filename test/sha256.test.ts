@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { compute, type CellValue } from '../src/index.js'
 import { inputHash, valuesHash } from '../src/canon.js'
-import { Sha256 } from '../src/sha256.js'
+import { Sha256, sha256 } from '../src/sha256.js'
 import { mulberry32, synthBook } from '../src/synth.js'
 
 const js = (...parts: string[]) => parts.reduce((h, p) => h.update(p), new Sha256()).hex()
@@ -79,5 +79,18 @@ describe('sha256', () => {
     // the configuration version carries the package name: renaming the package changes this hash too
     expect(r.configVersion).toBe('xlcalc/1;canon15')
     expect(r.hash).toBe('101578a9c6b600b197bfd8f96d2d28eb3ffc19044a947949d8473d45ce2ed901')
+  })
+})
+
+describe('sha256()', () => {
+  it("hashes with Node's own in Node, to the digests of the plain-JS hasher", () => {
+    expect(sha256()).not.toBeInstanceOf(Sha256)
+    const rnd = mulberry32(12)
+    for (let i = 0; i < 200; i++) {
+      const parts = Array.from({ length: 1 + Math.floor(rnd() * 5) }, () => randomText(rnd, Math.floor(rnd() * 300)))
+      const h = sha256()
+      for (const p of parts) h.update(p)
+      expect(h.hex(), `case ${i}`).toBe(js(...parts))
+    }
   })
 })

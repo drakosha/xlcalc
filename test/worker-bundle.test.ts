@@ -1,8 +1,8 @@
 /**
  * The threads' code stays out of the root entry: bundled by esbuild for the browser, `xlcalc` takes no file of
  * `worker/`, while it takes the computation in portions. The subpath `xlcalc/worker` and the thread's module bundle
- * for the browser too: no Node module is imported, and they reach Node's `worker_threads` only through
- * `process.getBuiltinModule` when they run in Node.
+ * for the browser too: no Node module is imported, and they reach Node's `worker_threads` (and the thread its
+ * `crypto`, for the hashes) only through `process.getBuiltinModule` when they run in Node.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -23,11 +23,11 @@ describe('bundles', () => {
   }, 60_000)
 
   it('the subpath and the thread bundle for the browser without Node modules', async () => {
-    for (const file of ['worker/index.js', 'worker/thread.js']) {
+    for (const [file, builtins] of [['worker/index.js', ['"node:worker_threads"']], ['worker/thread.js', ['"node:crypto"', '"node:worker_threads"']]] as const) {
       const { code, used } = await bundle(file)
       expect(used.filter((f) => !/^(src|dist)\//.test(f)), file).toEqual([])
       expect(code, file).not.toMatch(/\brequire\s*\(|from\s*["']node:|import\(\s*["']node:/)
-      expect(code.match(/["']node:[a-z_]+["']/g) ?? [], file).toEqual(['"node:worker_threads"'])
+      expect(code.match(/["']node:[a-z_]+["']/g) ?? [], file).toEqual(builtins)
     }
   }, 60_000)
 })

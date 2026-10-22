@@ -1,10 +1,10 @@
 /**
- * Outside Node: the library bundled by esbuild for the browser has no dependencies and no Node built-ins,
- * and the bundle runs in an empty `node:vm` context (only the ECMAScript globals: no `process`, `Buffer`,
- * `require`, `performance` or `crypto`) and gives the same hash as Node in both execution modes. With code
- * generation from strings disabled, as under a Content Security Policy without 'unsafe-eval', the bundle
- * computes in the default `closures` mode with the same hash, and `execution: 'eval'` fails with a clear
- * EvalError.
+ * Outside Node: the library bundled by esbuild for the browser has no dependencies and imports no Node built-in (it
+ * looks for Node's crypto through `process.getBuiltinModule`), and the bundle runs in an empty `node:vm` context
+ * (only the ECMAScript globals: no `process`, `Buffer`, `require`, `performance` or `crypto`) and gives the same hash
+ * as Node in both execution modes. With code generation from strings disabled, as under a Content Security Policy
+ * without 'unsafe-eval', the bundle computes in the default `closures` mode with the same hash, and
+ * `execution: 'eval'` fails with a clear EvalError.
  */
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
@@ -19,7 +19,9 @@ describe('outside Node', () => {
   it('the browser bundle has no Node built-ins and runs in an empty vm context with the same hash', async () => {
     const { code, inputs } = await bundle()
     expect(inputs.filter((p) => !/^(src|dist)\/|<stdin>/.test(p))).toEqual([])
-    expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\b|["']node:/)
+    expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\b|from\s*["']node:|import\(\s*["']node:/)
+    // Node's crypto for the hashes, reached only through `process.getBuiltinModule` where there is one
+    expect(code.match(/["']node:[a-z_]+["']/g)).toEqual(['"node:crypto"'])
 
     const ctx = createContext({})
     expect(runInContext('[typeof process, typeof require, typeof Buffer, typeof performance, typeof crypto, typeof TextEncoder]', ctx)).toEqual(Array(6).fill('undefined'))
