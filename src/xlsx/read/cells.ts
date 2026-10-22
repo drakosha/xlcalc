@@ -179,7 +179,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     } else if (raw !== undefined && t !== 'e') {
       if (t === 'str') value = readText(raw)
       else if (t === 'b') value = raw === '1' || raw === 'true'
-      else if (t === 'd') value = dateToSerial(raw) - ctx.epoch
+      else if (t === 'd') value = isoDate(raw, ctx, addr)
       else if (raw !== '' && Number.isFinite(Number(raw))) value = Number(raw)
     }
     const errText = t === 'e' && raw !== undefined ? (rich ?? readText(raw).trim()) : undefined
@@ -223,6 +223,16 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
   }
   endRow()
   return out
+}
+
+/** A Strict file's date as its serial in the book's date system; one that is no date (`garbage`, `2025-02-30`) is left out and reported. */
+function isoDate(raw: string, ctx: CellsContext, cell: string): number | undefined {
+  try {
+    return dateToSerial(raw) - ctx.epoch
+  } catch {
+    ctx.issues.add('part', { key: 'dateInvalid' }, { sheet: ctx.sheet, cell })
+    return undefined
+  }
 }
 
 /** A row's or a column's outline level (1 to 7) and its collapsed mark, as fields of its entry. */

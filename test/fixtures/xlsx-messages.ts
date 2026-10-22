@@ -41,6 +41,7 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   letPrefix: [{}],
   formulaUnparsed: [{}],
   cellOutside: [{}],
+  dateInvalid: [{}],
   valueMetadata: [{}],
   richText: [{}],
   errorUnknown: [{}],

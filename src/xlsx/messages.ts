@@ -80,6 +80,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   formulaUnparsed: () => 'a formula the engine does not parse is read as written (its cell evaluates to an error)',
   // reading: cells
   cellOutside: () => 'a cell outside the sheet (past its last row or column) is left out',
+  dateInvalid: () => 'a date of a Strict file (a cell of type d) that is not a valid ISO date is left out',
   valueMetadata: () => "a cell's value metadata (a data type, a picture in the cell) is not in the model",
   richText: () => 'formatted runs of text are read as plain text',
   errorUnknown: () => 'a stored error the model has no code for is read as #ERROR!',

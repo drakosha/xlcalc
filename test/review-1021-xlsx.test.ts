@@ -9,7 +9,7 @@ import type { BookInput } from '../src/contract.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { rawZip, type RawEntry } from './fixtures/raw-zip.js'
-import { pack, read } from './xlsx-fixtures.js'
+import { pack, read, sheet } from './xlsx-fixtures.js'
 
 /** The rejections nobody handled while `f` ran, and a moment after, when Node reports them. */
 async function unhandledDuring(f: () => Promise<void>): Promise<unknown[]> {
@@ -143,5 +143,16 @@ describe('xlsx: a worksheet whose SpreadsheetML elements have a prefix (fix-u324
   it('a sheet of 2007 rules alone keeps them', async () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 2 } }, conditionalFormats: [{ ranges: ['A1:A3'], type: 'cellIs', operator: 'greaterThan', formulas: ['1'], style: { font: { bold: true } } }] }] }
     expect((await rewritten(book, prefixed)).book.sheets[0].conditionalFormats).toEqual([{ ranges: ['A1:A3'], type: 'cellIs', operator: 'greaterThan', formulas: ['1'], style: { font: { bold: true } } }])
+  })
+})
+
+describe('xlsx: a damaged cell (x-xlsx-4, x-xlsx-8)', () => {
+  const cellsOf = (r: Awaited<ReturnType<typeof read>>) => r.book.sheets[0].cells
+  const issuesOf = (r: Awaited<ReturnType<typeof read>>) => r.issues.map((i) => [i.code, i.cells ?? [], i.message])
+
+  it('a date of a Strict file that is no ISO date, or no date at all, is left out with an issue; the file reads', async () => {
+    const r = await sheet('<row r="1"><c r="A1" t="d"><v>garbage</v></c><c r="B1" t="d"><v>2025-02-30</v></c><c r="C1" t="d"><v>2025-02-28T12:00:00</v></c><c r="D1"><v>1</v></c></row>')
+    expect(cellsOf(r)).toEqual({ C1: { value: 45716.5 }, D1: { value: 1 } })
+    expect(issuesOf(r)).toEqual([['part', ['A1', 'B1'], 'a date of a Strict file (a cell of type d) that is not a valid ISO date is left out']])
   })
 })
