@@ -336,6 +336,7 @@ const MESSAGES: Messages = {
   defaultFont: (p, w) => `Шрифт по умолчанию ${p.name ?? '(без названия)'} ${p.size === undefined ? '(без размера)' : w.num(p.size)} прочитан как Calibri 11, шрифт по умолчанию в модели`,
   sheetKind: () => 'Лист диаграммы, диалога или макросов не прочитан',
   sheetPartMissing: () => 'Лист не прочитан: его части нет в файле',
+  sheetNameRepaired: (p) => `Имя листа ${q(p.name)} Excel не принимает: лист прочитан как ${q(p.sheet)}`,
   stringsOpen: () => 'Общие строки без закрывающего тега </si> прочитаны как пустой текст или как часть следующей строки',
   allSheetsHidden: () => 'Все листы файла скрыты: первый прочитан как видимый',
   tableNameTwice: (p) => `Таблица ${q(p.table)} не прочитана: её имя занято другой таблицей или именем`,
@@ -378,6 +379,7 @@ const MESSAGES: Messages = {
   // reading xlsx: tables; the reason a table is left out is the check's own, in English
   tablePartBad: () => 'Таблица без имени или диапазона не прочитана',
   tableLeftOut: (p) => `Таблица ${q(p.table)} не прочитана, модель не может её хранить (${p.reason})`,
+  tableStyleCustom: (p) => `Собственный стиль ${q(p.name)} таблицы ${p.table} не поддерживается: таблица прочитана со стилем Excel по умолчанию`,
   headerGiven: (p) => `Ячейка заголовка, в которой нет имени её столбца как текста, прочитана с именем ${q(p.name)}`,
   // reading xlsx: conditional formats
   condRangeOutside: () => 'Диапазон условного форматирования за пределами листа не прочитан',

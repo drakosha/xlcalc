@@ -5,18 +5,38 @@
  * a merged area, a name taken) is left out; both are reported, and so is what the engine cannot take of a calculated
  * column formula, as of a cell's. A column formula that differs from its cells' is kept as it is, as Excel keeps it.
  */
-import type { CellInput, TableColumn, TableInput, TotalsFunction } from '../../contract.js'
+import type { CellInput, TableColumn, TableInput, TableStyle, TotalsFunction } from '../../contract.js'
 import { InputError } from '../../input-error.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
-import { checkTables, TOTALS } from '../../tables/check.js'
+import { checkTables, DEFAULT_TABLE_STYLE, STYLE_OPTIONS, TABLE_STYLE, TOTALS } from '../../tables/check.js'
 import type { Issues } from '../issues.js'
 import { parseFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
-import { attributes, element, elements } from '../xml/scan.js'
+import { attributes, element, elements, flag } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 
-/** A table part's table with its calculated column formulas as read (by column), or null when it has no name or range. */
-function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: (ReadFormula | undefined)[] } | null {
+/** Whether two styles are the same: the same name and options, an option false when it is absent. */
+const sameStyle = (a: TableStyle, b: TableStyle) => a.name === b.name && STYLE_OPTIONS.every(([k]) => !a[k] === !b[k])
+
+/**
+ * A table part's style: none without `tableStyleInfo` or a name, Excel's default (undefined) as no field; a custom style,
+ * which the model has no place for, as its name.
+ */
+function styleOf(xml: string): TableStyle | string | undefined {
+  const info = element(xml, 'tableStyleInfo')
+  const a = attributes(info?.attrs ?? '')
+  const name = a.name === undefined ? undefined : readText(a.name)
+  if (name !== undefined && !TABLE_STYLE.test(name)) return name
+  const style: TableStyle = name === undefined ? {} : { name }
+  for (const [k, attr] of STYLE_OPTIONS) if (flag(a[attr])) style[k] = true
+  return sameStyle(style, DEFAULT_TABLE_STYLE) ? undefined : style
+}
+
+/**
+ * A table part's table with its calculated column formulas as read (by column), and the name of a custom style it
+ * has; null when it has no name or range.
+ */
+function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: (ReadFormula | undefined)[]; custom?: string } | null {
   const root = element(xml, 'table')
   if (!root) return null
   const a = attributes(root.attrs)
@@ -40,7 +60,9 @@ function tableOf(xml: string, opts: FormulaOptions): { t: TableInput; formulas: 
   const t: TableInput = { name, range, columns }
   if (a.headerRowCount !== undefined && Number(a.headerRowCount) === 0) t.headers = false
   if (Number(a.totalsRowCount ?? 0) > 0) t.totals = true
-  return { t, formulas }
+  const style = styleOf(xml)
+  if (typeof style === 'object') t.style = style
+  return { t, formulas, ...(typeof style === 'string' ? { custom: style } : {}) }
 }
 
 /** The tables of a sheet's table parts; `cells` (the sheet's) get the header names they lack; `opts` read their formulas. */
@@ -52,7 +74,7 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
       issues.add('table', { key: 'tablePartBad' }, { sheet })
       continue
     }
-    const { t, formulas } = read
+    const { t, formulas, custom } = read
     // the header cells the table needs: tried on a copy, kept with the table
     const x = parseRange(t.range)
     const fixed: [string, CellInput][] = []
@@ -71,6 +93,7 @@ export function readTables(parts: string[], sheet: string, cells: Record<string,
       issues.add('table', { key: 'tableLeftOut', table: t.name, reason: e.message.replace(/^[^:]*: /, '') }, { sheet })
       continue
     }
+    if (custom !== undefined) issues.add('table', { key: 'tableStyleCustom', table: t.name, name: custom }, { sheet })
     for (const [addr, cell] of fixed) {
       issues.add('table', { key: 'headerGiven', name: cell.value as string }, { sheet, cell: addr })
       cells[addr] = cell
