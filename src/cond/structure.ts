@@ -12,12 +12,10 @@ import { hasCell, hi, intersect, lo, meets, shiftRect, subtract, withBounds, typ
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
 import { copyTransform, deleteSpan } from '../structure/transform.js'
-import { originOf, rangesOf, rectsOf } from './rules.js'
+import { corner, originOf, rangesOf, rectsOf } from './rules.js'
 
 type Cell = { r: number; c: number }
 
-/** The top-left of the rectangle around rectangles: the cell a rule over them has its formulas written for (`originOf`). */
-const corner = (xs: Rect[]): Cell => ({ r: Math.min(...xs.map((x) => x.r1)), c: Math.min(...xs.map((x) => x.c1)) })
 
 const valueWith = (v: ConditionalValue, f: (text: string) => string): ConditionalValue => (v.value === undefined ? v : { ...v, value: f(v.value) })
 
