@@ -32,15 +32,15 @@ const KNOWN: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   'spill-cycles-held:wait-file': { 'S!C1': START, 'S!C2': START },
 }
 
-/** The session kept the outcome of its edits, other than its compute(), before the engine gave a book one answer (x-fuzz-modes-6). */
-const ONE = 'the session kept another answer than a full computation of its book before the engine gave a book one answer (x-fuzz-modes-6)'
+/** The session kept the outcome of its edits, other than its compute(), before it iterated afresh the cycles it computes again (x-fuzz-modes-6). */
+const ONE = 'the session kept another answer than a full computation of its book before it iterated afresh the cycles it computes again (x-fuzz-modes-6)'
 /** The same cells missed for the same reason in each of the cases `ids` of `set`. */
 const missed = (set: string, ids: string[], cells: string[], why: string) => Object.fromEntries(ids.map((id) => [`${set}:${id}`, Object.fromEntries(cells.map((k) => [k, why]))]))
 /** Predictions of held-out cases that Excel answered otherwise: `<set>:<case>` → cells, each the reason of the miss. */
 const MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   'date1904-held:held': { 'F!A24': 'EDATE of date text typed in the formula: Excel takes the 1904 serial as a 1900 one (the set date1904-text measures it)' },
   'iterate-held:text': Object.fromEntries(['S!A1', 'S!B1'].map((k) => [k, 'a change of text into other text does not count to go on iterating (the set iterate measures it)'])),
-  ...missed('spill-cycles-held', ['wait-file', 'wait-typed-B1-A2-C1-C2'], ['S!B1', 'S!C1', 'S!A2', 'S!B2', 'S!C2'], 'the engine threw "spilled arrays did not settle" before it gave a book one answer (x-fuzz-modes-6)'),
+  ...missed('spill-cycles-held', ['wait-file', 'wait-typed-B1-A2-C1-C2'], ['S!B1', 'S!C1', 'S!A2', 'S!B2', 'S!C2'], 'the engine threw "spilled arrays did not settle" before an array closing a cycle through its spill gave way (x-fuzz-modes-6)'),
   ...missed('spill-cycles-held-2', ['unique-typed', 'unique-typed-20', 'unique-found-typed'], ['S!B3', 'S!A5'], ONE),
   ...missed('spill-cycles-held-2', ['sum-typed-array-last', 'sum-typed-value-last'], ['S!C3', 'S!D3'], ONE),
 }
@@ -48,10 +48,10 @@ const MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
 /**
  * Arrays in a cycle through their own spill beside another array over the same cells (`spill-cycles-held`): Excel's answer
  * follows the order the formulas were typed in and stays after a full calculation and a rebuild of the dependencies, while
- * a book opened from its file gets one answer. The engine gives a book one answer, the file's, whatever order its cells
- * were entered in (`docs/limitations.md`): each case pinned here must still differ from Excel, and its predictions are not checked.
+ * a book opened from its file gets one answer. The engine decides by the formulas, as Excel for the book opened from its
+ * file (`docs/limitations.md`): each case pinned here must still differ from Excel, and its predictions are not checked.
  */
-const ORDER = 'Excel keeps the outcome the typing order gave it (a full calculation and a rebuild keep it too); the engine gives the answer of the book opened from its file'
+const ORDER = 'Excel keeps the outcome the typing order gave it (a full calculation and a rebuild keep it too); the engine decides by the formulas, as Excel for the book opened from its file'
 const PENDING: Readonly<Record<string, string>> = Object.fromEntries(
   ['sort-typed-B3-C2-A4', 'sort-typed-B3-A4-C2', 'sort-typed-C2-B3-A4', 'sheets-typed-Sheet2.E5-Sheet2.D7-Q_data.F5-Q_data.D4', 'sheets-typed-Q_data.F5-Q_data.D4-Sheet2.E5-Sheet2.D7', 'wait-typed-C2-C1-A2-B1'].map((id) => [`spill-cycles-held:${id}`, ORDER]),
 )

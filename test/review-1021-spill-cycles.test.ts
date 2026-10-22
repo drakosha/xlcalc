@@ -1,7 +1,7 @@
 /**
  * Arrays in a cycle through their own spill beside another array over the same cells (x-fuzz-modes-6, repro-i1, fuzz
- * seeds 1754, 3315, 3914): a book gets one answer, the one Excel gives it opened from its file, whatever the order of its
- * cells and sheets, and a session reaches it whatever order the cells are entered in.
+ * seeds 1754, 3315, 3914, 3600, 10059, 1507): which array spills follows the formulas, as Excel decides for a book opened
+ * from its file, whatever the order of the cells and sheets, and a session entering the cells in any order reaches it.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, createSession, type BookInput, type CellInput, type ComputeResult, type SheetInput } from '../src/index.js'
@@ -107,6 +107,20 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
     expect(s.getResult().sheets[0].cells.B3.value).toBe(1)
   })
 
+  it('whether an array reads a cell its spill may cover follows its references, not what spilled (cyc seed 1507)', async () => {
+    // C2 reads D3:E4, which D1 spills over and C2's own array may: C2 gives way, in every order and with or without iteration
+    for (const extra of [{}, iteration]) {
+      const c = (await oneAnswer({ S: { D1: { formula: 'SEQUENCE(3,3)' }, C2: { formula: 'UNIQUE(D3:E4)' } } }, execution, extra)).S
+      expect([c.D1, c.F3, c.C2]).toEqual([1, 9, { error: 'SPILL' }])
+    }
+  })
+
+  it('an array that gave way stays waiting while an iteration places the winner again (cyc seed 10059)', async () => {
+    const cells = { B5: { formula: '{1,2;3,4}+0*N(C5)' }, B2: { formula: 'TRANSPOSE(A3:B5)' }, A6: { formula: 'SEQUENCE(3,3)+0*N(B2)' } }
+    const c = (await oneAnswer({ S: cells }, execution, { iteration: { maxIterations: 100, maxChange: 0.001 } })).S
+    expect([c.B5, c.A6, c.C8]).toEqual([{ error: 'SPILL' }, 1, 9])
+  })
+
   it('an array that reads another\'s spill in a cycle under iterative calculation settles (seed 3315)', async () => {
     const cells = { B6: { formula: 'IF(E6>0,A3,10)' }, E7: { formula: 'UNIQUE(C6:D7)' }, A6: { formula: 'D2:E2*2' }, D5: { formula: 'TRANSPOSE(E7#)' } }
     const b: BookInput = { sheets: [{ name: 'S', cells }], iteration: { maxIterations: 3, maxChange: 0.001 } }
@@ -118,4 +132,21 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
       expect(s.getHash()).toBe(full.hash)
     }
   })
+})
+
+it('which of two arrays spills is found once per graph, not by a walk of what depends on them for each pair', () => {
+  // 3,000 arrays read by a long chain, then an array typed into each one's range: the time follows the chain once, not once per pair
+  const cells: Record<string, CellInput> = { E1: { formula: 'SUM(A1:D9000)' } }
+  for (let i = 0; i < 3000; i++) cells[`A${3 * i + 1}`] = { formula: 'SEQUENCE(2,2)' }
+  for (let k = 2; k <= 40_000; k++) cells[`E${k}`] = { formula: `E${k - 1}+1` }
+  const enter = (column: string) => {
+    const s = createSession({ sheets: [{ name: 'S', cells }] }, { clock })
+    const t = performance.now()
+    s.setCells(Array.from({ length: 3000 }, (_, i) => ({ sheet: 'S', cell: `${column}${3 * i + 2}`, input: { formula: 'SEQUENCE(1,2)' } })))
+    return performance.now() - t
+  }
+  // into the ranges (B) against beside them (D), the faster of two each, taking turns against a busy host: a walk of the chain
+  // for each pair took some 24 times as long, now 2 as on master
+  const [b1, d1, d2, b2] = [enter('B'), enter('D'), enter('D'), enter('B')]
+  expect(Math.min(b1, b2) / Math.min(d1, d2)).toBeLessThan(6)
 })

@@ -56,7 +56,7 @@ export function rebuildGraph(state: EngineState) {
     spillSucc.set(id, [...readers])
   }
   state.spillSucc = spillSucc
-  state.spills.rank = undefined
+  state.spills.rank = state.spills.looped = state.spills.places = undefined
   const indeg = indegrees(succ, spillSucc)
   const order: number[] = []
   const queue: number[] = []

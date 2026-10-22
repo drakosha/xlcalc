@@ -77,7 +77,7 @@ export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
   if (cell) return blocked(state, f, t, `${cannot}: ${cellText(state, f.s, cell[0], cell[1])} is not empty`, area)
   const over = rivals(state, f.id, area)
   // an old-kind array formula's area is never spilled over
-  const first = over.find((x) => state.formulas[x.id]?.area || !beats(state, f.id, x.id, area))
+  const first = over.find((x) => state.formulas[x.id]?.area || !beats(state, f.id, x.id))
   if (first) {
     const what = sp.on.has(first.id) ? 'the spilled array' : 'the range kept in a circular reference by the array'
     return blocked(state, f, t, `${cannot}: it overlaps ${what} of ${cellText(state, f.s, first.r1, first.c1)}`, area, first.id)
@@ -95,7 +95,10 @@ export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
 function rivals(state: EngineState, id: number, area: Area): (Area & { id: number })[] {
   const sp = state.spills
   const out: (Area & { id: number })[] = [...sp.on.values()].filter((x) => x.id !== id && x.s === area.s && meets(x, area))
-  for (const [k, x] of sp.claims) if (k !== id && x.s === area.s && !sp.on.has(k) && !sp.wait.has(k) && meets(x, area)) out.push({ ...x, id: k })
+  for (const k of sp.kept) {
+    const x = sp.claims.get(k)
+    if (x && k !== id && x.s === area.s && !sp.on.has(k) && !sp.wait.has(k) && meets(x, area)) out.push({ ...x, id: k })
+  }
   return out
 }
 
@@ -139,6 +142,7 @@ function place(state: EngineState, f: Formula, a: Arr, area: Area, t?: Tracker) 
   if (old) sh.fills = sh.fills.filter((x) => !old.fills.includes(x))
   sh.fills.push(...fills)
   sp.on.set(f.id, { ...area, id: f.id, h, w, fills })
+  sp.kept.delete(f.id)
   if (old) invalidate(state.ctx, old)
   invalidate(state.ctx, area)
   claim(state, f.id, area)
@@ -172,6 +176,7 @@ function blocked(state: EngineState, f: Formula, t: Tracker | undefined, why: st
 export function endSpill(state: EngineState, f: Formula, t: Tracker | undefined, cycle: boolean) {
   // an array waiting for its range keeps none: the claim left from its spill closes no cycle
   if (!(cycle || state.spills.iterating) || state.spills.wait.has(f.id)) claim(state, f.id, undefined)
+  else keep(state, f.id)
   release(state, f.id, t)
   state.spills.wait.delete(f.id)
   state.spills.why.delete(f.id)
@@ -183,11 +188,19 @@ function claim(state: EngineState, id: number, x: Area | undefined) {
   const sp = state.spills
   const was = sp.claims.get(id)
   if (equalAreas(was, x)) return
-  // a range a cycle kept and no spill holds is given up: the arrays waiting for it are concerned, as by a release
-  if (was && !sp.on.has(id)) sp.touched.push({ ...was, step: sp.step })
+  // a range a cycle kept without a spill is given up: the arrays waiting for it are concerned, as by a release
+  if (was && sp.kept.has(id)) sp.touched.push({ ...was, step: sp.step })
   if (x) sp.claims.set(id, x)
-  else sp.claims.delete(id)
+  else {
+    sp.claims.delete(id)
+    sp.kept.delete(id)
+  }
   sp.claimsChanged = true
+}
+
+/** Formula `id`'s claim stays without a spill, kept by a cycle (`Spills.kept`). */
+export function keep(state: EngineState, id: number) {
+  if (state.spills.claims.has(id)) state.spills.kept.add(id)
 }
 
 /** Takes a spill back: its cells are blank again (but those that hold input now). */

@@ -12,7 +12,7 @@ import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { Column } from './column.js'
 import { heldAt, unhold } from './held.js'
-import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
+import { describeAt, endSpill, fixed, keep, release, spill } from './spill/place.js'
 import { beats } from './spill/rank.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
@@ -158,6 +158,7 @@ function* iterate(state: EngineState, t?: Tracker): Steps<void> {
   for (const id of ids) {
     const f = state.formulas[id]!
     release(state, id, t)
+    keep(state, id)
     write(state, f.s, f.r, f.c, 0, t)
   }
   state.iterated = ids
@@ -206,7 +207,7 @@ export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, p
   yield* settle(state, lists, t, active)
   if (!before && !spillCycle(state)) return
   for (const id of [...state.spills.on.keys()]) release(state, id, t)
-  for (const m of [state.spills.claims, state.spills.wait, state.spills.why, state.spills.by]) m.clear()
+  for (const m of [state.spills.claims, state.spills.kept, state.spills.wait, state.spills.why, state.spills.by]) m.clear()
   // as in a new state, no cycle has been iterated yet: the cycles the spills close again are iterated afresh
   state.iterated = []
   rebuildGraph(state)
@@ -281,7 +282,7 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
 /**
  * Formulas a change of an area's cells concerns: those that read them, arrays waiting for them, arrays spilled
  * over them (a cell typed there stops them). With `step`, only those computed before that step of the round, and none
- * waiting for cells the input still blocks; `acyclic`, none in a cycle or over one.
+ * waiting for cells the input or a spill it gives way to still blocks; `acyclic`, none in a cycle or over one.
  */
 export function concerned(state: EngineState, x: Area, out: Set<number>, step = Infinity, acyclic = false) {
   const sp = state.spills
@@ -293,7 +294,7 @@ export function concerned(state: EngineState, x: Area, out: Set<number>, step = 
     readersOf(state, x, readers)
     readers.forEach(add)
   }
-  for (const [id, a] of sp.wait) if (a.s === x.s && meets(a, x) && (step === Infinity || !blockedByInput(state, id, a))) add(id)
+  for (const [id, a] of sp.wait) if (a.s === x.s && meets(a, x) && (step === Infinity || !(blockedByInput(state, id, a) || blockedBySpill(state, id, a)))) add(id)
   for (const [id, a] of sp.on) if (a.s === x.s && meets(a, x)) add(id)
 }
 
@@ -301,6 +302,13 @@ export function concerned(state: EngineState, x: Area, out: Set<number>, step = 
 function blockedByInput(state: EngineState, id: number, a: Area): boolean {
   const f = state.formulas[id]
   return !!f && !!state.spills.occupied.first(a.s, a, f.r, f.c)
+}
+
+/** An array waiting for `a`, shown as #SPILL!, that a spilled array it gives way to still covers: computed again, it would not spill either. */
+function blockedBySpill(state: EngineState, id: number, a: Area): boolean {
+  if (!state.spills.why.has(id)) return false
+  for (const x of state.spills.on.values()) if (x.id !== id && x.s === a.s && meets(x, a) && (state.formulas[x.id]?.area || !beats(state, id, x.id))) return true
+  return false
 }
 
 /** A formula's steps in room for `n` formulas, at least twice as many as before. */
