@@ -37,3 +37,19 @@ describe('parseEntry edited in place', () => {
     expect(() => parseEntry('6', { inPlace: 'yes' as unknown as boolean })).toThrow(/opts\.inPlace/)
   })
 })
+
+describe('entryText at the edges of the range', () => {
+  it.each([
+    [2958465.999999999, 14, undefined, '2958466'],
+    [2958465.9999999995, 22, undefined, '2958466'],
+    [2958465.999999999, 21, undefined, '2958466'],
+    [2957003.9999999, 14, 1904, '2957003.9999999'],
+  ] as const)('writes %s in format %s, rounded past 9999-12-31, as the number (system %s)', (v, numberFormat, dateSystem, text) => {
+    const opts = { numberFormat, ...(dateSystem ? { dateSystem } : {}) } as const
+    expect(entryText(v, opts)).toBe(text)
+    expect(parseEntry(text, { cell: { numberFormat }, inPlace: true, ...(dateSystem ? { dateSystem } : {}) })).toEqual({ ok: true, input: { value: Number(text), numberFormat } })
+    // half a second earlier the value is still a date
+    expect(entryText(2958465.99999, { numberFormat: 22 })).toBe('12/31/9999  11:59:59 PM')
+  })
+
+})
