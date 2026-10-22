@@ -119,7 +119,7 @@ describe.each(EXECUTIONS)('a session merging entire columns of a sheet of one ce
   })
 })
 
-describe.each(EXECUTIONS)('merged areas read once per session state (speed-u109), %s', (execution) => {
+describe.each(EXECUTIONS)('merged areas read once per session state (speed-u109, speed-u110), %s', (execution) => {
   /** Rows 1 to 2n, every odd one merged across columns A:B, its value a number too wide for column A alone. */
   const merged = (n: number): BookInput => ({
     sheets: [{ name: 'S', merges: Array.from({ length: n }, (_, i) => `A${2 * i + 1}:B${2 * i + 1}`), cells: Object.fromEntries(Array.from({ length: n }, (_, i) => [`A${2 * i + 1}`, { value: 123456789 + i, numberFormat: '#,##0' }])) }],
@@ -140,5 +140,14 @@ describe.each(EXECUTIONS)('merged areas read once per session state (speed-u109)
       await s.close()
     })
 
+    it('typing a number into 20,000 cells reads the merged areas once, not once a cell (speed-u110)', async () => {
+      const s = await open(merged(3000), { execution, clock, display: false, undo: { depth: 0 } })
+      const t = performance.now()
+      await s.fillCellText('S', 'D1:D20000', '123456789012345')
+      // every merge parsed for each cell: about 5 s
+      expect(performance.now() - t).toBeLessThan(1500)
+      expect((await s.getLayout()).sheets[0].columns?.D?.width).toBeGreaterThan(8.43)
+      await s.close()
+    })
   })
 })
