@@ -238,6 +238,26 @@ export interface TableInput {
   totals?: boolean
   /** The columns from left to right, one for each column of the range. */
   columns: TableColumn[]
+  /**
+   * How Excel draws the table (xlsx `tableStyleInfo`); without it, Excel's default, `TableStyleMedium2` with banded rows.
+   * The engine does not draw it: it stays with the table through operations and is written to the file.
+   */
+  style?: TableStyle
+}
+
+/**
+ * A table's style (`TableInput.style`): one of Excel's table styles, and the parts of the table it emphasizes, each
+ * false by default, as the checkboxes of Excel's Table Style Options.
+ */
+export interface TableStyle {
+  /** One of Excel's table styles, `TableStyleLight1` to `TableStyleLight21`, `TableStyleMedium1` to `TableStyleMedium28`, `TableStyleDark1` to `TableStyleDark11`; none without it. */
+  name?: string
+  firstColumn?: boolean
+  lastColumn?: boolean
+  /** Banded rows. */
+  rowStripes?: boolean
+  /** Banded columns. */
+  columnStripes?: boolean
 }
 
 /** A column of a table (`TableInput.columns`): its header name and what its cells and its totals row calculate. */

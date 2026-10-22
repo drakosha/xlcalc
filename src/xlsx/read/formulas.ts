@@ -28,6 +28,8 @@ export interface FormulaOptions {
   union?: boolean
   /** The numbers `[N]` of the book's links to other workbooks (`readLinks`): a formula the engine parses that refers to these alone is in it. */
   links?: ReadonlySet<number>
+  /** References to sheets read under other names than the file's (`sheet-names.ts`) rewritten. */
+  rename?: (formula: string) => string
 }
 
 /** Reports what the engine cannot take of a formula read, at `where`: a shared formula's copies report their master's. */
@@ -39,6 +41,7 @@ export function reportFormula(f: ReadFormula, issues: Issues, where: Where): voi
 /** A formula of a file in the engine's spelling, parsed when the engine parses it, with nothing reported yet. */
 export function parseFormula(text: string, opts: FormulaOptions = {}): ReadFormula {
   const { links, ...c } = fromFile(text)
+  if (opts.rename) c.formula = opts.rename(c.formula)
   let ast: Ast
   try {
     ast = parse(c.formula, { union: opts.union })

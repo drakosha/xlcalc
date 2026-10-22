@@ -79,7 +79,8 @@ describe('tables in xlsx', () => {
       }),
     )
     const r = await readXlsx(data)
-    expect(r.book.sheets[0].tables).toEqual([{ name: 'T', range: 'A1:B2', columns: [{ name: 'a' }, { name: 'b' }] }])
+    // a table part without tableStyleInfo has no style
+    expect(r.book.sheets[0].tables).toEqual([{ name: 'T', range: 'A1:B2', columns: [{ name: 'a' }, { name: 'b' }], style: {} }])
     expect(r.book.sheets[0].cells.B1).toEqual({ value: 'b' })
     expect(r.issues.map((i) => [i.code, i.message.replace(/:.*/, '')])).toEqual([
       ['table', "a header cell that does not hold its column's name as text is read with the name \"b\""],
