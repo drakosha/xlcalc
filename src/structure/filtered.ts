@@ -5,13 +5,17 @@
  * as into a target alone. A selection of hidden rows only is taken whole. Every hidden row of a filtered sheet
  * counts, whatever hid it.
  */
-import type { BookInput } from '../contract.js'
+import type { BookInput, CellInput } from '../contract.js'
 import { say } from '../locale/messages.js'
-import { cornersText, type Rect } from './area.js'
+import { cornersText, hasCell, type Rect } from './area.js'
 import { clipped, CLIP } from './clip.js'
 import { copyRange } from './copy.js'
-import type { Applied, Geometry } from './geometry.js'
-import { shift } from './shift.js'
+import { placer, type Applied, type Geometry } from './geometry.js'
+import { placedCells, shift, shiftTransform } from './shift.js'
+import { arraysOf, gridOf } from './grid.js'
+import { rewriteCells, sheetIndex, sheetNames, sheetOf, type Site, type Transform } from './rewrite.js'
+import { deleteSpan } from './transform.js'
+import { madeFrom } from '../looks/sheet.js'
 import type { ValuesIn } from './values.js'
 import { visibleRows, visibleRuns } from './visible.js'
 
@@ -38,7 +42,48 @@ export function insertRows(book: BookInput, sheet: string, at: number, n: number
 export function deleteRows(book: BookInput, sheet: string, at: number, n: number): Applied {
   const visible = visibleRuns(book, sheet, at, at + n - 1)
   if (!visible?.length) return shift(book, sheet, 'r', at, -n)
-  return chain(book, visible.reverse().map(([lo, hi]) => (b: BookInput) => shift(b, sheet, 'r', lo, lo - hi - 1)))
+  const runs = visible.reverse()
+  const steps = (b: BookInput) => chain(b, runs.map(([lo, hi]) => (x: BookInput) => shift(x, sheet, 'r', lo, lo - hi - 1)))
+  // a table's rows deleted run by run change its cells (`keepFirstRow`, `tableShift`): the cells go through each step
+  return runs.length > 1 && !sheetOf(book, sheet).tables?.length ? movedOnce(book, sheet, runs, steps) : steps(book)
+}
+
+/** The transforms one after another, as each step's formulas are rewritten by its own: a reference lost stays lost. */
+function composed(ts: Transform[]): Transform {
+  return {
+    ref(site) {
+      let out: Site | undefined
+      for (const t of ts) {
+        const o = t.ref(out ?? site)
+        if (o === 'lost' || o === 'gone') return o
+        out = o ?? out
+      }
+      return out
+    },
+  }
+}
+
+/**
+ * The runs of rows deleted (`steps` of `runs`, descending) with the cells moved once: the steps run over the book without
+ * cells but the sheet's array formulas, which their refusals read, and every sheet's cells take the steps' transforms
+ * one after another, where a step each rewrote and placed them all (O(runs × book)).
+ */
+function movedOnce(book: BookInput, sheet: string, runs: [number, number][], steps: (b: BookInput) => Applied): Applied {
+  const ti = sheetIndex(book, sheet)
+  const bare = book.sheets.map((s, i) => ({ ...s, cells: i === ti ? Object.fromEntries(arraysOf(s).map(([addr]) => [addr, s.cells[addr]])) : {} }))
+  const r = steps({ ...book, sheets: bare })
+  if (!r.ok) return r
+  const name = book.sheets[ti].name
+  const t = composed(runs.map(([lo, hi]) => shiftTransform(name, 'r', lo, hi - lo + 1, deleteSpan)))
+  const names = sheetNames(book)
+  const sheets = r.book.sheets.map((s, i) => {
+    const old = book.sheets[i]
+    const cells = i === ti ? placedCells(old, ti, r.geometry, t, names) : rewriteCells(old.cells, old.name, old.name, t, names)
+    if (cells === old.cells) return s === bare[i] ? old : { ...s, cells }
+    madeFrom([old.cells], cells)
+    return { ...s, cells }
+  })
+  return { ...r, book: { ...r.book, sheets } }
 }
 
 /**
@@ -64,5 +109,31 @@ export function copyRows(book: BookInput, from: string, src: Rect, to: string, t
   if (!parts) return copyRange(book, at, rect, to, target, withMeta, source)
   if (clip && parts.length > 1)
     return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
-  return chain(book, parts.map(([lo, hi]) => (b: BookInput) => copyRange(b, at, rect, to, { ...target, r1: lo, r2: hi }, withMeta, source)))
+  const steps = (b: BookInput) => chain(b, parts.map(([lo, hi]) => (x: BookInput) => copyRange(x, at, rect, to, { ...target, r1: lo, r2: hi }, withMeta, source)))
+  return parts.length > 1 ? pastedOnce(book, to, target, steps) : steps(book)
+}
+
+/**
+ * The pastes into the runs of `target` (`steps`) over the sheet `to` with only its cells of the target and its array
+ * formulas, which a paste reads, where each paste walked all its cells (O(runs × sheet)): its other cells come back
+ * after, in its order before the pasted ones, as the pastes leave them.
+ */
+function pastedOnce(book: BookInput, to: string, target: Rect, steps: (b: BookInput) => Applied): Applied {
+  const ti = sheetIndex(book, to)
+  const sheet = book.sheets[ti]
+  const g = gridOf(sheet)
+  const arrays = new Set(arraysOf(sheet).map(([addr]) => addr))
+  const read: Record<string, CellInput> = {}
+  for (let i = 0; i < g.addr.length; i++) if (hasCell(target, g.row[i], g.col[i]) || arrays.has(g.addr[i])) read[g.addr[i]] = g.cell[i]
+  const r = steps({ ...book, sheets: book.sheets.map((s, i) => (i === ti ? { ...s, cells: read } : s)) })
+  if (!r.ok) return r
+  const [pasted, place, p] = [r.book.sheets[ti], placer(r.geometry), { s: ti, r: 0, c: 0 }]
+  const cells: Record<string, CellInput> = {}
+  for (let i = 0; i < g.addr.length; i++) {
+    p.r = g.row[i]
+    p.c = g.col[i]
+    if (place(p)) cells[g.addr[i]] = g.cell[i]
+  }
+  for (const a in pasted.cells) if (!(a in cells)) cells[a] = pasted.cells[a]
+  return { ...r, book: { ...r.book, sheets: r.book.sheets.map((s, i) => (i === ti ? { ...pasted, cells } : s)) } }
 }

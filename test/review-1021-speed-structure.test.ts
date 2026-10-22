@@ -40,6 +40,44 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     expect(s.getCell('S', `B${n}`)).toMatchObject({ formula: `A${n}*2`, value: n * 2 })
   })
 
+  it('deleting rows on a filtered sheet moves the cells once, not once per run of visible rows (speed-u90)', () => {
+    const [n, runs] = [6000, 800]
+    const [cells, rows]: [BookInput['sheets'][0]['cells'], Record<string, { hidden: true }>] = [{ C2: { formula: `SUM(A1:A${n})` } }, {}]
+    for (let r = 1; r <= n; r++) {
+      cells[`A${r}`] = { value: r }
+      cells[`B${r}`] = { formula: `A${r}*2` }
+    }
+    for (let k = 1; k <= runs; k++) rows[String(2 * k)] = { hidden: true }
+    const book: BookInput = { sheets: [{ name: 'S', cells, rows, filtered: true }, { name: 'T', cells: { A1: { formula: `S!A${n}+S!A3` } } }] }
+    const s = createSession(book, { execution, clock, display: false })
+    // the old delete rebuilt the book once per run: 8-10 s at 800 runs of 6,000 rows
+    const ms = timed(() => expect(s.editStructure({ op: 'deleteRows', sheet: 'S', row: 1, count: 2 * runs }).ok).toBe(true))
+    expect(ms).toBeLessThan(3000)
+    // the hidden rows stay, the visible ones above the end go
+    expect(s.getCell('S', 'A1')).toMatchObject({ value: 2 })
+    expect(s.getCell('S', 'B2')).toMatchObject({ formula: 'A2*2', value: 8 })
+    expect(s.getCell('S', 'C1')).toMatchObject({ formula: `SUM(A1:A${n - runs})` })
+    expect(s.getCell('T', 'A1')).toMatchObject({ formula: `'S'!A${n - runs}+'S'!#REF!`, value: { error: 'REF' } })
+  })
+
+  it('a paste over a filtered sheet walks its cells once, not once per run of visible rows (speed-u90)', () => {
+    const [n, runs] = [34_000, 400]
+    const [cells, rows]: [BookInput['sheets'][0]['cells'], Record<string, { hidden: true }>] = [{ E1: { formula: 'C1*3' } }, {}]
+    for (let r = 1; r <= n; r++) {
+      cells[`A${r}`] = { value: r }
+      cells[`B${r}`] = { formula: `A${r}*2` }
+    }
+    for (let k = 1; k <= runs; k++) rows[String(2 * k)] = { hidden: true }
+    const s = createSession({ sheets: [{ name: 'S', cells, rows, filtered: true }] }, { execution, clock, display: false })
+    // the old paste rebuilt the sheet once per run: 4-5 s at 400 runs of 34,000 rows
+    const ms = timed(() => expect(s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'E1' }, to: { sheet: 'S', range: `C1:C${2 * runs}` } }).ok).toBe(true))
+    expect(ms).toBeLessThan(3000)
+    // the visible rows take the copy, the hidden ones keep what they had
+    expect(s.getCell('S', 'C3')).toMatchObject({ formula: 'A3*3', value: 9 })
+    expect(s.getCell('S', 'C2')?.formula).toBeUndefined()
+    expect(s.getCell('S', `B${n}`)).toMatchObject({ formula: `A${n}*2`, value: 2 * n })
+  })
+
   describe('editStructure checks the cells it was given, not those it made (speed-u95)', () => {
     const book = (): BookInput => ({ styles: [{}, { font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 1 }, A2: { formula: '=A1+1' }, B1: { style: 1 } } }, { name: 'T', cells: { A1: { formula: 'S!A2*2' } } }] })
     const done = (r: StructureResult) => {

@@ -5,7 +5,7 @@
  * move too. At the sheet's edge a range ending on the last row keeps ending there, a single cell pushed
  * past it is `#REF!`, and a range over every row is not changed by rows inserted or deleted.
  */
-import type { BookInput, CellInput } from '../contract.js'
+import type { BookInput, CellInput, SheetInput } from '../contract.js'
 import { formatAddress } from '../model.js'
 import { say, type EngineMessage } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
@@ -27,7 +27,7 @@ type SpanFn = (lo: number, hi: number, at: number, n: number, max: number, cell:
  * The transform of every reference to `sheet` along `axis`; `edge` gives the span of a reference into a table's data
  * that rows inserted into the table grow at its edge (`tables/shift.ts`).
  */
-function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: SpanFn, edge?: (area: Area) => [number, number] | undefined): Transform {
+export function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: SpanFn, edge?: (area: Area) => [number, number] | undefined): Transform {
   const key = sheetKey(sheet)
   return {
     ref({ sheet: s, area }): Outcome {
@@ -76,20 +76,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     const moving = s === target
     let cells: Record<string, CellInput> = {}
     let changed = moving
-    if (moving) {
-      // the cells where the geometry takes them, their formulas rewritten
-      const place = placer(geometry)
-      const p: Place = { s: ti, r: 0, c: 0 }
-      for (let i = 0; i < grid.addr.length; i++) {
-        const addr = grid.addr[i]
-        p.s = ti
-        p.r = grid.row[i]
-        p.c = grid.col[i]
-        if (!place(p)) continue
-        const to = p.r === grid.row[i] && p.c === grid.col[i] ? addr : formatAddress(p.r, p.c)
-        cells[to] = relocated(rewriteCell(grid.cell[i], s.name, s.name, t, names), addr, to)
-      }
-    } else {
+    if (moving) cells = placedCells(s, ti, geometry, t, names)
+    else {
       cells = rewriteCells(s.cells, s.name, s.name, t, names)
       changed = cells !== s.cells
       if (changed) madeFrom([s.cells], cells)
@@ -124,6 +112,22 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const nm = rewriteNames(book.names, offsetsStay(t, axis), names)
   if (nm) out.names = nm
   return { ok: true, book: tables.after(out), geometry }
+}
+
+/** The cells of sheet `ti` where the geometry takes them, their formulas rewritten by `t`. */
+export function placedCells(sheet: SheetInput, ti: number, geometry: Geometry, t: Transform, names: Map<string, string>): Record<string, CellInput> {
+  const [grid, place, p] = [gridOf(sheet), placer(geometry), { s: ti, r: 0, c: 0 } as Place]
+  const cells: Record<string, CellInput> = {}
+  for (let i = 0; i < grid.addr.length; i++) {
+    const addr = grid.addr[i]
+    p.s = ti
+    p.r = grid.row[i]
+    p.c = grid.col[i]
+    if (!place(p)) continue
+    const to = p.r === grid.row[i] && p.c === grid.col[i] ? addr : formatAddress(p.r, p.c)
+    cells[to] = relocated(rewriteCell(grid.cell[i], sheet.name, sheet.name, t, names), addr, to)
+  }
+  return cells
 }
 
 /** Rows deleted over every data row of a table: its first data row stays, its cells in the table cleared; the rest go. */
