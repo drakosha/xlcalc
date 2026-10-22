@@ -1,7 +1,8 @@
 /**
  * Number literals and dates typed, from the review of 21.10, as Excel answered the entry sets `review-held`, `-2` and
  * `-3`: a formula's number literal from 1E+308 on, or not 0 and below 1E-309, is refused, and one up to the smallest
- * normal number is 0 (it was Infinity, written `Infinity`, which a file round trip made a name).
+ * normal number is 0 (it was Infinity, written `Infinity`, which a file round trip made a name); the leap day typed in
+ * a year that is not leap, read as February 2029, takes the month and year format as `2/30` does.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, parseEntry, validateFormula } from '../src/index.js'
@@ -38,5 +39,25 @@ describe('a number literal past the bounds of a formula (fix-u345)', () => {
       const s = createSession(book, { clock, execution })
       expect(s.setCellText('S', 'B1', '=1E400')).toMatchObject({ ok: false, code: 'syntax' })
     })
+  })
+})
+
+describe('the leap day typed in a year that is not leap (fix-u380)', () => {
+  it.each(['2/29', 'Feb 29', '2-29', 'Feb/29'])('%s is February 2029 in mmm-yy, as 2/30 is February 1930', (t) => {
+    expect(parseEntry(t, { now: '2026-10-22' })).toEqual({ ok: true, input: { value: 47150, numberFormat: 17 } })
+    // in a leap year the day of this year, in d-mmm
+    expect(parseEntry(t, { now: '2028-10-22' })).toEqual({ ok: true, input: { value: 46812, numberFormat: 16 } })
+  })
+
+  it('2/28 is this year in d-mmm, 2/30 a month and year', () => {
+    expect(parseEntry('2/28', { now: '2026-10-22' })).toEqual({ ok: true, input: { value: 46081, numberFormat: 16 } })
+    expect(parseEntry('2/30', { now: '2026-10-22' })).toEqual({ ok: true, input: { value: 10990, numberFormat: 17 } })
+  })
+
+  it.each(['closures', 'eval'] as const)('in a session, execution %s', (execution) => {
+    const s = createSession({ sheets: [{ name: 'S', cells: {} }] }, { clock, execution })
+    expect(s.setCellText('S', 'A1', '2/29')).toMatchObject({ ok: true })
+    expect(s.getBook().sheets[0].cells.A1).toEqual({ value: 47150, numberFormat: 17 })
+    expect(s.getCells('S', 'A1').A1).toMatchObject({ text: 'Feb-29' })
   })
 })
