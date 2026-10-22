@@ -119,6 +119,21 @@ describe('structure operations on a filtered sheet', () => {
     session.close()
   })
 
+  it.each(['closures', 'eval'] as const)('a copy of a legacy array over hidden rows pastes values without its area, execution %s (fix-u294)', (execution) => {
+    const legacy = (formula: string): BookInput => ({ sheets: [{ name: 'S', filtered: true, rows: { '2': { hidden: true } }, cells: { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 }, B1: { formula, array: 'B1:B3' } } }, { name: 'T', cells: {} }] })
+    const op = { op: 'copyRange', from: { sheet: 'S', range: 'B1:B3' }, to: { sheet: 'T', range: 'A1' } } as const
+    const r = editStructure(legacy('A1:A3*2'), op)
+    expect(r.ok && r.book.sheets[1].cells).toEqual({ A1: { value: 2 }, A2: { value: 6 } })
+    if (r.ok) expect(compute(r.book, { clock, execution }).sheets[1].cells.A2.value).toBe(6)
+    // an error on top pastes as an error formula of one cell, the value below it stays
+    const e = editStructure(legacy('1/(A1:A3-1)'), op)
+    expect(e.ok && e.book.sheets[1].cells).toEqual({ A1: { formula: '#DIV/0!' }, A2: { value: 0.5 } })
+    const session = createSession(legacy('A1:A3*2'), { clock, execution })
+    expect(session.editStructure(op).ok).toBe(true)
+    expect(compute(session.getBook(), { clock, execution }).hash).toBe(session.getHash())
+    session.close()
+  })
+
   it('deleting rows deletes the visible ones, and mapCell follows them', () => {
     const r = editStructure(filtered(), { op: 'deleteRows', sheet: 'S', row: 1, count: 3 })
     if (!r.ok) throw new Error(r.message)
