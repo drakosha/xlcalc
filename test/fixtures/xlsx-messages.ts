@@ -59,6 +59,7 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   tablePartBad: [{}],
   tableLeftOut: [{ table: 'Over', reason: 'B1:C2 overlaps the table T' }],
   headerGiven: [{ name: 'Qty' }],
+  tableStyleCustom: [{ table: 'Sales', name: 'My Style' }],
   condRangeOutside: [{}],
   condStyleLost: [{ part: 'fontSize' }, { part: 'alignment' }],
   condOperator: [{ operator: 'between2' }],

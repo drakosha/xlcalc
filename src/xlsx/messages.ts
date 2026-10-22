@@ -98,6 +98,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   // reading: tables
   tablePartBad: () => 'a table part without a name or a range is left out',
   tableLeftOut: (p) => `the table ${p.table} is left out: ${p.reason}`,
+  tableStyleCustom: (p) => `the custom table style ${JSON.stringify(p.name)} of the table ${p.table} is not in the model: the table is read with Excel's default style`,
   headerGiven: (p) => `a header cell that does not hold its column's name as text is read with the name ${JSON.stringify(p.name)}`,
   // reading: conditional formats
   condRangeOutside: () => 'a range of a conditional format outside the sheet is left out',

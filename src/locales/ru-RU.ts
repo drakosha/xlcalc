@@ -379,6 +379,7 @@ const MESSAGES: Messages = {
   // reading xlsx: tables; the reason a table is left out is the check's own, in English
   tablePartBad: () => 'Таблица без имени или диапазона не прочитана',
   tableLeftOut: (p) => `Таблица ${q(p.table)} не прочитана, модель не может её хранить (${p.reason})`,
+  tableStyleCustom: (p) => `Собственный стиль ${q(p.name)} таблицы ${p.table} не поддерживается: таблица прочитана со стилем Excel по умолчанию`,
   headerGiven: (p) => `Ячейка заголовка, в которой нет имени её столбца как текста, прочитана с именем ${q(p.name)}`,
   // reading xlsx: conditional formats
   condRangeOutside: () => 'Диапазон условного форматирования за пределами листа не прочитан',

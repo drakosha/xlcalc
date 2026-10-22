@@ -256,7 +256,7 @@ The manual calculation mode, "automatic except for data tables" and precision as
 
 ### Tables
 
-A sheet's table parts become its `tables`: the name formulas use, the range, the header and totals rows, and each column with its calculated column formula and its totals function or label. Structured references come in the stored spelling, which matches the file's except for a column name that starts with `@` (`Sales[@at]` in a file becomes `Sales['@at]`). A header cell that does not contain its column's name as text is given it, and a table the model cannot represent, one that overlaps another table or a merged area, is left out; both are reported, as is any part of a calculated column formula the engine cannot handle, as for a cell's formula (at the column's first cell). A calculated column formula that differs from its cells' formulas is kept as Excel keeps it: a row inserted into the table gets it. [docs/tables.md](tables.md) has the rules.
+A sheet's table parts become its `tables`: the name formulas use, the range, the header and totals rows, each column with its calculated column formula and its totals function or label, and its style (`tableStyleInfo`): a table in Excel's default style, `TableStyleMedium2` with banded rows, has no `style`, and one in a custom style, which the model has no place for, is read in the default style and reported. Structured references come in the stored spelling, which matches the file's except for a column name that starts with `@` (`Sales[@at]` in a file becomes `Sales['@at]`). A header cell that does not contain its column's name as text is given it, and a table the model cannot represent, one that overlaps another table or a merged area, is left out; both are reported, as is any part of a calculated column formula the engine cannot handle, as for a cell's formula (at the column's first cell). A calculated column formula that differs from its cells' formulas is kept as Excel keeps it: a row inserted into the table gets it. [docs/tables.md](tables.md) has the rules.
 
 ### The locale
 
@@ -268,7 +268,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 |---|---|
 | `richText` | formatted runs of text |
 | `userFunction` | a user-defined function (`_xludf.`) |
-| `table` | a table left out (overlapping another table or a merged area, or with a name already in use), a header cell given its column's name, a structured reference without a table name |
+| `table` | a table left out (overlapping another table or a merged area, or with a name already in use), a header cell given its column's name, a custom table style, a structured reference without a table name |
 | `externalLink` | a DDE or OLE link, or a link whose part is missing, kept as a workbook without sheets; a formula over a link the file does not contain, or over such a link |
 | `formula` | a formula the engine cannot parse, kept as written |
 | `errorConstant` | an error stored as a value, read as a formula consisting of it |
@@ -361,7 +361,7 @@ A file with formulas asks Excel to recalculate the workbook when it opens it, so
 
 ### Tables
 
-Each table is written as a table part, as Excel writes one: its name, range, header and totals rows, an AutoFilter over the header and data, and its columns with their calculated column formulas and totals. A formula in the totals row that none of its column's totals functions produces is recorded as the column's custom totals formula, without which Excel does not open the file, and a table's name alone in a defined name is written as `Sales[]`.
+Each table is written as a table part, as Excel writes one: its name, range, header and totals rows, an AutoFilter over the header and data, its columns with their calculated column formulas and totals, and its style, Excel's default for a table without `style`. A formula in the totals row that none of its column's totals functions produces is recorded as the column's custom totals formula, without which Excel does not open the file, and a table's name alone in a defined name is written as `Sales[]`.
 
 ### Styles, columns and rows
 
