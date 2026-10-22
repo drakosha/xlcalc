@@ -1,7 +1,8 @@
 /**
  * Reproductions from the 21.10 review, structure at its edges: a fill over dates that runs past the date system writes
  * the serial numbers, as a fill over numbers in a date format does. `limits.writes` bounds a fill's cells all together,
- * in a synchronous session, in the same thread and in a thread.
+ * in a synchronous session, in the same thread and in a thread. A copy or a fill keeps the spelling of the references
+ * it does not change.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, editStructure, type BookInput, type StructureOp } from '../src/index.js'
@@ -40,6 +41,26 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       expect(d1904.A1.value).toEqual({ date: '1904-01-01' })
       const below = edited(one({ A3: { value: { date: '1904-01-02' } } }, 1904), { op: 'fillRange', sheet: 'S', range: 'A3', to: 'A1:A3', type: 'series' }, execution)
       expect(below.A1.value).toBe(-1)
+    })
+  })
+
+  describe('a copy keeps the spelling of a reference it does not change', () => {
+    const book = (): BookInput => ({ sheets: [{ name: 'S', cells: { B1: { formula: 'sum( a1 , $a$1 ) + $A$1 + s!$a$1 + S!a1' }, C1: { formula: '$a$1*2 + a:a + sum(1:1)' } } }, { name: 'T', cells: {} }] })
+
+    it.each([
+      ['copyRange', { op: 'copyRange', from: { sheet: 'S', range: 'B1:C1' }, to: { sheet: 'S', range: 'B2:C2' } }],
+      ['fillRange', { op: 'fillRange', sheet: 'S', range: 'B1:C1', to: 'B1:C2' }],
+    ] as [string, StructureOp][])('%s', (_, op) => {
+      const cells = edited(book(), op, execution)
+      expect(cells.B2.formula).toBe('sum( A2 , $a$1 ) + $A$1 + s!$a$1 + S!A2')
+      expect(cells.C2.formula).toBe('$a$1*2 + a:a + sum(2:2)')
+    })
+
+    it('to another sheet a copy changes nothing; a move spells out the sheet as Excel writes it', () => {
+      const r = editStructure(book(), { op: 'copyRange', from: { sheet: 'S', range: 'C1' }, to: { sheet: 'T', range: 'C1' } })
+      expect(r.ok && r.book.sheets[1].cells.C1.formula).toBe('$a$1*2 + a:a + sum(1:1)')
+      const m = editStructure(book(), { op: 'moveRange', from: { sheet: 'S', range: 'C1' }, to: { sheet: 'T', cell: 'C1' } })
+      expect(m.ok && m.book.sheets[1].cells.C1.formula).toBe("'S'!$A$1*2 + 'S'!A:A + sum('S'!1:1)")
     })
   })
 
