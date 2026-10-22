@@ -186,10 +186,13 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
   const layout = new Map<number, SheetInput>()
   book.sheets.forEach((sh, i) => {
     const old = s.input.sheets[i]
+    // a sheet whose parts are the same objects in the same order is not written out to be compared, nor a part kept: rows can hold tens of thousands of entries
+    const [ka, kb] = [old, sh].map((x) => Object.keys(x).filter((k) => k !== 'cells' && k !== 'looks') as (keyof SheetInput)[])
+    if (ka.length === kb.length && ka.every((k, j) => k === kb[j] && old[k] === sh[k])) return
     const { cells: _a, looks: _c, ...a } = old,
       { cells: _b, looks: _d, ...b } = sh
     if (JSON.stringify(a) !== JSON.stringify(b)) layout.set(i, sh)
-    if (JSON.stringify(old.merges ?? []) !== JSON.stringify(sh.merges ?? []) || JSON.stringify(hiddenRows(old) ?? null) !== JSON.stringify(hiddenRows(sh) ?? null) || old.filtered !== sh.filtered) rebuild = true
+    if ((old.merges !== sh.merges && JSON.stringify(old.merges ?? []) !== JSON.stringify(sh.merges ?? [])) || (old.rows !== sh.rows && JSON.stringify(hiddenRows(old) ?? null) !== JSON.stringify(hiddenRows(sh) ?? null)) || old.filtered !== sh.filtered) rebuild = true
   })
   if (rebuild) book.sheets = book.sheets.map((sh) => ({ ...sh, cells: { ...sh.cells } }))
   return { book, edits: final, back: [...back.values()], rebuild, layout, layers, styles }

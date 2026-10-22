@@ -61,6 +61,20 @@ describe.each(EXECUTIONS)('review 21.10 rows and columns, %s', (execution) => {
       await s.close()
     })
 
+    it('applyChanges and setLayout on a sheet of 34,000 row entries compare the rows by identity (speed-u111)', async () => {
+      const s = await open({ sheets: [{ name: 'S', rows: manyRows(34_000, (r) => (r % 5 ? {} : { hidden: true })), cells: { A1: { value: 1 }, B1: { formula: 'SUBTOTAL(109,A1:A10)' } } }] }, { execution, clock, undo: { depth: 0 } })
+      // each call wrote out and read the rows map: about 13 ms, 6 s for 500
+      expect(
+        await took(async () => {
+          for (let k = 0; k < 250; k++) {
+            await s.applyChanges([{ op: 'setCells', edits: [{ sheet: 'S', cell: 'A2', input: { value: k } }] }])
+            await s.setLayout([{ sheet: 'S', columns: 'C', set: { width: 10 + (k % 5) } }])
+          }
+        }),
+      ).toBeLessThan(1500)
+      expect((await s.getCell('S', 'B1'))!.value).toBe(250)
+      await s.close()
+    })
   })
 
   it.each([
