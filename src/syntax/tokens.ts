@@ -63,6 +63,9 @@ function colNo(s: string, at: number): number {
   return n
 }
 
+/** An axis's two bounds as written, `$` and all, the lower first: Excel orders each axis of a typed `B2:A1` on its own (`A1:B2`). */
+const lowFirst = (a: string, i: number, b: string, j: number): [string, string] => (i <= j ? [a, b] : [b, a])
+
 /** A reference without a sheet at position `at` in `rest`, or null. */
 function readRef(rest: string, at: number): { ref: RangeRef; len: number } | null {
   const next = (len: number) => rest[len] ?? ''
@@ -77,8 +80,10 @@ function readRef(rest: string, at: number): { ref: RangeRef; len: number } | nul
     const two = m[6] !== undefined
     const r2 = two ? rowNo(m[8], at) : r1
     const c2 = two ? colNo(m[6], at) : c1
+    const [ca, cb] = lowFirst(m[1] + m[2], c1, m[5] + m[6], c2)
+    const [ra, rb] = lowFirst(m[3] + m[4], r1, m[7] + m[8], r2)
     return {
-      ref: { r1: Math.min(r1, r2), c1: Math.min(c1, c2), r2: Math.max(r1, r2), c2: Math.max(c1, c2), kind: two ? 'range' : 'cell', text: m[0].toUpperCase() },
+      ref: { r1: Math.min(r1, r2), c1: Math.min(c1, c2), r2: Math.max(r1, r2), c2: Math.max(c1, c2), kind: two ? 'range' : 'cell', text: (two ? `${ca}${ra}:${cb}${rb}` : m[0]).toUpperCase() },
       len: m[0].length,
     }
   }
@@ -86,13 +91,13 @@ function readRef(rest: string, at: number): { ref: RangeRef; len: number } | nul
   if (m && !IDENT_CHAR.test(next(m[0].length))) {
     const c1 = colNo(m[2], at)
     const c2 = colNo(m[4], at)
-    return { ref: { r1: 0, r2: MAX_ROWS - 1, c1: Math.min(c1, c2), c2: Math.max(c1, c2), kind: 'cols', text: m[0].toUpperCase() }, len: m[0].length }
+    return { ref: { r1: 0, r2: MAX_ROWS - 1, c1: Math.min(c1, c2), c2: Math.max(c1, c2), kind: 'cols', text: lowFirst(m[1] + m[2], c1, m[3] + m[4], c2).join(':').toUpperCase() }, len: m[0].length }
   }
   m = ROW_RANGE.exec(rest)
   if (m && !IDENT_CHAR.test(next(m[0].length))) {
     const r1 = rowNo(m[2], at)
     const r2 = rowNo(m[4], at)
-    return { ref: { c1: 0, c2: MAX_COLS - 1, r1: Math.min(r1, r2), r2: Math.max(r1, r2), kind: 'rows', text: m[0] }, len: m[0].length }
+    return { ref: { c1: 0, c2: MAX_COLS - 1, r1: Math.min(r1, r2), r2: Math.max(r1, r2), kind: 'rows', text: lowFirst(m[1] + m[2], r1, m[3] + m[4], r2).join(':') }, len: m[0].length }
   }
   return null
 }
