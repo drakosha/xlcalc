@@ -186,3 +186,24 @@ describe.each(['closures', 'eval'] as const)('xlsx: what a write changes is repo
     expect((await writeXlsx({ book, result }, { locale: ruRU })).issues.find((i) => i.code === 'errorValue')?.message).toBe('#ERROR!, ошибка формулы, которая не вычисляется, записана как #ПУСТО!: в Excel нет #ERROR!')
   })
 })
+
+describe('xlsx: text cut to a limit (fix-u332)', () => {
+  it('does not split a character of two code units', async () => {
+    const r = await writeXlsx({
+      book: {
+        sheets: [
+          {
+            name: 'S',
+            cells: { A1: { value: 'x'.repeat(32_766) + '😀' }, A2: { value: 'x'.repeat(32_767) + '😀' } },
+            validations: [{ range: 'B1', type: 'any', promptTitle: 'x'.repeat(31) + '😀', prompt: 'p' }],
+          },
+        ],
+      },
+    })
+    expect(r.issues.map((i) => i.code)).toEqual(['textLength', 'textLength'])
+    const back = await readXlsx(r.data)
+    const s = back.book.sheets[0]
+    expect([s.cells.A1.value, s.cells.A2.value]).toEqual(['x'.repeat(32_766), 'x'.repeat(32_767)])
+    expect(s.validations?.[0].promptTitle).toBe('x'.repeat(31))
+  })
+})
