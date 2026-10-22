@@ -131,18 +131,21 @@ const settings = ({ range: _, formula1: __, formula2: ___, ...rest }: DataValida
 /** Rules of a sheet joined where they are one rule: the same settings, and formulas that are the first one's at the other's corner; the joined rule's formulas written for the corner of both. */
 function joined(rules: DataValidation[], sheet: string, sheets: Map<string, string>): DataValidation[] {
   const out: DataValidation[] = []
+  // each joined rule's settings and corner, kept as it grows: a join appends ranges, so the corner is the lesser of both
+  const keys: string[] = []
+  const corners: Cell[] = []
   for (const v of rules) {
-    const same = out.findIndex((w) => {
-      if (settings(w) !== settings(v)) return false
-      const [a, b] = [anchorOf(w), anchorOf(v)]
-      return (['formula1', 'formula2'] as const).every((k) => (w[k] === undefined ? v[k] === undefined : v[k] !== undefined && formulaAt(w[k], sheet, a, b, sheets) === v[k]))
-    })
-    if (same < 0) out.push(v)
-    else {
-      const w = out[same]
-      const range = `${w.range} ${v.range}`
-      const [from, to] = [anchorOf(w), cornerOf(areasOf(range)!)]
-      out[same] = { ...withFormulas(w, (text) => formulaAt(text, sheet, from, to, sheets)), range }
+    const [key, b] = [settings(v), anchorOf(v)]
+    const same = out.findIndex((w, i) => keys[i] === key && (['formula1', 'formula2'] as const).every((k) => (w[k] === undefined ? v[k] === undefined : v[k] !== undefined && formulaAt(w[k], sheet, corners[i], b, sheets) === v[k])))
+    if (same < 0) {
+      out.push(v)
+      keys.push(key)
+      corners.push(b)
+    } else {
+      const [w, from] = [out[same], corners[same]]
+      const to = { r: Math.min(from.r, b.r), c: Math.min(from.c, b.c) }
+      out[same] = { ...withFormulas(w, (text) => formulaAt(text, sheet, from, to, sheets)), range: `${w.range} ${v.range}` }
+      corners[same] = to
     }
   }
   return out
