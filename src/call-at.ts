@@ -6,17 +6,18 @@
  * separators of their own, so half typed or broken text still gives its call. The package's own rule, not measured in
  * Excel. And the name of a function being typed at a caret (`nameAt`), for Formula AutoComplete.
  */
+import { wordKey } from './collate.js'
 import type { CallAt, NameAt, ScanOptions } from './contract.js'
 import { typedArgs } from './point.js'
 import { NAME_CHAR, openBrackets, walk, type OpenBracket } from './syntax/scan.js'
 import type { Locale } from './locale/types.js'
 
-/** A function's English name: the locale's name translated, in upper case; another name upper-cased as it is. */
+/** A function's English name: the locale's name translated, in upper case; another name upper-cased as it is (by `wordKey`, as the engine reads names: `gauß` is no GAUSS). */
 export function englishName(name: string, locale: Locale | undefined): string {
-  const upper = name.toUpperCase()
+  const upper = wordKey(name)
   if (!locale) return upper
   const fns = locale.functions
-  return Object.keys(fns).find((k) => fns[k].toUpperCase() === upper) ?? upper
+  return Object.keys(fns).find((k) => wordKey(fns[k]) === upper) ?? upper
 }
 
 /**
