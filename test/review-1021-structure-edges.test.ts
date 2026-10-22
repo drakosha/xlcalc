@@ -2,7 +2,8 @@
  * Reproductions from the 21.10 review, structure at its edges: a fill over dates that runs past the date system writes
  * the serial numbers, as a fill over numbers in a date format does. `limits.writes` bounds a fill's cells all together,
  * in a synchronous session, in the same thread and in a thread. A copy or a fill keeps the spelling of the references
- * it does not change. Inserting lines refuses to push a legacy array's area off the sheet.
+ * it does not change. Inserting lines refuses to push a legacy array's area off the sheet, and a shift that leaves no
+ * row, column or merged area leaves no empty field for them.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, editStructure, type BookInput, type StructureOp } from '../src/index.js'
@@ -78,6 +79,17 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     it('an area that stays on the sheet moves', () => {
       const cells = edited(one({ A1048574: { formula: '{1;2}', array: 'A1048574:A1048575' } }), { op: 'insertRows', sheet: 'S', row: 1 }, execution)
       expect(cells).toEqual({ A1048575: { formula: '{1;2}', array: 'A1048575:A1048576' } })
+    })
+  })
+
+  describe('a shift that leaves no rows, columns or merged areas drops their fields', () => {
+    it.each([
+      ['a row pushed off', { rows: { 1048576: { outlineLevel: 1 } } }, { op: 'insertRows', sheet: 'S', row: 1 }],
+      ['the only row deleted', { rows: { 5: { height: 20 } } }, { op: 'deleteRows', sheet: 'S', row: 5 }],
+      ['columns and a merged area deleted', { columns: { XFD: { width: 20 } }, merges: ['XFC1:XFD1'] }, { op: 'deleteColumns', sheet: 'S', column: 'XFC', count: 2 }],
+    ] as [string, Partial<BookInput['sheets'][number]>, StructureOp][])('%s', (_, layout, op) => {
+      const r = editStructure({ sheets: [{ name: 'S', cells: { B2: { value: 1 } }, ...layout }] }, op)
+      expect(r.ok && Object.keys(r.book.sheets[0])).toEqual(['name', 'cells'])
     })
   })
 

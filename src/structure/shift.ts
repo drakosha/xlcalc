@@ -116,6 +116,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
     const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, frozen: shiftFrozen(s.frozen, axis, at, n), validations }
     for (const k of ['columns', 'rows', 'merges', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
+    // lines and merged areas all pushed off or deleted leave no field, as a paste leaves none
+    for (const k of ['columns', 'rows', 'merges'] as const) if (layout[k] && !Object.keys(layout[k]).length) delete layout[k]
     return layout
   })
   const out: BookInput = { ...book, sheets: shiftConditional(sheets, target.name, axis, at, n, t, names) }
