@@ -217,3 +217,30 @@ describe('xlsx: shared strings left open (sst-open)', () => {
     expect([r.book.sheets[0].cells, r.issues]).toEqual([{ A1: { value: 'a' }, B1: { value: '' } }, []])
   })
 })
+
+describe('xlsx: a threshold of a type the model does not have (x-xlsx-7)', () => {
+  const cf = (sqref: string, rule: string) => `<conditionalFormatting sqref="${sqref}">${rule}</conditionalFormatting>`
+  const scale = (t: string) => `<cfRule type="colorScale" priority="1"><colorScale><cfvo type="min"/><cfvo type="${t}"/><color rgb="FFF8696B"/><color rgb="FF63BE7B"/></colorScale></cfRule>`
+  const bar = (t: string, extra = '') => `<cfRule type="dataBar" priority="2"><dataBar><cfvo type="min"/><cfvo type="${t}"/><color rgb="FF638EC6"/></dataBar>${extra}</cfRule>`
+  const icons = (t: string) => `<cfRule type="iconSet" priority="3"><iconSet iconSet="3Arrows"><cfvo type="percent" val="0"/><cfvo type="${t}" val="33"/><cfvo type="percent" val="67"/></iconSet></cfRule>`
+  const keep = cf('E1', '<cfRule type="expression" priority="4"><formula>TRUE</formula></cfRule>')
+
+  it('takes the rule out with an issue, and the file reads', async () => {
+    const body = `<sheetData/>${cf('A1:A3', scale('banana'))}${cf('B1:B3', bar('num'))}${cf('C1:C3', icons('toString'))}${keep}`
+    const r = await read({ sheets: [{ name: 'S', body }] })
+    expect(r.book.sheets[0].conditionalFormats).toEqual([{ ranges: ['E1'], type: 'expression', formula: 'TRUE' }])
+    expect(r.issues.map((i) => [i.code, i.cells, i.message])).toEqual([
+      ['conditionalFormat', ['A1:A3'], 'a color scale without its points or colors is left out'],
+      ['conditionalFormat', ['B1:B3'], 'a data bar without its thresholds is left out'],
+      ['conditionalFormat', ['C1:C3'], 'an icon set without a threshold for each icon is left out'],
+    ])
+  })
+
+  it("a data bar's 2010 part with one keeps the 2007 thresholds", async () => {
+    const id = '{00000001-0000-4000-8000-000000000002}'
+    const ext = `<extLst><ext uri="{B025F937-C7B1-47D3-B67F-A62EFF666E3E}" xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main"><x14:id>${id}</x14:id></ext></extLst>`
+    const x14 = `<extLst><ext uri="{78C0D931-6437-407d-A8EE-F0AAD7539E65}" xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main"><x14:conditionalFormattings><x14:conditionalFormatting xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main"><x14:cfRule type="dataBar" id="${id}"><x14:dataBar minLength="0" maxLength="100" direction="rightToLeft"><x14:cfvo type="banana"/><x14:cfvo type="autoMax"/></x14:dataBar></x14:cfRule><xm:sqref>B1:B3</xm:sqref></x14:conditionalFormatting></x14:conditionalFormattings></ext></extLst>`
+    const r = await read({ sheets: [{ name: 'S', body: `<sheetData/>${cf('B1:B3', bar('max', ext))}${x14}` }] })
+    expect(r.book.sheets[0].conditionalFormats).toEqual([{ ranges: ['B1:B3'], type: 'dataBar', min: { type: 'min' }, max: { type: 'max' }, color: '#638EC6', direction: 'rightToLeft', negativeColor: '#FF0000' }])
+  })
+})

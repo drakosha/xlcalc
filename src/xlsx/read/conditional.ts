@@ -6,7 +6,7 @@
  * come in the engine's spelling; what the model cannot hold is reported.
  */
 import type { Color, ConditionalFormat, ConditionalStyle, ConditionalValue, IconSetName } from '../../contract.js'
-import { CELL_IS, ICON_SETS, PERIODS, STYLED } from '../../cond/check.js'
+import { CELL_IS, ICON_SETS, PERIODS, STYLED, VALUE_TYPES, WITH_VALUE } from '../../cond/check.js'
 import { defaultFormula, originOf } from '../../cond/rules.js'
 import { formatAddress } from '../../model.js'
 import { areaText } from '../../structure/area.js'
@@ -52,13 +52,21 @@ function formula(text: string, where: string, ctx: Context): string {
   return readFormula(readText(text), ctx.issues, { sheet: ctx.sheet, cell: where }, ctx.formulas).formula
 }
 
-/** A threshold: `val` (2007) or `<xm:f>` (2010) as its formula. */
-function value(e: Element, where: string, ctx: Context): ConditionalValue {
+/** A threshold: `val` (2007) or `<xm:f>` (2010) as its formula; null for a type the model does not have, or one without the value it needs. */
+function value(e: Element, where: string, ctx: Context): ConditionalValue | null {
   const a = attributes(e.attrs)
   const type = (a.type ?? 'min') as ConditionalValue['type']
+  if (!VALUE_TYPES.includes(type)) return null
   const f = e.body ? element(e.body, 'f') : undefined
   const text = f ? (f.body ?? '') : a.val
-  return text === undefined || type === 'min' || type === 'max' || type === 'autoMin' || type === 'autoMax' ? { type } : { type, value: formula(text, where, ctx) }
+  if (!WITH_VALUE.has(type)) return { type }
+  return text === undefined ? null : { type, value: formula(text, where, ctx) }
+}
+
+/** The thresholds of `<cfvo>` elements, or null when one of them is none (`value`). */
+function values(body: string, where: string, ctx: Context): ConditionalValue[] | null {
+  const out = elements(body, 'cfvo').map((v) => value(v, where, ctx))
+  return out.includes(null) ? null : (out as ConditionalValue[])
 }
 
 /** The colours of a colour scale or data bar, in order. */
@@ -131,17 +139,17 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
   }
   if (type === 'colorScale') {
     const cs = element(body, 'colorScale')?.body ?? ''
-    const vs = elements(cs, 'cfvo').map((v) => value(v, where, ctx))
+    const vs = values(cs, where, ctx)
     const cl = colors(cs, 'color', ctx)
-    if (vs.length < 2 || vs.length > 3 || cl.length !== vs.length || cl.some((c) => !c)) return lost({ key: 'condColorScale' })
+    if (!vs || vs.length < 2 || vs.length > 3 || cl.length !== vs.length || cl.some((c) => !c)) return lost({ key: 'condColorScale' })
     return read({ ...base, type, points: vs.map((v, i) => ({ value: v, color: cl[i]! })) })
   }
   if (type === 'dataBar') {
     const db = element(body, 'dataBar')
     const d = db?.body ?? ''
-    const vs = elements(d, 'cfvo').map((v) => value(v, where, ctx))
+    const vs = values(d, where, ctx)
     const color = x14 ? colorOf(element(d, 'fillColor'), ctx.palette) : colors(d, 'color', ctx)[0]
-    if (vs.length !== 2) return lost({ key: 'condDataBar' })
+    if (vs?.length !== 2) return lost({ key: 'condDataBar' })
     const da = attributes(db?.attrs ?? '')
     const r: Extract<ConditionalFormat, { type: 'dataBar' }> = { ...base, type, min: vs[0], max: vs[1], color: color ?? '#638EC6', ...lengths(da, 10, 90) }
     if (!flag(da.showValue, true)) r.showValue = false
@@ -161,14 +169,15 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
       return ca.iconSet === 'NoIcons' ? null : { set: ca.iconSet as IconSetName, index: Number(ca.iconId ?? 0) }
     })
     const n = ICON_SETS[set]
-    if (vs.length !== n) return lost({ key: 'condIcons' })
+    const thresholds = values(ib, where, ctx)
+    if (thresholds?.length !== n) return lost({ key: 'condIcons' })
     const reverse = flag(ia.reverse)
     const points = vs.map((v, i) => {
       const gte = flag(attributes(v.attrs).gte, true)
       // a custom icon that is the set's own at its place is no custom icon
       const mine = icons[i]?.set === set && icons[i]?.index === (reverse ? n - 1 - i : i)
       const icon = flag(ia.custom) && !mine ? icons[i] : undefined
-      return { value: value(v, where, ctx), ...(gte ? {} : { gte: false }), ...(icon !== undefined ? { icon } : {}) }
+      return { value: thresholds[i], ...(gte ? {} : { gte: false }), ...(icon !== undefined ? { icon } : {}) }
     })
     const r: ConditionalFormat = { ...base, type, icons: set, points }
     if (reverse) r.reverse = true
@@ -191,9 +200,10 @@ function joinBar(base: Extract<ConditionalFormat, { type: 'dataBar' }>, x: Eleme
   if (!d) return base
   const a = attributes(d.attrs)
   const b = d.body ?? ''
-  const vs = elements(b, 'cfvo').map((v) => value(v, base.ranges[0], ctx))
+  // thresholds the model does not have leave the 2007 ones
+  const vs = values(b, base.ranges[0], ctx)
   const { excel2007: _, ...out } = base
-  if (vs.length === 2) [out.min, out.max] = vs
+  if (vs?.length === 2) [out.min, out.max] = vs
   delete out.minLength
   delete out.maxLength
   Object.assign(out, lengths(a, 0, 100))
