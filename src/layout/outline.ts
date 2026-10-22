@@ -12,7 +12,7 @@
 import { MAX_OUTLINE } from '../column-width.js'
 import type { LinePatch } from '../contract.js'
 import { LIMIT, type Axis } from '../structure/area.js'
-import { entryAt, lines, patchLines, type Line } from './spans.js'
+import { entryAt, firstEnding, lines, patchIn, toMap, type Line } from './spans.js'
 
 /** What the outline reads of a line: its level, hidden state (a size of 0 hides it too) and mark. */
 export interface OutlineEntry {
@@ -38,14 +38,12 @@ export interface Group {
 
 /** One axis of a sheet: its entries in order, where summaries are (`after` the detail: below, right) and its last line. */
 class Outline {
-  readonly ls: Line<OutlineEntry>[]
   readonly last: number
   constructor(
-    readonly map: Map | undefined,
-    readonly axis: Axis,
+    readonly ls: Line<OutlineEntry>[],
+    axis: Axis,
     readonly after: boolean,
   ) {
-    this.ls = lines(map, axis)
     this.last = LIMIT[axis] - 1
   }
   level(i: number): number {
@@ -71,14 +69,9 @@ class Outline {
   }
   /** The index of the last entry starting at or before `i`, -1 for none. */
   index(i: number): number {
-    let [a, b] = [0, this.ls.length - 1]
-    if (b < 0 || this.ls[0][0] > i) return -1
-    while (a < b) {
-      const m = (a + b + 1) >> 1
-      if (this.ls[m][0] <= i) a = m
-      else b = m - 1
-    }
-    return a
+    // entries before the first ending at or after `i` end before it
+    const k = firstEnding(this.ls, i)
+    return this.ls[k]?.[0] <= i ? k : k - 1
   }
   /** Whether every line of `lo`..`hi` is hidden. */
   allHidden(lo: number, hi: number): boolean {
@@ -136,15 +129,19 @@ class Outline {
   }
 }
 
-/** The map with `patch` over lines `lo`..`hi`. */
-const patched = <T extends OutlineEntry>(map: Map<T> | undefined, axis: Axis, lo: number, hi: number, patch: LinePatch<OutlineEntry>): Map<T> => patchLines(map, axis, lo, hi, patch as LinePatch<T>)
+/** Entries `ls` (in order, changed in place) with the marks Excel keeps (`normalized`); whether one changed. */
+function remarked(ls: Line<OutlineEntry>[], axis: Axis, after: boolean): boolean {
+  const o = new Outline(ls, axis, after)
+  let changed = false
+  // the marks are read first; a mark patched changes no other line's
+  for (const [i, mark] of o.marks()) if (mark !== o.mark(i)) changed = !!patchIn(ls, i, i, { collapsed: mark || null })
+  return changed
+}
 
 /** The map with the marks Excel keeps: each summary line marked as `Outline.marks` says, other lines as they were. */
 export function normalized<T extends OutlineEntry>(map: Map<T> | undefined, axis: Axis, after: boolean): Map<T> | undefined {
-  const o = new Outline(map, axis, after)
-  let out = map
-  for (const [i, mark] of o.marks()) if (mark !== o.mark(i)) out = patched(out, axis, i, i, { collapsed: mark ? true : null })
-  return out
+  const ls = lines(map, axis)
+  return remarked(ls, axis, after) ? (toMap(ls, axis) as Map<T>) : map
 }
 
 /**
@@ -153,7 +150,7 @@ export function normalized<T extends OutlineEntry>(map: Map<T> | undefined, axis
  * summary line (`Outline.marks`), or for a group at the sheet's edge, when the run there is all hidden.
  */
 export function groupsOf(map: Map | undefined, axis: Axis, after: boolean): Group[] {
-  const o = new Outline(map, axis, after)
+  const o = new Outline(lines(map, axis), axis, after)
   const marks = o.marks()
   const out: Group[] = []
   for (let level = 1; level <= MAX_OUTLINE; level++) {
@@ -204,10 +201,11 @@ function pieces(o: Outline, lo: number, hi: number): [number, number, number][] 
 }
 
 /** Lines shown: not hidden, and a size of 0 dropped, as Excel gives a line it shows its default size. */
-function shown<T extends OutlineEntry>(map: Map<T> | undefined, axis: Axis, lo: number, hi: number): Map<T> {
-  let out = patched(map, axis, lo, hi, { hidden: null })
-  for (const [a, b, e] of lines(out, axis)) if (b >= lo && a <= hi && (e.height === 0 || e.width === 0)) out = patched(out, axis, Math.max(a, lo), Math.min(b, hi), { height: null, width: null })
-  return out
+function shown(ls: Line<OutlineEntry>[], lo: number, hi: number) {
+  patchIn(ls, lo, hi, { hidden: null })
+  const zero: Line<OutlineEntry>[] = []
+  for (let k = firstEnding(ls, lo); ls[k]?.[0] <= hi; k++) if (ls[k][2].height === 0 || ls[k][2].width === 0) zero.push(ls[k])
+  for (const [a, b] of zero) patchIn(ls, Math.max(a, lo), Math.min(b, hi), { height: null, width: null })
 }
 
 /**
@@ -219,20 +217,26 @@ function shown<T extends OutlineEntry>(map: Map<T> | undefined, axis: Axis, lo: 
  * the collapsed groups inside it. A level button k hides the lines of level k and deeper and shows the other grouped lines.
  */
 export function outlineCommand<T extends OutlineEntry>(map: Map<T> | undefined, axis: Axis, after: boolean, c: OutlineCommand): Map<T> | undefined | OutlineRefusal {
-  const start = normalized(map, axis, after)
-  const o = new Outline(start, axis, after)
-  let out = start
+  // the axis patched as one list, read once and keyed once (`patchIn`); `o` reads it as it was at the start
+  const ls = lines(map, axis)
+  let changed = remarked(ls, axis, after)
+  const o = new Outline(ls.slice(), axis, after)
+  const patch = (lo: number, hi: number, p?: LinePatch<OutlineEntry>) => {
+    changed = true
+    if (p) patchIn(ls, lo, hi, p)
+    else shown(ls, lo, hi)
+  }
   if ('lo' in c) {
     const ps = pieces(o, c.lo, c.hi)
     if (c.kind === 'group' ? ps.every(([, , l]) => l >= MAX_OUTLINE) : ps.every(([, , l]) => l === 0)) return c.kind === 'group' ? 'outline_deep' : 'not_grouped'
     for (const [a, b, l] of ps) {
       const next = c.kind === 'group' ? Math.min(l + 1, MAX_OUTLINE) : l - 1
-      if (next !== l && next >= 0) out = patched(out, axis, a, b, { outlineLevel: next || null })
+      if (next !== l && next >= 0) patch(a, b, { outlineLevel: next || null })
     }
   } else if (c.kind === 'levels') {
     for (const [a, b, e] of o.ls) {
       const l = e.outlineLevel ?? 0
-      if (l) out = l >= c.level ? patched(out, axis, a, b, { hidden: true }) : shown(out, axis, a, b)
+      if (l) patch(a, b, l >= c.level ? { hidden: true } : undefined)
     }
   } else {
     const at = c.at
@@ -247,18 +251,18 @@ export function outlineCommand<T extends OutlineEntry>(map: Map<T> | undefined, 
     const marked = o.mark(s)
     if (marked === (c.kind === 'hide')) return 'detail'
     const [lo, hi] = o.detail(s)
-    if (c.kind === 'hide') out = patched(out, axis, lo, hi, { hidden: true })
+    if (c.kind === 'hide') patch(lo, hi, { hidden: true })
     else {
       // the lines of the collapsed groups inside stay hidden: their summary lines keep their marks
       const holes = o.summaries().filter((x) => x !== s && x >= lo && x <= hi && o.mark(x)).map((x) => o.detail(x))
       let p = lo
       for (const [a, b] of holes.sort((x, y) => x[0] - y[0])) {
-        if (a > p) out = shown(out, axis, p, a - 1)
+        if (a > p) patch(p, a - 1)
         p = Math.max(p, b + 1)
       }
-      if (p <= hi) out = shown(out, axis, p, hi)
-      out = patched(out, axis, s, s, { collapsed: null })
+      if (p <= hi) patch(p, hi)
+      patch(s, s, { collapsed: null })
     }
   }
-  return normalized(out, axis, after)
+  return remarked(ls, axis, after) || changed ? (toMap(ls, axis) as Map<T>) : map
 }
