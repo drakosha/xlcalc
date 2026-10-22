@@ -97,11 +97,14 @@ export function shownLinkName(target: string, name: string): string {
   return `${dir === '' && plain(file) ? file : quoteSheet(dir + file)}!${name}`
 }
 
-/** Each token of `formula` that `f` gives a text (undefined keeps it) replaced by that text; a formula that does not read as it is. */
-export function eachToken(formula: string, f: (tok: Tok, text: string) => string | undefined): string {
+/**
+ * Each token of `formula` that `f` gives a text (undefined keeps it) replaced by that text; a formula that does not read
+ * as it is. `given`: its tokens read already.
+ */
+export function eachToken(formula: string, f: (tok: Tok, text: string) => string | undefined, given?: Tok[]): string {
   let toks: Tok[]
   try {
-    toks = tokenize(formula)
+    toks = given ?? tokenize(formula)
   } catch (e) {
     if (e instanceof FormulaError) return formula
     throw e

@@ -11,11 +11,12 @@ import type { Outcome, Transform } from './rewrite.js'
  * reference is lost, or with `wrap` comes round its other edge, as a conditional format's formula computes.
  */
 export function copyTransform(dr: number, dc: number, wrap = false): Transform {
+  const moves: [Axis, number][] = [['r', dr], ['c', dc]]
   return {
     copy: true,
     ref({ sheet, area }): Outcome {
       const next: Area = { ...area }
-      for (const [axis, d] of [['r', dr], ['c', dc]] as [Axis, number][]) {
+      for (const [axis, d] of moves) {
         if (d === 0 || isFull(area[axis], axis)) continue
         const at = (i: number) => (wrap ? (((i + d) % LIMIT[axis]) + LIMIT[axis]) % LIMIT[axis] : i + d)
         const move = (b: Bound): Bound => (b.abs ? b : { i: at(b.i), abs: false })
