@@ -88,7 +88,7 @@ Pass the locale the user reading the messages has chosen. A file does not record
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the workbook's order, in the shape of a result: `cached.sheets[0].cells.B1.value` like `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range has `spillOf`, the formula's address, as in a result. These are what Excel calculated when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`). A workbook with a circular reference opens with them as Excel opens the file, with `compute(book, { cached })` or `createSession(book, { cached })`: the formulas the cycle stops keep the stored values ([cycles.md](cycles.md)).
 - `issues` lists everything the workbook cannot represent, with the sheet and the cells or the name it concerns. Nothing is dropped without an issue. Each issue has a code for programs and a message for users, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
-A file that is not a zip archive, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
+A file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
 
 `opts.limits` bounds how large the file's parts may be once inflated: `entryBytes` for one part, 512 MiB by default; `totalBytes` for all parts read together, 1 GiB by default; and `ratio`, how many times its compressed size a part larger than 16 MiB may inflate to, 200 by default. A file beyond these limits causes an error, as a damaged file does. A host that reads files uploaded by users passes lower limits:
 
@@ -292,7 +292,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `outline` | automatic outline styles |
 | `drawing`, `pivotTable`, `protection`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
-| `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size |
+| `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size, a row number that is no whole number, a style index or a shared string the file does not have, a value that is no number or no boolean |
 
 Gridlines and other view settings outside `SheetView` are not reported. A page setup is reported only when one was actually made, for example a landscape page or fit to width.
 
@@ -390,10 +390,10 @@ A filtered sheet is written so that Excel treats it as filtered. Its first table
 | code | what happens |
 |---|---|
 | `meta` | a cell's `meta` is left out |
-| `errorValue` | `#CYCLE!`, which a self-referencing name returns, is written as 0, as Excel stores a circular reference, including among a link's stored values |
+| `errorValue` | `#CYCLE!`, which a self-referencing name returns, is written as 0, as Excel stores a circular reference, including among a link's stored values; `#ERROR!`, the engine's error for a formula that does not compute, is written as `#NULL!`, as Excel has no `#ERROR!` |
 | `textLength` | text longer than 32,767 characters is truncated, including a note's; also a hyperlink's tooltip over 255, a rule's titles over 32, its input message over 255 and its alert text over 225 |
 | `dataValidation` | a rule whose formula does not parse, or names a sheet, a table or a column the workbook does not have, is left out |
-| `formula` | a formula that does not parse, or names a sheet, a table, a column or a link to another workbook the workbook does not have, is written as its value |
+| `formula` | a formula that does not parse, or names a sheet, a table, a column or a link to another workbook the workbook does not have, is written as its value, or as an empty cell when it has none (no result given) |
 | `noCachedValues` | the file stores no formula values, because no result was given, or a formula has no value in the result (`values: 'preserve'`) |
 | `name` | a name Excel does not accept, given twice, scoped to a missing sheet, or whose reference does not parse or names a table, a column or a link the workbook does not have, is left out |
 | `autoFilter` | the filter mode of a sheet whose tables have no header row and overlap its cells is left out |
