@@ -135,6 +135,11 @@ function arrays(read: SheetCells, added?: Set<string>): [looked: string[], dropp
   const looked: string[] = []
   const dropped: string[] = []
   for (const a of read.arrays) {
+    // a dynamic array of one cell (each formula of a file xlcalc wrote) has its anchor alone
+    if (a.dynamic && a.ref === a.anchor) {
+      read.errors.delete(a.anchor)
+      continue
+    }
     const r = parseRange(a.ref)
     if (!r) continue
     const anchor = read.cells[a.anchor]
