@@ -7,7 +7,8 @@ import { InputError } from '../input-error.js'
 import { array, isObject, object, onlyKeys } from '../input/basic.js'
 import { checkStyles } from '../input/styles.js'
 import { sheetKey } from '../syntax.js'
-import { withoutLooksAt } from '../looks/sheet.js'
+import type { Layer } from '../looks/layer.js'
+import { withLayer, withLooksOf, withoutLooksAt } from '../looks/sheet.js'
 import { parseAddress } from '../model.js'
 import { linksIn, markedLinks } from '../syntax/links.js'
 import { editsTaken } from '../taken.js'
@@ -27,6 +28,8 @@ export interface OperationsPlan {
   back: CellReplace[]
   rebuild: boolean
   layout: Map<number, SheetInput>
+  /** The sheets' looks set whole by patches (`Plan.layers`), laid before the edits. */
+  layers: Map<number, Layer>
   styles: boolean
 }
 
@@ -36,6 +39,7 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
   const edits = new Map<string, CellReplace>(),
     back = new Map<string, CellReplace>()
   const overlays = new Map<number, Map<string, CellInput | null>>()
+  const layers = new Map<number, Layer>()
   let rebuild = false,
     styles = false
   const index = (name: string) => s.sheetIdx.get(sheetKey(name))
@@ -74,7 +78,14 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
       book.sheets[i] = withoutLooksAt(book.sheets[i], at)
     }
   }
+  /** A plan's looks set whole over the draft's sheets, as they are laid before its cells. */
+  const relaid = (p: Plan) =>
+    p.layers?.size ? { ...book, sheets: book.sheets.map((sh, i) => (p.layers!.has(i) ? withLayer(sh, sh.cells, p.layers!.get(i)!) : sh)) } : book
   const looks = (p: Plan) => {
+    for (const [i, layer] of p.layers ?? []) {
+      book.sheets[i] = withLayer(book.sheets[i], book.sheets[i].cells, layer)
+      layers.set(i, layer)
+    }
     put(p.edits)
     for (const [i, sh] of p.sheets) book.sheets[i] = { ...sh, cells: book.sheets[i].cells }
     if (p.styles) {
@@ -106,7 +117,8 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
         onlyKeys(op, path, ['op', 'ranges', 'what'])
         const p = clearPlan(draft(), op.ranges as never, op.what as never)
         // a header cell cleared renames its column, as `Session.clearCells` does: the plan's sheets go in first, so the rename rewrites their rules too
-        const laid = p.sheets.size ? { ...book, sheets: book.sheets.map((sh, i) => (p.sheets.has(i) ? { ...p.sheets.get(i)!, cells: sh.cells } : sh)) } : book
+        const looked = relaid(p)
+        const laid = p.sheets.size ? { ...looked, sheets: looked.sheets.map((sh, i) => (p.sheets.has(i) ? withLooksOf({ ...p.sheets.get(i)!, cells: sh.cells }, sh) : sh)) } : looked
         const renamed = headerEdits(laid, p.edits, headerText)
         if (!renamed) {
           looks(p)
@@ -171,5 +183,5 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
     if (JSON.stringify(old.merges ?? []) !== JSON.stringify(sh.merges ?? []) || JSON.stringify(hiddenRows(old) ?? null) !== JSON.stringify(hiddenRows(sh) ?? null) || old.filtered !== sh.filtered) rebuild = true
   })
   if (rebuild) book.sheets = book.sheets.map((sh) => ({ ...sh, cells: { ...sh.cells } }))
-  return { book, edits: final, back: [...back.values()], rebuild, layout, styles }
+  return { book, edits: final, back: [...back.values()], rebuild, layout, layers, styles }
 }

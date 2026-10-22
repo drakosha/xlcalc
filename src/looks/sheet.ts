@@ -261,6 +261,13 @@ export function putInputs(sheets: SheetInput[], index: (name: string) => number,
   for (const s of touched) settle(s)
 }
 
+/** Sheets given back the looks they had (`layers`, by index, as `layerOf` read them), where they have others now. */
+export function putLayers(sheets: SheetInput[], layers: (Layer | undefined)[]): void {
+  sheets.forEach((x, i) => {
+    if (layerOf(x) !== layers[i]) setLayer(x, layers[i] ?? emptyLayer())
+  })
+}
+
 /** The sheet without the looks of cells `at` (`[row, column]`): a new sheet, or the sheet itself when none of them has a look. */
 export function withoutLooksAt(sheet: SheetInput, at: [number, number][]): SheetInput {
   const layer = layerOf(sheet)
