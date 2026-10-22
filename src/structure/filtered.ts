@@ -132,7 +132,8 @@ function pastedOnce(book: BookInput, to: string, target: Rect, steps: (b: BookIn
   for (let i = 0; i < g.addr.length; i++) {
     p.r = g.row[i]
     p.c = g.col[i]
-    if (place(p)) cells[g.addr[i]] = g.cell[i]
+    // the pastes clear only cells of the target
+    if (!hasCell(target, p.r, p.c) || place(p)) cells[g.addr[i]] = g.cell[i]
   }
   for (const a in pasted.cells) if (!(a in cells)) cells[a] = pasted.cells[a]
   return { ...r, book: { ...r.book, sheets: r.book.sheets.map((s, i) => (i === ti ? { ...pasted, cells } : s)) } }
