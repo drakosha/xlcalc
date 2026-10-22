@@ -61,6 +61,8 @@ const MISSED: readonly string[] = [
   ...[3, 7, 11, 15].map((n) => `ru-RU:calendar-held-ru:b1#${n}`),
   ...['en-US:calendar-names-held', 'ru-RU:calendar-names-held-ru'].flatMap((set) => Array.from({ length: 16 }, (_, i) => `${set}:b2n#${i + 1}`)),
   ...['en-US:calendar-hijri-held', 'ru-RU:calendar-hijri-held-ru'].flatMap((set) => [7, 11, 12, 22, 30, 33].map((n) => `${set}:hijri#${n}`)),
+  // the one number section before a text section writes the minus
+  'en-US:values-held:text-section#7',
 ]
 
 for (const set of DISPLAY_SETS) {

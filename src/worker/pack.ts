@@ -37,22 +37,25 @@ const plainObject = (v: object) => {
   return p === Object.prototype || p === null
 }
 
+/** Deeper than this a value goes by structured clone: an object inside itself (a cyclic meta) ends the walk there, the thread refuses it as the same thread does. */
+const DEPTH = 1000
+
 /**
  * A value JSON writes and reads back as it is. `loose`: a field set to undefined is as good as none, as the engine reads
  * its input; a cell's `meta` comes back to the host as given, so there it is strict.
  */
-function isJson(v: unknown, loose: boolean): boolean {
+function isJson(v: unknown, loose: boolean, depth = 0): boolean {
   if (v === null || typeof v === 'string' || typeof v === 'boolean') return true
   if (typeof v === 'number') return Number.isFinite(v) && !Object.is(v, -0)
-  if (typeof v !== 'object') return false
+  if (typeof v !== 'object' || depth > DEPTH) return false
   if (Array.isArray(v)) {
-    for (let i = 0; i < v.length; i++) if (!(i in v) || !isJson(v[i], loose)) return false
+    for (let i = 0; i < v.length; i++) if (!(i in v) || !isJson(v[i], loose, depth + 1)) return false
     return true
   }
   if (!plainObject(v)) return false
   for (const k in v) {
     const x = (v as Record<string, unknown>)[k]
-    if (x === undefined ? !loose : !isJson(x, loose && k !== 'meta')) return false
+    if (x === undefined ? !loose : !isJson(x, loose && k !== 'meta', depth + 1)) return false
   }
   return true
 }

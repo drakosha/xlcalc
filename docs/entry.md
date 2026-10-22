@@ -178,6 +178,7 @@ The options:
 - `cell`: the cell typed into, as the workbook stores it: its `numberFormat`, `style`, `meta`, `note` and `link` (a `CellInput`, or a `CellView` from `Session.getCells`; other fields are not read). Pass the number format the cell displays with: its row's or column's when it has none of its own.
 - `now`: the moment whose year completes a date typed without one, in ISO form like `Clock.now`; the current time if omitted.
 - `dateSystem`: the workbook's date system, 1900 or 1904, for the serial numbers of dates.
+- `inPlace`: true when the text was edited in the cell's own text (F2, a double click, the formula bar) rather than typed over the cell, as `setCellText` takes it ([A percent cell](#a-percent-cell)); the text `entryText` writes is such text. False if omitted.
 
 ## In a session
 
@@ -280,7 +281,7 @@ A number format set on the cell before the entry stays, unless what is typed is 
 
 When a number is typed into a cell whose format displays a percentage, Excel's editor appends `%` to it: `5` becomes 5% (0.05), `0.5` in en-US 0.5%, `1 1/2` 1.5%, `1/2` 0.5%, and `-5` -5%. It appends it to text that starts with a digit, or a sign and a digit, so `5%` becomes the text `5%%`, `-5%` the formula `-5%%` (a sign before something that is not a number starts a formula) and `15.03.2026` the text `15.03.2026%`; `.5`, `(5)`, ` 5`, `abc` and formulas get none.
 
-A cell edited in place, after F2, a double click or in the formula bar, opens with its own text (`5%`), and there the editor appends `%` only to a number that starts with a sign: `6%` becomes 0.06, `6` becomes 6 (displayed as 600%), `0.5` in en-US becomes 0.5 (50%), `-5` becomes -5% and `+5` becomes 5%. A host that knows the text was edited in place passes `{ inPlace: true }` to `setCellText`, `setCellTexts`, `fillCellText` or their previews; without it, the text is parsed as typed over the cell.
+A cell edited in place, after F2, a double click or in the formula bar, opens with its own text (`5%`), and there the editor appends `%` only to a number that starts with a sign: `6%` becomes 0.06, `6` becomes 6 (displayed as 600%), `0.5` in en-US becomes 0.5 (50%), `-5` becomes -5% and `+5` becomes 5%. A host that knows the text was edited in place passes `{ inPlace: true }` to `parseEntry`, `setCellText`, `setCellTexts`, `fillCellText` or their previews; without it, the text is parsed as typed over the cell.
 
 ### A line break
 
@@ -394,7 +395,7 @@ Tested on the Mac keyboard in Excel 16 for Mac, en-US and ru-RU: six sets, each 
 
 ## The text a cell opens with
 
-`entryText(value, opts)` works in the opposite direction: it returns the text a cell opens with in edit mode, as Excel's formula bar shows the value the cell contains, so that the editor shows what Excel shows and the value parses back from it. `needsApostrophe(text, opts)` tells whether text typed into the cell would be parsed as something other than itself.
+`entryText(value, opts)` works in the opposite direction: it returns the text a cell opens with in edit mode, as Excel's formula bar shows the value the cell contains, so that the editor shows what Excel shows and the value parses back from it as edited in place (`parseEntry(text, { cell, inPlace: true })`): a percentage cell's `12.5%` is 0.125 again, while a negative one, `-5%`, becomes the formula `=-5%%`, as Excel's editor reads it. `needsApostrophe(text, opts)` tells whether text typed into the cell would be parsed as something other than itself.
 
 ```js
 import { entryText, needsApostrophe, registerLocale } from 'xlcalc'

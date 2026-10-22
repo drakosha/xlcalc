@@ -93,11 +93,12 @@ const PASTED_EURO = '[$€-2]\\ #,##0;[Red]\\-[$€-2]\\ #,##0'
 /**
  * Text typed into a cell, as Excel interprets it in the workbook's locale: the cell's new input, with the cell's style,
  * meta, note and link and the format Excel leaves it, or a formula Excel would reject. Empty text clears the value and
- * keeps the rest.
+ * keeps the rest. Typed over the cell, or edited in place with `opts.inPlace`.
  */
 export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   checkString(text, 'text')
-  return readEntry(text, checkEntryOptions(opts))
+  const o = checkEntryOptions(opts)
+  return readEntry(text, o, o.inPlace ? 'inPlace' : 'typed')
 }
 
 /** How text comes into a cell: typed over it, edited in place (F2, a double click, the formula bar), pasted from the clipboard, put back by Excel's Replace. */

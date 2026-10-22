@@ -1,0 +1,72 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.696,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "DOLLAR#1",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "LEN(DOLLAR(1E+189,0))"
+  },
+  {
+   "id": "DOLLAR#2",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "LEN(DOLLAR(1E+188,1))"
+  },
+  {
+   "id": "DOLLAR#3",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "DOLLAR(1E+187,3)"
+  },
+  {
+   "id": "DOLLAR#4",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "LEN(DOLLAR(-1E+187,1))"
+  },
+  {
+   "id": "DOLLAR#5",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "LEN(DOLLAR(-1E+186,2))"
+  },
+  {
+   "id": "DOLLAR#6",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "DOLLAR(-1E+186,3)"
+  }
+ ],
+ "values": {
+  "DOLLAR#1": {
+   "t": "n",
+   "v": 254
+  },
+  "DOLLAR#2": {
+   "t": "n",
+   "v": 254
+  },
+  "DOLLAR#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DOLLAR#4": {
+   "t": "n",
+   "v": 255
+  },
+  "DOLLAR#5": {
+   "t": "n",
+   "v": 255
+  },
+  "DOLLAR#6": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

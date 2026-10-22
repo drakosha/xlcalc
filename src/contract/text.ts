@@ -54,6 +54,12 @@ export interface EntryOptions {
    * is rejected (`external_ref`). Without them, such a formula is kept as typed.
    */
   externalBooks?: ExternalBook[]
+  /**
+   * True: the text was edited within the cell's existing text (F2, a double-click, the formula bar), as `entryText`
+   * writes it, rather than typed over the cell; Excel's percent entry then adds `%` only to a number that begins with a
+   * sign: in a cell formatted `0%`, `6%` is 0.06 and `6` is 6 (600%). False by default, as `Session.setCellText` has it.
+   */
+  inPlace?: boolean
 }
 
 /**

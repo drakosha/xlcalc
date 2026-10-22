@@ -9,13 +9,13 @@ import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { clip, HEAD, MAIN, MAX_TEXT } from './xml.js'
 
-/** The content of a sheet's view with frozen panes: the pane after the frozen rows and columns, active, and its selection. */
-export function paneXml(f: FrozenPanes | undefined): string {
+/** The content of a sheet's view with frozen panes: the pane after the frozen rows and columns, active, scrolled to `top`, and its selection. */
+export function paneXml(f: FrozenPanes | undefined, top: string): string {
   if (!f) return ''
   const [rows, cols] = [f.rows ?? 0, f.columns ?? 0]
   const pane = rows && cols ? 'bottomRight' : rows ? 'bottomLeft' : 'topRight'
   const at = formatAddress(rows, cols)
-  return `<pane${cols ? ` xSplit="${cols}"` : ''}${rows ? ` ySplit="${rows}"` : ''} topLeftCell="${at}" activePane="${pane}" state="frozen"/><selection pane="${pane}" activeCell="${at}" sqref="${at}"/>`
+  return `<pane${cols ? ` xSplit="${cols}"` : ''}${rows ? ` ySplit="${rows}"` : ''} topLeftCell="${top}" activePane="${pane}" state="frozen"/><selection pane="${pane}" activeCell="${at}" sqref="${at}"/>`
 }
 
 /** Cells in the order of a sheet (row by row). */
