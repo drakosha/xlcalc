@@ -27,7 +27,7 @@ function sheetData(s: ExternalSheet, i: number, at: string, issues: Issues): str
   for (const a of sortAddresses(Object.keys(s.cells))) {
     const r = parseAddress(a).row
     if (r !== row) rows.push(`${row < 0 ? '' : '</row>'}<row r="${(row = r) + 1}">`)
-    rows.push(cellXml(a, s.cells[a], (code) => errorXml(code, () => issues.add('errorValue', { key: 'cycleZero' }, { cell: `${at}${a}` }))))
+    rows.push(cellXml(a, s.cells[a], (code) => errorXml(code, (key) => issues.add('errorValue', { key }, { cell: `${at}${a}` }))))
   }
   const mark = s.refreshError ? ' refreshError="1"' : ''
   return rows.length ? `<sheetData sheetId="${i}"${mark}>${rows.join('')}</row></sheetData>` : `<sheetData sheetId="${i}"${mark}/>`

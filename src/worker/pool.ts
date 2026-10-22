@@ -292,7 +292,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
           r.journal.push({ seq: msg.seq, op: msg.op, args: msg.args, clock: a.clock })
           if (r.journal.length >= snapshotEvery && !r.snapshotting) {
             r.snapshotting = true
-            slot.queue.push({ id: ++ids, msg: { t: 'snapshot', sid: r.sid }, session: r, internal: true, resolve() {}, reject() {} })
+            // next on the thread, ahead of calls already waiting, so that pipelined calls do not grow the journal past it
+            slot.queue.unshift({ id: ++ids, msg: { t: 'snapshot', sid: r.sid }, session: r, internal: true, resolve() {}, reject() {} })
           }
         }
         return task.resolve(a)
@@ -495,15 +496,19 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       if (closed) throw closed
       if (o.maxSessions !== undefined && recs.size >= o.maxSessions) throw new CalcError('too_many_sessions', `the pool already holds ${o.maxSessions} sessions`)
       const { signal, timeoutMs, rest } = splitCall<SessionOptions>(sopts)
-      const opts = { ...rest } as SessionOptions & { clock?: Clock }
+      const { clock: given, cached, ...own } = { ...rest } as SessionOptions & { clock?: Clock }
+      // the session's own copy of its options, as its snapshot keeps them: what the caller changes in them later (its
+      // externals' values, say) does not reach a restore
+      let opts: Omit<SessionOptions, 'cached'>
+      try {
+        opts = g.structuredClone(own)
+      } catch (e) {
+        throw unsendable('opts', e)
+      }
       // a session without a budget of its own for its history takes its share of the thread's heap; wrong input stays for the thread to refuse
       const u = opts.undo as unknown
       if (historyMb !== undefined && (u === undefined || (typeof u === 'object' && u !== null && (u as { maxMb?: unknown }).maxMb === undefined))) opts.undo = { ...(u as object), maxMb: historyMb }
       const slot = [...slots].sort((a, b) => a.sessions.size - b.sessions.size || a.queue.length - b.queue.length)[0]
-      const given = opts.clock
-      delete opts.clock
-      const { cached } = opts
-      delete opts.cached
       // the book and the stored values are taken now and written as text, between turns of the event loop when they are large; the text is the first snapshot
       const [sent, written] = texts(book, cached)
       const later = written?.then((x) => {

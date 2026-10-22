@@ -820,7 +820,7 @@ A legacy formula (text without `=`, as a file stores it, with the prefixes of ne
 array formula Excel 365 displays for it, in canonical text: `A1:A10*2` becomes `@A1:A10*2`, `INDEX(A1:C3,0,1)`
 becomes `@INDEX(A1:C3,0,1)`, `SUM(A1:A10)` stays. Excel puts `@` before a name depending on what the name's formula
 returns, so the workbook's names are needed for formulas that use names. A formula the engine cannot parse is
-returned as is. The API function (`strict-args.ts`), the same from `xlcalc/xlsx` and from the root.
+returned as is. The API function (`strict-args.ts`), from `xlcalc/xlsx`.
 
 ### <a id="xlcalcxlsx-readxlsx"></a>`readXlsx`
 
@@ -1209,7 +1209,8 @@ interface Calc {
 
 ### `CalcErrorCode`
 
-Why an asynchronous call failed ([`CalcError.code`](#xlcalc-calcerror)). `soft_timeout`: its `timeoutMs` elapsed, as detected by a check
+Why a call failed ([`CalcError.code`](#xlcalc-calcerror)): an asynchronous call rejects with it, and a synchronous session throws `limit`,
+`closed` and `stale_revision`. `soft_timeout`: its `timeoutMs` elapsed, as detected by a check
 during the calculation. `aborted`: its `signal` fired. `hard_timeout`: it ran past the pool's `hardTimeoutMs` and its
 thread was terminated. `out_of_memory`: its thread reached `maxHeapMb`. `thread_failed`: its thread exited or threw
 outside the calculation. `restore_failed`: the session could not be restored on a thread and has been closed. `limit`:
@@ -2014,7 +2015,10 @@ interface ComputeOptions {
   externals?: Externals
   /** `closures` by default. */
   execution?: Execution
-  /** Each cell's displayed text and color (`CellResult.text`, `color`); true by default, false calculates values only. */
+  /**
+   * Each cell's displayed text and color (`CellResult.text`, `color`); true by default, false calculates values only.
+   * `readCells` and `findCells` still return `text` when their fields ask for it.
+   */
   display?: boolean
   /** None by default. */
   limits?: CalcLimits
@@ -2696,7 +2700,8 @@ interface FindCellsOptions extends ReadCellsOptions {
   /**
    * What to search: the text a cell displays (`text`, the default; Excel's Look in: Values), the text it opens with in
    * edit mode (`edit`: a formula in the workbook's locale, a number in its format, text as is, without an apostrophe;
-   * Excel's Look in: Formulas), its stored formula (`formula`) or its value (`value`). Regular expressions are not
+   * Excel's Look in: Formulas), its stored formula (`formula`) or its value (`value`: the same in every locale, a number
+   * as JavaScript writes it, `TRUE` or `FALSE`, an error by its name such as `#DIV/0!`). Regular expressions are not
    * supported.
    */
   in?: 'text' | 'edit' | 'formula' | 'value'
@@ -3496,13 +3501,30 @@ interface RangeSummary {
 
 ### `ReadCell`
 
-A cell as `readCells` and `findCells` return it: its address and the requested fields.
+A cell as `readCells` and `findCells` return it: its address and the requested fields ([`CellReadField`](#cellreadfield)), no others.
 
 ```ts
-interface ReadCell extends CellRef, Partial<CellView> {
+interface ReadCell extends CellRef, Partial<Pick<CellView, 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link'>> {
   issue?: CellIssueDetail | null
   /** With the field `editText`: the text the cell opens with in edit mode, as in `ViewportCell.editText`; this is what `findCells` searches with `edit`, except for the apostrophe before text that would otherwise be parsed as something else, which the search leaves out. */
   editText?: string
+  // the fields of CellView no CellReadField asks for, kept so that host code reading them compiles until a breaking release
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  color?: CellView['color']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spill?: CellView['spill']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spillFill?: CellView['spillFill']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spillOf?: CellView['spillOf']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  meta?: CellView['meta']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  array?: CellView['array']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  appearance?: CellView['appearance']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  numberFormatCode?: CellView['numberFormatCode']
 }
 ```
 
@@ -3512,7 +3534,10 @@ Options of `readCells`: the fields to read and which rows and columns.
 
 ```ts
 interface ReadCellsOptions extends PageOptions {
-  /** value, text and formula by default. Address and sheet are always returned. */
+  /**
+   * value, text and formula by default. Address and sheet are always returned. `text` is the displayed text in a session
+   * opened with `display: false` too; `['value', 'formula']` reads without formatting.
+   */
   fields?: CellReadField[]
   /**
    * Only the cells in these rows (for example, the rows a host's filter displays), as in `ViewportOptions.rows`: their
@@ -3815,7 +3840,7 @@ interface Session {
   /** What `fillCellText` would do, without changing anything. */
   previewFillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextPreview
   setNames(names: NameInput[], opts?: EditOptions): EditResult
-  /** Non-live sessions only. */
+  /** Non-live sessions only: a live session throws `InputError`. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
   /** A structure operation on the session's workbook, followed by recalculation; rejected wherever `editStructure` rejects it. Hiding or unhiding a sheet recalculates nothing. */
   editStructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
@@ -4463,6 +4488,19 @@ Excel's totals functions of a table column (xlsx `totalsRowFunction`).
 type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' | 'min' | 'stdDev' | 'var' | 'custom'
 ```
 
+### `TranslateOptions`
+
+[`toLocal`](#xlcalc-tolocal)'s and [`toInvariant`](#xlcalc-toinvariant)'s options: `table`, the table of the formula's cell; `externalBooks`, the book's links to
+other workbooks, by which a reference to one is shown as Excel shows it (`'[1]Sheet1'!A1` is `[Book2.xlsx]Sheet1!A1`,
+`'../data/[Book3.xlsx]Sheet1'!A1` with the path the link holds) and read back by its file name.
+
+```ts
+interface TranslateOptions {
+  table?: string
+  externalBooks?: ExternalBook[]
+}
+```
+
 ### `Translation`
 
 The result of translating formula text: the text, or a check code with a message in the locale's language and the
@@ -4848,10 +4886,11 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
   the engine cannot parse.
 - `userFunction`: a call to a function the file marks as user-defined (`_xludf.`), a macro or add-in function.
 - `formula`: a formula the engine cannot parse, read as written (its cell calculates to an error), or a formula the
-  writer could not write (its value is written instead).
+  writer could not write (its value is written instead, or an empty cell when it has none).
 - `errorConstant`: an error typed into a cell as its value, read as a formula of that error.
 - `errorValue`: an error the model has no code for (`#GETTING_DATA`, `#FIELD!`, `#BLOCKED!` and the like), read
-  as `#ERROR!`; or, when writing, `#CYCLE!` written as 0, as Excel stores a circular reference.
+  as `#ERROR!`; or, when writing, `#CYCLE!` written as 0, as Excel stores a circular reference, and `#ERROR!`
+  written as `#NULL!`, which Excel has.
 - `dataTable`: a what-if data table (`TABLE()`), read as its stored values.
 - `calculation`: calculation settings the workbook does not keep: manual mode, automatic except for data tables,
   precision as displayed; an iteration count or maximum change out of range, read as Excel's default.

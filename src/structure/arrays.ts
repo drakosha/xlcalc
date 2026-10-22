@@ -56,16 +56,21 @@ export function arrayRefusal(book: BookInput, p: Paste): Message | null {
 
 /**
  * The cells of a copy's source that lie in an area without all of it: each as its own array formula over the cell, its
- * area's formula as copied from the area's cell to it (`shift`); whole areas copy as they are.
+ * area's formula as copied from the area's cell to it (`shift`), with the cell's own looks, note, link and meta; whole
+ * areas copy as they are.
  */
 export function copiedCells(sheet: SheetInput, src: Rect, shift: (formula: string, dr: number, dc: number) => string): [string, CellInput][] {
   const out: [string, CellInput][] = []
   for (const [addr, x] of arraysOf(sheet)) {
     const part = contains(src, x) ? null : intersect(x, src)
     if (!part) continue
-    const top = sheet.cells[addr]
+    const formula = sheet.cells[addr].formula!
     for (let r = part.r1; r <= part.r2; r++)
-      for (let c = part.c1; c <= part.c2; c++) out.push([formatAddress(r, c), { ...top, formula: shift(top.formula!, r - x.r1, c - x.c1), array: formatAddress(r, c) }])
+      for (let c = part.c1; c <= part.c2; c++) {
+        // the area's other cells hold no formula or value (checkArrays), only their own looks, note, link and meta
+        const at = formatAddress(r, c)
+        out.push([at, { ...sheet.cells[at], formula: shift(formula, r - x.r1, c - x.c1), array: at }])
+      }
   }
   return out
 }
