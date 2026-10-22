@@ -5,6 +5,7 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, createSession, displayValue, entryText, InputError, parseEntry, type BookInput, type CellInput } from '../src/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
+import { mergedArea, rangeAddress, rectContains, rectsMeet } from '../src/a1.js'
 import { ASYNC_CALCS, closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -156,5 +157,28 @@ describe("a locale object not loaded: its rules checked where it is taken", () =
   it('takes a locale without rules, calculated by en-US\'s, and one with all of them', () => {
     expect(displayValue(1234.5, { numberFormat: '#,##0.00', locale: { ...base, regional: undefined } })).toEqual({ text: '1,234.50' })
     expect(displayValue(1234.5, { numberFormat: '#,##0.00', locale: base }).text).toBe(displayValue(1234.5, { numberFormat: '#,##0.00', locale: ruRU }).text)
+  })
+})
+
+describe('the rectangles of xlcalc/a1', () => {
+  const reversed = { top: 5, left: 3, bottom: 1, right: 1 }
+  const ordered = { top: 1, left: 1, bottom: 5, right: 3 }
+  const merge = { top: 3, left: 2, bottom: 4, right: 4 }
+
+  it('are taken with their corners in either order, as rangeAddress takes them', () => {
+    expect(rangeAddress(reversed)).toBe('A1:C5')
+    expect(mergedArea(reversed, [merge])).toEqual({ top: 1, left: 1, bottom: 5, right: 4 })
+    expect(mergedArea(ordered, [{ top: 4, left: 4, bottom: 3, right: 2 }])).toEqual({ top: 1, left: 1, bottom: 5, right: 4 })
+    expect(mergedArea({ top: 3, left: 3, bottom: 3, right: 3 }, [{ top: 4, left: 4, bottom: 2, right: 2 }])).toEqual({ top: 2, left: 2, bottom: 4, right: 4 })
+    expect([rectsMeet(reversed, merge), rectContains(reversed, { top: 2, left: 2, bottom: 2, right: 2 })]).toEqual([true, true])
+  })
+
+  it('are refused off the sheet or not a rectangle, as an InputError naming the argument', () => {
+    const zeros = { top: 0, left: 0, bottom: 0, right: 0 }
+    expect(refusal(() => rectsMeet(zeros, zeros))).toMatchObject({ path: 'a.top' })
+    expect(refusal(() => rectContains(ordered, { top: '1', left: 1, bottom: 1, right: 1 } as never))).toMatchObject({ path: 'inner.top' })
+    expect(refusal(() => rectsMeet(undefined as never, ordered))).toMatchObject({ path: 'a.top' })
+    expect(refusal(() => rangeAddress(undefined as never))).toMatchObject({ path: 'rect.top' })
+    expect(refusal(() => mergedArea(ordered, [null as never]))).toMatchObject({ path: 'merges[0].top' })
   })
 })
