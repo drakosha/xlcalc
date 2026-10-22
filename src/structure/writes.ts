@@ -57,6 +57,11 @@ function copyWrites(book: BookInput, p: PasteOp, target: Rect, values: ValuesIn,
   return contentIn(sheet, src) * laid
 }
 
+/** A fill handle's copies (`pieces`, each a source and its target on sheet `s`) over `limits.writes` all together stop before the first. */
+export function checkFillWrites(book: BookInput, s: number, pieces: [Rect, Rect][]): void {
+  allotWrites(() => pieces.reduce((n, [from, at]) => n + contentIn(book.sheets[s], from) * tileCount(from, at), 0), book.locale)
+}
+
 /** A copy or a move over `limits.writes` stops before anything is built; the cells are counted only under the limit. */
 export function checkWrites(book: BookInput, op: StructureOp, values: ValuesIn, whole = false): void {
   const p = pasteOf(book, op)

@@ -363,6 +363,8 @@ export class CellsLayer {
   private row = -1
   private runs: number[] = []
   private late: [number, number, number][] = []
+  /** The cells of the current row given out of order, taken after its runs. */
+  private again: [number, number, number][] = []
 
   get looks(): LookTable {
     return this.out.looks
@@ -376,7 +378,7 @@ export class CellsLayer {
       this.row = r
     }
     const n = this.runs.length
-    if (n && this.runs[n - 2] >= c) this.late.push([r, c, look])
+    if (n && this.runs[n - 2] >= c) this.again.push([r, c, look])
     else if (n && this.runs[n - 1] === look && this.runs[n - 2] === c - 1) this.runs[n - 2] = c
     else this.runs.push(c, c, look)
   }
@@ -387,7 +389,10 @@ export class CellsLayer {
     if (this.out.last < this.row) this.out.rows(this.row, this.row, p)
     // a row given again after later ones: its cells over what it has
     else for (let k = 0; k < p.length; k += 3) for (let c = p[k]; c <= p[k + 1]; c++) this.late.push([this.row, c, p[k + 2]])
+    // the row's cells given out of order come after its runs, so that the last look given a cell counts
+    for (const x of this.again) this.late.push(x)
     this.runs = []
+    this.again = []
   }
 
   build(): Layer {

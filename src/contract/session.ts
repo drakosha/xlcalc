@@ -149,7 +149,7 @@ export interface Session {
   /** What `fillCellText` would do, without changing anything. */
   previewFillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextPreview
   setNames(names: NameInput[], opts?: EditOptions): EditResult
-  /** Non-live sessions only. */
+  /** Non-live sessions only: a live session throws `InputError`. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
   /** A structure operation on the session's workbook, followed by recalculation; rejected wherever `editStructure` rejects it. Hiding or unhiding a sheet recalculates nothing. */
   editStructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
@@ -369,7 +369,8 @@ export interface AbortSignalLike {
 }
 
 /**
- * Why an asynchronous call failed (`CalcError.code`). `soft_timeout`: its `timeoutMs` elapsed, as detected by a check
+ * Why a call failed (`CalcError.code`): an asynchronous call rejects with it, and a synchronous session throws `limit`,
+ * `closed` and `stale_revision`. `soft_timeout`: its `timeoutMs` elapsed, as detected by a check
  * during the calculation. `aborted`: its `signal` fired. `hard_timeout`: it ran past the pool's `hardTimeoutMs` and its
  * thread was terminated. `out_of_memory`: its thread reached `maxHeapMb`. `thread_failed`: its thread exited or threw
  * outside the calculation. `restore_failed`: the session could not be restored on a thread and has been closed. `limit`:

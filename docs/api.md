@@ -1209,7 +1209,8 @@ interface Calc {
 
 ### `CalcErrorCode`
 
-Why an asynchronous call failed ([`CalcError.code`](#xlcalc-calcerror)). `soft_timeout`: its `timeoutMs` elapsed, as detected by a check
+Why a call failed ([`CalcError.code`](#xlcalc-calcerror)): an asynchronous call rejects with it, and a synchronous session throws `limit`,
+`closed` and `stale_revision`. `soft_timeout`: its `timeoutMs` elapsed, as detected by a check
 during the calculation. `aborted`: its `signal` fired. `hard_timeout`: it ran past the pool's `hardTimeoutMs` and its
 thread was terminated. `out_of_memory`: its thread reached `maxHeapMb`. `thread_failed`: its thread exited or threw
 outside the calculation. `restore_failed`: the session could not be restored on a thread and has been closed. `limit`:
@@ -2014,7 +2015,10 @@ interface ComputeOptions {
   externals?: Externals
   /** `closures` by default. */
   execution?: Execution
-  /** Each cell's displayed text and color (`CellResult.text`, `color`); true by default, false calculates values only. */
+  /**
+   * Each cell's displayed text and color (`CellResult.text`, `color`); true by default, false calculates values only.
+   * `readCells` and `findCells` still return `text` when their fields ask for it.
+   */
   display?: boolean
   /** None by default. */
   limits?: CalcLimits
@@ -2695,7 +2699,8 @@ interface FindCellsOptions extends ReadCellsOptions {
   /**
    * What to search: the text a cell displays (`text`, the default; Excel's Look in: Values), the text it opens with in
    * edit mode (`edit`: a formula in the workbook's locale, a number in its format, text as is, without an apostrophe;
-   * Excel's Look in: Formulas), its stored formula (`formula`) or its value (`value`). Regular expressions are not
+   * Excel's Look in: Formulas), its stored formula (`formula`) or its value (`value`: the same in every locale, a number
+   * as JavaScript writes it, `TRUE` or `FALSE`, an error by its name such as `#DIV/0!`). Regular expressions are not
    * supported.
    */
   in?: 'text' | 'edit' | 'formula' | 'value'
@@ -3511,7 +3516,10 @@ Options of `readCells`: the fields to read and which rows and columns.
 
 ```ts
 interface ReadCellsOptions extends PageOptions {
-  /** value, text and formula by default. Address and sheet are always returned. */
+  /**
+   * value, text and formula by default. Address and sheet are always returned. `text` is the displayed text in a session
+   * opened with `display: false` too; `['value', 'formula']` reads without formatting.
+   */
   fields?: CellReadField[]
   /**
    * Only the cells in these rows (for example, the rows a host's filter displays), as in `ViewportOptions.rows`: their
@@ -3814,7 +3822,7 @@ interface Session {
   /** What `fillCellText` would do, without changing anything. */
   previewFillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextPreview
   setNames(names: NameInput[], opts?: EditOptions): EditResult
-  /** Non-live sessions only. */
+  /** Non-live sessions only: a live session throws `InputError`. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
   /** A structure operation on the session's workbook, followed by recalculation; rejected wherever `editStructure` rejects it. Hiding or unhiding a sheet recalculates nothing. */
   editStructure(op: StructureOp, opts?: EditOptions): SessionStructureResult

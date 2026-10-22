@@ -47,7 +47,10 @@ export interface PageOptions extends EditOptions {
 }
 /** Options of `readCells`: the fields to read and which rows and columns. */
 export interface ReadCellsOptions extends PageOptions {
-  /** value, text and formula by default. Address and sheet are always returned. */
+  /**
+   * value, text and formula by default. Address and sheet are always returned. `text` is the displayed text in a session
+   * opened with `display: false` too; `['value', 'formula']` reads without formatting.
+   */
   fields?: CellReadField[]
   /**
    * Only the cells in these rows (for example, the rows a host's filter displays), as in `ViewportOptions.rows`: their
@@ -61,7 +64,8 @@ export interface FindCellsOptions extends ReadCellsOptions {
   /**
    * What to search: the text a cell displays (`text`, the default; Excel's Look in: Values), the text it opens with in
    * edit mode (`edit`: a formula in the workbook's locale, a number in its format, text as is, without an apostrophe;
-   * Excel's Look in: Formulas), its stored formula (`formula`) or its value (`value`). Regular expressions are not
+   * Excel's Look in: Formulas), its stored formula (`formula`) or its value (`value`: the same in every locale, a number
+   * as JavaScript writes it, `TRUE` or `FALSE`, an error by its name such as `#DIV/0!`). Regular expressions are not
    * supported.
    */
   in?: 'text' | 'edit' | 'formula' | 'value'
