@@ -197,6 +197,7 @@ export interface ViewportCell extends Partial<CellDisplay> {
   spillOf?: string
   /** On the top-left cell of a legacy array formula, its range (`CellInput.array`). */
   array?: string
+  /** As `CellResult.meta`: on the session's thread the workbook's own object, which must not be modified. */
   meta?: JsonValue
   /** The cell's own style, an index into the workbook's `styles` as in `CellView.style`; the style object is in `Viewport.styles`. */
   style?: number

@@ -17,15 +17,18 @@ export function parseMerge(text: string): Rect | null {
 /** A sheet's merged areas. */
 export const mergesOf = (s: Pick<SheetInput, 'merges'>): Rect[] => (s.merges ?? []).map((m) => parseMerge(m)!)
 
-/** The first two merges that overlap, by index, or null (sorted by top row, each meets only those above it that reach down). */
-export function overlapping(xs: Rect[]): [number, number] | null {
+/**
+ * The first two merges that overlap, by index, or null (sorted by top row, each meets only those above it that reach down);
+ * a pair `apart` holds for (two parts of one rule) does not count.
+ */
+export function overlapping(xs: Rect[], apart?: (i: number, j: number) => boolean): [number, number] | null {
   const order = xs.map((_, i) => i).sort((a, b) => xs[a].r1 - xs[b].r1)
   const open: number[] = []
   for (const i of order) {
     for (let k = open.length - 1; k >= 0; k--) {
       const j = open[k]
       if (xs[j].r2 < xs[i].r1) open.splice(k, 1)
-      else if (meets(xs[i], xs[j])) return [Math.min(i, j), Math.max(i, j)]
+      else if (meets(xs[i], xs[j]) && !apart?.(i, j)) return [Math.min(i, j), Math.max(i, j)]
     }
     open.push(i)
   }

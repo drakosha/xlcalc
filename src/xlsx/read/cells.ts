@@ -73,6 +73,11 @@ const V = /<(?:[\w.-]+:)?v(?:\s[^<>]*?)?(?:\/>|>((?:[^<]|<(?!(?:[\w.-]+:)?v[\s/>
 const F = /<(?:[\w.-]+:)?f((?:\s[^<>]*?)?)(?:\/>|>((?:[^<]|<(?!(?:[\w.-]+:)?f[\s/>]))*?)<\/(?:[\w.-]+:)?f>)/
 const IS = /<(?:[\w.-]+:)?is(?:\s[^<>]*)?>((?:[^<]|<(?!(?:[\w.-]+:)?is[\s/>]))*?)<\/(?:[\w.-]+:)?is>/
 const ADDR = /^([A-Za-z]{1,3})([1-9][0-9]*)$/
+// the opening tags of a cell, a value, a formula and an inline string, which a body holds when one was left open
+const OPEN_C = /<(?:[\w.-]+:)?c[\s/>]/
+const OPEN_V = /<(?:[\w.-]+:)?v[\s/>]/
+const OPEN_F = /<(?:[\w.-]+:)?f[\s/>]/
+const OPEN_IS = /<(?:[\w.-]+:)?is[\s/>]/
 
 
 /**
@@ -121,7 +126,11 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       line = {}
       lineRow = row
       // a height Excel fitted has no customHeight; Excel for Mac writes its highest, 409.5, as 409.6
-      if (a.ht !== undefined) Object.assign(line, { height: Math.min(409.5, Number(a.ht)) }, flag(a.customHeight) ? {} : { bestFit: true })
+      if (a.ht !== undefined) {
+        const height = Number(a.ht)
+        if (Number.isFinite(height) && height >= 0) Object.assign(line, { height: Math.min(409.5, height) }, flag(a.customHeight) ? {} : { bestFit: true })
+        else issues.add('part', { key: 'heightBad' }, { sheet, cell: `${row + 1}:${row + 1}` })
+      }
       // Excel hides a row of height 0 whatever its flag
       if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) {
@@ -138,11 +147,14 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       row = Number(ref[2]) - 1
     } else col++
     let body = ''
+    // an element of the cell left open: the cell, or one it holds, runs into what follows
+    let open = false
     if (!m[4]) {
       const close = `</${m[1] ?? ''}c>`
       const end = data.indexOf(close, TAG.lastIndex)
       body = data.slice(TAG.lastIndex, end < 0 ? data.length : end)
       TAG.lastIndex = end < 0 ? data.length : end + close.length
+      open = end < 0 || (body.includes(`<${m[1] ?? ''}c`) && OPEN_C.test(body))
     }
     if (row < 0 || row >= MAX_ROWS || col >= MAX_COLS) {
       issues.add('part', { key: 'cellOutside' }, { sheet, cell: a.r ?? `${row + 1}:${col + 1}` })
@@ -161,6 +173,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     const t = a.t ?? 'n'
     // Excel writes an empty text result as `<v/>`
     const v = body.includes('v') ? V.exec(body) : null
+    if (!v && body.includes('v') && OPEN_V.test(body)) open = true
     const raw = v ? (v[1] ?? '') : undefined
     let value: Scalar | undefined
     if (t === 's') {
@@ -171,6 +184,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       }
     } else if (t === 'inlineStr') {
       const is = IS.exec(body)
+      if (!is && OPEN_IS.test(body)) open = true
       if (is) {
         const s = stringItem(is[1])
         value = s.text
@@ -179,11 +193,13 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     } else if (raw !== undefined && t !== 'e') {
       if (t === 'str') value = readText(raw)
       else if (t === 'b') value = raw === '1' || raw === 'true'
-      else if (t === 'd') value = dateToSerial(raw) - ctx.epoch
+      else if (t === 'd') value = isoDate(raw, ctx, addr)
       else if (raw !== '' && Number.isFinite(Number(raw))) value = Number(raw)
     }
     const errText = t === 'e' && raw !== undefined ? (rich ?? readText(raw).trim()) : undefined
     const f = body.includes('f') ? F.exec(body) : null
+    if (!f && body.includes('f') && OPEN_F.test(body)) open = true
+    if (open) issues.add('part', { key: 'cellOpen' }, { sheet, cell: addr })
     const fa = f ? attributes(f[1]) : {}
     const text = f?.[2] === undefined ? '' : readText(f[2])
     // `<f ca="1"/>` with no text only flags a value Excel recalculates (a cell a volatile array spilled into)
@@ -223,6 +239,16 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
   }
   endRow()
   return out
+}
+
+/** A Strict file's date as its serial in the book's date system; one that is no date (`garbage`, `2025-02-30`) is left out and reported. */
+function isoDate(raw: string, ctx: CellsContext, cell: string): number | undefined {
+  try {
+    return dateToSerial(raw) - ctx.epoch
+  } catch {
+    ctx.issues.add('part', { key: 'dateInvalid' }, { sheet: ctx.sheet, cell })
+    return undefined
+  }
 }
 
 /** A row's or a column's outline level (1 to 7) and its collapsed mark, as fields of its entry. */

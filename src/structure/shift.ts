@@ -121,7 +121,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     return layout
   })
   const out: BookInput = { ...book, sheets: shiftConditional(sheets, target.name, axis, at, n, t, names) }
-  const nm = rewriteNames(book.names, offsetsStay(t), names)
+  const nm = rewriteNames(book.names, offsetsStay(t, axis), names)
   if (nm) out.names = nm
   return { ok: true, book: tables.after(out), geometry }
 }

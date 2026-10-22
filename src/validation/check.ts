@@ -44,7 +44,8 @@ export function checkValidations(v: unknown, path: string): DataValidation[] {
     for (const k of ['allowBlank', 'dropdown', 'showPrompt', 'showError']) if (o[k] !== undefined) checkBoolean(o[k], `${p}.${k}`)
     if (o.errorStyle !== undefined) checkOneOf(o.errorStyle, `${p}.errorStyle`, ['stop', 'warning', 'information'])
   })
-  const o = overlapping(areas)
+  // the parts of one rule may overlap: a cell they share still has one rule
+  const o = overlapping(areas, (i, j) => owner[i][0] === owner[j][0])
   if (o) throw new InputError(`${path}[${owner[o[1]][0]}].range`, `${owner[o[1]][1]} overlaps ${owner[o[0]][1]}: a cell can have at most one rule`)
   return v as DataValidation[]
 }

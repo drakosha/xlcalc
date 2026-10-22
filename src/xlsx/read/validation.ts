@@ -85,13 +85,13 @@ function rule(raw: RawRule, sheet: string, issues: Issues, opts: FormulaOptions)
 }
 
 /**
- * The sheet's rules (`tail`: the worksheet after its cells), none meeting an earlier one; a rule that loses its first cell
- * so has its formulas written for its new first cell (`sheets`: the book's sheets).
+ * The sheet's rules (`tail`: the worksheet after its cells, without its own extension list, whose content is `ext`),
+ * none meeting an earlier one; a rule that loses its first cell so has its formulas written for its new first cell
+ * (`sheets`: the book's sheets).
  */
-export function readValidations(tail: string, sheet: string, sheets: string[], issues: Issues, opts: FormulaOptions): DataValidation[] | undefined {
+export function readValidations(tail: string, ext: string, sheet: string, sheets: string[], issues: Issues, opts: FormulaOptions): DataValidation[] | undefined {
   const names = new Map(sheets.map((s) => [sheetKey(s), s]))
-  const ext = tail.search(/<(?:[\w.-]+:)?extLst[\s>]/)
-  const raws = [...plain(ext < 0 ? tail : tail.slice(0, ext), sheet, issues), ...(ext < 0 ? [] : extended(tail.slice(ext)))]
+  const raws = [...plain(tail, sheet, issues), ...extended(ext)]
   const out: DataValidation[] = []
   const taken: Rect[] = []
   for (const raw of raws) {

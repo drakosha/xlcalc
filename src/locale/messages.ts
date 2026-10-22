@@ -81,6 +81,7 @@ export interface XlsxMessageParams {
   defaultFont: { name?: string; size?: number }
   sheetKind: object
   sheetPartMissing: object
+  stringsOpen: object
   allSheetsHidden: object
   tableNameTwice: { table: string }
   // reading: a sheet
@@ -98,6 +99,7 @@ export interface XlsxMessageParams {
   printSettings: object
   defaultWidth: { width: number }
   errorTyped: object
+  sheetDataOpen: object
   // reading: formulas
   userFunction: object
   tableRefWithoutTable: object
@@ -106,6 +108,10 @@ export interface XlsxMessageParams {
   formulaUnparsed: object
   // reading: cells
   cellOutside: object
+  widthBad: object
+  heightBad: object
+  dateInvalid: object
+  cellOpen: object
   valueMetadata: object
   richText: object
   errorUnknown: object
@@ -291,10 +297,10 @@ export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams>
 export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
   localeUnknown: 0, builtInName: 0, nameOfSheetLeftOut: 0, hiddenName: 0, manualCalculation: 0, autoNoTable: 0, precisionAsDisplayed: 0,
   iterationCount: 0, iterationChange: 0, workbookProtection: 0, externalLinks: 0, pivotTables: 0, macros: 0, connections: 0, defaultFont: 0,
-  sheetKind: 0, sheetPartMissing: 0, allSheetsHidden: 0, tableNameTwice: 0, sharedWithoutMaster: 0, sharedCopy: 0, outlineStyles: 0,
+  sheetKind: 0, sheetPartMissing: 0, stringsOpen: 0, allSheetsHidden: 0, tableNameTwice: 0, sharedWithoutMaster: 0, sharedCopy: 0, outlineStyles: 0,
   mergeOverlap: 0, autoFilterCriteria: 0, autoFilterPlain: 0, advancedFilter: 0, tableFilter: 0, sheetProtection: 0, drawings: 0, sparklines: 0,
-  printSettings: 0, defaultWidth: 0, errorTyped: 0, userFunction: 0, tableRefWithoutTable: 0, formulaExternal: 0, letPrefix: 0, formulaUnparsed: 0,
-  cellOutside: 0, valueMetadata: 0, richText: 0, errorUnknown: 0, errorUnspelled: 0, dataTable: 0, styleLost: 0, eastAsianFormat: 0, unknownFormat: 0,
+  printSettings: 0, defaultWidth: 0, errorTyped: 0, sheetDataOpen: 0, userFunction: 0, tableRefWithoutTable: 0, formulaExternal: 0, letPrefix: 0, formulaUnparsed: 0,
+  cellOutside: 0, widthBad: 0, heightBad: 0, dateInvalid: 0, cellOpen: 0, valueMetadata: 0, richText: 0, errorUnknown: 0, errorUnspelled: 0, dataTable: 0, styleLost: 0, eastAsianFormat: 0, unknownFormat: 0,
   tablePartBad: 0, tableLeftOut: 0, headerGiven: 0, condRangeOutside: 0, condStyleLost: 0, condOperator: 0, condNoFormulas: 0, condNoFormula: 0,
   condPeriod: 0, condAverage: 0, condColorScale: 0, condDataBar: 0, condIconSet: 0, condIcons: 0, condType: 0, condPivot: 0, ruleListCommas: 0,
   ruleType: 0, ruleNoFormula: 0, ruleNoSecond: 0, ruleIme: 0, ruleNoRange: 0, ruleShared: 0, splitPanes: 0, frozenScrolled: 0, noteCell: 0,

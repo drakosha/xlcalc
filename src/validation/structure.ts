@@ -18,7 +18,7 @@ import { anchorOf, areasOf, rangeText } from './rules.js'
 type Cell = { r: number; c: number }
 
 /** A rule's formulas, each through `f`; the same rule when none changes. */
-function withFormulas(v: DataValidation, f: (text: string) => string): DataValidation {
+export function withFormulas(v: DataValidation, f: (text: string) => string): DataValidation {
   const [a, b] = [v.formula1 === undefined ? undefined : f(v.formula1), v.formula2 === undefined ? undefined : f(v.formula2)]
   return a === v.formula1 && b === v.formula2 ? v : { ...v, ...(a !== undefined ? { formula1: a } : {}), ...(b !== undefined ? { formula2: b } : {}) }
 }

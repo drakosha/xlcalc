@@ -171,12 +171,6 @@ export function sheetWith(sheet: SheetInput, back: SheetBack): SheetInput {
   return out as unknown as SheetInput
 }
 
-/** Sheet `to`, a change of the layout of `from`, made on `onto` instead, the same sheet built again since: `onto` with the fields and lines that changed. */
-export function rebased(from: SheetInput, to: SheetInput, onto: SheetInput): SheetInput {
-  const back = sheetBack(0, from, to)
-  return back ? sheetWith(onto, back) : onto
-}
-
 /** The fields of `a` that `b` does not share, as `weigh` counts them. */
 const own = (a: object, b: object | undefined): number => {
   let n = 32

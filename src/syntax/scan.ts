@@ -88,9 +88,9 @@ export function bracketEnd(src: string, i: number): number {
 /** After a bracketed run, what makes it a reference to another workbook (`[1]Sheet1!A1`, `[Book.xlsx]S!A1`, `[1]!name`). */
 export const BOOK_SHEET = /^(?:[\p{L}\p{N}_.:]+|'(?:[^']|'')+')?!/u
 
-/** Whether `(` follows at `i`, past spaces: the word before it is a function's name (`SUM (A1)`). */
+/** Whether `(` follows at `i`, past whitespace: the word before it is a function's name (`SUM (A1)`, `SUM\n(A1)`). */
 export function callFollows(src: string, i: number): boolean {
-  while (src[i] === ' ') i++
+  while (isSpace(src[i])) i++
   return src[i] === '('
 }
 

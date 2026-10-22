@@ -12,11 +12,19 @@ export function roundHalfUp(abs: number, k: number): string {
   return roundDigits(abs, 100, Math.round).toFixed(100) + '0'.repeat(k - 100)
 }
 
-/** `abs` with `k` decimals, rounded half away from zero; from 10^21 on, its 15 significant digits and zeros. */
+/**
+ * `abs` with `k` decimals, rounded half away from zero; where that takes more than 15 significant digits, its 15
+ * significant digits and zeros, as Excel shows them (`TEXT(2^60,"0")` is 1152921504606850000).
+ */
 export function positional(abs: number, k: number): string {
-  if (abs < 1e21) return roundHalfUp(abs, k)
-  const [m, e] = abs.toExponential(14).split('e')
-  return m.replace('.', '').padEnd(Number(e) + 1, '0') + (k ? '.' + '0'.repeat(k) : '')
+  // below 10^(15-k) the text has 15 significant digits at most (the common case)
+  if (abs < 10 ** (15 - k)) return roundHalfUp(abs, k)
+  const [m, ex] = abs.toExponential(14).split('e')
+  const digits = m.replace('.', '')
+  const e = Number(ex)
+  // all 15 digits fall within the text, so no further rounding
+  const [ip, fp] = e < 0 ? ['0', '0'.repeat(-e - 1) + digits] : [digits.slice(0, e + 1).padEnd(e + 1, '0'), digits.slice(e + 1)]
+  return k ? `${ip}.${fp.padEnd(k, '0')}` : ip
 }
 
 /** Trailing zeros of the decimals dropped, and the point when none is left. */

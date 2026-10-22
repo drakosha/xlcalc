@@ -6,7 +6,7 @@ import { outValue } from '../result.js'
 import { sheetKey } from '../syntax.js'
 import type { Rect } from './area.js'
 
-/** The non-blank values of a sheet's cells in a rectangle, spilled ones too: [row, column, value]. */
+/** The non-blank values of a sheet's cells in a rectangle, spilled ones too, a large spill's unstored cells included: [row, column, value]. */
 export type ValuesIn = (sheet: string, rect: Rect) => [number, number, CellValue][]
 
 /** The values of a computed state. */
@@ -22,6 +22,17 @@ export function stateValues(state: EngineState): ValuesIn {
         const v = valueAt(state, s, r, c)
         if (v !== null && v !== undefined) out.push([r, c, outValue(toCellValue(v))])
       }
+    }
+    // the unstored cells of a large spill (`spill/fill.ts`) the loop above does not reach
+    for (const f of sh.fills) {
+      if (f.v === null) continue
+      const v = outValue(toCellValue(f.v))
+      for (let c = Math.max(x.c1, f.c1); c <= Math.min(x.c2, f.c2); c++)
+        for (let r = Math.max(x.r1, f.r1); r <= Math.min(x.r2, f.r2); r++) {
+          if (sh.cols[c] && r < sh.rows) continue
+          spend(1)
+          out.push([r, c, v])
+        }
     }
     return out
   }

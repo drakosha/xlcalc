@@ -39,7 +39,10 @@ function regionalCodes(data: RegionalData): Codes {
     // the group separator in a fraction section
     refuses: (sec) => {
       const b = bare(sec)
-      const date = [...b].some((ch) => letter(ch) !== undefined) || /AM\/PM|A\/P/i.test(b)
+      // a date by its letters outside brackets, or by elapsed time in them (`[ч]`); a colour's name holds letters too (`[Красный]`)
+      const isLetter = (ch: string) => letter(ch) !== undefined
+      const elapsed = [...b.matchAll(/\[([^\]]+)\]/g)].some((m) => [...m[1]].every(isLetter))
+      const date = elapsed || [...b.replace(/\[[^\]]*\]?/g, '')].some(isLetter) || /AM\/PM|A\/P/i.test(b)
       return (!date && pointRefused && /\.[^]*[0#?]/.test(b)) || (/[0#?]\//.test(b) && b.includes(group))
     },
   }

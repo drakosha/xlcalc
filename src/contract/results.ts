@@ -104,6 +104,7 @@ export interface CellResult extends Partial<CellDisplay> {
   formula?: string
   /** The cell's own number format, as given in its input. */
   numberFormat?: NumberFormat
+  /** The cell's `meta` as given; on the session's thread the workbook's own object, which must not be modified. */
   meta?: JsonValue
   /**
    * A formula whose array spilled: the range it fills on its sheet (`B2:D9`, with this cell at the top left); for a

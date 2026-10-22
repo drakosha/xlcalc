@@ -2,6 +2,7 @@
 import type { Cx, FnDef, Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { E, isErr, type V } from '../../values.js'
+import { lowerInPlace } from '../../find-text.js'
 import { delimiters } from './common.js'
 
 /** The earliest delimiter at or after `from` (a column delimiter wins a tie, then the longer). */
@@ -26,8 +27,9 @@ function textsplit(cx: Cx, text: string, colSeg: Segment | undefined, rowSeg?: S
   if (mode !== 0 && mode !== 1) return E.VALUE
   // an empty delimiter anywhere (a blank cell too) is #VALUE!, as in Excel
   if (cols.includes('') || rows.includes('') || text === '') return E.VALUE
-  const hay = mode ? text.toLowerCase() : text
-  const fold = (ks: string[]) => (mode ? ks.map((k) => k.toLowerCase()) : ks)
+  // in any case, searched in a lower case of the same length, so its places are the text's
+  const hay = mode ? lowerInPlace(text) : text
+  const fold = (ks: string[]) => (mode ? ks.map(lowerInPlace) : ks)
   const lines: string[][] = [[]]
   let p = 0
   for (;;) {

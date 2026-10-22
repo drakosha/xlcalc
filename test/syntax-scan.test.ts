@@ -21,8 +21,8 @@ describe('scanning formula text', () => {
     expect(['S!A1', '!name', "'S x'!A1", '+1', ''].map((t) => BOOK_SHEET.test(t))).toEqual([true, true, true, false, false])
   })
 
-  it('a call follows a word past spaces only; whitespace is four characters', () => {
-    expect(['SUM(', 'SUM  (', 'SUM\t(', 'SUM'].map((s) => callFollows(s, 3))).toEqual([true, true, false, false])
+  it('a call follows a word past whitespace; whitespace is four characters', () => {
+    expect(['SUM(', 'SUM  (', 'SUM\t(', 'SUM\r\n (', 'SUM'].map((s) => callFollows(s, 3))).toEqual([true, true, true, true, false])
     expect([' ', '\t', '\n', '\r', ' ', undefined].map(isSpace)).toEqual([true, true, true, true, false, false])
   })
 

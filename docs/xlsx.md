@@ -102,7 +102,7 @@ A zip archive can contain a part that inflates to a thousand times its compresse
 
 Text, numbers and booleans become values. Dates stay numbers, as Excel stores them, and their number format makes them display as dates. The ISO dates of Strict files (`t="d"`) become serial numbers too.
 
-Text keeps its spaces and line breaks. Excel's escapes for characters XML cannot represent are decoded: `_x000B_` is a vertical tab, and `_x005F_x0041_` is the literal text `_x0041_`. Rich text is read as its plain text and reported. Phonetic readings of East Asian text are not part of the text.
+Text keeps its spaces and line breaks. Excel's escapes for characters XML cannot represent are decoded: `_x000B_` is a vertical tab, and `_x005F_x0041_` is the literal text `_x0041_`. A CDATA section, which some other writers use for text with `<` or `&`, gives its content as written. Rich text is read as its plain text and reported. Phonetic readings of East Asian text are not part of the text.
 
 The model has no error values, so an error stored as a cell's value is read as a formula consisting of that error: a cell containing `#N/A` gets the formula `#N/A`.
 
@@ -200,7 +200,7 @@ const book = {
 }
 ```
 
-The reader takes `workbookView.activeTab` from the first workbook view, and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane. The writer restores those fields; a workbook without them keeps the writer's default of the first visible sheet. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, the selections of inactive panes, and gridline settings are outside this model, and so is a group of selected tabs: it is read as the active sheet alone, so a workbook never opens with its sheets grouped, where an edit would apply to all of them.
+The reader takes `workbookView.activeTab` from the first workbook view, and the first `sheetView` of each sheet. For frozen panes it takes the selection of the active pane, and a scroll position past the split from the pane after it, where Excel keeps it and the writer writes it, so frozen panes and `topLeft` round-trip together. The writer restores those fields; a workbook without them keeps the writer's default of the first visible sheet. Unknown, hidden or out-of-range saved active tabs are left out. Malformed optional view fields are left out one field at a time. Other windows, the selections of inactive panes, and gridline settings are outside this model, and so is a group of selected tabs: it is read as the active sheet alone, so a workbook never opens with its sheets grouped, where an edit would apply to all of them.
 
 Views change neither values nor `inputHash`. `getLayout()`, `getBook()` and snapshots keep them in every kind of session. Renaming the active sheet updates its name; deleting or hiding it selects the first visible sheet. The host tracks the live selection and scrolling itself, and applies `activeSheet` and `view` to the workbook before saving. They have no `setLayout` edit, so moving around a grid creates no undo steps.
 
@@ -283,7 +283,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `outline` | automatic outline styles |
 | `drawing`, `pivotTable`, `protection`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
-| `part` | a missing sheet part, a cell outside the sheet |
+| `part` | a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size |
 
 Gridlines and other view settings outside `SheetView` are not reported. A page setup is reported only when one was actually made, for example a landscape page or fit to width.
 

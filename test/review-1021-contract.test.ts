@@ -1,6 +1,10 @@
-/** The contract's types name what the calls return: the refusals of typed text include a reference to a workbook not among the links. */
-import { describe, expect, it } from 'vitest'
-import { createSession } from '../src/index.js'
+/**
+ * The contract's types name what the calls return: the refusals of typed text include a reference to a workbook not among
+ * the links. The views of a cell give a host copies of its note and link in every kind of session.
+ */
+import { afterAll, describe, expect, it } from 'vitest'
+import { createSession, type BookInput } from '../src/index.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const OTHER = '=[Book9.xlsx]Sheet1!A1'
 
@@ -25,5 +29,28 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       replaced.refused?.[0].code === 'external_ref',
     ]).toEqual(Array(7).fill(true))
     s.close()
+  })
+})
+
+describe.each(['closures', 'eval'] as const)('views of a cell hand out copies of its note and link (fix-u319), %s', (execution) => {
+  afterAll(closeCalcs)
+  describe.each(KINDS)('in %s', (kind) => {
+    const open = openerFor(kind)
+    it('changing them leaves the workbook as it was', async () => {
+      const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1, note: { text: 'n' }, link: { url: 'http://a' } } } }] }
+      const s = await open(book, { execution, clock: { now: '2026-10-04T12:00:00Z', seed: 7 } })
+      const hash = (await s.getResult()).inputHash
+      const cell = (await s.getCell('S', 'A1'))!
+      const cells = await s.getCells('S', 'A1')
+      const vp = await s.getViewport('S', 'A1:B2')
+      cell.note!.text = 'edited'
+      cells.A1.link!.url = 'http://cells'
+      vp.cells.A1.note!.text = 'viewport'
+      vp.cells.A1.link!.url = 'http://viewport'
+      const now = (await s.getBook()).sheets[0].cells.A1
+      expect([now.note, now.link]).toEqual([{ text: 'n' }, { url: 'http://a' }])
+      expect((await s.getResult()).inputHash).toBe(hash)
+      await s.close()
+    })
   })
 })

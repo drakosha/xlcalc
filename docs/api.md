@@ -231,7 +231,8 @@ according to the cell's `opts.numberFormat`: a number to 15 significant digits w
 (`1234.5`, `1234,5`), a percentage cell's number as a percentage (`12%`), a date or time cell's value in the locale's
 short date and long time formats (`1/31/2025  6:00:00 PM`, `31.01.2025  18:00:00`), a boolean or an error in the
 locale's words, and text with an apostrophe where typing it would otherwise be parsed as something else (`'007`).
-Parsing the text gives back the value ([`parseEntry`](#xlcalcentry-parseentry)).
+Parsing the text as edited in place gives back the value ([`parseEntry`](#xlcalcentry-parseentry) with `inPlace: true`), but for a negative
+percentage, which Excel's in-place editor reads as a formula (`-5%` is `=-5%%`).
 
 ### <a id="xlcalc-entrywidth"></a>`entryWidth`
 
@@ -539,7 +540,7 @@ function parseEntry(text: string, opts?: EntryOptions): EntryResult
 
 Text typed into a cell, as Excel interprets it in the workbook's locale: the cell's new input, with the cell's style,
 meta, note and link and the format Excel leaves it, or a formula Excel would reject. Empty text clears the value and
-keeps the rest.
+keeps the rest. Typed over the cell, or edited in place with `opts.inPlace`.
 
 ### <a id="xlcalc-parselines"></a>`parseLines`
 
@@ -782,7 +783,8 @@ according to the cell's `opts.numberFormat`: a number to 15 significant digits w
 (`1234.5`, `1234,5`), a percentage cell's number as a percentage (`12%`), a date or time cell's value in the locale's
 short date and long time formats (`1/31/2025  6:00:00 PM`, `31.01.2025  18:00:00`), a boolean or an error in the
 locale's words, and text with an apostrophe where typing it would otherwise be parsed as something else (`'007`).
-Parsing the text gives back the value ([`parseEntry`](#xlcalcentry-parseentry)).
+Parsing the text as edited in place gives back the value ([`parseEntry`](#xlcalcentry-parseentry) with `inPlace: true`), but for a negative
+percentage, which Excel's in-place editor reads as a formula (`-5%` is `=-5%%`).
 
 ### <a id="xlcalcentry-needsapostrophe"></a>`needsApostrophe`
 
@@ -802,7 +804,7 @@ function parseEntry(text: string, opts?: EntryOptions): EntryResult
 
 Text typed into a cell, as Excel interprets it in the workbook's locale: the cell's new input, with the cell's style,
 meta, note and link and the format Excel leaves it, or a formula Excel would reject. Empty text clears the value and
-keeps the rest.
+keeps the rest. Typed over the cell, or edited in place with `opts.inPlace`.
 
 ## xlcalc/xlsx
 
@@ -1620,6 +1622,7 @@ interface CellResult extends Partial<CellDisplay> {
   formula?: string
   /** The cell's own number format, as given in its input. */
   numberFormat?: NumberFormat
+  /** The cell's `meta` as given; on the session's thread the workbook's own object, which must not be modified. */
   meta?: JsonValue
   /**
    * A formula whose array spilled: the range it fills on its sheet (`B2:D9`, with this cell at the top left); for a
@@ -2409,6 +2412,12 @@ interface EntryOptions {
    * is rejected (`external_ref`). Without them, such a formula is kept as typed.
    */
   externalBooks?: ExternalBook[]
+  /**
+   * True: the text was edited within the cell's existing text (F2, a double-click, the formula bar), as `entryText`
+   * writes it, rather than typed over the cell; Excel's percent entry then adds `%` only to a number that begins with a
+   * sign: in a cell formatted `0%`, `6%` is 0.06 and `6` is 6 (600%). False by default, as `Session.setCellText` has it.
+   */
+  inPlace?: boolean
 }
 ```
 
@@ -4618,6 +4627,7 @@ interface ViewportCell extends Partial<CellDisplay> {
   spillOf?: string
   /** On the top-left cell of a legacy array formula, its range (`CellInput.array`). */
   array?: string
+  /** As `CellResult.meta`: on the session's thread the workbook's own object, which must not be modified. */
   meta?: JsonValue
   /** The cell's own style, an index into the workbook's `styles` as in `CellView.style`; the style object is in `Viewport.styles`. */
   style?: number
