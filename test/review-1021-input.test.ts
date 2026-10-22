@@ -3,7 +3,8 @@
  * finite number and a clock that is not a moment the same in every time zone, refused at the boundary as InputError.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, createSession, entryText, InputError, parseEntry, type BookInput, type CellInput } from '../src/index.js'
+import { compute, createInlineCalc, createSession, displayValue, entryText, InputError, parseEntry, type BookInput, type CellInput } from '../src/index.js'
+import { ruRU } from '../src/locales/ru-RU.js'
 import { ASYNC_CALCS, closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -141,5 +142,19 @@ describe.each(['closures', 'eval'] as const)('a clock is ISO 8601 with Z or an o
     expect([at('2026-10-04T15:00:00+03:00'), at('2026-10-04T05:00-07:00'), at('2026-10-04T12:00:00.000Z'), at('2026-10-04T12:00:00.123456Z')]).toEqual([46299.5, 46299.5, 46299.5, at('2026-10-04T12:00:00.123Z')])
     expect([at('2026-10-04'), at('2024-02-29'), at('2026-10-05T02:00:00+14:00')]).toEqual([46299, 45351, 46299.5])
     expect(parseEntry('3/15', { now: '2026-12-31T23:30:00-08:00' })).toEqual(parseEntry('3/15', { now: '2027-01-01T07:30:00Z' }))
+  })
+})
+
+describe("a locale object not loaded: its rules checked where it is taken", () => {
+  const base = { ...ruRU, tag: 'xx-XX' }
+  it('refuses rules with a field missing or not an object as an InputError naming the field', () => {
+    expect(refusal(() => displayValue(1234.5, { numberFormat: '#,##0.00', locale: { ...base, regional: { decimal: ',' } } as never }))).toEqual({ path: 'opts.locale.regional.group', message: 'opts.locale.regional.group: expected a value' })
+    expect(refusal(() => parseEntry('1,5', { locale: { ...base, regional: { ...ruRU.regional, extra: 1 } } as never }))).toMatchObject({ path: 'opts.locale.regional' })
+    expect(refusal(() => entryText(1.5, { locale: { ...base, regional: 'x' } as never }))).toMatchObject({ path: 'opts.locale.regional' })
+  })
+
+  it('takes a locale without rules, calculated by en-US\'s, and one with all of them', () => {
+    expect(displayValue(1234.5, { numberFormat: '#,##0.00', locale: { ...base, regional: undefined } })).toEqual({ text: '1,234.50' })
+    expect(displayValue(1234.5, { numberFormat: '#,##0.00', locale: base }).text).toBe(displayValue(1234.5, { numberFormat: '#,##0.00', locale: ruRU }).text)
   })
 })
