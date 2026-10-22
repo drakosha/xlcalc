@@ -644,7 +644,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       checkBase(eo, revision)
       const plan = clearPlan(s, ranges, what)
-      const write = what === 'formats' ? lookCells : (x: EngineState, edits: CellReplace[], p: Plan) => writeCells(x, edits, 'clearCells', p)
+      const write = what === 'formats' ? (x: EngineState, edits: CellReplace[], p: Plan) => lookCells(x, edits, p, 'clearCells') : (x: EngineState, edits: CellReplace[], p: Plan) => writeCells(x, edits, 'clearCells', p)
       const [next, out, steps] = yield* applyPlan(s, plan, 'clearCells', write)
       if (ranges.length) keep(() => manyStep('clearCells', steps.map((f) => f())))
       return answer(next, out)
