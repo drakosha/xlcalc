@@ -40,10 +40,12 @@ const MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
 /**
  * Arrays in a cycle through their own spill beside another array over the same cells (`spill-cycles-held`): Excel's answer
  * follows the order the formulas were typed in and stays after a full calculation and a rebuild of the dependencies, while
- * a book opened from its file gets one answer. The engine's rule is not decided yet (x-fuzz-modes-6, repro-i1): each case
+ * a book opened from its file gets one answer; in `spill-cycles-held-2` Excel gives the file's answer in every order,
+ * where the engine's session parts from its compute(). The engine's rule is not decided yet (x-fuzz-modes-6, repro-i1): each case
  * pinned here must still differ from Excel or throw, and its predictions are not checked.
  */
 const ORDER = 'Excel keeps the outcome the typing order gave it (a full calculation and a rebuild keep it too); the engine computes the book as one, rule pending'
+const SESSION = 'Excel gives the answer of the book opened from its file, which compute() gives; the session that entered the cells keeps another, rule pending'
 const THROWS = 'the engine throws "spilled arrays did not settle" with iterative calculation on; Excel settles it, rule pending'
 const PENDING: Readonly<Record<string, string>> = {
   'spill-cycles-held:sort-typed-B3-C2-A4': THROWS,
@@ -54,6 +56,7 @@ const PENDING: Readonly<Record<string, string>> = {
   'spill-cycles-held:wait-file': THROWS,
   'spill-cycles-held:wait-typed-B1-A2-C1-C2': THROWS,
   'spill-cycles-held:wait-typed-C2-C1-A2-B1': THROWS,
+  ...Object.fromEntries(['unique-typed', 'unique-typed-20', 'unique-found-typed', 'sum-typed-array-last', 'sum-typed-value-last'].map((id) => [`spill-cycles-held-2:${id}`, SESSION])),
 }
 
 /** Whether the engine throws on the case or differs from Excel at some read. */

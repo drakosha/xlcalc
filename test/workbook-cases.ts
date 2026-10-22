@@ -100,8 +100,8 @@ export function predictionCheck(c: WorkbookCase, excel: WorkbookAnswer['reads'],
 
 /**
  * A recalculation, a full calculation or an edit computes Excel's cycles again from the values they hold, the
- * engine's from 0 (`BookInput.iteration`): in the set `iterate`, a cell of a read after the first may differ where
+ * engine's from 0 (`BookInput.iteration`): in the sets `iterate` and `spill-cycles-held-2`, a cell of a read after the first may differ where
  * Excel's value moved from its previous read, and must match where it did not.
  */
 export const goesOn = (set: string, excel: WorkbookAnswer['reads'], read: number, cell: string) =>
-  set === 'iterate' && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])
+  (set === 'iterate' || set === 'spill-cycles-held-2') && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])
