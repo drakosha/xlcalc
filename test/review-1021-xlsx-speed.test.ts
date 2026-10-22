@@ -65,4 +65,15 @@ describe('xlsx: reading in time linear in the sheet (speed-u1, u3, u5, u6)', () 
     expect(r.issues).toEqual([])
     expect(ms).toBeLessThan(1000)
   }, 120_000)
+
+  it('8,000 data-validation rules of a cell each (speed-u6): a rule is cut by the earlier rules it meets alone', async () => {
+    const rules = rows(8_000, (i) => `<dataValidation type="whole" operator="equal" sqref="A${i + 1}"><formula1>${i}</formula1></dataValidation>`)
+    // 2 s when every rule subtracted the rectangles of all rules before it
+    const data = await file(`<sheetData/><dataValidations count="8000">${rules}</dataValidations>`)
+    const [ms, r] = await timed(() => readXlsx(data))
+    expect(r.book.sheets[0].validations).toHaveLength(8_000)
+    expect(r.book.sheets[0].validations?.[7_999]).toMatchObject({ range: 'A8000', formula1: '7999' })
+    expect(r.issues).toEqual([])
+    expect(ms).toBeLessThan(1000)
+  }, 120_000)
 })
