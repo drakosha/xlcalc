@@ -15,7 +15,16 @@ const FILE = new URL('./error-areas-held.predicted.json', import.meta.url)
 const PREDICTED = (existsSync(FILE) ? JSON.parse(readFileSync(FILE, 'utf8')) : {}) as Record<string, Record<string, Val>>
 
 /** The ids whose prediction Excel did not confirm. */
-export const MISSED: readonly string[] = []
+export const MISSED: readonly string[] = [
+  // Excel shows the error in every cell of the area and spills nothing into it, refusing the edit too; the engine had the error in N1 alone
+  ...['sheet', 'function'].flatMap((k) => [`${k}-area`, `${k}-spill-into`, `${k}-type-into`]),
+  // Excel did not load the book: a syntax error, and a literal past the largest number, reject the whole file
+  'syntax-area',
+  'syntax-spill-into',
+  'syntax-type-into',
+  'literal-alone',
+  'literal-inside',
+]
 
 const DATA: Record<string, CellSpec> = { A1: 1, A2: 2, B1: 10, B2: 20, B3: 30, C1: 100, C2: 200, C3: 300, D1: 1000, D2: 2000, D3: 3000 }
 const arr = (formula: string): CellInput => ({ formula, array: 'N1:O3' })

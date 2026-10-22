@@ -55,8 +55,6 @@ export interface Invalid {
   message: string
   at: number
   error: ErrorCode
-  /** The area of an array formula of the old kind (`CellInput.array`): edits keep it whole, as of one that prepares. */
-  area?: Rect
 }
 
 export interface EngineOptions {
@@ -108,7 +106,7 @@ export interface EngineState {
   /** A walk of the graph from changed formulas (`ordered`): a vertex it reached holds its mark, so no set is filled. */
   marks: Uint32Array
   mark: number
-  /** How many formulas are arrays of the old kind (`Formula.area`, `Invalid.area`): edits of a book with none look at no formula for them. */
+  /** How many formulas are arrays of the old kind (`Formula.area`): edits of a book with none look at no formula for them. */
   arrays: number
   /** Formula references indexed by sheet and column, with a separate bucket for wide ranges. */
   listeners: AreaIndex<Area & { id: number }>
@@ -213,12 +211,11 @@ export const codegenContext = (state: EngineState, s: number, area?: Rect): Code
 /** The area of a formula cell's array formula of the old kind, if it is one. */
 const areaOf = (cell: CellInput, row: number, col: number) => (cell.array === undefined ? undefined : (arrayArea(formatAddress(row, col), cell.array) ?? undefined))
 
-/** A formula that does not prepare: its reason, with the area of an old-kind array formula, counted with the others. */
-function setInvalid(state: EngineState, k: string, invalid: Invalid, cell: CellInput, row: number, col: number) {
-  const area = areaOf(cell, row, col)
-  state.invalid.set(k, area ? { ...invalid, area } : invalid)
-  if (area) state.arrays++
-}
+/**
+ * An array formula of the old kind that does not prepare, as its error over its area: Excel shows the error in every
+ * cell of the area, keeps the area whole and spills nothing into it (the spill set `error-areas-held`).
+ */
+const erring = (cell: CellInput, invalid: Invalid): Extract<Prepared, { ok: true }> => ({ ok: true, text: cell.formula!, ast: { k: 'err', code: invalid.error } })
 
 /** A formula cell compiled: its code, and the area of an old-kind array formula. */
 function compiled(state: EngineState, id: number, s: number, row: number, col: number, cell: CellInput, p: Extract<Prepared, { ok: true }>): Formula {
@@ -332,12 +329,15 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       if (due()) yield
       step()
       count(pending.length + state.invalid.size + 1)
-      const p = prepareShaped(state, shapes, s, row, col, cellIn.formula)
+      let p = prepareShaped(state, shapes, s, row, col, cellIn.formula)
       if (!p.ok) {
-        setInvalid(state, key(s, row, col), p.invalid, cellIn, row, col)
-        put(ctx.sheets[s], row, col, E[p.invalid.error])
-        if (cellIn.held !== undefined) putHeld(state, s, addr, undefined)
-        continue
+        state.invalid.set(key(s, row, col), p.invalid)
+        if (cellIn.array !== undefined) p = erring(cellIn, p.invalid)
+        else {
+          put(ctx.sheets[s], row, col, E[p.invalid.error])
+          if (cellIn.held !== undefined) putHeld(state, s, addr, undefined)
+          continue
+        }
       }
       const f = compiled(state, pending.length, s, row, col, cellIn, p)
       if (cellIn.held !== undefined) state.held.set(f.id, heldValue(cellIn.held))
@@ -393,7 +393,6 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
       state.at.delete(n)
       structural = true
     }
-    if (state.invalid.get(k)?.area) state.arrays--
     state.invalid.delete(k)
     // An atomic column batch touches one contiguous area, without querying all its readers per cell.
     const last = touched.at(-1)
@@ -403,13 +402,16 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
     } else touched.push({ s, r1: row, c1: col, r2: row, c2: col })
     const input: CellInput | null = e.input
     if (input?.formula !== undefined) {
-      const p = prepare(state, s, row, col, input.formula)
+      let p = prepare(state, s, row, col, input.formula)
       if (!p.ok) {
-        graphChanged ||= !!previous
-        setInvalid(state, k, p.invalid, input, row, col)
-        write(state, s, row, col, E[p.invalid.error], track)
-        if (input.held !== undefined) putHeld(state, s, e.cell, undefined)
-        continue
+        state.invalid.set(k, p.invalid)
+        if (input.array !== undefined) p = erring(input, p.invalid)
+        else {
+          graphChanged ||= !!previous
+          write(state, s, row, col, E[p.invalid.error], track)
+          if (input.held !== undefined) putHeld(state, s, e.cell, undefined)
+          continue
+        }
       }
       const f = compiled(state, state.free.pop() ?? state.formulas.length, s, row, col, input, p)
       if (input.held !== undefined) state.held.set(f.id, heldValue(input.held))

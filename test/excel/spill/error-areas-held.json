@@ -1,0 +1,1638 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 32.4
+ },
+ "cases": [
+  {
+   "id": "sheet-area",
+   "about": "a sheet not in the book over N1:O3: the area and formulas reading it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "TRANSPOSE(Nope!B2:D3)",
+        "array": "N1:O3"
+       },
+       "I1": {
+        "formula": "COUNTBLANK(N1:O3)"
+       },
+       "I2": {
+        "formula": "COUNTA(N1:O3)"
+       },
+       "I3": {
+        "formula": "ISERROR(O2)"
+       },
+       "I4": {
+        "formula": "ISBLANK(O2)"
+       },
+       "I5": {
+        "formula": "SUMPRODUCT(--ISERROR(N1:O3))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "N1:O3"
+    },
+    {
+     "sheet": "S",
+     "range": "I1:I5"
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!I3": {
+     "t": "b",
+     "v": false
+    },
+    "S!I4": {
+     "t": "b",
+     "v": true
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 1
+    }
+   }
+  },
+  {
+   "id": "sheet-spill-into",
+   "about": "a sheet not in the book over N1:O3, a dynamic array at M2 spilling across its middle row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "TRANSPOSE(Nope!B2:D3)",
+        "array": "N1:O3"
+       },
+       "M2": {
+        "formula": "SEQUENCE(1,3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "M1:O3"
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!M2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!N2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!O2": {
+     "t": "n",
+     "v": 3
+    }
+   }
+  },
+  {
+   "id": "sheet-type-into",
+   "about": "a sheet not in the book over N1:O3, a value typed into O2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "TRANSPOSE(Nope!B2:D3)",
+        "array": "N1:O3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "N1:O3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "O2",
+     "value": 5
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O2": {
+     "t": "n",
+     "v": 5
+    }
+   }
+  },
+  {
+   "id": "function-area",
+   "about": "an unknown function over N1:O3: the area and formulas reading it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "FOO(A1:B3)",
+        "array": "N1:O3"
+       },
+       "I1": {
+        "formula": "COUNTBLANK(N1:O3)"
+       },
+       "I2": {
+        "formula": "COUNTA(N1:O3)"
+       },
+       "I3": {
+        "formula": "ISERROR(O2)"
+       },
+       "I4": {
+        "formula": "ISBLANK(O2)"
+       },
+       "I5": {
+        "formula": "SUMPRODUCT(--ISERROR(N1:O3))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "N1:O3"
+    },
+    {
+     "sheet": "S",
+     "range": "I1:I5"
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!I3": {
+     "t": "b",
+     "v": false
+    },
+    "S!I4": {
+     "t": "b",
+     "v": true
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 1
+    }
+   }
+  },
+  {
+   "id": "function-spill-into",
+   "about": "an unknown function over N1:O3, a dynamic array at M2 spilling across its middle row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "FOO(A1:B3)",
+        "array": "N1:O3"
+       },
+       "M2": {
+        "formula": "SEQUENCE(1,3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "M1:O3"
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!M2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!N2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!O2": {
+     "t": "n",
+     "v": 3
+    }
+   }
+  },
+  {
+   "id": "function-type-into",
+   "about": "an unknown function over N1:O3, a value typed into O2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "FOO(A1:B3)",
+        "array": "N1:O3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "N1:O3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "O2",
+     "value": 5
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O2": {
+     "t": "n",
+     "v": 5
+    }
+   }
+  },
+  {
+   "id": "syntax-area",
+   "about": "a parenthesis left open over N1:O3: the area and formulas reading it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "SUM(A1:B3",
+        "array": "N1:O3"
+       },
+       "I1": {
+        "formula": "COUNTBLANK(N1:O3)"
+       },
+       "I2": {
+        "formula": "COUNTA(N1:O3)"
+       },
+       "I3": {
+        "formula": "ISERROR(O2)"
+       },
+       "I4": {
+        "formula": "ISBLANK(O2)"
+       },
+       "I5": {
+        "formula": "SUMPRODUCT(--ISERROR(N1:O3))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "N1:O3"
+    },
+    {
+     "sheet": "S",
+     "range": "I1:I5"
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "ERROR"
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!I3": {
+     "t": "b",
+     "v": false
+    },
+    "S!I4": {
+     "t": "b",
+     "v": true
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 1
+    }
+   }
+  },
+  {
+   "id": "syntax-spill-into",
+   "about": "a parenthesis left open over N1:O3, a dynamic array at M2 spilling across its middle row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "SUM(A1:B3",
+        "array": "N1:O3"
+       },
+       "M2": {
+        "formula": "SEQUENCE(1,3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "M1:O3"
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "ERROR"
+    },
+    "S!M2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!N2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!O2": {
+     "t": "n",
+     "v": 3
+    }
+   }
+  },
+  {
+   "id": "syntax-type-into",
+   "about": "a parenthesis left open over N1:O3, a value typed into O2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "SUM(A1:B3",
+        "array": "N1:O3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "N1:O3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "O2",
+     "value": 5
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "ERROR"
+    },
+    "S!O2": {
+     "t": "n",
+     "v": 5
+    }
+   }
+  },
+  {
+   "id": "runtime-area",
+   "about": "the control: an error at run time over N1:O3: the area and formulas reading it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "TRANSPOSE(A1:B2)/0",
+        "array": "N1:O3"
+       },
+       "I1": {
+        "formula": "COUNTBLANK(N1:O3)"
+       },
+       "I2": {
+        "formula": "COUNTA(N1:O3)"
+       },
+       "I3": {
+        "formula": "ISERROR(O2)"
+       },
+       "I4": {
+        "formula": "ISBLANK(O2)"
+       },
+       "I5": {
+        "formula": "SUMPRODUCT(--ISERROR(N1:O3))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "N1:O3"
+    },
+    {
+     "sheet": "S",
+     "range": "I1:I5"
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 0
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 6
+    },
+    "S!I3": {
+     "t": "b",
+     "v": true
+    },
+    "S!I4": {
+     "t": "b",
+     "v": false
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 6
+    }
+   }
+  },
+  {
+   "id": "runtime-spill-into",
+   "about": "the control: an error at run time over N1:O3, a dynamic array at M2 spilling across its middle row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "TRANSPOSE(A1:B2)/0",
+        "array": "N1:O3"
+       },
+       "M2": {
+        "formula": "SEQUENCE(1,3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "M1:O3"
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!M2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NA"
+    }
+   }
+  },
+  {
+   "id": "runtime-type-into",
+   "about": "the control: an error at run time over N1:O3, a value typed into O2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "N1": {
+        "formula": "TRANSPOSE(A1:B2)/0",
+        "array": "N1:O3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "N1:O3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "O2",
+     "value": 5
+    }
+   ],
+   "predicted": {
+    "S!N1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NA"
+    }
+   }
+  },
+  {
+   "id": "literal-alone",
+   "about": "a literal past the largest number, alone",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "F1": {
+        "formula": "1E400"
+       },
+       "F2": {
+        "formula": "-1E400"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F1:F2"
+    }
+   ],
+   "predicted": {
+    "S!F1": {
+     "t": "e",
+     "v": "NUM"
+    },
+    "S!F2": {
+     "t": "e",
+     "v": "NUM"
+    }
+   }
+  },
+  {
+   "id": "literal-inside",
+   "about": "a literal past the largest number inside a function",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D1": {
+        "value": 1000
+       },
+       "D2": {
+        "value": 2000
+       },
+       "D3": {
+        "value": 3000
+       },
+       "F1": {
+        "formula": "ISNUMBER(1E400)"
+       },
+       "F2": {
+        "formula": "IFERROR(1E400,\"e\")"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F1:F2"
+    }
+   ],
+   "predicted": {
+    "S!F1": {
+     "t": "b",
+     "v": true
+    },
+    "S!F2": {
+     "t": "e",
+     "v": "NUM"
+    }
+   }
+  }
+ ],
+ "answers": {
+  "sheet-area": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 0
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 6
+    },
+    "S!I3": {
+     "t": "b",
+     "v": true
+    },
+    "S!I4": {
+     "t": "b",
+     "v": false
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!N1": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O1": "=TRANSPOSE(Nope!B2:D3)",
+    "S!N2": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O2": "=TRANSPOSE(Nope!B2:D3)",
+    "S!N3": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O3": "=TRANSPOSE(Nope!B2:D3)",
+    "S!I1": "=COUNTBLANK(N1:O3)",
+    "S!I2": "=COUNTA(N1:O3)",
+    "S!I3": "=ISERROR(O2)",
+    "S!I4": "=ISBLANK(O2)",
+    "S!I5": "=SUMPRODUCT(--ISERROR(N1:O3))"
+   }
+  },
+  "sheet-spill-into": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!M2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "REF"
+    }
+   },
+   "formulas": {
+    "S!N1": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O1": "=TRANSPOSE(Nope!B2:D3)",
+    "S!M2": "=SEQUENCE(1,3)",
+    "S!N2": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O2": "=TRANSPOSE(Nope!B2:D3)",
+    "S!N3": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O3": "=TRANSPOSE(Nope!B2:D3)"
+   }
+  },
+  "sheet-type-into": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "REF"
+    }
+   },
+   "formulas": {
+    "S!N1": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O1": "=TRANSPOSE(Nope!B2:D3)",
+    "S!N2": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O2": "=TRANSPOSE(Nope!B2:D3)",
+    "S!N3": "=TRANSPOSE(Nope!B2:D3)",
+    "S!O3": "=TRANSPOSE(Nope!B2:D3)"
+   }
+  },
+  "function-area": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 0
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 6
+    },
+    "S!I3": {
+     "t": "b",
+     "v": true
+    },
+    "S!I4": {
+     "t": "b",
+     "v": false
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!N1": "=FOO(A1:B3)",
+    "S!O1": "=FOO(A1:B3)",
+    "S!N2": "=FOO(A1:B3)",
+    "S!O2": "=FOO(A1:B3)",
+    "S!N3": "=FOO(A1:B3)",
+    "S!O3": "=FOO(A1:B3)",
+    "S!I1": "=COUNTBLANK(N1:O3)",
+    "S!I2": "=COUNTA(N1:O3)",
+    "S!I3": "=ISERROR(O2)",
+    "S!I4": "=ISBLANK(O2)",
+    "S!I5": "=SUMPRODUCT(--ISERROR(N1:O3))"
+   }
+  },
+  "function-spill-into": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!M2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NAME"
+    }
+   },
+   "formulas": {
+    "S!N1": "=FOO(A1:B3)",
+    "S!O1": "=FOO(A1:B3)",
+    "S!M2": "=SEQUENCE(1,3)",
+    "S!N2": "=FOO(A1:B3)",
+    "S!O2": "=FOO(A1:B3)",
+    "S!N3": "=FOO(A1:B3)",
+    "S!O3": "=FOO(A1:B3)"
+   }
+  },
+  "function-type-into": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NAME"
+    }
+   },
+   "formulas": {
+    "S!N1": "=FOO(A1:B3)",
+    "S!O1": "=FOO(A1:B3)",
+    "S!N2": "=FOO(A1:B3)",
+    "S!O2": "=FOO(A1:B3)",
+    "S!N3": "=FOO(A1:B3)",
+    "S!O3": "=FOO(A1:B3)"
+   }
+  },
+  "syntax-area": {
+   "values": {},
+   "formulas": {},
+   "rejected": true
+  },
+  "syntax-spill-into": {
+   "values": {},
+   "formulas": {},
+   "rejected": true
+  },
+  "syntax-type-into": {
+   "values": {},
+   "formulas": {},
+   "rejected": true
+  },
+  "runtime-area": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 0
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 6
+    },
+    "S!I3": {
+     "t": "b",
+     "v": true
+    },
+    "S!I4": {
+     "t": "b",
+     "v": false
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!N1": "=TRANSPOSE(A1:B2)/0",
+    "S!O1": "=TRANSPOSE(A1:B2)/0",
+    "S!N2": "=TRANSPOSE(A1:B2)/0",
+    "S!O2": "=TRANSPOSE(A1:B2)/0",
+    "S!N3": "=TRANSPOSE(A1:B2)/0",
+    "S!O3": "=TRANSPOSE(A1:B2)/0",
+    "S!I1": "=COUNTBLANK(N1:O3)",
+    "S!I2": "=COUNTA(N1:O3)",
+    "S!I3": "=ISERROR(O2)",
+    "S!I4": "=ISBLANK(O2)",
+    "S!I5": "=SUMPRODUCT(--ISERROR(N1:O3))"
+   }
+  },
+  "runtime-spill-into": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!M2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NA"
+    }
+   },
+   "formulas": {
+    "S!N1": "=TRANSPOSE(A1:B2)/0",
+    "S!O1": "=TRANSPOSE(A1:B2)/0",
+    "S!M2": "=SEQUENCE(1,3)",
+    "S!N2": "=TRANSPOSE(A1:B2)/0",
+    "S!O2": "=TRANSPOSE(A1:B2)/0",
+    "S!N3": "=TRANSPOSE(A1:B2)/0",
+    "S!O3": "=TRANSPOSE(A1:B2)/0"
+   }
+  },
+  "runtime-type-into": {
+   "values": {
+    "S!N1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!O2": {
+     "t": "e",
+     "v": "DIV0"
+    },
+    "S!N3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!O3": {
+     "t": "e",
+     "v": "NA"
+    }
+   },
+   "formulas": {
+    "S!N1": "=TRANSPOSE(A1:B2)/0",
+    "S!O1": "=TRANSPOSE(A1:B2)/0",
+    "S!N2": "=TRANSPOSE(A1:B2)/0",
+    "S!O2": "=TRANSPOSE(A1:B2)/0",
+    "S!N3": "=TRANSPOSE(A1:B2)/0",
+    "S!O3": "=TRANSPOSE(A1:B2)/0"
+   }
+  },
+  "literal-alone": {
+   "values": {},
+   "formulas": {},
+   "rejected": true
+  },
+  "literal-inside": {
+   "values": {},
+   "formulas": {},
+   "rejected": true
+  }
+ }
+}
