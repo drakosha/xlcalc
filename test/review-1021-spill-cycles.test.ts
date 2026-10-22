@@ -117,6 +117,13 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
     }
   })
 
+  it('an array that reads cells beside or below it, out of the most its array can take, closes no cycle: the lower array spills', async () => {
+    for (const A2 of ['TRANSPOSE(D5:D7)', 'SEQUENCE(1,3)+0*SUM(Z99)', 'SORT(D2:E3)']) {
+      const c = (await oneAnswer({ S: { A2: { formula: A2 }, B1: { formula: 'SEQUENCE(2)' } } }, execution)).S
+      expect([c.B1, typeof c.A2]).toEqual([{ error: 'SPILL' }, 'number'])
+    }
+  })
+
   it('an array that gave way stays waiting while an iteration places the winner again (cyc seed 10059)', async () => {
     const cells = { B5: { formula: '{1,2;3,4}+0*N(C5)' }, B2: { formula: 'TRANSPOSE(A3:B5)' }, A6: { formula: 'SEQUENCE(3,3)+0*N(B2)' } }
     const c = (await oneAnswer({ S: cells }, execution, { iteration: { maxIterations: 100, maxChange: 0.001 } })).S
