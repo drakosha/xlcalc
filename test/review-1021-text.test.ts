@@ -54,3 +54,22 @@ describe.each(['closures', 'eval'] as const)('FIXED and DOLLAR of large numbers,
     expect(values(['FIXED(1E21,1)'], execution, 'ru-RU')).toEqual(['1 000 000 000 000 000 000 000,0'])
   })
 })
+
+describe.each(['closures', 'eval'] as const)('TEXTBEFORE, TEXTAFTER and TEXTSPLIT in any case past an İ, %s', (execution) => {
+  it('cut the text where the delimiter is, as in their own case', () => {
+    const cases: [string, unknown][] = [
+      ['TEXTBEFORE("İstanbul","s",1,1)', 'İ'],
+      ['TEXTAFTER("İstanbul","s",1,1)', 'tanbul'],
+      ['TEXTAFTER("İstanbul","S",-1,1)', 'tanbul'],
+      ['TEXTBEFORE("İİİ;x",";",1,1)', 'İİİ'],
+      ['TEXTAFTER("aİbİc","B",1,1)', 'İc'],
+      ['TEXTBEFORE("x;İ",";",1,1)', 'x'],
+      ['TEXTBEFORE("İxAy","a",1,1)', 'İx'],
+      ['INDEX(TEXTSPLIT("İ-s-t","S",,,1),1)', 'İ-'],
+      ['INDEX(TEXTSPLIT("İ-s-t","S",,,1),2)', '-t'],
+      ['ROWS(TEXTSPLIT("İaXbxc",,"x",,1))', 3],
+      ['INDEX(TEXTSPLIT("İaXbxc",,"x",,1),2,1)', 'b'],
+    ]
+    expect(values(cases.map((c) => c[0]), execution)).toEqual(cases.map((c) => c[1]))
+  })
+})
