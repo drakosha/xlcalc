@@ -130,8 +130,8 @@ const bookOf = (path: string, file: string): number | string => (path === '' && 
  */
 function literal(text: string, at: number): number {
   const v = readNumber(text)
-  const e = Math.abs(Number(/[eE]([+-]?\d+)$/.exec(text)?.[1] ?? 0))
-  if (v >= 1e308 || (v !== 0 && v < 1e-309) || (v === 0 && e > 308)) bad(at, { key: 'numberOutOfRange', number: text })
+  const out = v === 0 ? Math.abs(Number(/[eE]([+-]?\d+)$/.exec(text)?.[1] ?? 0)) > 308 : v >= 1e308 || v < 1e-309
+  if (out) bad(at, { key: 'numberOutOfRange', number: text })
   return v <= MIN_NORMAL ? 0 : v
 }
 
