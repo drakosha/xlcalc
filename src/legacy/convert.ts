@@ -274,7 +274,7 @@ export function legacyConverter(names: readonly NameInput[] = []): (ast: Ast, sh
  * array formula Excel 365 displays for it, in canonical text: `A1:A10*2` becomes `@A1:A10*2`, `INDEX(A1:C3,0,1)`
  * becomes `@INDEX(A1:C3,0,1)`, `SUM(A1:A10)` stays. Excel puts `@` before a name depending on what the name's formula
  * returns, so the workbook's names are needed for formulas that use names. A formula the engine cannot parse is
- * returned as is. The API function (`strict-args.ts`), the same from `xlcalc/xlsx` and from the root.
+ * returned as is. The API function (`strict-args.ts`), from `xlcalc/xlsx`.
  */
 export const fromLegacy = /* @__PURE__ */ strict(function fromLegacy(formula: string, ctx?: LegacyContext): string {
   if (ctx !== undefined) onlyKeys(object(ctx, 'ctx', "the workbook's names and the formula's sheet, such as { names, sheet: 'Sales' }"), 'ctx', ['names', 'sheet'])

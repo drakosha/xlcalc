@@ -39,9 +39,9 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 97 KB (37) |
 | `xlcalc/function-text` | what a function does, in a line; Russian in `xlcalc/function-text/ru-RU` | |
 | `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 99 KB (16) |
-| `xlcalc/contract` | types only | |
+| `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
-`xlcalc/xlsx`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry` and `xlcalc/function-text` do not load the engine.
+`xlcalc/xlsx`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text` and `xlcalc/contract` do not load the engine.
 
 ## Quick start
 

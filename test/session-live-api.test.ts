@@ -171,7 +171,7 @@ describe.each(['closures', 'eval'] as const)('live workbook additions, %s', (exe
             { op: 'setCells', edits: [{ sheet: 'S', cell: 'A1', input: { value: 9 } }] },
             { op: 'setLayout', edits: [{ sheet: 'missing', columns: 'A', set: { width: 12 } }] },
           ]),
-        ).rejects.toBeDefined()
+        ).rejects.toMatchObject({ name: 'InputError', path: 'operations[1].edits[0].sheet', message: expect.stringContaining('unknown sheet "missing"') })
         expect(s.revision).toBe(0)
         expect(s.history.undo).toBe(0)
         expect(await s.getHash()).toBe(before)

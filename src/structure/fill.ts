@@ -12,7 +12,7 @@
  */
 import type { BookInput, CellInput, FillType } from '../contract.js'
 import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
-import { dateToSerial, serialToDate } from '../date-serial.js'
+import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
 import { lineAt } from '../layout/spans.js'
 import { localeOf } from '../locale/registry.js'
@@ -25,6 +25,7 @@ import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetIndex } from './rewrite.js'
+import { checkFillWrites } from './writes.js'
 import { renamedByPaste } from '../tables/moves.js'
 import { tablesOf } from '../tables/model.js'
 
@@ -70,6 +71,8 @@ export function fillRange(book: BookInput, sheet: string, src: Rect, target: Rec
     if (whole) pieces.push([src, withBounds(src, axis, a - whole, a - 1)])
     if (part) pieces.push([withBounds(src, axis, b - part + 1, b), withBounds(src, axis, a - whole - part, a - whole - 1)])
   }
+  // the copies count together against limits.writes: each checks its own cells too, which is then within the limit
+  checkFillWrites(book, sheetIndex(book, sheet), pieces)
   let out = book
   const geometry: Geometry = []
   for (const [from, at] of pieces) {
@@ -144,7 +147,9 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
         const [r, c] = axis === 'r' ? [pos, across] : [across, pos]
         const value = next(e, run.items[d])
         const own = line.get(run.at[d])!.value
-        out.push([formatAddress(r, c), typeof own === 'object' && own !== null && typeof value === 'number' ? { date: serialToDate(value, { dateSystem: book.dateSystem }) } : value])
+        // a date past the date system is written as its serial number, as a fill over numbers in a date format writes it
+        const date = typeof own === 'object' && own !== null && typeof value === 'number' && isDateSerial(value, epoch)
+        out.push([formatAddress(r, c), date ? { date: serialToDate(value, { dateSystem: book.dateSystem }) } : value])
       }
     }
   }
