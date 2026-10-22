@@ -126,7 +126,7 @@ Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fi
 | `not_grouped` | Ungroup on rows or columns none of which is grouped; Show or Hide Detail at a row or column in no group, or in a group without a summary row or column |
 | `detail` | Show Detail on a group that is already expanded, or Hide Detail on one that is already collapsed |
 
-Excel rejects an insert only when a non-empty cell would be pushed off the sheet, and drops the formatting pushed off. Here a cell counts also when it holds only `meta`, a note or a link, so none of these is dropped silently. Formatting alone is dropped as in Excel: the part of the sheet's `looks` pushed off, and the formatting of entire rows and columns past the edge. A look over an entire column stays over the entire column when rows are inserted, and one over an entire row when columns are, so the wide shape of [docs/grid.md](grid.md#formatting-of-many-cells) (`A2:XFD4`) takes inserted columns.
+Excel rejects an insert only when a non-empty cell would be pushed off the sheet, and drops the formatting pushed off. Here a cell counts also when it holds only `meta`, a note or a link, so none of these is dropped silently, and each cell of a legacy array formula's area counts, as it holds a value in Excel. Formatting alone is dropped as in Excel: the part of the sheet's `looks` pushed off, and the formatting of entire rows and columns past the edge. A look over an entire column stays over the entire column when rows are inserted, and one over an entire row when columns are, so the wide shape of [docs/grid.md](grid.md#formatting-of-many-cells) (`A2:XFD4`) takes inserted columns.
 
 ## Formula text
 

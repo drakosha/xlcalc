@@ -2,7 +2,7 @@
  * Reproductions from the 21.10 review, structure at its edges: a fill over dates that runs past the date system writes
  * the serial numbers, as a fill over numbers in a date format does. `limits.writes` bounds a fill's cells all together,
  * in a synchronous session, in the same thread and in a thread. A copy or a fill keeps the spelling of the references
- * it does not change.
+ * it does not change. Inserting lines refuses to push a legacy array's area off the sheet.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, editStructure, type BookInput, type StructureOp } from '../src/index.js'
@@ -61,6 +61,23 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       expect(r.ok && r.book.sheets[1].cells.C1.formula).toBe('$a$1*2 + a:a + sum(1:1)')
       const m = editStructure(book(), { op: 'moveRange', from: { sheet: 'S', range: 'C1' }, to: { sheet: 'T', cell: 'C1' } })
       expect(m.ok && m.book.sheets[1].cells.C1.formula).toBe("'S'!$A$1*2 + 'S'!A:A + sum('S'!1:1)")
+    })
+  })
+
+  describe("inserting lines refuses to push a legacy array's area off the sheet", () => {
+    it.each([
+      ['rows', { A1048575: { formula: '{1;2}', array: 'A1048575:A1048576' } }, { op: 'insertRows', sheet: 'S', row: 1 }, 'A1048575'],
+      ['columns', { XFC1: { formula: '{1,2}', array: 'XFC1:XFD1' } }, { op: 'insertColumns', sheet: 'S', column: 'A' }, 'XFC1'],
+      ['two rows', { A1048573: { formula: '{1;2;3}', array: 'A1048573:A1048575' } }, { op: 'insertRows', sheet: 'S', row: 1, count: 2 }, 'A1048573'],
+    ] as [string, BookInput['sheets'][number]['cells'], StructureOp, string][])('%s', (_, cells, op, top) => {
+      const r = editStructure(one(cells), op)
+      expect(r).toMatchObject({ ok: false, code: 'off_sheet' })
+      expect(!r.ok && r.message).toContain(`S!${top}`)
+    })
+
+    it('an area that stays on the sheet moves', () => {
+      const cells = edited(one({ A1048574: { formula: '{1;2}', array: 'A1048574:A1048575' } }), { op: 'insertRows', sheet: 'S', row: 1 }, execution)
+      expect(cells).toEqual({ A1048575: { formula: '{1;2}', array: 'A1048575:A1048576' } })
     })
   })
 
