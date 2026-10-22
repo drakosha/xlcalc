@@ -46,10 +46,11 @@ describe('a book as text', () => {
       expect(isText(sent), name).toBe(false)
       expect(sent, name).toEqual(book)
     }
-    // and they compute in a thread as here
+    // and they compute in a thread as here, where a NaN value is refused as here
     const p = await pool({ threads: 1 })
     pools.push(p)
-    for (const [name, book] of odd.slice(0, 4)) expect((await p.compute(book, { clock: CLOCK })).hash, name).toBe(compute(book, { clock: CLOCK }).hash)
+    for (const [name, book] of odd.slice(1, 4)) expect((await p.compute(book, { clock: CLOCK })).hash, name).toBe(compute(book, { clock: CLOCK }).hash)
+    await expect(p.compute(odd[0][1], { clock: CLOCK })).rejects.toMatchObject({ path: 'book.sheets[0].cells["A1"].value' })
   })
 
   it('is taken at once: what the caller changes afterwards does not reach the session', async () => {

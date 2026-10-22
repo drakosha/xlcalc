@@ -2,7 +2,10 @@
 import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
 import type { CellStyle, ConditionalFormat, DataValidation } from './looks.js'
 
-/** An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number. */
+/**
+ * An input cell. A date is passed explicitly (`{ value: { date: '2025-01-31' } }`) and becomes an Excel serial number; a
+ * number must be finite (NaN and infinities throw `InputError`).
+ */
 export interface CellInput {
   value?: Scalar | { date: string }
   /**

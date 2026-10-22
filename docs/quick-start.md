@@ -41,7 +41,7 @@ console.log(bad.payment, bad.issues)
 //   ]
 ```
 
-`compute` compiles the workbook on every call. A model that serves many requests in a row can stay open in a session, which compiles it once and recalculates only what new inputs affect (next section). A result's `inputHash` identifies its workbook, so for a workbook without volatile functions (the result's `volatile` is empty) and without external functions it can serve as a cache key; the `externals` option is not part of it, so a workbook that calls external functions needs their values in the key as well. [Formulas](formulas.md) describes what a formula can contain, and [Errors](formulas.md#errors) the error values and their reasons.
+`compute` compiles the workbook on every call. A model that serves many requests in a row can stay open in a session, which compiles it once and recalculates only what new inputs affect (next section). A result's `inputHash` identifies its workbook, the order of its sheets included, so for a workbook without volatile functions (the result's `volatile` is empty) and without external functions it can serve as a cache key; the `externals` option is not part of it, so a workbook that calls external functions needs their values in the key as well. [Formulas](formulas.md) describes what a formula can contain, and [Errors](formulas.md#errors) the error values and their reasons.
 
 ## What-if: change an input and see the effect
 
@@ -169,7 +169,7 @@ A session accepts the same `externals` when it is created ([External functions](
 
 ## Reproducible results
 
-`TODAY`, `NOW`, `RAND` and `RANDBETWEEN` read a clock: a moment in UTC and a seed. The same workbook with the same clock produces the same values and the same `hash` in any process and time zone, so a stored calculation can be verified later, and a test can pin a workbook's values by its hash. Without a clock the engine uses the current time and a random seed, and the result's `clock` reproduces that result.
+`TODAY`, `NOW`, `RAND` and `RANDBETWEEN` read a clock: a moment in UTC and a seed. The moment is ISO 8601 with `Z` or an offset (`2026-10-04T12:00:00Z`, `2026-10-04T15:00:00+03:00`) or a date alone, read as midnight UTC (`2026-10-04`); any other text, which a host would read in its own time zone, throws `InputError`, and so does a day the calendar does not have. The same workbook with the same clock produces the same values and the same `hash` in any process and time zone, so a stored calculation can be verified later, and a test can pin a workbook's values by its hash. Without a clock the engine uses the current time and a random seed, and the result's `clock` reproduces that result.
 
 ```js
 import { compute } from 'xlcalc'
