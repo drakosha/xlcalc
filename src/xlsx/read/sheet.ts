@@ -105,10 +105,13 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues, added?
   }
 }
 
-/** The formulas of the sheet in the engine's spelling, those of the old kind as dynamic ones. */
-function convert(src: SheetSource, read: SheetCells, issues: Issues): Map<string, ReadFormula> {
+/**
+ * The formulas of the sheet in the engine's spelling, those of the old kind as dynamic ones, in the cells' order: the
+ * file's order of its formulas unless a cell took its place earlier (`walk`, then every cell is walked).
+ */
+function convert(src: SheetSource, read: SheetCells, issues: Issues, walk: boolean): Map<string, ReadFormula> {
   const out = new Map<string, ReadFormula>()
-  for (const addr of Object.keys(read.cells)) {
+  for (const addr of walk ? Object.keys(read.cells) : read.formulas) {
     const cell = read.cells[addr]
     if (cell.formula === undefined) continue
     const f = readFormula(cell.formula, issues, { sheet: src.name, cell: addr }, src.formulas)
@@ -346,8 +349,14 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   // the looks, and with them the cells the reader adds to the file's, which take their place among the file's under a look
   const layer = read.looks.build()
   const added = layer.empty ? undefined : new Set<string>()
-  for (const s of read.shared.values()) if (s.master !== undefined) setCell(read.cells, s.master, { ...read.cells[s.master], formula: s.text }, added)
-  const converted = convert(src, read, ctx.issues)
+  // a master its formatted row left without content is made again, after the file's cells
+  let remade = false
+  for (const s of read.shared.values())
+    if (s.master !== undefined) {
+      remade ||= read.cells[s.master] === undefined
+      setCell(read.cells, s.master, { ...read.cells[s.master], formula: s.text }, added)
+    }
+  const converted = convert(src, read, ctx.issues, read.unordered || remade)
   // copies are pasted from the converted master and take what it reports
   spreadShared(src, read, ctx.issues, added)
   for (const s of read.shared.values()) {

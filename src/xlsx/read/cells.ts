@@ -58,6 +58,8 @@ export interface SheetCells {
   old: Set<string>
   /** Cells holding an error as their value, read as a formula of it (unless an array spilled it there). */
   errors: Set<string>
+  /** The cells given a formula, shared formulas' masters among them, in the file's order. */
+  formulas: string[]
   /**
    * Whether a cell comes at or before one given before it, as a second `<c>` of an address does, or lies outside the
    * formatted row it is given in, which takes its look: a cell with content may then lie under a look.
@@ -96,7 +98,7 @@ const OPEN_IS = /<(?:[\w.-]+:)?is[\s/>]/
  * style or a format the row has not, the row gets the plain style or General (Excel and the writer write those cells).
  */
 export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInput>[] = []): SheetCells {
-  const out: SheetCells = { cells: {}, looks: new CellsLayer(), cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set(), unordered: false }
+  const out: SheetCells = { cells: {}, looks: new CellsLayer(), cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set(), formulas: [], unordered: false }
   const { looks } = out
   const { issues, sheet } = ctx
   const looked = cols.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
@@ -247,6 +249,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
         if (!s) out.shared.set(fa.si, (s = { copies: [] }))
         if (text && s.text === undefined) {
           s.master = addr
+          out.formulas.push(addr)
           s.text = text
         } else s.copies.push(addr)
         out.old.add(addr)
@@ -255,12 +258,14 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
         if (fa.t === 'array') out.arrays.push({ anchor: addr, ref: (fa.ref ?? addr).toUpperCase(), dynamic })
         if (fa.t !== 'array') out.old.add(addr)
         cell.formula = text
+        out.formulas.push(addr)
       }
     } else {
       if (fa.t === 'dataTable') issues.add('dataTable', { key: 'dataTable' }, { sheet, cell: addr })
       if (errText !== undefined) {
         if (LITERAL.has(errText)) {
           cell.formula = errText
+          out.formulas.push(addr)
           out.cached[addr] = { value: { error: ERRORS[errText] } }
           out.errors.add(addr)
         } else issues.add('errorValue', { key: 'errorUnspelled' }, { sheet, cell: addr })
