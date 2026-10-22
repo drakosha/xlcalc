@@ -183,7 +183,11 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     if (!(lo >= 0 && hi >= lo && hi < 16384)) continue
     const col: ColumnInput = {}
     const where = { sheet: read.sheet, cell: `${spanKey(lo, hi, 'c').replace(/^([A-Z]+)$/, '$1:$1')}` }
-    if (a.width !== undefined && flag(a.customWidth)) col.width = Math.min(255, Number(a.width))
+    if (a.width !== undefined && flag(a.customWidth)) {
+      const width = Number(a.width)
+      if (Number.isFinite(width) && width >= 0) col.width = Math.min(255, width)
+      else read.issues.add('part', { key: 'widthBad' }, where)
+    }
     // a width Excel fitted, which typing widens again
     if (col.width !== undefined && flag(a.bestFit)) col.bestFit = true
     // Excel hides a column of width 0 whatever its flag

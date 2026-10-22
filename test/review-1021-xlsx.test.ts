@@ -183,3 +183,18 @@ describe('xlsx: a damaged cell (x-xlsx-4, x-xlsx-8)', () => {
     expect((await read({ sheets: [{ name: 'S', body: '<sheetData/><mergeCells><mergeCell ref="A1:B1"/></mergeCells>' }] })).issues).toEqual([])
   })
 })
+
+describe('xlsx: a width or height that is no size (x-xlsx-6)', () => {
+  it('is left out with an issue; one above the highest is the highest, as before', async () => {
+    const cols = ['abc', '-5', '1e400', 'NaN', '300', '12'].map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('')
+    const rows = ['-1', 'abc', '1e400', '409.6', '20'].map((h, i) => `<row r="${i + 1}" ht="${h}" customHeight="1"><c r="A${i + 1}"><v>1</v></c></row>`).join('')
+    const r = await read({ sheets: [{ name: 'S', body: `<cols>${cols}</cols><sheetData>${rows}</sheetData>` }] })
+    const s = r.book.sheets[0]
+    expect(s.columns).toEqual({ E: { width: 255 }, F: { width: 12 } })
+    expect(s.rows).toEqual({ 4: { height: 409.5 }, 5: { height: 20 } })
+    expect(r.issues.map((i) => [i.code, i.cells, i.message])).toEqual([
+      ['part', ['A:A', 'B:B', 'C:C', 'D:D'], 'a column width that is not a number of 0 or more is left out'],
+      ['part', ['1:1', '2:2', '3:3'], 'a row height that is not a number of 0 or more is left out'],
+    ])
+  })
+})

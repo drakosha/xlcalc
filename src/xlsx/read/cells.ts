@@ -126,7 +126,11 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       line = {}
       lineRow = row
       // a height Excel fitted has no customHeight; Excel for Mac writes its highest, 409.5, as 409.6
-      if (a.ht !== undefined) Object.assign(line, { height: Math.min(409.5, Number(a.ht)) }, flag(a.customHeight) ? {} : { bestFit: true })
+      if (a.ht !== undefined) {
+        const height = Number(a.ht)
+        if (Number.isFinite(height) && height >= 0) Object.assign(line, { height: Math.min(409.5, height) }, flag(a.customHeight) ? {} : { bestFit: true })
+        else issues.add('part', { key: 'heightBad' }, { sheet, cell: `${row + 1}:${row + 1}` })
+      }
       // Excel hides a row of height 0 whatever its flag
       if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) {
