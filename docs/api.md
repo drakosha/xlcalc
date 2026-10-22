@@ -820,7 +820,7 @@ A legacy formula (text without `=`, as a file stores it, with the prefixes of ne
 array formula Excel 365 displays for it, in canonical text: `A1:A10*2` becomes `@A1:A10*2`, `INDEX(A1:C3,0,1)`
 becomes `@INDEX(A1:C3,0,1)`, `SUM(A1:A10)` stays. Excel puts `@` before a name depending on what the name's formula
 returns, so the workbook's names are needed for formulas that use names. A formula the engine cannot parse is
-returned as is. The API function (`strict-args.ts`), the same from `xlcalc/xlsx` and from the root.
+returned as is. The API function (`strict-args.ts`), from `xlcalc/xlsx`.
 
 ### <a id="xlcalcxlsx-readxlsx"></a>`readXlsx`
 
@@ -3500,13 +3500,30 @@ interface RangeSummary {
 
 ### `ReadCell`
 
-A cell as `readCells` and `findCells` return it: its address and the requested fields.
+A cell as `readCells` and `findCells` return it: its address and the requested fields ([`CellReadField`](#cellreadfield)), no others.
 
 ```ts
-interface ReadCell extends CellRef, Partial<CellView> {
+interface ReadCell extends CellRef, Partial<Pick<CellView, 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link'>> {
   issue?: CellIssueDetail | null
   /** With the field `editText`: the text the cell opens with in edit mode, as in `ViewportCell.editText`; this is what `findCells` searches with `edit`, except for the apostrophe before text that would otherwise be parsed as something else, which the search leaves out. */
   editText?: string
+  // the fields of CellView no CellReadField asks for, kept so that host code reading them compiles until a breaking release
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  color?: CellView['color']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spill?: CellView['spill']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spillFill?: CellView['spillFill']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spillOf?: CellView['spillOf']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  meta?: CellView['meta']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  array?: CellView['array']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  appearance?: CellView['appearance']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  numberFormatCode?: CellView['numberFormatCode']
 }
 ```
 
@@ -4468,6 +4485,19 @@ Excel's totals functions of a table column (xlsx `totalsRowFunction`).
 
 ```ts
 type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' | 'min' | 'stdDev' | 'var' | 'custom'
+```
+
+### `TranslateOptions`
+
+[`toLocal`](#xlcalc-tolocal)'s and [`toInvariant`](#xlcalc-toinvariant)'s options: `table`, the table of the formula's cell; `externalBooks`, the book's links to
+other workbooks, by which a reference to one is shown as Excel shows it (`'[1]Sheet1'!A1` is `[Book2.xlsx]Sheet1!A1`,
+`'../data/[Book3.xlsx]Sheet1'!A1` with the path the link holds) and read back by its file name.
+
+```ts
+interface TranslateOptions {
+  table?: string
+  externalBooks?: ExternalBook[]
+}
 ```
 
 ### `Translation`

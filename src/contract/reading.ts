@@ -30,11 +30,28 @@ export interface CellView extends CellResult {
 
 /** A cell field that `readCells` and `findCells` return: `editText` is the text the cell opens with in edit mode, as in a viewport (`ViewportCell.editText`). */
 export type CellReadField = 'value' | 'text' | 'formula' | 'editText' | 'style' | 'numberFormat' | 'note' | 'link' | 'issue'
-/** A cell as `readCells` and `findCells` return it: its address and the requested fields. */
-export interface ReadCell extends CellRef, Partial<CellView> {
+/** A cell as `readCells` and `findCells` return it: its address and the requested fields (`CellReadField`), no others. */
+export interface ReadCell extends CellRef, Partial<Pick<CellView, 'value' | 'text' | 'formula' | 'style' | 'numberFormat' | 'note' | 'link'>> {
   issue?: CellIssueDetail | null
   /** With the field `editText`: the text the cell opens with in edit mode, as in `ViewportCell.editText`; this is what `findCells` searches with `edit`, except for the apostrophe before text that would otherwise be parsed as something else, which the search leaves out. */
   editText?: string
+  // the fields of CellView no CellReadField asks for, kept so that host code reading them compiles until a breaking release
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  color?: CellView['color']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spill?: CellView['spill']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spillFill?: CellView['spillFill']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  spillOf?: CellView['spillOf']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  meta?: CellView['meta']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  array?: CellView['array']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  appearance?: CellView['appearance']
+  /** @deprecated Never returned: no `CellReadField` asks for it; `getCell` and a viewport give it. */
+  numberFormatCode?: CellView['numberFormatCode']
 }
 /** Options of a query that returns results in pages (`readCells`, `findCells`, `getDependents`): how many results a page holds and where the previous page stopped. */
 export interface PageOptions extends EditOptions {

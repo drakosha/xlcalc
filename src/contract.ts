@@ -1,5 +1,5 @@
 /**
- * The formula engine contract (subpath `./contract`): types only, no engine code. Any engine
+ * The formula engine contract (subpath `./contract`): types and the formula limits, no engine code. Any engine
  * implementation (currently formulas compiled to closures or to JS text) sits behind this contract; the
  * package's behaviour tests are its acceptance suite.
  *
@@ -7,7 +7,11 @@
  * a string from data never becomes a formula. Function names are English, arguments are separated
  * by commas, the decimal separator is a dot.
  */
-export type { Locale } from './locale/types.js'
+export type { Locale, Translation } from './locale/types.js'
+// the options of root functions, declared beside them; type-only, so the subpath loads no engine code
+export type { TranslateOptions } from './locale/index.js'
+export type { CopyContext } from './structure/copy.js'
+export type { DateSystemOptions } from './date-serial.js'
 export type * from './contract/values.js'
 export type * from './contract/book.js'
 export type * from './contract/looks.js'

@@ -213,7 +213,7 @@ Several texts are checked after all of them are written, and the cell whose valu
 
 Without a session, a host reads the cell (from its own copy, or from `cells`), calls `parseEntry` with the number format the cell displays, and sends the input with `setCells`, which keeps the fields the input leaves out.
 
-A number typed into a column that is too narrow for it widens the column in Excel, unless its width was set manually. `setCellText` sets the width; without it, `entryWidth(value, { format, locale, width, bestFit })` returns that width for the value the entry produces (the cell's change from `setCells`) and the column's current state, and the host sets it with `setLayout([{ sheet, columns: 'B', set: { width, bestFit: true } }])`. Only typing widens a column, not the object model; the rules are in [Fitting columns](formats.md#fitting-columns).
+A number typed into a column that is too narrow for it widens the column in Excel, unless its width was set manually. `setCellText` sets the width; without it, `entryWidth(value, { numberFormat, locale, width, bestFit })` returns that width for the value the entry produces (the cell's change from `setCells`) and the column's current state, and the host sets it with `setLayout([{ sheet, columns: 'B', set: { width, bestFit: true } }])`. Only typing widens a column, not the object model; the rules are in [Fitting columns](formats.md#fitting-columns).
 
 ## The rules
 
