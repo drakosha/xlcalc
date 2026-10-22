@@ -25,6 +25,7 @@ import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetIndex } from './rewrite.js'
+import { checkFillWrites } from './writes.js'
 import { renamedByPaste } from '../tables/moves.js'
 import { tablesOf } from '../tables/model.js'
 
@@ -70,6 +71,8 @@ export function fillRange(book: BookInput, sheet: string, src: Rect, target: Rec
     if (whole) pieces.push([src, withBounds(src, axis, a - whole, a - 1)])
     if (part) pieces.push([withBounds(src, axis, b - part + 1, b), withBounds(src, axis, a - whole - part, a - whole - 1)])
   }
+  // the copies count together against limits.writes: each checks its own cells too, which is then within the limit
+  checkFillWrites(book, sheetIndex(book, sheet), pieces)
   let out = book
   const geometry: Geometry = []
   for (const [from, at] of pieces) {

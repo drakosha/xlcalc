@@ -1,10 +1,14 @@
 /**
  * Reproductions from the 21.10 review, structure at its edges: a fill over dates that runs past the date system writes
- * the serial numbers, as a fill over numbers in a date format does.
+ * the serial numbers, as a fill over numbers in a date format does. `limits.writes` bounds a fill's cells all together,
+ * in a synchronous session, in the same thread and in a thread.
  */
-import { describe, expect, it } from 'vitest'
-import { compute, editStructure, type BookInput, type StructureOp } from '../src/index.js'
+import { afterAll, describe, expect, it } from 'vitest'
+import { CalcError, compute, editStructure, type BookInput, type StructureOp } from '../src/index.js'
 import { CLOCK } from './async-books.js'
+import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
+
+afterAll(closeCalcs)
 
 const one = (cells: BookInput['sheets'][number]['cells'], dateSystem?: 1904): BookInput => ({ ...(dateSystem ? { dateSystem } : {}), sheets: [{ name: 'S', cells }] })
 
@@ -36,6 +40,22 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       expect(d1904.A1.value).toEqual({ date: '1904-01-01' })
       const below = edited(one({ A3: { value: { date: '1904-01-02' } } }, 1904), { op: 'fillRange', sheet: 'S', range: 'A3', to: 'A1:A3', type: 'series' }, execution)
       expect(below.A1.value).toBe(-1)
+    })
+  })
+
+  describe.each(KINDS)('limits.writes, %s', (kind) => {
+    const open = openerFor(kind)
+    const ten = () => one(Object.fromEntries(Array.from({ length: 10 }, (_, i) => [`A${i + 1}`, { value: i + 1 }])))
+
+    it.each(['copy', 'default'] as const)('a fill of type %s counts its cells together', async (type) => {
+      const s = await open(ten(), { clock: CLOCK, execution, limits: { writes: 15 } })
+      // 19 cells, laid as a copy of the 10 and one of 9: each under the limit, together over it
+      const e = await s.editStructure({ op: 'fillRange', sheet: 'S', range: 'A1:A10', to: 'A1:A29', type }).then(() => null, (x: unknown) => x)
+      expect(e).toBeInstanceOf(CalcError)
+      expect(e).toMatchObject({ code: 'limit', limit: 'writes', size: 19, max: 15 })
+      expect(Object.keys((await s.getBook()).sheets[0].cells)).toHaveLength(10)
+      expect(await s.editStructure({ op: 'fillRange', sheet: 'S', range: 'A1:A10', to: 'A1:A25', type })).toMatchObject({ ok: true })
+      await s.close()
     })
   })
 })
