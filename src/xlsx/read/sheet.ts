@@ -311,7 +311,10 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const closeAt = open < 0 ? -1 : xml.indexOf('sheetData>', open + 10)
   const head = open < 0 ? xml : xml.slice(0, open)
   const dataEnd = closeAt < 0 ? open : closeAt + 10
-  const data = open < 0 ? '' : xml.slice(open, dataEnd)
+  // cells left open (no `</sheetData>`, the tag not closing itself) are read to the end of the part
+  const unclosed = open >= 0 && closeAt < 0 && xml[xml.indexOf('>', open) - 1] !== '/'
+  if (unclosed) ctx.issues.add('part', { key: 'sheetDataOpen' }, { sheet: name })
+  const data = open < 0 ? '' : xml.slice(open, unclosed ? xml.length : dataEnd)
   const tail = open < 0 ? '' : xml.slice(dataEnd)
   const cols = columns(head, ctx)
   const read = readCells(data, ctx, lines(cols, 'c'))

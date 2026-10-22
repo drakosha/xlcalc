@@ -155,4 +155,31 @@ describe('xlsx: a damaged cell (x-xlsx-4, x-xlsx-8)', () => {
     expect(cellsOf(r)).toEqual({ C1: { value: 45716.5 }, D1: { value: 1 } })
     expect(issuesOf(r)).toEqual([['part', ['A1', 'B1'], 'a date of a Strict file (a cell of type d) that is not a valid ISO date is left out']])
   })
+
+  const OPEN = 'an element of a cell left open (without its closing tag): what it holds, and the cells it runs into, are not read'
+  it.each([
+    ['a cell without its closing tag before the next cell', '<row r="1"><c r="A1"><v>1</v><c r="B1"><v>2</v></c></row><row r="2"><c r="A2"><v>3</v></c></row>', { A1: { value: 1 }, A2: { value: 3 } }, ['A1']],
+    ['cells without closing tags to the end', '<row r="1"><c r="A1"><v>1</v><c r="B1"><v>2</v></row><row r="2"><c r="A2"><v>3</v></row>', { A1: { value: 1 } }, ['A1']],
+    ['a value without its closing tag', '<row r="1"><c r="A1"><v>1</c><c r="B1"><v>2</v></c></row>', { B1: { value: 2 } }, ['A1']],
+    ['a formula without its closing tag', '<row r="1"><c r="A1"><f>1+1</c><c r="B1"><v>2</v></c></row>', { B1: { value: 2 } }, ['A1']],
+    ['an inline string without its closing tag', '<row r="1"><c r="A1" t="inlineStr"><is><t>a</t></c><c r="B1"><v>2</v></c></row>', { B1: { value: 2 } }, ['A1']],
+    ['a prefixed cell', '<x:row r="1"><x:c r="A1"><x:v>1</x:v><x:c r="B1"><x:v>2</x:v></x:c></x:row>', { A1: { value: 1 } }, ['A1']],
+  ])('%s is reported', async (_, rows, cells, at) => {
+    const r = await sheet(rows)
+    expect(cellsOf(r)).toEqual(cells)
+    expect(issuesOf(r)).toEqual([['part', at, OPEN]])
+  })
+
+  it('rich text, empty values and self-closing cells are no elements left open', async () => {
+    const r = await sheet('<row r="1"><c r="A1" t="inlineStr"><is><r><rPr><color rgb="FFFF0000"/><charset val="1"/></rPr><t>a</t></r></is></c><c r="B1" t="str"><f>""</f><v/></c><c r="C1" s="0"/><c r="D1"><v>4</v></c></row>')
+    expect(cellsOf(r)).toEqual({ A1: { value: 'a' }, B1: { formula: '""' }, D1: { value: 4 } })
+    expect(r.issues.map((i) => i.code)).toEqual(['richText'])
+  })
+
+  it('cells without </sheetData> are read to the end of the part, and reported', async () => {
+    const r = await read({ sheets: [{ name: 'S', body: '<sheetData><row r="1"><c r="A1"><v>1</v></c></row><row r="2"><c r="A2"><v>2</v></c></row>' }] })
+    expect(cellsOf(r)).toEqual({ A1: { value: 1 }, A2: { value: 2 } })
+    expect(r.issues).toEqual([{ code: 'part', sheet: 'S', message: "the sheet's cells have no closing tag (</sheetData>): they are read to the end of the part" }])
+    expect((await read({ sheets: [{ name: 'S', body: '<sheetData/><mergeCells><mergeCell ref="A1:B1"/></mergeCells>' }] })).issues).toEqual([])
+  })
 })

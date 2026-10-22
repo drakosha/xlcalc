@@ -283,7 +283,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `outline` | automatic outline styles |
 | `drawing`, `pivotTable`, `protection`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
-| `part` | a missing sheet part, a cell outside the sheet, a Strict file's date that is no date |
+| `part` | a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells left open (an element without its closing tag) |
 
 Gridlines and other view settings outside `SheetView` are not reported. A page setup is reported only when one was actually made, for example a landscape page or fit to width.
 

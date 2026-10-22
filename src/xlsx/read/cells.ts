@@ -73,6 +73,11 @@ const V = /<(?:[\w.-]+:)?v(?:\s[^<>]*?)?(?:\/>|>((?:[^<]|<(?!(?:[\w.-]+:)?v[\s/>
 const F = /<(?:[\w.-]+:)?f((?:\s[^<>]*?)?)(?:\/>|>((?:[^<]|<(?!(?:[\w.-]+:)?f[\s/>]))*?)<\/(?:[\w.-]+:)?f>)/
 const IS = /<(?:[\w.-]+:)?is(?:\s[^<>]*)?>((?:[^<]|<(?!(?:[\w.-]+:)?is[\s/>]))*?)<\/(?:[\w.-]+:)?is>/
 const ADDR = /^([A-Za-z]{1,3})([1-9][0-9]*)$/
+// the opening tags of a cell, a value, a formula and an inline string, which a body holds when one was left open
+const OPEN_C = /<(?:[\w.-]+:)?c[\s/>]/
+const OPEN_V = /<(?:[\w.-]+:)?v[\s/>]/
+const OPEN_F = /<(?:[\w.-]+:)?f[\s/>]/
+const OPEN_IS = /<(?:[\w.-]+:)?is[\s/>]/
 
 
 /**
@@ -138,11 +143,14 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       row = Number(ref[2]) - 1
     } else col++
     let body = ''
+    // an element of the cell left open: the cell, or one it holds, runs into what follows
+    let open = false
     if (!m[4]) {
       const close = `</${m[1] ?? ''}c>`
       const end = data.indexOf(close, TAG.lastIndex)
       body = data.slice(TAG.lastIndex, end < 0 ? data.length : end)
       TAG.lastIndex = end < 0 ? data.length : end + close.length
+      open = end < 0 || (body.includes(`<${m[1] ?? ''}c`) && OPEN_C.test(body))
     }
     if (row < 0 || row >= MAX_ROWS || col >= MAX_COLS) {
       issues.add('part', { key: 'cellOutside' }, { sheet, cell: a.r ?? `${row + 1}:${col + 1}` })
@@ -161,6 +169,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     const t = a.t ?? 'n'
     // Excel writes an empty text result as `<v/>`
     const v = body.includes('v') ? V.exec(body) : null
+    if (!v && body.includes('v') && OPEN_V.test(body)) open = true
     const raw = v ? (v[1] ?? '') : undefined
     let value: Scalar | undefined
     if (t === 's') {
@@ -171,6 +180,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       }
     } else if (t === 'inlineStr') {
       const is = IS.exec(body)
+      if (!is && OPEN_IS.test(body)) open = true
       if (is) {
         const s = stringItem(is[1])
         value = s.text
@@ -184,6 +194,8 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     }
     const errText = t === 'e' && raw !== undefined ? (rich ?? readText(raw).trim()) : undefined
     const f = body.includes('f') ? F.exec(body) : null
+    if (!f && body.includes('f') && OPEN_F.test(body)) open = true
+    if (open) issues.add('part', { key: 'cellOpen' }, { sheet, cell: addr })
     const fa = f ? attributes(f[1]) : {}
     const text = f?.[2] === undefined ? '' : readText(f[2])
     // `<f ca="1"/>` with no text only flags a value Excel recalculates (a cell a volatile array spilled into)

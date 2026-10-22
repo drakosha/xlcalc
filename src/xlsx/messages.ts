@@ -72,6 +72,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   printSettings: () => 'print settings (headers and footers, page breaks, page setup) are not in the model',
   defaultWidth: (p) => `the sheet's default column width (${p.width} in xlsx units) is not in the model, which uses Excel's standard width of 8 digits`,
   errorTyped: () => 'an error typed into a cell is read as a formula of that error',
+  sheetDataOpen: () => "the sheet's cells have no closing tag (</sheetData>): they are read to the end of the part",
   // reading: formulas
   userFunction: () => 'the engine does not support a user-defined function (a macro or an add-in)',
   tableRefWithoutTable: () => 'a file cannot hold a structured reference without a table name: the formula is read as written and evaluates to an error',
@@ -81,6 +82,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   // reading: cells
   cellOutside: () => 'a cell outside the sheet (past its last row or column) is left out',
   dateInvalid: () => 'a date of a Strict file (a cell of type d) that is not a valid ISO date is left out',
+  cellOpen: () => 'an element of a cell left open (without its closing tag): what it holds, and the cells it runs into, are not read',
   valueMetadata: () => "a cell's value metadata (a data type, a picture in the cell) is not in the model",
   richText: () => 'formatted runs of text are read as plain text',
   errorUnknown: () => 'a stored error the model has no code for is read as #ERROR!',
