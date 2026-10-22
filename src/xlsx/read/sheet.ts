@@ -89,13 +89,15 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
       box.c2 = Math.max(box.c2, a.col)
     }
     // copies spread thin over a large area are pasted one by one
-    const targets = cellCount(box) > 4 * at.length ? s.copies : [cornersText(box)]
+    const thin = cellCount(box) > 4 * at.length
+    const targets = thin ? s.copies : [cornersText(box)]
     const book = { sheets: src.sheets.map((name) => ({ name, cells: name === src.name ? { [s.master!]: { formula } } : {} })) }
     for (const range of targets) {
       // the pure copy and paste, without editStructure's checks and values (a paste from a filtered sheet computes the book)
       const r = copyRange(book, src.name, parseRange(s.master)!, src.name, parseRange(range)!, false)
       const pasted = r.ok ? r.book.sheets.find((x) => x.name === src.name)!.cells : {}
-      for (const c of s.copies) {
+      // a one-cell paste makes only its target
+      for (const c of thin ? [range] : s.copies) {
         const f = pasted[c]?.formula
         if (f !== undefined) read.cells[c] = { ...read.cells[c], formula: f }
       }
