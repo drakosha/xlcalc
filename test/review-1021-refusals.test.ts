@@ -1,8 +1,8 @@
 /**
  * Reproductions from the 21.10 review, refusals: a call that cannot be made fails with the library's own error class in
  * every kind of session. A closed session refuses with `CalcError` code `closed`, `setClock` on a live session with an
- * `InputError` on `clock`. `editStructure` refuses an operation named as a member of `Object.prototype` with `InputError`
- * and its path. In a synchronous session, in the same thread and in a thread,
+ * `InputError` on `clock`. `editStructure` refuses an operation named as a member of `Object.prototype` and `addTable` a
+ * column without a name with `InputError` and its path. In a synchronous session, in the same thread and in a thread,
  * with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -56,6 +56,24 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       const e = await failure(() => s.editStructure(op))
       expect(e).toBeInstanceOf(InputError)
       expect(e).toMatchObject({ path: 'op.op' })
+      await s.close()
+    })
+
+    it.each([[{}], [null], [5], [{ nam: 'b' }], [{ name: 5 }]])('addTable with a column %j over an empty header cell refuses with InputError', async (column) => {
+      const op = { op: 'addTable', sheet: 'S', table: { name: 'T', range: 'C1:D2', columns: [{ name: 'a' }, column] } } as unknown as StructureOp
+      expect(() => editStructure(book, op)).toThrow(/^op\.sheets\[0\]\.tables\[0\]\.columns\[1\]/)
+      const s = await open(book, { clock: CLOCK, execution })
+      const e = await failure(() => s.editStructure(op))
+      expect(e).toBeInstanceOf(InputError)
+      expect((e as InputError).path).toMatch(/^op\.sheets\[0\]\.tables\[0\]\.columns\[1\]/)
+      expect(Object.keys((await s.getBook()).sheets[0].cells)).toEqual(['A1', 'A2'])
+      await s.close()
+    })
+
+    it('addTable over a header cell with a formula writes the column name in its place', async () => {
+      const s = await open({ sheets: [{ name: 'S', cells: { D1: { value: 1, formula: '1' } } }] }, { clock: CLOCK, execution })
+      await s.editStructure({ op: 'addTable', sheet: 'S', table: { name: 'T', range: 'C1:D2', columns: [{ name: 'a' }, { name: 'b' }] } })
+      expect((await s.getBook()).sheets[0].cells).toEqual({ C1: { value: 'a' }, D1: { value: 'b' } })
       await s.close()
     })
   })
