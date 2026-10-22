@@ -14,7 +14,7 @@ import { lines, parseSpan, patchLines as patchSpans, spanKey } from './layout/sp
 import type { Locale } from './locale/types.js'
 import { OUTLINE_MESSAGES } from './locale/outline-messages.js'
 import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
-import { contains, encode, grown, meets, parseRange as rangeArg, span, type Area, type Axis, type Rect } from './structure/area.js'
+import { contains, encode, grown, meets, parseRange as rangeArg, rectOf, span, type Area, type Axis, type Rect } from './structure/area.js'
 import { applyOutline, OUTLINE_FIELDS, type OutlineAxes, type OutlineOp } from './structure/outline-command.js'
 import { PLAIN_SHEET } from './sheet-pattern.js'
 import { strict } from './strict-args.js'
@@ -49,6 +49,9 @@ const DOLLAR = /(^|:)\$|([A-Za-z])\$(?=\d)/g
 const COLUMNS = /^[A-Z]+:[A-Z]+$/
 const ROWS = /^\d+:\d+$/
 
+/** The engine's rectangle (rows and columns from 0) as a `CellRect` (from 1). */
+const cellRect = (x: Rect): CellRect => ({ top: x.r1 + 1, left: x.c1 + 1, bottom: x.r2 + 1, right: x.c2 + 1 })
+
 /**
  * A range's rectangle and kind: `B2:D9` and `B2` are cells, `B:D` entire columns, `2:9` entire rows, with `$` and
  * letters in any case; corners given in reverse order are swapped, as Excel reorders such a typed reference. Null for
@@ -61,7 +64,7 @@ export const parseRange = /* @__PURE__ */ strict(function parseRange(range: stri
   const x = rangeArg(t)
   if (!x) return null
   const kind = COLUMNS.test(t) ? 'columns' : ROWS.test(t) ? 'rows' : 'cells'
-  return { kind, top: x.r1 + 1, left: x.c1 + 1, bottom: x.r2 + 1, right: x.c2 + 1 }
+  return { kind, ...cellRect(x) }
 })
 
 /** A cell's row and column (`B12`, `$B$12`, `b12`), or null when the text is not a cell of the sheet (`ZZZ1`, `A0`, `B2:C3`). */
@@ -72,8 +75,9 @@ export const parseCell = /* @__PURE__ */ strict(function parseCell(cell: string)
 
 /** A rectangle checked against the sheet, corners in order, as the engine's area of a reference without `$`. */
 function areaOf(r: CellRect, path = 'rect'): Area {
-  const [top, bottom] = [line(r.top, MAX_ROWS, `${path}.top`), line(r.bottom, MAX_ROWS, `${path}.bottom`)]
-  const [left, right] = [line(r.left, MAX_COLS, `${path}.left`), line(r.right, MAX_COLS, `${path}.right`)]
+  // `?.`: what is no rectangle is refused by its first bound
+  const [top, bottom] = [line(r?.top, MAX_ROWS, `${path}.top`), line(r?.bottom, MAX_ROWS, `${path}.bottom`)]
+  const [left, right] = [line(r?.left, MAX_COLS, `${path}.left`), line(r?.right, MAX_COLS, `${path}.right`)]
   const b = (i: number) => ({ i: i - 1, abs: false })
   return { kind: top === bottom && left === right ? 'cell' : 'range', r: span(b(top), b(bottom)), c: span(b(left), b(right)) }
 }
@@ -83,16 +87,17 @@ export const rangeAddress = /* @__PURE__ */ strict(function rangeAddress(rect: C
   return encode(areaOf(rect))
 })
 
-const rect = (x: CellRect): Rect => ({ r1: x.top, c1: x.left, r2: x.bottom, c2: x.right })
+/** A rectangle checked against the sheet, corners in order (rows and columns from 0), as every helper here takes one. */
+const rect = (x: CellRect, path?: string): Rect => rectOf(areaOf(x, path))
 
 /** Whether two rectangles share a cell. */
 export const rectsMeet = /* @__PURE__ */ strict(function rectsMeet(a: CellRect, b: CellRect): boolean {
-  return meets(rect(a), rect(b))
+  return meets(rect(a, 'a'), rect(b, 'b'))
 })
 
 /** Whether `inner` lies within `outer`. */
 export const rectContains = /* @__PURE__ */ strict(function rectContains(outer: CellRect, inner: CellRect): boolean {
-  return contains(rect(outer), rect(inner))
+  return contains(rect(outer, 'outer'), rect(inner, 'inner'))
 })
 
 /**
@@ -100,11 +105,9 @@ export const rectContains = /* @__PURE__ */ strict(function rectContains(outer: 
  * that it overlaps, repeated for each area it then overlaps, until it overlaps no other.
  */
 export const mergedArea = /* @__PURE__ */ strict(function mergedArea(r: CellRect, merges: readonly CellRect[]): CellRect {
-  areaOf(r)
+  const x = rect(r)
   if (!Array.isArray(merges)) throw new InputError('merges', `expected an array of rectangles, got ${what(merges)}`)
-  merges.forEach((m, i) => areaOf(m, `merges[${i}]`))
-  const g = grown(rect(r), merges.map(rect))
-  return { top: g.r1, left: g.c1, bottom: g.r2, right: g.c2 }
+  return cellRect(grown(x, merges.map((m, i) => rect(m, `merges[${i}]`))))
 })
 
 /** The engine's axis of layout lines. */

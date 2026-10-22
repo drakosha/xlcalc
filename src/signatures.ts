@@ -8,6 +8,7 @@
  * Function window lists it (`function-info.ts`); what it does is `xlcalc/function-text`'s.
  */
 import { englishName } from './call-at.js'
+import { wordKey } from './collate.js'
 import type { FunctionArgument, FunctionSignature } from './contract.js'
 import { CATEGORY_NAMES, CATEGORY_OF } from './function-info.js'
 import { checkString } from './input/basic.js'
@@ -533,7 +534,7 @@ function translated(name: string, words: Readonly<Record<string, string>> | unde
 export function functionSignature(name: string, locale?: string | Locale): FunctionSignature | null {
   checkString(name, 'name')
   const loc = locale === undefined ? localeOf(undefined) : checkLocaleArg(locale, 'locale')
-  const upper = name.toUpperCase()
+  const upper = wordKey(name)
   const invariant = upper in SIGNATURES ? upper : englishName(name, loc)
   if (!(invariant in SIGNATURES)) return null
   const shape = shapeOf(invariant)

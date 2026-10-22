@@ -447,7 +447,7 @@ function nameAt(text: string, caret?: number, opts?: ScanOptions): NameAt | null
 
 The name of a function being typed at `caret` (the end of the text by default) in formula text `text`, for the
 Formula AutoComplete list: the name characters around the caret, starting with a letter or `_`, where an operand may
-begin (after the formula's first character, an operator, `(`, the locale's list separator or a space); null where no
+begin (after the formula's first character, an operator, the range's `:` included, `(`, the locale's list separator or a space); null where no
 function can appear: no name at the caret, inside a string, a quoted sheet name or a table's brackets, after a
 sheet's `!` or a `$`, and for text that is not a formula. `opts.locale`: the locale the text is typed in (its list
 separator); without it, the text is treated as en-US.

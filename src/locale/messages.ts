@@ -332,7 +332,7 @@ export interface Words {
   item(word: string): string
   /** A number with the locale's decimal separator. */
   num(n: number): string
-  /** A value as a formula of the locale writes it: a number, text in quotes, a boolean, an error. */
+  /** A value as a formula of the locale writes it: a number, text in quotes (a quote doubled), a boolean, an error. */
   value(v: Exclude<CellValue, null>): string
   /** A stored formula as the locale shows it (`toLocal`), where the caller gives the way. */
   formula(text: string): string
@@ -345,7 +345,8 @@ export type Messages = { readonly [K in MessageKey]: (p: MessageParams[K], w: Wo
 export type EnglishMessages = { readonly [K in EngineKey]: (p: MessageParams[K]) => string }
 
 function wordsOf(loc: Locale, formula: (text: string) => string): Words {
-  const num = (n: number) => JSON.stringify(n).replace('.', loc.decimalSeparator)
+  // every digit of the double, as JSON has them, with the exponent a formula writes (`1E+21`, not `1e+21`)
+  const num = (n: number) => String(n).replace('e', 'E').replace('.', loc.decimalSeparator)
   return {
     loc,
     fn: (name) => loc.functions[name] ?? name,
@@ -353,7 +354,7 @@ function wordsOf(loc: Locale, formula: (text: string) => string): Words {
     num,
     value: (v) => {
       if (typeof v === 'number') return num(v)
-      if (typeof v === 'string') return JSON.stringify(v)
+      if (typeof v === 'string') return `"${v.replaceAll('"', '""')}"`
       if (typeof v === 'boolean') return v ? loc.booleans.TRUE : loc.booleans.FALSE
       return errorIn(v.error, loc.errors)
     },
