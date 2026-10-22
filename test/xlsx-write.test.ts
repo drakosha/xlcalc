@@ -6,7 +6,7 @@ import { withoutView } from './xlsx-fixtures.js'
  * is reported. The same book gives the same bytes.
  */
 import { describe, expect, it } from 'vitest'
-import type { BookInput } from '../src/contract.js'
+import type { BookInput, NumberFormat } from '../src/contract.js'
 import { compute, InputError } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
@@ -135,5 +135,20 @@ describe('xlsx writer', () => {
     await expect(writeXlsx({ book }, { mode: 'other' as 'values' })).rejects.toThrow(/expected "formulas" or "values"/)
     const other = compute({ sheets: [{ name: 'X', cells: {} }] }, { clock })
     await expect(writeXlsx({ book, result: other })).rejects.toThrow(/its sheets differ from the workbook's/)
+  })
+})
+
+describe('xlsx writer: a number format by its number and the same digits as a code (fix-u326)', () => {
+  type Format = NumberFormat | undefined
+  /** The number formats of cells of 1.5 in a row, written and read back. */
+  const back = async (formats: Format[]) => {
+    const cells = Object.fromEntries(formats.map((numberFormat, i) => [`A${i + 1}`, { value: 1.5, ...(numberFormat === undefined ? {} : { numberFormat }) }]))
+    const r = await readXlsx((await writeXlsx({ book: { sheets: [{ name: 'S', cells }] } })).data)
+    return formats.map((_, i) => r.book.sheets[0].cells[`A${i + 1}`]?.numberFormat)
+  }
+  it.each([[[0, '0']], [['0', 0]], [[14, '14']], [['14', 14]]] as [Format[]][])('%j each keep their own, as each alone', async (formats) => {
+    const alone = await Promise.all(formats.map(async (f) => (await back([f]))[0]))
+    expect(new Set(alone.map((x) => JSON.stringify(x))).size).toBe(2)
+    expect(await back(formats)).toEqual(alone)
   })
 })
