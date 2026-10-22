@@ -20,7 +20,6 @@ import { checkFieldEdits, resolveEdits } from './cells.js'
 import { clearPlan } from './clear.js'
 import { checkPatches } from './patch.js'
 import { patchPlan, type Plan } from './styles.js'
-import { rebased } from './undo.js'
 
 export interface OperationsPlan {
   book: BookInput
@@ -106,15 +105,14 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
       case 'clearCells': {
         onlyKeys(op, path, ['op', 'ranges', 'what'])
         const p = clearPlan(draft(), op.ranges as never, op.what as never)
-        // a header cell cleared renames its column, as `Session.clearCells` does: the plan's sheets go on the renamed book
-        const was = book.sheets.slice()
-        const renamed = headerEdits(book, p.edits, headerText)
+        // a header cell cleared renames its column, as `Session.clearCells` does: the plan's sheets go in first, so the rename rewrites their rules too
+        const laid = p.sheets.size ? { ...book, sheets: book.sheets.map((sh, i) => (p.sheets.has(i) ? { ...p.sheets.get(i)!, cells: sh.cells } : sh)) } : book
+        const renamed = headerEdits(laid, p.edits, headerText)
         if (!renamed) {
           looks(p)
           break
         }
         Object.assign(book, renamed)
-        for (const [i, sh] of p.sheets) book.sheets[i] = rebased(was[i], sh, book.sheets[i])
         if (p.styles) {
           book.styles = p.styles
           styles = true

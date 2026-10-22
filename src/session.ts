@@ -47,7 +47,7 @@ import { patchPlan, type Plan } from './session/styles.js'
 import { bookDiff, DiffPass, type BookDiff } from './session/rebook.js'
 import { columnWidening, entryCheck, validationAlert } from './session/text.js'
 import { alertRefusal, checkActive, checkTextEntries, filledText, pastedText, previewCells, strictestRefusal, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
-import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, rebased, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
+import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
 import { issueDetail } from './issues.js'
@@ -336,16 +336,18 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display, sheetIndex }
   /**
    * Cells' new inputs (checked) written, as `call`: a table's header cell typed over renames its column and the
-   * references to it, which builds the book again, with `styles` (a plan's style table) when given, so that one step
-   * takes both back; the state after and what changed, and the way back.
+   * references to it, which builds the book again; a plan's sheets and style table (`plan`) go in first then, so that
+   * the rename rewrites the plan's rules too and one step takes all of it back. The state after and what changed, and
+   * the way back.
    */
-  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call'], styles?: CellStyle[]): Steps<[EngineState, Outcome, () => Step | null]> {
+  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call'], plan?: Pick<Plan, 'sheets' | 'styles'>): Steps<[EngineState, Outcome, () => Step | null]> {
     checkArrayEdits(s, edits)
-    const renamed = headerEdits(s.input, edits, (v, format) => headerText(s, v, format))
+    const laid = plan?.sheets.size ? { ...s.input, sheets: s.input.sheets.map((x, i) => (plan.sheets.has(i) ? withLooksOf({ ...plan.sheets.get(i)!, cells: x.cells }, x) : x)) } : s.input
+    const renamed = headerEdits(laid, edits, (v, format) => headerText(s, v, format))
     if (renamed) {
-      if (styles) renamed.styles = styles
+      if (plan?.styles) renamed.styles = plan.styles
       const [next, out, diff] = yield* rebuild(s, renamed, [], true, history.on)
-      return [next, styles ? { ...out, styles: true } : out, () => diff && bookStep(call, diff, renamed)]
+      return [next, plan?.styles ? { ...out, styles: true } : out, () => diff && bookStep(call, diff, renamed)]
     }
     const [out, was] = yield* putCells(s, edits)
     return [s, out, () => (was.length ? cellsStep(call, was) : null)]
@@ -354,23 +356,22 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
    * A plan of looks applied after the cells it writes (`write`): the style table and the sheets' lines, rules and merged
    * areas, which compute the arrays and SUBTOTALs they concern. The state after, what changed and the steps to take it back.
    */
-  function* applyPlan(s: EngineState, plan: Plan, call: Step['call'], write: (s: EngineState, edits: CellReplace[], styles?: CellStyle[]) => Steps<[EngineState, Outcome, () => Step | null]>): Steps<[EngineState, Outcome, (() => Step | null)[]]> {
+  function* applyPlan(s: EngineState, plan: Plan, call: Step['call'], write: (s: EngineState, edits: CellReplace[], plan: Plan) => Steps<[EngineState, Outcome, () => Step | null]>): Steps<[EngineState, Outcome, (() => Step | null)[]]> {
     const back = kept(s)
-    const [next, out, cellsBack] = yield* write(s, plan.edits, plan.styles)
+    const [next, out, cellsBack] = yield* write(s, plan.edits, plan)
+    // a header cell written renamed its column and built the book again with the plan's sheets and styles (`writeCells`)
+    if (next !== s) return [next, out, [cellsBack]]
     let o = out
     const steps = [cellsBack]
-    // a header cell written renamed its column and built the book again: the plan's sheets, made on the book before, go on the new one
-    const sheets = next === s ? plan.sheets : new Map([...plan.sheets].map(([i, x]) => [i, rebased(s.input.sheets[i], x, next.input.sheets[i])]))
     try {
-      if (sheets.size) o = yield* laidOut(next, sheets, display ? snapshot(next, layoutCells(next, plan.touched)) : null, o, steps, call)
+      if (plan.sheets.size) o = yield* laidOut(next, plan.sheets, display ? snapshot(next, layoutCells(next, plan.touched)) : null, o, steps, call)
     } catch (e) {
       // stopped computing a merged area's arrays: the cells written go back too
       const cells = cellsBack()
       back(cells?.kind === 'cells' ? cells.edits : [])
       throw e
     }
-    // a book built again took the plan's styles with it (`writeCells`)
-    if (plan.styles && next === s) o = restyled(next, plan.styles, o, steps, call)
+    if (plan.styles) o = restyled(next, plan.styles, o, steps, call)
     return [next, o, steps]
   }
   /** Sheets of a prepared layout put in (`relayout`) after the changes `o`: the changes of both, and the step back added to `steps`. */
@@ -613,7 +614,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       checkBase(eo, revision)
       const plan = clearPlan(s, ranges, what)
-      const write = what === 'formats' ? lookCells : (x: EngineState, edits: CellReplace[], styles?: CellStyle[]) => writeCells(x, edits, 'clearCells', styles)
+      const write = what === 'formats' ? lookCells : (x: EngineState, edits: CellReplace[], p: Plan) => writeCells(x, edits, 'clearCells', p)
       const [next, out, steps] = yield* applyPlan(s, plan, 'clearCells', write)
       if (ranges.length) keep(() => manyStep('clearCells', steps.map((f) => f())))
       return answer(next, out)
@@ -728,7 +729,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const plan = op.op === 'mergeCells' || op.op === 'unmergeCells' ? mergedPlan(old, op) : null
       if (plan && 'ok' in plan) return plan
       if (plan) {
-        const [next, out, steps] = yield* applyPlan(old, plan, 'editStructure', (x, edits, styles) => writeCells(x, edits, 'editStructure', styles))
+        const [next, out, steps] = yield* applyPlan(old, plan, 'editStructure', (x, edits, p) => writeCells(x, edits, 'editStructure', p))
         keep(() => manyStep('editStructure', steps.map((f) => f())))
         return { ok: true, mapCell: checkedMapCell({ geometry: [], before: old.sheetNames, after: old.sheetNames }), ...answer(next, out) }
       }

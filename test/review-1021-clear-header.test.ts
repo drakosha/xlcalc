@@ -25,6 +25,17 @@ const book = (): BookInput => ({
   }],
 })
 
+/** Table Sales with a conditional format and a list over its Qty column, the list beside it on row 1. */
+const ruled = (): BookInput => ({
+  sheets: [{
+    name: 'Data',
+    cells: { A1: { value: 'Item' }, B1: { value: 'Qty' }, A2: { value: 'x' }, B2: { value: 2 }, B3: { value: 4 } },
+    tables: [{ name: 'Sales', range: 'A1:B3', columns: [{ name: 'Item' }, { name: 'Qty' }] }],
+    conditionalFormats: [{ type: 'expression', ranges: ['B2:B3'], formula: 'B2>SUM(Sales[Qty])/2', style: { fill: { color: '#FF0000' } } }],
+    validations: [{ range: 'D1', type: 'list', formula1: 'Sales[Qty]' }],
+  }],
+})
+
 /** The session's book, which must be valid and compute to its hash. */
 async function held(s: AsyncSession, execution: Execution): Promise<BookInput> {
   const b = structuredClone(await s.getBook())
@@ -68,6 +79,24 @@ describe.each(EXECUTIONS)('%s', (execution) => {
         await s.redo()
         expect(await held(s, execution)).toEqual(after)
         await s.close()
+      }
+    })
+
+    it('Clear All through a header with rules over the table comes back whole after an undo and a redo', async () => {
+      for (const range of ['1:1', 'B:B', 'A1:D3', 'B1:B2']) {
+        for (const through of ['clearCells', 'applyChanges'] as const) {
+          const s = await open(ruled(), { execution, clock })
+          const before = await held(s, execution)
+          const ranges = [{ sheet: 'Data', range }]
+          if (through === 'clearCells') await s.clearCells(ranges, 'all')
+          else await s.applyChanges([{ op: 'clearCells', ranges, what: 'all' }])
+          const after = await held(s, execution)
+          await s.undo()
+          expect(await held(s, execution), `${through} ${range} undo`).toEqual(before)
+          await s.redo()
+          expect(await held(s, execution), `${through} ${range} redo`).toEqual(after)
+          await s.close()
+        }
       }
     })
 
