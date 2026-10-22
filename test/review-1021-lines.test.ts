@@ -45,6 +45,22 @@ describe.each(EXECUTIONS)('review 21.10 rows and columns, %s', (execution) => {
       await s.close()
     })
 
+    it('typing into a wrapped cell and AutoFit of a row do not walk every cell of the sheet (speed-u96)', async () => {
+      const cells = Object.fromEntries(Array.from({ length: 200_000 }, (_, i) => [`${'ABCDEFGHIJ'[i % 10]}${Math.floor(i / 10) + 1}`, { value: i }]))
+      const s = await open({ styles: [{}, { alignment: { wrap: true } }], sheets: [{ name: 'S', cells: { ...cells, L5: { value: null, style: 1 } } }] }, { execution, clock, display: false, undo: { depth: 0 } })
+      // each call walked the 200,000 cells with a regular expression: about 40 ms each, 8 s for 200
+      expect(
+        await took(async () => {
+          for (let k = 0; k < 100; k++) {
+            await s.setCellText('S', 'L5', k % 2 ? 'x\ny' : 'x\ny\nz')
+            await s.setLayout([{ sheet: 'S', rows: '5', fit: true }])
+          }
+        }),
+      ).toBeLessThan(1500)
+      expect((await s.getLayout()).sheets[0].rows).toEqual({ 5: { height: 32, bestFit: true } })
+      await s.close()
+    })
+
   })
 
   it.each([
