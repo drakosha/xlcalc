@@ -336,14 +336,16 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display, sheetIndex }
   /**
    * Cells' new inputs (checked) written, as `call`: a table's header cell typed over renames its column and the
-   * references to it, which builds the book again; the state after and what changed, and the way back.
+   * references to it, which builds the book again, with `styles` (a plan's style table) when given, so that one step
+   * takes both back; the state after and what changed, and the way back.
    */
-  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call']): Steps<[EngineState, Outcome, () => Step | null]> {
+  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call'], styles?: CellStyle[]): Steps<[EngineState, Outcome, () => Step | null]> {
     checkArrayEdits(s, edits)
     const renamed = headerEdits(s.input, edits, (v, format) => headerText(s, v, format))
     if (renamed) {
+      if (styles) renamed.styles = styles
       const [next, out, diff] = yield* rebuild(s, renamed, [], true, history.on)
-      return [next, out, () => diff && bookStep(call, diff, renamed)]
+      return [next, styles ? { ...out, styles: true } : out, () => diff && bookStep(call, diff, renamed)]
     }
     const [out, was] = yield* putCells(s, edits)
     return [s, out, () => (was.length ? cellsStep(call, was) : null)]
@@ -352,9 +354,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
    * A plan of looks applied after the cells it writes (`write`): the style table and the sheets' lines, rules and merged
    * areas, which compute the arrays and SUBTOTALs they concern. The state after, what changed and the steps to take it back.
    */
-  function* applyPlan(s: EngineState, plan: Plan, call: Step['call'], write: (s: EngineState, edits: CellReplace[]) => Steps<[EngineState, Outcome, () => Step | null]>): Steps<[EngineState, Outcome, (() => Step | null)[]]> {
+  function* applyPlan(s: EngineState, plan: Plan, call: Step['call'], write: (s: EngineState, edits: CellReplace[], styles?: CellStyle[]) => Steps<[EngineState, Outcome, () => Step | null]>): Steps<[EngineState, Outcome, (() => Step | null)[]]> {
     const back = kept(s)
-    const [next, out, cellsBack] = yield* write(s, plan.edits)
+    const [next, out, cellsBack] = yield* write(s, plan.edits, plan.styles)
     let o = out
     const steps = [cellsBack]
     // a header cell written renamed its column and built the book again: the plan's sheets, made on the book before, go on the new one
@@ -367,7 +369,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       back(cells?.kind === 'cells' ? cells.edits : [])
       throw e
     }
-    if (plan.styles) o = restyled(next, plan.styles, o, steps, call)
+    // a book built again took the plan's styles with it (`writeCells`)
+    if (plan.styles && next === s) o = restyled(next, plan.styles, o, steps, call)
     return [next, o, steps]
   }
   /** Sheets of a prepared layout put in (`relayout`) after the changes `o`: the changes of both, and the step back added to `steps`. */
@@ -610,7 +613,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       checkBase(eo, revision)
       const plan = clearPlan(s, ranges, what)
-      const write = what === 'formats' ? lookCells : (x: EngineState, edits: CellReplace[]) => writeCells(x, edits, 'clearCells')
+      const write = what === 'formats' ? lookCells : (x: EngineState, edits: CellReplace[], styles?: CellStyle[]) => writeCells(x, edits, 'clearCells', styles)
       const [next, out, steps] = yield* applyPlan(s, plan, 'clearCells', write)
       if (ranges.length) keep(() => manyStep('clearCells', steps.map((f) => f())))
       return answer(next, out)
@@ -725,7 +728,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const plan = op.op === 'mergeCells' || op.op === 'unmergeCells' ? mergedPlan(old, op) : null
       if (plan && 'ok' in plan) return plan
       if (plan) {
-        const [next, out, steps] = yield* applyPlan(old, plan, 'editStructure', (x, edits) => writeCells(x, edits, 'editStructure'))
+        const [next, out, steps] = yield* applyPlan(old, plan, 'editStructure', (x, edits, styles) => writeCells(x, edits, 'editStructure', styles))
         keep(() => manyStep('editStructure', steps.map((f) => f())))
         return { ok: true, mapCell: checkedMapCell({ geometry: [], before: old.sheetNames, after: old.sheetNames }), ...answer(next, out) }
       }

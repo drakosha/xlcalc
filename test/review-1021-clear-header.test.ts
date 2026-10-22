@@ -44,6 +44,21 @@ describe.each(EXECUTIONS)('%s', (execution) => {
       return s
     }
 
+    it('Clear All over a header on a styled row comes back whole after an undo and a redo (A)', async () => {
+      const fresh = await open(book(), { execution, clock })
+      const before = await held(fresh, execution)
+      await fresh.close()
+      for (const through of ['clearCells', 'applyChanges'] as const) {
+        const s = await cleared('all', 'B1', through)
+        const after = await held(s, execution)
+        await s.undo()
+        expect(await held(s, execution)).toEqual(before)
+        await s.redo()
+        expect(await held(s, execution)).toEqual(after)
+        await s.close()
+      }
+    })
+
     it('a range through a header clears the cells with a look alone (B)', async () => {
       for (const through of ['clearCells', 'applyChanges'] as const) {
         for (const range of ['B1:B6', 'B:B']) {
