@@ -46,9 +46,15 @@ function dateTime(n: number, time: boolean, r: Rules): string {
   return secs || time ? `${date}  ${clock}` : date
 }
 
+/** A percent cell's number times 100; where the product overflows, the exponent moved by two in the text (1E+307 is 1E+309%). */
+function percentText(n: number, r: Rules): string {
+  const p = n * 100
+  return Number.isFinite(p) ? whole(p, r) : whole(n, r).replace(/E\+(\d+)$/, (_, e: string) => `E+${Number(e) + 2}`)
+}
+
 function numberText(n: number, format: NumberFormat | undefined, r: Rules): string {
   const as = shownAs(n, format)
-  if (as === 'percent') return `${whole(n * 100, r)}%`
+  if (as === 'percent') return `${percentText(n, r)}%`
   if ((as === 'date' || as === 'time') && n >= 0 && n + r.epoch < END) return dateTime(n, as === 'time', r)
   return whole(n, r)
 }

@@ -52,4 +52,12 @@ describe('entryText at the edges of the range', () => {
     expect(entryText(2958465.99999, { numberFormat: 22 })).toBe('12/31/9999  11:59:59 PM')
   })
 
+  it('writes a percentage whose value times 100 overflows with the exponent moved by two, and reads it back', () => {
+    for (const [v, en, ru] of [[1.8e306, '1.8E+308%', '1,8E+308%'], [1e307, '1E+309%', '1E+309%'], [9.99e307, '9.99E+309%', '9,99E+309%'], [-1e307, '-1E+309%', '-1E+309%']] as const) {
+      expect(entryText(v, { numberFormat: '0%' })).toBe(en)
+      expect(entryText(v, { numberFormat: '0%', locale: ruRU })).toBe(ru)
+      if (v > 0) expect(parseEntry(en, { cell: { numberFormat: '0%' }, inPlace: true })).toEqual({ ok: true, input: { value: v, numberFormat: 11 } })
+    }
+    expect(entryText(1e306, { numberFormat: 9 })).toBe('1E+308%')
+  })
 })
