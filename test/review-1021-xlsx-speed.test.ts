@@ -55,4 +55,14 @@ describe('xlsx: reading in time linear in the sheet (speed-u1, u3, u5, u6)', () 
     expect([cells.A1, cells.A6, cells.A49996]).toEqual([{ formula: 'B1*2' }, { formula: 'B6*2' }, { formula: 'B49996*2' }])
     expect(ms).toBeLessThan(1000)
   }, 120_000)
+
+  it('20,000 merged areas (speed-u5): checked against each other once', async () => {
+    const merges = rows(20_000, (i) => `<mergeCell ref="A${2 * i + 1}:B${2 * i + 1}"/>`)
+    // 5.5 s when each merge sorted all the merges before it
+    const data = await file(`<sheetData/><mergeCells count="20000">${merges}</mergeCells>`)
+    const [ms, r] = await timed(() => readXlsx(data))
+    expect(r.book.sheets[0].merges).toHaveLength(20_000)
+    expect(r.issues).toEqual([])
+    expect(ms).toBeLessThan(1000)
+  }, 120_000)
 })

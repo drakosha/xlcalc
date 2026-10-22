@@ -202,17 +202,26 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
 }
 
 function merges(rest: string, sheet: string, issues: Issues): string[] | undefined {
-  const xs: Rect[] = []
+  const refs: string[] = []
+  const all: Rect[] = []
   for (const e of elements(element(rest, 'mergeCells')?.body ?? '', 'mergeCell')) {
     const ref = attributes(e.attrs).ref?.toUpperCase()
     const x = ref ? parseMerge(ref) : null
     if (!x) continue
-    xs.push(x)
-    const o = overlapping(xs)
-    if (o) {
-      xs.pop()
-      issues.add('part', { key: 'mergeOverlap' }, { sheet, cell: ref })
-    }
+    refs.push(ref!)
+    all.push(x)
+  }
+  // one check of the whole list; only a list with an overlap is taken merge by merge, each kept unless it meets one kept
+  let xs = all
+  if (overlapping(all)) {
+    xs = []
+    all.forEach((x, i) => {
+      xs.push(x)
+      if (overlapping(xs)) {
+        xs.pop()
+        issues.add('part', { key: 'mergeOverlap' }, { sheet, cell: refs[i] })
+      }
+    })
   }
   return xs.length ? xs.map(cornersText) : undefined
 }
