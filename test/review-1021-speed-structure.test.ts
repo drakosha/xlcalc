@@ -88,6 +88,19 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     expect(s.getBook().sheets[0].validations).toEqual([{ range: `A1:A${n}`, type: 'whole', operator: 'greaterThan', formula1: '0' }])
   })
 
+  it('a merge across walks the cells of its range once, not once per row (speed-u93)', () => {
+    const n = 20_000
+    const cells: BookInput['sheets'][0]['cells'] = {}
+    for (let r = 1; r <= n; r++) for (const c of 'ABDEF') cells[`${c}${r}`] = { value: r }
+    const s = createSession({ sheets: [{ name: 'S', cells }] }, { execution, clock, display: false })
+    // the old merge walked the sheet's cells for each row: 5-6 s at 20,000 rows of 100,000 cells
+    const ms = timed(() => expect(s.editStructure({ op: 'mergeCells', sheet: 'S', range: `A1:C${n}`, across: true }).ok).toBe(true))
+    expect(ms).toBeLessThan(3000)
+    const sheet = s.getBook().sheets[0]
+    expect(sheet.merges?.length).toBe(n)
+    expect([sheet.cells.A7?.value, sheet.cells.B7, sheet.cells.D7?.value]).toEqual([7, undefined, 7])
+  })
+
   describe('editStructure checks the cells it was given, not those it made (speed-u95)', () => {
     const book = (): BookInput => ({ styles: [{}, { font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 1 }, A2: { formula: '=A1+1' }, B1: { style: 1 } } }, { name: 'T', cells: { A1: { formula: 'S!A2*2' } } }] })
     const done = (r: StructureResult) => {
