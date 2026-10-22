@@ -2,16 +2,19 @@
  * Numbers as text by the book's locale (`Cx.rules`): FIXED is ported from formula.js 4.6.1 (src/text.js),
  * Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); TEXT and DOLLAR are this engine's own.
  */
-import { roundHalfUp } from '../../numfmt/general.js'
+import { positional } from '../../numfmt/general.js'
 import type { Cx, FnDef } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, type CErr, type V } from '../../values.js'
 import { roundDigits } from '../common.js'
 
-/** Rounded on the decimal representation (1.005 → 1.01); negative decimals round left of the point; grouped by threes with `group`. */
+/**
+ * Rounded on the decimal representation (1.005 → 1.01); negative decimals round left of the point; 15 significant
+ * digits and zeros past them, as TEXT writes them (`positional`); grouped by threes with `group`.
+ */
 function fixedDigits(x: number, decimals: number, rules: Rules, group: boolean): { text: string; zero: boolean } {
   const k = Math.max(decimals, 0)
-  const text = roundHalfUp(Math.abs(roundDigits(x, decimals, Math.round)), k)
+  const text = positional(Math.abs(roundDigits(x, decimals, Math.round)), k)
   const [ip, fp] = text.split('.')
   const grouped = group ? ip.replace(/\B(?=(\d{3})+$)/g, rules.group) : ip
   return { text: grouped + (fp === undefined ? '' : rules.decimal + fp), zero: Number(text) === 0 }

@@ -33,3 +33,24 @@ describe.each(['closures', 'eval'] as const)('whitespace around number text, %s'
     expect(values(['(CHAR(9)&"5")+0', '(UNICHAR(160)&"5")+0', '" 5"+0'], execution, 'ru-RU')).toEqual([value, value, 5])
   })
 })
+
+describe.each(['closures', 'eval'] as const)('FIXED and DOLLAR of large numbers, %s', (execution) => {
+  it('write the digits from 1E+21 on, 15 significant ones and zeros, as TEXT does', () => {
+    const cases: [string, string][] = [
+      ['FIXED(1E21)', '1,000,000,000,000,000,000,000.00'],
+      ['FIXED(1E21,2,TRUE)', '1000000000000000000000.00'],
+      ['FIXED(-1E21,0)', '-1,000,000,000,000,000,000,000'],
+      ['FIXED(1E21,-5)', '1,000,000,000,000,000,000,000'],
+      ['FIXED(123456789012345678901234,0)', '123,456,789,012,345,000,000,000'],
+      ['DOLLAR(1E21)', '$1,000,000,000,000,000,000,000.00'],
+      ['DOLLAR(-1E21)', '($1,000,000,000,000,000,000,000.00)'],
+      ['FIXED(2^60,0)', '1,152,921,504,606,850,000'],
+      ['FIXED(1/3,20)', '0.33333333333333300000'],
+      ['FIXED(1.005,2)', '1.01'],
+      ['FIXED(1234.567,-2)', '1,200'],
+      ['FIXED(1E20)', '100,000,000,000,000,000,000.00'],
+    ]
+    expect(values(cases.map((c) => c[0]), execution)).toEqual(cases.map((c) => c[1]))
+    expect(values(['FIXED(1E21,1)'], execution, 'ru-RU')).toEqual(['1 000 000 000 000 000 000 000,0'])
+  })
+})
