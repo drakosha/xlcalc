@@ -6,9 +6,9 @@
  * what it changes: a formula left out, #ERROR! as #NULL!, text cut without splitting a character. Reading a file does
  * not calculate; what a write takes from a result is checked in both execution modes.
  */
-import { deflateRawSync } from 'node:zlib'
+import { crc32 as zlibCrc32, deflateRawSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
-import { openArchive } from '../src/xlsx/zip/read.js'
+import { crc32, openArchive } from '../src/xlsx/zip/read.js'
 import { rawZip, type RawEntry } from './fixtures/raw-zip.js'
 import type { BookInput } from '../src/contract.js'
 import { compute } from '../src/index.js'
@@ -57,6 +57,13 @@ describe('xlsx: a damaged zip archive (x-xlsx-3, x-xlsx-12, x-xlsx-13)', () => {
     expect(await refusal(rawZip([{ ...entry('a.xml', text), usize: 5 }]))).toBe('Error: xlsx: not a readable zip archive: entry a.xml is stored in 12 bytes but says it holds 5')
     expect(await openArchive(rawZip([deflated])).text('a.xml')).toBe(text)
     expect(await openArchive(rawZip([entry('a.xml', text)])).text('a.xml')).toBe(text)
+  })
+
+  it("the reader's CRC-32 is zlib's", () => {
+    for (const n of [0, 1, 7, 8, 9, 16, 17, 1000]) {
+      const data = Uint8Array.from({ length: n }, (_, i) => (i * 131 + n) & 0xff)
+      expect(crc32(data)).toBe(zlibCrc32(data))
+    }
   })
 })
 
