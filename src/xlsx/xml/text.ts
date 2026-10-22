@@ -18,8 +18,22 @@ export function decodeEscapes(s: string): string {
   return s.replace(/_x([0-9A-Fa-f]{4})_/g, (_, h: string) => String.fromCharCode(parseInt(h, 16)))
 }
 
-/** Text of an XML element (`<t>`, `<v>`): entities, then Excel's escapes. */
-export const readText = (s: string): string => decodeEscapes(decodeXml(s))
+/** Entities to characters outside CDATA sections, whose content is taken as written (an attribute value holds none: it holds no `<`). */
+function decodeData(s: string): string {
+  if (!s.includes('<![CDATA[')) return decodeXml(s)
+  let out = ''
+  let at = 0
+  for (let open = s.indexOf('<![CDATA[', at); open >= 0; open = s.indexOf('<![CDATA[', at)) {
+    const close = s.indexOf(']]>', open + 9)
+    if (close < 0) break
+    out += decodeXml(s.slice(at, open)) + s.slice(open + 9, close)
+    at = close + 3
+  }
+  return out + decodeXml(s.slice(at))
+}
+
+/** Text of an XML element (`<t>`, `<v>`): entities and CDATA sections, then Excel's escapes. */
+export const readText = (s: string): string => decodeEscapes(decodeData(s))
 
 const hex4 = (c: number) => `_x${c.toString(16).toUpperCase().padStart(4, '0')}_`
 

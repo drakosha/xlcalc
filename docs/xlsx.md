@@ -102,7 +102,7 @@ A zip archive can contain a part that inflates to a thousand times its compresse
 
 Text, numbers and booleans become values. Dates stay numbers, as Excel stores them, and their number format makes them display as dates. The ISO dates of Strict files (`t="d"`) become serial numbers too.
 
-Text keeps its spaces and line breaks. Excel's escapes for characters XML cannot represent are decoded: `_x000B_` is a vertical tab, and `_x005F_x0041_` is the literal text `_x0041_`. Rich text is read as its plain text and reported. Phonetic readings of East Asian text are not part of the text.
+Text keeps its spaces and line breaks. Excel's escapes for characters XML cannot represent are decoded: `_x000B_` is a vertical tab, and `_x005F_x0041_` is the literal text `_x0041_`. A CDATA section, which some other writers use for text with `<` or `&`, gives its content as written. Rich text is read as its plain text and reported. Phonetic readings of East Asian text are not part of the text.
 
 The model has no error values, so an error stored as a cell's value is read as a formula consisting of that error: a cell containing `#N/A` gets the formula `#N/A`.
 

@@ -9,7 +9,7 @@ import type { BookInput } from '../src/contract.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { rawZip, type RawEntry } from './fixtures/raw-zip.js'
-import { pack, read, sheet } from './xlsx-fixtures.js'
+import { pack, read, sheet, storedValues } from './xlsx-fixtures.js'
 
 /** The rejections nobody handled while `f` ran, and a moment after, when Node reports them. */
 async function unhandledDuring(f: () => Promise<void>): Promise<unknown[]> {
@@ -242,5 +242,15 @@ describe('xlsx: a threshold of a type the model does not have (x-xlsx-7)', () =>
     const x14 = `<extLst><ext uri="{78C0D931-6437-407d-A8EE-F0AAD7539E65}" xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main"><x14:conditionalFormattings><x14:conditionalFormatting xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main"><x14:cfRule type="dataBar" id="${id}"><x14:dataBar minLength="0" maxLength="100" direction="rightToLeft"><x14:cfvo type="banana"/><x14:cfvo type="autoMax"/></x14:dataBar></x14:cfRule><xm:sqref>B1:B3</xm:sqref></x14:conditionalFormatting></x14:conditionalFormattings></ext></extLst>`
     const r = await read({ sheets: [{ name: 'S', body: `<sheetData/>${cf('B1:B3', bar('max', ext))}${x14}` }] })
     expect(r.book.sheets[0].conditionalFormats).toEqual([{ ranges: ['B1:B3'], type: 'dataBar', min: { type: 'min' }, max: { type: 'max' }, color: '#638EC6', direction: 'rightToLeft', negativeColor: '#FF0000' }])
+  })
+})
+
+describe('xlsx: CDATA sections (x-xlsx-14)', () => {
+  it('give their content, entities in them as written and Excel\'s escapes decoded', async () => {
+    const rows = '<row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="inlineStr"><is><t><![CDATA[a&amp;b <i>]]></t></is></c><c r="C1"><f><![CDATA[1+1]]></f><v>2</v></c><c r="D1" t="str"><f>"x&lt;y"</f><v><![CDATA[x<y]]></v></c><c r="E1" t="s"><v>1</v></c></row>'
+    const r = await read({ sheets: [{ name: 'S', body: `<sheetData>${rows}</sheetData>` }], strings: [], parts: { 'xl/sharedStrings.xml': '<sst><si><t><![CDATA[hello <cdata> & stuff]]></t></si><si><t>a &amp; <![CDATA[&amp;]]> _x0041_</t></si></sst>' } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 'hello <cdata> & stuff' }, B1: { value: 'a&amp;b <i>' }, C1: { formula: '1+1' }, D1: { formula: '"x<y"' }, E1: { value: 'a & &amp; A' } })
+    expect(storedValues(r)).toEqual({ C1: 2, D1: 'x<y' })
+    expect(r.issues).toEqual([])
   })
 })
