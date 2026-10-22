@@ -8,7 +8,7 @@ import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.j
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { spend } from '../exec/budget.js'
-import { say, type Message } from '../locale/messages.js'
+import { say, type EngineMessage } from '../locale/messages.js'
 import { formatAddress, parseAddress, readAddress } from '../model.js'
 import { clockSerial } from '../result.js'
 import { ERROR_TEXT } from '../syntax.js'
@@ -56,7 +56,7 @@ export function renamedByPaste(tables: Tables, after: BookInput, areas: [number,
 const qualified = (formula: string, tables: Tables, t: Table) => rewriteTableRefs(formula, tables, t, null, () => undefined, true)
 
 /** Cut `src` of sheet `from` and paste it at `to`, `dr` rows and `dc` columns away: the tables it carries, refusals. */
-export function moveTables(book: BookInput, from: string, src: Rect, to: string, dr: number, dc: number): { refuse?: Message; before(b: BookInput): BookInput; after(b: BookInput): BookInput } {
+export function moveTables(book: BookInput, from: string, src: Rect, to: string, dr: number, dc: number): { refuse?: EngineMessage; before(b: BookInput): BookInput; after(b: BookInput): BookInput } {
   const tables = tablesOf(book)
   const [fs, ts] = [sheetIndex(book, from), sheetIndex(book, to)]
   const dst = shiftRect(src, dr, dc)

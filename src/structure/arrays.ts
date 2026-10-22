@@ -5,7 +5,7 @@
  * its own.
  */
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
-import type { Message } from '../locale/messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { contains, hi, intersect, lo, meets, parseRange, rectText, shiftRect, type Axis, type Rect } from './area.js'
@@ -17,7 +17,7 @@ import { sheetOf } from './rewrite.js'
  * Excel's refusal of an array formula of several cells that a paste left over a table of sheet `sheet` (checkBook
  * refuses the book), or null.
  */
-export function arrayInTable(sheet: SheetInput): Message | null {
+export function arrayInTable(sheet: SheetInput): EngineMessage | null {
   if (!sheet.tables?.length) return null
   for (const [, x] of arraysOf(sheet)) {
     if (x.r1 === x.r2 && x.c1 === x.c2) continue
@@ -35,7 +35,7 @@ export function relocated(cell: CellInput, from: string, to: string): CellInput 
 }
 
 /** Why Excel refuses to insert (`n` > 0) or delete lines of `sheet` at `at`, or null: lines inside an area, part of an area deleted. */
-export function shiftRefusal(sheet: SheetInput, axis: Axis, at: number, n: number): Message | null {
+export function shiftRefusal(sheet: SheetInput, axis: Axis, at: number, n: number): EngineMessage | null {
   for (const [addr, x] of arraysOf(sheet)) {
     const [a, b] = [lo(x, axis), hi(x, axis)]
     const cut = n > 0 ? at > a && at <= b : at <= b && at - n - 1 >= a && !(at <= a && at - n - 1 >= b)
@@ -44,10 +44,10 @@ export function shiftRefusal(sheet: SheetInput, axis: Axis, at: number, n: numbe
   return null
 }
 
-const refuse = (sheet: string, cell: string, x: Rect): Message => ({ key: 'arrayPart', sheet, cell, area: rectText(x) })
+const refuse = (sheet: string, cell: string, x: Rect): EngineMessage => ({ key: 'arrayPart', sheet, cell, area: rectText(x) })
 
 /** Why Excel refuses a move or a paste, or null: a move taking part of an area, cells landing on part of one that stays. */
-export function arrayRefusal(book: BookInput, p: Paste): Message | null {
+export function arrayRefusal(book: BookInput, p: Paste): EngineMessage | null {
   if (p.move) for (const [addr, x] of arraysOf(sheetOf(book, p.from))) if (meets(x, p.src) && !contains(p.src, x)) return refuse(p.from, addr, x)
   const moving = (x: Rect) => p.move && sheetKey(p.from) === sheetKey(p.to) && contains(p.src, x)
   for (const [addr, x] of arraysOf(sheetOf(book, p.to))) if (meets(x, p.area) && !contains(p.area, x) && !moving(x)) return refuse(p.to, addr, x)

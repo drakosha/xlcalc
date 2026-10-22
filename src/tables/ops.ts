@@ -6,7 +6,7 @@ import type { BookInput, StructureOp, TableInput } from '../contract.js'
 import { checkTables } from './check.js'
 import { InputError } from '../input-error.js'
 import { formatAddress } from '../model.js'
-import { say, type Message } from '../locale/messages.js'
+import { say, type EngineMessage } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'
 import { nameRule } from '../syntax.js'
 import { meets, parseRange, rectCells } from '../structure/area.js'
@@ -33,7 +33,7 @@ function withTable(book: BookInput, key: string, next: TableInput | null): BookI
 }
 
 /** A name a table can take in the book: Excel's rules, not another table's or a defined name (but `own`). */
-export function nameRefusal(book: BookInput, name: string, own?: string): Message | null {
+export function nameRefusal(book: BookInput, name: string, own?: string): EngineMessage | null {
   // not ИСТИНА in ru-RU, as Excel for Windows (Excel for Mac keeps such a table's name)
   const rule = nameRule(name, localeBooleans(book.locale))
   if (rule) return { key: 'tableName', name, rule }

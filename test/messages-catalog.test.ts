@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
+import { EDIT_MESSAGES } from '../src/locale/edit-messages.js'
 import { toLocal } from '../src/locale/index.js'
 import { ruRU } from './locales.js'
 import { ownText, say, XLSX_MESSAGE_KEYS, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
@@ -147,7 +148,7 @@ const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValu
 
 describe('the catalog of messages', () => {
   it("ru-RU writes every message of en-US and of the xlsx subpath, whose keys registerLocale takes", () => {
-    const keys = [...Object.keys(EN_MESSAGES), ...Object.keys(XLSX_EN_MESSAGES)]
+    const keys = [...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES), ...Object.keys(XLSX_EN_MESSAGES)]
     expect(keys.filter((k) => ruRU.messages?.[k as MessageKey] === undefined)).toEqual([])
     expect(Object.keys(SAMPLES).sort()).toEqual([...keys].sort())
     expect(Object.keys(XLSX_MESSAGE_KEYS).sort()).toEqual(Object.keys(XLSX_EN_MESSAGES).sort())
