@@ -1,6 +1,7 @@
 /**
  * Formatting under structure operations, from the review of 21.10: looks reaching the sheet's edge no longer refuse an
- * insert. Each result's book computes, a session's hash is a full computation's, and undo and redo give the books
+ * insert, inserted lines take the look of the line before them as rectangles, copies and moves carry looks as
+ * rectangles. Each result's book computes, a session's hash is a full computation's, and undo and redo give the books
  * back.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -80,6 +81,56 @@ describe.each(EXECUTIONS)('looks at the sheet\'s edge (x-fix-structure-looks-4),
       await inSession(open, wide(), { op: 'insertColumns', sheet: 'Plan', column: 'B', count: 3 }, execution)
       const after = await inSession(open, sheet({ A1: { value: 1 } }, [{ range: 'D:D', style: 0 }]), { op: 'insertRows', sheet: 'S', row: 2, count: 4 }, execution)
       expect(after.sheets[0].looks).toEqual([{ range: 'D:D', style: 0 }])
+    })
+  })
+})
+
+/** Thirty cells of a header row, A1:AD1, each with a value and a style. */
+function header(): BookInput {
+  const cells: BookInput['sheets'][number]['cells'] = {}
+  for (let c = 0; c < 30; c++) cells[`${c < 26 ? '' : 'A'}${String.fromCharCode(65 + (c % 26))}1`] = { value: c, style: 0 }
+  return sheet(cells)
+}
+
+describe.each(EXECUTIONS)('inserted lines take the look of the line before them as rectangles (fix-u298), %s', (execution) => {
+  it('a million rows under a styled header: one look, in a fraction of a second', () => {
+    const t0 = performance.now()
+    const out = edited(header(), { op: 'insertRows', sheet: 'S', row: 2, count: 1_000_000 }, execution)
+    expect(performance.now() - t0).toBeLessThan(2000)
+    expect(out.sheets[0].looks).toEqual([{ range: 'A2:AD1000001', style: 0 }])
+    expect(Object.keys(out.sheets[0].cells)).toHaveLength(30)
+  })
+
+  it('100 columns beside a formatted column of 34,000 cells: one look', () => {
+    const cells: BookInput['sheets'][number]['cells'] = {}
+    for (let r = 1; r <= 34_000; r++) cells[`A${r}`] = { value: r, numberFormat: '#,##0.00' }
+    const t0 = performance.now()
+    const out = edited(sheet(cells), { op: 'insertColumns', sheet: 'S', column: 'B', count: 100 }, execution)
+    expect(performance.now() - t0).toBeLessThan(2000)
+    expect(out.sheets[0].looks).toEqual([{ range: 'B1:CW34000', numberFormat: '#,##0.00' }])
+  })
+
+  it('a table\'s calculated column in the new rows keeps the look of the row before', () => {
+    const book: BookInput = {
+      styles,
+      sheets: [{
+        name: 'S',
+        cells: { A1: { value: 'k' }, B1: { value: 'v' }, A2: { value: 1, style: 1 }, B2: { formula: 'A2*2', style: 0, numberFormat: '0.0' }, A3: { value: 2 }, B3: { formula: 'A3*2' } },
+        tables: [{ name: 'T', range: 'A1:B3', columns: [{ name: 'k' }, { name: 'v', formula: '[@k]*2' }] }],
+      }],
+    }
+    const out = edited(book, { op: 'insertRows', sheet: 'S', row: 3, count: 2 }, execution)
+    expect(out.sheets[0].cells.B3).toEqual({ formula: '[@k]*2', style: 0, numberFormat: '0.0' })
+    expect(out.sheets[0].cells.B4).toEqual({ formula: '[@k]*2', style: 0, numberFormat: '0.0' })
+    expect(out.sheets[0].looks).toEqual([{ range: 'A3:A4', style: 1 }])
+  })
+
+  describe.each(KINDS)('in %s', (kind) => {
+    const open = openerFor(kind)
+    it('inserts a million rows under a styled header and 100 columns, with undo and redo', async () => {
+      const after = await inSession(open, header(), { op: 'insertRows', sheet: 'S', row: 2, count: 1_000_000 }, execution)
+      expect(after.sheets[0].looks).toEqual([{ range: 'A2:AD1000001', style: 0 }])
+      await inSession(open, header(), { op: 'insertColumns', sheet: 'S', column: 'B', count: 100 }, execution)
     })
   })
 })

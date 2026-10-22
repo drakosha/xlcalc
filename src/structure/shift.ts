@@ -13,7 +13,7 @@ import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
 import { gridOf } from './grid.js'
 import { relocated, shiftRefusal } from './arrays.js'
-import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
+import { openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { copyTransform, deleteSpan, insertSpan } from './transform.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
@@ -108,10 +108,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     const tableFields = list ? { tables: list } : {}
     const validations = moving ? shiftValidations(s.validations, s.name, axis, at, n, t, names) : rewriteValidations(s.validations, s.name, s.name, t, names)
     if (!moving) return changed || validations !== s.validations ? { ...s, cells, ...tableFields, ...(validations ? { validations } : {}) } : s
-    // the new lines take the format of the line before them
-    const before = n > 0 ? formatBefore(s, axis, at, n) : {}
-    Object.assign(cells, before)
-    madeFrom([s.cells], cells, before)
+    // the new lines take the format of the line before them with the sheet's looks (`linesMoved`)
+    madeFrom([s.cells], cells)
     const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
     const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, frozen: shiftFrozen(s.frozen, axis, at, n), validations }
     for (const k of ['columns', 'rows', 'merges', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
