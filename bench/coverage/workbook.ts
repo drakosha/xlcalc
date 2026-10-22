@@ -39,7 +39,9 @@ function stepLine(s: Step): string {
   }
   if ('formula' in s) {
     const { sheet, cell, formula, dynamic, array } = s.formula
-    return array ? ['formulaarray', sheet, array, `=${fileFormula(formula)}`].join('\t') : [dynamic ? 'formula2' : 'formula', sheet, cell, `=${fileFormula(formula)}`].join('\t')
+    // typed as Excel 365 enters it, in the user's spelling: Excel for Mac leaves a cell empty when typed `_xlpm.` names reach it
+    if (dynamic) return ['formula2', sheet, cell, `=${formula}`].join('\t')
+    return array ? ['formulaarray', sheet, array, `=${fileFormula(formula)}`].join('\t') : ['formula', sheet, cell, `=${fileFormula(formula)}`].join('\t')
   }
   if ('hide' in s) {
     const { sheet, rows, hidden } = s.hide
