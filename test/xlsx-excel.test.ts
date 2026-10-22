@@ -139,6 +139,9 @@ const SAVED_KNOWN: Record<string, string> = {
 /** Cases where the value Excel stored on saving differs from its stored answer: Excel does not repeat it. */
 const SAVED_UNSTABLE: Record<string, string> = { 'fuzz:1#1263': 'DAY(WEEKNUM(40977,1E+3)<>2.5): 1 or #NUM! from run to run (bench/coverage/README.md)' }
 
+/** Cells Excel left uncomputed, in a circular reference without iterative calculation: the file stores empty text for them. */
+const SAVED_UNCOMPUTED: Record<string, string> = Object.fromEntries(['SUMIF#1', 'SUMIF#2', 'SUMIF#3'].map((id) => [`sumif-own-held:${id}`, "SUMIF inside its own resized sum range (OPEN in test/excel-open.ts)"]))
+
 describe.skipIf(!existsSync(new URL('saved.json', dir)))('xlsx case books saved by Excel', async () => {
   const files = readdirSync(new URL('saved/', dir)).filter((f) => f.endsWith('.xlsx'))
   const sets = new Map<string, { probes: Probe[]; sheets: SheetCells; answers: Record<string, Parameters<typeof matches>[1]> }>()
@@ -173,7 +176,7 @@ describe.skipIf(!existsSync(new URL('saved.json', dir)))('xlsx case books saved 
         const [engine, fromFile] = [toVal(sent[`A${i + 1}`].value), toVal(got[`A${i + 1}`].value)]
         if (show(engine) !== show(fromFile) && !SAVED_KNOWN[key]) off.push(`${key} ${p.formula}: sent ${show(engine)}, read ${show(fromFile)}`)
         const stored = read.cached.sheets[c].cells[`A${i + 1}`]?.value
-        if ((stored === undefined || !matches(p.fn, s.answers[p.id], toVal(stored))) && !SAVED_UNSTABLE[key]) off.push(`${key}: Excel's answer ${show(s.answers[p.id])}, stored in the file ${stored === undefined ? 'nothing' : show(toVal(stored))}`)
+        if ((stored === undefined || !matches(p.fn, s.answers[p.id], toVal(stored))) && !SAVED_UNSTABLE[key] && !SAVED_UNCOMPUTED[key]) off.push(`${key}: Excel's answer ${show(s.answers[p.id])}, stored in the file ${stored === undefined ? 'nothing' : show(toVal(stored))}`)
       })
       expect(off).toEqual([])
     })

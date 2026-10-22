@@ -36,8 +36,8 @@ const WIN_STRUCT: Readonly<Record<string, string | string[]>> = {
   ...Object.fromEntries(
     ['delete-rows-3-4', 'delete-row-1048572', 'delete-row-1048576', 'delete-rows-1048575-2', 'delete-rows-1048568-4', 'delete-columns-B-C', 'delete-column-XFB', 'delete-column-XFD', 'delete-columns-XEZ-3'].map((id) => [`edge-layout:${id}`, EDGE]),
   ),
-  // the Mac's: whole columns copied onto part of a merged area, the fill handle over a filtered sheet
-  ...STRUCT_KNOWN,
+  // the Mac's: whole columns copied onto part of a merged area, the fill handle over a filtered sheet (names-held ran on the Mac alone)
+  ...Object.fromEntries(Object.entries(STRUCT_KNOWN).filter(([k]) => !k.startsWith('names-held:'))),
 }
 
 /** A difference line of the look: a cell's style, a row's height, a column's width. */

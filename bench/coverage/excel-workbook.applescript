@@ -4,8 +4,9 @@
 -- rectangle, the values of its mirrors on the sheets WT, WN and WX (formulas that never give an error) and the
 -- rectangle's formulas as Excel shows them, and the text each cell to show shows (`string value`, Range.Text).
 -- Arguments: book path (inside Excel's sandbox), rectangles as lines "sheet<TAB>range<TAB>mirror range", steps as
--- lines: "full", "calc", "read", "set<TAB>sheet<TAB>cell<TAB>kind<TAB>value" (kind n a number, s a text, x clear),
--- "formula<TAB>sheet<TAB>cell<TAB>=formula",
+-- lines: "full", "rebuild", "calc", "read", "set<TAB>sheet<TAB>cell<TAB>kind<TAB>value" (kind n a number, s a text, x clear),
+-- "formula<TAB>sheet<TAB>cell<TAB>=formula" (as one of the old kind), "formula2<TAB>sheet<TAB>cell<TAB>=formula" (as Excel 365 enters it),
+-- "formulaarray<TAB>sheet<TAB>range<TAB>=formula" (an array formula of the old kind over the range),
 -- "hide<TAB>sheet<TAB>range<TAB>1|0" (the entire rows of the range), "hidecols<TAB>sheet<TAB>range<TAB>1|0",
 -- "filter<TAB>sheet<TAB>range<TAB>field<TAB>criterion"; the cells to show as lines "sheet<TAB>address"; the names of
 -- the mirror sheets of the types, the numbers and the texts, separated by tabs.
@@ -35,6 +36,8 @@ on run argv
 				set k to item 1 of parts
 				if k is "full" then
 					calculate full
+				else if k is "rebuild" then
+					calculate full rebuild
 				else if k is "calc" then
 					calculate
 				else if k is "set" then
@@ -48,6 +51,10 @@ on run argv
 					end if
 				else if k is "formula" then
 					set formula of range (item 3 of parts) of worksheet (item 2 of parts) of wb to (item 4 of parts)
+				else if k is "formula2" then
+					set formula2 of range (item 3 of parts) of worksheet (item 2 of parts) of wb to (item 4 of parts)
+				else if k is "formulaarray" then
+					set formula array of range (item 3 of parts) of worksheet (item 2 of parts) of wb to (item 4 of parts)
 				else if k is "hide" then
 					set hidden of entire row of (range (item 3 of parts) of worksheet (item 2 of parts) of wb) to ((item 4 of parts) is "1")
 				else if k is "hidecols" then

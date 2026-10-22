@@ -1,0 +1,699 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US",
+  "seconds": 11.6
+ },
+ "books": {
+  "plain": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "H1": {
+       "value": 0
+      },
+      "I1": {
+       "value": 0
+      },
+      "J1": {
+       "value": 0
+      },
+      "A2": {
+       "value": 2
+      },
+      "H2": {
+       "value": 0
+      },
+      "I2": {
+       "value": 0
+      },
+      "J2": {
+       "value": 0
+      },
+      "A3": {
+       "value": 3
+      },
+      "H3": {
+       "value": 0
+      },
+      "I3": {
+       "value": 0
+      },
+      "J3": {
+       "value": 0
+      },
+      "A4": {
+       "value": 4
+      },
+      "H4": {
+       "value": 0
+      },
+      "I4": {
+       "value": 0
+      },
+      "J4": {
+       "value": 0
+      },
+      "A5": {
+       "value": 5
+      },
+      "H5": {
+       "value": 0
+      },
+      "I5": {
+       "value": 0
+      },
+      "J5": {
+       "value": 0
+      },
+      "A6": {
+       "value": 6
+      },
+      "H6": {
+       "value": 0
+      },
+      "I6": {
+       "value": 0
+      },
+      "J6": {
+       "value": 0
+      }
+     }
+    }
+   ]
+  },
+  "written": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "H1": {
+       "value": 0
+      },
+      "I1": {
+       "value": 0
+      },
+      "J1": {
+       "value": 0
+      },
+      "A2": {
+       "value": 2
+      },
+      "H2": {
+       "value": 0
+      },
+      "I2": {
+       "value": 0
+      },
+      "J2": {
+       "value": 0
+      },
+      "A3": {
+       "value": 3
+      },
+      "H3": {
+       "value": 0
+      },
+      "I3": {
+       "value": 0
+      },
+      "J3": {
+       "value": 0
+      },
+      "A4": {
+       "value": 4
+      },
+      "H4": {
+       "value": 0
+      },
+      "I4": {
+       "value": 0
+      },
+      "J4": {
+       "value": 0
+      },
+      "A5": {
+       "value": 5
+      },
+      "H5": {
+       "value": 0
+      },
+      "I5": {
+       "value": 0
+      },
+      "J5": {
+       "value": 0
+      },
+      "A6": {
+       "value": 6
+      },
+      "H6": {
+       "value": 0
+      },
+      "I6": {
+       "value": 0
+      },
+      "J6": {
+       "value": 0
+      }
+     },
+     "validations": [
+      {
+       "range": "H3:H6 J1:J3",
+       "type": "custom",
+       "formula1": "$A3>2"
+      }
+     ]
+    }
+   ]
+  },
+  "saved": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "H1": {
+       "value": 0
+      },
+      "I1": {
+       "value": 0
+      },
+      "J1": {
+       "value": 0
+      },
+      "A2": {
+       "value": 2
+      },
+      "H2": {
+       "value": 0
+      },
+      "I2": {
+       "value": 0
+      },
+      "J2": {
+       "value": 0
+      },
+      "A3": {
+       "value": 3
+      },
+      "H3": {
+       "value": 0
+      },
+      "I3": {
+       "value": 0
+      },
+      "J3": {
+       "value": 0
+      },
+      "A4": {
+       "value": 4
+      },
+      "H4": {
+       "value": 0
+      },
+      "I4": {
+       "value": 0
+      },
+      "J4": {
+       "value": 0
+      },
+      "A5": {
+       "value": 5
+      },
+      "H5": {
+       "value": 0
+      },
+      "I5": {
+       "value": 0
+      },
+      "J5": {
+       "value": 0
+      },
+      "A6": {
+       "value": 6
+      },
+      "H6": {
+       "value": 0
+      },
+      "I6": {
+       "value": 0
+      },
+      "J6": {
+       "value": 0
+      }
+     },
+     "validations": [
+      {
+       "range": "J1:J3 H3:H6",
+       "type": "custom",
+       "formula1": "$A3>2"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "made",
+   "book": "plain",
+   "make": [
+    {
+     "sheet": "S",
+     "range": "H3:H6 J1:J3",
+     "rule": {
+      "type": "custom",
+      "formula1": "$A3>2"
+     }
+    }
+   ]
+  },
+  {
+   "id": "written",
+   "book": "written"
+  },
+  {
+   "id": "written-corner-last",
+   "book": "saved"
+  }
+ ],
+ "sent": {
+  "made": "833a3086fe8953697d5c1a66328af517cb0fd1c283067ed93b6c8afb000b0cb4",
+  "written": "e2e0ca9bed90cb46007e072a3499551ebec0abc65e2915e6e944e04b7b4713e7",
+  "written-corner-last": "29587c02c35fbf8ff7d2bd499f2906b4eab98677bd2b800057e98319a5bc47b0"
+ },
+ "answers": {
+  "made": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$H$3",
+       "validate custom",
+       "operator between",
+       "=$A3>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$4",
+       "validate custom",
+       "operator between",
+       "=$A4>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$5",
+       "validate custom",
+       "operator between",
+       "=$A5>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$6",
+       "validate custom",
+       "operator between",
+       "=$A6>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$J$1",
+       "validate custom",
+       "operator between",
+       "=$A1>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$J$2",
+       "validate custom",
+       "operator between",
+       "=$A2>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$J$3",
+       "validate custom",
+       "operator between",
+       "=$A3>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "written": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$H$3",
+       "validate custom",
+       "operator between",
+       "=$A5>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$4",
+       "validate custom",
+       "operator between",
+       "=$A6>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$5",
+       "validate custom",
+       "operator between",
+       "=$A7>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$6",
+       "validate custom",
+       "operator between",
+       "=$A8>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$J$1",
+       "validate custom",
+       "operator between",
+       "=$A3>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$J$2",
+       "validate custom",
+       "operator between",
+       "=$A4>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$J$3",
+       "validate custom",
+       "operator between",
+       "=$A5>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "written-corner-last": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$J$1",
+       "validate custom",
+       "operator between",
+       "=$A3>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$J$2",
+       "validate custom",
+       "operator between",
+       "=$A4>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$J$3",
+       "validate custom",
+       "operator between",
+       "=$A5>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$3",
+       "validate custom",
+       "operator between",
+       "=$A5>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$4",
+       "validate custom",
+       "operator between",
+       "=$A6>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$5",
+       "validate custom",
+       "operator between",
+       "=$A7>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$6",
+       "validate custom",
+       "operator between",
+       "=$A8>2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  }
+ }
+}

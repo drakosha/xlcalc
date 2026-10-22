@@ -51,9 +51,9 @@ function filterRows(session: Session, sheet: string, range: string, field: numbe
 /** A step in the session; `read` takes the result. */
 function apply(session: Session, s: Step, reads: ComputeResult[]) {
   if (s === 'read') reads.push(session.getResult())
-  else if (s === 'full' || s === 'calc' || s === 'save') return
+  else if (s === 'full' || s === 'rebuild' || s === 'calc' || s === 'save') return
   else if ('set' in s) session.setCells([{ sheet: s.set.sheet, cell: s.set.cell, input: s.set.value === null ? null : { value: s.set.value } }])
-  else if ('formula' in s) session.setCells([{ sheet: s.formula.sheet, cell: s.formula.cell, input: { formula: s.formula.formula } }])
+  else if ('formula' in s) session.setCells([{ sheet: s.formula.sheet, cell: s.formula.cell, input: { formula: s.formula.formula, ...(s.formula.array ? { array: s.formula.array } : {}) } }])
   else if ('hide' in s) {
     const { sheet, rows, columns, hidden } = s.hide
     session.setLayout([rows !== undefined ? { sheet, rows, set: { hidden } } : { sheet, columns: columns!, set: { hidden } }])
@@ -100,8 +100,8 @@ export function predictionCheck(c: WorkbookCase, excel: WorkbookAnswer['reads'],
 
 /**
  * A recalculation, a full calculation or an edit computes Excel's cycles again from the values they hold, the
- * engine's from 0 (`BookInput.iteration`): in the set `iterate`, a cell of a read after the first may differ where
+ * engine's from 0 (`BookInput.iteration`): in the sets `iterate` and `spill-cycles-held-2`, a cell of a read after the first may differ where
  * Excel's value moved from its previous read, and must match where it did not.
  */
 export const goesOn = (set: string, excel: WorkbookAnswer['reads'], read: number, cell: string) =>
-  set === 'iterate' && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])
+  (set === 'iterate' || set === 'spill-cycles-held-2') && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])

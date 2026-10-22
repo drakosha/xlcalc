@@ -102,6 +102,16 @@ describe.each(['closures', 'eval'] as const)('a legacy array whose formula does 
     t.setCells(edit('O2', { value: 5 }))
     expect(compute(t.getBook(), { clock, execution }).hash).toBe(t.getHash())
   })
+
+  it.each([['TRANSPOSE(Nope!B2:D3)', 'REF'], ['FOO(A1)', 'NAME'], ['SUM(A1', 'ERROR']])('%s shows its error in every cell of the area and takes no spill, as Excel (spill set error-areas-held)', async (formula, error) => {
+    const b = book({ A1: { value: 1 }, N1: { formula, array: 'N1:O3' }, M2: { formula: 'SEQUENCE(1,3)' }, I1: { formula: 'COUNTBLANK(N1:O3)' }, I2: { formula: 'ISERROR(O2)' } })
+    const r = compute(b, { clock, execution })
+    const v = (a: string) => r.sheets[0].cells[a]?.value
+    for (const a of ['N1', 'O1', 'N2', 'O2', 'N3', 'O3']) expect(v(a), a).toEqual({ error })
+    expect([v('M2'), v('I1'), v('I2')]).toEqual([{ error: 'SPILL' }, 0, true])
+    expect(r.diagnostics.find((d) => d.kind === 'cell' && d.cell === 'N1')).toMatchObject({ error })
+    await sameEverywhere(b, execution)
+  })
 })
 
 describe.each(['closures', 'eval'] as const)('a legacy array over a table, execution %s', (execution) => {

@@ -1,0 +1,180 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-22",
+  "seconds": 2.6
+ },
+ "cases": [
+  {
+   "id": "exp-1",
+   "text": "=0.01E309"
+  },
+  {
+   "id": "exp-2",
+   "text": "=0.1E309"
+  },
+  {
+   "id": "exp-3",
+   "text": "=100E306"
+  },
+  {
+   "id": "exp-4",
+   "text": "=1000E-312"
+  },
+  {
+   "id": "exp-5",
+   "text": "=0.001E-306"
+  },
+  {
+   "id": "exp-6",
+   "text": "=10E-311"
+  },
+  {
+   "id": "exp-7",
+   "text": "=1E-310"
+  },
+  {
+   "id": "exp-8",
+   "text": "=1E-312"
+  },
+  {
+   "id": "exp-9",
+   "text": "=1E-315"
+  },
+  {
+   "id": "exp-10",
+   "text": "=1E-318"
+  },
+  {
+   "id": "exp-11",
+   "text": "=1E-319"
+  },
+  {
+   "id": "exp-12",
+   "text": "=1E-323"
+  },
+  {
+   "id": "exp-13",
+   "text": "=1E-308+1"
+  },
+  {
+   "id": "exp-14",
+   "text": "=ISNUMBER(1E-309)"
+  }
+ ],
+ "answers": {
+  "exp-1": {
+   "cell": {
+    "formula": "1E+307"
+   },
+   "computed": 1e+307,
+   "text": "1E+307",
+   "code": "General",
+   "local": "General",
+   "value2": 1e+307
+  },
+  "exp-2": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-3": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-4": {
+   "cell": {
+    "formula": "0"
+   },
+   "computed": 0,
+   "text": "0",
+   "code": "General",
+   "local": "General",
+   "value2": 0
+  },
+  "exp-5": {
+   "cell": {
+    "formula": "0"
+   },
+   "computed": 0,
+   "text": "0",
+   "code": "General",
+   "local": "General",
+   "value2": 0
+  },
+  "exp-6": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-7": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-8": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-9": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-10": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-11": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-12": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "exp-13": {
+   "cell": {
+    "formula": "0+1"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "exp-14": {
+   "cell": {
+    "formula": "ISNUMBER(0)"
+   },
+   "computed": true,
+   "text": "TRUE",
+   "code": "General",
+   "local": "General"
+  }
+ }
+}

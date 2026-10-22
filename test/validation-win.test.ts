@@ -11,7 +11,9 @@ const SETS = validSets('win/valid/')
 const PINS = { ...VALID_PINS, loose: { 'ru-RU': 'lists' as const } }
 
 describe('data validation and outlines against Excel for Windows', () => {
-  it('every set of the Mac is answered', () => expect(SETS.map((s) => `${s.tag} ${s.name}`)).toEqual(validSets('valid/').map((s) => `${s.tag} ${s.name}`)))
+  // the Mac's alone: anchor-held (a rule's anchor, measured on the Mac only)
+  const MAC_ONLY = new Set(['anchor-held'])
+  it('every set of the Mac is answered', () => expect(SETS.map((s) => `${s.tag} ${s.name}`)).toEqual(validSets('valid/').filter((s) => !MAC_ONLY.has(s.name)).map((s) => `${s.tag} ${s.name}`)))
 })
 
 checkValidSets(SETS, PINS, (name) => import(`../bench/coverage/valid/${name}.ts`))

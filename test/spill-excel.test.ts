@@ -11,6 +11,8 @@ import type { RectsAnswer } from '../bench/coverage/case-book.js'
 import type { StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
 import { computed, differences } from './spill-cases.js'
+import { compare } from '../bench/coverage/compare.js'
+import type { Val } from '../bench/coverage/formulajs.js'
 import { currentCases } from './stored-cases.js'
 
 const dir = new URL('./excel/spill/', import.meta.url)
@@ -58,4 +60,15 @@ describe('held-out spill cases: the engine gives the answer predicted before Exc
     const held = ((await import(`../bench/coverage/spill/${set}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()
     for (const c of held) it(`${set}: ${c.id}`, () => expect(differences(c, { values: c.predicted!, formulas: {} }, computed(c))).toEqual([]))
   }
+})
+
+describe('error-areas-held: the predictions Excel did not confirm are the ones in MISSED', async () => {
+  const { buildSpillCases, MISSED } = (await import('../bench/coverage/spill/error-areas-held.js')) as { buildSpillCases: () => SpillCase[]; MISSED: readonly string[] }
+  const set = SETS.find((s) => s.name === 'error-areas-held')
+  it.skipIf(!set)('each case', () => {
+    // a book Excel did not load misses whatever was predicted for it
+    const same = (a: Record<string, Val>, b: Record<string, Val> = {}) => Object.keys({ ...a, ...b }).every((k) => a[k] !== undefined && b[k] !== undefined && compare(a[k], b[k]).ok)
+    const missed = buildSpillCases().filter((c) => set!.answers[c.id].rejected || !same(set!.answers[c.id].values, c.predicted))
+    expect(missed.map((c) => c.id)).toEqual([...MISSED])
+  })
 })

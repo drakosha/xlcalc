@@ -97,10 +97,27 @@ function outOfRange(text: string, n: number | null, r: Rules): boolean {
 /** The smallest normal number: Excel takes a smaller one typed as 0 (`1E-309`). */
 
 /**
+ * Whether date text read with the clock's year takes the year, not only asks for it: read again 28 years on, in the same
+ * calendar, its value moves (`2/28`); `2/29` in a year that is not leap, read as February 2029, stays.
+ */
+function takesYear(text: string, r: Rules, clock: YearClock, value: number): boolean {
+  const y = clock.y
+  clock.y = y > 9000 ? y - 28 : y + 28
+  try {
+    return dateTimeParts(text, r.dates)?.value !== value
+  } finally {
+    clock.y = y
+  }
+}
+
+/** The rules' clock with its year (`y`), which a reading may set for a moment. */
+export type YearClock = RulesClock & { y: number }
+
+/**
  * Typed text read as a constant by the book's rules; `clock` is the rules' clock, to know a date without a year. In a
  * percent cell (`percent`) a number begun by a digit gets the `%` Excel's editor adds as it is typed.
  */
-export function readTyped(typed: string, r: Rules, clock: RulesClock, percent = false): Typed {
+export function readTyped(typed: string, r: Rules, clock: YearClock, percent = false): Typed {
   const editor = percent && /^[-+]?\d/.test(typed)
   const fp = editor ? fractionPercent(typed) : null
   if (fp !== null) return { t: 'number', v: fp, form: 'percent', format: 10 }
@@ -109,8 +126,8 @@ export function readTyped(typed: string, r: Rules, clock: RulesClock, percent = 
   if (outOfRange(text, n, r)) return { t: 'text', v: text, format: 11 }
   if (n !== null) return { t: 'number', v: Math.abs(n) < MIN_NORMAL ? 0 : n, ...numberForm(text, r) }
   // date and time text is read with no space before it, as an argument reads it
-  const [p, yearless] = readsClock(clock, () => dateTimeParts(text, r.dates))
-  if (p) return { t: 'number', v: p.value, form: p.date === null ? 'time' : 'date', format: dateFormat(p, yearless, r.dates.decimal) }
+  const [p, clocked] = readsClock(clock, () => dateTimeParts(text, r.dates))
+  if (p) return { t: 'number', v: p.value, form: p.date === null ? 'time' : 'date', format: dateFormat(p, clocked && takesYear(text, r, clock, p.value), r.dates.decimal) }
   const e = euro(text, r)
   if (e !== null) return { t: 'number', v: e, form: 'plain' }
   const u = wordKey(text)

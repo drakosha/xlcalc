@@ -59,6 +59,8 @@ A cell with `array: 'B2:C5'` contains an array formula entered over B2:C5. The f
 | a larger array | its top-left part |
 | a single value | that value in every cell |
 
+A formula that cannot be read (a sheet not in the workbook, an unknown function, a syntax error) displays its error in every cell of the range, `#REF!`, `#NAME?` or `#ERROR!`, and keeps the range as any other does, as Excel does with such a formula from a file; Excel itself does not load a file with a syntax error.
+
 `ROW()` and `COLUMN()` return the rows and columns of the range: `{=ROW()}` over E1:E3 displays 1, 2, 3. A single cell (`array: 'B2'`) displays the top-left value: `{=A1:A3}` displays A1, where a plain legacy formula would use implicit intersection.
 
 The range never spills and never returns `#SPILL!`. A dynamic array that runs into it returns `#SPILL!`. In the result, the formula's cell has `spill`, the range, and the other cells have `spillOf`. `B2#` refers to the range.

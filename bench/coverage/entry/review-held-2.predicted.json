@@ -1,0 +1,213 @@
+{
+ "now": "2026-10-22",
+ "locales": {
+  "en-US": {
+   "big-1": {
+    "ok": true,
+    "input": {
+     "formula": "1e+307"
+    }
+   },
+   "big-2": {
+    "ok": true,
+    "input": {
+     "formula": "9.99999999999999e+307"
+    }
+   },
+   "big-3": {
+    "ok": true,
+    "input": {
+     "formula": "9.99999999999999e+307"
+    }
+   },
+   "big-4": {
+    "ok": true,
+    "input": {
+     "formula": "1e+308"
+    }
+   },
+   "big-5": {
+    "ok": true,
+    "input": {
+     "formula": "1.79769313486231e+308"
+    }
+   },
+   "big-6": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1e+308,1)"
+    }
+   },
+   "big-7": {
+    "ok": true,
+    "input": {
+     "formula": "1e+307*10"
+    }
+   },
+   "small-1": {
+    "ok": true,
+    "input": {
+     "formula": "1e-307"
+    }
+   },
+   "small-2": {
+    "ok": true,
+    "input": {
+     "formula": "2.2250738585072e-308"
+    }
+   },
+   "small-3": {
+    "ok": true,
+    "input": {
+     "formula": "2.2e-308"
+    }
+   },
+   "small-4": {
+    "ok": true,
+    "input": {
+     "formula": "1e-308"
+    }
+   },
+   "small-5": {
+    "ok": true,
+    "input": {
+     "formula": "1e-309"
+    }
+   },
+   "small-6": {
+    "ok": true,
+    "input": {
+     "formula": "1e-320"
+    }
+   },
+   "small-7": {
+    "ok": true,
+    "input": {
+     "formula": "5e-324"
+    }
+   },
+   "small-8": {
+    "ok": true,
+    "input": {
+     "formula": "0"
+    }
+   },
+   "small-9": {
+    "ok": true,
+    "input": {
+     "formula": "0"
+    }
+   },
+   "small-10": {
+    "ok": true,
+    "input": {
+     "formula": "0"
+    }
+   }
+  },
+  "ru-RU": {
+   "big-1": {
+    "ok": true,
+    "input": {
+     "formula": "1e+307"
+    }
+   },
+   "big-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "big-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "big-4": {
+    "ok": true,
+    "input": {
+     "formula": "1e+308"
+    }
+   },
+   "big-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "big-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Ожидалась ), а здесь число",
+    "at": 10
+   },
+   "big-7": {
+    "ok": true,
+    "input": {
+     "formula": "1e+307*10"
+    }
+   },
+   "small-1": {
+    "ok": true,
+    "input": {
+     "formula": "1e-307"
+    }
+   },
+   "small-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "small-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "small-4": {
+    "ok": true,
+    "input": {
+     "formula": "1e-308"
+    }
+   },
+   "small-5": {
+    "ok": true,
+    "input": {
+     "formula": "1e-309"
+    }
+   },
+   "small-6": {
+    "ok": true,
+    "input": {
+     "formula": "1e-320"
+    }
+   },
+   "small-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   },
+   "small-8": {
+    "ok": true,
+    "input": {
+     "formula": "0"
+    }
+   },
+   "small-9": {
+    "ok": true,
+    "input": {
+     "formula": "0"
+    }
+   },
+   "small-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «.»",
+    "at": 2
+   }
+  }
+ }
+}

@@ -13,7 +13,7 @@ import { currentStructSet } from './stored-cases.js'
 
 describe('structure operations against Excel en-US', () => {
   it('every set has its cases answered', () => {
-    expect(STRUCT_SETS.map((s) => s.name)).toEqual(['arrays', 'checks', 'cube', 'edge-layout', 'edge-wide', 'edge', 'hidden', 'history', 'move', 'moves', 'rows', 'sheets', 'spill-copy', 'spill-more', 'spill', 'styles-checks', 'styles', 'zero-held'])
+    expect(STRUCT_SETS.map((s) => s.name)).toEqual(['arrays', 'checks', 'cube', 'edge-layout', 'edge-wide', 'edge', 'hidden', 'history', 'move', 'moves', 'names-held', 'rows', 'sheets', 'spill-copy', 'spill-more', 'spill', 'styles-checks', 'styles', 'zero-held'])
   })
 
   it('every STRUCT_KNOWN entry names an existing case', () => {

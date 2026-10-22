@@ -1,6 +1,7 @@
 /**
  * Data validation, from the review of 21.10: a rule whose own ranges overlap is one rule over each cell, not a conflict,
- * and a list through a defined name sees the blanks of its cells past the source sheet's last value.
+ * a list through a defined name sees the blanks of its cells past the source sheet's last value, and a rule's formulas
+ * are written for the corner of the rectangle around its ranges (the valid set `anchor-held`).
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, InputError, type BookInput, type DataValidation } from '../src/index.js'
@@ -58,6 +59,28 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
       // the dropdown leaves out the blanks past the last value
       expect(s.getValidation('S', 'A1')!.list).toHaveLength(3)
     })
+  })
+})
+
+describe.each(['closures', 'eval'] as const)('a rule over ranges that do not start at their corner, execution %s (fix-u310)', (execution) => {
+  // A1:A6 hold 1 to 6: `$A3>2` written for H1, the corner, checks A5 at H3 and A4 at J2, as Excel reads it from a file
+  const cells = Object.fromEntries([1, 2, 3, 4, 5, 6].map((r) => [`A${r}`, { value: r }]))
+  const book = (range: string, formula1: string): BookInput => ({ sheets: [{ name: 'S', cells, validations: [{ range, type: 'custom', formula1 }] }] })
+
+  it.each(['H3:H6 J1:J3', 'J1:J3 H3:H6'])('%s: the verdicts follow the corner H1', async (range) => {
+    const s = createSession(book(range, '$A3>2'), { execution, clock })
+    for (const [cell, ok] of [['J1', true], ['J2', true], ['H3', true]] as const) expect(s.validateEntry('S', cell, { value: 0 }).ok, cell).toBe(ok)
+    const t = createSession(book(range, '$A1>2'), { execution, clock })
+    for (const [cell, ok] of [['J1', false], ['J2', false], ['J3', true], ['H3', true], ['H4', true]] as const) expect(t.validateEntry('S', cell, { value: 0 }).ok, cell).toBe(ok)
+    // the file keeps the formula for the corner, and reads it back so
+    const back = await readXlsx((await writeXlsx({ book: book(range, '$A1>2') })).data)
+    expect(back.book.sheets[0].validations).toEqual([{ range, type: 'custom', formula1: '$A1>2' }])
+  })
+
+  it('a row deleted above the corner moves it, the formula stays written for it', () => {
+    const s = createSession(book('H3:H6 J2:J3', '$A2>2'), { execution, clock })
+    expect(s.editStructure({ op: 'deleteRows', sheet: 'S', row: 1 }).ok).toBe(true)
+    expect(s.getBook().sheets[0].validations).toEqual([{ range: 'H2:H5 J1:J2', type: 'custom', formula1: '$A1>2' }])
   })
 })
 
