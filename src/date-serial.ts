@@ -28,6 +28,9 @@ function epoch(opts: unknown): number {
 /** The last serial number of the date system whose day 0 is `e`: the end of 9999-12-31. */
 const last = (e: number) => MAX_SERIAL - e + 1
 
+/** Whether `serial` is a date of the date system whose day 0 is `e` (`epochOf`), from day 0 to 9999-12-31. */
+export const isDateSerial = (serial: number, e: number) => serial >= 0 && serial < last(e)
+
 const pad = (n: number, width = 2) => String(n).padStart(width, '0')
 
 /**
@@ -54,7 +57,7 @@ export function dateToSerial(text: string, opts?: DateSystemOptions): number {
  */
 export function serialToDate(serial: number, opts?: DateSystemOptions): string {
   const e = epoch(opts)
-  if (typeof serial !== 'number' || !(serial >= 0 && serial < last(e)))
+  if (typeof serial !== 'number' || !isDateSerial(serial, e))
     throw new InputError('serial', `expected the serial number of a date, from 0 to ${last(e) - 1} (9999-12-31) in the ${e === EPOCH_1904 ? '1904' : '1900'} date system, got ${what(serial)}`)
   let day = Math.floor(serial)
   let ms = Math.round((serial - day) * DAY_MS)

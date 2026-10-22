@@ -45,12 +45,10 @@ export { FUNCTION_CATEGORIES } from './function-info.js'
 export { CONFIG_VERSION } from './config.js'
 export { InputError } from './input-error.js'
 export { CalcError } from './exec/budget.js'
-export { enUS, type Locale, type Translation } from './locale/index.js'
+export { enUS } from './locale/index.js'
 export { LOCALES } from './locale/registry.js'
-export type { CopyContext } from './structure/copy.js'
 export * from './a1.js'
 export { callAt, compareValues, columnWidthFromChars, columnWidthFromPoints, columnWidthToChars, columnWidthToPoints, DEFAULT_ROW_HEIGHT, escapeColumn, findMatcher, findReplacer, MAX_OUTLINE, MAX_ROW_HEIGHT, nameAt, numberFormatCategory, numberFormatChoices, formatClipboard, parseClipboard, refAt, scanReferences, valueComparator } from './text.js'
-export type { DateSystemOptions } from './date-serial.js'
 
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses;
 // those that check a formula's calls count by the functions' declared arguments in a bundle without the engine (`declared-arity.ts`)

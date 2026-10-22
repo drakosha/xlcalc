@@ -106,6 +106,9 @@ function refText(tok: Extract<Tok, { t: 'ref' }>, written: string, host: string 
   if (o === undefined) return tok.sheet === null && !same(target, moved ?? host) ? prefix(target) + tok.ref.text + spill : undefined
   if (o === 'gone') return `#REF!${tok.ref.text}${spill}`
   if (o === 'lost') return `${prefix(target)}#REF!${spill}`
+  // a reference that did not change keeps its spelling (the token's text is uppercase)
+  const kept = written.slice(written.length - tok.ref.text.length - spill.length)
+  if (sameArea(o.area, area) && prefix(o.sheet) + kept === written) return undefined
   const next = prefix(o.sheet) + (sameArea(o.area, area) ? tok.ref.text : encode(o.area)) + spill
   return next === written ? undefined : next
 }

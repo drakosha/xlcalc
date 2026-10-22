@@ -20,7 +20,8 @@ import { outValue } from './result.js'
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
-import { allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
+import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
+import { InputError } from './input-error.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet } from './input.js'
@@ -176,7 +177,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   // a call stopped while changing the state in place: the state is built again from its book before the next one
   let stale = false
   const st = () => {
-    if (!state) throw new Error('the session is closed')
+    if (!state) throw new CalcError('closed', 'the session is closed')
     return state
   }
   function* ready(): Steps<EngineState> {
@@ -707,7 +708,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return answer(next, out)
     },
     *setClock(next: Clock, eo?: EditOptions) {
-      if (live) throw new Error('a live session takes its clock from the system')
+      if (live) throw new InputError('clock', 'a live session takes its clock from the system: setClock is for a session opened without live')
       const s = yield* ready()
       checkBase(eo, revision)
       const was = clock

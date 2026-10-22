@@ -9,9 +9,9 @@ import type { BookInput, CellInput } from '../contract.js'
 import { formatAddress } from '../model.js'
 import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
-import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
+import { hi, LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
-import { gridOf } from './grid.js'
+import { arraysOf, gridOf } from './grid.js'
 import { relocated, shiftRefusal } from './arrays.js'
 import { openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
@@ -60,6 +60,9 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   if (n > 0) {
     const off = line.findIndex((i) => i >= LIMIT[axis] - count)
     if (off >= 0) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: grid.addr[off] })
+    // the cells of a legacy array's area past its top cell hold values in Excel, though not entries here
+    const array = arraysOf(target).find(([, x]) => hi(x, axis) >= LIMIT[axis] - count)
+    if (array) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: array[0] })
     if (tables.offSheet) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: tables.offSheet })
   }
   const cut = shiftRefusal(target, axis, at, n)
@@ -113,6 +116,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
     const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, frozen: shiftFrozen(s.frozen, axis, at, n), validations }
     for (const k of ['columns', 'rows', 'merges', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
+    // lines and merged areas all pushed off or deleted leave no field, as a paste leaves none
+    for (const k of ['columns', 'rows', 'merges'] as const) if (layout[k] && !Object.keys(layout[k]).length) delete layout[k]
     return layout
   })
   const out: BookInput = { ...book, sheets: shiftConditional(sheets, target.name, axis, at, n, t, names) }

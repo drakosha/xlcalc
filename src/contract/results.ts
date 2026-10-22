@@ -80,7 +80,10 @@ export interface ComputeOptions {
   externals?: Externals
   /** `closures` by default. */
   execution?: Execution
-  /** Each cell's displayed text and color (`CellResult.text`, `color`); true by default, false calculates values only. */
+  /**
+   * Each cell's displayed text and color (`CellResult.text`, `color`); true by default, false calculates values only.
+   * `readCells` and `findCells` still return `text` when their fields ask for it.
+   */
   display?: boolean
   /** None by default. */
   limits?: CalcLimits
