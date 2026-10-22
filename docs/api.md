@@ -2046,7 +2046,8 @@ interface ComputeResult {
   /**
    * sha256 of the input (sheets, cells, names, and styles, columns, rows, merged areas, frozen panes, conditional formats,
    * data validation and outline settings when there are any). The order of the sheets counts, that of cells and names does
-   * not.
+   * not. A workbook saved to xlsx and read back usually gets another `inputHash` (formulas in canonical text, dates as
+   * numbers, styles renumbered): compare `hash` to tell whether its values changed.
    */
   inputHash: string
   configVersion: string
