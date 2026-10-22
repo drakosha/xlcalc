@@ -102,9 +102,9 @@ function rivals(state: EngineState, id: number, area: Area): (Area & { id: numbe
 /** Array `x.id` gives way to formula `by` (or to an old-kind array's area): its spill, or the range a cycle keeps it, goes, and it waits for that range. */
 function giveWay(state: EngineState, x: Area & { id: number }, t: Tracker | undefined, by?: number) {
   const sp = state.spills
-  release(state, x.id, t)
-  // the range it no longer holds closes no cycle: a claim left until the formula is computed again would stop it
-  claim(state, x.id, undefined)
+  // a spill's claim stays until its formula is computed again (`endSpill`); a range a cycle keeps goes now
+  if (sp.on.has(x.id)) release(state, x.id, t)
+  else claim(state, x.id, undefined)
   sp.wait.set(x.id, { s: x.s, r1: x.r1, c1: x.c1, r2: x.r2, c2: x.c2 })
   if (by !== undefined) sp.by.set(x.id, by)
 }
@@ -166,11 +166,13 @@ function blocked(state: EngineState, f: Formula, t: Tracker | undefined, why: st
 
 /**
  * The formula has no array to spill now (one value, an error, a cycle, or it is gone). In a cycle its claim
- * stays, so the cycle it closes through its range stays found.
+ * stays, so the cycle it closes through its range stays found, unless it was waiting for that range; so it does while
+ * iterative calculation computes the cycle.
  */
 export function endSpill(state: EngineState, f: Formula, t: Tracker | undefined, cycle: boolean) {
+  // an array waiting for its range keeps none: the claim left from its spill closes no cycle
+  if (!(cycle || state.spills.iterating) || state.spills.wait.has(f.id)) claim(state, f.id, undefined)
   release(state, f.id, t)
-  if (!cycle) claim(state, f.id, undefined)
   state.spills.wait.delete(f.id)
   state.spills.why.delete(f.id)
   state.spills.by.delete(f.id)
@@ -179,7 +181,10 @@ export function endSpill(state: EngineState, f: Formula, t: Tracker | undefined,
 /** Sets the area the graph puts the readers of after the formula. */
 function claim(state: EngineState, id: number, x: Area | undefined) {
   const sp = state.spills
-  if (equalAreas(sp.claims.get(id), x)) return
+  const was = sp.claims.get(id)
+  if (equalAreas(was, x)) return
+  // a range a cycle kept and no spill holds is given up: the arrays waiting for it are concerned, as by a release
+  if (was && !sp.on.has(id)) sp.touched.push({ ...was, step: sp.step })
   if (x) sp.claims.set(id, x)
   else sp.claims.delete(id)
   sp.claimsChanged = true

@@ -13,6 +13,7 @@ import type { RuntimeContext, SheetData } from './runtime.js'
 import { Column } from './column.js'
 import { heldAt, unhold } from './held.js'
 import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
+import { beats } from './spill/rank.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
 import { sheetKey } from './syntax.js'
@@ -107,8 +108,7 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
         if (f.area) { array = true; v = fixed(state, f, x, t) }
         else if (isMany(x)) { array = true; v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t) }
         else {
-          // an iteration keeps the cycle it computes: an array of the cycle that gives one value in a pass keeps its range
-          endSpill(state, f, t, iterating)
+          endSpill(state, f, t, false)
           v = shown(rt.scalar(x))
         }
       } catch (e) {
@@ -161,7 +161,13 @@ function* iterate(state: EngineState, t?: Tracker): Steps<void> {
     write(state, f.s, f.r, f.c, 0, t)
   }
   state.iterated = ids
-  for (let k = 0; k < maxIterations && (yield* evaluate(state, ids, t, true, maxChange)); k++);
+  // an iteration keeps the cycles it computes: an array of one that gives one value or cannot spill in a pass keeps its range
+  state.spills.iterating = true
+  try {
+    for (let k = 0; k < maxIterations && (yield* evaluate(state, ids, t, true, maxChange)); k++);
+  } finally {
+    state.spills.iterating = false
+  }
 }
 
 /**
@@ -259,6 +265,9 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
       if (state.input.iteration) cyclesMoved(state, next)
       else for (const f of state.formulas) if (f && (state.topo[f.id] < 0) !== (was[f.id] < 0)) next.add(f.id)
     }
+    // an array that gave way and now wins over the array holding its cells (the graph or the arrays' ranges changed) takes
+    // them; an old-kind array formula's area it never takes
+    for (const [id, by] of sp.by) if (!next.has(id) && sp.claims.has(by) && state.formulas[id] && !state.formulas[by]?.area && beats(state, id, by)) next.add(id)
     if (!next.size) {
       sp.touched.length = 0
       unhold(state)

@@ -43,8 +43,10 @@ export interface Spills {
   done: Float64Array
   touched: (Area & { step: number })[]
   claimsChanged: boolean
+  /** Iterative calculation is computing the cycles: their formulas keep their claims (`endSpill`). */
+  iterating: boolean
 }
 
-export const newSpills = (): Spills => ({ on: new Map(), claims: new Map(), wait: new Map(), why: new Map(), by: new Map(), occupied: new Occupied(), merges: new Map(), step: 0, since: 0, done: new Float64Array(0), touched: [], claimsChanged: false })
+export const newSpills = (): Spills => ({ on: new Map(), claims: new Map(), wait: new Map(), why: new Map(), by: new Map(), occupied: new Occupied(), merges: new Map(), step: 0, since: 0, done: new Float64Array(0), touched: [], claimsChanged: false, iterating: false })
 
 export const equalAreas = (a: Area | undefined, b: Area | undefined) => a === b || (!!a && !!b && a.s === b.s && a.r1 === b.r1 && a.c1 === b.c1 && a.r2 === b.r2 && a.c2 === b.c2)

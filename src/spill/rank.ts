@@ -24,24 +24,20 @@ export function beats(state: EngineState, a: number, b: number, area?: Area): bo
 const areaOf = (state: EngineState, id: number): Area | undefined => state.spills.claims.get(id) ?? state.spills.wait.get(id)
 
 /**
- * Whether formula `id`'s array over `area` (else its own range) is read back by the formula: a path from a reader of the
- * range to it, through references and the ranges of the other arrays, spilled or waiting.
+ * Whether formula `id`'s array over `area` (else its own range) is read back by the formula: a path of references from a
+ * reader of the range to it. The ranges of other arrays are left out, as they change with what spilled.
  */
 function looped(state: EngineState, id: number, area = areaOf(state, id)): boolean {
   if (!area) return false
   const seen = new Set<number>()
   readersOf(state, area, seen)
   const stack = [...seen]
-  const reach = (n: number) => !seen.has(n) && (seen.add(n), stack.push(n))
   while (stack.length) {
     const v = stack.pop()!
     if (v === id) return true
-    for (const n of state.succ[v] ?? []) reach(n)
-    const x = state.formulas[v] && areaOf(state, v)
-    if (x) {
-      const readers = new Set<number>()
-      readersOf(state, x, readers)
-      readers.forEach(reach)
+    for (const n of state.succ[v] ?? []) if (!seen.has(n)) {
+      seen.add(n)
+      stack.push(n)
     }
   }
   return false

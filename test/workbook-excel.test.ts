@@ -7,7 +7,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
 import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
-import { differences, engineReads, goesOn, predictionCheck } from './workbook-cases.js'
+import { differences, differsOrThrows, engineReads, goesOn, predictionCheck } from './workbook-cases.js'
 import { currentCases } from './stored-cases.js'
 
 const dir = new URL('./excel/workbook/', import.meta.url)
@@ -56,12 +56,6 @@ const PENDING: Readonly<Record<string, string>> = Object.fromEntries(
   ['sort-typed-B3-C2-A4', 'sort-typed-B3-A4-C2', 'sort-typed-C2-B3-A4', 'sheets-typed-Sheet2.E5-Sheet2.D7-Q_data.F5-Q_data.D4', 'sheets-typed-Q_data.F5-Q_data.D4-Sheet2.E5-Sheet2.D7', 'wait-typed-C2-C1-A2-B1'].map((id) => [`spill-cycles-held:${id}`, ORDER]),
 )
 
-/** Whether the engine differs from Excel at some read. */
-function differs(c: WorkbookCase, excel: StoredWorkbook['answers'][string]['reads']): boolean {
-  const reads = engineReads(c)
-  return excel.some((a, i) => differences(c, a.values, a.shown, reads[i]).length > 0)
-}
-
 for (const set of SETS) {
   const built = ((await import(`../bench/coverage/workbook/${set.name}.ts`)) as { buildWorkbookCases: () => WorkbookCase[] }).buildWorkbookCases()
 
@@ -71,7 +65,7 @@ for (const set of SETS) {
     for (const c of set.cases) {
       const pending = PENDING[`${set.name}:${c.id}`]
       if (pending) {
-        it(`${c.id}: ${c.about} (known difference)`, () => expect(differs(c, set.answers[c.id].reads), pending).toBe(true))
+        it(`${c.id}: ${c.about} (known difference)`, () => expect(differsOrThrows(c, set.answers[c.id].reads), pending).toBe(true))
         continue
       }
       it(`${c.id}: ${c.about}`, () => {
