@@ -31,7 +31,7 @@ export function clipped(book: BookInput, from: string, src: Rect, values: Values
   for (const i of cellsIn(g, src)) {
     const r = row.get(g.row[i])
     if (r === undefined) continue
-    const { value: _v, formula: _f, held: _h, ...look } = g.cell[i]
+    const { value: _v, formula: _f, held: _h, array: _a, ...look } = g.cell[i]
     if (Object.keys(look).length) cells[formatAddress(r, g.col[i])] = look
   }
   for (const [r, c, v] of values(sheet.name, src)) {

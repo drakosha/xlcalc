@@ -55,6 +55,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is read as Calibri 11, the model's default`,
   sheetKind: () => 'a chart, dialog or macro sheet is left out',
   sheetPartMissing: () => 'a sheet whose part is missing is left out',
+  sheetNameRepaired: (p) => `the sheet name ${JSON.stringify(p.name)} is not one Excel takes: the sheet is read as ${JSON.stringify(p.sheet)}`,
   stringsOpen: () => 'shared strings left open (an <si> without its closing tag) are read as empty text or as part of the string after them',
   allSheetsHidden: () => 'every worksheet in the file is hidden: the first one is read as visible',
   tableNameTwice: (p) => `the table ${p.table} is left out: another table or a defined name has its name`,
@@ -97,6 +98,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   // reading: tables
   tablePartBad: () => 'a table part without a name or a range is left out',
   tableLeftOut: (p) => `the table ${p.table} is left out: ${p.reason}`,
+  tableStyleCustom: (p) => `the custom table style ${JSON.stringify(p.name)} of the table ${p.table} is not in the model: the table is read with Excel's default style`,
   headerGiven: (p) => `a header cell that does not hold its column's name as text is read with the name ${JSON.stringify(p.name)}`,
   // reading: conditional formats
   condRangeOutside: () => 'a range of a conditional format outside the sheet is left out',

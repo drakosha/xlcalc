@@ -63,7 +63,7 @@ A cell with `array: 'B2:C5'` contains an array formula entered over B2:C5. The f
 
 The range never spills and never returns `#SPILL!`. A dynamic array that runs into it returns `#SPILL!`. In the result, the formula's cell has `spill`, the range, and the other cells have `spillOf`. `B2#` refers to the range.
 
-The other cells of the range have no input. A session rejects edits that change some cells of a range but not the rest: `setCells` throws `InputError` and changes nothing, as Excel does. Clearing every cell of the range removes the formula. An edit of the formula's cell that keeps an array over the same range changes the whole array.
+The other cells of the range have no input, and two ranges never overlap: a workbook or an edit that would give them either is rejected with `InputError`. A session rejects edits that change some cells of a range but not the rest: `setCells` throws `InputError` and changes nothing, as Excel does. Clearing every cell of the range removes the formula. An edit of the formula's cell that keeps an array over the same range changes the whole array.
 
 `editStructure` moves a range together with its cell. It rejects with `array` inserting rows or columns inside a range, deleting part of one, moving part of one and pasting over part of one. Copying an entire range copies the array; copying part of a range pastes each cell as an array formula of its own, with the range's formula adjusted from the range's first cell.
 

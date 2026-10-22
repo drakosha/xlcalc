@@ -301,6 +301,27 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     if (anchors.length) (info.spans ??= []).push({ boxes, anchors })
   }
   /**
+   * SUMIF's and AVERAGEIF's sum range is read resized from its top-left to the criteria range's size (`criteria.ts`):
+   * the cells that takes in past what is written are read too, as far as the criteria range can reach (a spill's to
+   * the sheet's end), from anywhere in a rectangle of which a part may be answered.
+   */
+  const resized = (crit: Ast, sum: Ast) => {
+    const sized: Rng[] = []
+    const anchors: Rng[] = []
+    reach(crit, sized, anchors)
+    if (!sized.length) return
+    const tall = anchors.length ? MAX_ROWS : Math.max(...sized.map((g) => g.r2 - g.r1 + 1))
+    const wide = anchors.length ? MAX_COLS : Math.max(...sized.map((g) => g.c2 - g.c1 + 1))
+    const from: Rng[] = []
+    const parts = new Set<Rng>()
+    reach(sum, from, [], parts)
+    for (const g of from) {
+      const [r, c] = parts.has(g) ? [g.r2, g.c2] : [g.r1, g.c1]
+      const x = new Rng(g.s, g.r1, g.c1, Math.min(r + tall, MAX_ROWS) - 1, Math.min(c + wide, MAX_COLS) - 1)
+      if (x.r2 > g.r2 || x.c2 > g.c2) info.refs.push(x)
+    }
+  }
+  /**
    * LOOKUP's result row, column or cell (a row) widened to the length of a longer lookup range or array constant, or to
    * the sheet's end where the lookup array's length is known only once computed: Excel reads on past the result's end.
    * A result a spill, a function or an operator answers is read on as it comes (`tables.ts`): what it can answer,
@@ -461,6 +482,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const open = OPEN_REFERENCE[n.name]
         if (open && n.args.some((a, i) => holds(open, i) && closed(a))) return b.value(E.VALUE)
         const past = n.name === 'LOOKUP' && n.args.length === 3 ? lookupResult(n.args[1], n.args[2]) : undefined
+        if ((n.name === 'SUMIF' || n.name === 'AVERAGEIF') && n.args.length === 3 && n.args[2].k !== 'missing') resized(n.args[0], n.args[2])
         // a reference across sheets is passed to any argument, which takes it or answers its error
         const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : i === 2 && past ? past : go(a, spec.range(i) || a.k === 'ref3d')))
         let code: T

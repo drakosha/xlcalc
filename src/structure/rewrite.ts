@@ -30,6 +30,19 @@ export interface Transform {
   copy?: true
 }
 
+/** The sheets `renamed` (the key of a name to the new name) renamed in every reference: an end of one across sheets too. */
+export function renaming(renamed: ReadonlyMap<string, string>): Transform {
+  const to = (s: string) => renamed.get(sheetKey(s))
+  return {
+    ref: ({ sheet, area }) => {
+      const name = to(sheet)
+      return name === undefined ? undefined : { sheet: name, area }
+    },
+    sheet: to,
+    ends: (a, b) => (to(a) !== undefined || to(b) !== undefined ? [to(a) ?? a, to(b) ?? b] : undefined),
+  }
+}
+
 /** Sheet names of a book by key (sheet names compare case-insensitively). */
 export const sheetNames = (book: BookInput) => new Map(book.sheets.map((s) => [sheetKey(s.name), s.name]))
 

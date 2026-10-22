@@ -3,7 +3,7 @@
  * a rectangle with a data row, one column entry per column with unique names, header cells holding the names, no
  * table over another, no merged area or array area of several cells in a table.
  */
-import type { BookInput, CellInput, TableColumn, TableInput, TotalsFunction } from '../contract.js'
+import type { BookInput, CellInput, TableColumn, TableInput, TableStyle, TotalsFunction } from '../contract.js'
 import { InputError } from '../input-error.js'
 import { isObject, onlyKeys } from '../input/basic.js'
 import { parseMerge } from '../layout/merges.js'
@@ -16,6 +16,28 @@ import { tableKey } from './model.js'
 
 /** The functions of a totals row (`TotalsFunction`), as xlsx names them. */
 export const TOTALS: readonly TotalsFunction[] = ['sum', 'average', 'count', 'countNums', 'max', 'min', 'stdDev', 'var', 'custom']
+
+/** Excel's table styles by name: Light 1 to 21, Medium 1 to 28, Dark 1 to 11. */
+export const TABLE_STYLE = /^TableStyle(?:Light(?:[1-9]|1\d|2[01])|Medium(?:[1-9]|1\d|2[0-8])|Dark(?:[1-9]|1[01]))$/
+
+/** The options of a table's style (`TableStyle`), each with its name in xlsx `tableStyleInfo`. */
+export const STYLE_OPTIONS: readonly [Exclude<keyof TableStyle, 'name'>, string][] = [
+  ['firstColumn', 'showFirstColumn'],
+  ['lastColumn', 'showLastColumn'],
+  ['rowStripes', 'showRowStripes'],
+  ['columnStripes', 'showColumnStripes'],
+]
+
+/** Excel's default style, a table's without `style`. */
+export const DEFAULT_TABLE_STYLE: TableStyle = { name: 'TableStyleMedium2', rowStripes: true }
+
+function style(v: unknown, path: string) {
+  if (!isObject(v)) throw new InputError(path, 'expected a style such as { name: "TableStyleLight1", rowStripes: true }')
+  onlyKeys(v, path, ['name', ...STYLE_OPTIONS.map(([k]) => k)])
+  if (v.name !== undefined && (typeof v.name !== 'string' || !TABLE_STYLE.test(v.name)))
+    throw new InputError(`${path}.name`, `expected one of Excel's table styles, TableStyleLight1 to 21, TableStyleMedium1 to 28 or TableStyleDark1 to 11, got ${JSON.stringify(v.name)}`)
+  for (const [k] of STYLE_OPTIONS) if (v[k] !== undefined && typeof v[k] !== 'boolean') throw new InputError(`${path}.${k}`, 'expected a boolean')
+}
 
 function column(v: unknown, path: string): TableColumn {
   if (!isObject(v)) throw new InputError(path, 'expected a column such as { name: "Amount" }')
@@ -33,13 +55,14 @@ function column(v: unknown, path: string): TableColumn {
 /** One table's own shape: its fields, its rectangle and columns, its header cells; returns the rectangle. */
 function table(v: unknown, path: string, cells: Record<string, CellInput>, booleans: readonly string[]): Rect {
   if (!isObject(v)) throw new InputError(path, 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
-  onlyKeys(v, path, ['name', 'range', 'headers', 'totals', 'columns'])
+  onlyKeys(v, path, ['name', 'range', 'headers', 'totals', 'columns', 'style'])
   if (typeof v.name !== 'string') throw new InputError(`${path}.name`, 'expected a table name')
   const problem = nameProblem(v.name, booleans)
   if (problem) throw new InputError(`${path}.name`, `${JSON.stringify(v.name)}: ${problem}`)
   const x = typeof v.range === 'string' && /^[A-Z]+\d+(:[A-Z]+\d+)?$/.test(v.range) ? parseRange(v.range) : null
   if (!x) throw new InputError(`${path}.range`, `expected a range such as "B2:E10" within the sheet, got ${JSON.stringify(v.range)}`)
   for (const k of ['headers', 'totals'] as const) if (v[k] !== undefined && typeof v[k] !== 'boolean') throw new InputError(`${path}.${k}`, 'expected a boolean')
+  if (v.style !== undefined) style(v.style, `${path}.style`)
   const t = v as unknown as TableInput
   const headers = t.headers !== false
   if (x.r2 - x.r1 + 1 < (headers ? 1 : 0) + (t.totals ? 1 : 0) + 1) throw new InputError(`${path}.range`, `${t.range} has no row for data between its header and totals rows`)
