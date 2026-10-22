@@ -186,3 +186,28 @@ describe.each(EXECUTIONS)('a copy, a fill and a move lay looks as rectangles (fi
     })
   })
 })
+
+describe.each(EXECUTIONS)('formatting whole columns over large looks (patch-looks), %s', (execution) => {
+  /** A merged area of entire columns: its looks cover A2:H1048576, two cells of them with a format of their own. */
+  const merged = (): BookInput => ({ styles, sheets: [{ name: 'S', cells: { A1: { value: 'x y', style: 1 } }, looks: [{ range: 'B1:H1', style: 1 }, { range: 'A2:H1048576', style: 1 }, { range: 'B3:B4', style: 1, numberFormat: '0.0' }], merges: ['A1:H1048576'] }] })
+
+  describe.each(KINDS)('in %s', (kind) => {
+    const open = openerFor(kind)
+    it('a format over the columns changes the cells of the looks it changes, in a fraction of a second, with undo and redo', async () => {
+      const s = await open(merged(), { execution, clock })
+      const before = held(await s.getBook())
+      const t0 = performance.now()
+      const r = await s.patchCells([{ sheet: 'S', range: 'A:H', set: { numberFormat: '@' } }])
+      expect(performance.now() - t0).toBeLessThan(3000)
+      expect(r.changes.map((c) => [c.cell, c.numberFormat])).toEqual([['B3', '@'], ['B4', '@']])
+      const after = await s.getBook()
+      expect(after.sheets[0].columns).toEqual({ 'A:H': { numberFormat: '@' } })
+      expect(compute(after, { execution, clock }).hash).toBe(await s.getHash())
+      await s.undo()
+      expect(held(await s.getBook())).toEqual(before)
+      await s.redo()
+      expect(held(await s.getBook())).toEqual(held(after))
+      await s.close()
+    })
+  })
+})
