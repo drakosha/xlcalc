@@ -190,7 +190,7 @@ export function* cellAt(state: EngineState, s: number, r: number, c: number, dis
  * spilled from; the steps yield between cells when the computation's slice is used up. A cell of the sheet's looks is
  * listed where an input of a look alone was apart from the spills' stored cells: in the unstored part of a large spill.
  */
-function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined, row: number, col: number) => void, sorted?: Map<object, string[]>): Steps<void> {
+function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined, row: number, col: number) => void, sorted?: Map<object, string[]>, keys?: Map<object, string[]>): Steps<void> {
   const spill = yield* spilled(state, s)
   const layer = state.spills.on.size ? layerOf(state.input.sheets[s]) : undefined
   const unstored: string[] = []
@@ -203,7 +203,8 @@ function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: str
   const cells = state.input.sheets[s].cells
   const only = !spill.size && !unstored.length
   const places: number[] = []
-  const addrs = yield* sortedSteps(only ? Object.keys(cells) : [...Object.keys(cells), ...spill.keys(), ...unstored], places)
+  const listed = keys?.get(cells) ?? Object.keys(cells)
+  const addrs = yield* sortedSteps(only ? listed : [...listed, ...spill.keys(), ...unstored], places)
   // the input cells alone: the input hash takes them in this order too
   if (only) sorted?.set(cells, addrs)
   let last: string | undefined
@@ -248,7 +249,7 @@ export function* stateHash(state: EngineState): Steps<string> {
  * The result; with `display` each cell's shown text and colour after its value. Sheets are read in the hash's order,
  * listed in the book's. The steps yield between cells, so a large book's result does not hold the thread.
  */
-export function* buildResult(state: EngineState, clock: Clock, t0: number, display: boolean, book = state.input): Steps<ComputeResult> {
+export function* buildResult(state: EngineState, clock: Clock, t0: number, display: boolean, book = state.input, keys?: Map<object, string[]>): Steps<ComputeResult> {
   const w = hasher(state)
   const fills: FillLine[] = []
   const look = display ? cellLooks(state) : null
@@ -264,7 +265,7 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
       fillLines(state, s, addr, out.spillFill, fills)
       cells[addr] = out
       w.cell(quoted, addr, out.value, true)
-    }, sorted)
+    }, sorted, keys)
   }
   const inputHash = yield* inputHashSteps(state.input, sorted)
   const volatile = [...state.volatile]

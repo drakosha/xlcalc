@@ -194,9 +194,10 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  * by A1 address, their looks, columns, rows, merged areas, frozen panes, data validation and outline settings, names,
  * styles. It is returned as the engine takes it: its formulas without a leading `=`, its number formats by the name
  * `numberFormat` (a copy of what needs it, `taken.ts`), the entries of a look alone in its sheets' looks (`looksTaken`);
- * with `looked`, those of the sheets that have looks only (a writer keeps a sheet without looks as it is given).
+ * with `looked`, those of the sheets that have looks only (a writer keeps a sheet without looks as it is given). `keys`
+ * gets the addresses of each sheet's cells, in their order, where the book returned keeps the cells object given.
  */
-export function checkBook(v: unknown, path = 'book', looked = false): BookInput {
+export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<object, string[]>): BookInput {
   const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
   onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks', 'activeSheet'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
@@ -212,6 +213,7 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
   // the cells of each sheet that the engine takes otherwise: a formula with a leading `=`, a look alone (into the sheet's looks)
   const taken: string[][] = []
   const alone: string[][] = []
+  const listed: string[][] = []
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
@@ -225,7 +227,7 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
     const cells = object(sheet.cells, `${p}.cells`, 'an object of cells by address such as { A1: { value: 1 } }')
     // the cells of old-kind array formulas, checked against the sheet once all its cells are
     const arrays: string[] = []
-    for (const addr of Object.keys(cells)) {
+    for (const addr of (listed[i] = Object.keys(cells))) {
       const cell = cells[addr]
       if (!(SURE_ADDRESS.test(addr) && plainCell(cell, styles))) {
         const cp = `${p}.cells[${JSON.stringify(addr)}]`
@@ -262,6 +264,7 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
   checkTables(book as unknown as BookInput, path)
   const out = bookTaken(book as unknown as BookInput, taken)
   const sheetsTaken = out.sheets.map((s, i) => (looked && !hasLooks(s) ? s : looksTaken(s, alone[i] ?? [])))
+  sheetsTaken.forEach((s, i) => s.cells === (book.sheets as BookInput['sheets'])[i].cells && keys?.set(s.cells, listed[i]))
   return sheetsTaken.every((s, i) => s === out.sheets[i]) ? out : { ...out, sheets: sheetsTaken }
 }
 

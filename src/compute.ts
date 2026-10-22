@@ -15,8 +15,9 @@ const owned = () => true
  */
 export function* computeSteps(book: BookInput, o: ComputeOptions, hosted = false): Steps<ComputeResult> {
   const t0 = nowMs()
-  book = checkBook(book)
+  const keys = new Map<object, string[]>()
+  book = checkBook(book, undefined, false, keys)
   const clock = o.clock ?? currentClock()
-  const state = yield* buildState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution, cached: o.cached, own: hosted ? undefined : owned })
-  return yield* buildResult(state, clock, t0, o.display !== false)
+  const state = yield* buildState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution, cached: o.cached, own: hosted ? undefined : owned, keys })
+  return yield* buildResult(state, clock, t0, o.display !== false, undefined, keys)
 }

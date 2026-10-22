@@ -68,6 +68,8 @@ export interface EngineOptions {
   cache?: CacheBudget
   /** Whether the state may take a sheet's cells as they are, no one else reading or changing them after: else it takes a copy. */
   own?: (cells: Record<string, CellInput>) => boolean
+  /** The addresses of cells objects in their order, listed already (`checkBook`): the state reads those it takes by them. */
+  keys?: Map<object, string[]>
   /** The values the book's file stores (`ComputeOptions.cached`), for the formulas a circular reference stops that hold none. */
   cached?: CachedValues
   /** What a formula showed before a session's book was built again, for one a circular reference stops now that holds none (`held.ts`). */
@@ -246,7 +248,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   // the state's own cells (edits change them), copied unless they are its own already, the entries of a look alone in the
   // sheet's looks (a structure operation over looks gives them back so); the layout and the styles are shared
   // no closure here takes \`opts\`: the state's closures share this scope, and \`opts.prior\` holds the state built before
-  const own = opts.own
+  const { own, keys } = opts
   const input: BookInput = { ...book, sheets: book.sheets.map((x) => looksTaken(x)).map((s) => ({ ...s, cells: own?.(s.cells) ? s.cells : { ...s.cells } })) }
   const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
   const tables = tablesOf(input)
@@ -313,8 +315,8 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const shapes: Shapes = new Map()
   for (let s = 0; s < input.sheets.length; s++) {
     const sheet = input.sheets[s]
-    // its own copy of the cells: for...in walks them in the order of their entries without making an entry each
-    for (const addr in sheet.cells) {
+    // the cells in the order of their entries, listed already where the caller has them
+    for (const addr of keys?.get(sheet.cells) ?? Object.keys(sheet.cells)) {
       const cellIn = sheet.cells[addr]
       const place = addressOrder(addr), col = place % MAX_COLS, row = (place - col) / MAX_COLS
       if (holds(cellIn)) state.spills.occupied.set(s, row, col, true, true)
