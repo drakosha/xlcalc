@@ -6,7 +6,7 @@ The rules below were verified in Excel 16 for Mac (en-US), and those for merging
 
 ## In short
 
-`editStructure(book, op)` inserts or deletes rows and columns, moves (cut and paste) or copies (copy and paste, fill) a range, renames or deletes a sheet, and adjusts every reference in formulas and names on every sheet as Excel adjusts it: ranges grow and shrink, lost references become `#REF!`, and absolute references move with inserted rows. It returns the new workbook and `mapCell`, which tells where a cell of the old workbook is now (null for a cell that was deleted or overwritten, or that belongs to a sheet the old workbook does not have); the input workbook is not changed.
+`editStructure(book, op)` inserts or deletes rows and columns, moves (cut and paste) or copies (copy and paste, fill) a range, renames or deletes a sheet, and adjusts every reference in formulas and names on every sheet as Excel adjusts it: ranges grow and shrink, lost references become `#REF!`, and absolute references move with inserted rows. It returns the new workbook and `mapCell`, which tells where a cell of the old workbook is now (null for a cell that was deleted or overwritten, or that belongs to a sheet the old workbook does not have); the input workbook is not changed. Treat the returned workbook as read-only: the calls you give it to next (`editStructure`, `compute`, a session) skip checking the cells `editStructure` made, so change a copy of it (`structuredClone`) instead of changing it in place.
 
 ```js
 import { editStructure } from 'xlcalc'
