@@ -94,7 +94,7 @@ async function edits(file: string, display: boolean) {
     ['deleteRows 10', () => s.editStructure({ op: 'deleteRows', sheet, row: 10 })],
     ['insertRows 301 (under a row of looks)', () => s.editStructure({ op: 'insertRows', sheet, row: 301 })],
     ['deleteRows 300 (a row of looks)', () => s.editStructure({ op: 'deleteRows', sheet, row: 300 })],
-    ['insertColumns B (the looks reach XFD: refused)', () => s.editStructure({ op: 'insertColumns', sheet, column: 'B' })],
+    ['insertColumns B (the looks reach XFD and stay there)', () => s.editStructure({ op: 'insertColumns', sheet, column: 'B' })],
     ['deleteColumns B', () => s.editStructure({ op: 'deleteColumns', sheet, column: 'B' })],
     ['copyRange 344 × 100 of the looks', () => s.editStructure({ op: 'copyRange', from: { sheet, range: 'B20:CW363' }, to: { sheet, range: 'B1000' } })],
     ['moveRange 344 × 100 of the looks', () => s.editStructure({ op: 'moveRange', from: { sheet, range: 'B20:CW363' }, to: { sheet, cell: 'B2000' } })],

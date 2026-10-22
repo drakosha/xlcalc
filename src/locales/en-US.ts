@@ -104,6 +104,7 @@ export const EN_MESSAGES: EnglishMessages = {
   tableOverTable: (p) => `${p.range} overlaps the table ${p.table}`,
   tableOverMerge: (p) => `${p.range} overlaps the merged area ${p.area}`,
   mergeInTable: (p) => `${p.range} overlaps the table ${p.table}, whose cells cannot be merged`,
+  arrayInTable: (p) => `the array formula over ${p.area} overlaps the table ${p.table} (Excel does not allow array formulas of several cells in tables)`,
   headerFormula: (p) => `${p.sheet}!${p.cell} is a header cell of the table ${p.table}: it holds its column's name, not a formula`,
   validationError: () => "This value doesn't match the data validation restrictions defined for this cell.",
   explainCells: (p) => `${p.count} cells`,

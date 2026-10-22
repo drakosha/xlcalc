@@ -72,12 +72,6 @@ function heldLayer(sheet: Pick<SheetInput, 'looks'>): Layer | undefined {
   return CURRENT.get(sheet) ?? (sheet.looks?.length ? layerOfList(sheet.looks) : undefined)
 }
 
-/** The address of the first cell of the sheet's looks in rectangle `x`, row by row; undefined for none. */
-export function firstLook(sheet: Pick<SheetInput, 'looks'>, x: Rect): string | undefined {
-  const p = layerOf(sheet)?.pieces(x).next()
-  return p && !p.done ? formatAddress(p.value.r1, p.value.c1) : undefined
-}
-
 /** Whether a sheet has looks, or writes of looks to settle: without making its list. */
 export const hasLooks = (sheet: Pick<SheetInput, 'looks'>): boolean => CURRENT.has(sheet) || PENDING.has(sheet) || !!sheet.looks?.length
 

@@ -19,6 +19,7 @@ import { looksTaken } from '../looks/sheet.js'
 import { linesMoved, overLooks } from './looks.js'
 import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry.js'
 import { withGrids } from './grid.js'
+import { arrayInTable } from './arrays.js'
 import { copyRange } from './copy.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
@@ -181,6 +182,10 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
           const m = moveRange(tables.before(book), fromSheet, src, toSheet, at.row, at.col)
           r = m.ok ? { ...m, book: tables.after(m.book) } : m
         }
+      }
+      if (r.ok) {
+        const refused = arrayInTable(r.book.sheets.find((s) => s.name === toSheet)!)
+        if (refused) r = { ok: false, code: 'table', message: say(book.locale, refused) }
       }
       break
     }

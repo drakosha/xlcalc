@@ -105,6 +105,7 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   tableOverTable: [{ range: 'A1:C9', table: 'Sales' }],
   tableOverMerge: [{ range: 'A1:C9', area: 'B2:C3' }],
   mergeInTable: [{ range: 'B2:D3', table: 'Sales' }],
+  arrayInTable: [{ area: 'D2:E2', table: 'Sales' }],
   headerFormula: [{ sheet: 'Лист', cell: 'B2', table: 'Т' }],
   validationError: [{}],
   explainCells: [{ count: 1 }, { count: 2 }, { count: 11 }, { count: 25 }],

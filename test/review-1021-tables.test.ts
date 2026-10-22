@@ -4,13 +4,15 @@
  * book an operation gives, and a session's `getBook()`, computes, and the session's hash is a full computation's.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createSession, editStructure, type BookInput, type Execution, type StructureOp } from '../src/index.js'
+import { compute, createSession, editStructure, registerLocale, type BookInput, type Execution, type StructureOp } from '../src/index.js'
 import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
+import { ruRU } from '../src/locales/ru-RU.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const EXECUTIONS: Execution[] = ['closures', 'eval']
 
 afterAll(closeCalcs)
+registerLocale(ruRU)
 
 /** The operation in a session of each kind: its answer, and a book the session holds that computes to the session's hash. */
 function inSessions(execution: Execution, book: () => BookInput, op: StructureOp, check: (r: { ok: boolean; code?: string }, after: BookInput) => void) {
@@ -236,3 +238,41 @@ describe.each(EXECUTIONS)('table operations rewrite structured references in rul
     expect(ruleFormulas(after).T).toEqual(['SUM(Sales[Qty])', 'Sales[Qty]'])
   })
 })
+
+/** A legacy array formula over A1:B1 beside a table at D1:E3. */
+const arrayBeside = (): BookInput => ({
+  locale: 'en-US',
+  sheets: [{
+    name: 'S',
+    cells: { A1: { formula: '{1,2}', array: 'A1:B1' }, A5: { formula: '{3}', array: 'A5' }, D1: { value: 'k' }, E1: { value: 'v' }, D2: { value: 1 }, E2: { value: 2 }, D3: { value: 3 }, E3: { value: 4 } },
+    tables: [{ name: 'T', range: 'D1:E3', columns: [{ name: 'k' }, { name: 'v' }] }],
+  }],
+})
+const arrayRefusal = 'the array formula over D2:E2 overlaps the table T (Excel does not allow array formulas of several cells in tables)'
+
+describe.each(EXECUTIONS)('an array formula of several cells moved or copied onto a table (array-into-table), %s', (execution) => {
+  const ops: StructureOp[] = [
+    { op: 'moveRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', cell: 'D2' } },
+    { op: 'copyRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', range: 'D2' } },
+  ]
+  it.each(ops)('refuses $op with code table and the message checkBook gives', (op) => {
+    expect(editStructure(arrayBeside(), op)).toMatchObject({ ok: false, code: 'table', message: arrayRefusal })
+    expect(editStructure({ ...arrayBeside(), locale: 'ru-RU' }, op)).toMatchObject({ ok: false, code: 'table', message: 'Формула массива на D2:E2 пересекается с таблицей «T»: в таблицах Excel не допускает формулы массива из нескольких ячеек' })
+  })
+
+  it('takes an array formula of one cell onto a table, and one of several cells beside it', () => {
+    compute(edited(editStructure(arrayBeside(), { op: 'moveRange', from: { sheet: 'S', range: 'A5' }, to: { sheet: 'S', cell: 'D2' } })), { execution, clock })
+    compute(edited(editStructure(arrayBeside(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', range: 'G2' } })), { execution, clock })
+  })
+
+  for (const op of ops)
+    inSessions(execution, arrayBeside, op, (r, after) => {
+      expect(r).toMatchObject({ ok: false, code: 'table' })
+      expect(after.sheets[0].cells.A1).toEqual({ formula: '{1,2}', array: 'A1:B1' })
+    })
+})
+
+function edited(r: ReturnType<typeof editStructure>): BookInput {
+  if (!r.ok) throw new Error(r.message)
+  return r.book
+}

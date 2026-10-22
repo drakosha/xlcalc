@@ -13,6 +13,20 @@ import { arraysOf } from './grid.js'
 import type { Paste } from './paste.js'
 import { sheetOf } from './rewrite.js'
 
+/**
+ * Excel's refusal of an array formula of several cells that a paste left over a table of sheet `sheet` (checkBook
+ * refuses the book), or null.
+ */
+export function arrayInTable(sheet: SheetInput): Message | null {
+  if (!sheet.tables?.length) return null
+  for (const [, x] of arraysOf(sheet)) {
+    if (x.r1 === x.r2 && x.c1 === x.c2) continue
+    const t = sheet.tables.find((t) => meets(parseRange(t.range)!, x))
+    if (t) return { key: 'arrayInTable', area: rectText(x), table: t.name }
+  }
+  return null
+}
+
 /** A cell moved from `from` to `to`: an array formula's area goes along. */
 export function relocated(cell: CellInput, from: string, to: string): CellInput {
   if (cell.array === undefined || from === to) return cell

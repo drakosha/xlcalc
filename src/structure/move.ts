@@ -18,6 +18,8 @@ import { pasteLayout, pasteRefusal, type Paste } from './paste.js'
 import { rewriteCell, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { moveConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
+import { movedLooks } from '../looks/move.js'
+import { layerOf, withLayer } from '../looks/sheet.js'
 
 type Pair = [number, number]
 
@@ -180,6 +182,13 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
     return changed || tables !== s.tables ? { ...s, cells, ...(tables ? { tables } : {}) } : s
   })
   Object.assign(sheets[ti].cells, moved)
+  // the looks of the cells without an entry move by rectangles, the place they land on cleared
+  const [cut, onto] = [layerOf(book.sheets[fi]), layerOf(book.sheets[ti])]
+  if (cut || onto) {
+    const [lf, lt] = movedLooks(cut, src, onto, dr, dc, fi === ti)
+    if (lf) sheets[fi] = withLayer(sheets[fi], sheets[fi].cells, lf)
+    sheets[ti] = withLayer(sheets[ti], sheets[ti].cells, lt!)
+  }
   const out: BookInput = { ...book, sheets }
   let nm = rewriteNames(book.names, t, names)
   if (nm && fk !== tk) {

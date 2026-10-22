@@ -13,12 +13,12 @@ import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
 import { gridOf } from './grid.js'
 import { relocated, shiftRefusal } from './arrays.js'
-import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
+import { openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { copyTransform, deleteSpan, insertSpan } from './transform.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
-import { firstLook, madeFrom } from '../looks/sheet.js'
+import { madeFrom } from '../looks/sheet.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
 
 type SpanFn = (lo: number, hi: number, at: number, n: number, max: number, cell: boolean) => [number, number] | null
@@ -41,8 +41,8 @@ function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: Sp
 
 /**
  * Inserts (`n` > 0) or deletes (`n` < 0) rows or columns at index `at` of `sheet`, with the sheet's layout.
- * Inserting refuses when a cell or a merged area would leave the sheet (Excel refuses for cells that are
- * not empty).
+ * Inserting refuses when an entry or a merged area would leave the sheet (Excel refuses for cells that are
+ * not empty); the sheet's looks pushed off are dropped, as Excel drops formatting (`linesMoved`).
  */
 export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n: number): Applied {
   const emptied = axis === 'r' && n < 0 ? emptiedTable(input, sheet, at, -n) : null
@@ -60,9 +60,6 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   if (n > 0) {
     const off = line.findIndex((i) => i >= LIMIT[axis] - count)
     if (off >= 0) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: grid.addr[off] })
-    // a cell of the sheet's looks in the lines pushed off, as an entry of a look alone
-    const edge = firstLook(target, axis === 'r' ? { r1: LIMIT.r - count, r2: LIMIT.r - 1, c1: 0, c2: LIMIT.c - 1 } : { r1: 0, r2: LIMIT.r - 1, c1: LIMIT.c - count, c2: LIMIT.c - 1 })
-    if (edge) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: edge })
     if (tables.offSheet) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: tables.offSheet })
   }
   const cut = shiftRefusal(target, axis, at, n)
@@ -111,10 +108,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     const tableFields = list ? { tables: list } : {}
     const validations = moving ? shiftValidations(s.validations, s.name, axis, at, n, t, names) : rewriteValidations(s.validations, s.name, s.name, t, names)
     if (!moving) return changed || validations !== s.validations ? { ...s, cells, ...tableFields, ...(validations ? { validations } : {}) } : s
-    // the new lines take the format of the line before them
-    const before = n > 0 ? formatBefore(s, axis, at, n) : {}
-    Object.assign(cells, before)
-    madeFrom([s.cells], cells, before)
+    // the new lines take the format of the line before them with the sheet's looks (`linesMoved`)
+    madeFrom([s.cells], cells)
     const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
     const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, frozen: shiftFrozen(s.frozen, axis, at, n), validations }
     for (const k of ['columns', 'rows', 'merges', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
