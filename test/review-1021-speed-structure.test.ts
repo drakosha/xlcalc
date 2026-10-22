@@ -78,6 +78,16 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     expect(s.getCell('S', `B${n}`)).toMatchObject({ formula: `A${n}*2`, value: 2 * n })
   })
 
+  it('a paste on a sheet with a rule over many single cells joins them in linear time (speed-u124)', () => {
+    const n = 300_000
+    const range = Array.from({ length: n }, (_, r) => `A${r + 1}`).join(' ')
+    const s = createSession({ sheets: [{ name: 'S', cells: { C1: { value: 1 } }, validations: [{ range, type: 'whole', operator: 'greaterThan', formula1: '0' }] }] }, { execution, clock, display: false })
+    // the old join of touching rectangles spliced the list per join: 17 s at 300,000 cells
+    const ms = timed(() => expect(s.editStructure({ op: 'copyRange', from: { sheet: 'S', range: 'C1' }, to: { sheet: 'S', range: 'D1' } }).ok).toBe(true))
+    expect(ms).toBeLessThan(3000)
+    expect(s.getBook().sheets[0].validations).toEqual([{ range: `A1:A${n}`, type: 'whole', operator: 'greaterThan', formula1: '0' }])
+  })
+
   describe('editStructure checks the cells it was given, not those it made (speed-u95)', () => {
     const book = (): BookInput => ({ styles: [{}, { font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 1 }, A2: { formula: '=A1+1' }, B1: { style: 1 } } }, { name: 'T', cells: { A1: { formula: 'S!A2*2' } } }] })
     const done = (r: StructureResult) => {
