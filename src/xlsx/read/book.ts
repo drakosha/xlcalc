@@ -22,11 +22,12 @@ import { attr, attributes, element, elements, flag, has, ownEntry } from '../xml
 import { decodeXml, readText } from '../xml/text.js'
 import { openArchive, type Archive } from '../zip/read.js'
 import { legacyConverter } from '../../legacy/convert.js'
-import { readFormula } from './formulas.js'
+import { readFormula, type FormulaOptions } from './formulas.js'
 import { readLinks } from './links.js'
 import { cellMetadata } from './metadata.js'
 import { relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
+import { renamedIn, repairNames } from './sheet-names.js'
 import { readActiveSheet } from '../view.js'
 import { readStrings } from './strings.js'
 import { formatAddress } from '../../model.js'
@@ -62,7 +63,7 @@ interface SheetDecl {
 /** A sheet's `hidden` by its state in the file. */
 const STATES = new Map<string | undefined, true | 'very'>([...SHEET_STATES].map(([hidden, state]) => [state, hidden]))
 
-function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: Issues, links: Set<number>): NameInput[] {
+function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: Issues, opts: FormulaOptions): NameInput[] {
   const out: NameInput[] = []
   for (const e of elements(element(xml, 'definedNames')?.body ?? '', 'definedName')) {
     const a = attributes(e.attrs)
@@ -78,7 +79,7 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
       issues.add('name', { key: 'nameOfSheetLeftOut' }, { name })
       continue
     }
-    const f = readFormula(readText(e.body ?? ''), issues, { name }, { union: true, links })
+    const f = readFormula(readText(e.body ?? ''), issues, { name }, { ...opts, union: true })
     if (flag(a.hidden)) issues.add('name', { key: 'hiddenName' }, { name })
     out.push(scope === undefined ? { name, ref: f.formula } : { name, ref: f.formula, scope })
   }
@@ -173,11 +174,19 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     const r = byId.get(attr(a, 'id') ?? '')
     return { name: readText(a.name ?? ''), kind: r?.kind, part: r?.external ? undefined : r?.target, ...(STATES.has(a.state) ? { hidden: STATES.get(a.state) } : {}) }
   })
+  const worksheets = decls.filter((d) => d.kind === 'worksheet')
+  const repaired = repairNames(worksheets.map((d) => d.name))
+  worksheets.forEach((d, i) => {
+    const name = repaired.names[i]
+    if (name !== d.name) issues.add('part', { key: 'sheetNameRepaired', name: d.name, sheet: name }, { sheet: name, name: d.name })
+    d.name = name
+  })
   const strings = readStrings(stringsXml, issues)
   const meta = cellMetadata(metaXml, richValues, richStructures)
   const links = await readLinks(archive, wb, rels, issues)
-  const all = decls.filter((d) => d.kind === 'worksheet').map((d) => d.name)
-  const names = readNames(wb, decls, new Set(all), issues, links.known)
+  const all = worksheets.map((d) => d.name)
+  const formulas: FormulaOptions = { links: links.known, ...(repaired.renamed.size ? { rename: renamedIn(repaired.renamed) } : {}) }
+  const names = readNames(wb, decls, new Set(all), issues, formulas)
   const legacy = legacyConverter(names)
   const sheets: SheetInput[] = []
   const cached: XlsxRead['cached'] = { sheets: [] }
@@ -201,7 +210,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     }
     const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas: { links: links.known } },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas },
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)

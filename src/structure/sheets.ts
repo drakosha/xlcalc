@@ -12,7 +12,7 @@ import { sheetNameProblem } from '../input.js'
 import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import type { Applied } from './geometry.js'
-import { rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Transform } from './rewrite.js'
+import { renaming, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Transform } from './rewrite.js'
 import { rewriteConditional } from '../cond/structure.js'
 import { rewriteValidations } from '../validation/structure.js'
 
@@ -21,12 +21,7 @@ export function renameSheet(book: BookInput, sheet: string, name: string): Appli
   const problem = nameProblem(book, name, sheet)
   if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
   const renamed = (s: string) => (sheetKey(s) === key ? name : s)
-  const t: Transform = {
-    ref: ({ sheet: s, area }) => (sheetKey(s) === key ? { sheet: name, area } : undefined),
-    sheet: (s) => (sheetKey(s) === key ? name : undefined),
-    ends: (a, b) => (sheetKey(a) === key || sheetKey(b) === key ? [renamed(a), renamed(b)] : undefined),
-  }
-  const out = rewriteBook(book, t, sheetNames(book), (s) => (sheetKey(s) === key ? name : s))
+  const out = rewriteBook(book, renaming(new Map([[key, name]])), sheetNames(book), renamed)
   if (out.activeSheet !== undefined) out.activeSheet = renamed(out.activeSheet)
   if (out.names) out.names = out.names.map((n) => (n.scope !== undefined && sheetKey(n.scope) === key ? { ...n, scope: name } : n))
   return { ok: true, book: out, geometry: [{ kind: 'renameSheet', s: sheetIndex(book, sheet) }] }

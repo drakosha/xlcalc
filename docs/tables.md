@@ -64,12 +64,19 @@ A sheet lists its tables in `tables` (`TableInput`):
 | `headers` | the first row is a header row; true by default |
 | `totals` | the last row is a totals row; false by default |
 | `columns` | one entry for each column of the range, left to right: its `name`, the `formula` of a calculated column, its `totals` |
+| `style` | how Excel draws the table; Excel's default without it |
 
 A table's name follows Excel's naming rules, the same as for a defined name ([Defined names](names.md) has them, and how they were verified): it starts with a letter of any script, `_` or `\`, continues with letters, digits, `_`, `.`, `\` and `?`, and is not a cell address (`T2` is the cell T2), not `R`, `C` or an R1C1 reference, not TRUE or FALSE, and in a ru-RU workbook not `ИСТИНА` or `ЛОЖЬ`. Tables and defined names share one namespace: no table can have the name of another table or of a defined name, in any case, Cyrillic included (a table `Продажи` and a name `ПРОДАЖИ` cannot coexist). A table has at least one data row.
 
 With a header row, its cells contain the column names as text: `B1` contains `"Qty"` when the second column is named `Qty`. Column names are unique within a table, case-insensitively, and can contain any characters.
 
 A calculated column's `formula` is the formula Excel gives a row inserted into the table. The cells of the column contain their own formulas, which calculate like any other. A column's `totals` records what its cell in the totals row is, as an xlsx file records it: one of Excel's functions (`sum`, `average`, `count`, `countNums`, `max`, `min`, `stdDev`, `var`), `custom` for a formula of its own, or a label. The cell contains the formula or the text, and that is what is calculated.
+
+A table's `style` keeps its look in Excel, which the engine does not draw: `name`, one of Excel's table styles (`TableStyleLight1` to `TableStyleLight21`, `TableStyleMedium1` to `TableStyleMedium28`, `TableStyleDark1` to `TableStyleDark11`), none without it; and the Table Style Options, each false by default: `firstColumn`, `lastColumn`, `rowStripes` (banded rows) and `columnStripes` (banded columns). A table without `style` has Excel's default, `TableStyleMedium2` with banded rows. The style stays with the table when it is renamed, moved, copied or resized, and is read from and written to xlsx ([docs/xlsx.md](xlsx.md#tables)).
+
+```js
+{ name: 'Sales', range: 'A1:C9', columns: [...], style: { name: 'TableStyleLight9', firstColumn: true, rowStripes: true } }
+```
 
 What Excel does not allow throws an `InputError` with the location and the reason: a table overlapping another, a merged area or a legacy array formula over several cells inside a table, a name already in use, or a header cell that does not contain its column's name.
 

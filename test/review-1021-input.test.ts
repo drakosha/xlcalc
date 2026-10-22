@@ -1,6 +1,10 @@
-/** Input the contract types but did not check: the values of external functions and a cell's meta, refused at the boundary as InputError. */
-import { describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, createSession, InputError, type BookInput } from '../src/index.js'
+/**
+ * Input the contract types but did not check: the values of external functions, a cell's meta, a value that is not a
+ * finite number and a clock that is not a moment the same in every time zone, refused at the boundary as InputError.
+ */
+import { afterAll, describe, expect, it } from 'vitest'
+import { compute, createInlineCalc, createSession, entryText, InputError, parseEntry, type BookInput, type CellInput } from '../src/index.js'
+import { ASYNC_CALCS, closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const BALANCE = 'BALANCE("x")'
@@ -58,5 +62,84 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     const shared = { tag: 'x' }
     const r = compute({ sheets: [{ name: 'S', cells: { A1: { value: 1, meta: { a: shared, b: shared } }, A2: { value: 2, meta: 'm' } } }] }, { clock, execution })
     expect(r.sheets[0].cells.A1.meta).toEqual({ a: shared, b: shared })
+  })
+})
+
+describe.each(['closures', 'eval'] as const)('a value that is not a finite number is refused (fix-u373), %s', (execution) => {
+  afterAll(closeCalcs)
+  const cell = (v: number): CellInput => ({ value: v })
+  const at = (v: number): BookInput => ({ sheets: [{ name: 'S', cells: { A1: cell(v), A2: { formula: 'A1+1' } } }] })
+  const BAD = [NaN, Infinity, -Infinity]
+  const why = { path: 'book.sheets[0].cells["A1"].value', message: expect.stringMatching(/expected a finite number/) }
+
+  it('compute and createSession, for each value', () => {
+    for (const v of BAD) {
+      expect(refusal(() => compute(at(v), { clock, execution })), String(v)).toEqual(why)
+      expect(refusal(() => createSession(at(v), { clock, execution })), String(v)).toEqual(why)
+    }
+    expect(compute(at(-0), { clock, execution }).sheets[0].cells.A2.value).toBe(1)
+  })
+
+  it.each(ASYNC_CALCS)('compute and createSession %s', async (_, make) => {
+    const calc = await make()
+    for (const v of BAD) {
+      await expect(calc.compute(at(v), { clock, execution })).rejects.toMatchObject(why)
+      await expect(calc.createSession(at(v), { clock, execution })).rejects.toMatchObject(why)
+    }
+    await calc.close()
+  })
+
+  describe.each(KINDS)('the edits of %s', (kind) => {
+    const open = openerFor(kind)
+    it('setCells, replaceCells and applyChanges refuse it and change nothing', async () => {
+      const s = await open(at(5), { clock, execution })
+      const before = (await s.getResult()).hash
+      for (const v of BAD) {
+        const edit = [{ sheet: 'S', cell: 'A1', input: cell(v) }]
+        await expect(s.setCells(edit), String(v)).rejects.toMatchObject({ path: 'edits[0].input.value' })
+        await expect(s.replaceCells(edit), String(v)).rejects.toMatchObject({ path: 'edits[0].input.value' })
+        await expect(s.applyChanges([{ op: 'setCells', edits: edit }]), String(v)).rejects.toMatchObject({ path: 'operations[0].edits[0].input.value' })
+        await expect(s.applyChanges([{ op: 'replaceCells', edits: edit }]), String(v)).rejects.toMatchObject({ path: 'operations[0].edits[0].input.value' })
+        await expect(s.validateEntry('S', 'A1', cell(v)), String(v)).rejects.toMatchObject({ path: 'input.value' })
+      }
+      expect((await s.getResult()).hash).toBe(before)
+      await s.close()
+    })
+  })
+})
+
+describe.each(['closures', 'eval'] as const)('a clock is ISO 8601 with Z or an offset, or a date alone (fix-u374), %s', (execution) => {
+  afterAll(closeCalcs)
+  const now = { sheets: [{ name: 'S', cells: { A1: { formula: 'NOW()' } } }] }
+  const at = (moment: string) => compute(now, { clock: { now: moment, seed: 7 }, execution }).sheets[0].cells.A1.value
+  // read in the host's time zone, by the engine's own rules, or a day the calendar does not have
+  const REFUSED = ['2026-10-04T12:00:00', '2026-10-04T12:00', '10/4/2026', '1', 'Sun Oct 04 2026', '2026-02-30T00:00:00Z', '2026-02-30', '2026-13-01', '2026-10-04T24:00:00Z', '2026-10-04 12:00:00Z', '2026-10']
+  const why = (path: string) => ({ path, message: expect.stringMatching(/invalid moment .*expected ISO 8601 with Z or an offset/) })
+
+  it('compute, createSession, setClock and the options of typed text refuse the others', () => {
+    const s = createSession(now, { clock, execution })
+    for (const moment of REFUSED) {
+      expect(refusal(() => compute(now, { clock: { now: moment, seed: 7 }, execution })), moment).toEqual(why('opts.clock.now'))
+      expect(refusal(() => createSession(now, { clock: { now: moment, seed: 7 }, execution })), moment).toEqual(why('opts.clock.now'))
+      expect(refusal(() => s.setClock({ now: moment, seed: 7 })), moment).toEqual(why('clock.now'))
+      expect(refusal(() => parseEntry('3/15', { now: moment })), moment).toEqual(why('opts.now'))
+      expect(refusal(() => entryText(1, { now: moment })), moment).toEqual(why('opts.now'))
+    }
+    expect(s.getResult().clock).toEqual(clock)
+    s.close()
+  })
+
+  it.each(ASYNC_CALCS)('compute and createSession %s refuse them', async (_, make) => {
+    const calc = await make()
+    await expect(calc.compute(now, { clock: { now: '2026-10-04T12:00:00', seed: 7 }, execution })).rejects.toMatchObject(why('opts.clock.now'))
+    await expect(calc.createSession(now, { clock: { now: '2026-02-30T00:00:00Z', seed: 7 }, execution })).rejects.toMatchObject(why('opts.clock.now'))
+    await calc.close()
+  })
+
+  it('Z, an offset, fractions of a second and a date alone name one moment wherever the host is', () => {
+    expect(at('2026-10-04T12:00:00Z')).toBe(46299.5)
+    expect([at('2026-10-04T15:00:00+03:00'), at('2026-10-04T05:00-07:00'), at('2026-10-04T12:00:00.000Z'), at('2026-10-04T12:00:00.123456Z')]).toEqual([46299.5, 46299.5, 46299.5, at('2026-10-04T12:00:00.123Z')])
+    expect([at('2026-10-04'), at('2024-02-29'), at('2026-10-05T02:00:00+14:00')]).toEqual([46299, 45351, 46299.5])
+    expect(parseEntry('3/15', { now: '2026-12-31T23:30:00-08:00' })).toEqual(parseEntry('3/15', { now: '2027-01-01T07:30:00Z' }))
   })
 })

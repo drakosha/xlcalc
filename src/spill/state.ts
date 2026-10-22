@@ -28,6 +28,8 @@ export interface Spills {
   wait: Map<number, Area>
   /** Why a formula's array could not spill. */
   why: Map<number, string>
+  /** The spilled array that a waiting one gave way to, by the waiting one (`beats` may turn once the graph changes). */
+  by: Map<number, number>
   occupied: Occupied
   /** Merged areas by sheet, parsed when first needed. */
   merges: Map<number, Rect[]>
@@ -43,6 +45,6 @@ export interface Spills {
   claimsChanged: boolean
 }
 
-export const newSpills = (): Spills => ({ on: new Map(), claims: new Map(), wait: new Map(), why: new Map(), occupied: new Occupied(), merges: new Map(), step: 0, since: 0, done: new Float64Array(0), touched: [], claimsChanged: false })
+export const newSpills = (): Spills => ({ on: new Map(), claims: new Map(), wait: new Map(), why: new Map(), by: new Map(), occupied: new Occupied(), merges: new Map(), step: 0, since: 0, done: new Float64Array(0), touched: [], claimsChanged: false })
 
 export const equalAreas = (a: Area | undefined, b: Area | undefined) => a === b || (!!a && !!b && a.s === b.s && a.r1 === b.r1 && a.c1 === b.c1 && a.r2 === b.r2 && a.c2 === b.c2)
