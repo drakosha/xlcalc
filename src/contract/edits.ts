@@ -54,8 +54,9 @@ export interface EditResult {
   /**
    * The cells whose value, displayed text, formula, formatting, note or hyperlink changed, as `CellChange`; a cell whose
    * value changed because of another cell is listed with its value only. After a structure operation, the cells whose
-   * value or formula differs from that of the cell previously at their old position (`moved`); a rectangle of more than
-   * 65,536 cells whose formatting alone changed (a merge of entire columns, its undo) is in `repaint` instead of here.
+   * value or formula differs from that of the cell previously at their old position (`moved`). A rectangle of more than
+   * 65,536 cells without an entry of their own whose formatting changed (`patchCells` or `clearCells` over formatted
+   * ranges, a merge of entire columns, their undo and redo) is in `repaint` instead of here, spilled values included.
    */
   changes: CellChange[]
   /** The sheets whose layout changed (rows, columns, merged areas, tables, conditional formats, validation…): a host reads `getLayout()` again. */
@@ -67,8 +68,8 @@ export interface EditResult {
   /**
    * Rectangles where cells may look different without being in `changes`: the cells covered by the workbook's
    * conditional formats, after a call that changed a value or the rules (a rule's formatting depends on values wherever
-   * its formulas point), and after a structure operation, its undo or redo, a rectangle of more than 65,536 cells whose
-   * formatting changed, which a host reads again where it overlaps its viewport.
+   * its formulas point), and a rectangle of more than 65,536 cells whose formatting changed (`patchCells`, `clearCells`, a
+   * structure operation, their undo and redo), which a host reads again where it overlaps its viewport.
    */
   repaint?: RangeRef[]
 }
