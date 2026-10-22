@@ -1,4 +1,5 @@
 /** Zip archives written by hand, for what the reader refuses: entries as given, and a central directory pointing at them. */
+import { crc32, inflateRawSync } from 'node:zlib'
 import { concat } from '../../src/xlsx/zip/platform.js'
 
 export interface RawEntry {
@@ -10,6 +11,19 @@ export interface RawEntry {
   /** The size the entry says it inflates to: the data's own by default. */
   usize?: number
   flags?: number
+  /** The CRC-32 recorded: by default the one of the bytes the entry inflates to (0 when they do not inflate within `usize`). */
+  crc?: number
+}
+
+/** The CRC-32 of what an entry's data inflates to, as the reader checks it. */
+function crcOf(e: RawEntry): number {
+  if (e.crc !== undefined) return e.crc
+  if (e.method !== 8) return crc32(e.data)
+  try {
+    return crc32(inflateRawSync(e.data, { maxOutputLength: Math.max(1, e.usize ?? e.data.length) }))
+  } catch {
+    return 0
+  }
 }
 
 const enc = new TextEncoder()
@@ -23,6 +37,7 @@ function record(sig: number, fixed: number, e: RawEntry, name: string): [Uint8Ar
   v.setUint32(0, sig, true)
   v.setUint16(6 + at, e.flags ?? 0, true)
   v.setUint16(8 + at, e.method ?? 0, true)
+  v.setUint32(14 + at, crcOf(e), true)
   v.setUint32(18 + at, e.data.length, true)
   v.setUint32(22 + at, e.usize ?? e.data.length, true)
   v.setUint16(26 + at, n.length, true)

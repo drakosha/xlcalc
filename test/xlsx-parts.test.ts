@@ -88,7 +88,7 @@ const sheetWith = async (body: string, sheetRels: string, more: Record<string, s
 const DATA = '<sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1"><v>1</v></c></row></sheetData>'
 
 describe('frozen and split panes read', () => {
-  const view = (pane: string, attrs = '') => read({ sheets: [{ name: 'S', body: `<sheetViews><sheetView workbookViewId="0"${attrs}>${pane}</sheetView></sheetViews>${DATA}` }] })
+  const view = (pane: string, attrs = '') => read({ sheets: [{ name: 'S', body: `<sheetViews><sheetView workbookViewId="0"${attrs}>${pane}</sheetView></sheetViews>${DATA}` }], strings: ['x'] })
 
   it('frozen panes by their rows and columns, frozen after a split too; split panes alone reported', async () => {
     expect((await view('<pane xSplit="2" ySplit="1" topLeftCell="C2" activePane="bottomRight" state="frozen"/>')).book.sheets[0].frozen).toEqual({ rows: 1, columns: 2 })

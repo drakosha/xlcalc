@@ -99,9 +99,9 @@ function chunk(keys: string[], cells: CellInput[], i: number): string | null {
 }
 
 /**
- * The book as text, as objects when JSON cannot hold it. The book is taken at once: what the caller changes in it
- * afterwards does not reach the text. A book of one chunk is written at once; a larger one a chunk at a time between
- * turns of the event loop.
+ * The book as text, as objects when JSON cannot hold it. The book is taken at once: a cell the caller replaces in it
+ * afterwards does not reach the text. Its cell objects are not copied and must not be changed in place: a book of one
+ * chunk is written at once, a larger one a chunk at a time between turns of the event loop, and objects go as they are.
  */
 export function pack(book: BookInput): Sent | Promise<Sent> {
   const c = capture(book)

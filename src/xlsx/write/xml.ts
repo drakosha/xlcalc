@@ -9,9 +9,10 @@ export const rgb = (c: string) => `FF${c.slice(1).toUpperCase()}`
 
 export { MAX_TEXT } from '../../model.js'
 
-/** Text cut to Excel's limit `max`, reported as `textLength` when it was longer. */
+/** Text cut to Excel's limit `max`, reported as `textLength` when it was longer; a character of two code units is not split. */
 export function clip(text: string, max: number, issues: Issues, message: XlsxMessage, where: Where): string {
   if (text.length <= max) return text
   issues.add('textLength', message, where)
-  return text.slice(0, max)
+  const high = (text.charCodeAt(max - 1) & 0xfc00) === 0xd800 && (text.charCodeAt(max) & 0xfc00) === 0xdc00
+  return text.slice(0, high ? max - 1 : max)
 }

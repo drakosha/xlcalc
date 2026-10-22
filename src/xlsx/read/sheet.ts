@@ -19,7 +19,7 @@ import { canonical } from '../../syntax/print.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has, lastChild, ownEntry, type Element } from '../xml/scan.js'
-import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
+import { look, outlineOf, readCells, xfAt, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
@@ -192,7 +192,7 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     if (col.width !== undefined && flag(a.bestFit)) col.bestFit = true
     // Excel hides a column of width 0 whatever its flag
     if (flag(a.hidden) || col.width === 0) col.hidden = true
-    if (a.style !== undefined) Object.assign(col, look(read.xfs[Number(a.style)], read.issues, where))
+    if (a.style !== undefined) Object.assign(col, look(xfAt(a.style, read, where), read.issues, where))
     Object.assign(col, outlineOf(a))
     if (Object.keys(col).length) lines.push([lo, hi, col])
   }

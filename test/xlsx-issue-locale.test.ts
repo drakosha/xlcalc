@@ -165,7 +165,7 @@ describe('the issues of a file written, in the language of opts.locale', () => {
     const said: XlsxMessage[] = [
       { key: 'cellMeta' },
       { key: 'textCut' },
-      { key: 'formulaAsValue' },
+      { key: 'formulaLeftOut' },
       { key: 'tooltipCut' },
       { key: 'ruleTextCut', field: 'prompt', max: 255 },
       { key: 'noteCut' },

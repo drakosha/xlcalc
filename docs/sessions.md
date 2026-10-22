@@ -43,6 +43,7 @@ session.close()
 
 Every call that changes the workbook returns an `EditResult`: the session's `revision` after the call (incremented by one for each such call; `session.revision` reads it) and `changes`, the cells whose value or displayed text changed, with a cell's `formula`, own `style`, own `numberFormat`, `note` or `link` when they changed (null when the cell no longer has one). Changes to `meta` are not listed: the host owns this data, and the history restores it.
 
+- `createSession(book, opts)` takes the workbook's cell objects and the options as given, not copies of them, in every kind of session: they belong to the session from then on, and changing one in place afterwards gives results that depend on the kind of session. Change the workbook through the session's calls instead.
 - `getResult()` returns the same shape as `compute`.
 - `getSnapshot()` returns independent copies of the workbook and its result at a single point in time, in every kind of session (what `writeXlsx` accepts). Later edits do not change a snapshot, and changing a snapshot cannot change the session.
 - `getHash()` returns only the values hash.
