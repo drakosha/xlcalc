@@ -1,12 +1,14 @@
 /**
  * Table parts (`xl/tables/tableN.xml`) from a sheet's tables, as Excel writes them: the name twice (`name` and
  * `displayName`), the range, the header and totals row counts, an autofilter over the header and data rows, each
- * column with its name, its totals function or label and its calculated column formula, and Excel's default style.
+ * column with its name, its totals function or label and its calculated column formula, and its style (Excel's default
+ * without one).
  * A formula in the totals row that no totals function of its column gives is the column's `custom` totals formula:
  * Excel does not open a file whose totals row holds a formula its table part does not record. The table that holds a
  * filtered sheet's filter mode gets criteria every row meets (`KEEP_ALL`).
  */
-import type { SheetInput, TableInput } from '../../contract.js'
+import type { SheetInput, TableInput, TableStyle } from '../../contract.js'
+import { DEFAULT_TABLE_STYLE, STYLE_OPTIONS } from '../../tables/check.js'
 import { formatAddress } from '../../model.js'
 import { cornersText, parseRange } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
@@ -15,6 +17,12 @@ import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree, type FileNames } from './formula.js'
 import { KEEP_ALL } from './sheet.js'
 import { HEAD, MAIN } from './xml.js'
+
+/** A table's `tableStyleInfo`: Excel's default style for a table without `style`, every option written. */
+function styleInfo(s: TableStyle = DEFAULT_TABLE_STYLE): string {
+  const name = s.name === undefined ? '' : ` name="${escapeAttr(s.name)}"`
+  return `<tableStyleInfo${name}${STYLE_OPTIONS.map(([k, attr]) => ` ${attr}="${s[k] ? 1 : 0}"`).join('')}/>`
+}
 
 /** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode. */
 export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: FileNames, issues: Issues, filtered = false): string {
@@ -50,6 +58,6 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, names: Fi
   return (
     `${HEAD}<table xmlns="${MAIN}" id="${id}" name="${name}" displayName="${name}" ref="${ref}"${counts}>` +
     `${filter}<tableColumns count="${cols.length}">${cols.join('')}</tableColumns>` +
-    '<tableStyleInfo name="TableStyleMedium2" showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/></table>'
+    `${styleInfo(t.style)}</table>`
   )
 }

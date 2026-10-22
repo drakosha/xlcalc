@@ -178,6 +178,15 @@ A cell keeps only the part of its formatting that its row or column does not pro
 
 A merged area that overlaps another is left out and reported.
 
+### Sheet names
+
+A file from another program may name a sheet as Excel would not: `History`, more than 31 characters, an empty name, a name another sheet has in another case, an apostrophe at either end, or one of `: \ / ? * [ ]`. The sheet is read under a name the workbook can hold, and reported with code `part`, the new name as `sheet` and the file's as `name`. Each of `: \ / ? * [ ]` and an apostrophe at either end becomes `_`, the name is cut to 31 characters, an empty name becomes `Sheet` and the sheet's place (`Sheet2`), and a name that is reserved (`History`) or taken by another sheet gets a number, as Excel numbers a copied sheet: `History (2)`, `s (2)`. The first of names that differ only in case keeps its name. Formulas, names, calculated columns, conditional formats and validation rules that refer to the sheet refer to its new name, as after `renameSheet`; a reference to a name several sheets share goes to the first of them. A reference to a sheet whose name holds `[` or `:` reads as a reference to another workbook or across sheets and is not rewritten. This rule is the reader's own: what Excel does when it opens such a file is not recorded here.
+
+```js
+// <sheet name="History" sheetId="1" r:id="rId1"/>, a formula History!A1*2 on another sheet
+{ name: 'History (2)', cells: { … } }, { formula: "'History (2)'!A1*2" }
+```
+
 ### Hidden sheets
 
 A sheet marked `state="hidden"` in a file gets `hidden: true`, and one marked `state="veryHidden"` gets `hidden: 'very'`: a very hidden sheet is one that Excel's window does not offer to unhide, only its object model can. Formulas read hidden sheets like any other. A workbook keeps at least one visible sheet, so a file whose worksheets are all hidden next to a visible chart sheet, which the workbook leaves out, has its first worksheet made visible, which is reported.
@@ -247,7 +256,7 @@ The manual calculation mode, "automatic except for data tables" and precision as
 
 ### Tables
 
-A sheet's table parts become its `tables`: the name formulas use, the range, the header and totals rows, and each column with its calculated column formula and its totals function or label. Structured references come in the stored spelling, which matches the file's except for a column name that starts with `@` (`Sales[@at]` in a file becomes `Sales['@at]`). A header cell that does not contain its column's name as text is given it, and a table the model cannot represent, one that overlaps another table or a merged area, is left out; both are reported, as is any part of a calculated column formula the engine cannot handle, as for a cell's formula (at the column's first cell). A calculated column formula that differs from its cells' formulas is kept as Excel keeps it: a row inserted into the table gets it. [docs/tables.md](tables.md) has the rules.
+A sheet's table parts become its `tables`: the name formulas use, the range, the header and totals rows, each column with its calculated column formula and its totals function or label, and its style (`tableStyleInfo`): a table in Excel's default style, `TableStyleMedium2` with banded rows, has no `style`, and one in a custom style, which the model has no place for, is read in the default style and reported. Structured references come in the stored spelling, which matches the file's except for a column name that starts with `@` (`Sales[@at]` in a file becomes `Sales['@at]`). A header cell that does not contain its column's name as text is given it, and a table the model cannot represent, one that overlaps another table or a merged area, is left out; both are reported, as is any part of a calculated column formula the engine cannot handle, as for a cell's formula (at the column's first cell). A calculated column formula that differs from its cells' formulas is kept as Excel keeps it: a row inserted into the table gets it. [docs/tables.md](tables.md) has the rules.
 
 ### The locale
 
@@ -259,7 +268,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 |---|---|
 | `richText` | formatted runs of text |
 | `userFunction` | a user-defined function (`_xludf.`) |
-| `table` | a table left out (overlapping another table or a merged area, or with a name already in use), a header cell given its column's name, a structured reference without a table name |
+| `table` | a table left out (overlapping another table or a merged area, or with a name already in use), a header cell given its column's name, a custom table style, a structured reference without a table name |
 | `externalLink` | a DDE or OLE link, or a link whose part is missing, kept as a workbook without sheets; a formula over a link the file does not contain, or over such a link |
 | `formula` | a formula the engine cannot parse, kept as written |
 | `errorConstant` | an error stored as a value, read as a formula consisting of it |
@@ -283,7 +292,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `outline` | automatic outline styles |
 | `drawing`, `pivotTable`, `protection`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
-| `part` | a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size |
+| `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size |
 
 Gridlines and other view settings outside `SheetView` are not reported. A page setup is reported only when one was actually made, for example a landscape page or fit to width.
 
@@ -354,7 +363,7 @@ A file with formulas asks Excel to recalculate the workbook when it opens it, so
 
 ### Tables
 
-Each table is written as a table part, as Excel writes one: its name, range, header and totals rows, an AutoFilter over the header and data, and its columns with their calculated column formulas and totals. A formula in the totals row that none of its column's totals functions produces is recorded as the column's custom totals formula, without which Excel does not open the file, and a table's name alone in a defined name is written as `Sales[]`.
+Each table is written as a table part, as Excel writes one: its name, range, header and totals rows, an AutoFilter over the header and data, its columns with their calculated column formulas and totals, and its style, Excel's default for a table without `style`. A formula in the totals row that none of its column's totals functions produces is recorded as the column's custom totals formula, without which Excel does not open the file, and a table's name alone in a defined name is written as `Sales[]`.
 
 ### Styles, columns and rows
 
