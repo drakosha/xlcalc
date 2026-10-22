@@ -134,7 +134,8 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
 
 function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: boolean): Applied {
   const o = object(op, 'op')
-  const allowed = FIELDS[o.op as string]
+  // an own field only: a name of Object.prototype's members is no operation
+  const allowed = typeof o.op === 'string' && Object.hasOwn(FIELDS, o.op) ? FIELDS[o.op] : undefined
   if (typeof o.op !== 'string' || !allowed) throw new InputError('op.op', `expected one of ${Object.keys(FIELDS).join(', ')}, got ${JSON.stringify(o.op)}`)
   onlyKeys(o, 'op', ['op', ...allowed])
   const sheets = namesOf(book)

@@ -88,9 +88,11 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
   const cells = { ...book.sheets[s].cells }
   if (x && table.headers !== false && Array.isArray(table.columns))
     table.columns.forEach((c, i) => {
+      // a column without a name is left to checkTables, which refuses it
+      if (!c || typeof c.name !== 'string') return
       const addr = formatAddress(x.r1, x.c1 + i)
-      if (c && typeof c.name === 'string') cells[addr] = { ...cells[addr], value: c.name, formula: undefined }
-      if (cells[addr].formula === undefined) delete cells[addr].formula
+      const { formula: _, ...rest } = cells[addr] ?? {}
+      cells[addr] = { ...rest, value: c.name }
     })
   // a malformed table (its fields, range, columns) is an input error, as in a book
   checkTables({ ...(book.names ? { names: book.names } : {}), sheets: [{ ...book.sheets[s], cells, tables: [table] }] }, 'op')

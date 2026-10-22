@@ -5,7 +5,7 @@
  * of the edited book.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, debugGeneratedCode, createSession, type BookInput } from '../src/index.js'
+import { InputError, compute, debugGeneratedCode, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { apply, edits, withHeld } from './session-edits.js'
 
@@ -48,7 +48,7 @@ describe('session', () => {
     const saved = s.getResult()
     expect(saved.clock).toEqual(c2)
     expect(compute(apply(book, [{ sheet: 'S', cell: 'A3', input: { value: 2 } }]), { clock: c2 }).hash).toBe(saved.hash)
-    expect(() => s.setClock(c1)).toThrow()
+    expect(() => s.setClock(c1)).toThrow(InputError)
   })
 
   it('explain: the precedents tree with depth, node limit and text', () => {
