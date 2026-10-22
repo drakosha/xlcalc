@@ -14,7 +14,7 @@ import type { BookInput, CellInput, FillType } from '../contract.js'
 import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
 import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
-import { lineAt } from '../layout/spans.js'
+import { entryAt, lines as linesOf } from '../layout/spans.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
@@ -111,6 +111,9 @@ const empty = (cell: CellInput | undefined) => !cell || (cell.formula === undefi
 function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [number, number], type: FillType): [string, CellInput['value']][] {
   const sheet = book.sheets[s]
   const g = gridOf(sheet)
+  // a cell's number format: its own, else its row's, else its column's, the sheet's rows and columns read once
+  const [rows, cols] = [linesOf(sheet.rows, 'r'), linesOf(sheet.columns, 'c')]
+  const formatAt = (cell: CellInput | undefined, r: number, c: number) => cell?.numberFormat ?? entryAt(rows, r)?.numberFormat ?? entryAt(cols, c)?.numberFormat
   const a = lo(src, axis)
   const h = hi(src, axis) - a + 1
   // the source's cells by line across the fill, at their position along it
@@ -120,7 +123,7 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
   for (const i of cellsIn(g, src)) {
     const cell = g.cell[i]
     if (empty(cell)) continue
-    numbers &&= cell.formula === undefined && typeof cell.value === 'number' && shownAs(formatAt(sheet, cell, g.row[i], g.col[i])) === 'number'
+    numbers &&= cell.formula === undefined && typeof cell.value === 'number' && shownAs(formatAt(cell, g.row[i], g.col[i])) === 'number'
     const [along, across] = axis === 'r' ? [g.row[i], g.col[i]] : [g.col[i], g.row[i]]
     let line = lines.get(across)
     if (!line) lines.set(across, (line = new Map()))
@@ -133,7 +136,7 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
     const items = Array.from({ length: h }, (_, p) => {
       const [r, c] = axis === 'r' ? [a + p, across] : [across, a + p]
       const cell = line.get(p)
-      return itemOf(cell, formatAt(sheet, cell, r, c), book, lists)
+      return itemOf(cell, formatAt(cell, r, c), book, lists)
     })
     for (const run of runsOf(items)) {
       const next = goesOn(run, !numbers, epoch)
@@ -154,11 +157,6 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
     }
   }
   return out
-}
-
-/** A cell's number format: its own, else its row's, else its column's. */
-function formatAt(sheet: BookInput['sheets'][number], cell: CellInput | undefined, r: number, c: number) {
-  return cell?.numberFormat ?? lineAt(sheet.rows, 'r', r)?.numberFormat ?? lineAt(sheet.columns, 'c', c)?.numberFormat
 }
 
 /** The lists a text goes on through: en-US's short and long day and month names, and the book's locale's. */

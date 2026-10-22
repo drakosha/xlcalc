@@ -10,8 +10,7 @@ import { invalidError } from '../prepare.js'
 import { closureBackend } from '../exec/closures.js'
 import { walk } from '../exec/walk.js'
 import type { Steps } from '../exec/budget.js'
-import { formatOf as lineFormat } from '../layout/lines.js'
-import { lineAt } from '../layout/spans.js'
+import { sheetLines } from '../layout/lines.js'
 import { nameFor } from '../names.js'
 import { journaled } from '../held.js'
 import { readEntry } from '../entry/index.js'
@@ -50,11 +49,8 @@ function formulas(state: EngineState, s: number, r: number, c: number, v: DataVa
   return { ...(v.formula1 !== undefined ? { formula1: at(v.formula1) } : {}), ...(v.formula2 !== undefined ? { formula2: at(v.formula2) } : {}) }
 }
 
-/** The number format a cell shows by (`layout/lines.ts`). */
-function formatOf(state: EngineState, s: number, r: number, c: number): NumberFormat | undefined {
-  const sh = state.input.sheets[s]
-  return lineFormat(inputIn(sh, formatAddress(r, c), r, c), lineAt(sh.rows, 'r', r), lineAt(sh.columns, 'c', c))
-}
+/** The number format a cell shows by (`layout/lines.ts`), the sheet's lines read once for the state. */
+const formatOf = (state: EngineState, s: number, r: number, c: number): NumberFormat | undefined => sheetLines(state.input.sheets[s], state).format(r, c)
 
 /** A literal list (a text constant): its items, split at commas as a file holds them in every locale. */
 const literal = (text: string): string[] | null => (/^\s*"(?:[^"]|"")*"\s*$/.test(text) ? text.trim().slice(1, -1).replace(/""/g, '"').split(',') : null)

@@ -10,7 +10,7 @@
  */
 import type { BookInput, CellInput, LookRange, SheetInput } from '../contract.js'
 import { mergesOf, parseMerge } from '../layout/merges.js'
-import { lineAt } from '../layout/spans.js'
+import { entryAt, lines } from '../layout/spans.js'
 import { say } from '../locale/messages.js'
 import { inputIn } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
@@ -58,10 +58,11 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
   const cells: Record<string, CellInput> = { ...sh.cells }
   const looks: LookRange[] = []
   let styles = moved.styles ?? []
+  const [rows, cols] = [lines(sh.rows, 'r'), lines(sh.columns, 'c')]
   for (const a of center ? areas : made) {
     const top = formatAddress(a.r1, a.c1)
     const own = inputIn(sh, top, a.r1, a.c1)
-    const [row, col] = [lineAt(sh.rows, 'r', a.r1), lineAt(sh.columns, 'c', a.c1)]
+    const [row, col] = [entryAt(rows, a.r1), entryAt(cols, a.c1)]
     const numberFormat = own?.numberFormat ?? row?.numberFormat ?? col?.numberFormat
     let style = own?.style ?? row?.style ?? col?.style
     if (center) {

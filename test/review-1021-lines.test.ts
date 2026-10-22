@@ -30,9 +30,31 @@ const manyRows = (n: number, entry: (r: number) => RowInput = () => ({})): Recor
   Object.fromEntries(Array.from({ length: n }, (_, i) => [String(i + 1), { height: 15 + (i % 3), ...entry(i + 1) }]))
 
 describe.each(EXECUTIONS)('review 21.10 rows and columns, %s', (execution) => {
+  it('a series fill and a merge across read a sheet of 34,000 row entries once (speed-u94)', () => {
+    const cells = Object.fromEntries(Array.from({ length: 300 }, (_, i) => [`A${i + 1}`, { value: i + 1 }]))
+    const book: BookInput = { sheets: [{ name: 'S', rows: manyRows(34_000), cells }] }
+    // the rows read once per cell of the series' source, once per row merged: 2 to 3 s each
+    let fill: ReturnType<typeof editStructure> | undefined, merge: ReturnType<typeof editStructure> | undefined
+    expect(tookSync(() => (fill = editStructure(book, { op: 'fillRange', sheet: 'S', range: 'A1:A300', to: 'A1:A310' })))).toBeLessThan(500)
+    expect(fill!.ok && fill!.book.sheets[0].cells.A310).toEqual({ value: 310 })
+    expect(tookSync(() => (merge = editStructure(book, { op: 'mergeCells', sheet: 'S', range: 'C1:D600', across: true })))).toBeLessThan(500)
+    expect(merge!.ok && merge!.book.sheets[0].merges!.length).toBe(600)
+  })
 
   describe.each(KINDS)('in %s', (kind) => {
     const open = openerFor(kind)
+
+    it('a list of data validation reads the rows once, not once per item (speed-u94)', async () => {
+      const rows = manyRows(34_000, (r) => (r === 7 ? { numberFormat: '0.0%' } : {}))
+      const cells = Object.fromEntries(Array.from({ length: 1000 }, (_, i) => [`B${i + 1}`, { value: i }]))
+      const s = await open({ sheets: [{ name: 'S', rows, cells, validations: [{ range: 'D1', type: 'list', formula1: '$B$1:$B$1000' }] }] }, { execution, clock })
+      let list: unknown
+      // the rows read for each item: 5 s
+      expect(await took(async () => (list = (await s.getValidation('S', 'D1'))!.list))).toBeLessThan(500)
+      expect((list as { text: string }[]).map((x) => x.text).slice(5, 8)).toEqual(['5', '600.0%', '7'])
+      expect((list as unknown[]).length).toBe(1000)
+      await s.close()
+    })
 
     it('typing text with a line break into 20,000 rows patches the rows map once (speed-u116)', async () => {
       const s = await open({ sheets: [{ name: 'S', cells: {} }] }, { execution, clock, display: false, undo: { depth: 0 } })
