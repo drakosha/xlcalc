@@ -197,16 +197,18 @@ export async function stepSpill(set: string, tag: Tag, e: WinEnv): Promise<void>
 
 /** A workbook step as steps of `xl.ps1`; a read takes the rectangles and the text of the cells to show. */
 function bookSteps(s: BookStep, c: WorkbookCase, shows: { sheet: string; cell: string }[]): Step[] {
-  if (s === 'full' || s === 'calc') return [{ do: s }]
+  if (s === 'full' || s === 'calc' || s === 'rebuild') return [{ do: s }]
   if (s === 'save') return [{ do: 'saveAs' }]
-  if (s === 'rebuild') throw new Error(`${c.id}: the workbook step rebuild is Excel for Mac's alone`)
   if (s === 'read') return [...readSteps(c.read), ...shows.map((x) => ({ do: 'shown', sheet: x.sheet, cells: [x.cell] }))]
   if ('set' in s) {
     const { sheet, cell, value } = s.set
     return [{ do: 'set', sheet, cell, ...comEdit(value) }]
   }
-  if ('formula' in s && s.formula.array) throw new Error(`${c.id}: an array formula typed is Excel for Mac's alone`)
-  if ('formula' in s) return [{ do: 'set', sheet: s.formula.sheet, cell: s.formula.cell, kind: 'f', value: `=${s.formula.formula.replace(/^=/, '')}` }]
+  if ('formula' in s) {
+    // as Excel 365 enters it (Formula2), an array of the old kind over its range (FormulaArray), else of the old kind (Formula)
+    const { sheet, cell, formula, dynamic, array } = s.formula
+    return [{ do: 'set', sheet, cell: array ?? cell, kind: array ? 'fa' : dynamic ? 'f2' : 'f', value: `=${formula.replace(/^=/, '')}` }]
+  }
   if ('hide' in s) {
     const { sheet, rows, hidden } = s.hide
     return [{ do: rows !== undefined ? 'hide' : 'hideColumns', sheet, range: hideRange(s.hide), hidden }]
@@ -252,15 +254,21 @@ export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<vo
       const [iteration, count, delta] = a.answers[0] as [boolean, number, number]
       const { shows, steps } = plan(c)
       const reads: WorkbookAnswer['reads'] = []
+      const refused: string[] = []
       let at = 1
       for (const { s, xl } of steps) {
         const got = a.answers.slice(at, at + xl.length)
         at += xl.length
-        if (s !== 'read') continue
+        if (s !== 'read') {
+          refused.push(...stepErrors(got, () => JSON.stringify(s)))
+          continue
+        }
         const rects = rectsOf(c.read, got.slice(0, c.read.length * 2))
         const texts = got.slice(c.read.length * 2).map((x) => String((x as [string][])[0][0]))
         reads.push({ ...rects, ...(shows.length ? { shown: Object.fromEntries(shows.map((x, i) => [`${x.sheet}!${x.cell}`, texts[i]])) } : {}) })
       }
+      // an edit Excel refused leaves the book otherwise than the case says: no answer
+      if (refused.length) return void failed.push(`${c.id}: ${refused.join('; ')}`)
       answers[c.id] = { settings: { iteration, count, delta }, reads }
       if (a.saved) saved.set(c.id, a.saved)
     },
@@ -270,7 +278,7 @@ export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<vo
   for (const c of todo) if (saved.has(c.id)) answers[c.id].saved = await savedValues(c.read, saved.get(c.id)!)
   save()
   console.log(answeredLine(`workbook ${set}`, todo.length, answers, cases))
-  if (failed.length) throw new Error(`workbook ${set}: Excel did not load ${failed.join('; ')}`)
+  if (failed.length) throw new Error(`workbook ${set}: Excel did not load the book or refused an edit: ${failed.join('; ')}`)
 }
 
 // ---- tables

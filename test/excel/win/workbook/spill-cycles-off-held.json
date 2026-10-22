@@ -1,0 +1,5362 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 35.1
+ },
+ "cases": [
+  {
+   "id": "sort-file",
+   "about": "sort: the formulas in the file",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B3": {
+        "formula": "SORT(B1:C2)"
+       },
+       "C2": {
+        "formula": "C4+1"
+       },
+       "A4": {
+        "formula": "SEQUENCE(1,4)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D5"
+    }
+   ],
+   "steps": [
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    },
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    },
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "sort-typed-B3-C2-A4",
+   "about": "sort: the formulas typed in the order B3, C2, A4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D5"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "B3",
+      "formula": "SORT(B1:C2)",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C2",
+      "formula": "C4+1",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A4",
+      "formula": "SEQUENCE(1,4)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    },
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    },
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "sort-typed-A4-C2-B3",
+   "about": "sort: the formulas typed in the order A4, C2, B3",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D5"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A4",
+      "formula": "SEQUENCE(1,4)",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C2",
+      "formula": "C4+1",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "B3",
+      "formula": "SORT(B1:C2)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    },
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    },
+    {
+     "S!C2": {
+      "t": "n",
+      "v": 4
+     },
+     "S!B3": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B4": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C4": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D4": {
+      "t": "n",
+      "v": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "munit-file",
+   "about": "munit: the formulas in the file",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C14": {
+        "formula": "MUNIT(3)"
+       },
+       "D11": {
+        "formula": "SWITCH(E11,30,1,H1:I4,2)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C11:E16"
+    }
+   ],
+   "steps": [
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!D11": {
+      "t": "s",
+      "v": ""
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    },
+    {
+     "S!D11": {
+      "t": "s",
+      "v": ""
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    },
+    {
+     "S!D11": {
+      "t": "s",
+      "v": ""
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "munit-typed-C14-D11",
+   "about": "munit: the formulas typed in the order C14, D11",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C11:E16"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C14",
+      "formula": "MUNIT(3)",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "D11",
+      "formula": "SWITCH(E11,30,1,H1:I4,2)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!D11": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    },
+    {
+     "S!D11": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    },
+    {
+     "S!D11": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "munit-typed-D11-C14",
+   "about": "munit: the formulas typed in the order D11, C14",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C11:E16"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "D11",
+      "formula": "SWITCH(E11,30,1,H1:I4,2)",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C14",
+      "formula": "MUNIT(3)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!D11": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    },
+    {
+     "S!D11": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    },
+    {
+     "S!D11": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "S!C14": {
+      "t": "n",
+      "v": 1
+     },
+     "S!D14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E14": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D15": {
+      "t": "n",
+      "v": 1
+     },
+     "S!E15": {
+      "t": "n",
+      "v": 0
+     },
+     "S!C16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D16": {
+      "t": "n",
+      "v": 0
+     },
+     "S!E16": {
+      "t": "n",
+      "v": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "sheets-file-Sheet2-Q_data",
+   "about": "sheets: the formulas in the file, sheets Sheet2, Q data",
+   "book": {
+    "sheets": [
+     {
+      "name": "Sheet2",
+      "cells": {
+       "E5": {
+        "formula": "'Q data'!E5:F8*2"
+       },
+       "D7": {
+        "formula": "TRANSPOSE(D4:D6)"
+       }
+      }
+     },
+     {
+      "name": "Q data",
+      "cells": {
+       "F5": {
+        "formula": "#DIV/0!"
+       },
+       "D4": {
+        "formula": "LET(x,0.1,Sheet2!E8:F10)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "Sheet2",
+     "range": "D4:H10"
+    },
+    {
+     "sheet": "Q data",
+     "range": "D4:G10"
+    }
+   ],
+   "steps": [
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "Sheet2!E5": {
+      "t": "s",
+      "v": ""
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "s",
+      "v": ""
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     }
+    },
+    {
+     "Sheet2!E5": {
+      "t": "s",
+      "v": ""
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "s",
+      "v": ""
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     }
+    },
+    {
+     "Sheet2!E5": {
+      "t": "s",
+      "v": ""
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "s",
+      "v": ""
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     }
+    }
+   ]
+  },
+  {
+   "id": "sheets-file-Q_data-Sheet2",
+   "about": "sheets: the formulas in the file, sheets Q data, Sheet2",
+   "book": {
+    "sheets": [
+     {
+      "name": "Q data",
+      "cells": {
+       "F5": {
+        "formula": "#DIV/0!"
+       },
+       "D4": {
+        "formula": "LET(x,0.1,Sheet2!E8:F10)"
+       }
+      }
+     },
+     {
+      "name": "Sheet2",
+      "cells": {
+       "E5": {
+        "formula": "'Q data'!E5:F8*2"
+       },
+       "D7": {
+        "formula": "TRANSPOSE(D4:D6)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "Sheet2",
+     "range": "D4:H10"
+    },
+    {
+     "sheet": "Q data",
+     "range": "D4:G10"
+    }
+   ],
+   "steps": [
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "sheets-typed-Sheet2.E5-Sheet2.D7-Q_data.F5-Q_data.D4",
+   "about": "sheets: the formulas typed in the order Sheet2!E5, Sheet2!D7, Q data!F5, Q data!D4",
+   "book": {
+    "sheets": [
+     {
+      "name": "Sheet2",
+      "cells": {}
+     },
+     {
+      "name": "Q data",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "Sheet2",
+     "range": "D4:H10"
+    },
+    {
+     "sheet": "Q data",
+     "range": "D4:G10"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "Sheet2",
+      "cell": "E5",
+      "formula": "'Q data'!E5:F8*2",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "Sheet2",
+      "cell": "D7",
+      "formula": "TRANSPOSE(D4:D6)",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "Q data",
+      "cell": "F5",
+      "formula": "#DIV/0!",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "Q data",
+      "cell": "D4",
+      "formula": "LET(x,0.1,Sheet2!E8:F10)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "sheets-typed-Q_data.F5-Q_data.D4-Sheet2.E5-Sheet2.D7",
+   "about": "sheets: the formulas typed in the order Q data!F5, Q data!D4, Sheet2!E5, Sheet2!D7",
+   "book": {
+    "sheets": [
+     {
+      "name": "Sheet2",
+      "cells": {}
+     },
+     {
+      "name": "Q data",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "Sheet2",
+     "range": "D4:H10"
+    },
+    {
+     "sheet": "Q data",
+     "range": "D4:G10"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "Q data",
+      "cell": "F5",
+      "formula": "#DIV/0!",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "Q data",
+      "cell": "D4",
+      "formula": "LET(x,0.1,Sheet2!E8:F10)",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "Sheet2",
+      "cell": "E5",
+      "formula": "'Q data'!E5:F8*2",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "Sheet2",
+      "cell": "D7",
+      "formula": "TRANSPOSE(D4:D6)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "Sheet2!E5": {
+      "t": "e",
+      "v": "SPILL"
+     },
+     "Sheet2!D7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!E7": {
+      "t": "n",
+      "v": 0
+     },
+     "Sheet2!F7": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E4": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!D5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E5": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!F5": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "Q data!D6": {
+      "t": "n",
+      "v": 0
+     },
+     "Q data!E6": {
+      "t": "n",
+      "v": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "wait-file",
+   "about": "wait: the formulas in the file",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(2)"
+       },
+       "A2": {
+        "formula": "{1,2}+B2"
+       },
+       "C1": {
+        "formula": "B1+C2"
+       },
+       "C2": {
+        "formula": "C1*1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ],
+   "steps": [
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "wait-typed-B1-A2-C1-C2",
+   "about": "wait: the formulas typed in the order B1, A2, C1, C2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "B1",
+      "formula": "SEQUENCE(2)",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A2",
+      "formula": "{1,2}+B2",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C1",
+      "formula": "B1+C2",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C2",
+      "formula": "C1*1",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!A2": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!A2": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!A2": {
+      "t": "n",
+      "v": 1
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "n",
+      "v": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "wait-typed-C2-C1-A2-B1",
+   "about": "wait: the formulas typed in the order C2, C1, A2, B1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C2",
+      "formula": "C1*1",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C1",
+      "formula": "B1+C2",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A2",
+      "formula": "{1,2}+B2",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "B1",
+      "formula": "SEQUENCE(2)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!A2": {
+      "t": "n",
+      "v": 3
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!A2": {
+      "t": "n",
+      "v": 3
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 1
+     },
+     "S!C1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!A2": {
+      "t": "n",
+      "v": 3
+     },
+     "S!B2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C2": {
+      "t": "n",
+      "v": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "unique-typed",
+   "about": "A4 = UNIQUE(A4#) and B2 = A4#+1, then IF(A5:A7>1,D2:D3,365) typed into A4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A4": {
+        "formula": "UNIQUE(A4#)"
+       },
+       "B2": {
+        "formula": "A4#+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E8"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A4",
+      "formula": "IF(A5:A7>1,D2:D3,365)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "unique-found-typed",
+   "about": "the book the random check found, then IF(A5:A7>1,D2:D3,365) typed into A4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A4": {
+        "formula": "UNIQUE(A4#)"
+       },
+       "B2": {
+        "formula": "A4#+1"
+       },
+       "B1": {
+        "formula": "COUNT(E4:E4)"
+       },
+       "C7": {
+        "formula": "{3,-1;0.5,7}"
+       },
+       "B5": {
+        "value": 0
+       },
+       "D5": {
+        "value": 3
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E8"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A4",
+      "formula": "IF(A5:A7>1,D2:D3,365)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     },
+     "S!B5": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D5": {
+      "t": "n",
+      "v": 3
+     },
+     "S!C7": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D7": {
+      "t": "n",
+      "v": -1
+     },
+     "S!C8": {
+      "t": "n",
+      "v": 0.5
+     },
+     "S!D8": {
+      "t": "n",
+      "v": 7
+     }
+    },
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     },
+     "S!B5": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D5": {
+      "t": "n",
+      "v": 3
+     },
+     "S!C7": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D7": {
+      "t": "n",
+      "v": -1
+     },
+     "S!C8": {
+      "t": "n",
+      "v": 0.5
+     },
+     "S!D8": {
+      "t": "n",
+      "v": 7
+     }
+    },
+    {
+     "S!B1": {
+      "t": "n",
+      "v": 0
+     },
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     },
+     "S!B5": {
+      "t": "n",
+      "v": 0
+     },
+     "S!D5": {
+      "t": "n",
+      "v": 3
+     },
+     "S!C7": {
+      "t": "n",
+      "v": 3
+     },
+     "S!D7": {
+      "t": "n",
+      "v": -1
+     },
+     "S!C8": {
+      "t": "n",
+      "v": 0.5
+     },
+     "S!D8": {
+      "t": "n",
+      "v": 7
+     }
+    }
+   ]
+  },
+  {
+   "id": "unique-file",
+   "about": "IF(A5:A7>1,D2:D3,365) in A4 and B2 = A4#+1 in the file",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A4": {
+        "formula": "IF(A5:A7>1,D2:D3,365)"
+       },
+       "B2": {
+        "formula": "A4#+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E8"
+    }
+   ],
+   "steps": [
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!B2": {
+      "t": "s",
+      "v": ""
+     },
+     "S!A4": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "sum-file",
+   "about": "C3:D3 = SUM(D1:D3) as an array of the old kind and D2 = 2 in the file",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C3": {
+        "formula": "SUM(D1:D3)",
+        "array": "C3:D3"
+       },
+       "D2": {
+        "value": 2
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E4"
+    }
+   ],
+   "steps": [
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "sum-typed-array-last",
+   "about": "D2 = 2 in the file, then the array typed over C3:D3",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "D2": {
+        "value": 2
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E4"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "C3",
+      "formula": "SUM(D1:D3)",
+      "array": "C3:D3"
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "n",
+      "v": 0
+     }
+    }
+   ]
+  },
+  {
+   "id": "sum-typed-value-last",
+   "about": "the array in the file, then 2 typed into D2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C3": {
+        "formula": "SUM(D1:D3)",
+        "array": "C3:D3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E4"
+    }
+   ],
+   "steps": [
+    {
+     "set": {
+      "sheet": "S",
+      "cell": "D2",
+      "value": 2
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "s",
+      "v": ""
+     }
+    },
+    {
+     "S!D2": {
+      "t": "n",
+      "v": 2
+     },
+     "S!C3": {
+      "t": "s",
+      "v": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "unique-typed-A4-B2",
+   "about": "A4 = IF(A5:A7>1,D2:D3,365), then B2 = A4#+1, typed into the empty sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E8"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A4",
+      "formula": "IF(A5:A7>1,D2:D3,365)",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "B2",
+      "formula": "A4#+1",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!B2": {
+      "t": "n",
+      "v": 0
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 365
+     }
+    },
+    {
+     "S!B2": {
+      "t": "n",
+      "v": 0
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 365
+     }
+    },
+    {
+     "S!B2": {
+      "t": "n",
+      "v": 0
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 365
+     }
+    }
+   ]
+  },
+  {
+   "id": "unique-typed-B2-A4",
+   "about": "B2 = A4#+1, then A4 = IF(A5:A7>1,D2:D3,365), typed into the empty sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E8"
+    }
+   ],
+   "steps": [
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "B2",
+      "formula": "A4#+1",
+      "dynamic": true
+     }
+    },
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A4",
+      "formula": "IF(A5:A7>1,D2:D3,365)",
+      "dynamic": true
+     }
+    },
+    "read",
+    "full",
+    "read",
+    "rebuild",
+    "read"
+   ],
+   "file": {
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "cycle": true,
+   "predicted": [
+    {
+     "S!B2": {
+      "t": "n",
+      "v": 366
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!B2": {
+      "t": "n",
+      "v": 366
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     }
+    },
+    {
+     "S!B2": {
+      "t": "n",
+      "v": 366
+     },
+     "S!A4": {
+      "t": "n",
+      "v": 0
+     }
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "sort-file": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 4
+      },
+      "S!B3": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D4": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    },
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 4
+      },
+      "S!B3": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D4": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    },
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 4
+      },
+      "S!B3": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D4": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    }
+   ]
+  },
+  "sort-typed-B3-C2-A4": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      },
+      "S!B3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    },
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      },
+      "S!B3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    },
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      },
+      "S!B3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A4": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    }
+   ]
+  },
+  "sort-typed-A4-C2-B3": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 4
+      },
+      "S!B3": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D4": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    },
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 4
+      },
+      "S!B3": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D4": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    },
+    {
+     "values": {
+      "S!C2": {
+       "t": "n",
+       "v": 4
+      },
+      "S!B3": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B4": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C4": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D4": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "S!C2": "=C4+1",
+      "S!B3": "=SORT(B1:C2)",
+      "S!A4": "=SEQUENCE(1,4)"
+     }
+    }
+   ]
+  },
+  "munit-file": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!D11": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C14": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D15": {
+       "t": "n",
+       "v": 1
+      },
+      "S!E15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E16": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    },
+    {
+     "values": {
+      "S!D11": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C14": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D15": {
+       "t": "n",
+       "v": 1
+      },
+      "S!E15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E16": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    },
+    {
+     "values": {
+      "S!D11": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C14": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D15": {
+       "t": "n",
+       "v": 1
+      },
+      "S!E15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E16": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    }
+   ]
+  },
+  "munit-typed-C14-D11": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!D11": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C14": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D15": {
+       "t": "n",
+       "v": 1
+      },
+      "S!E15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E16": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    },
+    {
+     "values": {
+      "S!D11": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C14": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D15": {
+       "t": "n",
+       "v": 1
+      },
+      "S!E15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E16": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    },
+    {
+     "values": {
+      "S!D11": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C14": {
+       "t": "n",
+       "v": 1
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D15": {
+       "t": "n",
+       "v": 1
+      },
+      "S!E15": {
+       "t": "n",
+       "v": 0
+      },
+      "S!C16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D16": {
+       "t": "n",
+       "v": 0
+      },
+      "S!E16": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    }
+   ]
+  },
+  "munit-typed-D11-C14": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!D11": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E11": {
+       "t": "n",
+       "v": 2
+      },
+      "S!D12": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E12": {
+       "t": "n",
+       "v": 2
+      },
+      "S!D13": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E13": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C14": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 2
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    },
+    {
+     "values": {
+      "S!D11": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E11": {
+       "t": "n",
+       "v": 2
+      },
+      "S!D12": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E12": {
+       "t": "n",
+       "v": 2
+      },
+      "S!D13": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E13": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C14": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 2
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    },
+    {
+     "values": {
+      "S!D11": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E11": {
+       "t": "n",
+       "v": 2
+      },
+      "S!D12": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E12": {
+       "t": "n",
+       "v": 2
+      },
+      "S!D13": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E13": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C14": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!D14": {
+       "t": "n",
+       "v": 2
+      },
+      "S!E14": {
+       "t": "n",
+       "v": 2
+      }
+     },
+     "formulas": {
+      "S!D11": "=SWITCH(E11,30,1,H1:I4,2)",
+      "S!C14": "=MUNIT(3)"
+     }
+    }
+   ]
+  },
+  "sheets-file-Sheet2-Q_data": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!D7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    },
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!D7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    },
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!D7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    }
+   ]
+  },
+  "sheets-file-Q_data-Sheet2": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!D7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    },
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!D7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    },
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!D7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    }
+   ]
+  },
+  "sheets-typed-Sheet2.E5-Sheet2.D7-Q_data.F5-Q_data.D4": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Sheet2!E6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!D7": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E8": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F8": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    },
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Sheet2!E6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!D7": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E8": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F8": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    },
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Sheet2!E6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!D7": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E8": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F8": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    }
+   ]
+  },
+  "sheets-typed-Q_data.F5-Q_data.D4-Sheet2.E5-Sheet2.D7": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Sheet2!E6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!D7": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E8": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F8": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    },
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Sheet2!E6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!D7": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E8": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F8": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    },
+    {
+     "values": {
+      "Sheet2!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Sheet2!E6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F6": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!D7": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "Sheet2!E7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F7": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!E8": {
+       "t": "n",
+       "v": 0
+      },
+      "Sheet2!F8": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E4": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!D5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E5": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!F5": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "Q data!D6": {
+       "t": "n",
+       "v": 0
+      },
+      "Q data!E6": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "Sheet2!E5": "='Q data'!E5:F8*2",
+      "Sheet2!D7": "=TRANSPOSE(D4:D6)",
+      "Q data!D4": "=LET(x,0.1,Sheet2!E8:F10)",
+      "Q data!F5": "=#DIV/0!"
+     }
+    }
+   ]
+  },
+  "wait-file": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B1": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C1": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C1": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C1": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "s",
+       "v": ""
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    }
+   ]
+  },
+  "wait-typed-B1-A2-C1-C2": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!A2": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    }
+   ]
+  },
+  "wait-typed-C2-C1-A2-B1": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B1": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "e",
+       "v": "SPILL"
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A2": {
+       "t": "n",
+       "v": 1
+      },
+      "S!B2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C2": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!B1": "=SEQUENCE(2)",
+      "S!C1": "=B1+C2",
+      "S!A2": "={1,2}+B2",
+      "S!C2": "=C1*1"
+     }
+    }
+   ]
+  },
+  "unique-typed": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    },
+    {
+     "values": {
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    },
+    {
+     "values": {
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    }
+   ]
+  },
+  "unique-found-typed": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!B5": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D5": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      },
+      "S!C7": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D7": {
+       "t": "n",
+       "v": -1
+      },
+      "S!C8": {
+       "t": "n",
+       "v": 0.5
+      },
+      "S!D8": {
+       "t": "n",
+       "v": 7
+      }
+     },
+     "formulas": {
+      "S!B1": "=COUNT(E4:E4)",
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)",
+      "S!C7": "={3,-1;0.5,7}"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!B5": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D5": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      },
+      "S!C7": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D7": {
+       "t": "n",
+       "v": -1
+      },
+      "S!C8": {
+       "t": "n",
+       "v": 0.5
+      },
+      "S!D8": {
+       "t": "n",
+       "v": 7
+      }
+     },
+     "formulas": {
+      "S!B1": "=COUNT(E4:E4)",
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)",
+      "S!C7": "={3,-1;0.5,7}"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 0
+      },
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!B5": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D5": {
+       "t": "n",
+       "v": 3
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      },
+      "S!C7": {
+       "t": "n",
+       "v": 3
+      },
+      "S!D7": {
+       "t": "n",
+       "v": -1
+      },
+      "S!C8": {
+       "t": "n",
+       "v": 0.5
+      },
+      "S!D8": {
+       "t": "n",
+       "v": 7
+      }
+     },
+     "formulas": {
+      "S!B1": "=COUNT(E4:E4)",
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)",
+      "S!C7": "={3,-1;0.5,7}"
+     }
+    }
+   ]
+  },
+  "unique-file": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    },
+    {
+     "values": {
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    },
+    {
+     "values": {
+      "S!B2": {
+       "t": "s",
+       "v": ""
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    }
+   ]
+  },
+  "sum-file": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "s",
+       "v": ""
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    },
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "s",
+       "v": ""
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    },
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "s",
+       "v": ""
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    }
+   ]
+  },
+  "sum-typed-array-last": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    },
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    },
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "n",
+       "v": 0
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    }
+   ]
+  },
+  "sum-typed-value-last": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "s",
+       "v": ""
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    },
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "s",
+       "v": ""
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    },
+    {
+     "values": {
+      "S!D2": {
+       "t": "n",
+       "v": 2
+      },
+      "S!C3": {
+       "t": "s",
+       "v": ""
+      },
+      "S!D3": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!C3": "=SUM(D1:D3)",
+      "S!D3": "=SUM(D1:D3)"
+     }
+    }
+   ]
+  },
+  "unique-typed-A4-B2": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B2": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    },
+    {
+     "values": {
+      "S!B2": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    },
+    {
+     "values": {
+      "S!B2": {
+       "t": "n",
+       "v": 0
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    }
+   ]
+  },
+  "unique-typed-B2-A4": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    },
+    {
+     "values": {
+      "S!B2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    },
+    {
+     "values": {
+      "S!B2": {
+       "t": "e",
+       "v": "REF"
+      },
+      "S!A4": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A5": {
+       "t": "n",
+       "v": 365
+      },
+      "S!A6": {
+       "t": "n",
+       "v": 365
+      }
+     },
+     "formulas": {
+      "S!B2": "=A4#+1",
+      "S!A4": "=IF(A5:A7>1,D2:D3,365)"
+     }
+    }
+   ]
+  }
+ }
+}
