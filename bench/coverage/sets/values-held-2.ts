@@ -35,3 +35,6 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/** The prediction Excel did not confirm: DOLLAR(1E+190,0), 255 characters, is #VALUE!. */
+export const MISSED: readonly string[] = ['DOLLAR#1']

@@ -21,8 +21,8 @@ function fixedDigits(x: number, decimals: number, rules: Rules, group: boolean):
   return { text: grouped + (fp === undefined ? '' : rules.decimal + fp), zero: Number(text) === 0 }
 }
 
-/** Text past 255 characters is #VALUE!, as TEXT has it (`FIXED(1E+200,0)`, the set `values-held`). */
-const shown = (text: string): V => (text.length > MAX_SHOWN ? E.VALUE : text)
+/** Text past `room` characters is #VALUE!, as TEXT's past 255 (`FIXED(1E+200,0)`, the set `values-held`). */
+const shown = (text: string, room = MAX_SHOWN): V => (text.length > room ? E.VALUE : text)
 
 export const functions: Record<string, FnDef> = {
   DOLLAR: {
@@ -33,8 +33,10 @@ export const functions: Record<string, FnDef> = {
       const { symbol, before, space, negative } = cx.rules.currency
       const { text } = fixedDigits(x, decimals, cx.rules, true)
       const amount = before ? symbol + space + text : text + space + symbol
-      // the en-US currency format writes a negative amount in parentheses, even one rounded to zero
-      return shown(x >= 0 ? amount : negative === '()' ? `(${amount})` : `-${amount}`)
+      // the en-US currency format writes a negative amount in parentheses, even one rounded to zero, and pads a
+      // positive one with the space of `_)`, which counts toward 255 characters (`DOLLAR(1E+190,0)`, the set `values-held-2`)
+      if (x >= 0) return shown(amount, negative === '()' ? MAX_SHOWN - 1 : MAX_SHOWN)
+      return shown(negative === '()' ? `(${amount})` : `-${amount}`)
     },
   },
   FIXED: {
