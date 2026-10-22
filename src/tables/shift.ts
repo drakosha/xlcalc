@@ -9,7 +9,7 @@
  * keeps some of its lines, and a table's header row deleted without the rest.
  */
 import type { BookInput, SheetInput, TableInput } from '../contract.js'
-import type { Message } from '../locale/messages.js'
+import type { EngineMessage } from '../locale/messages.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
 import { cornersText, hi, LIMIT, lo, rectOf, type Area, type Axis } from '../structure/area.js'
@@ -29,7 +29,7 @@ export function freeColumnName(taken: string[], locale: string | undefined): str
 
 /** The effect of a shift on the tables of `sheet`: a refusal, or the book prepared before the shift and finished after it. */
 export interface TableShift {
-  refuse?: Message
+  refuse?: EngineMessage
   /** The last cell of a table that inserted lines would push off the sheet (its last lines may hold no cell). */
   offSheet?: string
   /** References to deleted tables and columns made #REF!, before the cells move. */

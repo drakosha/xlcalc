@@ -3,6 +3,7 @@
  * Insert Function (`xlcalc/function-text`): en-US's here, another locale's in its own module (`xlcalc/function-text/ru-RU`),
  * apart from the engine, so that a host that only computes takes none of them.
  */
+import { wordKey } from '../collate.js'
 import type { Locale } from '../locale/types.js'
 import { checkString } from '../input/basic.js'
 import { checkLocaleArg } from '../locale/load.js'
@@ -488,7 +489,7 @@ const DESCRIPTIONS: Readonly<Record<string, string>> = {
  * for a name outside the whitelist.
  */
 export const functionDescription = /* @__PURE__ */ strict(function functionDescription(fn: string, locale?: string | Locale): string | null {
-  const name = checkString(fn, 'fn').toUpperCase()
+  const name = wordKey(checkString(fn, 'fn'))
   const own = locale === undefined ? undefined : checkLocaleArg(locale, 'locale').functionText?.descriptions
   return own?.[name] ?? DESCRIPTIONS[name] ?? null
 })

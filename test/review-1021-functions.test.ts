@@ -103,3 +103,13 @@ describe.each(['closures', 'eval'] as const)('review 21.10 functions, %s', (exec
     expect(took(() => compute(book(many), { execution, display: false }))).toBeLessThan(1000)
   })
 })
+
+describe.each(['closures', 'eval'] as const)('UNIQUE over spellings Unicode makes equivalent, %s', (execution) => {
+  // Excel for Mac and for Windows, the set low-values-held: é in NFC and NFD, ﬁ and fi are one; a soft hyphen is not
+  it('takes them as one line', () => {
+    const cells = { M1: { value: 'é' }, M2: { value: 'é' }, M3: { value: 'a' }, M4: { value: 'a­' }, M5: { value: 'É' } }
+    const formulas = ['ROWS(UNIQUE(M1:M2))', 'ROWS(UNIQUE(M1:M2,FALSE,TRUE))', 'ROWS(UNIQUE({"ﬁ";"fi"}))', 'ROWS(UNIQUE(M3:M4))', 'ROWS(UNIQUE({"a";"A"}))', 'ROWS(UNIQUE(M1:M5))', 'INDEX(UNIQUE(M1:M2),1)']
+    const r = compute(book({ ...cells, ...Object.fromEntries(formulas.map((f, i) => [`A${i + 1}`, { formula: f }])) }), { execution }).sheets[0].cells
+    expect(formulas.map((_, i) => r[`A${i + 1}`].value)).toEqual([1, { error: 'CALC' }, 1, 2, 1, 3, 'é'])
+  })
+})

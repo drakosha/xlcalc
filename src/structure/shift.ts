@@ -7,7 +7,7 @@
  */
 import type { BookInput, CellInput } from '../contract.js'
 import { formatAddress } from '../model.js'
-import { say, type Message } from '../locale/messages.js'
+import { say, type EngineMessage } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { hi, LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
@@ -56,7 +56,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const grid = gridOf(target)
   const line = axis === 'r' ? grid.row : grid.col
   const lines = axis === 'r' ? 'rows' : 'columns'
-  const refuse = (code: 'off_sheet' | 'array', m: Message): Applied => ({ ok: false, code, message: say(input.locale, m) })
+  const refuse = (code: 'off_sheet' | 'array', m: EngineMessage): Applied => ({ ok: false, code, message: say(input.locale, m) })
   if (n > 0) {
     const off = line.findIndex((i) => i >= LIMIT[axis] - count)
     if (off >= 0) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: grid.addr[off] })

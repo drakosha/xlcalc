@@ -187,9 +187,10 @@ export function makeRuntime(ctx: RuntimeContext) {
     const x = toNum(a)
     return isErr(x) ? x : -x
   }
+  // a subnormal hundredth is 0, as `/` gives it (`A1%` and `A1/100` agree)
   const pct = (a: V): V => {
     const x = toNum(a)
-    return isErr(x) ? x : x / 100
+    return isErr(x) ? x : fitNumber(x / 100)
   }
   // Excel cuts the joined text at its limit of 32,767 characters
   const cat = (a: V, b: V): V => {

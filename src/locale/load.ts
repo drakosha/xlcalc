@@ -6,6 +6,7 @@ import { wordKey } from '../collate.js'
 import { InputError } from '../input-error.js'
 import { checkString, isObject, object, onlyKeys } from '../input/basic.js'
 import { EN_MESSAGES } from '../locales/en-US.js'
+import { EDIT_MESSAGES } from './edit-messages.js'
 import { XLSX_MESSAGE_KEYS } from './messages.js'
 import { LOCALE_ERRORS } from '../syntax/errors.js'
 import { TABLE_ITEMS } from '../syntax/table.js'
@@ -72,10 +73,23 @@ function functionText(v: unknown, path: string): void {
 
 const checked = new WeakSet<object>()
 
-/** A locale object, its formula text checked once (a locale must not change after its first use). */
+/** The fields of a locale's rules of computation, every one of them required, and those it may leave out (en-US's then). */
+const REGIONAL_KEYS: readonly (keyof RegionalData)[] = ['decimal', 'group', 'dateOrder', 'currency', 'months', 'monthsShort', 'days', 'daysShort', 'codes', 'colors', 'dateSeparator', 'lcid', 'longDate', 'longTime', 'longMonths', 'collation', 'builtin', 'codePage', 'columnWord']
+const REGIONAL_OPTIONAL: readonly (keyof RegionalData)[] = ['formats']
+
+/** A locale's rules of computation, where it has them: every field given, no other (en-US's where it has none). */
+function checkRegional(v: unknown, path: string): void {
+  const regional = object(v, path, "the rules a workbook is calculated by, as the package's locale modules have them")
+  onlyKeys(regional, path, [...REGIONAL_KEYS, ...REGIONAL_OPTIONAL])
+  for (const k of REGIONAL_KEYS) if (regional[k] === undefined) throw new InputError(`${path}.${k}`, 'expected a value')
+}
+
+/** A locale object, its formula text and rules checked once (a locale must not change after its first use). */
 function checkLocaleObject(locale: unknown, path: string): Locale {
   if (typeof locale !== 'object' || locale === null || !checked.has(locale)) {
     checkText(locale, path)
+    const regional = (locale as { regional?: unknown }).regional
+    if (regional !== undefined) checkRegional(regional, `${path}.regional`)
     checked.add(locale as object)
   }
   return locale as Locale
@@ -119,10 +133,6 @@ export function checkLocaleArg(v: unknown, path: string): Locale {
   return typeof v === 'string' ? LOCALES.get(checkTag(v, path, toLoad))! : checkLocaleObject(v, path)
 }
 
-/** The fields of a locale's rules of computation, every one of them required, and those it may leave out (en-US's then). */
-const REGIONAL_KEYS: readonly (keyof RegionalData)[] = ['decimal', 'group', 'dateOrder', 'currency', 'months', 'monthsShort', 'days', 'daysShort', 'codes', 'colors', 'dateSeparator', 'lcid', 'longDate', 'longTime', 'longMonths', 'collation', 'builtin', 'codePage', 'columnWord']
-const REGIONAL_OPTIONAL: readonly (keyof RegionalData)[] = ['formats']
-
 /**
  * Loads a locale for workbooks in that locale (`BookInput.locale`) and for its tag wherever a locale is accepted: one
  * of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, then `registerLocale(ruRU)`). Loading
@@ -134,13 +144,12 @@ export function registerLocale(locale: Locale): void {
   const had = LOCALES.get(l.tag)
   if (had === l) return
   if (had) throw new InputError('locale.tag', `the locale ${l.tag} is already loaded${l.tag === DEFAULT_LOCALE ? ': it is built in' : ', as another object'}`)
-  const regional = object(l.regional, 'locale.regional', "the rules a workbook is calculated by, as the package's locale modules have them")
-  onlyKeys(regional, 'locale.regional', [...REGIONAL_KEYS, ...REGIONAL_OPTIONAL])
-  for (const k of REGIONAL_KEYS) if (regional[k] === undefined) throw new InputError(`locale.regional.${k}`, 'expected a value')
+  // a loaded locale is a workbook's, which is calculated by its rules: they are required
+  if (l.regional === undefined) checkRegional(l.regional, 'locale.regional')
   if (l.messages !== undefined) {
     const messages = object(l.messages, 'locale.messages', 'messages by key, each a function')
-    // the engine's keys, whose English is en-US's, and the xlsx issues', whose English the subpath carries
-    onlyKeys(messages, 'locale.messages', [...Object.keys(EN_MESSAGES), ...Object.keys(XLSX_MESSAGE_KEYS)])
+    // the engine's keys, whose English is en-US's and an edit's, and the xlsx issues', whose English the subpath carries
+    onlyKeys(messages, 'locale.messages', [...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES), ...Object.keys(XLSX_MESSAGE_KEYS)])
     for (const [k, f] of Object.entries(messages)) if (typeof f !== 'function') throw new InputError(`locale.messages.${k}`, 'expected a function')
   }
   addLocale(l)

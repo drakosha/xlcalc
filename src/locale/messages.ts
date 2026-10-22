@@ -2,12 +2,13 @@
  * Messages for people, in the language of a locale: why a formula does not read, why Excel refuses a structure
  * operation, the words of `explain`, what an xlsx file read or written lost. Code makes a message as a key with its
  * parameters (`Message`); the locale's `messages` write it (`Messages`), and a locale without its own text of a message
- * takes the English one: en-US's (`EN_MESSAGES`) for the engine's, the subpath's (`src/xlsx/messages.ts`) for the
+ * takes the English one: en-US's (`EN_MESSAGES`, `EDIT_MESSAGES`) for the engine's, the subpath's (`src/xlsx/messages.ts`) for the
  * issues of xlsx. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation,
  * an issue of xlsx.
  */
 import type { CellValue } from '../contract.js'
 import { errorIn } from '../syntax/errors.js'
+import { EDIT_MESSAGES } from './edit-messages.js'
 import { english } from './english.js'
 import { LOCALES, localeOf } from './registry.js'
 import type { Locale, TableItem } from './types.js'
@@ -297,8 +298,19 @@ export interface MessageParams extends XlsxMessageParams {
 
 export type MessageKey = keyof MessageParams
 
-/** The keys of the engine's messages, whose English text is en-US's (`EN_MESSAGES`). */
+/** The keys of the engine's messages, whose English text is en-US's (`EN_MESSAGES`, and `EDIT_MESSAGES` for `EditKey`). */
 export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams>
+
+/** The keys of the messages only an edit of a book gives (a structure operation, typing into a cell, `explain`), whose English text stays out of `compute`'s bundle. */
+export type EditKey =
+  | 'sheetNameTaken' | 'lastSheet' | 'lastVisibleSheet' | 'insertOffSheet' | 'insertMergeOffSheet' | 'arrayPart' | 'moveOffSheet' | 'copyOffSheet'
+  | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'filteredPaste' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
+  | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'mergeInTable' | 'arrayInTable'
+  | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
+  | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'
+
+/** The keys of the engine's other messages: of formula text, names, input and outlines. */
+export type CoreKey = Exclude<EngineKey, EditKey>
 
 /**
  * The keys of the messages of xlsx issues, which a locale's `messages` holds beside the engine's (`registerLocale` takes
@@ -319,8 +331,11 @@ export const XLSX_MESSAGE_KEYS: Readonly<Record<keyof XlsxMessageParams, 0>> = {
   tooltipCut: 0, ruleTextCut: 0, ruleFormulaOut: 0, condFormulaOut: 0, filterModeOut: 0,
 }
 
-/** A message: its key and its parameters; the engine's by default (an issue of xlsx is `XlsxMessage`). */
-export type Message<K extends MessageKey = EngineKey> = { [P in K]: { key: P } & MessageParams[P] }[K]
+/** A message: its key and its parameters; the engine's other than an edit's by default (an edit's is `Message<EngineKey>`, an issue of xlsx `XlsxMessage`). */
+export type Message<K extends MessageKey = CoreKey> = { [P in K]: { key: P } & MessageParams[P] }[K]
+
+/** Any message of the engine, an edit's among them. */
+export type EngineMessage = Message<EngineKey>
 
 /** What a locale's messages read the locale by: its formula text and the words of formulas in it. */
 export interface Words {
@@ -332,7 +347,7 @@ export interface Words {
   item(word: string): string
   /** A number with the locale's decimal separator. */
   num(n: number): string
-  /** A value as a formula of the locale writes it: a number, text in quotes, a boolean, an error. */
+  /** A value as a formula of the locale writes it: a number, text in quotes (a quote doubled), a boolean, an error. */
   value(v: Exclude<CellValue, null>): string
   /** A stored formula as the locale shows it (`toLocal`), where the caller gives the way. */
   formula(text: string): string
@@ -341,11 +356,15 @@ export interface Words {
 /** A locale's messages: the text of each, in its language. */
 export type Messages = { readonly [K in MessageKey]: (p: MessageParams[K], w: Words) => string }
 
-/** en-US's messages of the engine, which read nothing of a locale: what every locale falls back to. */
-export type EnglishMessages = { readonly [K in EngineKey]: (p: MessageParams[K]) => string }
+/** en-US's messages of the engine, which read nothing of a locale: what every locale falls back to; `EditMessages` the edits'. */
+export type EnglishMessages = { readonly [K in CoreKey]: (p: MessageParams[K]) => string }
+
+/** en-US's messages of an edit of a book (`EditKey`). */
+export type EditMessages = { readonly [K in EditKey]: (p: MessageParams[K]) => string }
 
 function wordsOf(loc: Locale, formula: (text: string) => string): Words {
-  const num = (n: number) => JSON.stringify(n).replace('.', loc.decimalSeparator)
+  // every digit of the double, as JSON has them, with the exponent a formula writes (`1E+21`, not `1e+21`)
+  const num = (n: number) => String(n).replace('e', 'E').replace('.', loc.decimalSeparator)
   return {
     loc,
     fn: (name) => loc.functions[name] ?? name,
@@ -353,7 +372,7 @@ function wordsOf(loc: Locale, formula: (text: string) => string): Words {
     num,
     value: (v) => {
       if (typeof v === 'number') return num(v)
-      if (typeof v === 'string') return JSON.stringify(v)
+      if (typeof v === 'string') return `"${v.replaceAll('"', '""')}"`
       if (typeof v === 'boolean') return v ? loc.booleans.TRUE : loc.booleans.FALSE
       return errorIn(v.error, loc.errors)
     },
@@ -374,5 +393,6 @@ export function ownText<K extends MessageKey>(where: string | Locale | undefined
 
 /** A message of the engine in the language of a locale (`ownText`), else in English. */
 export function say<K extends EngineKey>(where: string | Locale | undefined, m: { key: K } & MessageParams[K], formula?: (text: string) => string): string {
-  return ownText(where, m, formula) ?? english(m)
+  const edit = Object.hasOwn(EDIT_MESSAGES, m.key) ? (EDIT_MESSAGES[m.key as EditKey] as (p: typeof m) => string) : undefined
+  return ownText(where, m, formula) ?? (edit ? edit(m) : english(m as Message))
 }

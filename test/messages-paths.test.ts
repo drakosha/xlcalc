@@ -11,20 +11,21 @@ import { closeTyped } from '../src/entry/close.js'
 import { createInlineCalc, createSession, parseEntry, editStructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
-import { say, type Message, type MessageKey } from '../src/locale/messages.js'
+import { EDIT_MESSAGES } from '../src/locale/edit-messages.js'
+import { say, type EngineMessage, type MessageKey } from '../src/locale/messages.js'
 import { pool } from './fixtures/pool.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 const reached = new Set<MessageKey>()
-const ru = (m: Message) => say('ru-RU', m)
-const en = (m: Message) => say('en-US', m)
+const ru = (m: EngineMessage) => say('ru-RU', m)
+const en = (m: EngineMessage) => say('en-US', m)
 /** ru-RU's formula text without messages of its own: English messages, the same places. */
 const english: Locale = { ...ruRU, tag: 'xx-YY', messages: undefined }
 
 const TABLES = { tables: [{ name: 'Т', columns: ['Кол'] }] }
 
 /** Text typed in ru-RU, the message it gives, and the check's context. */
-const TYPED: [string, Message, ValidateContext?][] = [
+const TYPED: [string, EngineMessage, ValidateContext?][] = [
   ['=$A$0', { key: 'rowOutOfRange', row: '0' }],
   ['=$XFE$1', { key: 'columnOutOfRange', column: 'XFE' }],
   ['=1E400', { key: 'numberOutOfRange', number: '1E400' }],
@@ -81,7 +82,7 @@ const TYPED: [string, Message, ValidateContext?][] = [
 ]
 
 /** Stored formulas that do not show in ru-RU, and their messages. */
-const SHOWN: [string, Message][] = [
+const SHOWN: [string, EngineMessage][] = [
   ['SUM(1;2)', { key: 'unexpectedText', text: ';' }],
   ['"abc', { key: 'unterminatedString' }],
   ["1ИСТИНА''", { key: 'notWritable', text: 'ИСТИНА', tag: 'ru-RU' }],
@@ -133,7 +134,7 @@ const filtered = (): SheetInput => {
 }
 
 /** A book's sheets and names, an operation Excel refuses on it, and the message of the refusal. */
-const REFUSED: [string, () => Pick<BookInput, 'sheets' | 'names'>, StructureOp, Message][] = [
+const REFUSED: [string, () => Pick<BookInput, 'sheets' | 'names'>, StructureOp, EngineMessage][] = [
   ['an empty sheet name', () => ({ sheets: [sheet()] }), { op: 'renameSheet', sheet: 'Лист', name: '' }, { key: 'sheetNameEmpty' }],
   ['a long sheet name', () => ({ sheets: [sheet()] }), { op: 'renameSheet', sheet: 'Лист', name: 'я'.repeat(32) }, { key: 'sheetNameLong', name: 'я'.repeat(32), length: 32 }],
   ['a colon in a sheet name', () => ({ sheets: [sheet()] }), { op: 'insertSheet', name: 'а:б' }, { key: 'sheetNameChar', char: ':' }],
@@ -227,7 +228,7 @@ const typedBook = (locale?: string): BookInput => ({
 })
 
 /** Text typed into a cell, refused with the message. */
-const REFUSED_TEXT: [string, string, Message][] = [
+const REFUSED_TEXT: [string, string, EngineMessage][] = [
   ['A1', '=1+1', { key: 'headerFormula', sheet: 'Лист', cell: 'A1', table: 'Т' }],
   ['C2', '5', { key: 'arrayPart', sheet: 'Лист', cell: 'C1', area: 'C1:C2' }],
 ]
@@ -302,7 +303,7 @@ describe('explain', () => {
 
 it("an edit over limits.writes says it in the book's language, in a session as in a calculator", async () => {
   reached.add('writesLimit')
-  const m: Message = { key: 'writesLimit', size: 1_048_576, max: 100_000 }
+  const m: EngineMessage = { key: 'writesLimit', size: 1_048_576, max: 100_000 }
   const copy = { op: 'copyRange', from: { sheet: 'Лист', range: 'A1' }, to: { sheet: 'Лист', range: 'B:B' } } as const
   for (const [locale, text] of [['ru-RU', ru(m)], [undefined, en(m)]] as const) {
     const book: BookInput = { ...(locale ? { locale } : {}), sheets: [{ name: 'Лист', cells: { A1: { value: 1 } } }] }
@@ -314,5 +315,5 @@ it("an edit over limits.writes says it in the book's language, in a session as i
 })
 
 it('the cases reach every message of the catalog but the rules of names', () => {
-  expect(Object.keys(EN_MESSAGES).filter((k) => !reached.has(k as MessageKey))).toEqual(['nameRule'])
+  expect([...Object.keys(EN_MESSAGES), ...Object.keys(EDIT_MESSAGES)].filter((k) => !reached.has(k as MessageKey))).toEqual(['nameRule'])
 })
