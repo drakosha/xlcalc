@@ -75,7 +75,7 @@ describe('sha256', () => {
     // 0.2.0 and the formula-engine development builds hashed with these versions; the hash of the same values must not move
     expect(valuesHash(values, 'formula-engine/1;compiled-js;formulajs@4.6.1;canon15')).toBe('18be025cb4581543a8953790d380ecf9f3383002d8112eb6b15da4f182c0bba3')
     expect(valuesHash(values, 'formula-engine/2;compiled-js;canon15')).toBe('8d63bad2c247ae26aa632f2823e29d07947af262a623365e03d5856e67dd30fc')
-    expect(inputHash(book)).toBe('1fb3575501a5acbff64c388b43b5e3a1176e312243f01de1e4610e4ac7bc67a2')
+    expect(inputHash(book)).toBe('3ea383325f632b2fceff8e4b7c26b16b3b87906489c0540ea7b3341eca4f3b78')
     // the configuration version carries the package name: renaming the package changes this hash too
     expect(r.configVersion).toBe('xlcalc/1;canon15')
     expect(r.hash).toBe('101578a9c6b600b197bfd8f96d2d28eb3ffc19044a947949d8473d45ce2ed901')

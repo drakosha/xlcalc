@@ -41,7 +41,7 @@ console.log(bad.payment, bad.issues)
 //   ]
 ```
 
-`compute` compiles the workbook on every call. A model that serves many requests in a row can stay open in a session, which compiles it once and recalculates only what new inputs affect (next section). A result's `inputHash` identifies its workbook, so for a workbook without volatile functions (the result's `volatile` is empty) and without external functions it can serve as a cache key; the `externals` option is not part of it, so a workbook that calls external functions needs their values in the key as well. [Formulas](formulas.md) describes what a formula can contain, and [Errors](formulas.md#errors) the error values and their reasons.
+`compute` compiles the workbook on every call. A model that serves many requests in a row can stay open in a session, which compiles it once and recalculates only what new inputs affect (next section). A result's `inputHash` identifies its workbook, the order of its sheets included, so for a workbook without volatile functions (the result's `volatile` is empty) and without external functions it can serve as a cache key; the `externals` option is not part of it, so a workbook that calls external functions needs their values in the key as well. [Formulas](formulas.md) describes what a formula can contain, and [Errors](formulas.md#errors) the error values and their reasons.
 
 ## What-if: change an input and see the effect
 

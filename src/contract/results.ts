@@ -169,7 +169,11 @@ export interface ComputeResult {
   clock: Clock
   /** sha256 of the canonical text of the values (including spilled cells) together with the engine configuration version. */
   hash: string
-  /** sha256 of the input (sheets, cells, names, and styles, columns, rows, merged areas, frozen panes, conditional formats, data validation and outline settings when there are any; order does not matter). */
+  /**
+   * sha256 of the input (sheets, cells, names, and styles, columns, rows, merged areas, frozen panes, conditional formats,
+   * data validation and outline settings when there are any). The order of the sheets counts, that of cells and names does
+   * not.
+   */
   inputHash: string
   configVersion: string
   ms: number
