@@ -5,6 +5,8 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, createSession, type BookInput, type CellInput, type ComputeResult, type SheetInput } from '../src/index.js'
+import { applyEdits, createState } from '../src/engine.js'
+import { run } from '../src/exec/budget.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 type Cells = Record<string, CellInput>
@@ -135,18 +137,16 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
 })
 
 it('which of two arrays spills is found once per graph, not by a walk of what depends on them for each pair', () => {
-  // 3,000 arrays read by a long chain, then an array typed into each one's range: the time follows the chain once, not once per pair
-  const cells: Record<string, CellInput> = { E1: { formula: 'SUM(A1:D9000)' } }
-  for (let i = 0; i < 3000; i++) cells[`A${3 * i + 1}`] = { formula: 'SEQUENCE(2,2)' }
-  for (let k = 2; k <= 40_000; k++) cells[`E${k}`] = { formula: `E${k - 1}+1` }
-  const enter = (column: string) => {
-    const s = createSession({ sheets: [{ name: 'S', cells }] }, { clock })
-    const t = performance.now()
-    s.setCells(Array.from({ length: 3000 }, (_, i) => ({ sheet: 'S', cell: `${column}${3 * i + 2}`, input: { formula: 'SEQUENCE(1,2)' } })))
-    return performance.now() - t
-  }
-  // into the ranges (B) against beside them (D), the faster of two each, taking turns against a busy host: a walk of the chain
-  // for each pair took some 24 times as long, now 2 as on master
-  const [b1, d1, d2, b2] = [enter('B'), enter('D'), enter('D'), enter('B')]
-  expect(Math.min(b1, b2) / Math.min(d1, d2)).toBeLessThan(6)
+  // 1,000 arrays read by a chain of 5,000 formulas, then an array typed into each one's range: the reads of the graph's
+  // edges follow the chain a few times (some 40,000 reads), not once per pair (a walk for each pair read 10 million)
+  const cells: Record<string, CellInput> = { E1: { formula: 'SUM(A1:D3000)' } }
+  for (let i = 0; i < 1000; i++) cells[`A${3 * i + 1}`] = { formula: 'SEQUENCE(2,2)' }
+  for (let k = 2; k <= 5000; k++) cells[`E${k}`] = { formula: `E${k - 1}+1` }
+  const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 46300.5, seed: clock.seed })
+  let reads = 0
+  let succ = state.succ
+  // each list of successors the graph is given counts its reads
+  Object.defineProperty(state, 'succ', { get: () => succ, set: (v: number[][]) => (succ = new Proxy(v, { get: (t, k) => (typeof k === 'string' && /^\d+$/.test(k) && reads++, Reflect.get(t, k)) })) })
+  run(applyEdits(state, Array.from({ length: 1000 }, (_, i) => ({ sheet: 'S', cell: `B${3 * i + 2}`, input: { formula: 'SEQUENCE(1,2)' } }))))
+  expect(reads).toBeLessThan(500_000)
 })

@@ -12,7 +12,7 @@ import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { Column } from './column.js'
 import { heldAt, unhold } from './held.js'
-import { describeAt, endSpill, fixed, keep, release, spill } from './spill/place.js'
+import { blocker, describeAt, endSpill, fixed, release, rivals, spill } from './spill/place.js'
 import { beats } from './spill/rank.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
@@ -108,7 +108,8 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
         if (f.area) { array = true; v = fixed(state, f, x, t) }
         else if (isMany(x)) { array = true; v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t) }
         else {
-          endSpill(state, f, t, false)
+          // in a cycle only an iteration computes a formula: it keeps the cycle, its array's range staying claimed
+          endSpill(state, f, t, state.topo[id] < 0)
           v = shown(rt.scalar(x))
         }
       } catch (e) {
@@ -158,17 +159,10 @@ function* iterate(state: EngineState, t?: Tracker): Steps<void> {
   for (const id of ids) {
     const f = state.formulas[id]!
     release(state, id, t)
-    keep(state, id)
     write(state, f.s, f.r, f.c, 0, t)
   }
   state.iterated = ids
-  // an iteration keeps the cycles it computes: an array of one that gives one value or cannot spill in a pass keeps its range
-  state.spills.iterating = true
-  try {
-    for (let k = 0; k < maxIterations && (yield* evaluate(state, ids, t, true, maxChange)); k++);
-  } finally {
-    state.spills.iterating = false
-  }
+  for (let k = 0; k < maxIterations && (yield* evaluate(state, ids, t, true, maxChange)); k++);
 }
 
 /**
@@ -207,7 +201,7 @@ export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, p
   yield* settle(state, lists, t, active)
   if (!before && !spillCycle(state)) return
   for (const id of [...state.spills.on.keys()]) release(state, id, t)
-  for (const m of [state.spills.claims, state.spills.kept, state.spills.wait, state.spills.why, state.spills.by]) m.clear()
+  for (const m of [state.spills.claims, state.spills.wait, state.spills.why, state.spills.by]) m.clear()
   // as in a new state, no cycle has been iterated yet: the cycles the spills close again are iterated afresh
   state.iterated = []
   rebuildGraph(state)
@@ -268,7 +262,7 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
     }
     // an array that gave way and now wins over the array holding its cells (the graph or the arrays' ranges changed) takes
     // them; an old-kind array formula's area it never takes
-    for (const [id, by] of sp.by) if (!next.has(id) && sp.claims.has(by) && state.formulas[id] && !state.formulas[by]?.area && beats(state, id, by)) next.add(id)
+    for (const [id, by] of sp.by) if (sp.claims.has(by) && state.formulas[id] && !state.formulas[by]?.area && beats(state, id, by)) next.add(id)
     if (!next.size) {
       sp.touched.length = 0
       unhold(state)
@@ -305,11 +299,7 @@ function blockedByInput(state: EngineState, id: number, a: Area): boolean {
 }
 
 /** An array waiting for `a`, shown as #SPILL!, that a spilled array it gives way to still covers: computed again, it would not spill either. */
-function blockedBySpill(state: EngineState, id: number, a: Area): boolean {
-  if (!state.spills.why.has(id)) return false
-  for (const x of state.spills.on.values()) if (x.id !== id && x.s === a.s && meets(x, a) && (state.formulas[x.id]?.area || !beats(state, id, x.id))) return true
-  return false
-}
+const blockedBySpill = (state: EngineState, id: number, a: Area) => state.spills.why.has(id) && !!blocker(state, id, rivals(state, id, a))
 
 /** A formula's steps in room for `n` formulas, at least twice as many as before. */
 function grown(done: Float64Array, n: number): Float64Array {
