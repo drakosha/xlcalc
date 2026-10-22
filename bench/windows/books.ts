@@ -205,6 +205,7 @@ function bookSteps(s: BookStep, c: WorkbookCase, shows: { sheet: string; cell: s
     const { sheet, cell, value } = s.set
     return [{ do: 'set', sheet, cell, ...comEdit(value) }]
   }
+  if ('formula' in s && s.formula.array) throw new Error(`${c.id}: an array formula typed is Excel for Mac's alone`)
   if ('formula' in s) return [{ do: 'set', sheet: s.formula.sheet, cell: s.formula.cell, kind: 'f', value: `=${s.formula.formula.replace(/^=/, '')}` }]
   if ('hide' in s) {
     const { sheet, rows, hidden } = s.hide

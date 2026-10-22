@@ -19,8 +19,12 @@ export type Step =
   | 'save'
   /** A number or a text typed into a cell, or null to clear it (a session's `setCells`). */
   | { set: { sheet: string; cell: string; value: number | string | null } }
-  /** A formula typed into a cell, in the engine's spelling (a session's `setCells`); with `dynamic`, entered as Excel 365 enters it (`formula2`), else as one of the old kind (`formula`). */
-  | { formula: { sheet: string; cell: string; formula: string; dynamic?: true } }
+  /**
+   * A formula typed into a cell, in the engine's spelling (a session's `setCells`); with `dynamic`, entered as Excel 365
+   * enters it (`formula2`), with `array` as an array formula of the old kind over that range from the cell (`formula
+   * array`, Ctrl+Shift+Enter), else as one of the old kind (`formula`).
+   */
+  | { formula: { sheet: string; cell: string; formula: string; dynamic?: true; array?: string } }
   /** Rows (`5:6`) or columns (`C:D`) hidden or shown (a session's `setLayout`). */
   | { hide: { sheet: string; rows?: string; columns?: string; hidden: boolean } }
   /** Excel's autofilter on a range: a column (1 from its left) keeps the rows equal to `criterion`. */
