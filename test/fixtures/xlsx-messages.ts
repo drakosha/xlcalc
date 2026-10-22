@@ -19,6 +19,7 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   defaultFont: [{ name: 'Arial', size: 10.5 }, {}],
   sheetKind: [{}],
   sheetPartMissing: [{}],
+  stringsOpen: [{}],
   allSheetsHidden: [{}],
   tableNameTwice: [{ table: 'Sales' }],
   sharedWithoutMaster: [{}],

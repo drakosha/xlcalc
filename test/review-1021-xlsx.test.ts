@@ -198,3 +198,22 @@ describe('xlsx: a width or height that is no size (x-xlsx-6)', () => {
     ])
   })
 })
+
+describe('xlsx: shared strings left open (sst-open)', () => {
+  const two = '<sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c></row></sheetData>'
+  const OPEN = 'shared strings left open (an <si> without its closing tag) are read as empty text or as part of the string after them'
+  it.each([
+    ['the last one', '<sst><si><t>a</t></si><si><t>b</t></sst>', { A1: { value: 'a' }, B1: { value: '' } }],
+    ['one before another', '<sst><si><t>a</t><si><t>b</t></si></sst>', { A1: { value: 'ab' }, B1: { value: '' } }],
+    ['prefixed', '<x:sst><x:si><x:t>a</x:t></x:si><x:si><x:t>b</x:t></x:sst>', { A1: { value: 'a' }, B1: { value: '' } }],
+  ])('%s is reported', async (_, sst, cells) => {
+    const r = await read({ sheets: [{ name: 'S', body: two }], strings: [], parts: { 'xl/sharedStrings.xml': sst } })
+    expect(r.book.sheets[0].cells).toEqual(cells)
+    expect(r.issues).toEqual([{ code: 'part', message: OPEN }])
+  })
+
+  it('closed and empty ones are not', async () => {
+    const r = await read({ sheets: [{ name: 'S', body: two }], strings: [], parts: { 'xl/sharedStrings.xml': '<sst><si><t>a</t></si><si/></sst>' } })
+    expect([r.book.sheets[0].cells, r.issues]).toEqual([{ A1: { value: 'a' }, B1: { value: '' } }, []])
+  })
+})

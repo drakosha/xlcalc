@@ -55,6 +55,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is read as Calibri 11, the model's default`,
   sheetKind: () => 'a chart, dialog or macro sheet is left out',
   sheetPartMissing: () => 'a sheet whose part is missing is left out',
+  stringsOpen: () => 'shared strings left open (an <si> without its closing tag) are read as empty text or as part of the string after them',
   allSheetsHidden: () => 'every worksheet in the file is hidden: the first one is read as visible',
   tableNameTwice: (p) => `the table ${p.table} is left out: another table or a defined name has its name`,
   // reading: a sheet
