@@ -10,16 +10,17 @@ import type { StoredBook } from '../stored.js'
 
 /** One step after Excel opens the book (it computes the book on opening, as the file has no values). */
 export type Step =
-  /** Excel's full calculation (`calculate full`), a recalculation (`calculate`), a read of the rectangles. */
+  /** Excel's full calculation (`calculate full`), one that rebuilds the dependencies too (`calculate full rebuild`), a recalculation (`calculate`), a read of the rectangles. */
   | 'full'
+  | 'rebuild'
   | 'calc'
   | 'read'
   /** The book saved as xlsx, Excel for Windows alone (`SaveAs`): what the file stores for the read rectangles. One a case. */
   | 'save'
   /** A number or a text typed into a cell, or null to clear it (a session's `setCells`). */
   | { set: { sheet: string; cell: string; value: number | string | null } }
-  /** A formula typed into a cell, in the engine's spelling (a session's `setCells`). */
-  | { formula: { sheet: string; cell: string; formula: string } }
+  /** A formula typed into a cell, in the engine's spelling (a session's `setCells`); with `dynamic`, entered as Excel 365 enters it (`formula2`), else as one of the old kind (`formula`). */
+  | { formula: { sheet: string; cell: string; formula: string; dynamic?: true } }
   /** Rows (`5:6`) or columns (`C:D`) hidden or shown (a session's `setLayout`). */
   | { hide: { sheet: string; rows?: string; columns?: string; hidden: boolean } }
   /** Excel's autofilter on a range: a column (1 from its left) keeps the rows equal to `criterion`. */

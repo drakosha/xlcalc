@@ -37,7 +37,7 @@ function stepLine(s: Step): string {
     const { sheet, cell, value } = s.set
     return ['set', sheet, cell, ...editOf(value)].join('\t')
   }
-  if ('formula' in s) return ['formula', s.formula.sheet, s.formula.cell, `=${fileFormula(s.formula.formula)}`].join('\t')
+  if ('formula' in s) return [s.formula.dynamic ? 'formula2' : 'formula', s.formula.sheet, s.formula.cell, `=${fileFormula(s.formula.formula)}`].join('\t')
   if ('hide' in s) {
     const { sheet, rows, hidden } = s.hide
     return [rows !== undefined ? 'hide' : 'hidecols', sheet, hideRange(s.hide), hidden ? 1 : 0].join('\t')
