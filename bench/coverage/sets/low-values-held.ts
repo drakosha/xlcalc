@@ -62,3 +62,10 @@ const CASES: [string, string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldGroups(CASES)
+
+/**
+ * The predictions Excel did not confirm, the same in Excel for Mac and for Windows: UNIQUE takes é in NFC and NFD, and ﬁ
+ * and fi, as one (the engine then followed); `=` tells a soft hyphen apart, MATCH NFC from NFD, and COUNTIF counts them
+ * as one (`textEquivalence` in KNOWN).
+ */
+export const MISSED = ['unique-text#1', 'unique-text#2', 'unique-text#3', 'unique-text#8', 'unique-text#9', 'unique-text#10']
