@@ -7,7 +7,8 @@ import type { BookInput, CellDisplay, CellInput, CellValue, NumberFormat } from 
 import type { EngineState } from './engine.js'
 import { sheetLines, type SheetLines } from './layout/lines.js'
 import type { Rules } from './locale/rules.js'
-import { parseMerge } from './layout/merges.js'
+import { mergedOf } from './layout/merges.js'
+import { MAX_COLS } from './model.js'
 import { columnPoints, room } from './numfmt.js'
 
 /** What the cell at sheet `s`, row `r`, column `c` (zero-based) shows when it holds `v`; `own`, its input when the caller has it. */
@@ -16,10 +17,10 @@ export type Looks = (s: number, r: number, c: number, v: CellValue, own?: CellIn
 /** The looks of cells of the state's book as it is now; a new one after a change of formats or layout. */
 export const cellLooks = (state: EngineState): Looks => bookLooks(state.input, state.ctx.rules, state)
 
-/** A sheet's lines, and its merged areas by `r:c` of their top-left cell: their last column. */
+/** A sheet's lines, and its merged areas by their top-left cell (`Merged.ends`): their last column. */
 interface SheetLook {
   lines: SheetLines
-  merges: Map<string, number>
+  merges: Map<number, number>
 }
 
 /** Each sheet's lines and merged areas, read when the sheet is first looked at; with a session's `state`, its lines read once for it. */
@@ -29,8 +30,7 @@ function sheetLooks(book: BookInput, state?: EngineState): (s: number) => SheetL
     let x = sheets.get(s)
     if (!x) {
       const sh = book.sheets[s]
-      const merges = new Map((sh.merges ?? []).map((m) => parseMerge(m)!).map((m): [string, number] => [`${m.r1}:${m.c1}`, m.c2]))
-      sheets.set(s, (x = { lines: sheetLines(sh, state), merges }))
+      sheets.set(s, (x = { lines: sheetLines(sh, state), merges: mergedOf(sh, state).ends }))
     }
     return x
   }
@@ -38,7 +38,7 @@ function sheetLooks(book: BookInput, state?: EngineState): (s: number) => SheetL
 
 /** A cell's room in points: its column's, a merged area's columns' from its top-left cell. */
 function pointsAt(x: SheetLook, r: number, c: number): number {
-  const last = x.merges.size ? (x.merges.get(`${r}:${c}`) ?? c) : c
+  const last = x.merges.size ? (x.merges.get(r * MAX_COLS + c) ?? c) : c
   let points = 0
   for (let k = c; k <= last; k++) points += columnPoints(x.lines.column(k)?.width)
   return points
