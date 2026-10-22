@@ -11,7 +11,7 @@ import { sheetKey } from '../syntax.js'
 import { rewriteBookTables } from './rewrite.js'
 import { sheetIndex } from '../structure/rewrite.js'
 import { freeColumnName } from './shift.js'
-import { lookIn } from '../looks/sheet.js'
+import { lookIn, withoutLooksAt } from '../looks/sheet.js'
 import { tableKey, tablesOf } from './model.js'
 
 /**
@@ -62,13 +62,20 @@ export function headerEdits(book: BookInput, edits: CellReplace[], text: (v: Sca
     const cols = spec.cols.map(to) as [string] | [string, string]
     return cols.some((c, i) => c !== spec.cols![i]) ? { cols } : undefined
   })
-  const sheets = out.sheets.map((sheet, s) => {
-    const cells: Record<string, CellInput> = { ...sheet.cells }
+  const sheets = out.sheets.map((was, s) => {
+    const cells: Record<string, CellInput> = { ...was.cells }
+    const gone: [number, number][] = []
     for (const e of edits) {
-      if (sheetKey(e.sheet) !== sheetKey(sheet.name)) continue
-      if (e.input === null) delete cells[e.cell]
-      else cells[e.cell] = e.input
+      if (sheetKey(e.sheet) !== sheetKey(was.name)) continue
+      if (e.input !== null) cells[e.cell] = e.input
+      else {
+        delete cells[e.cell]
+        const { row, col } = parseAddress(e.cell)
+        gone.push([row, col])
+      }
     }
+    // a cell left without an input has no look of the sheet's looks either, as a session's write leaves it
+    const sheet = gone.length ? withoutLooksAt(was, gone) : was
     const list = sheet.tables?.map((ti) => {
       const names = renamed.get(tableKey(ti.name))
       if (!names) return ti

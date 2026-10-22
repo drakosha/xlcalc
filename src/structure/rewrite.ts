@@ -6,7 +6,7 @@ import type { BookInput, CellInput, NameInput, TableColumn, TableInput } from '.
 import { spend } from '../exec/budget.js'
 import { FormulaError, parse, quoteSheet, sheetKey, type Tok } from '../syntax.js'
 import { eachToken } from '../syntax/links.js'
-import { decode, encode, sameArea, type Area } from './area.js'
+import { decode, encode, LIMIT, sameArea, span, withSpan, type Area, type Axis } from './area.js'
 
 /** A reference as a transform sees it: the sheet it points to (as the book spells it) and its rectangle. */
 export interface Site {
@@ -66,8 +66,16 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
         ? errText(tok.sheet, tok.ref ?? '', t, sheets)
         : tok.t === 'xref' && t.copy
           ? copiedLink(tok, written, t)
-          : undefined,
+          : tok.t === 'ident' && tok.sheet !== undefined
+            ? nameText(tok.sheet, tok.v, t, sheets)
+            : undefined,
   )
+}
+
+/** A sheet's own name (`'S'!loc`) on a renamed sheet; a deleted sheet's stays as written, as it is `#REF!` already. */
+function nameText(sheet: string, name: string, t: Transform, sheets: Map<string, string>): string | undefined {
+  const next = t.sheet?.(sheets.get(sheetKey(sheet)) ?? sheet)
+  return next ? `${quoteSheet(next)}!${name}` : undefined
 }
 
 /**
@@ -145,8 +153,31 @@ export function rewriteCells(cells: Record<string, CellInput>, host: string, mov
   return out ?? cells
 }
 
-/** A transform for names' formulas under inserted or deleted rows and columns: a reference without `$`, an offset from the cell using the name, stays. */
-export const offsetsStay = (t: Transform): Transform => ({ ...t, ref: (site) => (site.area.r.lo.abs || site.area.r.hi.abs || site.area.c.lo.abs || site.area.c.hi.abs ? t.ref(site) : undefined) })
+/**
+ * A transform for names' formulas under rows or columns (`axis`) inserted or deleted: a bound without `$`, an offset from
+ * the cell using the name, stays; a bound with `$` moves as an end of a range in a cell's formula does, the range
+ * shrinking over deleted lines, lost only with all of it. With an offset for the other end, the fixed bound is the range's
+ * first line when the offset is 0 or more (`$B$2:$B1` used below row 2), its last when it is negative, wrapping round
+ * the sheet (`$A$12:$A1048574` used above row 12).
+ */
+export function offsetsStay(t: Transform, axis: Axis): Transform {
+  return {
+    ...t,
+    ref(site) {
+      const s = site.area[axis]
+      if (s.lo.abs === s.hi.abs) return s.lo.abs ? t.ref(site) : undefined
+      const [fixed, offset] = s.lo.abs ? [s.lo, s.hi] : [s.hi, s.lo]
+      const max = LIMIT[axis]
+      const first = offset.i < max / 2
+      // the fixed bound as the first or last line of a range that reaches the sheet's other end, not its whole span
+      const other = first ? (fixed.i === 0 ? max - 2 : max - 1) : fixed.i === max - 1 ? 1 : 0
+      const o = t.ref({ sheet: site.sheet, area: withSpan(site.area, axis, Math.min(fixed.i, other), Math.max(fixed.i, other)) })
+      if (typeof o !== 'object') return o
+      const next = span({ i: first ? o.area[axis].lo.i : o.area[axis].hi.i, abs: true }, offset)
+      return { sheet: o.sheet, area: axis === 'r' ? { ...site.area, r: next } : { ...site.area, c: next } }
+    },
+  }
+}
 
 /** The references of names rewritten; the same array when nothing changed. */
 export function rewriteNames(names: NameInput[] | undefined, t: Transform, sheets: Map<string, string>): NameInput[] | undefined {

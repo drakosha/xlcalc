@@ -1622,6 +1622,7 @@ interface CellResult extends Partial<CellDisplay> {
   formula?: string
   /** The cell's own number format, as given in its input. */
   numberFormat?: NumberFormat
+  /** The cell's `meta` as given; on the session's thread the workbook's own object, which must not be modified. */
   meta?: JsonValue
   /**
    * A formula whose array spilled: the range it fills on its sheet (`B2:D9`, with this cell at the top left); for a
@@ -4626,6 +4627,7 @@ interface ViewportCell extends Partial<CellDisplay> {
   spillOf?: string
   /** On the top-left cell of a legacy array formula, its range (`CellInput.array`). */
   array?: string
+  /** As `CellResult.meta`: on the session's thread the workbook's own object, which must not be modified. */
   meta?: JsonValue
   /** The cell's own style, an index into the workbook's `styles` as in `CellView.style`; the style object is in `Viewport.styles`. */
   style?: number

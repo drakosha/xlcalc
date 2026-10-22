@@ -67,7 +67,7 @@ A rule is a `DataValidation`, as an xlsx file stores it:
 
 | field | |
 |---|---|
-| `range` | the cells, with ranges separated by spaces: `B2:B20 D2`, entire columns `C:C`, entire rows `5:9`. No two rules on a sheet overlap |
+| `range` | the cells, with ranges separated by spaces: `B2:B20 D2`, entire columns `C:C`, entire rows `5:9`. No two rules on a sheet overlap; the ranges of one rule may (`A1:A5 A3:A7`) |
 | `type` | `any` (a rule for its input message only), `whole`, `decimal`, `date`, `time`, `textLength`, `list`, `custom` |
 | `operator` | for the first five types: `between` (the default), `notBetween`, `equal`, `notEqual`, `greaterThan`, `lessThan`, `greaterThanOrEqual`, `lessThanOrEqual` |
 | `formula1`, `formula2` | the value or the bounds, the list, or the custom formula; `formula2` for `between` and `notBetween` |

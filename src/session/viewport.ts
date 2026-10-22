@@ -229,8 +229,9 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
         out.numberFormatSource = formatSource(own, row, col)
       }
       src.appearance(out, r, c, own)
-      if (own?.note !== undefined) out.note = own.note
-      if (own?.link !== undefined) out.link = own.link
+      // copies, as a pool's are: a host that edits them does not change the workbook
+      if (own?.note !== undefined) out.note = { ...own.note }
+      if (own?.link !== undefined) out.link = { ...own.link }
       // a cell with an error, or a formula a circular reference stops, whatever value it holds
       if (o.diagnostics && ((out.value !== null && typeof out.value === 'object') || out.formula !== undefined)) {
         const issue = src.issue(r, c, origins)

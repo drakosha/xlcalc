@@ -80,6 +80,8 @@ function listItems(state: EngineState, s: number, r: number, c: number, text: st
       const v = valueAt(state, x.s, row, col)
       out.push({ value: v, text: v === null ? '' : shown(v, [x.s, row, col]) })
     }
+    // the cells past the sheet's last value are blank: one stands for them where blanks are asked for
+    if (blanks && x.r2 > last) out.push({ value: null, text: '' })
   } else if (x instanceof Arr) out = x.values().map((v) => ({ value: v, text: v === null ? '' : shown(v) }))
   else if (isErr(x)) return { error: x }
   else if (x instanceof Object) return { error: E.VALUE }

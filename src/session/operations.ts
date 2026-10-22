@@ -102,10 +102,25 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
         } else put(items)
         break
       }
-      case 'clearCells':
+      case 'clearCells': {
         onlyKeys(op, path, ['op', 'ranges', 'what'])
-        looks(clearPlan(draft(), op.ranges as never, op.what as never))
+        const p = clearPlan(draft(), op.ranges as never, op.what as never)
+        // a header cell cleared renames its column, as `Session.clearCells` does: the plan's sheets go in first, so the rename rewrites their rules too
+        const laid = p.sheets.size ? { ...book, sheets: book.sheets.map((sh, i) => (p.sheets.has(i) ? { ...p.sheets.get(i)!, cells: sh.cells } : sh)) } : book
+        const renamed = headerEdits(laid, p.edits, headerText)
+        if (!renamed) {
+          looks(p)
+          break
+        }
+        Object.assign(book, renamed)
+        if (p.styles) {
+          book.styles = p.styles
+          styles = true
+        }
+        rebuild = true
+        overlays.clear()
         break
+      }
       case 'patchCells':
         onlyKeys(op, path, ['op', 'patches'])
         looks(patchPlan(draft(), checkPatches(op.patches, index, count)))
