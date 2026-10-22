@@ -44,6 +44,18 @@ describe.each(EXECUTIONS)('%s', (execution) => {
       return s
     }
 
+    it('applyChanges clears a header cell as clearCells does (apply-clear-header)', async () => {
+      for (const what of ['contents', 'all'] as const) {
+        const [a, b] = [await cleared(what, 'B1', 'clearCells'), await cleared(what, 'B1', 'applyChanges')]
+        const [x, y] = [await held(a, execution), await held(b, execution)]
+        expect(y).toEqual(x)
+        expect(x.sheets[0].tables![0].columns.map((c) => c.name)).toEqual(['Item', 'Column1'])
+        expect(x.sheets[0].cells.D1.formula).toBe('SUM(Sales[Column1])')
+        await a.close()
+        await b.close()
+      }
+    })
+
     it('Clear All over a header on a styled row comes back whole after an undo and a redo (A)', async () => {
       const fresh = await open(book(), { execution, clock })
       const before = await held(fresh, execution)
