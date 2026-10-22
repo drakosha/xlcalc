@@ -183,7 +183,7 @@ A format has up to four sections separated by `;`. Without conditions, the first
 
 With conditions (`[>100]`, `[<=-5]`, `[=1]`, `[<>0]`), the value goes to the first of the first three sections whose condition is true or that has no condition. A value that no section accepts is displayed as General when the format has one section; otherwise it displays `#` in a cell and returns `#VALUE!` in `TEXT`.
 
-A section writes the minus sign of a negative number unless it can only accept negative numbers: `[Red][<0]0;0` displays −5 as `5`, while `[<=-5]"low";[>=5]"high";0` displays −1 as `-1`. A section of literals writes the minus sign before them: `[=1]"one";"other"` displays −2 as `-other`. An empty section displays nothing (`0;;`). Booleans and errors are displayed as they are; under a text section, a boolean is displayed as that section's text (`0;-0;0;"is "@` displays FALSE as `is FALSE`).
+A section writes the minus sign of a negative number unless it can only accept negative numbers: `[Red][<0]0;0` displays −5 as `5`, while `[<=-5]"low";[>=5]"high";0` displays −1 as `-1`. The one number section before a text section writes it in any case: `[<0]0;@` displays −5 as `-5`. A section of literals writes the minus sign before them: `[=1]"one";"other"` displays −2 as `-other`. An empty section displays nothing (`0;;`). Booleans and errors are displayed as they are; under a text section, a boolean is displayed as that section's text (`0;-0;0;"is "@` displays FALSE as `is FALSE`).
 
 ## Numbers
 

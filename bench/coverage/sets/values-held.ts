@@ -49,3 +49,6 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/** The predictions Excel did not confirm: FIXED past 255 characters is #VALUE!, and `[<0]0;@` shows -5 as `-5`. */
+export const MISSED: readonly string[] = ['FIXED#9', 'TEXT#22']

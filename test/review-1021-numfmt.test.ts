@@ -86,6 +86,8 @@ describe.each(['closures', 'eval'] as const)('a code ending in a text section, %
       ['TEXT(0,"0.00;-0.00;@")', '0.00'],
       ['TEXT(-5,"[>10]0;@")', value],
       ['TEXT(5,"[<0]0;[>10]0;@")', value],
+      // the one number section before the text section writes the minus, as Excel answered (the set values-held)
+      ['TEXT(-5,"[<0]0;@")', '-5'],
     ]
     expect(values(cases.map((c) => c[0]), execution)).toEqual(cases.map((c) => c[1]))
   })

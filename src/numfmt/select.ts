@@ -34,7 +34,8 @@ export function choose(secs: Section[], v: number): Choice | null {
   }
   const i = ordered.findIndex((s) => !s.cond || holds(s.cond, v))
   if (i < 0) return secs.length === 1 ? { sec: null, signed: true } : null
-  return { sec: ordered[i], signed: !negativeOnly(ordered, i) }
+  // the one number section before a text section writes the minus (`[<0]0;@` shows -5 as `-5`, the set `values-held`)
+  return { sec: ordered[i], signed: (n === 1 && n < secs.length) || !negativeOnly(ordered, i) }
 }
 
 /** The section that shows text: the fourth, else one with `@`. */

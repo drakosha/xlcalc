@@ -3,6 +3,7 @@
  * Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); TEXT and DOLLAR are this engine's own.
  */
 import { positional } from '../../numfmt/general.js'
+import { MAX_SHOWN } from '../../numfmt/glyphs.js'
 import type { Cx, FnDef } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, type CErr, type V } from '../../values.js'
@@ -20,6 +21,9 @@ function fixedDigits(x: number, decimals: number, rules: Rules, group: boolean):
   return { text: grouped + (fp === undefined ? '' : rules.decimal + fp), zero: Number(text) === 0 }
 }
 
+/** Text past 255 characters is #VALUE!, as TEXT has it (`FIXED(1E+200,0)`, the set `values-held`). */
+const shown = (text: string): V => (text.length > MAX_SHOWN ? E.VALUE : text)
+
 export const functions: Record<string, FnDef> = {
   DOLLAR: {
     args: 'n w?',
@@ -30,7 +34,7 @@ export const functions: Record<string, FnDef> = {
       const { text } = fixedDigits(x, decimals, cx.rules, true)
       const amount = before ? symbol + space + text : text + space + symbol
       // the en-US currency format writes a negative amount in parentheses, even one rounded to zero
-      return x >= 0 ? amount : negative === '()' ? `(${amount})` : `-${amount}`
+      return shown(x >= 0 ? amount : negative === '()' ? `(${amount})` : `-${amount}`)
     },
   },
   FIXED: {
@@ -39,7 +43,7 @@ export const functions: Record<string, FnDef> = {
     fn: (cx: Cx, x: number, decimals = 2, noCommas = false) => {
       if (decimals > 127) return E.VALUE
       const { text, zero } = fixedDigits(x, decimals, cx.rules, !noCommas)
-      return (x < 0 && !zero ? '-' : '') + text
+      return shown((x < 0 && !zero ? '-' : '') + text)
     },
   },
   TEXT: { args: 'v s', cx: true, fn: (cx: Cx, v: Exclude<V, CErr>, format: string) => cx.rules.formatText(v ?? 0, format) ?? E.VALUE },

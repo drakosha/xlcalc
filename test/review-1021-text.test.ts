@@ -36,7 +36,7 @@ describe.each(['closures', 'eval'] as const)('whitespace around number text, %s'
 
 describe.each(['closures', 'eval'] as const)('FIXED and DOLLAR of large numbers, %s', (execution) => {
   it('write the digits from 1E+21 on, 15 significant ones and zeros, as TEXT does', () => {
-    const cases: [string, string][] = [
+    const cases: [string, unknown][] = [
       ['FIXED(1E21)', '1,000,000,000,000,000,000,000.00'],
       ['FIXED(1E21,2,TRUE)', '1000000000000000000000.00'],
       ['FIXED(-1E21,0)', '-1,000,000,000,000,000,000,000'],
@@ -49,6 +49,9 @@ describe.each(['closures', 'eval'] as const)('FIXED and DOLLAR of large numbers,
       ['FIXED(1.005,2)', '1.01'],
       ['FIXED(1234.567,-2)', '1,200'],
       ['FIXED(1E20)', '100,000,000,000,000,000,000.00'],
+      // past 255 characters #VALUE!, as Excel answered (the set values-held)
+      ['FIXED(1E+200,0)', { error: 'VALUE' }],
+      ['LEN(FIXED(1E+200,0,TRUE))', 201],
     ]
     expect(values(cases.map((c) => c[0]), execution)).toEqual(cases.map((c) => c[1]))
     expect(values(['FIXED(1E21,1)'], execution, 'ru-RU')).toEqual(['1 000 000 000 000 000 000 000,0'])
