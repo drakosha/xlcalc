@@ -204,8 +204,10 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     }
     const sheetRels = await relsOf(archive, d.part!)
     const tableParts = await Promise.all(sheetRels.filter((r) => r.kind === 'table' && !r.external).map((r) => archive.text(r.target)))
-    // the VML drawing that shows the notes is the sheet's legacy drawing
-    const drawing = attr(attributes(element(xml, 'legacyDrawing')?.attrs ?? ''), 'id')
+    // the VML drawing that shows the notes is the sheet's legacy drawing, searched from the tag before its name's first
+    // mention: a scan of the whole part tried every tag of its cells
+    const named = xml.indexOf('legacyDrawing')
+    const drawing = named < 0 ? undefined : attr(attributes(element(xml.slice(Math.max(0, xml.lastIndexOf('<', named))), 'legacyDrawing')?.attrs ?? ''), 'id')
     const linked = async (kind: string, id?: string) => {
       const r = sheetRels.find((x) => x.kind === kind && !x.external && (id === undefined || x.id === id))
       return r ? archive.text(r.target) : undefined
