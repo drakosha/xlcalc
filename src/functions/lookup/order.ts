@@ -159,13 +159,20 @@ function byPosition(cx: Cx, array: Arg, rest: (Arg | undefined)[]): Arr {
   return new Arr(rows, cols, h, w, out, h < rows || w < cols ? answer(h < rows ? h : 0, h < rows ? 0 : w) : null)
 }
 
-/** A line's identity for UNIQUE: values by type, text in any case. */
+/**
+ * Text's identity for UNIQUE: in any case, and one for the spellings Unicode makes equivalent (é as one code point or as
+ * e and an accent, the ligature ﬁ and fi), as Excel merges them; a soft hyphen still tells two texts apart there (the
+ * set `low-values-held`).
+ */
+const textKey = (v: string) => (/[^\x00-\x7f]/.test(v) ? v.normalize('NFKC') : v).toLowerCase()
+
+/** A line's identity for UNIQUE: values by type, text by `textKey`. */
 function lineKey(a: Arr, line: number, byCol: boolean): string {
   const n = byCol ? a.rows : a.cols
   let key = ''
   for (let i = 0; i < n; i++) {
     const v = byCol ? a.at(i, line) : a.at(line, i)
-    key += (v === null ? 'b' : isErr(v) ? `e${v.code}` : typeof v === 'string' ? `t${v.toLowerCase()}` : `${typeof v}${String(v)}`) + '\u0000'
+    key += (v === null ? 'b' : isErr(v) ? `e${v.code}` : typeof v === 'string' ? `t${textKey(v)}` : `${typeof v}${String(v)}`) + '\u0000'
   }
   return key
 }

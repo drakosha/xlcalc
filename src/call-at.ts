@@ -6,17 +6,18 @@
  * separators of their own, so half typed or broken text still gives its call. The package's own rule, not measured in
  * Excel. And the name of a function being typed at a caret (`nameAt`), for Formula AutoComplete.
  */
+import { wordKey } from './collate.js'
 import type { CallAt, NameAt, ScanOptions } from './contract.js'
 import { typedArgs } from './point.js'
 import { NAME_CHAR, openBrackets, walk, type OpenBracket } from './syntax/scan.js'
 import type { Locale } from './locale/types.js'
 
-/** A function's English name: the locale's name translated, in upper case; another name upper-cased as it is. */
+/** A function's English name: the locale's name translated, in upper case; another name upper-cased as it is (by `wordKey`, as the engine reads names: `gauß` is no GAUSS). */
 export function englishName(name: string, locale: Locale | undefined): string {
-  const upper = name.toUpperCase()
+  const upper = wordKey(name)
   if (!locale) return upper
   const fns = locale.functions
-  return Object.keys(fns).find((k) => fns[k].toUpperCase() === upper) ?? upper
+  return Object.keys(fns).find((k) => wordKey(fns[k]) === upper) ?? upper
 }
 
 /**
@@ -43,13 +44,13 @@ export function callAt(text: string, caret?: number, opts?: ScanOptions): CallAt
   return { name: call.name, fn: englishName(call.name, locale), index: call.index, open: call.open, close }
 }
 
-/** What may stand right before a function's name, beside the list separator: the formula's first character, an operator, `(`, a space or a line break. */
-const BEFORE_NAME = /[=+\-*/^&<>@(\s]/
+/** What may stand right before a function's name, beside the list separator: the formula's first character, an operator (the range's `:` too, `A1:INDEX(…)`), `(`, a space or a line break. */
+const BEFORE_NAME = /[=+\-*/^&<>@(:\s]/
 
 /**
  * The name of a function being typed at `caret` (the end of the text by default) in formula text `text`, for the
  * Formula AutoComplete list: the name characters around the caret, starting with a letter or `_`, where an operand may
- * begin (after the formula's first character, an operator, `(`, the locale's list separator or a space); null where no
+ * begin (after the formula's first character, an operator, the range's `:` included, `(`, the locale's list separator or a space); null where no
  * function can appear: no name at the caret, inside a string, a quoted sheet name or a table's brackets, after a
  * sheet's `!` or a `$`, and for text that is not a formula. `opts.locale`: the locale the text is typed in (its list
  * separator); without it, the text is treated as en-US.

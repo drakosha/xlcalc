@@ -44,7 +44,7 @@ The array fills its range and never spills. A session does not allow changing pa
 
 ## Checking formulas
 
-`validateFormula` checks a formula without a workbook: it returns the canonical text (sheet names quoted, function names in upper case) and what the formula uses, or an error code with a message in English and a position.
+`validateFormula` checks a formula without a workbook: it returns the canonical text (sheet names quoted, function names in upper case, a range typed with its corners reversed in order, `B2:A1` as `A1:B2`, as Excel shows it) and what the formula uses, or an error code with a message in English and a position.
 
 ```js
 import { validateFormula, validateName, validateNames } from 'xlcalc'

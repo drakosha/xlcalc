@@ -1,0 +1,337 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 16.7,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "sumif-edge#1",
+   "group": "sumif-edge",
+   "fn": "SUMIF",
+   "formula": "SUMIF(V!A1:A3,\">0\",V!B1048575)"
+  },
+  {
+   "id": "sumif-edge#2",
+   "group": "sumif-edge",
+   "fn": "SUMIF",
+   "formula": "SUMIF(V!A1:A3,\">2\",V!B1048575)"
+  },
+  {
+   "id": "sumif-edge#3",
+   "group": "sumif-edge",
+   "fn": "SUMIF",
+   "formula": "SUMIF(V!A1:A3,\">1\",V!B1048575)"
+  },
+  {
+   "id": "sumif-edge#4",
+   "group": "sumif-edge",
+   "fn": "SUMIF",
+   "formula": "SUMIF(V!A1:A3,\">0\",V!B1048576)"
+  },
+  {
+   "id": "sumif-edge#5",
+   "group": "sumif-edge",
+   "fn": "SUMIF",
+   "formula": "SUMIF(V!H1:J1,\">0\",V!XFC1)"
+  },
+  {
+   "id": "sumif-edge#6",
+   "group": "sumif-edge",
+   "fn": "SUMIF",
+   "formula": "SUMIF(V!A1:A3,\">0\",V!B1048574)"
+  },
+  {
+   "id": "sumif-edge#7",
+   "group": "sumif-edge",
+   "fn": "AVERAGEIF",
+   "formula": "AVERAGEIF(V!A1:A3,\">0\",V!B1048575)"
+  },
+  {
+   "id": "sumif-edge#8",
+   "group": "sumif-edge",
+   "fn": "AVERAGEIF",
+   "formula": "AVERAGEIF(V!A1:A3,\">2\",V!B1048575)"
+  },
+  {
+   "id": "percent#1",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "\"a\"&(V!K1%)"
+  },
+  {
+   "id": "percent#2",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "V!K1%=0"
+  },
+  {
+   "id": "percent#3",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "V!K2%*1E300"
+  },
+  {
+   "id": "percent#4",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "-V!K1%=0"
+  },
+  {
+   "id": "percent#5",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "\"a\"&(V!K3%)"
+  },
+  {
+   "id": "percent#6",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "\"a\"&(V!K1/100)"
+  },
+  {
+   "id": "elapsed#1",
+   "group": "elapsed",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+20,\"[h]\")"
+  },
+  {
+   "id": "elapsed#2",
+   "group": "elapsed",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+17,\"[ss]\")"
+  },
+  {
+   "id": "elapsed#3",
+   "group": "elapsed",
+   "fn": "TEXT",
+   "formula": "TEXT(-1E+20,\"[mm]\")"
+  },
+  {
+   "id": "elapsed#4",
+   "group": "elapsed",
+   "fn": "TEXT",
+   "formula": "TEXT(4.2E+19,\"[h]\")"
+  },
+  {
+   "id": "elapsed#5",
+   "group": "elapsed",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+16,\"[h]\")"
+  },
+  {
+   "id": "elapsed#6",
+   "group": "elapsed",
+   "fn": "TEXT",
+   "formula": "LEN(TEXT(1E+250,\"[h]\"))"
+  },
+  {
+   "id": "elapsed#7",
+   "group": "elapsed",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+300,\"[h]\")"
+  },
+  {
+   "id": "unique-text#1",
+   "group": "unique-text",
+   "fn": "UNIQUE",
+   "formula": "ROWS(_xlfn.UNIQUE(V!M1:M2))"
+  },
+  {
+   "id": "unique-text#2",
+   "group": "unique-text",
+   "fn": "UNIQUE",
+   "formula": "ROWS(_xlfn.UNIQUE(V!M1:M2,FALSE,TRUE))"
+  },
+  {
+   "id": "unique-text#3",
+   "group": "unique-text",
+   "fn": "UNIQUE",
+   "formula": "ROWS(_xlfn.UNIQUE({\"ﬁ\";\"fi\"}))"
+  },
+  {
+   "id": "unique-text#4",
+   "group": "unique-text",
+   "fn": "UNIQUE",
+   "formula": "ROWS(_xlfn.UNIQUE(V!M3:M4))"
+  },
+  {
+   "id": "unique-text#5",
+   "group": "unique-text",
+   "fn": "UNIQUE",
+   "formula": "ROWS(_xlfn.UNIQUE({\"a\";\"A\"}))"
+  },
+  {
+   "id": "unique-text#6",
+   "group": "unique-text",
+   "fn": "=",
+   "formula": "V!M1=V!M2"
+  },
+  {
+   "id": "unique-text#7",
+   "group": "unique-text",
+   "fn": "=",
+   "formula": "\"ﬁ\"=\"fi\""
+  },
+  {
+   "id": "unique-text#8",
+   "group": "unique-text",
+   "fn": "=",
+   "formula": "V!M3=V!M4"
+  },
+  {
+   "id": "unique-text#9",
+   "group": "unique-text",
+   "fn": "MATCH",
+   "formula": "MATCH(V!M2,V!M1:M2,0)"
+  },
+  {
+   "id": "unique-text#10",
+   "group": "unique-text",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(V!M1:M2,V!M1)"
+  },
+  {
+   "id": "unique-text#11",
+   "group": "unique-text",
+   "fn": "EXACT",
+   "formula": "EXACT(V!M1,V!M2)"
+  }
+ ],
+ "values": {
+  "sumif-edge#1": {
+   "t": "n",
+   "v": 30
+  },
+  "sumif-edge#2": {
+   "t": "n",
+   "v": 0
+  },
+  "sumif-edge#3": {
+   "t": "n",
+   "v": 20
+  },
+  "sumif-edge#4": {
+   "t": "n",
+   "v": 20
+  },
+  "sumif-edge#5": {
+   "t": "n",
+   "v": 3000
+  },
+  "sumif-edge#6": {
+   "t": "n",
+   "v": 30
+  },
+  "sumif-edge#7": {
+   "t": "n",
+   "v": 15
+  },
+  "sumif-edge#8": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "percent#1": {
+   "t": "s",
+   "v": "a0"
+  },
+  "percent#2": {
+   "t": "b",
+   "v": true
+  },
+  "percent#3": {
+   "t": "n",
+   "v": 0
+  },
+  "percent#4": {
+   "t": "b",
+   "v": true
+  },
+  "percent#5": {
+   "t": "s",
+   "v": "a3E-308"
+  },
+  "percent#6": {
+   "t": "s",
+   "v": "a0"
+  },
+  "elapsed#1": {
+   "t": "s",
+   "v": "2400000000000000000000"
+  },
+  "elapsed#2": {
+   "t": "s",
+   "v": "8640000000000000000000"
+  },
+  "elapsed#3": {
+   "t": "s",
+   "v": "-144000000000000000000000"
+  },
+  "elapsed#4": {
+   "t": "s",
+   "v": "1008000000000000000000"
+  },
+  "elapsed#5": {
+   "t": "s",
+   "v": "240000000000000000"
+  },
+  "elapsed#6": {
+   "t": "n",
+   "v": 252
+  },
+  "elapsed#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "unique-text#1": {
+   "t": "n",
+   "v": 1
+  },
+  "unique-text#2": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "unique-text#3": {
+   "t": "n",
+   "v": 1
+  },
+  "unique-text#4": {
+   "t": "n",
+   "v": 2
+  },
+  "unique-text#5": {
+   "t": "n",
+   "v": 1
+  },
+  "unique-text#6": {
+   "t": "b",
+   "v": true
+  },
+  "unique-text#7": {
+   "t": "b",
+   "v": true
+  },
+  "unique-text#8": {
+   "t": "b",
+   "v": false
+  },
+  "unique-text#9": {
+   "t": "n",
+   "v": 2
+  },
+  "unique-text#10": {
+   "t": "n",
+   "v": 2
+  },
+  "unique-text#11": {
+   "t": "b",
+   "v": false
+  }
+ }
+}
