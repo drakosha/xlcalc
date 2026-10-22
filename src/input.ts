@@ -319,11 +319,26 @@ export function checkExternalBooks(v: unknown, path: string, values = true): Ext
   })
 }
 
+/** ISO 8601 with Z or an offset, or a date alone: the forms `Date.parse` reads the same in every time zone. */
+const MOMENT = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?(?:Z|([+-])(\d{2}):(\d{2})))?$/
+
+/** A moment the same in every time zone, on a day the calendar has (`Date.parse` rolls 30 February over to March). */
+function checkMoment(v: unknown, path: string): string {
+  const now = checkString(v, path)
+  const m = MOMENT.exec(now)
+  const ms = Date.parse(now)
+  // the moment back in the given offset must show the given date and time
+  const shown = m && !Number.isNaN(ms) ? new Date(ms + (m[7] === undefined ? 0 : (m[7] === '-' ? -1 : 1) * (Number(m[8]) * 60 + Number(m[9])) * 60_000)) : undefined
+  const parts = shown && [shown.getUTCFullYear(), shown.getUTCMonth() + 1, shown.getUTCDate(), shown.getUTCHours(), shown.getUTCMinutes(), shown.getUTCSeconds()]
+  if (!parts || parts.some((p, i) => m![i + 1] !== undefined && p !== Number(m![i + 1])))
+    throw new InputError(path, `invalid moment ${JSON.stringify(now)}: expected ISO 8601 with Z or an offset, such as "2026-01-31T12:00:00Z", or a date such as "2026-01-31"`)
+  return now
+}
+
 export function checkClock(v: unknown, path: string): Clock {
   const c = object(v, path, 'a clock such as { now: "2026-01-31T12:00:00Z", seed: 1 }')
   onlyKeys(c, path, ['now', 'seed'])
-  const now = checkString(c.now, `${path}.now`)
-  if (Number.isNaN(Date.parse(now))) throw new InputError(`${path}.now`, `invalid moment ${JSON.stringify(now)}: expected ISO 8601 such as "2026-01-31T12:00:00Z"`)
+  checkMoment(c.now, `${path}.now`)
   if (typeof c.seed !== 'number' || !Number.isFinite(c.seed)) throw new InputError(`${path}.seed`, `expected a finite number, got ${what(c.seed)}`)
   return c as unknown as Clock
 }
@@ -578,7 +593,7 @@ export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (o.inPlace !== undefined) checkBoolean(o.inPlace, `${path}.inPlace`)
   if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`, false)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
-  if (o.now !== undefined && Number.isNaN(Date.parse(checkString(o.now, `${path}.now`)))) throw new InputError(`${path}.now`, `invalid moment ${JSON.stringify(o.now)}: expected ISO 8601 such as "2026-01-31T12:00:00Z"`)
+  if (o.now !== undefined) checkMoment(o.now, `${path}.now`)
   if (o.cell !== undefined && o.cell !== null) {
     const c = object(o.cell, `${path}.cell`, 'a cell such as { numberFormat: "0.00", style: 1 }')
     // a cell's other fields are not read (a `CellView` has more), but the old name of its number format is refused

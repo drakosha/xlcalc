@@ -1903,7 +1903,8 @@ type ClearKind = 'contents' | 'formats' | 'all'
 
 ### `Clock`
 
-The point in time (ISO) and the random seed from which TODAY, NOW, RAND and RANDBETWEEN are calculated.
+The point in time and the random seed from which TODAY, NOW, RAND and RANDBETWEEN are calculated: ISO 8601 with Z or
+an offset (`2026-10-04T12:00:00Z`), or a date alone, read as midnight UTC.
 
 ```ts
 interface Clock {
