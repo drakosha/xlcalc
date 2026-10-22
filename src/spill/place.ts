@@ -57,11 +57,7 @@ function mergesOf(state: EngineState, s: number): Rect[] {
 export function fixed(state: EngineState, f: Formula, x: Arg, t?: Tracker): V {
   const area: Area = { s: f.s, ...f.area! }
   const a = fit(x, area.r2 - area.r1 + 1, area.c2 - area.c1 + 1, state.rt.view)
-  for (const o of [...state.spills.on.values()]) {
-    if (o.id === f.id || o.s !== f.s || !meets(o, area)) continue
-    release(state, o.id, t)
-    state.spills.wait.set(o.id, { s: o.s, r1: o.r1, c1: o.c1, r2: o.r2, c2: o.c2 })
-  }
+  for (const o of rivals(state, f.id, area)) giveWay(state, o, t)
   place(state, f, a, area, t)
   return shown(a.at(0, 0))
 }
@@ -79,18 +75,38 @@ export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
   if (merge) return blocked(state, f, t, `${cannot}: it overlaps the merged area ${cellText(state, f.s, merge.r1, merge.c1)}:${formatAddress(merge.r2, merge.c2)}`, area)
   const cell = sp.occupied.first(f.s, area, f.r, f.c)
   if (cell) return blocked(state, f, t, `${cannot}: ${cellText(state, f.s, cell[0], cell[1])} is not empty`, area)
-  const over = [...sp.on.values()].filter((x) => x.id !== f.id && x.s === f.s && meets(x, area))
+  const over = rivals(state, f.id, area)
   // an old-kind array formula's area is never spilled over
-  const first = over.find((x) => state.formulas[x.id]?.area || !beats(state, f.id, x.id))
-  if (first) return blocked(state, f, t, `${cannot}: it overlaps the spilled array of ${cellText(state, f.s, first.r1, first.c1)}`, area, first.id)
-  // the arrays this one wins over stop spilling and wait for their range
-  for (const x of over) {
-    release(state, x.id, t)
-    sp.wait.set(x.id, { s: x.s, r1: x.r1, c1: x.c1, r2: x.r2, c2: x.c2 })
-    sp.by.set(x.id, f.id)
+  const first = over.find((x) => state.formulas[x.id]?.area || !beats(state, f.id, x.id, area))
+  if (first) {
+    const what = sp.on.has(first.id) ? 'the spilled array' : 'the range kept in a circular reference by the array'
+    return blocked(state, f, t, `${cannot}: it overlaps ${what} of ${cellText(state, f.s, first.r1, first.c1)}`, area, first.id)
   }
+  // the arrays this one wins over stop spilling and wait for their range
+  for (const x of over) giveWay(state, x, t, f.id)
   place(state, f, a, area, t)
   return shown(a.at(0, 0))
+}
+
+/**
+ * The arrays over `area` but formula `id`'s: those spilled there, and the ranges that formulas a circular reference
+ * stops keep (their claims, `endSpill`), which an array spills over only where it wins (`beats`), as over a spill.
+ */
+function rivals(state: EngineState, id: number, area: Area): (Area & { id: number })[] {
+  const sp = state.spills
+  const out: (Area & { id: number })[] = [...sp.on.values()].filter((x) => x.id !== id && x.s === area.s && meets(x, area))
+  for (const [k, x] of sp.claims) if (k !== id && x.s === area.s && !sp.on.has(k) && !sp.wait.has(k) && meets(x, area)) out.push({ ...x, id: k })
+  return out
+}
+
+/** Array `x.id` gives way to formula `by` (or to an old-kind array's area): its spill, or the range a cycle keeps it, goes, and it waits for that range. */
+function giveWay(state: EngineState, x: Area & { id: number }, t: Tracker | undefined, by?: number) {
+  const sp = state.spills
+  release(state, x.id, t)
+  // the range it no longer holds closes no cycle: a claim left until the formula is computed again would stop it
+  claim(state, x.id, undefined)
+  sp.wait.set(x.id, { s: x.s, r1: x.r1, c1: x.c1, r2: x.r2, c2: x.c2 })
+  if (by !== undefined) sp.by.set(x.id, by)
 }
 
 /** Writes the array over its range, in place of the formula's previous spill. */

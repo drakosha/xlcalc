@@ -107,7 +107,8 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
         if (f.area) { array = true; v = fixed(state, f, x, t) }
         else if (isMany(x)) { array = true; v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t) }
         else {
-          endSpill(state, f, t, false)
+          // an iteration keeps the cycle it computes: an array of the cycle that gives one value in a pass keeps its range
+          endSpill(state, f, t, iterating)
           v = shown(rt.scalar(x))
         }
       } catch (e) {
@@ -200,6 +201,8 @@ export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, p
   if (!before && !spillCycle(state)) return
   for (const id of [...state.spills.on.keys()]) release(state, id, t)
   for (const m of [state.spills.claims, state.spills.wait, state.spills.why, state.spills.by]) m.clear()
+  // as in a new state, no cycle has been iterated yet: the cycles the spills close again are iterated afresh
+  state.iterated = []
   rebuildGraph(state)
   yield* evaluateAll(state, t)
 }

@@ -89,19 +89,20 @@ const predictedRead = (p: Record<string, Val | string>): [Record<string, Val>, R
 /**
  * A held-out case's predictions against Excel's answers `excel` and the engine: the cells `missed` pins that Excel answered
  * as predicted after all (none, as a miss stays pinned), and the differences of the engine from the predictions, the
- * missed cells holding Excel's answer instead, as the engine gives it since (none).
+ * missed cells holding Excel's answer instead, as the engine gives it since (none), but where `known` has the engine
+ * differ from Excel at that read for a reason of its own.
  */
-export function predictionCheck(c: WorkbookCase, excel: WorkbookAnswer['reads'], missed: Record<string, string>): [string[], string[]] {
+export function predictionCheck(c: WorkbookCase, excel: WorkbookAnswer['reads'], missed: Record<string, string>, known: (read: number, cell: string) => boolean = () => false): [string[], string[]] {
   const answered = Object.keys(missed).filter((k) => !c.predicted!.some((p, i) => JSON.stringify(p[k]) !== JSON.stringify(excel[i].values[k])))
   const reads = engineReads(c)
   const kept = c.predicted!.map((p, i) => ({ ...p, ...Object.fromEntries(Object.keys(missed).map((k) => [k, excel[i].values[k]])) }))
-  return [answered, kept.flatMap((p, i) => differences(c, ...predictedRead(p), reads[i]))]
+  return [answered, kept.flatMap((p, i) => differences(c, ...predictedRead(p), reads[i]).filter((d) => !(d.split(':')[0] in missed && known(i, d.split(':')[0]))))]
 }
 
 /**
  * A recalculation, a full calculation or an edit computes Excel's cycles again from the values they hold, the
- * engine's from 0 (`BookInput.iteration`): in the sets `iterate` and `spill-cycles-held-2`, a cell of a read after the first may differ where
+ * engine's from 0 (`BookInput.iteration`): in the sets `iterate`, `spill-cycles-held` and `spill-cycles-held-2`, a cell of a read after the first may differ where
  * Excel's value moved from its previous read, and must match where it did not.
  */
 export const goesOn = (set: string, excel: WorkbookAnswer['reads'], read: number, cell: string) =>
-  (set === 'iterate' || set === 'spill-cycles-held-2') && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])
+  ['iterate', 'spill-cycles-held', 'spill-cycles-held-2'].includes(set) && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])

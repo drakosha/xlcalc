@@ -3,18 +3,54 @@
  * computed first spills; of two that do not depend on each other the winner varies between runs, the one lower
  * on the sheet winning most often (`docs/spill.md`). Here the order is the references' topological order with
  * ties taken by address from the end (sheet, row, column), so the formula another one reads wins, and otherwise
- * the one further down.
+ * the one further down. An array whose range its own formula reads back, a cycle through its spill, gives way to
+ * one that closes no such cycle, as Excel gives a workbook opened from its file (the workbook set `spill-cycles-held`):
+ * the outcome depends on neither the order of the formulas nor which one was computed first.
  */
 import type { EngineState } from '../engine.js'
+import { readersOf } from '../graph.js'
 import { indegrees, releaseReady } from '../graph/order.js'
+import type { Area } from './state.js'
 
-/** Formula `a` spills where its array and `b`'s meet. */
-export function beats(state: EngineState, a: number, b: number): boolean {
+/** Formula `a` spills where its array (over `area`, else the range it holds or waits for) and `b`'s meet. */
+export function beats(state: EngineState, a: number, b: number, area?: Area): boolean {
+  const [la, lb] = [looped(state, a, area), looped(state, b)]
+  if (la !== lb) return lb
   const rank = (state.spills.rank ??= ranks(state))
-  return (rank.get(a) ?? Infinity) < (rank.get(b) ?? Infinity)
+  return rank.get(a)! < rank.get(b)!
 }
 
-/** Positions in the topological order of the references (without spills), the last by address among the ready ones. */
+/** The range formula `id` spilled into or keeps in a cycle (its claim), else the one it waits for. */
+const areaOf = (state: EngineState, id: number): Area | undefined => state.spills.claims.get(id) ?? state.spills.wait.get(id)
+
+/**
+ * Whether formula `id`'s array over `area` (else its own range) is read back by the formula: a path from a reader of the
+ * range to it, through references and the ranges of the other arrays, spilled or waiting.
+ */
+function looped(state: EngineState, id: number, area = areaOf(state, id)): boolean {
+  if (!area) return false
+  const seen = new Set<number>()
+  readersOf(state, area, seen)
+  const stack = [...seen]
+  const reach = (n: number) => !seen.has(n) && (seen.add(n), stack.push(n))
+  while (stack.length) {
+    const v = stack.pop()!
+    if (v === id) return true
+    for (const n of state.succ[v] ?? []) reach(n)
+    const x = state.formulas[v] && areaOf(state, v)
+    if (x) {
+      const readers = new Set<number>()
+      readersOf(state, x, readers)
+      readers.forEach(reach)
+    }
+  }
+  return false
+}
+
+/**
+ * Positions in the topological order of the references (without spills), the last by address among the ready ones;
+ * the formulas in a cycle of references or over one after all the others, the last by address first.
+ */
 function ranks(state: EngineState): Map<number, number> {
   const { formulas, succ } = state
   const place = (id: number) => {
@@ -35,6 +71,9 @@ function ranks(state: EngineState): Map<number, number> {
     out.set(id, out.size)
     releaseReady(id, succ, indeg, formulas.length, ready)
   }
+  const rest: number[] = []
+  formulas.forEach((f, id) => f && !out.has(id) && rest.push(id))
+  for (const id of rest.sort(before)) out.set(id, out.size)
   return out
 }
 
