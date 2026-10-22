@@ -1,6 +1,7 @@
 /** TEXTBEFORE and TEXTAFTER, this engine's own (Excel 2024). The delimiter may be several texts (an array or a range). */
 import type { Cx, FnDef, Segment } from '../../args.js'
 import { E, isErr, WHOLE, type V } from '../../values.js'
+import { lowerInPlace } from '../../find-text.js'
 import { delimiters } from './common.js'
 
 type Span = [number, number]
@@ -44,7 +45,8 @@ const around = (after: boolean): FnDef => ({
     if (text === '') return empty ? '' : n === 1 && !matchEnd && notFound === undefined ? E.NA : E.VALUE
     // an instance past the text's length is #VALUE!, and so are delimiters all longer than the text once an instance is given
     if (!empty && (Math.abs(n) > text.length || (instance !== undefined && keys.every((k) => k.length > text.length)))) return E.VALUE
-    const s = mode ? occurrence(text.toLowerCase(), keys.map((k) => k.toLowerCase()), n, matchEnd === 1) : occurrence(text, keys, n, matchEnd === 1)
+    // in any case, searched in a lower case of the same length, so its places are the text's
+    const s = mode ? occurrence(lowerInPlace(text), keys.map(lowerInPlace), n, matchEnd === 1) : occurrence(text, keys, n, matchEnd === 1)
     // Excel returns the not-found value as text
     if (!s) return notFound === undefined ? E.NA : cx.rules.toText(notFound)
     return after ? text.slice(s[1]) : text.slice(0, s[0])

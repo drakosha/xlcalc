@@ -359,11 +359,11 @@ export const textToNumber = textReaders(enNumber, EN_DATES).argument
 /** en-US criterion text as a number outside a book (`textToNumber` without `€`). */
 export const critTextToNumber = textReaders(enCritNumber, EN_DATES).argument
 
-/** How operators and numeric arguments read text: plain decimal text, whitespace around it trimmed (the common case), else as `read` reads it. */
+/** How operators and numeric arguments read text: plain decimal text, spaces around it trimmed (the common case), else as `read` reads it. */
 export const decimalFirst =
   (read: (text: string) => number | null) =>
   (text: string): number | null => {
-    const t = text.trim()
+    const t = trimSpaces(text)
     if (!NUMBER_TEXT.test(t)) return read(text)
     // text of 1E+308 or more is no number (`"1e308"+0` is #VALUE!), as `bodyNumber` has it
     const n = readNumber(t)

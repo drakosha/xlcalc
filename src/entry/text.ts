@@ -3,7 +3,7 @@
  * significant digits, positional up to 21 characters), a percent as a percent, a date or a time by the locale's short
  * date and long time (two spaces between them, as the bar writes them), booleans and errors in the locale's words, and
  * text with an apostrophe where typing it would read otherwise (`needsApostrophe`, by `parseEntry`). The value reads
- * back from the text.
+ * back from the text edited in place (`parseEntry` with `inPlace`).
  */
 import type { CellValue, EntryTextOptions, NumberFormat } from '../contract.js'
 import { epochOf } from '../dates.js'
@@ -72,7 +72,8 @@ export function needsApostrophe(text: string, opts?: EntryTextOptions): boolean 
  * (`1234.5`, `1234,5`), a percentage cell's number as a percentage (`12%`), a date or time cell's value in the locale's
  * short date and long time formats (`1/31/2025  6:00:00 PM`, `31.01.2025  18:00:00`), a boolean or an error in the
  * locale's words, and text with an apostrophe where typing it would otherwise be parsed as something else (`'007`).
- * Parsing the text gives back the value (`parseEntry`).
+ * Parsing the text as edited in place gives back the value (`parseEntry` with `inPlace: true`), but for a negative
+ * percentage, which Excel's in-place editor reads as a formula (`-5%` is `=-5%%`).
  */
 export function entryText(value: CellValue, opts?: EntryTextOptions): string {
   return checkedEntryText(checkCellValue(value, 'value'), checkEntryTextOptions(opts))

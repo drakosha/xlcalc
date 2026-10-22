@@ -1,0 +1,212 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 7.597,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "FIXED#1",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "LEN(FIXED(1E+191,0))"
+  },
+  {
+   "id": "FIXED#2",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "FIXED(1E+192,0)"
+  },
+  {
+   "id": "FIXED#3",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "FIXED(-1E+191,0)"
+  },
+  {
+   "id": "FIXED#4",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "FIXED(1E+191,1)"
+  },
+  {
+   "id": "FIXED#5",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "LEN(FIXED(1E+254,0,TRUE))"
+  },
+  {
+   "id": "FIXED#6",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "FIXED(1E+255,0,TRUE)"
+  },
+  {
+   "id": "FIXED#7",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "LEN(FIXED(-1E+253,0,TRUE))"
+  },
+  {
+   "id": "FIXED#8",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "FIXED(-1E+254,0,TRUE)"
+  },
+  {
+   "id": "DOLLAR#1",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "LEN(DOLLAR(1E+190,0))"
+  },
+  {
+   "id": "DOLLAR#2",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "DOLLAR(1E+191,0)"
+  },
+  {
+   "id": "DOLLAR#3",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "DOLLAR(-1E+190,0)"
+  },
+  {
+   "id": "DOLLAR#4",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "LEN(DOLLAR(-1E+189,0))"
+  },
+  {
+   "id": "TEXT#1",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"[<0]0\")"
+  },
+  {
+   "id": "TEXT#2",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"[<=-1]0;@\")"
+  },
+  {
+   "id": "TEXT#3",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"[<0]0.0;\"\"x\"\"@\")"
+  },
+  {
+   "id": "TEXT#4",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"[<0]\"\"neg \"\"0;@\")"
+  },
+  {
+   "id": "TEXT#5",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"[<0]0;0;@\")"
+  },
+  {
+   "id": "TEXT#6",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"[>-10]0;@\")"
+  },
+  {
+   "id": "TEXT#7",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(5,\"[<0]0;@\")"
+  },
+  {
+   "id": "TEXT#8",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"[<0]0;[<-1]0;@\")"
+  }
+ ],
+ "values": {
+  "FIXED#1": {
+   "t": "n",
+   "v": 255
+  },
+  "FIXED#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "FIXED#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "FIXED#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "FIXED#5": {
+   "t": "n",
+   "v": 255
+  },
+  "FIXED#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "FIXED#7": {
+   "t": "n",
+   "v": 255
+  },
+  "FIXED#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DOLLAR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DOLLAR#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DOLLAR#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DOLLAR#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#1": {
+   "t": "s",
+   "v": "5"
+  },
+  "TEXT#2": {
+   "t": "s",
+   "v": "-5"
+  },
+  "TEXT#3": {
+   "t": "s",
+   "v": "-5.0"
+  },
+  "TEXT#4": {
+   "t": "s",
+   "v": "-neg 5"
+  },
+  "TEXT#5": {
+   "t": "s",
+   "v": "5"
+  },
+  "TEXT#6": {
+   "t": "s",
+   "v": "-5"
+  },
+  "TEXT#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#8": {
+   "t": "s",
+   "v": "5"
+  }
+ }
+}

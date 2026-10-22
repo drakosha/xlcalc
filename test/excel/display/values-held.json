@@ -1,0 +1,165 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2
+ },
+ "cases": [
+  {
+   "id": "text-section#1",
+   "cell": {
+    "value": -0.25,
+    "format": "h:mm;@"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "###########"
+   }
+  },
+  {
+   "id": "text-section#2",
+   "cell": {
+    "value": -1,
+    "format": "m/d/yy;@"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "###########"
+   }
+  },
+  {
+   "id": "text-section#3",
+   "cell": {
+    "value": -0.25,
+    "format": "[$-409]h:mm AM/PM;@"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "###########"
+   }
+  },
+  {
+   "id": "text-section#4",
+   "cell": {
+    "value": 1.5,
+    "format": "h:mm;@"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "12:00"
+   }
+  },
+  {
+   "id": "text-section#5",
+   "cell": {
+    "value": -5,
+    "format": "0;@"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "-5"
+   }
+  },
+  {
+   "id": "text-section#6",
+   "cell": {
+    "value": 0,
+    "format": "0.00;-0.00;@"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "0.00"
+   }
+  },
+  {
+   "id": "text-section#7",
+   "cell": {
+    "value": -5,
+    "format": "[<0]0;@"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "5"
+   }
+  },
+  {
+   "id": "digits#1",
+   "cell": {
+    "value": 1152921504606847000,
+    "format": "#,##0"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "1,152,921,504,606,850,000"
+   }
+  },
+  {
+   "id": "digits#2",
+   "cell": {
+    "value": 0.333333333333333,
+    "format": "0.00000000000000000000"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "0.33333333333333300000"
+   }
+  },
+  {
+   "id": "digits#3",
+   "cell": {
+    "value": 793853.646,
+    "format": "0.0000000000"
+   },
+   "width": 30,
+   "predicted": {
+    "text": "793853.6460000000"
+   }
+  },
+  {
+   "id": "digits#4",
+   "cell": {
+    "value": 123456789012345000,
+    "format": "0%"
+   },
+   "width": 40,
+   "predicted": {
+    "text": "12345678901234500000%"
+   }
+  }
+ ],
+ "answers": {
+  "text-section#1": {
+   "text": "###########"
+  },
+  "text-section#2": {
+   "text": "###########"
+  },
+  "text-section#3": {
+   "text": "###########"
+  },
+  "text-section#4": {
+   "text": "12:00"
+  },
+  "text-section#5": {
+   "text": "-5"
+  },
+  "text-section#6": {
+   "text": "0.00"
+  },
+  "text-section#7": {
+   "text": "-5"
+  },
+  "digits#1": {
+   "text": "1,152,921,504,606,850,000"
+  },
+  "digits#2": {
+   "text": "0.33333333333333300000"
+  },
+  "digits#3": {
+   "text": "793853.6460000000"
+  },
+  "digits#4": {
+   "text": "12345678901234500000%"
+  }
+ }
+}

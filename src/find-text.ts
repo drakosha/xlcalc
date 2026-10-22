@@ -7,13 +7,18 @@
 import type { FindCellsOptions } from './contract.js'
 import { Wildcard } from './criteria.js'
 
+/** The text in lower case, each character at its place: `İ` stays (its lower case is two characters). */
+export const lowerInPlace = (t: string) => {
+  const lower = t.toLowerCase()
+  return lower.length === t.length ? lower : t.replace(/[^İ]+/g, (m) => m.toLowerCase())
+}
+
 /**
- * Each character's lower case as one UTF-16 unit or two as it was, so `?` keeps its place: `İ` stays (its lower case is
- * two characters), and the final `ς` is `σ`, as `Σ` is (Find takes `σ`, `ς` and `Σ` as one letter without Match case).
+ * Each character's lower case as one UTF-16 unit or two as it was, so `?` keeps its place (`lowerInPlace`), and the
+ * final `ς` is `σ`, as `Σ` is (Find takes `σ`, `ς` and `Σ` as one letter without Match case).
  */
 export const folded = (t: string) => {
-  const lower = t.toLowerCase()
-  const f = lower.length === t.length ? lower : t.replace(/[^İ]+/g, (m) => m.toLowerCase())
+  const f = lowerInPlace(t)
   return f.includes('ς') ? f.replaceAll('ς', 'σ') : f
 }
 

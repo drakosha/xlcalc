@@ -1,0 +1,72 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "ru-RU (the system language and locale)",
+  "seconds": 1.689,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "DOLLAR#1",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "LEN(DOLLAR(1E+189,0))"
+  },
+  {
+   "id": "DOLLAR#2",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "DOLLAR(1E+190,0)"
+  },
+  {
+   "id": "DOLLAR#3",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "LEN(DOLLAR(-1E+187,1))"
+  },
+  {
+   "id": "DOLLAR#4",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "DOLLAR(-1E+188,1)"
+  },
+  {
+   "id": "FIXED#1",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "LEN(FIXED(1E+191,0))"
+  },
+  {
+   "id": "FIXED#2",
+   "group": "FIXED",
+   "fn": "FIXED",
+   "formula": "FIXED(1E+192,0)"
+  }
+ ],
+ "values": {
+  "DOLLAR#1": {
+   "t": "n",
+   "v": 255
+  },
+  "DOLLAR#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DOLLAR#3": {
+   "t": "n",
+   "v": 255
+  },
+  "DOLLAR#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "FIXED#1": {
+   "t": "n",
+   "v": 255
+  },
+  "FIXED#2": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}
