@@ -6,11 +6,17 @@ import { currentClock, nowMs } from './env.js'
 import { checkBook } from './input.js'
 import { buildResult, clockSerial } from './result.js'
 
-/** `o` checked already (`checkComputeOptions`). */
-export function* computeSteps(book: BookInput, o: ComputeOptions): Steps<ComputeResult> {
+/** The computation takes the book's cells as they are: nothing writes into them (a held value copies its sheet, `held.ts`). */
+const owned = () => true
+
+/**
+ * `o` checked already (`checkComputeOptions`). `hosted`: the host runs between the steps (`createInlineCalc`) and may
+ * change the book meanwhile, so the computation copies its cells first.
+ */
+export function* computeSteps(book: BookInput, o: ComputeOptions, hosted = false): Steps<ComputeResult> {
   const t0 = nowMs()
   book = checkBook(book)
   const clock = o.clock ?? currentClock()
-  const state = yield* buildState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution, cached: o.cached })
+  const state = yield* buildState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution, cached: o.cached, own: hosted ? undefined : owned })
   return yield* buildResult(state, clock, t0, o.display !== false)
 }

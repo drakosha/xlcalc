@@ -28,7 +28,7 @@ export function createInlineCalc(opts?: InlineCalcOptions): Calc {
       if (closed) throw closed
       const { signal, timeoutMs, rest } = splitCall<ComputeOptions>(copts)
       const c = checkComputeOptions(rest)
-      return budgeted(d, callLimits(d.limits, c.limits))(computeSteps(book, c), { signal, timeoutMs })
+      return budgeted(d, callLimits(d.limits, c.limits))(computeSteps(book, c, true), { signal, timeoutMs })
     },
     async createSession(book, sopts) {
       if (closed) throw closed
