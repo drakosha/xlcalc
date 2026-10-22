@@ -1,16 +1,19 @@
 /**
- * Reproductions from the review of 21.10 on reading xlsx files that are damaged or written by hand: a zip archive whose
+ * Reproductions from the review of 21.10 on reading and writing xlsx files that are damaged or written by hand: a zip archive whose
  * entries are cut short, named twice or do not match their CRC-32 is refused with the reader's error; XML comments are
  * no content, and a character reference past U+10FFFF is refused as XML refuses it; a row number, a style index, a
- * shared string's index or a value the reader cannot take is reported, and leaves a valid workbook. Reading a file
- * does not calculate, so the execution modes do not apply here.
+ * shared string's index or a value the reader cannot take is reported, and leaves a valid workbook. Writing reports
+ * what it changes: a formula left out, #ERROR! as #NULL!, text cut without splitting a character. Reading a file does
+ * not calculate; what a write takes from a result is checked in both execution modes.
  */
 import { deflateRawSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { rawZip, type RawEntry } from './fixtures/raw-zip.js'
+import type { BookInput } from '../src/contract.js'
 import { compute } from '../src/index.js'
-import { readXlsx } from '../src/xlsx.js'
+import { ruRU } from '../src/locales/ru-RU.js'
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { pack, parts, read, sheet } from './xlsx-fixtures.js'
 
 const enc = new TextEncoder()
@@ -145,5 +148,41 @@ describe('xlsx: a name scoped to a sheet whose part is missing (fix-u331)', () =
       ['name', 'loc', 'a name scoped to a sheet that was left out is left out too'],
       ['part', 'T', 'a sheet whose part is missing is left out'],
     ])
+  })
+})
+
+/** The `<sheetData>` of a written file's first sheet. */
+async function sheetData(data: Uint8Array): Promise<string> {
+  return /<sheetData>.*<\/sheetData>/.exec((await openArchive(data).text('xl/worksheets/sheet1.xml'))!)![0]
+}
+
+const clock = { now: '2026-10-22T12:00:00Z', seed: 1 }
+
+describe.each(['closures', 'eval'] as const)('xlsx: what a write changes is reported as it happens, %s', (execution) => {
+  it('a formula the file cannot hold, without a value, is reported as left out; with a value as written as it (fix-u328)', async () => {
+    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: "'Nope'!A1*2", style: 0 }, A2: { formula: 'SUM(' }, A3: { formula: 'SUM(', held: 4 } } }], styles: [{ font: { bold: true } }] }
+    const bare = await writeXlsx({ book })
+    expect(issuesOf(bare)).toEqual([
+      ['formula', ['A1', 'A2'], 'a formula the file cannot hold (it does not parse, or names a sheet, a table, a column or a link to another workbook the workbook does not have) and without a value to write instead is left out: its cell is written empty'],
+      ['formula', ['A3'], 'a formula the file cannot hold (it does not parse, or names a sheet, a table, a column or a link to another workbook the workbook does not have) is written as its value'],
+    ])
+    expect(await sheetData(bare.data)).toBe('<sheetData><row r="1"><c r="A1" s="1"/></row><row r="2"><c r="A2"/></row><row r="3"><c r="A3"><v>4</v></c></row></sheetData>')
+    const valued = await writeXlsx({ book, result: compute(book, { clock, execution }) })
+    expect(valued.issues.find((i) => i.code === 'formula')?.cells).toEqual(['A1', 'A2', 'A3'])
+  })
+
+  it('#ERROR! written as #NULL! is reported, in values mode and from a file\'s stored values (fix-u329)', async () => {
+    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(' }, A2: { formula: 'A1' }, A3: { formula: 'ERROR.TYPE(A1)' } } }] }
+    const result = compute(book, { clock, execution })
+    expect(result.sheets[0].cells.A2.value).toEqual({ error: 'ERROR' })
+    const NULL = '#ERROR!, the error of a formula that does not compute, is written as #NULL!: Excel has no #ERROR!'
+    const values = await writeXlsx({ book, result }, { mode: 'values' })
+    expect(issuesOf(values)).toEqual([['errorValue', ['A1', 'A2'], NULL]])
+    expect(await sheetData(values.data)).toBe('<sheetData><row r="1"><c r="A1" t="e"><v>#NULL!</v></c></row><row r="2"><c r="A2" t="e"><v>#NULL!</v></c></row><row r="3"><c r="A3"><v>1</v></c></row></sheetData>')
+    // a stored #GETTING_DATA, read as #ERROR!, written back
+    const read = await sheet('<row r="1"><c r="A1" t="e"><f>NOW()</f><v>#GETTING_DATA</v></c></row>')
+    const again = await writeXlsx({ book: read.book, result: read.cached })
+    expect(issuesOf(again)).toEqual([['errorValue', ['A1'], NULL]])
+    expect((await writeXlsx({ book, result }, { locale: ruRU })).issues.find((i) => i.code === 'errorValue')?.message).toBe('#ERROR!, ошибка формулы, которая не вычисляется, записана как #ПУСТО!: в Excel нет #ERROR!')
   })
 })

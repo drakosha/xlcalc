@@ -390,10 +390,10 @@ A filtered sheet is written so that Excel treats it as filtered. Its first table
 | code | what happens |
 |---|---|
 | `meta` | a cell's `meta` is left out |
-| `errorValue` | `#CYCLE!`, which a self-referencing name returns, is written as 0, as Excel stores a circular reference, including among a link's stored values |
+| `errorValue` | `#CYCLE!`, which a self-referencing name returns, is written as 0, as Excel stores a circular reference, including among a link's stored values; `#ERROR!`, the engine's error for a formula that does not compute, is written as `#NULL!`, as Excel has no `#ERROR!` |
 | `textLength` | text longer than 32,767 characters is truncated, including a note's; also a hyperlink's tooltip over 255, a rule's titles over 32, its input message over 255 and its alert text over 225 |
 | `dataValidation` | a rule whose formula does not parse, or names a sheet, a table or a column the workbook does not have, is left out |
-| `formula` | a formula that does not parse, or names a sheet, a table, a column or a link to another workbook the workbook does not have, is written as its value |
+| `formula` | a formula that does not parse, or names a sheet, a table, a column or a link to another workbook the workbook does not have, is written as its value, or as an empty cell when it has none (no result given) |
 | `noCachedValues` | the file stores no formula values, because no result was given, or a formula has no value in the result (`values: 'preserve'`) |
 | `name` | a name Excel does not accept, given twice, scoped to a missing sheet, or whose reference does not parse or names a table, a column or a link the workbook does not have, is left out |
 | `autoFilter` | the filter mode of a sheet whose tables have no header row and overlap its cells is left out |

@@ -4847,10 +4847,11 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
   the engine cannot parse.
 - `userFunction`: a call to a function the file marks as user-defined (`_xludf.`), a macro or add-in function.
 - `formula`: a formula the engine cannot parse, read as written (its cell calculates to an error), or a formula the
-  writer could not write (its value is written instead).
+  writer could not write (its value is written instead, or an empty cell when it has none).
 - `errorConstant`: an error typed into a cell as its value, read as a formula of that error.
 - `errorValue`: an error the model has no code for (`#GETTING_DATA`, `#FIELD!`, `#BLOCKED!` and the like), read
-  as `#ERROR!`; or, when writing, `#CYCLE!` written as 0, as Excel stores a circular reference.
+  as `#ERROR!`; or, when writing, `#CYCLE!` written as 0, as Excel stores a circular reference, and `#ERROR!`
+  written as `#NULL!`, which Excel has.
 - `dataTable`: a what-if data table (`TABLE()`), read as its stored values.
 - `calculation`: calculation settings the workbook does not keep: manual mode, automatic except for data tables,
   precision as displayed; an iteration count or maximum change out of range, read as Excel's default.
