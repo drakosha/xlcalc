@@ -6,6 +6,7 @@
  * elapsed time alone gives null (TEXT answers #VALUE!, a cell shows `#`), and so does a digit placeholder in it.
  */
 import { momentOf, ymd } from '../dates.js'
+import { positional } from './general.js'
 import { hijri } from './hijri.js'
 import type { Ph, Section, Tok } from './parse.js'
 import { plain, type Names, type Style } from './style.js'
@@ -82,7 +83,8 @@ export function formatDate(v: number, sec: Section, style: Style, names: Names):
     if (t.t === 'ampm') out += t.s.length > 3 ? (h < 12 ? 'AM' : 'PM') : h < 12 ? t.s[0] : t.s[2]
     else if (t.t === 'elapsed') {
       const total = t.s[0] === 'h' ? day * 24 + h : t.s[0] === 'n' ? (day * 24 + h) * 60 + mi : day * 86_400 + secs
-      out += String(total).padStart(t.s.length, '0')
+      // digits past 1E+21 too, 15 significant and zeros as a number shows them, not JavaScript's `2.4e+21`
+      out += positional(total, 0).padStart(t.s.length, '0')
     } else if (t.t === 'date') {
       const c = t.s[0]
       const n = t.s.length
