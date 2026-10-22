@@ -12,6 +12,7 @@ import { checkedMapCell, namesOf } from '../structure/index.js'
 import { sheetKey } from '../syntax.js'
 import { joined, nothing, type Outcome } from './answer.js'
 import { layoutCells, snapshot } from './looks.js'
+import { relookBack, type LooksBack } from './relook.js'
 import { applyDiff, type BookDiff } from './rebook.js'
 
 /** The fields of a sheet but its cells, and how its lines (`rows`, `columns`) changed entry by entry. */
@@ -29,6 +30,8 @@ export type Step =
   | { kind: 'cells'; call: UndoCall; edits: CellReplace[]; size: number }
   | { kind: 'layout'; call: UndoCall; sheets: SheetBack[]; size: number }
   | { kind: 'styles'; call: UndoCall; styles: CellStyle[] | undefined; size: number }
+  /** Rectangles of sheets' looks put back (`relook.ts`): none of the cells the call wrote one by one. */
+  | { kind: 'looks'; call: UndoCall; sheets: LooksBack[]; size: number }
   | { kind: 'book'; call: UndoCall; diff: BookDiff; size: number }
   /**
    * Several of one call, taken in their order either way: they change different parts of the book, and one stopped
@@ -193,6 +196,8 @@ export function layoutStep(call: UndoCall, before: SheetInput[], after: Map<numb
   return { kind: 'layout', call, sheets, size: sheets.reduce((n, x) => n + weigh(x.set) + weigh(x.lines), 0) }
 }
 
+export const looksStep = (call: UndoCall, sheets: LooksBack[]): Step => ({ kind: 'looks', call, sheets, size: weigh(sheets) })
+
 export const stylesStep = (styles: CellStyle[] | undefined, call: UndoCall = 'setStyles'): Step => ({ kind: 'styles', call, styles, size: weigh(styles) })
 
 /** The way back from `book`, the book a rebuild was given, by its diff. */
@@ -253,6 +258,10 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       // a sheet hidden or shown again: its cells stay where they are
       if (step.call === 'editStructure') t.mapCell = checkedMapCell({ geometry: [], before: s.sheetNames, after: s.sheetNames })
       return [t, layoutStep(step.call, before, next)]
+    }
+    case 'looks': {
+      const [outcome, forth] = relookBack(s, step.sheets)
+      return [{ call: step.call, outcome }, looksStep(step.call, forth)]
     }
     case 'styles': {
       const was = s.input.styles

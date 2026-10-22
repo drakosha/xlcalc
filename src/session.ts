@@ -44,11 +44,12 @@ import { checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
 import { checkPatches } from './session/patch.js'
+import { relook } from './session/relook.js'
 import { patchPlan, type Plan } from './session/styles.js'
 import { bookDiff, DiffPass, type BookDiff } from './session/rebook.js'
 import { columnWidening, entryCheck, validationAlert } from './session/text.js'
 import { alertRefusal, checkActive, checkTextEntries, filledText, pastedText, previewCells, strictestRefusal, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
-import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
+import { applyStep, bookStep, cellsStep, History, layoutStep, looksStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
 import { issueDetail } from './issues.js'
@@ -68,7 +69,7 @@ import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
-import { putInputs, withLooksOf } from './looks/sheet.js'
+import { layerOf, putInputs, putLayers, withLayer, withLooksOf } from './looks/sheet.js'
 import { FILL_OPTIONS, REPLACE_OPTIONS, strictMethods, TEXT_OPTIONS } from './strict-args.js'
 
 /** How a session is run by its host. */
@@ -326,8 +327,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
    */
   const kept = (s: EngineState) => {
     const book = { ...s.input, sheets: s.input.sheets.slice() }
+    // the sheets' looks, which a call may set whole (`relook`)
+    const layers = book.sheets.map((x) => layerOf(x))
     const at = clock
     return (cells: CellReplace[]) => {
+      putLayers(book.sheets, layers)
       putInputs(book.sheets, (name) => sheetIndex(s)(name)!, cells)
       st().input = book
       clock = at
@@ -336,22 +340,27 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display, sheetIndex }
   /**
-   * Cells' new inputs (checked) written, as `call`: a table's header cell typed over renames its column and the
-   * references to it, which builds the book again; a plan's sheets and style table (`plan`) go in first then, so that
-   * the rename rewrites the plan's rules too and one step takes all of it back. The state after and what changed, and
-   * the way back.
+   * Cells' new inputs (checked) written, as `call`, over the sheets' looks of a plan set whole (`relook`): a table's
+   * header cell typed over renames its column and the references to it, which builds the book again; a plan's sheets,
+   * looks and style table (`plan`) go in first then, so that the rename rewrites the plan's rules too and one step takes
+   * all of it back. The state after and what changed, and the way back.
    */
-  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call'], plan?: Pick<Plan, 'sheets' | 'styles'>): Steps<[EngineState, Outcome, () => Step | null]> {
+  function* writeCells(s: EngineState, edits: CellReplace[], call: Step['call'], plan?: Pick<Plan, 'sheets' | 'styles' | 'layers'>): Steps<[EngineState, Outcome, () => Step | null]> {
     checkArrayEdits(s, edits)
-    const laid = plan?.sheets.size ? { ...s.input, sheets: s.input.sheets.map((x, i) => (plan.sheets.has(i) ? withLooksOf({ ...plan.sheets.get(i)!, cells: x.cells }, x) : x)) } : s.input
+    const laid = plan?.sheets.size || plan?.layers ? { ...s.input, sheets: s.input.sheets.map((x, i) => planned(x, i, plan)) } : s.input
     const renamed = headerEdits(laid, edits, (v, format) => headerText(s, v, format))
     if (renamed) {
       if (plan?.styles) renamed.styles = plan.styles
       const [next, out, diff] = yield* rebuild(s, renamed, [], true, history.on)
       return [next, plan?.styles ? { ...out, styles: true } : out, () => diff && bookStep(call, diff, renamed)]
     }
-    const [out, was] = yield* putCells(s, edits)
-    return [s, out, () => (was.length ? cellsStep(call, was) : null)]
+    return yield* lookCells(s, edits, plan, call)
+  }
+  /** A session's sheet with a plan's lines and rules, and its looks set whole, if the plan has them. */
+  const planned = (x: SheetInput, i: number, plan: Pick<Plan, 'sheets' | 'layers'>) => {
+    const sheet = plan.sheets.has(i) ? withLooksOf({ ...plan.sheets.get(i)!, cells: x.cells }, x) : x
+    const layer = plan.layers?.get(i)
+    return layer ? withLayer(sheet, x.cells, layer) : sheet
   }
   /**
    * A plan of looks applied after the cells it writes (`write`): the style table and the sheets' lines, rules and merged
@@ -388,10 +397,28 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     steps.push(() => stylesStep(was, call))
     return { ...o, styles: true }
   }
-  /** Look-only edits (a patch, cleared formats): they keep every cell's content, so nothing is renamed or computed. */
-  function* lookCells(s: EngineState, edits: CellReplace[]): Steps<[EngineState, Outcome, () => Step | null]> {
-    const [out, was] = yield* putCells(s, edits)
-    return [s, out, () => (was.length ? cellsStep('patchCells', was) : null)]
+  /**
+   * Cells' new inputs written over the sheets' looks of a plan set whole (`relook`), with no header renamed: those of a
+   * patch, of cleared formats, and of `writeCells`. The state, what changed and the way back: the looks, then the cells.
+   */
+  function* lookCells(s: EngineState, edits: CellReplace[], plan?: Pick<Plan, 'layers'>, call: Step['call'] = 'patchCells'): Steps<[EngineState, Outcome, () => Step | null]> {
+    // the cells written one by one keep their looks until they are written, so that each step puts back its own cells
+    const byCell = plan?.layers
+      ? edits.map((e): [number, number, number] => {
+          const { row, col } = parseAddress(e.cell)
+          return [sheetIndex(s)(e.sheet)!, row, col]
+        })
+      : []
+    const [looked, back, layers] = plan?.layers ? relook(s, plan.layers, byCell) : [nothing(), [], []]
+    let out: Outcome, was: CellReplace[]
+    try {
+      ;[out, was] = yield* putCells(s, edits)
+    } catch (e) {
+      relook(s, layers)
+      throw e
+    }
+    if (!back.length) return [s, out, () => (was.length ? cellsStep(call, was) : null)]
+    return [s, joined(looked, out), () => manyStep(call, [looksStep(call, back), was.length ? cellsStep(call, was) : null])]
   }
   /**
    * Typed cells written as `call`, in one step of the undo with the widths their columns take (`textWidths`), set unless
@@ -496,6 +523,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     if (preview) checkNumber(max, 'opts.maxChanges', 1, 10000, true)
     const plan = operationsPlan(old, given, (v, format) => headerText(old, v, format))
     const beforeBook = { ...old.input, sheets: old.input.sheets.slice() }
+    const beforeLayers = beforeBook.sheets.map((x) => layerOf(x))
     besides = []
     const captured = tracker()
     if (preview) old.capture = captured
@@ -511,7 +539,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         outcome = { ...out, styles: plan.styles }
         back = () => diff && bookStep('applyChanges', diff, plan.book)
       } else {
-        const [built, out, cellsBack] = yield* writeCells(old, plan.edits, 'applyChanges')
+        const [built, out, cellsBack] = yield* writeCells(old, plan.edits, 'applyChanges', { sheets: new Map(), ...(plan.layers.size ? { layers: plan.layers } : {}) })
         next = built
         outcome = out
         const steps: (() => Step | null)[] = [cellsBack]
@@ -549,6 +577,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         clock = beforeClock
         state = old
         const back = [...plan.back, ...besides]
+        putLayers(beforeBook.sheets, beforeLayers)
         putInputs(beforeBook.sheets, (name) => old.sheetIdx.get(sheetKey(name))!, back)
         old.input = beforeBook
         setNow(old, clockSerial(beforeClock), beforeClock.seed)
