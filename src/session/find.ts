@@ -8,6 +8,7 @@
 import type { CellValue, ColumnInput, FindCellsOptions, RowInput } from '../contract.js'
 import { toCellValue, valueAt, type EngineState } from '../engine.js'
 import { InputError } from '../input-error.js'
+import { ERROR_TEXT } from '../syntax/errors.js'
 import { checkBoolean } from '../input/basic.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, placeOf } from '../model.js'
@@ -254,4 +255,5 @@ const cr = (k: number): [number, number] => {
 /** The cells a search reads at a time, so that a page that is full stops it. */
 const CHUNK = 4096
 
-const valueText = (v: CellValue): string => (typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v ?? ''))
+/** A value as the `value` kind reads it, the same in every locale: a number as JavaScript writes it, TRUE or FALSE, an error by its name. */
+const valueText = (v: CellValue): string => (typeof v === 'object' && v !== null ? ERROR_TEXT[v.error] : typeof v === 'boolean' ? (v ? 'TRUE' : 'FALSE') : String(v ?? ''))
