@@ -27,3 +27,6 @@ const CASES: [string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES.map(([f, v]) => ['SUMIF', f, v]))
+
+/** The predictions Excel did not confirm: it left the formulas reading a cell in the circular reference uncomputed (`OPEN` in `test/excel-open.ts`). */
+export const MISSED = ['SUMIF#1', 'SUMIF#2', 'SUMIF#3']

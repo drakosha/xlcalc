@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "version": "16.114",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.083,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "SUMIF#1",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "Ua!B2"
+  },
+  {
+   "id": "SUMIF#2",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "Ub!B2"
+  },
+  {
+   "id": "SUMIF#3",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "Ub!B3"
+  },
+  {
+   "id": "SUMIF#4",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "Uc!D1"
+  }
+ ],
+ "values": {
+  "SUMIF#1": {
+   "t": "other",
+   "v": "type "
+  },
+  "SUMIF#2": {
+   "t": "other",
+   "v": "type "
+  },
+  "SUMIF#3": {
+   "t": "other",
+   "v": "type "
+  },
+  "SUMIF#4": {
+   "t": "n",
+   "v": 8
+  }
+ }
+}
