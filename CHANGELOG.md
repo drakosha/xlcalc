@@ -1,5 +1,132 @@
 # Changelog
 
+## 0.55.0 (2026-10-23)
+
+Corrections across the engine, sessions, structure operations, xlsx and the pool, with the values that changed checked in Excel. The synthetic workbook's values hash is as in 0.54.2; the `inputHash` of a workbook whose sheets are not in name order changes, since the order of the sheets now counts.
+
+Breaking changes:
+
+- A cell value that is `NaN` or an infinity throws an `InputError` at its path, in `compute`, `createSession` and every cell edit. It used to read as `#NUM!` through references but as a number in `ISNUMBER`, `COUNT` and its own cell.
+- `clock.now` must be ISO 8601 with `Z` or an offset, or a date alone (midnight UTC), on a day the calendar has. A date and time without a time zone, free text or `2026-02-30` throws an `InputError` in `compute`, `createSession`, `setClock` and the entry options; such a clock was read in the host's time zone, so `NOW()`, `TODAY()` and the hash moved between machines.
+- A number literal from `1E308` on, or one that is not 0 below `1E-309`, makes its formula a `syntax` error, as Excel rejects it typed; it used to calculate as an infinity and print as `Infinity`. A literal up to the smallest normal number is 0 and is written `0` (`=1E-309+1` is stored as `0+1`).
+- `dateToSerial` and a cell's `{ date }` throw an `InputError` for a date or time that does not exist (`2025-02-30`, `9999-12-32`, an hour of 25) or text after the date, instead of rolling it into another date. Excel's day 0, 1900-02-29 and a `Z` or offset after the time are taken as before; `parseEntry` is unchanged.
+- `externals.values` is checked as cell values: an unknown error code, an array, `undefined`, a `Date` or a `BigInt` throws an `InputError` with its path, where it calculated as 0 or crashed with a `TypeError`. A non-finite number is still `#NUM!`.
+- A cell's `meta` that holds a cycle or a `BigInt` throws an `InputError` at its path, in `compute`, `createSession` and the pool, where it overflowed the stack or broke `inputHash`. What JSON turns into `null` or `{}` still passes.
+- A rectangle of more than 65,536 cells without an entry of their own whose formatting changed is no longer listed cell by cell in `EditResult.changes`: it comes as a range in `EditResult.repaint`, after `patchCells`, `clearCells`, `applyChanges`, a structure operation (a merge of whole columns, say) and their undo and redo. A host that repaints from `changes` alone must also read again where `repaint` meets its viewport ([Editing a grid](docs/edits.md)).
+- `setLayout` rejects a merged area over a table's cells with an `InputError`; it was accepted, and the session's workbook was then rejected by `compute` and `writeXlsx`.
+- A legacy array formula of several cells over a table is rejected: by `setCells`, `replaceCells` and `validateEntry` with the workbook check's reason, and by `moveRange` and `copyRange` with the code `table`.
+- A copy of a whole table numbers its name past defined names too, and a numbered name Excel would not accept (`Tab3`, a cell address) rejects the copy with `table_name`, as `renameTable` does.
+- Rows or columns inserted that would push a table, or a legacy array formula's range, past the sheet's edge return `off_sheet`.
+- `mergedArea`, `rectsMeet` and `rectContains` of `xlcalc/a1` check a rectangle as `rangeAddress` does: corners in either order, and a rectangle off the sheet throws an `InputError`.
+- `inputHash` counts the order of the sheets when it is not their order by name, since a 3-D reference covers the sheets between its ends in workbook order. Such workbooks, the synthetic one among them, get another `inputHash`; their values hash is unchanged.
+
+Added:
+
+- `TableInput.style` (`TableStyle`: `name`, `firstColumn`, `lastColumn`, `rowStripes`, `columnStripes`): `readXlsx` reads a table's style, operations keep it and `writeXlsx` writes it back. A table without it is written as Excel's default, `TableStyleMedium2` with banded rows, as before; a custom style is reported and read as the default.
+- `EntryOptions.inPlace` for `parseEntry`: text edited within the cell, as `entryText` writes it, so a percentage cell's `12.5%` is parsed as 0.125 rather than as the text `12.5%%`.
+- `xlcalc/worker/thread`: the pool's thread module, for bundlers that keep `new URL('./thread.js', import.meta.url)` as written (esbuild); [Asynchronous and threaded computation](docs/async.md) gives the entry point and the `spawn` form.
+- `xlcalc/contract` exports `Translation`, `TranslateOptions` (the options of `toLocal` and `toInvariant`, exported nowhere before), `CopyContext` and `DateSystemOptions`, so it names every type of the root's signatures.
+- `CellTextRefusal` includes `external_ref`, which `setCellText`, `setCellTexts`, `fillCellText`, their previews and `replaceInCells` already returned.
+
+Changed:
+
+- Digit formats write 15 significant digits and then zeros below 1E+21 too, as Excel does: `TEXT(2^60,"0")` is `1152921504606850000`, not the double's binary expansion.
+- `FIXED` and `DOLLAR` write the digits of numbers from 1E+21 on (they wrote `1e+21`) and return `#VALUE!` past 255 characters, `DOLLAR` counting the padding of its currency format.
+- In ru-RU a color name with a date letter (`[Красный]`, `[Синий]`, `[Черный]`, `[Голубой]`) no longer turns a number section into a date: `TEXT(1234.5,"[Красный]0.00")` is `#VALUE!`, as with `0.00` and the other colors, where it was `12.35`.
+- A text section that ends a format of two or three sections takes no numbers: under `h:mm;@` a negative displays `#` (`#VALUE!` in `TEXT`) and under `0;@` it is `-5`, where they showed `0.25` and `5`.
+- An elapsed total of 1E+21 and more (`[h]`, `[mm]`, `[ss]`) is written in digits, not as `2.4e+21`; the percent operator returns 0 for a hundredth below the smallest normal number, as `/` does.
+- `SUMIF` and `AVERAGEIF` whose sum range, resized to the criteria range, runs past the sheet's edge add the cells that exist instead of returning `#VALUE!`. A formula inside its own resized sum range is a circular reference, as in Excel.
+- `UNIQUE` takes spellings Unicode makes equivalent (é in NFC and NFD, `ﬁ` and `fi`) as one row, and keeps a soft hyphen apart; ASCII text is compared as before.
+- Operators read number text padded with tabs or no-break spaces as text (`"\t5"+0` is `#VALUE!`), as `VALUE` does; spaces are trimmed as before.
+- A data validation rule's formulas are relative to the top-left cell of the rectangle around its ranges, as Excel reads and saves them: a rule over `H3:H6 J1:J3` with `$A1>2` checks `$A3>2` for H3. It was the top-left cell of the first range.
+- `2/29` typed in a year that is not a leap year is February 2029 in the format `mmm-yy`, as Excel has it, not 1 February in `d-mmm`.
+- A legacy array formula that cannot be prepared (a sheet not in the workbook, an unknown function) displays its error in every cell of its range, rejects values typed into it and gives a dynamic array spilling into it `#SPILL!`, as in Excel; the error was in the top-left cell alone.
+- A defined name whose area mixes `$` and relative bounds keeps the relative bounds as offsets when lines are inserted or deleted (inserting row 1 turned `S!$A1` into `S!$A2`), and becomes `#REF!` when the line of its `$` bound is deleted, as in Excel.
+- A range typed with its corners reversed is stored in order, each axis on its own with its `$` (`SUM(B2:A1)` is `SUM(A1:B2)`, `$B1:A$2` is `A1:$B$2`), so a formula's text no longer changes at its first structure operation.
+
+Fixed, calculation and spilled arrays:
+
+- Spilled arrays placed again unchanged in every round, or under iterative calculation, settle instead of throwing that they did not settle; an array that gave way to another spill takes its cells once it ranks first.
+- Legacy array formulas whose ranges cross each other are rejected; they were accepted and then threw from the calculation.
+- `SUMIF` and `AVERAGEIF` depend on their sum range resized to the criteria range, so a session no longer keeps a stale value after an edit of a cell that the written range leaves out.
+- A criteria function with an array where a range belongs, inside an operator (`COUNTIF({1},">0")*1`), returns its array of `#VALUE!` instead of aborting `compute`, `createSession` and `setCells` with a `TypeError`.
+- `diagnostics` find the source of an error without reading a range over `limits.cells`, which threw a limit error from a workbook that had calculated within it.
+
+Fixed, sessions, undo and stopped calls:
+
+- A merge, an undo or redo of a merge, a preview and `validateEntry` stopped during their recalculation (`soft_timeout`, `aborted`, a limit) leave the session as it was. A stopped merge lost the merged cells' contents with no undo step, and a stopped preview left its trial values in the workbook, so every later call hit the same limit.
+- Clear All through a table header: over whole lines the workbook and the calculated state stay together, a cell holding only formatting is cleared, undo and redo keep a valid workbook and give back the rules over the table, and `applyChanges` clears a header cell as `clearCells` does instead of throwing.
+- In an `applyChanges` batch, later operations see the formatting earlier ones set, so a batch leaves the workbook the same calls made one by one leave.
+- An undone or redone `clearCells` of formats reports `clearCells` in `UndoResult.call`, not `patchCells`.
+- A closed synchronous session throws `CalcError` with `closed`, and `setClock` on a live session throws an `InputError`, as the other kinds of session fail.
+- `findCells` with `in: 'value'` reads a logical as `TRUE` or `FALSE` and an error by its name (`#DIV/0!`); it matched JavaScript's `true` and an internal code.
+- `getCell`, `getCells` and `getViewport` of a synchronous or inline session return copies of a cell's note and link, as a pool does; a host editing them changed the workbook with no undo step or notification.
+- A fill over `{ date }` values past the date system writes serial numbers instead of throwing about a `serial` the caller never passed; `limits.writes` bounds a fill's copies together, where a fill wrote up to twice the limit.
+- `setCellText`, `setCellTexts` and `fillCellText` wrapping text in more than about 125,000 rows of a sheet no longer throw `RangeError`.
+
+Fixed, structure operations and formatting:
+
+- Formatting alone at the sheet's edge no longer rejects an insert: what is pushed off is dropped, as in Excel, and formatting over a whole column stays over it when rows are inserted. Cells with content, a note, a link or `meta` at the edge still return `off_sheet`.
+- A copy or fill that moves a conditional format's first cell rewrites its formulas for the new one, wrapping round the sheet's edge as the rule's evaluation does; the rule kept reading shifted cells.
+- `renameSheet` rewrites references to the sheet's own names (`'S'!name`), which turned `#REF!`.
+- `renameTable`, `deleteTable`, `convertTable`, a deleted table column and a deleted table sheet rewrite structured references in conditional formats and validation rules, which stopped working; `convertTable` turns a reference to a column the table lacks into `#REF!` instead of its first column.
+- A fill series over a table's header renames its columns, where the workbook was then rejected.
+- `deleteSheet` and `moveSheet` keep a 3-D reference whose end is not in the workbook instead of throwing `TypeError`.
+- A copy of part of a legacy array formula keeps each cell's own note, link, `meta` and formatting, not the top cell's; a copy or fill keeps the spelling of the references it does not change (`$a$1` stays as written).
+- A copy from a filtered sheet drops the legacy array range from pasted values and pastes the values of a large spill's cells past its data, which were blank.
+- A data validation rule whose own ranges overlap is accepted (by `readXlsx` too, which rejected the file); a list through a defined name sees the blank cells past its sheet's last value.
+- A shift that leaves a sheet no rows, columns or merged areas drops `rows: {}`, `columns: {}` and `merges: []`.
+- `editStructure` with an op named as an `Object.prototype` member (`constructor`, `__proto__`) and `addTable` with a column without a name throw an `InputError`, not a `TypeError`.
+
+Fixed, functions and number formats:
+
+- `FILTER` checks its result against `limits.cells`; `FREQUENCY` and `AMORDEGRC` count their work, so `timeoutMs` and the signal stop them; `TAKE` and `DROP` of a whole column build no index arrays.
+- `LINEST`, `LOGEST`, `TREND` and `GROWTH` fit columns of more than about 124,000 rows, where they returned `#VALUE!`.
+- A tab or line break before `(` keeps a function call (`SUM\t(A1)`); `TEXTBEFORE`, `TEXTAFTER` and `TEXTSPLIT` with match mode 1 cut in the right place after an `İ`.
+- A number format with more than 100 decimals displays them instead of throwing `RangeError` from `displayValue`, `getCells`, `getViewport` and `setCellText`.
+- `entryText` of a date that rounds past 9999-12-31 is the number, not 255 `#`, and of a percentage past the largest number moves the exponent (`1E+309%`).
+- ru-RU `explain` writes a value as a formula writes it (a quote doubled, `1E+21`); a locale object not registered has its regional rules checked where it is taken, with an `InputError` naming the field.
+- `functionSignature`, `callAt` and `functionDescription` read a function's name as the engine does, so `gauß(` gets no `GAUSS` tip; `nameAt` returns the name being typed after `:`.
+
+Fixed, xlsx:
+
+- A damaged deflate entry rejects `readXlsx` alone instead of ending the Node process with an unhandled rejection; an entry past the end of the file, two entries of one name and bytes that do not match their CRC-32 are rejected as not a readable zip archive.
+- XML comments are not read as content, CDATA sections give their content, and a character reference past U+10FFFF rejects its part as not valid XML.
+- Reported as issues, where the whole file was rejected or data was lost silently: a sheet name Excel would not take (repaired, and references to it rewritten), a Strict file's date that is not a date, a width or height that is not a size, a threshold of a type the model does not have (the rule left out), a cell, value, formula or `<sheetData>` left open, shared strings left open, a row number that is not a whole number, a style or shared string index out of range, and a number or boolean value that is not one.
+- An `extLst` inside `autoFilter`, `sortState` and the like no longer hides Excel 2010's conditional formats or breaks the validations, and SpreadsheetML with a prefix (`<x:conditionalFormatting>`) keeps its conditional formats.
+- Frozen panes with a scroll position round-trip without the frozen rows growing at each write and read.
+- `writeXlsx` keeps `numberFormat: 0` apart from the code `'0'` (and `14` from `'14'`), which shared one cell format; it reports a formula it leaves out and `#ERROR!` written as `#NULL!`; text cut to an Excel limit does not split a surrogate pair.
+- A name scoped to a sheet whose part is missing is left out with the sheet; a cell given twice in a row keeps its last style.
+
+Fixed, the pool:
+
+- A task whose workbook text cannot be written fails alone instead of blocking its queue, and a task rejected before it waits leaves no unhandled rejection.
+- A thread that cannot start fails one task with `thread_failed` and the next task tries again; a restore that cannot be sent closes its session with `restore_failed` instead of retrying forever on the event loop.
+- `getCells` in a thread keeps its `signal` and `timeoutMs`, and reads without options (`getCell`, `getViewport`, `getUsedRange`, `getEnd`, `getCellIssue`, `getValidation`) are bounded by the pool's `timeoutMs`, as under `createInlineCalc`.
+- A pool session keeps its own copy of its options (`externals`, `limits`, `undo`), so changes the host makes to them later no longer reach a restored session; options that cannot be cloned throw an `InputError` at `opts` when the session opens.
+- The snapshot taken at `snapshotEvery` goes ahead of calls sent without waiting, so the journal stays within `snapshotEvery`.
+
+Fixed, the package:
+
+- `validateFormula`, `validateLocalFormula`, `parseEntry`, `entryText`, `needsApostrophe` and `xlcalc/entry` work in a tree-shaken bundle without `compute` or `createSession`, where they threw `no arities to check`.
+
+Fixed, speed:
+
+- Wildcards are matched part by part rather than by one backtracking regular expression: `COUNTIF(A1,"*a*a*c")` over 8,000 characters took about a minute in one call `timeoutMs` could not stop. This serves criteria, `MATCH`, `VLOOKUP`, `XLOOKUP`, `SEARCH` and Find and Replace; `XLOOKUP` and `XMATCH` match mode 3 keeps the regular expression as one call.
+- Large changes of formatting go by rectangles: `clearCells` of formats over `A2:H1048576` took 43 s and 8.4 million changes and now under a millisecond, `patchCells` over `A:H` 48 s and now 2 ms, a merge of whole columns seconds and now milliseconds. Inserted lines under styled cells, copies, fills and moves of formatted ranges no longer throw `RangeError` or take seconds, and a conditional format over 200,000 ranges no longer breaks structure operations and opening a session.
+- A fraction format finds its fraction on the value's continued fraction: 9 placeholders took 0.7 s per value. xlsx parts with elements left open read in linear time, where a 6.6 KB file held a CPU for 44 s.
+
+Fixed, arrays in a cycle through their spill:
+
+- Arrays in a cycle through their own spill ranges settle where they threw that spilled arrays did not settle, and which of two arrays spills follows their formulas and references, not which spilled first: an array that reads a cell within the largest range its formula can take gives way to one that does not, so the answer is the workbook's as Excel opens it from its file and a session gives what `compute(getBook())` gives. Workbooks without such cycles calculate as before. Without iterative calculation, where an array's size depends on the values a cycle holds, the outcome can still depend on the order the cells were entered in ([Spilled arrays](docs/spill.md)).
+
+Documentation:
+
+- `inputHash` is not a cache key on its own for a workbook with external functions, and a workbook read back from xlsx usually gets another `inputHash`: compare `hash` to tell whether its values changed.
+- Cell objects passed to a session belong to it and must not be changed in place; `meta` returned on the session's thread is the workbook's own object; `readCells` and `findCells` return `text` under `display: false` when their fields ask for it.
+- New known differences: text that Excel's `=`, `MATCH` and `COUNTIF` compare differently (a soft hyphen, NFC and NFD) and a `SUMIF` inside its own resized sum range ([Limitations](docs/limitations.md)); a deleted sheet's names, which Excel writes with the file's name, and arrays in a cycle where Excel keeps the outcome of the order they were typed in ([How the rules were checked](docs/development.md#how-the-rules-were-checked)).
+- Smaller corrections: the formula limits `xlcalc/contract` exports, `fromLegacy` from `xlcalc/xlsx` only, `numberFormat` in `displayValue` and `entryWidth`, fitted row heights read with `bestFit`, `createInlineCalc` from `xlcalc` in the 0.54.2 entry, and what a large change of formatting costs.
+
 ## 0.54.2 (2026-10-20)
 
 The first public release. The versions below it were internal builds used by our own applications and were not published to npm; their entries are kept as written, and the README describes the package as it is now.
