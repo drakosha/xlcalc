@@ -19,20 +19,11 @@ export type TableRef = (n: Extract<Ast, { k: 'table' }>) => Rect | ErrorCode
 
 export type Shape = 0 | 1 | 2
 
-/** At most so many rows and columns. */
-export type Size = [number, number]
-
 interface Info {
   s: Shape
   /** The node is a reference of several cells (a range lifted or refused as such, not an array). */
   ref: boolean
-  /** The most rows and columns it answers, where the formula tells them (`z`, `spill/rank.ts`). */
-  z?: Size
 }
-
-/** The size of several answers broadcast together: the most rows and columns of each, where all are known. */
-const z = (xs: Info[]): Size | undefined => (xs.every((x) => x.z) ? [Math.max(1, ...xs.map((x) => x.z![0])), Math.max(1, ...xs.map((x) => x.z![1]))] : undefined)
-const dims = (r: { r1: number; r2: number; c1: number; c2: number }): Size => [r.r2 - r.r1 + 1, r.c2 - r.c1 + 1]
 
 const max = (a: Shape, b: Shape): Shape => (a > b ? a : b)
 
@@ -53,10 +44,9 @@ const isArea = (r: { kind: string; r1: number; r2: number; c1: number; c2: numbe
 
 /**
  * Shapes of every node of a formula on sheet `scope`; a name is judged by its formula (`nameRef`), which sees the
- * global names, a LET name by its value; `inArea`: the formula is an old-kind array formula. With them, the most rows and
- * columns the formula answers where its references, constants, operators and a few array functions tell them (`size`).
+ * global names, a LET name by its value; `inArea`: the formula is an old-kind array formula.
  */
-export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false, tableRef: TableRef = () => 'REF'): { shape: Map<Ast, Shape>; size?: Size } {
+export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false, tableRef: TableRef = () => 'REF'): Map<Ast, Shape> {
   const out = new Map<Ast, Shape>()
   // LET's names by slot (a name's formula has its own), the names being expanded
   let bound: Info[] = []
@@ -64,8 +54,6 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
   const go = (n: Ast): Info => {
     const i = info(n)
     out.set(n, i.s)
-    // one value is one cell
-    if (!i.s && !i.ref) i.z = [1, 1]
     return i
   }
   const info = (n: Ast): Info => {
@@ -78,18 +66,18 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
         return { s: 0, ref: false }
       case 'arr':
         // a 1 × 1 constant is still an array (TYPE({1}) is 64), but one value wherever it goes
-        return { s: n.rows.length * n.rows[0].length > 1 ? 2 : 1, ref: false, z: [n.rows.length, n.rows[0].length] }
+        return { s: n.rows.length * n.rows[0].length > 1 ? 2 : 1, ref: false }
       case 'ref':
         // a spill reference has as many cells as its array spilled into
-        return n.ref.spill ? { s: 1, ref: true } : isArea(n.ref) ? { s: 2, ref: true, z: dims(n.ref) } : { s: 0, ref: false }
+        return n.ref.spill ? { s: 1, ref: true } : isArea(n.ref) ? { s: 2, ref: true } : { s: 0, ref: false }
       case 'xref':
-        return isArea(n.ref) ? { s: 2, ref: true, z: dims(n.ref) } : { s: 0, ref: false }
+        return isArea(n.ref) ? { s: 2, ref: true } : { s: 0, ref: false }
       // the engine puts another workbook's name's reference in its place before it computes (`links.ts`)
       case 'xname':
         return { s: 0, ref: false }
       case 'table': {
         const x = tableRef(n)
-        return typeof x !== 'string' && (x.r2 > x.r1 || x.c2 > x.c1) ? { s: 2, ref: true, z: dims(x) } : { s: 0, ref: false }
+        return typeof x !== 'string' && (x.r2 > x.r1 || x.c2 > x.c1) ? { s: 2, ref: true } : { s: 0, ref: false }
       }
       // several areas are one value nowhere (#VALUE!), and a reference where a function takes them
       case 'ref3d':
@@ -117,10 +105,10 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
       case 'un': {
         const a = go(n.a)
         // unary plus keeps a reference: SUM(+A1:A3) sums the range
-        return n.op === '+' ? a : { ...a, ref: false }
+        return n.op === '+' ? a : { s: a.s, ref: false }
       }
       case 'pct':
-        return { ...go(n.a), ref: false }
+        return { s: go(n.a).s, ref: false }
       case 'bin':
         // the intersection and the range operator answer a reference of one cell or more
         if (isRefOp(n.op)) {
@@ -128,8 +116,7 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
           go(n.b)
           return { s: 1, ref: true }
         }
-        const [a, b] = [go(n.a), go(n.b)]
-        return { s: max(a.s, b.s), ref: false, z: z([a, b]) }
+        return { s: max(go(n.a).s, go(n.b).s), ref: false }
       case 'fn':
         return call(n.name, n.args.map(go), n.args)
       case 'let':
@@ -155,27 +142,68 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
       args.forEach((a, i) => (spec.liftAt(i, args.length) ? lifted : rest).push(a.s))
       // IF without its third argument answers FALSE
       if (name === 'IF' && args.length === 2) rest.push(0)
-      // one of the values, the conditions lifted: no more than all of them broadcast
-      return { s: combine(lifted, rest, false), ref: false, z: z(args) }
+      return { s: combine(lifted, rest, false), ref: false }
     }
     const lifted: Shape[] = []
     const passed: Shape[] = []
-    const used: Info[] = []
     args.forEach((a, i) => {
       const mode = spec.mode(i)
       // an array (not a reference) in a range of criteria makes the call an array of #VALUE!, as the call answers at run time
       if (mode === 'whole') {
-        if (!a.ref && a.s > 0 && spec.criteriaAt(i)) lifted.push(a.s), used.push(a)
+        if (!a.ref && a.s > 0 && spec.criteriaAt(i)) lifted.push(a.s)
         return
       }
-      if (mode === 'pass') passed.push(a.s), used.push(a)
-      else if (!a.ref || (mode === 'lift' && spec.rangeAt(i) === 'lift')) lifted.push(a.s), used.push(a)
+      if (mode === 'pass') passed.push(a.s)
+      else if (!a.ref || (mode === 'lift' && spec.rangeAt(i) === 'lift')) lifted.push(a.s)
     })
-    // the arrays a few functions answer from literal sizes or from their first argument; others lift their arguments
-    const n = (k: number) => (nodes[k] ? (nodes[k].k === 'num' ? nodes[k].v : NaN) : 1)
-    const x = args[0]?.z
-    const size: Size | undefined = /^(SEQUENCE|RANDARRAY)$/.test(name) ? [n(0), n(1)] : name === 'MUNIT' ? [n(0), n(0)] : name === 'TRANSPOSE' ? x && [x[1], x[0]] : /^(SORT|SORTBY|UNIQUE|FILTER|TAKE|DROP)$/.test(name) ? x : spec.array ? undefined : z(used)
-    return { s: combine(lifted, passed, spec.array === true), ref: false, z: size && size[0] >= 1 && size[1] >= 1 ? size : undefined }
+    return { s: combine(lifted, passed, spec.array === true), ref: false }
   }
-  return { shape: out, size: go(ast).z }
+  go(ast)
+  return out
 }
+
+/** At most so many rows and columns. */
+export type Size = [number, number]
+
+/**
+ * The most rows and columns an array formula answers (`shape` its nodes' shapes), where it tells them: a reference or a
+ * constant array, an operator over them, SEQUENCE, RANDARRAY and MUNIT with numbers typed in, TRANSPOSE, SORT, SORTBY,
+ * UNIQUE, FILTER, TAKE and DROP by their first argument, another function by the arguments it lifts or passes; else
+ * undefined (`spill/rank.ts`).
+ */
+export function sizeOf(n: Ast, shape: Map<Ast, Shape>, tableRef: TableRef): Size | undefined {
+  // one value is one cell
+  if (!shape.get(n)) return [1, 1]
+  const all = (xs: Ast[]): Size | undefined => {
+    let size: Size | undefined = [1, 1]
+    for (const x of xs) {
+      const z = sizeOf(x, shape, tableRef)
+      size = z && size && [Math.max(size[0], z[0]), Math.max(size[1], z[1])]
+    }
+    return size
+  }
+  switch (n.k) {
+    case 'arr':
+      return [n.rows.length, n.rows[0].length]
+    case 'ref':
+    case 'table': {
+      const x = n.k === 'ref' ? (n.ref.spill ? undefined : n.ref) : tableRef(n)
+      return typeof x === 'object' ? [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1] : undefined
+    }
+    case 'paren':
+    case 'un':
+    case 'pct':
+      return sizeOf(n.a, shape, tableRef)
+    case 'bin':
+      return isRefOp(n.op) ? undefined : all([n.a, n.b])
+    case 'fn': {
+      const a = n.args
+      const num = (k: number) => (!a[k] ? 1 : a[k].k === 'num' ? a[k].v : 0)
+      const x = a[0] && sizeOf(a[0], shape, tableRef)
+      const z: Size | undefined = /^(SEQUENCE|RANDARRAY)$/.test(n.name) ? [num(0), num(1)] : n.name === 'MUNIT' ? [num(0), num(0)] : n.name === 'TRANSPOSE' ? x && [x[1], x[0]] : /^(SORT|SORTBY|UNIQUE|FILTER|TAKE|DROP)$/.test(n.name) ? x : FUNCTIONS[n.name]?.array ? undefined : all(a.filter((_, i) => FUNCTIONS[n.name]?.lazy || FUNCTIONS[n.name]?.mode(i) !== 'whole'))
+      return z && z[0] >= 1 && z[1] >= 1 ? z : undefined
+    }
+  }
+  return undefined
+}
+
