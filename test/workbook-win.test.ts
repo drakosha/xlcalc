@@ -43,22 +43,29 @@ const WIN_BOOK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
  */
 const ORDER = 'Excel depends on the order the formulas were typed in (a full calculation and a rebuild keep it); the engine gives the answer of the book from its file'
 const TWO_FILES = 'from the file Excel for Windows spills A2 and gives B1 #SPILL!, Excel for Mac the other way round; the engine follows the Mac'
-const SETTLE = 'the engine throws "spilled arrays did not settle" with iterative calculation on; Excel settles it'
-const SESSION = 'Excel gives the answer of the book opened from its file, which compute() gives; the session that entered the cells keeps another, rule pending'
 const SPILLS = 'without iterative calculation Excel still computes an array a cycle runs through, as a spill or #SPILL!; the engine leaves the cells of the cycle empty'
 const ARRAY_CELL = 'without iterative calculation Excel shows 0 in the other cell of an array of the old kind in a cycle; the engine leaves it empty'
 const WIN_CASES: Readonly<Record<string, string>> = {
   ...Object.fromEntries(['sort-typed-B3-C2-A4', 'sort-typed-B3-A4-C2', 'sort-typed-C2-B3-A4', 'sheets-typed-Sheet2.E5-Sheet2.D7-Q_data.F5-Q_data.D4', 'sheets-typed-Q_data.F5-Q_data.D4-Sheet2.E5-Sheet2.D7'].map((id) => [`spill-cycles-held:${id}`, ORDER])),
-  'spill-cycles-held:wait-file': `${TWO_FILES}; ${SETTLE}`,
-  'spill-cycles-held:wait-typed-B1-A2-C1-C2': `${ORDER}; ${SETTLE}`,
-  'spill-cycles-held:wait-typed-C2-C1-A2-B1': `${ORDER}; ${SETTLE}`,
-  ...Object.fromEntries(['unique-typed', 'unique-typed-20', 'unique-found-typed', 'sum-typed-array-last', 'sum-typed-value-last'].map((id) => [`spill-cycles-held-2:${id}`, SESSION])),
+  'spill-cycles-held:wait-file': TWO_FILES,
+  'spill-cycles-held:wait-typed-B1-A2-C1-C2': ORDER,
+  'spill-cycles-held:wait-typed-C2-C1-A2-B1': ORDER,
   ...Object.fromEntries(
-    ['sort-typed-B3-C2-A4', 'munit-typed-D11-C14', 'sheets-typed-Sheet2.E5-Sheet2.D7-Q_data.F5-Q_data.D4', 'sheets-typed-Q_data.F5-Q_data.D4-Sheet2.E5-Sheet2.D7', 'wait-typed-B1-A2-C1-C2', 'sum-typed-array-last', 'unique-typed-A4-B2', 'unique-typed-B2-A4'].map((id) => [`spill-cycles-off-held:${id}`, ORDER]),
+    ['sort-typed-B3-C2-A4', 'munit-typed-D11-C14', 'sheets-typed-Sheet2.E5-Sheet2.D7-Q_data.F5-Q_data.D4', 'sheets-typed-Q_data.F5-Q_data.D4-Sheet2.E5-Sheet2.D7', 'sum-typed-array-last', 'unique-typed-A4-B2', 'unique-typed-B2-A4'].map((id) => [`spill-cycles-off-held:${id}`, ORDER]),
   ),
-  ...Object.fromEntries(['munit-file', 'sheets-file-Sheet2-Q_data', 'wait-file', 'wait-typed-C2-C1-A2-B1', 'unique-file', 'unique-typed', 'unique-found-typed'].map((id) => [`spill-cycles-off-held:${id}`, SPILLS])),
+  ...Object.fromEntries(['wait-file', 'wait-typed-C2-C1-A2-B1', 'unique-file', 'unique-typed', 'unique-found-typed'].map((id) => [`spill-cycles-off-held:${id}`, SPILLS])),
   ...Object.fromEntries(['sum-file', 'sum-typed-value-last'].map((id) => [`spill-cycles-off-held:${id}`, ARRAY_CELL])),
 }
+
+/** Predictions of held-out cases that Excel for Windows answered otherwise: `<set>:<case>` → cell → why; the engine gives Excel's answer since. */
+const RANKED = 'the engine left the cells of a cycle through a spill empty before an array closing such a cycle gave way to one that closes none (x-fuzz-modes-6)'
+const WIN_MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = Object.fromEntries(
+  Object.entries({
+    'munit-file': ['S!D11'],
+    'sheets-file-Sheet2-Q_data': ['Sheet2!E5', 'Q data!D4', 'Q data!E4', 'Q data!D5', 'Q data!E5', 'Q data!D6', 'Q data!E6'],
+    'wait-typed-B1-A2-C1-C2': ['S!A2'],
+  }).map(([id, cells]) => [`spill-cycles-off-held:${id}`, Object.fromEntries(cells.map((k) => [k, RANKED]))]),
+)
 
 for (const set of SETS) {
   const built = ((await import(`../bench/coverage/workbook/${set.name}.ts`)) as { buildWorkbookCases: () => WorkbookCase[] }).buildWorkbookCases()
@@ -69,9 +76,7 @@ for (const set of SETS) {
     for (const c of set.cases) {
       const whole = WIN_CASES[`${set.name}:${c.id}`]
       if (whole) {
-        // the engine gives up on such a case only after its iterations run out, some ten seconds: not run in the suite
-        if (whole.endsWith(SETTLE)) it.skip(`${c.id}: ${c.about} (${whole})`)
-        else it(`${c.id}: ${c.about} (known)`, () => expect(differsOrThrows(c, set.answers[c.id].reads), whole).toBe(true))
+        it(`${c.id}: ${c.about} (known)`, () => expect(differsOrThrows(c, set.answers[c.id].reads), whole).toBe(true))
         continue
       }
       it(`${c.id}: ${c.about}`, () => {
@@ -85,10 +90,10 @@ for (const set of SETS) {
       })
     }
     // the predictions of a held-out case Excel for Windows alone runs (`cycle`; the Mac's test checks the others), written
-    // before Excel ran: the engine gives them all, its misses pinned in WIN_BOOK
+    // before Excel ran: the engine gives them all, its misses pinned in WIN_BOOK and WIN_MISSED
     for (const c of set.cases.filter((x) => x.cycle && x.predicted && !WIN_CASES[`${set.name}:${x.id}`]))
       it(`${c.id}: the answers predicted before Excel ran`, () => {
-        expect(predictionCheck(c, set.answers[c.id].reads, {})).toEqual([[], []])
+        expect(predictionCheck(c, set.answers[c.id].reads, WIN_MISSED[`${set.name}:${c.id}`] ?? {})).toEqual([[], []])
       })
   })
 }
@@ -98,5 +103,6 @@ describe('known differences from Excel for Windows: book-level features', () => 
     const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
     expect(Object.keys(WIN_BOOK).filter((k) => !keys.has(k))).toEqual([])
     expect(Object.keys(WIN_CASES).filter((k) => !keys.has(k))).toEqual([])
+    expect(Object.keys(WIN_MISSED).filter((k) => !keys.has(k))).toEqual([])
   })
 })

@@ -12,7 +12,8 @@ import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { Column } from './column.js'
 import { heldAt, unhold } from './held.js'
-import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
+import { blocker, describeAt, endSpill, fixed, release, rivals, spill } from './spill/place.js'
+import { beats } from './spill/rank.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
 import { sheetKey } from './syntax.js'
@@ -107,7 +108,8 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
         if (f.area) { array = true; v = fixed(state, f, x, t) }
         else if (isMany(x)) { array = true; v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t) }
         else {
-          endSpill(state, f, t, false)
+          // in a cycle only an iteration computes a formula: it keeps the cycle, its array's range staying claimed
+          endSpill(state, f, t, state.topo[id] < 0)
           v = shown(rt.scalar(x))
         }
       } catch (e) {
@@ -200,6 +202,8 @@ export function* recompute(state: EngineState, dirty: Set<number>, t: Tracker, p
   if (!before && !spillCycle(state)) return
   for (const id of [...state.spills.on.keys()]) release(state, id, t)
   for (const m of [state.spills.claims, state.spills.wait, state.spills.why, state.spills.by]) m.clear()
+  // as in a new state, no cycle has been iterated yet: the cycles the spills close again are iterated afresh
+  state.iterated = []
   rebuildGraph(state)
   yield* evaluateAll(state, t)
 }
@@ -256,6 +260,9 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
       if (state.input.iteration) cyclesMoved(state, next)
       else for (const f of state.formulas) if (f && (state.topo[f.id] < 0) !== (was[f.id] < 0)) next.add(f.id)
     }
+    // an array that gave way and now wins over the array holding its cells (the graph or the arrays' ranges changed) takes
+    // them; an old-kind array formula's area it never takes
+    for (const [id, by] of sp.by) if (sp.claims.has(by) && state.formulas[id] && !state.formulas[by]?.area && beats(state, id, by)) next.add(id)
     if (!next.size) {
       sp.touched.length = 0
       unhold(state)
@@ -269,7 +276,7 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
 /**
  * Formulas a change of an area's cells concerns: those that read them, arrays waiting for them, arrays spilled
  * over them (a cell typed there stops them). With `step`, only those computed before that step of the round, and none
- * waiting for cells the input still blocks; `acyclic`, none in a cycle or over one.
+ * waiting for cells the input or a spill it gives way to still blocks; `acyclic`, none in a cycle or over one.
  */
 export function concerned(state: EngineState, x: Area, out: Set<number>, step = Infinity, acyclic = false) {
   const sp = state.spills
@@ -281,7 +288,7 @@ export function concerned(state: EngineState, x: Area, out: Set<number>, step = 
     readersOf(state, x, readers)
     readers.forEach(add)
   }
-  for (const [id, a] of sp.wait) if (a.s === x.s && meets(a, x) && (step === Infinity || !blockedByInput(state, id, a))) add(id)
+  for (const [id, a] of sp.wait) if (a.s === x.s && meets(a, x) && (step === Infinity || !(blockedByInput(state, id, a) || blockedBySpill(state, id, a)))) add(id)
   for (const [id, a] of sp.on) if (a.s === x.s && meets(a, x)) add(id)
 }
 
@@ -290,6 +297,9 @@ function blockedByInput(state: EngineState, id: number, a: Area): boolean {
   const f = state.formulas[id]
   return !!f && !!state.spills.occupied.first(a.s, a, f.r, f.c)
 }
+
+/** An array waiting for `a`, shown as #SPILL!, that a spilled array it gives way to still covers: computed again, it would not spill either. */
+const blockedBySpill = (state: EngineState, id: number, a: Area) => state.spills.why.has(id) && !!blocker(state, id, rivals(state, id, a))
 
 /** A formula's steps in room for `n` formulas, at least twice as many as before. */
 function grown(done: Float64Array, n: number): Float64Array {

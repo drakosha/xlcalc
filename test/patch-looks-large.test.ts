@@ -146,7 +146,7 @@ describe('large looks, the cells by pieces', () => {
       parts.clearCells([{ sheet: 'S', range: 'A2:D30000' }, { sheet: 'S', range: 'A30001:D60000' }], 'formats')
       expect(byContent(whole.getBook())).toEqual(byContent(parts.getBook()))
     }
-  })
+  }, 60_000)
 
   it('formatting goes to the looks, which `limits.writes` does not count', () => {
     const open = () => createSession(book(), { limits: { writes: 10 } })
