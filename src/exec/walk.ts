@@ -5,7 +5,7 @@
  * per computation of the LET. A backend (`js.ts` for `eval`, `closures.ts`) only builds the code of each node
  * from what the walk decided, so the two modes cannot part on a decision.
  */
-import { shapes, type NameRef } from '../arrays/shape.js'
+import { shapes, sizeOf, type NameRef, type Size } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
 import { holds } from '../arity.js'
 import { FUNCTIONS } from '../functions.js'
@@ -150,6 +150,8 @@ export interface FormulaInfo {
   nested: boolean
   /** Calls an external function (its missing value is #N/A). */
   external: boolean
+  /** An array formula: the most rows and columns it answers, where the formula tells them (`arrays/shape.ts`). */
+  size?: Size
 }
 
 /** The rows (a column of their numbers) or the columns (a row) of an area. */
@@ -198,6 +200,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const resolve: NameRef = (n, scope) => ctx.name(n.name, n.sheet === undefined ? scope : ctx.sheet(n.sheet))
   const table = (n: Extract<Ast, { k: 'table' }>) => ctx.table?.(n, r) ?? 'REF'
   const shape = shapes(ast, s, resolve, !!ctx.area, table)
+  // an array formula's most rows and columns, for the arrays that meet its spill (`spill/rank.ts`)
+  const size = shape.get(ast) ? sizeOf(ast, shape, table) : undefined
+  if (size) info.size = size
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
   // the code of a use of each LET name, and its value, by slot (a name's formula has its own LET names)
   let uses: T[] = []
