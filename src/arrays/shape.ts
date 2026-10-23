@@ -161,3 +161,49 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
   go(ast)
   return out
 }
+
+/** At most so many rows and columns. */
+export type Size = [number, number]
+
+/**
+ * The most rows and columns an array formula answers (`shape` its nodes' shapes), where it tells them: a reference or a
+ * constant array, an operator over them, SEQUENCE, RANDARRAY and MUNIT with numbers typed in, TRANSPOSE, SORT, SORTBY,
+ * UNIQUE, FILTER, TAKE and DROP by their first argument, another function by the arguments it lifts or passes; else
+ * undefined (`spill/rank.ts`).
+ */
+export function sizeOf(n: Ast, shape: Map<Ast, Shape>, tableRef: TableRef): Size | undefined {
+  // one value is one cell
+  if (!shape.get(n)) return [1, 1]
+  const all = (xs: Ast[]): Size | undefined => {
+    let size: Size | undefined = [1, 1]
+    for (const x of xs) {
+      const z = sizeOf(x, shape, tableRef)
+      size = z && size && [Math.max(size[0], z[0]), Math.max(size[1], z[1])]
+    }
+    return size
+  }
+  switch (n.k) {
+    case 'arr':
+      return [n.rows.length, n.rows[0].length]
+    case 'ref':
+    case 'table': {
+      const x = n.k === 'ref' ? (n.ref.spill ? undefined : n.ref) : tableRef(n)
+      return typeof x === 'object' ? [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1] : undefined
+    }
+    case 'paren':
+    case 'un':
+    case 'pct':
+      return sizeOf(n.a, shape, tableRef)
+    case 'bin':
+      return isRefOp(n.op) ? undefined : all([n.a, n.b])
+    case 'fn': {
+      const a = n.args
+      const num = (k: number) => (!a[k] ? 1 : a[k].k === 'num' ? a[k].v : 0)
+      const x = a[0] && sizeOf(a[0], shape, tableRef)
+      const z: Size | undefined = /^(SEQUENCE|RANDARRAY)$/.test(n.name) ? [num(0), num(1)] : n.name === 'MUNIT' ? [num(0), num(0)] : n.name === 'TRANSPOSE' ? x && [x[1], x[0]] : /^(SORT|SORTBY|UNIQUE|FILTER|TAKE|DROP)$/.test(n.name) ? x : FUNCTIONS[n.name]?.array ? undefined : all(a.filter((_, i) => FUNCTIONS[n.name]?.lazy || FUNCTIONS[n.name]?.mode(i) !== 'whole'))
+      return z && z[0] >= 1 && z[1] >= 1 ? z : undefined
+    }
+  }
+  return undefined
+}
+

@@ -24,21 +24,21 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (20.10.2026, 0.54.2), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (23.10.2026, 0.55.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 310 KB.
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 295 KB (112) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 499 KB (188) |
+| `compute` from `xlcalc` | calculating a workbook | 300 KB (114) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 521 KB (196) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 563 KB (208) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 205 KB (77) |
-| `xlcalc/worker` | `createCalcPool`: worker threads | 33 KB (12), its worker 611 KB (209) |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 592 KB (219) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 218 KB (81) |
+| `xlcalc/worker` | `createCalcPool`: worker threads | 30 KB (11), its worker 639 KB (218) |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
-| `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Find over a host's text, sort order | 51 KB (20) |
-| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 97 KB (37) |
+| `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Find over a host's text, sort order | 50 KB (19) |
+| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 101 KB (37) |
 | `xlcalc/function-text` | what a function does, in a line; Russian in `xlcalc/function-text/ru-RU` | |
-| `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 99 KB (16) |
+| `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 105 KB (16) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
 `xlcalc/xlsx`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text` and `xlcalc/contract` do not load the engine.

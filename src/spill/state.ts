@@ -35,6 +35,9 @@ export interface Spills {
   merges: Map<number, Rect[]>
   /** Of two arrays over one cell, the one with the lower rank spills (made when needed, dropped with the graph). */
   rank?: Map<number, number>
+  /** Formulas that read a cell their array may spill over (`rank.ts`), as found, and the graph's edges turned round; dropped with the graph. */
+  looped?: Map<number, boolean>
+  pred?: number[][]
   /** Steps so far, counted on across rounds: a formula's evaluation, a change of spilled cells. */
   step: number
   /** The step the current round began after: a formula's step in `done` before it is of an earlier round. */
