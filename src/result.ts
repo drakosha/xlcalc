@@ -30,14 +30,10 @@ export function outValue(v: CellValue): CellValue {
 }
 
 /** A value the engine holds as a result gives it: a number to 15 significant digits, an error as `{ error }`, null for none. */
-export function outCell(v: V): CellValue {
-  return outValue(toCellValue(v))
-}
+export const outCell = (v: V): CellValue => outValue(toCellValue(v))
 
 /** A cell's value as a result shows it. */
-export function cellValue(state: EngineState, s: number, r: number, c: number): CellValue {
-  return outCell(valueAt(state, s, r, c))
-}
+export const cellValue = (state: EngineState, s: number, r: number, c: number): CellValue => outCell(valueAt(state, s, r, c))
 
 /** A spilled formula's range and the value of its unstored cells. */
 const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: cornersText(x), spillFill: outCell(x.fills[0].v) } : { spill: cornersText(x) })
