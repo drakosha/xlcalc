@@ -24,16 +24,16 @@ ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlc
 
 ### What to import
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (23.10.2026, 0.55.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 310 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (25.10.2026, 0.56.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 310 KB.
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 300 KB (114) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 521 KB (196) |
+| `compute` from `xlcalc` | calculating a workbook | 301 KB (115) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 525 KB (198) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 592 KB (219) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 218 KB (81) |
-| `xlcalc/worker` | `createCalcPool`: worker threads | 30 KB (11), its worker 639 KB (218) |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 596 KB (221) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 221 KB (82) |
+| `xlcalc/worker` | `createCalcPool`: worker threads | 30 KB (11), its worker 643 KB (219) |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
 | `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Find over a host's text, sort order | 50 KB (19) |
 | `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 101 KB (37) |

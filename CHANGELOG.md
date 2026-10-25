@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.56.0 (2026-10-25)
+
+Speed: reading xlsx, a full calculation, edits of lookup keys and summed amounts, outline and layout commands, merged areas, and deletes, pastes and fills on filtered sheets. Values, texts, workbooks, issues and hashes are the same on every input; the synthetic workbook's values hash and `inputHash` are as in 0.55.0.
+
+Faster:
+
+- `readXlsx` no longer walks every cell of a sheet once per table, merged area, data-validation rule, large array formula or formatted empty cell: a workbook of ten tables over 102,000 cells reads in 110 ms instead of 1.5 s, a sheet of 20,000 merges or 4,000 validation rules in tens of milliseconds, and a thin shared-formula group in time linear in its copies. The synthetic 34,000-row workbook reads 15 % faster.
+- `compute` takes the workbook's cells as they are instead of copying each sheet (`createInlineCalc`, whose host runs between the steps, still copies), lists and sorts each sheet's cells once, reads addresses without a regular expression, and hashes with Node's SHA-256 where there is one, with the same digests (a browser and a Node without `node:crypto` keep the plain-JS hasher, and no browser bundle holds a Node module). A cold calculation of the synthetic 34,000-row workbook takes 0.83 s instead of 1.48 s.
+- A session finds the formulas a one-cell edit concerns in a bucket of 64 rows, keeps parsed criteria by the value itself, and writes General text and rounds a number without its decimal text where it is already short or whole: editing a lookup key and an amount summed by SUMIFS are faster.
+- Outline commands (group, ungroup, show and hide detail, the level buttons) and layout edits patch each axis as one sorted list: 8,000 outline entries in 11 ms instead of 4.7 s, 5,000 wrapped texts typed in 45 ms instead of 2.8 s. AutoFit and typing into a wrapped cell no longer walk every cell; `applyChanges` and `setLayout` skip sheets whose parts they were given unchanged.
+- The looks of cells (`getCell`, `getCells`, the viewport, find, a result's changes) and typing read the parsed merged areas the session keeps, instead of parsing every merge of the sheet per call or per cell.
+- `deleteRows` and a paste over a filter's visible rows move the cells once instead of once per run of visible rows (a sheet with tables keeps the run-by-run delete): 800 runs in 0.3 s instead of 12 s. A paste or fill reads each copied formula once for all its copies, finds the lines of each tile by halving, and joins pasted validation rules in linear time; a merge across reads its range by row once.
+
 ## 0.55.0 (2026-10-23)
 
 Corrections across the engine, sessions, structure operations, xlsx and the pool, with the values that changed checked in Excel. The synthetic workbook's values hash is as in 0.54.2; the `inputHash` of a workbook whose sheets are not in name order changes, since the order of the sheets now counts.
