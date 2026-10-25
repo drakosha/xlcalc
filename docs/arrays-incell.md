@@ -90,4 +90,4 @@ An array inside a formula exists only while the formula runs, so arrays add noth
 
 ## Checked against Excel
 
-Every test case set of the library is calculated in Excel as dynamic array formulas, so the rules above are Excel 365's. Held-out sets, each predicted before Excel calculated it, settled `SORTBY` and `LOOKUP`; one known difference remains: a `LOOKUP` placed among the cells it may read returns `#CYCLE!`, where Excel calculates it.
+Every test case set of the library is calculated in Excel as dynamic array formulas, so the rules above are Excel 365's. Held-out sets, each predicted before Excel calculated it, settled `SORTBY` and `LOOKUP`, and the size of an array (Excel for Mac 16.114, arrays of up to 2 million values; one of 2^31 values was not run, as it could exhaust Excel's resources); one known difference remains: a `LOOKUP` placed among the cells it may read returns `#CYCLE!`, where Excel calculates it.
