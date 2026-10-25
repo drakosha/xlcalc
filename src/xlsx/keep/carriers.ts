@@ -16,7 +16,7 @@ import type { Rect } from '../../structure/area.js'
 import type { Ast } from '../../syntax/ast.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
-import { canonical, quoteSheet, sheetKey, walk } from '../../syntax/print.js'
+import { canonical, mapAst, quoteSheet, sheetKey, walk } from '../../syntax/print.js'
 import { attr, attributes, element, elements } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { parseFormula } from '../read/formulas.js'
@@ -111,12 +111,17 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
     if (ref === null) out.unparsed[sheet].push(what)
     else out.refs.push({ name: nextName(), ref, kind: 'place', what })
   }
-  /** A file's formula of references (a chart's series, a name's): its carrier, none when it holds no reference of the book's sheets. */
+  /**
+   * A file's formula of references (a chart's series, a name's, a pivot cache's source): its carrier, its references
+   * absolute (the engine moves a name's relative reference with no row or column); none when it holds no reference of
+   * the book's sheets.
+   */
   const reference = (text: string, what: string) => {
     const f = parseFormula(text, { union: true })
     if (!f.ast) return void out.anywhere.push(what)
     if (!refersToBook(f.ast, known)) return
-    out.refs.push({ name: nextName(), ref: canonical(f.ast), kind: 'ref', what })
+    const absolute = mapAst(f.ast, (x) => (x.k === 'ref' || x.k === 'ref3d' ? { ...x, ref: { ...x.ref, text: absText(x.ref) } } : undefined))
+    out.refs.push({ name: nextName(), ref: canonical(absolute), kind: 'ref', what })
   }
   const types = new ContentTypes(src.types)
   for (const [i, s] of src.sheets.entries()) {

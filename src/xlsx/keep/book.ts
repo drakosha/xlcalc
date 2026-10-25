@@ -39,6 +39,7 @@ import { attrsOf, childrenOf, DOC_REL, Rels, rootOf, setAttrs, type ContentTypes
 const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 const VML = 'application/vnd.openxmlformats-officedocument.vmlDrawing'
 const STRICT = 'http://purl.oclc.org/ooxml/spreadsheetml/main'
+const STRICT_FILE = 'the file is a Strict Open XML workbook, which writeKept does not write over'
 const REL = (kind: string) => `${DOC_REL}/${kind}`
 /** The children of a workbook the schema puts before its names, and before its calculation settings. */
 const BEFORE_NAMES = ['fileVersion', 'fileSharing', 'workbookPr', 'workbookProtection', 'bookViews', 'sheets', 'functionGroups', 'externalReferences']
@@ -157,10 +158,16 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   const carried = new Set(carrierNames(carriers).map((n) => caseKey(n.name)))
   const book: BookInput = given.names ? { ...given, names: given.names.filter((n) => n.scope !== undefined || !carried.has(caseKey(n.name))) } : given
   const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src))
-  k.write()
-  if (!k.changed) return { data: bytes, issues: [] }
   const root = rootOf(src.wb)!
-  if (src.wb.slice(root.start, root.open).includes(STRICT)) throw new KeptRefusal('the file is a Strict Open XML workbook, which writeKept does not write over')
+  const strict = src.wb.slice(root.start, root.open).includes(STRICT)
+  try {
+    k.write()
+  } catch (e) {
+    // a Strict file's sheets are in other namespaces than the model's elements
+    throw strict ? new KeptRefusal(STRICT_FILE) : e
+  }
+  if (!k.changed) return { data: bytes, issues: [] }
+  if (strict) throw new KeptRefusal(STRICT_FILE)
   // a sheet the reader read under another name than the file's: the file's formulas name it as the file does
   const repaired = src.sheets.findIndex((s, i) => src.decls[s.decl].name !== read.book.sheets[i].name)
   if (repaired >= 0) throw new KeptRefusal(`the file names a sheet '${src.decls[src.sheets[repaired].decl].name}', which Excel does not take (it was read as '${read.book.sheets[repaired].name}')`)
@@ -242,8 +249,8 @@ class Kept {
       const d = src.decls[ss.decl]
       this.sheetRels[j] = attr(d.attrs, 'id') ?? ''
       // the sheet's index in both writes is the file's: what a writer numbers by it (rules' ids) compares
-      const p0 = sheetPieces(s0, k, { ...this.context(book0, this.w0, k, this.cached?.[k], new Issues()), active: this.w0.active === k })
-      const p1 = sheetPieces(s1, k, { ...this.context(book, this.w1, j, this.cells?.[j], issues), active: this.w1.active === j })
+      const p0 = sheetPieces(s0, k, this.context(book0, this.w0, k, this.cached?.[k], new Issues()))
+      const p1 = sheetPieces(s1, k, this.context(book, this.w1, j, this.cells?.[j], issues))
       const rels = new Rels(ss.relsXml)
       const bound = { hyperlinks: this.hyperlinks(ss, p0, p1, rels), legacyDrawing: this.notes(ss, p0, p1, rels), tableParts: this.tables(ss, k, j, rels) }
       const out = spliceSheet({ xml: ss.xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k] })

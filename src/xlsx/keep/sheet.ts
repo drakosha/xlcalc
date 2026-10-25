@@ -13,6 +13,7 @@ import { keyOf } from '../../style-table.js'
 import type { RowWritten, SheetPieces } from '../write/sheet.js'
 import { MAIN } from '../write/xml.js'
 import { attributes } from '../xml/scan.js'
+import { KeptRefusal } from './refusals.js'
 import type { KeptStyles } from './styles.js'
 import { attrsOf, childrenOf, closing, DOC_REL, opening, rootOf, setAttrs, split, tagEnd, type Placed } from './xml.js'
 
@@ -449,9 +450,9 @@ function rootTag(tag: string, qname: string): string {
   const a = attributes(tag.slice(qname.length + 1))
   const add: Record<string, string> = {}
   if (a.xmlns === undefined) add.xmlns = MAIN
-  else if (a.xmlns !== MAIN) throw new Error(`xlsx/keep: the worksheet's default namespace is ${a.xmlns}, not SpreadsheetML's`)
+  else if (a.xmlns !== MAIN) throw new KeptRefusal(`the worksheet's default namespace is ${a.xmlns}, not SpreadsheetML's`)
   if (a['xmlns:r'] === undefined) add['xmlns:r'] = DOC_REL
-  else if (a['xmlns:r'] !== DOC_REL) throw new Error(`xlsx/keep: the worksheet's prefix r is ${a['xmlns:r']}, not the namespace of relationships`)
+  else if (a['xmlns:r'] !== DOC_REL) throw new KeptRefusal(`the worksheet's prefix r is ${a['xmlns:r']}, not the namespace of relationships`)
   return Object.keys(add).length ? setAttrs(tag, add) : tag
 }
 
