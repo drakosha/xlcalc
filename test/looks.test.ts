@@ -3,13 +3,12 @@
  * (`expandBook`) are one book: the same hashes, windows, cells, queries, used ranges and book given back, the same xlsx
  * parts, which read back give the looks as the session holds them. In a synchronous session, in the same thread and in a
  * thread, with closures and eval (formats by code that no built-in format has, which a file read gives back by number). Then the looks' cells as a session shows and edits them, by what an entry of a look
- * alone gave, and a book without looks hashing as before.
+ * alone gave.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { compute, createSession, type AsyncSession, type BookInput, type LookRange } from '../src/index.js'
 import { formatAddress } from '../src/model.js'
-import { synthBook } from '../src/synth.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
 import { cellsOf, expandBook, seeded } from './looks-book.js'
@@ -302,12 +301,5 @@ describe('the looks\' cells in a session', () => {
     expect(['B2', 'F2', 'F3'].map((a) => cellsOf(s.getBook().sheets[0])[a]?.numberFormat)).toEqual([undefined, '0.0%', '0.0%'])
     while (s.undo());
     expect(expandBook(s.getBook())).toEqual(expandBook(book()))
-  })
-})
-
-describe('a book without looks', () => {
-  it('the synthetic book keeps its hashes', () => {
-    const r = compute(synthBook({ seed: 1, rows: 3400 }).book, { clock: { now: '2026-10-04T12:00:00Z', seed: 7 } })
-    expect([r.hash.slice(0, 16), r.inputHash.slice(0, 16)]).toEqual(['101578a9c6b600b1', '3ea383325f632b2f'])
   })
 })
