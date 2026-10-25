@@ -144,8 +144,8 @@ describe.each(EXECUTIONS)('merged areas read once per session state (speed-u109,
       const s = await open(merged(20_000), { execution, clock, display: false, undo: { depth: 0 } })
       const t = performance.now()
       await s.fillCellText('S', 'D1:D5000', '123456789012345')
-      // every merge parsed for each cell: about 9 s; read once, about 0.3 s
-      expect(performance.now() - t).toBeLessThan(3000)
+      // every merge parsed for each cell: about 10 s; read once, about 0.25 s alone and 3 s under the load of a full run
+      expect(performance.now() - t).toBeLessThan(6000)
       expect((await s.getLayout()).sheets[0].columns?.D?.width).toBeGreaterThan(8.43)
       await s.close()
     })
