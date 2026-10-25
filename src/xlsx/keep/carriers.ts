@@ -47,13 +47,20 @@ export interface Edit {
 /** What writing an item's carriers back gives: the edits, or why the file cannot take the change. */
 export type Fix = { edits: Edit[] } | { refuse: string }
 
+/** The size of a sheet's rows and columns as the book written has them, in EMUs (a drawing's offsets count in them). */
+export interface Geometry {
+  row(r: number): number
+  col(c: number): number
+}
+
 /** A part's references: its carriers, and the edits that write what they hold now (by carrier) back to the file. */
 export interface Item {
   what: string
   /** The sheet of the source the part lies on: deleted with it, its references go too. */
   on?: number
   carriers: Carrier[]
-  fix(now: string[]): Fix
+  /** The edits; `at` gives the lines' sizes of the sheet the part lies on. */
+  fix(now: string[], at: Geometry): Fix
 }
 
 export interface Carriers {
@@ -250,6 +257,9 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
    * deleted, at the probe's, the lines below and beside it. The rectangle tells a range moved over the drawing, refused.
    */
   function anchors(xml: string, i: number, part: string) {
+    const root = rootOf(xml)
+    /** The anchors of the drawing itself, not in alternate content (`mc:AlternateContent`): those it can lose. */
+    const children = new Set(root ? childrenOf(xml, root).map((c) => c.start) : [])
     for (const local of ['twoCellAnchor', 'oneCellAnchor'] as const)
       for (const e of within(xml, 0, xml.length, local)) {
         const editAs = local === 'oneCellAnchor' ? 'oneCell' : (attributes(e.attrs).editAs ?? 'twoCell')
@@ -282,8 +292,11 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
           what,
           on: i,
           carriers: [place(i, rect), place(i, probe), row(rect.r1), col(rect.c1), ...(sized ? [row(rect.r2), col(rect.c2)] : [])],
-          fix([rectNow, probeNow, ...linesNow]) {
+          fix([rectNow, probeNow, ...linesNow], at) {
             const [r, p] = [rectsNow(rectNow)?.[0], rectsNow(probeNow)?.[0]]
+            // a drawing that sizes with its cells goes with all of them deleted, as Excel deletes it (the set keep/struct);
+            // the parts only it points at go with it (`writeKept`)
+            if (sized && !r) return children.has(e.start) ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted, in alternate content, which writeKept does not delete` }
             const line = (k: number, axis: 'r' | 'c') => {
               const x = linesNow[k] === undefined ? undefined : rectsNow(linesNow[k])?.[0]
               return x ? (axis === 'r' ? x.r1 : x.c1) : undefined
@@ -307,8 +320,18 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
               if (r2 === undefined) set(to.rowOff, 0)
               if (c2 === undefined) set(to.colOff, 0)
             } else if (to) {
-              set(to.row, top + (to.row.value - from.row.value))
-              set(to.col, left + (to.col.value - from.col.value))
+              // its size kept: a corner that lost its offset takes it off the other corner too
+              const keep = (lo: number, line: number, off: number, was: number, size: (i: number) => number): [number, number] => {
+                let [n, o] = [lo + line, off - was]
+                while (o < 0 && n > lo) o += size(--n)
+                return [n, Math.max(0, o)]
+              }
+              const [row, rowOff] = r1 === undefined ? keep(top, to.row.value - from.row.value, to.rowOff.value, from.rowOff.value, at.row) : [top + (to.row.value - from.row.value), to.rowOff.value]
+              const [col, colOff] = c1 === undefined ? keep(left, to.col.value - from.col.value, to.colOff.value, from.colOff.value, at.col) : [left + (to.col.value - from.col.value), to.colOff.value]
+              set(to.row, row)
+              set(to.col, col)
+              if (rowOff !== to.rowOff.value) set(to.rowOff, rowOff)
+              if (colOff !== to.colOff.value) set(to.colOff, colOff)
             }
             return { edits }
           },
@@ -356,8 +379,8 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
           fix([now]) {
             const area = areasOf(now)?.[0]
             if (!area) return { refuse: `${what} is no reference after the change` }
-            // lost, its rows or its sheet deleted: #REF!
-            if ('lost' in area) return { edits: [{ part, start: ref[0], end: ref[1], text: '#REF!' }] }
+            // its sheet deleted, Excel keeps the source as it was (the set keep/struct); its cells deleted is not measured
+            if ('lost' in area) return area.sheet === undefined ? { edits: [] } : { refuse: `${what} lies in cells the change deleted` }
             return { edits: [{ part, start: ref[0], end: ref[1], text: plainArea(area.rect) }, { part, start: sheet[0], end: sheet[1], text: escapeAttr(area.sheet) }] }
           },
         })

@@ -11,13 +11,14 @@
  * has Excel do the same operation on it and records what the parts it saved refer to (`test/excel/keep/struct.json`).
  * Test: `test/xlsx-keep-excel.test.ts`.
  */
+import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { createSession } from '../../src/index.js'
 import { openKept, writeKept } from '../../src/xlsx-keep.js'
-import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
+import { dialogText, ensureExcel, excelVersion, runSavingScript, runWatched } from './excel.js'
 import { baseFile, EDITS, MADE, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
 import { saveThroughExcel } from './xlsx/excel.js'
 import { partsHash } from './xlsx/sent.js'
@@ -148,6 +149,35 @@ export async function structWritten(): Promise<Record<string, { refs: Record<str
   return out
 }
 
+/** Excel's warning that a formula refers to cells it lost, which deleting a chart's data shows once its book is saved. */
+const LOST_REFERENCES = /problem with one or more formula references/i
+
+/**
+ * A made file through `excel-keep-struct.applescript`: its answer and the file it saved. Excel's warning of lost
+ * references is answered OK and its text goes with the answer; any other window stops the run.
+ */
+async function structThroughExcel(id: string, data: Uint8Array, args: string[]): Promise<{ out: string; saved: Uint8Array }> {
+  const r = await runWatched<{ out: string; saved: Uint8Array }>({
+    script: join(HERE, 'excel-keep-struct.applescript'),
+    label: id,
+    folder: 'fkeep',
+    book: (file) => writeFileSync(file, data),
+    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', ...args],
+    timeout: 180_000,
+    poll: 1000,
+    fatal: false,
+    repair: async () => {
+      throw new Error(`${id}: Excel refused the made file`)
+    },
+    done: (out, dir) => ({ out: out.trim(), saved: new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))) }),
+  })
+  const shown = dialogText()
+  if (!shown) return r
+  if (!LOST_REFERENCES.test(shown)) throw new Error(`${id}: Excel window after the case: ${shown}`)
+  execFileSync('osascript', ['-e', 'tell application "System Events" to tell process "Microsoft Excel"\nrepeat with w in windows\ntry\nif subrole of w is "AXDialog" then\nrepeat with b in (buttons of w)\nif name of b is "OK" then\nclick b\nreturn\nend if\nend repeat\nend if\nend try\nend repeat\nend tell'])
+  return { ...r, out: `${r.out}; Excel warned: ${shown.replace(/^AXDialog «|»;.*$/g, '')}` }
+}
+
 /** The operations of the structure in Excel over the made files: what the parts Excel saved refer to. */
 async function struct(): Promise<void> {
   const file = join(DATA, 'struct.json')
@@ -160,10 +190,9 @@ async function struct(): Promise<void> {
     const data = new Uint8Array(readFileSync(join(DATA, 'made', `${c.made}.xlsx`)))
     const sent = createHash('sha256').update(JSON.stringify(c.excel)).update(await partsHash(data)).digest('hex')
     if (run.cases[c.id]?.sent === sent) continue
-    const r = await runSavingScript(`struct-${c.id}`, join(HERE, 'excel-keep-struct.applescript'), data, c.excel)
-    if ('rejected' in r) throw new Error(`${c.id}: Excel refused the made file: ${r.rejected}`)
+    const r = await structThroughExcel(c.id, data, c.excel)
     writeFileSync(join(DATA, 'struct', `${c.id}.xlsx`), r.saved)
-    run.cases[c.id] = { sent, out: r.out.trim(), refs: await refsOf(r.saved) }
+    run.cases[c.id] = { sent, out: r.out, refs: await refsOf(r.saved) }
     console.log(`${c.id}: ${r.out.trim()} ${JSON.stringify(run.cases[c.id].refs)}`)
     run.meta = { version: excelVersion(), seconds: secondsSince(t0), date: new Date().toISOString().slice(0, 10) }
     writeAnswers(file, run)

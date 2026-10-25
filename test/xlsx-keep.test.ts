@@ -221,11 +221,16 @@ describe('writeKept moves the references of the parts the model does not have', 
     // rows inserted inside both: the chart grows, the picture keeps its size
     expect(anchors(await moved((s) => s.editStructure({ op: 'insertRows', sheet: 'Other', row: 3, count: 2 })))).toEqual(['from 7+1000 0+2000', 'to 12+1000 7+2000', 'from 7+1000 11+2000', 'to 9+1000 15+2000'])
     expect(anchors(await moved((s) => s.editStructure({ op: 'insertRows', sheet: 'Other', row: 12 })))).toEqual([...was.slice(0, 3), 'to 9+1000 13+2000'])
-    // the chart's last row deleted: its bottom where that row was; the picture's rows all deleted: it moves up to where they were
+    // the chart's last row deleted: its bottom where that row was; the picture's rows all deleted: it moves up to where
+    // they were, its height kept (its top's offset gone, its bottom's goes too: four rows of the default height)
     expect(anchors(await moved((s) => s.editStructure({ op: 'deleteRows', sheet: 'Other', row: 6 })))).toEqual(['from 7+1000 0+2000', 'to 12+1000 5+0', 'from 7+1000 8+2000', 'to 9+1000 12+2000'])
-    expect(anchors(await moved((s) => s.editStructure({ op: 'deleteRows', sheet: 'Other', row: 8, count: 10 })))).toEqual([...was.slice(0, 2), 'from 7+1000 7+0', 'to 9+1000 11+2000'])
-    // all the chart's rows deleted: it shrinks to nothing where they were
-    expect(anchors(await moved((s) => s.editStructure({ op: 'deleteRows', sheet: 'Other', row: 1, count: 6 })))).toEqual(['from 7+1000 0+0', 'to 12+1000 0+0', 'from 7+1000 3+2000', 'to 9+1000 7+2000'])
+    expect(anchors(await moved((s) => s.editStructure({ op: 'deleteRows', sheet: 'Other', row: 8, count: 10 })))).toEqual([...was.slice(0, 2), 'from 7+1000 7+0', 'to 9+1000 11+0'])
+    // all the chart's rows deleted: Excel deletes it, its chart part with it
+    const gone = (await moved((s) => s.editStructure({ op: 'deleteRows', sheet: 'Other', row: 1, count: 6 }))) as Map<string, string>
+    expect(anchors(gone)).toEqual(['from 7+1000 3+2000', 'to 9+1000 7+2000'])
+    expect([...gone.keys()].filter((p) => /chart/.test(p))).toEqual([])
+    expect(gone.get('xl/drawings/_rels/drawing1.xml.rels')).not.toContain('chart')
+    expect(gone.get('[Content_Types].xml')).not.toContain('chart1')
     // a fixed drawing stays where it is
     expect(anchors(await moved((s) => s.editStructure({ op: 'insertRows', sheet: 'Other', row: 1 }), { picture: { sheet: 1, anchor: [9, 7, 13, 9], editAs: 'absolute' } }))).toEqual(['from 7+1000 1+2000', 'to 12+1000 6+2000', ...was.slice(2)])
   })
@@ -235,6 +240,11 @@ describe('writeKept moves the references of the parts the model does not have', 
     const parts = (await moved((s) => s.editStructure({ op: 'deleteSheet', sheet: 'Other' }))) as Map<string, string>
     expect([...parts.keys()].filter((p) => /drawing|chart|media/.test(p))).toEqual([])
     expect(parts.get('[Content_Types].xml')).not.toMatch(/drawing1|chart1/)
+    // a drawing that loses its only anchor goes, with its sheet's <drawing>
+    const alone = (await moved((s) => s.editStructure({ op: 'deleteRows', sheet: 'Other', row: 1, count: 6 }), { picture: undefined })) as Map<string, string>
+    expect([...alone.keys()].filter((p) => /drawing|chart/.test(p))).toEqual([])
+    expect(alone.get('xl/worksheets/sheet2.xml')).not.toContain('<drawing')
+    expect(alone.get('xl/worksheets/_rels/sheet2.xml.rels')).not.toContain('drawing')
   })
 
   it('the print area, page breaks, a pivot table and its source by cells and by a table renamed', async () => {
@@ -249,6 +259,9 @@ describe('writeKept moves the references of the parts the model does not have', 
     const pivots = (parts: Map<string, string> | string) => (typeof parts === 'string' ? parts : [/<location ref="([^"]*)"/.exec(parts.get('xl/pivotTables/pivotTable1.xml')!)![1], /<worksheetSource [^>]*\/>/.exec(parts.get('xl/pivotCache/pivotCacheDefinition1.xml')!)![0]])
     expect(pivots(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 1 })))).toEqual(['D4:E6', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
     expect(pivots(await plain(pivot, (s) => { s.editStructure({ op: 'insertRows', sheet: 'Data', row: 3 }); s.editStructure({ op: 'renameSheet', sheet: 'Data', name: 'Raw' }) }))).toEqual(['D3:E5', '<worksheetSource ref="A1:B5" sheet="Raw"/>'])
+    // the source's sheet deleted: the cache keeps its source, as Excel keeps it; its cells deleted: refused
+    expect(pivots(await plain(pivot, (s) => s.editStructure({ op: 'deleteSheet', sheet: 'Data' })))).toEqual(['D3:E5', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
+    expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 1, count: 4 }))).toBe('xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml lies in cells the change deleted')
     expect(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 4 }))).toBe("xlsx/keep: the pivot table xl/pivotTables/pivotTable1.xml on 'Plain' would be cut by the change, which Excel refuses")
     const table: BookInput = { sheets: [{ name: 'Data', cells: { A1: { value: 'k' }, B1: { value: 'v' }, A2: { value: 'x' }, B2: { value: 1 } }, tables: [{ name: 'Sales', range: 'A1:B2', columns: [{ name: 'k' }, { name: 'v' }] }] }, { name: 'Other', cells: {} }] }
     const data = await withParts(table, { pivot: { sheet: 1, location: 'A3:B5', source: { name: 'Sales' } } })

@@ -12,7 +12,10 @@ import { keyOf } from '../../style-table.js'
 import { quoteSheet, sheetKey } from '../../syntax/print.js'
 import { plain } from '../../syntax/links.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { compared, sheetOfCarrier, type Carriers, type Edit } from './carriers.js'
+import { columnPoints, DEFAULT_ROW_HEIGHT } from '../../column-width.js'
+import { entryAt, lines } from '../../layout/spans.js'
+import { attributes } from '../xml/scan.js'
+import { compared, sheetOfCarrier, type Carriers, type Edit, type Geometry } from './carriers.js'
 import type { Source } from './source.js'
 
 /** `writeKept`'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells. */
@@ -38,6 +41,9 @@ export interface Identity {
 const DELETABLE = new Set(['table', 'comments', 'vmlDrawing', 'printerSettings', 'hyperlink', 'threadedComment', 'drawing'])
 
 const OPEN_KEPT = 'open the file with openKept and keep the hidden names it adds'
+
+/** EMUs in a point. */
+const EMU = 12_700
 
 export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Carriers): Identity {
   const names = new Map((book1.names ?? []).filter((n) => n.scope === undefined).map((n) => [caseKey(n.name), n]))
@@ -69,6 +75,24 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       if (own) throw new KeptRefusal(`the sheet '${was}' was deleted, and it has a part the workbook does not hold (${own.kind} ${own.target})`)
     }
   }
+  /** A sheet's lines in EMUs as the book written has them: a row's height (its sheet's default where it has none), a column's width; hidden ones none. */
+  const geometry = (k: number | undefined): Geometry => {
+    const s = k === undefined ? undefined : book1.sheets[out.target.get(k)!]
+    const rows = lines(s?.rows, 'r')
+    const cols = lines(s?.columns, 'c')
+    const fp = k === undefined ? {} : attributes(/<(?:[\w.-]+:)?sheetFormatPr\b([^>]*)>/.exec(src.sheets[k].xml)?.[1] ?? '')
+    const height = Number(fp.defaultRowHeight) || DEFAULT_ROW_HEIGHT
+    return {
+      row: (r) => {
+        const e = entryAt(rows, r)
+        return e?.hidden ? 0 : (e?.height ?? height) * EMU
+      },
+      col: (c) => {
+        const e = entryAt(cols, c)
+        return e?.hidden ? 0 : columnPoints(e?.width) * EMU
+      },
+    }
+  }
   for (const item of c.items) {
     // a part on a sheet deleted goes with it
     if (item.on !== undefined && !out.target.has(item.on)) continue
@@ -78,7 +102,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       return n.ref
     })
     if (item.carriers.every((x, k) => compared(now[k], x.kind) === compared(x.ref, x.kind))) continue
-    const fix = item.fix(now)
+    const fix = item.fix(now, geometry(item.on))
     if ('refuse' in fix) throw new KeptRefusal(fix.refuse)
     out.edits.push(...fix.edits)
   }

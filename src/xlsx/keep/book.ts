@@ -12,7 +12,7 @@ import { object, onlyOptions } from '../../input/basic.js'
 import { sheetKey } from '../../syntax/print.js'
 import { Issues } from '../issues.js'
 import { checkLimits, fileBytes, readXlsx } from '../read/book.js'
-import { partText, relsOf } from '../read/package.js'
+import { partText, relsOf, type Rel } from '../read/package.js'
 import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
 import type { XlsxSnapshot, XlsxWritten } from '../types.js'
@@ -88,10 +88,10 @@ function relative(from: string, to: string): string {
 
 /** What the file gives every sheet: its styles, the marks of its cell metadata, the first free block of VML shape ids, the text and largest id of its tables. */
 interface Setup {
-  /** The parts each part points at, by its name in lower case: the file's relationships, internal ones. */
+  /** The parts each part points at, by its name in lower case: the file's relationships, internal ones (less those `writeKept` removes). */
   rels: Map<string, string[]>
-  /** The text of the parts the moved references are written back to, by name (the sheets and the workbook apart). */
-  texts: Map<string, string>
+  /** The parts the moved references are written back to, by name (the sheets and the workbook apart): their text and relationships. */
+  texts: Map<string, { text: string; rels: Rel[]; relsXml: string | undefined }>
   styles: KeptStyles
   meta: MetaPlan
   /** The file's metadata and rich value parts, by relationship kind: their text. */
@@ -127,8 +127,9 @@ async function setup(src: Source, edits: Edit[]): Promise<Setup> {
     if (m) rels.set(`${m[1]}${m[2]}`.toLowerCase(), (await relsOf(src.archive, `${m[1]}${m[2]}`)).filter((r) => !r.external).map((r) => r.target.toLowerCase()))
   }
   const own = new Set([src.wbPath, ...src.sheets.map((s) => s.part)].map((p) => p.toLowerCase()))
-  const texts = new Map<string, string>()
-  for (const part of new Set(edits.map((e) => e.part))) if (!own.has(part.toLowerCase())) texts.set(part, (await src.archive.text(part))!)
+  const texts: Setup['texts'] = new Map()
+  for (const part of new Set(edits.map((e) => e.part)))
+    if (!own.has(part.toLowerCase())) texts.set(part, { text: (await src.archive.text(part))!, rels: await relsOf(src.archive, part), relsXml: await src.archive.text(relsPath(part)) })
   return {
     rels,
     texts,
@@ -193,6 +194,8 @@ class Kept {
   private readonly sheetRels: string[] = []
   private block: number
   private tableId: number
+  /** The file's parts removed, by name in lower case. */
+  private readonly gone = new Set<string>()
 
   constructor(
     readonly src: Source,
@@ -240,6 +243,7 @@ class Kept {
 
   write(): void {
     const { src, book0, book } = this
+    const emptied = this.others()
     for (const [j, s1] of book.sheets.entries()) {
       const k = this.id.source[j]
       const issues = new KeptIssues()
@@ -256,7 +260,15 @@ class Kept {
       const rels = new Rels(ss.relsXml)
       const bound = { hyperlinks: this.hyperlinks(ss, p0, p1, rels), legacyDrawing: this.notes(ss, p0, p1, rels), tableParts: this.tables(ss, k, j, rels) }
       // the references of the sheet's own parts (an AutoFilter, page breaks, sparklines) written back first
-      const xml = this.edited(ss.part, ss.xml)
+      let xml = this.edited(ss.part, ss.xml)
+      const drawing = ss.rels.find((r) => r.kind === 'drawing' && !r.external && emptied.has(r.target.toLowerCase()))
+      if (drawing) {
+        // a drawing left without anchors goes, with the sheet's `<drawing>`
+        const el = childrenOf(xml, rootOf(xml)!).find((c) => c.local === 'drawing')
+        if (el) xml = xml.slice(0, el.start) + xml.slice(el.end)
+        rels.remove(drawing.id)
+        this.unlink(ss.part, drawing.target)
+      }
       const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k] })
       this.changed ||= out.changed || xml !== ss.xml
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
@@ -264,16 +276,68 @@ class Kept {
       if (rels.changed) this.parts.set(relsPath(ss.part), rels.xml())
       adopt(issues, this.issues, out.cells, out.written)
     }
-    // the references moved in the parts the model does not have: charts, drawings, pivot tables and caches
-    for (const [part, text] of this.setup.texts) {
+    // the sheets the book no longer has, with the parts of their own
+    for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
+    this.workbook()
+  }
+
+  /**
+   * The parts the model does not have with their moved references written back: charts, drawings, pivot tables and
+   * caches. A drawing's relationships its anchors no longer use go, with the charts and pictures only they point at, as
+   * Excel deletes a drawing with its cells; gives the drawings left without anchors, which go with their sheets'
+   * `<drawing>`.
+   */
+  private others(): Set<string> {
+    const emptied = new Set<string>()
+    const drawings: [string, string][] = []
+    for (const [part, { text }] of this.setup.texts) {
       const next = this.edited(part, text)
       if (next === text) continue
       this.changed = true
       this.parts.set(part, next)
+      if (rootOf(next)?.local === 'wsDr') drawings.push([part, next])
     }
-    // the sheets the book no longer has, with the parts of their own
-    for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
-    this.workbook()
+    for (const [part, next] of drawings) {
+      const { rels: list, relsXml } = this.setup.texts.get(part)!
+      if (!childrenOf(next, rootOf(next)!).length) {
+        emptied.add(part.toLowerCase())
+        continue
+      }
+      const rels = new Rels(relsXml)
+      for (const r of list)
+        if (!r.external && !next.includes(`"${escapeAttr(r.id)}"`)) {
+          rels.remove(r.id)
+          this.unlink(part, r.target)
+        }
+      if (rels.changed) this.parts.set(relsPath(part), rels.xml())
+    }
+    return emptied
+  }
+
+  /** A part removed with its relationships, and the parts only it pointed at, theirs too. */
+  private drop(part: string): void {
+    const key = part.toLowerCase()
+    if (this.gone.has(key)) return
+    this.gone.add(key)
+    this.parts.remove(part)
+    this.types.remove(part)
+    this.parts.remove(relsPath(part))
+    for (const t of this.setup.rels.get(key) ?? []) this.orphan(t)
+  }
+
+  /** A part (its name in lower case) removed where no part kept points at it. */
+  private orphan(target: string): void {
+    const kept = [...this.setup.rels].some(([from, to]) => !this.gone.has(from) && to.includes(target))
+    if (!kept) this.drop(this.src.archive.names.find((n) => n.toLowerCase() === target) ?? target)
+  }
+
+  /** A relationship of a part removed, and its target where no part kept points at it any more. */
+  private unlink(part: string, target: string): void {
+    const [from, to] = [part.toLowerCase(), target.toLowerCase()]
+    const list = this.setup.rels.get(from) ?? []
+    const i = list.indexOf(to)
+    if (i >= 0) list.splice(i, 1)
+    this.orphan(to)
   }
 
   /** A part's text with the moved references written back. */
@@ -426,21 +490,7 @@ class Kept {
    */
   private deleteSheet(ss: SourceSheet): void {
     this.changed = true
-    const gone = new Set<string>()
-    const drop = (part: string) => {
-      const key = part.toLowerCase()
-      if (gone.has(key)) return
-      gone.add(key)
-      this.parts.remove(part)
-      this.types.remove(part)
-      this.parts.remove(relsPath(part))
-      for (const t of this.setup.rels.get(key) ?? []) {
-        // a part another part still points at stays
-        const kept = [...this.setup.rels].some(([from, to]) => !gone.has(from) && to.includes(t))
-        if (!kept) drop(this.src.archive.names.find((n) => n.toLowerCase() === t) ?? t)
-      }
-    }
-    drop(ss.part)
+    this.drop(ss.part)
     const id = attr(this.src.decls[ss.decl].attrs, 'id')
     if (id) this.wbRels.remove(id)
   }
