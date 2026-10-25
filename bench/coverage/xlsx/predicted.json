@@ -110,6 +110,21 @@
    "differences": [],
    "values": {}
   },
+  "lost-sheet": {
+   "differences": [],
+   "values": {
+    "Plain!A1": {
+     "error": "REF"
+    },
+    "Plain!A2": {
+     "error": "REF"
+    },
+    "Plain!A3": {
+     "error": "REF"
+    },
+    "Plain!A4": 1
+   }
+  },
   "hidden": {
    "differences": [],
    "values": {
