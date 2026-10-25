@@ -5,7 +5,7 @@
  * so text the engine cannot parse translates as well. Every character of the text belongs to exactly one piece.
  */
 import { wordKey } from '../collate.js'
-import { literal } from '../criteria.js'
+import { literal } from '../wildcards.js'
 import { BOOK_SHEET, bracketEnd, callFollows, closingQuote, IDENT_RULE, numberSource } from '../syntax/scan.js'
 import type { Message } from './messages.js'
 

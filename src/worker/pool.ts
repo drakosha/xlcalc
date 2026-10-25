@@ -9,7 +9,7 @@ import type { CellValue, CopyTextOptions, Explanation, ValuesOptions } from '../
 import type { AbortSignalLike, AsyncStructureResult, AsyncSession, CachedValues, Calc, CalcLimits, CalcOptions, CalcPoolOptions, ChangingMethod, Clock, ComputeResult, ExplainOptions, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
-import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
+import { addedLocales, onLocale } from '../locale/registry.js'
 import { splitCall, checkCall, checkEditCall, withCall } from '../async/options.js'
 import { checkedMapCell } from '../structure/index.js'
 import { subscribers, withSubscribe } from '../session/subscribers.js'
@@ -131,7 +131,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       (l) => slot.thread === t && lose(slot, l),
     )
     // a thread computes in the locales loaded here, those loaded later as they are
-    const locales = [...LOCALES.values()].filter((l) => l.tag !== DEFAULT_LOCALE).map(sentLocale)
+    const locales = addedLocales().map(sentLocale)
     t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}) })
     return t
   }

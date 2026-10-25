@@ -6,11 +6,15 @@
  * `"="` blanks alone, `"<>"` the rest; an error, or its text, matches that error. Numbers, dates and words in the
  * text and the order of text follow the book's locale (`CritRules`, en-US by default).
  */
+import type { ErrorCode } from './contract.js'
 import { collator } from './collate.js'
 import { critTextToNumber, textToNumber } from './dates.js'
 import { spend } from './exec/budget.js'
+import { ERROR_TYPE } from './error-type.js'
 import { readsClock, type RulesClock } from './locale/rules/data.js'
+import { CELL_ERRORS, ERROR_CODE } from './syntax/errors.js'
 import { holds, to15 } from './values.js'
+import { wildMatcher, type Wildcard } from './wildcards.js'
 
 /** A cell value for a criterion; errors are any object. */
 export type CritValue = number | string | boolean | null | object
@@ -23,24 +27,9 @@ export type Crit =
   | { op: string; kind: 'blank' }
   | { op: string; kind: 'err'; code: string }
 
-/** Error texts in a criterion (any case) and their order, ERROR.TYPE's numbers. */
-const ERRORS: Record<string, [code: string, rank: number]> = {
-  '#NULL!': ['NULL', 1],
-  '#DIV/0!': ['DIV0', 2],
-  '#VALUE!': ['VALUE', 3],
-  '#REF!': ['REF', 4],
-  '#NAME?': ['NAME', 5],
-  '#NUM!': ['NUM', 6],
-  '#N/A': ['NA', 7],
-  '#SPILL!': ['SPILL', 9],
-  '#CALC!': ['CALC', 14],
-}
-// a formula that does not compute (#ERROR!) ranks as ERROR.TYPE numbers it
-const ERROR_RANK: Record<string, number> = { ...Object.fromEntries(Object.values(ERRORS)), ERROR: 1 }
-
 /** A criterion's error text by a locale's error texts (`'#N/A': '#Н/Д'`; one not given keeps its English text): the error code, or undefined. */
 export function errorWords(local: Readonly<Record<string, string>>): (text: string) => string | undefined {
-  const words = new Map(Object.entries(ERRORS).map(([text, [code]]) => [(local[text] ?? text).toUpperCase(), code]))
+  const words = new Map(CELL_ERRORS.map((t) => [(local[t] ?? t).toUpperCase(), ERROR_CODE[t]]))
   return (text) => words.get(text.toUpperCase())
 }
 
@@ -71,116 +60,6 @@ export const EN_CRIT: CritRules = {
 
 /** Parsed criteria by value (a Map key: `1` and `'1'` apart, `-0` with `0`), per locale's rules. */
 const caches = new WeakMap<CritRules, Map<number | string | boolean | null, Crit>>()
-
-/** Text matched literally in a regular expression. */
-export const literal = (ch: string) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
-/** The regular expression source of a wildcard pattern as Excel reads it: `*` any text, `?` one character, `~` takes the next character as it is (a trailing `~` is dropped). */
-export function wildSource(s: string): string {
-  let re = ''
-  for (let i = 0; i < s.length; i++) {
-    const ch = s[i]
-    if (ch === '~') re += i + 1 < s.length ? literal(s[++i]) : ''
-    else if (ch === '*') re += '[\\s\\S]*'
-    else if (ch === '?') re += '[\\s\\S]'
-    else re += literal(ch)
-  }
-  return re
-}
-
-/**
- * A wildcard pattern by its parts between `*`, each a regular expression without `*` (`?` one character, `~` the next
- * one as it is): one expression with a `[\s\S]*` for each `*` backtracks over the text once per `*` (three of them on
- * 8,000 characters run a minute in one call no deadline stops), while parts found leftmost in turn cost a search each.
- * Leftmost is enough: a later place of a part leaves less text for the parts after it. `flags` are the expressions'
- * own (`iu` in criteria, lookups and SEARCH; none in Find, which folds the text itself).
- */
-export class Wildcard {
-  /** The whole pattern as one expression anchored at both ends, with one `*` at most (it backtracks once, over a part's length); else null. */
-  private readonly whole: RegExp | null
-  /** The first part at the start (sticky), the parts found anywhere, and the last part at the end; null for an empty part. */
-  private readonly head: RegExp | null
-  private readonly parts: (RegExp | null)[]
-  private readonly tail: RegExp | null
-
-  /** Nothing to match: an empty pattern, or `~` alone. */
-  readonly empty: boolean
-
-  constructor(pattern: string, flags: string) {
-    const sources = ['']
-    for (let i = 0; i < pattern.length; i++) {
-      const ch = pattern[i]
-      if (ch === '*') sources.push('')
-      else sources[sources.length - 1] += ch === '~' ? (i + 1 < pattern.length ? literal(pattern[++i]) : '') : ch === '?' ? '[\\s\\S]' : literal(ch)
-    }
-    const k = sources.length - 1
-    this.empty = !k && !sources[0]
-    const re = (source: string, more: string, after = '') => (source ? new RegExp(`(?:${source})${after}`, flags + more) : null)
-    this.whole = k > 1 ? null : new RegExp(`^(?:${sources.join('[\\s\\S]*')})$`, flags)
-    this.head = k > 1 ? re(sources[0], 'y') : null
-    this.parts = sources.map((x) => re(x, 'g'))
-    this.tail = k > 1 ? re(sources[k], 'g', '$') : null
-  }
-
-  /** Whether the whole text matches. */
-  test(text: string): boolean {
-    if (this.whole) return this.whole.test(text)
-    let p = 0
-    if (this.head) {
-      this.head.lastIndex = 0
-      if (!this.head.test(text)) return false
-      p = this.head.lastIndex
-    }
-    p = this.middle(text, p)
-    if (p < 0 || !this.tail) return p >= 0
-    this.tail.lastIndex = p
-    return this.tail.test(text)
-  }
-
-  /**
-   * The first match at or after `from`, as [start, end], or null: each `*` takes as little as it can, a last one the
-   * rest of the text (Replace in Find), and the start is the leftmost one there is (SEARCH).
-   */
-  find(text: string, from = 0): [start: number, end: number] | null {
-    const first = this.parts[0]
-    let start = from
-    let p = from
-    if (first) {
-      first.lastIndex = from
-      const m = first.exec(text)
-      if (!m) return null
-      start = m.index
-      p = first.lastIndex
-    }
-    if (this.parts.length === 1) return [start, p]
-    p = this.middle(text, p)
-    if (p < 0) return null
-    const last = this.parts[this.parts.length - 1]
-    if (!last) return [start, text.length]
-    last.lastIndex = p
-    return last.test(text) ? [start, last.lastIndex] : null
-  }
-
-  /** Where the parts between the first and the last end, found leftmost in turn from `p`; −1 where one is not found. */
-  private middle(text: string, p: number): number {
-    for (let k = 1; k < this.parts.length - 1; k++) {
-      const re = this.parts[k]
-      if (!re) continue
-      re.lastIndex = p
-      if (!re.test(text)) return -1
-      p = re.lastIndex
-    }
-    return p
-  }
-}
-
-/**
- * A whole-text, case-insensitive matcher, or null for plain text. In criteria only `*` or `?` make a pattern
- * (`a~~c` is compared as it is); in lookups (`tilde`) a `~` alone does too (`a~c` looks up `ac`).
- */
-export function wildMatcher(s: string, tilde = false): Wildcard | null {
-  return (tilde ? /[*?~]/ : /[*?]/).test(s) ? new Wildcard(s, 'iu') : null
-}
 
 /** Criteria of error values by code, one each, so that a criterion is found by itself (kept selections). */
 const errorCrits = new Map<string, Crit>()
@@ -261,11 +140,11 @@ export function matches(v: CritValue, c: Crit | Lowered, rules: CritRules = EN_C
       if (typeof v !== 'string') return c.op === '<>'
       return c.re.test(v) === (c.op === '=')
     case 'err': {
-      // errors only, never text that reads like one; < and > order errors as ERROR.TYPE does
+      // errors only, never text that reads like one; < and > order errors as ERROR.TYPE does (#ERROR! counts as #NULL!)
       const code = v !== null && typeof v === 'object' ? (v as { code?: string }).code : undefined
       if (c.op === '=' || c.op === '<>') return (code === c.code) === (c.op === '=')
-      const r = code === undefined ? undefined : ERROR_RANK[code]
-      return r !== undefined && holds(c.op, ord(r, ERROR_RANK[c.code]))
+      const r = code === undefined ? undefined : ERROR_TYPE[code as ErrorCode]
+      return r !== undefined && holds(c.op, ord(r, ERROR_TYPE[c.code as ErrorCode] as number))
     }
     case 'str':
     case 'low':

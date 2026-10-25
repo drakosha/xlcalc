@@ -8,7 +8,7 @@
  * shows, hidden rows found, an empty query finding nothing, a cell with an empty text never found.
  */
 import { createSession } from '../../../src/index.js'
-import { wildSource } from '../../../src/criteria.js'
+import { wildSource } from '../../../src/wildcards.js'
 import { formatAddress, parseAddress } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { TAGS } from '../locales.js'

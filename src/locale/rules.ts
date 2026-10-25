@@ -7,8 +7,8 @@
  */
 import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
-import { decimalFirst, enCritNumber, enDates, enNumber, enTypedNumber, inSystem, parseDateWith, textReaders, type DateSyntax } from '../dates.js'
-import { builtinCodes, displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
+import { decimalFirst, enCritNumber, enDates, enNumber, enTypedNumber, inSystem, textReaders, type DateSyntax } from '../dates.js'
+import { builtinCodes, builtinIn, EN_CODES, EN_NAMES, generalFormat, generalText, styleIn, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { EN_US } from '../locales/en-US.js'
@@ -16,14 +16,8 @@ import { RU_NAMES } from './lcid.js'
 import { localeOf } from './registry.js'
 import type { CodePage, RulesClock } from './rules/data.js'
 import { cellNumberOf } from './rules/numbers.js'
-import { regionalRules } from './rules/regional.js'
+import { regionalRules, shownBy } from './rules/regional.js'
 import type { Locale } from './types.js'
-
-/** The codes a locale (a loaded locale's tag or an object; en-US without one) shows the built-in formats by, by number: its own, en-US's for the rest (`numfmt/builtin.ts`). */
-export function builtinIn(where: string | Locale | undefined): (id: number) => string {
-  const own = localeOf(where).regional?.builtin
-  return own ? builtinCodes(own) : (id) => EN_BUILTIN[id]
-}
 
 /** A number format as a code in a locale (`ViewportCell.numberFormat`): a built-in format by the locale's code (`builtinIn`), a code as it is. */
 export function formatCodeIn(where: string | Locale | undefined): (format: NumberFormat) => string {
@@ -100,7 +94,7 @@ const EN_STYLE: Style = {
   names: namesOf,
   longDate: 'dddd, mmmm d, yyyy',
   longTime: 'h:mm:ss AM/PM',
-  builtin: (id) => EN_BUILTIN[id],
+  builtin: builtinCodes({}),
 }
 
 /** Excel en-US with the English interface: the engine's own rules, date text without a year in the clock's year (`1/31`). */
@@ -123,14 +117,10 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
     group: ',',
     currency: { symbol: '$', before: true, space: '', negative: '()' },
     valueText,
-    dateText: (text) => parseDateWith(text, dates),
+    ...shownBy(dialect, style, dates),
     numberOnly: enTypedNumber,
     dates,
     numberText: generalText,
-    formatText: (value, format) => formatWith(value, format, dialect),
-    display: (value, format, space) => displayWith(value, format, style, space),
-    fitPoints: (value, format) => fitPoints(value, format, style),
-    typedPoints: (value, format, now) => typedPoints(value, format, style, now),
     compare: compareValues,
     compareOp,
     errorText: (code) => ERROR_TEXT[code],

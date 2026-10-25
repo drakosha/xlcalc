@@ -8,16 +8,14 @@
  */
 import { wordKey } from './collate.js'
 import type { CallAt, NameAt, ScanOptions } from './contract.js'
+import { sidesOf } from './locale/index.js'
+import type { Locale } from './locale/types.js'
 import { typedArgs } from './point.js'
 import { NAME_CHAR, openBrackets, walk, type OpenBracket } from './syntax/scan.js'
-import type { Locale } from './locale/types.js'
 
 /** A function's English name: the locale's name translated, in upper case; another name upper-cased as it is (by `wordKey`, as the engine reads names: `gauß` is no GAUSS). */
 export function englishName(name: string, locale: Locale | undefined): string {
-  const upper = wordKey(name)
-  if (!locale) return upper
-  const fns = locale.functions
-  return Object.keys(fns).find((k) => wordKey(fns[k]) === upper) ?? upper
+  return (locale && sidesOf(locale).local.fn.get(wordKey(name))) ?? wordKey(name)
 }
 
 /**

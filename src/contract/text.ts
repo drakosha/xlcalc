@@ -1,5 +1,6 @@
 /** Formula text and typed values without a book: a value shown and typed in by a format and a locale, a sheet's name, the references, call and name at a place of formula text, a function's signature, Find's options over text and the order values compare in. */
 import type { Locale } from '../locale/types.js'
+import type { DateSystem } from '../dates.js'
 import type { CellRect, CheckCode, JsonValue, Refusal } from './values.js'
 import type { CellInput, CellLink, CellNote, ExternalBook, NumberFormat } from './book.js'
 import type { FindCellsOptions } from './reading.js'
@@ -16,7 +17,7 @@ export interface DisplayOptions {
    */
   width?: number
   /** The date system used to display dates, as in `BookInput.dateSystem`; 1900 without it. */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
 }
 
 /**
@@ -36,7 +37,7 @@ export interface EntryOptions {
    */
   locale?: string | Locale
   /** The workbook's date system, as in `BookInput.dateSystem`; 1900 without it. */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /**
    * The cell's entry context: its effective `numberFormat`, `style`, `meta`, `note` and `link`; other fields are not read.
    * A `CellInput`, or a `CellView` from `getCell` or `getCells`, carries only the cell's own format. To take a row's or
@@ -83,7 +84,7 @@ export interface EntryTextOptions {
   numberFormat?: NumberFormat
   /** A loaded locale's tag (`LOCALES`) or a locale object; en-US without one. */
   locale?: string | Locale
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /** ISO, as in `Clock.now`; the current time without it. */
   now?: string
 }

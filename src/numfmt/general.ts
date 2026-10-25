@@ -19,9 +19,8 @@ export function roundHalfUp(abs: number, k: number): string {
 export function positional(abs: number, k: number): string {
   // below 10^(15-k) the text has 15 significant digits at most (the common case)
   if (abs < 10 ** (15 - k)) return roundHalfUp(abs, k)
-  const [m, ex] = abs.toExponential(14).split('e')
+  const [m, e] = sig15(abs)
   const digits = m.replace('.', '')
-  const e = Number(ex)
   // all 15 digits fall within the text, so no further rounding
   const [ip, fp] = e < 0 ? ['0', '0'.repeat(-e - 1) + digits] : [digits.slice(0, e + 1).padEnd(e + 1, '0'), digits.slice(e + 1)]
   return k ? `${ip}.${fp.padEnd(k, '0')}` : ip
@@ -33,13 +32,15 @@ const strip = (s: string) => (s.includes('.') ? s.replace(/\.?0+$/, '') : s)
 /** The exponent of scientific notation as Excel writes it: its sign and two digits at least (`E+20`, `E-06`). */
 const power = (e: number) => `E${e < 0 ? '-' : '+'}${String(Math.abs(e)).padStart(2, '0')}`
 
-/** The decimal exponent of a positive number rounded to 15 significant digits. */
-const exponent = (a: number) => Number(a.toExponential(14).split('e')[1])
+/** A number's 15 significant digits, as the mantissa text of its scientific notation and its decimal exponent. */
+export function sig15(a: number): [string, number] {
+  const [m, e] = a.toExponential(14).split('e')
+  return [m, Number(e)]
+}
 
 /** Scientific notation with `m` decimals of the mantissa at most (trailing zeros dropped), an exponent of two digits at least. */
 function sci(a: number, m: number): string {
-  const [digits, ex] = a.toExponential(14).split('e')
-  let e = Number(ex)
+  let [digits, e] = sig15(a)
   let mant = roundHalfUp(Number(digits), m)
   if (Number(mant) >= 10) [e, mant] = [e + 1, roundHalfUp(Number(mant) / 10, m)]
   return strip(mant) + power(e)
@@ -57,8 +58,7 @@ export function generalText(n: number, max = 20): string {
   // the shortest decimal text of 15 characters at most is the text rounded to 15 digits (most numbers of a book)
   const short = String(a)
   if (short.length <= 15 && !short.includes('e') && max >= 15) return n < 0 ? '-' + short : short
-  const [m, e] = a.toExponential(14).split('e')
-  const exp = Number(e)
+  const [m, exp] = sig15(a)
   const digits = m.replace('.', '').replace(/0+$/, '')
   const fixed =
     exp < 0 ? `0.${'0'.repeat(-exp - 1)}${digits}` : digits.length <= exp + 1 ? digits.padEnd(exp + 1, '0') : `${digits.slice(0, exp + 1)}.${digits.slice(exp + 1)}`
@@ -78,8 +78,7 @@ export function generalFormat(n: number): string {
   // the shortest decimal text of 11 characters at most is the General text (most values of a book)
   const short = String(a)
   if (short.length <= 11 && !short.includes('e')) return n < 0 ? '-' + short : short
-  const [m, ex] = a.toExponential(14).split('e')
-  const e = Number(ex)
+  const [m, e] = sig15(a)
   const need = m.replace('.', '').replace(/0+$/, '').length
   const sciCap = 11 - 3 - Math.max(2, String(Math.abs(e)).length)
   const fixedCap = e >= 0 ? (e < 11 ? Math.max(10, e + 1) : 0) : 10 + e
@@ -111,7 +110,7 @@ export function generalFit(n: number, space: number): string {
   const cells = Math.floor((space - (neg ? glyph('-') : 0)) / DIGIT)
   const full = generalFormat(a)
   if (full.length <= cells) return sign + full
-  const e = exponent(a)
+  const e = sig15(a)[1]
   const positional = e >= -4 && e <= 10
   // more decimals than the room left by the integer part and the point cannot fit
   if (positional)

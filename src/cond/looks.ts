@@ -10,7 +10,7 @@ import type { EngineState } from '../engine.js'
 import type { Looks } from '../shown.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { MAX_COLS } from '../model.js'
-import { EN_BUILTIN } from '../numfmt/builtin.js'
+import { enCode } from '../numfmt/builtin.js'
 import { COMPARE } from '../operators.js'
 import { inside, type Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
@@ -299,7 +299,7 @@ type ShownBy = ((format: NonNullable<ConditionalStyle['numberFormat']>) => { tex
 export function lookShown(view: { text?: string; color?: Color }, look: ConditionalAppearance, display: ShownBy) {
   const format = look.style?.numberFormat
   if (format === undefined || !display) return
-  const d = display(typeof format === 'number' ? (EN_BUILTIN[format] ?? format) : format)
+  const d = display(enCode(format))
   view.text = d.text
   if (d.color === undefined) delete view.color
   else view.color = d.color
