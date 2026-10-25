@@ -163,18 +163,16 @@ function viewOf(state: EngineState, s: number, addr: string, r: number, c: numbe
 /**
  * The cell at row `r` and column `c` of sheet `s` as `cellsIn` gives it for its one-cell rectangle (`Session.getCell`),
  * without the work of a rectangle; undefined where it lists none. `whole`: a cell of a large spill's unstored rest too,
- * as `spilled` takes it (`readCells`, which lists such cells). The steps yield only in conditional formats' tests.
+ * as `spilled` takes it (`readCells`, which lists such cells). The steps yield as `spilled` does between a spill's
+ * cells, and in the conditional formats' tests.
  */
 export function* cellAt(state: EngineState, s: number, r: number, c: number, display: boolean, whole = false): Steps<CellView | undefined> {
   const sheet = state.input.sheets[s]
   const addr = formatAddress(r, c)
   const layer = layerOf(sheet)
-  // as `spilled`: a stored cell of a spill, not its formula's, not one an input cell occupies
-  let spillOf: string | undefined
-  if (state.spills.on.size)
-    for (const x of state.spills.on.values())
-      if (x.s === s && r >= x.r1 && c >= x.c1 && r <= (whole ? x.r2 : Math.min(x.r1 + x.h - 1, x.r2)) && c <= (whole ? x.c2 : Math.min(x.c1 + x.w - 1, x.c2)) && (r !== x.r1 || c !== x.c1) && !state.spills.occupied.has(s, r, c)) spillOf = formatAddress(x.r1, x.c1)
-  const cond = sheet.conditionalFormats?.length ? yield* windowLooks(state, s, { r1: r, c1: c, r2: r, c2: c }) : null
+  const one = { r1: r, c1: c, r2: r, c2: c }
+  const spillOf = state.spills.on.size ? (yield* spilled(state, s, one, whole)).get(addr) : undefined
+  const cond = sheet.conditionalFormats?.length ? yield* windowLooks(state, s, one) : null
   const k = r * MAX_COLS + c
   if (spillOf === undefined && !cond?.has(k) && !(addr in sheet.cells) && !(layer && layer.idAt(r, c) !== NONE)) return undefined
   return viewOf(state, s, addr, r, c, layer, display ? cellLooks(state) : null, spillOf, cond?.get(k), (format) => formatCodeIn(state.input.locale)(format))
