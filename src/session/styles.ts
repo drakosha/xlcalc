@@ -294,14 +294,19 @@ function lookLines(d: Draft, t: Target, look: Look) {
   const crossing = st || ft ? spansOf((axis === 'r' ? sh.columns : sh.rows) as Record<string, Line> | undefined, axis === 'r' ? 'c' : 'r').filter(([, , e]) => shows(e)) : []
   const big = cellCount(t.rect) > SMALL
   for (const [r, c, a] of d.stored(t.i, t.rect, !big)) cells.set(a, [r, c])
-  // past SMALL cells the crossings go by pieces too, a cell of no look among them taking the look
-  const crosses = (r: number, c: number) => shows(axis === 'r' ? before.column(c) : before.row(r))
+  // crossings of more than MAX_CELLS cells go by pieces, a cell of no look among them taking the look; fewer, cell by cell
+  const many = crossing.reduce((n, [a, b]) => n + (b - a + 1) * (hi - lo + 1), 0) > MAX_CELLS
+  const crosses = many ? (r: number, c: number) => shows(axis === 'r' ? before.column(c) : before.row(r)) : () => false
   const pieces = big ? byPieces(d, t.i, t.rect, look, before, after, false, crosses, [sh, d.sheet(t.i)]) : undefined
   for (const [r, c, a] of pieces?.cells ?? []) cells.set(a, [r, c])
   for (const [a, b] of crossing) {
-    const x: Rect = axis === 'r' ? { r1: lo, r2: hi, c1: a, c2: b } : { r1: a, r2: b, c1: lo, c2: hi }
-    if (big) for (const [r, c, k] of d.held(t.i, x)) cells.set(k, [r, c])
-    else for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) cells.set(formatAddress(r, c), [r, c])
+    if (many) for (const [r, c, k] of d.held(t.i, axis === 'r' ? { r1: lo, r2: hi, c1: a, c2: b } : { r1: a, r2: b, c1: lo, c2: hi })) cells.set(k, [r, c])
+    else
+      for (let k = a; k <= b; k++)
+        for (let j = lo; j <= hi; j++) {
+          const [r, c] = axis === 'r' ? [j, k] : [k, j]
+          cells.set(formatAddress(r, c), [r, c])
+        }
   }
   for (const [a, [r, c]] of cells) d.set(t.i, a, lookOver(d.table, d.input(t.i, a), r, c, look, before, after, false))
   if (pieces) d.relook(t.i, pieces.edits, pieces.looks)

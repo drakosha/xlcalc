@@ -247,3 +247,27 @@ describe('rows across formatted columns, the cells by pieces', () => {
     }
   })
 })
+
+describe('rows across formatted columns in fewer cells than a rectangle holds, cell by cell as before 25.10', () => {
+  // 24 rows of 393,216 cells cross styled columns in 120: each of those an entry, listed by cell and put back by cell
+  const crossed = (): BookInput => ({
+    styles: [{}, { alignment: { wrap: true } }, { font: { size: 20 } }, { alignment: { horizontal: 'center' } }],
+    sheets: [{ name: 'S', columns: { 'H:L': { style: 1 } }, cells: { B9: { value: 'x', style: 1 }, H22: { style: 2 }, H28: { style: 2 }, C24: { value: 1, style: 1 } } }],
+  })
+  const crossings = ['H', 'I', 'J', 'K', 'L'].flatMap((c) => Array.from({ length: 24 }, (_, k) => `${c}${k + 9}`))
+
+  it('patchCells and clearCells list the cells and undo puts them back one by one, in the order of the columns crossed', () => {
+    for (const [what, call] of [
+      ['a style set', (s: ReturnType<typeof createSession>) => s.patchCells([{ sheet: 'S', range: '9:32', set: { style: 3 } }])],
+      ['formats cleared', (s: ReturnType<typeof createSession>) => s.clearCells([{ sheet: 'S', range: '9:32' }], 'formats')],
+    ] as const) {
+      const s = createSession(crossed(), { clock: CLOCK })
+      const r = call(s)
+      expect(r.repaint, what).toBeUndefined()
+      if (what === 'a style set') expect(r.changes.map((c) => c.cell), what).toEqual(['B9', 'H22', 'C24', 'H28'])
+      else expect(r.changes.map((c) => c.cell).sort(), what).toEqual(['B9', 'C24', ...crossings].sort())
+      const back = s.undo()!
+      expect(back.cells.map((c) => c.cell), what).toEqual(['B9', 'C24', ...crossings])
+    }
+  })
+})
