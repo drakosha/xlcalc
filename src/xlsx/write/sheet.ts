@@ -19,7 +19,7 @@ import { frozenScroll, sheetViewXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { normalized } from '../../layout/outline.js'
 import { lines, type Line } from '../../layout/spans.js'
-import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress, readAddress } from '../../model.js'
+import { bookScalar, formatAddress, indexToCol, MAX_COLS, parseAddress, readAddress } from '../../model.js'
 import { NONE, type Layer } from '../../looks/layer.js'
 import { inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
@@ -173,7 +173,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     if (c.link) links.set(addr, c.link)
     const res = result?.[addr]
     if (c.formula === undefined) {
-      const v = c.value === undefined || c.value === null ? undefined : typeof c.value === 'object' ? dateToSerial(c.value.date) - ctx.epoch : c.value
+      const v = c.value == null ? undefined : bookScalar(c.value, ctx.epoch)
       put(addr, cellXml(addr, c, v))
       continue
     }
