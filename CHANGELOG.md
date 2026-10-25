@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.57.0 (2026-10-25)
+
+Writing an xlsx over its original file, so that what the workbook model does not hold survives an edit; hidden names; fixes in reading and writing xlsx. Values and hashes of workbooks without hidden names are as in 0.56.0.
+
+Added:
+
+- `xlcalc/xlsx/keep`: `openKept(data)` reads a file as `readXlsx` does, and `writeKept(original, { book, result })` writes the edited workbook over the original file instead of rebuilding it. Charts, pivot tables, pictures, shapes, sparklines, the theme, page setup, rich text in unedited cells, macros and parts the model does not know are kept as the file holds them; without edits the original bytes come back. An edit that would leave a reference of such a part out of date is refused with a `KeptRefusal`; writing such references back comes next. [xlsx over its original file](docs/xlsx-keep.md).
+- `NameInput.hidden`: a hidden name, as Excel stores it. It works in formulas as any name; `readXlsx` reads `hidden="1"`, `writeXlsx` writes it, every operation keeps it, and `inputHash` counts it.
+
+Changed:
+
+- `readXlsx` reads a hidden name as `hidden: true`; it read it as a visible name with an issue.
+- `xlcalc/text` is 45 KB instead of 50 and `xlcalc/worker` 25 KB instead of 30 (minified), as the criteria rules and the en-US locale are no longer built at load for them.
+
+Fixed:
+
+- `readXlsx` no longer throws a `TypeError` on a row with `customFormat` that repeats a cell, and each repeated cell keeps its own content.
+- A row height or column width that is empty, blank or not a decimal number sets no size and is reported (`part`), where it read as 0 and hid the row or column.
+- Hyperlinks to a sheet whose name `readXlsx` repairs follow the repaired name.
+- A formula that read a sheet since deleted is written to a file as `#REF!` (a spill reference as `_xlfn.ANCHORARRAY(#REF!)`), as Excel writes it: `#REF!E2*2`, the form the model holds, made a file Excel for Mac would not open.
+
 ## 0.56.0 (2026-10-25)
 
 Speed: reading xlsx, a full calculation, edits of lookup keys and summed amounts, outline and layout commands, merged areas, and deletes, pastes and fills on filtered sheets. Values, texts, workbooks, issues and hashes are the same on every input; the synthetic workbook's values hash and `inputHash` are as in 0.55.0.
