@@ -3,7 +3,7 @@
  * column renamed or deleted, a table deleted (#REF!) or turned into cells (references to its cells). Only the references
  * that change are rewritten; a formula that does not parse is left as written.
  */
-import type { BookInput, CellInput, TableInput } from '../contract.js'
+import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, readAddress } from '../model.js'
 import { FormulaError, parse, quoteSheet } from '../syntax.js'
@@ -61,24 +61,32 @@ export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table 
 }
 
 /**
+ * A sheet's cells with their formulas rewritten by `f` (their row and column; undefined keeps one as written): the
+ * same cells when no formula changes. A session's operation stops here at its deadline or abort (`exec/budget.ts`).
+ */
+export function rewriteFormulas(sheet: SheetInput, f: (formula: string, r: number, c: number) => string | undefined): Record<string, CellInput> | undefined {
+  let cells: Record<string, CellInput> | undefined
+  const p = { r: 0, c: 0 }
+  for (const addr in sheet.cells) {
+    const cell = sheet.cells[addr]
+    spend(1)
+    if (cell.formula === undefined) continue
+    readAddress(addr, p)
+    const formula = f(cell.formula, p.r, p.c) ?? cell.formula
+    if (formula !== cell.formula) (cells ??= { ...sheet.cells })[addr] = { ...cell, formula }
+  }
+  return cells
+}
+
+/**
  * Every formula of the book rewritten by `edit` (cells, names, the formulas of calculated columns, of conditional formats
  * and of data validation), with the tables of `book` itself; the same objects where nothing changed.
  */
 export function rewriteBookTables(book: BookInput, edit: TableEdit): BookInput {
   const tables = tablesOf(book)
   let changed = false
-  const p = { r: 0, c: 0 }
   const sheets = book.sheets.map((sheet, s) => {
-    let cells: Record<string, CellInput> | undefined
-    for (const addr in sheet.cells) {
-      const cell = sheet.cells[addr]
-      // a session's operation stops here at its deadline or abort (`exec/budget.ts`)
-      spend(1)
-      if (cell.formula === undefined) continue
-      readAddress(addr, p)
-      const formula = rewriteTableRefs(cell.formula, tables, tableAt(tables, s, p.r, p.c), { s, r: p.r }, edit)
-      if (formula !== cell.formula) (cells ??= { ...sheet.cells })[addr] = { ...cell, formula }
-    }
+    const cells = rewriteFormulas(sheet, (formula, r, c) => rewriteTableRefs(formula, tables, tableAt(tables, s, r, c), { s, r }, edit))
     let list: TableInput[] | undefined
     sheet.tables?.forEach((ti, i) => {
       const t = tables.byName.get(tableKey(ti.name))!
