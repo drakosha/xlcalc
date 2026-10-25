@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, displayValue, InputError, createSession, type BookInput, type CellInput } from '../src/index.js'
+import { values as sheetValues } from './clock-books.js'
 import './locales.js'
 
 const clock = { now: '2026-10-07T18:00:00Z', seed: 1 }
@@ -17,7 +18,7 @@ const cells: Record<string, CellInput> = {
   A6: { formula: 'TEXT(A3,"yyyy-mm-dd")' },
 }
 const book = (dateSystem?: 1900 | 1904): BookInput => ({ sheets: [{ name: 'S', cells }], ...(dateSystem ? { dateSystem } : {}) })
-const values = (b: BookInput) => Object.fromEntries(Object.entries(compute(b, { clock, display: false }).sheets[0].cells).map(([k, c]) => [k, c.value]))
+const values = (b: BookInput) => sheetValues(compute(b, { clock, display: false }))
 
 describe('the 1904 date system', () => {
   it('counts days from 1904-01-01: the clock, typed dates and date text', () => {
