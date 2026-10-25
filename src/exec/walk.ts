@@ -217,6 +217,11 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     const [dr, dc] = inside.size || !ctx.origin ? [r, c] : [r - ctx.origin.r + MAX_ROWS, c - ctx.origin.c + MAX_COLS]
     return placed(a, dr, dc)
   }
+  // the same rectangle as a range of sheet `s`
+  const rng = (n: Extract<Ast, { k: 'ref' | 'xref' }>, s: number): Rng => {
+    const x = rect(n)
+    return new Rng(s, x.r1, x.c1, x.r2, x.c2)
+  }
   /**
    * The rectangles a node can answer as a reference, for the cells between the ends of the range operator: the
    * references a call can answer (INDEX's, TAKE's and DROP's array, XLOOKUP's return array and `if_not_found`, the
@@ -232,8 +237,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     }
     switch (n.k) {
       case 'ref': {
-        const x = rect(n)
-        const g = new Rng(ctx.sheet(n.sheet), x.r1, x.c1, x.r2, x.c2)
+        const g = rng(n, ctx.sheet(n.sheet))
         add(g)
         if (n.ref.spill) anchors.push(g)
         return
@@ -246,8 +250,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'xref': {
         const k = linked(n)
         if (k === undefined) return
-        const x = rect(n)
-        add(new Rng(k, x.r1, x.c1, x.r2, x.c2))
+        add(rng(n, k))
         return
       }
       case 'paren':
@@ -391,8 +394,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         return b.array(new Arr(n.rows.length, n.rows[0].length, n.rows.length, n.rows[0].length, v))
       }
       case 'ref': {
-        const x = rect(n)
-        const g = new Rng(ctx.sheet(n.sheet), x.r1, x.c1, x.r2, x.c2)
+        const g = rng(n, ctx.sheet(n.sheet))
         info.refs.push(g)
         // one code for every cell: a reference without `$` finds its rectangle at the cell the code runs at
         const a = ctx.here && relative(n.ref)
@@ -411,8 +413,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'xref': {
         const k = linked(n)
         if (k === undefined) return b.value(E.REF)
-        const x = rect(n)
-        const g = new Rng(k, x.r1, x.c1, x.r2, x.c2)
+        const g = rng(n, k)
         info.refs.push(g)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
