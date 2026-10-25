@@ -8,12 +8,11 @@
  * which they may read. A state built anew (a structure operation, new names, a call that stopped) starts with none.
  */
 import { writesMark, writesSince } from '../cell-writes.js'
-import type { EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, placeParts, readAddress } from '../model.js'
 import { lowerBound } from '../sorted.js'
 import { parseRange } from '../structure/area.js'
-import { sheetKey } from '../syntax.js'
 import type { Outcome } from './answer.js'
 
 /** What a search reads (`FindCellsOptions.in`), in the cells' own case or in any case (`folded`). */
@@ -140,11 +139,11 @@ export function textsChanged(state: EngineState, o: Outcome): void {
   if (o.moved.length) return sheets.clear()
   // a sheet's layout and the styles change what its cells show, not where its cells are
   for (const x of o.styles ? sheets.values() : []) x.texts.clear()
-  for (const name of o.layout) sheets.get(state.sheetIdx.get(sheetKey(name))!)?.texts.clear()
+  for (const name of o.layout) sheets.get(sheetIndexOf(state, name)!)?.texts.clear()
   // a rectangle of looks too large to list (`Outcome.looks`)
-  for (const x of o.looks) sheets.get(state.sheetIdx.get(sheetKey(x.sheet))!)?.texts.clear()
+  for (const x of o.looks) sheets.get(sheetIndexOf(state, x.sheet)!)?.texts.clear()
   // what conditional formats show reads values anywhere
-  const shown = new Set(o.rules.map((x) => state.sheetIdx.get(sheetKey(x.sheet))))
+  const shown = new Set(o.rules.map((x) => sheetIndexOf(state, x.sheet)))
   for (const [i, x] of sheets)
     if (shown.has(i) || (o.valued && state.input.sheets[i].conditionalFormats?.length)) {
       x.texts.delete('text')

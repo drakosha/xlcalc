@@ -6,7 +6,7 @@
  * value breaks.
  */
 import type { CellInput, CellRef, CellReplace, CellTextRefusal, DataValidation, EntryCheck, EntryResult, Refusal, ValidationAlert } from '../contract.js'
-import type { EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { readEntry, type EntryWay } from '../entry/index.js'
 import { entryWidth } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
@@ -14,7 +14,6 @@ import { mergedOf } from '../layout/merges.js'
 import { hasCell } from '../structure/area.js'
 import { say } from '../locale/messages.js'
 import { parseAddress } from '../model.js'
-import { sheetKey } from '../syntax.js'
 import { arrayPart } from '../spill/fixed.js'
 import { brokenRule } from '../validation/session.js'
 import { CONTENT } from './cells.js'
@@ -64,7 +63,7 @@ export function arrayRefusal(s: EngineState, edits: CellReplace[]): (Refusal<'ar
 /** Why Excel would not take an entry into the cell: it puts a formula into a table's header cell; null when it takes it. */
 export function headerRefusal(s: EngineState, edit: CellReplace): Refusal<'header'> | null {
   if (edit.input?.formula === undefined) return null
-  const i = s.sheetIdx.get(sheetKey(edit.sheet))!
+  const i = sheetIndexOf(s, edit.sheet)!
   const { row, col } = parseAddress(edit.cell)
   const table = s.tables.list.find((t) => t.headers && t.s === i && t.r1 === row && col >= t.c1 && col <= t.c2)
   return table ? { ok: false, code: 'header', message: say(s.input.locale, { key: 'headerFormula', sheet: s.sheetNames[i], cell: edit.cell, table: table.name }) } : null

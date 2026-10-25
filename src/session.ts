@@ -66,7 +66,6 @@ import { mergedPlan } from './session/merged.js'
 import { OUTLINE_FIELDS } from './structure/outline.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
-import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
 import { layerOf, putInputs, putLayers, withLayer, withLooksOf } from './looks/sheet.js'
@@ -344,7 +343,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       stale = true
     }
   }
-  const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display, sheetIndex }
+  const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display }
   /**
    * Cells' new inputs (checked) written, as `call`, over the sheets' looks of a plan set whole (`relook`): a table's
    * header cell typed over renames its column and the references to it, which builds the book again; a plan's sheets,
@@ -562,7 +561,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         if (next !== old) setNow(old, clockSerial(beforeClock), beforeClock.seed)
         const list = changes(next, outcome.keys.slice(0, max), outcome.fields)
         const impacts = list.map((c) => {
-          const i = old.sheetIdx.get(sheetKey(c.sheet))!,
+          const i = sheetIndexOf(old, c.sheet)!,
             { row, col } = parseAddress(c.cell),
             k = placeOf(i, row, col)
           const before = captured.cells.has(k) ? outValue(toCellValue(captured.cells.get(k)!)) : cellValue(old, i, row, col)
@@ -584,7 +583,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         state = old
         const back = [...plan.back, ...besides]
         putLayers(beforeBook.sheets, beforeLayers)
-        putInputs(beforeBook.sheets, (name) => old.sheetIdx.get(sheetKey(name))!, back)
+        putInputs(beforeBook.sheets, (name) => sheetIndexOf(old, name)!, back)
         old.input = beforeBook
         setNow(old, clockSerial(beforeClock), beforeClock.seed)
         if (next === old) {

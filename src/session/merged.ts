@@ -6,7 +6,7 @@
  * (`applyPlan`).
  */
 import type { BookInput, CellInput, CellReplace, Refusal, SheetInput, StructureOp, StructureRefusal } from '../contract.js'
-import type { EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { mergesOf } from '../layout/merges.js'
 import { inputIn } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
@@ -14,7 +14,6 @@ import { cellCount, meets, parseRange } from '../structure/area.js'
 import { applyOp } from '../structure/index.js'
 import { grown } from '../structure/merge.js'
 import { stateValues } from '../structure/values.js'
-import { sheetKey } from '../syntax.js'
 import type { Plan } from './styles.js'
 
 /** Past this many cells a merged range is built again with the book, as other operations are. */
@@ -27,7 +26,7 @@ const same = (a: CellInput | undefined, b: CellInput | undefined) => a === b || 
  * meeting an array formula of the old kind, a cell moved into an empty top-left cell, input the full operation checks.
  */
 export function mergedPlan(s: EngineState, op: Extract<StructureOp, { op: 'mergeCells' | 'unmergeCells' }>): Plan | Refusal<StructureRefusal> | null {
-  const i = typeof op.sheet === 'string' ? s.input.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(op.sheet)) : -1
+  const i = typeof op.sheet === 'string' ? sheetIndexOf(s, op.sheet) ?? -1 : -1
   const range = i < 0 || typeof op.range !== 'string' ? null : parseRange(op.range)
   if (!range) return null
   const was = s.input.sheets[i]

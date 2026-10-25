@@ -1,6 +1,6 @@
 /** Bounded queries executed in the session: no whole-sheet value copy; a search keeps the texts it reads with the state (`search.ts`). */
 import type { CellReadField, CellView, Clock, DependentCell, DependentsOptions, DependentsResult, FindCellsOptions, PageOptions, QueryPage, RangeRef, RangeSummary, SummaryOptions, ReadCell, ReadCellsOptions, ReadCellsResult } from '../contract.js'
-import { toCellValue, valueAt, type EngineState } from '../engine.js'
+import { sheetIndexOf, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { CalcError, paced, type Steps } from '../exec/budget.js'
 import { referencesOf } from '../graph.js'
 import { checkSheet } from '../input.js'
@@ -11,7 +11,6 @@ import { issueDetail } from '../issues.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf } from '../model.js'
 import { cellAt, outValue } from '../result.js'
 import { rectText, meets } from '../structure/area.js'
-import { sheetKey } from '../syntax.js'
 import { CompensatedSum } from '../functions/statistical/sum.js'
 import { checkBase } from './answer.js'
 import { inputIn } from '../looks/sheet.js'
@@ -29,7 +28,7 @@ export const refsOf = (s: EngineState, refs: RangeRef[]) =>
     const p = `ranges[${i}]`,
       o = object(v, p, 'a sheet and range')
     onlyKeys(o, p, ['sheet', 'range'])
-    return { ...checkRange(o.range, `${p}.range`), s: checkSheet(o.sheet, (n) => s.sheetIdx.get(sheetKey(n)), `${p}.sheet`) }
+    return { ...checkRange(o.range, `${p}.range`), s: checkSheet(o.sheet, (n) => sheetIndexOf(s, n), `${p}.sheet`) }
   })
 
 /** A cursor's parts: the revision, the results before it, the query's signature, the count of all (-1 when not counted), and the position the query goes on after. */
@@ -146,7 +145,7 @@ export function* readQuery(s: EngineState, revision: number, clock: Clock, given
 function startOf(s: EngineState, refs: Ref[], finder: Finder, after: unknown): number[] {
   const o = object(after, 'opts.after', 'a cell such as { sheet: "Sheet1", cell: "D7" }')
   onlyKeys(o, 'opts.after', ['sheet', 'cell'])
-  const i = checkSheet(o.sheet, (n) => s.sheetIdx.get(sheetKey(n)), 'opts.after.sheet')
+  const i = checkSheet(o.sheet, (n) => sheetIndexOf(s, n), 'opts.after.sheet')
   const { row, col } = parseAddress(checkAddress(o.cell, 'opts.after.cell'))
   const at = finder.positionOf(refs, i, row, col)
   if (!at) throw new InputError('opts.after', `expected a cell of the ranges searched, got ${s.sheetNames[i]}!${formatAddress(row, col)}`)
