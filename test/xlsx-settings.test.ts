@@ -5,13 +5,11 @@ import { withoutView } from './xlsx-fixtures.js'
  * one written. Excel's answers are checked in `test/xlsx-excel.test.ts`.
  */
 import { describe, expect, it } from 'vitest'
-import { storedValues } from './xlsx-fixtures.js'
+import { partText as text, storedValues } from './xlsx-fixtures.js'
 import { compute, type BookInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
-import { openArchive } from '../src/xlsx/zip/read.js'
 import './locales.js'
 
-const text = async (data: Uint8Array, name: string) => (await openArchive(data).text(name))!
 const clock = { now: '2026-10-07T12:00:00Z', seed: 7 }
 const values = (book: BookInput) => compute(book, { clock }).sheets.map((s) => Object.fromEntries(Object.entries(s.cells).map(([a, c]) => [a, [c.value, c.text]])))
 

@@ -7,10 +7,9 @@ import { describe, expect, it } from 'vitest'
 import type { BookInput, CellInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
-import { codes, pack, parts, read } from './xlsx-fixtures.js'
+import { codes, pack, parts, read, rels } from './xlsx-fixtures.js'
 
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-const rels = (body: string) => `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${body}</Relationships>`
 
 /** The text of a part of a written book. */
 async function part(book: BookInput, name: string): Promise<string> {
