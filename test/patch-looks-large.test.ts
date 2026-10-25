@@ -3,9 +3,11 @@
  * pieces, not cell by cell, so formatting whole columns of them takes milliseconds; a rectangle of more than 65,536
  * cells whose look changed comes whole as a range of `repaint`, the cells of entries and the smaller rectangles as
  * `changes`; one step of the undo puts it back. In every kind of session, with closures and eval, display on and off.
+ * Formats are cleared from styled columns over the sheet's height and from rows across styled columns, as Excel clears
+ * them, however many cells that is.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createSession, type AsyncSession, type BookInput, type EditResult, type Execution, type SessionOperation, type Viewport } from '../src/index.js'
+import { compute, createSession, type AsyncSession, type BookInput, type EditResult, type Execution, type SessionOperation, type SheetInput, type Viewport } from '../src/index.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
@@ -152,5 +154,96 @@ describe('large looks, the cells by pieces', () => {
     const open = () => createSession(book(), { limits: { writes: 10 } })
     expect(open().patchCells([{ sheet: 'S', range: 'A:H', set: { style: 0 } }]).repaint).toEqual([{ sheet: 'S', range: 'A6:H1048576' }])
     expect(open().clearCells([{ sheet: 'S', range: 'A2:H1048576' }], 'formats').repaint).toEqual([{ sheet: 'S', range: 'A6:H1048576' }])
+  })
+})
+
+/** Columns with a style and a format, a bold row across them, values and a note: the columns' cells of no entry show the look of their column. */
+const styledColumns = (columns: string): BookInput => ({
+  styles,
+  sheets: [{ name: 'S', columns: { [columns]: { style: 1, numberFormat: '0.0' } }, rows: { '3': { style: 0 } }, cells: { A1: { value: 1 }, E1: { formula: 'SEQUENCE(3)' }, B5: { value: 2, style: 0 }, C7: { note: { text: 'n' } } } }],
+})
+
+/** Ranges cleared of formats over styled columns, each with the cells that show the plain look after it and one that keeps its column's. */
+const CLEARED: [string, string, string[], string][] = [
+  ['A:H', 'a column', ['A1', 'A2', 'A1048576'], 'B2'],
+  ['A:H', 'a column to the sheet\'s bottom', ['A1', 'A3', 'A1048576'], 'B1'],
+  ['A:H', 'columns below their first row', ['B2', 'B3', 'B5', 'H1048576'], 'A1'],
+  ['A:XFD', 'rows across every column', ['A1', 'C7', 'XFD100'], 'A101'],
+]
+const RANGES: Record<string, string> = { 'a column': 'A:A', "a column to the sheet's bottom": 'A1:A1048576', 'columns below their first row': 'A2:H1048576', 'rows across every column': '1:100' }
+
+describe.each(['closures', 'eval'] as const)('formats cleared over styled lines, %s', (execution: Execution) => {
+  describe.each(KINDS)('%s', (kind) => {
+    it.each(CLEARED)('columns %s, %s', async (columns, what, plain, kept) => {
+      const open = await opener(kind)
+      const s = await open(styledColumns(columns), { clock: CLOCK, execution })
+      const before = JSON.stringify(await s.getBook())
+      const t = performance.now()
+      // a rectangle of more than 1,048,576 cells in styled columns, and rows crossing them in as many, were refused before 25.10
+      await s.clearCells([{ sheet: 'S', range: RANGES[what] }], 'formats')
+      expect(performance.now() - t).toBeLessThan(4000)
+      const after = JSON.parse(JSON.stringify(await s.getBook())) as BookInput
+      expect(await s.getHash()).toBe(compute(after, { clock: CLOCK, execution }).hash)
+      // a cleared cell shows the plain style and General, as Excel's Normal; a cell outside keeps its column's look
+      const shown = async (a: string) => {
+        const v = (await s.getViewport('S', a)).cells[a]
+        return [v?.effectiveStyle === undefined ? {} : after.styles![v.effectiveStyle], v?.numberFormat ?? 'General']
+      }
+      for (const a of plain) expect(await shown(a), a).toEqual([{}, 'General'])
+      expect(await shown(kept), kept).toEqual([styles[1], '0.0'])
+      const fresh = createSession(after, { clock: CLOCK, execution })
+      for (const range of ['A1:I8', 'A99:C102', 'A1048570:I1048576']) expect(await view(s, range)).toEqual(await view(fresh, range))
+      await s.undo()
+      expect(JSON.parse(JSON.stringify(await s.getBook()))).toEqual(JSON.parse(before))
+      expect(await s.getHash()).toBe(compute(JSON.parse(before) as BookInput, { clock: CLOCK, execution }).hash)
+      await s.redo()
+      expect(JSON.parse(JSON.stringify(await s.getBook()))).toEqual(after)
+      expect(await s.getHash()).toBe(compute(after, { clock: CLOCK, execution }).hash)
+      await s.close()
+    })
+  })
+})
+
+describe('rows across formatted columns, the cells by pieces', () => {
+  it('rows of more than 65,536 cells are formatted where they cross the columns as their parts of fewer cells are, one by one', () => {
+    const b: BookInput = {
+      styles,
+      sheets: [
+        {
+          name: 'S',
+          columns: { 'A:C': { style: 1 }, E: { numberFormat: '0.0' }, 'G:XFD': { style: 0, numberFormat: '0%' } },
+          rows: { '3': { style: 1 }, '6:7': { numberFormat: '@' } },
+          cells: { A1: { value: 1, style: 0 }, B7: { formula: 'SEQUENCE(2,2)' }, F4: { value: 3, note: { text: 'n' } }, H8: { value: 'x' } },
+          looks: [{ range: 'B2:H5', style: 0 }, { range: 'Z1:AB8', numberFormat: '0.00' }],
+        },
+      ],
+    }
+    const calls: [string, (s: ReturnType<typeof createSession>, range: string) => unknown][] = [
+      ['formats cleared', (s, range) => s.clearCells([{ sheet: 'S', range }], 'formats')],
+      ['all cleared', (s, range) => s.clearCells([{ sheet: 'S', range }], 'all')],
+      ['made italic', (s, range) => s.patchCells([{ sheet: 'S', range, set: { style: { font: { italic: true } } } }])],
+      ['a style set', (s, range) => s.patchCells([{ sheet: 'S', range, set: { style: 0 } }])],
+      ['a format set', (s, range) => s.patchCells([{ sheet: 'S', range, set: { numberFormat: '@' } }])],
+    ]
+    // the rows' entries by row: two calls may leave a span as two
+    const byRow = (book: BookInput) => {
+      const out = byContent(book) as SheetInput[]
+      for (const sh of out)
+        sh.rows = Object.fromEntries(
+          Object.entries(sh.rows ?? {}).flatMap(([k, v]) => {
+            const [a, z = a] = k.split(':').map(Number)
+            return Array.from({ length: z - a + 1 }, (_, j) => [String(a + j), v])
+          }),
+        )
+      return out
+    }
+    for (const [what, call] of calls) {
+      const [whole, parts] = [createSession(b), createSession(b)]
+      call(whole, '1:8')
+      call(parts, '1:4')
+      call(parts, '5:8')
+      expect(byRow(whole.getBook()), what).toEqual(byRow(parts.getBook()))
+      expect(whole.getHash(), what).toBe(compute(JSON.parse(JSON.stringify(whole.getBook())) as BookInput).hash)
+    }
   })
 })
