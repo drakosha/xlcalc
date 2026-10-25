@@ -8,10 +8,10 @@ import { sheetIndexOf, type EngineState } from '../engine.js'
 import { CELL_FIELDS, checkCell, checkEditList } from '../input.js'
 import { InputError } from '../input-error.js'
 import { object, onlyKeys } from '../input/basic.js'
+import { CONTENT } from '../array-areas.js'
 import { inputAt } from './book.js'
 
-/** The fields of a cell's content: a formula's value held while a circular reference stops it goes with the formula. */
-export const CONTENT = ['value', 'formula', 'array', 'held'] as const
+export { CONTENT }
 
 /**
  * A cell's input with an edit's fields over it; null when nothing is left of the cell. An edit of null clears the content

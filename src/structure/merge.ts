@@ -20,12 +20,9 @@ import { cornersText, grown, meets, rectText, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { moveRange } from './move.js'
 import { arraysOf, cellsIn, gridOf, type Grid } from './grid.js'
-import { holds } from '../array-areas.js'
+import { holds, CONTENT } from '../array-areas.js'
 
 export { grown }
-
-/** The fields of a cell a merge clears: what it holds. */
-const CONTENT = ['value', 'formula', 'array', 'held'] as const
 
 export function mergeCells(book: BookInput, sheet: string, x: Rect, across: boolean, center: boolean): Applied {
   const s = book.sheets.findIndex((t) => t.name === sheet)
