@@ -23,6 +23,9 @@ export const EN_BUILTIN: readonly string[] = [
 /** The numbers of the built-in formats: 0 to 49. */
 export const isBuiltin = (id: number) => Number.isInteger(id) && id >= 0 && id < EN_BUILTIN.length
 
+/** The built-in money formats, by their kind: 5 to 8 currency, 41 to 44 accounting; their codes Excel keeps with the symbol quoted. */
+export const BUILTIN_MONEY: ReadonlyMap<number, 'currency' | 'accounting'> = new Map([[5, 'currency'], [6, 'currency'], [7, 'currency'], [8, 'currency'], [41, 'accounting'], [42, 'accounting'], [43, 'accounting'], [44, 'accounting']])
+
 /** The codes of a locale that shows built-in formats otherwise: its own by number, en-US's for the rest. */
 export const builtinCodes =
   (own: Readonly<Record<number, string>>) =>

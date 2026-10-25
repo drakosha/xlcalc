@@ -15,7 +15,7 @@ import { checkFormat } from '../input/styles.js'
 import { optionalLocale } from '../locale/load.js'
 import type { FormatNames } from '../locale/rules/data.js'
 import type { Locale } from '../locale/types.js'
-import { builtinIn, EN_BUILTIN } from './builtin.js'
+import { BUILTIN_MONEY, builtinIn, EN_BUILTIN } from './builtin.js'
 import { splitSections } from './parse.js'
 
 /** en-US's names of the box's categories and the list's items, and the code of its Currency item. */
@@ -45,9 +45,6 @@ const CHOICES: readonly [FormatChoiceKey, NumberFormat | undefined][] = [
 ]
 
 const namesOf = (loc: Locale | undefined): FormatNames => loc?.regional?.formats ?? EN_NAMES
-
-/** The money formats among the built-in ones, whose `$` Excel keeps quoted (`"$"#,##0_);\("$"#,##0\)`), as the box reads them. */
-const MONEY = /^(?:[5-8]|4[1-4])$/
 
 /**
  * The category of a number format in `locale` (a loaded locale's tag or a locale object; en-US without one), as the
@@ -168,14 +165,14 @@ function dateOrTime(section: string): FormatCategory | undefined {
 }
 
 /** en-US's code of each built-in format as Excel keeps it, the dollar of its money quoted. */
-const EN_KEPT = EN_BUILTIN.map((code, id) => canonical(MONEY.test(String(id)) ? code.replace(/\$/g, '"$"') : code))
+const EN_KEPT = EN_BUILTIN.map((code, id) => canonical(BUILTIN_MONEY.has(id) ? code.replace(/\$/g, '"$"') : code))
 
 /**
  * A built-in format's category in a locale other than en-US, as Excel for Windows shows it by the locale's own code
  * (measured in ru-RU): its money the locale's currency (5 to 8) and accounting (41 to 44), its numbers with a minus
  * (37 to 40) none of Format Cells' formats, the others as their en-US codes.
  */
-const builtinCategory = (id: number): FormatCategory => (id >= 37 && id <= 40 ? 'custom' : MONEY.test(String(id)) ? (id < 9 ? 'currency' : 'accounting') : categoryOf(EN_KEPT[id], '', undefined))
+const builtinCategory = (id: number): FormatCategory => (id >= 37 && id <= 40 ? 'custom' : (BUILTIN_MONEY.get(id) ?? categoryOf(EN_KEPT[id], '', undefined)))
 
 /**
  * The category of a code as Excel keeps it (`canonical`) in a locale whose short date (built-in 14) has the code

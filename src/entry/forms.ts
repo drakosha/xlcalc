@@ -8,7 +8,7 @@
  */
 import type { NumberFormat } from '../contract.js'
 import type { Locale } from '../locale/types.js'
-import { builtinIn, EN_BUILTIN, EN_CODES, isBuiltin } from '../numfmt.js'
+import { BUILTIN_MONEY, builtinIn, EN_BUILTIN, EN_CODES, isBuiltin } from '../numfmt.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import type { Form } from './read.js'
 
@@ -19,8 +19,7 @@ const span = (lo: number, hi: number, f: Family): [number, Family][] => Array.fr
 
 /** The built-in formats by kind; the others (General, the numbers 1 to 4 and 37 to 40, text) are not replaced. */
 const FAMILY: ReadonlyMap<number, Family> = new Map([
-  ...span(5, 8, 'currency'),
-  ...span(41, 44, 'accounting'),
+  ...BUILTIN_MONEY,
   ...span(9, 10, 'percent'),
   [11, 'scientific'],
   [48, 'scientific'],
@@ -34,11 +33,8 @@ const FAMILY: ReadonlyMap<number, Family> = new Map([
   ...span(45, 47, 'time'),
 ])
 
-/** The kind of each typed form that sets a format. */
-const FORM: Partial<Record<Form, Family>> = { date: 'date', time: 'time', percent: 'percent', currency: 'currency', scientific: 'scientific', fraction: 'fraction' }
-
-/** The money and accounting formats, whose codes Excel keeps otherwise than they show (`"$"#,##0_);\("$"#,##0\)`): no code is one of them. */
-const MONEY: ReadonlySet<number> = new Set([5, 6, 7, 8, 41, 42, 43, 44])
+/** The kind of a typed form that sets a format; a plain or grouped number keeps the cell's format. */
+const familyOf = (form: Form): Family | undefined => (form === 'plain' || form === 'grouped' ? undefined : form)
 
 /**
  * The number of the built-in format a cell's format is in a locale: its number, or the first whose code it is in en-US
@@ -49,7 +45,7 @@ export function builtinOf(format: NumberFormat, locale: Locale): number | undefi
   if (typeof format === 'number') return format
   if (format.toLowerCase() === 'general') return 0
   const code = builtinIn(locale)
-  for (let id = 0; isBuiltin(id); id++) if (!MONEY.has(id) && EN_BUILTIN[id] === format && code(id) === format) return id
+  for (let id = 0; isBuiltin(id); id++) if (!BUILTIN_MONEY.has(id) && EN_BUILTIN[id] === format && code(id) === format) return id
   return undefined
 }
 
@@ -57,7 +53,7 @@ export function builtinOf(format: NumberFormat, locale: Locale): number | undefi
 export function formatAfter(form: Form, typed: NumberFormat | undefined, cell: NumberFormat | undefined, locale: Locale): NumberFormat | undefined {
   const id = cell === undefined ? 0 : builtinOf(cell, locale)
   if (id === 0) return typed
-  const family = FORM[form]
+  const family = familyOf(form)
   const own = id === undefined ? undefined : FAMILY.get(id)
   return family && own && family !== own ? typed : cell
 }
