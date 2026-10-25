@@ -68,16 +68,18 @@ function referenceText(r: ComputeResult, book: BookInput, fills: FillLine[]): st
 const sha256 = (text: string) => createHash('sha256').update(text, 'utf8').digest('hex')
 
 /**
- * A synchronous session's `getHash()` and `getResult().hash` (with and without display), `compute()` of its book and
- * `valuesHash` over the computed values (prepared and not) all equal the reference hash; returns it.
+ * A synchronous session's `getHash()` and `getResult().hash`, `compute()` of its book and `valuesHash` over the computed
+ * values (prepared and not) all equal the reference hash; returns it. Where a book opens (`opened`) the hash is the same
+ * without the display too: display builds looks only, and after the steps display-api checks the same elsewhere.
  */
-function agree(s: Session, execution: Execution, label: string): string {
+function agree(s: Session, execution: Execution, label: string, opened = false): string {
   const h = s.getHash()
   const book = s.getBook()
   const fresh = compute(book, { clock: CLOCK, execution })
   const fills = fillsOf(book, execution)
   const expected = sha256(referenceText(fresh, book, fills))
-  expect([h, s.getResult().hash, fresh.hash, compute(book, { clock: CLOCK, execution, display: false }).hash], label).toEqual([expected, expected, expected, expected])
+  const hashes = [h, s.getResult().hash, fresh.hash, ...(opened ? [compute(book, { clock: CLOCK, execution, display: false }).hash] : [])]
+  expect(hashes, label).toEqual(hashes.map(() => expected))
   const values = new Map(fresh.sheets.map((x) => [x.name, new Map(Object.entries(x.cells).map(([a, c]): [string, CellValue] => [a, c.value]))]))
   expect([valuesHash(values, CONFIG_VERSION, fills, book.locale, book.dateSystem, true), valuesHash(values, CONFIG_VERSION, fills, book.locale, book.dateSystem)], label).toEqual([expected, expected])
   return expected
@@ -268,7 +270,7 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution: Executi
   it('a synchronous session: books, then cell edits and structure operations', () => {
     BOOKS.forEach(([name, book], i) => {
       const s = createSession(book, { clock: CLOCK, execution })
-      agree(s, execution, name)
+      agree(s, execution, name, true)
       randomSteps(100 + i, book, 6).forEach((step, j) => {
         if ('edits' in step) s.setCells(step.edits)
         else s.editStructure(step.op)
