@@ -29,7 +29,8 @@ export function indexToCol(i: number): string {
   return s
 }
 
-const ADDR = /^([A-Z]{1,3})([1-9][0-9]*)$/
+/** A cell address in A1 style: one to three upper-case letters and a row, both within the sheet when checked. */
+export const ADDR = /^([A-Z]{1,3})([1-9][0-9]*)$/
 
 /** `B12` → { row: 11, col: 1 } (zero-based). */
 export function parseAddress(addr: string): { row: number; col: number } {
