@@ -387,7 +387,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (m) sheet.merges = m
   const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas, added)
   if (tables.length) sheet.tables = tables
-  readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts, looked: (x) => addressesOf(layer, x) }, read.cells, ctx.issues, added)
+  readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts, looked: (x) => addressesOf(layer, x), rename: src.formulas.rename }, read.cells, ctx.issues, added)
   // a cell of the file's an array left nothing in stays the file's when a note, a link or a header is put on it
   for (const a of dropped) added?.delete(a)
   const [cells, looks] = withEntries(layer, read.cells, added, read.unordered, [...looked, ...[...read.shared.values()].flatMap((s) => s.copies)])
