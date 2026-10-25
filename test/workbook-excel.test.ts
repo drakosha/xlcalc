@@ -3,19 +3,14 @@
  * stored case is its generator's current case, and at each read the cells of its rectangles hold what Excel showed.
  * A held-out set also keeps the answers predicted before Excel ran, and the engine gives those too.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
 import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
 import { differences, differsOrThrows, engineReads, goesOn, predictionCheck } from './workbook-cases.js'
 import { currentCases } from './stored-cases.js'
+import { storedSets } from './stored-sets.js'
 
-const dir = new URL('./excel/workbook/', import.meta.url)
-const SETS = existsSync(dir)
-  ? readdirSync(dir)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredWorkbook) }))
-  : []
+const SETS = storedSets<StoredWorkbook>('workbook')
 
 /** Cells whose answer differs from Excel's for a reason outside the case's feature: `<set>:<case>` → cell → why. */
 const OUTSIDE = {

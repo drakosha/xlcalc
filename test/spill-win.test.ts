@@ -6,11 +6,11 @@
 import { describe, expect, it } from 'vitest'
 import type { StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
-import { winFiles } from './excel-win-cases.js'
+import { storedSets } from './stored-sets.js'
 import { computed, differences } from './spill-cases.js'
 import { currentCases } from './stored-cases.js'
 
-const SETS = winFiles<StoredSpill>('spill/')
+const SETS = storedSets<StoredSpill>('win/spill')
 
 /**
  * Cases whose answer Excel for Windows changes from run to run, as Excel for Mac does (`order-runs.json`): not compared.

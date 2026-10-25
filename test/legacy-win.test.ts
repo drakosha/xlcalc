@@ -11,7 +11,7 @@ import { compare } from '../bench/coverage/compare.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { Probe } from '../bench/coverage/probes.js'
 import { show } from './excel-cases.js'
-import { winFiles } from './excel-win-cases.js'
+import { storedSets } from './stored-sets.js'
 
 interface Stored {
   cases: Probe[]
@@ -21,7 +21,7 @@ interface Stored {
 }
 
 const mac = (name: string) => JSON.parse(readFileSync(new URL(`./excel/legacy/${name}.json`, import.meta.url), 'utf8')) as Stored
-const SETS = winFiles<Stored>('legacy/')
+const SETS = storedSets<Stored>('win/legacy')
 
 /** Volatile calls: their values are compared by type only. */
 const VOLATILE = /\b(RAND|RANDBETWEEN|RANDARRAY|NOW|TODAY)\(/

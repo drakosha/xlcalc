@@ -35,9 +35,6 @@ const dir = new URL('./excel/win/', import.meta.url)
 const read = (rel: string) => JSON.parse(readFileSync(new URL(rel, dir), 'utf8')) as Omit<WinSet, 'name' | 'tag'>
 const jsons = (rel: string) => (existsSync(new URL(rel, dir)) ? readdirSync(new URL(rel, dir)).filter((f) => f.endsWith('.json')).sort() : [])
 
-/** The stored Windows answer files of a kind (`display/`, `display/ru-RU/`, `spill/`, ...), each with its set's name. */
-export const winFiles = <T>(sub: string): (T & { name: string })[] => jsons(sub).map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(sub + f, dir), 'utf8')) as T) }))
-
 /** Every stored Windows run of formula cases: the measurement and the sets by locale, the probes in en-US. */
 export const WIN_SETS: WinSet[] = [
   ...TAGS.flatMap((tag) => (existsSync(new URL(`coverage/${measurementFile(tag)}`, dir)) ? [{ name: 'measurement', tag, ...read(`coverage/${measurementFile(tag)}`) }] : [])),

@@ -3,13 +3,12 @@
  * <set> [locale]`) as books: each case's cell where the harness put it, in a column of its width (a merged area of
  * its span), computed in the locale of the answers; and how an engine's shown text and colour compare with Excel's.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { place, type StoredDisplay } from '../bench/coverage/display.js'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import type { BookInput, CellDisplay, CellInput, CellValue, SheetInput } from '../src/contract.js'
 import { compute, displayValue } from '../src/index.js'
 import { formatAddress, indexToCol } from '../src/model.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 export const CLOCK = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -20,18 +19,8 @@ export interface DisplaySetFile extends StoredDisplay {
   locale: string
 }
 
-const dir = new URL('./excel/display/', import.meta.url)
-const read = (sub: string, locale: DisplaySetFile['locale']): DisplaySetFile[] => {
-  const d = new URL(sub, dir)
-  if (!existsSync(d)) return []
-  return readdirSync(d)
-    .filter((f) => f.endsWith('.json'))
-    .sort()
-    .map((f) => ({ name: f.slice(0, -5), locale, ...(JSON.parse(readFileSync(new URL(f, d), 'utf8')) as StoredDisplay) }))
-}
-
 /** The stored answers of Excel in each locale that has them. */
-export const DISPLAY_SETS: DisplaySetFile[] = TAGS.flatMap((tag) => read(`./${localeDir(tag)}`, tag))
+export const DISPLAY_SETS: DisplaySetFile[] = localeSets<StoredDisplay>('display').map((r) => ({ name: r.set, locale: r.tag, ...r.stored }))
 
 /** A case's cell as the engine takes it: a built-in format by its number. */
 export function formatted(c: DisplayCase): CellInput {

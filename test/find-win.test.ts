@@ -7,10 +7,10 @@
  * until a cell found before. Known differences are in `FIND_KNOWN` with
  * their reasons; the predictions committed before Excel ran each set are kept with how many cases Excel confirmed.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { findInBook, type FindCase, type StoredFind } from '../bench/coverage/find/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 const FIND_REASONS = {
@@ -58,13 +58,7 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:rules-held-5': 15,
 }
 
-const RUNS = TAGS.flatMap((tag) => {
-  const dir = new URL(`./excel/win/find/${localeDir(tag)}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({ tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredFind }))
-})
+const RUNS = localeSets<StoredFind>('win/find')
 
 /** The cells Excel found, once round; null when it answered an error (a cell to begin after outside the range, which findCells refuses too) or found more than it read. */
 function excelCells(run: (typeof RUNS)[number], c: FindCase): string[] | null {

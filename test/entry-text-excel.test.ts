@@ -6,13 +6,13 @@
  * apostrophe being the prefix character, and the cells under other formats are checked against it on Windows and the
  * Mac. The predictions committed before Excel for Mac ran keep their misses listed.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredEntry } from '../bench/coverage/entry.js'
 import { formulaBar, type EntryAnswer } from '../bench/coverage/entry/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import type { StoredCell } from '../bench/coverage/stored.js'
 import { entryText, parseEntry, sameValue } from '../src/index.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 /** Excel for Mac's own regional data: its ru-RU long time has a leading zero, where Windows's has none and the engine follows it. */
@@ -42,13 +42,7 @@ interface Run {
 }
 
 const RUNS: Run[] = (['Mac', 'Windows'] as const).flatMap((excel) =>
-  TAGS.flatMap((tag) => {
-    const dir = new URL(`./excel/${excel === 'Windows' ? 'win/' : ''}entry/${localeDir(tag)}`, import.meta.url)
-    if (!existsSync(dir)) return []
-    return readdirSync(dir)
-      .filter((f) => /^edit.*\.json$/.test(f))
-      .map((f) => ({ excel, tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredEntry }))
-  }),
+  localeSets<StoredEntry>(`${excel === 'Windows' ? 'win/' : ''}entry`, (f) => /^edit.*\.json$/.test(f)).map((r) => ({ excel, ...r })),
 )
 
 /**

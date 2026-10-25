@@ -7,11 +7,11 @@
 import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
 import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
-import { winFiles } from './excel-win-cases.js'
+import { storedSets } from './stored-sets.js'
 import { differences, differsOrThrows, engineReads, goesOn, predictionCheck } from './workbook-cases.js'
 import { currentCases } from './stored-cases.js'
 
-const SETS = winFiles<StoredWorkbook>('workbook/')
+const SETS = storedSets<StoredWorkbook>('win/workbook')
 
 /** `<set>:<case>` → cell → why it differs from Excel for Windows (at any read). */
 const PIXELS = 'a date that does not fit shows `#` across the cell: Excel for Windows measures the column in pixels, the engine in the Mac\'s points, so the count of `#` differs'

@@ -4,12 +4,12 @@
  * synchronous session, in the same thread and in a thread of the pool. Known differences would be in `END_KNOWN` with
  * their reasons (none); the predictions committed before Excel ran each set are kept with how many cases Excel confirmed.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { afterAll, describe, expect, it } from 'vitest'
 import { endBook, type EndAnswer, type EndSet, type StoredEnd } from '../bench/coverage/end/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 afterAll(closeCalcs)
@@ -24,13 +24,7 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:ru-held': 4,
 }
 
-const RUNS = TAGS.flatMap((tag) => {
-  const dir = new URL(`./excel/win/end/${localeDir(tag)}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({ tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredEnd }))
-})
+const RUNS = localeSets<StoredEnd>('win/end')
 
 const excelCell = (a: EndAnswer) => ('cell' in a ? a.cell : a.error)
 
