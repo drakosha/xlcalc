@@ -71,16 +71,6 @@ export function bindLinks(ast: Ast, books: readonly ExternalBook[] | undefined, 
   return fail ? { ok: false, ...(fail as LinkFail) } : { ok: true, ast: out }
 }
 
-/** Whether the formula refers to another workbook, by number or by file name. */
-export function readsLinks(ast: Ast): boolean {
-  let found = false
-  mapAst(ast, (n) => {
-    if (n.k === 'xref' || n.k === 'xname') found = true
-    return undefined
-  })
-  return found
-}
-
 /** A name of a sheet or a file in a reference as Excel writes it: in quotes unless it is a plain name (`Book2.xlsx`, `Sheet1`). */
 export const plain = (s: string) => PLAIN.test(s) && !readsAsCell(s)
 

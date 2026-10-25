@@ -66,7 +66,7 @@ const named = (axis: Axis, c: OutlineCommand) => ('at' in c ? spanKey(c.at, c.at
 export type OutlineAxes = Pick<SheetInput, 'rows' | 'columns' | 'outline'>
 
 /** Why Excel refuses an outline command: its code, and its message's key and parameters. */
-export interface OutlineRefused {
+interface OutlineRefused {
   ok: false
   code: OutlineRefusal
   message: { key: OutlineMessageKey; lines: Lines; span: string }

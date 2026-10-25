@@ -3,7 +3,7 @@
  * a watchdog that SIGKILLs it when its current phase takes longer than `phaseLimitMs`. Resolves with the raw facts —
  * the result message, whether it timed out, the phase it reached, when it began and how long it ran, the tail of its
  * stderr, its exit code and signal, and the fork's error if it never ran — for the caller to classify
- * (`hyperformula/run.mjs`, `compare/run.mjs`, `hyperformula/compare.mjs`).
+ * (`hyperformula/run.mjs`, `compare/run.mjs`).
  */
 import { fork } from 'node:child_process'
 

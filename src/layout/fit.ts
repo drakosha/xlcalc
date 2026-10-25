@@ -30,7 +30,7 @@ const widthAt = (points: number): number | null => (points === columnPoints(unde
  * The widths AutoFit gives the columns `lo` to `hi` of a sheet whose cells hold `cells` (in any order), as
  * `ColumnInput.width`, null for the default width; a column with nothing to show is left out, as it keeps its width.
  */
-export function fitWidths(rules: Rules, sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number): Record<string, number | null> {
+function fitWidths(rules: Rules, sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number): Record<string, number | null> {
   const formats = sheetLines(sheet)
   const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
