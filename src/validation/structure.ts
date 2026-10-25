@@ -8,10 +8,10 @@
  * again for its new first cell.
  */
 import type { BookInput, DataValidation } from '../contract.js'
-import { cornerOf, hi, intersect, LIMIT, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
+import { anyMeets, cornerOf, hi, inside, LIMIT, lo, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
-import { copyTransform, deleteSpan, insertSpan } from '../structure/transform.js'
+import { copyTransform, deleteSpan, formulaAt, growSpan } from '../structure/transform.js'
 import { withField } from '../looks/sheet.js'
 import { sheetKey } from '../syntax.js'
 import { anchorOf, areasOf, rangeText } from './rules.js'
@@ -24,10 +24,8 @@ export function withFormulas(v: DataValidation, f: (text: string) => string): Da
   return a === v.formula1 && b === v.formula2 ? v : { ...v, ...(a !== undefined ? { formula1: a } : {}), ...(b !== undefined ? { formula2: b } : {}) }
 }
 
-/** A formula written for cell `from` of `sheet` as at cell `to`: relative references move by the offset, as a copy moves them. */
-export function formulaAt(text: string, sheet: string, from: Cell, to: Cell, sheets: Map<string, string>): string {
-  return from.r === to.r && from.c === to.c ? text : rewriteFormula(text, sheet, sheet, copyTransform(to.r - from.r, to.c - from.c), sheets)
-}
+/** A formula moved from the cell it was written for to another of the same sheet (`structure/transform.ts`); a rule's formulas are readied by it. */
+export { formulaAt }
 
 /**
  * The rule over the ranges `areas`: its formulas as at the cell that was `old` before the operation (the new corner's),
@@ -88,8 +86,8 @@ export function shiftValidations(rules: DataValidation[] | undefined, sheet: str
     const areas = areasOf(v.range)!.flatMap((x) => {
       const [a, b] = [lo(x, axis), hi(x, axis)]
       const one = a === b && (axis === 'r' ? x.c1 === x.c2 : x.r1 === x.r2)
-      // a range whose last line is the one before the inserted lines takes them in, as their cells take that line's look
-      const s = n > 0 ? (b === at - 1 ? [a, Math.min(b + count, LIMIT[axis] - 1)] : insertSpan(a, b, at, count, LIMIT[axis], one)) : deleteSpan(a, b, at, count, LIMIT[axis], false)
+      // a range of one cell too (the set `edge-held`: B1048576 is B1048575:B1048576 after a row above is deleted)
+      const s = n > 0 ? growSpan(a, b, at, count, LIMIT[axis], one) : deleteSpan(a, b, at, count, LIMIT[axis], false)
       return s ? [withBounds(x, axis, s[0], s[1])] : []
     })
     const corner = areas.length ? cornerOf(areas) : null
@@ -173,7 +171,7 @@ function withoutAreas(rules: DataValidation[], holes: Rect[], sheet: string, she
 
 /** A sheet's rules without the cells of `holes` (Excel's Clear over them), their ranges joined where they touch; the same array when no rule meets them. */
 export function clearValidations(rules: DataValidation[] | undefined, holes: Rect[], sheet: string, sheets: Map<string, string>): DataValidation[] | undefined {
-  if (!rules?.some((v) => areasOf(v.range)!.some((x) => holes.some((h) => meets(x, h))))) return rules
+  if (!rules?.some((v) => anyMeets(areasOf(v.range)!, holes))) return rules
   const kept = withoutAreas(rules, holes, sheet, sheets).map((v) => tidy(v, sheet, sheets))
   return kept.length ? kept : undefined
 }
@@ -191,7 +189,7 @@ export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t:
   const landed: Rect[] = []
   for (const [dr, dc] of p.offsets)
     for (const v of src) {
-      const pieces = areasOf(v.range)!.flatMap((x) => intersect(x, p.src) ?? [])
+      const pieces = inside(areasOf(v.range)!, p.src)
       if (!pieces.length) continue
       const areas = pieces.map((x) => shiftRect(x, dr, dc))
       landed.push(...areas)

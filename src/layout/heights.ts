@@ -12,6 +12,7 @@ import { layerOf } from '../looks/sheet.js'
 import { MAX_COLS, parseAddress } from '../model.js'
 import { columnPoints } from '../numfmt.js'
 import { outValue } from '../result.js'
+import { bands } from '../sorted.js'
 import { advance } from '../numfmt/advances.js'
 import { resultSheet, type Placed } from './result-sheet.js'
 import { sheetLines } from './lines.js'
@@ -147,14 +148,13 @@ export function fitHeights(styles: readonly CellStyle[], sheet: SheetInput, cell
     if (x) needs.push([Math.max(r1, lo), Math.min(r2, hi), ...x])
   }
   // the rows in runs of one height: their style's line or the base, the needs over them, a row's own cells
-  const cuts = [...new Set([lo, hi + 1, ...entries, ...needs.flatMap(([a, b]) => [a, b + 1]), ...[...rows.keys()].flatMap((r) => [r, r + 1])])].filter((x) => x >= lo && x <= hi + 1).sort((a, b) => a - b)
+  const cuts = bands([lo, hi + 1, ...entries, ...needs.flatMap(([a, b]) => [a, b + 1]), ...[...rows.keys()].flatMap((r) => [r, r + 1])].filter((x) => x >= lo && x <= hi + 1))
   const out: Record<string, number | null> = {}
   let run: [number, number, number] | null = null
   const flush = () => {
     if (run) out[spanKey(run[0], run[1], 'r')] = run[2] === DEFAULT_HEIGHT ? null : run[2]
   }
-  for (let k = 0; k + 1 < cuts.length; k++) {
-    const [a, b] = [cuts[k], cuts[k + 1] - 1]
+  for (const [a, b] of cuts) {
     const own = lines.row(a)?.style
     let n = own === undefined ? base : lineNeed(sizeOf(styles, own))
     for (const [x, y, above, below] of needs) if (x <= a && y >= b) n = most(n, [above, below])
