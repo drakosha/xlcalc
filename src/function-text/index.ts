@@ -6,7 +6,7 @@
 import { wordKey } from '../collate.js'
 import type { Locale } from '../locale/types.js'
 import { checkString } from '../input/basic.js'
-import { checkLocaleArg } from '../locale/load.js'
+import { optionalLocale } from '../locale/load.js'
 import { strict } from '../strict-args.js'
 
 /** What each function does, one line in en-US. */
@@ -490,6 +490,6 @@ const DESCRIPTIONS: Readonly<Record<string, string>> = {
  */
 export const functionDescription = /* @__PURE__ */ strict(function functionDescription(fn: string, locale?: string | Locale): string | null {
   const name = wordKey(checkString(fn, 'fn'))
-  const own = locale === undefined ? undefined : checkLocaleArg(locale, 'locale').functionText?.descriptions
+  const own = optionalLocale(locale, 'locale')?.functionText?.descriptions
   return own?.[name] ?? DESCRIPTIONS[name] ?? null
 })

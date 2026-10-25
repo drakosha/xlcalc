@@ -11,8 +11,9 @@ import { epochOf } from '../../dates.js'
 import { checkBook, ITERATION, SHEET_STATES } from '../../input.js'
 import { InputError, what } from '../../input-error.js'
 import { checkNumber, object, onlyKeys, onlyOptions } from '../../input/basic.js'
+import { optionalLocale } from '../../locale/load.js'
 import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
-import { issueLocale, Issues, type XlsxMessage } from '../issues.js'
+import { Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
@@ -140,7 +141,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   const bytes = fileBytes(data)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
   onlyOptions(o, 'opts', ['locale', 'limits'])
-  const language = issueLocale(o)
+  const language = optionalLocale(o.locale, 'opts.locale')
   const archive = openArchive(bytes, o.limits === undefined ? undefined : checkLimits(o.limits))
   const issues = new Issues()
   const root = await relsOf(archive, '')

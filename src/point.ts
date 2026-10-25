@@ -12,7 +12,7 @@
 import type { PointAction, ScanOptions } from './contract.js'
 import { checkNumber, checkString, object, onlyKeys } from './input/basic.js'
 import { sidesOf } from './locale/index.js'
-import { checkLocaleArg } from './locale/load.js'
+import { optionalLocale } from './locale/load.js'
 import { ownErrors, translate } from './locale/translate.js'
 import type { Locale } from './locale/types.js'
 import { FormulaError } from './syntax/ast.js'
@@ -46,7 +46,7 @@ export function typedArgs(text: string, caret: number | undefined, opts: ScanOpt
   const t = checkString(text, 'text')
   if (caret !== undefined) checkNumber(caret, 'caret', 0, t.length, true)
   if (opts !== undefined) onlyKeys(object(opts, 'opts', "options such as { locale: 'ru-RU' }"), 'opts', ['locale'])
-  return { t, at: caret ?? t.length, locale: opts?.locale === undefined ? undefined : checkLocaleArg(opts.locale, 'opts.locale') }
+  return { t, at: caret ?? t.length, locale: optionalLocale(opts?.locale, 'opts.locale') }
 }
 
 /**

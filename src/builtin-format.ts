@@ -5,7 +5,7 @@
  * `numberFormat` takes a code.
  */
 import { InputError, what } from './input-error.js'
-import { checkLocaleArg } from './locale/load.js'
+import { optionalLocale } from './locale/load.js'
 import { builtinIn } from './locale/rules.js'
 import type { Locale } from './locale/types.js'
 import { isBuiltin } from './numfmt.js'
@@ -17,6 +17,6 @@ import { isBuiltin } from './numfmt.js'
  */
 export function builtinFormatCode(id: number, locale?: string | Locale): string | undefined {
   if (typeof id !== 'number') throw new InputError('id', `expected the number of a built-in format, 0 to 49, got ${what(id)}`)
-  const loc = locale === undefined ? undefined : checkLocaleArg(locale, 'locale')
+  const loc = optionalLocale(locale, 'locale')
   return isBuiltin(id) ? builtinIn(loc)(id) : undefined
 }

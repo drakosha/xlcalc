@@ -8,7 +8,7 @@ import { overlapping, parseMerge } from './layout/merges.js'
 import { checkSpan, SPAN_KEY } from './layout/spans.js'
 import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
-import { checkBookLocale, checkLocaleArg } from './locale/load.js'
+import { checkBookLocale, optionalLocale } from './locale/load.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import type { Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
@@ -532,7 +532,7 @@ export function checkNameOptions(v: unknown, path = 'opts'): NameOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU' }")
   onlyKeys(o, path, ['locale'])
-  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
+  optionalLocale(o.locale, `${path}.locale`)
   return o as NameOptions
 }
 
@@ -543,7 +543,7 @@ export function checkNamesContext(v: unknown, path = 'ctx'): NamesContext {
   if (o.sheets === undefined) throw new InputError(`${path}.sheets`, "expected the workbook's sheet names as an array of strings")
   const { locale, ...rest } = o
   checkValidateContext(rest, path)
-  if (locale !== undefined) checkLocaleArg(locale, `${path}.locale`)
+  optionalLocale(locale, `${path}.locale`)
   return o as unknown as NamesContext
 }
 
@@ -561,7 +561,7 @@ export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   onlyKeys(o, path, ['numberFormat', 'locale', 'width', 'dateSystem'])
   if (o.numberFormat !== undefined) checkFormat(o.numberFormat, `${path}.numberFormat`)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
-  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
+  optionalLocale(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
   return o as DisplayOptions
 }
@@ -592,7 +592,7 @@ export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { numberFormat: '0.00' } }")
   onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now', 'externalBooks', 'inPlace'])
-  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
+  optionalLocale(o.locale, `${path}.locale`)
   if (o.inPlace !== undefined) checkBoolean(o.inPlace, `${path}.inPlace`)
   if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`, false)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
