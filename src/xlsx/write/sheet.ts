@@ -157,7 +157,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   // `cm` marks a dynamic array formula
   // the cells of the sheet's looks numbered among its entries, as entries of theirs would be (`numberLooks`)
   const layer = layerOf(sheet)
-  const layerXf = layer ? numberLooks(sheet, layer, sAttr) : null
+  const layerXf = layer ? numberLooks(sheet, layer, lined, sAttr) : null
   const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
     const cm = dynamic ? ' cm="1"' : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
@@ -301,10 +301,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
  * The cell format of each look of the sheet's looks (`sAttr` of a cell of it, ` s="n"` or none), numbered with the sheet's
  * entries as entries of theirs would be: each cell of the looks just before the first entry after it by address, the
  * entries in their order, as a file read lists them (a cell a note or a link alone made comes last); by cell where the
- * sheet's rows or columns have a look, which a cell's whole look takes.
+ * sheet's rows or columns have a look (`lined`), which a cell's whole look takes.
  */
-function numberLooks(sheet: SheetInput, layer: Layer, sAttr: (addr: string, c: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
-  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.numberFormat !== undefined))
+function numberLooks(sheet: SheetInput, layer: Layer, lined: boolean, sAttr: (addr: string, c: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
   const byLook: (string | undefined)[] = []
   const attr = (r: number, c: number, look: number) => (lined ? sAttr(formatAddress(r, c), layer.looks.list[look]) : (byLook[look] ??= sAttr(formatAddress(r, c), layer.looks.list[look])))
   // the looks not numbered yet; once none is left, only the entries take new numbers
