@@ -6,13 +6,13 @@
  * with closures and eval.
  */
 import { createHash } from 'node:crypto'
-import { afterAll, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { valuesHash, type FillLine } from '../src/canon.js'
 import { CONFIG_VERSION } from '../src/config.js'
 import { compute, createInlineCalc, createSession, type BookInput, type CellEdit, type CellInput, type CellValue, type ComputeResult, type Execution, type Session, type StructureOp } from '../src/index.js'
 import { clockSerial, createState, formatAddress, outValue, toCellValue } from '../src/internal.js'
 import { mulberry32, synthBook } from '../src/synth.js'
-import { pool } from './fixtures/pool.js'
+import { closedAfter } from './fixtures/pool.js'
 import './locales.js'
 
 const CLOCK = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -218,8 +218,7 @@ const BOOKS: [string, BookInput][] = [...EDGE, ['portions of lines', portions], 
 
 // ---------- the tests ----------
 
-const pools: { close(): Promise<void> }[] = []
-afterAll(() => Promise.all(pools.map((p) => p.close())))
+const { made } = closedAfter()
 
 describe('hash and the canonical text', () => {
   it('a book keeps the hash recorded before streaming canonicalization', () => {
@@ -280,8 +279,7 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution: Executi
 
   it('in the same thread and in a thread, after the same steps', async () => {
     const calc = createInlineCalc({ sliceMs: 2 })
-    const p = await pool({ threads: 2 })
-    pools.push(p)
+    const p = await made({ threads: 2 })
     for (const [i, [name, book]] of BOOKS.slice(0, EDGE.length + 8).entries()) {
       const s = createSession(book, { clock: CLOCK, execution })
       const [a, b] = [await calc.createSession(book, { clock: CLOCK, execution }), await p.createSession(book, { clock: CLOCK, execution })]

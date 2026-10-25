@@ -4,21 +4,16 @@
  * stop the session's hash is the full recalculation's of its book, the book passes the checks of a new one, and undo and
  * redo go on. In a synchronous session, in the same thread and in a thread, with closures and eval.
  */
-import { afterAll, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { CalcError, compute, createInlineCalc, createSession, type AsyncSession, type BookInput, type Calc, type CalcOptions, type Execution, type Session } from '../src/index.js'
 import { checkBook } from '../src/input.js'
 import { CLOCK } from './async-books.js'
-import { pool } from './fixtures/pool.js'
+import { closedAfter } from './fixtures/pool.js'
 
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
-const inline = () => {
-  const c = createInlineCalc({ sliceMs: 0 })
-  calcs.push(c)
-  return c
-}
+const { keep, made } = closedAfter()
+const inline = () => keep(createInlineCalc({ sliceMs: 0 }))
 let shared: Calc | undefined
-const threads = async () => shared ?? (calcs.push((shared = await pool({ threads: 1 }))), shared)
+const threads = async () => shared ?? (shared = await made({ threads: 1 }))
 
 /** A signal that reports aborted from its n-th poll on: a stop at each point of a call in turn. */
 const stopsAt = (n: number) => {
