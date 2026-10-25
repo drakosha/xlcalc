@@ -6,7 +6,7 @@ import { toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
-import { formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
+import { addressOrder, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks, type Looks } from './shown.js'
@@ -130,7 +130,7 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
     }
     for (const a of mine) listed.add(a)
     // what the sheet's conditional formats give the cells: every cell of a window, the listed ones of a larger rectangle
-    for (const [k, v] of yield* windowLooks(state, s, x, small ? undefined : new Set(mine.map((a) => cellIndex(a))))) cond.set(k, v)
+    for (const [k, v] of yield* windowLooks(state, s, x, small ? undefined : new Set(mine.map(addressOrder)))) cond.set(k, v)
   }
   for (const k of cond.keys()) listed.add(formatAddress(Math.floor(k / MAX_COLS), k % MAX_COLS))
   const out: Record<string, CellView> = {}
@@ -141,11 +141,6 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
     out[addr] = viewOf(state, s, addr, row, col, layer, look, spill.get(addr), cond.get(row * MAX_COLS + col), code)
   }
   return out
-}
-
-const cellIndex = (addr: string) => {
-  const { row, col } = parseAddress(addr)
-  return row * MAX_COLS + col
 }
 
 /**
