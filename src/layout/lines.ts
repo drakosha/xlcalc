@@ -36,18 +36,20 @@ export interface SheetLines {
 }
 
 /**
- * The lines of a sheet's rows or columns, read once for a state (a session's): a change of the layout, a structure
- * operation and an undo give the sheet new maps, never change one, so a map read once stays as it was read.
+ * What `make` reads of a part of a sheet (its rows, columns, merged areas), read once for a state (a session's): a change
+ * of the layout, a structure operation and an undo give the sheet new parts, never change one, so a part read once stays
+ * as it was read.
  */
-const read = new WeakMap<EngineState, WeakMap<object, Line<unknown>[]>>()
-function linesOf<T>(state: EngineState, map: Record<string, T> | undefined, axis: 'r' | 'c'): Line<T>[] {
-  if (!map) return []
-  let maps = read.get(state)
-  if (!maps) read.set(state, (maps = new WeakMap()))
-  let ls = maps.get(map) as Line<T>[] | undefined
-  if (!ls) maps.set(map, (ls = lines(map, axis)))
-  return ls
+const read = new WeakMap<EngineState, WeakMap<object, unknown>>()
+export function readOnce<T>(state: EngineState, part: object, make: () => T): T {
+  let parts = read.get(state)
+  if (!parts) read.set(state, (parts = new WeakMap()))
+  if (!parts.has(part)) parts.set(part, make())
+  return parts.get(part) as T
 }
+
+/** The lines of a sheet's rows or columns, read once for a state (`readOnce`). */
+const linesOf = <T>(state: EngineState, map: Record<string, T> | undefined, axis: 'r' | 'c'): Line<T>[] => (map ? readOnce(state, map, () => lines(map, axis)) : [])
 
 /** A sheet's lines; with the session's `state`, read once for it. */
 export function sheetLines(sh: Pick<SheetInput, 'cells' | 'looks' | 'rows' | 'columns'>, state?: EngineState): SheetLines {

@@ -53,14 +53,20 @@ export function toMap<T>(ls: Line<T>[], axis: Axis): Record<string, T> {
 
 /** The entry of line `i` among entries. */
 export function entryAt<T>(ls: Line<T>[], i: number): T | undefined {
-  // the entries are in order and do not overlap: the last one starting at or before `i`
-  let [a, b] = [0, ls.length - 1]
+  const e = ls[firstEnding(ls, i)]
+  return e && e[0] <= i ? e[2] : undefined
+}
+
+/** The index of the first of entries `ls` (in order) that ends at or after line `i`; their length for none. */
+export function firstEnding(ls: Line<unknown>[], i: number): number {
+  // the entries do not overlap, so their ends are in order too
+  let [a, b] = [0, ls.length]
   while (a < b) {
-    const m = (a + b + 1) >> 1
-    if (ls[m][0] <= i) a = m
-    else b = m - 1
+    const m = (a + b) >> 1
+    if (ls[m][1] < i) a = m + 1
+    else b = m
   }
-  return ls[a] && ls[a][0] <= i && i <= ls[a][1] ? ls[a][2] : undefined
+  return a
 }
 
 /** The entry of line `i` of a map. */
@@ -77,15 +83,21 @@ function patched<T extends object>(entry: T | undefined, patch: LinePatch<T>): T
 }
 
 /** The map with `patch` applied to every line of [lo, hi]: spans it cuts are split, entries left empty are dropped. */
-export function patchLines<T extends object>(map: Record<string, T> | undefined, axis: Axis, lo: number, hi: number, patch: LinePatch<T>): Record<string, T> {
+export const patchLines = <T extends object>(map: Record<string, T> | undefined, axis: Axis, lo: number, hi: number, patch: LinePatch<T>): Record<string, T> =>
+  toMap(patchIn(lines(map, axis), lo, hi, patch), axis)
+
+/**
+ * Entries `ls` (in order) with `patch` applied to every line of [lo, hi] as `patchLines` applies it, changed in place
+ * (their tuples are replaced, never changed): many patches of one map parse and sort it once.
+ */
+export function patchIn<T extends object>(ls: Line<T>[], lo: number, hi: number, patch: LinePatch<T>): Line<T>[] {
+  const i = firstEnding(ls, lo)
+  let j = i
   const out: Line<T>[] = []
   let next = lo
   const put = (a: number, b: number, v: T | undefined) => v && out.push([a, b, v])
-  for (const [a, b, v] of lines(map, axis)) {
-    if (b < lo || a > hi) {
-      out.push([a, b, v])
-      continue
-    }
+  for (; ls[j]?.[0] <= hi; j++) {
+    const [a, b, v] = ls[j]
     // a gap before this span inside [lo, hi] gets the patch alone
     if (a > next) put(next, a - 1, patched(undefined, patch))
     if (a < lo) out.push([a, lo - 1, v])
@@ -94,7 +106,10 @@ export function patchLines<T extends object>(map: Record<string, T> | undefined,
     next = b + 1
   }
   if (next <= hi) put(next, hi, patched(undefined, patch))
-  return toMap(out, axis)
+  // a long run of new entries is not spread into the arguments of one call
+  if (out.length < 4096) ls.splice(i, j - i, ...out)
+  else for (const x of out.concat(ls.splice(i).slice(j - i))) ls.push(x)
+  return ls
 }
 
 /** The entries of `ls` clipped to [lo, hi], moved by `d`. */

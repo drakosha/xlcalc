@@ -1,9 +1,9 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
-import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, RowsFit, SheetInput, SheetLayout } from '../contract.js'
+import type { BookInput, BookLayout, CellInput, CellReplace, ColumnInput, ColumnsFit, LayoutEdit, RowInput, RowsFit, SheetInput, SheetLayout } from '../contract.js'
 import { setInput, settled, sheetIndexOf, type EngineState } from '../engine.js'
 import { InputError } from '../input-error.js'
 import { hasLooks, inputIn, layerOf } from '../looks/sheet.js'
-import { parseSpan, patchLines } from '../layout/spans.js'
+import { lines, parseSpan, patchIn, toMap, type Line } from '../layout/spans.js'
 import { bookScalar, parseAddress } from '../model.js'
 import { parseMerge } from '../layout/merges.js'
 import { meets } from '../structure/area.js'
@@ -103,6 +103,13 @@ export type SetLayoutEdit = Exclude<LayoutEdit, ColumnsFit | RowsFit>
 /** Layout edits (checked) applied to the book: each changed sheet is a new object with the same cells; the changed sheets by index. */
 export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex: (name: string) => number): Map<number, SheetInput> {
   const changed = new Map<number, SheetInput>()
+  // each sheet's columns and rows patched as one list, read and keyed once however many edits there are; the key is
+  // put in its place in the sheet at the first edit, as a map patched at once would be
+  const patching = new Map<SheetInput, { columns?: Line<ColumnInput>[]; rows?: Line<RowInput>[] }>()
+  const listOf = <K extends 'columns' | 'rows'>(sheet: SheetInput, key: K) => {
+    const x = patching.get(sheet) ?? patching.set(sheet, {}).get(sheet)!
+    return (x[key] ??= lines((sheet[key] = sheet[key]) as never, key === 'columns' ? 'c' : 'r')) as NonNullable<(typeof x)[K]>
+  }
   for (const e of edits) {
     const i = sheetIndex(e.sheet)
     const sheet = changed.get(i) ?? { ...book.sheets[i] }
@@ -114,8 +121,12 @@ export function applyLayout(book: BookInput, edits: SetLayoutEdit[], sheetIndex:
     else if ('validations' in e) sheet.validations = e.validations.map((v) => ({ ...v }))
     else if ('outline' in e) sheet.outline = e.outline ? { ...e.outline } : undefined
     // a width or height assigned leaves AutoFit; an explicit bestFit still describes a fitted size
-    else if ('columns' in e) sheet.columns = patchLines(sheet.columns, 'c', ...parseSpan(e.columns, 'c')!, e.set.width !== undefined && e.set.bestFit === undefined ? { ...e.set, bestFit: null } : e.set)
-    else sheet.rows = patchLines(sheet.rows, 'r', ...parseSpan(e.rows, 'r')!, e.set.height !== undefined && e.set.bestFit === undefined ? { ...e.set, bestFit: null } : e.set)
+    else if ('columns' in e) patchIn(listOf(sheet, 'columns'), ...parseSpan(e.columns, 'c')!, e.set.width !== undefined && e.set.bestFit === undefined ? { ...e.set, bestFit: null } : e.set)
+    else patchIn(listOf(sheet, 'rows'), ...parseSpan(e.rows, 'r')!, e.set.height !== undefined && e.set.bestFit === undefined ? { ...e.set, bestFit: null } : e.set)
+  }
+  for (const [sheet, { columns, rows }] of patching) {
+    if (columns) sheet.columns = toMap(columns, 'c')
+    if (rows) sheet.rows = toMap(rows, 'r')
   }
   for (const [i, sheet] of changed) {
     for (const k of ['columns', 'rows', 'merges', 'validations'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]

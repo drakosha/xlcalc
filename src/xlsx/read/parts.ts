@@ -9,6 +9,7 @@ import { cellCount, cellsWithin, parseRange, type Rect } from '../../structure/a
 import type { Issues } from '../issues.js'
 import { attr, attributes, element, elements, has } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
+import { setCell } from './cells.js'
 import type { Rel } from './package.js'
 import { fileCell } from './refs.js'
 import { stringItem } from './strings.js'
@@ -169,11 +170,11 @@ function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issue
   return out
 }
 
-/** Notes, threads of comments and hyperlinks put on the sheet's cells (a cell holding only them is made). */
-export function readCellParts(src: PartsSource, cells: Record<string, CellInput>, issues: Issues): void {
+/** Notes, threads of comments and hyperlinks put on the sheet's cells (a cell holding only them is made, and goes to `added`). */
+export function readCellParts(src: PartsSource, cells: Record<string, CellInput>, issues: Issues, added?: Set<string>): void {
   const list = comments(src.comments, src.sheet, issues)
   const placed = new Map(list.flatMap((c) => (placeholderOf(c) ? [[placeholderOf(c)!, c.cell] as const] : [])))
   const thread = threads(src, placed, issues)
-  for (const [cell, note] of [...notes(src, list, thread, issues), ...thread]) cells[cell] = { ...cells[cell], note }
-  for (const [cell, link] of links(src, cells, issues)) cells[cell] = { ...cells[cell], link }
+  for (const [cell, note] of [...notes(src, list, thread, issues), ...thread]) setCell(cells, cell, { ...cells[cell], note }, added)
+  for (const [cell, link] of links(src, cells, issues)) setCell(cells, cell, { ...cells[cell], link }, added)
 }
