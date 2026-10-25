@@ -9,6 +9,7 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | measurement | 5260 | 5255 | 5256 | 5251 | 0 |
 | ru-RU | measurement | 5260 | 5252 | 5256 | 5248 | 0 |
 | en-US | probes | 959 | 959 | 959 | 959 | 0 |
+| en-US | accrint-ironcalc-held | 42 | 42 | 42 | 42 | 0 |
 | en-US | areas-each | 52 | 52 | 52 | 52 | 0 |
 | en-US | areas | 1137 | 1137 | 1137 | 1137 | 0 |
 | en-US | arity | 62 | 62 | 62 | 62 | 0 |
@@ -18,10 +19,19 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | collation | 174 | 174 | 174 | 174 | 0 |
 | en-US | complex-text | 156 | 156 | 156 | 156 | 0 |
 | en-US | core | 258 | 258 | 258 | 258 | 0 |
+| en-US | countif-ironcalc-held | 23 | 23 | 23 | 23 | 0 |
 | en-US | criteria-text | 37 | 37 | 37 | 37 | 0 |
 | en-US | criteria | 69 | 69 | 69 | 69 | 0 |
+| en-US | currency-held | 34 | 34 | 34 | 34 | 0 |
+| en-US | database-ironcalc-held | 15 | 15 | 15 | 15 | 0 |
 | en-US | date-day | 93 | 93 | 93 | 93 | 0 |
+| en-US | date-ironcalc-held | 33 | 33 | 33 | 33 | 0 |
 | en-US | date-noyear | 191 | 191 | 191 | 191 | 0 |
+| en-US | euro-ironcalc-held-2 | 13 | 13 | 13 | 13 | 0 |
+| en-US | euro-ironcalc-held-3 | 16 | 16 | 16 | 16 | 0 |
+| en-US | euro-ironcalc-held | 29 | 29 | 29 | 29 | 0 |
+| en-US | finance-ironcalc-held-2 | 17 | 17 | 17 | 17 | 0 |
+| en-US | finance-ironcalc-held | 32 | 32 | 32 | 32 | 0 |
 | en-US | findate-edges | 72 | 72 | 72 | 72 | 0 |
 | en-US | findate | 1615 | 1614 | 1611 | 1611 | 0 |
 | en-US | fit-offset-held | 43 | 43 | 36 | 36 | 0 |
@@ -37,6 +47,8 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | lookup-held | 19 | 19 | 19 | 19 | 0 |
 | en-US | lookup-own-held | 9 | 9 | 5 | 5 | 0 |
 | en-US | lookup-rules | 14 | 14 | 14 | 14 | 0 |
+| en-US | low-values-held | 32 | 32 | 29 | 29 | 0 |
+| en-US | math-ironcalc-held | 30 | 30 | 30 | 30 | 0 |
 | en-US | matheng | 3163 | 3151 | 3151 | 3151 | 0 |
 | en-US | name-case-held | 23 | 16 | 22 | 16 | 1 |
 | en-US | near-integer | 4220 | 4220 | 4219 | 4219 | 0 |
@@ -48,6 +60,9 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | power-edges-held | 28 | 28 | 28 | 28 | 0 |
 | en-US | power-neg-held | 56 | 56 | 56 | 56 | 0 |
 | en-US | ref-deps | 11 | 11 | 11 | 11 | 0 |
+| en-US | refs-ironcalc-held-2 | 10 | 10 | 10 | 10 | 0 |
+| en-US | refs-ironcalc-held | 35 | 35 | 35 | 35 | 0 |
+| en-US | rounding-ironcalc-held | 32 | 32 | 32 | 32 | 0 |
 | en-US | seconds-held | 420 | 420 | 420 | 420 | 0 |
 | en-US | sheet-cells | 13 | 13 | 13 | 13 | 0 |
 | en-US | single-values | 66 | 66 | 66 | 66 | 0 |
@@ -59,10 +74,21 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | sumproduct-held | 17 | 17 | 17 | 17 | 0 |
 | en-US | sumx-cell-held | 34 | 34 | 34 | 34 | 0 |
 | en-US | tests-cell-held | 17 | 17 | 17 | 17 | 0 |
+| en-US | text-date-ironcalc-held-2 | 12 | 12 | 12 | 12 | 0 |
+| en-US | text-date-ironcalc-held-3 | 12 | 12 | 12 | 12 | 0 |
+| en-US | text-date-ironcalc-held-4 | 27 | 27 | 27 | 27 | 0 |
+| en-US | text-date-ironcalc-held | 19 | 19 | 19 | 19 | 0 |
 | en-US | text-format-more | 22 | 22 | 22 | 22 | 0 |
 | en-US | text-format | 479 | 474 | 479 | 474 | 0 |
 | en-US | text | 1229 | 1229 | 1229 | 1229 | 0 |
+| en-US | textafter-ironcalc-held-2 | 10 | 10 | 10 | 10 | 0 |
+| en-US | textafter-ironcalc-held | 23 | 23 | 23 | 23 | 0 |
 | en-US | time-text | 286 | 286 | 286 | 286 | 0 |
+| en-US | xlookup-ironcalc-held-2 | 30 | 30 | 30 | 30 | 0 |
+| en-US | xlookup-ironcalc-held | 39 | 39 | 39 | 39 | 0 |
+| en-US | xmatch-regex-held-2 | 9 | 0 | 0 | 0 | 0 |
+| en-US | xmatch-regex-held-3 | 6 | 0 | 0 | 0 | 0 |
+| en-US | xmatch-regex-held | 22 | 3 | 3 | 3 | 0 |
 | ru-RU | char-code | 305 | 298 | 305 | 298 | 0 |
 | ru-RU | collation | 174 | 84 | 174 | 84 | 0 |
 | ru-RU | criteria-text | 37 | 37 | 37 | 37 | 0 |
@@ -125,6 +151,40 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | text-format | date#82 | TEXT | `TEXT(45688.999999,"[$-419]mmmm")` | "февраль" | "Февраль" | "Февраль" | Windows | platform: the engine follows Windows |
 | en-US | text-format | date#83 | TEXT | `TEXT(0.75/86400,"[$-419]mmmm")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
 | en-US | text-format | date#84 | TEXT | `TEXT(1.5,"[$-419]mmmm")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| en-US | xmatch-regex-held-2 | XMATCH#1 | XMATCH | `_xlfn.XMATCH("1\.5",Ry!A1:A7,3)` | 1 | #VALUE | 1 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-2 | XMATCH#2 | XMATCH | `_xlfn.XMATCH("E\+20",Ry!A1:A7,3)` | 2 | #VALUE | 2 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-2 | XMATCH#3 | XMATCH | `_xlfn.XMATCH("^-",Ry!A1:A7,3)` | 3 | #VALUE | 3 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-2 | XMATCH#4 | XMATCH | `_xlfn.XMATCH("TRUE",Ry!A1:A7,3)` | 4 | #VALUE | 4 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-2 | XMATCH#5 | XMATCH | `_xlfn.XMATCH("N/A",Ry!A1:A7,3)` | #NA | #VALUE | #NA | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-2 | XMATCH#6 | XMATCH | `_xlfn.XMATCH("^$",Ry!A1:A7,3)` | 5 | #VALUE | 5 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-2 | XMATCH#7 | XMATCH | `_xlfn.XMATCH("d$",Ry!A1:A7,3)` | 7 | #VALUE | 7 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-2 | XMATCH#8 | XMATCH | `_xlfn.XMATCH(1.5,Ry!A1:A7,3)` | 1 | #VALUE | 1 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-2 | XMATCH#9 | XMATCH | `_xlfn.XMATCH(TRUE,Ry!A1:A7,3)` | 4 | #VALUE | 4 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-3 | XMATCH#1 | XMATCH | `_xlfn.XMATCH("^$",Rz!A1:A3,3)` | 2 | #VALUE | 2 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-3 | XMATCH#2 | XMATCH | `_xlfn.XMATCH("^$",Rz!A1:A3,3,-1)` | 2 | #VALUE | 2 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-3 | XMATCH#3 | XMATCH | `_xlfn.XMATCH("^$",Rz!A:A,3,-1)` | 1048576 | #VALUE | 1048576 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-3 | XMATCH#4 | XMATCH | `_xlfn.XMATCH("^$",Rz!A3:A10,3)` | 2 | #VALUE | 2 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-3 | XMATCH#5 | XMATCH | `_xlfn.XMATCH("x*",Rz!A1:A3,3)` | 1 | #VALUE | 1 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held-3 | XMATCH#6 | XMATCH | `_xlfn.XMATCH(".",Rz!A2:A2,3)` | #NA | #VALUE | #NA | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#1 | XMATCH | `_xlfn.XMATCH("[A-Z][a-z]+y",Rx!A1:A8,3,1)` | 4 | #VALUE | 4 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#2 | XMATCH | `_xlfn.XMATCH("[A-Z][a-z]+y",Rx!A1:A8,3,-1)` | 8 | #VALUE | 8 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | INDEX#1 | INDEX | `INDEX(Rx!A1:A8,_xlfn.XMATCH("[A-Z][a-z]+y",Rx!A1:A8,3,1))` | "Germany" | #VALUE | "Germany" | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#3 | XMATCH | `_xlfn.XMATCH(42,Rx!A1:A8,3)` | #NA | #VALUE | #NA | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#4 | XMATCH | `_xlfn.XMATCH("an",Rx!A1:A8,3)` | 1 | #VALUE | 1 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#5 | XMATCH | `_xlfn.XMATCH("^In",Rx!A1:A8,3)` | 2 | #VALUE | 2 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#6 | XMATCH | `_xlfn.XMATCH("ia$",Rx!A1:A8,3,-1)` | 3 | #VALUE | 3 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#7 | XMATCH | `_xlfn.XMATCH("y$",Rx!A1:A8,3)` | 4 | #VALUE | 4 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#8 | XMATCH | `_xlfn.XMATCH("I.a",Rx!A1:A8,3)` | 7 | #VALUE | 7 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#9 | XMATCH | `_xlfn.XMATCH("Ind*",Rx!A1:A8,3)` | 2 | #VALUE | 2 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#10 | XMATCH | `_xlfn.XMATCH("",Rx!A1:A8,3)` | 1 | #VALUE | 1 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#11 | XMATCH | `_xlfn.XMATCH("germany",Rx!A1:A12,3)` | #NA | #VALUE | #NA | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#12 | XMATCH | `_xlfn.XMATCH("(?i)germany",Rx!A1:A12,3)` | 4 | #VALUE | 4 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#13 | XMATCH | `_xlfn.XMATCH("GERMANY",Rx!A1:A12,3)` | 12 | #VALUE | 12 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#15 | XMATCH | `_xlfn.XMATCH(42,Rx!A10:A11,3)` | 1 | #VALUE | 1 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XMATCH#16 | XMATCH | `_xlfn.XMATCH("\d",Rx!A10:A12,3)` | 1 | #VALUE | 1 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XLOOKUP#1 | XLOOKUP | `_xlfn.XLOOKUP("^Sp",Rx!A1:A8,Rx!B1:B8,,3)` | 5 | #VALUE | 5 | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XLOOKUP#2 | XLOOKUP | `_xlfn.XLOOKUP("zzz",Rx!A1:A8,Rx!B1:B8,"none",3)` | "none" | #VALUE | "none" | Mac | platform: winRegexMatch |
+| en-US | xmatch-regex-held | XLOOKUP#3 | XLOOKUP | `_xlfn.XLOOKUP("a$",Rx!A1:A8,Rx!B1:B8,,3,-1)` | 6 | #VALUE | 6 | Mac | platform: winRegexMatch |
 | ru-RU | char-code | CODE#142 | CODE | `CODE("中")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
 | ru-RU | char-code | CODE#143 | CODE | `CODE("😀")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
 | ru-RU | char-code | CODE#144 | CODE | `CODE("ā")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
@@ -310,10 +370,13 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | fuzz | 1#1327 | `_xlfn.TEXTJOIN(";",FALSE,IRR(D!I1:I5))` | "0.196309310268599" | "0.1963093102686" | textDigits |
 | en-US | fuzz | 2#472 | `_xlfn.TEXTJOIN(";",FALSE,FV(0.005,10,-200,7,TRUE))` | "2048.47532711544" | "2048.47532711546" | textDigits |
 | en-US | let | let:file#5 | `_xlfn.LET(_xlpm.TRUE,1,_xlpm.TRUE)` | 1 | #ERROR | letFileName |
-| en-US | lookup-own-held | LOOKUP#5 | `Lv!C1` | "" | #CYCLE | lookupReadZone |
-| en-US | lookup-own-held | LOOKUP#7 | `Lq!E10` | "F" | #CYCLE | lookupReadZone |
-| en-US | lookup-own-held | LOOKUP#8 | `Lp!E10` | "F" | #CYCLE | lookupReadZone |
-| en-US | lookup-own-held | LOOKUP#9 | `Lu!F2` | "c5" | #CYCLE | lookupReadZone |
+| en-US | lookup-own-held | LOOKUP#5 | `Lv!C1` | "" | 0 | lookupReadZone |
+| en-US | lookup-own-held | LOOKUP#7 | `Lq!E10` | "F" | 0 | lookupReadZone |
+| en-US | lookup-own-held | LOOKUP#8 | `Lp!E10` | "F" | 0 | lookupReadZone |
+| en-US | lookup-own-held | LOOKUP#9 | `Lu!F2` | "c5" | 0 | lookupReadZone |
+| en-US | low-values-held | unique-text#8 | `V!M3=V!M4` | false | true | textEquivalence |
+| en-US | low-values-held | unique-text#9 | `MATCH(V!M2,V!M1:M2,0)` | 2 | 1 | textEquivalence |
+| en-US | low-values-held | unique-text#10 | `COUNTIF(V!M1:M2,V!M1)` | 2 | 1 | textEquivalence |
 | en-US | near-integer | literal#7 | `(1-FTEST(D!C1:C8,D!C1:C8))*2^52` | 1.5 | 1 | lastBits |
 | en-US | stat-edges-held | VAR.P#1 | `_xlfn.VAR.P(Edge!A2:A10001)` | 0.00015977911949157714 | 0.0000668002774232626 | momentRounding |
 | en-US | stat-edges-held | VAR.P#2 | `_xlfn.VAR.P(Edge!A:A)` | 0.00015977911949157714 | 0.0000668002774232626 | momentRounding |
