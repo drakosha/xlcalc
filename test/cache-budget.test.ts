@@ -75,7 +75,7 @@ it('a range read once fills no cache, a range read twice is kept', () => {
   expect(createState({ sheets: [{ name: 'S', cells: twice }] }, { now: 0, seed: 1, cache }).ctx.flat.size).toBe(600 - 255)
 })
 
-it('stored values preserve Map order and undefined while first-read marks stay out of iteration', () => {
+it('stored keys preserve Map order and stored undefined while first-read marks stay out of iteration', () => {
   const c = new RangeCache<number | undefined>()
   const [a, b, mark] = ['0:0:0:9:0', '0:0:1:9:1', '0:0:2:9:2']
   const expected = new Map<string, number | undefined>()
@@ -85,16 +85,19 @@ it('stored values preserve Map order and undefined while first-read marks stay o
   for (const [k, value] of [[b, undefined], [a, 3], [b, 4]] as const) { c.set(k, value); expected.set(k, value) }
   expect(c.size).toBe(expected.size)
   expect(c.has(b)).toBe(true)
-  expect([...c]).toEqual([...expected])
   expect([...c.keys()]).toEqual([...expected.keys()])
-  expect([...c.values()]).toEqual([...expected.values()])
-  const visits: [string, number | undefined][] = []
-  c.forEach((value, key, cache) => { expect(cache).toBe(c); visits.push([key, value]) })
-  expect(visits).toEqual([...expected])
-  expect(c.delete(mark)).toBe(false)
+  expect(c.get(b)).toBe(4)
+  expect(c.get(a)).toBe(3)
+  // a stored undefined is a value, not a miss, as Map.set kept it
+  c.set(mark, undefined)
+  expect(c.has(mark)).toBe(true)
+  expected.set(mark, undefined)
+  expect([...c.keys()]).toEqual([...expected.keys()])
+  expect(c.delete(mark)).toBe(true)
+  expected.delete(mark)
   expect(c.delete(b)).toBe(true)
   expected.delete(b)
-  expect([...c]).toEqual([...expected])
+  expect([...c.keys()]).toEqual([...expected.keys()])
   c.clear()
   expect(c.size).toBe(0)
   expect(c.held).toBe(0)

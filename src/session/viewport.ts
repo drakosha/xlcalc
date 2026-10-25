@@ -8,7 +8,7 @@
  */
 import { DEFAULT_ROW_HEIGHT } from '../column-width.js'
 import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, SavedViewportOptions, SheetExtent, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
-import { toCellValue, valueAt, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { checkedEntryText } from '../entry/text.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
@@ -22,7 +22,7 @@ import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { formatCodeIn } from '../locale/rules.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
-import { cellResult, outValue, spilled } from '../result.js'
+import { cellResult, cellValue, spilled } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { lowerBound } from '../sorted.js'
 import { rectText, type Rect } from '../structure/area.js'
@@ -110,7 +110,7 @@ export function windowLines(x: Rect, o: ViewportOptions): WindowLines {
 
 /** Whether ascending `xs` holds a number from `lo` to `hi`. */
 const hits = (xs: number[], lo: number, hi: number) => {
-  const i = lowerBound(xs, lo, (x) => x)
+  const i = lowerBound(xs, lo)
   return i < xs.length && xs[i] <= hi
 }
 
@@ -187,7 +187,7 @@ export function sessionEditTexts(state: EngineState, now: string): (s: number, r
     const formula = id === undefined ? own?.formula : state.formulas[id]!.text
     // a cell without content of its own in an array's area opens with the array's formula, an old kind's
     const o = holds(own) ? undefined : ownerOf(state, s, r, c)
-    const view = { formula, value: outValue(toCellValue(valueAt(state, s, r, c))), ...(o ? { spillOf: formatAddress(o.r1, o.c1) } : {}) }
+    const view = { formula, value: cellValue(state, s, r, c), ...(o ? { spillOf: formatAddress(o.r1, o.c1) } : {}) }
     return x.edit.editText(view, own, x.lines.format(r, c, own), r, c)
   }
 }

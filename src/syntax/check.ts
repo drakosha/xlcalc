@@ -16,52 +16,27 @@ const positionOf = (text: string, needle: string) => Math.max(0, wordKey(text).i
 
 /** Argument counts of each function and the arguments it cannot leave out; literal arguments of external functions. */
 export function checkCalls(ast: Ast, src: string, external: (fn: string) => boolean): FormulaError | null {
-  const visit = (n: Ast): FormulaError | null => {
-    switch (n.k) {
-      case 'paren':
-      case 'un':
-      case 'pct':
-      case 'at':
-        return visit(n.a)
-      case 'union':
-        for (const a of n.items) {
-          const e = visit(a)
-          if (e) return e
-        }
-        return null
-      case 'bin':
-        return visit(n.a) ?? visit(n.b)
-      case 'let':
-        for (const a of [...n.binds.map((b) => b.value), ...(n.body ? [n.body] : [])]) {
-          const e = visit(a)
-          if (e) return e
-        }
-        return null
-      case 'fn': {
-        if (external(n.name)) {
-          for (const a of n.args) {
-            const lit = a.k === 'num' || a.k === 'str' || a.k === 'bool' || (a.k === 'un' && a.a.k === 'num')
-            if (!lit) return new FormulaError('unsupported', { key: 'externalLiterals', fn: n.name }, positionOf(src, n.name))
-          }
-          return null
-        }
-        const spec = arityFor(n.name)
-        if (!spec) return null
-        const k = n.args.length
-        if (!spec.takes(k)) return new FormulaError('syntax', { key: 'argumentCount', fn: n.name, counts: spec.counts, got: k }, positionOf(src, n.name))
-        const left = n.args.findIndex((a, i) => a.k === 'missing' && !spec.omits(i))
-        if (left >= 0) return new FormulaError('syntax', { key: 'argumentLeftOut', fn: n.name, position: left + 1 }, positionOf(src, n.name))
-        for (const a of n.args) {
-          const e = visit(a)
-          if (e) return e
-        }
-        return null
+  // the first error of `walk`'s pre-order, which is the same order the hand-written traversal took
+  let fail: FormulaError | null = null
+  walk(ast, (n) => {
+    if (fail || n.k !== 'fn') return
+    if (external(n.name)) {
+      for (const a of n.args) {
+        const lit = a.k === 'num' || a.k === 'str' || a.k === 'bool' || (a.k === 'un' && a.a.k === 'num')
+        if (!lit) fail = new FormulaError('unsupported', { key: 'externalLiterals', fn: n.name }, positionOf(src, n.name))
       }
-      default:
-        return null
+      return
     }
-  }
-  return visit(ast)
+    const spec = arityFor(n.name)
+    if (!spec) return
+    const k = n.args.length
+    if (!spec.takes(k)) fail = new FormulaError('syntax', { key: 'argumentCount', fn: n.name, counts: spec.counts, got: k }, positionOf(src, n.name))
+    else {
+      const left = n.args.findIndex((a, i) => a.k === 'missing' && !spec.omits(i))
+      if (left >= 0) fail = new FormulaError('syntax', { key: 'argumentLeftOut', fn: n.name, position: left + 1 }, positionOf(src, n.name))
+    }
+  })
+  return fail
 }
 
 /**

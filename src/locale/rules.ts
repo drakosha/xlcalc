@@ -6,6 +6,7 @@
  * code outside a book (the parser, the criteria index of `unstable/internal`) works by en-US.
  */
 import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
+import { inner } from '../model.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { decimalFirst, enCritNumber, enDates, enNumber, enTypedNumber, inSystem, textReaders, type DateSyntax } from '../dates.js'
 import { builtinCodes, builtinIn, EN_CODES, EN_NAMES, generalFormat, generalText, styleIn, type Dialect, type Names, type Style } from '../numfmt.js'
@@ -134,8 +135,7 @@ const DISPLAY = new WeakMap<Locale, Map<number, Rules>>()
 /** Rules that show values in a locale (a loaded locale's tag or an object; en-US without one) and a date system, kept for later calls. */
 export function displayRules(where: string | Locale | undefined, epoch = 0): Rules {
   const locale = localeOf(where)
-  let byEpoch = DISPLAY.get(locale)
-  if (!byEpoch) DISPLAY.set(locale, (byEpoch = new Map()))
+  const byEpoch = inner(DISPLAY, locale, () => new Map())
   let r = byEpoch.get(epoch)
   if (!r) byEpoch.set(epoch, (r = rulesOf(locale, { year: () => 1900, read: false }, epoch)))
   return r

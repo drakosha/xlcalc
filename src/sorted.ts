@@ -1,5 +1,10 @@
-/** First element whose numeric key is at least `value`, or the sorted array's length. */
-export function lowerBound<T>(xs: ArrayLike<T>, value: number, key: (x: T) => number): number {
+/**
+ * First element whose numeric key is at least `value`, or the sorted array's length. A plain number array takes its
+ * elements for keys; an array of anything else names its key, which cannot be left out.
+ */
+export function lowerBound(xs: ArrayLike<number>, value: number): number
+export function lowerBound<T>(xs: ArrayLike<T>, value: number, key: (x: T) => number): number
+export function lowerBound<T>(xs: ArrayLike<T>, value: number, key: (x: T) => number = (x) => x as number): number {
   let lo = 0
   let hi = xs.length
   while (lo < hi) {

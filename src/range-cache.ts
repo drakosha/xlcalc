@@ -89,8 +89,7 @@ export function keptWith(value: object, bytes: number): void {
   carried.get(value)?.(bytes)
 }
 
-export class RangeCache<T> implements Map<string, T> {
-  readonly [Symbol.toStringTag] = 'RangeCache'
+export class RangeCache<T> {
   private readonly ranges = new Map<string, Entry<T>>()
   private readonly index = new AreaIndex<Entry<T>>()
   /** Bytes this cache holds, by the budget's estimate. */
@@ -103,18 +102,8 @@ export class RangeCache<T> implements Map<string, T> {
     return entry !== undefined && entry.value !== MARK
   }
 
-  *entries(): MapIterator<[string, T]> {
-    for (const entry of this.ranges.values()) if (entry.value !== MARK) yield [entry.key, entry.value]
-  }
   *keys(): MapIterator<string> {
-    for (const [key] of this.entries()) yield key
-  }
-  *values(): MapIterator<T> {
-    for (const [, value] of this.entries()) yield value
-  }
-  [Symbol.iterator](): MapIterator<[string, T]> { return this.entries() }
-  forEach(visit: (value: T, key: string, map: Map<string, T>) => void, thisArg?: unknown): void {
-    for (const [key, value] of this.entries()) visit.call(thisArg, value, key, this)
+    for (const entry of this.ranges.values()) if (entry.value !== MARK) yield entry.key
   }
 
   constructor(private readonly budget?: CacheBudget) {

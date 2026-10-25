@@ -5,7 +5,7 @@
  * stacks hold one kind of step. Steps are kept by `depth` and by an estimate of their memory.
  */
 import type { BookInput, CellReplace, CellRef, CellStyle, LayoutEdit, SessionHistory, SheetInput, UndoCall, UndoOptions } from '../contract.js'
-import type { EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import type { Steps } from '../exec/budget.js'
 import { movesOf, type Geometry } from '../structure/geometry.js'
 import { checkedMapCell, namesOf } from '../structure/index.js'
@@ -218,7 +218,6 @@ export interface SessionCore {
   /** The book of `s` as it is now, put back by the function given the inputs the cells written since replaced; built again on the next call. */
   kept(s: EngineState): (cells: CellReplace[]) => void
   display: boolean
-  sheetIndex(s: EngineState): (name: string) => number | undefined
 }
 
 /** A step taken: the call it was of, what it changed, and the cells or the mapCell a host reads by. */
@@ -247,7 +246,7 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
   switch (step.kind) {
     case 'cells': {
       const [outcome, was] = yield* core.putCells(s, step.edits, true)
-      const cells = step.edits.map((e) => ({ sheet: s.sheetNames[core.sheetIndex(s)(e.sheet)!], cell: e.cell }))
+      const cells = step.edits.map((e) => ({ sheet: s.sheetNames[sheetIndexOf(s, e.sheet)!], cell: e.cell }))
       return [{ call: step.call, outcome, cells }, cellsStep(step.call, was)]
     }
     case 'layout': {

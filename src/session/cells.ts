@@ -13,6 +13,12 @@ import { inputAt } from './book.js'
 
 export { CONTENT }
 
+/** An object's fields, or null where every one is undefined (a cell's input, a style's patch). */
+export function someField<T>(out: Record<string, unknown>): T | null {
+  for (const k in out) if (out[k] !== undefined) return out as T
+  return null
+}
+
 /**
  * A cell's input with an edit's fields over it; null when nothing is left of the cell. An edit of null clears the content
  * and the hyperlink, as Excel's Delete key and ClearContents do (the set `lines/clear`).
@@ -32,8 +38,7 @@ function withFields(input: CellInput | undefined, fields: CellFields | null): Ce
       const v = fields[k as keyof CellFields]
       if (v !== null && v !== undefined) out[k] = v
     }
-  for (const k in out) if (out[k] !== undefined) return out as CellInput
-  return null
+  return someField<CellInput>(out)
 }
 
 /** Edits by fields of a book with `styles` styles: a sheet of the book, an address, the fields (null removing one) or null. */

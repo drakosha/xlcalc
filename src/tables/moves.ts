@@ -9,7 +9,7 @@ import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { say, type EngineMessage } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
-import { clockSerial } from '../result.js'
+import { clockOptions } from '../result.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { isErr } from '../values.js'
 import { headerEdits } from './headers.js'
@@ -40,7 +40,7 @@ export function renamedByPaste(tables: Tables, after: BookInput, areas: [number,
   }
   if (!cells.length) return after
   const clock = currentClock()
-  const state = createState(after, { now: clockSerial(clock), seed: clock.seed })
+  const state = createState(after, clockOptions(clock))
   const text = (v: unknown) => (isErr(v as never) ? ERROR_TEXT[(v as { code: keyof typeof ERROR_TEXT }).code] : String(state.ctx.rules.toText(v as never)))
   const edits = cells.map(({ s, addr }) => {
     const input = after.sheets[s].cells[addr]

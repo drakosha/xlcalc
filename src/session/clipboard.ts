@@ -69,8 +69,8 @@ export function* copyText(state: EngineState, s: number, asked: Rect, o: CopyTex
   const cond = yield* windowLooks(state, s, w.rects)
   const covered = new Set<number>()
   for (const m of mergesOf(sheet)) {
-    for (let ri = lowerBound(rows, m.r1, (r) => r); ri < rows.length && rows[ri] <= m.r2; ri++)
-      for (let ci = lowerBound(cols, m.c1, (c) => c); ci < cols.length && cols[ci] <= m.c2; ci++) {
+    for (let ri = lowerBound(rows, m.r1); ri < rows.length && rows[ri] <= m.r2; ri++)
+      for (let ci = lowerBound(cols, m.c1); ci < cols.length && cols[ci] <= m.c2; ci++) {
         if (paced(1)) yield
         const r = rows[ri], c = cols[ci]
         if (r !== m.r1 || c !== m.c1) covered.add(r * MAX_COLS + c)

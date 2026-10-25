@@ -1,5 +1,6 @@
 /** Traversal of an AST and its text: canonical, or with another engine's literals. */
 import { caseKey } from '../collate.js'
+import { quoteSheet } from '../sheet-pattern.js'
 import { ERROR_TEXT, type Ast } from './ast.js'
 import { specText } from './table.js'
 
@@ -79,7 +80,7 @@ export function mapAst(ast: Ast, f: (n: Ast) => Ast | undefined): Ast {
 /** Sheet names compare case-insensitively, as in Excel. */
 export const sheetKey = caseKey
 
-export const quoteSheet = (s: string) => `'${s.replaceAll("'", "''")}'`
+export { quoteSheet }
 
 /** Another workbook's sheet as a reference writes it before `!`, unquoted: `[1]Sheet1` by its link's number, `C:\data\[Book2.xlsx]Sheet1` by its path. */
 export function linkedSheet(book: number | string, sheet: string): string {

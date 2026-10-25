@@ -4,13 +4,12 @@
  */
 import type { CellValue, ValuesOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { outNumber } from '../canon.js'
 import { allot, CalcError, paced, type Steps } from '../exec/budget.js'
 import { checkNumber, object, onlyOptions } from '../input/basic.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { fillAt } from '../spill/fill.js'
+import { outCell } from '../result.js'
 import type { Rect } from '../structure/area.js'
-import { isErr, type V } from '../values.js'
 
 /** The most cells a rectangle of values may have by default: a sheet of tens of thousands of rows fits, a whole column does not. */
 const MAX_CELLS = 1_000_000
@@ -23,9 +22,6 @@ export function checkValuesOptions(v: unknown): ValuesOptions {
   if (o.maxCells !== undefined) checkNumber(o.maxCells, 'opts.maxCells', 1, MAX_ROWS * MAX_COLS, true)
   return o as ValuesOptions
 }
-
-/** A value as a result gives it: a number to 15 significant digits, an error as `{ error }`, null for none. */
-const valueOf = (v: V): CellValue => (typeof v === 'number' ? outNumber(v) : isErr(v) ? { error: v.code } : (v ?? null))
 
 /** The values of rectangle `x` of sheet `s`, by rows; refused past `maxCells`. */
 export function* valuesIn(state: EngineState, s: number, x: Rect, o: ValuesOptions): Steps<CellValue[][]> {
@@ -40,7 +36,7 @@ export function* valuesIn(state: EngineState, s: number, x: Rect, o: ValuesOptio
     if (paced(width)) yield
     const row: CellValue[] = []
     // the cells a large spill does not store hold its fill
-    for (let c = x.c1; c <= x.c2; c++) row.push(valueOf(cols[c]?.get(r) ?? (fills.length ? fillAt(fills, r, c) : null)))
+    for (let c = x.c1; c <= x.c2; c++) row.push(outCell(cols[c]?.get(r) ?? (fills.length ? fillAt(fills, r, c) : null)))
     out.push(row)
   }
   return out

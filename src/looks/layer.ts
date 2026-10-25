@@ -6,7 +6,7 @@
  */
 import type { NumberFormat } from '../contract.js'
 import type { Look } from '../layout/lines.js'
-import { MAX_COLS } from '../model.js'
+import { inner, MAX_COLS } from '../model.js'
 import { bands, lowerBound } from '../sorted.js'
 import type { Rect } from '../structure/area.js'
 
@@ -18,8 +18,6 @@ export type Pattern = Int32Array
 
 /** An empty pattern: a row without looks. */
 export const EMPTY: Pattern = new Int32Array(0)
-
-const same = (x: number) => x
 
 const formatKey = (f: NumberFormat | undefined) => (f === undefined ? '-' : typeof f === 'number' ? `n${f}` : `s${f}`)
 
@@ -212,13 +210,13 @@ export class Layer {
 
   /** The block holding row `r`, or -1. */
   blockOf(r: number): number {
-    const b = lowerBound(this.r2, r, same)
+    const b = lowerBound(this.r2, r)
     return b < this.at.length && this.r1[b] <= r ? b : -1
   }
 
   /** The first block that ends at or after row `r`. */
   firstFrom(r: number): number {
-    return lowerBound(this.r2, r, same)
+    return lowerBound(this.r2, r)
   }
 
   /** The pattern of row `r`; an empty one for a row without looks. */
@@ -320,8 +318,7 @@ export function edited(layer: Layer, edits: RowsEdit[], looks: LookTable = layer
 export function cellEdits(cells: Iterable<[r: number, c: number, look: number]>): RowsEdit[] {
   const byRow = new Map<number, number[][]>()
   for (const [r, c, look] of cells) {
-    let row = byRow.get(r)
-    if (!row) byRow.set(r, (row = []))
+    const row = inner(byRow, r, () => [])
     row.push([c, look])
   }
   return [...byRow.keys()]

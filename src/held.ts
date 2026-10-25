@@ -13,13 +13,10 @@ import { putInput } from './looks/sheet.js'
 import { formatAddress, parseAddress, placeOf } from './model.js'
 import { inverse, placer, type Geometry, type Place } from './structure/geometry.js'
 import { sheetKey } from './syntax.js'
-import { E, type V } from './values.js'
+import { fromCellValue, type V } from './values.js'
 
 /** Whether formula `id` is one a circular reference stops: in a cycle or over one, in a book without iterative calculation. */
 export const stopped = (state: EngineState, id: number): boolean => state.topo[id] < 0 && !state.input.iteration
-
-/** A held value as the engine holds it. */
-export const heldValue = (v: Exclude<CellValue, null>): V => (typeof v === 'object' ? E[v.error] : v)
 
 /**
  * The cell's input with `held` set to `v` or left out (undefined); the first change of a cell's input goes to the
@@ -97,7 +94,7 @@ function storedIn(state: EngineState, cached: CachedValues): (f: Formula) => V {
   const sheets = new Map(cached.sheets.map((x) => [state.sheetIdx.get(sheetKey(x.name)), x.cells]))
   return (f) => {
     const v = sheets.get(f.s)?.[formatAddress(f.r, f.c)]?.value
-    return v === undefined || v === null ? '' : heldValue(v)
+    return v === undefined || v === null ? '' : fromCellValue(v)
   }
 }
 
