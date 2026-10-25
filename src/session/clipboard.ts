@@ -2,7 +2,7 @@
 import type { CopyTextOptions } from '../contract.js'
 import { lookShown, windowLooks } from '../cond/looks.js'
 import { toCellValue, valueAt, type EngineState } from '../engine.js'
-import { allot, CalcError, paced, type Steps } from '../exec/budget.js'
+import { allotCells, CalcError, paced, type Steps } from '../exec/budget.js'
 import { checkBoolean, checkNumber, object, onlyOptions } from '../input/basic.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
 import { sheetLines } from '../layout/lines.js'
@@ -61,7 +61,8 @@ export function* copyText(state: EngineState, s: number, asked: Rect, o: CopyTex
   const size = visibleCount(x.r1, x.r2, hiddenRows) * visibleCount(x.c1, x.c2, hiddenCols)
   const max = o.maxCells ?? MAX_CELLS
   if (size > max) throw new CalcError('limit', `the copy contains ${size} cells, over the limit of ${max}`, { limit: 'cells', max, size })
-  allot(size)
+  // rows of values, or text: no one array of them all
+  allotCells(size)
   if (!size) return ''
   const rows = [...visibleLines(x.r1, x.r2, hiddenRows)]
   const cols = [...visibleLines(x.c1, x.c2, hiddenCols)]

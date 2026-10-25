@@ -4,7 +4,7 @@
  */
 import type { CellValue, ValuesOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
-import { allot, CalcError, paced, type Steps } from '../exec/budget.js'
+import { allotCells, CalcError, paced, type Steps } from '../exec/budget.js'
 import { checkNumber, object, onlyOptions } from '../input/basic.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { fillAt } from '../spill/fill.js'
@@ -29,7 +29,8 @@ export function* valuesIn(state: EngineState, s: number, x: Rect, o: ValuesOptio
   const size = (x.r2 - x.r1 + 1) * width
   const max = o.maxCells ?? MAX_CELLS
   if (size > max) throw new CalcError('limit', `the range has ${size} cells, over the limit of ${max}`, { limit: 'cells', max, size })
-  allot(size)
+  // rows of values, or text: no one array of them all
+  allotCells(size)
   const { cols, fills } = state.ctx.sheets[s]
   const out: CellValue[][] = []
   for (let r = x.r1; r <= x.r2; r++) {

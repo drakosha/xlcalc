@@ -94,3 +94,12 @@ describe.each(EXECUTIONS)('arrays of more rows or columns than a sheet has, as E
     expect(forms.map((_, i) => r[`A${i + 1}`].value)).toEqual([value, value, value, num, num, 16385, 16385, 1048576, 1048576, value, value, num, num, 16385])
   })
 })
+
+describe('reads of more cells than one array holds', () => {
+  // getValues gives rows and copyText text: the bound of one array is not theirs (the acceptance of r7/fixes-session)
+  it('getValues gives the rows and copyText stops at its text, with maxCells raised', () => {
+    const child = fileURLToPath(new URL('./fixtures/large-read-child.ts', import.meta.url))
+    const out = JSON.parse(execFileSync(process.execPath, ['--max-old-space-size=4096', '--import', 'tsx', child], { encoding: 'utf8', timeout: 120_000 })) as { values: unknown; text: unknown }
+    expect(out).toEqual({ values: [8193, 16384, 1, 2], text: { code: 'limit', message: 'the copied text exceeds 16777216 characters' } })
+  }, 120_000)
+})

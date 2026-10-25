@@ -118,12 +118,14 @@ export const MAX_ARRAY = 2 ** 27
 /** An array of more values than MAX_ARRAY: the function's call or the formula that makes it gives #VALUE!. */
 export class ArraySizeError extends RangeError {}
 
-/**
- * `n` values are about to be made: over `limits.cells` stops the computation, before they are allocated; else over
- * MAX_ARRAY an ArraySizeError.
- */
-export function allot(n: number): void {
+/** `n` values are about to be made, in pieces or in one array: over `limits.cells` stops the computation, before they are allocated. */
+export function allotCells(n: number): void {
   if (active !== null && n > active.cells) throw new CalcError('limit', `${n} values in one range or array, over the limit of ${active.cells}`, { limit: 'cells', max: active.cells, size: n })
+}
+
+/** One array of `n` values is about to be made: `allotCells`, then over MAX_ARRAY an ArraySizeError. */
+export function allot(n: number): void {
+  allotCells(n)
   if (n > MAX_ARRAY) throw new ArraySizeError(`${n} values in one array, over the ${MAX_ARRAY} an array holds`)
 }
 
