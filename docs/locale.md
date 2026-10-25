@@ -156,7 +156,7 @@ Text sorts Latin before Cyrillic in both locales, as Excel for Windows sorts in 
 
 `Intl.Collator` with the en-US order (`collation: 'en-US'` in both locales) and `sensitivity: 'accent'` reproduces Excel for Windows's order on all 236 tested cases in ru-RU and 174 in en-US. Operators, criteria, lookups and sorting all use it.
 
-Text spelled with é as one code point or as e with a combining accent is equal in operators, criteria and `UNIQUE`, as in Excel, while `MATCH`, `XLOOKUP` and the other exact lookups tell the two spellings apart, as Excel's `MATCH` does. A soft hyphen (U+00AD), which `Intl.Collator` ignores, still tells two texts apart, as in Excel: `a` and `a` with a soft hyphen after it are not equal.
+Text spelled with é as one code point or as e with a combining accent is equal in operators, criteria and `UNIQUE`, as in Excel, while the exact lookups (`MATCH` and `XMATCH` with match type 0, `XLOOKUP` and `XMATCH` searching from the first or the last, `VLOOKUP` and `HLOOKUP` with `FALSE`) tell the two spellings apart, as Excel's `MATCH` does; the binary searches (`XLOOKUP` and `XMATCH` with search mode 2 or −2) and the approximate ones take them as `=` does, which Excel was not measured on. A soft hyphen (U+00AD), which `Intl.Collator` ignores, still tells two texts apart, as in Excel: `a` and `a` with a soft hyphen after it are not equal.
 
 ## Messages
 
