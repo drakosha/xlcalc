@@ -7,7 +7,7 @@ import type { CellInput, CellLink, CellNote, FrozenPanes } from '../../contract.
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../../model.js'
 import { cellCount, cellsWithin, parseRange, type Rect } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
-import { attr, attributes, element, elements, has } from '../xml/scan.js'
+import { attr, attributes, element, elements, has, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { setCell } from './cells.js'
 import type { Rel } from './package.js'
@@ -29,11 +29,10 @@ export interface PartsSource {
 }
 
 /**
- * Frozen panes of the sheet's first view: the rows and columns before the split, counted from the first ones. A pane
- * frozen over a sheet scrolled down or right showed fewer of them; split panes without freezing are reported.
+ * Frozen panes of the sheet's first view (`view`, found once by the sheet reader): the rows and columns before the
+ * split. A pane frozen over a scrolled sheet showed fewer of them; split panes without freezing are reported.
  */
-export function readFrozen(head: string, sheet: string, issues: Issues): FrozenPanes | undefined {
-  const view = element(element(head, 'sheetViews')?.body ?? '', 'sheetView')
+export function readFrozen(view: Element | undefined, sheet: string, issues: Issues): FrozenPanes | undefined {
   const pane = view?.body ? element(view.body, 'pane') : undefined
   if (!view || !pane) return undefined
   const a = attributes(pane.attrs)
