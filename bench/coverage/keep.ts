@@ -6,16 +6,23 @@
  * window and keeps every part counted), before `keep open` sends them: `writeKept` writes each edit over its made file,
  * Excel opens, computes and saves it into `test/excel/keep/open/<made>-<edit>.xlsx`, and `test/excel/keep/open.json`
  * records what was sent (a hash of its parts), the repair window's text where Excel refused one, and the parts of the
- * file written and of the file Excel saved. Test: `test/xlsx-keep-excel.test.ts`.
+ * file written and of the file Excel saved. `keep struct-predict` writes what the parts refer to after each operation of
+ * the structure of `STRUCT` that `writeKept` writes over a made file (`keep/struct.predicted.json`), before `keep struct`
+ * has Excel do the same operation on it and records what the parts it saved refer to (`test/excel/keep/struct.json`).
+ * `keep struct-open-predict` writes what Excel is predicted to do with each of those files `writeKept` wrote
+ * (`keep/struct-open.predicted.json`: it opens it without its repair window, keeps every part counted and what they
+ * refer to), before `keep struct-open` has Excel open, compute and save them (`test/excel/keep/struct-open.json`,
+ * `struct-open/<case>.xlsx`). Test: `test/xlsx-keep-excel.test.ts`.
  */
+import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { createSession } from '../../src/index.js'
 import { openKept, writeKept } from '../../src/xlsx-keep.js'
-import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
-import { baseFile, EDITS, MADE, partsOf } from './keep/books.js'
+import { dialogText, ensureExcel, excelVersion, runSavingScript, runWatched, settleRejected } from './excel.js'
+import { baseFile, EDITS, MADE, MADE_STRUCT, partsOf, refsOf, STRUCT } from './keep/books.js'
 import { saveThroughExcel } from './xlsx/excel.js'
 import { partsHash } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
@@ -51,7 +58,7 @@ async function made(): Promise<void> {
   const t0 = Date.now()
   await ensureExcel('en-US')
   const png = picture()
-  for (const m of MADE) {
+  for (const m of [...MADE, ...MADE_STRUCT]) {
     if (ONLY && !ONLY.includes(m.id)) continue
     const base = await baseFile(m)
     const sent = createHash('sha256').update(JSON.stringify(m)).update(await partsHash(base)).digest('hex')
@@ -119,9 +126,138 @@ async function open(): Promise<void> {
   }
 }
 
+/** A made file with an operation of the structure: Excel's answer, what it refers to, and the hash of what was sent. */
+export interface StructRun {
+  meta: Record<string, string | number>
+  cases: Record<string, { sent: string; out: string; refs?: Record<string, unknown> }>
+}
+
+/** A case of `STRUCT` written by `writeKept` and opened by Excel: the hash of the parts sent, Excel's repair window or the parts of the file it saved and what they refer to. */
+export interface StructOpenRun {
+  meta: Record<string, string | number>
+  cases: Record<string, { sent: string; rejected?: string; saved?: Record<string, number>; refs?: Record<string, unknown> }>
+}
+
+/** Each operation of `STRUCT` written over its made file by `writeKept`: the file, or the refusal. */
+export async function structFiles(): Promise<{ id: string; written: { data: Uint8Array } | { refused: string } }[]> {
+  const out: { id: string; written: { data: Uint8Array } | { refused: string } }[] = []
+  for (const c of STRUCT) {
+    const original = new Uint8Array(readFileSync(join(DATA, 'made', `${c.made}.xlsx`)))
+    const read = await openKept(original)
+    const s = createSession(read.book, { cached: read.cached })
+    const r = s.editStructure(c.op)
+    if (r.ok === false) throw new Error(`${c.id}: the session refused the operation: ${r.message}`)
+    try {
+      out.push({ id: c.id, written: { data: (await writeKept(original, s.getSnapshot())).data } })
+    } catch (e) {
+      if ((e as Error).name !== 'KeptRefusal') throw e
+      out.push({ id: c.id, written: { refused: (e as Error).message } })
+    }
+    s.close()
+  }
+  return out
+}
+
+/** Each operation of `STRUCT` written over its made file by `writeKept`: what its parts refer to then, or the refusal. */
+export async function structWritten(): Promise<Record<string, { refs: Record<string, unknown> } | { refused: string }>> {
+  const out: Record<string, { refs: Record<string, unknown> } | { refused: string }> = {}
+  for (const f of await structFiles()) out[f.id] = 'data' in f.written ? { refs: await refsOf(f.written.data) } : f.written
+  return out
+}
+
+/** Excel's warning that a formula refers to cells it lost, which deleting a chart's data shows once its book is saved. */
+const LOST_REFERENCES = /problem with one or more formula references/i
+
+/**
+ * A file through an AppleScript that saves it (`excel-keep-struct.applescript`, `excel-save.applescript`): its answer
+ * and the file it saved, or the repair window's text, the book closed unsaved. Excel's warning of lost references is
+ * answered OK and its text goes with the answer; any other window stops the run.
+ */
+async function throughExcel(id: string, script: string, data: Uint8Array, args: string[]): Promise<{ out: string; saved: Uint8Array } | { rejected: string }> {
+  const r = await runWatched<{ out: string; saved: Uint8Array } | { rejected: string }>({
+    script: join(HERE, script),
+    label: id,
+    folder: 'fkeep',
+    book: (file) => writeFileSync(file, data),
+    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', ...args],
+    timeout: 180_000,
+    poll: 1000,
+    fatal: false,
+    repair: async (stop, text) => {
+      await stop()
+      await settleRejected()
+      return { rejected: text }
+    },
+    done: (out, dir) => ({ out: out.trim(), saved: new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))) }),
+  })
+  const shown = dialogText()
+  if (!shown || 'rejected' in r) return r
+  if (!LOST_REFERENCES.test(shown)) throw new Error(`${id}: Excel window after the case: ${shown}`)
+  execFileSync('osascript', ['-e', 'tell application "System Events" to tell process "Microsoft Excel"\nrepeat with w in windows\ntry\nif subrole of w is "AXDialog" then\nrepeat with b in (buttons of w)\nif name of b is "OK" then\nclick b\nreturn\nend if\nend repeat\nend if\nend try\nend repeat\nend tell'])
+  return { ...r, out: `${r.out}; Excel warned: ${shown.replace(/^AXDialog «|»;.*$/g, '')}` }
+}
+
+/** The operations of the structure in Excel over the made files: what the parts Excel saved refer to. */
+async function struct(): Promise<void> {
+  const file = join(DATA, 'struct.json')
+  const run = loadStored<StructRun>(file) ?? { meta: {}, cases: {} }
+  mkdirSync(join(DATA, 'struct'), { recursive: true })
+  const t0 = Date.now()
+  await ensureExcel('en-US')
+  for (const c of STRUCT) {
+    if (ONLY && !ONLY.includes(c.id)) continue
+    const data = new Uint8Array(readFileSync(join(DATA, 'made', `${c.made}.xlsx`)))
+    const sent = createHash('sha256').update(JSON.stringify(c.excel)).update(await partsHash(data)).digest('hex')
+    if (run.cases[c.id]?.sent === sent) continue
+    const r = await throughExcel(c.id, 'excel-keep-struct.applescript', data, c.excel)
+    if ('rejected' in r) throw new Error(`${c.id}: Excel refused the made file: ${r.rejected}`)
+    writeFileSync(join(DATA, 'struct', `${c.id}.xlsx`), r.saved)
+    run.cases[c.id] = { sent, out: r.out, refs: await refsOf(r.saved) }
+    console.log(`${c.id}: ${r.out.trim()} ${JSON.stringify(run.cases[c.id].refs)}`)
+    run.meta = { version: excelVersion(), seconds: secondsSince(t0), date: new Date().toISOString().slice(0, 10) }
+    writeAnswers(file, run)
+  }
+}
+
+/** The prediction, written before `struct-open` runs: Excel opens each file `writeKept` wrote for `STRUCT` without its repair window, and keeps its parts and what they refer to. */
+async function structOpenPredict(): Promise<void> {
+  const cases: Record<string, { opens: true; parts: Record<string, number>; refs: Record<string, unknown> }> = {}
+  for (const f of await structFiles()) if ('data' in f.written) cases[f.id] = { opens: true, parts: await partsOf(f.written.data), refs: await refsOf(f.written.data) }
+  writePrediction(new URL('./keep/books.ts', import.meta.url).href, 'struct-open', { cases })
+}
+
+/** The files `writeKept` wrote for `STRUCT` through Excel: opened, computed and saved. */
+async function structOpen(): Promise<void> {
+  const file = join(DATA, 'struct-open.json')
+  const run = loadStored<StructOpenRun>(file) ?? { meta: {}, cases: {} }
+  mkdirSync(join(DATA, 'struct-open'), { recursive: true })
+  const t0 = Date.now()
+  await ensureExcel('en-US')
+  for (const f of await structFiles()) {
+    if ((ONLY && !ONLY.includes(f.id)) || !('data' in f.written)) continue
+    const sent = await partsHash(f.written.data)
+    if (run.cases[f.id]?.sent === sent && (run.cases[f.id].rejected || existsSync(join(DATA, 'struct-open', `${f.id}.xlsx`)))) continue
+    const r = await throughExcel(f.id, 'excel-save.applescript', f.written.data, [])
+    if ('rejected' in r) {
+      run.cases[f.id] = { sent, rejected: r.rejected }
+      console.log(`${f.id}: Excel refused the file: ${r.rejected}`)
+    } else {
+      writeFileSync(join(DATA, 'struct-open', `${f.id}.xlsx`), r.saved)
+      run.cases[f.id] = { sent, saved: await partsOf(r.saved), refs: await refsOf(r.saved) }
+      console.log(`${f.id}: opened${r.out ? ` (${r.out})` : ''}; saved ${JSON.stringify(run.cases[f.id].saved)} ${JSON.stringify(run.cases[f.id].refs)}`)
+    }
+    run.meta = { version: excelVersion(), seconds: secondsSince(t0), date: new Date().toISOString().slice(0, 10) }
+    writeAnswers(file, run)
+  }
+}
+
 export async function stepKeep(what: string | undefined): Promise<void> {
   if (what === 'made') return made()
   if (what === 'predict') return predict()
   if (what === 'open') return open()
-  throw new Error('keep: made | predict | open')
+  if (what === 'struct-predict') return writePrediction(new URL('./keep/books.ts', import.meta.url).href, 'struct', { cases: await structWritten() })
+  if (what === 'struct') return struct()
+  if (what === 'struct-open-predict') return structOpenPredict()
+  if (what === 'struct-open') return structOpen()
+  throw new Error('keep: made | predict | open | struct-predict | struct | struct-open-predict | struct-open')
 }

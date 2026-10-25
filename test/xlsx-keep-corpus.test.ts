@@ -16,6 +16,7 @@ import { parse } from '../src/syntax/parse.js'
 import { canonical } from '../src/syntax/print.js'
 import { readXlsx, writeXlsx, type XlsxRead } from '../src/xlsx.js'
 import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
+import { relsOf } from '../src/xlsx/read/package.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
 
@@ -164,6 +165,10 @@ function concerned(read: XlsxRead, snap: { book: BookInput; result: { sheets: { 
   return out
 }
 
+/** Parts with references the model does not hold, which a structure operation moves, and their text without those references. */
+const MOVED = /^xl\/(charts\/chart|drawings\/drawing|pivotTables\/|pivotCache\/pivotCacheDefinition)/i
+const refsOut = (xml: string) => xml.replace(/<(\w+:)?f(\s[^>]*)?>[^<]*<\/(\w+:)?f>/g, '<f/>').replace(/<xdr:(col|row|colOff|rowOff)>\d+</g, '<xdr:$1><').replace(/\s(ref|sheet)="[^"]*"/g, '')
+
 const PARTS_OF_BOOK = /^(\[content_types\]\.xml|xl\/workbook\.xml|xl\/_rels\/workbook\.xml\.rels|xl\/styles\.xml|xl\/calcchain\.xml|xl\/metadata\.xml|xl\/richdata\/.*)$/i
 
 /** Each file edited by `kinds`, written over its original; what differs from writeXlsx's, and the parts that changed unasked. */
@@ -192,16 +197,21 @@ async function check(kinds: readonly string[]): Promise<{ written: number; refus
     const [o, x] = [openArchive(data), openArchive(w.data)]
     const { openSource } = await import('../src/xlsx/keep/source.js')
     const src = await openSource(data)
+    // a concerned sheet's part and the parts under it (a sheet deleted takes its drawings with their charts)
     const mine = new Set<string>()
-    for (const i of concerned(read, snap)) {
-      const ss = src.sheets[i]
-      mine.add(ss.part.toLowerCase()).add(ss.part.replace(/([^/]+)$/, '_rels/$1.rels').toLowerCase())
-      for (const r of ss.rels) mine.add(r.target.toLowerCase())
+    const under = async (part: string) => {
+      if (mine.has(part.toLowerCase())) return
+      mine.add(part.toLowerCase()).add(part.replace(/([^/]+)$/, '_rels/$1.rels').toLowerCase())
+      for (const r of await relsOf(src.archive, part)) if (!r.external) await under(r.target)
     }
+    for (const i of concerned(read, snap)) await under(src.sheets[i].part)
     for (const name of o.names) {
       if (PARTS_OF_BOOK.test(name) || mine.has(name.toLowerCase())) continue
       const [p, q] = [await o.bytes(name), await x.bytes(name)]
-      if (!q || Buffer.compare(Buffer.from(p!), Buffer.from(q)) !== 0) out.problems.push(`${f}: ${name} ${q ? 'changed' : 'missing'}`)
+      if (q && Buffer.compare(Buffer.from(p!), Buffer.from(q)) === 0) continue
+      // a part whose references an operation moved: it changed in them alone
+      if (q && MOVED.test(name) && refsOut((await o.text(name))!) === refsOut((await x.text(name))!)) continue
+      out.problems.push(`${f}: ${name} ${q ? 'changed' : 'missing'}`)
     }
   }
   return out

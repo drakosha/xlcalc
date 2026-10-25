@@ -19,10 +19,10 @@ const TYPE = 'application/vnd.openxmlformats-officedocument'
 export type Anchor = [r1: number, c1: number, r2: number, c2: number]
 
 export interface Extra {
-  /** A chart on a sheet (by index) over the series' references, at an anchor. */
-  chart?: { sheet: number; series: string[]; anchor: Anchor }
-  /** A picture on a sheet, moving with its cells. */
-  picture?: { sheet: number; anchor: Anchor }
+  /** A chart on a sheet (by index) over the series' references, at an anchor, moving and sizing with its cells unless `editAs` says otherwise. */
+  chart?: { sheet: number; series: string[]; anchor: Anchor; editAs?: string }
+  /** A picture on a sheet, moving with its cells (`editAs` oneCell unless it says otherwise). */
+  picture?: { sheet: number; anchor: Anchor; editAs?: string }
   /** A pivot table on a sheet at `location`, its cache's source cells or the table or name it takes them from. */
   pivot?: { sheet: number; location: string; source: { sheet: string; ref: string } | { name: string } }
   /** `_xlnm.Print_Area` of a sheet. */
@@ -33,10 +33,12 @@ export interface Extra {
   rich?: Record<string, string>
   /** Cell formats given a rotation of their text, by index. */
   rotated?: number[]
+  /** Attributes added to cells of a sheet (`vm="1"` of a rich value, `ph="1"`), by address. */
+  attrs?: { sheet: number; cells: Record<string, string> }
 }
 
-const anchorXml = (x: Anchor, inner: string) =>
-  `<xdr:twoCellAnchor editAs="oneCell"><xdr:from><xdr:col>${x[1]}</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>${x[0]}</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>${x[3]}</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>${x[2]}</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>${inner}<xdr:clientData/></xdr:twoCellAnchor>`
+const anchorXml = (x: Anchor, inner: string, editAs?: string) =>
+  `<xdr:twoCellAnchor${editAs ? ` editAs="${editAs}"` : ''}><xdr:from><xdr:col>${x[1]}</xdr:col><xdr:colOff>1000</xdr:colOff><xdr:row>${x[0]}</xdr:row><xdr:rowOff>2000</xdr:rowOff></xdr:from><xdr:to><xdr:col>${x[3]}</xdr:col><xdr:colOff>1000</xdr:colOff><xdr:row>${x[2]}</xdr:row><xdr:rowOff>2000</xdr:rowOff></xdr:to>${inner}<xdr:clientData/></xdr:twoCellAnchor>`
 
 /** A file of `writeXlsx`'s for the book and its values, with the extra parts. */
 export async function withParts(book: BookInput, extra: Extra): Promise<Uint8Array> {
@@ -62,13 +64,13 @@ export async function withParts(book: BookInput, extra: Extra): Promise<Uint8Arr
     const ser = series.map((f, k) => `<c:ser><c:idx val="${k}"/><c:order val="${k}"/><c:val><c:numRef><c:f>${f}</c:f></c:numRef></c:val></c:ser>`).join('')
     parts.set('xl/charts/chart1.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<c:chartSpace xmlns:c="${C}" xmlns:a="${A}" xmlns:r="${REL}"><c:chart><c:plotArea><c:layout/><c:barChart><c:barDir val="col"/><c:grouping val="clustered"/>${ser}<c:axId val="1"/><c:axId val="2"/></c:barChart></c:plotArea></c:chart></c:chartSpace>`)
     override('xl/charts/chart1.xml', `${TYPE}.drawingml.chart+xml`)
-    ;(anchors.get(sheet) ?? anchors.set(sheet, []).get(sheet)!).push(anchorXml(anchor, `<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="2" name="Chart 1"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="${C}"><c:chart xmlns:c="${C}" r:id="rIdC1"/></a:graphicData></a:graphic></xdr:graphicFrame>`))
+    ;(anchors.get(sheet) ?? anchors.set(sheet, []).get(sheet)!).push(anchorXml(anchor, `<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="2" name="Chart 1"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="${C}"><c:chart xmlns:c="${C}" r:id="rIdC1"/></a:graphicData></a:graphic></xdr:graphicFrame>`, extra.chart.editAs))
   }
   if (extra.picture) {
     const { sheet, anchor } = extra.picture
     parts.set('xl/media/image1.png', 'png bytes')
     edit('[Content_Types].xml', (x) => x.replace('<Default Extension="xml"', '<Default Extension="png" ContentType="image/png"/><Default Extension="xml"'))
-    ;(anchors.get(sheet) ?? anchors.set(sheet, []).get(sheet)!).push(anchorXml(anchor, `<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="3" name="Picture 1"/><xdr:cNvPicPr/></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="rIdP1"/></xdr:blipFill><xdr:spPr/></xdr:pic>`))
+    ;(anchors.get(sheet) ?? anchors.set(sheet, []).get(sheet)!).push(anchorXml(anchor, `<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="3" name="Picture 1"/><xdr:cNvPicPr/></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="rIdP1"/></xdr:blipFill><xdr:spPr/></xdr:pic>`, extra.picture.editAs ?? 'oneCell'))
   }
   for (const [sheet, list] of anchors) {
     parts.set('xl/drawings/drawing1.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<xdr:wsDr xmlns:xdr="${DRAW}" xmlns:a="${A}" xmlns:r="${REL}">${list.join('')}</xdr:wsDr>`)
@@ -99,6 +101,7 @@ export async function withParts(book: BookInput, extra: Extra): Promise<Uint8Arr
     inSheet(extra.breaks.sheet, `<rowBreaks count="${extra.breaks.rows.length}" manualBreakCount="${extra.breaks.rows.length}">${b}</rowBreaks>`, ['drawing', 'legacyDrawing', 'tableParts', 'extLst'])
   }
   for (const [text, runs] of Object.entries(extra.rich ?? {})) edit('xl/sharedStrings.xml', (x) => x.replace(`<si><t>${text}</t></si>`, `<si>${runs}</si>`))
+  for (const [cell, attrs] of Object.entries(extra.attrs?.cells ?? {})) edit(`xl/worksheets/sheet${extra.attrs!.sheet + 1}.xml`, (x) => x.replace(new RegExp(`<c r="${cell}"`), `$& ${attrs}`))
   for (const i of extra.rotated ?? [])
     edit('xl/styles.xml', (x) => {
       let k = -1
