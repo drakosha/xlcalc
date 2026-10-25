@@ -16,7 +16,8 @@ export const NONE = -1
 /** A pattern: runs `[c1, c2, look]` of columns, in order, apart, two runs of one look never next to each other. */
 export type Pattern = Int32Array
 
-const EMPTY: Pattern = new Int32Array(0)
+/** An empty pattern: a row without looks. */
+export const EMPTY: Pattern = new Int32Array(0)
 
 const same = (x: number) => x
 

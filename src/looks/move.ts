@@ -7,7 +7,7 @@
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { LIMIT, shiftRect, type Axis, type Rect } from '../structure/area.js'
 import type { Geometry } from '../structure/geometry.js'
-import { edited, LayerBuilder, LookTable, NONE, patternOf, runAt, spansOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
+import { edited, EMPTY, LayerBuilder, LookTable, NONE, patternOf, runAt, spansOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
 
 /** A pattern's runs with `n` columns inserted before `at` (or `-n` deleted from `at`); `before`: the new columns take the look of column `at` − 1. */
 function shiftedRuns(p: Pattern, at: number, n: number, before: boolean): Pattern {
@@ -201,8 +201,6 @@ function differingRuns(pa: Pattern, ta: LookTable, pb: Pattern, tb: LookTable): 
   return out
 }
 
-const NO_RUNS: Pattern = new Int32Array(0)
-
 /** The rectangles of cells to which two layers (none for no looks) give other looks: a run of columns over a block of rows, row by row. */
 export function* differing(a: Layer | undefined, b: Layer | undefined): Generator<Rect> {
   if (a === b) return
@@ -213,7 +211,7 @@ export function* differing(a: Layer | undefined, b: Layer | undefined): Generato
   const memo = new Map<Pattern, Map<Pattern, number[]>>()
   for (let k = 0; k + 1 < rows.length; k++) {
     const [lo, hi] = [rows[k], rows[k + 1] - 1]
-    const [pa, pb] = [a?.row(lo) ?? NO_RUNS, b?.row(lo) ?? NO_RUNS]
+    const [pa, pb] = [a?.row(lo) ?? EMPTY, b?.row(lo) ?? EMPTY]
     if (pa === pb && a?.looks === b?.looks) continue
     let byB = memo.get(pa)
     if (!byB) memo.set(pa, (byB = new Map()))
