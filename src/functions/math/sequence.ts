@@ -2,10 +2,11 @@
 import type { Cx, FnDef } from '../../args.js'
 import { Arr, EMPTY } from '../../arrays/value.js'
 import { allot } from '../../exec/budget.js'
+import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import { E, type V } from '../../values.js'
 
 /** Excel's grid: an array larger than a sheet cannot be made. */
-const MAX_CELLS = 1_048_576 * 16_384
+const MAX_CELLS = MAX_ROWS * MAX_COLS
 
 /** The size of a new array: negative #VALUE!, zero #CALC!, else rows × cols. */
 function size(rows: number, cols: number): [number, number] | typeof E.VALUE {

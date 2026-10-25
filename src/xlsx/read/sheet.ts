@@ -197,7 +197,7 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
   for (const e of elements(element(head, 'cols')?.body ?? '', 'col')) {
     const a = attributes(e.attrs)
     const [lo, hi] = [Number(a.min) - 1, Number(a.max) - 1]
-    if (!(lo >= 0 && hi >= lo && hi < 16384)) continue
+    if (!(lo >= 0 && hi >= lo && hi < MAX_COLS)) continue
     const col: ColumnInput = {}
     const where = { sheet: read.sheet, cell: `${spanKey(lo, hi, 'c').replace(/^([A-Z]+)$/, '$1:$1')}` }
     if (a.width !== undefined && flag(a.customWidth)) {
