@@ -11,7 +11,7 @@ import type { BookInput, DataValidation } from '../contract.js'
 import { cornerOf, hi, intersect, LIMIT, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
-import { copyTransform, deleteSpan, growSpan } from '../structure/transform.js'
+import { copyTransform, deleteSpan, formulaAt, growSpan } from '../structure/transform.js'
 import { sheetKey } from '../syntax.js'
 import { anchorOf, areasOf, rangeText } from './rules.js'
 
@@ -23,10 +23,8 @@ export function withFormulas(v: DataValidation, f: (text: string) => string): Da
   return a === v.formula1 && b === v.formula2 ? v : { ...v, ...(a !== undefined ? { formula1: a } : {}), ...(b !== undefined ? { formula2: b } : {}) }
 }
 
-/** A formula written for cell `from` of `sheet` as at cell `to`: relative references move by the offset, as a copy moves them. */
-export function formulaAt(text: string, sheet: string, from: Cell, to: Cell, sheets: Map<string, string>): string {
-  return from.r === to.r && from.c === to.c ? text : rewriteFormula(text, sheet, sheet, copyTransform(to.r - from.r, to.c - from.c), sheets)
-}
+/** A formula moved from the cell it was written for to another of the same sheet (`structure/transform.ts`); a rule's formulas are readied by it. */
+export { formulaAt }
 
 /**
  * The rule over the ranges `areas`: its formulas as at the cell that was `old` before the operation (the new corner's),

@@ -11,7 +11,7 @@ import { sheetKey, tokenize } from '../syntax.js'
 import { cornerOf, hasCell, hi, intersect, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
-import { copyTransform, deleteSpan, growSpan } from '../structure/transform.js'
+import { copyTransform, deleteSpan, formulaAt, growSpan } from '../structure/transform.js'
 import { originOf, rangesOf, rectsOf } from './rules.js'
 
 type Cell = { r: number; c: number }
@@ -48,11 +48,8 @@ const texts = (r: ConditionalFormat): string => JSON.stringify(r)
  * copied from the old one to `from`, that cell's place before the operation, then rewritten by `t`.
  */
 function placed(rule: ConditionalFormat, next: Rect[], from: Cell, host: string, moved: string, t: Transform, names: Map<string, string>): Placed {
-  const o = originOf(rule)
-  const [dr, dc] = [from.r - o.r, from.c - o.c]
   // the formula as at another cell of the rule, wrapping round the sheet's edges as it computes
-  const copy = dr || dc ? copyTransform(dr, dc, true) : null
-  const anchored = copy ? mapFormulas(rule, (text) => rewriteFormula(text, host, host, copy, names)) : rule
+  const anchored = mapFormulas(rule, (text) => formulaAt(text, host, originOf(rule), from, names, true))
   const out = mapFormulas(anchored, (text) => plainLost(rewriteFormula(text, host, moved, t, names)))
   const ranges = rangesOf(next, rule.ranges)
   return { rule: ranges === rule.ranges && texts(out) === texts(rule) ? rule : { ...out, ranges }, rewrote: texts(out) !== texts(anchored) }

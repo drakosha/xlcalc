@@ -4,7 +4,7 @@
  * `validation/structure.ts`) share.
  */
 import { isFull, LIMIT, span, type Area, type Axis, type Bound } from './area.js'
-import type { Outcome, Transform } from './rewrite.js'
+import { rewriteFormula, type Outcome, type Transform } from './rewrite.js'
 
 /**
  * Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. Off the sheet a
@@ -27,6 +27,14 @@ export function copyTransform(dr: number, dc: number, wrap = false): Transform {
       return { sheet, area: next }
     },
   }
+}
+
+/**
+ * A formula written for cell `from` of `sheet` as at cell `to`: relative references move by the offset, as a copy moves
+ * them. With `wrap`, a reference pushed off the sheet comes round its other edge, as a conditional format's formula computes.
+ */
+export function formulaAt(text: string, sheet: string, from: { r: number; c: number }, to: { r: number; c: number }, sheets: Map<string, string>, wrap = false): string {
+  return from.r === to.r && from.c === to.c ? text : rewriteFormula(text, sheet, sheet, copyTransform(to.r - from.r, to.c - from.c, wrap), sheets)
 }
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
