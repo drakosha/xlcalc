@@ -508,6 +508,14 @@ export function checkSheet(v: unknown, sheetIndex: (name: string) => number | un
   return i
 }
 
+/** A sheet of a book, by its name in any case, as the book spells it; `InputError` naming `path` when it has none. */
+export function checkSheetOf<S extends { name: string }>(book: { sheets: S[] }, v: unknown, path: string): S {
+  const name = checkString(v, path)
+  const sheet = book.sheets.find((s) => sheetKey(s.name) === sheetKey(name))
+  if (!sheet) throw new InputError(path, `unknown sheet ${JSON.stringify(v)}`)
+  return sheet
+}
+
 export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext | undefined {
   if (v === undefined) return undefined
   const o = object(v, path, 'a context such as { sheets: ["Sheet1"], names: [] }')
