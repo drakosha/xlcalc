@@ -19,9 +19,9 @@ import { frozenScroll, sheetViewXml } from '../view.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { normalized } from '../../layout/outline.js'
 import { lines, type Line } from '../../layout/spans.js'
-import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress, readAddress } from '../../model.js'
+import { bookScalar, formatAddress, indexToCol, MAX_COLS, parseAddress, readAddress } from '../../model.js'
 import { NONE, type Layer } from '../../looks/layer.js'
-import { inputIn, layerOf } from '../../looks/sheet.js'
+import { hasLook, inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import { toFile } from '../formulas/to-file.js'
@@ -57,10 +57,8 @@ export interface SheetContext extends FileNames {
   result?: Record<string, ResultCell>
   /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!. */
   richError(code: 'SPILL' | 'CALC'): number
-  /** The book's table holding a cell of this sheet. */
-  tableAt(addr: string): string | undefined
-  /** A cell of a table's totals row, where Excel takes only a formula of the old kind (no array formula). */
-  totalsAt(addr: string): boolean
+  /** The book's table holding a cell of this sheet, with whether the cell is of its totals row, where Excel takes only a formula of the old kind (no array formula). */
+  tableAt(addr: string): { name: string; totals: boolean } | undefined
   /** The relationship ids of the sheet's table parts. */
   tableParts: string[]
   /** The day 0 of the book's date system in the 1900 system (`epochOf`): a date's serial counts from it. */
@@ -144,20 +142,20 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const where = (cell: string) => ({ sheet: sheet.name, cell })
   const sheetLook = sheetLines(sheet)
   // a sheet whose rows and columns have no look writes each cell's own
-  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.numberFormat !== undefined))
+  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some(hasLook))
   const sAttr = (addr: string, c: CellInput | undefined) => {
     let look: Look | undefined = c
     if (lined) {
       const { row, col } = parseAddress(addr)
       look = sheetLook.look(row, col, c)
     }
-    const xf = look ? styles.xf(look.style, look.numberFormat) : 0
+    const xf = styles.xf(look?.style, look?.numberFormat)
     return xf ? ` s="${xf}"` : ''
   }
   // `cm` marks a dynamic array formula
   // the cells of the sheet's looks numbered among its entries, as entries of theirs would be (`numberLooks`)
   const layer = layerOf(sheet)
-  const layerXf = layer ? numberLooks(sheet, layer, sAttr) : null
+  const layerXf = layer ? numberLooks(sheet, layer, lined, sAttr) : null
   const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
     const cm = dynamic ? ' cm="1"' : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
@@ -173,7 +171,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     if (c.link) links.set(addr, c.link)
     const res = result?.[addr]
     if (c.formula === undefined) {
-      const v = c.value === undefined || c.value === null ? undefined : typeof c.value === 'object' ? dateToSerial(c.value.date) - ctx.epoch : c.value
+      const v = c.value == null ? undefined : bookScalar(c.value, ctx.epoch)
       put(addr, cellXml(addr, c, v))
       continue
     }
@@ -181,7 +179,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const value = c.held !== undefined && (res === undefined || (typeof res.value === 'object' && res.value?.error === 'CYCLE')) ? c.held : res?.value
     // a result without the formula's value (`values: 'preserve'`)
     if (result && !res && c.held === undefined) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
-    const tree = mode === 'formulas' ? fileTree(c.formula, ctx, ctx.tableAt(addr)) : null
+    // the book's table holding the cell, looked up once for its name and its totals row
+    const table = mode === 'formulas' ? ctx.tableAt(addr) : undefined
+    const tree = mode === 'formulas' ? fileTree(c.formula, ctx, table?.name) : null
     // without a value (no result), the cell is written empty
     if (mode === 'formulas' && !tree) issues.add('formula', { key: value === undefined ? 'formulaLeftOut' : 'formulaAsValue' }, where(addr))
     if (!tree) {
@@ -189,7 +189,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       continue
     }
     formulas = true
-    if (ctx.totalsAt(addr) && c.array === undefined) {
+    if (table?.totals && c.array === undefined) {
       put(addr, cellXml(addr, c, value, `<f>${escapeText(toFile(tree))}</f>`, false))
       continue
     }
@@ -215,7 +215,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   for (const [lo, hi] of rowLines) for (let r = lo; r <= hi; r++) rowsUsed.add(r)
   const rowAttrs = new Map<number, string>()
   for (const [lo, hi, e] of rowLines) {
-    const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
+    const xf = styles.xf(e.style, e.numberFormat)
     // a height Excel fitted is written without customHeight, as Excel writes it
     const attrs = (e.height !== undefined ? ` ht="${e.height}"${e.bestFit ? '' : ' customHeight="1"'}` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '') + outlineAttrs(e)
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
@@ -241,7 +241,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const maxCol = Math.max(extent.c2, looked?.c2 ?? 0)
   const dim = any ? `${indexToCol(minCol)}${rowLo + 1}:${indexToCol(maxCol)}${rowHi + 1}` : 'A1'
   const cols = colLines.map(([lo, hi, e]) => {
-    const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
+    const xf = styles.xf(e.style, e.numberFormat)
     const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${DEFAULT_WIDTH}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
@@ -268,8 +268,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const scroll = sheet.frozen && frozenScroll(sheet.view?.topLeft, sheet.frozen)
   const pane = scroll ? paneXml(sheet.frozen, scroll.pane) : ''
   const view = scroll && sheet.view ? { ...sheet.view, topLeft: scroll.view } : sheet.view
-  const names: FileNames = { sheets: ctx.sheets, tables: ctx.tables, externalBooks: ctx.externalBooks }
-  const cond = conditionalXml(sheet, index, { styles, issues, ...names })
+  const cond = conditionalXml(sheet, index, ctx)
   // the outline: where its summaries are, and its deepest levels, which Excel reserves room for
   const o = sheet.outline
   const outlinePr = o && (o.summaryBelow !== undefined || o.summaryRight !== undefined) ? `<outlinePr${o.summaryBelow !== undefined ? ` summaryBelow="${o.summaryBelow ? 1 : 0}"` : ''}${o.summaryRight !== undefined ? ` summaryRight="${o.summaryRight ? 1 : 0}"` : ''}/>` : ''
@@ -288,7 +287,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
     cond.main +
-    validationsXml(sheet.validations, { sheet: sheet.name, ...names, issues }) +
+    validationsXml(sheet.validations, { ...ctx, sheet: sheet.name }) +
     hyperlinks +
     (drawing ? `<legacyDrawing r:id="${drawing}"/>` : '') +
     (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
@@ -301,10 +300,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
  * The cell format of each look of the sheet's looks (`sAttr` of a cell of it, ` s="n"` or none), numbered with the sheet's
  * entries as entries of theirs would be: each cell of the looks just before the first entry after it by address, the
  * entries in their order, as a file read lists them (a cell a note or a link alone made comes last); by cell where the
- * sheet's rows or columns have a look, which a cell's whole look takes.
+ * sheet's rows or columns have a look (`lined`), which a cell's whole look takes.
  */
-function numberLooks(sheet: SheetInput, layer: Layer, sAttr: (addr: string, c: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
-  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.numberFormat !== undefined))
+function numberLooks(sheet: SheetInput, layer: Layer, lined: boolean, sAttr: (addr: string, c: CellInput | undefined) => string): (r: number, c: number, look: number) => string {
   const byLook: (string | undefined)[] = []
   const attr = (r: number, c: number, look: number) => (lined ? sAttr(formatAddress(r, c), layer.looks.list[look]) : (byLook[look] ??= sAttr(formatAddress(r, c), layer.looks.list[look])))
   // the looks not numbered yet; once none is left, only the entries take new numbers
@@ -358,7 +356,7 @@ function rowXml(row: number, layer: Layer, attr: (r: number, c: number, look: nu
  * cells itself where lines it formats cross; `put` gets each with the model's cell format.
  */
 function crossings(rows: Line<RowInput>[], cols: Line<ColumnInput>[], styles: StyleWriter, put: (r: number, c: number, xf: number) => void) {
-  const looked = <T extends Look>(ls: Line<T>[]) => ls.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
+  const looked = <T extends Look>(ls: Line<T>[]) => ls.filter(([, , e]) => hasLook(e))
   const withCols = looked(cols)
   if (!withCols.length) return
   for (const [rlo, rhi, row] of looked(rows)) {

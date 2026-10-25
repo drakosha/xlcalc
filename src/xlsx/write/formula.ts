@@ -22,12 +22,13 @@ export interface FileNames {
 /**
  * The formula's tree when the file can hold it: it parses, names only the book's sheets, its structured references name
  * the book's tables and columns (a file names a reference's table always: `[@Qty]` is written `Sales[[#This Row],[Qty]]`),
- * and its references to other workbooks the book's links and their sheets.
+ * and its references to other workbooks the book's links and their sheets. A defined name's ref (`opts.anySheet`) keeps
+ * a reference to a sheet the book does not have, and binds its links without the walk that looks for them.
  */
-export function fileTree(formula: string, names: FileNames, enclosing?: string): Ast | null {
+export function fileTree(formula: string, names: FileNames, enclosing?: string, opts: { union?: boolean; anySheet?: boolean } = {}): Ast | null {
   let ast: Ast
   try {
-    ast = parse(formula)
+    ast = parse(formula, opts)
   } catch (e) {
     if (e instanceof FormulaError) return null
     throw e
@@ -36,13 +37,15 @@ export function fileTree(formula: string, names: FileNames, enclosing?: string):
   if (!bound.ok) return null
   ast = bound.ast
   let ok = true
-  let linked = false
+  // a defined name's ref may name a sheet the book does not have; its links are bound without the walk
+  let linked = !!opts.anySheet
   const known = (sheet: string | null | undefined) => sheet == null || names.sheets.has(sheetKey(sheet))
-  walk(ast, (n) => {
-    // a reference into another workbook, one Excel lost too (`[1]Sheet1!#REF!`, of any sheet of its link)
-    if (n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined)) linked = true
-    else if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
-  })
+  if (!opts.anySheet)
+    walk(ast, (n) => {
+      // a reference into another workbook, one Excel lost too (`[1]Sheet1!#REF!`, of any sheet of its link)
+      if (n.k === 'xref' || n.k === 'xname' || (n.k === 'err' && n.book !== undefined)) linked = true
+      else if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
+    })
   if (!ok || !linked) return ok ? ast : null
   const links = bindLinks(ast, names.externalBooks, [...names.sheets])
   return links.ok ? links.ast : null

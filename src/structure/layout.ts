@@ -8,7 +8,8 @@ import type { FrozenPanes, SheetInput } from '../contract.js'
 import { entryAt, lines, patchLines, toMap, type Line } from '../layout/spans.js'
 import { parseMerge } from '../layout/merges.js'
 import type { LookTable, RowsEdit } from '../looks/layer.js'
-import { cornersText, hi, LIMIT, lo, withBounds, type Axis } from './area.js'
+import { hasLook } from '../looks/sheet.js'
+import { cornersText, hi, LIMIT, LINES, lo, withBounds, type Axis } from './area.js'
 import { gridOf } from './grid.js'
 
 /** Index `i` after `n` lines inserted before `at` (n > 0) or deleted from `at` (n < 0); `gone` for a deleted one. */
@@ -97,7 +98,7 @@ export function shiftMerges(merges: string[] | undefined, axis: Axis, at: number
  * frozen (the parts sets `struct-held` and `frozen-held`).
  */
 export function shiftFrozen(frozen: FrozenPanes | undefined, axis: Axis, at: number, n: number): FrozenPanes | undefined {
-  const key = axis === 'r' ? 'rows' : 'columns'
+  const key = LINES[axis]
   const k = frozen?.[key]
   if (k === undefined || at >= k) return frozen
   const next = n > 0 ? Math.min(k + n, LIMIT[axis] - 1) : Math.max(1, k - (Math.min(at - n, k) - at))
@@ -117,7 +118,7 @@ export function lookBefore(sheet: SheetInput, axis: Axis, at: number, n: number,
   const found: [number, number][] = []
   for (let k = 0; k < line.length; k++) {
     const cell = g.cell[k]
-    if (line[k] !== at - 1 || (cell.style === undefined && cell.numberFormat === undefined)) continue
+    if (line[k] !== at - 1 || !hasLook(cell)) continue
     found.push([axis === 'r' ? g.col[k] : g.row[k], looks.id(cell.style, cell.numberFormat)])
   }
   found.sort((a, b) => a[0] - b[0])

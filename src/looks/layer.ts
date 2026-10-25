@@ -7,6 +7,7 @@
 import type { NumberFormat } from '../contract.js'
 import type { Look } from '../layout/lines.js'
 import { MAX_COLS } from '../model.js'
+import { bands, lowerBound } from '../sorted.js'
 import type { Rect } from '../structure/area.js'
 
 /** No look: a cell in a gap of a pattern. */
@@ -15,7 +16,10 @@ export const NONE = -1
 /** A pattern: runs `[c1, c2, look]` of columns, in order, apart, two runs of one look never next to each other. */
 export type Pattern = Int32Array
 
-const EMPTY: Pattern = new Int32Array(0)
+/** An empty pattern: a row without looks. */
+export const EMPTY: Pattern = new Int32Array(0)
+
+const same = (x: number) => x
 
 const formatKey = (f: NumberFormat | undefined) => (f === undefined ? '-' : typeof f === 'number' ? `n${f}` : `s${f}`)
 
@@ -91,16 +95,16 @@ export function* spansOf(a: Pattern, b: Pattern): Generator<[number, number, num
   }
 }
 
-/** The index of the run of a pattern holding column `c`, or -1. */
-function runAt(p: Pattern, c: number): number {
+/** The look's number of the run of a pattern holding column `c`, NONE for none. */
+export function runAt(p: Pattern, c: number): number {
   let [lo, hi] = [0, p.length / 3 - 1]
   while (lo <= hi) {
     const m = (lo + hi) >> 1
     if (p[m * 3] > c) hi = m - 1
     else if (p[m * 3 + 1] < c) lo = m + 1
-    else return m * 3
+    else return p[m * 3 + 2]
   }
-  return -1
+  return NONE
 }
 
 /**
@@ -208,25 +212,13 @@ export class Layer {
 
   /** The block holding row `r`, or -1. */
   blockOf(r: number): number {
-    let [lo, hi] = [0, this.at.length - 1]
-    while (lo <= hi) {
-      const m = (lo + hi) >> 1
-      if (this.r1[m] > r) hi = m - 1
-      else if (this.r2[m] < r) lo = m + 1
-      else return m
-    }
-    return -1
+    const b = lowerBound(this.r2, r, same)
+    return b < this.at.length && this.r1[b] <= r ? b : -1
   }
 
   /** The first block that ends at or after row `r`. */
   firstFrom(r: number): number {
-    let [lo, hi] = [0, this.at.length]
-    while (lo < hi) {
-      const m = (lo + hi) >> 1
-      if (this.r2[m] < r) lo = m + 1
-      else hi = m
-    }
-    return lo
+    return lowerBound(this.r2, r, same)
   }
 
   /** The pattern of row `r`; an empty one for a row without looks. */
@@ -237,9 +229,7 @@ export class Layer {
 
   /** The look's number of a cell, NONE without one. */
   idAt(r: number, c: number): number {
-    const p = this.row(r)
-    const k = runAt(p, c)
-    return k < 0 ? NONE : p[k + 2]
+    return runAt(this.row(r), c)
   }
 
   /** The look of a cell (a frozen object shared by the cells of that look), undefined without one. */
@@ -304,12 +294,11 @@ export function edited(layer: Layer, edits: RowsEdit[], looks: LookTable = layer
   const cuts = new Set<number>()
   for (let b = 0; b < layer.at.length; b++) cuts.add(layer.r1[b]).add(layer.r2[b] + 1)
   for (const e of edits) cuts.add(e.lo).add(e.hi + 1)
-  const rows = [...cuts].sort((a, b) => a - b)
+  const rows = bands(cuts)
   const done = new Map<string, Pattern>()
   let changed = false
   let [b, j] = [0, 0]
-  for (let k = 0; k + 1 < rows.length; k++) {
-    const [lo, hi] = [rows[k], rows[k + 1] - 1]
+  for (const [lo, hi] of rows) {
     while (b < layer.at.length && layer.r2[b] < lo) b++
     while (j < edits.length && edits[j].hi < lo) j++
     const inBlock = b < layer.at.length && layer.r1[b] <= lo
@@ -346,14 +335,16 @@ export function cellEdits(cells: Iterable<[r: number, c: number, look: number]>)
     })
 }
 
+/** Whether two looks (of one table or two, none for one of them) are the same: their style and number format fields. */
+export const sameLook = (x: Look | undefined, y: Look | undefined): boolean => x?.style === y?.style && x?.numberFormat === y?.numberFormat
+
 /** Whether two layers give every cell the same look. */
 export function sameLooks(a: Layer, b: Layer): boolean {
   const [x, y] = [[...a.pieces()], [...b.pieces()]]
   if (x.length !== y.length) return false
   return x.every((p, i) => {
     const q = y[i]
-    const [l, m] = [a.looks.list[p.look], b.looks.list[q.look]]
-    return p.r1 === q.r1 && p.r2 === q.r2 && p.c1 === q.c1 && p.c2 === q.c2 && l.style === m.style && l.numberFormat === m.numberFormat
+    return p.r1 === q.r1 && p.r2 === q.r2 && p.c1 === q.c1 && p.c2 === q.c2 && sameLook(a.looks.list[p.look], b.looks.list[q.look])
   })
 }
 

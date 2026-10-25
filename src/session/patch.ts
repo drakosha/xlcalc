@@ -10,7 +10,7 @@ import { array, object, onlyKeys } from '../input/basic.js'
 import { checkAddress, checkRange } from '../input/range.js'
 import { checkFormat, checkStyle, checkStyleIndex } from '../input/styles.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
-import { parseRange, type Rect } from '../structure/area.js'
+import { LINES, parseRange, type Rect } from '../structure/area.js'
 
 /** What a patch does to a style: one of the table's set, fields changed over the style a cell shows, the style removed, or the look reset (Excel's ClearFormats). */
 export type StyleChange = { set: number } | { merge: StylePatch } | { remove: true } | { reset: true }
@@ -71,7 +71,7 @@ export function checkPatches(v: unknown, sheetIndex: (name: string) => number | 
     const given: Record<string, unknown> = {}
     for (const key of ['meta', 'note', 'link'] as const) {
       if (set[key] === undefined) continue
-      if (set[key] !== null && lines) throw new InputError(`${p}.set.${key}`, `whole ${lines === 'r' ? 'rows' : 'columns'} take no ${key}: null removes it from their cells`)
+      if (set[key] !== null && lines) throw new InputError(`${p}.set.${key}`, `whole ${LINES[lines]} take no ${key}: null removes it from their cells`)
       look[key] = set[key] as never
       if (set[key] !== null) given[key] = set[key]
     }

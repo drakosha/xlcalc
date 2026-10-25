@@ -8,20 +8,18 @@
 import { codegenContext, type EngineState } from '../engine.js'
 import { closureBackend } from '../exec/closures.js'
 import { walk } from '../exec/walk.js'
-import { nameFor } from '../names.js'
 import { MAX_COLS } from '../model.js'
 import { decode } from '../structure/area.js'
 import { FUNCTIONS } from '../functions.js'
-import { sheetKey, validate, walk as walkTree, type Ast } from '../syntax.js'
-import { tableNames } from '../tables/model.js'
+import { tokenize, validate, walk as walkTree, type Ast } from '../syntax.js'
+import { validateIn } from '../prepare.js'
 import { Areas, Rng, type V } from '../values.js'
 import { Arr } from '../arrays/value.js'
 import type { Arg } from '../args.js'
 
 /** A formula checked against the book as a cell's on sheet `s` is: its tree, or null when it does not parse or names what the book lacks. */
 export function prepare(state: EngineState, s: number, text: string): Ast | null {
-  const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
-  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables) })
+  const r = validate(text, validateIn(state, s))
   return r.ok ? r.ast : null
 }
 

@@ -11,8 +11,9 @@ import { epochOf } from '../../dates.js'
 import { checkBook, ITERATION, SHEET_STATES } from '../../input.js'
 import { InputError, what } from '../../input-error.js'
 import { checkNumber, object, onlyKeys, onlyOptions } from '../../input/basic.js'
+import { optionalLocale } from '../../locale/load.js'
 import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
-import { issueLocale, Issues, type XlsxMessage } from '../issues.js'
+import { Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
@@ -25,7 +26,7 @@ import { legacyConverter } from '../../legacy/convert.js'
 import { readFormula, type FormulaOptions } from './formulas.js'
 import { readLinks } from './links.js'
 import { cellMetadata } from './metadata.js'
-import { relsOf, type Rel } from './package.js'
+import { partText, relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
 import { renamedIn, repairNames } from './sheet-names.js'
 import { readActiveSheet } from '../view.js'
@@ -41,8 +42,7 @@ const LINKED: Record<string, ['macros' | 'pivotTable' | 'connection', XlsxMessag
 }
 
 async function locale(archive: Archive, rels: Rel[], issues: Issues): Promise<string | undefined> {
-  const part = rels.find((r) => r.kind === 'custom-properties' && !r.external)
-  const xml = part && (await archive.text(part.target))
+  const xml = await partText(archive, rels, 'custom-properties')
   const p = xml && elements(xml, 'property').find((e) => decodeXml(attributes(e.attrs).name ?? '') === LOCALE_PROPERTY)
   if (!p) return undefined
   const tag = readText(element(p.body ?? '', 'lpwstr')?.body ?? '')
@@ -80,8 +80,7 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
       continue
     }
     const f = readFormula(readText(e.body ?? ''), issues, { name }, { ...opts, union: true })
-    if (flag(a.hidden)) issues.add('name', { key: 'hiddenName' }, { name })
-    out.push(scope === undefined ? { name, ref: f.formula } : { name, ref: f.formula, scope })
+    out.push({ name, ref: f.formula, ...(scope === undefined ? {} : { scope }), ...(flag(a.hidden) ? { hidden: true } : {}) })
   }
   return out
 }
@@ -141,7 +140,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   const bytes = fileBytes(data)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
   onlyOptions(o, 'opts', ['locale', 'limits'])
-  const language = issueLocale(o)
+  const language = optionalLocale(o.locale, 'opts.locale')
   const archive = openArchive(bytes, o.limits === undefined ? undefined : checkLimits(o.limits))
   const issues = new Issues()
   const root = await relsOf(archive, '')
@@ -149,10 +148,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   const wb = await archive.text(wbPath)
   if (wb === undefined) throw new Error(`xlsx: the file has no workbook part (${wbPath})`)
   const rels = await relsOf(archive, wbPath)
-  const part = async (kind: string) => {
-    const r = rels.find((x) => x.kind === kind && !x.external)
-    return r ? archive.text(r.target) : undefined
-  }
+  const part = (kind: string) => partText(archive, rels, kind)
   const [stringsXml, stylesXml, themeXml, metaXml, richValues, richStructures, persons] = await Promise.all(
     ['sharedStrings', 'styles', 'theme', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure', 'person'].map(part),
   )
@@ -208,10 +204,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     // mention: a scan of the whole part tried every tag of its cells
     const named = xml.indexOf('legacyDrawing')
     const drawing = named < 0 ? undefined : attr(attributes(element(xml.slice(Math.max(0, xml.lastIndexOf('<', named))), 'legacyDrawing')?.attrs ?? ''), 'id')
-    const linked = async (kind: string, id?: string) => {
-      const r = sheetRels.find((x) => x.kind === kind && !x.external && (id === undefined || x.id === id))
-      return r ? archive.text(r.target) : undefined
-    }
+    const linked = (kind: string, id?: string) => partText(archive, sheetRels, kind, id)
     const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
     const read = readSheet(
       { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas },

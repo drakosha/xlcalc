@@ -48,3 +48,9 @@ export async function relsOf(archive: Archive, part: string): Promise<Rel[]> {
     return { id: a.Id ?? '', kind: type.slice(type.lastIndexOf('/') + 1), target: external ? target : resolvePart(dir, target), external }
   })
 }
+
+/** The text of the part of the first internal rel of a kind (one of id `id`), or undefined without one. */
+export async function partText(archive: Archive, rels: Rel[], kind: string, id?: string): Promise<string | undefined> {
+  const r = rels.find((x) => x.kind === kind && !x.external && (id === undefined || x.id === id))
+  return r ? archive.text(r.target) : undefined
+}

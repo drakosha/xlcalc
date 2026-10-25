@@ -251,13 +251,14 @@ describe('xlsx links: writing', () => {
         { name: 'Ext', ref: "'[1]Sheet1'!$A$2" },
         { name: 'Far', ref: "'[3]Sheet1'!$A$2" },
         { name: 'Lost', ref: "'[1]Sheet1'!#REF!" },
+        { name: 'ByFile', ref: 'Book2.xlsx!Rate' },
       ],
       externalBooks: [BOOK2],
     }
     const { data, issues } = await writeXlsx({ book })
     const sheet = await part(data, 'xl/worksheets/sheet1.xml')
     expect([...sheet.matchAll(/<f[^>]*>([^<]*)<\/f>/g)].map((m) => m[1])).toEqual(['[1]Sheet1!A1+1', "SUM('[1]My Sheet'!A1:B9)", '[1]!Rate*2', '[1]Sheet1!Local', '[1]Sheet1!A2', "[1]Sheet1!#REF!+'[1]My Sheet'!#REF!"])
-    expect(await part(data, 'xl/workbook.xml')).toContain('<definedNames><definedName name="Ext">[1]Sheet1!$A$2</definedName><definedName name="Lost">[1]Sheet1!#REF!</definedName></definedNames>')
+    expect(await part(data, 'xl/workbook.xml')).toContain('<definedNames><definedName name="Ext">[1]Sheet1!$A$2</definedName><definedName name="Lost">[1]Sheet1!#REF!</definedName><definedName name="ByFile">[1]!Rate</definedName></definedNames>')
     expect(issues.map((i) => `${i.code} ${i.cells ?? i.name}`)).toEqual(['formula A6,A7', 'noCachedValues undefined', 'name Far'])
   })
 

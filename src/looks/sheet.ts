@@ -82,6 +82,17 @@ function withoutLooks(sheet: SheetInput): SheetInput {
   return out as unknown as SheetInput
 }
 
+/**
+ * A sheet with one field of it set to `value`, the field dropped when `value` is undefined. Its place is kept (dropped
+ * in place), as a book's field order reaches results as it is given; `last` puts it after the others instead, as the
+ * places that read the field out of the sheet first write it back.
+ */
+export function withField<S extends object, K extends keyof S & string>(s: S, key: K, value: S[K] | undefined, last?: boolean): S {
+  const rest = { ...s }
+  delete (rest as Record<string, unknown>)[key]
+  return value === undefined ? rest : last ? ({ ...rest, [key]: value } as S) : ({ ...s, [key]: value } as S)
+}
+
 /** A layer's list in the one form, known as written in it (the layer read already). */
 export function listOf(layer: Layer): LookRange[] {
   const list = writeRanges(layer)
@@ -99,9 +110,9 @@ export function layerOf(sheet: Pick<SheetInput, 'looks'>): Layer | undefined {
 /** The look of a cell from the sheet's looks: what a cell without an entry shows as its own. */
 export const lookIn = (sheet: Pick<SheetInput, 'looks'>, r: number, c: number): Look | undefined => layerOf(sheet)?.lookAt(r, c)
 
-/** A cell's entry, else its look from the sheet's looks as an entry of a look alone (a frozen object), else undefined. */
+/** A cell's entry, else its look from the sheet's looks (which is undefined without them) as an entry of a look alone (a frozen object), else undefined. */
 export const inputIn = (sheet: Pick<SheetInput, 'cells' | 'looks'>, addr: string, r: number, c: number): CellInput | undefined =>
-  sheet.cells[addr] ?? (hasLooks(sheet) ? lookIn(sheet, r, c) : undefined)
+  sheet.cells[addr] ?? lookIn(sheet, r, c)
 
 /**
  * Marks `cells` as made of the entries of cells taken (`from`, each moved or its formula rewritten, which makes no entry
@@ -111,10 +122,13 @@ export function madeFrom(from: readonly object[], cells: object, added: Record<s
   if (from.every((x) => TAKEN.has(x))) MADE.set(cells, Object.keys(added).filter((a) => added[a] && lookAlone(added[a]!)))
 }
 
+/** Whether an entry (a cell, a row, a column) shows a look of its own: a style or a number format. */
+export const hasLook = (e: Pick<Look, 'style' | 'numberFormat'>): boolean => e.style !== undefined || e.numberFormat !== undefined
+
 /** Whether an entry holds a look alone: a style or a number format and no other field (a field of undefined is none); an empty entry holds none. */
 export function lookAlone(cell: CellInput): boolean {
   for (const k in cell) if (k !== 'style' && k !== 'numberFormat' && (cell as Record<string, unknown>)[k] !== undefined) return false
-  return cell.style !== undefined || cell.numberFormat !== undefined
+  return hasLook(cell)
 }
 
 /** The sheet with `cells` and `layer` as its looks: a new object, without the field for no looks. */

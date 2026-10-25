@@ -306,6 +306,11 @@ export interface NameInput {
   ref: string
   /** The sheet where the name is visible; a local name shadows a global one. Without it the name is global. */
   scope?: string
+  /**
+   * Hidden (xlsx `hidden="1"`): Excel's Name Manager does not list the name, which a host's list of names should follow.
+   * Not part of calculation: formulas use a hidden name like any other.
+   */
+  hidden?: boolean
 }
 
 /** The first saved sheet view; selection holds A1 cells or ranges, without a sheet name. */

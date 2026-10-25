@@ -3,11 +3,10 @@ import type { BookInput, FrozenPanes, SheetInput, SheetView } from '../contract.
 import { checkSheetView } from '../input-view.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
-import { attributes, element, elements } from './xml/scan.js'
+import { attributes, element, elements, type Element } from './xml/scan.js'
 import { escapeAttr } from './xml/text.js'
 
-export function readSheetView(head: string): SheetView | undefined {
-  const first = element(element(head, 'sheetViews')?.body ?? '', 'sheetView')
+export function readSheetView(first: Element | undefined): SheetView | undefined {
   if (!first) return undefined
   const attrs = attributes(first.attrs)
   const body = first.body ?? ''

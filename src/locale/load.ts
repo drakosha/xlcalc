@@ -133,6 +133,9 @@ export function checkLocaleArg(v: unknown, path: string): Locale {
   return typeof v === 'string' ? LOCALES.get(checkTag(v, path, toLoad))! : checkLocaleObject(v, path)
 }
 
+/** An optional locale argument: an absent one stays undefined, a given one is checked (`checkLocaleArg`). */
+export const optionalLocale = (v: unknown, path: string): Locale | undefined => (v === undefined ? undefined : checkLocaleArg(v, path))
+
 /**
  * Loads a locale for workbooks in that locale (`BookInput.locale`) and for its tag wherever a locale is accepted: one
  * of the package's locale modules (`import { ruRU } from 'xlcalc/locales/ru-RU'`, then `registerLocale(ruRU)`). Loading

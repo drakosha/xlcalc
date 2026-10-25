@@ -17,6 +17,7 @@ import { attributes, flag, ownEntry } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import type { CellMetadata } from './metadata.js'
 import { CellsLayer } from '../../looks/layer.js'
+import { hasLook } from '../../looks/sheet.js'
 import { stringItem, type Strings } from './strings.js'
 
 export interface CellsContext {
@@ -101,7 +102,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
   const out: SheetCells = { cells: {}, looks: new CellsLayer(), cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set(), formulas: [], unordered: false }
   const { looks } = out
   const { issues, sheet } = ctx
-  const looked = cols.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
+  const looked = cols.filter(([, , e]) => hasLook(e))
   const column = (c: number) => (looked.length ? entryAt(looked, c) : undefined)
   let row = -1
   let col = -1

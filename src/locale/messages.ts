@@ -68,6 +68,7 @@ export interface XlsxMessageParams {
   localeUnknown: { tag: string }
   builtInName: object
   nameOfSheetLeftOut: object
+  /** @deprecated Never given: `readXlsx` reads a hidden name hidden (`NameInput.hidden`). */
   hiddenName: object
   manualCalculation: object
   autoNoTable: object

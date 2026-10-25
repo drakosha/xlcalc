@@ -24,6 +24,9 @@ export type Axis = 'r' | 'c'
 
 export const LIMIT: Record<Axis, number> = { r: MAX_ROWS, c: MAX_COLS }
 
+/** The field of a sheet's lines an axis names: its rows or its columns. */
+export const LINES: Record<Axis, 'rows' | 'columns'> = { r: 'rows', c: 'columns' }
+
 const full = (axis: Axis): Span => ({ lo: { i: 0, abs: true }, hi: { i: LIMIT[axis] - 1, abs: true } })
 
 /** Both bounds in order; Excel orders each axis of `B5:A1` on its own, carrying the `$` with the bound. */
@@ -160,6 +163,12 @@ export function minus(x: Rect, y: Rect): Rect[] {
 
 /** Rectangles without the cells of `cut`. */
 export const subtract = (rects: Rect[], cut: Rect): Rect[] => rects.flatMap((x) => minus(x, cut))
+
+/** The rectangles of `xs` inside `y`. */
+export const inside = (xs: Rect[], y: Rect): Rect[] => xs.flatMap((x) => intersect(x, y) ?? [])
+
+/** Whether any rectangle of `xs` meets any of `ys`. */
+export const anyMeets = (xs: readonly Rect[], ys: readonly Rect[]): boolean => xs.some((x) => ys.some((y) => meets(x, y)))
 
 /**
  * The top-left cell of the rectangle around `xs`, which need not be a cell of theirs: the cell a rule's formulas are

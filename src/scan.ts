@@ -7,7 +7,7 @@
 import type { FormulaReference, ScanOptions } from './contract.js'
 import { checkString, object, onlyKeys } from './input/basic.js'
 import { sidesOf } from './locale/index.js'
-import { checkLocaleArg } from './locale/load.js'
+import { optionalLocale } from './locale/load.js'
 import { translate, type Translated } from './locale/translate.js'
 import type { Locale } from './locale/types.js'
 import { FormulaError, tokenize, type Tok } from './syntax.js'
@@ -99,7 +99,7 @@ const KIND = { cell: 'cells', range: 'cells', cols: 'columns', rows: 'rows' } as
 export function scanReferences(formula: string, opts?: ScanOptions): FormulaReference[] {
   const text = checkString(formula, 'formula')
   if (opts !== undefined) onlyKeys(object(opts, 'opts', "options such as { locale: 'ru-RU' }"), 'opts', ['locale'])
-  const locale = opts?.locale === undefined ? undefined : checkLocaleArg(opts.locale, 'opts.locale')
+  const locale = optionalLocale(opts?.locale, 'opts.locale')
   const eq = text.startsWith('=') ? 1 : 0
   const stored = locale === undefined ? { formula: text.slice(eq), back: (at: number) => at + eq } : storedText(text, eq, locale)
   const out: FormulaReference[] = []

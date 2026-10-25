@@ -10,7 +10,7 @@ import { say } from '../locale/messages.js'
 import { cornersText, hasCell, type Rect } from './area.js'
 import { clipped, CLIP } from './clip.js'
 import { copyRange, tiles } from './copy.js'
-import { placer, type Applied, type Geometry } from './geometry.js'
+import { chain, placer, type Applied, type Geometry } from './geometry.js'
 import { placedCells, shift, shiftTransform } from './shift.js'
 import { arraysOf, gridOf } from './grid.js'
 import { rewriteCells, sheetIndex, sheetNames, sheetOf, type Site, type Transform } from './rewrite.js'
@@ -18,19 +18,6 @@ import { deleteSpan } from './transform.js'
 import { madeFrom } from '../looks/sheet.js'
 import type { ValuesIn } from './values.js'
 import { visibleRows, visibleRuns } from './visible.js'
-
-/** Applies the steps in turn, each to the book the last one gave; the geometry is theirs one after another. */
-function chain(book: BookInput, steps: ((b: BookInput) => Applied)[]): Applied {
-  let out = book
-  const geometry: Geometry = []
-  for (const step of steps) {
-    const r = step(out)
-    if (!r.ok) return r
-    out = r.book
-    geometry.push(...r.geometry)
-  }
-  return { ok: true, book: out, geometry }
-}
 
 /** `n` rows inserted before `at` (zero-based) on `sheet`: on a filtered sheet as many as are visible among them. */
 export function insertRows(book: BookInput, sheet: string, at: number, n: number): Applied {

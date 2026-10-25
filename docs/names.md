@@ -101,6 +101,14 @@ A name with a `scope` sheet is visible on that sheet only and takes precedence o
 
 Names inside a name's formula are the global ones, as a file stores them. For a sheet's own name, the formula says `'T'!rate`. So a global `g = y+0` uses the global `y` on every sheet, and a local `L = y*2` on T uses the global `y` too.
 
+## Hidden names
+
+A name with `hidden: true` stays out of Excel's Name Manager, as a file marks it with `hidden="1"`; a host's list of names should leave it out too. It calculates like any other name: the flag changes no value and no values hash, only `inputHash`. Structure operations, sessions with their undo, and `readXlsx` and `writeXlsx` keep it, and a local name that a moved or copied formula takes to another sheet is hidden there too. `hidden: false` is a visible name, as one without the field.
+
+```js
+names: [{ name: 'rate', ref: "'Data'!$B$1", hidden: true }]
+```
+
 ## Errors and cycles
 
 | the name's formula | where it is used |

@@ -39,6 +39,9 @@ export const VERTICAL: readonly NonNullable<AlignmentStyle['vertical']>[] = ['to
 /** Whether a field of a style is given: an undefined one never is, as no field of input is; in a patch a null one neither (`checkStyle`). */
 export type Given = (o: Record<string, unknown>, k: string) => boolean
 
+/** The rule of `Given`: a field is given unless undefined, or null in a patch, a field removed; `givenIn(patch)` makes the predicate. */
+export const givenIn = (patch: boolean): Given => (o, k) => o[k] !== undefined && !(patch && o[k] === null)
+
 /** A font's fields: a cell's (`named`) has a name and a size too, which a conditional style (a dxf) has not. */
 export function checkFont(v: unknown, p: string, given: Given, named: boolean) {
   const f = object(v, p, 'a font such as { bold: true }')
@@ -75,8 +78,7 @@ export function checkBorder(v: unknown, p: string, side: Given) {
 export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
   const s = object(v, p, 'a style such as { font: { bold: true } }')
   onlyKeys(s, p, ['font', 'fill', 'border', 'alignment'])
-  // a field given: in a patch, null is a field removed
-  const given: Given = (o, k) => o[k] !== undefined && !(patch && o[k] === null)
+  const given: Given = givenIn(patch)
   if (given(s, 'font')) checkFont(s.font, `${p}.font`, given, true)
   if (given(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC000')
   if (given(s, 'border')) checkBorder(s.border, `${p}.border`, given)
