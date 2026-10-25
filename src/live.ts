@@ -8,9 +8,8 @@
 import type { CellTextOptions, CellTextResult, CellValue, LiveCell, LiveSheet, LiveBook, NumberFormat, Scalar, Session, SessionChange, SessionOperation, StylePatch } from './contract.js'
 import { nameKey, parseCell, parseRange } from './a1.js'
 import { InputError, what } from './input-error.js'
+import { listenerOf, tell as tellListener, type Listener } from './session/subscribers.js'
 import { strict } from './strict-args.js'
-
-type Listener = (change: SessionChange) => void
 
 /** A watch: its own entry, so that one listener given twice is unsubscribed once. */
 interface Watch {
@@ -40,9 +39,6 @@ const books = new WeakMap<Session, LiveBook>()
 /** A key of `cells` that may be the address of a cell, without `$` (`parseCell` checks it is on the sheet). */
 const ADDRESS = /^[A-Za-z]{1,3}[1-9]\d{0,6}$/
 
-/** The platform's `queueMicrotask` (both Node and browsers have it). */
-const g = globalThis as unknown as { queueMicrotask(f: () => void): void }
-
 /** A session of the synchronous kind: an asynchronous one answers `getBook()` with a promise. `getBook` changes nothing. */
 function checkSession(session: unknown): Session {
   const s = session as Partial<Session> | null
@@ -54,11 +50,6 @@ function checkSession(session: unknown): Session {
     throw new InputError('session', 'expected a synchronous session (createSession), got an asynchronous one (createInlineCalc, createCalcPool)')
   }
   return s as Session
-}
-
-const listenerOf = (path: string, listener: unknown): Listener => {
-  if (typeof listener !== 'function') throw new InputError(path, `listener must be a function, got ${what(listener)}`)
-  return listener as Listener
 }
 
 /** Adds a watch to `set`, answering the function that takes it away (nothing once `set` is cleared). */
@@ -272,13 +263,7 @@ export function liveBook(session: Session): LiveBook {
     for (const { listener } of wake) {
       if (called.has(listener)) continue
       called.add(listener)
-      try {
-        listener(change)
-      } catch (e) {
-        g.queueMicrotask(() => {
-          throw e
-        })
-      }
+      tellListener(listener, change)
     }
   }
   s.subscribe(tell)

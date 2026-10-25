@@ -7,19 +7,17 @@
  */
 import { DEFAULT_ROW_HEIGHT as DEFAULT_HEIGHT, MAX_ROW_HEIGHT as MAX_HEIGHT } from '../column-width.js'
 import type { BookInput, CellStyle, CellValue, ComputeResult, SheetInput } from '../contract.js'
-import { toCellValue, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { layerOf } from '../looks/sheet.js'
 import { MAX_COLS, parseAddress } from '../model.js'
 import { columnPoints } from '../numfmt.js'
-import { outValue } from '../result.js'
+import { outCell } from '../result.js'
 import { bands } from '../sorted.js'
 import { advance } from '../numfmt/advances.js'
 import { resultSheet, type Placed } from './result-sheet.js'
 import { sheetLines } from './lines.js'
 import { mergesOf } from './merges.js'
 import { lines as spansOf, spanKey } from './spans.js'
-
-export { DEFAULT_HEIGHT, MAX_HEIGHT }
 
 /** The size of the book's default font, which a style without one shows. */
 const DEFAULT_SIZE = 11
@@ -28,7 +26,7 @@ const DEFAULT_SIZE = 11
 const WRAP_PADDING = 7
 
 /** The height of one line of Calibri of `size` points, as Excel for Mac fits a row to it (`test/excel/rows/autofit.json`); a size of a half point counts as the next whole one (`held.json`). */
-export const lineHeight = (size: number): number => Math.round(Math.round(size) * 1.27 + 0.96)
+const lineHeight = (size: number): number => Math.round(Math.round(size) * 1.27 + 0.96)
 
 /**
  * The width of text in Calibri of `size` points as Excel for Mac wraps it: each character the font's advance rounded to
@@ -44,7 +42,7 @@ function widthIn(s: string, size: number): number {
  * The lines a text takes wrapped in `space` points of Calibri of `size` points: a line at each line break, and within
  * one, the words that fit, spaces between them counted; a word wider than the room breaks between its characters.
  */
-export function wrappedLines(text: string, size: number, space: number): number {
+function wrappedLines(text: string, size: number, space: number): number {
   let n = 0
   const gap = widthIn(' ', size)
   // spaces at the end of a line hang past the room
@@ -80,7 +78,7 @@ const sizeOf = (styles: readonly CellStyle[], style: number | undefined) => (sty
  * and below it (`test/excel/rows/lines.json`). A line of Calibri of `s` points stands `s` points above and its line's
  * rest below; a wrapped text's lines above its last are a point higher than a line alone, the first 20 of them.
  */
-export type Need = [above: number, below: number]
+type Need = [above: number, below: number]
 
 /** One line of a font of `size` points. */
 const lineNeed = (size: number): Need => [Math.round(size), lineHeight(size) - Math.round(size)]
@@ -89,7 +87,7 @@ const lineNeed = (size: number): Need => [Math.round(size), lineHeight(size) - M
  * What a cell needs (`Need`): wrapped text its lines at its column's width (`points`), anything else one line of its
  * font. `across`: the cell is merged with the cells beside it, one line, or wrapped no more than the line's rest below.
  */
-export function cellNeed(value: CellValue, style: CellStyle | undefined, points: number, across = false): Need {
+function cellNeed(value: CellValue, style: CellStyle | undefined, points: number, across = false): Need {
   const size = style?.font?.size ?? DEFAULT_SIZE
   const [above, below] = lineNeed(size)
   if (typeof value !== 'string' || !value || !style?.alignment?.wrap) return [above, below]
@@ -187,12 +185,12 @@ export function stateRows(s: EngineState, i: number, lo: number, hi: number): { 
     if (col)
       for (let r = lo; r <= Math.min(hi, col.length - 1); r++) {
         const v = col.get(r)
-        if (v !== undefined && v !== null) cells.push([r, c, outValue(toCellValue(v))])
+        if (v !== undefined && v !== null) cells.push([r, c, outCell(v)])
       }
   }
   // the entries without a value are the state's bare ones: no walk of every cell of the sheet; a large spill can cover one
   blanksOf(cells, [...(s.bare.get(i) ?? [])].map((k): [number, number] => [Math.floor(k / MAX_COLS), k % MAX_COLS]), lo, hi, (r, c) => (data.cols[c]?.get(r) ?? null) !== null)
-  const spans = data.fills.flatMap((f) => Array.from({ length: f.c2 - f.c1 + 1 }, (_, k): [number, number, number, CellValue] => [f.r1, f.r2, f.c1 + k, outValue(toCellValue(f.v))]))
+  const spans = data.fills.flatMap((f) => Array.from({ length: f.c2 - f.c1 + 1 }, (_, k): [number, number, number, CellValue] => [f.r1, f.r2, f.c1 + k, outCell(f.v)]))
   return { cells, spans }
 }
 

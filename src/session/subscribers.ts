@@ -13,6 +13,23 @@ export type Listener = (change: SessionChange) => void
 /** The platform's `queueMicrotask` (both Node and browsers have it). */
 const g = globalThis as unknown as { queueMicrotask(f: () => void): void }
 
+/** A listener as a call's `path` argument takes it, refused where it is not a function. */
+export const listenerOf = (path: string, listener: unknown): Listener => {
+  if (typeof listener !== 'function') throw new InputError(path, `listener must be a function, got ${what(listener)}`)
+  return listener as Listener
+}
+
+/** Tells `listener` the `change`: its own throw reaches the host as a microtask, stopping neither the call nor the other listeners. */
+export const tell = (listener: Listener, change: SessionChange) => {
+  try {
+    listener(change)
+  } catch (e) {
+    g.queueMicrotask(() => {
+      throw e
+    })
+  }
+}
+
 /** The fields of `EditResult` a change carries, out of a call's answer (`CellTextResult`, `UndoResult`…). */
 function changeOf(method: ChangingMethod, r: EditResult): SessionChange {
   const c: SessionChange = { method, revision: r.revision, changes: r.changes }
@@ -30,7 +47,7 @@ export function subscribers(revision: number) {
   let telling = false
   return {
     subscribe(listener: Listener): () => void {
-      if (typeof listener !== 'function') throw new InputError('subscribe', `listener must be a function, got ${what(listener)}`)
+      listenerOf('subscribe', listener)
       listeners.add(listener)
       return () => {
         listeners.delete(listener)
@@ -48,15 +65,7 @@ export function subscribers(revision: number) {
       telling = true
       try {
         for (let c = waiting.shift(); c; c = waiting.shift()) {
-          for (const listener of [...listeners]) {
-            try {
-              listener(c)
-            } catch (e) {
-              g.queueMicrotask(() => {
-                throw e
-              })
-            }
-          }
+          for (const listener of [...listeners]) tell(listener, c)
         }
       } finally {
         telling = false

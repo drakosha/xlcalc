@@ -22,8 +22,6 @@ import { sheetIndex } from './rewrite.js'
 import { arraysOf, cellsIn, gridOf, type Grid } from './grid.js'
 import { holds, CONTENT } from '../array-areas.js'
 
-export { grown }
-
 export function mergeCells(book: BookInput, sheet: string, x: Rect, across: boolean, center: boolean): Applied {
   const s = sheetIndex(book, sheet)
   const merges = mergesOf(book.sheets[s])

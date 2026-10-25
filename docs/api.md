@@ -9,6 +9,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/text`](#xlcalctext)
 - [`xlcalc/entry`](#xlcalcentry)
 - [`xlcalc/xlsx`](#xlcalcxlsx)
+- [`xlcalc/xlsx/keep`](#xlcalcxlsxkeep)
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
 - [`xlcalc/function-text/ru-RU`](#xlcalcfunction-textru-ru)
@@ -840,6 +841,36 @@ function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<Xls
 Writes a workbook as an xlsx file: its formulas with the values from `snapshot.result` that `opts.values` requests,
 or only its values (`opts.mode: 'values'`).
 
+## xlcalc/xlsx/keep
+
+Types: see [Types](#types).
+
+### <a id="xlcalcxlsxkeep-keptrefusal"></a>`KeptRefusal`
+
+```ts
+class KeptRefusal extends Error
+```
+
+[`writeKept`](#xlcalcxlsxkeep-writekept)'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells.
+
+### <a id="xlcalcxlsxkeep-openkept"></a>`openKept`
+
+```ts
+function openKept(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxRead>
+```
+
+Reads an xlsx file into a workbook as [`readXlsx`](#xlcalcxlsx-readxlsx) does, its carriers added to the names for [`writeKept`](#xlcalcxlsxkeep-writekept).
+
+### <a id="xlcalcxlsxkeep-writekept"></a>`writeKept`
+
+```ts
+function writeKept(original: ArrayBuffer | Uint8Array<ArrayBufferLike>, snapshot: XlsxSnapshot, opts?: WriteKeptOptions): Promise<XlsxWritten>
+```
+
+Writes a book over the xlsx file it was read from ([`openKept`](#xlcalcxlsxkeep-openkept)): what the book changed is written, the rest is the
+file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal)) a change that would leave
+references the model does not hold pointing at other cells.
+
 ## xlcalc/worker
 
 Described under an entry above: [`CalcError`](#xlcalc-calcerror), [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length).
@@ -1131,7 +1162,7 @@ interface BookInput {
    * dates, TODAY and NOW, date text and how dates are displayed: a 1904 workbook displays a negative date or time with a
    * minus sign (`-12:00`). It is included in both hashes only when it is 1904.
    */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /**
    * Iterative calculation of circular references, like Excel's setting and xlsx `calcPr iterate`. Without it, the cells
    * of a cycle and the cells that depend on it are not calculated and keep their values (`CellInput.held`). With it, the
@@ -2254,7 +2285,7 @@ The workbook's date system, as in [`BookInput.dateSystem`](#bookinput): 1900 wit
 
 ```ts
 interface DateSystemOptions {
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
 }
 ```
 
@@ -2314,7 +2345,7 @@ interface DisplayOptions {
    */
   width?: number
   /** The date system used to display dates, as in `BookInput.dateSystem`; 1900 without it. */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
 }
 ```
 
@@ -2407,7 +2438,7 @@ interface EntryOptions {
    */
   locale?: string | Locale
   /** The workbook's date system, as in `BookInput.dateSystem`; 1900 without it. */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /**
    * The cell's entry context: its effective `numberFormat`, `style`, `meta`, `note` and `link`; other fields are not read.
    * A `CellInput`, or a `CellView` from `getCell` or `getCells`, carries only the cell's own format. To take a row's or
@@ -2460,7 +2491,7 @@ interface EntryTextOptions {
   numberFormat?: NumberFormat
   /** A loaded locale's tag (`LOCALES`) or a locale object; en-US without one. */
   locale?: string | Locale
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /** ISO, as in `Clock.now`; the current time without it. */
   now?: string
 }
@@ -4810,6 +4841,18 @@ interface WorkerLike {
   postMessage(message: unknown): void
   terminate(): void
   addEventListener(type: 'message' | 'error' | 'messageerror', listener: (event: { data?: unknown; message?: string }) => void): void
+}
+```
+
+### `WriteKeptOptions`
+
+Options of [`writeKept`](#xlcalcxlsxkeep-writekept): the language of its issues and which formula values the file stores, as [`writeXlsx`](#xlcalcxlsx-writexlsx) takes
+them, and the limits of reading the original file, as [`readXlsx`](#xlcalcxlsx-readxlsx) takes them.
+
+```ts
+interface WriteKeptOptions extends Pick<WriteXlsxOptions, 'locale' | 'values'> {
+  /** How large the original file's parts may be once inflated (`ReadXlsxOptions.limits`). */
+  limits?: XlsxLimits
 }
 ```
 

@@ -12,7 +12,7 @@ import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { say } from '../locale/messages.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
-import { clockSerial } from '../result.js'
+import { clockOptions } from '../result.js'
 import { areaText } from './area.js'
 import { looksTaken } from '../looks/sheet.js'
 import { linesMoved, overLooks } from './looks.js'
@@ -28,7 +28,8 @@ import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './s
 import { stateValues, type ValuesIn } from './values.js'
 import { checkWrites } from './writes.js'
 import { tableOp } from '../tables/ops.js'
-import { OUTLINE_FIELDS, outlineOp } from './outline.js'
+import { OUTLINE_FIELDS } from './outline-command.js'
+import { outlineOp } from './outline.js'
 import { mergeCells, unmergeCells } from './merge.js'
 import { fillRange, type Copier } from './fill.js'
 import { copyTables, moveTables } from '../tables/moves.js'
@@ -103,7 +104,7 @@ function lazyValues(book: BookInput): ValuesIn {
   return (sheet, rect) => {
     if (!values) {
       const clock = currentClock()
-      values = stateValues(createState(book, { now: clockSerial(clock), seed: clock.seed }))
+      values = stateValues(createState(book, clockOptions(clock)))
     }
     return values(sheet, rect)
   }

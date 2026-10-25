@@ -16,7 +16,7 @@ export interface Where {
   name?: string
 }
 
-interface Gathered {
+export interface Gathered {
   code: XlsxIssueCode
   message: XlsxMessage
   where: Where
@@ -24,7 +24,7 @@ interface Gathered {
 }
 
 export class Issues {
-  private readonly byKey = new Map<string, Gathered>()
+  protected readonly byKey = new Map<string, Gathered>()
 
   add(code: XlsxIssueCode, message: XlsxMessage, where: Where = {}): void {
     const key = `${code}\n${where.sheet ?? ''}\n${where.name ?? ''}\n${JSON.stringify(message)}`

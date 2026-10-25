@@ -16,7 +16,7 @@ import { sheetIndex } from './rewrite.js'
 import type { ValuesIn } from './values.js'
 
 /** A copy's or a move's sheets (-1 for a name the book has not) and ranges, read as given before the operation is checked. */
-export interface PasteOp {
+interface PasteOp {
   copy: boolean
   fs: number
   src: Rect

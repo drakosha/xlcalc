@@ -13,7 +13,6 @@ import type { Steps } from '../exec/budget.js'
 import { sheetLines } from '../layout/lines.js'
 import { journaled } from '../held.js'
 import { readEntry } from '../entry/index.js'
-import { formatAddress } from '../model.js'
 import { COMPARE } from '../operators.js'
 import { ERROR_TEXT } from '../syntax/ast.js'
 import { inputAt } from '../session/book.js'
@@ -214,14 +213,7 @@ export function brokenRule(state: EngineState, s: number, r: number, c: number):
 /** Whether a cell has a rule. */
 export const hasRule = (state: EngineState, s: number, r: number, c: number): boolean => ruleOf(state, s, r, c) !== null
 
-/**
- * What `read` gives with the cell holding `input`: the input put into the book, read, and taken back (both recompute
- * what depends on the cell).
- */
-export const withInput = <T>(state: EngineState, s: number, r: number, c: number, input: CellInput | null, read: () => T): Steps<T> =>
-  withInputs(state, [{ sheet: state.sheetNames[s], cell: formatAddress(r, c), input }], read)
-
-/** What `read` gives with the cells holding the inputs of `edits` (each cell once), as `withInput`; the held values the engine changed meanwhile go back too. */
+/** What `read` gives with the cells holding the inputs of `edits` (each cell once); the held values the engine changed meanwhile go back too. */
 export function* withInputs<T>(state: EngineState, edits: CellReplace[], read: () => T): Steps<T> {
   const put: CellReplace[] = []
   let back: CellReplace[] = []

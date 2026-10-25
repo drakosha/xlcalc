@@ -6,7 +6,7 @@
 import type { ConditionalFormat } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { placeParts } from '../model.js'
+import { inner, placeParts } from '../model.js'
 import { caseKey } from '../collate.js'
 import { hasCell, meets, type Rect } from '../structure/area.js'
 import type { Rules } from '../locale/rules.js'
@@ -82,8 +82,7 @@ const kept = new WeakMap<EngineState, Map<ConditionalFormat, { s: number; rects:
 
 /** A rule's statistics, kept until an edit among its cells. */
 export function* statsOf(state: EngineState, s: number, rule: ConditionalFormat): Steps<Stats> {
-  let m = kept.get(state)
-  if (!m) kept.set(state, (m = new Map()))
+  const m = inner(kept, state, () => new Map())
   const hit = m.get(rule)
   if (hit) return hit.stats
   const stats = yield* ruleStats(state, s, rule)

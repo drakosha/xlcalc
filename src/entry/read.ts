@@ -9,7 +9,7 @@
  */
 import { wordKey } from '../collate.js'
 import type { NumberFormat } from '../contract.js'
-import { literal } from '../criteria.js'
+import { literal } from '../wildcards.js'
 import { dateTimeParts, trimSpaces, type DateTimeParts } from '../dates.js'
 import { readsClock, type RulesClock } from '../locale/rules/data.js'
 import type { Rules } from '../locale/rules.js'

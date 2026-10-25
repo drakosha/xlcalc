@@ -3,7 +3,7 @@
  * `Rules.compare`), blanks and errors in the data never match.
  */
 import { isArea } from '../../arrays/lift.js'
-import { wildMatcher } from '../../criteria.js'
+import { wildMatcher } from '../../wildcards.js'
 import { E, isErr, Rng, sameType, type CErr, type V } from '../../values.js'
 import type { Cx } from '../../args.js'
 import { indexedExact, scannedExact, type ExactStore } from './exact.js'

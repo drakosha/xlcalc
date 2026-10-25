@@ -6,11 +6,11 @@
  */
 import type { BookInput, CellValue, ColumnInput, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, RowInput, SheetInput } from '../contract.js'
 import { epochOf } from '../dates.js'
-import { toCellValue, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { checkCellValue, checkEntryWidthOptions } from '../input.js'
 import { displayRules, type Rules } from '../locale/rules.js'
 import { columnPoints, widthOf } from '../numfmt.js'
-import { outValue } from '../result.js'
+import { outCell } from '../result.js'
 import { applyLayout, type SetLayoutEdit } from '../session/book.js'
 import { sheetKey } from '../syntax.js'
 import { sheetLines } from './lines.js'
@@ -30,7 +30,7 @@ const widthAt = (points: number): number | null => (points === columnPoints(unde
  * The widths AutoFit gives the columns `lo` to `hi` of a sheet whose cells hold `cells` (in any order), as
  * `ColumnInput.width`, null for the default width; a column with nothing to show is left out, as it keeps its width.
  */
-export function fitWidths(rules: Rules, sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number): Record<string, number | null> {
+function fitWidths(rules: Rules, sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number): Record<string, number | null> {
   const formats = sheetLines(sheet)
   const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
@@ -53,10 +53,10 @@ function* stateCells(s: EngineState, i: number, lo: number, hi: number): Generat
     if (col)
       for (let r = 0; r < col.length; r++) {
         const v = col.get(r)
-        if (v !== undefined && v !== null) yield [r, c, outValue(toCellValue(v))]
+        if (v !== undefined && v !== null) yield [r, c, outCell(v)]
       }
   }
-  for (const f of data.fills) for (let c = Math.max(lo, f.c1); c <= Math.min(hi, f.c2); c++) yield [f.r1, c, outValue(toCellValue(f.v))]
+  for (const f of data.fills) for (let c = Math.max(lo, f.c1); c <= Math.min(hi, f.c2); c++) yield [f.r1, c, outCell(f.v)]
 }
 
 /** What AutoFit sets on a row it fits: the height as Excel's own, the row shown; the default height bare. */

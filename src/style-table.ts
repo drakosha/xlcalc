@@ -7,7 +7,7 @@ import type { CellStyle } from './contract.js'
 import { checkStyle, checkStyles } from './input/styles.js'
 
 /** A key of a value independent of the order of its fields. */
-function keyOf(v: unknown): string {
+export function keyOf(v: unknown): string {
   if (v === null || typeof v !== 'object') return JSON.stringify(v)
   const o = v as Record<string, unknown>
   return `{${Object.keys(o)

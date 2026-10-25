@@ -8,25 +8,23 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, InputError, createSession, type Execution, type Session } from '../src/index.js'
-import * as rangeCache from '../src/range-cache.js'
+import { heapCaches } from '../src/range-cache.js'
 import { differences, fuzz, lookEdits, patches, type LookEdit } from './session-fuzz.js'
 import { extentOf } from './sheet-extent.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const STEPS = 60
-// absent before the cache budget (0.7.0): the calibration on older code runs the rest of the file
-const heapCaches = (rangeCache as Partial<typeof rangeCache>).heapCaches
 /** A few ranges of 300 values: each step that reads ranges drops some (`docs/cache.md`). */
 const SMALL = 8 * 1024
 
 /** Runs `f` with this heap's budget cut to `SMALL`. */
 function tight<T>(f: () => T): T {
-  const cap = heapCaches!.cap
-  heapCaches!.cap = SMALL
+  const cap = heapCaches.cap
+  heapCaches.cap = SMALL
   try {
     return f()
   } finally {
-    heapCaches!.cap = cap
+    heapCaches.cap = cap
   }
 }
 
@@ -53,34 +51,29 @@ function run(seed: number, execution: Execution, around: <T>(f: () => T) => T = 
   const patch = patches(seed)
   const look = lookEdits(seed)
   const s = around(() => createSession(book, { ...opts, undo: { depth: 10_000, maxMb: 1024 } }))
-  // absent before patches and extents (0.12.0), and before the calls that keep a look (EditResult): the calibration on older code runs the steps alone
-  const looks = 'patchCells' in s
-  const kept = 'replaceCells' in s
   try {
     for (let k = 0; k <= STEPS; k++) {
       const st = k ? step() : undefined
       if (st && 'op' in st) {
         if (!around(() => s.editStructure(st.op)).ok) continue
       } else if (st) around(() => s.setCells(st.edits))
-      const p = looks && k ? patch() : []
+      const p = k ? patch() : []
       // a patch lists the cells whose own number format, note or link it changed, and no value
-      if (p.length) expect(around(() => (kept ? s.patchCells(p).changes.filter((c) => !('numberFormat' in c || 'note' in c || 'link' in c)) : (s as Session).patchCells(p)))).toEqual([])
-      const e = kept && k ? look() : undefined
+      if (p.length) expect(around(() => s.patchCells(p).changes.filter((c) => !('numberFormat' in c || 'note' in c || 'link' in c)))).toEqual([])
+      const e = k ? look() : undefined
       if (e) around(() => lookEdit(s, e))
       const hash = around(() => s.getHash())
       const full = compute(s.getBook(), opts)
       const at = `seed ${seed}, step ${k}: ${JSON.stringify(st ?? 'open')}, patches ${JSON.stringify(p)}, then ${JSON.stringify(e)}`
-      if (looks) for (const sheet of full.sheets) expect(around(() => s.getUsedRange(sheet.name)), `${at}: ${sheet.name}`).toEqual(extentOf(full, s.getBook(), sheet.name))
+      for (const sheet of full.sheets) expect(around(() => s.getUsedRange(sheet.name)), `${at}: ${sheet.name}`).toEqual(extentOf(full, s.getBook(), sheet.name))
       if (hash === full.hash) continue
       expect(around(() => differences(s.getResult(), full)), at).toEqual([])
       expect(hash, at).toBe(full.hash)
     }
-    if (kept) {
-      // every step undone: the book opened, and its hash
-      while (around(() => s.undo()));
-      expect(s.getBook(), `seed ${seed}: every step undone`).toEqual(fuzz(seed).book)
-      expect(around(() => s.getHash())).toBe(compute(fuzz(seed).book, opts).hash)
-    }
+    // every step undone: the book opened, and its hash
+    while (around(() => s.undo()));
+    expect(s.getBook(), `seed ${seed}: every step undone`).toEqual(fuzz(seed).book)
+    expect(around(() => s.getHash())).toBe(compute(fuzz(seed).book, opts).hash)
   } finally {
     s.close()
   }
@@ -89,7 +82,7 @@ function run(seed: number, execution: Execution, around: <T>(f: () => T) => T = 
 describe.each(['closures', 'eval'] as const)('seeded sessions against full computations, %s', (execution) => {
   it.each([1, 2, 3, 4, 5, 6])('seed %i, default budget', (seed) => run(seed, execution))
 
-  describe.skipIf(!heapCaches)('a budget that drops ranges at each step', () => {
+  describe('a budget that drops ranges at each step', () => {
     it.each([7, 8, 9])('seed %i', (seed) => run(seed, execution, tight))
   })
 })

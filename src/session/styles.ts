@@ -11,14 +11,14 @@ import type { EngineState } from '../engine.js'
 import { InputError } from '../input-error.js'
 import { sheetLines, type SheetLines } from '../layout/lines.js'
 import { lines as spansOf, patchLines, spanKey } from '../layout/spans.js'
-import { formatAddress, parseAddress } from '../model.js'
+import { formatAddress, inner, parseAddress } from '../model.js'
 import { cellCount, hasCell, LINES, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import { StyleTable } from '../style-table.js'
 import { edited, emptyLayer, LookTable, NONE, type Layer, type RowsEdit } from '../looks/layer.js'
 import { layerOf, lookAlone, hasLook } from '../looks/sheet.js'
 import { inputAt } from './book.js'
-import { CONTENT } from './cells.js'
+import { CONTENT, someField } from './cells.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
 
 /** A rectangle of at most so many cells is read cell by cell. */
@@ -36,8 +36,7 @@ function over<T extends object>(base: T | undefined, patch: { [K in keyof T]?: T
     if (v === null) delete out[k]
     else if (v !== undefined) out[k] = v
   }
-  for (const k in out) if (out[k] !== undefined) return out as T
-  return undefined
+  return someField<T>(out) ?? undefined
 }
 
 /** A style with a patch over it, field by field: the font, the border's sides and the alignment one field at a time, the fill whole. */
@@ -110,8 +109,7 @@ export class Draft {
 
   set(i: number, addr: string, input: CellInput | null) {
     this.cells.set(`${i}!${addr}`, input)
-    let own = this.drafted.get(i)
-    if (!own) this.drafted.set(i, (own = new Set()))
+    const own = inner(this.drafted, i, () => new Set())
     own.add(addr)
   }
 
@@ -206,8 +204,7 @@ function lookOver(table: StyleTable, input: CellInput | undefined, r: number, c:
     if (look[k] === null) delete out[k]
     else if (look[k] !== undefined) out[k] = look[k]
   }
-  for (const k in out) if (out[k] !== undefined) return out as CellInput
-  return null
+  return someField<CellInput>(out)
 }
 
 /** Whether a look gives an empty cell an input: a field set, or a reset where the cell's lines show a look. */

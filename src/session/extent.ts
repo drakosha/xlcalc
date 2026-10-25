@@ -2,11 +2,23 @@
  * Where a sheet's cells end (`Session.getUsedRange`): found from what the engine holds, the sheet's columns of values, its
  * spills, its input cells without a value, its looks and its merged areas and tables, never by reading every cell.
  */
-import type { SheetExtent } from '../contract.js'
+import type { SheetExtent, SheetInput } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { parseMerge } from '../layout/merges.js'
 import { layerOf } from '../looks/sheet.js'
-import { MAX_COLS } from '../model.js'
+import { colOf, rowOf } from '../model.js'
+import type { Tables } from '../tables/model.js'
+
+/** What a sheet's layout reaches: its merged areas, its tables on the sheet, and its looks' bounds (`sheetExtent`, a saved sheet). */
+export function reachLayout(sheet: SheetInput, tables: Tables, s: number, reach: (r: number, c: number) => void): void {
+  for (const m of sheet.merges ?? []) {
+    const x = parseMerge(m)
+    if (x) reach(x.r2, x.c2)
+  }
+  for (const t of tables.list) if (t.s === s) reach(t.r2, t.c2)
+  const looked = layerOf(sheet)?.bounds()
+  if (looked) reach(looked.r2, looked.c2)
+}
 
 export function sheetExtent(state: EngineState, s: number): SheetExtent {
   let rows = 0
@@ -28,14 +40,8 @@ export function sheetExtent(state: EngineState, s: number): SheetExtent {
   }
   // the whole range of each spill, its cells past the stored ones (`spillFill`) too
   for (const x of state.spills.on.values()) if (x.s === s) reach(x.r2, x.c2)
-  for (const k of state.bare.get(s) ?? []) reach(Math.floor(k / MAX_COLS), k % MAX_COLS)
-  // the cells of a look of the sheet's looks, as cells of a look alone
-  const looked = layerOf(state.input.sheets[s])?.bounds()
-  if (looked) reach(looked.r2, looked.c2)
-  for (const m of state.input.sheets[s].merges ?? []) {
-    const x = parseMerge(m)
-    if (x) reach(x.r2, x.c2)
-  }
-  for (const t of state.tables.list) if (t.s === s) reach(t.r2, t.c2)
+  for (const k of state.bare.get(s) ?? []) reach(rowOf(k), colOf(k))
+  // the sheet's layout: its looks, merged areas and tables
+  reachLayout(state.input.sheets[s], state.tables, s, reach)
   return { rows, columns }
 }

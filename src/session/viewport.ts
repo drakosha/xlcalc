@@ -6,8 +6,9 @@
  * tables that meet its cells, the sheet's frozen panes and where its cells end. A session's window reads its state
  * (`sessionSource`), a saved one a book and its result (`saved.ts`); either reads the window's cells, never the whole sheet.
  */
+import { DEFAULT_ROW_HEIGHT } from '../column-width.js'
 import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, SavedViewportOptions, SheetExtent, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
-import { toCellValue, valueAt, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { checkedEntryText } from '../entry/text.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
@@ -21,7 +22,7 @@ import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { formatCodeIn } from '../locale/rules.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress, placeOf } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
-import { cellResult, outValue, spilled } from '../result.js'
+import { cellResult, cellValue, spilled } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { lowerBound } from '../sorted.js'
 import { rectText, type Rect } from '../structure/area.js'
@@ -35,9 +36,8 @@ import { sheetExtent } from './extent.js'
 /** The cells a window gives by default, as many as the window of a sheet a server sends. */
 const MAX_CELLS = 20_000
 
-/** Excel's width of a column without its own (8 digits and the padding) and height of a row without its own, in points (Calibri 11). */
+/** Excel's width of a column without its own (8 digits and the padding), in points (Calibri 11). */
 const DEFAULT_WIDTH = widthOf(columnPoints(undefined))
-const DEFAULT_HEIGHT = 15
 
 /** Line numbers asked of a window or a query (`rows`): whole numbers from 1 to `max`, ascending, each once. */
 export function checkLineNumbers(v: unknown, path: string, max: number) {
@@ -110,7 +110,7 @@ export function windowLines(x: Rect, o: ViewportOptions): WindowLines {
 
 /** Whether ascending `xs` holds a number from `lo` to `hi`. */
 const hits = (xs: number[], lo: number, hi: number) => {
-  const i = lowerBound(xs, lo, (x) => x)
+  const i = lowerBound(xs, lo)
   return i < xs.length && xs[i] <= hi
 }
 
@@ -141,7 +141,7 @@ export type EditView = Pick<ViewportCell, 'formula' | 'value' | 'spillOf'>
  * area, its own value by the format it shows (a text, which is read as typed, once per format), nothing for a cell
  * without either. `now` completes text read as a date without a year.
  */
-export function editTexts(book: BookInput, s: number, tables: Tables, now: string) {
+function editTexts(book: BookInput, s: number, tables: Tables, now: string) {
   const sheet = book.sheets[s]
   const loc = LOCALES.get(book.locale ?? DEFAULT_LOCALE)!
   const locals = new Map<string, string>()
@@ -187,7 +187,7 @@ export function sessionEditTexts(state: EngineState, now: string): (s: number, r
     const formula = id === undefined ? own?.formula : state.formulas[id]!.text
     // a cell without content of its own in an array's area opens with the array's formula, an old kind's
     const o = holds(own) ? undefined : ownerOf(state, s, r, c)
-    const view = { formula, value: outValue(toCellValue(valueAt(state, s, r, c))), ...(o ? { spillOf: formatAddress(o.r1, o.c1) } : {}) }
+    const view = { formula, value: cellValue(state, s, r, c), ...(o ? { spillOf: formatAddress(o.r1, o.c1) } : {}) }
     return x.edit.editText(view, own, x.lines.format(r, c, own), r, c)
   }
 }
@@ -253,7 +253,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     }),
     rows: w.rows.map((r) => {
       const row = lines.row(r)
-      return row && isHiddenRow(row) ? { row: r + 1, height: row.height ?? DEFAULT_HEIGHT, hidden: true } : { row: r + 1, height: row?.height ?? DEFAULT_HEIGHT }
+      return row && isHiddenRow(row) ? { row: r + 1, height: row.height ?? DEFAULT_ROW_HEIGHT, hidden: true } : { row: r + 1, height: row?.height ?? DEFAULT_ROW_HEIGHT }
     }),
     merges: (sheet.merges ?? []).filter((m) => crosses(parseMerge(m)!)),
     tables: tables.list.filter((t) => t.s === s && crosses(t)).map((t) => ({ name: t.name, range: t.input.range, headers: t.headers, totals: t.totals })),

@@ -149,6 +149,17 @@ const at = { r: 0, c: 0 }
 /** A cell's place as one number, which orders places as addresses: by sheet, row, then column; no text is made for it. */
 export const placeOf = (s: number, r: number, c: number) => (s * MAX_ROWS + r) * MAX_COLS + c
 
+/** The row of a sheet-local place (`r * MAX_COLS + c`), and its column: by subtraction, which a hot loop over places costs less than a modulo. */
+export const rowOf = (place: number) => Math.floor(place / MAX_COLS)
+export const colOf = (place: number) => place - rowOf(place) * MAX_COLS
+
+/** The value `outer` keeps at `key` (a `Map` or a `WeakMap`), made by `make` where it kept none: the get-or-create of an inner container. */
+export function inner<K, V>(outer: { get(key: K): V | undefined; set(key: K, value: V): unknown }, key: K, make: () => V): V {
+  let v = outer.get(key)
+  if (v === undefined) outer.set(key, (v = make()))
+  return v
+}
+
 /** The sheet, row and column of a place (`placeOf`). */
 export function placeParts(n: number): [number, number, number] {
   const c = n % MAX_COLS

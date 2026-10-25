@@ -17,13 +17,17 @@ export interface Archive {
   text(name: string): Promise<string | undefined>
 }
 
-interface Entry {
+/** An entry of the central directory. */
+export interface Entry {
   name: string
+  flags: number
   method: number
   crc: number
   csize: number
   usize: number
   offset: number
+  /** Where its central directory record lies. */
+  central: [number, number]
 }
 
 /** The signatures of a zip's records, which the writer writes: the end of the central directory, an entry of it, a local header. */
@@ -80,7 +84,8 @@ function endRecord(v: DataView): number {
   fail('no end of central directory record')
 }
 
-function entries(bytes: Uint8Array): Entry[] {
+/** The entries the central directory lists, in its order. */
+export function entries(bytes: Uint8Array): Entry[] {
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
   const end = endRecord(v)
   const count = v.getUint16(end + 10, true)
@@ -93,8 +98,9 @@ function entries(bytes: Uint8Array): Entry[] {
     const nameLen = v.getUint16(at + 28, true)
     const name = text(bytes.subarray(at + 46, at + 46 + nameLen))
     if (flags & 1) fail(`encrypted entry ${name}`)
-    out.push({ name, method: v.getUint16(at + 10, true), crc: v.getUint32(at + 16, true), csize: v.getUint32(at + 20, true), usize: v.getUint32(at + 24, true), offset: v.getUint32(at + 42, true) })
-    at += 46 + nameLen + v.getUint16(at + 30, true) + v.getUint16(at + 32, true)
+    const next = at + 46 + nameLen + v.getUint16(at + 30, true) + v.getUint16(at + 32, true)
+    out.push({ name, flags, method: v.getUint16(at + 10, true), crc: v.getUint32(at + 16, true), csize: v.getUint32(at + 20, true), usize: v.getUint32(at + 24, true), offset: v.getUint32(at + 42, true), central: [at, next] })
+    at = next
   }
   return out
 }

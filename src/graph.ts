@@ -83,7 +83,7 @@ export function markVolatile(state: EngineState) {
 }
 
 /** Expand roots through formula and helper vertices; callers retain only the formula ids they need. */
-export function descendants(state: EngineState, seen: Set<number>): Set<number> {
+function descendants(state: EngineState, seen: Set<number>): Set<number> {
   const stack = [...seen]
   while (stack.length) {
     const id = stack.pop()!

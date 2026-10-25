@@ -8,6 +8,7 @@ import type { CellInput, CellStyle } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { fitHeights, stateRows } from '../layout/heights.js'
 import { sheetLines } from '../layout/lines.js'
+import { inner } from '../model.js'
 import { parseSpan } from '../layout/spans.js'
 import { StyleTable } from '../style-table.js'
 import type { SetLayoutEdit } from './book.js'
@@ -45,8 +46,7 @@ export function typedHeights(s: EngineState, cells: Typed[]): SetLayoutEdit[] {
     const style = lines.look(r, c).style
     const row = lines.row(r)
     if (style === undefined || !styles[style]?.alignment?.wrap || row?.hidden || (row?.height !== undefined && !row.bestFit)) continue
-    let set = rows.get(i)
-    if (!set) rows.set(i, (set = new Set()))
+    const set = inner(rows, i, () => new Set())
     set.add(r)
   }
   const out: SetLayoutEdit[] = []

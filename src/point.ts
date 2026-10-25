@@ -13,7 +13,7 @@ import type { PointAction, ScanOptions } from './contract.js'
 import { checkNumber, checkString, object, onlyKeys } from './input/basic.js'
 import { sidesOf } from './locale/index.js'
 import { optionalLocale } from './locale/load.js'
-import { ownErrors, translate } from './locale/translate.js'
+import { translate } from './locale/translate.js'
 import type { Locale } from './locale/types.js'
 import { FormulaError } from './syntax/ast.js'
 import { parse } from './syntax/parse.js'
@@ -27,8 +27,8 @@ const WANTS_OPERAND = new Set([...'=+-*/^&<>(:!@.'])
 function reads(body: string, locale: Locale | undefined): boolean {
   let stored = body
   if (locale) {
-    const { local, invariant } = sidesOf(locale)
-    const t = translate(body, ownErrors(locale, local), invariant)
+    const { own, invariant } = sidesOf(locale)
+    const t = translate(body, own, invariant)
     if (!t.ok) return false
     stored = t.formula
   }

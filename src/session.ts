@@ -16,7 +16,7 @@ import type { CellValue, CopyTextOptions, ValuesOptions } from './contract.js'
 import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/queries.js'
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
-import { outValue } from './result.js'
+import { outCell } from './result.js'
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
@@ -58,16 +58,15 @@ import { fitEdits } from './layout/fit.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress, placeOf, placeParts, readAddress } from './model.js'
-import { buildResult, cellAt, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
+import { buildResult, cellAt, cellsIn, clockOptions, clockSerial, spillFields, stateHash } from './result.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
 import { mergedPlan } from './session/merged.js'
-import { OUTLINE_FIELDS } from './structure/outline.js'
+import { OUTLINE_FIELDS } from './structure/outline-command.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
-import { sheetKey } from './syntax.js'
-import { cellValidation, hasRule, withInput, withInputs } from './validation/session.js'
+import { cellValidation, hasRule, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
 import { layerOf, putInputs, putLayers, withLayer, withLooksOf } from './looks/sheet.js'
 import { FILL_OPTIONS, REPLACE_OPTIONS, strictMethods, TEXT_OPTIONS } from './strict-args.js'
@@ -172,7 +171,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const unlent = (cells: object) => !lent.has(cells)
   /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are; `more`, the options of its held values. */
-  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution, own, ...more })
+  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { ...clockOptions(clock), externals, execution, own, ...more })
   let state: EngineState | null = yield* build(book, undefined, { cached: o.cached })
   let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one
@@ -206,16 +205,20 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c), ...f, ...(format !== undefined && format !== null ? { numberFormatCode: code(format) } : {}) }
     })
   }
-  /** A call that changed the book answered: the revision one more, and what changed. */
-  const answer = (s: EngineState, x: Outcome): EditResult => {
-    textsChanged(s, x)
-    const out: EditResult = { revision: ++revision, changes: changes(s, x.keys, x.fields) }
+  /** The layout, the styles, the moves and where to repaint: what a call's `answer` and a preview tell besides their changed cells; `moved` a preview leaves out. */
+  const told = (s: EngineState, x: Outcome, moved: Outcome['moved']): Partial<EditResult> => {
+    const out: Partial<EditResult> = {}
     if (x.layout.size) out.layout = [...x.layout]
     if (x.styles) out.styles = s.input.styles ?? []
-    if (x.moved.length) out.moved = x.moved
+    if (moved.length) out.moved = moved
     const repaint = repaintOf(s.input, x)
     if (repaint) out.repaint = repaint
     return out
+  }
+  /** A call that changed the book answered: the revision one more, and what changed. */
+  const answer = (s: EngineState, x: Outcome): EditResult => {
+    textsChanged(s, x)
+    return { revision: ++revision, changes: changes(s, x.keys, x.fields), ...told(s, x, x.moved) }
   }
   let controlledClock: Clock | undefined
   const tick = (s: EngineState) => {
@@ -340,7 +343,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       stale = true
     }
   }
-  const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display, sheetIndex }
+  const core: SessionCore = { ready, putCells, rebuild, relayout, kept, display }
   /**
    * Cells' new inputs (checked) written, as `call`, over the sheets' looks of a plan set whole (`relook`): a table's
    * header cell typed over renames its column and the references to it, which builds the book again; a plan's sheets,
@@ -558,14 +561,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         if (next !== old) setNow(old, clockSerial(beforeClock), beforeClock.seed)
         const list = changes(next, outcome.keys.slice(0, max), outcome.fields)
         const impacts = list.map((c) => {
-          const i = old.sheetIdx.get(sheetKey(c.sheet))!,
+          const i = sheetIndexOf(old, c.sheet)!,
             { row, col } = parseAddress(c.cell),
             k = placeOf(i, row, col)
-          const before = captured.cells.has(k) ? outValue(toCellValue(captured.cells.get(k)!)) : cellValue(old, i, row, col)
+          const before = captured.cells.has(k) ? outCell(captured.cells.get(k)!) : cellValue(old, i, row, col)
           const issue = issueDetail(next, i, row, col)
           return { sheet: c.sheet, cell: c.cell, before, after: c.value, ...(issue ? { issue } : {}) }
         })
-        return { revision: beforeRevision, clock: used, changes: list, impacts, totalChanges: outcome.keys.length, truncated: outcome.keys.length > max, ...(outcome.layout.size ? { layout: [...outcome.layout] } : {}), ...(outcome.styles ? { styles: next.input.styles ?? [] } : {}), ...(repaintOf(next.input, outcome) ? { repaint: repaintOf(next.input, outcome) } : {}) }
+        return { revision: beforeRevision, clock: used, changes: list, impacts, totalChanges: outcome.keys.length, truncated: outcome.keys.length > max, ...told(next, outcome, []) }
       }
       const result = { ...answer(next, outcome), clock: used }
       keep(back)
@@ -580,7 +583,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         state = old
         const back = [...plan.back, ...besides]
         putLayers(beforeBook.sheets, beforeLayers)
-        putInputs(beforeBook.sheets, (name) => old.sheetIdx.get(sheetKey(name))!, back)
+        putInputs(beforeBook.sheets, (name) => sheetIndexOf(old, name)!, back)
         old.input = beforeBook
         setNow(old, clockSerial(beforeClock), beforeClock.seed)
         if (next === old) {
@@ -591,7 +594,6 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
           }
         }
       }
-      controlledClock = undefined
     }
   }
   return {
@@ -867,13 +869,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (input !== null) input = cellTaken(checkCell(input, 'input', styleCount(s)))
       checkArrayEdits(s, [{ sheet, cell, input }])
       if (!hasRule(s, i, row, col)) return { ok: true }
-      try {
-        return yield* withInput(s, i, row, col, input, () => entryCheck(s, i, row, col))
-      } catch (e) {
-        // the input put in for the check may still be there: the state is built again on the next call
-        stale = true
-        throw e
-      }
+      return yield* previewed(s, [{ i, r: row, c: col, edit: { sheet: s.sheetNames[i], cell: formatAddress(row, col), input } }], () => entryCheck(s, i, row, col))
     },
     *getHash() {
       return yield* stateHash(yield* ready())

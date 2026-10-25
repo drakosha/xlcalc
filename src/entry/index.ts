@@ -8,6 +8,7 @@
  * cell computes `#NAME?`. Text pasted from the clipboard is read so too, but where Excel reads it otherwise (`readEntry`).
  */
 import type { CellInput, CheckCode, EntryOptions, EntryResult, ExternalBook, NumberFormat } from '../contract.js'
+import { inner } from '../model.js'
 import { checkEntryOptions } from '../input.js'
 import { checkString } from '../input/basic.js'
 import { validateTyped, toInvariant } from '../locale/index.js'
@@ -30,8 +31,7 @@ import { moneyFormat, readTyped, type Form, type YearClock } from './read.js'
 const RULES = new WeakMap<Locale, Map<number, { rules: Rules; clock: YearClock }>>()
 
 function rulesFor(locale: Locale, epoch: number, year: number) {
-  let byEpoch = RULES.get(locale)
-  if (!byEpoch) RULES.set(locale, (byEpoch = new Map()))
+  const byEpoch = inner(RULES, locale, () => new Map())
   let r = byEpoch.get(epoch)
   if (!r) {
     const clock: YearClock = Object.assign(markingClock(() => clock.y), { y: year })

@@ -16,7 +16,7 @@ import { OUTLINE_MESSAGES } from './locale/outline-messages.js'
 import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
 import { contains, encode, grown, meets, parseRange as rangeArg, rectOf, span, type Area, type Axis, type Rect } from './structure/area.js'
 import { applyOutline, OUTLINE_FIELDS, type OutlineAxes, type OutlineOp } from './structure/outline-command.js'
-import { PLAIN_SHEET } from './sheet-pattern.js'
+import { PLAIN_NAME, quoteSheet } from './sheet-pattern.js'
 import { strict } from './strict-args.js'
 
 export { MAX_COLS, MAX_ROWS }
@@ -197,10 +197,9 @@ export const outlineEdit = /* @__PURE__ */ strict(function outlineEdit(sheet: Pi
   return { ok: true, ...(rows && Object.keys(rows).length ? { rows } : {}), ...(columns && Object.keys(columns).length ? { columns } : {}) }
 })
 
-const PLAIN = new RegExp(`^${PLAIN_SHEET}$`, 'u')
-const CELL = /^([A-Za-z]{1,3})(\d+)$/
 /** An R1C1 reference at the start of a name: `R` and its number, then `C` and its number; or `C` and its number. */
 const R1C1 = /^(?:([Rr])(\d*)(?:[Cc](\d*))?|[Cc](\d*))/
+const CELL = /^([A-Za-z]{1,3})(\d+)$/
 
 /** A number of a reference (`''` for none) that is a row or column of the sheet. */
 const inGrid = (digits: string, max: number) => digits === '' || (Number(digits) >= 1 && Number(digits) <= max)
@@ -244,12 +243,12 @@ export const quoteSheetIfNeeded = /* @__PURE__ */ strict(function quoteSheetIfNe
   const words = booleans(locale)
   const cell = CELL.exec(n)
   const quote =
-    !PLAIN.test(n) ||
+    !PLAIN_NAME.test(n) ||
     caseKey(n) === caseKey(words.TRUE) ||
     caseKey(n) === caseKey(words.FALSE) ||
     (cell !== null && colToIndex(cell[1]) < MAX_COLS && inGrid(cell[2], MAX_ROWS)) ||
     r1c1Start(n)
-  return quote ? `'${n.replaceAll("'", "''")}'` : n
+  return quote ? quoteSheet(n) : n
 })
 
 /**

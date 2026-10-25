@@ -1,12 +1,11 @@
 /** Ordered operations staged over sparse cell overlays; no full snapshot is made for ordinary cell and look batches. */
 import type { BookInput, CellInput, CellReplace, SessionOperation, SheetInput } from '../contract.js'
-import type { EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { allotWrites } from '../exec/budget.js'
 import { checkEdits, checkLayoutEdits, checkNames } from '../input.js'
 import { InputError } from '../input-error.js'
 import { array, isObject, object, onlyKeys } from '../input/basic.js'
 import { checkStyles } from '../input/styles.js'
-import { sheetKey } from '../syntax.js'
 import type { Layer } from '../looks/layer.js'
 import { withLayer, withLooksOf, withoutLooksAt } from '../looks/sheet.js'
 import { parseAddress } from '../model.js'
@@ -44,7 +43,7 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
   const layers = new Map<number, Layer>()
   let rebuild = false,
     styles = false
-  const index = (name: string) => s.sheetIdx.get(sheetKey(name))
+  const index = (name: string) => sheetIndexOf(s, name)
   const draft = () => ({ ...s, input: book })
   const cells = (i: number) => {
     let changes = overlays.get(i)

@@ -6,7 +6,8 @@ import { toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
-import { formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
+import { addressOrder, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
+import type { V } from './values.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks, type Looks } from './shown.js'
@@ -28,8 +29,17 @@ export function outValue(v: CellValue): CellValue {
   return typeof v === 'number' ? outNumber(v) : v
 }
 
+/** A value the engine holds as a result gives it: a number to 15 significant digits, an error as `{ error }`, null for none. */
+export const outCell = (v: V): CellValue => outValue(toCellValue(v))
+
+/** A cell's value as a result shows it. */
+export const cellValue = (state: EngineState, s: number, r: number, c: number): CellValue => outCell(valueAt(state, s, r, c))
+
+/** The engine options a clock gives: its moment as a serial number, and its seed. */
+export const clockOptions = (clock: Clock) => ({ now: clockSerial(clock), seed: clock.seed })
+
 /** A spilled formula's range and the value of its unstored cells. */
-const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: cornersText(x), spillFill: outValue(toCellValue(x.fills[0].v)) } : { spill: cornersText(x) })
+const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: cornersText(x), spillFill: outCell(x.fills[0].v) } : { spill: cornersText(x) })
 
 /** A formula's spill (`spill`, `spillFill`) or a spilled cell's formula (`spillOf`), as results and changes show them. */
 export function spillFields(state: EngineState, s: number, r: number, c: number): Pick<CellResult, 'spill' | 'spillFill' | 'spillOf'> {
@@ -71,7 +81,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
 /** `cellResult` of the cell at `addr`, row `row` and column `col`: for callers that have both, without reading the address again. */
 function resultAt(state: EngineState, s: number, addr: string, row: number, col: number, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const inCell = inputIn(state.input.sheets[s], addr, row, col) ?? {}
-  const value = outValue(toCellValue(valueAt(state, s, row, col)))
+  const value = cellValue(state, s, row, col)
   const id = state.at.get(placeOf(s, row, col))
   const out: CellResult = look ? { value, ...look(s, row, col, value, inCell) } : { value }
   const text = id === undefined ? inCell.formula : state.formulas[id]!.text
@@ -130,7 +140,7 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
     }
     for (const a of mine) listed.add(a)
     // what the sheet's conditional formats give the cells: every cell of a window, the listed ones of a larger rectangle
-    for (const [k, v] of yield* windowLooks(state, s, x, small ? undefined : new Set(mine.map((a) => cellIndex(a))))) cond.set(k, v)
+    for (const [k, v] of yield* windowLooks(state, s, x, small ? undefined : new Set(mine.map(addressOrder)))) cond.set(k, v)
   }
   for (const k of cond.keys()) listed.add(formatAddress(Math.floor(k / MAX_COLS), k % MAX_COLS))
   const out: Record<string, CellView> = {}
@@ -141,11 +151,6 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
     out[addr] = viewOf(state, s, addr, row, col, layer, look, spill.get(addr), cond.get(row * MAX_COLS + col), code)
   }
   return out
-}
-
-const cellIndex = (addr: string) => {
-  const { row, col } = parseAddress(addr)
-  return row * MAX_COLS + col
 }
 
 /**
@@ -168,18 +173,16 @@ function viewOf(state: EngineState, s: number, addr: string, r: number, c: numbe
 /**
  * The cell at row `r` and column `c` of sheet `s` as `cellsIn` gives it for its one-cell rectangle (`Session.getCell`),
  * without the work of a rectangle; undefined where it lists none. `whole`: a cell of a large spill's unstored rest too,
- * as `spilled` takes it (`readCells`, which lists such cells). The steps yield only in conditional formats' tests.
+ * as `spilled` takes it (`readCells`, which lists such cells). The steps yield as `spilled` does between a spill's
+ * cells, and in the conditional formats' tests.
  */
 export function* cellAt(state: EngineState, s: number, r: number, c: number, display: boolean, whole = false): Steps<CellView | undefined> {
   const sheet = state.input.sheets[s]
   const addr = formatAddress(r, c)
   const layer = layerOf(sheet)
-  // as `spilled`: a stored cell of a spill, not its formula's, not one an input cell occupies
-  let spillOf: string | undefined
-  if (state.spills.on.size)
-    for (const x of state.spills.on.values())
-      if (x.s === s && r >= x.r1 && c >= x.c1 && r <= (whole ? x.r2 : Math.min(x.r1 + x.h - 1, x.r2)) && c <= (whole ? x.c2 : Math.min(x.c1 + x.w - 1, x.c2)) && (r !== x.r1 || c !== x.c1) && !state.spills.occupied.has(s, r, c)) spillOf = formatAddress(x.r1, x.c1)
-  const cond = sheet.conditionalFormats?.length ? yield* windowLooks(state, s, { r1: r, c1: c, r2: r, c2: c }) : null
+  const one = { r1: r, c1: c, r2: r, c2: c }
+  const spillOf = state.spills.on.size ? (yield* spilled(state, s, one, whole)).get(addr) : undefined
+  const cond = sheet.conditionalFormats?.length ? yield* windowLooks(state, s, one) : null
   const k = r * MAX_COLS + c
   if (spillOf === undefined && !cond?.has(k) && !(addr in sheet.cells) && !(layer && layer.idAt(r, c) !== NONE)) return undefined
   return viewOf(state, s, addr, r, c, layer, display ? cellLooks(state) : null, spillOf, cond?.get(k), (format) => formatCodeIn(state.input.locale)(format))
@@ -226,23 +229,28 @@ function fillLines(state: EngineState, s: number, addr: string, value: CellValue
   for (const f of state.spills.on.get(state.at.get(placeOf(s, row, col))!)!.fills) out.push({ sheet: state.sheetNames[s], range: cornersText(f), value })
 }
 
-/** The values hasher of a state's configuration, locale and date system; cells are written to it as they are read. */
-const hasher = (state: EngineState) => new ValuesHasher(CONFIG_VERSION, state.input.locale, state.input.dateSystem)
-
-/** The values hash of a state, as its result gives it, without the cells' results (`Session.getHash`). */
-export function* stateHash(state: EngineState): Steps<string> {
-  const w = hasher(state)
+/** The state's cells written to a hasher of its configuration, in the hash's sheet order, with each spill's fills: one walk for the values hash alone and a result. */
+function* hashCells(state: EngineState, cell: (s: number, addr: string, spillOf: string | undefined, row: number, col: number) => { value: CellValue; spillFill?: CellValue }, sorted?: Map<object, string[]>, keys?: Map<object, string[]>): Steps<string> {
+  const w = new ValuesHasher(CONFIG_VERSION, state.input.locale, state.input.dateSystem)
   const fills: FillLine[] = []
   for (const s of sheetOrder(state.input.sheets.map((x) => x.name))) {
     const quoted = JSON.stringify(state.input.sheets[s].name)
-    yield* eachCell(state, s, (addr, _, row, col) => {
-      w.cell(quoted, addr, outValue(toCellValue(valueAt(state, s, row, col))), true)
-      const id = state.at.get(placeOf(s, row, col))
-      const x = id === undefined ? undefined : state.spills.on.get(id)
-      if (x?.fills.length) fillLines(state, s, addr, anchorFields(x).spillFill, fills)
-    })
+    yield* eachCell(state, s, (addr, spillOf, row, col) => {
+      const { value, spillFill } = cell(s, addr, spillOf, row, col)
+      w.cell(quoted, addr, value, true)
+      if (spillFill !== undefined) fillLines(state, s, addr, spillFill, fills)
+    }, sorted, keys)
   }
   return w.hex(fills)
+}
+
+/** The values hash of a state, as its result gives it, without the cells' results (`Session.getHash`). */
+export function* stateHash(state: EngineState): Steps<string> {
+  return yield* hashCells(state, (s, addr, _, row, col) => {
+    const id = state.at.get(placeOf(s, row, col))
+    const x = id === undefined ? undefined : state.spills.on.get(id)
+    return { value: cellValue(state, s, row, col), spillFill: x?.fills.length ? anchorFields(x).spillFill : undefined }
+  })
 }
 
 /**
@@ -250,23 +258,16 @@ export function* stateHash(state: EngineState): Steps<string> {
  * listed in the book's. The steps yield between cells, so a large book's result does not hold the thread.
  */
 export function* buildResult(state: EngineState, clock: Clock, t0: number, display: boolean, book = state.input, keys?: Map<object, string[]>): Steps<ComputeResult> {
-  const w = hasher(state)
-  const fills: FillLine[] = []
   const look = display ? cellLooks(state) : null
   const sheets = state.input.sheets.map(({ name }) => ({ name, cells: {} as Record<string, CellResult> }))
   const sorted = new Map<object, string[]>()
-  for (const s of sheetOrder(sheets.map((x) => x.name))) {
-    const { name, cells } = sheets[s]
-    const quoted = JSON.stringify(name)
-    yield* eachCell(state, s, (addr, spillOf, row, col) => {
-      const out = resultAt(state, s, addr, row, col, look, spillOf)
-      // A snapshot's result takes its metadata from the detached book, not from the session's live input.
-      if (out.meta !== undefined && book !== state.input) out.meta = book.sheets[s].cells[addr].meta
-      fillLines(state, s, addr, out.spillFill, fills)
-      cells[addr] = out
-      w.cell(quoted, addr, out.value, true)
-    }, sorted, keys)
-  }
+  const hash = yield* hashCells(state, (s, addr, spillOf, row, col) => {
+    const out = resultAt(state, s, addr, row, col, look, spillOf)
+    // A snapshot's result takes its metadata from the detached book, not from the session's live input.
+    if (out.meta !== undefined && book !== state.input) out.meta = book.sheets[s].cells[addr].meta
+    sheets[s].cells[addr] = out
+    return { value: out.value, spillFill: out.spillFill }
+  }, sorted, keys)
   const inputHash = yield* inputHashSteps(state.input, sorted)
   const volatile = [...state.volatile]
     .map((id) => state.formulas[id]!)
@@ -280,7 +281,7 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
     ],
     volatile,
     clock: { ...clock },
-    hash: w.hex(fills),
+    hash,
     inputHash,
     configVersion: CONFIG_VERSION,
     ms: nowMs() - t0,

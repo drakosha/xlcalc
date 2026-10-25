@@ -6,9 +6,8 @@
  */
 import { InputError, what } from './input-error.js'
 import { optionalLocale } from './locale/load.js'
-import { builtinIn } from './locale/rules.js'
 import type { Locale } from './locale/types.js'
-import { isBuiltin } from './numfmt.js'
+import { builtinIn, isBuiltin } from './numfmt.js'
 
 /**
  * The format code with which a built-in number format (0 to 49, `NumberFormat` as a number) is displayed in `locale` (a

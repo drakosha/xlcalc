@@ -85,9 +85,8 @@ export function shiftValidations(rules: DataValidation[] | undefined, sheet: str
   for (const v of rules) {
     const areas = areasOf(v.range)!.flatMap((x) => {
       const [a, b] = [lo(x, axis), hi(x, axis)]
-      const one = a === b && (axis === 'r' ? x.c1 === x.c2 : x.r1 === x.r2)
       // a range of one cell too (the set `edge-held`: B1048576 is B1048575:B1048576 after a row above is deleted)
-      const s = n > 0 ? growSpan(a, b, at, count, LIMIT[axis], one) : deleteSpan(a, b, at, count, LIMIT[axis], false)
+      const s = n > 0 ? growSpan(a, b, at, count, LIMIT[axis], false) : deleteSpan(a, b, at, count, LIMIT[axis], false)
       return s ? [withBounds(x, axis, s[0], s[1])] : []
     })
     const corner = areas.length ? cornerOf(areas) : null

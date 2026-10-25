@@ -6,7 +6,7 @@
  */
 import type { NumberFormat } from '../contract.js'
 import type { Look } from '../layout/lines.js'
-import { MAX_COLS } from '../model.js'
+import { inner, MAX_COLS } from '../model.js'
 import { bands, lowerBound } from '../sorted.js'
 import type { Rect } from '../structure/area.js'
 
@@ -18,8 +18,6 @@ export type Pattern = Int32Array
 
 /** An empty pattern: a row without looks. */
 export const EMPTY: Pattern = new Int32Array(0)
-
-const same = (x: number) => x
 
 const formatKey = (f: NumberFormat | undefined) => (f === undefined ? '-' : typeof f === 'number' ? `n${f}` : `s${f}`)
 
@@ -212,13 +210,13 @@ export class Layer {
 
   /** The block holding row `r`, or -1. */
   blockOf(r: number): number {
-    const b = lowerBound(this.r2, r, same)
+    const b = lowerBound(this.r2, r)
     return b < this.at.length && this.r1[b] <= r ? b : -1
   }
 
   /** The first block that ends at or after row `r`. */
   firstFrom(r: number): number {
-    return lowerBound(this.r2, r, same)
+    return lowerBound(this.r2, r)
   }
 
   /** The pattern of row `r`; an empty one for a row without looks. */
@@ -343,8 +341,7 @@ export function rectEdits(xs: readonly Piece[]): RowsEdit[] {
 export function cellEdits(cells: Iterable<[r: number, c: number, look: number]>): RowsEdit[] {
   const byRow = new Map<number, number[][]>()
   for (const [r, c, look] of cells) {
-    let row = byRow.get(r)
-    if (!row) byRow.set(r, (row = []))
+    const row = inner(byRow, r, () => [])
     row.push([c, look])
   }
   return [...byRow.keys()]
@@ -360,16 +357,6 @@ export function cellEdits(cells: Iterable<[r: number, c: number, look: number]>)
 
 /** Whether two looks (of one table or two, none for one of them) are the same: their style and number format fields. */
 export const sameLook = (x: Look | undefined, y: Look | undefined): boolean => x?.style === y?.style && x?.numberFormat === y?.numberFormat
-
-/** Whether two layers give every cell the same look. */
-export function sameLooks(a: Layer, b: Layer): boolean {
-  const [x, y] = [[...a.pieces()], [...b.pieces()]]
-  if (x.length !== y.length) return false
-  return x.every((p, i) => {
-    const q = y[i]
-    return p.r1 === q.r1 && p.r2 === q.r2 && p.c1 === q.c1 && p.c2 === q.c2 && sameLook(a.looks.list[p.look], b.looks.list[q.look])
-  })
-}
 
 /** A layer from cells given row by row, as a file lists them: a row's cells in order of columns; a cell out of that order is taken at the end, over the rest. */
 export class CellsLayer {

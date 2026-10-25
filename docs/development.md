@@ -591,6 +591,12 @@ From [Reading and writing xlsx, The saved active sheet and view](xlsx.md#the-sav
 
 `test/xlsx-view.test.ts` reads explicit OOXML fields, then writes, reads, writes and reads them again. It checks the first-visible-sheet default, input validation, both hashes in both execution modes, all three kinds of session, and active-sheet changes through rename, hide, delete and undo. No default XML behavior was changed for workbooks without saved view fields.
 
+### Writing over the original file
+
+From [Writing over the original file](xlsx-keep.md).
+
+The harness's `keep` step (`bench/coverage/keep.ts`) gave six books the writer wrote, in Excel 16.113 for Mac, what the workbook model does not hold: column charts over the data, a line chart moved to a chart sheet, a picture, formatted runs in two cells, theme colours of a font and a fill, the print area, a manual page break and a note; two of them got a pivot table whose parts the step writes, as the object model on the Mac makes no pivot cache, and Excel filled it on opening (`test/excel/keep/made/`). `writeKept` wrote five edits over each (amounts the charts and the pivot table show; a column of formulas with styles and a number format; a merged area, a conditional format, a validation rule, a hyperlink and a note; rows, a column, a new sheet and a rename on a sheet no part refers to; rows below what the parts read), and the prediction, committed before Excel opened them (`bench/coverage/keep/open.predicted.json`), was that Excel opens each without its repair window and saves the charts, chart sheets, drawings, pictures, pivot tables, formatted strings, theme colours, print areas, page breaks and notes the file written holds. All 30 came out as predicted, and the values Excel saved are the ones written (`test/xlsx-keep-excel.test.ts`). The same made files show the refusals: rows inserted above a chart, the pivot table's source shortened, a column inserted under a drawing, the data's sheet renamed under a chart sheet, the data moved, the pivot table's sheet deleted. The round trip and the random edits over the test sets run in `test/xlsx-keep-corpus.test.ts`.
+
 ### Reference operators
 
 From [Reference operators](references.md).

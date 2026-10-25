@@ -3,16 +3,15 @@
  * column's width, a row's or a column's format, merged areas): the cells whose shown text or colour changed.
  */
 import type { CellInput, CellValue, LayoutEdit } from '../contract.js'
-import { toCellValue, valueAt, type EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { parseMerge } from '../layout/merges.js'
 import { parseSpan } from '../layout/spans.js'
 import { parseAddress, placeOf, placeParts } from '../model.js'
-import { outValue } from '../result.js'
-import { cellLooks, type Looks } from '../shown.js'
-import { sheetKey } from '../syntax.js'
+import { cellValue } from '../result.js'
 
-/** A cell's value as a result shows it. */
-export const cellValue = (s: EngineState, i: number, r: number, c: number): CellValue => outValue(toCellValue(valueAt(s, i, r, c)))
+// the result's cell value, where the session's looks answer with it
+export { cellValue }
+import { cellLooks, type Looks } from '../shown.js'
 
 /** What a cell shows, as one comparable string; `own`, its input when the caller has it. */
 export const shownKey = (look: Looks, s: EngineState, i: number, r: number, c: number, own?: CellInput): string => {
@@ -41,7 +40,7 @@ export function shownChanges(s: EngineState, before: Map<number, string>): numbe
 export function layoutCells(s: EngineState, edits: LayoutEdit[]): Set<number> {
   const out = new Set<number>()
   for (const e of edits) {
-    const i = s.sheetIdx.get(sheetKey(e.sheet))!
+    const i = sheetIndexOf(s, e.sheet)!
     const cols = s.ctx.sheets[i].cols
     if ('merges' in e) {
       for (const m of [...(s.input.sheets[i].merges ?? []), ...e.merges]) {
@@ -65,5 +64,5 @@ export function layoutCells(s: EngineState, edits: LayoutEdit[]): Set<number> {
 export const editedCells = (s: EngineState, edits: { sheet: string; cell: string }[]): number[] =>
   edits.map((e) => {
     const p = parseAddress(e.cell)
-    return placeOf(s.sheetIdx.get(sheetKey(e.sheet))!, p.row, p.col)
+    return placeOf(sheetIndexOf(s, e.sheet)!, p.row, p.col)
   })

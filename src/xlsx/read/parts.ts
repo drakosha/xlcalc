@@ -26,6 +26,8 @@ export interface PartsSource {
   vml?: string
   threads?: string
   persons?: string
+  /** References to sheets read under other names than the file's rewritten (`FormulaOptions.rename`): a link's location follows them. */
+  rename?: (formula: string) => string
 }
 
 /**
@@ -156,7 +158,7 @@ function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issue
     const id = attr(a, 'id')
     const rel = id === undefined ? undefined : rels.get(id)
     if (rel?.external && rel.target) link.url = rel.target
-    if (a.location) link.location = readText(a.location)
+    if (a.location) link.location = src.rename ? src.rename(readText(a.location)) : readText(a.location)
     if (a.tooltip) link.tooltip = readText(a.tooltip)
     const where = { sheet: src.sheet, cell: a.ref ?? '' }
     if (id !== undefined && link.url === undefined) issues.add('hyperlink', { key: 'linkAddress' }, where)

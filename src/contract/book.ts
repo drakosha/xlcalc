@@ -1,4 +1,5 @@
 /** A book as the engine takes it: cells with their notes and links, sheets with their columns, rows, looks, frozen panes, outline settings, tables and view, the book's names and the workbooks it links to; a book without its cells. */
+import type { DateSystem } from '../dates.js'
 import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
 import type { CellStyle, ConditionalFormat, DataValidation } from './looks.js'
 
@@ -345,7 +346,7 @@ export interface BookInput {
    * dates, TODAY and NOW, date text and how dates are displayed: a 1904 workbook displays a negative date or time with a
    * minus sign (`-12:00`). It is included in both hashes only when it is 1904.
    */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /**
    * Iterative calculation of circular references, like Excel's setting and xlsx `calcPr iterate`. Without it, the cells
    * of a cycle and the cells that depend on it are not calculated and keep their values (`CellInput.held`). With it, the
