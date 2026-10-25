@@ -80,6 +80,8 @@ Every whitelisted function's typical call was run with a two-cell range and a tw
 
 An empty array, such as a `FILTER` that keeps nothing, `TAKE` of zero rows or `DROP` of everything, is `#CALC!`, as in Excel.
 
+An array can have more columns than a sheet: `COLUMNS(SEQUENCE(1,16385))` is 16,385, as in Excel. More rows than a sheet has are refused as Excel refuses them: `SEQUENCE` and `RANDARRAY` of 1,048,577 rows are `#VALUE!`, and `VSTACK` or `TOCOL` that would make them `#NUM!`. Whatever its shape, an array of more than 134,217,728 values (2^27, what one JavaScript array holds) is `#VALUE!`.
+
 ## Compilation
 
 The compiler knows statically whether a node of a formula can be an array (`src/arrays/shape.ts`): ranges of several cells where a single value is expected, array constants, functions that return arrays, and anything lifted over them. A LET name has the shape of its value, and an omitted argument is a single value. Only such nodes go through the lifting operators and callers; a formula without arrays compiles to plain scalar code. The shape pass takes about 5 ms on the 3,907 formulas of the synthetic workbook.

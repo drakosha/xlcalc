@@ -7,6 +7,7 @@ import { eachValue, type Arg, type Cx, type FnDef, type Grid, type Segment } fro
 import { isMany } from '../../arrays/lift.js'
 import { Arr, asArray, EMPTY, fromGrid, selectArray } from '../../arrays/value.js'
 import { allot, spend } from '../../exec/budget.js'
+import { MAX_ROWS } from '../../model.js'
 import type { Rules } from '../../locale/rules.js'
 import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
@@ -79,6 +80,8 @@ function stack(across: boolean): FnDef {
       const parts = xs.flatMap((x) => stackParts(cx, x))
       const rows = across ? Math.max(...parts.map((p) => p.rows)) : parts.reduce((s, p) => s + p.rows, 0)
       const cols = across ? parts.reduce((s, p) => s + p.cols, 0) : Math.max(...parts.map((p) => p.cols))
+      // more rows than a sheet has are #NUM! (the set `array-size-held`)
+      if (rows > MAX_ROWS) return E.NUM
       allot(rows * cols)
       const v: V[] = new Array(rows * cols).fill(E.NA)
       let at = 0
@@ -121,6 +124,8 @@ function flatten(column: boolean): FnDef {
       const v: V[] = []
       for (const part of x instanceof Areas ? x.list : [x]) values(cx.grid(part), ignore, byCol, v)
       if (!v.length) return EMPTY
+      // a column of more rows than a sheet has is #NUM! (the set `array-size-held`)
+      if (column && v.length > MAX_ROWS) return E.NUM
       return column ? new Arr(v.length, 1, v.length, 1, v) : new Arr(1, v.length, 1, v.length, v)
     },
   }
