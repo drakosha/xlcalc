@@ -4,8 +4,7 @@
  * or each sheet's rules, checks of values and lines over the window after what Excel makes and the operation; a raw
  * case on the book the reader reads from its file, with what the reader reports.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { editStructure } from '../../../src/index.js'
 import { readXlsx } from '../../../src/xlsx.js'
 import { bookViews, made, validCaseFile, WINDOW, type ValidSet } from './cases.js'
@@ -21,5 +20,5 @@ for (const c of cases) {
   const issues = read?.issues.map((i) => `${i.code} ${i.sheet ?? ''} ${(i.cells ?? []).join(' ')}: ${i.message}`)
   out[c.id] = r.ok ? (issues ? { views: bookViews(r.book, window ?? WINDOW), issues } : bookViews(r.book, window ?? WINDOW)) : { refused: r.code }
 }
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)
+writePrediction(import.meta.url, `${set}`, out)
 console.log(`${set}: ${cases.length} cases predicted`)

@@ -6,6 +6,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { BookInput, CellInput, ColumnInput, ConditionalFormat, ConditionalStyle, NumberFormat, RowInput, SheetInput, StructureOp } from '../../src/contract.js'
 import { editStructure } from '../../src/structure/index.js'
 
@@ -16,6 +17,11 @@ export const loadStored = <T>(file: string): T | null => (existsSync(file) && !p
 export function writeAnswers(file: string, body: unknown): void {
   mkdirSync(dirname(file), { recursive: true })
   writeFileSync(file, JSON.stringify(body, null, 1) + '\n')
+}
+
+/** A prediction file of a script (`<name>.predicted.json` beside its `import.meta.url`), written as every prediction is. */
+export function writePrediction(metaUrl: string, name: string, body: unknown): void {
+  writeAnswers(fileURLToPath(new URL(`./${name}.predicted.json`, metaUrl)), body)
 }
 
 /** The seconds since `t0` to a tenth, as an answer file's `meta` gives its run's time. */
