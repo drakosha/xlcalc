@@ -19,13 +19,14 @@ import { tablesOf } from '../tables/model.js'
 import { cornersText, grown, meets, rectText, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { moveRange } from './move.js'
+import { sheetIndex } from './rewrite.js'
 import { arraysOf, cellsIn, gridOf, type Grid } from './grid.js'
 import { holds, CONTENT } from '../array-areas.js'
 
 export { grown }
 
 export function mergeCells(book: BookInput, sheet: string, x: Rect, across: boolean, center: boolean): Applied {
-  const s = book.sheets.findIndex((t) => t.name === sheet)
+  const s = sheetIndex(book, sheet)
   const merges = mergesOf(book.sheets[s])
   const area = grown(x, merges)
   const table = tablesOf(book).list.find((t) => t.s === s && meets(t, area))
@@ -104,7 +105,7 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
 }
 
 export function unmergeCells(book: BookInput, sheet: string, x: Rect): Applied {
-  const s = book.sheets.findIndex((t) => t.name === sheet)
+  const s = sheetIndex(book, sheet)
   const sh = book.sheets[s]
   const merges = (sh.merges ?? []).filter((m) => !meets(parseMerge(m)!, x))
   if (merges.length === (sh.merges ?? []).length) return { ok: true, book, geometry: [] }

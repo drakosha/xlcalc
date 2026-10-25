@@ -24,6 +24,7 @@ import { copyRange } from './copy.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
+import { sheetIndex } from './rewrite.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
 import { checkWrites } from './writes.js'
@@ -196,7 +197,7 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'deleteSheet': {
       // references to the sheet's tables are lost with it
       const sheet = named(o.sheet, 'op.sheet')
-      const gone = book.sheets.findIndex((s) => s.name === sheet)
+      const gone = sheetIndex(book, sheet)
       r = deleteSheet(book.sheets.length > 1 ? rewriteBookTables(book, (t) => (t.s === gone ? 'lost' : undefined)) : book, sheet)
       break
     }
