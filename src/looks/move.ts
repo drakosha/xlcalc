@@ -7,13 +7,7 @@
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { LIMIT, shiftRect, type Axis, type Rect } from '../structure/area.js'
 import type { Geometry } from '../structure/geometry.js'
-import { edited, LayerBuilder, LookTable, NONE, patternOf, spansOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
-
-/** The run of a pattern holding column `c`: its look, or NONE. */
-function lookAtColumn(p: Pattern, c: number): number {
-  for (let k = 0; k < p.length && p[k] <= c; k += 3) if (p[k + 1] >= c) return p[k + 2]
-  return NONE
-}
+import { edited, LayerBuilder, LookTable, NONE, patternOf, runAt, spansOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
 
 /** A pattern's runs with `n` columns inserted before `at` (or `-n` deleted from `at`); `before`: the new columns take the look of column `at` − 1. */
 function shiftedRuns(p: Pattern, at: number, n: number, before: boolean): Pattern {
@@ -34,7 +28,7 @@ function shiftedRuns(p: Pattern, at: number, n: number, before: boolean): Patter
       if (c2 >= at + d) push(at, c2 - d, look)
     }
   }
-  const look = before && n > 0 && at > 0 ? lookAtColumn(p, at - 1) : NONE
+  const look = before && n > 0 && at > 0 ? runAt(p, at - 1) : NONE
   if (look !== NONE) push(at, at + n - 1, look)
   const runs: number[][] = []
   for (let k = 0; k < out.length; k += 3) runs.push(out.slice(k, k + 3))

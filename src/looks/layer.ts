@@ -94,16 +94,16 @@ export function* spansOf(a: Pattern, b: Pattern): Generator<[number, number, num
   }
 }
 
-/** The index of the run of a pattern holding column `c`, or -1. */
-function runAt(p: Pattern, c: number): number {
+/** The look's number of the run of a pattern holding column `c`, NONE for none. */
+export function runAt(p: Pattern, c: number): number {
   let [lo, hi] = [0, p.length / 3 - 1]
   while (lo <= hi) {
     const m = (lo + hi) >> 1
     if (p[m * 3] > c) hi = m - 1
     else if (p[m * 3 + 1] < c) lo = m + 1
-    else return m * 3
+    else return p[m * 3 + 2]
   }
-  return -1
+  return NONE
 }
 
 /**
@@ -228,9 +228,7 @@ export class Layer {
 
   /** The look's number of a cell, NONE without one. */
   idAt(r: number, c: number): number {
-    const p = this.row(r)
-    const k = runAt(p, c)
-    return k < 0 ? NONE : p[k + 2]
+    return runAt(this.row(r), c)
   }
 
   /** The look of a cell (a frozen object shared by the cells of that look), undefined without one. */
