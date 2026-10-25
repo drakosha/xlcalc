@@ -6,10 +6,12 @@ import type { ColumnInput, RowInput, SheetInput } from '../contract.js'
 import type { Axis } from '../structure/area.js'
 import { lines } from './spans.js'
 
-/** A row hidden as Excel takes it: marked hidden, or of height 0 (an xlsx round trip through Excel, the book `zero-sizes`). */
-export const isHiddenRow = (e: RowInput): boolean => e.hidden === true || e.height === 0
-/** A column hidden: marked hidden, or of width 0. */
-export const isHiddenColumn = (e: ColumnInput): boolean => e.hidden === true || e.width === 0
+/** A row or column hidden as Excel takes it: marked hidden, or of size 0 (a row's its height, a column's its width). */
+export const isHidden = (e: { hidden?: boolean; height?: number; width?: number }): boolean => e.hidden === true || e.height === 0 || e.width === 0
+/** A row (`isHidden`, a row has no width). */
+export const isHiddenRow = (e: RowInput): boolean => isHidden(e)
+/** A column (`isHidden`, a column has no height). */
+export const isHiddenColumn = (e: ColumnInput): boolean => isHidden(e)
 
 export interface HiddenRows {
   /** Disjoint spans of hidden rows, ascending, zero-based and inclusive. */

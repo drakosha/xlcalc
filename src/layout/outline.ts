@@ -12,6 +12,7 @@
 import { MAX_OUTLINE } from '../column-width.js'
 import type { LinePatch } from '../contract.js'
 import { LIMIT, type Axis } from '../structure/area.js'
+import { isHidden } from './hidden.js'
 import { entryAt, firstEnding, lines, patchIn, toMap, type Line } from './spans.js'
 
 /** What the outline reads of a line: its level, hidden state (a size of 0 hides it too) and mark. */
@@ -50,8 +51,7 @@ class Outline {
     return i < 0 || i > this.last ? 0 : (entryAt(this.ls, i)?.outlineLevel ?? 0)
   }
   hidden(i: number): boolean {
-    const e = entryAt(this.ls, i)
-    return !!e && (e.hidden === true || e.height === 0 || e.width === 0)
+    return isHidden(entryAt(this.ls, i) ?? {})
   }
   mark(i: number): boolean {
     return entryAt(this.ls, i)?.collapsed === true
@@ -79,7 +79,7 @@ class Outline {
     for (let k = Math.max(0, this.index(lo)); p <= hi; k++) {
       const e = this.ls[k]
       if (!e || e[0] > p || e[1] < p) return false
-      if (!(e[2].hidden === true || e[2].height === 0 || e[2].width === 0)) return false
+      if (!isHidden(e[2])) return false
       p = e[1] + 1
     }
     return true
