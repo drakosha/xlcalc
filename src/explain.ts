@@ -1,5 +1,5 @@
 /** `explain`: where a cell's value comes from, as a tree of its precedents and as indented text in the book's locale. */
-import type { CellValue, ExplainOptions, ExternalBook, RangeRef } from './contract.js'
+import type { ExplainNode, ExplainOptions, ExternalBook } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { object, onlyOptions } from './input/basic.js'
 import { errorOrigin, errorStep, issueCode, placeText, type Place } from './issues.js'
@@ -29,32 +29,19 @@ function rngText(state: EngineState, g: Rng): string {
   return g.r1 === g.r2 && g.c1 === g.c2 ? `${sheet}!${a}` : `${sheet}!${a}:${formatAddress(g.r2, g.c2)}`
 }
 
-export interface ExplainTree {
-  location?: RangeRef
-  ref: string
-  value?: CellValue
-  formula?: string
-  cells?: number
-  /** A cell an array spilled into: the array's formula cell, which is the node's child. */
-  spillOf?: string
-  /** A cell with an error, or a formula a circular reference stops: the cell it began in. */
-  origin?: string
-  children: ExplainTree[]
-}
-
 /**
  * The tree of a cell's precedents, `depth` levels deep (a range takes one); a cell with an error leads on to the cell it
  * began in, through a range by the cell its error came from, past `depth` by that way alone for `errorDepth` cells more,
  * stopping where it comes back to a cell above it.
  */
-export function* explainCell(state: EngineState, s: number, r: number, c: number, o: { depth: number; maxNodes: number; expand: boolean; errorDepth: number }): Steps<{ root: ExplainTree; nodes: number; truncated: boolean }> {
+export function* explainCell(state: EngineState, s: number, r: number, c: number, o: { depth: number; maxNodes: number; expand: boolean; errorDepth: number }): Steps<{ root: ExplainNode; nodes: number; truncated: boolean }> {
   let nodes = 0
   let truncated = false
   // the cells from the root to the one visited, each as often as it is there; the origins of errors found
   const above = new Map<string, number>()
   const origins = new Map<string, Place>()
   const room = () => nodes < o.maxNodes || !(truncated = true)
-  const range = function* (g: Rng): Steps<ExplainTree> {
+  const range = function* (g: Rng): Steps<ExplainNode> {
     nodes++
     let filled = 0
     for (const v of state.rt.flat(g)) {
@@ -66,7 +53,7 @@ export function* explainCell(state: EngineState, s: number, r: number, c: number
     return { ref, ...(location ? { location } : {}), cells: filled, children: [] }
   }
   // `d`: the levels left; `past`: the cells the way to an error's origin may go on past them
-  const visit = function* (s: number, r: number, c: number, d: number, past: number): Steps<ExplainTree> {
+  const visit = function* (s: number, r: number, c: number, d: number, past: number): Steps<ExplainNode> {
     if (paced(1)) yield
     nodes++
     const k = key(s, r, c)
@@ -74,7 +61,7 @@ export function* explainCell(state: EngineState, s: number, r: number, c: number
     const f = id === undefined ? undefined : state.formulas[id]
     const v = valueAt(state, s, r, c)
     const location = state.sheetNames[s] === undefined ? undefined : { sheet: state.sheetNames[s], range: formatAddress(r, c) }
-    const node: ExplainTree = { ref: placeText(state, { s, r, c }), ...(location ? { location } : {}), value: toCellValue(v), children: [] }
+    const node: ExplainNode = { ref: placeText(state, { s, r, c }), ...(location ? { location } : {}), value: toCellValue(v), children: [] }
     if (state.invalid.has(k)) node.formula = state.input.sheets[s].cells[formatAddress(r, c)]?.formula
     if (f) node.formula = f.text
     const code = issueCode(state, s, r, c)
@@ -130,7 +117,7 @@ export function* explainCell(state: EngineState, s: number, r: number, c: number
 }
 
 /** The tree as indented text in the loaded locale `tag` (en-US without one): its words, values, formulas and references, a sheet in quotes where Excel puts them. */
-export function* explainText(root: ExplainTree, tag?: string, externalBooks?: ExternalBook[]): Steps<string> {
+export function* explainText(root: ExplainNode, tag?: string, externalBooks?: ExternalBook[]): Steps<string> {
   const loc = localeOf(tag)
   const local = (f: string) => {
     const t = showFormula(f, loc, undefined, externalBooks)
@@ -139,7 +126,7 @@ export function* explainText(root: ExplainTree, tag?: string, externalBooks?: Ex
   // the formula shown before its message takes it: en-US's prints it as given
   const text = (m: EngineMessage) => say(loc, m)
   const lines: string[] = []
-  const go = function* (n: ExplainTree, indent: string): Steps<void> {
+  const go = function* (n: ExplainNode, indent: string): Steps<void> {
     if (paced(1)) yield
     const ref = local(n.ref)
     const head = n.cells !== undefined ? `${ref} (${text({ key: 'explainCells', count: n.cells })})` : `${ref} = ${text({ key: 'explainValue', value: n.value })}`
