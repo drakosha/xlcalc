@@ -11,7 +11,7 @@ import { betaPrefix, dbinom, dgamma, dpois, gammaPQ, ibeta, lbeta, lognormCdf, n
 
 /** Excel's ceiling on degrees of freedom of the chi-squared, t and F distributions. */
 const MAX_DF = 1e10
-/** Counts at or past 2^31 − 1 are #NUM! in BINOM.DIST, PERMUT and PERMUTATIONA. */
+/** Counts at or past 2^31 − 1 are #NUM! in BINOM.DIST, BINOM.DIST.RANGE, BINOM.INV, PERMUT, PERMUTATIONA, COMBIN and COMBINA. */
 export const MAX_COUNT = 2147483647
 
 function normDist(x: number, m: number, sd: number, cumulative: boolean): V {

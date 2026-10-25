@@ -2,9 +2,8 @@
 import { gridAt, occupied, type Arg, type Cx, type FnDef } from '../../args.js'
 import { E, isErr, whole, type CErr, type V } from '../../values.js'
 import { fact, sum } from '../common.js'
+import { MAX_COUNT } from '../statistical/distributions.js'
 
-/** Excel: COMBIN and COMBINA take n below 2^31 − 1. */
-const MAX_N = 2 ** 31 - 1
 /** Excel: GCD and LCM take values up to 2^53, and LCM's answer as well. */
 const MAX_INT = 2 ** 53
 const MAX = Number.MAX_VALUE
@@ -23,7 +22,7 @@ function choose(n: number, k: number): number {
 function combin(n: number, k: number): number | CErr {
   const a = Math.trunc(n)
   const b = Math.trunc(k)
-  return a < 0 || b < 0 || a < b || a >= MAX_N ? E.NUM : choose(a, b)
+  return a < 0 || b < 0 || a < b || a >= MAX_COUNT ? E.NUM : choose(a, b)
 }
 
 function combina(n: number, k: number): number | CErr {
