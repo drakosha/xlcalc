@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.58.0 (2026-10-25)
+
+`writeKept` follows structure operations; arrays larger than the sheet, iterations that never settled and text comparison as Excel. Values and hashes of the synthetic workbook are as in 0.57.0.
+
+Added:
+
+- `writeKept` writes the references of parts outside the model back where an insert, a delete, a moved range or a renamed sheet took their cells: series, categories and titles of charts, the anchors of pictures and shapes by how they move with cells (one whose rows are all deleted goes, with its parts), a pivot table's place and its cache's source (a renamed table too), sparklines, the autofilter and its sort, print areas and titles, page breaks and protected ranges. A moved cell with what only the file holds (rich text runs, phonetic text, a value by `vm`) keeps it, up to 5,000 such cells a sheet; past that the move is reported. Still refused: a range moved over a picture, a pivot table cut, a deleted source of a pivot cache, a sparkline's or autofilter's cells deleted ([xlsx over its original file](docs/xlsx-keep.md)).
+
+Fixed:
+
+- An array larger than the sheet no longer crashes the process with an out-of-memory error: `SEQUENCE` and `RANDARRAY` of more than 1,048,576 rows or 16,384 columns return `#VALUE!` and `VSTACK`, `HSTACK`, `TOCOL` and `TOROW` `#NUM!`, as Excel does (measured), and any array of more than 2^27 values returns `#VALUE!` in its cell. `getValues` and `copyText` read as before.
+- A workbook under iterative calculation whose spilled arrays come back to the same state each round finishes its calculation, where it ran 100,000 rounds and threw; calculations that finished before give the same answers.
+- Text is compared as Excel compares it: `=` tells a soft hyphen apart, exact `MATCH`, `XMATCH` and `VLOOKUP` tell composed and decomposed spellings apart (é and e with a combining accent), criteria compare text in its composed form.
+- `clearCells` of formats over a rectangle in columns with a style of their own, and formatting rows across formatted lines past 1,048,576 cells, are no longer refused; `copyRange` and `moveRange` of whole formatted columns no longer throw `RangeError`.
+- A legacy array formula moved or copied over a table's header row is refused, as one over its data already was.
+- Arrays waiting for cells their own formula reads back find what they wait for by what their readers read: 1,000 arrays below a chain of 20,000 formulas in 146 ms instead of 2.6 s.
+
 ## 0.57.0 (2026-10-25)
 
 Writing an xlsx over its original file, so that what the workbook model does not hold survives an edit; hidden names; fixes in reading and writing xlsx. Values and hashes of workbooks without hidden names are as in 0.56.0.
