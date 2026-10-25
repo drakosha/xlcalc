@@ -13,6 +13,7 @@ import { mergesOf, parseMerge } from '../layout/merges.js'
 import { cut, entryAt, lines, slice, toMap, type Line } from '../layout/spans.js'
 import { say, type EngineMessage } from '../locale/messages.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import { bands } from '../sorted.js'
 import { contains, cornersText, hi, intersect, lo, meets, shiftRect, type Axis, type Rect } from './area.js'
 import { arrayRefusal } from './arrays.js'
 import type { Applied } from './geometry.js'
@@ -66,8 +67,7 @@ function segments(src: Line<unknown>[], dst: Line<unknown>[], a: number, b: numb
   const at = new Set([a, b + 1])
   bounds(src, a, b, 0, at)
   bounds(dst, a, b, d, at)
-  const bs = [...at].filter((x) => x >= a && x <= b + 1).sort((x, y) => x - y)
-  return bs.slice(0, -1).map((x, i) => [x, bs[i + 1] - 1])
+  return bands([...at].filter((x) => x >= a && x <= b + 1))
 }
 
 /** The bounds of the lines `ls` (shifted back by `d`) that can fall in [a, b + 1], added to `at`: a fill pastes one row per tile, so the lines in order are halved to the first, not all walked. */

@@ -161,6 +161,12 @@ export function minus(x: Rect, y: Rect): Rect[] {
 /** Rectangles without the cells of `cut`. */
 export const subtract = (rects: Rect[], cut: Rect): Rect[] => rects.flatMap((x) => minus(x, cut))
 
+/** The rectangles of `xs` inside `y`. */
+export const inside = (xs: Rect[], y: Rect): Rect[] => xs.flatMap((x) => intersect(x, y) ?? [])
+
+/** Whether any rectangle of `xs` meets any of `ys`. */
+export const anyMeets = (xs: readonly Rect[], ys: readonly Rect[]): boolean => xs.some((x) => ys.some((y) => meets(x, y)))
+
 /**
  * The top-left cell of the rectangle around `xs`, which need not be a cell of theirs: the cell a rule's formulas are
  * written for. In one pass, as a rule read from a file may have hundreds of thousands of rectangles.
