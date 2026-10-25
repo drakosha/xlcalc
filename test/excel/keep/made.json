@@ -134,6 +134,48 @@
     "breaks": 0,
     "notes": 1
    }
+  },
+  "sized": {
+   "sent": "e8a635d0f733373a81f650ee60b3ceb5e2c9ab73ac41307a0abe49b5edbe65ff",
+   "made": [
+    "chart",
+    "picture",
+    "floating"
+   ],
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "moving": {
+   "sent": "69ff9edf38a1d63cf3522ff293505dde58cbebc9a08389b9d727972dee53d79a",
+   "made": [
+    "chart",
+    "picture",
+    "chartmove"
+   ],
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
   }
  }
 }

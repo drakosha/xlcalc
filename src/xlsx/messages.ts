@@ -156,6 +156,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   ruleFormulaOut: () => 'a rule whose formula the file cannot hold (it does not parse, or names a sheet, a table or a column the workbook does not have) is left out',
   condFormulaOut: () => 'a conditional format with a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the workbook does not have) is left out of the file',
   filterModeOut: () => "the filter mode of a sheet whose tables have no header row is left out: an autofilter over the sheet's cells would overlap them",
+  keptCells: (p) => `rows or columns moved on a sheet with ${p.count} cells holding formatted runs of text or rich values that the workbook does not have, more than writeKept follows: those that moved are written from the workbook, without them`,
 }
 
 /** An issue's message in a locale (en-US without one): the locale's own text, else the English one. */

@@ -1,6 +1,7 @@
 -- Open a book and give it what the workbook model does not hold, as a person does in Excel's window, then save it as
 -- xlsx under another name and close it. Arguments: the book's path and the path to save to (inside Excel's sandbox),
--- the saved file's name, the features (a comma list: chart, chartsheet, picture, rich, theme, print, breaks, note) and
+-- the saved file's name, the features (a comma list: chart, chartsheet, picture, sized, floating, chartmove, rich, theme,
+-- print, breaks, note) and
 -- a picture's path (inside the sandbox). Answers what it made, one feature a line, or the error of one it could not.
 on run argv
 	set p to item 1 of argv
@@ -33,8 +34,20 @@ on run argv
 				set made to made & "chartsheet" & linefeed
 			end if
 			if feats contains "picture" then
-				make new picture at ws with properties {file name:img, link to file:false, save with document:true, top:220, left position:300, width:80, height:50}
+				set pic to make new picture at ws with properties {file name:img, link to file:false, save with document:true, top:220, left position:300, width:80, height:50}
+				-- moving and sizing with its cells, or fixed where it is, as the features ask; Excel's own is moving only
+				if feats contains "sized" then set placement of pic to placement move and size
 				set made to made & "picture" & linefeed
+			end if
+			if feats contains "floating" then
+				set pic to make new picture at ws with properties {file name:img, link to file:false, save with document:true, top:300, left position:120, width:60, height:40}
+				set placement of pic to placement free floating
+				set made to made & "floating" & linefeed
+			end if
+			if feats contains "chartmove" then
+				-- the chart moving with its cells and keeping its size
+				set placement of (chart object 1 of ws) to placement move
+				set made to made & "chartmove" & linefeed
 			end if
 			if feats contains "rich" then
 				-- formatted runs in a cell's text

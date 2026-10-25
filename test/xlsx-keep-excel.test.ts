@@ -4,18 +4,54 @@
  * `writeKept` wrote over them for five edits, which Excel opened and saved (`test/excel/keep/open/`, `open.json`, by
  * `bench/coverage/run.ts keep`). Each written file is the one Excel saw, Excel opened it without its repair window as
  * predicted (`bench/coverage/keep/open.predicted.json`), and the file it saved holds the same parts and the edit's values.
+ * For the operations of the structure Excel did over the made files (`test/excel/keep/struct.json`, `struct/`), the
+ * references `writeKept` writes are the ones Excel saved; Excel opened the files `writeKept` wrote for them without its
+ * repair window and kept their parts and references, as predicted (`struct-open.json`, `struct-open/`).
  */
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { readXlsx } from '../src/xlsx.js'
-import { KeptRefusal, openKept, writeKept } from '../src/xlsx-keep.js'
+import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { createSession } from '../src/index.js'
-import { MADE, partsOf } from '../bench/coverage/keep/books.js'
-import { written, type OpenRun } from '../bench/coverage/keep.js'
+import { MADE, partsOf, refsOf, STRUCT } from '../bench/coverage/keep/books.js'
+import { structFiles, structWritten, written, type OpenRun, type StructOpenRun, type StructRun } from '../bench/coverage/keep.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
+import { partsOf as textsOf } from './keep-files.js'
 
 const dir = new URL('./excel/keep/', import.meta.url)
 const run = JSON.parse(readFileSync(new URL('open.json', dir), 'utf8')) as OpenRun
+const struct = JSON.parse(readFileSync(new URL('struct.json', dir), 'utf8')) as StructRun
+/**
+ * Where `writeKept` writes an operation's references otherwise than Excel, by case: what it writes. A series' category
+ * or name that lost all its cells keeps `#REF!` in its place; Excel moves it to an extension of the series
+ * (`c15:filteredCategoryTitle`, `c15:filteredSeriesTitle`), which no `<c:f>` holds.
+ */
+const KNOWN: Record<string, Record<string, unknown>> = {
+  'chart-delete-series': { series: ["'Data'!#REF!", "'Data'!#REF!", "'Data'!$B$1"] },
+  'chartsheet-source-deleted': { series: ['#REF!', '#REF!'] },
+}
+/**
+ * The operations `writeKept` refuses, by case: the refusal. A pivot cache whose source sheet is deleted: Excel keeps
+ * `ref` and `sheet` and links the source to the file by its path (`r:id`, an external link path to the file's name),
+ * which a writer of bytes does not know; the source kept without the link, Excel does not open the file.
+ */
+const REFUSED: Record<string, string> = {
+  'pivot-source-deleted': 'xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml is on a sheet the change deleted, which Excel makes a link to the file by its path',
+}
+const structOpen = JSON.parse(readFileSync(new URL('struct-open.json', dir), 'utf8')) as StructOpenRun
+const structPredicted = JSON.parse(readFileSync(new URL('../bench/coverage/keep/struct-open.predicted.json', import.meta.url), 'utf8')) as { cases: Record<string, { parts: Record<string, number>; refs: Record<string, unknown> }> }
+/**
+ * Where Excel saved a file `writeKept` wrote for an operation of the structure otherwise than predicted, by case: what
+ * it saved. Excel drops the formats and strings no cell uses, as with its own operation, and moves a series' category
+ * or name that lost its cells to an extension of the series.
+ */
+const RESAVED: Record<string, { parts?: Record<string, number>; refs?: Record<string, unknown> }> = {
+  'chart-delete-in': { parts: { themeColors: 0 } },
+  'chart-delete-series': { parts: { themeColors: 0 }, refs: { series: ["'Data'!#REF!", "'Data'!$B$1"] } },
+  'chart-delete-chart': { parts: { themeColors: 0 } },
+  'chartsheet-source-deleted': { parts: { richStrings: 0 }, refs: { series: ['#REF!'] } },
+}
 const predicted = JSON.parse(readFileSync(new URL('../bench/coverage/keep/open.predicted.json', import.meta.url), 'utf8')) as { cases: Record<string, { opens: boolean; parts: Record<string, number> }> }
 
 /** A book's typed values by sheet and cell, the formulas left out: what Excel's file and the written one share whatever their spelling. */
@@ -49,23 +85,42 @@ describe('xlsx/keep in Excel', () => {
     }
   }, 60_000)
 
-  it("a change that would move the references of Excel's parts is refused, with the part named", async () => {
-    const refusal = async (id: string, op: Parameters<ReturnType<typeof createSession>['editStructure']>[0]) => {
-      const data = readFileSync(new URL(`made/${id}.xlsx`, dir))
-      const r = await openKept(data)
-      const s = createSession(r.book, { cached: r.cached })
-      expect(s.editStructure(op).ok).toBe(true)
-      return writeKept(data, s.getSnapshot()).then(
-        () => 'written',
-        (e: Error) => (e instanceof KeptRefusal ? e.message.replace(/ \(xl\/[^)]*\)|xl\/[\w/]+\.xml/g, '').slice(0, 60) : `${e.name}: ${e.message}`),
-      )
+  it("writeKept moves the parts' references as Excel moved them in the operations of the structure", async () => {
+    const ours = await structWritten()
+    expect(Object.keys(ours).sort()).toEqual(Object.keys(struct.cases).sort())
+    // each answer is Excel's for the case as it is now: its operation over its made file
+    for (const c of STRUCT) {
+      const data = readFileSync(new URL(`made/${c.made}.xlsx`, dir))
+      expect(struct.cases[c.id].sent, `${c.id}: the case changed since Excel did it: run the keep struct step`).toBe(createHash('sha256').update(JSON.stringify(c.excel)).update(await partsHash(data)).digest('hex'))
     }
-    // a row inserted above what the chart reads moves its anchor first: the chart sits over the data's rows
-    expect(await refusal('chart', { op: 'insertRows', sheet: 'Data', row: 3 })).toMatch(/^xlsx\/keep: a drawing on 'Data' refers to 'Data'!\$F\$1:\$L\$13, /)
-    expect(await refusal('pivot', { op: 'deleteRows', sheet: 'Data', row: 21 })).toMatch(/^xlsx\/keep: (the chart|the source of the pivot cache)/)
-    expect(await refusal('print', { op: 'insertColumns', sheet: 'Data', column: 'B' })).toMatch(/^xlsx\/keep: /)
-    expect(await refusal('chartsheet', { op: 'renameSheet', sheet: 'Data', name: 'Amounts' })).toMatch(/^xlsx\/keep: the chart  refers to 'Data'!/)
-    expect(await refusal('all', { op: 'moveRange', from: { sheet: 'Data', range: 'A1:C21' }, to: { sheet: 'Plain', cell: 'D1' } })).toMatch(/^xlsx\/keep: /)
-    expect(await refusal('all', { op: 'deleteSheet', sheet: 'Pivot' })).toMatch(/^xlsx\/keep: /)
-  })
+    for (const [id, o] of Object.entries(ours)) {
+      expect('refused' in o ? o.refused : undefined, id).toBe(REFUSED[id])
+      if ('refs' in o) expect(o.refs, id).toEqual({ ...struct.cases[id].refs, ...KNOWN[id] })
+    }
+    // Excel's file for the refused one: the source kept, linked to the file by its name in Excel's sandbox
+    const saved = await textsOf(readFileSync(new URL('struct/pivot-source-deleted.xlsx', dir)))
+    expect(/<worksheetSource ref="A1:C21" sheet="Data" r:id="rId1"\/>/.test(saved.get('xl/pivotCache/pivotCacheDefinition1.xml')!)).toBe(true)
+    expect(saved.get('xl/pivotCache/_rels/pivotCacheDefinition1.xml.rels')).toContain('relationships/externalLinkPath" Target="book.xlsx" TargetMode="External"')
+  }, 60_000)
+
+  it('Excel opened every file writeKept wrote for the operations of the structure, and kept its parts and their references', async () => {
+    const files = await structFiles()
+    expect(files.map((f) => f.id).sort()).toEqual(Object.keys(structPredicted.cases).sort())
+    for (const f of files) {
+      if (!('data' in f.written)) {
+        expect(f.written.refused, f.id).toBe(REFUSED[f.id])
+        continue
+      }
+      const c = structOpen.cases[f.id]
+      expect(c, `${f.id}: no Excel answer: run the keep struct-open step`).toBeDefined()
+      expect(c.sent, `${f.id}: writeKept changed since Excel saw the file: run the keep struct-open step`).toBe(await partsHash(f.written.data))
+      expect(c.rejected, f.id).toBeUndefined()
+      const p = structPredicted.cases[f.id]
+      expect(c.saved, f.id).toEqual({ ...p.parts, ...RESAVED[f.id]?.parts })
+      expect(c.refs, f.id).toEqual({ ...p.refs, ...RESAVED[f.id]?.refs })
+      const saved = readFileSync(new URL(`struct-open/${f.id}.xlsx`, dir))
+      expect(await partsOf(saved), f.id).toEqual(c.saved)
+      expect(await refsOf(saved), f.id).toEqual(c.refs)
+    }
+  }, 60_000)
 })
