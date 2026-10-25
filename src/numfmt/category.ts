@@ -15,7 +15,7 @@ import { checkFormat } from '../input/styles.js'
 import { optionalLocale } from '../locale/load.js'
 import type { FormatNames } from '../locale/rules/data.js'
 import type { Locale } from '../locale/types.js'
-import { builtinCodes, EN_BUILTIN } from './builtin.js'
+import { builtinIn, EN_BUILTIN } from './builtin.js'
 import { splitSections } from './parse.js'
 
 /** en-US's names of the box's categories and the list's items, and the code of its Currency item. */
@@ -45,7 +45,6 @@ const CHOICES: readonly [FormatChoiceKey, NumberFormat | undefined][] = [
 ]
 
 const namesOf = (loc: Locale | undefined): FormatNames => loc?.regional?.formats ?? EN_NAMES
-const codesOf = (loc: Locale | undefined) => builtinCodes(loc?.regional?.builtin ?? {})
 
 /** The money formats among the built-in ones, whose `$` Excel keeps quoted (`"$"#,##0_);\("$"#,##0\)`), as the box reads them. */
 const MONEY = /^(?:[5-8]|4[1-4])$/
@@ -60,7 +59,7 @@ export function numberFormatCategory(format: NumberFormat, locale?: string | Loc
   const loc = optionalLocale(locale, 'locale')
   let category: FormatCategory
   if (!loc?.regional) category = categoryOf(typeof format === 'string' ? canonical(format) : EN_KEPT[format], '', undefined)
-  else category = typeof format === 'number' ? builtinIn(format) : categoryOf(canonical(format), codesOf(loc)(14), loc)
+  else category = typeof format === 'number' ? builtinCategory(format) : categoryOf(canonical(format), builtinIn(loc)(14), loc)
   return { category, name: namesOf(loc).categories[category] }
 }
 
@@ -68,7 +67,7 @@ export function numberFormatCategory(format: NumberFormat, locale?: string | Loc
 export function numberFormatChoices(locale?: string | Locale): FormatChoice[] {
   const loc = optionalLocale(locale, 'locale')
   const names = namesOf(loc)
-  const codes = codesOf(loc)
+  const codes = builtinIn(loc)
   return CHOICES.map(([key, format = names.currency]) => ({ key, name: names.choices[key], format, code: typeof format === 'number' ? codes(format) : format }))
 }
 
@@ -176,7 +175,7 @@ const EN_KEPT = EN_BUILTIN.map((code, id) => canonical(MONEY.test(String(id)) ? 
  * (measured in ru-RU): its money the locale's currency (5 to 8) and accounting (41 to 44), its numbers with a minus
  * (37 to 40) none of Format Cells' formats, the others as their en-US codes.
  */
-const builtinIn = (id: number): FormatCategory => (id >= 37 && id <= 40 ? 'custom' : MONEY.test(String(id)) ? (id < 9 ? 'currency' : 'accounting') : categoryOf(EN_KEPT[id], '', undefined))
+const builtinCategory = (id: number): FormatCategory => (id >= 37 && id <= 40 ? 'custom' : MONEY.test(String(id)) ? (id < 9 ? 'currency' : 'accounting') : categoryOf(EN_KEPT[id], '', undefined))
 
 /**
  * The category of a code as Excel keeps it (`canonical`) in a locale whose short date (built-in 14) has the code

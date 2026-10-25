@@ -14,7 +14,7 @@ import { choose, kind, textSection } from './numfmt/select.js'
 import { HIJRI_NAMES } from './numfmt/hijri.js'
 import { FILL, plain, type Style } from './numfmt/style.js'
 
-export { builtinCodes, EN_BUILTIN, isBuiltin } from './numfmt/builtin.js'
+export { builtinCodes, builtinIn, EN_BUILTIN, isBuiltin } from './numfmt/builtin.js'
 export { generalFormat, generalText } from './numfmt/general.js'
 export { columnPoints, room, widthOf } from './numfmt/glyphs.js'
 export { EN_CODES, type Codes } from './numfmt/parse.js'

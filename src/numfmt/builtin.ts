@@ -4,6 +4,8 @@
  * the short date, `m/d/yyyy` (the Mac's `m/d/yy`). A locale shows some of them by its own codes (`Style.builtin`): the
  * short and medium dates and times, money, numbers with negatives in parentheses.
  */
+import { localeOf } from '../locale/registry.js'
+import type { Locale } from '../locale/types.js'
 
 const SHORT_DATE = 'm/d/yyyy'
 const LONG_TIME = 'h:mm:ss'
@@ -26,3 +28,6 @@ export const builtinCodes =
   (own: Readonly<Record<number, string>>) =>
   (id: number): string =>
     own[id] ?? EN_BUILTIN[id]
+
+/** The codes a locale (a loaded locale's tag or an object; en-US without one) shows the built-in formats by, by number: its own, en-US's for the rest. */
+export const builtinIn = (where: string | Locale | undefined): ((id: number) => string) => builtinCodes(localeOf(where).regional?.builtin ?? {})

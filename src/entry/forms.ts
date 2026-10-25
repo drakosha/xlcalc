@@ -7,9 +7,8 @@
  * format of the book's own are kept whatever is typed. A code is a built-in format where Excel takes a file's code so.
  */
 import type { NumberFormat } from '../contract.js'
-import { builtinIn } from '../locale/rules.js'
 import type { Locale } from '../locale/types.js'
-import { EN_BUILTIN, EN_CODES, isBuiltin } from '../numfmt.js'
+import { builtinIn, EN_BUILTIN, EN_CODES, isBuiltin } from '../numfmt.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import type { Form } from './read.js'
 
