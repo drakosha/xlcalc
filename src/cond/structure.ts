@@ -11,6 +11,7 @@ import { sheetKey, tokenize } from '../syntax.js'
 import { cornerOf, hasCell, hi, intersect, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
+import { withField } from '../looks/sheet.js'
 import { copyTransform, deleteSpan } from '../structure/transform.js'
 import { originOf, rangesOf, rectsOf } from './rules.js'
 
@@ -87,8 +88,7 @@ export function rewriteConditional(list: ConditionalFormat[] | undefined, host: 
 
 /** The sheet with `conditionalFormats` set; left out when empty. */
 function withRules(s: SheetInput, list: ConditionalFormat[]): SheetInput {
-  const { conditionalFormats: _, ...rest } = s
-  return list.length ? { ...rest, conditionalFormats: list } : rest
+  return withField(s, 'conditionalFormats', list.length ? list : undefined, true)
 }
 
 /** Rules in their order, those Excel takes out and puts back after the others last (`late`), in their order. */

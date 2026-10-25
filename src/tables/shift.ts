@@ -16,6 +16,7 @@ import { cornersText, hi, LINES, LIMIT, lo, rectOf, type Area, type Axis } from 
 import { copyTransform } from '../structure/transform.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteBookTables } from './rewrite.js'
+import { withField } from '../looks/sheet.js'
 import { numbered, rowsOf, tableKey, tablesOf } from './model.js'
 
 /** The first free name `Column<n>` (n from 1) among `taken`, case-insensitively, with the word of the book's locale (`columnWord`). */
@@ -168,9 +169,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
       else delete next.totals
       list.push(next)
     }
-    const out: SheetInput = { ...sh, cells }
-    if (list.length) out.tables = list
-    else delete out.tables
+    const out: SheetInput = withField({ ...sh, cells }, 'tables', list.length ? list : undefined)
     const sheets = [...b.sheets]
     sheets[s] = out
     return { ...b, sheets }

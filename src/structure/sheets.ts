@@ -14,6 +14,7 @@ import { sheetKey } from '../syntax.js'
 import type { Applied } from './geometry.js'
 import { renaming, rewriteCells, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Transform } from './rewrite.js'
 import { rewriteConditional } from '../cond/structure.js'
+import { withField } from '../looks/sheet.js'
 import { rewriteValidations } from '../validation/structure.js'
 
 export function renameSheet(book: BookInput, sheet: string, name: string): Applied {
@@ -121,8 +122,7 @@ export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'ver
   if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const sheets: BookInput['sheets'] = book.sheets.map((s) => {
     if (sheetKey(s.name) !== key) return s
-    const { hidden: _, ...rest } = s
-    return hidden ? { ...rest, hidden } : rest
+    return withField(s, 'hidden', hidden || undefined, true)
   })
   const activeSheet = hidden && book.activeSheet !== undefined && sheetKey(book.activeSheet) === key ? sheets.find((s) => !s.hidden)!.name : book.activeSheet
   return { ok: true, book: { ...book, sheets, ...(activeSheet !== undefined ? { activeSheet } : {}) }, geometry: [] }

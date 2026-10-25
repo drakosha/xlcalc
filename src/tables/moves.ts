@@ -19,6 +19,7 @@ import { tiles } from '../structure/copy.js'
 import { copyTransform } from '../structure/transform.js'
 import type { Applied } from '../structure/geometry.js'
 import { cellsIn, gridOf } from '../structure/grid.js'
+import { withField } from '../looks/sheet.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteFormulas, rewriteTableRefs } from './rewrite.js'
 import { numbered, tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
@@ -97,9 +98,7 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
       const gone = new Set([...moving].map((t) => tableKey(t.name)))
       const sheets: SheetInput[] = b.sheets.map((s) => {
         const left = (s.tables ?? []).filter((t) => !gone.has(tableKey(t.name)))
-        const out: SheetInput = { ...s, tables: left }
-        if (!left.length) delete out.tables
-        return out
+        return withField(s, 'tables', left.length ? left : undefined)
       })
       // each moved table as the move left it (its calculated columns rewritten with its cells), at its new place
       const own = (t: Table) => b.sheets[fs].tables!.find((ti) => tableKey(ti.name) === tableKey(t.name))!
