@@ -41,17 +41,19 @@ export function expectSame(evalResult: ComputeResult, closuresResult: ComputeRes
   expect(rest(closuresResult)).toEqual(rest(evalResult))
 }
 
-/** 200 seeded session edits in the mode `session`; after each one the session equals a full computation in the other mode of the edited book with the values its cycles hold. */
+/** 200 seeded session edits in the mode `session`; after each one the session equals a full computation in the other mode of the edited book with the values its cycles hold, and the reported changes agree with the values. */
 export function sessionAgainstFull(session: Execution) {
   const synth = synthBook({ seed: 1, rows: 340 })
   const s = session === 'closures' ? strict.createSession(synth.book, { clock, execution: 'closures' }) : createSession(synth.book, { clock, execution: 'eval' })
   let book = synth.book
   for (const batch of edits(3, 200, synth)) {
-    s.setCells(batch)
+    const { changes } = s.setCells(batch)
     book = apply(book, batch)
     const r = structuredClone(s.getResult())
     const full = withHeld(book, s.getBook())
     if (session === 'closures') expectSame(byEval(full), r)
     else expectSame(r, byClosures(full))
+    // the reported changes agree with the values
+    for (const ch of changes) expect(r.sheets.find((x) => x.name === ch.sheet)!.cells[ch.cell]?.value ?? null).toEqual(ch.value)
   }
 }
