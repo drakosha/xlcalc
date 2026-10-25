@@ -11,7 +11,7 @@ import { writeFileSync } from 'node:fs'
 import { writeXlsx } from '../../src/xlsx.js'
 import { caseAnswer, uiFile, type RawCell, type StoredUi } from '../coverage/ui.js'
 import { clipboardText, macOnly, readCells, readColumns, uiBook, type UiCase, type UiSet } from '../coverage/ui/cases.js'
-import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
+import { answeredLine, answerSaver, keptSame, loadStored, setModule } from '../coverage/stored.js'
 import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepUi(set: string, tag: Tag, e: WinEnv): Promise<void> {
@@ -19,7 +19,7 @@ export async function stepUi(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const file = uiFile(set, tag, true)
   const answers = keptSame({ cases }, loadStored<StoredUi>(file))
   const t0 = Date.now()
-  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
   const results: [UiCase, unknown[], Uint8Array][] = []
   const book = async (c: UiCase, f: string) => {

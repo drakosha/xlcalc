@@ -18,7 +18,7 @@ import { declineRepair, ensureExcel, excelVersion, KEYS, runWatched, settleRejec
 import { heldOf } from './entry.js'
 import { savedColumns } from './fit.js'
 import { localeDir, localeMeta } from './locales.js'
-import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, writeAnswers } from './stored.js'
+import { answeredLine, answerSaver, keptSame, loadStored, runCases, setModule } from './stored.js'
 import { clipboardText, readCells, readColumns, selectedOf, uiBook, type PointStep, type UiAnswer, type UiCase, type UiCell, type UiSet } from './ui/cases.js'
 import { rawFile } from './xlsx/sent.js'
 import { HERE, ROOT } from './paths.js'
@@ -161,7 +161,7 @@ export async function stepUi(set: string, tag: string): Promise<void> {
   const todo = cases.filter((c) => !answers[c.id])
   const t0 = Date.now()
   // the time of the runs before it too
-  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0 - Number(prev?.meta.seconds ?? 0) * 1000) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(target, { version: excelVersion(), locale: localeMeta(tag) }, true, t0, cases, answers, { was: Number(prev?.meta.seconds ?? 0) })
   await ensureExcel(tag)
   // the clipboard's text, put back after a set that pastes
   const pastes = todo.some((c) => c.act.do === 'paste')

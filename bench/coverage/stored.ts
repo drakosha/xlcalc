@@ -24,6 +24,25 @@ export function writePrediction(metaUrl: string, name: string, body: unknown): v
   writeAnswers(fileURLToPath(new URL(`./${name}.predicted.json`, metaUrl)), body)
 }
 
+/**
+ * A step's `save`, as the harnesses write their answer files: `meta` — the base the step gives (`metaOf`'s on Windows,
+ * the coverage steps' version and locale), the day where a step's tests read it as their clock (`dated`), and `seconds`
+ * of this run beside the resumed runs' (`extra.was`, the seconds the step's stored file gives) — the answers in the
+ * order of the cases, and a step's own fields around them: its books before the cases, the cases Excel did not confirm
+ * (read at each save) after the answers.
+ */
+export function answerSaver(file: string, base: object, dated: boolean, t0: number, cases: readonly { id: string }[], answers: Record<string, unknown>, extra: { was?: number; before?: object; after?: () => object } = {}): () => void {
+  const { was = 0, before = {}, after = () => ({}) } = extra
+  return () =>
+    writeAnswers(file, {
+      meta: { ...base, ...(dated ? { date: new Date().toISOString().slice(0, 10) } : {}), seconds: secondsSince(t0 - was * 1000) },
+      ...before,
+      cases,
+      answers: inCaseOrder(cases, answers),
+      ...after(),
+    })
+}
+
 /** The seconds since `t0` to a tenth, as an answer file's `meta` gives its run's time. */
 export const secondsSince = (t0: number): number => Math.round((Date.now() - t0) / 100) / 10
 

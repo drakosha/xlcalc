@@ -10,7 +10,7 @@ import { writeFileSync } from 'node:fs'
 import { writeXlsx } from '../../src/xlsx.js'
 import { sentBook } from '../coverage/find/cases.js'
 import { columnsOf, readOf, replaceFile, type ReplaceAnswer, type ReplaceCase, type ReplaceSet, type StoredReplace } from '../coverage/replace/cases.js'
-import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
+import { answeredLine, answerSaver, keptSame, loadStored, setModule } from '../coverage/stored.js'
 import { savedCells, type RawCell } from '../coverage/ui.js'
 import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -21,7 +21,7 @@ export async function stepReplace(set: string, tag: Tag, e: WinEnv): Promise<voi
   // a case is kept while it and its book are the same
   const answers = keptSame<ReplaceCase, ReplaceAnswer, Pick<StoredReplace, 'books' | 'cases'>>({ books: BOOKS, cases }, loadStored<StoredReplace>(file), (c, s) => JSON.stringify([c, s.books[c.book]]))
   const t0 = Date.now()
-  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0) }, books: BOOKS, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers, { before: { books: BOOKS } })
   const todo = cases.filter((c) => !answers[c.id])
   const results: [ReplaceCase, unknown[], Uint8Array][] = []
   const book = async (c: ReplaceCase, f: string) => {

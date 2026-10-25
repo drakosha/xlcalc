@@ -10,7 +10,7 @@ import { writeXlsx } from '../../src/xlsx.js'
 import { inParts } from '../coverage/book.js'
 import { cellOf, keptRows, partAnswers, ROWS_PART, rowsFile } from '../coverage/rows.js'
 import { caseCells, caseRow, rowsBook, type RowCase, type RowSet } from '../coverage/rows/cases.js'
-import { answeredLine, inCaseOrder, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
+import { answeredLine, answerSaver, setModule } from '../coverage/stored.js'
 import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepRows(set: string, tag: Tag, e: WinEnv): Promise<void> {
@@ -18,7 +18,7 @@ export async function stepRows(set: string, tag: Tag, e: WinEnv): Promise<void> 
   const file = rowsFile(set, tag, true)
   const { answers } = keptRows(file, cases)
   const t0 = Date.now()
-  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
   // a column's style reaches every row of the sheet: such a case has a book of its own, as on the Mac
   const alone = (c: RowCase) => Object.values(c.columns ?? {}).some((x) => x.look)
