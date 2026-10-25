@@ -16,7 +16,7 @@ import type { CellValue, CopyTextOptions, ValuesOptions } from './contract.js'
 import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/queries.js'
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
-import { outValue } from './result.js'
+import { outCell } from './result.js'
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
@@ -564,7 +564,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
           const i = sheetIndexOf(old, c.sheet)!,
             { row, col } = parseAddress(c.cell),
             k = placeOf(i, row, col)
-          const before = captured.cells.has(k) ? outValue(toCellValue(captured.cells.get(k)!)) : cellValue(old, i, row, col)
+          const before = captured.cells.has(k) ? outCell(captured.cells.get(k)!) : cellValue(old, i, row, col)
           const issue = issueDetail(next, i, row, col)
           return { sheet: c.sheet, cell: c.cell, before, after: c.value, ...(issue ? { issue } : {}) }
         })

@@ -6,13 +6,13 @@
  * and kept with the session's state (`search.ts`), so another search of the same sheet only matches them.
  */
 import type { CellValue, ColumnInput, FindCellsOptions, RowInput } from '../contract.js'
-import { toCellValue, valueAt, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { InputError } from '../input-error.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
 import { checkBoolean } from '../input/basic.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, placeOf } from '../model.js'
-import { outValue } from '../result.js'
+import { cellValue } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
 import { hasCell, meets, type Rect } from '../structure/area.js'
@@ -99,7 +99,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
       const id = own?.formula === undefined ? undefined : state.at.get(placeOf(s, r, c))
       return (id === undefined ? own?.formula : state.formulas[id]!.text) ?? ''
     }
-    const value = outValue(toCellValue(valueAt(state, s, r, c)))
+    const value = cellValue(state, s, r, c)
     if (!looks) return valueText(value)
     const view = { value, ...looks(s, r, c, value, own ?? {}) }
     shown?.(view, r, c, own)

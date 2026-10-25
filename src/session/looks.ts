@@ -3,15 +3,15 @@
  * column's width, a row's or a column's format, merged areas): the cells whose shown text or colour changed.
  */
 import type { CellInput, CellValue, LayoutEdit } from '../contract.js'
-import { sheetIndexOf, toCellValue, valueAt, type EngineState } from '../engine.js'
+import { sheetIndexOf, type EngineState } from '../engine.js'
 import { parseMerge } from '../layout/merges.js'
 import { parseSpan } from '../layout/spans.js'
 import { parseAddress, placeOf, placeParts } from '../model.js'
-import { outValue } from '../result.js'
-import { cellLooks, type Looks } from '../shown.js'
+import { cellValue } from '../result.js'
 
-/** A cell's value as a result shows it. */
-export const cellValue = (s: EngineState, i: number, r: number, c: number): CellValue => outValue(toCellValue(valueAt(s, i, r, c)))
+// the result's cell value, where the session's looks answer with it
+export { cellValue }
+import { cellLooks, type Looks } from '../shown.js'
 
 /** What a cell shows, as one comparable string; `own`, its input when the caller has it. */
 export const shownKey = (look: Looks, s: EngineState, i: number, r: number, c: number, own?: CellInput): string => {

@@ -6,11 +6,11 @@
  */
 import type { BookInput, CellValue, ColumnInput, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, RowInput, SheetInput } from '../contract.js'
 import { epochOf } from '../dates.js'
-import { toCellValue, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { checkCellValue, checkEntryWidthOptions } from '../input.js'
 import { displayRules, type Rules } from '../locale/rules.js'
 import { columnPoints, widthOf } from '../numfmt.js'
-import { outValue } from '../result.js'
+import { outCell } from '../result.js'
 import { applyLayout, type SetLayoutEdit } from '../session/book.js'
 import { sheetKey } from '../syntax.js'
 import { sheetLines } from './lines.js'
@@ -53,10 +53,10 @@ function* stateCells(s: EngineState, i: number, lo: number, hi: number): Generat
     if (col)
       for (let r = 0; r < col.length; r++) {
         const v = col.get(r)
-        if (v !== undefined && v !== null) yield [r, c, outValue(toCellValue(v))]
+        if (v !== undefined && v !== null) yield [r, c, outCell(v)]
       }
   }
-  for (const f of data.fills) for (let c = Math.max(lo, f.c1); c <= Math.min(hi, f.c2); c++) yield [f.r1, c, outValue(toCellValue(f.v))]
+  for (const f of data.fills) for (let c = Math.max(lo, f.c1); c <= Math.min(hi, f.c2); c++) yield [f.r1, c, outCell(f.v)]
 }
 
 /** What AutoFit sets on a row it fits: the height as Excel's own, the row shown; the default height bare. */

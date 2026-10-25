@@ -204,7 +204,7 @@ export function* summaryQuery(s: EngineState, revision: number, clock: Clock, gi
       yield
       continue
     }
-    const v = outValue(toCellValue(valueAt(s, at[0], at[1], at[2])))
+    const v = cellValue(s, at[0], at[1], at[2])
     if (v === null || v === '') continue
     out.cells++
     if (typeof v === 'number') {

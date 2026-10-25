@@ -7,11 +7,11 @@
  */
 import { DEFAULT_ROW_HEIGHT as DEFAULT_HEIGHT, MAX_ROW_HEIGHT as MAX_HEIGHT } from '../column-width.js'
 import type { BookInput, CellStyle, CellValue, ComputeResult, SheetInput } from '../contract.js'
-import { toCellValue, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { layerOf } from '../looks/sheet.js'
 import { MAX_COLS, parseAddress } from '../model.js'
 import { columnPoints } from '../numfmt.js'
-import { outValue } from '../result.js'
+import { outCell } from '../result.js'
 import { bands } from '../sorted.js'
 import { advance } from '../numfmt/advances.js'
 import { resultSheet, type Placed } from './result-sheet.js'
@@ -187,12 +187,12 @@ export function stateRows(s: EngineState, i: number, lo: number, hi: number): { 
     if (col)
       for (let r = lo; r <= Math.min(hi, col.length - 1); r++) {
         const v = col.get(r)
-        if (v !== undefined && v !== null) cells.push([r, c, outValue(toCellValue(v))])
+        if (v !== undefined && v !== null) cells.push([r, c, outCell(v)])
       }
   }
   // the entries without a value are the state's bare ones: no walk of every cell of the sheet; a large spill can cover one
   blanksOf(cells, [...(s.bare.get(i) ?? [])].map((k): [number, number] => [Math.floor(k / MAX_COLS), k % MAX_COLS]), lo, hi, (r, c) => (data.cols[c]?.get(r) ?? null) !== null)
-  const spans = data.fills.flatMap((f) => Array.from({ length: f.c2 - f.c1 + 1 }, (_, k): [number, number, number, CellValue] => [f.r1, f.r2, f.c1 + k, outValue(toCellValue(f.v))]))
+  const spans = data.fills.flatMap((f) => Array.from({ length: f.c2 - f.c1 + 1 }, (_, k): [number, number, number, CellValue] => [f.r1, f.r2, f.c1 + k, outCell(f.v)]))
   return { cells, spans }
 }
 

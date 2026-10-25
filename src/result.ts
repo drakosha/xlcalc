@@ -7,6 +7,7 @@ import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
 import { addressOrder, formatAddress, MAX_COLS, msToSerial, parseAddress, placeOf } from './model.js'
+import type { V } from './values.js'
 import { windowLooks, withLook } from './cond/looks.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks, type Looks } from './shown.js'
@@ -28,8 +29,18 @@ export function outValue(v: CellValue): CellValue {
   return typeof v === 'number' ? outNumber(v) : v
 }
 
+/** A value the engine holds as a result gives it: a number to 15 significant digits, an error as `{ error }`, null for none. */
+export function outCell(v: V): CellValue {
+  return outValue(toCellValue(v))
+}
+
+/** A cell's value as a result shows it. */
+export function cellValue(state: EngineState, s: number, r: number, c: number): CellValue {
+  return outCell(valueAt(state, s, r, c))
+}
+
 /** A spilled formula's range and the value of its unstored cells. */
-const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: cornersText(x), spillFill: outValue(toCellValue(x.fills[0].v)) } : { spill: cornersText(x) })
+const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: cornersText(x), spillFill: outCell(x.fills[0].v) } : { spill: cornersText(x) })
 
 /** A formula's spill (`spill`, `spillFill`) or a spilled cell's formula (`spillOf`), as results and changes show them. */
 export function spillFields(state: EngineState, s: number, r: number, c: number): Pick<CellResult, 'spill' | 'spillFill' | 'spillOf'> {
@@ -71,7 +82,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
 /** `cellResult` of the cell at `addr`, row `row` and column `col`: for callers that have both, without reading the address again. */
 function resultAt(state: EngineState, s: number, addr: string, row: number, col: number, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const inCell = inputIn(state.input.sheets[s], addr, row, col) ?? {}
-  const value = outValue(toCellValue(valueAt(state, s, row, col)))
+  const value = cellValue(state, s, row, col)
   const id = state.at.get(placeOf(s, row, col))
   const out: CellResult = look ? { value, ...look(s, row, col, value, inCell) } : { value }
   const text = id === undefined ? inCell.formula : state.formulas[id]!.text
@@ -239,7 +250,7 @@ export function* stateHash(state: EngineState): Steps<string> {
   return yield* hashCells(state, (s, addr, _, row, col) => {
     const id = state.at.get(placeOf(s, row, col))
     const x = id === undefined ? undefined : state.spills.on.get(id)
-    return { value: outValue(toCellValue(valueAt(state, s, row, col))), spillFill: x?.fills.length ? anchorFields(x).spillFill : undefined }
+    return { value: cellValue(state, s, row, col), spillFill: x?.fills.length ? anchorFields(x).spillFill : undefined }
   })
 }
 
