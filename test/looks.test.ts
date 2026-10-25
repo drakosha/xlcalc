@@ -5,7 +5,7 @@
  * thread, with closures and eval (formats by code that no built-in format has, which a file read gives back by number). Then the looks' cells as a session shows and edits them, by what an entry of a look
  * alone gave.
  */
-import { afterAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { compute, createSession, type AsyncSession, type BookInput, type LookRange } from '../src/index.js'
 import { formatAddress } from '../src/model.js'
@@ -115,6 +115,21 @@ async function answers(s: AsyncSession): Promise<unknown> {
   return out
 }
 
+/**
+ * The answers and the file of the expanded books, taken once: a session of any kind and execution mode opens them the
+ * same, and the tests below check each kind's session with the looks against this.
+ */
+const ENTRIES = new Map<string, { answers: unknown; fileHash: string }>()
+
+beforeAll(async () => {
+  const open = await opener('a synchronous session')
+  for (const [name, book] of BOOKS) {
+    const e = await open(expandBook(book), { clock: CLOCK, execution: 'closures' })
+    ENTRIES.set(name, { answers: await answers(e), fileHash: await partsHash((await writeXlsx(await e.getSnapshot())).data) })
+    await e.close()
+  }
+}, 60_000)
+
 describe.each(['closures', 'eval'] as const)('a book with looks and the same book with entries, %s', (execution) => {
   const opts = { clock: CLOCK, execution }
 
@@ -124,16 +139,18 @@ describe.each(['closures', 'eval'] as const)('a book with looks and the same boo
   })
 
   describe.each(KINDS)('%s', (kind) => {
-    it.each(BOOKS)('%s: the same answers, book and file', async (_, book) => {
+    it.each(BOOKS)('%s: the same answers, book and file', async (name, book) => {
       const open = await opener(kind)
-      const [s, e] = [await open(book, opts), await open(expandBook(book), opts)]
-      expect(await answers(s)).toEqual(await answers(e))
+      const s = await open(book, opts)
+      const entries = ENTRIES.get(name)!
+      expect(await answers(s)).toEqual(entries.answers)
       // the file: the same parts, and its looks read back as the session holds them
-      const data = await sameFiles(s, e)
+      const data = (await writeXlsx(await s.getSnapshot())).data
+      expect(await partsHash(data)).toBe(entries.fileHash)
       // a file read numbers the styles anew: a look by its style's fields
       const looksOf = (b: BookInput) => b.sheets.map((x) => x.looks?.map(({ style, ...rest }) => ({ ...rest, ...(style !== undefined ? { style: b.styles![style] } : {}) })))
       expect(looksOf((await readXlsx(data)).book)).toEqual(looksOf(await s.getBook()))
-      await Promise.all([s.close(), e.close()])
+      await s.close()
     }, 60_000)
   })
 })
