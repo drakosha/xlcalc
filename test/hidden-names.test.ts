@@ -85,6 +85,10 @@ describe('hidden names in xlsx files', () => {
 /** The operations that rewrite names, with the names after each. */
 const OPS: [StructureOp, string[]][] = [
   [{ op: 'insertRows', sheet: 'Data', row: 1 }, ['rate!', 'own@Data!', 'qty!', 'shown']],
+  [{ op: 'deleteRows', sheet: 'Data', row: 2 }, ['rate!', 'own@Data!', 'qty!', 'shown']],
+  [{ op: 'insertColumns', sheet: 'Data', column: 'A' }, ['rate!', 'own@Data!', 'qty!', 'shown']],
+  [{ op: 'deleteColumns', sheet: 'Data', column: 'A' }, ['rate!', 'own@Data!', 'qty!', 'shown']],
+  [{ op: 'insertSheet', name: 'New', before: 'Data' }, ['rate!', 'own@Data!', 'qty!', 'shown']],
   [{ op: 'renameSheet', sheet: 'Data', name: 'Book' }, ['rate!', 'own@Book!', 'qty!', 'shown']],
   [{ op: 'moveSheet', sheet: 'Data' }, ['rate!', 'own@Data!', 'qty!', 'shown']],
   // a local name a formula moved or copied to another sheet uses is defined there too
@@ -92,6 +96,7 @@ const OPS: [StructureOp, string[]][] = [
   [{ op: 'moveRange', from: { sheet: 'Data', range: 'B2' }, to: { sheet: 'Other', cell: 'C3' } }, ['rate!', 'own@Data!', 'qty!', 'shown', 'own@Other!']],
   [{ op: 'renameTable', table: 'T', name: 'Sales' }, ['rate!', 'own@Data!', 'qty!', 'shown']],
   [{ op: 'deleteTable', table: 'T' }, ['rate!', 'own@Data!', 'qty!', 'shown']],
+  [{ op: 'convertTable', table: 'T' }, ['rate!', 'own@Data!', 'qty!', 'shown']],
   [{ op: 'deleteSheet', sheet: 'Data' }, ['rate!', 'qty!', 'shown']],
 ]
 
@@ -106,7 +111,7 @@ describe('structure operations keep a name hidden', () => {
   })
 })
 
-/** Operations one after another in a session: rows above, a copy that carries a local name, a table and its sheet renamed. */
+/** Operations one after another in a session: rows above, a copy that carries a local name, a table and its sheet renamed (a header typed over after them). */
 const SESSION_OPS: StructureOp[] = [
   { op: 'insertRows', sheet: 'Data', row: 1 },
   { op: 'copyRange', from: { sheet: 'Data', range: 'B3' }, to: { sheet: 'Other', range: 'B2' } },
@@ -116,7 +121,7 @@ const SESSION_OPS: StructureOp[] = [
 
 describe.each(['closures', 'eval'] as const)('a session keeps hidden names (%s)', (execution: Execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    it('through setNames, structure operations, undo and redo, getBook, getLayout and a snapshot written to a file', async () => {
+    it('through setNames, structure operations, a header typed over, undo and redo, getBook, getLayout and a snapshot written to a file', async () => {
       const open = await opener(kind)
       const s = await open(book(), { clock: CLOCK, execution })
       const hashOf = async () => (await s.getResult()).inputHash
@@ -126,15 +131,19 @@ describe.each(['closures', 'eval'] as const)('a session keeps hidden names (%s)'
       expect(flags((await s.getBook()).names)).toEqual(['rate!', 'own@Data!', 'qty!', 'shown', 'more!'])
       expect(flags((await s.getLayout()).names)).toEqual(['rate!', 'own@Data!', 'qty!', 'shown', 'more!'])
       for (const op of SESSION_OPS) expect((await s.editStructure(op)).ok).toBe(true)
+      // a header typed over renames its column in the names' references
+      await s.setCells([{ sheet: 'Book', cell: 'D2', input: { value: 'Amount' } }])
+      expect((await s.getBook()).names!.find((n) => n.name === 'qty')).toEqual({ name: 'qty', ref: 'Sales[Amount]', hidden: true })
       const after = ['rate!', 'own@Book!', 'qty!', 'shown', 'more!', 'own@Other!']
       expect(flags((await s.getBook()).names)).toEqual(after)
       expect((await s.getBook()).names!.find((n) => n.scope === 'Other')).toEqual({ name: 'own', ref: "'Other'!$A$2", scope: 'Other', hidden: true })
       expect(await hashOf()).toBe(compute(await s.getBook(), { clock: CLOCK }).inputHash)
-      // the operations and setNames undone
-      for (let i = 0; i <= SESSION_OPS.length; i++) expect(await s.undo()).not.toBeNull()
+      // the operations, the header and setNames undone
+      const steps = SESSION_OPS.length + 2
+      for (let i = 0; i < steps; i++) expect(await s.undo()).not.toBeNull()
       expect(await s.getBook()).toEqual(book())
       expect(await hashOf()).toBe(compute(book(), { clock: CLOCK }).inputHash)
-      for (let i = 0; i <= SESSION_OPS.length; i++) expect(await s.redo()).not.toBeNull()
+      for (let i = 0; i < steps; i++) expect(await s.redo()).not.toBeNull()
       expect(flags((await s.getBook()).names)).toEqual(after)
       const back = await readXlsx((await writeXlsx(await s.getSnapshot())).data)
       expect(flags(back.book.names)).toEqual(after)
