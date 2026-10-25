@@ -12,6 +12,7 @@ import { runtimeSheet } from './links.js'
 import { fillBounds } from './spill/fill.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
+import type { Place } from './structure/geometry.js'
 import { quoteSheet } from './syntax.js'
 import { isErr } from './values.js'
 
@@ -39,12 +40,8 @@ export interface Issue {
   at?: number
 }
 
-/** A cell of a sheet: zero-based row and column. */
-export interface Place {
-  s: number
-  r: number
-  c: number
-}
+// the cell of a sheet `structure/geometry.ts` already names
+export type { Place }
 
 /** A cell's reference text: `'Sheet'!B3`. */
 export const placeText = (state: EngineState, p: Place) => `${quoteSheet(runtimeSheet(state.sheetNames, state.links, p.s))}!${formatAddress(p.r, p.c)}`
