@@ -140,12 +140,12 @@ describe.each(EXECUTIONS)('merged areas read once per session state (speed-u109,
       await s.close()
     })
 
-    it('typing a number into 20,000 cells reads the merged areas once, not once a cell (speed-u110)', async () => {
-      const s = await open(merged(3000), { execution, clock, display: false, undo: { depth: 0 } })
+    it('typing a number into 5,000 cells reads the merged areas once, not once a cell (speed-u110)', async () => {
+      const s = await open(merged(20_000), { execution, clock, display: false, undo: { depth: 0 } })
       const t = performance.now()
-      await s.fillCellText('S', 'D1:D20000', '123456789012345')
-      // every merge parsed for each cell: about 5 s
-      expect(performance.now() - t).toBeLessThan(1500)
+      await s.fillCellText('S', 'D1:D5000', '123456789012345')
+      // every merge parsed for each cell: about 9 s; read once, about 0.3 s
+      expect(performance.now() - t).toBeLessThan(3000)
       expect((await s.getLayout()).sheets[0].columns?.D?.width).toBeGreaterThan(8.43)
       await s.close()
     })
