@@ -7,7 +7,7 @@
  * coefficient 0, as Excel does: variables are taken by the largest norm left after the ones taken (centered with
  * a constant), a tie going to the later variable with a constant, to the earlier without, as measured.
  */
-import { gridAt, type FnDef, type Grid } from '../../args.js'
+import { gridAt, observations, values, type FnDef, type Grid } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { sumSquares } from '../common.js'
@@ -20,22 +20,6 @@ interface Data {
   /** y was a row: the variables of x are its rows. */
   byRow: boolean
 }
-
-/** The numbers of a grid row by row; anything else is #VALUE!. */
-function values(g: Grid): number[] | CErr {
-  const out: number[] = []
-  for (let i = 0; i < g.rows * g.cols; i++) {
-    const v = gridAt(g, i)
-    if (isErr(v)) return v
-    if (typeof v !== 'number') return E.VALUE
-    out.push(v)
-  }
-  return out
-}
-
-/** A flat list of n·k numbers as n observations of k variables: row by row when `vertical`, else column by column. */
-const observations = (xs: readonly number[], n: number, k: number, vertical: boolean): number[][] =>
-  Array.from({ length: n }, (_, i) => Array.from({ length: k }, (_, j) => (vertical ? xs[i * k + j] : xs[j * n + i])))
 
 /**
  * y and x as observations: y one column (row), x as many rows (columns) as y has values; x defaults to 1…n.
