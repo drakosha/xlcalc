@@ -14,7 +14,7 @@ import { count, due, run, step, type Steps } from './exec/budget.js'
 import { FUNCTIONS } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
-import { builtAnew, heldValue, putHeld } from './held.js'
+import { builtAnew, putHeld } from './held.js'
 import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
@@ -37,7 +37,7 @@ import { prepare, prepareShaped, type Prepared, type Shapes } from './prepare.js
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
 import { specRect, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
-import { E, isErr, type V } from './values.js'
+import { E, fromCellValue, isErr, type V } from './values.js'
 
 export interface Formula extends FormulaCode {
   id: number
@@ -342,7 +342,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
         }
       }
       const f = compiled(state, pending.length, s, row, col, cellIn, p)
-      if (cellIn.held !== undefined) state.held.set(f.id, heldValue(cellIn.held))
+      if (cellIn.held !== undefined) state.held.set(f.id, fromCellValue(cellIn.held))
       pending.push(f)
       if (f.area) state.arrays++
       if (f.nested) mark(ctx, s, row, col, true)
@@ -416,7 +416,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
         }
       }
       const f = compiled(state, state.free.pop() ?? state.formulas.length, s, row, col, input, p)
-      if (input.held !== undefined) state.held.set(f.id, heldValue(input.held))
+      if (input.held !== undefined) state.held.set(f.id, fromCellValue(input.held))
       if (f.nested) mark(state.ctx, s, row, col, true)
       if (f.area) state.arrays++
       state.formulas[f.id] = f
