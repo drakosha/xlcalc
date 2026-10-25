@@ -36,6 +36,8 @@ interface Side {
 export interface Sides {
   invariant: Side
   local: Side
+  /** The local side reading its own error texts alone, as Excel's formula bar in that locale reads them (`refAt`). */
+  own: Side
 }
 
 /** Text that does not translate: why, at its place in the caller's text. */
@@ -51,15 +53,9 @@ const swap = (xs: [string, string][]) => xs.map(([a, b]): [string, string] => [b
 const same = (xs: readonly string[]) => xs.map((x): [string, string] => [x, x])
 
 /**
- * The local side of `loc` reading its own error texts alone, as Excel's formula bar in that locale reads them: `#N/A` does
- * not read in ru-RU, whose text is `#Н/Д` (`refAt`). English function names and TRUE/FALSE read as names there, as they do.
+ * Both sides of a (checked) locale. Local text also reads English function names, TRUE/FALSE and error texts; `own`
+ * reads the locale's own error texts alone (`#N/A` does not read in ru-RU, whose text is `#Н/Д`).
  */
-export function ownErrors(loc: Locale, local: Side): Side {
-  const errors = LOCALE_ERRORS.map((e): [string, string] => [e, loc.errors[e] ?? e])
-  return { ...local, errors: byLength(errors.map((e) => e[1])), err: upperKeys(swap(errors)) }
-}
-
-/** Both sides of a (checked) locale. Local text also reads English function names, TRUE/FALSE and error texts. */
 export function sides(loc: Locale): Sides {
   const local: Syntax = { decimal: loc.decimalSeparator, list: loc.listSeparator, arrayColumn: loc.arrayColumnSeparator, arrayRow: loc.arrayRowSeparator }
   const errors = LOCALE_ERRORS.map((e): [string, string] => [e, loc.errors[e] ?? e])
@@ -69,20 +65,23 @@ export function sides(loc: Locale): Sides {
   ]
   const fns = Object.entries(loc.functions)
   const items = TABLE_ITEMS.map((w): [string, string] => [w, loc.tableItems?.[w] ?? w])
+  // the local side; `own` below takes its words and drops the English ones
+  const side: Side = {
+    tag: loc.tag,
+    syn: local,
+    num: numberRule(local),
+    errors: byLength([...errors.map((e) => e[1]), ...LOCALE_ERRORS]),
+    fn: upperKeys(swap(fns)),
+    // the locale's own words win over the English ones
+    word: upperKeys([...same(['TRUE', 'FALSE']), ...swap(bools)]),
+    err: upperKeys([...same(LOCALE_ERRORS), ...swap(errors)]),
+    item: upperKeys([...same(TABLE_ITEMS), ...swap(items)]),
+    sheet: (name) => quoteSheetIfNeeded(name, loc),
+  }
   return {
     invariant: { syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(LOCALE_ERRORS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors), item: upperKeys(items) },
-    local: {
-      tag: loc.tag,
-      syn: local,
-      num: numberRule(local),
-      errors: byLength([...errors.map((e) => e[1]), ...LOCALE_ERRORS]),
-      fn: upperKeys(swap(fns)),
-      // the locale's own words win over the English ones
-      word: upperKeys([...same(['TRUE', 'FALSE']), ...swap(bools)]),
-      err: upperKeys([...same(LOCALE_ERRORS), ...swap(errors)]),
-      item: upperKeys([...same(TABLE_ITEMS), ...swap(items)]),
-      sheet: (name) => quoteSheetIfNeeded(name, loc),
-    },
+    local: side,
+    own: { ...side, errors: byLength(errors.map((e) => e[1])), err: upperKeys(swap(errors)) },
   }
 }
 
