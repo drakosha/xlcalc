@@ -6,12 +6,11 @@
 import type { CellInput, CellReplace, CellValidation, DataValidation, NumberFormat } from '../contract.js'
 import type { Arg } from '../args.js'
 import { applyEdits, codegenContext, sheetIndexOf, toCellValue, valueAt, type EngineState } from '../engine.js'
-import { invalidError } from '../prepare.js'
+import { invalidError, validateIn } from '../prepare.js'
 import { closureBackend } from '../exec/closures.js'
 import { walk } from '../exec/walk.js'
 import type { Steps } from '../exec/budget.js'
 import { sheetLines } from '../layout/lines.js'
-import { nameFor } from '../names.js'
 import { journaled } from '../held.js'
 import { readEntry } from '../entry/index.js'
 import { formatAddress } from '../model.js'
@@ -21,7 +20,7 @@ import { inputAt } from '../session/book.js'
 import { inputIn, putInputs } from '../looks/sheet.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
 import { decode } from '../structure/area.js'
-import { tableAt, tableNames } from '../tables/model.js'
+import { tableAt } from '../tables/model.js'
 import { Arr } from '../arrays/value.js'
 import { E, isErr, Rng, type V } from '../values.js'
 import { anchorOf, ruleAt, twoBounds } from './rules.js'
@@ -29,9 +28,7 @@ import { formulaAt } from './structure.js'
 
 /** A formula of a rule computed at cell (r, c) of sheet `s`: a reference stays one; a formula that does not compute is its error. */
 function computeAt(state: EngineState, s: number, r: number, c: number, text: string): Arg {
-  const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
-  const enclosing = tableAt(state.tables, s, r, c)?.name
-  const v = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { table: enclosing } : {}) })
+  const v = validate(text, validateIn(state, s, tableAt(state.tables, s, r, c)?.name))
   if (!v.ok) return E[invalidError(v.code)]
   return walk(codegenContext(state, s), v.ast, s, r, c, closureBackend(state.rt)).code()
 }
