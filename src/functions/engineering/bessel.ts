@@ -3,7 +3,7 @@
  * Apache License 2.0 (THIRD_PARTY.md). Changed: Excel's J1 above 8 and start of the I recurrence, argument checks, loop caps.
  */
 import { E, MIN_NORMAL } from '../../values.js'
-import { MAX_TRIG } from '../common.js'
+import { horner, MAX_TRIG } from '../common.js'
 import { gammaln } from '../jstat.js'
 import type { FnDef } from '../../args.js'
 
@@ -11,12 +11,6 @@ import type { FnDef } from '../../args.js'
 const MAX_STEPS = 1.5e8
 /** Below this (the smallest normal number) Excel's answer is 0. */
 const LOG_TINY = Math.log(MIN_NORMAL)
-
-function horner(arr: readonly number[], v: number): number {
-  let z = 0
-  for (const a of arr) z = v * z + a
-  return z
-}
 
 /** Forward recurrence from orders 0 and 1 (sign −1 for J and Y, +1 for K); stops once it overflows. */
 function forward(x: number, n: number, f0: number, f1: number, sign: number): number {
