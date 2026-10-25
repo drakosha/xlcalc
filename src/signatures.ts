@@ -12,7 +12,7 @@ import { wordKey } from './collate.js'
 import type { FunctionArgument, FunctionSignature } from './contract.js'
 import { CATEGORY_NAMES, CATEGORY_OF } from './function-info.js'
 import { checkString } from './input/basic.js'
-import { checkLocaleArg } from './locale/load.js'
+import { optionalLocale } from './locale/load.js'
 import { localeOf } from './locale/registry.js'
 import type { Locale } from './locale/types.js'
 
@@ -533,7 +533,7 @@ function translated(name: string, words: Readonly<Record<string, string>> | unde
  */
 export function functionSignature(name: string, locale?: string | Locale): FunctionSignature | null {
   checkString(name, 'name')
-  const loc = locale === undefined ? localeOf(undefined) : checkLocaleArg(locale, 'locale')
+  const loc = optionalLocale(locale, 'locale') ?? localeOf(undefined)
   const upper = wordKey(name)
   const invariant = upper in SIGNATURES ? upper : englishName(name, loc)
   if (!(invariant in SIGNATURES)) return null

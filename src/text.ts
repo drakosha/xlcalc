@@ -15,7 +15,7 @@ import { clipboardRows } from './entry/clipboard.js'
 import { folded, matcher, replacer } from './find-text.js'
 import { sameType, sortOrder } from './sort-order.js'
 import { textOrder } from './collate.js'
-import { checkLocaleArg } from './locale/load.js'
+import { optionalLocale } from './locale/load.js'
 import { charsOfPoints, columnPoints, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
@@ -127,7 +127,7 @@ const ORDERS = new Map<string, (a: CellValue, b: CellValue) => number>()
 /** The options of the comparisons, checked: the reversal, and the order of one type (en-US's, `sortOrder`'s own, as undefined). */
 function compareOptions(opts: CompareValuesOptions | undefined): [boolean, ((a: CellValue, b: CellValue) => number) | undefined] {
   const desc = flags(opts, ['descending'], 'options such as { descending: true }', ['locale']).descending === true
-  const tag = (opts?.locale === undefined ? undefined : checkLocaleArg(opts.locale, 'opts.locale').regional?.collation) ?? 'en-US'
+  const tag = optionalLocale(opts?.locale, 'opts.locale')?.regional?.collation ?? 'en-US'
   if (tag === 'en-US') return [desc, undefined]
   let same = ORDERS.get(tag)
   if (!same) ORDERS.set(tag, (same = sameType(textOrder(tag))))

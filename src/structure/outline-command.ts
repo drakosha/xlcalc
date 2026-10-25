@@ -12,7 +12,7 @@ import { checkSpan, spanKey } from '../layout/spans.js'
 import type { OutlineMessageKey } from '../locale/outline-messages.js'
 import type { Lines } from '../locale/messages.js'
 import { colToIndex, MAX_COLS, MAX_ROWS } from '../model.js'
-import type { Axis } from './area.js'
+import { LINES, type Axis } from './area.js'
 
 export type OutlineOp = Extract<StructureOp, { op: 'group' | 'ungroup' | 'showDetail' | 'hideDetail' | 'showLevels' }>
 
@@ -37,7 +37,7 @@ function commands(o: Record<string, unknown>): [Axis, OutlineCommand][] {
     case 'group':
     case 'ungroup': {
       const axis = oneOf(o, 'rows', 'columns')
-      const key = axis === 'r' ? 'rows' : 'columns'
+      const key = LINES[axis]
       const [lo, hi] = checkSpan(o[key], `op.${key}`, axis)
       return [[axis, { kind: o.op as 'group' | 'ungroup', lo, hi }]]
     }
@@ -79,7 +79,7 @@ export interface OutlineRefused {
 export function applyOutline<S extends OutlineAxes>(sheet: S, o: Record<string, unknown>): { ok: true; sheet: S } | OutlineRefused {
   let s = sheet
   for (const [axis, c] of commands(o)) {
-    const key = axis === 'r' ? 'rows' : 'columns'
+    const key = LINES[axis]
     const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
     const r = outlineCommand(s[key], axis, after, c)
     if (typeof r === 'string') {

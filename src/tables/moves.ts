@@ -7,9 +7,8 @@
 import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
-import { spend } from '../exec/budget.js'
 import { say, type EngineMessage } from '../locale/messages.js'
-import { formatAddress, parseAddress, readAddress } from '../model.js'
+import { formatAddress, parseAddress } from '../model.js'
 import { clockSerial } from '../result.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { isErr } from '../values.js'
@@ -20,9 +19,10 @@ import { tiles } from '../structure/copy.js'
 import { copyTransform } from '../structure/transform.js'
 import type { Applied } from '../structure/geometry.js'
 import { cellsIn, gridOf } from '../structure/grid.js'
+import { withField } from '../looks/sheet.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
-import { rewriteTableRefs } from './rewrite.js'
-import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
+import { rewriteFormulas, rewriteTableRefs } from './rewrite.js'
+import { numbered, tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
 
 const headerRow = (t: Table): Rect | null => (t.headers ? { r1: t.r1, r2: t.r1, c1: t.c1, c2: t.c2 } : null)
 
@@ -98,9 +98,7 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
       const gone = new Set([...moving].map((t) => tableKey(t.name)))
       const sheets: SheetInput[] = b.sheets.map((s) => {
         const left = (s.tables ?? []).filter((t) => !gone.has(tableKey(t.name)))
-        const out: SheetInput = { ...s, tables: left }
-        if (!left.length) delete out.tables
-        return out
+        return withField(s, 'tables', left.length ? left : undefined)
       })
       // each moved table as the move left it (its calculated columns rewritten with its cells), at its new place
       const own = (t: Table) => b.sheets[fs].tables!.find((ti) => tableKey(ti.name) === tableKey(t.name))!
@@ -136,9 +134,7 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       if (tables.list.some((o) => o.s === ts && meets(o, x)) || copies.some((o) => meets(o.x, x))) continue
       // Excel numbers a copy by the book's count of tables and two (the set `more`: Sales3 in a book of one table), past
       // the names of tables and defined names
-      let n = taken.length + 2
-      while (taken.some((k) => tableKey(k) === tableKey(`${t.name}${n}`)) || nameRefusal(book, `${t.name}${n}`)?.key === 'tableNameDefined') n++
-      const name = `${t.name}${n}`
+      const name = numbered(t.name, [...taken, ...(book.names ?? []).map((x) => x.name)], taken.length + 2)
       // a numbered name Excel would not take (`Tab3` is a cell) is refused, as renameTable refuses it
       const why = nameRefusal(book, name)
       if (why) return { after: () => ({ ok: false, code: 'table_name', message: say(book.locale, why) }) }
@@ -149,23 +145,15 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
     after(r) {
       if (!r.ok) return r
       const sheet = r.book.sheets[ts]
-      let cells: Record<string, CellInput> | undefined
       // a sheet the paste made: its formulas alone are read for their places, which no other step reads
-      const p = { r: 0, c: 0 }
-      for (const addr in sheet.cells) {
-        const cell = sheet.cells[addr]
-        spend(1)
-        if (cell.formula === undefined) continue
-        readAddress(addr, p)
-        const [row, col] = [p.r, p.c]
-        if (!hasCell(pasted, row, col)) continue
+      const cells = rewriteFormulas(sheet, (formula, row, col) => {
+        if (!hasCell(pasted, row, col)) return undefined
         const t = tableAt(tables, fs, src.r1 + ((row - target.r1) % h), src.c1 + ((col - target.c1) % w))
-        if (!t || tableAt(tables, ts, row, col) === t) continue
+        if (!t || tableAt(tables, ts, row, col) === t) return undefined
         // inside a copy of its table: the references to the table are to the copy, those without a name stay so
         const copy = copies.find((c) => c.t === t && hasCell(c.x, row, col))
-        const formula = copy ? rewriteTableRefs(cell.formula, tables, t, null, (x) => (x === t ? { table: copy.name } : undefined)) : qualified(cell.formula, tables, t)
-        if (formula !== cell.formula) (cells ??= { ...sheet.cells })[addr] = { ...cell, formula }
-      }
+        return copy ? rewriteTableRefs(formula, tables, t, null, (x) => (x === t ? { table: copy.name } : undefined)) : qualified(formula, tables, t)
+      })
       const sheets = [...r.book.sheets]
       sheets[ts] = { ...sheet, ...(cells ? { cells } : {}) }
       // a copy's calculated columns: relative references move by its offset as its cells' do, references to the table go to the copy

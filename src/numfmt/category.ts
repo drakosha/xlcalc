@@ -12,7 +12,7 @@
  */
 import type { FormatCategory, FormatChoice, FormatChoiceKey, NumberFormat, NumberFormatCategory } from '../contract.js'
 import { checkFormat } from '../input/styles.js'
-import { checkLocaleArg } from '../locale/load.js'
+import { optionalLocale } from '../locale/load.js'
 import type { FormatNames } from '../locale/rules/data.js'
 import type { Locale } from '../locale/types.js'
 import { builtinCodes, EN_BUILTIN } from './builtin.js'
@@ -44,7 +44,6 @@ const CHOICES: readonly [FormatChoiceKey, NumberFormat | undefined][] = [
   ['text', 49],
 ]
 
-const optLocale = (locale: string | Locale | undefined) => (locale === undefined ? undefined : checkLocaleArg(locale, 'locale'))
 const namesOf = (loc: Locale | undefined): FormatNames => loc?.regional?.formats ?? EN_NAMES
 const codesOf = (loc: Locale | undefined) => builtinCodes(loc?.regional?.builtin ?? {})
 
@@ -58,7 +57,7 @@ const MONEY = /^(?:[5-8]|4[1-4])$/
  */
 export function numberFormatCategory(format: NumberFormat, locale?: string | Locale): NumberFormatCategory {
   checkFormat(format, 'format')
-  const loc = optLocale(locale)
+  const loc = optionalLocale(locale, 'locale')
   let category: FormatCategory
   if (!loc?.regional) category = categoryOf(typeof format === 'string' ? canonical(format) : EN_KEPT[format], '', undefined)
   else category = typeof format === 'number' ? builtinIn(format) : categoryOf(canonical(format), codesOf(loc)(14), loc)
@@ -67,7 +66,7 @@ export function numberFormatCategory(format: NumberFormat, locale?: string | Loc
 
 /** The items of the Number Format list in `locale`, in list order: each item's key, name, the format it applies and that format's code in the locale. */
 export function numberFormatChoices(locale?: string | Locale): FormatChoice[] {
-  const loc = optLocale(locale)
+  const loc = optionalLocale(locale, 'locale')
   const names = namesOf(loc)
   const codes = codesOf(loc)
   return CHOICES.map(([key, format = names.currency]) => ({ key, name: names.choices[key], format, code: typeof format === 'number' ? codes(format) : format }))

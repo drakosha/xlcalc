@@ -3,14 +3,14 @@
  * column renamed or deleted, a table deleted (#REF!) or turned into cells (references to its cells). Only the references
  * that change are rewritten; a formula that does not parse is left as written.
  */
-import type { BookInput, CellInput, TableInput } from '../contract.js'
+import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, readAddress } from '../model.js'
 import { FormulaError, parse, quoteSheet } from '../syntax.js'
 import { eachToken } from '../syntax/links.js'
 import { caseKey } from '../collate.js'
 import { specText, type TableSpec } from '../syntax/table.js'
-import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
+import { specRows, tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
 import { mapFormulas } from '../cond/structure.js'
 import { originOf } from '../cond/rules.js'
 import { withFormulas } from '../validation/structure.js'
@@ -61,24 +61,32 @@ export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table 
 }
 
 /**
+ * A sheet's cells with their formulas rewritten by `f` (their row and column; undefined keeps one as written): the
+ * same cells when no formula changes. A session's operation stops here at its deadline or abort (`exec/budget.ts`).
+ */
+export function rewriteFormulas(sheet: SheetInput, f: (formula: string, r: number, c: number) => string | undefined): Record<string, CellInput> | undefined {
+  let cells: Record<string, CellInput> | undefined
+  const p = { r: 0, c: 0 }
+  for (const addr in sheet.cells) {
+    const cell = sheet.cells[addr]
+    spend(1)
+    if (cell.formula === undefined) continue
+    readAddress(addr, p)
+    const formula = f(cell.formula, p.r, p.c) ?? cell.formula
+    if (formula !== cell.formula) (cells ??= { ...sheet.cells })[addr] = { ...cell, formula }
+  }
+  return cells
+}
+
+/**
  * Every formula of the book rewritten by `edit` (cells, names, the formulas of calculated columns, of conditional formats
  * and of data validation), with the tables of `book` itself; the same objects where nothing changed.
  */
 export function rewriteBookTables(book: BookInput, edit: TableEdit): BookInput {
   const tables = tablesOf(book)
   let changed = false
-  const p = { r: 0, c: 0 }
   const sheets = book.sheets.map((sheet, s) => {
-    let cells: Record<string, CellInput> | undefined
-    for (const addr in sheet.cells) {
-      const cell = sheet.cells[addr]
-      // a session's operation stops here at its deadline or abort (`exec/budget.ts`)
-      spend(1)
-      if (cell.formula === undefined) continue
-      readAddress(addr, p)
-      const formula = rewriteTableRefs(cell.formula, tables, tableAt(tables, s, p.r, p.c), { s, r: p.r }, edit)
-      if (formula !== cell.formula) (cells ??= { ...sheet.cells })[addr] = { ...cell, formula }
-    }
+    const cells = rewriteFormulas(sheet, (formula, r, c) => rewriteTableRefs(formula, tables, tableAt(tables, s, r, c), { s, r }, edit))
     let list: TableInput[] | undefined
     sheet.tables?.forEach((ti, i) => {
       const t = tables.byName.get(tableKey(ti.name))!
@@ -141,28 +149,14 @@ const abs = (r: number, c: number) => formatAddress(r, c).replace(/^([A-Z]+)(\d+
 export function convertedText(t: Table, spec: TableSpec, row: number | null, sheet: string): string {
   // a column the table lacks (the formula is #NAME?) is lost, so the formula stays an error
   if (spec.cols?.some((c) => !t.index.has(tableKey(c)))) return '#REF!'
-  const head = t.headers ? t.r1 : -1
-  const first = t.r1 + (t.headers ? 1 : 0)
-  const last = t.r2 - (t.totals ? 1 : 0)
-  const has = (a: TableSpec['areas'][number]) => spec.areas.includes(a)
-  let r1 = first
-  let r2 = last
-  let relative = false
-  // a part the table lacks (#REF!) becomes the whole table, columns and all
-  if ((has('headers') && !has('data') && head < 0) || (has('totals') && !has('data') && !t.totals)) return `${quoteSheet(sheet)}!${abs(t.r1, t.c1)}:${abs(t.r2, t.c2)}`
-  if (has('all')) [r1, r2] = [t.r1, t.r2]
-  else if (has('row')) {
-    ;[r1, r2] = [row ?? 0, row ?? 0]
-    relative = true
-  } else if (has('headers') && !has('data')) r1 = r2 = head
-  else if (has('totals') && !has('data')) r1 = r2 = t.r2
-  else {
-    if (has('headers') && head >= 0) r1 = head
-    if (has('totals') && t.totals) r2 = t.r2
-  }
+  // the formula's row stays relative; a part the table lacks (#REF!) becomes the whole table, columns and all
+  const relative = spec.areas.includes('row')
+  const rows = relative ? { r1: row ?? 0, r2: row ?? 0 } : specRows(t, spec)
+  if (rows === 'REF') return `${quoteSheet(sheet)}!${abs(t.r1, t.c1)}:${abs(t.r2, t.c2)}`
+  const { r1, r2 } = rows
   let [c1, c2] = [t.c1, t.c2]
   // in a name, Excel turns the formula's row of some columns into the whole row of the table (the set `ops-held`)
-  if (spec.cols && !(row === null && has('row'))) {
+  if (spec.cols && !(row === null && relative)) {
     const [a, b = a] = spec.cols.map((c) => t.index.get(tableKey(c))!)
     ;[c1, c2] = [t.c1 + Math.min(a, b), t.c1 + Math.max(a, b)]
   }

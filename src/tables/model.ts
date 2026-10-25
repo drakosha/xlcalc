@@ -10,6 +10,13 @@ import { sheetKey } from '../syntax/print.js'
 /** Table names, like sheet names, compare without case. */
 export const tableKey = sheetKey
 
+/** The first name `${base}${n}` (n counted from `from`) that no name of `taken` has, case-insensitively. */
+export function numbered(base: string, taken: string[], from: number): string {
+  let n = from
+  while (taken.some((x) => tableKey(x) === tableKey(`${base}${n}`))) n++
+  return `${base}${n}`
+}
+
 export interface Table extends Rect {
   name: string
   /** The sheet's index. */
@@ -59,27 +66,33 @@ export function rowsOf(t: Table): { head: number; first: number; last: number; f
 }
 
 /**
+ * The rows a structured reference's areas take, every area but the formula's row; #REF! for a header or totals row the
+ * table does not have. The formula's row (`row`) stays to its caller, which checks it against the data.
+ */
+export function specRows(t: Table, spec: TableSpec): { r1: number; r2: number } | 'REF' {
+  const { head, first, last, foot } = rowsOf(t)
+  const has = (a: TableArea) => spec.areas.includes(a)
+  if (has('all')) return { r1: t.r1, r2: t.r2 }
+  if (has('headers') && !has('data')) return head < 0 ? 'REF' : { r1: head, r2: head }
+  if (has('totals') && !has('data')) return foot < 0 ? 'REF' : { r1: foot, r2: foot }
+  return { r1: has('headers') && head >= 0 ? head : first, r2: has('totals') && foot >= 0 ? foot : last }
+}
+
+/**
  * The rectangle a structured reference takes in the formula's row `row`: #REF! for a header or totals row the table
  * does not have and for an unknown column, #VALUE! for the formula's row outside the data, as Excel answers.
  */
 export function specRect(t: Table, spec: TableSpec, row: number): Rect | 'REF' | 'VALUE' {
-  const { head, first, last, foot } = rowsOf(t)
-  const has = (a: TableArea) => spec.areas.includes(a)
-  let r1 = first
-  let r2 = last
-  if (has('all')) [r1, r2] = [t.r1, t.r2]
-  else if (has('row')) {
+  let r1: number
+  let r2: number
+  if (spec.areas.includes('row')) {
+    const { first, last } = rowsOf(t)
     if (row < first || row > last) return 'VALUE'
-    r1 = r2 = row
-  } else if (has('headers') && !has('data')) {
-    if (head < 0) return 'REF'
-    r1 = r2 = head
-  } else if (has('totals') && !has('data')) {
-    if (foot < 0) return 'REF'
-    r1 = r2 = foot
+    ;[r1, r2] = [row, row]
   } else {
-    if (has('headers') && head >= 0) r1 = head
-    if (has('totals') && foot >= 0) r2 = foot
+    const rows = specRows(t, spec)
+    if (rows === 'REF') return 'REF'
+    ;({ r1, r2 } = rows)
   }
   if (!spec.cols) return { r1, r2, c1: t.c1, c2: t.c2 }
   const at = spec.cols.map((c) => t.index.get(tableKey(c)))

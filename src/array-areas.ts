@@ -17,6 +17,9 @@ export function arrayArea(addr: string, text: string): Rect | null {
 /** A cell that holds a value or a formula. */
 export const holds = (c: CellInput | undefined) => c !== undefined && (c.formula !== undefined || (c.value !== undefined && c.value !== null))
 
+/** The fields of a cell's content: a formula's value held while a circular reference stops it goes with the formula. */
+export const CONTENT = ['value', 'formula', 'array', 'held'] as const
+
 /** The two areas cross, as Excel never lets array formulas do: the text of the refusal; null when they do not meet. */
 export const crossing = (x: Rect, top: string, y: Rect, other: string): string | null =>
   meets(x, y) ? `the area of the array formula at ${top} (${cornersText(x)}) overlaps the area of the array formula at ${other} (${cornersText(y)})` : null
