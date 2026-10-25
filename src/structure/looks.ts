@@ -7,7 +7,7 @@
 import type { BookInput, CellInput, StructureOp } from '../contract.js'
 import { edited, emptyLayer, LookTable, type Layer } from '../looks/layer.js'
 import { shifted } from '../looks/move.js'
-import { expanded, hasLooks, layerOf, withLayer } from '../looks/sheet.js'
+import { expanded, hasLook, hasLooks, layerOf, withLayer } from '../looks/sheet.js'
 import { sheetKey } from '../syntax.js'
 import { tableKey, tablesOf } from '../tables/model.js'
 import { readAddress } from '../model.js'
@@ -106,7 +106,7 @@ function lookedContent(cells: Record<string, CellInput>, layer: Layer, axis: Axi
   const p = { r: 0, c: 0 }
   for (const a in cells) {
     const cell = cells[a]
-    if (cell.style !== undefined || cell.numberFormat !== undefined) continue
+    if (hasLook(cell)) continue
     readAddress(a, p)
     const i = axis === 'r' ? p.r : p.c
     if (i < at || i >= at + n) continue

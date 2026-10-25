@@ -393,9 +393,10 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const [cells, looks] = withEntries(layer, read.cells, added, read.unordered, [...looked, ...[...read.shared.values()].flatMap((s) => s.copies)])
   sheet.cells = cells
   if (!looks.empty) sheet.looks = listOf(looks)
-  const view = readSheetView(head)
+  const first = element(element(head, 'sheetViews')?.body ?? '', 'sheetView')
+  const view = readSheetView(first)
   if (view) sheet.view = view
-  const frozen = readFrozen(head, name, ctx.issues)
+  const frozen = readFrozen(first, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
   // the worksheet's own extension list is its last element: autofilters, sorts and rules may hold lists of their own
   const ext = lastChild(tail, 'extLst')

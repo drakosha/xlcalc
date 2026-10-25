@@ -3,7 +3,7 @@
  * palette, or the book's own `<indexedColors>`), `theme` with `tint` (the theme's colour lightened or darkened by
  * its luminance, as ECMA-376 defines `tint` and Excel rounds it). `auto` and the system colours are no colour.
  */
-import { attributes, element, elements, type Element } from '../xml/scan.js'
+import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 
 /** The legacy palette (ECMA-376 18.8.27): 64 is the system foreground, 65 the background. */
 const INDEXED = [
@@ -88,7 +88,7 @@ export function tinted(hex: string, tint: number): string {
 export function colorOf(e: Element | undefined, p: Palette): string | undefined {
   if (!e) return undefined
   const a = attributes(e.attrs)
-  if (a.auto === '1' || a.auto === 'true') return undefined
+  if (flag(a.auto)) return undefined
   let hex: string | undefined
   if (a.rgb && /^[0-9A-Fa-f]{6,8}$/.test(a.rgb)) hex = a.rgb.slice(-6).toUpperCase()
   else if (a.theme !== undefined) hex = p.theme[Number(a.theme)] || undefined

@@ -10,10 +10,7 @@ import type { BookInput } from '../../contract.js'
 import { activeSheetIndex } from '../view.js'
 import { epochOf } from '../../dates.js'
 import { SHEET_STATES } from '../../input.js'
-import { FormulaError } from '../../syntax/ast.js'
-import { parse } from '../../syntax/parse.js'
-import { bindTables, nameProblem } from '../../syntax/check.js'
-import { bindLinks } from '../../syntax/links.js'
+import { nameProblem } from '../../syntax/check.js'
 import { localeBooleans } from '../../locale/registry.js'
 import { sheetKey } from '../../syntax/print.js'
 import { caseKey } from '../../collate.js'
@@ -26,7 +23,7 @@ import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { externalLinkXml } from './links.js'
 import { nextBlock } from './parts.js'
-import type { FileNames } from './formula.js'
+import { fileTree, type FileNames } from './formula.js'
 import { writeSheet } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
@@ -69,7 +66,7 @@ function metadata(dynamic: boolean, rich: (keyof typeof RICH_TYPE)[]): string {
 const rels = (items: [type: string, target: string, external?: boolean][]) =>
   `${HEAD}<Relationships xmlns="${PKG_REL}">${items.map(([type, target, external], i) => `<Relationship Id="rId${i + 1}" Type="${type}" Target="${external ? escapeAttr(target) : target}"${external ? ' TargetMode="External"' : ''}/>`).join('')}</Relationships>`
 
-function definedNames(book: BookInput, issues: Issues, tables: { name: string; columns: string[] }[]): string {
+function definedNames(book: BookInput, issues: Issues, names: FileNames): string {
   const index = new Map(book.sheets.map((s, i) => [sheetKey(s.name), i]))
   // Excel ru-RU does not load a file with a name ИСТИНА: the names the book's locale takes
   const booleans = localeBooleans(book.locale)
@@ -78,16 +75,9 @@ function definedNames(book: BookInput, issues: Issues, tables: { name: string; c
   for (const n of book.names ?? []) {
     const scope = n.scope === undefined ? undefined : index.get(sheetKey(n.scope))
     const key = `${scope ?? ''}\n${caseKey(n.name)}`
-    let text: string | undefined
-    try {
-      // a table's name alone is its data, which a file writes `Sales[]`
-      const bound = bindTables(parse(n.ref, { union: true }), n.ref, { tables })
-      // a reference to another workbook names one of the book's links and a sheet that link has
-      const linked = bound.ok ? bindLinks(bound.ast, book.externalBooks, book.sheets.map((s) => s.name)) : bound
-      if (linked.ok) text = toFile(linked.ast)
-    } catch (e) {
-      if (!(e instanceof FormulaError)) throw e
-    }
+    // a name's ref parses with union ranges and may name a sheet the book does not have (anySheet)
+    const tree = fileTree(n.ref, names, undefined, { union: true, anySheet: true })
+    const text = tree === null ? undefined : toFile(tree)
     const why: XlsxMessage | undefined =
       nameProblem(n.name, booleans) !== null
         ? { key: 'nameNotTaken' }
@@ -154,12 +144,8 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       richError,
       tableAt: (addr) => {
         const { row, col } = parseAddress(addr)
-        return tableAt(tables, i, row, col)?.name
-      },
-      totalsAt: (addr) => {
-        const { row, col } = parseAddress(addr)
         const t = tableAt(tables, i, row, col)
-        return !!t?.totals && row === t.r2
+        return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }
       },
       tableParts: parts[i].map((_, k) => `rId${k + 1}`),
       epoch: epochOf(book.dateSystem),
@@ -224,7 +210,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names.tables)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {

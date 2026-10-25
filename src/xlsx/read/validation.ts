@@ -75,7 +75,7 @@ function rule(raw: RawRule, sheet: string, issues: Issues, opts: FormulaOptions)
   // xlsx's defaults are false, the model's those of a rule Excel makes
   if (!flag(a.allowBlank)) out.allowBlank = false
   if (type === 'list' && flag(a.showDropDown)) out.dropdown = false
-  for (const [k, file] of [['promptTitle', 'promptTitle'], ['prompt', 'prompt']] as const) if (a[file] !== undefined) out[k] = readText(a[file])
+  for (const k of ['promptTitle', 'prompt'] as const) if (a[k] !== undefined) out[k] = readText(a[k])
   if (!flag(a.showInputMessage)) out.showPrompt = false
   if (a.errorStyle === 'warning' || a.errorStyle === 'information') out.errorStyle = a.errorStyle
   for (const k of ['errorTitle', 'error'] as const) if (a[k] !== undefined) out[k] = readText(a[k])
