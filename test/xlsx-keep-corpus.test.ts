@@ -49,7 +49,10 @@ function formulas(v: unknown): unknown {
   return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, typeof x === 'string' && FORMULAS.has(k) ? canon(x) : k === 'formulas' && Array.isArray(x) ? x.map(canon) : formulas(x)]))
 }
 
-/** A read book with its styles by their fields, its formulas canonical, a rule's built-in number format by its code. */
+/**
+ * A read book with its styles by their fields, its formulas canonical, a rule's built-in number format by its code, and
+ * its active sheet by name (a file with chart sheets names its first worksheet, which a file without leaves out).
+ */
 function norm(r: XlsxRead) {
   const st = r.book.styles ?? []
   const key = (i: number | undefined) => (i === undefined ? undefined : keyOf(st[i] ?? {}))
@@ -59,6 +62,7 @@ function norm(r: XlsxRead) {
   return {
     book: formulas({
       ...book,
+      activeSheet: book.activeSheet ?? book.sheets.find((x) => !x.hidden)?.name,
       sheets: book.sheets.map((s) => ({
         ...s,
         cells: map(s.cells),
