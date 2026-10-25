@@ -5,20 +5,15 @@
  * rectangles and the same formulas, read as stored text. The held-out sets (`-held`) keep the answers predicted before
  * Excel ran them.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredTables } from '../bench/coverage/tables.js'
 import type { TableSet } from '../bench/coverage/tables/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
+import { localeDir } from '../bench/coverage/locales.js'
 import { differences } from './tables-cases.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
-const dir = new URL('./excel/tables/', import.meta.url)
-const sets = (sub: string) => {
-  const d = new URL(sub, dir)
-  return existsSync(d) ? readdirSync(d).filter((f) => f.endsWith('.json')).map((f) => ({ name: f.slice(0, -5), sub, ...(JSON.parse(readFileSync(new URL(f, d), 'utf8')) as StoredTables) })) : []
-}
-const SETS = TAGS.flatMap((tag) => sets(localeDir(tag)).map((s) => ({ ...s, tag })))
+const SETS = localeSets<StoredTables>('tables').map((r) => ({ name: r.set, sub: localeDir(r.tag), tag: r.tag, ...r.stored }))
 
 /** `<set>:<case>` → why the engine's answer differs from Excel's (each has a line in docs/limitations.md's Known differences). */
 const KNOWN: Readonly<Record<string, string>> = {

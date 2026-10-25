@@ -107,11 +107,7 @@ export function step(): void {
 export const due = (): boolean => active !== null && active.due
 
 /** Counts `n` units of work as `spend` does, and tells whether the slice is used up: a loop of steps yields then. */
-export function paced(n: number): boolean {
-  if (active === null) return false
-  if ((active.left -= n) <= 0) active.look()
-  return active.due
-}
+export const paced = (n: number): boolean => (spend(n), due())
 
 /** `n` values are about to be made: over `limits.cells` stops the computation, before they are allocated. */
 export function allot(n: number): void {

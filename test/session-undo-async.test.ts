@@ -4,10 +4,10 @@
  * deadline or its signal changes nothing; a session whose thread was lost comes back with its history, from the journal
  * (undos and redos in it) and from a snapshot, and one that left a full thread too.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { CalcError, createInlineCalc, createSession, type AsyncSession, type BookInput, type Calc, type CellRef, type Execution, type Session, type UndoResult } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { CalcError, createInlineCalc, createSession, type AsyncSession, type BookInput, type CellRef, type Execution, type Session, type UndoResult } from '../src/index.js'
 import { CLOCK, heavyBook } from './async-books.js'
-import { inside, pool } from './fixtures/pool.js'
+import { closedAfter, inside } from './fixtures/pool.js'
 
 const book = (): BookInput => ({
   sheets: [
@@ -41,8 +41,7 @@ function plain(a: unknown, sheets: string[]) {
   return { ...rest, at: at.map((ref) => mapCell(ref)) }
 }
 
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
+const { keep, made } = closedAfter()
 
 describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s', (execution: Execution) => {
   const o = { clock: CLOCK, execution }
@@ -61,20 +60,17 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
   }
 
   it('in the same thread', async () => {
-    const calc = createInlineCalc({ sliceMs: 1 })
-    calcs.push(calc)
+    const calc = keep(createInlineCalc({ sliceMs: 1 }))
     await same(await calc.createSession(book(), o))
   })
 
   it('in a thread: mapCell from the geometry the thread sends', async () => {
-    const calc = await pool({ threads: 1 })
-    calcs.push(calc)
+    const calc = await made({ threads: 1 })
     await same(await calc.createSession(book(), o))
   }, 60_000)
 
   it('an undo stopped by its deadline or its signal changes nothing', async () => {
-    const calc = createInlineCalc({ sliceMs: 1 })
-    calcs.push(calc)
+    const calc = keep(createInlineCalc({ sliceMs: 1 }))
     const s = await calc.createSession(heavyBook(), o)
     await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }])
     const [b, hash] = [JSON.stringify(await s.getBook()), await s.getHash()]
@@ -96,7 +92,7 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
   it('a thread lost: the session comes back with its history, from the journal and from a snapshot taken after undos', async () => {
     for (const snapshotEvery of [64, 2]) {
       const { calc, inside: x, crash } = await inside({ threads: 1, snapshotEvery })
-      calcs.push(calc)
+      keep(calc)
       const s = await calc.createSession(book(), o)
       const y = await same(s, MOVES.slice(0, 13))
       const r = [...x.recs][0]
@@ -114,7 +110,7 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
     for (let r = 1; r <= 20_000; r++) for (let c = 0; c < 10; c++) cells[`${'ABCDEFGHIJ'[c]}${r}`] = { value: r * 10 + c }
     const big = (): BookInput => ({ sheets: [{ name: 'S', cells: { ...cells } }] })
     const { calc, inside: x } = await inside({ threads: 1, maxHeapMb: 384, maxSessionsPerThread: 6, snapshotEvery: 1 })
-    calcs.push(calc)
+    keep(calc)
     const [s, own] = [await calc.createSession(big(), o), await calc.createSession(big(), { ...o, undo: { maxMb: 64 } })]
     const y = createSession(big(), { ...o, undo: { maxMb: 8 } })
     const counts: number[] = []
@@ -145,8 +141,7 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
   }, 120_000)
 
   it('sessions that take turns on a full thread keep their histories', async () => {
-    const calc = await pool({ threads: 1, maxSessionsPerThread: 1 })
-    calcs.push(calc)
+    const calc = await made({ threads: 1, maxSessionsPerThread: 1 })
     const [a, b] = [await calc.createSession(book(), o), await calc.createSession(book(), o)]
     const [ya, yb] = [createSession(book(), o), createSession(book(), o)]
     for (const [k, move] of MOVES.entries()) {

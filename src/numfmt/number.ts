@@ -3,7 +3,7 @@
  * 1000, `%`), fractions (`# ?/?`, `?/??`, `# ?/8`) and scientific notation (`0.00E+00`, `##0.0E+0`). A section
  * gives text, or null for a number it cannot show (TEXT answers #VALUE!, a cell shows `#`).
  */
-import { positional, roundHalfUp } from './general.js'
+import { positional, roundHalfUp, sig15 } from './general.js'
 import type { Ph, Tok } from './parse.js'
 import { BLANK, blank, plain, type Style } from './style.js'
 
@@ -177,8 +177,7 @@ function formatExponent(v: number, toks: Tok[], ex: number, signed: boolean, sty
   let e = 0
   let m = 0
   if (a !== 0) {
-    const [d, x] = a.toExponential(14).split('e')
-    const e0 = Number(x)
+    const [d, e0] = sig15(a)
     e = Math.floor(e0 / width) * width
     m = Number(`${d}e${e0 - e}`)
     if (Number(roundHalfUp(m, decimals)) >= 10 ** width) [e, m] = [e + width, Number(`${d}e${e0 - e - width}`)]

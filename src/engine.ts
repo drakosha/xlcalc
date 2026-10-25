@@ -11,10 +11,10 @@ import type { BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckC
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
-import { FUNCTIONS } from './functions.js'
+import { externalNames } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
-import { builtAnew, heldValue, putHeld } from './held.js'
+import { builtAnew, putHeld } from './held.js'
 import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
@@ -37,7 +37,7 @@ import { prepare, prepareShaped, type Prepared, type Shapes } from './prepare.js
 import { jsBackend } from './exec/js.js'
 import { walk } from './exec/walk.js'
 import { specRect, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
-import { E, isErr, type V } from './values.js'
+import { E, fromCellValue, isErr, type V } from './values.js'
 
 export interface Formula extends FormulaCode {
   id: number
@@ -141,12 +141,6 @@ export interface EngineState {
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
 
-/** Coordinates of an internal cell key, without a split array and a map callback per changed cell. */
-export function keyParts(k: string): [number, number, number] {
-  const a = k.indexOf(':'), b = k.indexOf(':', a + 1)
-  return [+k.slice(0, a), +k.slice(a + 1, b), +k.slice(b + 1)]
-}
-
 /** Marks or unmarks a cell whose formula calls SUBTOTAL or AGGREGATE. */
 function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean) {
   let marks = ctx.nested.get(s)
@@ -156,7 +150,7 @@ function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean)
 }
 
 /** The hidden rows of sheet `s` that SUBTOTAL and AGGREGATE read, from its input. */
-export function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
+function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
   const h = hiddenRows(sheet)
   if (h) ctx.hidden.set(s, h)
   else ctx.hidden.delete(s)
@@ -250,7 +244,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   // no closure here takes \`opts\`: the state's closures share this scope, and \`opts.prior\` holds the state built before
   const { own, keys } = opts
   const input: BookInput = { ...book, sheets: book.sheets.map((x) => looksTaken(x)).map((s) => ({ ...s, cells: own?.(s.cells) ? s.cells : { ...s.cells } })) }
-  const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
+  const externalFunctions = externalNames(opts.externals?.functions)
   const tables = tablesOf(input)
   const prepared = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale), book.externalBooks)
   const linked = linkSheets(book.externalBooks, sheetNames.length)
@@ -342,7 +336,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
         }
       }
       const f = compiled(state, pending.length, s, row, col, cellIn, p)
-      if (cellIn.held !== undefined) state.held.set(f.id, heldValue(cellIn.held))
+      if (cellIn.held !== undefined) state.held.set(f.id, fromCellValue(cellIn.held))
       pending.push(f)
       if (f.area) state.arrays++
       if (f.nested) mark(ctx, s, row, col, true)
@@ -416,7 +410,7 @@ export function* applyEdits(state: EngineState, edits: CellReplace[], withVolati
         }
       }
       const f = compiled(state, state.free.pop() ?? state.formulas.length, s, row, col, input, p)
-      if (input.held !== undefined) state.held.set(f.id, heldValue(input.held))
+      if (input.held !== undefined) state.held.set(f.id, fromCellValue(input.held))
       if (f.nested) mark(state.ctx, s, row, col, true)
       if (f.area) state.arrays++
       state.formulas[f.id] = f

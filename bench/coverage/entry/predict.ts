@@ -4,8 +4,7 @@
  * package's locales, with the day whose year completes a date typed without one. For a set of `edit`, `entryText` of the
  * value each answer holds, by the format it holds, is the predicted text of the formula bar.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { entryText, parseEntry } from '../../../src/index.js'
 import { TAGS } from '../locales.js'
 import type { EntrySet } from './cases.js'
@@ -17,4 +16,4 @@ const typed = (tag: string) => buildEntryCases().map((c) => [c.id, parseEntry(c.
 const locales = Object.fromEntries(TAGS.map((tag) => [tag, Object.fromEntries(typed(tag))]))
 const shown = (tag: string) =>
   Object.fromEntries(typed(tag).map(([id, r]) => [id, r.ok && r.input ? (r.input.value !== undefined ? entryText(r.input.value as string | number | boolean, { locale: tag, now, ...(r.input.numberFormat !== undefined ? { numberFormat: r.input.numberFormat } : {}) }) : `=${r.input.formula}`) : null]))
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { now, locales, ...(edit ? { edit: Object.fromEntries(TAGS.map((tag) => [tag, shown(tag)])) } : {}) })
+writePrediction(import.meta.url, `${set}`, { now, locales, ...(edit ? { edit: Object.fromEntries(TAGS.map((tag) => [tag, shown(tag)])) } : {}) })

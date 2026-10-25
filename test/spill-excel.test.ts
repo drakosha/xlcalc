@@ -5,7 +5,7 @@
  * not depend on each other: Excel's choice varies between runs (`order-runs.json` keeps every answer seen),
  * and any of them is accepted. Held-out cases (`held`) also keep the answer predicted before Excel ran.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { RectsAnswer } from '../bench/coverage/case-book.js'
 import type { StoredSpill } from '../bench/coverage/spill.js'
@@ -14,13 +14,10 @@ import { computed, differences } from './spill-cases.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { currentCases } from './stored-cases.js'
+import { storedSets } from './stored-sets.js'
 
 const dir = new URL('./excel/spill/', import.meta.url)
-const SETS = existsSync(dir)
-  ? readdirSync(dir)
-      .filter((f) => f.endsWith('.json') && !f.endsWith('-runs.json'))
-      .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredSpill) }))
-  : []
+const SETS = storedSets<StoredSpill>('spill', (f) => f.endsWith('.json') && !f.endsWith('-runs.json'))
 const RUNS = JSON.parse(readFileSync(new URL('order-runs.json', dir), 'utf8')) as { answers: Record<string, RectsAnswer[]> }
 
 /** `<set>:<case>` → why the engine's answer differs from the one Excel run of the case. */

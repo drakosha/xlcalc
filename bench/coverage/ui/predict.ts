@@ -9,8 +9,7 @@
  * applied: the item of `numberFormatChoices`, its name, the format it applies and the box's category after. Point mode:
  * the sheet component's model (`point-model.ts`), the formula bar after each step and the cells after.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { createSession, type CellInput, type CellValidationAlert, type CellValue } from '../../../src/index.js'
 import { TAGS } from '../locales.js'
 import { entriesOf, readCells, readColumns, ribbonOf, uiBook, windowOver, type UiCase, type UiSet } from './cases.js'
@@ -56,4 +55,4 @@ function predict(c: UiCase, tag: string) {
 }
 
 const locales = Object.fromEntries(TAGS.map((tag) => [tag, Object.fromEntries(buildUiCases().map((c) => [c.id, predict(c, tag)]))]))
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { now, locales })
+writePrediction(import.meta.url, `${set}`, { now, locales })

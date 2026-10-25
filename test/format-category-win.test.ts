@@ -5,12 +5,13 @@
  * `ribbon` too (`test/excel/ui/`): how many cells the two Excels name alike. The predictions committed before the run
  * (`bench/windows/ribbon/<set>.predicted.json`) are kept with how many cells Excel confirmed.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
 import { ribbonOf, type UiSet } from '../bench/coverage/ui/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
+import { localeDir } from '../bench/coverage/locales.js'
 import { ribbonCases, type StoredRibbon } from '../bench/windows/ribbon.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 const LISTS =
@@ -27,13 +28,7 @@ const CONFIRMED: Record<string, number> = { 'ru-RU:ribbon': 318, 'ru-RU:ribbon-r
 /** How many cells of the set `ribbon` Excel for Mac and for Windows name alike, by tag. */
 const MAC_SAME: Record<string, number> = { 'ru-RU': 266 }
 
-const RUNS = TAGS.flatMap((tag) => {
-  const dir = new URL(`./excel/win/ribbon/${localeDir(tag)}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({ tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredRibbon }))
-})
+const RUNS = localeSets<StoredRibbon>('win/ribbon')
 
 /** Each cell of a run: its case, its address, what Excel for Windows showed. */
 const cellsOf = (stored: StoredRibbon) => stored.cases.flatMap((c) => Object.entries(stored.answers[c.id]).map(([x, a]) => ({ c, x, box: a.box })))

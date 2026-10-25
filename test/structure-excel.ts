@@ -4,7 +4,6 @@
  * rectangle of every sheet, the extra cells, the sheets and the names. Formulas are compared in the form
  * Excel writes references (`A1:A1048576` is `A:A`), with sheet names quoted.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { CellLook, ExcelStructAnswer, SheetLook, StoredStruct } from '../bench/coverage/struct.js'
 import type { BookInput, CellInput, SheetInput } from '../src/contract.js'
 import { isHiddenRow } from '../src/layout/hidden.js'
@@ -17,15 +16,9 @@ import { expandSheet } from './looks-book.js'
 import { numberFormatOf, takenBook, type StoredBook } from '../bench/coverage/stored.js'
 import type { StructCase } from '../bench/coverage/struct/cases.js'
 import { editStructure } from '../src/structure/index.js'
+import { storedSets } from './stored-sets.js'
 
-const dir = new URL('./excel/struct/', import.meta.url)
-
-export const STRUCT_SETS: (StoredStruct & { name: string })[] = existsSync(dir)
-  ? readdirSync(dir)
-      .filter((f) => f.endsWith('.json'))
-      .sort()
-      .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredStruct) }))
-  : []
+export const STRUCT_SETS: (StoredStruct & { name: string })[] = storedSets<StoredStruct>('struct')
 
 /** Formula text (without `=`, a name's union too) with references as Excel writes them; as written when it does not parse. */
 export function normalFormula(f: string): string {

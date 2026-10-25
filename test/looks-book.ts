@@ -6,6 +6,15 @@ import type { BookInput, CellInput, CellStyle, SheetInput } from '../src/contrac
 import { readRanges } from '../src/looks/ranges.js'
 import { formatAddress } from '../src/model.js'
 
+/** A seeded generator of numbers below `n`: the LCG the look tests draw their random edits with. */
+export function seeded(seed: number): (n: number) => number {
+  let x = seed
+  return (n) => {
+    x = (Math.imul(x, 1103515245) + 12345) & 0x7fffffff
+    return x % n
+  }
+}
+
 /** The sheet with each cell of a look of its looks and without an entry as an entry of that look, and no looks. */
 export function expandSheet(sheet: SheetInput): SheetInput {
   if (!sheet.looks) return sheet

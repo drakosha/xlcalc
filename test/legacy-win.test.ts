@@ -11,7 +11,8 @@ import { compare } from '../bench/coverage/compare.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { Probe } from '../bench/coverage/probes.js'
 import { show } from './excel-cases.js'
-import { winFiles } from './excel-win-cases.js'
+import { storedSets } from './stored-sets.js'
+import { pinnedCases } from './stored-cases.js'
 
 interface Stored {
   cases: Probe[]
@@ -21,7 +22,7 @@ interface Stored {
 }
 
 const mac = (name: string) => JSON.parse(readFileSync(new URL(`./excel/legacy/${name}.json`, import.meta.url), 'utf8')) as Stored
-const SETS = winFiles<Stored>('legacy/')
+const SETS = storedSets<Stored>('win/legacy')
 
 /** Volatile calls: their values are compared by type only. */
 const VOLATILE = /\b(RAND|RANDBETWEEN|RANDARRAY|NOW|TODAY)\(/
@@ -43,8 +44,5 @@ describe.skipIf(!existsSync(new URL('./excel/win/legacy/', import.meta.url)) || 
       expect(off).toEqual([])
     })
 
-  it('every WIN_LEGACY entry names a stored case', () => {
-    const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect(Object.keys(WIN_LEGACY).filter((k) => !keys.has(k))).toEqual([])
-  })
+  it('every WIN_LEGACY entry names a stored case', () => expect(pinnedCases(SETS, WIN_LEGACY)).toEqual([]))
 })

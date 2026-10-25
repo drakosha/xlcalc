@@ -7,13 +7,13 @@
  * saved holds, and no column Excel left at the standard width has one. Known differences are in `REPLACE_KNOWN` with
  * their reasons; the predictions committed before Excel ran each set are kept with how many cases Excel confirmed.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { held } from '../bench/coverage/entry/compare.js'
 import { findBook } from '../bench/coverage/find/cases.js'
 import { columnsOf, readOf, replaceInBook, type ReplaceBook, type ReplaceCase, type StoredReplace } from '../bench/coverage/replace/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { createSession, type CellInput } from '../src/index.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 const REPLACE_REASONS = {
@@ -39,13 +39,7 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:rules-held-3': 9,
 }
 
-const RUNS = TAGS.flatMap((tag) => {
-  const dir = new URL(`./excel/win/replace/${localeDir(tag)}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({ tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredReplace }))
-})
+const RUNS = localeSets<StoredReplace>('win/replace')
 
 /** A cell as compared: its value or formula and format; a structured reference without its table's name, as the engine writes one in its table. */
 const key = (c: CellInput | null | undefined, b: ReplaceBook, tag: string) => (b.tables ?? []).reduce((t, x) => t.replaceAll(`${x.name}[`, '['), JSON.stringify(held(c ?? null, tag)))

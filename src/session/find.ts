@@ -6,13 +6,13 @@
  * and kept with the session's state (`search.ts`), so another search of the same sheet only matches them.
  */
 import type { CellValue, ColumnInput, FindCellsOptions, RowInput } from '../contract.js'
-import { toCellValue, valueAt, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
 import { InputError } from '../input-error.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
 import { checkBoolean } from '../input/basic.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, placeOf } from '../model.js'
-import { outValue } from '../result.js'
+import { colOf, formatAddress, MAX_COLS, MAX_ROWS, placeOf, rowOf } from '../model.js'
+import { cellValue } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
 import { hasCell, meets, type Rect } from '../structure/area.js'
@@ -30,8 +30,6 @@ export type Ref = Rect & { s: number }
 
 /** A cell found: its sheet, row and column, its position in Find's order (its range, its block's bands of rows and columns, its place), which a cursor keeps, and the text Find read in it. */
 export type Found = [s: number, r: number, c: number, position: number[], text: string]
-
-const same = (v: number) => v
 
 /** A sheet's hidden rows or columns: whether there are any; whether a line is hidden, and how many lines are hidden before it, the band of lines it is in (a hidden line's, the band after it). */
 interface HiddenLines {
@@ -99,7 +97,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
       const id = own?.formula === undefined ? undefined : state.at.get(placeOf(s, r, c))
       return (id === undefined ? own?.formula : state.formulas[id]!.text) ?? ''
     }
-    const value = outValue(toCellValue(valueAt(state, s, r, c)))
+    const value = cellValue(state, s, r, c)
     if (!looks) return valueText(value)
     const view = { value, ...looks(s, r, c, value, own ?? {}) }
     shown?.(view, r, c, own)
@@ -150,10 +148,10 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
     // by columns: the range's columns at once; by rows: the rows asked of the range one by one, or its rows at once
     const cols = o.byColumns ? byColumns(t) : null
     const only = cols && rows ? new Set(rows) : null
-    const spans: [number, number][] = cols ? [[x.c1 * MAX_ROWS + x.r1, x.c2 * MAX_ROWS + x.r2]] : (rows ? rows.slice(lowerBound(rows, x.r1, same), lowerBound(rows, x.r2 + 1, same)) : [x.r1]).map((r) => [r * MAX_COLS + x.c1, (rows ? r : x.r2) * MAX_COLS + x.c2])
+    const spans: [number, number][] = cols ? [[x.c1 * MAX_ROWS + x.r1, x.c2 * MAX_ROWS + x.r2]] : (rows ? rows.slice(lowerBound(rows, x.r1), lowerBound(rows, x.r2 + 1)) : [x.r1]).map((r) => [r * MAX_COLS + x.c1, (rows ? r : x.r2) * MAX_COLS + x.c2])
     const at = cols ? cols.at : t.at
     for (const [lo, hi] of spans)
-      for (let j = lowerBound(at, Math.max(lo, start), same); j < at.length && at[j] <= hi; j++) {
+      for (let j = lowerBound(at, Math.max(lo, start)); j < at.length && at[j] <= hi; j++) {
         if (paced(1)) yield
         const k = at[j]
         const [r, c] = cols ? cr(k) : rc(k)
@@ -238,10 +236,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
 }
 
 /** A place's row and column; by columns (`c * MAX_ROWS + r`), too. */
-const rc = (m: number): [number, number] => {
-  const r = Math.floor(m / MAX_COLS)
-  return [r, m - r * MAX_COLS]
-}
+const rc = (m: number): [number, number] => [rowOf(m), colOf(m)]
 /** Whether position `a` comes after `b` in Find's order. */
 const later = (a: number[], b: number[]) => {
   for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] > b[k]

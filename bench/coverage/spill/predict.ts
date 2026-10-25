@@ -3,8 +3,7 @@
  * `npx tsx bench/coverage/spill/predict.ts <set>` writes `spill/<set>.predicted.json` (the non-blank cells of each case's
  * rectangles by `Sheet!A1`, as `test/spill-excel.test.ts` compares them), which the set reads.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { cellsOf } from '../case-book.js'
 import type { SpillSet } from './cases.js'
 import { computed } from '../../../test/spill-cases.js'
@@ -21,5 +20,5 @@ for (const c of (await setModule<SpillSet>('spill', set)).buildSpillCases()) {
   }
   out[c.id] = vals
 }
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)
+writePrediction(import.meta.url, `${set}`, out)
 console.log(`${set}: ${Object.keys(out).length} cases predicted`)

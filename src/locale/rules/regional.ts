@@ -6,8 +6,8 @@
 import type { ErrorCode } from '../../contract.js'
 import { textOrder } from '../../collate.js'
 import { errorWords } from '../../criteria.js'
-import { inSystem, parseDateWith, textReaders } from '../../dates.js'
-import { displayWith, fitPoints, formatWith, generalText, styleIn, typedPoints, type Names } from '../../numfmt.js'
+import { inSystem, parseDateWith, textReaders, type DateSyntax } from '../../dates.js'
+import { displayWith, fitPoints, formatWith, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../../numfmt.js'
 import { errorIn } from '../../syntax/errors.js'
 import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
@@ -16,6 +16,17 @@ import type { RegionalData, RulesClock } from './data.js'
 import { regionalDates } from './dates.js'
 import { formatDialects } from './format.js'
 import { cellNumberOf, numberReader } from './numbers.js'
+
+/** The five members of `Rules` that show a value by its format, wired to the text dialect, the cell's style and date reading. */
+export function shownBy(text: Dialect, cell: Style, dates: DateSyntax): Pick<Rules, 'dateText' | 'formatText' | 'display' | 'fitPoints' | 'typedPoints'> {
+  return {
+    dateText: (t) => parseDateWith(t, dates),
+    formatText: (value, format) => formatWith(value, format, text),
+    display: (value, format, space) => displayWith(value, format, cell, space),
+    fitPoints: (value, format) => fitPoints(value, format, cell),
+    typedPoints: (value, format, now) => typedPoints(value, format, cell, now),
+  }
+}
 
 export function regionalRules(locale: Locale, data: RegionalData, clock: RulesClock, names: (lcid: string) => Names | undefined, epoch = 0): Rules {
   const { decimal, group, currency } = data
@@ -43,14 +54,10 @@ export function regionalRules(locale: Locale, data: RegionalData, clock: RulesCl
     toText,
     toBool,
     valueText,
-    dateText: (text) => parseDateWith(text, dates),
+    ...shownBy(text, cell, dates),
     numberOnly,
     dates,
     numberText,
-    formatText: (value, format) => formatWith(value, format, text),
-    display: (value, format, space) => displayWith(value, format, cell, space),
-    fitPoints: (value, format) => fitPoints(value, format, cell),
-    typedPoints: (value, format, now) => typedPoints(value, format, cell, now),
     compare,
     compareOp: operatorOrder(compare),
     errorText: (code: ErrorCode) => errorIn(code, locale.errors),

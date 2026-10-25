@@ -4,8 +4,7 @@
  * refusal, or the look of each sheet after the operation (`LOOK` and the set's `look`, as `test/structure-excel.ts`
  * compares it) and its cells as Excel shows them, in `READ`.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, takenBook, writeAnswers } from '../stored.js'
+import { setModule, takenBook, writePrediction } from '../stored.js'
 import type { StructSet } from './cases.js'
 import { LOOK } from '../struct.js'
 import { editStructure } from '../../../src/index.js'
@@ -21,5 +20,5 @@ for (const c of cases) {
   const r = first && !first.ok ? first : editStructure(first ? first.book : takenBook(books[c.book]), c.op)
   out[c.id] = r.ok ? { sheets: Object.fromEntries(r.book.sheets.map((s) => [s.name, { look: lookOf(r.book, expandSheet(s), rects), cells: Object.fromEntries(Object.entries(s.cells).map(([a, x]) => [a, x.formula !== undefined ? `=${x.formula}` : String(x.value)])) }])) } : { refused: r.code }
 }
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)
+writePrediction(import.meta.url, `${set}`, out)
 console.log(`${set}: ${cases.length} cases predicted`)

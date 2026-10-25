@@ -1162,7 +1162,7 @@ interface BookInput {
    * dates, TODAY and NOW, date text and how dates are displayed: a 1904 workbook displays a negative date or time with a
    * minus sign (`-12:00`). It is included in both hashes only when it is 1904.
    */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /**
    * Iterative calculation of circular references, like Excel's setting and xlsx `calcPr iterate`. Without it, the cells
    * of a cycle and the cells that depend on it are not calculated and keep their values (`CellInput.held`). With it, the
@@ -2285,7 +2285,7 @@ The workbook's date system, as in [`BookInput.dateSystem`](#bookinput): 1900 wit
 
 ```ts
 interface DateSystemOptions {
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
 }
 ```
 
@@ -2345,7 +2345,7 @@ interface DisplayOptions {
    */
   width?: number
   /** The date system used to display dates, as in `BookInput.dateSystem`; 1900 without it. */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
 }
 ```
 
@@ -2438,7 +2438,7 @@ interface EntryOptions {
    */
   locale?: string | Locale
   /** The workbook's date system, as in `BookInput.dateSystem`; 1900 without it. */
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /**
    * The cell's entry context: its effective `numberFormat`, `style`, `meta`, `note` and `link`; other fields are not read.
    * A `CellInput`, or a `CellView` from `getCell` or `getCells`, carries only the cell's own format. To take a row's or
@@ -2491,7 +2491,7 @@ interface EntryTextOptions {
   numberFormat?: NumberFormat
   /** A loaded locale's tag (`LOCALES`) or a locale object; en-US without one. */
   locale?: string | Locale
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
   /** ISO, as in `Clock.now`; the current time without it. */
   now?: string
 }

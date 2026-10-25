@@ -4,11 +4,11 @@
  * format changes; refused patches change nothing; in the same thread and in a thread as in a synchronous session, and
  * after a thread is lost, from the snapshot and the journal. With closures and eval.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, InputError, createSession, type BookInput, type Calc, type CellPatch, type Execution } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { compute, createInlineCalc, InputError, createSession, type BookInput, type CellPatch, type Execution } from '../src/index.js'
 import { CLOCK } from './async-books.js'
 import { boldAndYellow, cellsOf } from './looks-book.js'
-import { inside, pool } from './fixtures/pool.js'
+import { closedAfter, inside } from './fixtures/pool.js'
 
 const book = (): BookInput => ({
   styles: boldAndYellow(),
@@ -39,8 +39,7 @@ const PATCHES: CellPatch[][] = [
   [{ sheet: 'S', cell: 'B5', set: { style: null } }, { sheet: 'S', cell: 'A3', set: { note: null, numberFormat: null } }],
 ]
 
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
+const { keep, made } = closedAfter()
 
 describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (execution: Execution) => {
   const opts = { clock: CLOCK, execution }
@@ -131,10 +130,8 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
   })
 
   it('in the same thread and in a thread: the changes, the book and the hash of a synchronous session', async () => {
-    const p = await pool({ threads: 1 })
-    calcs.push(p)
-    const inline = createInlineCalc({ sliceMs: 2 })
-    calcs.push(inline)
+    const p = await made({ threads: 1 })
+    const inline = keep(createInlineCalc({ sliceMs: 2 }))
     const y = createSession(book(), opts)
     const [a, b] = [await inline.createSession(book(), opts), await p.createSession(book(), opts)]
     for (const patches of PATCHES) {
@@ -153,7 +150,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
   it('a thread lost: the session comes back with its patches, from the journal and from a snapshot taken after them', async () => {
     for (const snapshotEvery of [64, 3]) {
       const { calc, inside: x, crash } = await inside({ threads: 1, snapshotEvery })
-      calcs.push(calc)
+      keep(calc)
       const s = await calc.createSession(book(), opts)
       const y = createSession(book(), opts)
       for (const patches of PATCHES.slice(0, 5)) {

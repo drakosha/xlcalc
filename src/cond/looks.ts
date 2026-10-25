@@ -9,8 +9,8 @@ import type { BarLook, CellInput, CellValue, Color, ConditionalFormat, Condition
 import type { EngineState } from '../engine.js'
 import type { Looks } from '../shown.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { MAX_COLS } from '../model.js'
-import { EN_BUILTIN } from '../numfmt/builtin.js'
+import { inner, MAX_COLS } from '../model.js'
+import { enCode } from '../numfmt/builtin.js'
 import { COMPARE } from '../operators.js'
 import { inside, type Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
@@ -24,8 +24,7 @@ import { statsOf, valueKey, type Stats } from './stats.js'
 const prepared = new WeakMap<EngineState, Map<string, Ast | null>>()
 
 function tree(state: EngineState, s: number, text: string): Ast | null {
-  let m = prepared.get(state)
-  if (!m) prepared.set(state, (m = new Map()))
+  const m = inner(prepared, state, () => new Map())
   const k = `${s}\n${text}`
   if (!m.has(k)) m.set(k, prepare(state, s, text))
   return m.get(k)!
@@ -134,8 +133,11 @@ function mergeStyle(into: ConditionalAppearance, s: ConditionalStyle) {
 /** Whether a rule of a style holds for `v` at (r, c). */
 type Test = (v: V, r: number, c: number) => boolean
 
+/** The kinds that shade a cell by where its number sits among the range's numbers instead of testing it for a style: `shade` takes them, `styleTest` the rest. */
+type Graded = { type: 'colorScale' | 'dataBar' | 'iconSet' }
+
 /** The test of a rule with a style, built once per window; null when it holds for no cell. */
-function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Steps<Test | null> {
+function* styleTest(state: EngineState, s: number, rule: Exclude<ConditionalFormat, Graded>): Steps<Test | null> {
   const { compareOp } = state.ctx.rules
   const at = (text: string) => formulaAt(state, s, rule, text)
   switch (rule.type) {
@@ -185,10 +187,6 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
       const key = valueKey(state.ctx.rules)
       return (v) => v !== null && (st.counts.get(key(v)) ?? 0) > 1 === dup
     }
-    case 'colorScale':
-    case 'dataBar':
-    case 'iconSet':
-      return null
     default: {
       const f = formulaAt(state, s, rule, ruleFormula(rule)!)
       return (_, r, c) => holds(state, f(r, c))
@@ -199,7 +197,7 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
 /** What a rule over numbers gives a number, built once per window; null when it gives nothing. */
 type Shade = (v: number, into: ConditionalAppearance) => void
 
-function* shade(state: EngineState, s: number, rule: Extract<ConditionalFormat, { type: 'colorScale' | 'dataBar' | 'iconSet' }>): Steps<Shade | null> {
+function* shade(state: EngineState, s: number, rule: Extract<ConditionalFormat, Graded>): Steps<Shade | null> {
   const st = yield* statsOf(state, s, rule)
   const t = (v: ConditionalValue) => threshold(state, s, rule, v, st)
   switch (rule.type) {
@@ -300,7 +298,7 @@ type ShownBy = ((format: NonNullable<ConditionalStyle['numberFormat']>) => { tex
 export function lookShown(view: { text?: string; color?: Color }, look: ConditionalAppearance, display: ShownBy) {
   const format = look.style?.numberFormat
   if (format === undefined || !display) return
-  const d = display(typeof format === 'number' ? (EN_BUILTIN[format] ?? format) : format)
+  const d = display(enCode(format))
   view.text = d.text
   if (d.color === undefined) delete view.color
   else view.color = d.color

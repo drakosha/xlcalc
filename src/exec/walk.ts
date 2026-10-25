@@ -210,12 +210,30 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   // whose names the walk sees, and the names it is inside (their references without `$` move by the cell from A1)
   let scope = s
   const inside = new Set<NameDef>()
+  /**
+   * A definition's formula entered: at the global scope (a name's names are the global ones, its LET names its own), a
+   * name that goes through it to itself caught by `inside`. The walk's state is per call, so a throw leaves it as is.
+   */
+  const enter = <R>(d: NameDef, visit: () => R): R => {
+    const outer: [T[], Ast[], number] = [uses, bound, scope]
+    ;[uses, bound, scope] = [[], [], -1]
+    inside.add(d)
+    const out = visit()
+    inside.delete(d)
+    ;[uses, bound, scope] = outer
+    return out
+  }
   // a reference's rectangle: in a name's formula, its relative bounds moved by the formula's cell
   const rect = (n: Extract<Ast, { k: 'ref' | 'ref3d' | 'xref' }>) => {
     const a = inside.size || ctx.origin ? relative(n.ref) : null
     if (!a) return n.ref
     const [dr, dc] = inside.size || !ctx.origin ? [r, c] : [r - ctx.origin.r + MAX_ROWS, c - ctx.origin.c + MAX_COLS]
     return placed(a, dr, dc)
+  }
+  // the same rectangle as a range of sheet `s`
+  const rng = (n: Extract<Ast, { k: 'ref' | 'xref' }>, s: number): Rng => {
+    const x = rect(n)
+    return new Rng(s, x.r1, x.c1, x.r2, x.c2)
   }
   /**
    * The rectangles a node can answer as a reference, for the cells between the ends of the range operator: the
@@ -232,8 +250,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     }
     switch (n.k) {
       case 'ref': {
-        const x = rect(n)
-        const g = new Rng(ctx.sheet(n.sheet), x.r1, x.c1, x.r2, x.c2)
+        const g = rng(n, ctx.sheet(n.sheet))
         add(g)
         if (n.ref.spill) anchors.push(g)
         return
@@ -246,8 +263,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'xref': {
         const k = linked(n)
         if (k === undefined) return
-        const x = rect(n)
-        add(new Rng(k, x.r1, x.c1, x.r2, x.c2))
+        add(rng(n, k))
         return
       }
       case 'paren':
@@ -268,12 +284,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'name': {
         const d = resolve(n, scope)
         if (!d || inside.has(d)) return
-        const outer: [Ast[], number] = [bound, scope]
-        ;[bound, scope] = [[], -1]
-        inside.add(d)
-        on(d.ast)
-        inside.delete(d)
-        ;[bound, scope] = outer
+        enter(d, () => on(d.ast))
         return
       }
       case 'let': {
@@ -370,6 +381,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     if (n.k !== 'name') return false
     const d = resolve(n, scope)
     if (!d || inside.has(d)) return false
+    // entered at the formula's scope, without enter's switch to the global one: a linked name in it resolves as the formula's cell does
     inside.add(d)
     const out = closed(d.ast)
     inside.delete(d)
@@ -391,8 +403,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         return b.array(new Arr(n.rows.length, n.rows[0].length, n.rows.length, n.rows[0].length, v))
       }
       case 'ref': {
-        const x = rect(n)
-        const g = new Rng(ctx.sheet(n.sheet), x.r1, x.c1, x.r2, x.c2)
+        const g = rng(n, ctx.sheet(n.sheet))
         info.refs.push(g)
         // one code for every cell: a reference without `$` finds its rectangle at the cell the code runs at
         const a = ctx.here && relative(n.ref)
@@ -411,8 +422,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'xref': {
         const k = linked(n)
         if (k === undefined) return b.value(E.REF)
-        const x = rect(n)
-        const g = new Rng(k, x.r1, x.c1, x.r2, x.c2)
+        const g = rng(n, k)
         info.refs.push(g)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
@@ -443,13 +453,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         if (!d) return b.value(E.NAME)
         // a name that uses itself, through other names or not
         if (inside.has(d)) return b.value(E.CYCLE)
-        const outer: [T[], Ast[], number] = [uses, bound, scope]
-        ;[uses, bound, scope] = [[], [], -1]
-        inside.add(d)
-        const code = go(d.ast, rangeOk)
-        inside.delete(d)
-        ;[uses, bound, scope] = outer
-        return code
+        return enter(d, () => go(d.ast, rangeOk))
       }
       case 'at':
         return value(b.at(go(n.a, true), r, c), n, rangeOk)

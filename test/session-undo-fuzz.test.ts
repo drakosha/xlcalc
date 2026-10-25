@@ -6,9 +6,9 @@
  * values; a refused change leaves the book and the history as they were. In a synchronous session, in the same thread
  * and in a thread, with closures and eval.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, InputError, createSession, type BookInput, type Calc, type CellChange, type CellRef, type ComputeResult, type Execution, type SessionHistory, type SessionOptions, type UndoResult } from '../src/index.js'
-import { inside, pool } from './fixtures/pool.js'
+import { describe, expect, it } from 'vitest'
+import { compute, createInlineCalc, InputError, createSession, type BookInput, type CellChange, type CellRef, type ComputeResult, type Execution, type SessionHistory, type SessionOptions, type UndoResult } from '../src/index.js'
+import { closedAfter, inside } from './fixtures/pool.js'
 import { undoBook, undoMoves, type Change } from './undo-fuzz.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -137,8 +137,7 @@ export async function undoRun(seed: number, moves: number, open: (book: BookInpu
 
 const sync = async (book: BookInput, o: SessionOptions) => createSession(book, o) as unknown as Undoable
 
-const calcs: Calc[] = []
-afterAll(() => Promise.all(calcs.map((c) => c.close())))
+const { keep, made } = closedAfter()
 
 describe.each(['closures', 'eval'] as const)('undo and redo against the books of the changes, %s', (execution: Execution) => {
   it.each([1, 2, 3, 4, 5, 6])('seed %i, synchronous', async (seed) => {
@@ -150,20 +149,18 @@ describe.each(['closures', 'eval'] as const)('undo and redo against the books of
   })
 
   it('seed 8, in the same thread', async () => {
-    const calc = createInlineCalc({ sliceMs: 1 })
-    calcs.push(calc)
+    const calc = keep(createInlineCalc({ sliceMs: 1 }))
     await undoRun(8, 60, (b, o) => calc.createSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution })
   })
 
   it('seed 9, in a thread', async () => {
-    const calc = await pool({ threads: 1 })
-    calcs.push(calc)
+    const calc = await made({ threads: 1 })
     await undoRun(9, 60, (b, o) => calc.createSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution })
   }, 120_000)
 
   it('seed 10, in a thread lost now and then, its snapshots taken every 3 calls', async () => {
     const { calc, crash } = await inside({ threads: 1, snapshotEvery: 3 })
-    calcs.push(calc)
+    keep(calc)
     await undoRun(10, 60, (b, o) => calc.createSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution }, (k) => k % 9 === 8 && crash(0))
   }, 120_000)
 })

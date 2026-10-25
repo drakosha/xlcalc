@@ -9,6 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { FUNCTION_NAMES } from '../src/index.js'
 import { CASES } from './excel-cases.js'
 import { describeOff, KNOWN_BY_LOCALE, LOCALE_EXCEL, LOCALE_SETS, LOCALE_TAGS, measurementPath, reasonText, runLocaleCases, type LocaleOutcome } from './excel-locale-cases.js'
+import { pinnedCases } from './stored-cases.js'
 
 for (const tag of LOCALE_TAGS) {
   const excel = LOCALE_EXCEL.get(tag)
@@ -33,10 +34,7 @@ for (const tag of LOCALE_TAGS) {
   const known = KNOWN_BY_LOCALE[tag]
   if (known)
     describe(`known differences from Excel ${tag}`, () => {
-      it(`every entry of KNOWN_BY_LOCALE['${tag}'] names an existing case`, () => {
-        const keys = new Set([...CASES.map((c) => `measurement:${c.id}`), ...LOCALE_SETS.get(tag)!.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`))])
-        expect(Object.keys(known).filter((k) => !keys.has(k))).toEqual([])
-      })
+      it(`every entry of KNOWN_BY_LOCALE['${tag}'] names an existing case`, () => expect(pinnedCases([{ name: 'measurement', cases: CASES }, ...LOCALE_SETS.get(tag)!], known)).toEqual([]))
 
       it(`docs/limitations.md's known differences have a line for every reason in KNOWN_BY_LOCALE['${tag}']`, () => {
         const readme = readFileSync(new URL('../docs/limitations.md', import.meta.url), 'utf8')

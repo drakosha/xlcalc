@@ -3,13 +3,12 @@
  * `ribbon`, written before Excel runs it: `npx tsx bench/windows/ribbon-predict.ts <set>` writes
  * `ribbon/<set>.predicted.json`, each case's cells by name in each of the package's locales.
  */
-import { fileURLToPath } from 'node:url'
 import { TAGS } from '../coverage/locales.js'
-import { setModule, writeAnswers } from '../coverage/stored.js'
+import { setModule, writePrediction } from '../coverage/stored.js'
 import { ribbonOf, type UiSet } from '../coverage/ui/cases.js'
 import { ribbonCases } from './ribbon.js'
 
 const set = process.argv[2]
 const cases = ribbonCases(await setModule<UiSet>('ui', set))
 const locales = Object.fromEntries(TAGS.map((tag) => [tag, Object.fromEntries(cases.map((c) => [c.id, ribbonOf(c, tag)]))]))
-writeAnswers(fileURLToPath(new URL(`./ribbon/${set}.predicted.json`, import.meta.url)), { now: new Date().toISOString().slice(0, 10), locales })
+writePrediction(import.meta.url, `ribbon/${set}`, { now: new Date().toISOString().slice(0, 10), locales })

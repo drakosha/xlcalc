@@ -5,15 +5,14 @@
  * pool takes its tasks in order while a large book is written; opening a large book stops the event loop for a
  * fraction of what a structured clone of it takes.
  */
-import { afterAll, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { compute, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { pack, unpack, unpackSlowly, type Sent } from '../src/worker/pack.js'
 import { BOOKS, chainBook, CLOCK, loopDuring } from './async-books.js'
-import { inside, pool } from './fixtures/pool.js'
+import { closedAfter, inside } from './fixtures/pool.js'
 
-const pools: { close(): Promise<void> }[] = []
-afterAll(() => Promise.all(pools.map((p) => p.close())))
+const { keep, made } = closedAfter()
 
 const isText = (s: Sent) => (s as { packed?: number }).packed === 1
 
@@ -47,8 +46,7 @@ describe('a book as text', () => {
       expect(sent, name).toEqual(book)
     }
     // and they compute in a thread as here, where a NaN value is refused as here
-    const p = await pool({ threads: 1 })
-    pools.push(p)
+    const p = await made({ threads: 1 })
     for (const [name, book] of odd.slice(1, 4)) expect((await p.compute(book, { clock: CLOCK })).hash, name).toBe(compute(book, { clock: CLOCK }).hash)
     await expect(p.compute(odd[0][1], { clock: CLOCK })).rejects.toMatchObject({ path: 'book.sheets[0].cells["A1"].value' })
   })
@@ -56,8 +54,7 @@ describe('a book as text', () => {
   it('is taken at once: what the caller changes afterwards does not reach the session', async () => {
     const book = synthBook({ seed: 1, rows: 2000 }).book
     const before = structuredClone(book)
-    const p = await pool({ threads: 1 })
-    pools.push(p)
+    const p = await made({ threads: 1 })
     const opening = p.createSession(book, { clock: CLOCK })
     // the large book is written between turns: change it right away
     const data = book.sheets[0]
@@ -89,8 +86,7 @@ describe('a book as text', () => {
     it.each([['as text', false], ['as objects', true]] as const)('%s: createSession and compute', async (_, negZero) => {
       const before = large(negZero)
       const expected = compute(before, { clock: CLOCK, execution }).hash
-      const p = await pool({ threads: 1 })
-      pools.push(p)
+      const p = await made({ threads: 1 })
       const book = large(negZero)
       const opening = p.createSession(book, { clock: CLOCK, execution })
       const computing = p.compute(book, { clock: CLOCK, execution })
@@ -105,15 +101,14 @@ describe('a book as text', () => {
     it('as objects: a session comes back as it was taken after its thread is lost and after it left a full thread', async () => {
       const expected = compute(large(true), { clock: CLOCK, execution }).hash
       const lost = await inside({ threads: 1 })
-      pools.push(lost.calc)
+      keep(lost.calc)
       const book = large(true)
       const opening = lost.calc.createSession(book, { clock: CLOCK, execution })
       change(book)
       const s = await opening
       lost.crash(0)
       expect(await s.getHash()).toBe(expected)
-      const full = await pool({ threads: 1, maxSessionsPerThread: 1 })
-      pools.push(full)
+      const full = await made({ threads: 1, maxSessionsPerThread: 1 })
       const other = large(true)
       const first = full.createSession(other, { clock: CLOCK, execution })
       change(other)
@@ -124,8 +119,7 @@ describe('a book as text', () => {
   })
 
   it('tasks keep their order while a large book is written', async () => {
-    const p = await pool({ threads: 1 })
-    pools.push(p)
+    const p = await made({ threads: 1 })
     const order: string[] = []
     const big = p.compute(synthBook({ seed: 1, rows: 3400 }).book).then(() => order.push('large'))
     const small = p.compute(chainBook(3)).then(() => order.push('small'))
@@ -138,8 +132,7 @@ describe('a book as text', () => {
     const t0 = performance.now()
     structuredClone(book)
     const clone = performance.now() - t0
-    const p = await pool({ threads: 1 })
-    pools.push(p)
+    const p = await made({ threads: 1 })
     await p.compute(chainBook(2))
     const { value: s, worst } = await loopDuring(p.createSession(book, { clock: CLOCK }))
     // the pool copied the book and cloned it to the thread in one stretch: more than half a clone

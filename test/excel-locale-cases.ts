@@ -7,7 +7,7 @@
  * clock is in 2026, the year Excel computed them in, so date text without a year is in 2026. Comparison as for en-US;
  * each locale's known differences are pinned in `KNOWN_BY_LOCALE`, as `KNOWN` does for en-US.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { samePin } from '../bench/coverage/compare.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { localeDir, measurementFile, TAGS } from '../bench/coverage/locales.js'
@@ -17,6 +17,7 @@ import { compute } from '../src/index.js'
 import { CASES, CLOCK, excelBook, matches, REASONS, show, toVal, type ExcelCase } from './excel-cases.js'
 import { RU_KNOWN, RU_REASONS } from './excel-ru-known.js'
 import { caseBook, loadSet, type StoredSet } from './excel-sets.js'
+import { storedSets } from './stored-sets.js'
 import './locales.js'
 
 /** The locales compared here: the package's, but en-US. */
@@ -51,11 +52,7 @@ export const LOCALE_EXCEL: ReadonlyMap<string, Record<string, Val>> = new Map(
 
 /** The case sets computed in Excel in each locale (`test/excel/cases/<tag>/`), none where it has no directory. */
 export const LOCALE_SETS: ReadonlyMap<string, StoredSet[]> = new Map(
-  LOCALE_TAGS.map((tag) => {
-    const dir = new URL(`./excel/cases/${localeDir(tag)}`, import.meta.url)
-    const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).sort() : []
-    return [tag, files.map((f) => ({ name: f.slice(0, -5), ...json<Omit<StoredSet, 'name'>>(new URL(f, dir)) }))]
-  }),
+  LOCALE_TAGS.map((tag) => [tag, storedSets<Omit<StoredSet, 'name'>>(`cases/${localeDir(tag)}`).map(({ dir, ...set }) => set)]),
 )
 
 /** A case passes: it matches Excel in the locale, or it is a known difference there, differs from Excel and gives the pinned answer (`samePin`). */

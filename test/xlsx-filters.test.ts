@@ -9,10 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { compute, type BookInput, type SheetInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { KEEP_ALL } from '../src/xlsx/write/sheet.js'
-import { openArchive } from '../src/xlsx/zip/read.js'
-import { codes, pack, parts } from './xlsx-fixtures.js'
-
-const text = async (data: Uint8Array, name: string) => (await openArchive(data).text(name))!
+import { codes, pack, partText as text, parts } from './xlsx-fixtures.js'
 
 /** A1:A6 hold 1, 2, 4, 8, 16, 32 and B1:B6 keys; C1 to C4 SUBTOTAL and AGGREGATE over A1:A6. */
 const ROWS = Array.from({ length: 6 }, (_, i) => `<c r="A${i + 1}"><v>${2 ** i}</v></c><c r="B${i + 1}" t="inlineStr"><is><t>${i % 3 ? 'x' : 'y'}</t></is></c>`)

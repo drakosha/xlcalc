@@ -8,7 +8,7 @@
 import type { EngineState } from '../engine.js'
 import { paced } from '../exec/budget.js'
 import { layerOf } from '../looks/sheet.js'
-import { formatAddress, MAX_COLS } from '../model.js'
+import { colOf, formatAddress, MAX_COLS, rowOf } from '../model.js'
 import { lowerBound } from '../sorted.js'
 import { hasCell, meets, type Rect } from '../structure/area.js'
 import type { Ref } from './find.js'
@@ -17,28 +17,26 @@ import { textsOf } from './search.js'
 /** A cell of a query: its sheet, row and column, the range it comes in, and its address. */
 export type Read = [s: number, r: number, c: number, n: number, addr: string]
 
-const same = (v: number) => v
-
 /** The rows of `rows` (ascending) from row `r` on, as the index of the first; all rows without `rows`. */
-const nextRow = (rows: number[] | null, r: number) => (rows ? (rows[lowerBound(rows, r, same)] ?? Infinity) : r)
+const nextRow = (rows: number[] | null, r: number) => (rows ? (rows[lowerBound(rows, r)] ?? Infinity) : r)
 
 /** The index of the first place of `at` (ascending) from index `j` on in rectangle `x` and rows `rows`, not before place `start`, each row's run found by a search; `at.length` when none. */
 function nextIn(at: Float64Array, x: Rect, rows: number[] | null, start: number, j: number): number {
   while (j < at.length) {
     const m = at[j]
-    const r = Math.floor(m / MAX_COLS)
-    const c = m - r * MAX_COLS
+    const r = rowOf(m)
+    const c = colOf(m)
     const row = nextRow(rows, r)
     if (row > x.r2) return at.length
-    if (row > r || c < x.c1) j = lowerBound(at, Math.max(start, row * MAX_COLS + x.c1), same)
-    else if (c > x.c2) j = lowerBound(at, Math.max(start, nextRow(rows, r + 1) * MAX_COLS + x.c1), same)
+    if (row > r || c < x.c1) j = lowerBound(at, Math.max(start, row * MAX_COLS + x.c1))
+    else if (c > x.c2) j = lowerBound(at, Math.max(start, nextRow(rows, r + 1) * MAX_COLS + x.c1))
     else return j
   }
   return at.length
 }
 
 /** The index of the first place of `at` in rectangle `x` and rows `rows` from place `start` on; `at.length` when none. */
-const firstIn = (at: Float64Array, x: Rect, rows: number[] | null, start: number) => nextIn(at, x, rows, start, lowerBound(at, Math.max(start, x.r1 * MAX_COLS + x.c1), same))
+const firstIn = (at: Float64Array, x: Rect, rows: number[] | null, start: number) => nextIn(at, x, rows, start, lowerBound(at, Math.max(start, x.r1 * MAX_COLS + x.c1)))
 
 /** The places of `at` in rectangle `x` and rows `rows`, by rows, from place `start` on. */
 function* indexed(at: Float64Array, x: Rect, rows: number[] | null, start: number): Generator<number> {
@@ -100,8 +98,8 @@ export function* readOrder(state: EngineState, refs: Ref[], rows: number[] | nul
       const m = heads[k].value as number
       heads[k] = streams[k].next()
       if (paced(1)) yield
-      const r = Math.floor(m / MAX_COLS)
-      const c = m - r * MAX_COLS
+      const r = rowOf(m)
+      const c = colOf(m)
       const addr = formatAddress(r, c)
       // an input cell from the index alone, a spilled cell from its spill alone, a look's cell where neither is
       if ((k === 0) !== (addr in cells) || (k === 2 && spills.some((y) => hasCell(y, r, c))) || (earlier.length && earlier.some((y) => hasCell(y, r, c)))) continue

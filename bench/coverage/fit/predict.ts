@@ -3,8 +3,7 @@
  * bench/coverage/fit/predict.ts <set>` writes `fit/<set>.predicted.json`, each case's width and shown texts in each of
  * the package's locales, with the day whose year completes a date typed without one.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { compute, entryWidth, fitColumns, parseEntry } from '../../../src/index.js'
 import { TAGS } from '../locales.js'
 import type { FitSet } from './cases.js'
@@ -23,4 +22,4 @@ const engine: FitEngine = {
 }
 
 const locales = Object.fromEntries(TAGS.map((tag) => [tag, Object.fromEntries(buildFitCases(tag).map((c) => [c.id, engineFit(engine, c, tag, now)]))]))
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { now, locales })
+writePrediction(import.meta.url, `${set}`, { now, locales })

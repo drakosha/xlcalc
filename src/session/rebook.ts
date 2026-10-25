@@ -10,7 +10,7 @@
  */
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { formatAddress, MAX_COLS, readAddress } from '../model.js'
+import { colOf, formatAddress, MAX_COLS, readAddress, rowOf } from '../model.js'
 import { madeFrom } from '../looks/sheet.js'
 import { cellCount, type Rect } from '../structure/area.js'
 import { inverse, placer, vanishing, type Geometry, type Place } from '../structure/geometry.js'
@@ -160,7 +160,7 @@ export function* bookDiff(pass: DiffPass, g: Geometry): Steps<BookDiff> {
     }
     // its cells: those the pass met, and those at the places taken nowhere looked up; past `GONE` of these, counted
     let size = d.kept + d.held + d.left
-    if (d.gone) for (const n of d.gone) size += o.cells[formatAddress(Math.floor(n / MAX_COLS), n % MAX_COLS)] ? 1 : 0
+    if (d.gone) for (const n of d.gone) size += o.cells[formatAddress(rowOf(n), colOf(n))] ? 1 : 0
     else {
       size = 0
       for (const _ in o.cells) size++

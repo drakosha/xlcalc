@@ -1,33 +1,16 @@
 /**
- * Session: recomputing only the dependents must give the same as a full computation in order. 200 seeded
- * edits (values of the lookup table, criteria and data, formulas with and without arrays, invalid formulas,
- * clearing, a cycle and breaking it); after each one the session hash equals the hash of a full `compute`
- * of the edited book.
+ * Session: `setClock` recomputes volatile cells and `setNames` rebuilds, a live session takes a clock on every
+ * recomputation, `explain` walks the precedents, and `debugGeneratedCode` dumps the code in evaluation order.
+ * The hash of a session after each of 200 seeded edits, and its reported changes, are checked against full
+ * computations by `execution-session-*.test.ts` (`execution-compare.ts`), in both execution modes.
  */
 import { describe, expect, it } from 'vitest'
 import { InputError, compute, debugGeneratedCode, createSession, type BookInput } from '../src/index.js'
-import { synthBook } from '../src/synth.js'
-import { apply, edits, withHeld } from './session-edits.js'
+import { apply } from './session-edits.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
 describe('session', () => {
-  it('200 edits: after each one the session hash equals the full computation hash', () => {
-    const synth = synthBook({ seed: 1, rows: 340 })
-    const session = createSession(synth.book, { clock })
-    let book = synth.book
-    for (const batch of edits(3, 200, synth)) {
-      const { changes } = session.setCells(batch)
-      book = apply(book, batch)
-      const full = compute(withHeld(book, session.getBook()), { clock })
-      const r = session.getResult()
-      expect(r.hash).toBe(full.hash)
-      // the reported changes agree with the values
-      for (const ch of changes) expect(r.sheets.find((s) => s.name === ch.sheet)!.cells[ch.cell]?.value ?? null).toEqual(ch.value)
-    }
-    session.close()
-  }, 300_000)
-
   it('setClock recomputes volatile cells; setNames rebuilds', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TODAY()' }, A2: { formula: 'A1+1' }, A3: { value: 5 }, B1: { formula: 'x*2' } } }], names: [{ name: 'x', ref: "'S'!$A$3" }] }
     const s = createSession(book, { clock, display: false })

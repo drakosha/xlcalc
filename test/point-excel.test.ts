@@ -5,12 +5,11 @@
  * in), or neither (nothing happened). The keys pressed while pointing (an arrow again, Shift, Command, Home, Page Down,
  * F2) are the host's to follow, as `docs/entry.md` describes them, and are not compared here.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
 import type { PointStep } from '../bench/coverage/ui/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { refAt, type PointAction } from '../src/index.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 /** Cases where `refAt` knowingly differs from Excel, by `<set>:<id>` in every locale or `<tag>:<set>:<id>` in one, with the reason. */
@@ -31,13 +30,7 @@ function barOf(description: string): { cell: string; text: string } {
   return { cell: `${m[1]}${m[2]}`, text: m[3] }
 }
 
-const SETS = TAGS.flatMap((tag) => {
-  const dir = new URL(`./excel/ui/${localeDir(tag)}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.startsWith('point-') && f.endsWith('.json'))
-    .map((f) => ({ tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredUi }))
-})
+const SETS = localeSets<StoredUi>('ui', (f) => f.startsWith('point-') && f.endsWith('.json'))
 
 /**
  * A case that types a text, moves the caret in Edit mode (F2, then Home and arrows, F2 again) or not, then presses Right

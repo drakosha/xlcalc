@@ -6,6 +6,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { BookInput, CellInput, ColumnInput, ConditionalFormat, ConditionalStyle, NumberFormat, RowInput, SheetInput, StructureOp } from '../../src/contract.js'
 import { editStructure } from '../../src/structure/index.js'
 
@@ -16,6 +17,30 @@ export const loadStored = <T>(file: string): T | null => (existsSync(file) && !p
 export function writeAnswers(file: string, body: unknown): void {
   mkdirSync(dirname(file), { recursive: true })
   writeFileSync(file, JSON.stringify(body, null, 1) + '\n')
+}
+
+/** A prediction file of a script (`<name>.predicted.json` beside its `import.meta.url`), written as every prediction is. */
+export function writePrediction(metaUrl: string, name: string, body: unknown): void {
+  writeAnswers(fileURLToPath(new URL(`./${name}.predicted.json`, metaUrl)), body)
+}
+
+/**
+ * A step's `save`, as the harnesses write their answer files: `meta` — the base the step gives (`metaOf`'s on Windows,
+ * the coverage steps' version and locale), the day where a step's tests read it as their clock (`dated`), and `seconds`
+ * of this run beside the resumed runs' (`extra.was`, the seconds the step's stored file gives) — the answers in the
+ * order of the cases, and a step's own fields around them: its books before the cases, the cases Excel did not confirm
+ * (read at each save) after the answers.
+ */
+export function answerSaver(file: string, base: object, dated: boolean, t0: number, cases: readonly { id: string }[], answers: Record<string, unknown>, extra: { was?: number; before?: object; after?: () => object } = {}): () => void {
+  const { was = 0, before = {}, after = () => ({}) } = extra
+  return () =>
+    writeAnswers(file, {
+      meta: { ...base, ...(dated ? { date: new Date().toISOString().slice(0, 10) } : {}), seconds: secondsSince(t0 - was * 1000) },
+      ...before,
+      cases,
+      answers: inCaseOrder(cases, answers),
+      ...after(),
+    })
 }
 
 /** The seconds since `t0` to a tenth, as an answer file's `meta` gives its run's time. */

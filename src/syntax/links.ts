@@ -6,13 +6,11 @@
 import type { CheckCode, ExternalBook } from '../contract.js'
 import { caseKey } from '../collate.js'
 import type { Message } from '../locale/messages.js'
-import { PLAIN_SHEET } from '../sheet-pattern.js'
+import { PLAIN_NAME } from '../sheet-pattern.js'
 import { FormulaError, type Ast } from './ast.js'
 import { mapAst, quoteSheet, sheetKey } from './print.js'
 import { isSpace } from './scan.js'
 import { readsAsCell, tokenize, type Tok } from './tokens.js'
-
-const PLAIN = new RegExp(`^${PLAIN_SHEET}$`, 'u')
 
 /** A link's target as a formula shows it: the folder (`C:\data\`, `../data/`, empty for a file name) and the file. */
 export function shownTarget(target: string): { dir: string; file: string } {
@@ -71,18 +69,8 @@ export function bindLinks(ast: Ast, books: readonly ExternalBook[] | undefined, 
   return fail ? { ok: false, ...(fail as LinkFail) } : { ok: true, ast: out }
 }
 
-/** Whether the formula refers to another workbook, by number or by file name. */
-export function readsLinks(ast: Ast): boolean {
-  let found = false
-  mapAst(ast, (n) => {
-    if (n.k === 'xref' || n.k === 'xname') found = true
-    return undefined
-  })
-  return found
-}
-
 /** A name of a sheet or a file in a reference as Excel writes it: in quotes unless it is a plain name (`Book2.xlsx`, `Sheet1`). */
-export const plain = (s: string) => PLAIN.test(s) && !readsAsCell(s)
+export const plain = (s: string) => PLAIN_NAME.test(s) && !readsAsCell(s)
 
 /** Another workbook's sheet before `!` as Excel shows it, by the link's target: `[Book2.xlsx]Sheet1`, `'C:\data\[Book2.xlsx]My Sheet'`. */
 export function shownLinkSheet(target: string, sheet: string): string {

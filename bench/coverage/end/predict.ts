@@ -3,9 +3,8 @@
  * `end/<set>.predicted.json`, each case's cell in each of the package's locales, by `getEnd` of the day (`endsInBook`),
  * so a set's committed predictions stay what the engine answered before Excel ran it.
  */
-import { fileURLToPath } from 'node:url'
 import { TAGS } from '../locales.js'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { endsInBook, type EndSet } from './cases.js'
 
 const [set] = process.argv.slice(2)
@@ -16,4 +15,4 @@ const answers = (tag: string): Record<string, string> => {
   return Object.fromEntries(cases.map((c) => [c.id, all[c.id]]))
 }
 const locales = Object.fromEntries(TAGS.map((tag) => [tag, answers(tag)]))
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { model: 'getEnd', locales })
+writePrediction(import.meta.url, `${set}`, { model: 'getEnd', locales })

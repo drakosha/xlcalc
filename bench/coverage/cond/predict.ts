@@ -6,8 +6,7 @@
  * periods). A case whose rules Excel makes (Windows) is predicted on its book with the rules it is expected to make; a
  * raw case on the book the reader reads from its file, with what the reader reports.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { readXlsx } from '../../../src/xlsx.js'
 import { condFile, engineCase, type CondSet } from './cases.js'
 
@@ -23,5 +22,5 @@ for (const c of built.cases) {
   const issues = read?.issues.map((i) => `${i.code} ${i.sheet ?? ''} ${(i.cells ?? []).join(' ')}: ${i.message}`)
   out[c.id] = { ...engineCase(built, c, clock, read?.book ?? (c.make && mod.expectedBook ? mod.expectedBook(c) : undefined)), ...(issues ? { issues } : {}) }
 }
-writeAnswers(fileURLToPath(new URL(`./${set}${run ? `.${run}` : ''}.predicted.json`, import.meta.url)), out)
+writePrediction(import.meta.url, `${set}${run ? `.${run}` : ''}`, out)
 console.log(`${set}: ${built.cases.length} cases predicted on ${day}`)

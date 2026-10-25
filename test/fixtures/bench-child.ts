@@ -7,6 +7,7 @@
  * (5 runs).
  */
 import type { Execution } from '../../src/contract.js'
+import { median, p95 } from '../../bench/stats.mjs'
 
 const m0 = process.memoryUsage()
 const rows = Number(process.argv[2] ?? 3400)
@@ -20,8 +21,6 @@ const { makeCompiler } = (await import(libUrl('compile.js'))) as typeof import('
 const { parse } = (await import(libUrl('syntax.js'))) as typeof import('../../src/syntax.js')
 
 const gc = () => (globalThis as { gc?: () => void }).gc?.()
-const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]
-const p95 = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.ceil(0.95 * xs.length) - 1]
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const synth = synthBook({ seed: 1, rows })
 const time = (f: () => unknown) => {

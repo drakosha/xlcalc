@@ -131,8 +131,6 @@ function paint(xs: Placed[]): Pattern {
   return patternOf(out)
 }
 
-const same = (x: number) => x
-
 /** The layer a list of rectangles (checked) gives, each over those before it, with its looks numbered by `looks`. */
 export function readRanges(list: readonly LookRange[], looks = new LookTable()): Layer {
   const xs: Placed[] = list.map((x, order) => ({ ...parseRange(x.range)!, look: looks.id(x.style, x.numberFormat), order }))
@@ -151,8 +149,8 @@ export function readRanges(list: readonly LookRange[], looks = new LookTable()):
   const painted = new Map<string, Pattern>()
   for (const [lo, hi] of rows) {
     const [enter, leave] = edges.get(lo)!
-    for (const o of leave) active.splice(lowerBound(active, o, same), 1)
-    for (const o of enter) active.splice(lowerBound(active, o, same), 0, o)
+    for (const o of leave) active.splice(lowerBound(active, o), 1)
+    for (const o of enter) active.splice(lowerBound(active, o), 0, o)
     if (!active.length) continue
     const last = xs[active[active.length - 1]]
     let p: Pattern

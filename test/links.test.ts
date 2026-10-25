@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createSession, editStructure, parseEntry, toInvariant, toLocal, validateFormula, validateNames, type BookInput, type ExternalBook } from '../src/index.js'
+import { values as sheetValues } from './clock-books.js'
 import { ruRU } from './locales.js'
 
 const LINKS: ExternalBook[] = [
@@ -14,7 +15,7 @@ const LINKS: ExternalBook[] = [
 
 const book = (cells: Record<string, string>, extra: Partial<BookInput> = {}): BookInput => ({ sheets: [{ name: 'S', cells: Object.fromEntries(Object.entries(cells).map(([a, f]) => [a, { formula: f }])) }], externalBooks: LINKS, ...extra })
 const inputHash = (b: BookInput) => compute(b, { display: false }).inputHash
-const values = (b: BookInput) => Object.fromEntries(Object.entries(compute(b, { display: false }).sheets[0].cells).map(([a, c]) => [a, c.value]))
+const values = (b: BookInput) => sheetValues(compute(b, { display: false }))
 
 describe('the text of a reference to another workbook', () => {
   it('reads the forms a file and a person write and checks them to the canonical text by the link’s number', () => {

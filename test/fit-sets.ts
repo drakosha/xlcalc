@@ -4,12 +4,11 @@
  * its column fitted by `fitColumns`, or its texts typed in turn by `parseEntry` with the column widened by `entryWidth`
  * (texts set through an object model widen no column in either Excel).
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { StoredFit } from '../bench/coverage/fit.js'
 import type { FitAnswer, FitCase, FitSet } from '../bench/coverage/fit/cases.js'
 import { engineFit, type FitPrediction } from '../bench/coverage/fit/engine.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { compute, entryWidth, fitColumns, parseEntry } from '../src/index.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 export interface FitSetFile extends StoredFit {
@@ -19,13 +18,7 @@ export interface FitSetFile extends StoredFit {
 
 /** The sets stored under `test/excel/<root>fit/`, every locale's. */
 export function fitSets(root: '' | 'win/'): FitSetFile[] {
-  return TAGS.flatMap((tag) => {
-    const dir = new URL(`./excel/${root}fit/${localeDir(tag)}`, import.meta.url)
-    if (!existsSync(dir)) return []
-    return readdirSync(dir)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => ({ name: f.slice(0, -5), tag, ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredFit) }))
-  })
+  return localeSets<StoredFit>(`${root}fit`).map((r) => ({ name: r.set, tag: r.tag, ...r.stored }))
 }
 
 /** A set's current cases in a locale, by its generator. */

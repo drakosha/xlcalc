@@ -7,13 +7,12 @@
  * as the lookup functions read them (`wildSource`), Look in Formulas `editText` of `getViewport`, Values the text it
  * shows, hidden rows found, an empty query finding nothing, a cell with an empty text never found.
  */
-import { fileURLToPath } from 'node:url'
 import { createSession } from '../../../src/index.js'
-import { wildSource } from '../../../src/criteria.js'
+import { wildSource } from '../../../src/wildcards.js'
 import { formatAddress, parseAddress } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { TAGS } from '../locales.js'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { findBook, findInBook, type FindBook, type FindQuery, type FindSet } from './cases.js'
 
 const [set, model] = process.argv.slice(2)
@@ -43,4 +42,4 @@ function grid(b: FindBook, q: FindQuery, tag: string): string[] {
 const predict = model === 'grid' ? grid : findInBook
 const cases = buildFindCases()
 const locales = Object.fromEntries(TAGS.map((tag) => [tag, Object.fromEntries(cases.map((c) => [c.id, predict(BOOKS[c.book], c.query, tag)]))]))
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { model: model === 'grid' ? 'xlcalc-sheet find-match.ts' : 'findCells', locales })
+writePrediction(import.meta.url, `${set}`, { model: model === 'grid' ? 'xlcalc-sheet find-match.ts' : 'findCells', locales })

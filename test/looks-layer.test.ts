@@ -6,23 +6,15 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { LookRange } from '../src/contract.js'
-import { cellEdits, edited, NONE, sameLooks, type Layer } from '../src/looks/layer.js'
+import { cellEdits, edited, NONE, sameLook, type Layer } from '../src/looks/layer.js'
 import { carried, differing, shifted } from '../src/looks/move.js'
 import { readRanges, writeRanges } from '../src/looks/ranges.js'
 import { looksTaken } from '../src/looks/sheet.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../src/model.js'
 import { areaText, parseRange } from '../src/structure/area.js'
+import { seeded } from './looks-book.js'
 
 const [ROWS, COLS] = [14, 12]
-
-/** A generator of numbers below `n`, the same for one seed. */
-function seeded(seed: number): (n: number) => number {
-  let x = seed
-  return (n) => {
-    x = (Math.imul(x, 1103515245) + 12345) & 0x7fffffff
-    return x % n
-  }
-}
 
 /** The look of each cell of the corner, painted rectangle by rectangle (`style|format`, empty for none). */
 function painted(list: LookRange[]): Map<string, string> {
@@ -47,6 +39,16 @@ function shown(layer: Layer): Map<string, string> {
 }
 
 const without = (m: Map<string, string>) => new Map([...m].filter(([, v]) => v !== ''))
+
+/** Whether two layers give every cell the same look. */
+function sameLooks(a: Layer, b: Layer): boolean {
+  const [x, y] = [[...a.pieces()], [...b.pieces()]]
+  if (x.length !== y.length) return false
+  return x.every((p, i) => {
+    const q = y[i]
+    return p.r1 === q.r1 && p.r2 === q.r2 && p.c1 === q.c1 && p.c2 === q.c2 && sameLook(a.looks.list[p.look], b.looks.list[q.look])
+  })
+}
 
 /** A random list of rectangles: cells, ranges, whole rows and columns, of two styles and two formats, or of none. */
 function randomList(rnd: (n: number) => number): LookRange[] {

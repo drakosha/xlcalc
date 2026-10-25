@@ -5,9 +5,8 @@
  * default they are the engine's of the day (`replaceInBook`: `replaceInCells`); with `grid`, `modelReplace`, a grid's
  * Replace All with the matches `?` reads as Find does (for `rules-held`).
  */
-import { fileURLToPath } from 'node:url'
 import { TAGS } from '../locales.js'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { changedCells, modelReplace, replaceInBook, type ReplaceSet } from './cases.js'
 
 const [set, model] = process.argv.slice(2)
@@ -24,4 +23,4 @@ const locales = Object.fromEntries(
     ),
   ]),
 )
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { model: model === 'grid' ? 'modelReplace: a grid Replace All, Find in formulas and setCellTexts' : 'replaceInCells', locales })
+writePrediction(import.meta.url, `${set}`, { model: model === 'grid' ? 'modelReplace: a grid Replace All, Find in formulas and setCellTexts' : 'replaceInCells', locales })

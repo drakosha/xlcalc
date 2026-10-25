@@ -3,6 +3,8 @@
  * width or in what its cells show, by `<tag>:<set>:<id>`, with the reason.
  */
 
+import { knownCases as cases } from './known-cases.js'
+
 export const FIT_REASONS = {
   macRegional:
     "Excel for Mac shows the built-in short date by its own code (en-US m/d/yy, 3/15/26) and ru-RU's month names in lower case and its own short forms (март); the engine follows Excel for Windows (3/15/2026, Март, мар), so the text it fits or widens a column for differs",
@@ -13,11 +15,6 @@ export const FIT_REASONS = {
 } as const
 
 export type FitReason = keyof typeof FIT_REASONS
-
-/** `<tag>:<set>` and its case ids → the same reason. */
-function cases(reason: FitReason, bySet: Record<string, string[]>): [string, FitReason][] {
-  return Object.entries(bySet).flatMap(([set, ids]) => ids.map((id): [string, FitReason] => [`${set}:${id}`, reason]))
-}
 
 /** The typed cases whose dates Excel for Mac shows by its own short date, in en-US. */
 const MAC_DATES = ['date-1', 'formula-1', 'hand-2', 'fitted-2', 'turn-1', 'turn-2'].flatMap((id) => ['value', 'local', 'keys'].map((via) => `${via}-${id}`))

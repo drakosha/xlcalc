@@ -18,7 +18,7 @@ export interface HiddenRows {
 }
 
 /** The spans of hidden lines of a sheet's rows or columns, ascending, joined where they touch. */
-export function hiddenSpans<T>(map: Record<string, T> | undefined, axis: Axis, hidden: (e: T) => boolean): [number, number][] {
+function hiddenSpans<T>(map: Record<string, T> | undefined, axis: Axis, hidden: (e: T) => boolean): [number, number][] {
   const spans: [number, number][] = []
   for (const [lo, hi, e] of lines(map, axis)) {
     if (!hidden(e)) continue

@@ -6,8 +6,7 @@
  * for a case without steps that writes its book the book the reader is to read from the file Excel saves: the book
  * written.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { entries } from '../xlsx/compare.js'
 import { caseBook, engineCase, partsOf, sessionBook, sessionCase, type LinesSet } from './cases.js'
 
@@ -20,5 +19,5 @@ for (const c of built.cases) {
   const book = await caseBook(built, c)
   out[c.id] = { looks: engine(c, book), ...(c.parts ? { parts: partsOf(sessionBook(c, book)) } : {}), ...(c.steps || c.bare ? {} : { read: Object.fromEntries(entries(built.books[c.book])) }) }
 }
-writeAnswers(fileURLToPath(new URL(`./${set}${run ? `.${run}` : ''}.predicted.json`, import.meta.url)), out)
+writePrediction(import.meta.url, `${set}${run ? `.${run}` : ''}`, out)
 console.log(`${set}: ${built.cases.length} cases predicted`)

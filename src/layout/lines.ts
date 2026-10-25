@@ -6,7 +6,7 @@
 import type { CellInput, ColumnInput, NumberFormat, RowInput, SheetInput } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { inputIn } from '../looks/sheet.js'
-import { formatAddress } from '../model.js'
+import { formatAddress, inner } from '../model.js'
 import { entryAt, lines, type Line } from './spans.js'
 
 /** A style (by index) and a number format, of a cell or a line. */
@@ -42,8 +42,7 @@ export interface SheetLines {
  */
 const read = new WeakMap<EngineState, WeakMap<object, unknown>>()
 export function readOnce<T>(state: EngineState, part: object, make: () => T): T {
-  let parts = read.get(state)
-  if (!parts) read.set(state, (parts = new WeakMap()))
+  const parts = inner(read, state, () => new WeakMap())
   if (!parts.has(part)) parts.set(part, make())
   return parts.get(part) as T
 }

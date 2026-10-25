@@ -7,15 +7,15 @@
  */
 import type { CellValue, EntryTextOptions, NumberFormat } from '../contract.js'
 import { epochOf } from '../dates.js'
-import { checkCellValue, checkEntryTextOptions } from '../input.js'
+import { checkCellValue, checkEntryTextOptions, entryOptionsOf } from '../input.js'
 import { checkString } from '../input/basic.js'
 import { DEFAULT_LOCALE } from '../locale/registry.js'
 import { displayRules, type Rules } from '../locale/rules.js'
-import { EN_BUILTIN, EN_CODES, generalText } from '../numfmt.js'
+import { enCode, EN_CODES, generalText } from '../numfmt.js'
 import { dayOrTime } from '../numfmt/date.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import { choose, kind } from '../numfmt/select.js'
-import { parseEntry } from './index.js'
+import { readEntry } from './index.js'
 
 /** The first serial past 9999-12-31, where Excel's calendar ends. */
 const END = 2_958_466
@@ -23,7 +23,7 @@ const END = 2_958_466
 /** What a number's section of its format shows it as: a date (a day, maybe a time), a time alone, a percent, a number. */
 function shownAs(n: number, format: NumberFormat | undefined): 'date' | 'time' | 'percent' | 'number' {
   if (format === undefined) return 'number'
-  const sec = choose(parseFormat(typeof format === 'number' ? EN_BUILTIN[format] : format, EN_CODES) ?? [], n)?.sec
+  const sec = choose(parseFormat(enCode(format), EN_CODES) ?? [], n)?.sec
   if (!sec) return 'number'
   if (kind(sec.toks) === 'date') return dayOrTime(sec.toks) === 'date' ? 'date' : 'time'
   return sec.toks.some((t: Tok) => t.t === 'pct') ? 'percent' : 'number'
@@ -59,9 +59,9 @@ function numberText(n: number, format: NumberFormat | undefined, r: Rules): stri
   return whole(n, r)
 }
 
-/** Whether text typed into a cell with these options would read as something else than that text (`parseEntry`). */
+/** Whether text typed into a cell with these options would read as something else than that text (`readEntry`, the options checked). */
 function readsOtherwise(text: string, o: EntryTextOptions): boolean {
-  const r = parseEntry(text, { ...(o.locale ? { locale: o.locale } : {}), ...(o.dateSystem ? { dateSystem: o.dateSystem } : {}), ...(o.now ? { now: o.now } : {}), ...(o.numberFormat === undefined ? {} : { cell: { numberFormat: o.numberFormat } }) })
+  const r = readEntry(text, { ...entryOptionsOf(o), ...(o.numberFormat === undefined ? {} : { cell: { numberFormat: o.numberFormat } }) })
   return !(r.ok && r.input?.value === text && r.input.formula === undefined)
 }
 

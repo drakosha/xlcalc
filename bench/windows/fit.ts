@@ -11,7 +11,7 @@ import { indexToCol } from '../../src/model.js'
 import { inParts } from '../coverage/book.js'
 import { FIT_PART, fitFile, keptAnswers, partAnswers } from '../coverage/fit.js'
 import { caseColumn, caseRows, fitBook, type FitCase, type FitSet } from '../coverage/fit/cases.js'
-import { answeredLine, inCaseOrder, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
+import { answeredLine, answerSaver, setModule } from '../coverage/stored.js'
 import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
 export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
@@ -19,7 +19,7 @@ export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const file = fitFile(set, tag, true)
   const { answers } = keptAnswers(file, cases)
   const t0 = Date.now()
-  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
   const parts = inParts(todo, FIT_PART)
   const book = async (part: FitCase[], f: string) => {

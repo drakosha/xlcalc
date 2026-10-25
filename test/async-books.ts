@@ -7,6 +7,7 @@ import { expect } from 'vitest'
 import type { BookInput, CellReplace, CellInput } from '../src/contract.js'
 import { CalcError, createSession, type AsyncSession, type Execution, type Session } from '../src/index.js'
 import type { SynthBook } from '../src/synth.js'
+import { median } from '../bench/stats.mjs'
 import { edits } from './session-edits.js'
 import { synthBook } from '../src/synth.js'
 import { CASES, excelBook } from './excel-cases.js'
@@ -51,7 +52,7 @@ export async function medianMs(n: number, f: (i: number) => unknown): Promise<nu
     await f(i)
     xs.push(performance.now() - t)
   }
-  return xs.sort((a, b) => a - b)[n >> 1]
+  return median(xs)
 }
 
 /** The CalcError a call fails with; a call that does not fail fails the test. */

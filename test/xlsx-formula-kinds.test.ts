@@ -9,9 +9,7 @@ import { storedOf, storedValues } from './xlsx-fixtures.js'
 import type { BookInput } from '../src/contract.js'
 import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
-import { openArchive } from '../src/xlsx/zip/read.js'
-
-const part = async (data: Uint8Array, name: string) => (await openArchive(data).text(name))!
+import { partText as part } from './xlsx-fixtures.js'
 
 const book: BookInput = {
   sheets: [

@@ -2,13 +2,10 @@
 // turns, the order changed each round, on the synthetic book: a cold computation (median of 5 each, both executions),
 // 200 cell edits in a session (p50 and p95), and rows inserted and deleted at row 10 with undo and redo (median of 7,
 // display false and true). Noise of a busy host falls on both builds alike.
+import { at, clock, load, names, pair } from './pair.mjs'
 const [base, branch, ...sizes] = process.argv.slice(2)
-const libs = await Promise.all([base, branch].map(async (r) => ({ ...(await import(r + '/dist/index.js')), ...(await import(r + '/dist/synth.js')) })))
-const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
-const names = ['base', 'branch']
+const libs = await load(base, branch, true)
 const f = (v) => (v < 10 ? v.toFixed(3) : v.toFixed(1))
-const at = (xs, q) => [...xs].sort((a, b) => a - b)[Math.min(xs.length - 1, Math.floor(xs.length * q))]
-const pair = (round) => (round % 2 ? [1, 0] : [0, 1])
 
 for (const rows of (sizes.length ? sizes : ['3400', '34000']).map(Number)) {
   const synth = libs[0].synthBook({ seed: 1, rows })
