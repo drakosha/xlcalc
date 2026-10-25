@@ -19,8 +19,6 @@ export type Pattern = Int32Array
 /** An empty pattern: a row without looks. */
 export const EMPTY: Pattern = new Int32Array(0)
 
-const same = (x: number) => x
-
 const formatKey = (f: NumberFormat | undefined) => (f === undefined ? '-' : typeof f === 'number' ? `n${f}` : `s${f}`)
 
 /** Looks by number: equal pairs of a style and a format share a number and one frozen object, `{ style, numberFormat }` with the fields given. */
@@ -212,13 +210,13 @@ export class Layer {
 
   /** The block holding row `r`, or -1. */
   blockOf(r: number): number {
-    const b = lowerBound(this.r2, r, same)
+    const b = lowerBound(this.r2, r)
     return b < this.at.length && this.r1[b] <= r ? b : -1
   }
 
   /** The first block that ends at or after row `r`. */
   firstFrom(r: number): number {
-    return lowerBound(this.r2, r, same)
+    return lowerBound(this.r2, r)
   }
 
   /** The pattern of row `r`; an empty one for a row without looks. */

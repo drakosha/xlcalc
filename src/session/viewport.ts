@@ -110,7 +110,7 @@ export function windowLines(x: Rect, o: ViewportOptions): WindowLines {
 
 /** Whether ascending `xs` holds a number from `lo` to `hi`. */
 const hits = (xs: number[], lo: number, hi: number) => {
-  const i = lowerBound(xs, lo, (x) => x)
+  const i = lowerBound(xs, lo)
   return i < xs.length && xs[i] <= hi
 }
 

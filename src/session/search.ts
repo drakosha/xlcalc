@@ -35,8 +35,6 @@ export interface SheetTexts {
 
 const kept = new WeakMap<EngineState, Map<number, SheetTexts>>()
 
-const same = (v: number) => v
-
 /** The cells of sheet `s` a search reads: its cells, and those its arrays spill into. The steps yield between cells. */
 function* sheetCells(state: EngineState, s: number): Steps<SheetTexts> {
   const sheet = state.input.sheets[s]
@@ -65,7 +63,7 @@ function refresh(x: SheetTexts) {
   if (!x.changed.size) return
   const fresh: number[] = []
   for (const m of x.changed) {
-    const i = lowerBound(x.at, m, same)
+    const i = lowerBound(x.at, m)
     if (x.at[i] === m) for (const t of x.texts.values()) t[i] = undefined
     else fresh.push(m)
   }

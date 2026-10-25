@@ -31,8 +31,6 @@ export type Ref = Rect & { s: number }
 /** A cell found: its sheet, row and column, its position in Find's order (its range, its block's bands of rows and columns, its place), which a cursor keeps, and the text Find read in it. */
 export type Found = [s: number, r: number, c: number, position: number[], text: string]
 
-const same = (v: number) => v
-
 /** A sheet's hidden rows or columns: whether there are any; whether a line is hidden, and how many lines are hidden before it, the band of lines it is in (a hidden line's, the band after it). */
 interface HiddenLines {
   any: boolean
@@ -150,10 +148,10 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
     // by columns: the range's columns at once; by rows: the rows asked of the range one by one, or its rows at once
     const cols = o.byColumns ? byColumns(t) : null
     const only = cols && rows ? new Set(rows) : null
-    const spans: [number, number][] = cols ? [[x.c1 * MAX_ROWS + x.r1, x.c2 * MAX_ROWS + x.r2]] : (rows ? rows.slice(lowerBound(rows, x.r1, same), lowerBound(rows, x.r2 + 1, same)) : [x.r1]).map((r) => [r * MAX_COLS + x.c1, (rows ? r : x.r2) * MAX_COLS + x.c2])
+    const spans: [number, number][] = cols ? [[x.c1 * MAX_ROWS + x.r1, x.c2 * MAX_ROWS + x.r2]] : (rows ? rows.slice(lowerBound(rows, x.r1), lowerBound(rows, x.r2 + 1)) : [x.r1]).map((r) => [r * MAX_COLS + x.c1, (rows ? r : x.r2) * MAX_COLS + x.c2])
     const at = cols ? cols.at : t.at
     for (const [lo, hi] of spans)
-      for (let j = lowerBound(at, Math.max(lo, start), same); j < at.length && at[j] <= hi; j++) {
+      for (let j = lowerBound(at, Math.max(lo, start)); j < at.length && at[j] <= hi; j++) {
         if (paced(1)) yield
         const k = at[j]
         const [r, c] = cols ? cr(k) : rc(k)
