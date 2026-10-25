@@ -9,7 +9,7 @@ import type { StructCases } from '../bench/coverage/struct/cases.js'
 import type { BookInput } from '../src/index.js'
 import { storedSets } from './stored-sets.js'
 import { differences, STRUCT_KNOWN, structureOf } from './structure-excel.js'
-import { currentStructSet } from './stored-cases.js'
+import { currentStructSet, pinnedCases } from './stored-cases.js'
 
 const SETS = storedSets<StoredStruct>('win/struct')
 
@@ -70,8 +70,5 @@ for (const set of SETS) {
 }
 
 describe('known differences from Excel for Windows: structure operations', () => {
-  it('every WIN_STRUCT entry names a stored case', () => {
-    const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect(Object.keys(WIN_STRUCT).filter((k) => !keys.has(k))).toEqual([])
-  })
+  it('every WIN_STRUCT entry names a stored case', () => expect(pinnedCases(SETS, WIN_STRUCT)).toEqual([]))
 })

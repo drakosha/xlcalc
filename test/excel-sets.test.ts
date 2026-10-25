@@ -9,6 +9,7 @@ import { compute } from '../src/index.js'
 import { CASES, CLOCK, KNOWN, REASONS, show, toVal, verdict } from './excel-cases.js'
 import { OPEN } from './excel-open.js'
 import { caseBook, loadSet, SETS } from './excel-sets.js'
+import { pinnedCases } from './stored-cases.js'
 
 for (const set of SETS) {
   const mod = await loadSet(set.name)
@@ -42,10 +43,8 @@ describe('excel case sets', () => {
 })
 
 describe('known differences from Excel', () => {
-  it('every KNOWN and OPEN entry names an existing case', () => {
-    const keys = new Set([...CASES.map((c) => `measurement:${c.id}`), ...SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`))])
-    expect([...Object.keys(KNOWN), ...Object.keys(OPEN)].filter((k) => !keys.has(k))).toEqual([])
-  })
+  it('every KNOWN and OPEN entry names an existing case', () =>
+    expect([...pinnedCases([{ name: 'measurement', cases: CASES }, ...SETS], KNOWN), ...pinnedCases([{ name: 'measurement', cases: CASES }, ...SETS], OPEN)]).toEqual([]))
 
   it("docs/limitations.md's known differences have a line for every reason in KNOWN", () => {
     const readme = readFileSync(new URL('../docs/limitations.md', import.meta.url), 'utf8')

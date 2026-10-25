@@ -6,15 +6,13 @@
  */
 import { describe, expect, it } from 'vitest'
 import { checkSets, PARTS_KNOWN, PARTS_READ_KNOWN, partsSets, THREAD_ISSUES } from './sheet-parts-excel.js'
+import { pinnedCases } from './stored-cases.js'
 
 const SETS = partsSets('parts/')
 
 describe('notes, hyperlinks and frozen panes against Excel for Mac', () => {
   it('every set is answered', () => expect(SETS.map((s) => s.name)).toEqual(['files', 'frozen-held', 'refs-held', 'struct-held', 'threads']))
-  it('every pinned difference names a case', () => {
-    const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect([...Object.keys(PARTS_KNOWN), ...Object.keys(PARTS_READ_KNOWN)].filter((k) => !keys.has(k))).toEqual([])
-  })
+  it('every pinned difference names a case', () => expect([...pinnedCases(SETS, PARTS_KNOWN), ...pinnedCases(SETS, PARTS_READ_KNOWN)]).toEqual([]))
 })
 
 checkSets(SETS, PARTS_KNOWN, PARTS_READ_KNOWN, (name) => import(`../bench/coverage/parts/${name}.ts`), THREAD_ISSUES)

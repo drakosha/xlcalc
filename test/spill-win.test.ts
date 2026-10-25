@@ -8,7 +8,7 @@ import type { StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
 import { storedSets } from './stored-sets.js'
 import { computed, differences } from './spill-cases.js'
-import { currentCases } from './stored-cases.js'
+import { currentCases, pinnedCases } from './stored-cases.js'
 
 const SETS = storedSets<StoredSpill>('win/spill')
 
@@ -43,8 +43,5 @@ for (const set of SETS) {
 }
 
 describe('known differences from Excel for Windows: spilling', () => {
-  it('every WIN_SPILL entry names a stored case', () => {
-    const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect(Object.keys(WIN_SPILL).filter((k) => !keys.has(k))).toEqual([])
-  })
+  it('every WIN_SPILL entry names a stored case', () => expect(pinnedCases(SETS, WIN_SPILL)).toEqual([]))
 })

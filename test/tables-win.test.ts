@@ -8,6 +8,7 @@ import type { StoredTables } from '../bench/coverage/tables.js'
 import type { TableSet } from '../bench/coverage/tables/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { storedSets } from './stored-sets.js'
+import { pinnedCases } from './stored-cases.js'
 import { differences } from './tables-cases.js'
 import './locales.js'
 
@@ -46,8 +47,5 @@ describe.each(SETS)('tables $name ($sub) against Excel for Windows', (set) => {
 })
 
 describe('known differences from Excel for Windows: tables', () => {
-  it('every WIN_TABLES entry names a stored case', () => {
-    const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect(Object.keys(WIN_TABLES).filter((k) => !keys.has(k))).toEqual([])
-  })
+  it('every WIN_TABLES entry names a stored case', () => expect(pinnedCases(SETS, WIN_TABLES)).toEqual([]))
 })

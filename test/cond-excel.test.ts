@@ -5,7 +5,8 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { CondSet } from '../bench/coverage/cond/cases.js'
-import { checkCondSets, condSets, pinnedCases, type Known } from './cond-excel.js'
+import { checkCondSets, condSets, type Known } from './cond-excel.js'
+import { pinnedCases } from './stored-cases.js'
 import './locales.js'
 
 /** Excel drops the lengths of an Excel 2010 bar of 5 and 95 percent, which then read as the format's defaults, 10 and 90. */
@@ -44,7 +45,7 @@ const SETS = [...condSets('cond/'), ...condSets('cond/ru-RU/').map((s) => ({ ...
 
 describe('conditional formats against Excel for Mac', () => {
   it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'fills-held', 'fills-held-2', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'sqref-held', 'struct-held']))
-  it('every pinned difference names a case', () => expect(pinnedCases(SETS, COND_KNOWN)).toEqual([]))
+  it('every pinned difference names a case', () => expect(pinnedCases(SETS, COND_KNOWN, true)).toEqual([]))
 })
 
 checkCondSets(SETS, COND_KNOWN, async (name) => (await import(`../bench/coverage/cond/${name}.ts`)) as CondSet)

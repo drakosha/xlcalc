@@ -9,17 +9,14 @@ import type { StructCases } from '../bench/coverage/struct/cases.js'
 import { takenBook } from '../bench/coverage/stored.js'
 import { editStructure } from '../src/index.js'
 import { differences, STRUCT_KNOWN, STRUCT_SETS } from './structure-excel.js'
-import { currentStructSet } from './stored-cases.js'
+import { currentStructSet, pinnedCases } from './stored-cases.js'
 
 describe('structure operations against Excel en-US', () => {
   it('every set has its cases answered', () => {
     expect(STRUCT_SETS.map((s) => s.name)).toEqual(['arrays', 'checks', 'cube', 'edge-layout', 'edge-wide', 'edge', 'hidden', 'history', 'move', 'moves', 'names-held', 'rows', 'sheets', 'spill-copy', 'spill-more', 'spill', 'styles-checks', 'styles', 'zero-held'])
   })
 
-  it('every STRUCT_KNOWN entry names an existing case', () => {
-    const keys = new Set(STRUCT_SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect(Object.keys(STRUCT_KNOWN).filter((k) => !keys.has(k))).toEqual([])
-  })
+  it('every STRUCT_KNOWN entry names an existing case', () => expect(pinnedCases(STRUCT_SETS, STRUCT_KNOWN)).toEqual([]))
 
   it('the comparison sees the book before the operation differ from Excel, its look too', () => {
     const set = STRUCT_SETS.find((s) => s.name === 'rows')!

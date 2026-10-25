@@ -19,3 +19,12 @@ export function currentCases<C extends { id: string }>(set: { cases: C[]; answer
     expect(built.filter((c) => !set.answers[c.id])).toEqual([])
   })
 }
+
+/**
+ * The keys of the pinned differences of `known` that name no case of `sets` (`<set>:<id>`): stale entries to remove.
+ * `byCase` takes a key's first two segments, for keys that name a case's cell (`<set>:<id>:<cell>`).
+ */
+export function pinnedCases<S extends { name: string; cases: { id: string }[] }>(sets: readonly S[], known: Readonly<Record<string, unknown>>, byCase = false): string[] {
+  const ids = new Set(sets.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
+  return Object.keys(known).filter((k) => !ids.has(byCase ? k.split(':').slice(0, 2).join(':') : k))
+}
