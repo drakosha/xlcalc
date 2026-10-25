@@ -173,7 +173,6 @@ export function fitHeights(styles: readonly CellStyle[], sheet: SheetInput, cell
 /** The values of rows `lo` to `hi` of a sheet of the state, each row whole (blanks with an entry as null), and its large spills as spans. */
 export function stateRows(s: EngineState, i: number, lo: number, hi: number): { cells: Placed[]; spans: [number, number, number, CellValue][] } {
   const data = s.ctx.sheets[i]
-  const sheet = s.input.sheets[i]
   const cells: Placed[] = []
   for (let c = 0; c < data.cols.length; c++) {
     const col = data.cols[c]
@@ -183,8 +182,9 @@ export function stateRows(s: EngineState, i: number, lo: number, hi: number): { 
         if (v !== undefined && v !== null) cells.push([r, c, outValue(toCellValue(v))])
       }
   }
-  for (const a in sheet.cells) {
-    const { row, col } = parseAddress(a)
+  // the entries without a value are the state's bare ones: no walk of every cell of the sheet; a large spill can cover one
+  for (const k of s.bare.get(i) ?? []) {
+    const [row, col] = [Math.floor(k / MAX_COLS), k % MAX_COLS]
     if (row >= lo && row <= hi && (data.cols[col]?.get(row) ?? null) === null) cells.push([row, col, null])
   }
   const spans = data.fills.flatMap((f) => Array.from({ length: f.c2 - f.c1 + 1 }, (_, k): [number, number, number, CellValue] => [f.r1, f.r2, f.c1 + k, outValue(toCellValue(f.v))]))

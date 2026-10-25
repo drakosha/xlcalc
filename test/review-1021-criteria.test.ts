@@ -105,3 +105,12 @@ describe.each(['closures', 'eval'] as const)('SUMIF and AVERAGEIF with a sum ran
     s.close()
   })
 })
+
+describe.each(['closures', 'eval'] as const)('parsed criteria kept by value, %s', (execution) => {
+  it('keep a number, its text, a boolean and its text apart', () => {
+    const cells: Cells = { A1: { value: 1 }, A2: { value: '1' }, A3: { value: true }, A4: { value: 'TRUE' }, A5: { value: 0 }, B1: { value: 1 }, B2: { value: '1' }, B3: { value: true }, B4: { value: 'TRUE' }, B5: { formula: '-0' } }
+    for (let r = 1; r <= 5; r++) cells[`C${r}`] = { formula: `COUNTIF(A1:A5,B${r})` }
+    const out = compute(book(cells), { execution }).sheets[0].cells
+    expect([1, 2, 3, 4, 5].map((r) => out[`C${r}`].value)).toEqual([2, 2, 1, 1, 1])
+  })
+})

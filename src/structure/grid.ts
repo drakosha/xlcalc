@@ -49,10 +49,16 @@ export function gridOf(sheet: SheetInput): Grid {
   return g
 }
 
+/** The last rectangle `cellsIn` walked a grid for, with its cells: the pastes into a filter's runs read one source for each. */
+const WALKED = new WeakMap<Grid, { x: Rect; out: readonly number[] }>()
+
 /** The indices of a sheet's cells that lie in a rectangle, in the sheet's order. */
-export function cellsIn(g: Grid, x: Rect): number[] {
+export function cellsIn(g: Grid, x: Rect): readonly number[] {
+  const last = WALKED.get(g)
+  if (last && last.x.r1 === x.r1 && last.x.r2 === x.r2 && last.x.c1 === x.c1 && last.x.c2 === x.c2) return last.out
   const out: number[] = []
   for (let i = 0; i < g.addr.length; i++) if (hasCell(x, g.row[i], g.col[i])) out.push(i)
+  WALKED.set(g, { x: { ...x }, out })
   return out
 }
 
