@@ -78,6 +78,26 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     expect(s.getCell('S', `B${n}`)).toMatchObject({ formula: `A${n}*2`, value: 2 * n })
   })
 
+  describe('a paste over runs of a filter that are no whole multiple of the copy writes the copy past its run (speed-u90)', () => {
+    const book = (): BookInput => ({
+      sheets: [{ name: 'S', filtered: true, rows: { '3': { hidden: true } }, cells: { A1: { value: 1 }, B1: { value: 2 }, C1: { formula: 'A1*10' }, F1: { value: 'old' }, G4: { value: 'old' }, A6: { value: 6 }, A7: { value: 7 }, E5: { value: 'below' } } }],
+    })
+    it.each([
+      // three columns into one: each run takes one copy E:G, over the old cells beside the target
+      ['A1:C1', 'E1:E5', { E1: { value: 1 }, F1: { value: 2 }, G1: { formula: 'E1*10' }, E4: { value: 1 }, F4: { value: 2 }, G4: { formula: 'E4*10' }, E5: { value: 'below' } }],
+      // two rows into runs of one: the copy into E4 runs on to E5, below the target
+      ['A6:A7', 'E2:E4', { F1: { value: 'old' }, G4: { value: 'old' }, E2: { value: 6 }, E3: { value: 7 }, E4: { value: 6 }, E5: { value: 7 } }],
+    ])('%s onto %s, in editStructure and a session', (from, to, pasted) => {
+      const op = { op: 'copyRange', from: { sheet: 'S', range: from }, to: { sheet: 'S', range: to } } as const
+      const cells = { A1: { value: 1 }, B1: { value: 2 }, C1: { formula: 'A1*10' }, A6: { value: 6 }, A7: { value: 7 }, ...pasted }
+      const r = editStructure(book(), op)
+      expect(r.ok && r.book.sheets[0].cells).toEqual(cells)
+      const s = createSession(book(), { execution, clock, display: false })
+      expect(s.editStructure(op).ok).toBe(true)
+      expect(s.getBook().sheets[0].cells).toEqual(cells)
+    })
+  })
+
   it('a paste on a sheet with a rule over many single cells joins them in linear time (speed-u124)', () => {
     const n = 300_000
     const range = Array.from({ length: n }, (_, r) => `A${r + 1}`).join(' ')

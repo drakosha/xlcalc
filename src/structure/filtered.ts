@@ -9,7 +9,7 @@ import type { BookInput, CellInput } from '../contract.js'
 import { say } from '../locale/messages.js'
 import { cornersText, hasCell, type Rect } from './area.js'
 import { clipped, CLIP } from './clip.js'
-import { copyRange } from './copy.js'
+import { copyRange, tiles } from './copy.js'
 import { placer, type Applied, type Geometry } from './geometry.js'
 import { placedCells, shift, shiftTransform } from './shift.js'
 import { arraysOf, gridOf } from './grid.js'
@@ -109,22 +109,26 @@ export function copyRows(book: BookInput, from: string, src: Rect, to: string, t
   if (!parts) return copyRange(book, at, rect, to, target, withMeta, source)
   if (clip && parts.length > 1)
     return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
-  const steps = (b: BookInput) => chain(b, parts.map(([lo, hi]) => (x: BookInput) => copyRange(x, at, rect, to, { ...target, r1: lo, r2: hi }, withMeta, source)))
-  return parts.length > 1 ? pastedOnce(book, to, target, steps) : steps(book)
+  const runs = parts.map(([lo, hi]) => ({ ...target, r1: lo, r2: hi }))
+  const steps = (b: BookInput) => chain(b, runs.map((run) => (x: BookInput) => copyRange(x, at, rect, to, run, withMeta, source)))
+  if (runs.length === 1) return steps(book)
+  // a run that is no whole multiple of the copy takes one copy at its top-left, which can reach past the run and the target
+  const written = runs.map((run) => tiles(rect, run).area).reduce((a, x) => ({ r1: Math.min(a.r1, x.r1), r2: Math.max(a.r2, x.r2), c1: Math.min(a.c1, x.c1), c2: Math.max(a.c2, x.c2) }))
+  return pastedOnce(book, to, written, steps)
 }
 
 /**
- * The pastes into the runs of `target` (`steps`) over the sheet `to` with only its cells of the target and its array
- * formulas, which a paste reads, where each paste walked all its cells (O(runs × sheet)): its other cells come back
- * after, in its order before the pasted ones, as the pastes leave them.
+ * The pastes into the runs of a target (`steps`) over the sheet `to` with only its cells of `written`, a rectangle around
+ * all the copies write, and its array formulas, which a paste reads, where each paste walked all its cells
+ * (O(runs × sheet)): its other cells come back after, in its order before the pasted ones, as the pastes leave them.
  */
-function pastedOnce(book: BookInput, to: string, target: Rect, steps: (b: BookInput) => Applied): Applied {
+function pastedOnce(book: BookInput, to: string, written: Rect, steps: (b: BookInput) => Applied): Applied {
   const ti = sheetIndex(book, to)
   const sheet = book.sheets[ti]
   const g = gridOf(sheet)
   const arrays = new Set(arraysOf(sheet).map(([addr]) => addr))
   const read: Record<string, CellInput> = {}
-  for (let i = 0; i < g.addr.length; i++) if (hasCell(target, g.row[i], g.col[i]) || arrays.has(g.addr[i])) read[g.addr[i]] = g.cell[i]
+  for (let i = 0; i < g.addr.length; i++) if (hasCell(written, g.row[i], g.col[i]) || arrays.has(g.addr[i])) read[g.addr[i]] = g.cell[i]
   const r = steps({ ...book, sheets: book.sheets.map((s, i) => (i === ti ? { ...s, cells: read } : s)) })
   if (!r.ok) return r
   const [pasted, place, p] = [r.book.sheets[ti], placer(r.geometry), { s: ti, r: 0, c: 0 }]
@@ -132,8 +136,8 @@ function pastedOnce(book: BookInput, to: string, target: Rect, steps: (b: BookIn
   for (let i = 0; i < g.addr.length; i++) {
     p.r = g.row[i]
     p.c = g.col[i]
-    // the pastes clear only cells of the target
-    if (!hasCell(target, p.r, p.c) || place(p)) cells[g.addr[i]] = g.cell[i]
+    // the pastes clear only cells they write
+    if (!hasCell(written, p.r, p.c) || place(p)) cells[g.addr[i]] = g.cell[i]
   }
   for (const a in pasted.cells) if (!(a in cells)) cells[a] = pasted.cells[a]
   return { ...r, book: { ...r.book, sheets: r.book.sheets.map((s, i) => (i === ti ? { ...pasted, cells } : s)) } }
