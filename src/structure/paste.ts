@@ -196,7 +196,8 @@ let loose: Set<string> | null = null
 
 /**
  * Operation `f` and the keys of the sheets whose looks a paste laid where no entry is: those positions were entries of a
- * look alone, which the engine took into the looks as the sheet's last field (`withLayer`), and so stays its order.
+ * look alone, which the engine took into the looks as the sheet's last field (`withLayer`) once the outermost operation
+ * ended (a fill's copies are operations inside it), and so stays its order.
  */
 export function withLooseLooks<T>(f: () => T): [T, Set<string>] {
   const outer = loose
@@ -205,5 +206,6 @@ export function withLooseLooks<T>(f: () => T): [T, Set<string>] {
     return [f(), mine]
   } finally {
     loose = outer
+    if (outer) for (const k of mine) outer.add(k)
   }
 }

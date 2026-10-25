@@ -272,6 +272,8 @@ describe.each(EXECUTIONS)('the fields of a sheet after a paste lays looks (the a
     ['a move into styled rows', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [rule] }), { op: 'moveRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', cell: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
     ['a copy into styled rows, looks given before the rules', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [{ ...rule, ranges: ['H1'] }] }), { op: 'copyRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', range: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
     ['a fill into styled rows, looks given before the rules', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [{ ...rule, ranges: ['H1'] }] }), { op: 'fillRange', sheet: 'S', range: 'C3:E3', to: 'C3:E12', type: 'copy' }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    // the fill's second copy, which lays nothing, sets the rules again after the looks the first one laid
+    ['a fill of two copies into styled rows of a sheet without looks', sheet({}), { op: 'fillRange', sheet: 'S', range: 'I7:I8', to: 'I7:I15', type: 'copy' }, 'name,cells,rows,validations,looks'],
   ]
   it.each(CASES)('%s', (_, book, op, fields) => {
     expect(Object.keys(edited(book, op, execution).sheets[0]).join(',')).toBe(fields)
