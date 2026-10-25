@@ -9,10 +9,9 @@
  * not merged. An unmerge drops the merged areas its range meets; the cells keep what they hold and look like.
  */
 import type { BookInput, CellInput, LookRange, SheetInput } from '../contract.js'
+import { sheetLines } from '../layout/lines.js'
 import { mergesOf, parseMerge } from '../layout/merges.js'
-import { entryAt, lines } from '../layout/spans.js'
 import { say } from '../locale/messages.js'
-import { inputIn } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
 import { internStyle } from '../style-table.js'
 import { tablesOf } from '../tables/model.js'
@@ -68,13 +67,12 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
   const cells: Record<string, CellInput> = { ...sh.cells }
   const looks: LookRange[] = []
   let styles = moved.styles ?? []
-  const [rows, cols] = [lines(sh.rows, 'r'), lines(sh.columns, 'c')]
+  const lines = sheetLines(sh)
   for (const a of center ? areas : made) {
     const top = formatAddress(a.r1, a.c1)
-    const own = inputIn(sh, top, a.r1, a.c1)
-    const [row, col] = [entryAt(rows, a.r1), entryAt(cols, a.c1)]
-    const numberFormat = own?.numberFormat ?? row?.numberFormat ?? col?.numberFormat
-    let style = own?.style ?? row?.style ?? col?.style
+    const own = lines.look(a.r1, a.c1)
+    const { numberFormat } = own
+    let style = own.style
     if (center) {
       const was = style === undefined ? {} : styles[style]
       ;({ index: style, styles } = internStyle(styles, { ...was, alignment: { ...was.alignment, horizontal: 'center' } }))

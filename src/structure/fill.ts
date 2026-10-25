@@ -14,9 +14,9 @@ import type { BookInput, CellInput, FillType } from '../contract.js'
 import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
 import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
-import { entryAt, lines as linesOf } from '../layout/spans.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
+import { sheetLines } from '../layout/lines.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
 import { minutes } from '../numfmt/date.js'
 import { EN_CODES, parseFormat } from '../numfmt/parse.js'
@@ -104,8 +104,8 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
   const sheet = book.sheets[s]
   const g = gridOf(sheet)
   // a cell's number format: its own, else its row's, else its column's, the sheet's rows and columns read once
-  const [rows, cols] = [linesOf(sheet.rows, 'r'), linesOf(sheet.columns, 'c')]
-  const formatAt = (cell: CellInput | undefined, r: number, c: number) => cell?.numberFormat ?? entryAt(rows, r)?.numberFormat ?? entryAt(cols, c)?.numberFormat
+  const sl = sheetLines(sheet)
+  const formatAt = (cell: CellInput | undefined, r: number, c: number) => sl.format(r, c, cell)
   const a = lo(src, axis)
   const h = hi(src, axis) - a + 1
   // the source's cells by line across the fill, at their position along it
