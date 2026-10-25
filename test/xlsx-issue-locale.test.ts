@@ -70,7 +70,6 @@ const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['calculation', { key: 'iterationChange', change: '-1' }],
   ['protection', { key: 'workbookProtection' }],
   ['name', { key: 'builtInName' }],
-  ['name', { key: 'hiddenName' }],
   ['richText', { key: 'richText' }],
   ['style', { key: 'styleLost', part: 'superscript' }],
   ['style', { key: 'styleLost', part: 'patternFill' }],
@@ -140,7 +139,9 @@ describe('the issues of a file read, in the language of opts.locale', () => {
       ['Заливка узором в стиле не поддерживается', ['B1']],
       ['Поворот текста в стиле не поддерживается', ['B1']],
     ])
-    expect(ru.issues.find((i) => i.code === 'name' && i.name === 'ставка')?.message).toBe('Скрытое имя прочитано как видимое')
+    // the hidden name is read hidden, without an issue; the built-in one is left out
+    expect(ru.book.names).toEqual([{ name: 'ставка', ref: '0.1', hidden: true }])
+    expect(ru.issues.filter((i) => i.code === 'name').map((i) => [i.name, i.message])).toEqual([['_xlnm.Print_Area', 'Встроенное имя (область печати, печатаемые заголовки, диапазон фильтра) не поддерживается']])
   })
 
   it('the files Excel saved that have issues: in ru-RU each message is Russian, with the same code, sheet, cells and name', async () => {

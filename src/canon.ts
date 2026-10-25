@@ -144,7 +144,7 @@ function lineEntries(tag: string, map: Record<string, object> | undefined, axis:
 
 /**
  * Input hash: sheets by name, cells by address (their notes and links with them) and the looks of the cells without an
- * entry by rows (`layerLines`), names by (scope, name). Columns,
+ * entry by rows (`layerLines`), names by (scope, name), a hidden one with its flag. Columns,
  * rows, merged areas (in order), the filter mode, tables (in order), frozen panes, conditional formats (in order), rules
  * of data validation, outline settings, a hidden sheet's state, the style table, a locale other than en-US, the 1904 date
  * system, iterative calculation and the linked workbooks come after their sheet and the names when there are any, so a
@@ -180,7 +180,8 @@ export function* inputHashSteps(book: BookInput, sorted?: Map<object, string[]>)
   // the book's order of the sheets when it is not by name: a 3-D reference covers the sheets between its ends in that order
   if (sheets.some((s, i) => s !== book.sheets[i])) h.update(`Q ${JSON.stringify(book.sheets.map((s) => s.name))}\n`)
   const names = [...(book.names ?? [])].sort((a, b) => byText(`${a.scope ?? ''}\u0000${a.name}`, `${b.scope ?? ''}\u0000${b.name}`))
-  for (const n of names) h.update(`N ${stableJson([n.scope ?? null, n.name, n.ref])}\n`)
+  // a hidden name's flag after its ref, so a book without hidden names hashes as before
+  for (const n of names) h.update(`N ${stableJson(n.hidden ? [n.scope ?? null, n.name, n.ref, true] : [n.scope ?? null, n.name, n.ref])}\n`)
   if (book.styles?.length) h.update(`Y ${stableJson(book.styles)}\n`)
   const tag = hashedLocale(book.locale)
   if (tag !== undefined) h.update(`L ${JSON.stringify(tag)}\n`)
