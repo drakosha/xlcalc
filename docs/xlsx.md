@@ -356,7 +356,7 @@ Every formula is written as a dynamic array formula, as Excel 365 saves one: wit
 
 The spilled cells are written with their values. `#SPILL!` and `#CALC!` are written as Excel 365 writes them, so Excel reads them back as those errors.
 
-Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET names become `_xlpm.x`, `E2#` becomes `_xlfn.ANCHORARRAY(E2)`, and `@x` becomes `_xlfn.SINGLE(x)`. Sheet names are always quoted.
+Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET names become `_xlpm.x`, `E2#` becomes `_xlfn.ANCHORARRAY(E2)`, and `@x` becomes `_xlfn.SINGLE(x)`. Sheet names are always quoted. A reference to a deleted sheet, which the workbook holds as Excel shows it (`#REF!A5`, `#REF!E2#`), is written `#REF!` (`_xlfn.ANCHORARRAY(#REF!)`), as Excel writes it: Excel does not open a file with the other form. Read back, the formula has `#REF!` (`#REF!#`).
 
 A cell with `array` is written as a legacy array formula over its range, without the cell metadata, as Excel writes a formula entered with Ctrl+Shift+Enter. A formula in a table's totals row is written as a plain formula, the only kind Excel accepts there. A name's formula is written as the workbook has it: a constant, a formula or a union. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
 
