@@ -164,6 +164,10 @@ function concerned(read: XlsxRead, snap: { book: BookInput; result: { sheets: { 
   return out
 }
 
+/** Parts with references the model does not hold, which a structure operation moves, and their text without those references. */
+const MOVED = /^xl\/(charts\/chart|drawings\/drawing|pivotTables\/|pivotCache\/pivotCacheDefinition)/i
+const refsOut = (xml: string) => xml.replace(/<(\w+:)?f(\s[^>]*)?>[^<]*<\/(\w+:)?f>/g, '<f/>').replace(/<xdr:(col|row|colOff|rowOff)>\d+</g, '<xdr:$1><').replace(/\s(ref|sheet)="[^"]*"/g, '')
+
 const PARTS_OF_BOOK = /^(\[content_types\]\.xml|xl\/workbook\.xml|xl\/_rels\/workbook\.xml\.rels|xl\/styles\.xml|xl\/calcchain\.xml|xl\/metadata\.xml|xl\/richdata\/.*)$/i
 
 /** Each file edited by `kinds`, written over its original; what differs from writeXlsx's, and the parts that changed unasked. */
@@ -201,7 +205,10 @@ async function check(kinds: readonly string[]): Promise<{ written: number; refus
     for (const name of o.names) {
       if (PARTS_OF_BOOK.test(name) || mine.has(name.toLowerCase())) continue
       const [p, q] = [await o.bytes(name), await x.bytes(name)]
-      if (!q || Buffer.compare(Buffer.from(p!), Buffer.from(q)) !== 0) out.problems.push(`${f}: ${name} ${q ? 'changed' : 'missing'}`)
+      if (q && Buffer.compare(Buffer.from(p!), Buffer.from(q)) === 0) continue
+      // a part whose references an operation moved: it changed in them alone
+      if (q && MOVED.test(name) && refsOut((await o.text(name))!) === refsOut((await x.text(name))!)) continue
+      out.problems.push(`${f}: ${name} ${q ? 'changed' : 'missing'}`)
     }
   }
   return out

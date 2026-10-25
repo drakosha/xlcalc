@@ -234,7 +234,9 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
       const [x0, x1, own] = [c0.get(col), c1.get(col), sc.get(col)]
       const forced = own?.si !== undefined && !own.master && broken.has(own.si)
       if (x0?.text === x1?.text && !forced) {
-        if (own) body += own.text
+        // a cell of the file the model has not (one that looks as its row or column) means nothing where lines moved
+        if (own && (x0 || !x.lines)) body += own.text
+        else if (own) rowChanged = true
         continue
       }
       rowChanged = true
@@ -269,7 +271,8 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
     return !b && !body ? '' : rowXml(s, a, b, body, x)
   }
   try {
-    for (const r of all) if (!same(r)) rowOut.set(r, merge(r))
+    // with rows or columns inserted or deleted, every row is looked at for the file's cells the model has not
+    for (const r of all) if (x.lines || !same(r)) rowOut.set(r, merge(r))
     // the copies of shared formulas whose master was written anew, in the rows kept as they were
     if (broken.size)
       for (const s of rows) {

@@ -12,7 +12,7 @@ import { object, onlyOptions } from '../../input/basic.js'
 import { sheetKey } from '../../syntax/print.js'
 import { Issues } from '../issues.js'
 import { checkLimits, fileBytes, readXlsx } from '../read/book.js'
-import { partText } from '../read/package.js'
+import { partText, relsOf } from '../read/package.js'
 import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
 import type { XlsxSnapshot, XlsxWritten } from '../types.js'
@@ -27,8 +27,8 @@ import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { KeptIssues } from './issues.js'
 import { records } from './zip.js'
-import { carrierNames, carriersOf } from './carriers.js'
-import { KeptRefusal, refusals, type Identity } from './refusals.js'
+import { carrierNames, carriersOf, type Edit } from './carriers.js'
+import { edited, KeptRefusal, refusals, type Identity } from './refusals.js'
 import { spliceSheet } from './sheet.js'
 import { contentTypes, openSource, relsPath, type Source, type SourceSheet } from './source.js'
 import { addMeta, planMeta, type MetaPlan } from './metadata.js'
@@ -86,20 +86,12 @@ function relative(from: string, to: string): string {
   return [...a.slice(i).map(() => '..'), ...b.slice(i)].join('/')
 }
 
-/** A part's own text replaced: the file's part `at` to `end` replaced by `text`, in order of `at`. */
-function edited(xml: string, edits: { at: number; end: number; text: string }[]): string {
-  edits.sort((x, y) => x.at - y.at)
-  let out = ''
-  let from = 0
-  for (const e of edits) {
-    out += xml.slice(from, e.at) + e.text
-    from = e.end
-  }
-  return out + xml.slice(from)
-}
-
 /** What the file gives every sheet: its styles, the marks of its cell metadata, the first free block of VML shape ids, the text and largest id of its tables. */
 interface Setup {
+  /** The parts each part points at, by its name in lower case: the file's relationships, internal ones. */
+  rels: Map<string, string[]>
+  /** The text of the parts the moved references are written back to, by name (the sheets and the workbook apart). */
+  texts: Map<string, string>
   styles: KeptStyles
   meta: MetaPlan
   /** The file's metadata and rich value parts, by relationship kind: their text. */
@@ -112,7 +104,7 @@ interface Setup {
 /** The relationship kinds of the cell metadata and the rich values of errors. */
 const META = ['sheetMetadata', 'rdRichValue', 'rdRichValueStructure'] as const
 
-async function setup(src: Source): Promise<Setup> {
+async function setup(src: Source, edits: Edit[]): Promise<Setup> {
   const part = (kind: string) => partText(src.archive, src.wbRels, kind)
   const [stylesXml, themeXml, metaXml, richValues, richStructures] = await Promise.all(['styles', 'theme', ...META].map(part))
   let block = 1
@@ -129,7 +121,17 @@ async function setup(src: Source): Promise<Setup> {
         tables.set(r.target, xml)
         tableId = Math.max(tableId, Number(attributes(element(xml, 'table')?.attrs ?? '').id) || 0)
       }
+  const rels = new Map<string, string[]>()
+  for (const name of src.archive.names) {
+    const m = /^(.*?)_rels\/([^/]+)\.rels$/i.exec(name)
+    if (m) rels.set(`${m[1]}${m[2]}`.toLowerCase(), (await relsOf(src.archive, `${m[1]}${m[2]}`)).filter((r) => !r.external).map((r) => r.target.toLowerCase()))
+  }
+  const own = new Set([src.wbPath, ...src.sheets.map((s) => s.part)].map((p) => p.toLowerCase()))
+  const texts = new Map<string, string>()
+  for (const part of new Set(edits.map((e) => e.part))) if (!own.has(part.toLowerCase())) texts.set(part, (await src.archive.text(part))!)
   return {
+    rels,
+    texts,
     styles: new KeptStyles(stylesXml, readStyles(stylesXml, palette(themeXml, stylesXml))),
     meta: planMeta(metaXml, richValues, richStructures),
     metaParts: { sheetMetadata: metaXml, rdRichValue: richValues, rdRichValueStructure: richStructures },
@@ -157,7 +159,7 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   // the book as written: its names without the carriers
   const carried = new Set(carrierNames(carriers).map((n) => caseKey(n.name)))
   const book: BookInput = given.names ? { ...given, names: given.names.filter((n) => n.scope !== undefined || !carried.has(caseKey(n.name))) } : given
-  const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src))
+  const k = new Kept(src, read.book, book, cells, cells && read.cached.sheets.map((s) => s.cells), identity, await setup(src, identity.edits))
   const root = rootOf(src.wb)!
   const strict = src.wb.slice(root.start, root.open).includes(STRICT)
   try {
@@ -253,18 +255,32 @@ class Kept {
       const p1 = sheetPieces(s1, k, this.context(book, this.w1, j, this.cells?.[j], issues))
       const rels = new Rels(ss.relsXml)
       const bound = { hyperlinks: this.hyperlinks(ss, p0, p1, rels), legacyDrawing: this.notes(ss, p0, p1, rels), tableParts: this.tables(ss, k, j, rels) }
-      const out = spliceSheet({ xml: ss.xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k] })
-      this.changed ||= out.changed
-      if (out.xml !== undefined) {
-        this.parts.set(ss.part, out.xml)
-        this.formulas ||= p1.formulas
-      }
+      // the references of the sheet's own parts (an AutoFilter, page breaks, sparklines) written back first
+      const xml = this.edited(ss.part, ss.xml)
+      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k] })
+      this.changed ||= out.changed || xml !== ss.xml
+      if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
+      if (out.xml !== undefined) this.formulas ||= p1.formulas
       if (rels.changed) this.parts.set(relsPath(ss.part), rels.xml())
       adopt(issues, this.issues, out.cells, out.written)
+    }
+    // the references moved in the parts the model does not have: charts, drawings, pivot tables and caches
+    for (const [part, text] of this.setup.texts) {
+      const next = this.edited(part, text)
+      if (next === text) continue
+      this.changed = true
+      this.parts.set(part, next)
     }
     // the sheets the book no longer has, with the parts of their own
     for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
     this.workbook()
+  }
+
+  /** A part's text with the moved references written back. */
+  private edited(part: string, text: string): string {
+    const key = part.toLowerCase()
+    const mine = this.id.edits.filter((e) => e.part.toLowerCase() === key)
+    return mine.length ? edited(text, mine) : text
   }
 
   /** The sheet's hyperlinks where they changed, their addresses relationships of the sheet in place of the file's. */
@@ -404,17 +420,27 @@ class Kept {
     adopt(issues, this.issues)
   }
 
-  /** A sheet deleted, with its relationships and the parts of its own they point at (its tables, notes, printer settings). */
+  /**
+   * A sheet deleted, with its relationships and the parts only it points at, theirs too: its tables, notes, printer
+   * settings, and its drawings with their charts and pictures.
+   */
   private deleteSheet(ss: SourceSheet): void {
     this.changed = true
-    this.parts.remove(ss.part)
-    this.types.remove(ss.part)
-    this.parts.remove(relsPath(ss.part))
-    for (const r of ss.rels) {
-      if (r.external) continue
-      this.parts.remove(r.target)
-      this.types.remove(r.target)
+    const gone = new Set<string>()
+    const drop = (part: string) => {
+      const key = part.toLowerCase()
+      if (gone.has(key)) return
+      gone.add(key)
+      this.parts.remove(part)
+      this.types.remove(part)
+      this.parts.remove(relsPath(part))
+      for (const t of this.setup.rels.get(key) ?? []) {
+        // a part another part still points at stays
+        const kept = [...this.setup.rels].some(([from, to]) => !gone.has(from) && to.includes(t))
+        if (!kept) drop(this.src.archive.names.find((n) => n.toLowerCase() === t) ?? t)
+      }
     }
+    drop(ss.part)
     const id = attr(this.src.decls[ss.decl].attrs, 'id')
     if (id) this.wbRels.remove(id)
   }
@@ -422,10 +448,12 @@ class Kept {
   /** The workbook part: its sheets, names, active sheet and calculation settings, where the book changed them. */
   private workbook(): void {
     const { src, book0, book } = this
-    const { wb, decls } = src
+    const { decls } = src
+    // the moved references of the names the model does not take written back: after the sheets, which keep their places
+    const wb = this.edited(src.wbPath, src.wb)
     const root = rootOf(wb)!
     const kids = childrenOf(wb, root)
-    const edits: { at: number; end: number; text: string }[] = []
+    const edits: Edit[] = []
     const insertAt = (before: string[]) => [...kids].reverse().find((c) => before.includes(c.local))?.end ?? root.open
     // the workbook's sheets in the book's order; the file's others (chart sheets) after the sheet they followed
     const others = new Map<number, number[]>()
@@ -466,9 +494,9 @@ class Kept {
     const sheets = `${wb.slice(list.start, list.open)}${order.join('')}</${list.qname}>`
     if (sheets !== wb.slice(list.start, list.end)) {
       this.changed = true
-      edits.push({ at: list.start, end: list.end, text: sheets })
+      edits.push({ part: src.wbPath, start: list.start, end: list.end, text: sheets })
     }
-    this.names(kids, place, placeOf, edits, insertAt)
+    this.names(wb, kids, place, placeOf, edits, insertAt)
     // the active sheet, by its place now
     const views = kids.find((c) => c.local === 'bookViews')
     const view = views && childrenOf(wb, views).find((c) => c.local === 'workbookView')
@@ -480,7 +508,7 @@ class Kept {
       const next = setAttrs(tag, { activeTab: active || book.activeSheet !== undefined ? String(active) : null, ...(first >= order.length ? { firstSheet: null } : {}) })
       if (next !== tag) {
         this.changed = true
-        edits.push({ at: view.start, end: view.open, text: next })
+        edits.push({ part: src.wbPath, start: view.start, end: view.open, text: next })
       }
     }
     // iterative calculation as the book has it, and a full calculation on loading: Excel computes the values again
@@ -491,19 +519,19 @@ class Kept {
     const a = attributes(it1)
     const full = this.formulas || book.sheets.some((s) => Object.values(s.cells).some((c) => c.formula !== undefined))
     const set: Record<string, string | null> = { iterate: a.iterate ?? null, iterateCount: a.iterateCount ?? null, iterateDelta: a.iterateDelta ?? null, ...(full ? { fullCalcOnLoad: '1' } : {}) }
-    if (calc) edits.push({ at: calc.start, end: calc.open, text: setAttrs(wb.slice(calc.start, calc.open), set) })
+    if (calc) edits.push({ part: src.wbPath, start: calc.start, end: calc.open, text: setAttrs(wb.slice(calc.start, calc.open), set) })
     else {
       const at = insertAt(BEFORE_CALC)
-      edits.push({ at, end: at, text: `<calcPr${full ? ' fullCalcOnLoad="1"' : ''}${it1}/>` })
+      edits.push({ part: src.wbPath, start: at, end: at, text: `<calcPr${full ? ' fullCalcOnLoad="1"' : ''}${it1}/>` })
     }
     this.parts.set(src.wbPath, edited(wb, edits))
     this.finish()
   }
 
   /** The defined names: the book's, each as the file wrote it where it did not change, and the file's the model does not take, by their sheets' places now. */
-  private names(kids: ReturnType<typeof childrenOf>, place: Map<string, number>, placeOf: Map<number, number>, edits: { at: number; end: number; text: string }[], insertAt: (before: string[]) => number): void {
+  private names(wb: string, kids: ReturnType<typeof childrenOf>, place: Map<string, number>, placeOf: Map<number, number>, edits: Edit[], insertAt: (before: string[]) => number): void {
     const { src, book0, book } = this
-    const { wb, decls } = src
+    const { decls } = src
     const scopeOf = (d: number | undefined) => (d === undefined ? undefined : decls[d]?.sheet !== undefined ? book0.sheets[decls[d].sheet!].name : decls[d]?.name)
     const el = kids.find((c) => c.local === 'definedNames')
     const filePlace = new Map(decls.flatMap((d, i) => (d.sheet !== undefined ? [[sheetKey(book0.sheets[d.sheet].name), i] as const] : [])))
@@ -539,15 +567,16 @@ class Kept {
       const k = key(n.name, n.scope)
       return [was.get(k) === x && fileText.has(k) ? fileText.get(k)! : x]
     })
-    if (x0.filter(Boolean).join('') === x1.filter(Boolean).join('') && !foreignChanged) return
+    // the names the model does not take with their references written back count as changed
+    if (x0.filter(Boolean).join('') === x1.filter(Boolean).join('') && !foreignChanged && wb === src.wb) return
     this.changed = true
     adopt(issues, this.issues)
     const all = [...ours, ...foreign]
     const text = all.length ? `<definedNames>${all.join('')}</definedNames>` : ''
-    if (el) edits.push({ at: el.start, end: el.end, text })
+    if (el) edits.push({ part: src.wbPath, start: el.start, end: el.end, text })
     else if (text) {
       const at = insertAt(BEFORE_NAMES)
-      edits.push({ at, end: at, text })
+      edits.push({ part: src.wbPath, start: at, end: at, text })
     }
   }
 

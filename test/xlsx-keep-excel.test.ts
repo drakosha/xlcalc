@@ -8,7 +8,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { readXlsx } from '../src/xlsx.js'
-import { KeptRefusal, openKept, writeKept } from '../src/xlsx-keep.js'
+import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { createSession } from '../src/index.js'
 import { MADE, partsOf } from '../bench/coverage/keep/books.js'
 import { written, type OpenRun } from '../bench/coverage/keep.js'
@@ -48,24 +48,4 @@ describe('xlsx/keep in Excel', () => {
       expect(values((await readXlsx(saved)).book), f.id).toEqual(values((await readXlsx(f.data)).book))
     }
   }, 60_000)
-
-  it("a change that would move the references of Excel's parts is refused, with the part named", async () => {
-    const refusal = async (id: string, op: Parameters<ReturnType<typeof createSession>['editStructure']>[0]) => {
-      const data = readFileSync(new URL(`made/${id}.xlsx`, dir))
-      const r = await openKept(data)
-      const s = createSession(r.book, { cached: r.cached })
-      expect(s.editStructure(op).ok).toBe(true)
-      return writeKept(data, s.getSnapshot()).then(
-        () => 'written',
-        (e: Error) => (e instanceof KeptRefusal ? e.message.replace(/ \(xl\/[^)]*\)|xl\/[\w/]+\.xml/g, '').slice(0, 60) : `${e.name}: ${e.message}`),
-      )
-    }
-    // a row inserted above what the chart reads moves its anchor first: the chart sits over the data's rows
-    expect(await refusal('chart', { op: 'insertRows', sheet: 'Data', row: 3 })).toMatch(/^xlsx\/keep: a drawing on 'Data' refers to 'Data'!\$F\$1:\$L\$13, /)
-    expect(await refusal('pivot', { op: 'deleteRows', sheet: 'Data', row: 21 })).toMatch(/^xlsx\/keep: (the chart|the source of the pivot cache)/)
-    expect(await refusal('print', { op: 'insertColumns', sheet: 'Data', column: 'B' })).toMatch(/^xlsx\/keep: /)
-    expect(await refusal('chartsheet', { op: 'renameSheet', sheet: 'Data', name: 'Amounts' })).toMatch(/^xlsx\/keep: the chart  refers to 'Data'!/)
-    expect(await refusal('all', { op: 'moveRange', from: { sheet: 'Data', range: 'A1:C21' }, to: { sheet: 'Plain', cell: 'D1' } })).toMatch(/^xlsx\/keep: /)
-    expect(await refusal('all', { op: 'deleteSheet', sheet: 'Pivot' })).toMatch(/^xlsx\/keep: /)
-  })
 })

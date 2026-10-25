@@ -4,10 +4,16 @@
  * a note), and the edits written over each of them by `writeKept` (`EDITS`), which Excel then opens. What a file holds
  * of those parts is counted by `partsOf`.
  */
-import type { BookInput, Session } from '../../../src/contract.js'
+import type { BookInput, Session, StructureOp } from '../../../src/contract.js'
 import { compute } from '../../../src/index.js'
 import { writeXlsx } from '../../../src/xlsx.js'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
+import { canonical } from '../../../src/syntax/print.js'
+import { openSource } from '../../../src/xlsx/keep/source.js'
+import { ContentTypes } from '../../../src/xlsx/keep/xml.js'
+import { parseFormula } from '../../../src/xlsx/read/formulas.js'
+import { attributes, element, elements } from '../../../src/xlsx/xml/scan.js'
+import { readText } from '../../../src/xlsx/xml/text.js'
 import { zip } from '../../../src/xlsx/zip/write.js'
 
 const REGIONS = ['North', 'South', 'East', 'West']
@@ -158,4 +164,88 @@ export async function partsOf(data: Uint8Array): Promise<Record<string, number>>
     breaks,
     notes: count(/^xl\/comments\d+\.xml$/i),
   }
+}
+
+/** Files Excel makes for the operations of the structure (`STRUCT`) beside `MADE`: a picture that sizes with its cells and one fixed, and a chart and a picture that only move. */
+export const MADE_STRUCT: Made[] = [
+  { id: 'sized', features: ['chart', 'picture', 'sized', 'floating'] },
+  { id: 'moving', features: ['chart', 'chartmove', 'picture'] },
+]
+
+/** An operation of the structure on a made file, as the session takes it and as `excel-keep-struct.applescript` does it: op, sheet, range, target, cell. */
+export interface Struct {
+  id: string
+  made: string
+  op: StructureOp
+  excel: [op: string, sheet: string, range: string, target: string, to: string]
+}
+
+const rows = (sheet: string, row: number, count: number, op: 'insertRows' | 'deleteRows'): Pick<Struct, 'op' | 'excel'> => ({ op: { op, sheet, row, count }, excel: [op, sheet, `A${row}:A${row + count - 1}`, '', ''] })
+
+export const STRUCT: Struct[] = [
+  { id: 'chart-insert-in', made: 'chart', ...rows('Data', 3, 2, 'insertRows') },
+  { id: 'chart-delete-in', made: 'chart', ...rows('Data', 3, 2, 'deleteRows') },
+  { id: 'chart-delete-series', made: 'chart', ...rows('Data', 2, 5, 'deleteRows') },
+  { id: 'chart-delete-chart', made: 'chart', ...rows('Data', 1, 14, 'deleteRows') },
+  { id: 'chart-insert-cols', made: 'chart', op: { op: 'insertColumns', sheet: 'Data', column: 'B' }, excel: ['insertColumns', 'Data', 'B1', '', ''] },
+  { id: 'chart-rename', made: 'chart', op: { op: 'renameSheet', sheet: 'Data', name: 'Sales 2025' }, excel: ['renameSheet', 'Data', '', 'Sales 2025', ''] },
+  { id: 'chart-move', made: 'chart', op: { op: 'moveRange', from: { sheet: 'Data', range: 'A1:B6' }, to: { sheet: 'Plain', cell: 'D1' } }, excel: ['moveRange', 'Data', 'A1:B6', 'Plain', 'D1'] },
+  { id: 'picture-delete-picture', made: 'picture', ...rows('Data', 14, 7, 'deleteRows') },
+  { id: 'sized-delete-picture', made: 'sized', ...rows('Data', 14, 7, 'deleteRows') },
+  { id: 'sized-insert-above', made: 'sized', ...rows('Data', 2, 2, 'insertRows') },
+  { id: 'moving-insert-in', made: 'moving', ...rows('Data', 3, 2, 'insertRows') },
+  { id: 'pivot-source-deleted', made: 'pivot', op: { op: 'deleteSheet', sheet: 'Data' }, excel: ['deleteSheet', 'Data', '', '', ''] },
+  { id: 'pivot-insert-above', made: 'pivot', ...rows('Pivot', 1, 2, 'insertRows') },
+  { id: 'pivot-insert-source', made: 'pivot', ...rows('Data', 5, 1, 'insertRows') },
+  { id: 'print-delete', made: 'print', ...rows('Data', 21, 1, 'deleteRows') },
+  { id: 'print-insert', made: 'print', ...rows('Data', 5, 2, 'insertRows') },
+  { id: 'print-delete-break-row', made: 'print', ...rows('Data', 12, 1, 'deleteRows') },
+  { id: 'chartsheet-rename', made: 'chartsheet', op: { op: 'renameSheet', sheet: 'Data', name: 'Amounts' }, excel: ['renameSheet', 'Data', '', 'Amounts', ''] },
+  { id: 'chartsheet-source-deleted', made: 'chartsheet', op: { op: 'deleteSheet', sheet: 'Data' }, excel: ['deleteSheet', 'Data', '', '', ''] },
+  { id: 'all-insert-cols', made: 'all', op: { op: 'insertColumns', sheet: 'Data', column: 'A' }, excel: ['insertColumns', 'Data', 'A1', '', ''] },
+]
+
+/**
+ * What a file's parts the model does not have refer to: the series of its charts (canonical, sorted), each sheet's
+ * drawing anchors (kind, `editAs`, each corner's column and row with their offsets), its pivot tables' places and their
+ * caches' sources, the built-in names, each sheet's page breaks. What `keep struct` compares between Excel's file and
+ * the one `writeKept` writes.
+ */
+export async function refsOf(data: Uint8Array): Promise<Record<string, unknown>> {
+  const src = await openSource(data)
+  const types = new ContentTypes(src.types)
+  const canon = (text: string) => {
+    const f = parseFormula(text, { union: true })
+    return f.ast ? canonical(f.ast) : text
+  }
+  const series: string[] = []
+  for (const part of types.parts((t) => /drawingml\.chart\+xml$/i.test(t))) for (const f of elements((await src.archive.text(part)) ?? '', 'f')) series.push(canon(readText(f.body ?? '')))
+  const sheetName = (i: number) => src.decls[src.sheets[i].decl].name
+  const anchors: Record<string, string[]> = {}
+  const breaks: Record<string, string> = {}
+  for (const [i, s] of src.sheets.entries()) {
+    for (const r of s.rels.filter((x) => x.kind === 'drawing' && !x.external)) {
+      const xml = (await src.archive.text(r.target)) ?? ''
+      const corner = (body: string, tag: string) => {
+        const p = element(body, tag)?.body ?? ''
+        return ['col', 'colOff', 'row', 'rowOff'].map((k) => element(p, k)?.body ?? '?').join(' ')
+      }
+      for (const local of ['twoCellAnchor', 'oneCellAnchor', 'absoluteAnchor'])
+        for (const e of elements(xml, local)) (anchors[sheetName(i)] ??= []).push(`${local} ${attributes(e.attrs).editAs ?? ''}: ${corner(e.body ?? '', 'from')} / ${corner(e.body ?? '', 'to')}`)
+    }
+    const ids = (local: string) => elements(element(s.xml, local)?.body ?? '', 'brk').map((b) => attributes(b.attrs).id)
+    if (ids('rowBreaks').length || ids('colBreaks').length) breaks[sheetName(i)] = `rows ${ids('rowBreaks').join(',')} columns ${ids('colBreaks').join(',')}`
+  }
+  const pivots: string[] = []
+  for (const part of types.parts((t) => /pivotTable\+xml$/i.test(t))) pivots.push(`location ${attributes(element((await src.archive.text(part)) ?? '', 'location')?.attrs ?? '').ref}`)
+  for (const part of types.parts((t) => /pivotCacheDefinition\+xml$/i.test(t))) {
+    const a = attributes(element((await src.archive.text(part)) ?? '', 'worksheetSource')?.attrs ?? '')
+    pivots.push(`source ${a.name !== undefined ? `name ${a.name}` : `${a.sheet ?? '-'}!${a.ref ?? '-'}`}`)
+  }
+  const names: string[] = []
+  for (const d of elements(element(src.wb, 'definedNames')?.body ?? '', 'definedName')) {
+    const a = attributes(d.attrs)
+    if (/^_xlnm\./.test(a.name ?? '')) names.push(`${a.name}@${a.localSheetId === undefined ? '' : src.decls[Number(a.localSheetId)]?.name}=${canon(readText(d.body ?? ''))}`)
+  }
+  return { series: series.sort(), anchors, pivots, names: names.sort(), breaks }
 }

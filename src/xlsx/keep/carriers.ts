@@ -2,24 +2,26 @@
  * Carriers: names of the book that hold the references of the file's parts the model does not have (`openKept` adds
  * them, `writeKept` reads them back). Each sheet has one on its last cell, which a row or column inserted or deleted
  * anywhere on it moves and a rename or a deletion of the sheet changes, and which tells which sheet of the book the
- * file's sheet became. Each reference of a part the model does not have gets one of its own, which an operation of
- * the structure moves as Excel moves the reference: the series and labels of charts, the anchors of drawings, the
- * source and the place of pivot tables, sparklines, a sheet's AutoFilter and sort, the names the model does not take
- * (the print area and titles), page breaks, protected ranges and comment threads. Parts whose references are not
- * read (`unparsed`) are known only by their sheet's carrier: rows and columns inserted or deleted there are seen, a
- * range moved over them is not.
+ * file's sheet became. Each part with references the model does not have is an item with carriers of its own, which an
+ * operation of the structure moves as Excel moves a name's reference, and the edits that write them back (`fix`): the
+ * series and labels of charts, the anchors of drawings by their `editAs`, the place and the source of pivot tables,
+ * sparklines, a sheet's AutoFilter and sort, the names the model does not take (the print area and titles), page
+ * breaks and protected ranges. A part an item cannot write back as Excel would refuses (comment threads, a pivot
+ * table cut). Parts whose references are not read (`unparsed`) are known only by their sheet's carrier: rows and
+ * columns inserted or deleted there are seen, a range moved over them is not.
  */
 import type { BookInput, NameInput } from '../../contract.js'
 import { caseKey } from '../../collate.js'
-import { indexToCol, MAX_COLS, MAX_ROWS } from '../../model.js'
+import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Rect } from '../../structure/area.js'
 import type { Ast } from '../../syntax/ast.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { canonical, mapAst, quoteSheet, sheetKey, walk } from '../../syntax/print.js'
-import { attr, attributes, element, elements } from '../xml/scan.js'
-import { readText } from '../xml/text.js'
+import { attr, attributes, placed } from '../xml/scan.js'
+import { escapeAttr, escapeText, readText } from '../xml/text.js'
 import { parseFormula } from '../read/formulas.js'
+import { ABSOLUTE, areasOf, areaText, dollarsOf, plainArea, sheetPrefix, sqrefRects, type Area, type Dollars } from './refs.js'
 import type { Source } from './source.js'
 import { attrsOf, childrenOf, ContentTypes, rootOf } from './xml.js'
 
@@ -32,34 +34,55 @@ export interface Carrier {
   ref: string
   /** `ref`: the reference counts as written, its sheet too; `place`: the part lies on the sheet, only its cells count. */
   kind: 'ref' | 'place'
-  /** The part, as a refusal names it. */
+}
+
+/** A change of a part's text: from `start` to `end` of the part as the file has it, `text` in their place. */
+export interface Edit {
+  part: string
+  start: number
+  end: number
+  text: string
+}
+
+/** What writing an item's carriers back gives: the edits, or why the file cannot take the change. */
+export type Fix = { edits: Edit[] } | { refuse: string }
+
+/** A part's references: its carriers, and the edits that write what they hold now (by carrier) back to the file. */
+export interface Item {
   what: string
+  /** The sheet of the source the part lies on: deleted with it, its references go too. */
+  on?: number
+  carriers: Carrier[]
+  fix(now: string[]): Fix
 }
 
 export interface Carriers {
   /** Each of the source's sheets' carrier, in the book's order of them. */
   sheets: Carrier[]
-  refs: Carrier[]
+  items: Item[]
   /** By sheet of the source: its parts whose references no carrier holds. */
   unparsed: string[][]
   /** Parts whose references no carrier holds and that may refer to any sheet. */
   anywhere: string[]
-  /** The tables and names parts take their data from by name (a pivot cache's source). */
-  byName: { name: string; what: string }[]
-  /** By sheet of the source: parts that name the sheet (a pivot chart's pivot table). */
-  named: string[][]
+  /** The tables and names parts take their data from by name (a pivot cache's source): where the name lies in the part. */
+  byName: { name: string; what: string; part: string; at: [number, number] }[]
+  /** By sheet of the source: parts that name the sheet (a pivot chart's pivot table), where the name lies. */
+  named: { what: string; part: string; at: [number, number]; prefix: string; rest: string }[][]
 }
 
 /** Elements of a worksheet whose references are not read. */
 const UNPARSED = new Set(['oleObjects', 'controls', 'dataConsolidate', 'scenarios', 'customSheetViews', 'cellWatches', 'webPublishItems', 'smartTags', 'AlternateContent'])
+
+const SPARKLINES = '{05C60535-1F16-4FD2-B633-F4F36F0B64E0}'
+const PROTECTED = '{FC87AEE6-9EDD-4A0A-B7FB-166176984837}'
 
 /** Extensions of a worksheet without references of cells, or with those the model or a carrier holds. */
 const EXT_KNOWN = new Set(
   [
     '{78C0D931-6437-407d-A8EE-F0AAD7539E65}', // conditional formats
     '{CCE6A557-97BC-4b89-ADB6-D9C93CAAB3DF}', // data validation
-    '{05C60535-1F16-4fd2-B633-F4F36F0B64E0}', // sparklines
-    '{FC87AEE6-9EDD-4A0A-B7FB-166176984837}', // protected ranges
+    SPARKLINES,
+    PROTECTED,
     '{A8765BA9-456A-4dab-B4F3-ACF838C121DE}', // slicers of pivot tables
     '{3A4CF648-6AED-40f4-86FF-DC5316D8AED3}', // slicers of tables
     '{7E03D99C-DC04-49d9-9315-930204A7B6E9}', // timelines
@@ -68,26 +91,48 @@ const EXT_KNOWN = new Set(
 )
 
 /** A rectangle as an absolute reference: `$B$3`, `$B$3:$E$10`, `$C:$D`, `$3:$5`. */
-export function absText(x: Rect): string {
-  const cell = (r: number, c: number) => `$${indexToCol(c)}$${r + 1}`
-  if (x.r1 === 0 && x.r2 === MAX_ROWS - 1) return `$${indexToCol(x.c1)}:$${indexToCol(x.c2)}`
-  if (x.c1 === 0 && x.c2 === MAX_COLS - 1) return `$${x.r1 + 1}:$${x.r2 + 1}`
-  return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.r1, x.c1) : `${cell(x.r1, x.c1)}:${cell(x.r2, x.c2)}`
-}
+export const absText = (x: Rect) => areaText(x, ABSOLUTE)
 
 /** A sheet's carrier: its last cell. */
 const lastCell = (sheet: string) => `${quoteSheet(sheet)}!$XFD$1048576`
 
-/** A reference of an `sqref` (space-separated cells and ranges) on a sheet, a union of them; null when one is no range. */
-function sqrefText(sheet: string, sqref: string): string | null {
-  const parts = sqref.trim().split(/\s+/).filter(Boolean)
-  const out: string[] = []
-  for (const p of parts) {
-    const m = /^\$?([A-Za-z]{1,3})\$?(\d+)(?::\$?([A-Za-z]{1,3})\$?(\d+))?$/.exec(p)
-    if (!m) return null
-    out.push(`${quoteSheet(sheet)}!${p.replace(/\$/g, '').toUpperCase().replace(/([A-Z]+)(\d+)/g, '$$$1$$$2')}`)
-  }
-  return out.length ? out.join(',') : null
+/** Rows taken below an anchor to tell where it lands when its rows are deleted, and columns beside it. */
+const BELOW = 100_000
+const BESIDE = 1_000
+
+/** Where an element lies in a part: from its opening tag to its end. */
+interface Span {
+  start: number
+  end: number
+}
+
+/** Where the value of an attribute of the element at `e` lies in its opening tag; undefined without it. */
+function valueAt(xml: string, e: Span, name: string): [number, number] | undefined {
+  const tag = xml.slice(e.start, xml.indexOf('>', e.start) + 1)
+  const m = new RegExp(`\\s${name.replace(/[.:]/g, '\\$&')}\\s*=\\s*(["'])([^"']*)\\1`).exec(tag)
+  return m ? [e.start + m.index + m[0].length - 1 - m[2].length, e.start + m.index + m[0].length - 1] : undefined
+}
+
+/** The elements of a local name in a part from `from` to `to`: each where it lies, where its content lies, and its attributes and content. */
+function within(xml: string, from: number, to: number, local: string, first = false): (Span & { open: number; close: number; attrs: string; body: string | null })[] {
+  const sub = xml.slice(from, to)
+  return placed(sub, local, first).map((p) => {
+    const open = from + sub.indexOf('>', p.start) + 1
+    return { start: from + p.start, end: from + p.end, open, close: p.body === null ? open : open + p.body.length, attrs: p.attrs, body: p.body }
+  })
+}
+
+/** The rectangles of an `sqref` in a carrier: a union on the sheet; null when one is none. */
+const sqrefCarrier = (sheet: string, rects: Rect[] | null): string | null => (rects?.length ? rects.map((x) => `${quoteSheet(sheet)}!${absText(x)}`).join(',') : null)
+
+/** The rectangles a carrier's text holds now: each, or null where lost; null when it is no union of references. */
+const rectsNow = (text: string): (Rect | null)[] | null => areasOf(text)?.map((a) => ('rect' in a ? a.rect : null)) ?? null
+
+/** A reference written back as a file's formula: each area with its sheet and the `$`s it had (`dollars`), `#REF!` where lost; the whole `#REF!` for a sheet deleted. */
+function formulaText(areas: Area[], dollars: Dollars[], parens: boolean): string {
+  if (areas.every((a) => 'lost' in a && a.sheet === undefined)) return '#REF!'
+  const text = areas.map((a, i) => ('rect' in a ? `${sheetPrefix(a.sheet)}!${areaText(a.rect, dollars[i] ?? ABSOLUTE)}` : a.sheet === undefined ? '#REF!' : `${sheetPrefix(a.sheet)}!#REF!`)).join(',')
+  return parens ? `(${text})` : text
 }
 
 export async function carriersOf(src: Source, book: BookInput): Promise<Carriers> {
@@ -95,89 +140,74 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
   const known = new Set(names.map(sheetKey))
   const taken = new Set((book.names ?? []).map((n) => caseKey(n.name)))
   let n = 0
-  const nextName = (): string => {
+  const carrier = (ref: string, kind: Carrier['kind']): Carrier => {
     let name = `${PREFIX}${n++}`
     while (taken.has(caseKey(name))) name = `${PREFIX}${n++}`
-    return name
+    return { name, ref, kind }
   }
-  const out: Carriers = { sheets: [], refs: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []) }
+  const out: Carriers = { sheets: [], items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []) }
   for (const [i, sheet] of names.entries()) {
     let name = `${PREFIX}s${i}`
     for (let k = 2; taken.has(caseKey(name)); k++) name = `${PREFIX}s${i}.${k}`
-    out.sheets.push({ name, ref: lastCell(sheet), kind: 'place', what: `the sheet '${sheet}'` })
+    out.sheets.push({ name, ref: lastCell(sheet), kind: 'place' })
   }
-  const place = (sheet: number, x: Rect | string | null, what: string) => {
-    const ref = typeof x === 'string' ? x : x && `${quoteSheet(names[sheet])}!${absText(x)}`
-    if (ref === null) out.unparsed[sheet].push(what)
-    else out.refs.push({ name: nextName(), ref, kind: 'place', what })
-  }
+  const place = (sheet: number, x: Rect) => carrier(`${quoteSheet(names[sheet])}!${absText(x)}`, 'place')
+
   /**
-   * A file's formula of references (a chart's series, a name's, a pivot cache's source): its carrier, its references
-   * absolute (the engine moves a name's relative reference with no row or column); none when it holds no reference of
-   * the book's sheets.
+   * A file's formula of references (a chart's series, a sparkline's data, a name's) at `span` of a part: an item with its
+   * carrier, the references absolute (the engine moves no relative reference of a name), written back with the `$`s
+   * the file gave them; none when it holds no reference of the book's sheets.
    */
-  const reference = (text: string, what: string) => {
+  const formula = (part: string, span: [number, number], text: string, what: string, escape: (s: string) => string, on?: number) => {
     const f = parseFormula(text, { union: true })
     if (!f.ast) return void out.anywhere.push(what)
     if (!refersToBook(f.ast, known)) return
+    const dollars: Dollars[] = []
+    walk(f.ast, (x) => {
+      if (x.k === 'ref') dollars.push(dollarsOf(x.ref))
+    })
     const absolute = mapAst(f.ast, (x) => (x.k === 'ref' || x.k === 'ref3d' ? { ...x, ref: { ...x.ref, text: absText(x.ref) } } : undefined))
-    out.refs.push({ name: nextName(), ref: canonical(absolute), kind: 'ref', what })
+    const c = carrier(canonical(absolute), 'ref')
+    const parens = text.trim().startsWith('(')
+    out.items.push({
+      what,
+      ...(on === undefined ? {} : { on }),
+      carriers: [c],
+      fix([now]) {
+        const areas = areasOf(now)
+        const written = areas ? formulaText(areas, dollars, parens) : now
+        return { edits: [{ part, start: span[0], end: span[1], text: escape(written) }] }
+      },
+    })
   }
+
   const types = new ContentTypes(src.types)
   for (const [i, s] of src.sheets.entries()) {
     const sheet = names[i]
-    const root = rootOf(s.xml)
-    for (const c of root ? childrenOf(s.xml, root) : []) {
-      const a = () => attrsOf(s.xml, c)
-      const text = () => s.xml.slice(c.start, c.end)
+    const xml = s.xml
+    const root = rootOf(xml)
+    for (const c of root ? childrenOf(xml, root) : []) {
       if (UNPARSED.has(c.local)) out.unparsed[i].push(`the ${c.local} of '${sheet}'`)
-      else if (c.local === 'autoFilter' || c.local === 'sortState') place(i, sqrefText(sheet, a().ref ?? ''), `the ${c.local === 'autoFilter' ? 'AutoFilter' : 'sort'} of '${sheet}'`)
-      else if (c.local === 'rowBreaks' || c.local === 'colBreaks') {
-        for (const b of elements(text(), 'brk')) {
-          const id = Number(attributes(b.attrs).id)
-          if (!(id >= 0)) continue
-          // the line before the break and the one after it: either inserted or deleted moves it
-          const x: Rect = c.local === 'rowBreaks' ? { r1: Math.max(0, id - 1), r2: Math.min(id, MAX_ROWS - 1), c1: 0, c2: MAX_COLS - 1 } : { r1: 0, r2: MAX_ROWS - 1, c1: Math.max(0, id - 1), c2: Math.min(id, MAX_COLS - 1) }
-          place(i, x, `the page breaks of '${sheet}'`)
-        }
-      } else if (c.local === 'protectedRanges') for (const p of elements(text(), 'protectedRange')) place(i, sqrefText(sheet, attributes(p.attrs).sqref ?? ''), `the protected ranges of '${sheet}'`)
-      else if (c.local === 'extLst') {
-        for (const e of elements(text(), 'ext')) {
-          const uri = (attributes(e.attrs).uri ?? '').toUpperCase()
+      else if (c.local === 'autoFilter' || c.local === 'sortState') filter(xml, c, i, s.part)
+      else if (c.local === 'rowBreaks' || c.local === 'colBreaks') breaks(xml, c, i, s.part)
+      else if (c.local === 'protectedRanges') protectedRanges(xml, c, i, s.part)
+      else if (c.local === 'extLst')
+        for (const e of childrenOf(xml, c)) {
+          const uri = (attrsOf(xml, e).uri ?? '').toUpperCase()
           if (!EXT_KNOWN.has(uri)) out.unparsed[i].push(`an extension of '${sheet}' (${uri})`)
-          else if (uri === '{05C60535-1F16-4FD2-B633-F4F36F0B64E0}') {
-            for (const f of elements(e.body ?? '', 'f')) reference(readText(f.body ?? ''), `the sparklines of '${sheet}'`)
-            for (const q of elements(e.body ?? '', 'sqref')) place(i, sqrefText(sheet, readText(q.body ?? '')), `the sparklines of '${sheet}'`)
-          } else if (uri === '{FC87AEE6-9EDD-4A0A-B7FB-166176984837}') for (const q of elements(e.body ?? '', 'sqref')) place(i, sqrefText(sheet, readText(q.body ?? '')), `the protected ranges of '${sheet}'`)
+          else if (uri === SPARKLINES) sparklines(xml, e, i, s.part)
+          else if (uri === PROTECTED) protectedRanges(xml, e, i, s.part)
         }
-      }
     }
     for (const r of s.rels) {
       if (r.external) continue
-      if (r.kind === 'drawing') {
-        const xml = (await src.archive.text(r.target)) ?? ''
-        for (const local of ['twoCellAnchor', 'oneCellAnchor'])
-          for (const e of elements(xml, local)) {
-            const at = (tag: string) => {
-              const p = element(e.body ?? '', tag)
-              const [col, row] = ['col', 'row'].map((k) => Number(element(p?.body ?? '', k)?.body))
-              return p && Number.isInteger(col) && Number.isInteger(row) ? { row, col } : undefined
-            }
-            const from = at('from')
-            const to = local === 'twoCellAnchor' ? at('to') : from
-            const fits = (p: { row: number; col: number } | undefined) => p && p.row >= 0 && p.col >= 0 && p.row < MAX_ROWS && p.col < MAX_COLS
-            place(i, fits(from) && fits(to) ? { r1: Math.min(from!.row, to!.row), r2: Math.max(from!.row, to!.row), c1: Math.min(from!.col, to!.col), c2: Math.max(from!.col, to!.col) } : null, `a drawing on '${sheet}' (${r.target})`)
-          }
-      } else if (r.kind === 'pivotTable') {
-        const xml = (await src.archive.text(r.target)) ?? ''
-        place(i, sqrefText(sheet, attributes(element(xml, 'location')?.attrs ?? '').ref ?? ''), `the pivot table ${r.target} on '${sheet}'`)
-      } else if (r.kind === 'threadedComment') {
-        const xml = (await src.archive.text(r.target)) ?? ''
-        for (const t of elements(xml, 'threadedComment')) place(i, sqrefText(sheet, attributes(t.attrs).ref ?? ''), `the comment threads of '${sheet}'`)
-      } else if (r.kind === 'vmlDrawing') {
+      if (r.kind === 'drawing') anchors((await src.archive.text(r.target)) ?? '', i, r.target)
+      else if (r.kind === 'pivotTable') pivotTable((await src.archive.text(r.target)) ?? '', i, r.target)
+      else if (r.kind === 'threadedComment') threads((await src.archive.text(r.target)) ?? '', i, r.target)
+      else if (r.kind === 'vmlDrawing') {
         // a legacy drawing holds the notes, which the model has, and form controls, which it does not
-        const xml = (await src.archive.text(r.target)) ?? ''
-        if (elements(xml, 'ClientData').some((d) => attributes(d.attrs).ObjectType !== 'Note')) out.unparsed[i].push(`the form controls of '${sheet}'`)
+        const vml = (await src.archive.text(r.target)) ?? ''
+        if (placed(vml, 'ClientData').some((d) => attributes(d.attrs).ObjectType !== 'Note')) out.unparsed[i].push(`the form controls of '${sheet}'`)
       }
     }
   }
@@ -188,41 +218,283 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
   for (const d of defined ? childrenOf(src.wb, defined) : []) {
     const a = attrsOf(src.wb, d)
     const name = readText(a.name ?? '')
-    if (/^_xlfn\./i.test(name)) continue
+    if (/^_xlfn\./i.test(name) || d.end === d.open) continue
     const decl = a.localSheetId === undefined ? undefined : src.decls[Number(a.localSheetId)]
     // a worksheet's name as the book has it (the reader repairs names Excel would not take)
     const scope = a.localSheetId === undefined ? '' : decl?.sheet !== undefined ? names[decl.sheet] : decl?.name
     if (held.has(`${scope === undefined ? '' : sheetKey(scope)}\n${caseKey(name)}`)) continue
-    reference(readText(src.wb.slice(d.open, d.end - d.qname.length - 3)), `the name ${name}`)
+    const span: [number, number] = [d.open, d.end - d.qname.length - 3]
+    formula(src.wbPath, span, readText(src.wb.slice(...span)), `the name ${name}`, escapeText)
   }
   for (const part of types.parts((t) => /drawingml\.chart\+xml$|chartex\+xml$/i.test(t))) {
     const xml = (await src.archive.text(part)) ?? ''
-    for (const f of elements(xml, 'f')) reference(readText(f.body ?? ''), `the chart ${part}`)
-    // a pivot chart's table, by its sheet's name
-    const pivot = element(element(xml, 'pivotSource')?.body ?? '', 'name')
-    const sheet = pivot && /^'?\[[^\]]*\]((?:[^'!]|'')+)'?!/.exec(readText(pivot.body ?? ''))?.[1]?.replace(/''/g, "'")
-    if (sheet) {
-      const k = names.findIndex((x) => sheetKey(x) === sheetKey(sheet))
-      if (k >= 0) out.named[k].push(`the pivot chart ${part}`)
-    }
+    for (const f of within(xml, 0, xml.length, 'f')) formula(part, [f.open, f.close], readText(f.body ?? ''), `the chart ${part}`, escapeText)
+    // a pivot chart's table, by its sheet's name (`[Book1.xlsx]Pivot!PivotTable1`)
+    const source = within(xml, 0, xml.length, 'pivotSource', true)[0]
+    const name = source && within(xml, source.start, source.end, 'name', true)[0]
+    const m = name && /^('?)(\[[^\]]*\])((?:[^'!]|'')+)\1!(.*)$/.exec(readText(name.body ?? ''))
+    const k = m ? names.findIndex((x) => sheetKey(x) === sheetKey(m[3].replace(/''/g, "'"))) : -1
+    if (m && k >= 0) out.named[k].push({ what: `the pivot chart ${part}`, part, at: [name!.open, name!.close], prefix: m[2], rest: m[4] })
   }
-  for (const part of types.parts((t) => /pivotCacheDefinition\+xml$/i.test(t))) {
-    const xml = (await src.archive.text(part)) ?? ''
-    const what = `the source of the pivot cache ${part}`
-    const ws = element(element(xml, 'cacheSource')?.body ?? '', 'worksheetSource')
-    const a = attributes(ws?.attrs ?? '')
-    if (ws && attr(a, 'id') === undefined) {
-      if (a.name !== undefined) out.byName.push({ name: readText(a.name), what })
-      else if (a.sheet !== undefined && a.ref !== undefined) reference(`${quoteSheet(readText(a.sheet))}!${a.ref}`, what)
-    }
-    for (const rs of elements(xml, 'rangeSet')) {
-      const r = attributes(rs.attrs)
-      if (attr(r, 'id') === undefined && r.sheet !== undefined && r.ref !== undefined) reference(`${quoteSheet(readText(r.sheet))}!${r.ref}`, what)
-    }
-  }
+  for (const part of types.parts((t) => /pivotCacheDefinition\+xml$/i.test(t))) pivotCache((await src.archive.text(part)) ?? '', part)
   // macro and dialog sheets hold formulas over the worksheets
   for (const d of src.decls) if (d.kind !== undefined && d.kind !== 'worksheet' && d.kind !== 'chartsheet') out.anywhere.push(`the ${d.kind} '${d.name}'`)
   return out
+
+  /**
+   * A drawing's anchors (`twoCellAnchor`, `oneCellAnchor`; `absoluteAnchor` stays where it is) and how each follows
+   * the cells: one that moves and sizes with them (`editAs="twoCell"`, the default) by both its corners, one that only
+   * moves with them (`oneCell`, and a one-cell anchor) by its top left corner, its size kept, one fixed (`absolute`)
+   * not at all. A corner follows its row and its column (carriers of the whole lines); where its row or column is
+   * deleted it lands where the deleted lines were, its offset 0: at the rectangle's new edge, or, with all of it
+   * deleted, at the probe's, the lines below and beside it. The rectangle tells a range moved over the drawing, refused.
+   */
+  function anchors(xml: string, i: number, part: string) {
+    for (const local of ['twoCellAnchor', 'oneCellAnchor'] as const)
+      for (const e of within(xml, 0, xml.length, local)) {
+        const editAs = local === 'oneCellAnchor' ? 'oneCell' : (attributes(e.attrs).editAs ?? 'twoCell')
+        if (editAs === 'absolute') continue
+        const corner = (tag: string) => {
+          const p = within(xml, e.open, e.close, tag, true)[0]
+          if (!p) return undefined
+          const at = (k: string) => {
+            const v = within(xml, p.open, p.close, k, true)[0]
+            return v && v.body !== null ? { value: Number(v.body), start: v.open, end: v.close } : undefined
+          }
+          const [col, colOff, row, rowOff] = ['col', 'colOff', 'row', 'rowOff'].map(at)
+          const ok = col && row && colOff && rowOff && Number.isInteger(col.value) && Number.isInteger(row.value) && col.value >= 0 && row.value >= 0 && col.value < MAX_COLS && row.value < MAX_ROWS
+          return ok ? { col: col!, colOff: colOff!, row: row!, rowOff: rowOff! } : undefined
+        }
+        const from = corner('from')
+        const to = local === 'twoCellAnchor' ? corner('to') : undefined
+        const what = `a drawing on '${names[i]}' (${part})`
+        if (!from || (local === 'twoCellAnchor' && (!to || to.row.value < from.row.value || to.col.value < from.col.value))) {
+          out.unparsed[i].push(what)
+          continue
+        }
+        const sized = editAs === 'twoCell' && to !== undefined
+        const end = to ?? from
+        const rect = { r1: from.row.value, r2: end.row.value, c1: from.col.value, c2: end.col.value }
+        const probe = { r1: rect.r1, r2: Math.min(rect.r2 + BELOW, MAX_ROWS - 1), c1: rect.c1, c2: Math.min(rect.c2 + BESIDE, MAX_COLS - 1) }
+        const row = (r: number) => place(i, { r1: r, r2: r, c1: 0, c2: MAX_COLS - 1 })
+        const col = (c: number) => place(i, { r1: 0, r2: MAX_ROWS - 1, c1: c, c2: c })
+        out.items.push({
+          what,
+          on: i,
+          carriers: [place(i, rect), place(i, probe), row(rect.r1), col(rect.c1), ...(sized ? [row(rect.r2), col(rect.c2)] : [])],
+          fix([rectNow, probeNow, ...linesNow]) {
+            const [r, p] = [rectsNow(rectNow)?.[0], rectsNow(probeNow)?.[0]]
+            const line = (k: number, axis: 'r' | 'c') => {
+              const x = linesNow[k] === undefined ? undefined : rectsNow(linesNow[k])?.[0]
+              return x ? (axis === 'r' ? x.r1 : x.c1) : undefined
+            }
+            const [r1, c1, r2, c2] = [line(0, 'r'), line(1, 'c'), line(2, 'r'), line(3, 'c')]
+            // a range moved over the drawing moves its rectangle and not its lines: the drawing would stay behind
+            if (r && r1 !== undefined && c1 !== undefined && (r.r1 !== r1 || r.c1 !== c1)) return { refuse: `${what} lies in a range that moved, which writeKept does not move a drawing with` }
+            if (!p) return { refuse: `${what} lies in cells deleted with all those below or beside it` }
+            // where a corner of a deleted line lands: the first line after the deleted ones
+            const top = r1 ?? (r ? r.r1 : p.r1)
+            const left = c1 ?? (r ? r.c1 : p.c1)
+            const edits: Edit[] = []
+            const set = (v: { start: number; end: number }, n: number) => edits.push({ part, start: v.start, end: v.end, text: String(n) })
+            set(from.row, top)
+            set(from.col, left)
+            if (r1 === undefined) set(from.rowOff, 0)
+            if (c1 === undefined) set(from.colOff, 0)
+            if (to && sized) {
+              set(to.row, r2 ?? (r ? r.r2 + 1 : p.r1))
+              set(to.col, c2 ?? (r ? r.c2 + 1 : p.c1))
+              if (r2 === undefined) set(to.rowOff, 0)
+              if (c2 === undefined) set(to.colOff, 0)
+            } else if (to) {
+              set(to.row, top + (to.row.value - from.row.value))
+              set(to.col, left + (to.col.value - from.col.value))
+            }
+            return { edits }
+          },
+        })
+      }
+  }
+
+  /** A pivot table's place on its sheet: it moves with its cells; a change that would cut it, which Excel refuses, is refused. */
+  function pivotTable(xml: string, i: number, part: string) {
+    const loc = within(xml, 0, xml.length, 'location', true)[0]
+    const span = loc && valueAt(xml, loc, 'ref')
+    const rects = span ? sqrefRects(xml.slice(...span)) : null
+    const what = `the pivot table ${part} on '${names[i]}'`
+    if (!span || rects?.length !== 1) return void out.unparsed[i].push(what)
+    const was = rects[0]
+    out.items.push({
+      what,
+      on: i,
+      carriers: [place(i, was)],
+      fix([now]) {
+        const x = rectsNow(now)?.[0]
+        if (!x || x.r2 - x.r1 !== was.r2 - was.r1 || x.c2 - x.c1 !== was.c2 - was.c1) return { refuse: `${what} would be cut by the change, which Excel refuses` }
+        return { edits: [{ part, start: span[0], end: span[1], text: plainArea(x) }] }
+      },
+    })
+  }
+
+  /** A pivot cache's source: cells of a sheet (`ref` and `sheet`, a consolidation's range sets too), or a table or a name by its name. */
+  function pivotCache(xml: string, part: string) {
+    const what = `the source of the pivot cache ${part}`
+    for (const local of ['worksheetSource', 'rangeSet'])
+      for (const e of within(xml, 0, xml.length, local)) {
+        const a = attributes(e.attrs)
+        if (attr(a, 'id') !== undefined) continue
+        if (local === 'worksheetSource' && a.name !== undefined) {
+          out.byName.push({ name: readText(a.name), what, part, at: valueAt(xml, e, 'name')! })
+          continue
+        }
+        const [ref, sheet] = [valueAt(xml, e, 'ref'), valueAt(xml, e, 'sheet')]
+        const rects = ref ? sqrefRects(xml.slice(...ref)) : null
+        if (!ref || !sheet || rects?.length !== 1 || !known.has(sheetKey(readText(xml.slice(...sheet))))) continue
+        out.items.push({
+          what,
+          carriers: [carrier(`${quoteSheet(readText(xml.slice(...sheet)))}!${absText(rects[0])}`, 'ref')],
+          fix([now]) {
+            const area = areasOf(now)?.[0]
+            if (!area) return { refuse: `${what} is no reference after the change` }
+            // lost, its rows or its sheet deleted: #REF!
+            if ('lost' in area) return { edits: [{ part, start: ref[0], end: ref[1], text: '#REF!' }] }
+            return { edits: [{ part, start: ref[0], end: ref[1], text: plainArea(area.rect) }, { part, start: sheet[0], end: sheet[1], text: escapeAttr(area.sheet) }] }
+          },
+        })
+      }
+  }
+
+  /**
+   * A sheet's AutoFilter or sort (`e`): its range, the column of each criterion (`colId` counts from the range's first
+   * column; a criterion whose column was deleted goes) and the range of each sort condition (one deleted goes); its
+   * range deleted, a sort goes and an AutoFilter is refused.
+   */
+  function filter(xml: string, e: Span & { local: string }, i: number, part: string) {
+    const own = e.local === 'autoFilter' ? 'AutoFilter' : 'sort'
+    const what = `the ${own} of '${names[i]}'`
+    const span = valueAt(xml, e, 'ref')
+    const was = span && sqrefRects(xml.slice(...span))
+    if (!span || was?.length !== 1) return void out.unparsed[i].push(what)
+    const range = was[0]
+    const columns = within(xml, e.start, e.end, 'filterColumn').map((c) => ({ c, colId: Number(attributes(c.attrs).colId), at: valueAt(xml, c, 'colId')! }))
+    const sorts = within(xml, e.start, e.end, 'sortCondition').map((c) => ({ c, at: valueAt(xml, c, 'ref'), rects: sqrefRects(attributes(c.attrs).ref ?? '') }))
+    // an AutoFilter's own sort
+    const sortState = e.local === 'autoFilter' ? within(xml, e.start, e.end, 'sortState', true)[0] : undefined
+    const sortAt = sortState && valueAt(xml, sortState, 'ref')
+    const sortWas = sortAt && sqrefRects(xml.slice(...sortAt))
+    if (columns.some((c) => !(c.colId >= 0) || !c.at) || sorts.some((s) => !s.at || s.rects?.length !== 1) || (sortState && sortWas?.length !== 1)) return void out.unparsed[i].push(what)
+    out.items.push({
+      what,
+      on: i,
+      carriers: [place(i, range), ...columns.map(({ colId }) => place(i, { ...range, c1: range.c1 + colId, c2: range.c1 + colId })), ...sorts.map((s) => place(i, s.rects![0])), ...(sortWas ? [place(i, sortWas[0])] : [])],
+      fix([rangeNow, ...rest]) {
+        const now = rectsNow(rangeNow)?.[0]
+        if (!now) return own === 'sort' ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted` }
+        const edits: Edit[] = [{ part, start: span[0], end: span[1], text: plainArea(now) }]
+        columns.forEach(({ c, at }, k) => {
+          const x = rectsNow(rest[k])?.[0]
+          edits.push(x ? { part, start: at[0], end: at[1], text: String(x.c1 - now.c1) } : { part, start: c.start, end: c.end, text: '' })
+        })
+        sorts.forEach((s, k) => {
+          const x = rectsNow(rest[columns.length + k])?.[0]
+          edits.push(x ? { part, start: s.at![0], end: s.at![1], text: plainArea(x) } : { part, start: s.c.start, end: s.c.end, text: '' })
+        })
+        if (sortState && sortAt) {
+          const x = rectsNow(rest[columns.length + sorts.length])?.[0]
+          edits.push(x ? { part, start: sortAt[0], end: sortAt[1], text: plainArea(x) } : { part, start: sortState.start, end: sortState.end, text: '' })
+        }
+        return { edits: nested(edits) }
+      },
+    })
+  }
+
+  /** A sheet's page breaks, each by the line it comes before (`id`, from 0): it moves with the line, and goes with it. */
+  function breaks(xml: string, e: Span & { local: string; qname: string }, i: number, part: string) {
+    const rows = e.local === 'rowBreaks'
+    const what = `the page breaks of '${names[i]}'`
+    const list = within(xml, e.start, e.end, 'brk').map((b) => ({ b, id: Number(attributes(b.attrs).id), at: valueAt(xml, b, 'id') }))
+    if (list.some((x) => !x.at || !(x.id >= 0 && x.id < (rows ? MAX_ROWS : MAX_COLS)))) return void out.unparsed[i].push(what)
+    out.items.push({
+      what,
+      on: i,
+      carriers: list.map(({ id }) => place(i, rows ? { r1: id, r2: id, c1: 0, c2: MAX_COLS - 1 } : { r1: 0, r2: MAX_ROWS - 1, c1: id, c2: id })),
+      fix(now) {
+        const kept = list.flatMap(({ b, at }, k) => {
+          const x = rectsNow(now[k])?.[0]
+          return x ? [xml.slice(b.start, at![0]) + String(rows ? x.r1 : x.c1) + xml.slice(at![1], b.end)] : []
+        })
+        if (!kept.length) return { edits: [{ part, start: e.start, end: e.end, text: '' }] }
+        const manual = kept.filter((t) => /\sman\s*=\s*["'](1|true)["']/.test(t)).length
+        const tag = xml.slice(e.start, xml.indexOf('>', e.start) + 1).replace(/\scount\s*=\s*(["'])\d*\1/, ` count="${kept.length}"`).replace(/\smanualBreakCount\s*=\s*(["'])\d*\1/, ` manualBreakCount="${manual}"`)
+        return { edits: [{ part, start: e.start, end: e.end, text: `${tag}${kept.join('')}</${e.qname}>` }] }
+      },
+    })
+  }
+
+  /** Protected ranges (`<protectedRange sqref>`, and Excel 2010's `<xm:sqref>` in the sheet's extension): each area moves, a deleted one goes, a range with none left goes. */
+  function protectedRanges(xml: string, e: Span, i: number, part: string) {
+    const what = `the protected ranges of '${names[i]}'`
+    for (const p of within(xml, e.start, e.end, 'protectedRange')) {
+      const x14 = within(xml, p.open, p.close, 'sqref', true)[0]
+      const span = valueAt(xml, p, 'sqref') ?? (x14 && x14.body !== null ? ([x14.open, x14.close] as [number, number]) : undefined)
+      const ref = span ? sqrefCarrier(names[i], sqrefRects(readText(xml.slice(...span)))) : null
+      if (!span || !ref) {
+        out.unparsed[i].push(what)
+        continue
+      }
+      out.items.push({
+        what,
+        on: i,
+        carriers: [carrier(ref, 'place')],
+        fix([now]) {
+          const left = (rectsNow(now) ?? []).filter((x): x is Rect => x !== null)
+          if (!left.length) return { edits: [{ part, start: p.start, end: p.end, text: '' }] }
+          return { edits: [{ part, start: span[0], end: span[1], text: left.map(plainArea).join(' ') }] }
+        },
+      })
+    }
+  }
+
+  /** Sparklines (the sheet's extension `e`): each one's data (`xm:f`, a formula) and its cell (`xm:sqref`); a cell deleted is refused. */
+  function sparklines(xml: string, e: Span, i: number, part: string) {
+    const what = `the sparklines of '${names[i]}'`
+    for (const f of within(xml, e.start, e.end, 'f')) formula(part, [f.open, f.close], readText(f.body ?? ''), what, escapeText, i)
+    for (const q of within(xml, e.start, e.end, 'sqref')) {
+      const ref = sqrefCarrier(names[i], sqrefRects(readText(q.body ?? '')))
+      if (!ref) {
+        out.unparsed[i].push(what)
+        continue
+      }
+      out.items.push({
+        what,
+        on: i,
+        carriers: [carrier(ref, 'place')],
+        fix([now]) {
+          const xs = rectsNow(now)
+          if (!xs || xs.some((x) => x === null)) return { refuse: `a sparkline's cell on '${names[i]}' was deleted` }
+          return { edits: [{ part, start: q.open, end: q.close, text: (xs as Rect[]).map(plainArea).join(' ') }] }
+        },
+      })
+    }
+  }
+
+  /** Comment threads by their cells: the model writes the notes it reads them as, not the threads, so a move of one is refused. */
+  function threads(xml: string, i: number, part: string) {
+    const what = `the comment threads of '${names[i]}'`
+    for (const t of within(xml, 0, xml.length, 'threadedComment')) {
+      const ref = sqrefCarrier(names[i], sqrefRects(attributes(t.attrs).ref ?? ''))
+      if (!ref) {
+        out.unparsed[i].push(what)
+        continue
+      }
+      out.items.push({ what, on: i, carriers: [carrier(ref, 'place')], fix: () => ({ refuse: `${what} (${part}) would move, which writeKept does not write` }) })
+    }
+  }
+}
+
+/** Edits of one element where some lie inside others (a criterion inside its filter): the inner ones dropped where an outer one removes them. */
+function nested(edits: Edit[]): Edit[] {
+  return edits.filter((x) => !edits.some((y) => y !== x && y.text === '' && y.start <= x.start && x.end <= y.end && (y.start !== x.start || y.end !== x.end)))
 }
 
 /** Whether a formula refers to a cell of the book's sheets (`known`, by key): references to other workbooks and names are not moved by its structure. */
@@ -236,7 +508,7 @@ function refersToBook(ast: Ast, known: Set<string>): boolean {
 
 /** The carriers as the book's names, hidden ones. */
 export function carrierNames(c: Carriers): NameInput[] {
-  return [...c.sheets, ...c.refs].map((x) => ({ name: x.name, ref: x.ref, hidden: true }))
+  return [...c.sheets, ...c.items.flatMap((x) => x.carriers)].map((x) => ({ name: x.name, ref: x.ref, hidden: true }))
 }
 
 /** A carrier's reference as it compares: its canonical text; of a part on a sheet, without the sheet. Null when it does not parse. */
@@ -249,19 +521,6 @@ export function compared(text: string, kind: Carrier['kind']): string | null {
     throw e
   }
   return kind === 'ref' ? canonical(ast) : canonical(ast, () => '')
-}
-
-/** Whether a carrier's reference lost its sheet, as a deleted sheet's references do (`#REF!$B$2`): each of its areas. */
-export function lostSheet(text: string): boolean {
-  let ast: Ast
-  try {
-    ast = parse(text, { union: true })
-  } catch (e) {
-    if (e instanceof FormulaError) return false
-    throw e
-  }
-  const items = ast.k === 'union' ? ast.items : [ast]
-  return items.every((x) => x.k === 'err' && x.sheet === undefined && x.ref !== undefined)
 }
 
 /** The sheet a sheet's carrier names now, and whether its cell is still the last one; undefined when the sheet is gone. */
@@ -277,4 +536,3 @@ export function sheetOfCarrier(text: string): { sheet: string; moved: boolean } 
   if (ast.k === 'err' && ast.sheet !== undefined && ast.book === undefined) return { sheet: ast.sheet, moved: true }
   return undefined
 }
-
