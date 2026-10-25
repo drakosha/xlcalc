@@ -49,9 +49,6 @@ class Outline {
   level(i: number): number {
     return i < 0 || i > this.last ? 0 : (entryAt(this.ls, i)?.outlineLevel ?? 0)
   }
-  hidden(i: number): boolean {
-    return isHidden(entryAt(this.ls, i) ?? {})
-  }
   mark(i: number): boolean {
     return entryAt(this.ls, i)?.collapsed === true
   }
