@@ -8,19 +8,18 @@ export type Ymd = { y: number; m: number; d: number }
 /** Days from `a` to `b` on 30/360, their days taken as `d1` and `d2`: each convention moves them by its own rules. */
 export const d360 = (a: Ymd, b: Ymd, d1: number, d2: number) => (b.y - a.y) * 360 + (b.m - a.m) * 30 + (d2 - d1)
 
+/** European 30/360 (DAYS360's European rule, basis 4): both ends' days capped at 30. */
+export const euro360 = (a: Ymd, b: Ymd): number => d360(a, b, Math.min(a.d, 30), Math.min(b.d, 30))
+
 /** DAYS360: US moves a start on the 31st or on the last of February (Excel's calendar) to the 30th. */
 export function days360(start: number, end: number, european: boolean): number {
   const a = ymd(start)
   const b = ymd(end)
+  if (european) return euro360(a, b)
   let d1 = a.d
   let d2 = b.d
-  if (european) {
-    d1 = Math.min(d1, 30)
-    d2 = Math.min(d2, 30)
-  } else {
-    if (d1 === 31 || (a.m === 2 && d1 === lastDayExcel(a.y, 2))) d1 = 30
-    if (d2 === 31 && d1 >= 30) d2 = 30
-  }
+  if (d1 === 31 || (a.m === 2 && d1 === lastDayExcel(a.y, 2))) d1 = 30
+  if (d2 === 31 && d1 >= 30) d2 = 30
   return d360(a, b, d1, d2)
 }
 

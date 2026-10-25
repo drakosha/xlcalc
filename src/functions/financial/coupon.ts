@@ -3,7 +3,7 @@ import type { FnDef } from '../../args.js'
 import { addMonths, daysInMonth, serialExcel, ymd } from '../../dates.js'
 import { E, type CErr } from '../../values.js'
 import { atp, need } from '../date/atp.js'
-import { d360, days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
+import { d360, euro360, days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
 
 export type { Ymd }
 
@@ -15,7 +15,7 @@ export const serialOfYmd = (x: Ymd) => serialExcel(x.y, x.m, x.d)
 /** Days from `a` to `b` by basis: 0 the ToolPak's 30/360, 4 European 30/360, else actual. */
 export function daysBetween(a: Ymd, b: Ymd, basis: number): number {
   if (basis === 0) return cmp(a, b) <= 0 ? days30(a, b) : -days30(b, a)
-  if (basis === 4) return d360(a, b, Math.min(a.d, 30), Math.min(b.d, 30))
+  if (basis === 4) return euro360(a, b)
   return serialOfYmd(b) - serialOfYmd(a)
 }
 
