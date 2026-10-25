@@ -4,7 +4,7 @@
  * current one (a change of values or of CONFIG_VERSION has to update this pin consciously).
  */
 import { createHash } from 'node:crypto'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { compute, type CellValue } from '../src/index.js'
 import { inputHash, valuesHash } from '../src/canon.js'
 import { Sha256, sha256 } from '../src/sha256.js'
@@ -91,6 +91,28 @@ describe('sha256()', () => {
       const h = sha256()
       for (const p of parts) h.update(p)
       expect(h.hex(), `case ${i}`).toBe(js(...parts))
+    }
+  })
+
+  // a Node built without OpenSSL throws from getBuiltinModule('node:crypto'); one without SHA-256 from createHash
+  it.each(['getBuiltinModule', 'createHash'])('falls back to the plain-JS hasher when %s throws', async (where) => {
+    const own = process.getBuiltinModule
+    const crypto = { createHash: () => { throw new Error('Digest method not supported') } }
+    process.getBuiltinModule = ((id: string) => {
+      if (id !== 'node:crypto') return own(id)
+      if (where === 'getBuiltinModule') throw new Error('Node.js is not compiled with OpenSSL crypto support')
+      return crypto
+    }) as typeof own
+    try {
+      vi.resetModules()
+      const m = await import('../src/sha256.js')
+      expect(m.sha256()).toBeInstanceOf(m.Sha256)
+      const h = m.sha256()
+      h.update('abc')
+      expect(h.hex()).toBe('ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad')
+    } finally {
+      process.getBuiltinModule = own
+      vi.resetModules()
     }
   })
 })

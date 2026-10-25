@@ -5,10 +5,21 @@
  * `sha256()` hashes with Node's own where there is one.
  */
 
-/** Node's crypto, taken without an import (`process.getBuiltinModule`): a bundle for a browser holds no Node module. */
-const nodeCrypto = (globalThis as { process?: { getBuiltinModule?(id: string): unknown } }).process?.getBuiltinModule?.('node:crypto') as
-  | { createHash(algorithm: 'sha256'): { update(text: string): unknown; digest(encoding: 'hex'): string } }
-  | undefined
+type NodeCrypto = { createHash(algorithm: 'sha256'): { update(text: string): unknown; digest(encoding: 'hex'): string } }
+
+/**
+ * Node's crypto, taken without an import (`process.getBuiltinModule`): a bundle for a browser holds no Node module.
+ * None where it throws: a Node built without OpenSSL, or one whose crypto has no SHA-256.
+ */
+const nodeCrypto = ((): NodeCrypto | undefined => {
+  try {
+    const c = (globalThis as { process?: { getBuiltinModule?(id: string): unknown } }).process?.getBuiltinModule?.('node:crypto') as NodeCrypto | undefined
+    c?.createHash('sha256')
+    return c
+  } catch {
+    return undefined
+  }
+})()
 
 /** A hasher of strings: Node's SHA-256 where there is one (the same digests, three to four times faster), else `Sha256`. */
 export function sha256(): { update(text: string): unknown; hex(): string } {
