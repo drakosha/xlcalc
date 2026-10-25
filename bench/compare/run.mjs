@@ -1,11 +1,12 @@
 // node bench/compare/run.mjs [--part engines,structure,xlsx,memory] [--only part:args,...] [--out dir]: each case and library in its own Node
 // process, one after another; the engines' cases as bench/hyperformula runs them (a phase limited to 30 s, a 1024 MiB heap),
 // the others with 60 s and 4096 MiB. Raw results with the load average of each case and `uptime` at the start and end.
-import { execFileSync, fork } from 'node:child_process'
+import { execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { cpus, loadavg, totalmem } from 'node:os'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { runChild } from '../run-child.mjs'
 import { WORKLOADS } from '../hyperformula/workloads.mjs'
 
 const args = process.argv.slice(2)
@@ -45,25 +46,11 @@ mkdirSync(out, { recursive: true })
 const save = () => writeFileSync(resolve(out, 'raw.json'), JSON.stringify(report, null, 1) + '\n')
 
 function execute(job) {
-  return new Promise((done) => {
-    const [phaseLimitMs, heapMb] = job.part === 'engines' ? [30_000, 1024] : [60_000, 4096]
-    const child = fork(here(job.file), job.args, { cwd: root, silent: true, execArgv: ['--expose-gc', `--max-old-space-size=${heapMb}`], env: { ...process.env, XLCALC_BENCH_KEEP: '1' } })
-    let timer, phase = 'startup', received, timedOut = false, stderr = ''
-    const arm = () => {
-      clearTimeout(timer)
-      timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL') }, phaseLimitMs)
-    }
-    arm()
-    child.stderr.on('data', (chunk) => { stderr = (stderr + chunk).slice(-3000) })
-    child.stdout.resume()
-    child.on('message', (m) => {
-      if (m.type === 'phase') { phase = m.name; arm() }
-      if (m.type === 'result') received = m.result
-    })
-    child.on('exit', (code, signal) => {
-      clearTimeout(timer)
-      done(received ?? { status: timedOut ? 'timeout' : 'error', phase, code, signal, stderr })
-    })
+  const [phaseLimitMs, heapMb] = job.part === 'engines' ? [30_000, 1024] : [60_000, 4096]
+  return runChild(here(job.file), job.args, { cwd: root, execArgv: ['--expose-gc', `--max-old-space-size=${heapMb}`], env: { ...process.env, XLCALC_BENCH_KEEP: '1' }, phaseLimitMs, stderrTail: 3000 }).then((f) => {
+    // a fork that never ran: nothing to record, as the bare fork crashed before this harness had a listener
+    if (f.error) throw f.error
+    return f.received ?? { status: f.timedOut ? 'timeout' : 'error', phase: f.phase, code: f.code, signal: f.signal, stderr: f.stderr }
   })
 }
 
