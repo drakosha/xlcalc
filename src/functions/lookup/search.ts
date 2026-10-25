@@ -23,12 +23,15 @@ export const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(
 const spelling = (s: string) => (!MARK.test(s) || s.normalize('NFC') === s ? 'C' : s.normalize('NFD') === s ? 'D' : 'M')
 
 const EXACT = new WeakMap<Compare, Compare>()
+/** The last order asked for and its exact one: a lookup's book asks again and again. */
+let last: [Compare, Compare] | undefined
 
 /**
  * The order an exact lookup matches by: `compare`, with é written as one code point and as e and an accent told apart,
  * as Excel's MATCH tells them (the set `low-values-held`), where `=` takes them as equal.
  */
 function exactOrder(compare: Compare): Compare {
+  if (last?.[0] === compare) return last[1]
   let out = EXACT.get(compare)
   if (!out)
     EXACT.set(compare, (out = (a, b) => {
@@ -37,6 +40,7 @@ function exactOrder(compare: Compare): Compare {
       const [x, y] = [spelling(a), spelling(b)]
       return x < y ? -1 : x > y ? 1 : 0
     }))
+  last = [compare, out]
   return out
 }
 const MARK = /\p{M}/u
