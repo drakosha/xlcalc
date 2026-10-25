@@ -138,6 +138,12 @@ const ru: BookInput = {
 
 const en: BookInput = { sheets: [{ name: 'Sheet1', cells: { A1: v('1.5'), B1: f('A1*2'), C1: f('TRUE&""') } }], locale: 'en-US' }
 
+/** References to a deleted sheet as the engine keeps them (`#REF!A1`, as Excel shows them once the sheet is gone), in cells and a name. */
+const lostSheet: BookInput = {
+  sheets: [{ name: 'Plain', cells: { A1: f('#REF!E2*2'), A2: f('SUM(#REF!E2:E4)'), A3: f('SUM(#REF!E2#)'), A4: f('IFERROR(total,0)+1'), B1: v('3') } }],
+  names: [{ name: 'total', ref: '#REF!$B$5' }],
+}
+
 /** Dates typed in and computed in the 1904 date system, a negative date and time among them. */
 const date1904: BookInput = {
   dateSystem: 1904,
@@ -208,6 +214,7 @@ function ownBooks(): RoundTrip[] {
     { id: 'sheet-names', what: 'sheet names with an apostrophe, Cyrillic, an escape-like name, an empty sheet', book: sheetNames },
     { id: 'ru', what: 'a ru-RU book: the locale kept as a custom property', book: ru },
     { id: 'en', what: 'an en-US book with its locale given', book: en },
+    { id: 'lost-sheet', what: 'references to a deleted sheet in cells and a name, which a file holds as #REF!', book: lostSheet },
     { id: 'synth', what: 'the synthetic book (340 rows): SUMIFS over whole columns, names, XLOOKUP, Cyrillic', book: synthBook({ seed: 1, rows: 340 }).book },
     {
       id: 'hidden',
