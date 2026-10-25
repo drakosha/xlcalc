@@ -16,7 +16,7 @@ export interface Where {
   name?: string
 }
 
-interface Gathered {
+export interface Gathered {
   code: XlsxIssueCode
   message: XlsxMessage
   where: Where
@@ -24,22 +24,13 @@ interface Gathered {
 }
 
 export class Issues {
-  private readonly byKey = new Map<string, Gathered>()
+  protected readonly byKey = new Map<string, Gathered>()
 
   add(code: XlsxIssueCode, message: XlsxMessage, where: Where = {}): void {
     const key = `${code}\n${where.sheet ?? ''}\n${where.name ?? ''}\n${JSON.stringify(message)}`
     let issue = this.byKey.get(key)
     if (!issue) this.byKey.set(key, (issue = { code, message, where }))
     if (where.cell !== undefined) (issue.cells ??= []).push(where.cell)
-  }
-
-  /** Each issue gathered, cell by cell, added to `to` where `keep` takes it. */
-  copyTo(to: Issues, keep: (code: XlsxIssueCode, message: XlsxMessage, where: Where) => boolean): void {
-    for (const g of this.byKey.values())
-      for (const cell of g.cells ?? [undefined]) {
-        const where = cell === undefined ? g.where : { ...g.where, cell }
-        if (keep(g.code, g.message, where)) to.add(g.code, g.message, where)
-      }
   }
 
   /** The issues, their messages in `locale` (en-US without one). */

@@ -24,7 +24,7 @@ import { zip } from '../zip/write.js'
 import { externalLinkXml } from './links.js'
 import { nextBlock } from './parts.js'
 import { fileTree, type FileNames } from './formula.js'
-import { writeSheet, type SheetContext } from './sheet.js'
+import { sheetPieces, sheetXml, type SheetContext } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
@@ -171,7 +171,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   // the notes' VML shape ids, in blocks of 1,024 through the book
   let noteBlock = 1
   const sheets = book.sheets.map((s, i) => {
-    const w = writeSheet(s, i, {
+    const w = sheetPieces(s, i, {
       styles,
       string,
       issues,
@@ -196,7 +196,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const wbRels: [string, string][] = []
   let vml = false
   sheets.forEach((s, i) => {
-    files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: s.xml })
+    files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(s) })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {

@@ -81,16 +81,6 @@ export interface SheetRel {
   target: string
 }
 
-export interface SheetWritten {
-  xml: string
-  /** Whether a formula was written (the book then needs the dynamic array metadata). */
-  formulas: boolean
-  /** The sheet's relationships after its tables' (hyperlinks' addresses are external). */
-  rels: SheetRel[]
-  /** The comments part and VML drawing of the sheet's notes, and their count. */
-  notes?: { comments: string; vml: string; count: number }
-}
-
 /** A row of `<sheetData>`: its number (0-based), its attributes after `r`, and its cells' XML. */
 export interface RowWritten {
   row: number
@@ -100,9 +90,16 @@ export interface RowWritten {
 
 /**
  * The elements of a worksheet part in their order, each its XML or empty where the sheet has none (the rows of
- * `<sheetData>` apart): what `writeSheet` puts together, and what a file written over another takes element by element.
+ * `<sheetData>` apart), which `sheetXml` puts together and a file written over another takes element by element; and
+ * what the book's writer needs of the sheet.
  */
-export interface SheetPieces extends Omit<SheetWritten, 'xml'> {
+export interface SheetPieces {
+  /** Whether a formula was written (the book then needs the dynamic array metadata). */
+  formulas: boolean
+  /** The sheet's relationships after its tables' (hyperlinks' addresses are external). */
+  rels: SheetRel[]
+  /** The comments part and VML drawing of the sheet's notes, and their count. */
+  notes?: { comments: string; vml: string; count: number }
   sheetPr: string
   dimension: string
   views: string
@@ -132,23 +129,21 @@ export function sheetXml(p: SheetPieces): string {
   )
 }
 
+/** The type of an inline string, whose value is its element `<is>`, not the content of `<v>`. */
+const INLINE = ' t="inlineStr"'
+
 /**
  * A value as the cell's attributes (`t`, and `vm` for an error Excel keeps as a rich value: the cell holds #VALUE!
- * for older readers) and the element that holds it, `<v>` or an inline string's `<is>`; `shared` writes text through
- * the shared strings, or inline (`ctx.inline`).
+ * for older readers) and the content of `<v>`, or an inline string's `<is>`; `shared` writes text through the shared
+ * strings, or inline (`ctx.inline`).
  */
 function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell: string }, shared: boolean): { t: string; v: string } {
-  const x = valueOf(v, ctx, where, shared)
-  return x.t === ' t="inlineStr"' ? x : { t: x.t, v: `<v>${x.v}</v>` }
-}
-
-function valueOf(v: CellValue, ctx: SheetContext, where: { sheet: string; cell: string }, shared: boolean): { t: string; v: string } {
   if (v === null) return { t: '', v: '0' }
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
   if (typeof v === 'boolean') return { t: ' t="b"', v: v ? '1' : '0' }
   if (typeof v === 'string') {
     const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, where)
-    if (shared && ctx.inline) return { t: ' t="inlineStr"', v: `<is>${textElement(s)}</is>` }
+    if (shared && ctx.inline) return { t: INLINE, v: `<is>${textElement(s)}</is>` }
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
   return errorXml(v.error, (key) => ctx.issues.add('errorValue', { key }, where), ctx.richError)
@@ -171,11 +166,6 @@ export function errorXml(code: ErrorCode, changed: (key: 'cycleZero' | 'errorNul
   }
   if (code === 'ERROR') changed('errorNull')
   return { t: ' t="e"', v: code === 'ERROR' ? '#NULL!' : ERROR_TEXT[code] }
-}
-
-export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext): SheetWritten {
-  const { rels, formulas, notes, ...pieces } = sheetPieces(sheet, index, ctx)
-  return { xml: sheetXml({ ...pieces, rels, formulas }), formulas, rels, ...(notes ? { notes } : {}) }
 }
 
 /** The worksheet part of a sheet of the book, element by element. */
@@ -221,7 +211,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     const cm = dynamic ? ` cm="${ctx.dynamicMark ?? 1}"` : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
     const x = valueXml(v, ctx, where(addr), !f)
-    return `<c r="${addr}"${sAttr(addr, c)}${x.t}${cm}>${f}${x.v}</c>`
+    return `<c r="${addr}"${sAttr(addr, c)}${x.t}${cm}>${f}${x.t === INLINE ? x.v : `<v>${x.v}</v>`}</c>`
   }
   const notes = new Map<string, CellNote>()
   const links = new Map<string, CellLink>()

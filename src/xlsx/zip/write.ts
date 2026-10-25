@@ -3,7 +3,13 @@
  * bytes, ASCII names; or an entry of another archive taken over as it is. No ZIP64: a package of 4 GB or more is refused.
  */
 import { concat, deflate } from './platform.js'
-import { CENTRAL, crc32, EOCD, LOCAL, type EntryRecord } from './read.js'
+import { CENTRAL, crc32, EOCD, LOCAL } from './read.js'
+
+/** An entry of another archive as its file holds it: its local header, data and data descriptor, and its central directory record. */
+export interface EntryRecord {
+  local: Uint8Array
+  central: Uint8Array
+}
 
 /** DOS date of 1980-01-01, the earliest a zip can hold. */
 const DATE = 0x21

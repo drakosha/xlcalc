@@ -25,6 +25,8 @@ import { attr, attributes, element } from '../xml/scan.js'
 import { escapeAttr, readText } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
+import { KeptIssues } from './issues.js'
+import { records } from './zip.js'
 import { carrierNames, carriersOf } from './carriers.js'
 import { KeptRefusal, refusals, type Identity } from './refusals.js'
 import { spliceSheet } from './sheet.js'
@@ -231,7 +233,7 @@ class Kept {
     const { src, book0, book } = this
     for (const [j, s1] of book.sheets.entries()) {
       const k = this.id.source[j]
-      const issues = new Issues()
+      const issues = new KeptIssues()
       if (k === undefined) {
         this.newSheet(j, s1, issues)
         continue
@@ -356,7 +358,7 @@ class Kept {
   }
 
   /** A sheet the file does not have, written as `writeXlsx` writes one, with its tables, notes and hyperlinks. */
-  private newSheet(j: number, s: SheetInput, issues: Issues): void {
+  private newSheet(j: number, s: SheetInput, issues: KeptIssues): void {
     this.changed = true
     const part = this.parts.fresh('xl/worksheets/sheet', '.xml')
     const rels = new Rels(undefined)
@@ -499,7 +501,7 @@ class Kept {
     const el = kids.find((c) => c.local === 'definedNames')
     const filePlace = new Map(decls.flatMap((d, i) => (d.sheet !== undefined ? [[sheetKey(book0.sheets[d.sheet].name), i] as const] : [])))
     const x0 = nameElements(book0, new Issues(), this.w0.names, filePlace)
-    const issues = new Issues()
+    const issues = new KeptIssues()
     const x1 = nameElements(book, issues, this.w1.names, place)
     const key = (name: string, scope: string | undefined) => `${scope === undefined ? '' : sheetKey(scope)}\n${caseKey(name)}`
     const was = new Map((book0.names ?? []).map((n, i) => [key(n.name, n.scope), x0[i]]))
@@ -593,12 +595,13 @@ class Kept {
 
   async zip(): Promise<Uint8Array> {
     const { archive } = this.src
+    const kept = records(this.src.bytes)
     const files: Parameters<typeof zip>[0] = []
     for (const name of archive.names) {
       const k = name.toLowerCase()
       if (this.parts.removed.has(k)) continue
       const text = this.parts.text.get(k)
-      files.push(text !== undefined ? { name, data: utf8(text) } : archive.record(name)!)
+      files.push(text !== undefined ? { name, data: utf8(text) } : kept.get(k)!)
     }
     for (const name of this.parts.added) files.push({ name, data: utf8(this.parts.text.get(name.toLowerCase())!) })
     return zip(files)
@@ -606,7 +609,7 @@ class Kept {
 }
 
 /** The issues of writing a sheet that concern what was written from the model: the cells written, and the elements written. */
-function adopt(from: Issues, to: Issues, cells?: Set<string>, written?: Set<string>): void {
+function adopt(from: KeptIssues, to: Issues, cells?: Set<string>, written?: Set<string>): void {
   from.copyTo(to, (_, message, where) => {
     if (!cells || !written) return true
     switch (message.key) {

@@ -15,17 +15,10 @@ export interface Archive {
   bytes(name: string): Promise<Uint8Array | undefined>
   /** The text of an entry as XML reads it (`xmlText`), undefined when there is none. */
   text(name: string): Promise<string | undefined>
-  /** An entry as the file holds it, for a writer to take over unchanged; undefined when there is none. */
-  record(name: string): EntryRecord | undefined
 }
 
-/** An entry's bytes in the file: its local header, data and data descriptor, and its central directory record. */
-export interface EntryRecord {
-  local: Uint8Array
-  central: Uint8Array
-}
-
-interface Entry {
+/** An entry of the central directory. */
+export interface Entry {
   name: string
   flags: number
   method: number
@@ -36,9 +29,6 @@ interface Entry {
   /** Where its central directory record lies. */
   central: [number, number]
 }
-
-/** The signature a data descriptor may start with. */
-const DESCRIPTOR = 0x08074b50
 
 /** The signatures of a zip's records, which the writer writes: the end of the central directory, an entry of it, a local header. */
 export const EOCD = 0x06054b50
@@ -94,7 +84,8 @@ function endRecord(v: DataView): number {
   fail('no end of central directory record')
 }
 
-function entries(bytes: Uint8Array): Entry[] {
+/** The entries the central directory lists, in its order. */
+export function entries(bytes: Uint8Array): Entry[] {
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
   const end = endRecord(v)
   const count = v.getUint16(end + 10, true)
@@ -144,17 +135,12 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
   }
   const { entryBytes = ENTRY_BYTES, totalBytes = TOTAL_BYTES, ratio = RATIO } = limits
   let spent = 0
-  /** Where an entry's data starts, past its local header. */
-  const dataStart = (e: Entry): number => {
-    if (e.offset + 30 > v.byteLength || v.getUint32(e.offset, true) !== LOCAL) fail(`no local header for ${e.name}`)
-    const start = e.offset + 30 + v.getUint16(e.offset + 26, true) + v.getUint16(e.offset + 28, true)
-    if (start + e.csize > v.byteLength) fail(`entry ${e.name} is cut short`)
-    return start
-  }
   const bytesOf = async (name: string): Promise<Uint8Array | undefined> => {
     const e = byName.get(name.toLowerCase())
     if (!e) return undefined
-    const start = dataStart(e)
+    if (e.offset + 30 > v.byteLength || v.getUint32(e.offset, true) !== LOCAL) fail(`no local header for ${e.name}`)
+    const start = e.offset + 30 + v.getUint16(e.offset + 26, true) + v.getUint16(e.offset + 28, true)
+    if (start + e.csize > v.byteLength) fail(`entry ${e.name} is cut short`)
     const raw = bytes.subarray(start, start + e.csize)
     if (e.method !== 0 && e.method !== 8) fail(`entry ${e.name} uses the unsupported compression method ${e.method}`)
     if (e.method === 0 && e.usize !== e.csize) fail(`entry ${e.name} is stored in ${e.csize} bytes but says it holds ${e.usize}`)
@@ -181,15 +167,6 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
   return {
     names: list.map((e) => e.name),
     bytes: bytesOf,
-    record(name) {
-      const e = byName.get(name.toLowerCase())
-      if (!e) return undefined
-      let end = dataStart(e) + e.csize
-      // the sizes and CRC-32 after the data (flag 3), with or without their signature
-      if (e.flags & 8) end += end + 4 <= v.byteLength && v.getUint32(end, true) === DESCRIPTOR ? 16 : 12
-      if (end > v.byteLength) fail(`entry ${e.name} is cut short`)
-      return { local: bytes.subarray(e.offset, end), central: bytes.subarray(e.central[0], e.central[1]) }
-    },
     async text(name) {
       const b = await bytesOf(name)
       if (!b) return undefined
