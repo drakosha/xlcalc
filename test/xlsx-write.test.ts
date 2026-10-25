@@ -7,7 +7,7 @@ import { withoutView } from './xlsx-fixtures.js'
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput, NumberFormat } from '../src/contract.js'
-import { compute, InputError } from '../src/index.js'
+import { compute, createSession, InputError } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { codes, partText as part, storedOf, storedValues } from './xlsx-fixtures.js'
@@ -85,6 +85,28 @@ describe('xlsx writer', () => {
     const sheet = await part(data, 'xl/worksheets/sheet1.xml')
     expect(sheet).toContain('<c r="A1" cm="1"><f t="array" ref="A1">_xlfn.SEQUENCE(2)</f></c>')
     expect(await part(data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1"/>')
+  })
+
+  it('a reference to a deleted sheet is #REF! in the file, as Excel writes it: Excel opens no file with #REF!A1', async () => {
+    const s = createSession({
+      sheets: [
+        { name: 'Data', cells: { E2: { formula: 'SEQUENCE(3)' }, B5: { value: 4 } } },
+        { name: 'Plain', cells: { A1: { formula: 'Data!E2*2' }, A2: { formula: 'SUM(Data!E2:E4)' }, A3: { formula: 'SUM(Data!E2#)' }, A4: { formula: 'total+1' } } },
+      ],
+      names: [{ name: 'total', ref: 'Data!$B$5' }],
+    })
+    expect(s.editStructure({ op: 'deleteSheet', sheet: 'Data' }).ok).toBe(true)
+    expect(s.getBook().sheets[0].cells.A1).toEqual({ formula: '#REF!E2*2' })
+    const { data } = await writeXlsx(s.getSnapshot())
+    const formulas = [...(await part(data, 'xl/worksheets/sheet1.xml')).matchAll(/<f[^>]*>([^<]*)<\/f>/g)].map((m) => m[1])
+    expect(formulas).toEqual(['#REF!*2', 'SUM(#REF!)', 'SUM(_xlfn.ANCHORARRAY(#REF!))', 'total+1'])
+    expect(await part(data, 'xl/workbook.xml')).toContain('<definedName name="total">#REF!</definedName>')
+    const back = await readXlsx(data)
+    expect(back.book.sheets[0].cells).toEqual({ A1: { formula: '#REF!*2' }, A2: { formula: 'SUM(#REF!)' }, A3: { formula: 'SUM(#REF!#)' }, A4: { formula: 'total+1' } })
+    expect(back.book.names).toEqual([{ name: 'total', ref: '#REF!' }])
+    // a book that has one as the engine keeps it
+    const typed = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(#REF!E2:E4)' }, A2: { formula: '#REF!#REF!+1' }, A3: { formula: "'S'!#REF!+1" } } }] } })
+    expect([...(await part(typed.data, 'xl/worksheets/sheet1.xml')).matchAll(/<f[^>]*>([^<]*)<\/f>/g)].map((m) => m[1])).toEqual(['SUM(#REF!)', '#REF!+1', "'S'!#REF!+1"])
   })
 
   it('the same book gives the same bytes', async () => {
