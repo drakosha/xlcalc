@@ -17,6 +17,9 @@ export function keyOf(v: unknown): string {
     .join(',')}}`
 }
 
+/** Each style's key to its first index in `styles` (read back to front, so the first stays). */
+const firstKeys = (styles: readonly CellStyle[]): Map<string, number> => new Map(styles.map((s, i) => [keyOf(s), i] as [string, number]).reverse())
+
 /** The book's styles, found by their fields: an equal style's number, or a new one added at the end. */
 export class StyleTable {
   private keys: Map<string, number> | null = null
@@ -37,10 +40,7 @@ export class StyleTable {
   }
 
   indexOf(style: CellStyle): number {
-    if (!this.keys) {
-      this.keys = new Map()
-      this.list.forEach((s, i) => this.keys!.has(keyOf(s)) || this.keys!.set(keyOf(s), i))
-    }
+    this.keys ??= firstKeys(this.list)
     const k = keyOf(style)
     let i = this.keys.get(k)
     if (i === undefined) {
@@ -73,12 +73,7 @@ const indexes = new WeakMap<readonly CellStyle[], Indexed>()
 /** A table read anew, its styles checked: its own keys. */
 function indexed(styles: readonly CellStyle[]): Indexed {
   checkStyles(styles, 'styles')
-  const keys = new Map<string, number>()
-  styles.forEach((s, i) => {
-    const k = keyOf(s)
-    if (!keys.has(k)) keys.set(k, i)
-  })
-  const x = { keys, items: [...styles] }
+  const x = { keys: firstKeys(styles), items: [...styles] }
   indexes.set(styles, x)
   return x
 }

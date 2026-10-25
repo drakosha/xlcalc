@@ -9,3 +9,9 @@ export function lowerBound<T>(xs: ArrayLike<T>, value: number, key: (x: T) => nu
   }
   return lo
 }
+
+/** The bands between the cuts: the sorted cuts made unique, each from one cut to before the next. */
+export function bands(cuts: Iterable<number>): [number, number][] {
+  const xs = [...new Set(cuts)].sort((a, b) => a - b)
+  return xs.slice(0, -1).map((x, i) => [x, xs[i + 1] - 1])
+}

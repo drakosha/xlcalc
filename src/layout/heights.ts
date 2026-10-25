@@ -12,6 +12,7 @@ import { layerOf } from '../looks/sheet.js'
 import { MAX_COLS, parseAddress } from '../model.js'
 import { columnPoints } from '../numfmt.js'
 import { outValue } from '../result.js'
+import { bands } from '../sorted.js'
 import { advance } from '../numfmt/advances.js'
 import { resultSheet, type Placed } from './result-sheet.js'
 import { sheetLines } from './lines.js'
@@ -147,14 +148,13 @@ export function fitHeights(styles: readonly CellStyle[], sheet: SheetInput, cell
     if (x) needs.push([Math.max(r1, lo), Math.min(r2, hi), ...x])
   }
   // the rows in runs of one height: their style's line or the base, the needs over them, a row's own cells
-  const cuts = [...new Set([lo, hi + 1, ...entries, ...needs.flatMap(([a, b]) => [a, b + 1]), ...[...rows.keys()].flatMap((r) => [r, r + 1])])].filter((x) => x >= lo && x <= hi + 1).sort((a, b) => a - b)
+  const cuts = bands([lo, hi + 1, ...entries, ...needs.flatMap(([a, b]) => [a, b + 1]), ...[...rows.keys()].flatMap((r) => [r, r + 1])].filter((x) => x >= lo && x <= hi + 1))
   const out: Record<string, number | null> = {}
   let run: [number, number, number] | null = null
   const flush = () => {
     if (run) out[spanKey(run[0], run[1], 'r')] = run[2] === DEFAULT_HEIGHT ? null : run[2]
   }
-  for (let k = 0; k + 1 < cuts.length; k++) {
-    const [a, b] = [cuts[k], cuts[k + 1] - 1]
+  for (const [a, b] of cuts) {
     const own = lines.row(a)?.style
     let n = own === undefined ? base : lineNeed(sizeOf(styles, own))
     for (const [x, y, above, below] of needs) if (x <= a && y >= b) n = most(n, [above, below])
@@ -170,6 +170,14 @@ export function fitHeights(styles: readonly CellStyle[], sheet: SheetInput, cell
   return out
 }
 
+/**
+ * The entries of `keys` (a row and a column) that hold no value, in rows `lo` to `hi`, added to `cells` as
+ * [row, col, null]: a cell with an entry and no value counts by its font. `has` tells a value's place.
+ */
+function blanksOf(cells: Placed[], keys: Iterable<readonly [number, number]>, lo: number, hi: number, has: (r: number, c: number) => boolean): void {
+  for (const [row, col] of keys) if (row >= lo && row <= hi && !has(row, col)) cells.push([row, col, null])
+}
+
 /** The values of rows `lo` to `hi` of a sheet of the state, each row whole (blanks with an entry as null), and its large spills as spans. */
 export function stateRows(s: EngineState, i: number, lo: number, hi: number): { cells: Placed[]; spans: [number, number, number, CellValue][] } {
   const data = s.ctx.sheets[i]
@@ -183,10 +191,7 @@ export function stateRows(s: EngineState, i: number, lo: number, hi: number): { 
       }
   }
   // the entries without a value are the state's bare ones: no walk of every cell of the sheet; a large spill can cover one
-  for (const k of s.bare.get(i) ?? []) {
-    const [row, col] = [Math.floor(k / MAX_COLS), k % MAX_COLS]
-    if (row >= lo && row <= hi && (data.cols[col]?.get(row) ?? null) === null) cells.push([row, col, null])
-  }
+  blanksOf(cells, [...(s.bare.get(i) ?? [])].map((k): [number, number] => [Math.floor(k / MAX_COLS), k % MAX_COLS]), lo, hi, (r, c) => (data.cols[c]?.get(r) ?? null) !== null)
   const spans = data.fills.flatMap((f) => Array.from({ length: f.c2 - f.c1 + 1 }, (_, k): [number, number, number, CellValue] => [f.r1, f.r2, f.c1 + k, outValue(toCellValue(f.v))]))
   return { cells, spans }
 }
@@ -198,11 +203,8 @@ export function stateRows(s: EngineState, i: number, lo: number, hi: number): { 
 export function fitRows(book: BookInput, result: ComputeResult, sheet: string, rows: string): Record<string, number | null> {
   const x = resultSheet(book, result, sheet, rows, 'r')
   const sh = x.book.sheets[x.i]
-  // a cell with an entry and no value counts by its font
+  // a cell with an entry and no value counts by its font (rows outside the span are dropped in `fitHeights`)
   const valued = new Set(x.cells.map(([r, c]) => `${r}:${c}`))
-  for (const a of Object.keys(sh.cells)) {
-    const { row, col } = parseAddress(a)
-    if (!valued.has(`${row}:${col}`)) x.cells.push([row, col, null])
-  }
+  blanksOf(x.cells, Object.keys(sh.cells).map((a): [number, number] => { const { row, col } = parseAddress(a); return [row, col] }), x.lo, x.hi, (r, c) => valued.has(`${r}:${c}`))
   return fitHeights(x.book.styles ?? [], sh, x.cells, x.lo, x.hi)
 }

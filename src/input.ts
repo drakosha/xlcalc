@@ -8,9 +8,9 @@ import { overlapping, parseMerge } from './layout/merges.js'
 import { checkSpan, SPAN_KEY } from './layout/spans.js'
 import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
-import { checkBookLocale, checkLocaleArg } from './locale/load.js'
+import { checkBookLocale, optionalLocale } from './locale/load.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
-import type { Axis } from './structure/area.js'
+import { LINES, type Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { hasLooks, lookAlone, looksTaken } from './looks/sheet.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
@@ -18,7 +18,7 @@ import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
 import { array, checkBoolean, checkNumber, checkOneOf, checkString, isObject, object, onlyKeys, onlyOptions } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
-import { checkFormat, checkStyleIndex, checkStyles } from './input/styles.js'
+import { checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
@@ -74,10 +74,11 @@ export function checkNames(v: unknown, path: string): NameInput[] {
   names.forEach((n, i) => {
     const p = `${path}[${i}]`
     const o = object(n, p, "a name such as { name: 'rate', ref: \"'Data'!$B$1\" }")
-    onlyKeys(o, p, ['name', 'ref', 'scope'])
+    onlyKeys(o, p, ['name', 'ref', 'scope', 'hidden'])
     checkString(o.name, `${p}.name`)
     checkString(o.ref, `${p}.ref`)
     if (o.scope !== undefined) checkString(o.scope, `${p}.scope`)
+    if (o.hidden !== undefined) checkBoolean(o.hidden, `${p}.hidden`)
   })
   return namesTaken(names as NameInput[])
 }
@@ -139,7 +140,7 @@ function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boo
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
   onlyKeys(o, p, [size, 'bestFit', 'style', 'numberFormat', 'hidden', 'outlineLevel', 'collapsed'])
-  const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
+  const field = (k: string, check: (x: unknown, path: string) => void) => givenIn(patch)(o, k) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
   field('numberFormat', checkFormat)
@@ -392,16 +393,19 @@ function checkCached(v: unknown, path: string): CachedValues {
   return o as unknown as CachedValues
 }
 
+/** The run fields the compute and session options both check, each with its checker. */
+const RUN_FIELDS: Record<string, (v: unknown, path: string) => void> = { cached: checkCached, clock: checkClock, limits: checkLimits, externals: checkExternals, execution: checkExecution, display: checkBoolean }
+
+/** The run fields `keys`, each checked when given, in the caller's own order (undo and the live clock stay with their calls). */
+const runFields = (o: Record<string, unknown>, path: string, keys: readonly string[]) => {
+  for (const k of keys) if (o[k] !== undefined) RUN_FIELDS[k](o[k], `${path}.${k}`)
+}
+
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
   onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits', 'cached'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
-  if (o.cached !== undefined) checkCached(o.cached, `${path}.cached`)
-  if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
-  if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
-  if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
-  if (o.execution !== undefined) checkExecution(o.execution, `${path}.execution`)
-  if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
+  runFields(o, path, ['cached', 'clock', 'limits', 'externals', 'execution', 'display'])
   return o as ComputeOptions
 }
 
@@ -410,19 +414,16 @@ export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
   onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo', 'cached'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
-  if (o.cached !== undefined) checkCached(o.cached, `${path}.cached`)
-  if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
+  runFields(o, path, ['cached', 'limits'])
   if (o.undo !== undefined) {
     const u = object(o.undo, `${path}.undo`, 'undo options such as { depth: 100, maxMb: 64 }')
     onlyKeys(u, `${path}.undo`, ['depth', 'maxMb'])
     if (u.depth !== undefined) checkNumber(u.depth, `${path}.undo.depth`, 0, 1_000_000, true)
     if (u.maxMb !== undefined) checkNumber(u.maxMb, `${path}.undo.maxMb`, 0, 1_000_000)
   }
-  if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
+  runFields(o, path, ['display'])
   if (o.live === true && o.clock !== undefined) throw new InputError(path, 'a live session takes its clock from the system: pass either live or clock')
-  if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
-  if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
-  if (o.execution !== undefined) checkExecution(o.execution, `${path}.execution`)
+  runFields(o, path, ['clock', 'externals', 'execution'])
   return o as SessionOptions
 }
 
@@ -492,7 +493,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       return o as unknown as LayoutEdit
     }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
-    const lines = axis === 'r' ? 'rows' : 'columns'
+    const lines = LINES[axis]
     onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations or outline)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
@@ -506,6 +507,14 @@ export function checkSheet(v: unknown, sheetIndex: (name: string) => number | un
   const i = sheetIndex(checkString(v, path))
   if (i === undefined) throw new InputError(path, `unknown sheet ${JSON.stringify(v)}`)
   return i
+}
+
+/** A sheet of a book, by its name in any case, as the book spells it; `InputError` naming `path` when it has none. */
+export function checkSheetOf<S extends { name: string }>(book: { sheets: S[] }, v: unknown, path: string): S {
+  const name = checkString(v, path)
+  const sheet = book.sheets.find((s) => sheetKey(s.name) === sheetKey(name))
+  if (!sheet) throw new InputError(path, `unknown sheet ${JSON.stringify(v)}`)
+  return sheet
 }
 
 export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext | undefined {
@@ -532,7 +541,7 @@ export function checkNameOptions(v: unknown, path = 'opts'): NameOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU' }")
   onlyKeys(o, path, ['locale'])
-  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
+  optionalLocale(o.locale, `${path}.locale`)
   return o as NameOptions
 }
 
@@ -543,7 +552,7 @@ export function checkNamesContext(v: unknown, path = 'ctx'): NamesContext {
   if (o.sheets === undefined) throw new InputError(`${path}.sheets`, "expected the workbook's sheet names as an array of strings")
   const { locale, ...rest } = o
   checkValidateContext(rest, path)
-  if (locale !== undefined) checkLocaleArg(locale, `${path}.locale`)
+  optionalLocale(locale, `${path}.locale`)
   return o as unknown as NamesContext
 }
 
@@ -561,7 +570,7 @@ export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   onlyKeys(o, path, ['numberFormat', 'locale', 'width', 'dateSystem'])
   if (o.numberFormat !== undefined) checkFormat(o.numberFormat, `${path}.numberFormat`)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
-  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
+  optionalLocale(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
   return o as DisplayOptions
 }
@@ -592,7 +601,7 @@ export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { numberFormat: '0.00' } }")
   onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now', 'externalBooks', 'inPlace'])
-  if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
+  optionalLocale(o.locale, `${path}.locale`)
   if (o.inPlace !== undefined) checkBoolean(o.inPlace, `${path}.inPlace`)
   if (o.externalBooks !== undefined) checkExternalBooks(o.externalBooks, `${path}.externalBooks`, false)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)

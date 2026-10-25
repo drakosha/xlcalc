@@ -11,8 +11,8 @@ import { object, onlyKeys } from '../../input/basic.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { sheetKey } from '../../syntax/print.js'
+import { optionalLocale } from '../../locale/load.js'
 import type { Locale } from '../../locale/types.js'
-import { issueLocale } from '../issues.js'
 import type { WriteXlsxOptions, XlsxSnapshot } from '../types.js'
 
 export type Values = NonNullable<WriteXlsxOptions['values']>
@@ -85,7 +85,7 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   if (values !== 'omit' && !has) throw new InputError(path, `values: "${values}" takes the values of formulas from the result: pass { book, result }`)
   const cells = has ? resultCells(book, result, path) : undefined
   if (values === 'require') requireValues(book, cells!, path)
-  const locale = issueLocale(o)
+  const locale = optionalLocale(o.locale, 'opts.locale')
   return { book, mode, values, unasked: o.values === undefined && !has, ...(values !== 'omit' ? { cells } : {}), ...(locale ? { locale } : {}) }
 }
 

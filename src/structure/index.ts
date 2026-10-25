@@ -3,14 +3,13 @@
  * shape throws `InputError`; an operation Excel would refuse returns `{ ok: false, code, message }`.
  */
 import type { BookInput, CellRef, FillType, StructureResult, StructureOp } from '../contract.js'
-import { checkBook } from '../input.js'
+import { checkBook, checkSheetOf } from '../input.js'
 import { InputError } from '../input-error.js'
 import { checkOneOf, checkString, integer, isObject, onlyKeys } from '../input/basic.js'
 import { checkAddress, checkRange } from '../input/range.js'
 import { opTaken } from '../taken.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { say } from '../locale/messages.js'
-import { sheetKey } from '../syntax.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockSerial } from '../result.js'
@@ -24,6 +23,7 @@ import { copyRange } from './copy.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
+import { sheetIndex } from './rewrite.js'
 import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
 import { checkWrites } from './writes.js'
@@ -97,14 +97,6 @@ export function checkedMapCell(g: SentGeometry): (ref: CellRef) => CellRef | nul
   return mapCell
 }
 
-/** A sheet by name in any case, as the book whose sheets are `sheets` spells it. */
-function sheetOf(sheets: string[], v: unknown, path: string): string {
-  const k = sheetKey(checkString(v, path))
-  const sheet = sheets.find((s) => sheetKey(s) === k)
-  if (!sheet) throw new InputError(path, `unknown sheet ${JSON.stringify(v)}`)
-  return sheet
-}
-
 /** The values of a book computed when first asked for, at the current moment. */
 function lazyValues(book: BookInput): ValuesIn {
   let values: ValuesIn | undefined
@@ -138,8 +130,7 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
   const allowed = typeof o.op === 'string' && Object.hasOwn(FIELDS, o.op) ? FIELDS[o.op] : undefined
   if (typeof o.op !== 'string' || !allowed) throw new InputError('op.op', `expected one of ${Object.keys(FIELDS).join(', ')}, got ${JSON.stringify(o.op)}`)
   onlyKeys(o, 'op', ['op', ...allowed])
-  const sheets = namesOf(book)
-  const named = (v: unknown, path: string) => sheetOf(sheets, v, path)
+  const named = (v: unknown, path: string) => checkSheetOf(book, v, path).name
   const count = (max: number) => (o.count === undefined ? 1 : integer(o.count, 'op.count', 1, max))
   let r: Applied
   switch (o.op as StructureOp['op']) {
@@ -196,7 +187,7 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     case 'deleteSheet': {
       // references to the sheet's tables are lost with it
       const sheet = named(o.sheet, 'op.sheet')
-      const gone = book.sheets.findIndex((s) => s.name === sheet)
+      const gone = sheetIndex(book, sheet)
       r = deleteSheet(book.sheets.length > 1 ? rewriteBookTables(book, (t) => (t.s === gone ? 'lost' : undefined)) : book, sheet)
       break
     }

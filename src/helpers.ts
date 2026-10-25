@@ -8,7 +8,7 @@ import { canonValue as canonText, outNumber } from './canon.js'
 import { checkCellValue, checkNameOptions, sheetNameProblem } from './input.js'
 import { InputError } from './input-error.js'
 import { checkString } from './input/basic.js'
-import { checkLocaleArg } from './locale/load.js'
+import { optionalLocale } from './locale/load.js'
 import { say, type MessageKey } from './locale/messages.js'
 import { EN_US } from './locales/en-US.js'
 import type { Locale } from './locale/types.js'
@@ -33,7 +33,7 @@ export function validateSheetName(name: string, opts?: NameOptions): SheetNameCh
 /** An error as a cell displays it in `locale` (a loaded locale's tag or a locale object, en-US without one): `#DIV/0!`, `#ДЕЛ/0!` in ru-RU. */
 export function errorText(code: ErrorCode, locale?: string | Locale): string {
   if (!Object.hasOwn(ERROR_TEXT, code)) throw new InputError('code', `expected an error code (${Object.keys(ERROR_TEXT).join(', ')}), got ${JSON.stringify(code)}`)
-  return errorIn(code, (locale === undefined ? EN_US : checkLocaleArg(locale, 'locale')).errors)
+  return errorIn(code, (optionalLocale(locale, 'locale') ?? EN_US).errors)
 }
 
 /** A value checked at the boundary; an absent one (`undefined`) is an empty cell. */

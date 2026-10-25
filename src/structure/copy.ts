@@ -8,6 +8,7 @@ import type { BookInput, CellInput, CellRef, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import { checkString } from '../input/basic.js'
+import { checkSheetOf } from '../input.js'
 import { checkAddress } from '../input/range.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
@@ -148,10 +149,8 @@ function namedSheets(text: string): Map<string, string> {
 function place(ref: unknown, path: string, book: CopyContext | undefined): { sheet: string; row: number; col: number } {
   if (typeof ref !== 'object' || ref === null) throw new InputError(path, 'expected a cell such as { sheet: "Sheet1", cell: "B2" }')
   const { sheet, cell } = ref as CellRef
-  const name = checkString(sheet, `${path}.sheet`)
-  const known = book && sheetOf(book, name)
-  if (book && !known) throw new InputError(`${path}.sheet`, `unknown sheet ${JSON.stringify(name)}`)
-  return { sheet: known?.name ?? name, ...parseAddress(checkAddress(cell, `${path}.cell`)) }
+  const known = book ? checkSheetOf(book, sheet, `${path}.sheet`) : undefined
+  return { sheet: known?.name ?? checkString(sheet, `${path}.sheet`), ...parseAddress(checkAddress(cell, `${path}.cell`)) }
 }
 
 /** A cell by its sheet's name, its row and its column, zero-based. */

@@ -6,8 +6,8 @@ import type { Locale } from '../locale/types.js'
  * What the workbook cannot hold from a file, or what writing changed. The codes:
  *
  * - `richText`: text with formatted runs, read as plain text.
- * - `name`: a name the workbook does not accept (a built-in `_xlnm.` name, one on a sheet that was left out), a hidden
- *   name read as a visible one, or a name the writer left out.
+ * - `name`: a name the workbook does not accept (a built-in `_xlnm.` name, one on a sheet that was left out), or a name
+ *   the writer left out.
  * - `table`: a table the model cannot hold (overlapping another table or a merged area, or with a name already used),
  *   left out; a header cell that does not hold its column's name as text, given that name; a structured reference
  *   without a table name.

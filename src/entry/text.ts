@@ -12,7 +12,7 @@ import { checkString } from '../input/basic.js'
 import { DEFAULT_LOCALE } from '../locale/registry.js'
 import { displayRules, type Rules } from '../locale/rules.js'
 import { EN_BUILTIN, EN_CODES, generalText } from '../numfmt.js'
-import { minutes } from '../numfmt/date.js'
+import { dayOrTime } from '../numfmt/date.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import { choose, kind } from '../numfmt/select.js'
 import { parseEntry } from './index.js'
@@ -25,7 +25,7 @@ function shownAs(n: number, format: NumberFormat | undefined): 'date' | 'time' |
   if (format === undefined) return 'number'
   const sec = choose(parseFormat(typeof format === 'number' ? EN_BUILTIN[format] : format, EN_CODES) ?? [], n)?.sec
   if (!sec) return 'number'
-  if (kind(sec.toks) === 'date') return sec.toks.some((t, i) => t.t === 'date' && (t.s[0] === 'y' || t.s[0] === 'd' || (t.s[0] === 'm' && !minutes(sec.toks, i)))) ? 'date' : 'time'
+  if (kind(sec.toks) === 'date') return dayOrTime(sec.toks) === 'date' ? 'date' : 'time'
   return sec.toks.some((t: Tok) => t.t === 'pct') ? 'percent' : 'number'
 }
 

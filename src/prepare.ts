@@ -38,6 +38,19 @@ function checked(state: EngineState, enclosing: string | undefined, text: string
   return r.ok ? r : { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
 }
 
+/**
+ * How `validate` checks a formula of sheet `s` against the state's book: its sheets, names, functions and tables, and
+ * the table the formula is in (`enclosing`). Without the book's linked workbooks: a conditional format's or a data
+ * validation's formula reads none of them, so one that names them fails the check.
+ */
+export const validateIn = (state: EngineState, s: number, enclosing?: string) => ({
+  sheets: state.sheetNames,
+  known: (name: string, sheet: string | undefined) => !!namedFrom(state, s)(name, sheet),
+  externalFunctions: state.externalFunctions,
+  tables: tableNames(state.tables),
+  ...(enclosing ? { table: enclosing } : {}),
+})
+
 /** A formula's AST checked, with its text and linked workbooks' names put in their place. */
 const accepted = (state: EngineState, text: string, ast: Ast): Prepared => ({ ok: true, text, ast: expandLinkNames(ast, state.links, state.input.externalBooks) })
 

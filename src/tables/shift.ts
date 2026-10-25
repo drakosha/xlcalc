@@ -12,19 +12,17 @@ import type { BookInput, SheetInput, TableInput } from '../contract.js'
 import type { EngineMessage } from '../locale/messages.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
-import { cornersText, hi, LIMIT, lo, rectOf, type Area, type Axis } from '../structure/area.js'
+import { cornersText, hi, LINES, LIMIT, lo, rectOf, type Area, type Axis } from '../structure/area.js'
 import { copyTransform } from '../structure/transform.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteBookTables } from './rewrite.js'
-import { rowsOf, tableKey, tablesOf } from './model.js'
+import { withField } from '../looks/sheet.js'
+import { numbered, rowsOf, tableKey, tablesOf } from './model.js'
 
 /** The first free name `Column<n>` (n from 1) among `taken`, case-insensitively, with the word of the book's locale (`columnWord`). */
 export function freeColumnName(taken: string[], locale: string | undefined): string {
   const word = localeOf(locale).regional?.columnWord ?? 'Column'
-  const keys = new Set(taken.map(tableKey))
-  let n = 1
-  while (keys.has(tableKey(`${word}${n}`))) n++
-  return `${word}${n}`
+  return numbered(word, taken, 1)
 }
 
 /** The effect of a shift on the tables of `sheet`: a refusal, or the book prepared before the shift and finished after it. */
@@ -51,7 +49,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
   if (!tables.length) return none
   const count = Math.abs(n)
   const last = at + count - 1
-  const lines = axis === 'r' ? 'rows' : 'columns'
+  const lines = LINES[axis]
   if (n > 0) {
     const inside = tables.filter((t) => lo(t, axis) <= at && at <= hi(t, axis))
     if (inside.length > 1) return { ...none, refuse: { key: 'tableInsertTwo', lines, tables: inside.map((t) => t.name) } }
@@ -171,9 +169,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
       else delete next.totals
       list.push(next)
     }
-    const out: SheetInput = { ...sh, cells }
-    if (list.length) out.tables = list
-    else delete out.tables
+    const out: SheetInput = withField({ ...sh, cells }, 'tables', list.length ? list : undefined)
     const sheets = [...b.sheets]
     sheets[s] = out
     return { ...b, sheets }

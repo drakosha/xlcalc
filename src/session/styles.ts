@@ -12,7 +12,7 @@ import { InputError } from '../input-error.js'
 import { sheetLines, type SheetLines } from '../layout/lines.js'
 import { lines as spansOf, patchLines, spanKey } from '../layout/spans.js'
 import { formatAddress, parseAddress } from '../model.js'
-import { cellCount, hasCell, type Rect } from '../structure/area.js'
+import { cellCount, hasCell, LINES, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import { StyleTable } from '../style-table.js'
 import { edited, emptyLayer, LookTable, NONE, type Layer, type RowsEdit } from '../looks/layer.js'
@@ -270,7 +270,7 @@ function spans(map: Record<string, Line> | undefined, axis: 'r' | 'c', lo: numbe
  */
 function lookLines(d: Draft, t: Target, look: Look) {
   const axis = t.lines!
-  const field = axis === 'r' ? 'rows' : 'columns'
+  const field = LINES[axis]
   const [lo, hi] = axis === 'r' ? [t.rect.r1, t.rect.r2] : [t.rect.c1, t.rect.c2]
   const sh = d.sheet(t.i)
   const before = d.lines(t.i)

@@ -12,6 +12,7 @@ import { nameRule } from '../syntax.js'
 import { meets, parseRange, rectCells } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
 import { parseMerge } from '../layout/merges.js'
+import { withField } from '../looks/sheet.js'
 import { convertedText, rewriteBookTables } from './rewrite.js'
 import { sheetIndex } from '../structure/rewrite.js'
 import { tableKey, tablesOf } from './model.js'
@@ -25,9 +26,7 @@ function withTable(book: BookInput, key: string, next: TableInput | null): BookI
     sheets: book.sheets.map((s) => {
       if (!s.tables?.some((t) => tableKey(t.name) === key)) return s
       const tables = s.tables.flatMap((t) => (tableKey(t.name) !== key ? [t] : next ? [next] : []))
-      const out = { ...s, tables }
-      if (!tables.length) delete (out as { tables?: TableInput[] }).tables
-      return out
+      return withField(s, 'tables', tables.length ? tables : undefined)
     }),
   }
 }

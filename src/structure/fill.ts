@@ -14,17 +14,18 @@ import type { BookInput, CellInput, FillType } from '../contract.js'
 import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
 import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
-import { entryAt, lines as linesOf } from '../layout/spans.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
+import { dayOrTime } from '../numfmt/date.js'
+import { sheetLines } from '../layout/lines.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
-import { minutes } from '../numfmt/date.js'
 import { EN_CODES, parseFormat } from '../numfmt/parse.js'
 import { EN_NAMES } from '../numfmt/style.js'
 import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
-import type { Applied, Geometry } from './geometry.js'
+import { chain, type Applied } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetIndex } from './rewrite.js'
+import { holds } from '../array-areas.js'
 import { checkFillWrites } from './writes.js'
 import { renamedByPaste } from '../tables/moves.js'
 import { tablesOf } from '../tables/model.js'
@@ -73,15 +74,9 @@ export function fillRange(book: BookInput, sheet: string, src: Rect, target: Rec
   }
   // the copies count together against limits.writes: each checks its own cells too, which is then within the limit
   checkFillWrites(book, sheetIndex(book, sheet), pieces)
-  let out = book
-  const geometry: Geometry = []
-  for (const [from, at] of pieces) {
-    const r = copy(out, from, at)
-    if (!r.ok) return r
-    out = r.book
-    geometry.push(...r.geometry)
-  }
-  if (type === 'copy') return { ok: true, book: out, geometry }
+  const r = chain(book, pieces.map(([from, at]) => (b: BookInput) => copy(b, from, at)))
+  if (!r.ok || type === 'copy') return r
+  const { book: out, geometry } = r
   const s = sheetIndex(book, sheet)
   const added: [number, number] = forward ? [b + 1, b + n] : [a - n, a - 1]
   const written = seriesCells(book, s, src, axis, added, type)
@@ -104,16 +99,13 @@ function wayOf(src: Rect, target: Rect): { axis: Axis; forward: boolean } | null
   return null
 }
 
-/** A cell that holds nothing a fill reads: none, or one without a value or a formula. */
-const empty = (cell: CellInput | undefined) => !cell || (cell.formula === undefined && (cell.value === undefined || cell.value === null))
-
 /** The cells of positions `added` (from, to along the axis) that a series writes, with their values. */
 function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [number, number], type: FillType): [string, CellInput['value']][] {
   const sheet = book.sheets[s]
   const g = gridOf(sheet)
   // a cell's number format: its own, else its row's, else its column's, the sheet's rows and columns read once
-  const [rows, cols] = [linesOf(sheet.rows, 'r'), linesOf(sheet.columns, 'c')]
-  const formatAt = (cell: CellInput | undefined, r: number, c: number) => cell?.numberFormat ?? entryAt(rows, r)?.numberFormat ?? entryAt(cols, c)?.numberFormat
+  const sl = sheetLines(sheet)
+  const formatAt = (cell: CellInput | undefined, r: number, c: number) => sl.format(r, c, cell)
   const a = lo(src, axis)
   const h = hi(src, axis) - a + 1
   // the source's cells by line across the fill, at their position along it
@@ -122,7 +114,7 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
   let numbers = type !== 'series'
   for (const i of cellsIn(g, src)) {
     const cell = g.cell[i]
-    if (empty(cell)) continue
+    if (!holds(cell)) continue
     numbers &&= cell.formula === undefined && typeof cell.value === 'number' && shownAs(formatAt(cell, g.row[i], g.col[i])) === 'number'
     const [along, across] = axis === 'r' ? [g.row[i], g.col[i]] : [g.col[i], g.row[i]]
     let line = lines.get(across)
@@ -192,7 +184,7 @@ function ordinal(n: number): string {
 
 /** How a fill reads a cell of its source. */
 function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], book: BookInput, lists: (readonly string[])[]): Item {
-  if (empty(cell)) return { k: 'empty' }
+  if (!holds(cell)) return { k: 'empty' }
   if (cell!.formula !== undefined) return { k: 'other' }
   const v = cell!.value
   if (typeof v === 'object' && v !== null) {
@@ -227,17 +219,7 @@ function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], 
 /** What a number's format shows it as, by its first section: a date (a day, a month or a year in it), a time of day alone, or a number. */
 function shownAs(format: CellInput['numberFormat']): 'date' | 'time' | 'number' {
   if (format === undefined) return 'number'
-  const toks = parseFormat(typeof format === 'number' ? (EN_BUILTIN[format] ?? '') : format, EN_CODES)?.[0]?.toks ?? []
-  let time = false
-  for (let i = 0; i < toks.length; i++) {
-    const t = toks[i]
-    if (t.t === 'elapsed' || t.t === 'ampm') time = true
-    else if (t.t === 'date') {
-      if (t.s[0] === 'h' || t.s[0] === 's' || (t.s[0] === 'm' && minutes(toks, i))) time = true
-      else return 'date'
-    }
-  }
-  return time ? 'time' : 'number'
+  return dayOrTime(parseFormat(typeof format === 'number' ? (EN_BUILTIN[format] ?? '') : format, EN_CODES)?.[0]?.toks ?? []) ?? 'number'
 }
 
 /** A date's serial number in the book's system, or null for one out of it. */

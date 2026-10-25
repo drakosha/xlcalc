@@ -13,7 +13,7 @@ import { paced, type Steps } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
 import { array, checkBoolean, checkNumber, object, onlyOptions } from '../input/basic.js'
 import { issueDetail, type Place } from '../issues.js'
-import { isHiddenRow } from '../layout/hidden.js'
+import { isHiddenColumn, isHiddenRow } from '../layout/hidden.js'
 import { formatSource, lookOf, sheetLines, type SheetLines } from '../layout/lines.js'
 import { parseMerge } from '../layout/merges.js'
 import { showFormula } from '../locale/index.js'
@@ -249,7 +249,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     styles,
     columns: w.cols.map((c) => {
       const col = lines.column(c)
-      return col?.hidden === true || col?.width === 0 ? { column: c + 1, width: col.width ?? DEFAULT_WIDTH, hidden: true } : { column: c + 1, width: col?.width ?? DEFAULT_WIDTH }
+      return col && isHiddenColumn(col) ? { column: c + 1, width: col.width ?? DEFAULT_WIDTH, hidden: true } : { column: c + 1, width: col?.width ?? DEFAULT_WIDTH }
     }),
     rows: w.rows.map((r) => {
       const row = lines.row(r)

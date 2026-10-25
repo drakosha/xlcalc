@@ -8,10 +8,11 @@
 import type { BookInput, ConditionalFormat, ConditionalValue, SheetInput } from '../contract.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { sheetKey, tokenize } from '../syntax.js'
-import { cornerOf, hasCell, hi, intersect, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
+import { anyMeets, cornerOf, hasCell, hi, inside, lo, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
-import { copyTransform, deleteSpan } from '../structure/transform.js'
+import { withField } from '../looks/sheet.js'
+import { copyTransform, deleteSpan, formulaAt, growSpan } from '../structure/transform.js'
 import { originOf, rangesOf, rectsOf } from './rules.js'
 
 type Cell = { r: number; c: number }
@@ -48,11 +49,8 @@ const texts = (r: ConditionalFormat): string => JSON.stringify(r)
  * copied from the old one to `from`, that cell's place before the operation, then rewritten by `t`.
  */
 function placed(rule: ConditionalFormat, next: Rect[], from: Cell, host: string, moved: string, t: Transform, names: Map<string, string>): Placed {
-  const o = originOf(rule)
-  const [dr, dc] = [from.r - o.r, from.c - o.c]
   // the formula as at another cell of the rule, wrapping round the sheet's edges as it computes
-  const copy = dr || dc ? copyTransform(dr, dc, true) : null
-  const anchored = copy ? mapFormulas(rule, (text) => rewriteFormula(text, host, host, copy, names)) : rule
+  const anchored = mapFormulas(rule, (text) => formulaAt(text, host, originOf(rule), from, names, true))
   const out = mapFormulas(anchored, (text) => plainLost(rewriteFormula(text, host, moved, t, names)))
   const ranges = rangesOf(next, rule.ranges)
   return { rule: ranges === rule.ranges && texts(out) === texts(rule) ? rule : { ...out, ranges }, rewrote: texts(out) !== texts(anchored) }
@@ -87,8 +85,7 @@ export function rewriteConditional(list: ConditionalFormat[] | undefined, host: 
 
 /** The sheet with `conditionalFormats` set; left out when empty. */
 function withRules(s: SheetInput, list: ConditionalFormat[]): SheetInput {
-  const { conditionalFormats: _, ...rest } = s
-  return list.length ? { ...rest, conditionalFormats: list } : rest
+  return withField(s, 'conditionalFormats', list.length ? list : undefined, true)
 }
 
 /** Rules in their order, those Excel takes out and puts back after the others last (`late`), in their order. */
@@ -96,17 +93,6 @@ const lastLate = (xs: { rule: ConditionalFormat; late: boolean }[]) => [...xs.fi
 
 /** Rules over the statistics of their cells. */
 const GRADED = new Set(['colorScale', 'dataBar', 'iconSet', 'top10', 'aboveAverage', 'duplicateValues', 'uniqueValues'])
-
-/**
- * One axis of a rule's range after `n` lines are inserted before `at`: the lines take the format of the line before them,
- * so a range holding that line grows over them (the set `cond/struct-held`: rows inserted right below a range join it);
- * a range at or after `at` moves; a whole column or row stays. Null when it leaves the sheet.
- */
-function grown(lo: number, hi: number, at: number, n: number, max: number): [number, number] | null {
-  if (lo === 0 && hi === max - 1) return [lo, hi]
-  if (lo >= at) return lo + n > max - 1 ? null : [lo + n, Math.min(hi + n, max - 1)]
-  return hi + 1 >= at ? [lo, Math.min(hi + n, max - 1)] : [lo, hi]
-}
 
 /**
  * The rules of the book's sheets after `n` lines are inserted (`n` > 0) or deleted at `at` of `target` (`t`, the
@@ -131,7 +117,7 @@ export function shiftConditional(sheets: SheetInput[], target: string, axis: Axi
       let cut = false
       for (const x of own ? rectsOf(rule) : []) {
         const [a, b] = [lo(x, axis), hi(x, axis)]
-        const lohi = n > 0 ? grown(a, b, at, count, max) : deleteSpan(a, b, at, count, max, false)
+        const lohi = n > 0 ? growSpan(a, b, at, count, max, false) : deleteSpan(a, b, at, count, max, false)
         cut ||= n < 0 && a < at + count && b >= at
         if (lohi) next.push(withBounds(x, axis, lohi[0], lohi[1]))
       }
@@ -157,7 +143,7 @@ const KEEP: Transform = { ref: () => undefined }
  * whose first cell goes has its formulas made for its new first cell; the same list when no rule meets them.
  */
 export function clearConditional(list: ConditionalFormat[] | undefined, holes: Rect[], host: string, names: Map<string, string>): ConditionalFormat[] | undefined {
-  if (!list?.some((rule) => rectsOf(rule).some((x) => holes.some((h) => meets(x, h))))) return list
+  if (!list?.some((rule) => anyMeets(rectsOf(rule), holes))) return list
   const out = list.flatMap((rule) => {
     const stay = holes.reduce((xs, h) => subtract(xs, h), rectsOf(rule))
     return stay.length ? [placed(rule, stay, cornerOf(stay), host, host, KEEP, names).rule] : []
@@ -183,7 +169,7 @@ export function moveConditional(old: BookInput, out: BookInput, p: Paste, t: Tra
     for (const rule of list) {
       const rects = rectsOf(rule)
       const stay = k === fk ? subtract(rects, p.src) : rects
-      const moved = k === fk ? rects.flatMap((x) => intersect(x, p.src) ?? []).map((x) => shiftRect(x, dr, dc)) : []
+      const moved = k === fk ? inside(rects, p.src).map((x) => shiftRect(x, dr, dc)) : []
       const back = (c: Cell) => (moved.some((x) => hasCell(x, c.r, c.c)) ? { r: c.r - dr, c: c.c - dc } : c)
       const next = fk === tk ? [...stay, ...moved] : stay
       if (next.length) {
@@ -220,9 +206,9 @@ export function copyConditional(source: BookInput, out: BookInput, p: Paste, nam
   const [fk, tk] = [sheetKey(p.from), sheetKey(p.to)]
   const target = sheetOf(out, p.to)
   const from = sheetOf(source, p.from).conditionalFormats ?? []
-  const pasted = (rule: ConditionalFormat) => p.offsets.flatMap(([dr, dc]) => rectsOf(rule).flatMap((x) => intersect(x, p.src) ?? []).map((x) => shiftRect(x, dr, dc)))
+  const pasted = (rule: ConditionalFormat) => p.offsets.flatMap(([dr, dc]) => inside(rectsOf(rule), p.src).map((x) => shiftRect(x, dr, dc)))
   const own = target.conditionalFormats ?? []
-  if (!own.length && !from.some((r) => rectsOf(r).some((x) => meets(x, p.src)))) return
+  if (!own.length && !from.some((r) => anyMeets(rectsOf(r), [p.src]))) return
   const kept = own.map((rule) => ({ rule, stay: subtract(rectsOf(rule), p.area) }))
   const added: ConditionalFormat[] = []
   for (const rule of from) {

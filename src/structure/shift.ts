@@ -9,12 +9,12 @@ import type { BookInput, CellInput, SheetInput } from '../contract.js'
 import { formatAddress } from '../model.js'
 import { say, type EngineMessage } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
-import { hi, LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
+import { hi, LINES, LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { placer, type Applied, type Geometry, type Place } from './geometry.js'
 import { arraysOf, gridOf } from './grid.js'
 import { relocated, shiftRefusal } from './arrays.js'
 import { openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
-import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { offsetsStay, rewriteCell, rewriteCells, rewriteFormula, rewriteNames, rewriteTemplates, sheetIndex, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { copyTransform, deleteSpan, insertSpan } from './transform.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { shiftConditional } from '../cond/structure.js'
@@ -55,7 +55,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const target = book.sheets[ti]
   const grid = gridOf(target)
   const line = axis === 'r' ? grid.row : grid.col
-  const lines = axis === 'r' ? 'rows' : 'columns'
+  const lines = LINES[axis]
   const refuse = (code: 'off_sheet' | 'array', m: EngineMessage): Applied => ({ ok: false, code, message: say(input.locale, m) })
   if (n > 0) {
     const off = line.findIndex((i) => i >= LIMIT[axis] - count)
@@ -82,20 +82,19 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
       changed = cells !== s.cells
       if (changed) madeFrom([s.cells], cells)
     }
-    const list = s.tables?.map((ti) => {
-      const first = parseRange(ti.range)!.r1 + (ti.headers !== false ? 1 : 0)
-      // If the first data row is deleted, take the calculated formula at the first surviving row.
-      const dr = moving && axis === 'r' && n < 0 && first >= at && first < at + count ? at + count - first : 0
-      const columns = ti.columns.map((c) => {
-        if (c.formula === undefined) return c
-        const source = dr ? rewriteFormula(c.formula, s.name, s.name, copyTransform(dr, 0), names) : c.formula
-        const formula = rewriteFormula(source, s.name, s.name, t, names)
-        return formula === c.formula ? c : { ...c, formula }
-      })
-      if (columns.every((c, i) => c === ti.columns[i])) return ti
-      changed = true
-      return { ...ti, columns }
-    })
+    // a table whose first data row the deleted rows take has its calculated columns re-anchored on the first row that
+    // stays, before the shift rewrites them as any formula of the sheet (`rewriteTemplates`)
+    const pre =
+      moving && axis === 'r' && n < 0
+        ? s.tables?.map((ti) => {
+            const first = parseRange(ti.range)!.r1 + (ti.headers !== false ? 1 : 0)
+            return first >= at && first < at + count
+              ? { ...ti, columns: ti.columns.map((c) => (c.formula === undefined ? c : { ...c, formula: rewriteFormula(c.formula, s.name, s.name, copyTransform(at + count - first, 0), names) })) }
+              : ti
+          })
+        : s.tables
+    const list = rewriteTemplates(pre, s.name, () => s.name, t, names)
+    if (list !== s.tables) changed = true
     const tableFields = list ? { tables: list } : {}
     const validations = moving ? shiftValidations(s.validations, s.name, axis, at, n, t, names) : rewriteValidations(s.validations, s.name, s.name, t, names)
     if (!moving) return changed || validations !== s.validations ? { ...s, cells, ...tableFields, ...(validations ? { validations } : {}) } : s

@@ -6,21 +6,22 @@
 import type { CellInput, CellReplace, CellValidation, DataValidation, NumberFormat } from '../contract.js'
 import type { Arg } from '../args.js'
 import { applyEdits, codegenContext, sheetIndexOf, toCellValue, valueAt, type EngineState } from '../engine.js'
-import { invalidError } from '../prepare.js'
+import { invalidError, validateIn } from '../prepare.js'
 import { closureBackend } from '../exec/closures.js'
 import { walk } from '../exec/walk.js'
 import type { Steps } from '../exec/budget.js'
 import { sheetLines } from '../layout/lines.js'
-import { nameFor } from '../names.js'
 import { journaled } from '../held.js'
 import { readEntry } from '../entry/index.js'
 import { formatAddress } from '../model.js'
+import { COMPARE } from '../operators.js'
 import { ERROR_TEXT } from '../syntax/ast.js'
 import { inputAt } from '../session/book.js'
 import { inputIn, putInputs } from '../looks/sheet.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
 import { decode } from '../structure/area.js'
-import { tableAt, tableNames } from '../tables/model.js'
+import { sheetNames } from '../structure/rewrite.js'
+import { tableAt } from '../tables/model.js'
 import { Arr } from '../arrays/value.js'
 import { E, isErr, Rng, type V } from '../values.js'
 import { anchorOf, ruleAt, twoBounds } from './rules.js'
@@ -28,9 +29,7 @@ import { formulaAt } from './structure.js'
 
 /** A formula of a rule computed at cell (r, c) of sheet `s`: a reference stays one; a formula that does not compute is its error. */
 function computeAt(state: EngineState, s: number, r: number, c: number, text: string): Arg {
-  const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
-  const enclosing = tableAt(state.tables, s, r, c)?.name
-  const v = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { table: enclosing } : {}) })
+  const v = validate(text, validateIn(state, s, tableAt(state.tables, s, r, c)?.name))
   if (!v.ok) return E[invalidError(v.code)]
   return walk(codegenContext(state, s), v.ast, s, r, c, closureBackend(state.rt)).code()
 }
@@ -44,7 +43,7 @@ function ruleOf(state: EngineState, s: number, r: number, c: number): DataValida
 
 /** The rule's formulas as at the cell. */
 function formulas(state: EngineState, s: number, r: number, c: number, v: DataValidation): { formula1?: string; formula2?: string } {
-  const names = new Map(state.sheetNames.map((n) => [sheetKey(n), n]))
+  const names = sheetNames(state.input)
   const at = (text: string) => formulaAt(text, state.sheetNames[s], anchorOf(v), { r, c }, names)
   return { ...(v.formula1 !== undefined ? { formula1: at(v.formula1) } : {}), ...(v.formula2 !== undefined ? { formula2: at(v.formula2) } : {}) }
 }
@@ -116,29 +115,16 @@ export function cellValidation(state: EngineState, s: number, r: number, c: numb
 
 /** A bound as a number: a number, text that reads as one; blank as `blank`; anything else null. */
 function bound(state: EngineState, x: Arg): number | 'blank' | null {
-  const v = x instanceof Rng || x instanceof Arr ? state.rt.scalar(x) : (x as V)
+  const v = state.rt.scalar(x)
   if (v === null) return 'blank'
   if (typeof v === 'number') return v
   if (typeof v === 'string') return state.ctx.rules.valueText(v)
   return null
 }
 
-/** How a value compares with the bounds, by the order of Excel's comparison operators (`a`, `b`: the value against each bound). */
-const COMPARE: Record<string, (a: number, b: number) => boolean> = {
-  // bounds in the wrong order take nothing (the set `entry-held`, column C), where a conditional format's take both ways
-  between: (a, b) => a >= 0 && b <= 0,
-  notBetween: (a, b) => a < 0 || b > 0,
-  equal: (a) => a === 0,
-  notEqual: (a) => a !== 0,
-  greaterThan: (a) => a > 0,
-  lessThan: (a) => a < 0,
-  greaterThanOrEqual: (a) => a >= 0,
-  lessThanOrEqual: (a) => a <= 0,
-}
-
 /**
  * Whether a list's item is the value: a cell's value of the same type, text in any case; a literal item, text in its
- * case, against the value as text (a number as `&` writes it: `1e3` and `+2` are no 1000 and 2), without spaces at
+ * own case, against the value as text (a number as `&` writes it: `1e3` and `+2` are no 1000 and 2), without spaces at
  * either end (the sets `files`, `entry-held`, `lists`, `entry-held-2`, `held-3`).
  */
 function listed(state: EngineState, value: V, item: Item, isLiteral: boolean): boolean {
@@ -189,7 +175,7 @@ function meets(state: EngineState, s: number, r: number, c: number, v: DataValid
   if (blankOk && v.type !== 'list' && texts.some((t) => refersToBlank(state, s, t))) return true
   if (v.type === 'custom') {
     const x = computeAt(state, s, r, c, f.formula1!)
-    const y = x instanceof Rng || x instanceof Arr ? state.rt.scalar(x) : (x as V)
+    const y = state.rt.scalar(x)
     return y === null ? blankOk : y === true || (typeof y === 'number' && y !== 0)
   }
   if (v.type === 'list') {

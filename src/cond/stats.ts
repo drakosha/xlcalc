@@ -11,7 +11,6 @@ import { caseKey } from '../collate.js'
 import { hasCell, meets, type Rect } from '../structure/area.js'
 import type { Rules } from '../locale/rules.js'
 import { isErr, Rng, type V } from '../values.js'
-import { interpolate } from '../functions/statistical/common.js'
 import { rectsOf } from './rules.js'
 
 export interface Stats {
@@ -77,9 +76,6 @@ function* ruleStats(state: EngineState, s: number, rule: ConditionalFormat): Ste
   for (const x of nums) sq += (x - mean) ** 2
   return { nums, mean, sd: nums.length ? Math.sqrt(sq / nums.length) : 0, counts }
 }
-
-/** PERCENTILE.INC of sorted numbers, `k` from 0 to 1. */
-export const percentile = (nums: number[], k: number): number => interpolate(nums, Math.min(Math.max(k, 0), 1) * (nums.length - 1))
 
 /** The statistics kept per state, by sheet and rule. */
 const kept = new WeakMap<EngineState, Map<ConditionalFormat, { s: number; rects: Rect[]; stats: Stats }>>()
