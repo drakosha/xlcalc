@@ -16,9 +16,9 @@ import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
+import { dayOrTime } from '../numfmt/date.js'
 import { sheetLines } from '../layout/lines.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
-import { minutes } from '../numfmt/date.js'
 import { EN_CODES, parseFormat } from '../numfmt/parse.js'
 import { EN_NAMES } from '../numfmt/style.js'
 import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
@@ -219,17 +219,7 @@ function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], 
 /** What a number's format shows it as, by its first section: a date (a day, a month or a year in it), a time of day alone, or a number. */
 function shownAs(format: CellInput['numberFormat']): 'date' | 'time' | 'number' {
   if (format === undefined) return 'number'
-  const toks = parseFormat(typeof format === 'number' ? (EN_BUILTIN[format] ?? '') : format, EN_CODES)?.[0]?.toks ?? []
-  let time = false
-  for (let i = 0; i < toks.length; i++) {
-    const t = toks[i]
-    if (t.t === 'elapsed' || t.t === 'ampm') time = true
-    else if (t.t === 'date') {
-      if (t.s[0] === 'h' || t.s[0] === 's' || (t.s[0] === 'm' && minutes(toks, i))) time = true
-      else return 'date'
-    }
-  }
-  return time ? 'time' : 'number'
+  return dayOrTime(parseFormat(typeof format === 'number' ? (EN_BUILTIN[format] ?? '') : format, EN_CODES)?.[0]?.toks ?? []) ?? 'number'
 }
 
 /** A date's serial number in the book's system, or null for one out of it. */
