@@ -10,7 +10,7 @@
 import { writesMark, writesSince } from '../cell-writes.js'
 import { sheetIndexOf, type EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { colOf, formatAddress, MAX_COLS, MAX_ROWS, placeParts, readAddress, rowOf } from '../model.js'
+import { colOf, formatAddress, inner, MAX_COLS, MAX_ROWS, placeParts, readAddress, rowOf } from '../model.js'
 import { lowerBound } from '../sorted.js'
 import { parseRange } from '../structure/area.js'
 import type { Outcome } from './answer.js'
@@ -96,8 +96,7 @@ function refresh(x: SheetTexts) {
  * read again.
  */
 export function* textsOf(state: EngineState, s: number): Steps<SheetTexts> {
-  let sheets = kept.get(state)
-  if (!sheets) kept.set(state, (sheets = new Map()))
+  const sheets = inner(kept, state, () => new Map())
   let x = sheets.get(s)
   const written = x && x.sheet === state.input.sheets[s] ? writesSince(x.sheet, x.mark) : null
   if (x && written) {

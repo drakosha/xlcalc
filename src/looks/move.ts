@@ -4,7 +4,7 @@
  * rectangles cleared, cut and pasted. Then the layers of a book's sheets carried by a geometry, and the cells whose look
  * differs between two layers, which a session lists after an operation.
  */
-import { MAX_COLS, MAX_ROWS } from '../model.js'
+import { inner, MAX_COLS, MAX_ROWS } from '../model.js'
 import { LIMIT, shiftRect, type Axis, type Rect } from '../structure/area.js'
 import type { Geometry } from '../structure/geometry.js'
 import { bands } from '../sorted.js'
@@ -202,8 +202,7 @@ export function* differing(a: Layer | undefined, b: Layer | undefined): Generato
   for (const [lo, hi] of bands(cuts)) {
     const [pa, pb] = [a?.row(lo) ?? EMPTY, b?.row(lo) ?? EMPTY]
     if (pa === pb && a?.looks === b?.looks) continue
-    let byB = memo.get(pa)
-    if (!byB) memo.set(pa, (byB = new Map()))
+    const byB = inner(memo, pa, () => new Map())
     let runs = byB.get(pb)
     if (!runs) byB.set(pb, (runs = differingRuns(pa, a?.looks ?? empty, pb, b?.looks ?? empty)))
     for (let x = 0; x < runs.length; x += 2) yield { r1: lo, r2: hi, c1: runs[x], c2: runs[x + 1] }

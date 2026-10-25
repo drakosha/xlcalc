@@ -15,7 +15,7 @@ import { addMonths, daysInMonth, epochOf, serialOf, ymd } from '../dates.js'
 import { dateToSerial, isDateSerial, serialToDate } from '../date-serial.js'
 import { InputError } from '../input-error.js'
 import { localeOf } from '../locale/registry.js'
-import { formatAddress } from '../model.js'
+import { formatAddress, inner } from '../model.js'
 import { dayOrTime } from '../numfmt/date.js'
 import { sheetLines } from '../layout/lines.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
@@ -117,8 +117,7 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
     if (!holds(cell)) continue
     numbers &&= cell.formula === undefined && typeof cell.value === 'number' && shownAs(formatAt(cell, g.row[i], g.col[i])) === 'number'
     const [along, across] = axis === 'r' ? [g.row[i], g.col[i]] : [g.col[i], g.row[i]]
-    let line = lines.get(across)
-    if (!line) lines.set(across, (line = new Map()))
+    const line = inner(lines, across, () => new Map())
     line.set(along - a, cell)
   }
   const lists = listsOf(book)

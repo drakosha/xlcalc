@@ -9,7 +9,7 @@ import type { BarLook, CellInput, CellValue, Color, ConditionalFormat, Condition
 import type { EngineState } from '../engine.js'
 import type { Looks } from '../shown.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { MAX_COLS } from '../model.js'
+import { inner, MAX_COLS } from '../model.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
 import { COMPARE } from '../operators.js'
 import { inside, type Rect } from '../structure/area.js'
@@ -24,8 +24,7 @@ import { statsOf, valueKey, type Stats } from './stats.js'
 const prepared = new WeakMap<EngineState, Map<string, Ast | null>>()
 
 function tree(state: EngineState, s: number, text: string): Ast | null {
-  let m = prepared.get(state)
-  if (!m) prepared.set(state, (m = new Map()))
+  const m = inner(prepared, state, () => new Map())
   const k = `${s}\n${text}`
   if (!m.has(k)) m.set(k, prepare(state, s, text))
   return m.get(k)!

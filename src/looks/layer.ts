@@ -6,7 +6,7 @@
  */
 import type { NumberFormat } from '../contract.js'
 import type { Look } from '../layout/lines.js'
-import { MAX_COLS } from '../model.js'
+import { inner, MAX_COLS } from '../model.js'
 import { bands, lowerBound } from '../sorted.js'
 import type { Rect } from '../structure/area.js'
 
@@ -318,8 +318,7 @@ export function edited(layer: Layer, edits: RowsEdit[], looks: LookTable = layer
 export function cellEdits(cells: Iterable<[r: number, c: number, look: number]>): RowsEdit[] {
   const byRow = new Map<number, number[][]>()
   for (const [r, c, look] of cells) {
-    let row = byRow.get(r)
-    if (!row) byRow.set(r, (row = []))
+    const row = inner(byRow, r, () => [])
     row.push([c, look])
   }
   return [...byRow.keys()]

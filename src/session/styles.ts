@@ -11,7 +11,7 @@ import type { EngineState } from '../engine.js'
 import { InputError } from '../input-error.js'
 import { sheetLines, type SheetLines } from '../layout/lines.js'
 import { lines as spansOf, patchLines, spanKey } from '../layout/spans.js'
-import { formatAddress, parseAddress } from '../model.js'
+import { formatAddress, inner, parseAddress } from '../model.js'
 import { cellCount, hasCell, LINES, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import { StyleTable } from '../style-table.js'
@@ -109,8 +109,7 @@ export class Draft {
 
   set(i: number, addr: string, input: CellInput | null) {
     this.cells.set(`${i}!${addr}`, input)
-    let own = this.drafted.get(i)
-    if (!own) this.drafted.set(i, (own = new Set()))
+    const own = inner(this.drafted, i, () => new Set())
     own.add(addr)
   }
 
