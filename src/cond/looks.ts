@@ -16,8 +16,9 @@ import { intersect, type Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
 import { E, isErr, type V } from '../values.js'
 import { evaluator, holds, prepare } from './formulas.js'
+import { interpolate } from '../functions/statistical/common.js'
 import { originOf, rectsOf, ruleFormula } from './rules.js'
-import { percentile, statsOf, valueKey, type Stats } from './stats.js'
+import { statsOf, valueKey, type Stats } from './stats.js'
 
 /** Formulas checked once per state: by sheet and text. */
 const prepared = new WeakMap<EngineState, Map<string, Ast | null>>()
@@ -64,7 +65,7 @@ function threshold(state: EngineState, s: number, rule: ConditionalFormat, t: Co
     }
     case 'percentile': {
       const p = own()
-      return p === null || p < 0 || p > 100 ? null : stat(() => percentile(nums, p / 100))
+      return p === null || p < 0 || p > 100 ? null : stat(() => interpolate(nums, (p / 100) * (nums.length - 1)))
     }
   }
 }
