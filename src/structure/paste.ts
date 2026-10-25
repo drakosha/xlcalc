@@ -64,10 +64,21 @@ const lineLook = (rows: Line<RowInput>[], cols: Line<ColumnInput>[], r: number, 
 function segments(src: Line<unknown>[], dst: Line<unknown>[], a: number, b: number, d: number): [number, number][] {
   if (!src.length && !dst.length) return [[a, b]]
   const at = new Set([a, b + 1])
-  for (const [x, y] of src) at.add(x).add(y + 1)
-  for (const [x, y] of dst) at.add(x - d).add(y + 1 - d)
+  bounds(src, a, b, 0, at)
+  bounds(dst, a, b, d, at)
   const bs = [...at].filter((x) => x >= a && x <= b + 1).sort((x, y) => x - y)
   return bs.slice(0, -1).map((x, i) => [x, bs[i + 1] - 1])
+}
+
+/** The bounds of the lines `ls` (shifted back by `d`) that can fall in [a, b + 1], added to `at`: a fill pastes one row per tile, so the lines in order are halved to the first, not all walked. */
+function bounds(ls: Line<unknown>[], a: number, b: number, d: number, at: Set<number>) {
+  let [i, j] = [0, ls.length]
+  while (i < j) {
+    const m = (i + j) >> 1
+    if (ls[m][1] + 1 - d < a) i = m + 1
+    else j = m
+  }
+  for (; i < ls.length && ls[i][0] - d <= b + 1; i++) at.add(ls[i][0] - d).add(ls[i][1] + 1 - d)
 }
 
 /**

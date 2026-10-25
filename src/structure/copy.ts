@@ -20,7 +20,7 @@ import { copiedCells, relocated } from './arrays.js'
 import { placer, type Applied, type Geometry } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { pasteLayout, pasteRefusal, type Paste } from './paste.js'
-import { rewriteFormula, sheetIndex, sheetNames, sheetOf, type Transform } from './rewrite.js'
+import { formulaTokens, rewriteFormula, sheetIndex, sheetNames, sheetOf, type Transform } from './rewrite.js'
 import { copyTransform } from './transform.js'
 import { linksIn, markedLinks } from '../syntax/links.js'
 import { copyConditional } from '../cond/structure.js'
@@ -95,12 +95,15 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
       p.c = t.col[i]
       if (place(p)) cells[t.addr[i]] = t.cell[i]
     }
+    // each copied formula read once for all its copies
+    const read = copied.map(({ cell }) => (cell.formula === undefined ? null : formulaTokens(cell.formula, false)))
     for (const [r, c] of offsets) {
       const t = copyTransform(r, c)
-      for (const { addr, at, cell } of copied) {
+      for (let k = 0; k < copied.length; k++) {
+        const { addr, at, cell } = copied[k]
         // a paste over a large target stops at the session's deadline or abort (`exec/budget.ts`)
         spend(1)
-        const formula = cell.formula === undefined ? undefined : rewriteFormula(cell.formula, to, to, t, names)
+        const formula = cell.formula === undefined ? undefined : rewriteFormula(cell.formula, to, to, t, names, read[k])
         const dest = formatAddress(at.row + r, at.col + c)
         cells[dest] = relocated(formula === cell.formula ? cell : { ...cell, formula }, addr, dest)
       }
