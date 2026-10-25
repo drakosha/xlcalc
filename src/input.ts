@@ -10,7 +10,7 @@ import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
 import { checkBookLocale, checkLocaleArg } from './locale/load.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
-import type { Axis } from './structure/area.js'
+import { LINES, type Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { hasLooks, lookAlone, looksTaken } from './looks/sheet.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
@@ -492,7 +492,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       return o as unknown as LayoutEdit
     }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
-    const lines = axis === 'r' ? 'rows' : 'columns'
+    const lines = LINES[axis]
     onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations or outline)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)

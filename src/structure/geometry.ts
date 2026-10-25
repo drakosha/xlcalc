@@ -8,7 +8,7 @@
 import type { AddressMove, BookInput, CellRef, StructureResult } from '../contract.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
-import { areaText, hasCell, LIMIT, minus, shiftRect, type Axis, type Rect } from './area.js'
+import { areaText, hasCell, LINES, LIMIT, minus, shiftRect, type Axis, type Rect } from './area.js'
 
 export type Move =
   /** `n` lines inserted before index `at` (`n` > 0), or `-n` lines from `at` deleted; a cell pushed past the sheet's end is gone. */
@@ -187,7 +187,7 @@ export function movesOf(g: Geometry, before: string[], after: string[]): Address
   return g.flatMap((m): AddressMove[] => {
     switch (m.kind) {
       case 'lines':
-        return [{ kind: 'lines', sheet: after[m.s], axis: m.axis === 'r' ? 'rows' : 'columns', at: m.at + 1, count: m.n }]
+        return [{ kind: 'lines', sheet: after[m.s], axis: LINES[m.axis], at: m.at + 1, count: m.n }]
       case 'range':
         return [{ kind: 'range', from: { sheet: before[m.from], range: areaText(m.src) }, to: { sheet: after[m.to], cell: formatAddress(m.src.r1 + m.dr, m.src.c1 + m.dc) } }]
       case 'renameSheet':

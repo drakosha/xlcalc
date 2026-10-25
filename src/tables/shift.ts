@@ -12,7 +12,7 @@ import type { BookInput, SheetInput, TableInput } from '../contract.js'
 import type { EngineMessage } from '../locale/messages.js'
 import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
-import { cornersText, hi, LIMIT, lo, rectOf, type Area, type Axis } from '../structure/area.js'
+import { cornersText, hi, LINES, LIMIT, lo, rectOf, type Area, type Axis } from '../structure/area.js'
 import { copyTransform } from '../structure/transform.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteBookTables } from './rewrite.js'
@@ -51,7 +51,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
   if (!tables.length) return none
   const count = Math.abs(n)
   const last = at + count - 1
-  const lines = axis === 'r' ? 'rows' : 'columns'
+  const lines = LINES[axis]
   if (n > 0) {
     const inside = tables.filter((t) => lo(t, axis) <= at && at <= hi(t, axis))
     if (inside.length > 1) return { ...none, refuse: { key: 'tableInsertTwo', lines, tables: inside.map((t) => t.name) } }

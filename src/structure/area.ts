@@ -24,6 +24,9 @@ export type Axis = 'r' | 'c'
 
 export const LIMIT: Record<Axis, number> = { r: MAX_ROWS, c: MAX_COLS }
 
+/** The field of a sheet's lines an axis names: its rows or its columns. */
+export const LINES: Record<Axis, 'rows' | 'columns'> = { r: 'rows', c: 'columns' }
+
 const full = (axis: Axis): Span => ({ lo: { i: 0, abs: true }, hi: { i: LIMIT[axis] - 1, abs: true } })
 
 /** Both bounds in order; Excel orders each axis of `B5:A1` on its own, carrying the `$` with the bound. */
