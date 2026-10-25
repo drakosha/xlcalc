@@ -260,12 +260,23 @@ describe.each(EXECUTIONS)('an array formula of several cells moved or copied ont
     expect(editStructure({ ...arrayBeside(), locale: 'ru-RU' }, op)).toMatchObject({ ok: false, code: 'table', message: 'Формула массива на D2:E2 пересекается с таблицей «T»: в таблицах Excel не допускает формулы массива из нескольких ячеек' })
   })
 
+  // onto the header row the paste renamed the column with the array's first value and dropped the array (before 25.10)
+  const onHeader: [StructureOp, string][] = [
+    [{ op: 'moveRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', cell: 'D1' } }, 'D1:E1'],
+    [{ op: 'copyRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', range: 'D1' } }, 'D1:E1'],
+    [{ op: 'moveRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', cell: 'C1' } }, 'C1:D1'],
+    [{ op: 'copyRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', range: 'E1' } }, 'E1:F1'],
+  ]
+  it.each(onHeader)('refuses $op.op onto the header row as onto the rows below it', (op, area) => {
+    expect(editStructure(arrayBeside(), op)).toMatchObject({ ok: false, code: 'table', message: `the array formula over ${area} overlaps the table T (Excel does not allow array formulas of several cells in tables)` })
+  })
+
   it('takes an array formula of one cell onto a table, and one of several cells beside it', () => {
     compute(edited(editStructure(arrayBeside(), { op: 'moveRange', from: { sheet: 'S', range: 'A5' }, to: { sheet: 'S', cell: 'D2' } })), { execution, clock })
     compute(edited(editStructure(arrayBeside(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:B1' }, to: { sheet: 'S', range: 'G2' } })), { execution, clock })
   })
 
-  for (const op of ops)
+  for (const op of [...ops, onHeader[0][0]])
     inSessions(execution, arrayBeside, op, (r, after) => {
       expect(r).toMatchObject({ ok: false, code: 'table' })
       expect(after.sheets[0].cells.A1).toEqual({ formula: '{1,2}', array: 'A1:B1' })

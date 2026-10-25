@@ -1,0 +1,162 @@
+{
+ "meta": {
+  "version": "16.114.1",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.015,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "SEQUENCE#1",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "COLUMNS(_xlfn.SEQUENCE(1,1048577))"
+  },
+  {
+   "id": "SEQUENCE#2",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "COLUMNS(_xlfn.SEQUENCE(1,2000000))"
+  },
+  {
+   "id": "RANDARRAY#1",
+   "group": "RANDARRAY",
+   "fn": "RANDARRAY",
+   "formula": "COLUMNS(_xlfn.RANDARRAY(1,1048577))"
+  },
+  {
+   "id": "TOROW#1",
+   "group": "TOROW",
+   "fn": "TOROW",
+   "formula": "COLUMNS(_xlfn.TOROW(_xlfn.SEQUENCE(1100,1000)))"
+  },
+  {
+   "id": "HSTACK#1",
+   "group": "HSTACK",
+   "fn": "HSTACK",
+   "formula": "COLUMNS(_xlfn.HSTACK(_xlfn.SEQUENCE(1,16384),1))"
+  },
+  {
+   "id": "HSTACK#2",
+   "group": "HSTACK",
+   "fn": "HSTACK",
+   "formula": "COLUMNS(_xlfn.HSTACK(_xlfn.SEQUENCE(1,1048576),1))"
+  },
+  {
+   "id": "TRANSPOSE#1",
+   "group": "TRANSPOSE",
+   "fn": "TRANSPOSE",
+   "formula": "ROWS(TRANSPOSE(_xlfn.SEQUENCE(1,1048577)))"
+  },
+  {
+   "id": "WRAPCOLS#1",
+   "group": "WRAPCOLS",
+   "fn": "WRAPCOLS",
+   "formula": "ROWS(_xlfn.WRAPCOLS(_xlfn.SEQUENCE(1,1048577),1048577))"
+  },
+  {
+   "id": "WRAPROWS#1",
+   "group": "WRAPROWS",
+   "fn": "WRAPROWS",
+   "formula": "COLUMNS(_xlfn.WRAPROWS(_xlfn.SEQUENCE(1,1048577),1048577))"
+  },
+  {
+   "id": "SEQUENCE#3",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "ROWS(_xlfn.SEQUENCE(1048576))"
+  },
+  {
+   "id": "VSTACK#1",
+   "group": "VSTACK",
+   "fn": "VSTACK",
+   "formula": "ROWS(_xlfn.VSTACK(_xlfn.SEQUENCE(1048575),1))"
+  },
+  {
+   "id": "TOCOL#1",
+   "group": "TOCOL",
+   "fn": "TOCOL",
+   "formula": "ROWS(_xlfn.TOCOL(_xlfn.SEQUENCE(1024,1024)))"
+  },
+  {
+   "id": "SEQUENCE#4",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "COLUMNS(_xlfn.SEQUENCE(2,1048577))"
+  },
+  {
+   "id": "operators#1",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "ROWS(_xlfn.SEQUENCE(1048576)*_xlfn.SEQUENCE(1,2))"
+  },
+  {
+   "id": "operators#2",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "COLUMNS(_xlfn.SEQUENCE(1,16385)*_xlfn.SEQUENCE(2))"
+  }
+ ],
+ "values": {
+  "SEQUENCE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SEQUENCE#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "RANDARRAY#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TOROW#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HSTACK#1": {
+   "t": "n",
+   "v": 16385
+  },
+  "HSTACK#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "TRANSPOSE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WRAPCOLS#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WRAPROWS#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SEQUENCE#3": {
+   "t": "n",
+   "v": 1048576
+  },
+  "VSTACK#1": {
+   "t": "n",
+   "v": 1048576
+  },
+  "TOCOL#1": {
+   "t": "n",
+   "v": 1048576
+  },
+  "SEQUENCE#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#1": {
+   "t": "n",
+   "v": 1048576
+  },
+  "operators#2": {
+   "t": "n",
+   "v": 16385
+  }
+ }
+}

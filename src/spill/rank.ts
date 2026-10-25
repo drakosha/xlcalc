@@ -7,8 +7,10 @@
  * that cannot, as Excel gives a workbook opened from its file (the workbook set `spill-cycles-held`). Both tests follow
  * the formulas, not which of the two arrays spilled.
  */
-import type { EngineState } from '../engine.js'
+import type { EngineState, Formula } from '../engine.js'
 import { indegrees, releaseReady } from '../graph/order.js'
+import { meets, type Rect } from '../structure/area.js'
+import type { Rng } from '../values.js'
 
 /** Formula `a` spills where its array and `b`'s meet. */
 export function beats(state: EngineState, a: number, b: number): boolean {
@@ -23,7 +25,8 @@ export function beats(state: EngineState, a: number, b: number): boolean {
  * Whether formula `id` reads, by its references (a spill reference as its cell and the rectangles around it), a cell of
  * the most its array can spill over (its area of the old kind, else the rows and columns its formula tells,
  * `arrays/shape.ts`; none where it does not tell them), itself or through the formulas it comes after in the graph: a
- * cycle through its spill. Kept until the graph is built again.
+ * cycle through its spill. Kept until the graph is built again. The walk leaves out the formulas whose reads, with all
+ * they come after (`reachOf`), lie away from the area, so arrays below one long chain do not each walk it.
  */
 function looped(state: EngineState, id: number): boolean {
   const sp = state.spills
@@ -31,20 +34,73 @@ function looped(state: EngineState, id: number): boolean {
   const known = (sp.looped ??= new Map())
   const z = g.area ? [g.area.r2 - g.area.r1 + 1, g.area.c2 - g.area.c1 + 1] : g.size
   if (!known.has(id) && z) {
-    // the graph's edges turned round, made once for the graph
-    const pred = (sp.pred ??= state.succ.reduce<number[][]>((p, next, v) => (next.forEach((n) => (p[n] ??= []).push(v)), p), []))
+    const pred = predsOf(state)
+    const area: Rect = { r1: g.r, c1: g.c, r2: g.r + z[0] - 1, c2: g.c + z[1] - 1 }
+    const near = (n: number) => {
+      const x = reachOf(state, g.s, n)
+      return x === ALL || (x !== NOTHING && meets(x, area))
+    }
     const seen = new Set([id])
     let out = false
     // a set's walk takes in what is added to it on the way
     for (const v of seen) {
-      const f = state.formulas[v]
-      if (f) for (const x of [...f.refs, ...(f.spans ?? []).flatMap((y) => y.boxes)]) out ||= x.s === g.s && x.r2 >= g.r && x.c2 >= g.c && x.r1 < g.r + z[0] && x.c1 < g.c + z[1]
+      for (const x of readsOf(state.formulas[v])) out ||= x.s === g.s && meets(x, area)
       if (out) break
-      for (const n of pred[v] ?? []) seen.add(n)
+      for (const n of pred[v] ?? []) if (!seen.has(n) && near(n)) seen.add(n)
     }
     known.set(id, out)
   }
   return !!known.get(id)
+}
+
+/** The graph's edges turned round, made once for the graph. */
+const predsOf = (state: EngineState): number[][] => (state.spills.pred ??= state.succ.reduce<number[][]>((p, next, v) => (next.forEach((n) => (p[n] ??= []).push(v)), p), []))
+
+/** The rectangles a formula reads: its references and the boxes around its spill references. */
+const readsOf = (f: Formula | undefined): Rng[] => (f ? [...f.refs, ...(f.spans ?? []).flatMap((y) => y.boxes)] : [])
+
+/** What a formula and those it comes after read on a sheet: a box around it, nothing, or anything where a cycle of references leaves it open. */
+type Reach = Rect | typeof NOTHING | typeof ALL
+const NOTHING = 0
+const ALL = 1
+
+/**
+ * The box around what formula `from` and the formulas it comes after read on sheet `s`, each formula's made once for the
+ * graph, depth first without recursion; a formula that reaches a cycle of references gets `ALL`, which leaves nothing out.
+ */
+function reachOf(state: EngineState, s: number, from: number): Reach {
+  const sp = state.spills
+  const bySheet = (sp.reach ??= new Map())
+  let memo = bySheet.get(s)
+  if (!memo) bySheet.set(s, (memo = new Map()))
+  const pred = predsOf(state)
+  const open = new Set<number>()
+  const stack = [from]
+  while (stack.length) {
+    const v = stack[stack.length - 1]
+    if (memo.has(v)) stack.pop()
+    else if (!open.has(v)) {
+      // first the formulas it comes after; one already open closes a cycle
+      open.add(v)
+      for (const u of pred[v] ?? []) if (!memo.has(u) && !open.has(u)) stack.push(u)
+    } else {
+      stack.pop()
+      open.delete(v)
+      let box: Reach = NOTHING
+      for (const x of readsOf(state.formulas[v])) if (x.s === s) box = around(box, x)
+      for (const u of pred[v] ?? []) box = around(box, memo.get(u) ?? ALL)
+      memo.set(v, box)
+    }
+  }
+  return memo.get(from)!
+}
+
+/** The box around two reaches. */
+function around(a: Reach, b: Reach): Reach {
+  if (a === ALL || b === ALL) return ALL
+  if (a === NOTHING) return b === NOTHING ? NOTHING : { r1: b.r1, c1: b.c1, r2: b.r2, c2: b.c2 }
+  if (b === NOTHING) return a
+  return { r1: Math.min(a.r1, b.r1), c1: Math.min(a.c1, b.c1), r2: Math.max(a.r2, b.r2), c2: Math.max(a.c2, b.c2) }
 }
 
 /** Positions in the topological order of the references (without spills), the last by address among the ready ones. */

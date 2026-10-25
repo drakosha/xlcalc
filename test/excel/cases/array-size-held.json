@@ -1,0 +1,132 @@
+{
+ "meta": {
+  "version": "16.114.1",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 5.67,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "SEQUENCE#1",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "ROWS(_xlfn.SEQUENCE(1048577))"
+  },
+  {
+   "id": "SEQUENCE#2",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "INDEX(_xlfn.SEQUENCE(1048577),1048577)"
+  },
+  {
+   "id": "SEQUENCE#3",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "COLUMNS(_xlfn.SEQUENCE(1,16385))"
+  },
+  {
+   "id": "SEQUENCE#4",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "INDEX(_xlfn.SEQUENCE(1,16385),1,16385)"
+  },
+  {
+   "id": "SEQUENCE#5",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "ROWS(_xlfn.SEQUENCE(2000000))"
+  },
+  {
+   "id": "SEQUENCE#6",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "SUM(_xlfn.SEQUENCE(1048577))"
+  },
+  {
+   "id": "SEQUENCE#7",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "ROWS(_xlfn.SEQUENCE(1048577)*1)"
+  },
+  {
+   "id": "SEQUENCE#8",
+   "group": "SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "ROWS(_xlfn.SEQUENCE(1048576,2))"
+  },
+  {
+   "id": "RANDARRAY#1",
+   "group": "RANDARRAY",
+   "fn": "RANDARRAY",
+   "formula": "ROWS(_xlfn.RANDARRAY(1048577))"
+  },
+  {
+   "id": "RANDARRAY#2",
+   "group": "RANDARRAY",
+   "fn": "RANDARRAY",
+   "formula": "COLUMNS(_xlfn.RANDARRAY(1,16385))"
+  },
+  {
+   "id": "VSTACK#1",
+   "group": "VSTACK",
+   "fn": "VSTACK",
+   "formula": "ROWS(_xlfn.VSTACK(_xlfn.SEQUENCE(1048576),1))"
+  },
+  {
+   "id": "TOCOL#1",
+   "group": "TOCOL",
+   "fn": "TOCOL",
+   "formula": "ROWS(_xlfn.TOCOL(_xlfn.SEQUENCE(1100,1000)))"
+  }
+ ],
+ "values": {
+  "SEQUENCE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SEQUENCE#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SEQUENCE#3": {
+   "t": "n",
+   "v": 16385
+  },
+  "SEQUENCE#4": {
+   "t": "n",
+   "v": 16385
+  },
+  "SEQUENCE#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SEQUENCE#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SEQUENCE#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SEQUENCE#8": {
+   "t": "n",
+   "v": 1048576
+  },
+  "RANDARRAY#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "RANDARRAY#2": {
+   "t": "n",
+   "v": 16385
+  },
+  "VSTACK#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "TOCOL#1": {
+   "t": "e",
+   "v": "NUM"
+  }
+ }
+}

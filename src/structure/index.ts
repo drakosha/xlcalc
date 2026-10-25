@@ -14,7 +14,10 @@ import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockOptions } from '../result.js'
 import { areaText } from './area.js'
-import { looksTaken } from '../looks/sheet.js'
+import { layerOf, looksTaken, withLayer } from '../looks/sheet.js'
+import { emptyLayer } from '../looks/layer.js'
+import { withLooseLooks } from './paste.js'
+import { sheetKey } from '../syntax.js'
 import { linesMoved, overLooks } from './looks.js'
 import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry.js'
 import { withGrids } from './grid.js'
@@ -121,8 +124,10 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
   withGrids(() => {
     checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
-    const r = applied(input, op, values, whole)
-    return r.ok ? linesMoved(input, r) : r
+    const [r, loose] = withLooseLooks(() => applied(input, op, values, whole))
+    const out = r.ok ? linesMoved(input, r) : r
+    // the looks a paste laid where no entry is come as the sheet's last field, as the engine took them from entries
+    return out.ok && loose.size ? { ...out, book: { ...out.book, sheets: out.book.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } } : out
   })
 
 function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: boolean): Applied {
@@ -163,21 +168,26 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       const src = checkRange(from.range, 'op.from.range')
       const toSheet = named(to.sheet, 'op.to.sheet')
       if (o.withMeta !== undefined && typeof o.withMeta !== 'boolean') throw new InputError('op.withMeta', `expected a boolean, got ${JSON.stringify(o.withMeta)}`)
+      // the cells as pasted, before a header cell pasted over takes its value as its column's name
+      let pasted: Applied
       if (o.op === 'copyRange') {
         const target = checkRange(to.range, 'op.to.range')
         const withMeta = o.withMeta === true
-        r = copyTables(book, fromSheet, src, toSheet, target).after(whole ? copyRange(book, fromSheet, src, toSheet, target, withMeta) : copyRows(book, fromSheet, src, toSheet, target, withMeta, values))
+        pasted = whole ? copyRange(book, fromSheet, src, toSheet, target, withMeta) : copyRows(book, fromSheet, src, toSheet, target, withMeta, values)
+        r = copyTables(book, fromSheet, src, toSheet, target).after(pasted)
       } else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         const tables = moveTables(book, fromSheet, src, toSheet, at.row - src.r1, at.col - src.c1)
-        if (tables.refuse) r = { ok: false, code: 'table', message: say(book.locale, tables.refuse) }
+        if (tables.refuse) pasted = r = { ok: false, code: 'table', message: say(book.locale, tables.refuse) }
         else {
-          const m = moveRange(tables.before(book), fromSheet, src, toSheet, at.row, at.col)
-          r = m.ok ? { ...m, book: tables.after(m.book) } : m
+          pasted = moveRange(tables.before(book), fromSheet, src, toSheet, at.row, at.col)
+          r = pasted.ok ? { ...pasted, book: tables.after(pasted.book) } : pasted
         }
       }
-      if (r.ok) {
-        const refused = arrayInTable(r.book.sheets.find((s) => s.name === toSheet)!)
+      if (r.ok && pasted.ok) {
+        // an array of several cells over a table, its header too, against the tables where the operation leaves them
+        const ti = sheetIndex(book, toSheet)
+        const refused = arrayInTable({ ...pasted.book.sheets[ti], tables: r.book.sheets[ti].tables })
         if (refused) r = { ok: false, code: 'table', message: say(book.locale, refused) }
       }
       break

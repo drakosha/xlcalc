@@ -5,7 +5,7 @@
  * back.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, editStructure, type AsyncSession, type BookInput, type Execution, type LookRange, type SessionOptions, type StructureOp } from '../src/index.js'
+import { compute, createSession, editStructure, type AsyncSession, type BookInput, type Execution, type LookRange, type SessionOptions, type StructureOp } from '../src/index.js'
 import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -174,8 +174,53 @@ describe.each(EXECUTIONS)('a copy, a fill and a move lay looks as rectangles (fi
     expect(out.sheets[0].looks).toContainEqual({ range: 'F3', style: 0 })
   })
 
+  // a rectangle of formatted columns below their first row: before 25.10 each of its cells became an entry (18 s for
+  // A2:H1048576, a RangeError past 16 million cells); the columns' look goes by rectangles as the looks do
+  const styledColumns = (): BookInput => ({
+    styles: [...styles, { font: { italic: true } }],
+    sheets: [{ name: 'S', cells: { A1: { value: 1 }, B5: { value: 2, style: 0 }, C3: { value: 3 } }, columns: { 'A:Z': { style: 1 } }, rows: { '3': { numberFormat: '0.0' } }, looks: [{ range: 'C2:D9', numberFormat: '0%' }, { range: 'E4', style: 2 }] }],
+  })
+  /** What cells show after the paste at AB2, as [style, number format]: each the look its source showed. */
+  const SHOWN: [string, number | undefined, string | undefined][] = [
+    ['AB2', 1, undefined],
+    ['AD2', 1, '0%'],
+    ['AB3', 1, '0.0'],
+    ['AD3', 1, '0.0'],
+    ['AE3', 1, '0%'],
+    ['AF4', 2, undefined],
+    ['AC5', 0, undefined],
+    ['BA1048576', 1, undefined],
+    ['AA2', undefined, undefined],
+  ]
+
+  it('a rectangle of formatted columns copied and moved below their first row: their look laid by rectangles', () => {
+    for (const op of ['copyRange', 'moveRange'] as const) {
+      const t0 = performance.now()
+      const to = op === 'copyRange' ? { sheet: 'S', range: 'AB2' } : { sheet: 'S', cell: 'AB2' }
+      const out = edited(styledColumns(), { op, from: { sheet: 'S', range: 'A2:Z1048576' }, to } as StructureOp, execution)
+      expect(performance.now() - t0, op).toBeLessThan(3000)
+      // the cells of entries spell the columns' look in their entries, the others go to the looks
+      expect(Object.keys(out.sheets[0].cells).length, op).toBe(op === 'copyRange' ? 5 : 3)
+      const v = createSession(out, { execution, clock }).getViewport('S', 'AA1:BA9')
+      const far = createSession(out, { execution, clock }).getViewport('S', 'BA1048576')
+      for (const [a, style, format] of SHOWN) {
+        const c = (a === 'BA1048576' ? far : v).cells[a]
+        expect([c?.effectiveStyle, c?.numberFormat], `${op} ${a}`).toEqual([style, format])
+      }
+      expect(out.sheets[0].looks, op).toContainEqual({ range: 'AB10:BA1048576', style: 1 })
+    }
+  })
+
   describe.each(KINDS)('in %s', (kind) => {
     const open = openerFor(kind)
+    it('a rectangle of formatted columns copied and moved below their first row, with undo and redo', async () => {
+      for (const op of ['copyRange', 'moveRange'] as const) {
+        const to = op === 'copyRange' ? { sheet: 'S', range: 'AB2' } : { sheet: 'S', cell: 'AB2' }
+        const after = await inSession(open, styledColumns(), { op, from: { sheet: 'S', range: 'A2:Z1048576' }, to } as StructureOp, execution)
+        expect(after.sheets[0].looks, op).toContainEqual({ range: 'AB10:BA1048576', style: 1 })
+      }
+    })
+
     it('copies, fills and moves under limits.writes, with undo and redo', async () => {
       const limited = (book: BookInput, opts: SessionOptions) => open(book, { ...opts, limits: { writes: 100_000 } })
       const copied = await inSession(limited, formatted(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:AD1' }, to: { sheet: 'S', range: 'A2:AD1048576' } }, execution)
@@ -209,5 +254,28 @@ describe.each(EXECUTIONS)('formatting whole columns over large looks (patch-look
       expect(held(await s.getBook())).toEqual(held(after))
       await s.close()
     })
+  })
+})
+
+describe.each(EXECUTIONS)('the fields of a sheet after a paste lays looks (the acceptance of r7/fixes-session), %s', (execution) => {
+  // a book's field order reaches results as it is given: looks laid by a paste where no entry is come last, as the
+  // entries of a look alone they were before 25.10 came; a fill over entries alone keeps the order
+  const sheet = (extra: object): BookInput => ({
+    styles: [{}, { font: { bold: true } }, { font: { italic: true } }],
+    sheets: [{ name: 'S', cells: { D4: { value: 1 }, D5: { value: 2 } }, rows: { '9:12': { style: 1 } }, validations: [{ range: 'A1', type: 'list', formula1: '"a,b"' }], ...extra }],
+  })
+  const rule = { type: 'expression' as const, ranges: ['C3:C4'], formula: 'C3>1', style: { font: { bold: true } } }
+  const CASES: [string, BookInput, StructureOp, string][] = [
+    ['a fill over entries', sheet({ looks: [{ range: 'G7', style: 2 }] }), { op: 'fillRange', sheet: 'S', range: 'D4:D5', to: 'D4:D12', type: 'series' }, 'name,cells,rows,looks,validations'],
+    ['a copy into styled rows', sheet({ conditionalFormats: [rule] }), { op: 'copyRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', range: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    ['a copy into styled rows, with looks', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [rule] }), { op: 'copyRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', range: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    ['a move into styled rows', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [rule] }), { op: 'moveRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', cell: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    ['a copy into styled rows, looks given before the rules', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [{ ...rule, ranges: ['H1'] }] }), { op: 'copyRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', range: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    ['a fill into styled rows, looks given before the rules', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [{ ...rule, ranges: ['H1'] }] }), { op: 'fillRange', sheet: 'S', range: 'C3:E3', to: 'C3:E12', type: 'copy' }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    // the fill's second copy, which lays nothing, sets the rules again after the looks the first one laid
+    ['a fill of two copies into styled rows of a sheet without looks', sheet({}), { op: 'fillRange', sheet: 'S', range: 'I7:I8', to: 'I7:I15', type: 'copy' }, 'name,cells,rows,validations,looks'],
+  ]
+  it.each(CASES)('%s', (_, book, op, fields) => {
+    expect(Object.keys(edited(book, op, execution).sheets[0]).join(',')).toBe(fields)
   })
 })

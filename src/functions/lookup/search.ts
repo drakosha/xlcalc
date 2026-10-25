@@ -19,8 +19,35 @@ export const keyOf = (key: V): Key | CErr => (key === null ? 0 : key)
 /** A value of the data that can match the key: of its type, no blank and no error. */
 export const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(v, k)
 
+/** A text's spelling as exact lookups tell it: composed (`C`, as NFC writes it; text without a combining mark), decomposed (`D`) or mixed. */
+const spelling = (s: string) => (!MARK.test(s) || s.normalize('NFC') === s ? 'C' : s.normalize('NFD') === s ? 'D' : 'M')
+
+const EXACT = new WeakMap<Compare, Compare>()
+/** The last order asked for and its exact one: a lookup's book asks again and again. */
+let last: [Compare, Compare] | undefined
+
+/**
+ * The order an exact lookup matches by: `compare`, with é written as one code point and as e and an accent told apart,
+ * as Excel's MATCH tells them (the set `low-values-held`), where `=` takes them as equal.
+ */
+function exactOrder(compare: Compare): Compare {
+  if (last?.[0] === compare) return last[1]
+  let out = EXACT.get(compare)
+  if (!out)
+    EXACT.set(compare, (out = (a, b) => {
+      const c = compare(a, b)
+      if (c !== 0 || typeof a !== 'string' || typeof b !== 'string' || a === b) return c
+      const [x, y] = [spelling(a), spelling(b)]
+      return x < y ? -1 : x > y ? 1 : 0
+    }))
+  last = [compare, out]
+  return out
+}
+const MARK = /\p{M}/u
+
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
-export function exactMatch(line: Line, k: Key, wild: boolean, compare: Compare, last = false): number {
+export function exactMatch(line: Line, k: Key, wild: boolean, given: Compare, last = false): number {
+  const compare = exactOrder(given)
   const re = wild && typeof k === 'string' ? wildMatcher(k, true) : null
   if (!re && (line.values || line.store)) {
     const hit = indexedExact(line, k, compare, last)

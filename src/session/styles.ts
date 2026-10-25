@@ -223,9 +223,10 @@ function lookRect(d: Draft, t: Target, look: Look) {
   const looked = (map: Record<string, Line> | undefined, axis: 'r' | 'c', lo: number, hi: number) => spansOf(map, axis).some(([a, b, e]) => b >= lo && a <= hi && hasLook(e))
   const every = gives(look) || (reset && (looked(sh.rows, 'r', x.r1, x.r2) || looked(sh.columns, 'c', x.c1, x.c2)))
   const area = cellCount(x)
-  if (every && area > MAX_CELLS) throw new InputError('range', `a rectangle of ${area} cells: formatting applies to at most ${MAX_CELLS} cells of a rectangle, or to whole columns or rows (B:D, 2:9)`)
+  // a reset goes to a rectangle of any size by pieces, as Excel clears the formats of a styled column
+  if (gives(look) && area > MAX_CELLS) throw new InputError('range', `a rectangle of ${area} cells: formatting applies to at most ${MAX_CELLS} cells of a rectangle, or to whole columns or rows (B:D, 2:9)`)
   if (area > SMALL) {
-    const pieces = byPieces(d, t.i, x, look, ls, ls, true, every, [sh])
+    const pieces = byPieces(d, t.i, x, look, ls, ls, true, () => every, [sh])
     const cells = new Map<string, [number, number]>()
     for (const [r, c, a] of [...d.stored(t.i, x, false), ...(every ? d.held(t.i, x) : []), ...pieces.cells]) cells.set(a, [r, c])
     for (const [a, [r, c]] of cells) d.set(t.i, a, lookOver(d.table, d.input(t.i, a), r, c, look, ls, ls, true))
@@ -286,18 +287,21 @@ function lookLines(d: Draft, t: Target, look: Look) {
   }
   const after = d.lines(t.i)
   const cells = new Map<string, [number, number]>()
-  const big = cellCount(t.rect) > SMALL
-  for (const [r, c, a] of d.stored(t.i, t.rect, !big)) cells.set(a, [r, c])
-  const pieces = big ? byPieces(d, t.i, t.rect, look, before, after, false, false, [sh, d.sheet(t.i)]) : undefined
-  for (const [r, c, a] of pieces?.cells ?? []) cells.set(a, [r, c])
   // where the lines cross lines of the other direction that show a style or a format the look changes
   const st = look.style && !('remove' in look.style)
   const ft = look.format && !('remove' in look.format)
-  if (st || ft) {
-    const crossing = spansOf((axis === 'r' ? sh.columns : sh.rows) as Record<string, Line> | undefined, axis === 'r' ? 'c' : 'r').filter(([, , e]) => (st && e.style !== undefined) || (ft && e.numberFormat !== undefined))
-    const count = crossing.reduce((n, [a, b]) => n + (b - a + 1) * (hi - lo + 1), 0)
-    if (count > MAX_CELLS) throw new InputError('range', `the lines cross formatted lines in ${count} cells, more than ${MAX_CELLS}`)
-    for (const [a, b] of crossing)
+  const shows = (e: Line | undefined) => !!e && ((!!st && e.style !== undefined) || (!!ft && e.numberFormat !== undefined))
+  const crossing = st || ft ? spansOf((axis === 'r' ? sh.columns : sh.rows) as Record<string, Line> | undefined, axis === 'r' ? 'c' : 'r').filter(([, , e]) => shows(e)) : []
+  const big = cellCount(t.rect) > SMALL
+  for (const [r, c, a] of d.stored(t.i, t.rect, !big)) cells.set(a, [r, c])
+  // crossings of more than MAX_CELLS cells go by pieces, a cell of no look among them taking the look; fewer, cell by cell
+  const many = crossing.reduce((n, [a, b]) => n + (b - a + 1) * (hi - lo + 1), 0) > MAX_CELLS
+  const crosses = many ? (r: number, c: number) => shows(axis === 'r' ? before.column(c) : before.row(r)) : () => false
+  const pieces = big ? byPieces(d, t.i, t.rect, look, before, after, false, crosses, [sh, d.sheet(t.i)]) : undefined
+  for (const [r, c, a] of pieces?.cells ?? []) cells.set(a, [r, c])
+  for (const [a, b] of crossing) {
+    if (many) for (const [r, c, k] of d.held(t.i, axis === 'r' ? { r1: lo, r2: hi, c1: a, c2: b } : { r1: a, r2: b, c1: lo, c2: hi })) cells.set(k, [r, c])
+    else
       for (let k = a; k <= b; k++)
         for (let j = lo; j <= hi; j++) {
           const [r, c] = axis === 'r' ? [j, k] : [k, j]
@@ -326,13 +330,13 @@ function segments(at: number[], lo: number, hi: number): [number, number][] {
 }
 
 /**
- * The cells of rectangle `x` of the sheet's looks (`all`: and those of no look) with a look over them, as edits of the
- * draft's looks: a piece of one look under the same rows and columns, before and after (`sheets`), changes each of its
- * cells alike, so it is tried once, and a piece the look leaves as it is costs nothing per cell. The cells of a piece
- * that takes more than a look (a note, a link), without an entry, go cell by cell (`cells`); so do the cells of an entry
- * and those the draft holds, whose inputs the caller writes over these looks.
+ * The cells of rectangle `x` of the sheet's looks (and those of no look where `all` says so) with a look over them, as
+ * edits of the draft's looks: a piece of one look under the same rows and columns, before and after (`sheets`), changes
+ * each of its cells alike, so it is tried once, and a piece the look leaves as it is costs nothing per cell. The cells of
+ * a piece that takes more than a look (a note, a link), without an entry, go cell by cell (`cells`); so do the cells of
+ * an entry and those the draft holds, whose inputs the caller writes over these looks.
  */
-function byPieces(d: Draft, i: number, x: Rect, look: Look, before: SheetLines, after: SheetLines, own: boolean, all: boolean, sheets: SheetInput[]): { edits: RowsEdit[]; looks: LookTable; cells: [number, number, string][] } {
+function byPieces(d: Draft, i: number, x: Rect, look: Look, before: SheetLines, after: SheetLines, own: boolean, all: (r: number, c: number) => boolean, sheets: SheetInput[]): { edits: RowsEdit[]; looks: LookTable; cells: [number, number, string][] } {
   const layer = d.layer(i)
   const looks = new LookTable(layer?.looks)
   const [rowCuts, colCuts] = [lineCuts(sheets, 'r'), lineCuts(sheets, 'c')]
@@ -355,20 +359,21 @@ function byPieces(d: Draft, i: number, x: Rect, look: Look, before: SheetLines, 
     if (!band) {
       band = { top: [], loose: [] }
       memo.set(key, band)
-      // the runs of the pattern across the rectangle, with the gaps between them when `all`
+      // the runs of the pattern across the rectangle, with the gaps between them
       const runs: [number, number, number][] = []
       let c = x.c1
       for (let j = 0; p && j < p.length; j += 3) {
         if (p[j + 1] < x.c1) continue
         if (p[j] > x.c2) break
         const [a, b] = [Math.max(p[j], x.c1), Math.min(p[j + 1], x.c2)]
-        if (all && a > c) runs.push([c, a - 1, NONE])
+        if (a > c) runs.push([c, a - 1, NONE])
         runs.push([a, b, p[j + 2]])
         c = b + 1
       }
-      if (all && c <= x.c2) runs.push([c, x.c2, NONE])
+      if (c <= x.c2) runs.push([c, x.c2, NONE])
       for (const [a, b, was] of runs)
         for (const [c1, c2] of segments(colCuts, a, b)) {
+          if (was === NONE && !all(lo, c1)) continue
           const next = lookOver(d.table, was === NONE ? undefined : layer!.looks.list[was], lo, c1, look, before, after, own)
           if (next && !lookAlone(next)) band.loose.push([c1, c2])
           else if (looks.of(next ?? undefined) !== was) band.top.push(c1, c2, looks.of(next ?? undefined))

@@ -6,7 +6,7 @@
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { EngineState, Formula } from './engine.js'
-import { due, located, paced, step, type Steps } from './exec/budget.js'
+import { ArraySizeError, due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress, placeOf, placeParts } from './model.js'
 import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
@@ -113,7 +113,11 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
           v = shown(rt.scalar(x))
         }
       } catch (e) {
-        throw located(e, () => ({ sheet: state.sheetNames[f.s], cell: formatAddress(f.r, f.c) }))
+        if (!(e instanceof ArraySizeError)) throw located(e, () => ({ sheet: state.sheetNames[f.s], cell: formatAddress(f.r, f.c) }))
+        // an array of more values than one array holds (`allot`, before it is made) is #VALUE!, as a function's (`args.ts`)
+        endSpill(state, f, t, state.topo[id] < 0)
+        array = false
+        v = E.VALUE
       }
     }
     if (clock && clock.read !== state.clocked.has(id)) {
@@ -240,6 +244,7 @@ const ROUNDS = 100_000
 /** Rounds of evaluation until no spill changes cells already read or frees cells an array waits for. */
 function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, active?: Set<number>): Steps<void> {
   const sp = state.spills
+  let last: string | undefined
   for (let round = 0; ; round++) {
     if (round === ROUNDS) throw new Error('spilled arrays did not settle')
     sp.touched = []
@@ -263,6 +268,14 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
     // an array that gave way and now wins over the array holding its cells (the graph or the arrays' ranges changed) takes
     // them; an old-kind array formula's area it never takes
     for (const [id, by] of sp.by) if (sp.claims.has(by) && state.formulas[id] && !state.formulas[by]?.area && beats(state, id, by)) next.add(id)
+    // under iterative calculation a round can end as the one before it ended, to compute the same formulas again: an
+    // iteration, which starts from 0 each time, spills into cells a formula outside the cycles reads and takes the
+    // spill back; such rounds would repeat for ever, so the computation ends there
+    if (next.size && state.input.iteration) {
+      const mark = roundMark(state, lists, next)
+      if (mark === last) next.clear()
+      last = mark
+    }
     if (!next.size) {
       sp.touched.length = 0
       unhold(state)
@@ -271,6 +284,29 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
     lists = ordered(state, next)
     active = undefined
   }
+}
+
+/**
+ * What a round leaves for the next to start from: the formulas it is to compute, the values of those it computed and of
+ * their spills' cells, and the spills, claims and waits; the same text for the same state.
+ */
+function roundMark(state: EngineState, lists: [number[], number[]], next: Set<number>): string {
+  const sp = state.spills
+  const text = (v: V | undefined) => (isErr(v) ? `#${v.code}` : `${typeof v}:${String(v)}`)
+  const area = (x: Area) => `${x.s},${x.r1},${x.c1},${x.r2},${x.c2}`
+  const byId = <T>(m: Map<number, T>, f: (x: T) => string) => [...m].sort((a, b) => a[0] - b[0]).map(([id, x]) => `${id}:${f(x)}`).join(' ')
+  const out = [[...next].sort((a, b) => a - b).join(' ')]
+  for (const id of new Set([...lists[0], ...lists[1], ...state.iterated])) {
+    const f = state.formulas[id]
+    if (!f) continue
+    const sh = state.ctx.sheets[f.s]
+    const x = sp.on.get(id)
+    const cells = [text(sh.cols[f.c]?.get(f.r))]
+    if (x) for (let r = x.r1; r < x.r1 + x.h; r++) for (let c = x.c1; c < x.c1 + x.w; c++) cells.push(text(sh.cols[c]?.get(r)))
+    out.push(`${id}=${cells.join(',')}`)
+  }
+  out.push(byId(sp.on, (x) => `${area(x)},${x.h},${x.w},${x.fills.map((y) => `${y.r1},${y.c1},${y.r2},${y.c2},${text(y.v)}`).join(';')}`), byId(sp.claims, area), byId(sp.wait, area), byId(sp.why, String), byId(sp.by, String))
+  return out.join('|')
 }
 
 /**

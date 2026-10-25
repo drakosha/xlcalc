@@ -126,7 +126,7 @@ try {
 }
 ```
 
-A workbook over a limit is not calculated: the call throws `CalcError` with code `limit`, `limit` (`formulas`, `cells` or `spill`), `max`, `size` and, for `cells` and `spill`, the formula's `cell`. A limit is not a cell error such as `#NUM!`, because then the values and their hash would depend on the limits; a result is either exact or absent. Arrays are checked before they are created: without `cells`, `SUM(SEQUENCE(20000,20000))` requests 400 million values and crashes a Node process.
+A workbook over a limit is not calculated: the call throws `CalcError` with code `limit`, `limit` (`formulas`, `cells` or `spill`), `max`, `size` and, for `cells` and `spill`, the formula's `cell`. A limit is not a cell error such as `#NUM!`, because then the values and their hash would depend on the limits; a result is either exact or absent. Arrays are checked before they are created: without `cells`, `SUM(SEQUENCE(10000,10000))` requests 100 million values and can crash a Node process. Whatever the limits, an array of more than 134,217,728 values (2^27, what one JavaScript array holds), such as `SEQUENCE(2^31)`, is `#VALUE!` in its cell, so its value does not depend on the limits either.
 
 A spill costs more than its array, because each of its cells gets entries in the session's tables: the sheet's cells, the changes of a call, the cells of a result. So it has a limit of its own, checked before its cells are written. `spill` counts the cells a spill stores. A large array whose cells beyond some row and column all hold one value stores only the part before them ([spill.md](spill.md)): `A:A*2` over 500 rows of data stores 500 of its 1,048,576 cells, so such a formula is not rejected. Without `spill`, `cells` bounds spills too.
 

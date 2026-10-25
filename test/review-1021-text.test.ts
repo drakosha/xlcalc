@@ -76,3 +76,26 @@ describe.each(['closures', 'eval'] as const)('TEXTBEFORE, TEXTAFTER and TEXTSPLI
     expect(values(cases.map((c) => c[0]), execution)).toEqual(cases.map((c) => c[1]))
   })
 })
+
+describe.each(['closures', 'eval'] as const)('spellings Unicode makes equivalent, %s', (execution) => {
+  // Excel for Mac and for Windows, the set low-values-held: é in NFC and NFD is one text to `=` and COUNTIF, two to
+  // MATCH; a soft hyphen tells `a` apart for `=`
+  const cells: Record<string, CellInput> = { A1: { value: 'é' }, A2: { value: 'é' }, A3: { value: 'a' }, A4: { value: 'a­' }, C1: { value: 1 }, C2: { value: 2 } }
+
+  it('compares them as Excel does in operators, criteria and exact lookups', () => {
+    const forms = ['A1=A2', 'A3=A4', 'A3<>A4', 'MATCH(A2,A1:A2,0)', 'MATCH(A1,A1:A2,0)', 'XMATCH(A2,A1:A2)', 'VLOOKUP(A2,A1:C2,3,FALSE)', 'COUNTIF(A1:A2,A1)', 'COUNTIFS(A1:A2,A2)', 'SUMIF(A1:A2,"é",C1:C2)', 'MATCH(A4,A3:A4,0)', 'MATCH("É",A1:A2,0)']
+    expect(values(forms, execution, undefined, cells)).toEqual([true, false, true, 2, 1, 2, 2, 2, 2, 3, 2, 1])
+  })
+
+  it('a soft hyphen orders after the text without it, the same both ways', () => {
+    expect(values(['A3<A4', 'A4>A3', 'A4<A3', 'ROWS(UNIQUE(A3:A4))', 'INDEX(SORT(A3:A4,,-1),1)=A4'], execution, undefined, cells)).toEqual([true, true, false, 2, true])
+  })
+
+  it('takes them so over ranges long enough to be indexed', () => {
+    const many: Record<string, CellInput> = {}
+    for (let r = 1; r <= 400; r++) many[`A${r}`] = { value: r === 1 ? 'é' : r === 400 ? 'é' : `t${r}` }
+    // the lookups repeat so that the range's index is built
+    const forms = [...Array.from({ length: 12 }, () => 'MATCH(A400,A1:A400,0)'), 'MATCH(A1,A1:A400,0)', 'COUNTIF(A1:A400,A1)', 'COUNTIF(A1:A400,A400)']
+    expect(values(forms, execution, undefined, many)).toEqual([...Array(12).fill(400), 1, 2, 2])
+  })
+})
