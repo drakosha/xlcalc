@@ -379,8 +379,10 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
           fix([now]) {
             const area = areasOf(now)?.[0]
             if (!area) return { refuse: `${what} is no reference after the change` }
-            // its sheet deleted, Excel keeps the source as it was (the set keep/struct); its cells deleted is not measured
-            if ('lost' in area) return area.sheet === undefined ? { edits: [] } : { refuse: `${what} lies in cells the change deleted` }
+            // its sheet deleted, Excel makes the source a link to the file by its path (`r:id` of an external link path,
+            // the set keep/struct), which writeKept does not know, and does not open the source left as it was (keep
+            // struct-open); its cells deleted is not measured
+            if ('lost' in area) return { refuse: area.sheet === undefined ? `${what} is on a sheet the change deleted, which Excel makes a link to the file by its path` : `${what} lies in cells the change deleted` }
             return { edits: [{ part, start: ref[0], end: ref[1], text: plainArea(area.rect) }, { part, start: sheet[0], end: sheet[1], text: escapeAttr(area.sheet) }] }
           },
         })

@@ -259,8 +259,8 @@ describe('writeKept moves the references of the parts the model does not have', 
     const pivots = (parts: Map<string, string> | string) => (typeof parts === 'string' ? parts : [/<location ref="([^"]*)"/.exec(parts.get('xl/pivotTables/pivotTable1.xml')!)![1], /<worksheetSource [^>]*\/>/.exec(parts.get('xl/pivotCache/pivotCacheDefinition1.xml')!)![0]])
     expect(pivots(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 1 })))).toEqual(['D4:E6', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
     expect(pivots(await plain(pivot, (s) => { s.editStructure({ op: 'insertRows', sheet: 'Data', row: 3 }); s.editStructure({ op: 'renameSheet', sheet: 'Data', name: 'Raw' }) }))).toEqual(['D3:E5', '<worksheetSource ref="A1:B5" sheet="Raw"/>'])
-    // the source's sheet deleted: the cache keeps its source, as Excel keeps it; its cells deleted: refused
-    expect(pivots(await plain(pivot, (s) => s.editStructure({ op: 'deleteSheet', sheet: 'Data' })))).toEqual(['D3:E5', '<worksheetSource ref="A1:B4" sheet="Data"/>'])
+    // the source's sheet deleted: Excel makes the source a link to the file by its path, refused; its cells deleted: refused
+    expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteSheet', sheet: 'Data' }))).toBe('xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml is on a sheet the change deleted, which Excel makes a link to the file by its path')
     expect(await plain(pivot, (s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 1, count: 4 }))).toBe('xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml lies in cells the change deleted')
     expect(await plain(pivot, (s) => s.editStructure({ op: 'insertRows', sheet: 'Plain', row: 4 }))).toBe("xlsx/keep: the pivot table xl/pivotTables/pivotTable1.xml on 'Plain' would be cut by the change, which Excel refuses")
     const table: BookInput = { sheets: [{ name: 'Data', cells: { A1: { value: 'k' }, B1: { value: 'v' }, A2: { value: 'x' }, B2: { value: 1 } }, tables: [{ name: 'Sales', range: 'A1:B2', columns: [{ name: 'k' }, { name: 'v' }] }] }, { name: 'Other', cells: {} }] }

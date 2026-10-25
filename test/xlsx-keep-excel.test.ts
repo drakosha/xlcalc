@@ -16,6 +16,7 @@ import { createSession } from '../src/index.js'
 import { MADE, partsOf, STRUCT } from '../bench/coverage/keep/books.js'
 import { structWritten, written, type OpenRun, type StructRun } from '../bench/coverage/keep.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
+import { partsOf as textsOf } from './keep-files.js'
 
 const dir = new URL('./excel/keep/', import.meta.url)
 const run = JSON.parse(readFileSync(new URL('open.json', dir), 'utf8')) as OpenRun
@@ -28,6 +29,14 @@ const struct = JSON.parse(readFileSync(new URL('struct.json', dir), 'utf8')) as 
 const KNOWN: Record<string, Record<string, unknown>> = {
   'chart-delete-series': { series: ["'Data'!#REF!", "'Data'!#REF!", "'Data'!$B$1"] },
   'chartsheet-source-deleted': { series: ['#REF!', '#REF!'] },
+}
+/**
+ * The operations `writeKept` refuses, by case: the refusal. A pivot cache whose source sheet is deleted: Excel keeps
+ * `ref` and `sheet` and links the source to the file by its path (`r:id`, an external link path to the file's name),
+ * which a writer of bytes does not know; the source kept without the link, Excel does not open the file.
+ */
+const REFUSED: Record<string, string> = {
+  'pivot-source-deleted': 'xlsx/keep: the source of the pivot cache xl/pivotCache/pivotCacheDefinition1.xml is on a sheet the change deleted, which Excel makes a link to the file by its path',
 }
 const predicted = JSON.parse(readFileSync(new URL('../bench/coverage/keep/open.predicted.json', import.meta.url), 'utf8')) as { cases: Record<string, { opens: boolean; parts: Record<string, number> }> }
 
@@ -71,8 +80,12 @@ describe('xlsx/keep in Excel', () => {
       expect(struct.cases[c.id].sent, `${c.id}: the case changed since Excel did it: run the keep struct step`).toBe(createHash('sha256').update(JSON.stringify(c.excel)).update(await partsHash(data)).digest('hex'))
     }
     for (const [id, o] of Object.entries(ours)) {
-      expect('refused' in o ? o.refused : undefined, id).toBeUndefined()
-      expect('refs' in o && o.refs, id).toEqual({ ...struct.cases[id].refs, ...KNOWN[id] })
+      expect('refused' in o ? o.refused : undefined, id).toBe(REFUSED[id])
+      if ('refs' in o) expect(o.refs, id).toEqual({ ...struct.cases[id].refs, ...KNOWN[id] })
     }
+    // Excel's file for the refused one: the source kept, linked to the file by its name in Excel's sandbox
+    const saved = await textsOf(readFileSync(new URL('struct/pivot-source-deleted.xlsx', dir)))
+    expect(/<worksheetSource ref="A1:C21" sheet="Data" r:id="rId1"\/>/.test(saved.get('xl/pivotCache/pivotCacheDefinition1.xml')!)).toBe(true)
+    expect(saved.get('xl/pivotCache/_rels/pivotCacheDefinition1.xml.rels')).toContain('relationships/externalLinkPath" Target="book.xlsx" TargetMode="External"')
   }, 60_000)
 })
