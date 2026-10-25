@@ -7,7 +7,7 @@
  * (`-€5`, `€-5`), as en-US reads `$`; no Excel of such a locale has been measured.
  */
 import { bodyNumber, trimSpaces, unwrap } from '../../dates.js'
-import { literal } from '../../criteria.js'
+import { literal } from '../../wildcards.js'
 import type { RegionalData } from './data.js'
 
 /** A cell's text as a criterion compares it with a number, by `number`: only text with a digit in it is one. */
