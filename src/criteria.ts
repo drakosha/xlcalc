@@ -231,8 +231,9 @@ function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
 
 /** Text as a criterion's equality takes it: in lower case, é as one code point or as e and an accent alike, as Excel's COUNTIF counts them (the set `low-values-held`). */
-const lowered = (s: string) => (NON_ASCII.test(s) ? s.normalize('NFC') : s).toLowerCase()
-const NON_ASCII = /[^\x00-\x7f]/
+const lowered = (s: string) => (MARK.test(s) ? s.normalize('NFC') : s).toLowerCase()
+/** A combining mark: text without one is composed already (but for a few singletons). */
+const MARK = /\p{M}/u
 
 /** A text criterion over texts already in lower case: a range's kept ones (`select`). */
 interface Lowered {

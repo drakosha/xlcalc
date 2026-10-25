@@ -19,8 +19,8 @@ export const keyOf = (key: V): Key | CErr => (key === null ? 0 : key)
 /** A value of the data that can match the key: of its type, no blank and no error. */
 export const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(v, k)
 
-/** A text's spelling as exact lookups tell it: composed (`C`, as NFC writes it), decomposed (`D`) or mixed. */
-const spelling = (s: string) => (s.normalize('NFC') === s ? 'C' : s.normalize('NFD') === s ? 'D' : 'M')
+/** A text's spelling as exact lookups tell it: composed (`C`, as NFC writes it; text without a combining mark), decomposed (`D`) or mixed. */
+const spelling = (s: string) => (!MARK.test(s) || s.normalize('NFC') === s ? 'C' : s.normalize('NFD') === s ? 'D' : 'M')
 
 const EXACT = new WeakMap<Compare, Compare>()
 
@@ -33,13 +33,13 @@ function exactOrder(compare: Compare): Compare {
   if (!out)
     EXACT.set(compare, (out = (a, b) => {
       const c = compare(a, b)
-      if (c !== 0 || typeof a !== 'string' || typeof b !== 'string' || a === b || (!NON_ASCII.test(a) && !NON_ASCII.test(b))) return c
+      if (c !== 0 || typeof a !== 'string' || typeof b !== 'string' || a === b) return c
       const [x, y] = [spelling(a), spelling(b)]
       return x < y ? -1 : x > y ? 1 : 0
     }))
   return out
 }
-const NON_ASCII = /[^\x00-\x7f]/
+const MARK = /\p{M}/u
 
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
 export function exactMatch(line: Line, k: Key, wild: boolean, given: Compare, last = false): number {
