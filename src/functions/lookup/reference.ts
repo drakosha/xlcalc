@@ -7,6 +7,7 @@ import { colToIndex, indexToCol, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { arr } from '../../arrays/value.js'
 import { allot } from '../../exec/budget.js'
+import { PLAIN_NAME, quoteSheet } from '../../sheet-pattern.js'
 import { Areas, E, isErr, Rng, type V } from '../../values.js'
 
 /** A name that reads as an A1 address within the grid, an R1C1 reference or a boolean. */
@@ -18,7 +19,7 @@ function referenceLike(s: string): boolean {
 }
 
 /** Excel quotes a sheet name unless it is empty or a plain name that does not read as a reference. */
-const sheetPrefix = (s: string) => (s === '' || (/^[\p{L}_][\p{L}\p{N}_.]*$/u.test(s) && !referenceLike(s)) ? s : `'${s.replace(/'/g, "''")}'`)
+const sheetPrefix = (s: string) => (s === '' || (PLAIN_NAME.test(s) && !referenceLike(s)) ? s : quoteSheet(s))
 
 function address(r: number, c: number, abs = 1, a1 = true, sheet?: string): V {
   if (r < 1 || r > MAX_ROWS || c < 1 || c > MAX_COLS || abs < 1 || abs > 4) return E.VALUE
