@@ -150,7 +150,7 @@ const BESIDES: [number, string][] = [
 const ADVANCE = new Map<string, number>([...ADVANCES, ...BESIDES].flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])))
 
 /** A digit's advance, which a character not in the table takes too. */
-export const DIGIT_ADVANCE = 1038
+const DIGIT_ADVANCE = 1038
 
 /** The advance of one character, in 1/2048 of the font's size. */
 export const advance = (ch: string): number => ADVANCE.get(ch) ?? DIGIT_ADVANCE
