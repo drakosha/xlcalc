@@ -15,23 +15,72 @@ export const DEFAULT_FONT = { name: 'Calibri', size: 11 }
 /** A font's underline, as a cell's font and a dxf's write it. */
 const underlineXml = (u: FontStyle['underline']) => (u ? (u === 'double' ? '<u val="double"/>' : '<u/>') : '')
 
-function fontXml(f: FontStyle): string {
+/** The default font a style's font is relative to: its size and name, and its colour's XML, written where the style has none. */
+export interface BaseFont {
+  name: string
+  size: number
+  color?: string
+  /** The family and theme scheme of the default font, which a font of its name keeps. */
+  rest?: string
+}
+
+export function fontXml(f: FontStyle, base: BaseFont = DEFAULT_FONT): string {
+  const name = f.name ?? base.name
   const out = [
     f.bold ? '<b/>' : '',
     f.italic ? '<i/>' : '',
     f.strike ? '<strike/>' : '',
     underlineXml(f.underline),
-    `<sz val="${f.size ?? DEFAULT_FONT.size}"/>`,
-    f.color ? `<color rgb="${rgb(f.color)}"/>` : '',
-    `<name val="${escapeAttr(f.name ?? DEFAULT_FONT.name)}"/>`,
+    `<sz val="${f.size ?? base.size}"/>`,
+    f.color ? `<color rgb="${rgb(f.color)}"/>` : (base.color ?? ''),
+    `<name val="${escapeAttr(name)}"/>`,
+    name === base.name ? (base.rest ?? '') : '',
   ]
   return `<font>${out.join('')}</font>`
 }
 
 const line = (side: string, l: BorderLine | undefined) => (l ? `<${side} style="${l.style}">${l.color ? `<color rgb="${rgb(l.color)}"/>` : ''}</${side}>` : `<${side}/>`)
 
-function borderXml(b: NonNullable<CellStyle['border']>): string {
+export function borderXml(b: NonNullable<CellStyle['border']>): string {
   return `<border>${line('left', b.left)}${line('right', b.right)}${line('top', b.top)}${line('bottom', b.bottom)}<diagonal/></border>`
+}
+
+/** A cell's solid fill. */
+export const fillXml = (f: NonNullable<CellStyle['fill']>) => `<fill><patternFill patternType="solid"><fgColor rgb="${rgb(f.color)}"/><bgColor indexed="64"/></patternFill></fill>`
+
+/** A cell format's alignment, empty without one. */
+export function alignmentXml(a: CellStyle['alignment']): string {
+  return a ? `<alignment${a.horizontal ? ` horizontal="${a.horizontal}"` : ''}${a.vertical ? ` vertical="${a.vertical}"` : ''}${a.wrap ? ' wrapText="1"' : ''}${a.indent ? ` indent="${a.indent}"` : ''}/>` : ''
+}
+
+/** A cell format (`<xf>`) of a number format and a font, fill and border by index, with its alignment. */
+export function xfXml(numFmt: number, font: number, fill: number, border: number, align: string): string {
+  const applied = [numFmt ? ' applyNumberFormat="1"' : '', font ? ' applyFont="1"' : '', fill ? ' applyFill="1"' : '', border ? ' applyBorder="1"' : '', align ? ' applyAlignment="1"' : ''].join('')
+  const open = `<xf numFmtId="${numFmt}" fontId="${font}" fillId="${fill}" borderId="${border}" xfId="0"${applied}`
+  return align ? `${open}>${align}</xf>` : `${open}/>`
+}
+
+/** A conditional format's differential format, its number format by `numFmt`'s id. */
+export function dxfXml(s: ConditionalStyle, numFmt: (code: NumberFormat) => number): string {
+  const f = s.font
+  const flag = (tag: string, v: boolean | undefined) => (v === undefined ? '' : v ? `<${tag}/>` : `<${tag} val="0"/>`)
+  const font = f
+    ? `<font>${flag('b', f.bold)}${flag('i', f.italic)}${flag('strike', f.strike)}${underlineXml(f.underline)}${f.color ? `<color rgb="${rgb(f.color)}"/>` : ''}</font>`
+    : ''
+  const code = typeof s.numberFormat === 'number' ? (s.numberFormat === 0 ? 'General' : BUILTIN[s.numberFormat]) : s.numberFormat
+  const numFmtXml = s.numberFormat === undefined ? '' : `<numFmt numFmtId="${numFmt(s.numberFormat)}" formatCode="${escapeAttr(code!)}"/>`
+  // a dxf's solid fill is its background colour
+  const fill = s.fill ? `<fill><patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill></fill>` : ''
+  const border = s.border ? borderXml(s.border) : ''
+  return `<dxf>${font}${numFmtXml}${fill}${border}</dxf>`
+}
+
+/** A number format's id among the built-in ones and those a file defines (`custom`, which a new code joins from 164 on). */
+export function numFmtId(code: NumberFormat | undefined, custom: (code: string) => number): number {
+  // a built-in format given by number is written as that number, as Excel stores it
+  if (typeof code === 'number') return code
+  if (code === undefined || code === 'General') return 0
+  return BUILTIN_ID.get(code) ?? custom(code)
 }
 
 /** An index in a list of distinct XML texts. */
@@ -48,7 +97,17 @@ class Table {
   }
 }
 
-export class StyleWriter {
+/** What the sheet writers ask of a file's styles: the cell format of a style and a number format, and the differential format of a rule's style. */
+export interface CellFormats {
+  /** The cell format of a style (by index) and a number format; 0 is the default. */
+  xf(style: number | undefined, format: NumberFormat | undefined): number
+  /** The differential format of a conditional format's style: its index in `<dxfs>`. */
+  dxf(s: ConditionalStyle): number
+  /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */
+  dxfBody(i: number): string
+}
+
+export class StyleWriter implements CellFormats {
   private readonly fonts = new Table(fontXml({}))
   private readonly fills = new Table('<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>')
   private readonly borders = new Table('<border><left/><right/><top/><bottom/><diagonal/></border>')
@@ -60,14 +119,11 @@ export class StyleWriter {
   constructor(private readonly styles: CellStyle[] = []) {}
 
   private numFmt(code: NumberFormat | undefined): number {
-    // a built-in format given by number is written as that number, as Excel stores it
-    if (typeof code === 'number') return code
-    if (code === undefined || code === 'General') return 0
-    const builtin = BUILTIN_ID.get(code)
-    if (builtin !== undefined) return builtin
-    let id = this.formats.get(code)
-    if (id === undefined) this.formats.set(code, (id = 164 + this.formats.size))
-    return id
+    return numFmtId(code, (c) => {
+      let id = this.formats.get(c)
+      if (id === undefined) this.formats.set(c, (id = 164 + this.formats.size))
+      return id
+    })
   }
 
   /** The cell format of a style (by index) and a number format; 0 is the default. */
@@ -80,32 +136,16 @@ export class StyleWriter {
     if (i !== undefined) return i
     const s = style === undefined ? {} : this.styles[style]
     const font = s.font ? this.fonts.of(fontXml(s.font)) : 0
-    const fill = s.fill ? this.fills.of(`<fill><patternFill patternType="solid"><fgColor rgb="${rgb(s.fill.color)}"/><bgColor indexed="64"/></patternFill></fill>`) : 0
+    const fill = s.fill ? this.fills.of(fillXml(s.fill)) : 0
     const border = s.border ? this.borders.of(borderXml(s.border)) : 0
-    const a = s.alignment
-    const align = a
-      ? `<alignment${a.horizontal ? ` horizontal="${a.horizontal}"` : ''}${a.vertical ? ` vertical="${a.vertical}"` : ''}${a.wrap ? ' wrapText="1"' : ''}${a.indent ? ` indent="${a.indent}"` : ''}/>`
-      : ''
-    const applied = [numFmt ? ' applyNumberFormat="1"' : '', font ? ' applyFont="1"' : '', fill ? ' applyFill="1"' : '', border ? ' applyBorder="1"' : '', align ? ' applyAlignment="1"' : ''].join('')
-    const open = `<xf numFmtId="${numFmt}" fontId="${font}" fillId="${fill}" borderId="${border}" xfId="0"${applied}`
-    i = this.xfs.of(align ? `${open}>${align}</xf>` : `${open}/>`)
+    i = this.xfs.of(xfXml(numFmt, font, fill, border, alignmentXml(s.alignment)))
     this.byKey.set(key, i)
     return i
   }
 
   /** The differential format of a conditional format's style: its index in `<dxfs>`. */
   dxf(s: ConditionalStyle): number {
-    const f = s.font
-    const flag = (tag: string, v: boolean | undefined) => (v === undefined ? '' : v ? `<${tag}/>` : `<${tag} val="0"/>`)
-    const font = f
-      ? `<font>${flag('b', f.bold)}${flag('i', f.italic)}${flag('strike', f.strike)}${underlineXml(f.underline)}${f.color ? `<color rgb="${rgb(f.color)}"/>` : ''}</font>`
-      : ''
-    const code = typeof s.numberFormat === 'number' ? (s.numberFormat === 0 ? 'General' : BUILTIN[s.numberFormat]) : s.numberFormat
-    const numFmt = s.numberFormat === undefined ? '' : `<numFmt numFmtId="${this.numFmt(s.numberFormat)}" formatCode="${escapeAttr(code!)}"/>`
-    // a dxf's solid fill is its background colour
-    const fill = s.fill ? `<fill><patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill></fill>` : ''
-    const border = s.border ? borderXml(s.border) : ''
-    return this.dxfs.of(`<dxf>${font}${numFmt}${fill}${border}</dxf>`)
+    return this.dxfs.of(dxfXml(s, (c) => this.numFmt(c)))
   }
 
   /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */

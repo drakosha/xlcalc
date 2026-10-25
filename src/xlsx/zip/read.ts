@@ -15,16 +15,30 @@ export interface Archive {
   bytes(name: string): Promise<Uint8Array | undefined>
   /** The text of an entry as XML reads it (`xmlText`), undefined when there is none. */
   text(name: string): Promise<string | undefined>
+  /** An entry as the file holds it, for a writer to take over unchanged; undefined when there is none. */
+  record(name: string): EntryRecord | undefined
+}
+
+/** An entry's bytes in the file: its local header, data and data descriptor, and its central directory record. */
+export interface EntryRecord {
+  local: Uint8Array
+  central: Uint8Array
 }
 
 interface Entry {
   name: string
+  flags: number
   method: number
   crc: number
   csize: number
   usize: number
   offset: number
+  /** Where its central directory record lies. */
+  central: [number, number]
 }
+
+/** The signature a data descriptor may start with. */
+const DESCRIPTOR = 0x08074b50
 
 /** The signatures of a zip's records, which the writer writes: the end of the central directory, an entry of it, a local header. */
 export const EOCD = 0x06054b50
@@ -93,8 +107,9 @@ function entries(bytes: Uint8Array): Entry[] {
     const nameLen = v.getUint16(at + 28, true)
     const name = text(bytes.subarray(at + 46, at + 46 + nameLen))
     if (flags & 1) fail(`encrypted entry ${name}`)
-    out.push({ name, method: v.getUint16(at + 10, true), crc: v.getUint32(at + 16, true), csize: v.getUint32(at + 20, true), usize: v.getUint32(at + 24, true), offset: v.getUint32(at + 42, true) })
-    at += 46 + nameLen + v.getUint16(at + 30, true) + v.getUint16(at + 32, true)
+    const next = at + 46 + nameLen + v.getUint16(at + 30, true) + v.getUint16(at + 32, true)
+    out.push({ name, flags, method: v.getUint16(at + 10, true), crc: v.getUint32(at + 16, true), csize: v.getUint32(at + 20, true), usize: v.getUint32(at + 24, true), offset: v.getUint32(at + 42, true), central: [at, next] })
+    at = next
   }
   return out
 }
@@ -129,12 +144,17 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
   }
   const { entryBytes = ENTRY_BYTES, totalBytes = TOTAL_BYTES, ratio = RATIO } = limits
   let spent = 0
-  const bytesOf = async (name: string): Promise<Uint8Array | undefined> => {
-    const e = byName.get(name.toLowerCase())
-    if (!e) return undefined
+  /** Where an entry's data starts, past its local header. */
+  const dataStart = (e: Entry): number => {
     if (e.offset + 30 > v.byteLength || v.getUint32(e.offset, true) !== LOCAL) fail(`no local header for ${e.name}`)
     const start = e.offset + 30 + v.getUint16(e.offset + 26, true) + v.getUint16(e.offset + 28, true)
     if (start + e.csize > v.byteLength) fail(`entry ${e.name} is cut short`)
+    return start
+  }
+  const bytesOf = async (name: string): Promise<Uint8Array | undefined> => {
+    const e = byName.get(name.toLowerCase())
+    if (!e) return undefined
+    const start = dataStart(e)
     const raw = bytes.subarray(start, start + e.csize)
     if (e.method !== 0 && e.method !== 8) fail(`entry ${e.name} uses the unsupported compression method ${e.method}`)
     if (e.method === 0 && e.usize !== e.csize) fail(`entry ${e.name} is stored in ${e.csize} bytes but says it holds ${e.usize}`)
@@ -161,6 +181,15 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
   return {
     names: list.map((e) => e.name),
     bytes: bytesOf,
+    record(name) {
+      const e = byName.get(name.toLowerCase())
+      if (!e) return undefined
+      let end = dataStart(e) + e.csize
+      // the sizes and CRC-32 after the data (flag 3), with or without their signature
+      if (e.flags & 8) end += end + 4 <= v.byteLength && v.getUint32(end, true) === DESCRIPTOR ? 16 : 12
+      if (end > v.byteLength) fail(`entry ${e.name} is cut short`)
+      return { local: bytes.subarray(e.offset, end), central: bytes.subarray(e.central[0], e.central[1]) }
+    },
     async text(name) {
       const b = await bytesOf(name)
       if (!b) return undefined

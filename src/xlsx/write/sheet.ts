@@ -26,12 +26,12 @@ import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
-import { escapeAttr, escapeText } from '../xml/text.js'
+import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
 import { fileTree, type FileNames } from './formula.js'
 import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
-import type { StyleWriter } from './styles.js'
+import type { CellFormats } from './styles.js'
 import type { ResultCell } from './snapshot.js'
 import { clip, HEAD, MAIN, MAX_TEXT } from './xml.js'
 
@@ -48,15 +48,17 @@ const DEFAULT_WIDTH = '8.83203125'
 export const KEEP_ALL = '<filterColumn colId="0"><customFilters><customFilter val=""/><customFilter operator="notEqual" val=""/></customFilters></filterColumn>'
 
 export interface SheetContext extends FileNames {
-  styles: StyleWriter
+  styles: CellFormats
   /** The index of a string in the shared strings table. */
   string(s: string): number
+  /** Text values as inline strings (`t="inlineStr"`), not through the shared strings: a file written over another keeps its table as it is. */
+  inline?: boolean
   issues: Issues
   mode: 'formulas' | 'values'
   /** The sheet's cells of the result, when the file stores values of formulas. */
   result?: Record<string, ResultCell>
-  /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!. */
-  richError(code: 'SPILL' | 'CALC'): number
+  /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!; without one, `#VALUE!` alone. */
+  richError(code: 'SPILL' | 'CALC'): number | undefined
   /** The book's table holding a cell of this sheet, with whether the cell is of its totals row, where Excel takes only a formula of the old kind (no array formula). */
   tableAt(addr: string): { name: string; totals: boolean } | undefined
   /** The relationship ids of the sheet's table parts. */
@@ -87,16 +89,64 @@ export interface SheetWritten {
   notes?: { comments: string; vml: string; count: number }
 }
 
+/** A row of `<sheetData>`: its number (0-based), its attributes after `r`, and its cells' XML. */
+export interface RowWritten {
+  row: number
+  attrs: string
+  cells: string
+}
+
+/**
+ * The elements of a worksheet part in their order, each its XML or empty where the sheet has none (the rows of
+ * `<sheetData>` apart): what `writeSheet` puts together, and what a file written over another takes element by element.
+ */
+export interface SheetPieces extends Omit<SheetWritten, 'xml'> {
+  sheetPr: string
+  dimension: string
+  views: string
+  formatPr: string
+  cols: string
+  rows: RowWritten[]
+  autoFilter: string
+  merges: string
+  conditional: string
+  validations: string
+  hyperlinks: string
+  legacyDrawing: string
+  tableParts: string
+  /** The content of the worksheet's `<extLst>`: Excel 2010's conditional formats. */
+  ext: string
+}
+
+/** The worksheet part from its elements. */
+export function sheetXml(p: SheetPieces): string {
+  const data = p.rows.map((r) => (r.cells ? `<row r="${r.row + 1}"${r.attrs}>${r.cells}</row>` : `<row r="${r.row + 1}"${r.attrs}/>`)).join('')
+  return (
+    `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
+    p.sheetPr + `<dimension ref="${p.dimension}"/>` + p.views + p.formatPr + p.cols + `<sheetData>${data}</sheetData>` +
+    p.autoFilter + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
+    (p.ext ? `<extLst>${p.ext}</extLst>` : '') +
+    '</worksheet>'
+  )
+}
+
 /**
  * A value as the cell's attributes (`t`, and `vm` for an error Excel keeps as a rich value: the cell holds #VALUE!
- * for older readers) and the content of `<v>`; `shared` writes text through the shared strings.
+ * for older readers) and the element that holds it, `<v>` or an inline string's `<is>`; `shared` writes text through
+ * the shared strings, or inline (`ctx.inline`).
  */
 function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell: string }, shared: boolean): { t: string; v: string } {
+  const x = valueOf(v, ctx, where, shared)
+  return x.t === ' t="inlineStr"' ? x : { t: x.t, v: `<v>${x.v}</v>` }
+}
+
+function valueOf(v: CellValue, ctx: SheetContext, where: { sheet: string; cell: string }, shared: boolean): { t: string; v: string } {
   if (v === null) return { t: '', v: '0' }
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
   if (typeof v === 'boolean') return { t: ' t="b"', v: v ? '1' : '0' }
   if (typeof v === 'string') {
     const s = clip(v, MAX_TEXT, ctx.issues, { key: 'textCut' }, where)
+    if (shared && ctx.inline) return { t: ' t="inlineStr"', v: `<is>${textElement(s)}</is>` }
     return shared ? { t: ' t="s"', v: String(ctx.string(s)) } : { t: ' t="str"', v: escapeText(s) }
   }
   return errorXml(v.error, (key) => ctx.issues.add('errorValue', { key }, where), ctx.richError)
@@ -113,12 +163,21 @@ export function errorXml(code: ErrorCode, changed: (key: 'cycleZero' | 'errorNul
     changed('cycleZero')
     return { t: '', v: '0' }
   }
-  if (code === 'SPILL' || code === 'CALC') return { t: ` t="e"${richError ? ` vm="${richError(code)}"` : ''}`, v: '#VALUE!' }
+  if (code === 'SPILL' || code === 'CALC') {
+    const vm = richError?.(code)
+    return { t: ` t="e"${vm === undefined ? '' : ` vm="${vm}"`}`, v: '#VALUE!' }
+  }
   if (code === 'ERROR') changed('errorNull')
   return { t: ' t="e"', v: code === 'ERROR' ? '#NULL!' : ERROR_TEXT[code] }
 }
 
 export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext): SheetWritten {
+  const { rels, formulas, notes, ...pieces } = sheetPieces(sheet, index, ctx)
+  return { xml: sheetXml({ ...pieces, rels, formulas }), formulas, rels, ...(notes ? { notes } : {}) }
+}
+
+/** The worksheet part of a sheet of the book, element by element. */
+export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext): SheetPieces {
   const { styles, issues, mode, result } = ctx
   // each row's cells' XML by column and its columns written, and the bounds of them all: no map of every cell's place
   const xmlAt: string[][] = [], colsOf: number[][] = []
@@ -160,7 +219,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const cm = dynamic ? ' cm="1"' : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
     const x = valueXml(v, ctx, where(addr), !f)
-    return `<c r="${addr}"${sAttr(addr, c)}${x.t}${cm}>${f}<v>${x.v}</v></c>`
+    return `<c r="${addr}"${sAttr(addr, c)}${x.t}${cm}>${f}${x.v}</c>`
   }
   const notes = new Map<string, CellNote>()
   const links = new Map<string, CellLink>()
@@ -225,14 +284,14 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   })
   // the rows of the looks' blocks too, their cells written as the rows are, not held cell by cell
   if (layer) for (let b = 0; b < layer.blocks; b++) for (let r = layer.r1[b]; r <= layer.r2[b]; r++) rowsUsed.add(r)
-  const data: string[] = []
+  const data: RowWritten[] = []
   for (const row of [...rowsUsed].sort((a, b) => a - b)) {
     let cells = ''
     const cols = colsOf[row] ?? []
     if (cols.some((c, i) => i > 0 && c < cols[i - 1])) cols.sort((a, b) => a - b)
     if (layer) cells = rowXml(row, layer, layerXf!, cols, xmlAt[row])
     else for (const c of cols) cells += xmlAt[row][c]
-    data.push(cells ? `<row r="${row + 1}"${rowAttrs.get(row) ?? ''}>${cells}</row>` : `<row r="${row + 1}"${rowAttrs.get(row) ?? ''}/>`)
+    data.push({ row, attrs: rowAttrs.get(row) ?? '', cells })
   }
   const looked = layer?.bounds()
   const any = extent.n > 0 || !!looked
@@ -276,24 +335,26 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const n = ls.reduce((m, [, , e]) => Math.max(m, e.outlineLevel ?? 0), 0)
     return n ? ` ${attr}="${n}"` : ''
   }
-  const xml =
-    `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
-    (filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '') +
-    `<dimension ref="${dim}"/>${sheetViewXml(view, pane, ctx.active)}` +
+  return {
+    sheetPr: filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '',
+    dimension: dim,
+    views: sheetViewXml(view, pane, ctx.active),
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
-    `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>` +
-    (cols.length ? `<cols>${cols.join('')}</cols>` : '') +
-    `<sheetData>${data.join('')}</sheetData>` +
-    (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
-    (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
-    cond.main +
-    validationsXml(sheet.validations, { ...ctx, sheet: sheet.name }) +
-    hyperlinks +
-    (drawing ? `<legacyDrawing r:id="${drawing}"/>` : '') +
-    (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
-    (cond.ext ? `<extLst>${cond.ext}</extLst>` : '') +
-    '</worksheet>'
-  return { xml, formulas, rels, ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}) }
+    formatPr: `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
+    cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
+    rows: data,
+    autoFilter: filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '',
+    merges: merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '',
+    conditional: cond.main,
+    validations: validationsXml(sheet.validations, { ...ctx, sheet: sheet.name }),
+    hyperlinks,
+    legacyDrawing: drawing ? `<legacyDrawing r:id="${drawing}"/>` : '',
+    tableParts: ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '',
+    ext: cond.ext,
+    formulas,
+    rels,
+    ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}),
+  }
 }
 
 /**
@@ -355,7 +416,7 @@ function rowXml(row: number, layer: Layer, attr: (r: number, c: number, look: nu
  * default and so not written), the model each of its style and format from the row, else the column. Excel writes these
  * cells itself where lines it formats cross; `put` gets each with the model's cell format.
  */
-function crossings(rows: Line<RowInput>[], cols: Line<ColumnInput>[], styles: StyleWriter, put: (r: number, c: number, xf: number) => void) {
+function crossings(rows: Line<RowInput>[], cols: Line<ColumnInput>[], styles: CellFormats, put: (r: number, c: number, xf: number) => void) {
   const looked = <T extends Look>(ls: Line<T>[]) => ls.filter(([, , e]) => hasLook(e))
   const withCols = looked(cols)
   if (!withCols.length) return

@@ -1,22 +1,31 @@
 /**
  * Writing a zip archive: each entry deflated, a fixed timestamp (1980-01-01) so the same parts give the same
- * bytes, ASCII names. No ZIP64: a package of 4 GB or more is refused.
+ * bytes, ASCII names; or an entry of another archive taken over as it is. No ZIP64: a package of 4 GB or more is refused.
  */
 import { concat, deflate } from './platform.js'
-import { CENTRAL, crc32, EOCD, LOCAL } from './read.js'
+import { CENTRAL, crc32, EOCD, LOCAL, type EntryRecord } from './read.js'
 
 /** DOS date of 1980-01-01, the earliest a zip can hold. */
 const DATE = 0x21
 
-export async function zip(files: { name: string; data: Uint8Array }[]): Promise<Uint8Array> {
+export async function zip(files: ({ name: string; data: Uint8Array } | EntryRecord)[]): Promise<Uint8Array> {
   const parts: Uint8Array[] = []
   const central: Uint8Array[] = []
   let offset = 0
-  const packs = await Promise.all(files.map((f) => deflate(f.data)))
+  const packs = await Promise.all(files.map((f) => ('data' in f ? deflate(f.data) : undefined)))
   for (const [k, f] of files.entries()) {
+    if (!('data' in f)) {
+      // the entry's own bytes, its central record pointing at where they now lie
+      const dir = f.central.slice()
+      new DataView(dir.buffer).setUint32(42, offset, true)
+      parts.push(f.local)
+      central.push(dir)
+      offset += f.local.length
+      continue
+    }
     if (!/^[\x20-\x7e]+$/.test(f.name)) throw new Error(`xlsx: part name ${f.name} is not ASCII`)
     const name = Uint8Array.from(f.name, (c) => c.charCodeAt(0))
-    const packed = packs[k]
+    const packed = packs[k]!
     const crc = crc32(f.data)
     // the fields a local header and a central directory entry share, from `at` on
     const common = (v: DataView, at: number) => {
