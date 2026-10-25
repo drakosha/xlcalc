@@ -7,6 +7,7 @@
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { LIMIT, shiftRect, type Axis, type Rect } from '../structure/area.js'
 import type { Geometry } from '../structure/geometry.js'
+import { bands } from '../sorted.js'
 import { edited, EMPTY, LayerBuilder, LookTable, NONE, patternOf, runAt, sameLook, spansOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
 
 /** A pattern's runs with `n` columns inserted before `at` (or `-n` deleted from `at`); `before`: the new columns take the look of column `at` − 1. */
@@ -80,10 +81,8 @@ export function shifted(layer: Layer, axis: Axis, at: number, n: number, before 
 
 /** Rectangles as edits of rows that clear them: each band of rows with the columns the rectangles over it cover. */
 export function clearing(xs: Rect[]): RowsEdit[] {
-  const cuts = [...new Set(xs.flatMap((x) => [x.r1, x.r2 + 1]))].sort((a, b) => a - b)
   const out: RowsEdit[] = []
-  for (let k = 0; k + 1 < cuts.length; k++) {
-    const [lo, hi] = [cuts[k], cuts[k + 1] - 1]
+  for (const [lo, hi] of bands(xs.flatMap((x) => [x.r1, x.r2 + 1]))) {
     const cols = xs.filter((x) => x.r1 <= lo && x.r2 >= hi).map((x): [number, number] => [x.c1, x.c2]).sort((a, b) => a[0] - b[0])
     const top: number[] = []
     for (const [c1, c2] of cols) {
@@ -198,11 +197,9 @@ export function* differing(a: Layer | undefined, b: Layer | undefined): Generato
   if (a === b) return
   const cuts = new Set<number>()
   for (const x of [a, b]) for (let k = 0; k < (x?.blocks ?? 0); k++) cuts.add(x!.r1[k]).add(x!.r2[k] + 1)
-  const rows = [...cuts].sort((x, y) => x - y)
   const empty = new LookTable()
   const memo = new Map<Pattern, Map<Pattern, number[]>>()
-  for (let k = 0; k + 1 < rows.length; k++) {
-    const [lo, hi] = [rows[k], rows[k + 1] - 1]
+  for (const [lo, hi] of bands(cuts)) {
     const [pa, pb] = [a?.row(lo) ?? EMPTY, b?.row(lo) ?? EMPTY]
     if (pa === pb && a?.looks === b?.looks) continue
     let byB = memo.get(pa)

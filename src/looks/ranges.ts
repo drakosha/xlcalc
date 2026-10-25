@@ -8,7 +8,7 @@
  */
 import type { LookRange } from '../contract.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
-import { lowerBound } from '../sorted.js'
+import { bands, lowerBound } from '../sorted.js'
 import { areaText, parseRange, type Rect } from '../structure/area.js'
 import { Layer, LayerBuilder, LookTable, NONE, patternOf, spansOf, type Pattern } from './layer.js'
 
@@ -146,11 +146,11 @@ export function readRanges(list: readonly LookRange[], looks = new LookTable()):
     edge(x.r1)[0].push(x.order)
     edge(x.r2 + 1)[1].push(x.order)
   }
-  const rows = [...edges.keys()].sort((a, b) => a - b)
+  const rows = bands(edges.keys())
   const active: number[] = []
   const painted = new Map<string, Pattern>()
-  for (let k = 0; k + 1 < rows.length; k++) {
-    const [enter, leave] = edges.get(rows[k])!
+  for (const [lo, hi] of rows) {
+    const [enter, leave] = edges.get(lo)!
     for (const o of leave) active.splice(lowerBound(active, o, same), 1)
     for (const o of enter) active.splice(lowerBound(active, o, same), 0, o)
     if (!active.length) continue
@@ -161,7 +161,7 @@ export function readRanges(list: readonly LookRange[], looks = new LookTable()):
       const key = active.join(',')
       p = painted.get(key) ?? painted.set(key, paint(active.map((o) => xs[o]))).get(key)!
     }
-    out.rows(rows[k], Math.min(rows[k + 1] - 1, MAX_ROWS - 1), p)
+    out.rows(lo, Math.min(hi, MAX_ROWS - 1), p)
   }
   return out.build()
 }

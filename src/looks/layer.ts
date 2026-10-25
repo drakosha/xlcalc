@@ -7,7 +7,7 @@
 import type { NumberFormat } from '../contract.js'
 import type { Look } from '../layout/lines.js'
 import { MAX_COLS } from '../model.js'
-import { lowerBound } from '../sorted.js'
+import { bands, lowerBound } from '../sorted.js'
 import type { Rect } from '../structure/area.js'
 
 /** No look: a cell in a gap of a pattern. */
@@ -294,12 +294,11 @@ export function edited(layer: Layer, edits: RowsEdit[], looks: LookTable = layer
   const cuts = new Set<number>()
   for (let b = 0; b < layer.at.length; b++) cuts.add(layer.r1[b]).add(layer.r2[b] + 1)
   for (const e of edits) cuts.add(e.lo).add(e.hi + 1)
-  const rows = [...cuts].sort((a, b) => a - b)
+  const rows = bands(cuts)
   const done = new Map<string, Pattern>()
   let changed = false
   let [b, j] = [0, 0]
-  for (let k = 0; k + 1 < rows.length; k++) {
-    const [lo, hi] = [rows[k], rows[k + 1] - 1]
+  for (const [lo, hi] of rows) {
     while (b < layer.at.length && layer.r2[b] < lo) b++
     while (j < edits.length && edits[j].hi < lo) j++
     const inBlock = b < layer.at.length && layer.r1[b] <= lo
