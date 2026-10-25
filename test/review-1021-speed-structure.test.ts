@@ -41,7 +41,7 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
   })
 
   it('deleting rows on a filtered sheet moves the cells once, not once per run of visible rows (speed-u90)', () => {
-    const [n, runs] = [6000, 800]
+    const [n, runs] = [6000, 1600]
     const [cells, rows]: [BookInput['sheets'][0]['cells'], Record<string, { hidden: true }>] = [{ C2: { formula: `SUM(A1:A${n})` } }, {}]
     for (let r = 1; r <= n; r++) {
       cells[`A${r}`] = { value: r }
@@ -50,9 +50,9 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     for (let k = 1; k <= runs; k++) rows[String(2 * k)] = { hidden: true }
     const book: BookInput = { sheets: [{ name: 'S', cells, rows, filtered: true }, { name: 'T', cells: { A1: { formula: `S!A${n}+S!A3` } } }] }
     const s = createSession(book, { execution, clock, display: false })
-    // the old delete rebuilt the book once per run: 8-10 s at 800 runs of 6,000 rows
+    // the old delete rebuilt the book once per run: 8-10 s at 800 runs of 6,000 rows, twice that at 1,600; 3 s under CI's load at 800
     const ms = timed(() => expect(s.editStructure({ op: 'deleteRows', sheet: 'S', row: 1, count: 2 * runs }).ok).toBe(true))
-    expect(ms).toBeLessThan(3000)
+    expect(ms).toBeLessThan(8000)
     // the hidden rows stay, the visible ones above the end go
     expect(s.getCell('S', 'A1')).toMatchObject({ value: 2 })
     expect(s.getCell('S', 'B2')).toMatchObject({ formula: 'A2*2', value: 8 })

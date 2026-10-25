@@ -9,8 +9,6 @@ import type { Applied } from './geometry.js'
 import { applyOutline } from './outline-command.js'
 import { sheetIndex } from './rewrite.js'
 
-export { OUTLINE_FIELDS } from './outline-command.js'
-
 /** The operation on the sheet `sheet` of a book already checked, its other fields checked here. */
 export function outlineOp(book: BookInput, sheet: string, o: Record<string, unknown>): Applied {
   const at = sheetIndex(book, sheet)

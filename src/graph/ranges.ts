@@ -36,12 +36,6 @@ export class RangeDependencies {
     }
   }
 
-  at(s: number, r: number, c: number): number | undefined {
-    const cells = this.sheets.get(s)?.byCol.get(c)?.cells
-    const i = cells ? lowerBound(cells, r, rowOf) : -1
-    return cells?.[i]?.r === r ? cells[i].id : undefined
-  }
-
   add(area: Area, reader: number): void {
     const sh = this.sheets.get(area.s)
     if (!sh) return

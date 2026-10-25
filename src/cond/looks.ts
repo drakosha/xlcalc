@@ -134,8 +134,11 @@ function mergeStyle(into: ConditionalAppearance, s: ConditionalStyle) {
 /** Whether a rule of a style holds for `v` at (r, c). */
 type Test = (v: V, r: number, c: number) => boolean
 
+/** The kinds that shade a cell by where its number sits among the range's numbers instead of testing it for a style: `shade` takes them, `styleTest` the rest. */
+type Graded = { type: 'colorScale' | 'dataBar' | 'iconSet' }
+
 /** The test of a rule with a style, built once per window; null when it holds for no cell. */
-function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Steps<Test | null> {
+function* styleTest(state: EngineState, s: number, rule: Exclude<ConditionalFormat, Graded>): Steps<Test | null> {
   const { compareOp } = state.ctx.rules
   const at = (text: string) => formulaAt(state, s, rule, text)
   switch (rule.type) {
@@ -185,10 +188,6 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
       const key = valueKey(state.ctx.rules)
       return (v) => v !== null && (st.counts.get(key(v)) ?? 0) > 1 === dup
     }
-    case 'colorScale':
-    case 'dataBar':
-    case 'iconSet':
-      return null
     default: {
       const f = formulaAt(state, s, rule, ruleFormula(rule)!)
       return (_, r, c) => holds(state, f(r, c))
@@ -199,7 +198,7 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
 /** What a rule over numbers gives a number, built once per window; null when it gives nothing. */
 type Shade = (v: number, into: ConditionalAppearance) => void
 
-function* shade(state: EngineState, s: number, rule: Extract<ConditionalFormat, { type: 'colorScale' | 'dataBar' | 'iconSet' }>): Steps<Shade | null> {
+function* shade(state: EngineState, s: number, rule: Extract<ConditionalFormat, Graded>): Steps<Shade | null> {
   const st = yield* statsOf(state, s, rule)
   const t = (v: ConditionalValue) => threshold(state, s, rule, v, st)
   switch (rule.type) {

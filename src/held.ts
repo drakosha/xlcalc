@@ -42,7 +42,7 @@ export function putHeld(state: EngineState, s: number, addr: string, v: V | unde
 }
 
 /** Formula `f`'s held value set (`v`), or dropped (undefined) as it comes out of a cycle's way. */
-export function setHeld(state: EngineState, f: Formula, v: V | undefined) {
+function setHeld(state: EngineState, f: Formula, v: V | undefined) {
   if (v === undefined) state.held.delete(f.id)
   else state.held.set(f.id, v)
   putHeld(state, f.s, formatAddress(f.r, f.c), v)
