@@ -42,6 +42,9 @@ export interface Clock {
   seed: number
 }
 
+/** A workbook's date system, as Excel counts serial dates (`BookInput.dateSystem`): 1900, or 1904. */
+export type DateSystem = 1900 | 1904
+
 /** A cell of a workbook: its sheet's name and its A1 address (`B2`). */
 export interface CellRef {
   sheet: string

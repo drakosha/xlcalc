@@ -9,10 +9,11 @@ import { EPOCH_1904, epochOf, MAX_SERIAL, ymd } from './dates.js'
 import { InputError, what } from './input-error.js'
 import { checkOneOf, checkString, object, onlyKeys } from './input/basic.js'
 import { DAY_MS, dateToSerial as serialOfText } from './model.js'
+import type { DateSystem } from './contract/values.js'
 
 /** The workbook's date system, as in `BookInput.dateSystem`: 1900 without one. */
 export interface DateSystemOptions {
-  dateSystem?: 1900 | 1904
+  dateSystem?: DateSystem
 }
 
 
@@ -22,7 +23,7 @@ function epoch(opts: unknown): number {
   const o = object(opts, 'opts', 'options such as { dateSystem: 1904 }')
   onlyKeys(o, 'opts', ['dateSystem'])
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, 'opts.dateSystem', [1900, 1904])
-  return epochOf(o.dateSystem as 1900 | 1904 | undefined)
+  return epochOf(o.dateSystem as DateSystem | undefined)
 }
 
 /** The last serial number of the date system whose day 0 is `e`: the end of 9999-12-31. */

@@ -5,7 +5,7 @@
  * (`"Sheet"!B4:B1048576 n 0`). The engine configuration version is part of the values hash, and so are a
  * book's locale other than en-US and the 1904 date system.
  */
-import type { BookInput, CellValue } from './contract.js'
+import type { BookInput, CellValue, DateSystem } from './contract.js'
 import { paced, run, type Steps } from './exec/budget.js'
 import { lines, spanKey } from './layout/spans.js'
 import { layerLines, layerOf } from './looks/sheet.js'
@@ -70,7 +70,7 @@ export class ValuesHasher {
   private started = false
 
   /** The header: the configuration version, `;locale=<tag>` for a locale other than en-US, `;date1904` for the 1904 system, `\n`. */
-  constructor(configVersion: string, locale?: string, dateSystem?: 1900 | 1904) {
+  constructor(configVersion: string, locale?: string, dateSystem?: DateSystem) {
     const tag = hashedLocale(locale)
     this.h.update(`${configVersion}${tag === undefined ? '' : `;locale=${tag}`}${dateSystem === 1904 ? ';date1904' : ''}\n`)
   }
@@ -103,7 +103,7 @@ export class ValuesHasher {
 }
 
 /** The values hash of values by sheet name and address; `prepared`: a result's, by address already and rounded by outNumber. */
-export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, fills: readonly FillLine[] = [], locale?: string, dateSystem?: 1900 | 1904, prepared = false): string {
+export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, fills: readonly FillLine[] = [], locale?: string, dateSystem?: DateSystem, prepared = false): string {
   const w = new ValuesHasher(configVersion, locale, dateSystem)
   const names = [...values.keys()]
   for (const i of sheetOrder(names)) {

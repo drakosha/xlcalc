@@ -5,6 +5,7 @@
  */
 import { DAY_MS, EPOCH_MS, fromUtcDays, NUMBER_TEXT, readNumber, serialToUtcMs } from './model.js'
 import { EN_NAMES } from './numfmt/style.js'
+import type { DateSystem } from './contract/values.js'
 
 /** The last serial number Excel accepts: 9999-12-31. */
 export const MAX_SERIAL = 2_958_465
@@ -13,7 +14,7 @@ export const MAX_SERIAL = 2_958_465
 export const EPOCH_1904 = 1462
 
 /** The day 0 of a book's date system in the 1900 system: 0, or 1462 for 1904. */
-export const epochOf = (system: 1900 | 1904 | undefined) => (system === 1904 ? EPOCH_1904 : 0)
+export const epochOf = (system: DateSystem | undefined) => (system === 1904 ? EPOCH_1904 : 0)
 
 /** Days from 1899-12-30 to a date of the real calendar (month and day overflow roll over, as in `Date.UTC`). */
 export function utcDays(y: number, m: number, d: number): number {
