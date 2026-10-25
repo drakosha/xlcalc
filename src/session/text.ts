@@ -10,7 +10,7 @@ import type { EngineState } from '../engine.js'
 import { readEntry, type EntryWay } from '../entry/index.js'
 import { entryWidth } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
-import { parseMerge } from '../layout/merges.js'
+import { mergedOf } from '../layout/merges.js'
 import { hasCell } from '../structure/area.js'
 import { say } from '../locale/messages.js'
 import { parseAddress } from '../model.js'
@@ -86,10 +86,7 @@ export function columnWidening(s: EngineState, i: number, r: number, c: number):
   const lines = sheetLines(sh, s)
   const column = lines.column(c)
   if (column?.hidden || column?.width === 0) return undefined
-  if ((sh.merges ?? []).some((m) => {
-    const x = parseMerge(m)!
-    return x.c2 > x.c1 && hasCell(x, r, c)
-  })) return undefined
+  if (mergedOf(sh, s).rects.some((x) => x.c2 > x.c1 && hasCell(x, r, c))) return undefined
   const { locale, dateSystem } = s.input
   return entryWidth(cellValue(s, i, r, c), { numberFormat: lines.format(r, c), locale, dateSystem, width: column?.width, bestFit: column?.bestFit })
 }

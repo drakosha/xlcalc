@@ -1,5 +1,7 @@
 /** Merged areas of a sheet: `B2:D3`, top-left to bottom-right, two cells or more, none overlapping another. */
 import type { SheetInput } from '../contract.js'
+import type { EngineState } from '../engine.js'
+import { readOnce } from './lines.js'
 import { colToIndex, MAX_COLS, MAX_ROWS } from '../model.js'
 import { meets, type Rect } from '../structure/area.js'
 
@@ -16,6 +18,21 @@ export function parseMerge(text: string): Rect | null {
 
 /** A sheet's merged areas. */
 export const mergesOf = (s: Pick<SheetInput, 'merges'>): Rect[] => (s.merges ?? []).map((m) => parseMerge(m)!)
+
+/** A sheet's merged areas, and the last column of each by its top-left cell (row · MAX_COLS + column). */
+export interface Merged {
+  rects: Rect[]
+  ends: Map<number, number>
+}
+
+/** A sheet's merged areas (`Merged`); with a session's `state`, read once for it (`readOnce`). */
+export function mergedOf(s: Pick<SheetInput, 'merges'>, state?: EngineState): Merged {
+  const make = (): Merged => {
+    const rects = mergesOf(s)
+    return { rects, ends: new Map(rects.map((m) => [m.r1 * MAX_COLS + m.c1, m.c2])) }
+  }
+  return state && s.merges ? readOnce(state, s.merges, make) : make()
+}
 
 /**
  * The first two merges that overlap, by index, or null (sorted by top row, each meets only those above it that reach down);
