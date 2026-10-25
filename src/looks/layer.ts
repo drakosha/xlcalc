@@ -338,16 +338,6 @@ export function cellEdits(cells: Iterable<[r: number, c: number, look: number]>)
 /** Whether two looks (of one table or two, none for one of them) are the same: their style and number format fields. */
 export const sameLook = (x: Look | undefined, y: Look | undefined): boolean => x?.style === y?.style && x?.numberFormat === y?.numberFormat
 
-/** Whether two layers give every cell the same look. */
-export function sameLooks(a: Layer, b: Layer): boolean {
-  const [x, y] = [[...a.pieces()], [...b.pieces()]]
-  if (x.length !== y.length) return false
-  return x.every((p, i) => {
-    const q = y[i]
-    return p.r1 === q.r1 && p.r2 === q.r2 && p.c1 === q.c1 && p.c2 === q.c2 && sameLook(a.looks.list[p.look], b.looks.list[q.look])
-  })
-}
-
 /** A layer from cells given row by row, as a file lists them: a row's cells in order of columns; a cell out of that order is taken at the end, over the rest. */
 export class CellsLayer {
   private readonly out = new LayerBuilder()
