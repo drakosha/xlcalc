@@ -210,6 +210,14 @@ describe('xlsx: a width or height that is no size (x-xlsx-6)', () => {
       ['part', ['1:1', '2:2', '3:3'], 'a row height that is not a number of 0 or more is left out'],
     ])
   })
+
+  it('an empty one, or one in hex, is no size either: it hides no row or column (ht-empty)', async () => {
+    const cols = ['', ' ', '0x10', ' 8 '].map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('')
+    const rows = ['', ' ', '0x10', ' 8 '].map((h, i) => `<row r="${i + 1}" ht="${h}" customHeight="1"><c r="A${i + 1}"><v>1</v></c></row>`).join('')
+    const r = await read({ sheets: [{ name: 'S', body: `<cols>${cols}</cols><sheetData>${rows}</sheetData>` }] })
+    expect([r.book.sheets[0].columns, r.book.sheets[0].rows]).toEqual([{ D: { width: 8 } }, { 4: { height: 8 } }])
+    expect(r.issues.map((i) => [i.code, i.cells])).toEqual([['part', ['A:A', 'B:B', 'C:C']], ['part', ['1:1', '2:2', '3:3']]])
+  })
 })
 
 describe('xlsx: shared strings left open (sst-open)', () => {

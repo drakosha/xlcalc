@@ -92,6 +92,9 @@ const OPEN_V = /<(?:[\w.-]+:)?v[\s/>]/
 const OPEN_F = /<(?:[\w.-]+:)?f[\s/>]/
 const OPEN_IS = /<(?:[\w.-]+:)?is[\s/>]/
 
+/** A number in decimal notation (xsd:double: no hex, no infinity), NaN for any other text, an empty one too. */
+export const decimal = (raw: string): number => (DECIMAL.test(raw) ? Number(raw) : NaN)
+
 
 /**
  * The cells of `<sheetData>`; `cols`, the sheet's columns. A row with a cell format of its own is read with its cells:
@@ -145,7 +148,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       lineRow = row
       // a height Excel fitted has no customHeight; Excel for Mac writes its highest, 409.5, as 409.6
       if (a.ht !== undefined) {
-        const height = Number(a.ht)
+        const height = decimal(a.ht)
         if (Number.isFinite(height) && height >= 0) Object.assign(line, { height: Math.min(409.5, height) }, flag(a.customHeight) ? {} : { bestFit: true })
         else issues.add('part', { key: 'heightBad' }, { sheet, cell: `${row + 1}:${row + 1}` })
       }
@@ -226,8 +229,8 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (t === 'str') value = readText(raw)
       else if (t === 'd') value = isoDate(raw, ctx, addr)
       else if (raw !== '' || t === 'b') {
-        // a number in decimal notation (xsd:double: no hex, no infinity), a boolean as 1, 0, true or false
-        const v = t === 'b' ? BOOLEANS.get(raw.trim()) : DECIMAL.test(raw) ? Number(raw) : NaN
+        // a number in decimal notation, a boolean as 1, 0, true or false
+        const v = t === 'b' ? BOOLEANS.get(raw.trim()) : decimal(raw)
         if (v === undefined || (typeof v === 'number' && !Number.isFinite(v))) issues.add('part', { key: 'valueBad' }, { sheet, cell: addr })
         else value = v
       }

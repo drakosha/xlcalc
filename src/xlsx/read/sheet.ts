@@ -19,7 +19,7 @@ import { canonical } from '../../syntax/print.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has, lastChild, ownEntry, type Element } from '../xml/scan.js'
-import { look, outlineOf, readCells, setCell, xfAt, type CellsContext, type SheetCells } from './cells.js'
+import { decimal, look, outlineOf, readCells, setCell, xfAt, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
@@ -201,7 +201,7 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     const col: ColumnInput = {}
     const where = { sheet: read.sheet, cell: `${spanKey(lo, hi, 'c').replace(/^([A-Z]+)$/, '$1:$1')}` }
     if (a.width !== undefined && flag(a.customWidth)) {
-      const width = Number(a.width)
+      const width = decimal(a.width)
       if (Number.isFinite(width) && width >= 0) col.width = Math.min(255, width)
       else read.issues.add('part', { key: 'widthBad' }, where)
     }
