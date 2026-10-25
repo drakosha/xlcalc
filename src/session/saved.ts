@@ -20,8 +20,8 @@ import { InputError } from '../input-error.js'
 import { array, checkString, object } from '../input/basic.js'
 import { checkRange } from '../input/range.js'
 import { issueWith, reasonSource, spilledReason, wayBack, type Place } from '../issues.js'
+import { reachLayout } from './extent.js'
 import { sheetLines } from '../layout/lines.js'
-import { parseMerge } from '../layout/merges.js'
 import { displayRules } from '../locale/rules.js'
 import { formatAddress, MAX_COLS, parseAddress, readAddress } from '../model.js'
 import { clockSerial } from '../result.js'
@@ -30,7 +30,6 @@ import { hasCell, parseRange, type Rect } from '../structure/area.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
 import { tablesOf, type Tables } from '../tables/model.js'
 import { E, fromCellValue, Rng } from '../values.js'
-import { layerOf } from '../looks/sheet.js'
 import { checkViewportOptions, windowLines, windowOf, type WindowLines, type WindowSource } from './viewport.js'
 
 /** The cells of a large spill that its result leaves out (`CellResult.spillFill`): the spill's range, its formula's cell and their value. */
@@ -130,13 +129,7 @@ function sheetFound(f: Found, s: number): SheetFound {
     reach(x.r2, x.c2)
     if (cell.spillFill !== undefined) fills.push({ x, from: a, value: cell.spillFill })
   }
-  for (const m of input.merges ?? []) {
-    const x = parseMerge(m)
-    if (x) reach(x.r2, x.c2)
-  }
-  for (const t of f.tables.list) if (t.s === s) reach(t.r2, t.c2)
-  const looked = layerOf(input)?.bounds()
-  if (looked) reach(looked.r2, looked.c2)
+  reachLayout(input, f.tables, s, reach)
   f.sheets.set(s, (out = { fills, extent: { rows, columns } }))
   return out
 }
