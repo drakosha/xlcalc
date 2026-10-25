@@ -268,8 +268,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const scroll = sheet.frozen && frozenScroll(sheet.view?.topLeft, sheet.frozen)
   const pane = scroll ? paneXml(sheet.frozen, scroll.pane) : ''
   const view = scroll && sheet.view ? { ...sheet.view, topLeft: scroll.view } : sheet.view
-  const names: FileNames = { sheets: ctx.sheets, tables: ctx.tables, externalBooks: ctx.externalBooks }
-  const cond = conditionalXml(sheet, index, { styles, issues, ...names })
+  const cond = conditionalXml(sheet, index, ctx)
   // the outline: where its summaries are, and its deepest levels, which Excel reserves room for
   const o = sheet.outline
   const outlinePr = o && (o.summaryBelow !== undefined || o.summaryRight !== undefined) ? `<outlinePr${o.summaryBelow !== undefined ? ` summaryBelow="${o.summaryBelow ? 1 : 0}"` : ''}${o.summaryRight !== undefined ? ` summaryRight="${o.summaryRight ? 1 : 0}"` : ''}/>` : ''
@@ -288,7 +287,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
     cond.main +
-    validationsXml(sheet.validations, { sheet: sheet.name, ...names, issues }) +
+    validationsXml(sheet.validations, { ...ctx, sheet: sheet.name }) +
     hyperlinks +
     (drawing ? `<legacyDrawing r:id="${drawing}"/>` : '') +
     (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
