@@ -28,6 +28,19 @@ export type Geometry = Move[]
 /** An operation's result inside the library: the new book and where its cells went, or Excel's refusal. */
 export type Applied = { ok: true; book: BookInput; geometry: Geometry } | Exclude<StructureResult, { ok: true }>
 
+/** Applies the steps in turn, each to the book the last one gave; the geometry is theirs one after another. */
+export function chain(book: BookInput, steps: ((b: BookInput) => Applied)[]): Applied {
+  let out = book
+  const geometry: Geometry = []
+  for (const step of steps) {
+    const r = step(out)
+    if (!r.ok) return r
+    out = r.book
+    geometry.push(...r.geometry)
+  }
+  return { ok: true, book: out, geometry }
+}
+
 /** A cell's place: its sheet's index, its row and its column. */
 export interface Place {
   s: number

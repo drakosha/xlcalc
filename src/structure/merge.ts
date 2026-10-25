@@ -17,7 +17,7 @@ import { formatAddress } from '../model.js'
 import { internStyle } from '../style-table.js'
 import { tablesOf } from '../tables/model.js'
 import { cornersText, grown, meets, rectText, type Rect } from './area.js'
-import type { Applied, Geometry } from './geometry.js'
+import { chain, type Applied } from './geometry.js'
 import { moveRange } from './move.js'
 import { sheetIndex } from './rewrite.js'
 import { arraysOf, cellsIn, gridOf, type Grid } from './grid.js'
@@ -37,8 +37,7 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
   const made = areas.filter((a) => a.r1 < a.r2 || a.c1 < a.c2)
   // the merged areas met are split first, so that a cell of one can move
   const kept = merges.filter((m) => !meets(m, area)).map(cornersText)
-  let moved: BookInput = { ...book, sheets: book.sheets.map((t, i) => (i === s ? { ...t, merges: kept } : t)) }
-  const geometry: Geometry = []
+  const split: BookInput = { ...book, sheets: book.sheets.map((t, i) => (i === s ? { ...t, merges: kept } : t)) }
   // the cells of the area by row, read once for a grid: across, each row's area takes its own (a walk of the grid per row was O(rows × sheet))
   let byRow: { g: Grid; rows: Map<number, number[]> } | undefined
   const cellsOf = (g: Grid, a: Rect): readonly number[] => {
@@ -53,18 +52,17 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
     }
     return byRow.rows.get(a.r1) ?? []
   }
-  for (const a of made) {
-    const g = gridOf(moved.sheets[s])
-    if (holds(moved.sheets[s].cells[formatAddress(a.r1, a.c1)])) continue
+  // the first cell holding a value or a formula, row by row, moves to each merged area's top-left as cut and paste moves it
+  const carried = chain(split, made.map((a) => (b: BookInput) => {
+    const g = gridOf(b.sheets[s])
+    if (holds(b.sheets[s].cells[formatAddress(a.r1, a.c1)])) return { ok: true, book: b, geometry: [] }
     const from = cellsOf(g, a)
       .filter((i) => holds(g.cell[i]))
       .sort((i, j) => g.row[i] - g.row[j] || g.col[i] - g.col[j])[0]
-    if (from === undefined) continue
-    const r = moveRange(moved, sheet, { r1: g.row[from], c1: g.col[from], r2: g.row[from], c2: g.col[from] }, sheet, a.r1, a.c1)
-    if (!r.ok) return r
-    moved = r.book
-    geometry.push(...r.geometry)
-  }
+    return from === undefined ? { ok: true, book: b, geometry: [] } : moveRange(b, sheet, { r1: g.row[from], c1: g.col[from], r2: g.row[from], c2: g.col[from] }, sheet, a.r1, a.c1)
+  }))
+  if (!carried.ok) return carried
+  const { book: moved, geometry } = carried
   const sh = moved.sheets[s]
   const g = gridOf(sh)
   const cells: Record<string, CellInput> = { ...sh.cells }

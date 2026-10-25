@@ -22,7 +22,7 @@ import { minutes } from '../numfmt/date.js'
 import { EN_CODES, parseFormat } from '../numfmt/parse.js'
 import { EN_NAMES } from '../numfmt/style.js'
 import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
-import type { Applied, Geometry } from './geometry.js'
+import { chain, type Applied } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetIndex } from './rewrite.js'
 import { holds } from '../array-areas.js'
@@ -74,15 +74,9 @@ export function fillRange(book: BookInput, sheet: string, src: Rect, target: Rec
   }
   // the copies count together against limits.writes: each checks its own cells too, which is then within the limit
   checkFillWrites(book, sheetIndex(book, sheet), pieces)
-  let out = book
-  const geometry: Geometry = []
-  for (const [from, at] of pieces) {
-    const r = copy(out, from, at)
-    if (!r.ok) return r
-    out = r.book
-    geometry.push(...r.geometry)
-  }
-  if (type === 'copy') return { ok: true, book: out, geometry }
+  const r = chain(book, pieces.map(([from, at]) => (b: BookInput) => copy(b, from, at)))
+  if (!r.ok || type === 'copy') return r
+  const { book: out, geometry } = r
   const s = sheetIndex(book, sheet)
   const added: [number, number] = forward ? [b + 1, b + n] : [a - n, a - 1]
   const written = seriesCells(book, s, src, axis, added, type)
