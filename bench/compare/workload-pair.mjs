@@ -3,15 +3,12 @@
 // of the environment's OPEN_ROUNDS) and each edit operation (median and p95 of 30, the two states alternating), closures
 // and eval, display false. After the rounds the branch's values are checked against the base's full calculation.
 import { WORKLOADS, workload } from '../hyperformula/workloads.mjs'
+import { at, clock, load, names, pair } from './pair.mjs'
 
 const [base, branch, ...ids] = process.argv.slice(2)
-const libs = await Promise.all([base, branch].map((r) => import(r + '/dist/index.js')))
-const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
-const names = ['base', 'branch']
+const libs = await load(base, branch)
 const openRounds = Number(process.env.OPEN_ROUNDS ?? 7)
 const f = (v) => (v < 1 ? v.toFixed(3) : v < 10 ? v.toFixed(2) : v.toFixed(1))
-const at = (xs, q) => [...xs].sort((a, b) => a - b)[Math.min(xs.length - 1, Math.floor(xs.length * q))]
-const pair = (round) => (round % 2 ? [1, 0] : [0, 1])
 const line = (what, xs, q = 0.5) => `${what} ${names.map((n, i) => `${n} ${f(at(xs[i], q))}`).join(' / ')} (${(at(xs[0], q) / at(xs[1], q)).toFixed(2)}x)`
 
 for (const id of ids.length ? ids : WORKLOADS.map((w) => w.id)) {
