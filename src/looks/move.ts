@@ -15,24 +15,29 @@ function shiftedRuns(p: Pattern, at: number, n: number, before: boolean): Patter
   const push = (c1: number, c2: number, look: number) => {
     if (c1 < MAX_COLS) out.push(c1, Math.min(c2, MAX_COLS - 1), look)
   }
-  const d = -n
   for (let k = 0; k < p.length; k += 3) {
     const [c1, c2, look] = [p[k], p[k + 1], p[k + 2]]
-    if (c2 < at) push(c1, c2, look)
-    else if (n > 0) {
-      if (c1 < at) push(c1, at - 1, look)
-      push(Math.max(c1, at) + n, c2 + n, look)
-    } else if (c1 >= at + d) push(c1 - d, c2 - d, look)
-    else {
-      if (c1 < at) push(c1, at - 1, look)
-      if (c2 >= at + d) push(at, c2 - d, look)
-    }
+    shiftSpan(c1, c2, at, n, (lo, hi) => push(lo, hi, look))
   }
   const look = before && n > 0 && at > 0 ? runAt(p, at - 1) : NONE
   if (look !== NONE) push(at, at + n - 1, look)
   const runs: number[][] = []
   for (let k = 0; k < out.length; k += 3) runs.push(out.slice(k, k + 3))
   return patternOf(runs.sort((x, y) => x[0] - y[0]).flat())
+}
+
+/** One span `[lo, hi]` with `n` lines inserted before `at` (or `-n` deleted from `at`), `put` taking the pieces it makes, in order. */
+function shiftSpan(lo: number, hi: number, at: number, n: number, put: (lo: number, hi: number) => void): void {
+  const d = -n
+  if (hi < at) put(lo, hi)
+  else if (n > 0) {
+    if (lo < at) put(lo, at - 1)
+    put(Math.max(lo, at) + n, hi + n)
+  } else if (lo >= at + d) put(lo - d, hi - d)
+  else {
+    if (lo < at) put(lo, at - 1)
+    if (hi >= at + d) put(at, hi - d)
+  }
 }
 
 /**
@@ -55,7 +60,6 @@ export function shifted(layer: Layer, axis: Axis, at: number, n: number, before 
   const put = (lo: number, hi: number, p: Pattern) => {
     if (lo < MAX_ROWS) out.rows(lo, Math.min(hi, MAX_ROWS - 1), p)
   }
-  const d = -n
   let placed = n < 0
   const place = () => {
     if (placed) return
@@ -64,16 +68,11 @@ export function shifted(layer: Layer, axis: Axis, at: number, n: number, before 
   }
   for (let b = 0; b < layer.blocks; b++) {
     const [r1, r2, p] = [layer.r1[b], layer.r2[b], layer.patterns[layer.at[b]]]
-    if (r2 < at) put(r1, r2, p)
-    else if (n > 0) {
-      if (r1 < at) put(r1, at - 1, p)
-      place()
-      put(Math.max(r1, at) + n, r2 + n, p)
-    } else if (r1 >= at + d) put(r1 - d, r2 - d, p)
-    else {
-      if (r1 < at) put(r1, at - 1, p)
-      if (r2 >= at + d) put(at, r2 - d, p)
-    }
+    // the pieces at or past `at` shift: those come after the lines inserted before them
+    shiftSpan(r1, r2, at, n, (lo, hi) => {
+      if (lo >= at) place()
+      put(lo, hi, p)
+    })
   }
   place()
   return out.build()
