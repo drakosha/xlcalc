@@ -28,7 +28,7 @@ import { rectText, type Rect } from '../structure/area.js'
 import { tableAt, type Tables } from '../tables/model.js'
 import { holds } from '../array-areas.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
-import { layerOf } from '../looks/sheet.js'
+import { hasLook, layerOf } from '../looks/sheet.js'
 import { ownerOf } from '../spill/place.js'
 import { sheetExtent } from './extent.js'
 
@@ -218,7 +218,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
       const col = lines.column(c)
       const shown = lookOf(own, row, col)
       // an empty cell is listed when it shows something: a style or a number format of its row or column (a grid's format list shows it), a look, a note or a link
-      const out = src.cell(r, c, addr, own, shown.style !== undefined || shown.numberFormat !== undefined)
+      const out = src.cell(r, c, addr, own, hasLook(shown))
       if (!out) continue
       if (o.formulaLocal && out.formula !== undefined) out.formulaLocal = local(out.formula, r, c)
       if (own?.array !== undefined) out.array = own.array

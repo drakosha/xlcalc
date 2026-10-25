@@ -21,7 +21,7 @@ import { normalized } from '../../layout/outline.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { bookScalar, formatAddress, indexToCol, MAX_COLS, parseAddress, readAddress } from '../../model.js'
 import { NONE, type Layer } from '../../looks/layer.js'
-import { inputIn, layerOf } from '../../looks/sheet.js'
+import { hasLook, inputIn, layerOf } from '../../looks/sheet.js'
 import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import { toFile } from '../formulas/to-file.js'
@@ -144,7 +144,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const where = (cell: string) => ({ sheet: sheet.name, cell })
   const sheetLook = sheetLines(sheet)
   // a sheet whose rows and columns have no look writes each cell's own
-  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.numberFormat !== undefined))
+  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some(hasLook))
   const sAttr = (addr: string, c: CellInput | undefined) => {
     let look: Look | undefined = c
     if (lined) {
@@ -356,7 +356,7 @@ function rowXml(row: number, layer: Layer, attr: (r: number, c: number, look: nu
  * cells itself where lines it formats cross; `put` gets each with the model's cell format.
  */
 function crossings(rows: Line<RowInput>[], cols: Line<ColumnInput>[], styles: StyleWriter, put: (r: number, c: number, xf: number) => void) {
-  const looked = <T extends Look>(ls: Line<T>[]) => ls.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
+  const looked = <T extends Look>(ls: Line<T>[]) => ls.filter(([, , e]) => hasLook(e))
   const withCols = looked(cols)
   if (!withCols.length) return
   for (const [rlo, rhi, row] of looked(rows)) {

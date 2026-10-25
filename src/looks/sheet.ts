@@ -111,10 +111,13 @@ export function madeFrom(from: readonly object[], cells: object, added: Record<s
   if (from.every((x) => TAKEN.has(x))) MADE.set(cells, Object.keys(added).filter((a) => added[a] && lookAlone(added[a]!)))
 }
 
+/** Whether an entry (a cell, a row, a column) shows a look of its own: a style or a number format. */
+export const hasLook = (e: Pick<Look, 'style' | 'numberFormat'>): boolean => e.style !== undefined || e.numberFormat !== undefined
+
 /** Whether an entry holds a look alone: a style or a number format and no other field (a field of undefined is none); an empty entry holds none. */
 export function lookAlone(cell: CellInput): boolean {
   for (const k in cell) if (k !== 'style' && k !== 'numberFormat' && (cell as Record<string, unknown>)[k] !== undefined) return false
-  return cell.style !== undefined || cell.numberFormat !== undefined
+  return hasLook(cell)
 }
 
 /** The sheet with `cells` and `layer` as its looks: a new object, without the field for no looks. */

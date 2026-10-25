@@ -8,6 +8,7 @@ import type { FrozenPanes, SheetInput } from '../contract.js'
 import { entryAt, lines, patchLines, toMap, type Line } from '../layout/spans.js'
 import { parseMerge } from '../layout/merges.js'
 import type { LookTable, RowsEdit } from '../looks/layer.js'
+import { hasLook } from '../looks/sheet.js'
 import { cornersText, hi, LIMIT, lo, withBounds, type Axis } from './area.js'
 import { gridOf } from './grid.js'
 
@@ -117,7 +118,7 @@ export function lookBefore(sheet: SheetInput, axis: Axis, at: number, n: number,
   const found: [number, number][] = []
   for (let k = 0; k < line.length; k++) {
     const cell = g.cell[k]
-    if (line[k] !== at - 1 || (cell.style === undefined && cell.numberFormat === undefined)) continue
+    if (line[k] !== at - 1 || !hasLook(cell)) continue
     found.push([axis === 'r' ? g.col[k] : g.row[k], looks.id(cell.style, cell.numberFormat)])
   }
   found.sort((a, b) => a[0] - b[0])

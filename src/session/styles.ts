@@ -16,7 +16,7 @@ import { cellCount, hasCell, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import { StyleTable } from '../style-table.js'
 import { edited, emptyLayer, LookTable, NONE, type Layer, type RowsEdit } from '../looks/layer.js'
-import { layerOf, lookAlone } from '../looks/sheet.js'
+import { layerOf, lookAlone, hasLook } from '../looks/sheet.js'
 import { inputAt } from './book.js'
 import { CONTENT } from './cells.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
@@ -223,7 +223,7 @@ function lookRect(d: Draft, t: Target, look: Look) {
   const ls = d.lines(t.i)
   const sh = d.sheet(t.i)
   const reset = 'reset' in (look.style ?? {}) || 'reset' in (look.format ?? {})
-  const looked = (map: Record<string, Line> | undefined, axis: 'r' | 'c', lo: number, hi: number) => spansOf(map, axis).some(([a, b, e]) => b >= lo && a <= hi && (e.style !== undefined || e.numberFormat !== undefined))
+  const looked = (map: Record<string, Line> | undefined, axis: 'r' | 'c', lo: number, hi: number) => spansOf(map, axis).some(([a, b, e]) => b >= lo && a <= hi && hasLook(e))
   const every = gives(look) || (reset && (looked(sh.rows, 'r', x.r1, x.r2) || looked(sh.columns, 'c', x.c1, x.c2)))
   const area = cellCount(x)
   if (every && area > MAX_CELLS) throw new InputError('range', `a rectangle of ${area} cells: formatting applies to at most ${MAX_CELLS} cells of a rectangle, or to whole columns or rows (B:D, 2:9)`)
