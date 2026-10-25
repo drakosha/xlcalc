@@ -70,7 +70,7 @@ export function encode(a: Area): string {
   return `${colText(a.c.lo)}${rowText(a.r.lo)}:${colText(a.c.hi)}${rowText(a.r.hi)}`
 }
 
-export const sameSpan = (x: Span, y: Span) => x.lo.i === y.lo.i && x.hi.i === y.hi.i && x.lo.abs === y.lo.abs && x.hi.abs === y.hi.abs
+const sameSpan = (x: Span, y: Span) => x.lo.i === y.lo.i && x.hi.i === y.hi.i && x.lo.abs === y.lo.abs && x.hi.abs === y.hi.abs
 
 export const sameArea = (x: Area, y: Area) => sameSpan(x.r, y.r) && sameSpan(x.c, y.c)
 

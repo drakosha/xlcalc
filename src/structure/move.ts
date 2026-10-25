@@ -27,7 +27,7 @@ type Pair = [number, number]
  * One axis of a range [i, j] when the cells [s1, s2] move by d along it, the moved cells covering the
  * range's other axis; 'ref' when the range lies in the overwritten cells.
  */
-export function moveSpan(i: number, j: number, s1: number, s2: number, d: number): Pair | 'ref' {
+function moveSpan(i: number, j: number, s1: number, s2: number, d: number): Pair | 'ref' {
   const d1 = s1 + d
   const d2 = s2 + d
   const inS = (x: number) => x >= s1 && x <= s2
@@ -51,7 +51,7 @@ export function moveSpan(i: number, j: number, s1: number, s2: number, d: number
 }
 
 /** A range [i, j] with an end among the overwritten cells [d1, d2] sheds them, unless it holds them all. */
-export function overwrite(i: number, j: number, d1: number, d2: number): Pair {
+function overwrite(i: number, j: number, d1: number, d2: number): Pair {
   if (d1 >= i && d2 <= j) return [i, j]
   return [i >= d1 && i <= d2 ? d2 + 1 : i, j >= d1 && j <= d2 ? d1 - 1 : j]
 }
