@@ -53,6 +53,8 @@ export interface SheetContext extends FileNames {
   string(s: string): number
   /** Text values as inline strings (`t="inlineStr"`), not through the shared strings: a file written over another keeps its table as it is. */
   inline?: boolean
+  /** The cell metadata index (`cm`) that marks a dynamic array formula: 1, the writer's metadata, or the original file's. */
+  dynamicMark?: number
   issues: Issues
   mode: 'formulas' | 'values'
   /** The sheet's cells of the result, when the file stores values of formulas. */
@@ -216,7 +218,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const layer = layerOf(sheet)
   const layerXf = layer ? numberLooks(sheet, layer, lined, sAttr) : null
   const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
-    const cm = dynamic ? ' cm="1"' : ''
+    const cm = dynamic ? ` cm="${ctx.dynamicMark ?? 1}"` : ''
     if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
     const x = valueXml(v, ctx, where(addr), !f)
     return `<c r="${addr}"${sAttr(addr, c)}${x.t}${cm}>${f}${x.v}</c>`

@@ -16,7 +16,8 @@ export async function zip(files: ({ name: string; data: Uint8Array } | EntryReco
   for (const [k, f] of files.entries()) {
     if (!('data' in f)) {
       // the entry's own bytes, its central record pointing at where they now lie
-      const dir = f.central.slice()
+      // a copy of its own: a Node Buffer's slice shares the file's bytes
+      const dir = new Uint8Array(f.central)
       new DataView(dir.buffer).setUint32(42, offset, true)
       parts.push(f.local)
       central.push(dir)

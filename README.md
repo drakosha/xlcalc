@@ -33,6 +33,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
 | all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 596 KB (221) |
 | `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 221 KB (82) |
+| `xlcalc/xlsx/keep` | `openKept`, `writeKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 260 KB (96) |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 30 KB (11), its worker 643 KB (219) |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
 | `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Find over a host's text, sort order | 50 KB (19) |
@@ -41,7 +42,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/locales/ru-RU` | ru-RU, loaded once by `registerLocale(ruRU)`; en-US is built in | 105 KB (16) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
-`xlcalc/xlsx`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text` and `xlcalc/contract` do not load the engine.
+`xlcalc/xlsx`, `xlcalc/xlsx/keep`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text` and `xlcalc/contract` do not load the engine.
 
 ## Quick start
 
@@ -170,7 +171,7 @@ Workbooks and formulas: [Formulas](docs/formulas.md), [Functions](docs/functions
 
 Sessions and grids: [Sessions](docs/sessions.md), [Rendering a grid](docs/grid.md), [Editing a grid](docs/edits.md), [Cell entry](docs/entry.md), [Batch changes and queries](docs/live-books.md), [Live objects](docs/live-objects.md), [Structure operations](docs/structure.md), [Conditional formats](docs/conditional-formats.md), [Data validation](docs/validation.md), [Outlines](docs/outline.md), [Addresses and formula text](docs/addresses.md).
 
-Values, locales, files and threads: [Number formats and displayed text](docs/formats.md), [Locales](docs/locale.md), [Reading and writing xlsx](docs/xlsx.md), [Asynchronous and threaded computation](docs/async.md).
+Values, locales, files and threads: [Number formats and displayed text](docs/formats.md), [Locales](docs/locale.md), [Reading and writing xlsx](docs/xlsx.md), [Writing over the original file](docs/xlsx-keep.md), [Asynchronous and threaded computation](docs/async.md).
 
 The project: [Limitations](docs/limitations.md), [Development](docs/development.md), [formula.js against Excel](docs/coverage-formulajs.md), [Range and lookup caches](docs/cache.md), [Numerical stability of statistical moments](docs/statistics.md).
 
