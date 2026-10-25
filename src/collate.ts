@@ -5,7 +5,27 @@
  * (QuickJS, for example) the order falls back to code units of the lower-cased strings.
  */
 export const textOrder = (tag: string): ((a: string, b: string) => number) =>
-  typeof Intl !== 'undefined' ? new Intl.Collator(tag, { sensitivity: 'accent' }).compare : (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0)
+  typeof Intl !== 'undefined' ? withSoftHyphens(new Intl.Collator(tag, { sensitivity: 'accent' }).compare) : (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0)
+
+const SOFT_HYPHEN = '\u00ad'
+
+/**
+ * An order that tells apart texts the collator takes as equal but for soft hyphens (U+00AD), which it ignores and Excel's
+ * `=` does not (the set `low-values-held`: `"a"` and `"a"` with one are not equal): their parts between the hyphens in
+ * turn, then the text of fewer parts first.
+ */
+function withSoftHyphens(compare: (a: string, b: string) => number): (a: string, b: string) => number {
+  return (a, b) => {
+    const c = compare(a, b)
+    if (c !== 0 || (!a.includes(SOFT_HYPHEN) && !b.includes(SOFT_HYPHEN))) return c
+    const [x, y] = [a.split(SOFT_HYPHEN), b.split(SOFT_HYPHEN)]
+    for (let i = 0; i < x.length && i < y.length; i++) {
+      const d = compare(x[i], y[i])
+      if (d !== 0) return d
+    }
+    return x.length - y.length
+  }
+}
 
 /** en-US's order of text: Latin before Cyrillic, as Excel en-US sorts. */
 export const collator = { compare: /* @__PURE__ */ textOrder('en-US') }

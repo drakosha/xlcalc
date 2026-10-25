@@ -222,13 +222,17 @@ function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
     else if ((b = rules.critBool(rest)) !== null) c = { op, kind: 'bool', b }
     else {
       const re = op === '=' || op === '<>' ? wildMatcher(rest) : null
-      c = re ? { op, kind: 'wild', re } : { op, kind: 'str', s: rest.toLowerCase() }
+      c = re ? { op, kind: 'wild', re } : { op, kind: 'str', s: lowered(rest) }
     }
   }
   return c
 }
 
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
+
+/** Text as a criterion's equality takes it: in lower case, é as one code point or as e and an accent alike, as Excel's COUNTIF counts them (the set `low-values-held`). */
+const lowered = (s: string) => (NON_ASCII.test(s) ? s.normalize('NFC') : s).toLowerCase()
+const NON_ASCII = /[^\x00-\x7f]/
 
 /** A text criterion over texts already in lower case: a range's kept ones (`select`). */
 interface Lowered {
@@ -270,7 +274,7 @@ export function matches(v: CritValue, c: Crit | Lowered, rules: CritRules = EN_C
     case 'str':
     case 'low':
       if (typeof v !== 'string') return c.op === '<>'
-      return textHolds(c, c.kind === 'str' ? v.toLowerCase() : v, rules)
+      return textHolds(c, c.kind === 'str' ? lowered(v) : v, rules)
   }
 }
 
@@ -292,7 +296,7 @@ export function lowerOf(flat: readonly CritValue[]): [Lower, number] {
     const v = flat[i]
     if (typeof v !== 'string') continue
     let low = seen.get(v)
-    if (low === undefined) seen.set(v, (low = v.toLowerCase()))
+    if (low === undefined) seen.set(v, (low = lowered(v)))
     out[i] = low
   }
   return [out, seen.size]
@@ -305,7 +309,7 @@ const equalityKey = (x: string | number | boolean): string => (typeof x === 'str
 function eqKey(v: CritValue, rules: CritRules): string | null {
   if (typeof v === 'string') {
     const n = rules.cellNumber(v)
-    return equalityKey(n === null ? v.toLowerCase() : n)
+    return equalityKey(n === null ? lowered(v) : n)
   }
   return typeof v === 'number' || typeof v === 'boolean' ? equalityKey(v) : null
 }

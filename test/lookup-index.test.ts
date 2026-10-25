@@ -95,7 +95,8 @@ describe.each(['closures', 'eval'] as const)('lookup cache lifetime, %s', (execu
     try {
       // Misses warm the text indexes even when the following matches are near the start.
       for (let i = 0; i < 4; i++) s.setCells([{ sheet: 'Q', cell: 'A1', input: { value: `absent ${i}` } }])
-      for (let repeat = 0; repeat < 2; repeat++) for (const [key, first, last] of [['alpha', 1, 2], ['É', 3, 4], ['e\u0301', 3, 4], ['e', 5, 5], ['Ё', 6, 6], ['е', 7, 7], ['Й', 8, 8], ['и', 9, 9], ['', 13, 13]] as const) {
+      // é as one code point and as e with an accent are two texts to an exact lookup, as to Excel's MATCH (the set low-values-held)
+      for (let repeat = 0; repeat < 2; repeat++) for (const [key, first, last] of [['alpha', 1, 2], ['É', 3, 3], ['e\u0301', 4, 4], ['e', 5, 5], ['Ё', 6, 6], ['е', 7, 7], ['Й', 8, 8], ['и', 9, 9], ['', 13, 13]] as const) {
         s.setCells([{ sheet: 'Q', cell: 'A1', input: { value: key } }])
         const v = s.getCells('Q', 'B1:F1')
         expect([v.B1.value, v.C1.value, v.D1.value, v.E1.value, v.F1.value]).toEqual([first, last, first, first, first])
