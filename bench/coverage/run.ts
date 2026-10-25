@@ -18,7 +18,7 @@
  *   npx tsx bench/coverage/run.ts spill X    the spill cases of spill/X.ts into test/excel/spill/X.json (test: test/spill-excel.test.ts)
  *   npx tsx bench/coverage/run.ts display X [ru|T]   cells shown by display/X.ts into test/excel/display/[ru-RU/ or T/]X.json (test: test/display-excel.test.ts)
  *   npx tsx bench/coverage/run.ts xlsx X     the xlsx subpath through Excel (roundtrip | saved | colors | formats | intersect) into test/excel/xlsx/ (test: test/xlsx-excel.test.ts)
- *   npx tsx bench/coverage/run.ts keep X     writing over the original file through Excel (made | predict | open | struct-predict | struct) into test/excel/keep/ (test: test/xlsx-keep-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts keep X     writing over the original file through Excel (made | predict | open | struct-predict | struct | struct-open-predict | struct-open) into test/excel/keep/ (test: test/xlsx-keep-excel.test.ts)
  *   npx tsx bench/coverage/run.ts workbook X   book-level features of workbook/X.ts into test/excel/workbook/X.json (test: test/workbook-excel.test.ts)
  *   npx tsx bench/coverage/run.ts tables X [ru|T]   tables and structured references of tables/X.ts into test/excel/tables/[ru-RU/ or T/]X.json (test: test/tables-excel.test.ts)
  *   npx tsx bench/coverage/run.ts parts X    notes, hyperlinks and frozen panes of parts/X.ts into test/excel/parts/X.json and X/ (test: test/sheet-parts-excel.test.ts)
@@ -327,7 +327,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | entry set [ru|<tag>] | cond set | valid set [ru] | hidden set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | ui set [ru|<tag>] | xlsx roundtrip|saved|colors|formats|intersect | keep made|predict|open|struct-predict|struct')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | entry set [ru|<tag>] | cond set | valid set [ru] | hidden set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | ui set [ru|<tag>] | xlsx roundtrip|saved|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
