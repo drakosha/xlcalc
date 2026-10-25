@@ -72,6 +72,23 @@ describe('xlsx: sheet names Excel would not take (x-xlsx-16)', () => {
     }
   })
 
+  it('a hyperlink\'s location on the sheet follows its new name, as a formula\'s reference does (link-repair)', async () => {
+    const locations = ['History!A1', "'history'!B2:C3", "'History'!N", 'History!A1:History!B2', 'History!#REF!', 'Other!A1', 'A1', 'N']
+    const rows = locations.map((_, i) => `<row r="${i + 1}"><c r="A${i + 1}"><v>${i}</v></c></row>`).join('')
+    const links = locations.map((l, i) => `<hyperlink ref="A${i + 1}" location="${l}"/>`).join('')
+    const r = await read({ sheets: [{ name: 'History', body: one(1) }, { name: 'Other', body: `<sheetData>${rows}</sheetData><hyperlinks>${links}</hyperlinks>` }] })
+    expect(Object.values(r.book.sheets[1].cells).map((c) => c.link?.location)).toEqual([
+      "'History (2)'!A1",
+      "'History (2)'!B2:C3",
+      "'History (2)'!N",
+      "'History (2)'!A1:'History (2)'!B2",
+      "'History (2)'!#REF!",
+      'Other!A1',
+      'A1',
+      'N',
+    ])
+  })
+
   it('a reference to a duplicate name goes to the first sheet with it, which keeps its name', async () => {
     const r = await read({ sheets: [{ name: 'S', body: one(1) }, { name: 's', body: one(2) }, { name: 'U', body: '<sheetData><row r="1"><c r="A1"><f>s!A1</f></c></row></sheetData>' }] })
     expect(namesOf(r)).toEqual(['S', 's (2)', 'U'])
