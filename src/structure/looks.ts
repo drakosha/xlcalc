@@ -8,6 +8,7 @@ import type { BookInput, CellInput, StructureOp } from '../contract.js'
 import { edited, emptyLayer, LookTable, type Layer } from '../looks/layer.js'
 import { shifted } from '../looks/move.js'
 import { expanded, hasLook, hasLooks, layerOf, withLayer } from '../looks/sheet.js'
+import { sheetIndex } from './rewrite.js'
 import { sheetKey } from '../syntax.js'
 import { tableKey, tablesOf } from '../tables/model.js'
 import { readAddress } from '../model.js'
@@ -24,7 +25,7 @@ import { pasteOf } from './writes.js'
 function looksRegions(book: BookInput, op: StructureOp): Map<number, Rect[]> {
   const out = new Map<number, Rect[]>()
   if (!book.sheets.some(hasLooks) || typeof op !== 'object' || op === null) return out
-  const index = (name: unknown) => (typeof name === 'string' ? book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name)) : -1)
+  const index = (name: unknown) => (typeof name === 'string' ? sheetIndex(book, name) : -1)
   const add = (s: number, x: Rect | null) => {
     if (s >= 0 && x && hasLooks(book.sheets[s])) out.set(s, [...(out.get(s) ?? []), x])
   }

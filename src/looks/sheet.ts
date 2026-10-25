@@ -82,6 +82,17 @@ function withoutLooks(sheet: SheetInput): SheetInput {
   return out as unknown as SheetInput
 }
 
+/**
+ * A sheet with one field of it set to `value`, the field dropped when `value` is undefined. Its place is kept (dropped
+ * in place), as a book's field order reaches results as it is given; `last` puts it after the others instead, as the
+ * places that read the field out of the sheet first write it back.
+ */
+export function withField<S extends object, K extends keyof S & string>(s: S, key: K, value: S[K] | undefined, last?: boolean): S {
+  const rest = { ...s }
+  delete (rest as Record<string, unknown>)[key]
+  return value === undefined ? rest : last ? ({ ...rest, [key]: value } as S) : ({ ...s, [key]: value } as S)
+}
+
 /** A layer's list in the one form, known as written in it (the layer read already). */
 export function listOf(layer: Layer): LookRange[] {
   const list = writeRanges(layer)

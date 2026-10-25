@@ -12,6 +12,7 @@ import { anyMeets, cornerOf, hi, inside, LIMIT, lo, shiftRect, subtract, withBou
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
 import { copyTransform, deleteSpan, formulaAt, growSpan } from '../structure/transform.js'
+import { withField } from '../looks/sheet.js'
 import { sheetKey } from '../syntax.js'
 import { anchorOf, areasOf, rangeText } from './rules.js'
 
@@ -207,7 +208,6 @@ export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t:
     if (k === tk && pasted.length) rules = joined([...(rules ?? []), ...pasted], s.name, sheets)
     if (rules === s.validations) return s
     rules = rules?.map((v) => tidy(v, s.name, sheets))
-    const { validations: _, ...rest } = s
-    return rules?.length ? { ...rest, validations: rules } : rest
+    return withField(s, 'validations', rules?.length ? rules : undefined, true)
   })
 }

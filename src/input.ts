@@ -10,7 +10,7 @@ import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
 import { checkBookLocale, optionalLocale } from './locale/load.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
-import type { Axis } from './structure/area.js'
+import { LINES, type Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { hasLooks, lookAlone, looksTaken } from './looks/sheet.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
@@ -492,7 +492,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       return o as unknown as LayoutEdit
     }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
-    const lines = axis === 'r' ? 'rows' : 'columns'
+    const lines = LINES[axis]
     onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations or outline)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
@@ -506,6 +506,14 @@ export function checkSheet(v: unknown, sheetIndex: (name: string) => number | un
   const i = sheetIndex(checkString(v, path))
   if (i === undefined) throw new InputError(path, `unknown sheet ${JSON.stringify(v)}`)
   return i
+}
+
+/** A sheet of a book, by its name in any case, as the book spells it; `InputError` naming `path` when it has none. */
+export function checkSheetOf<S extends { name: string }>(book: { sheets: S[] }, v: unknown, path: string): S {
+  const name = checkString(v, path)
+  const sheet = book.sheets.find((s) => sheetKey(s.name) === sheetKey(name))
+  if (!sheet) throw new InputError(path, `unknown sheet ${JSON.stringify(v)}`)
+  return sheet
 }
 
 export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext | undefined {

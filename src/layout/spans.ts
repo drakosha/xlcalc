@@ -72,6 +72,9 @@ export function firstEnding(ls: Line<unknown>[], i: number): number {
 /** The entry of line `i` of a map. */
 export const lineAt = <T>(map: Record<string, T> | undefined, axis: Axis, i: number): T | undefined => entryAt(lines(map, axis), i)
 
+/** A line's entry hidden as Excel takes it: marked hidden, or of size 0 (a row's its height, a column's its width). */
+export const isHidden = (e: { hidden?: boolean; height?: number; width?: number }): boolean => e.hidden === true || e.height === 0 || e.width === 0
+
 /** The entry with the patch applied; undefined when nothing is left. */
 function patched<T extends object>(entry: T | undefined, patch: LinePatch<T>): T | undefined {
   const out: Record<string, unknown> = { ...entry }

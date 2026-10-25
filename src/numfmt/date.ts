@@ -49,6 +49,15 @@ export function minutes(toks: Tok[], i: number): boolean {
   return prev === 'h' || (j > 0 && (subs.has(j) || unit(toks[j]) === 's'))
 }
 
+/**
+ * What the tokens of a format's section show a number as: a date where a day, a month or a year leads its date tokens,
+ * a time of day alone where they are hours, minutes or seconds (with elapsed time and `AM/PM`); undefined for neither.
+ */
+export function dayOrTime(toks: Tok[]): 'date' | 'time' | undefined {
+  const day = (t: Tok, i: number) => t.t === 'date' && !(t.s[0] === 'h' || t.s[0] === 's' || (t.s[0] === 'm' && minutes(toks, i)))
+  return toks.some(day) ? 'date' : toks.some((t) => t.t === 'date' || t.t === 'elapsed' || t.t === 'ampm') ? 'time' : undefined
+}
+
 export function formatDate(v: number, sec: Section, style: Style, names: Names): string | null {
   const { toks } = sec
   const epoch = style.epoch ?? 0
