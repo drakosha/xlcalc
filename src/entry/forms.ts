@@ -8,7 +8,7 @@
  */
 import type { NumberFormat } from '../contract.js'
 import type { Locale } from '../locale/types.js'
-import { BUILTIN_MONEY, builtinIn, EN_BUILTIN, EN_CODES, isBuiltin } from '../numfmt.js'
+import { BUILTIN_MONEY, builtinIn, EN_BUILTIN, enCode, EN_CODES, isBuiltin } from '../numfmt.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import type { Form } from './read.js'
 
@@ -61,7 +61,7 @@ export function formatAfter(form: Form, typed: NumberFormat | undefined, cell: N
 /** Whether a format shows text (`@`) or percent, by its first section. */
 export function shows(format: NumberFormat | undefined, what: 'text' | 'pct'): boolean {
   if (format === undefined) return false
-  const code = typeof format === 'number' ? EN_BUILTIN[format] : format
+  const code = enCode(format)
   const toks: Tok[] = parseFormat(code, EN_CODES)?.[0]?.toks ?? []
   return toks.some((t) => t.t === what)
 }

@@ -11,7 +11,7 @@ import { checkCellValue, checkEntryTextOptions } from '../input.js'
 import { checkString } from '../input/basic.js'
 import { DEFAULT_LOCALE } from '../locale/registry.js'
 import { displayRules, type Rules } from '../locale/rules.js'
-import { EN_BUILTIN, EN_CODES, generalText } from '../numfmt.js'
+import { enCode, EN_CODES, generalText } from '../numfmt.js'
 import { dayOrTime } from '../numfmt/date.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
 import { choose, kind } from '../numfmt/select.js'
@@ -23,7 +23,7 @@ const END = 2_958_466
 /** What a number's section of its format shows it as: a date (a day, maybe a time), a time alone, a percent, a number. */
 function shownAs(n: number, format: NumberFormat | undefined): 'date' | 'time' | 'percent' | 'number' {
   if (format === undefined) return 'number'
-  const sec = choose(parseFormat(typeof format === 'number' ? EN_BUILTIN[format] : format, EN_CODES) ?? [], n)?.sec
+  const sec = choose(parseFormat(enCode(format), EN_CODES) ?? [], n)?.sec
   if (!sec) return 'number'
   if (kind(sec.toks) === 'date') return dayOrTime(sec.toks) === 'date' ? 'date' : 'time'
   return sec.toks.some((t: Tok) => t.t === 'pct') ? 'percent' : 'number'
