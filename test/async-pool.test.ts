@@ -185,7 +185,8 @@ describe('in threads', () => {
 
   it('maxHeapMb without limits: arrays of more values than the heap has 64 bytes, spills of more than it has KB give CalcError', async () => {
     const p = await made({ threads: 1, maxHeapMb: 64 })
-    const array = await fails(p.compute(one('SUM(SEQUENCE(1048577))')))
+    // 1,049,600 values in 1,024 rows: more rows than a sheet has are #VALUE! first, as in Excel
+    const array = await fails(p.compute(one('SUM(SEQUENCE(1024,1025))')))
     expect([array.limit, array.max]).toEqual(['cells', 1_048_576])
     const spill = await fails(p.compute(one('SEQUENCE(40000,2)')))
     expect([spill.code, spill.limit, spill.max, spill.size, spill.cell]).toEqual(['limit', 'spill', 65_536, 80_000, { sheet: 'S', cell: 'A1' }])
@@ -194,7 +195,7 @@ describe('in threads', () => {
 
   it("a call's limits keep the bounds the heap gives where they do not give their own", async () => {
     const p = await made({ threads: 1, maxHeapMb: 64 })
-    const array = await fails(p.compute(one('SUM(SEQUENCE(2000000))'), { limits: { formulas: 1_000 } }))
+    const array = await fails(p.compute(one('SUM(SEQUENCE(2000,1000))'), { limits: { formulas: 1_000 } }))
     expect([array.code, array.limit, array.max]).toEqual(['limit', 'cells', 1_048_576])
     const s = await p.createSession(one('1'), { clock: CLOCK, limits: { formulas: 1_000 } })
     const spill = await fails(s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SEQUENCE(40000,2)' } }]))
@@ -211,12 +212,12 @@ describe('in threads', () => {
     expect((await fails(p.compute(one('SEQUENCE(200000,2)')))).max).toBe(393_216)
     // a host that raises cells keeps the spill's bound, one that gives spill sets it
     const raised = await made({ threads: 1, maxHeapMb: 64, limits: { cells: 10_000_000 } })
-    expect((await raised.compute(one('SUM(SEQUENCE(1100000))'), { clock: CLOCK })).sheets[0].cells.A1.value).toBe(605_000_550_000)
+    expect((await raised.compute(one('SUM(SEQUENCE(1100,1000))'), { clock: CLOCK })).sheets[0].cells.A1.value).toBe(605_000_550_000)
     const kept = await fails(raised.compute(one('SEQUENCE(40000,2)')))
     expect([kept.limit, kept.max]).toEqual(['spill', 65_536])
     const given = await made({ threads: 1, maxHeapMb: 64, limits: { spill: 100_000 } })
     expect((await given.compute(one('SEQUENCE(40000,2)'), { clock: CLOCK })).hash).toBe(compute(one('SEQUENCE(40000,2)'), { clock: CLOCK }).hash)
-    expect((await fails(given.compute(one('SUM(SEQUENCE(1048577))')))).max).toBe(1_048_576)
+    expect((await fails(given.compute(one('SUM(SEQUENCE(1024,1025))')))).max).toBe(1_048_576)
   }, 30_000)
 
   it('a pool of 384 MB opens a running total over 10,000 rows: a sum of one range is not made whole', async () => {
