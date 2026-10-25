@@ -12,7 +12,7 @@ import { formatAddress } from '../src/model.js'
 import { synthBook } from '../src/synth.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
-import { cellsOf, expandBook } from './looks-book.js'
+import { cellsOf, expandBook, seeded } from './looks-book.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 afterAll(closeCalcs)
@@ -204,15 +204,6 @@ describe.each(['closures', 'eval'] as const)('edits of a book with looks and of 
     }, 120_000)
   })
 })
-
-/** A seeded generator of numbers below `n`. */
-function seeded(seed: number): (n: number) => number {
-  let x = seed
-  return (n) => {
-    x = (Math.imul(x, 1103515245) + 12345) & 0x7fffffff
-    return x % n
-  }
-}
 
 /** A random edit of the book of patterns: of looks, of values over them, of its lines and ranges, an undo or a redo. */
 function randomEdit(rnd: (n: number) => number): [string, (s: AsyncSession) => Promise<unknown>] {
