@@ -58,7 +58,7 @@ import { fitEdits } from './layout/fit.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress, placeOf, placeParts, readAddress } from './model.js'
-import { buildResult, cellAt, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
+import { buildResult, cellAt, cellsIn, clockOptions, clockSerial, spillFields, stateHash } from './result.js'
 import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
@@ -171,7 +171,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const unlent = (cells: object) => !lent.has(cells)
   /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are; `more`, the options of its held values. */
-  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution, own, ...more })
+  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { ...clockOptions(clock), externals, execution, own, ...more })
   let state: EngineState | null = yield* build(book, undefined, { cached: o.cached })
   let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one

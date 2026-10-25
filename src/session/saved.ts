@@ -24,7 +24,7 @@ import { reachLayout } from './extent.js'
 import { sheetLines } from '../layout/lines.js'
 import { displayRules } from '../locale/rules.js'
 import { formatAddress, MAX_COLS, parseAddress, readAddress } from '../model.js'
-import { clockSerial } from '../result.js'
+import { clockOptions } from '../result.js'
 import { bookLooks, type Looks } from '../shown.js'
 import { hasCell, parseRange, type Rect } from '../structure/area.js'
 import { quoteSheet, sheetKey } from '../syntax.js'
@@ -177,7 +177,7 @@ function stepBack(f: Found, p: Place): Place | null {
 function valuesState(f: Found): EngineState {
   if (f.state) return f.state
   const { book, result } = f
-  const state = createState({ ...book, sheets: book.sheets.map((x) => ({ ...x, cells: {} })) }, { now: clockSerial(result.clock), seed: result.clock.seed })
+  const state = createState({ ...book, sheets: book.sheets.map((x) => ({ ...x, cells: {} })) }, clockOptions(result.clock))
   const at = { r: 0, c: 0 }
   result.sheets.forEach(({ cells }, s) => {
     const data = state.ctx.sheets[s]

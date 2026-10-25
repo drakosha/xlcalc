@@ -34,7 +34,7 @@ import { checkString } from './input/basic.js'
 import { localeBooleans } from './locale/registry.js'
 import { displayRules } from './locale/rules.js'
 import { columnPoints, room } from './numfmt.js'
-import { clockSerial } from './result.js'
+import { clockOptions } from './result.js'
 import { FUNCTIONS } from './functions.js'
 import { prepareNames } from './names.js'
 import { sheetKey, validate, validateName as checkName } from './syntax.js'
@@ -124,7 +124,7 @@ export const debugGeneratedCode = /* @__PURE__ */ strict(function debugGenerated
   const o = checkComputeOptions(opts)
   book = checkBook(book)
   const clock = o.clock ?? currentClock()
-  return debugSource(createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: 'eval' }))
+  return debugSource(createState(book, { ...clockOptions(clock), externals: o.externals, execution: 'eval' }))
 })
 
 /**

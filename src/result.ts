@@ -35,6 +35,9 @@ export const outCell = (v: V): CellValue => outValue(toCellValue(v))
 /** A cell's value as a result shows it. */
 export const cellValue = (state: EngineState, s: number, r: number, c: number): CellValue => outCell(valueAt(state, s, r, c))
 
+/** The engine options a clock gives: its moment as a serial number, and its seed. */
+export const clockOptions = (clock: Clock) => ({ now: clockSerial(clock), seed: clock.seed })
+
 /** A spilled formula's range and the value of its unstored cells. */
 const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: cornersText(x), spillFill: outCell(x.fills[0].v) } : { spill: cornersText(x) })
 

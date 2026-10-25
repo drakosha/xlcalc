@@ -12,7 +12,7 @@ import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { say } from '../locale/messages.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
-import { clockSerial } from '../result.js'
+import { clockOptions } from '../result.js'
 import { areaText } from './area.js'
 import { looksTaken } from '../looks/sheet.js'
 import { linesMoved, overLooks } from './looks.js'
@@ -103,7 +103,7 @@ function lazyValues(book: BookInput): ValuesIn {
   return (sheet, rect) => {
     if (!values) {
       const clock = currentClock()
-      values = stateValues(createState(book, { now: clockSerial(clock), seed: clock.seed }))
+      values = stateValues(createState(book, clockOptions(clock)))
     }
     return values(sheet, rect)
   }
