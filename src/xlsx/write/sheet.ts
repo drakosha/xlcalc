@@ -151,7 +151,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       const { row, col } = parseAddress(addr)
       look = sheetLook.look(row, col, c)
     }
-    const xf = look ? styles.xf(look.style, look.numberFormat) : 0
+    const xf = styles.xf(look?.style, look?.numberFormat)
     return xf ? ` s="${xf}"` : ''
   }
   // `cm` marks a dynamic array formula
@@ -215,7 +215,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   for (const [lo, hi] of rowLines) for (let r = lo; r <= hi; r++) rowsUsed.add(r)
   const rowAttrs = new Map<number, string>()
   for (const [lo, hi, e] of rowLines) {
-    const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
+    const xf = styles.xf(e.style, e.numberFormat)
     // a height Excel fitted is written without customHeight, as Excel writes it
     const attrs = (e.height !== undefined ? ` ht="${e.height}"${e.bestFit ? '' : ' customHeight="1"'}` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '') + outlineAttrs(e)
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
@@ -241,7 +241,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const maxCol = Math.max(extent.c2, looked?.c2 ?? 0)
   const dim = any ? `${indexToCol(minCol)}${rowLo + 1}:${indexToCol(maxCol)}${rowHi + 1}` : 'A1'
   const cols = colLines.map(([lo, hi, e]) => {
-    const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
+    const xf = styles.xf(e.style, e.numberFormat)
     const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${DEFAULT_WIDTH}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
