@@ -15,7 +15,6 @@ export const DEFAULT_LOCALE = 'en-US'
 export const PACKAGE_LOCALES: readonly string[] = ['en-US', 'ru-RU']
 
 const loaded = new Map<string, Locale>([[DEFAULT_LOCALE, EN_US]])
-/** The locales `registerLocale` loaded; en-US, built in, is never among them (`registerLocale` refuses its tag). */
 const added = new Map<string, Locale>()
 const listeners = new Set<(locale: Locale) => void>()
 
@@ -29,7 +28,7 @@ export function addLocale(locale: Locale): void {
   for (const f of listeners) f(locale)
 }
 
-/** The locales `registerLocale` loaded, in the order they were loaded; en-US is not among them (the pool sends a thread only those). */
+/** The locales `registerLocale` loaded, in the order they were loaded and without en-US, which is built in (the pool sends a thread only those). */
 export const addedLocales = (): readonly Locale[] => [...added.values()]
 
 /** Hears every locale loaded from now on; the answer stops it. */

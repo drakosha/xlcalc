@@ -52,10 +52,7 @@ const byLength = (xs: readonly string[]) => [...new Set(xs)].sort((a, b) => b.le
 const swap = (xs: [string, string][]) => xs.map(([a, b]): [string, string] => [b, a])
 const same = (xs: readonly string[]) => xs.map((x): [string, string] => [x, x])
 
-/**
- * Both sides of a (checked) locale. Local text also reads English function names, TRUE/FALSE and error texts; `own`
- * reads the locale's own error texts alone (`#N/A` does not read in ru-RU, whose text is `#Н/Д`).
- */
+/** Both sides of a (checked) locale. Local text also reads English function names, TRUE/FALSE and error texts. */
 export function sides(loc: Locale): Sides {
   const local: Syntax = { decimal: loc.decimalSeparator, list: loc.listSeparator, arrayColumn: loc.arrayColumnSeparator, arrayRow: loc.arrayRowSeparator }
   const errors = LOCALE_ERRORS.map((e): [string, string] => [e, loc.errors[e] ?? e])

@@ -584,8 +584,7 @@ export function checkEntryWidthOptions(v: unknown, path = 'opts'): EntryWidthOpt
 }
 
 /** The locale, date system and moment of `entryText`'s options (unchecked there), as entry options `checkEntryOptions` checks. */
-export const entryOptionsOf = (o: EntryTextOptions): EntryOptions =>
-  ({ ...(o.locale !== undefined ? { locale: o.locale } : {}), ...(o.dateSystem !== undefined ? { dateSystem: o.dateSystem } : {}), ...(o.now !== undefined ? { now: o.now } : {}) })
+export const entryOptionsOf = (o: EntryTextOptions): EntryOptions => ({ ...(o.locale !== undefined ? { locale: o.locale } : {}), ...(o.dateSystem !== undefined ? { dateSystem: o.dateSystem } : {}), ...(o.now !== undefined ? { now: o.now } : {}) })
 
 /** `entryText`'s and `needsApostrophe`'s options: the cell's number format, the book's locale and date system, the moment for a date without a year. */
 export function checkEntryTextOptions(v: unknown, path = 'opts'): EntryTextOptions {
