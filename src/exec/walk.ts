@@ -210,6 +210,19 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   // whose names the walk sees, and the names it is inside (their references without `$` move by the cell from A1)
   let scope = s
   const inside = new Set<NameDef>()
+  /**
+   * A definition's formula entered: at the global scope (a name's names are the global ones, its LET names its own), a
+   * name that goes through it to itself caught by `inside`. The walk's state is per call, so a throw leaves it as is.
+   */
+  const enter = <R>(d: NameDef, visit: () => R): R => {
+    const outer: [T[], Ast[], number] = [uses, bound, scope]
+    ;[uses, bound, scope] = [[], [], -1]
+    inside.add(d)
+    const out = visit()
+    inside.delete(d)
+    ;[uses, bound, scope] = outer
+    return out
+  }
   // a reference's rectangle: in a name's formula, its relative bounds moved by the formula's cell
   const rect = (n: Extract<Ast, { k: 'ref' | 'ref3d' | 'xref' }>) => {
     const a = inside.size || ctx.origin ? relative(n.ref) : null
@@ -271,12 +284,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'name': {
         const d = resolve(n, scope)
         if (!d || inside.has(d)) return
-        const outer: [Ast[], number] = [bound, scope]
-        ;[bound, scope] = [[], -1]
-        inside.add(d)
-        on(d.ast)
-        inside.delete(d)
-        ;[bound, scope] = outer
+        enter(d, () => on(d.ast))
         return
       }
       case 'let': {
@@ -373,6 +381,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     if (n.k !== 'name') return false
     const d = resolve(n, scope)
     if (!d || inside.has(d)) return false
+    // entered at the formula's scope, without enter's switch to the global one: a linked name in it resolves as the formula's cell does
     inside.add(d)
     const out = closed(d.ast)
     inside.delete(d)
@@ -444,13 +453,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         if (!d) return b.value(E.NAME)
         // a name that uses itself, through other names or not
         if (inside.has(d)) return b.value(E.CYCLE)
-        const outer: [T[], Ast[], number] = [uses, bound, scope]
-        ;[uses, bound, scope] = [[], [], -1]
-        inside.add(d)
-        const code = go(d.ast, rangeOk)
-        inside.delete(d)
-        ;[uses, bound, scope] = outer
-        return code
+        return enter(d, () => go(d.ast, rangeOk))
       }
       case 'at':
         return value(b.at(go(n.a, true), r, c), n, rangeOk)
