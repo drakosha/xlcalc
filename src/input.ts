@@ -392,16 +392,19 @@ function checkCached(v: unknown, path: string): CachedValues {
   return o as unknown as CachedValues
 }
 
+/** The run fields the compute and session options both check, each with its checker. */
+const RUN_FIELDS: Record<string, (v: unknown, path: string) => void> = { cached: checkCached, clock: checkClock, limits: checkLimits, externals: checkExternals, execution: checkExecution, display: checkBoolean }
+
+/** The run fields `keys`, each checked when given, in the caller's own order (undo and the live clock stay with their calls). */
+const runFields = (o: Record<string, unknown>, path: string, keys: readonly string[]) => {
+  for (const k of keys) if (o[k] !== undefined) RUN_FIELDS[k](o[k], `${path}.${k}`)
+}
+
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
   onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits', 'cached'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
-  if (o.cached !== undefined) checkCached(o.cached, `${path}.cached`)
-  if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
-  if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
-  if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
-  if (o.execution !== undefined) checkExecution(o.execution, `${path}.execution`)
-  if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
+  runFields(o, path, ['cached', 'clock', 'limits', 'externals', 'execution', 'display'])
   return o as ComputeOptions
 }
 
@@ -410,19 +413,16 @@ export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
   onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo', 'cached'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
-  if (o.cached !== undefined) checkCached(o.cached, `${path}.cached`)
-  if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
+  runFields(o, path, ['cached', 'limits'])
   if (o.undo !== undefined) {
     const u = object(o.undo, `${path}.undo`, 'undo options such as { depth: 100, maxMb: 64 }')
     onlyKeys(u, `${path}.undo`, ['depth', 'maxMb'])
     if (u.depth !== undefined) checkNumber(u.depth, `${path}.undo.depth`, 0, 1_000_000, true)
     if (u.maxMb !== undefined) checkNumber(u.maxMb, `${path}.undo.maxMb`, 0, 1_000_000)
   }
-  if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
+  runFields(o, path, ['display'])
   if (o.live === true && o.clock !== undefined) throw new InputError(path, 'a live session takes its clock from the system: pass either live or clock')
-  if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
-  if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
-  if (o.execution !== undefined) checkExecution(o.execution, `${path}.execution`)
+  runFields(o, path, ['clock', 'externals', 'execution'])
   return o as SessionOptions
 }
 
