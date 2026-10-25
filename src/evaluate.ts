@@ -3,10 +3,11 @@
  * cells tracked. An array spills (`spill/place.ts`); when that changes cells already read, or frees cells an
  * array waits for, the formulas concerned are computed again in another round, until nothing changes.
  */
+import type { Arg } from './args.js'
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { EngineState, Formula } from './engine.js'
-import { due, located, paced, step, type Steps } from './exec/budget.js'
+import { ArraySizeError, due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress, placeOf, placeParts } from './model.js'
 import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
@@ -104,7 +105,7 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
       // out of a cycle's way, a formula holding a value drops it once the computation settles (a spill may close the cycle again)
       if (state.held.size && state.held.has(id)) state.outside.add(id)
       try {
-        const x = f.fn()
+        const x = answerOf(f)
         if (f.area) { array = true; v = fixed(state, f, x, t) }
         else if (isMany(x)) { array = true; v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t) }
         else {
@@ -138,6 +139,16 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
   }
   if (clocked) markVolatile(state)
   return moved
+}
+
+/** A formula's answer; an array of more values than one array holds (`allot`) is #VALUE!, as a function's (`args.ts`). */
+function answerOf(f: Formula): Arg {
+  try {
+    return f.fn()
+  } catch (e) {
+    if (e instanceof ArraySizeError) return E.VALUE
+    throw e
+  }
 }
 
 /** Formulas in a cycle or over one (computed after the others). */

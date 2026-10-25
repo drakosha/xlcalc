@@ -2,7 +2,10 @@
  * Array formulas of the old kind, from the review of 21.10: a copy of part of an area pastes each copied cell with its
  * own note, link, meta and looks, not the area's cell's (fix-u301). `editStructure` and the three kinds of session
  * give the same book, undo and redo it; the session's `getBook()` passes checkBook and its hash is a full computation's.
+ * And an array of more values than one JavaScript array holds is #VALUE! rather than the end of the process.
  */
+import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, editStructure, type BookInput, type Execution, type StructureOp } from '../src/index.js'
 import { checkBook } from '../src/input.js'
@@ -67,5 +70,16 @@ describe.each(EXECUTIONS)('a copy of part of an array formula of the old kind in
       expect(await s.getBook()).toEqual(after)
       await s.close()
     })
+  })
+})
+
+describe.each(EXECUTIONS)('an array of more values than one JavaScript array holds, %s', (execution) => {
+  // in a fresh process: before 25.10 V8 stopped it (`invalid table size`), from one formula of a book or typed in a session
+  it('is #VALUE! in its cell, and the process goes on', () => {
+    const child = fileURLToPath(new URL('./fixtures/array-size-child.ts', import.meta.url))
+    const out = JSON.parse(execFileSync(process.execPath, ['--import', 'tsx', child, execution], { encoding: 'utf8', timeout: 60_000 })) as { computed: unknown[]; typed: unknown[] }
+    const value = { error: 'VALUE' }
+    const expected = [value, value, value, value, value, value, value, 1048577]
+    expect(out).toEqual({ computed: expected, typed: expected })
   })
 })
