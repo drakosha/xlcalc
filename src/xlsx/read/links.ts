@@ -41,7 +41,7 @@ function cachedValue(e: { attrs: string; body: string | null }, where: string, i
   // text is text even when empty, as a cell's `<v/>` of an empty text result
   if (t === 'str' || t === 's' || t === 'inlineStr') return readText(raw)
   if (raw === '') return null
-  if (t === 'b') return raw === '1' || raw === 'true'
+  if (t === 'b') return flag(raw)
   if (t === 'e') {
     const code = ownEntry(ERRORS, readText(raw).trim())
     if (!code) issues.add('errorValue', { key: 'errorUnknown' }, { cell: where })
