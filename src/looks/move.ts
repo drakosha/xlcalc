@@ -7,7 +7,7 @@
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { LIMIT, shiftRect, type Axis, type Rect } from '../structure/area.js'
 import type { Geometry } from '../structure/geometry.js'
-import { edited, EMPTY, LayerBuilder, LookTable, NONE, patternOf, runAt, spansOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
+import { edited, EMPTY, LayerBuilder, LookTable, NONE, patternOf, runAt, sameLook, spansOf, type Layer, type Pattern, type RowsEdit } from './layer.js'
 
 /** A pattern's runs with `n` columns inserted before `at` (or `-n` deleted from `at`); `before`: the new columns take the look of column `at` − 1. */
 function shiftedRuns(p: Pattern, at: number, n: number, before: boolean): Pattern {
@@ -182,18 +182,11 @@ export function carried(layers: (Layer | undefined)[], g: Geometry): (Layer | un
   return out
 }
 
-/** A look's text that equal looks of two tables share. */
-const lookKey = (looks: LookTable, id: number) => {
-  if (id === NONE) return ''
-  const x = looks.list[id]
-  return `${x.style ?? '-'}|${typeof x.numberFormat}${x.numberFormat ?? ''}`
-}
-
 /** The runs of columns where two patterns (of tables `ta` and `tb`) give a cell other looks. */
 function differingRuns(pa: Pattern, ta: LookTable, pb: Pattern, tb: LookTable): number[] {
   const out: number[] = []
   for (const [c1, c2, a, b] of spansOf(pa, pb)) {
-    if (lookKey(ta, a) === lookKey(tb, b)) continue
+    if (sameLook(ta.list[a], tb.list[b])) continue
     const n = out.length
     if (n && out[n - 1] === c1 - 1) out[n - 1] = c2
     else out.push(c1, c2)
