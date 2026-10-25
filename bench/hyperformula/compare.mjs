@@ -2,6 +2,7 @@
 import { mkdirSync,writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { runChild } from '../run-child.mjs'
+import { median } from '../stats.mjs'
 const args=process.argv.slice(2),opt=(n,d)=>args.includes(n)?args[args.indexOf(n)+1]:d
 const roots=opt('--roots','').split(',').map(x=>resolve(x))
 if(roots.length<2)throw new Error('Pass --roots with compiled checkouts')
@@ -13,7 +14,6 @@ const run=(root,id,engine)=>runChild(new URL('./child.mjs',import.meta.url),[id,
  if(f.error)throw f.error
  if(f.received?.status==='ok')return f.received
  throw new Error(`${id}/${engine}: ${f.code}: ${JSON.stringify(f.received??f.stderr)}`)})
-const median=xs=>xs.sort((a,b)=>a-b)[Math.floor(xs.length/2)]
 for(const id of cases)for(const engine of ['xl-closures','xl-eval']){
  for(let trial=0;trial<5;trial++)for(let k=0;k<roots.length;k++){
   const root=roots[(trial+k)%roots.length],result=await run(root,id,engine)

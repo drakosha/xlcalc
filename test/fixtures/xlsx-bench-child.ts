@@ -12,9 +12,9 @@ const { readXlsx, writeXlsx } = (await import(libUrl('xlsx.js'))) as typeof impo
 const { formatAddress } = (await import(libUrl('model.js'))) as typeof import('../../src/model.js')
 import type { CellInput } from '../../src/contract.js'
 import type { XlsxSnapshot } from '../../src/xlsx.js'
+import { median } from '../../bench/stats.mjs'
 
 const gc = () => (globalThis as { gc?: () => void }).gc?.()
-const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]
 
 async function measure(snapshot: XlsxSnapshot) {
   const write: number[] = []

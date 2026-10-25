@@ -3,6 +3,7 @@
 // First the values of the synthetic data sheet alone, then the synthetic book with its formulas (values computed).
 import { createRequire } from 'node:module'
 import { hfInput, hfScalar, HF_OPTIONS, CLOCK as clock } from '../hyperformula/shared.mjs'
+import { median } from '../stats.mjs'
 import { load } from './pair.mjs'
 const [base, branch, hfDir] = process.argv.slice(2)
 const { HyperFormula } = createRequire(hfDir + '/package.json')('hyperformula')
@@ -59,7 +60,7 @@ function measure(list, cases) {
     // the rows of values each build gives, against HyperFormula's, outside the timer
     const hf = h && list.find(([n]) => n === 'HyperFormula')
     const checked = hf && what.includes('as values') ? list.filter(([n]) => n !== 'HyperFormula').map(([n, s]) => [n, x(s)]).filter(([, v]) => v !== NOT).map(([n, v]) => `${n} ${differing(v, h(hf[1]))}`) : []
-    console.log(`${what}: ${list.map(([n], i) => (ms[i].length ? `${n} ${f(ms[i].sort((a, b) => a - b)[4])} ms` : `${n} not measured`)).join(', ')}${checked.length ? ` (cells differing from HyperFormula: ${checked.join(', ')})` : ''}`)
+    console.log(`${what}: ${list.map(([n], i) => (ms[i].length ? `${n} ${f(median(ms[i]))} ms` : `${n} not measured`)).join(', ')}${checked.length ? ` (cells differing from HyperFormula: ${checked.join(', ')})` : ''}`)
   }
 }
 

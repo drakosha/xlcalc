@@ -119,5 +119,4 @@ export function measure(f) {
   return { value, wallMs, cpuMs: (usage.user + usage.system) / 1000 }
 }
 
-export const median = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)]
-export const p95 = (values) => [...values].sort((a, b) => a - b)[Math.ceil(values.length * 0.95) - 1]
+export { median, p95 } from '../stats.mjs'
