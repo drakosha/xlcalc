@@ -267,7 +267,7 @@ describe('rows across formatted columns in fewer cells than a rectangle holds, c
       if (what === 'a style set') expect(r.changes.map((c) => c.cell), what).toEqual(['B9', 'H22', 'C24', 'H28'])
       else expect(r.changes.map((c) => c.cell).sort(), what).toEqual(['B9', 'C24', ...crossings].sort())
       const back = s.undo()!
-      expect(back.cells.map((c) => c.cell), what).toEqual(['B9', 'C24', ...crossings])
+      expect(back.cells?.map((c) => c.cell), what).toEqual(['B9', 'C24', ...crossings])
     }
   })
 })
