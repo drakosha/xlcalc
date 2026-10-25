@@ -14,7 +14,7 @@ import type { Issues } from '../issues.js'
 import { X14_CF } from '../read/conditional.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree, type FileNames } from './formula.js'
-import type { StyleWriter } from './styles.js'
+import type { CellFormats } from './styles.js'
 import { rgb } from './xml.js'
 
 const X14 = 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main'
@@ -26,7 +26,7 @@ const NEW_SETS = new Set(['3Stars', '3Triangles', '5Boxes'])
 const TEXT_OPERATOR: Record<string, string> = { containsText: 'containsText', notContainsText: 'notContains', beginsWith: 'beginsWith', endsWith: 'endsWith' }
 
 export interface ConditionalContext extends FileNames {
-  styles: StyleWriter
+  styles: CellFormats
   issues: Issues
 }
 

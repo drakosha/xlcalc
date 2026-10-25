@@ -314,7 +314,7 @@ The messages are part of the locale's module, alongside its other messages ([doc
 
 ## Writing
 
-`writeXlsx(snapshot, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot represent. The same workbook and result produce the same bytes. The snapshot is `{ book, result }`: the workbook, and the values of its formulas and of the cells their arrays spilled into, from `compute`, from a session (`session.getSnapshot()` returns both in one call, so no edit comes between them) or from the `cached` of a file that was read.
+`writeXlsx(snapshot, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot represent. It writes the file anew from the workbook; to keep what the workbook cannot hold (charts, pictures, pivot tables, the page setup), write over the original file with `xlcalc/xlsx/keep` ([Writing over the original file](xlsx-keep.md)). The same workbook and result produce the same bytes. The snapshot is `{ book, result }`: the workbook, and the values of its formulas and of the cells their arrays spilled into, from `compute`, from a session (`session.getSnapshot()` returns both in one call, so no edit comes between them) or from the `cached` of a file that was read.
 
 | option | |
 |---|---|

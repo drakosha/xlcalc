@@ -70,6 +70,10 @@
       "types": "./dist/xlsx.d.ts",
       "default": "./dist/xlsx.js"
     },
+    "./xlsx/keep": {
+      "types": "./dist/xlsx-keep.d.ts",
+      "default": "./dist/xlsx-keep.js"
+    },
     "./worker": {
       "types": "./dist/worker/index.d.ts",
       "default": "./dist/worker/index.js"

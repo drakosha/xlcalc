@@ -1,0 +1,484 @@
+{
+ "cases": {
+  "chart-values": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "chart-formulas-styles": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "chart-parts": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "chart-structure": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "chart-below": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "picture-values": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "picture-formulas-styles": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "picture-parts": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "picture-structure": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "picture-below": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "pivot-values": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "pivot-formulas-styles": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "pivot-parts": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "pivot-structure": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "pivot-below": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "print-values": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 0
+   }
+  },
+  "print-formulas-styles": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 0
+   }
+  },
+  "print-parts": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 1
+   }
+  },
+  "print-structure": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 0
+   }
+  },
+  "print-below": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 0
+   }
+  },
+  "chartsheet-values": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "chartsheet-formulas-styles": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "chartsheet-parts": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 2
+   }
+  },
+  "chartsheet-structure": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "chartsheet-below": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "all-values": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "all-formulas-styles": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "all-parts": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 2
+   }
+  },
+  "all-structure": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "all-below": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 1
+   }
+  }
+ }
+}

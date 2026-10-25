@@ -24,7 +24,7 @@ import { zip } from '../zip/write.js'
 import { externalLinkXml } from './links.js'
 import { nextBlock } from './parts.js'
 import { fileTree, type FileNames } from './formula.js'
-import { writeSheet } from './sheet.js'
+import { sheetPieces, sheetXml, type SheetContext } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
@@ -37,43 +37,54 @@ const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships
 const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
 const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 
-const RICH = 'http://schemas.microsoft.com/office/spreadsheetml/2017/richdata'
-const RICH_REL = 'http://schemas.microsoft.com/office/2017/06/relationships'
+export const RICH = 'http://schemas.microsoft.com/office/spreadsheetml/2017/richdata'
+export const RICH_REL = 'http://schemas.microsoft.com/office/2017/06/relationships'
+export const DYNAMIC = 'http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray'
 /** The rich value `errorType` of the errors Excel keeps as rich values. */
-const RICH_TYPE = { SPILL: RICH_ERRORS.indexOf('#SPILL!'), CALC: RICH_ERRORS.indexOf('#CALC!') }
+export const RICH_TYPE = { SPILL: RICH_ERRORS.indexOf('#SPILL!'), CALC: RICH_ERRORS.indexOf('#CALC!') }
+
+/** A type of cell metadata as Excel 365 writes it: XLDAPR (dynamic arrays, a cell's) or XLRICHVALUE (a value's). */
+export const metadataType = (t: 'XLDAPR' | 'XLRICHVALUE') =>
+  `<metadataType name="${t}" minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1"${t === 'XLDAPR' ? ' cellMeta="1"' : ''}/>`
+/** The future metadata block of a dynamic array formula, and of the rich value `i`; their prefixes `xda` and `xlrd`. */
+export const DYNAMIC_BLOCK = '<bk><extLst><ext uri="{bdbb8cdc-fa1e-496e-a857-3c3f30c029c3}"><xda:dynamicArrayProperties fDynamic="1" fCollapsed="0"/></ext></extLst></bk>'
+export const richBlock = (i: number) => `<bk><extLst><ext uri="{3e2802c4-a4d2-4d8b-9148-e3be6c30e623}"><xlrd:rvb i="${i}"/></ext></extLst></bk>`
+/** The rich value of an error by its structure `s`, and the structure of an error by its type alone. */
+export const richError = (code: keyof typeof RICH_TYPE, s: number) => `<rv s="${s}"><v>${RICH_TYPE[code]}</v></rv>`
+export const ERROR_STRUCTURE = '<s t="_error"><k n="errorType" t="i"/></s>'
 
 /**
  * The cell metadata: XLDAPR (dynamic array formulas, which `cm="1"` points at) as Excel 365 writes it, and the rich
  * values of errors (which `vm` points at, one block each).
  */
-function metadata(dynamic: boolean, rich: (keyof typeof RICH_TYPE)[]): string {
-  const types = [...(dynamic ? ['XLDAPR'] : []), ...(rich.length ? ['XLRICHVALUE'] : [])]
-  const flags = ' minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1"'
-  const typeXml = types.map((t) => `<metadataType name="${t}"${flags}${t === 'XLDAPR' ? ' cellMeta="1"' : ''}/>`).join('')
-  const dynamicXml = dynamic
-    ? `<futureMetadata name="XLDAPR" count="1"><bk><extLst><ext uri="{bdbb8cdc-fa1e-496e-a857-3c3f30c029c3}"><xda:dynamicArrayProperties fDynamic="1" fCollapsed="0"/></ext></extLst></bk></futureMetadata>`
-    : ''
+export function metadata(dynamic: boolean, rich: (keyof typeof RICH_TYPE)[]): string {
+  const types = [...(dynamic ? ['XLDAPR' as const] : []), ...(rich.length ? ['XLRICHVALUE' as const] : [])]
+  const typeXml = types.map(metadataType).join('')
+  const dynamicXml = dynamic ? `<futureMetadata name="XLDAPR" count="1">${DYNAMIC_BLOCK}</futureMetadata>` : ''
   const richT = types.indexOf('XLRICHVALUE') + 1
-  const richXml = rich.length
-    ? `<futureMetadata name="XLRICHVALUE" count="${rich.length}">${rich.map((_, i) => `<bk><extLst><ext uri="{3e2802c4-a4d2-4d8b-9148-e3be6c30e623}"><xlrd:rvb i="${i}"/></ext></extLst></bk>`).join('')}</futureMetadata>`
-    : ''
+  const richXml = rich.length ? `<futureMetadata name="XLRICHVALUE" count="${rich.length}">${rich.map((_, i) => richBlock(i)).join('')}</futureMetadata>` : ''
   const cells = dynamic ? '<cellMetadata count="1"><bk><rc t="1" v="0"/></bk></cellMetadata>' : ''
   const values = rich.length ? `<valueMetadata count="${rich.length}">${rich.map((_, i) => `<bk><rc t="${richT}" v="${i}"/></bk>`).join('')}</valueMetadata>` : ''
-  return `${HEAD}<metadata xmlns="${MAIN}" xmlns:xlrd="${RICH}" xmlns:xda="http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray"><metadataTypes count="${types.length}">${typeXml}</metadataTypes>${dynamicXml}${richXml}${cells}${values}</metadata>`
+  return `${HEAD}<metadata xmlns="${MAIN}" xmlns:xlrd="${RICH}" xmlns:xda="${DYNAMIC}"><metadataTypes count="${types.length}">${typeXml}</metadataTypes>${dynamicXml}${richXml}${cells}${values}</metadata>`
 }
+
+/** The rich values of errors, each by the one structure. */
+export const richValuesXml = (rich: (keyof typeof RICH_TYPE)[]) => `${HEAD}<rvData xmlns="${RICH}" count="${rich.length}">${rich.map((code) => richError(code, 0)).join('')}</rvData>`
 
 /** A part's relationships, `rId1` on; an external one (a hyperlink's address) keeps its target as written. */
 const rels = (items: [type: string, target: string, external?: boolean][]) =>
   `${HEAD}<Relationships xmlns="${PKG_REL}">${items.map(([type, target, external], i) => `<Relationship Id="rId${i + 1}" Type="${type}" Target="${external ? escapeAttr(target) : target}"${external ? ' TargetMode="External"' : ''}/>`).join('')}</Relationships>`
 
-function definedNames(book: BookInput, issues: Issues, names: FileNames): string {
-  const index = new Map(book.sheets.map((s, i) => [sheetKey(s.name), i]))
+/**
+ * Each name of the book as its `<definedName>`, undefined for one the file cannot hold (reported); `place` is a sheet's
+ * index among the workbook's `<sheet>`s by its key, its place in the book by default.
+ */
+export function nameElements(book: BookInput, issues: Issues, names: FileNames, place = new Map(book.sheets.map((s, i) => [sheetKey(s.name), i]))): (string | undefined)[] {
   // Excel ru-RU does not load a file with a name ИСТИНА: the names the book's locale takes
   const booleans = localeBooleans(book.locale)
   const seen = new Set<string>()
-  const out: string[] = []
-  for (const n of book.names ?? []) {
-    const scope = n.scope === undefined ? undefined : index.get(sheetKey(n.scope))
+  return (book.names ?? []).map((n) => {
+    const scope = n.scope === undefined ? undefined : place.get(sheetKey(n.scope))
     const key = `${scope ?? ''}\n${caseKey(n.name)}`
     // a name's ref parses with union ranges and may name a sheet the book does not have (anySheet)
     const tree = fileTree(n.ref, names, undefined, { union: true, anySheet: true })
@@ -90,18 +101,48 @@ function definedNames(book: BookInput, issues: Issues, names: FileNames): string
               : undefined
     if (why) {
       issues.add('name', why, { name: n.name })
-      continue
+      return undefined
     }
     seen.add(key)
-    out.push(`<definedName name="${escapeAttr(n.name)}"${scope === undefined ? '' : ` localSheetId="${scope}"`}${n.hidden ? ' hidden="1"' : ''}>${escapeText(text!)}</definedName>`)
-  }
+    return `<definedName name="${escapeAttr(n.name)}"${scope === undefined ? '' : ` localSheetId="${scope}"`}${n.hidden ? ' hidden="1"' : ''}>${escapeText(text!)}</definedName>`
+  })
+}
+
+function definedNames(book: BookInput, issues: Issues, names: FileNames): string {
+  const out = nameElements(book, issues, names).filter((x) => x !== undefined)
   return out.length ? `<definedNames>${out.join('')}</definedNames>` : ''
 }
 
 /** Iterative calculation as `calcPr`'s attributes; what the book leaves out is Excel's default (100 rounds, a change of 0.001). */
-function iterationAttrs(it: BookInput['iteration']): string {
+export function iterationAttrs(it: BookInput['iteration']): string {
   if (!it) return ''
   return ' iterate="1"' + (it.maxIterations !== undefined ? ` iterateCount="${it.maxIterations}"` : '') + (it.maxChange !== undefined ? ` iterateDelta="${it.maxChange}"` : '')
+}
+
+/** What each sheet of a book is written with: the names its formulas may use, the table of a cell, the filtered sheets' tables that hold their filters, the active sheet and the date system's day 0. */
+export interface BookWriting {
+  names: FileNames
+  tableAt(sheet: number): SheetContext['tableAt']
+  filterTables: (string | undefined)[]
+  active: number
+  epoch: number
+}
+
+export function bookWriting(book: BookInput): BookWriting {
+  const tables = tablesOf(book)
+  return {
+    names: { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks },
+    tableAt: (i) => (addr) => {
+      const { row, col } = parseAddress(addr)
+      const t = tableAt(tables, i, row, col)
+      return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }
+    },
+    // a filtered sheet's criteria go on its first table with a header row, the one kind with a filter of its own
+    filterTables: book.sheets.map((s) => (s.filtered ? s.tables?.find((t) => t.headers !== false)?.name : undefined)),
+    // Excel shows the active sheet, which is never a hidden one
+    active: activeSheetIndex(book),
+    epoch: epochOf(book.dateSystem),
+  }
 }
 
 /**
@@ -122,19 +163,15 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   }
   const rich: (keyof typeof RICH_TYPE)[] = []
   const richError = (code: keyof typeof RICH_TYPE) => (rich.includes(code) ? rich.indexOf(code) : rich.push(code) - 1) + 1
-  const tables = tablesOf(book)
-  const names: FileNames = { sheets: new Set(book.sheets.map((s) => sheetKey(s.name))), tables: tableNames(tables), externalBooks: book.externalBooks }
+  const bw = bookWriting(book)
+  const { names, filterTables, active } = bw
   // table parts are numbered through the book, each sheet's from rId1 of its own relationships
   let tableId = 0
   const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
-  // a filtered sheet's criteria go on its first table with a header row, the one kind with a filter of its own
-  const filterTables = book.sheets.map((s) => (s.filtered ? s.tables?.find((t) => t.headers !== false)?.name : undefined))
   // the notes' VML shape ids, in blocks of 1,024 through the book
   let noteBlock = 1
-  // Excel shows the active sheet, which is never a hidden one
-  const active = activeSheetIndex(book)
   const sheets = book.sheets.map((s, i) => {
-    const w = writeSheet(s, i, {
+    const w = sheetPieces(s, i, {
       styles,
       string,
       issues,
@@ -142,13 +179,9 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       mode,
       result: cells?.[i],
       richError,
-      tableAt: (addr) => {
-        const { row, col } = parseAddress(addr)
-        const t = tableAt(tables, i, row, col)
-        return t === undefined ? undefined : { name: t.name, totals: !!t.totals && row === t.r2 }
-      },
+      tableAt: bw.tableAt(i),
       tableParts: parts[i].map((_, k) => `rId${k + 1}`),
-      epoch: epochOf(book.dateSystem),
+      epoch: bw.epoch,
       ...(filterTables[i] ? { filterTable: filterTables[i] } : {}),
       noteBlock,
       active: i === active,
@@ -163,7 +196,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const wbRels: [string, string][] = []
   let vml = false
   sheets.forEach((s, i) => {
-    files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: s.xml })
+    files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(s) })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {
@@ -193,9 +226,8 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     wbRels.push([`${REL}/sheetMetadata`, 'metadata.xml'])
   }
   if (rich.length) {
-    const values = rich.map((code) => `<rv s="0"><v>${RICH_TYPE[code]}</v></rv>`).join('')
-    files.push({ name: 'xl/richData/rdrichvalue.xml', text: `${HEAD}<rvData xmlns="${RICH}" count="${rich.length}">${values}</rvData>` })
-    files.push({ name: 'xl/richData/rdrichvaluestructure.xml', text: `${HEAD}<rvStructures xmlns="${RICH}" count="1"><s t="_error"><k n="errorType" t="i"/></s></rvStructures>` })
+    files.push({ name: 'xl/richData/rdrichvalue.xml', text: richValuesXml(rich) })
+    files.push({ name: 'xl/richData/rdrichvaluestructure.xml', text: `${HEAD}<rvStructures xmlns="${RICH}" count="1">${ERROR_STRUCTURE}</rvStructures>` })
     contentTypes.push(['/xl/richData/rdrichvalue.xml', 'application/vnd.ms-excel.rdrichvalue+xml'], ['/xl/richData/rdrichvaluestructure.xml', 'application/vnd.ms-excel.rdrichvaluestructure+xml'])
     wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }

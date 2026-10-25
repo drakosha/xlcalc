@@ -1,0 +1,139 @@
+{
+ "meta": {
+  "version": "16.114.1",
+  "seconds": 7,
+  "date": "2026-10-25"
+ },
+ "books": {
+  "chart": {
+   "sent": "819eac9047232789b171ad02b7a4a4c96be8c9664852e0275482c1e13a327e11",
+   "made": [
+    "chart",
+    "theme"
+   ],
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "picture": {
+   "sent": "9724d78f98f3aac00a38a820a0f659d20b67392ea683c29aec545e108d0862da",
+   "made": [
+    "picture",
+    "rich"
+   ],
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "pivot": {
+   "sent": "11da3d86912b164159b6a34f5f5c221c785d049eb1f607986ccee30d6e70e5c1",
+   "made": [
+    "chart"
+   ],
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "print": {
+   "sent": "a0e6d882237e983b2fb78d6fd050189c81b4eb91f71b33b6817c8951f01315fe",
+   "made": [
+    "chart",
+    "picture",
+    "rich",
+    "theme",
+    "print",
+    "breaks"
+   ],
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 0
+   }
+  },
+  "chartsheet": {
+   "sent": "e3349a1da2d1af5ec79257e41c8a886dc6343107ecb618fe6f4cb37b06be9beb",
+   "made": [
+    "chart",
+    "chartsheet",
+    "rich",
+    "note"
+   ],
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "all": {
+   "sent": "e73c997ba077b1d767608e79202314096b1201c0806fedc571765f3bb3e77032",
+   "made": [
+    "chart",
+    "chartsheet",
+    "picture",
+    "rich",
+    "theme",
+    "print",
+    "note"
+   ],
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 1
+   }
+  }
+ }
+}

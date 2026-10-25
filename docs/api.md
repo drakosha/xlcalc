@@ -9,6 +9,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/text`](#xlcalctext)
 - [`xlcalc/entry`](#xlcalcentry)
 - [`xlcalc/xlsx`](#xlcalcxlsx)
+- [`xlcalc/xlsx/keep`](#xlcalcxlsxkeep)
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
 - [`xlcalc/function-text/ru-RU`](#xlcalcfunction-textru-ru)
@@ -839,6 +840,36 @@ function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<Xls
 
 Writes a workbook as an xlsx file: its formulas with the values from `snapshot.result` that `opts.values` requests,
 or only its values (`opts.mode: 'values'`).
+
+## xlcalc/xlsx/keep
+
+Types: see [Types](#types).
+
+### <a id="xlcalcxlsxkeep-keptrefusal"></a>`KeptRefusal`
+
+```ts
+class KeptRefusal extends Error
+```
+
+[`writeKept`](#xlcalcxlsxkeep-writekept)'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells.
+
+### <a id="xlcalcxlsxkeep-openkept"></a>`openKept`
+
+```ts
+function openKept(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxRead>
+```
+
+Reads an xlsx file into a workbook as [`readXlsx`](#xlcalcxlsx-readxlsx) does, its carriers added to the names for [`writeKept`](#xlcalcxlsxkeep-writekept).
+
+### <a id="xlcalcxlsxkeep-writekept"></a>`writeKept`
+
+```ts
+function writeKept(original: ArrayBuffer | Uint8Array<ArrayBufferLike>, snapshot: XlsxSnapshot, opts?: WriteKeptOptions): Promise<XlsxWritten>
+```
+
+Writes a book over the xlsx file it was read from ([`openKept`](#xlcalcxlsxkeep-openkept)): what the book changed is written, the rest is the
+file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal)) a change that would leave
+references the model does not hold pointing at other cells.
 
 ## xlcalc/worker
 
@@ -4810,6 +4841,18 @@ interface WorkerLike {
   postMessage(message: unknown): void
   terminate(): void
   addEventListener(type: 'message' | 'error' | 'messageerror', listener: (event: { data?: unknown; message?: string }) => void): void
+}
+```
+
+### `WriteKeptOptions`
+
+Options of [`writeKept`](#xlcalcxlsxkeep-writekept): the language of its issues and which formula values the file stores, as [`writeXlsx`](#xlcalcxlsx-writexlsx) takes
+them, and the limits of reading the original file, as [`readXlsx`](#xlcalcxlsx-readxlsx) takes them.
+
+```ts
+interface WriteKeptOptions extends Pick<WriteXlsxOptions, 'locale' | 'values'> {
+  /** How large the original file's parts may be once inflated (`ReadXlsxOptions.limits`). */
+  limits?: XlsxLimits
 }
 ```
 

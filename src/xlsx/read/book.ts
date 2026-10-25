@@ -113,7 +113,7 @@ function workbookIssues(xml: string, rels: Rel[], issues: Issues) {
 }
 
 /** The file's bytes: a `Uint8Array` (a Node `Buffer` is one), another view of bytes, or an `ArrayBuffer`. */
-function fileBytes(data: unknown): Uint8Array {
+export function fileBytes(data: unknown): Uint8Array {
   if (data instanceof Uint8Array) return data
   if (ArrayBuffer.isView(data)) return new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
   if (data instanceof ArrayBuffer || Object.prototype.toString.call(data) === '[object ArrayBuffer]') return new Uint8Array(data as ArrayBuffer)
@@ -124,7 +124,7 @@ function fileBytes(data: unknown): Uint8Array {
 const BYTES = ['entryBytes', 'totalBytes'] as const
 
 /** `opts.limits`: whole numbers of bytes of at least 1, and a ratio of at least 1. */
-function checkLimits(v: unknown): XlsxLimits {
+export function checkLimits(v: unknown): XlsxLimits {
   const o = object(v, 'opts.limits', 'limits such as { entryBytes: 16777216, totalBytes: 67108864 }')
   onlyKeys(o, 'opts.limits', [...BYTES, 'ratio'])
   for (const k of BYTES) if (o[k] !== undefined) checkNumber(o[k], `opts.limits.${k}`, 1, Number.MAX_SAFE_INTEGER, true)
