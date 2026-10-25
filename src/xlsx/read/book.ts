@@ -25,7 +25,7 @@ import { legacyConverter } from '../../legacy/convert.js'
 import { readFormula, type FormulaOptions } from './formulas.js'
 import { readLinks } from './links.js'
 import { cellMetadata } from './metadata.js'
-import { relsOf, type Rel } from './package.js'
+import { partText, relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
 import { renamedIn, repairNames } from './sheet-names.js'
 import { readActiveSheet } from '../view.js'
@@ -41,8 +41,7 @@ const LINKED: Record<string, ['macros' | 'pivotTable' | 'connection', XlsxMessag
 }
 
 async function locale(archive: Archive, rels: Rel[], issues: Issues): Promise<string | undefined> {
-  const part = rels.find((r) => r.kind === 'custom-properties' && !r.external)
-  const xml = part && (await archive.text(part.target))
+  const xml = await partText(archive, rels, 'custom-properties')
   const p = xml && elements(xml, 'property').find((e) => decodeXml(attributes(e.attrs).name ?? '') === LOCALE_PROPERTY)
   if (!p) return undefined
   const tag = readText(element(p.body ?? '', 'lpwstr')?.body ?? '')
@@ -149,10 +148,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   const wb = await archive.text(wbPath)
   if (wb === undefined) throw new Error(`xlsx: the file has no workbook part (${wbPath})`)
   const rels = await relsOf(archive, wbPath)
-  const part = async (kind: string) => {
-    const r = rels.find((x) => x.kind === kind && !x.external)
-    return r ? archive.text(r.target) : undefined
-  }
+  const part = (kind: string) => partText(archive, rels, kind)
   const [stringsXml, stylesXml, themeXml, metaXml, richValues, richStructures, persons] = await Promise.all(
     ['sharedStrings', 'styles', 'theme', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure', 'person'].map(part),
   )
@@ -208,10 +204,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
     // mention: a scan of the whole part tried every tag of its cells
     const named = xml.indexOf('legacyDrawing')
     const drawing = named < 0 ? undefined : attr(attributes(element(xml.slice(Math.max(0, xml.lastIndexOf('<', named))), 'legacyDrawing')?.attrs ?? ''), 'id')
-    const linked = async (kind: string, id?: string) => {
-      const r = sheetRels.find((x) => x.kind === kind && !x.external && (id === undefined || x.id === id))
-      return r ? archive.text(r.target) : undefined
-    }
+    const linked = (kind: string, id?: string) => partText(archive, sheetRels, kind, id)
     const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
     const read = readSheet(
       { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas },
