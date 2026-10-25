@@ -57,10 +57,8 @@ export interface SheetContext extends FileNames {
   result?: Record<string, ResultCell>
   /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!. */
   richError(code: 'SPILL' | 'CALC'): number
-  /** The book's table holding a cell of this sheet. */
-  tableAt(addr: string): string | undefined
-  /** A cell of a table's totals row, where Excel takes only a formula of the old kind (no array formula). */
-  totalsAt(addr: string): boolean
+  /** The book's table holding a cell of this sheet, with whether the cell is of its totals row, where Excel takes only a formula of the old kind (no array formula). */
+  tableAt(addr: string): { name: string; totals: boolean } | undefined
   /** The relationship ids of the sheet's table parts. */
   tableParts: string[]
   /** The day 0 of the book's date system in the 1900 system (`epochOf`): a date's serial counts from it. */
@@ -181,7 +179,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const value = c.held !== undefined && (res === undefined || (typeof res.value === 'object' && res.value?.error === 'CYCLE')) ? c.held : res?.value
     // a result without the formula's value (`values: 'preserve'`)
     if (result && !res && c.held === undefined) issues.add('noCachedValues', { key: mode === 'formulas' ? 'formulaNoValue' : 'formulaEmpty' }, where(addr))
-    const tree = mode === 'formulas' ? fileTree(c.formula, ctx, ctx.tableAt(addr)) : null
+    // the book's table holding the cell, looked up once for its name and its totals row
+    const table = mode === 'formulas' ? ctx.tableAt(addr) : undefined
+    const tree = mode === 'formulas' ? fileTree(c.formula, ctx, table?.name) : null
     // without a value (no result), the cell is written empty
     if (mode === 'formulas' && !tree) issues.add('formula', { key: value === undefined ? 'formulaLeftOut' : 'formulaAsValue' }, where(addr))
     if (!tree) {
@@ -189,7 +189,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       continue
     }
     formulas = true
-    if (ctx.totalsAt(addr) && c.array === undefined) {
+    if (table?.totals && c.array === undefined) {
       put(addr, cellXml(addr, c, value, `<f>${escapeText(toFile(tree))}</f>`, false))
       continue
     }
