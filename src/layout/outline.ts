@@ -12,8 +12,7 @@
 import { MAX_OUTLINE } from '../column-width.js'
 import type { LinePatch } from '../contract.js'
 import { LIMIT, type Axis } from '../structure/area.js'
-import { isHidden } from './hidden.js'
-import { entryAt, firstEnding, lines, patchIn, toMap, type Line } from './spans.js'
+import { entryAt, firstEnding, isHidden, lines, patchIn, toMap, type Line } from './spans.js'
 
 /** What the outline reads of a line: its level, hidden state (a size of 0 hides it too) and mark. */
 export interface OutlineEntry {

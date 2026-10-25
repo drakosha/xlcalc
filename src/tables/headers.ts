@@ -12,7 +12,7 @@ import { rewriteBookTables } from './rewrite.js'
 import { sheetIndex } from '../structure/rewrite.js'
 import { freeColumnName } from './shift.js'
 import { lookIn, withoutLooksAt } from '../looks/sheet.js'
-import { tableKey, tablesOf } from './model.js'
+import { numbered, tableKey, tablesOf } from './model.js'
 
 /**
  * The book with `edits` applied when some of them type over header cells: the columns renamed, the references to them
@@ -45,11 +45,7 @@ export function headerEdits(book: BookInput, edits: CellReplace[], text: (v: Sca
     names.forEach((n, i) => {
       const others = [...done, ...names.slice(i + 1).filter((x): x is string => x !== null)]
       let name = n ?? freeColumnName(others, book.locale)
-      if (done.some((d) => tableKey(d) === tableKey(name))) {
-        let k = 2
-        while (others.some((d) => tableKey(d) === tableKey(`${name}${k}`))) k++
-        name = `${name}${k}`
-      }
+      if (done.some((d) => tableKey(d) === tableKey(name))) name = numbered(name, others, 2)
       done.push(name)
     })
     renamed.set(tableKey(t.name), done)

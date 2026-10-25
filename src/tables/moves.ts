@@ -21,7 +21,7 @@ import type { Applied } from '../structure/geometry.js'
 import { cellsIn, gridOf } from '../structure/grid.js'
 import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteFormulas, rewriteTableRefs } from './rewrite.js'
-import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
+import { numbered, tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
 
 const headerRow = (t: Table): Rect | null => (t.headers ? { r1: t.r1, r2: t.r1, c1: t.c1, c2: t.c2 } : null)
 
@@ -135,9 +135,7 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       if (tables.list.some((o) => o.s === ts && meets(o, x)) || copies.some((o) => meets(o.x, x))) continue
       // Excel numbers a copy by the book's count of tables and two (the set `more`: Sales3 in a book of one table), past
       // the names of tables and defined names
-      let n = taken.length + 2
-      while (taken.some((k) => tableKey(k) === tableKey(`${t.name}${n}`)) || nameRefusal(book, `${t.name}${n}`)?.key === 'tableNameDefined') n++
-      const name = `${t.name}${n}`
+      const name = numbered(t.name, [...taken, ...(book.names ?? []).map((x) => x.name)], taken.length + 2)
       // a numbered name Excel would not take (`Tab3` is a cell) is refused, as renameTable refuses it
       const why = nameRefusal(book, name)
       if (why) return { after: () => ({ ok: false, code: 'table_name', message: say(book.locale, why) }) }

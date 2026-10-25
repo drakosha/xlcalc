@@ -10,6 +10,13 @@ import { sheetKey } from '../syntax/print.js'
 /** Table names, like sheet names, compare without case. */
 export const tableKey = sheetKey
 
+/** The first name `${base}${n}` (n counted from `from`) that no name of `taken` has, case-insensitively. */
+export function numbered(base: string, taken: string[], from: number): string {
+  let n = from
+  while (taken.some((x) => tableKey(x) === tableKey(`${base}${n}`))) n++
+  return `${base}${n}`
+}
+
 export interface Table extends Rect {
   name: string
   /** The sheet's index. */
