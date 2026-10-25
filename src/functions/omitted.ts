@@ -8,6 +8,7 @@
  */
 import type { Omission } from '../args.js'
 import type { Positions } from '../arity.js'
+import { functions as database } from './database.js'
 
 const DEFAULT = 'default' as const
 
@@ -92,8 +93,6 @@ export const NOT_OMITTED: Readonly<Record<string, Positions>> = {
   SUBTOTAL: { from: 1 },
 }
 
-const DATABASE = ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP']
-
 /**
  * Positions that take a reference of an open book: another workbook's range there is `#VALUE!`, as Excel computes it
  * over a closed book (the criteria functions' ranges, COUNTBLANK's, a database function's range;
@@ -103,5 +102,5 @@ const DATABASE = ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRO
 export const OPEN_REFERENCE: Readonly<Record<string, Positions>> = {
   ...Object.fromEntries(Object.entries(NOT_OMITTED).filter(([name]) => !name.startsWith('RANK') && name !== 'SUBTOTAL')),
   COUNTBLANK: { at: [0] },
-  ...Object.fromEntries(DATABASE.map((name) => [name, { at: [0] }])),
+  ...Object.fromEntries(Object.keys(database).map((f) => [f, { at: [0] }])),
 }

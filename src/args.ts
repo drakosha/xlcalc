@@ -560,6 +560,22 @@ export const occupied = (g: Grid) => (g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
 /** The first error in the occupied part of a grid. */
 export const gridError = (g: Grid): CErr | undefined => g.v.find(isErr) as CErr | undefined
 
+/** The numbers of a grid, row by row; an error among them is it (the `M` kind answers it first), anything else #VALUE!. */
+export function values(g: Grid): number[] | CErr {
+  const out: number[] = []
+  for (let i = 0; i < g.rows * g.cols; i++) {
+    const v = gridAt(g, i)
+    if (isErr(v)) return v
+    if (typeof v !== 'number') return E.VALUE
+    out.push(v)
+  }
+  return out
+}
+
+/** A flat list of n·k numbers as n observations of k variables: row by row when `vertical`, else column by column. */
+export const observations = (xs: readonly number[], n: number, k: number, vertical: boolean): number[][] =>
+  Array.from({ length: n }, (_, i) => Array.from({ length: k }, (_, j) => (vertical ? xs[i * k + j] : xs[j * n + i])))
+
 /** Rule 4: number pairs from two arrays; pairs with a non-number are dropped; different sizes are #N/A. */
 export function pairs(a: Grid, b: Grid): [number[], number[]] | CErr {
   const n = a.rows * a.cols

@@ -1,7 +1,7 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import { lifts } from '../../arrays/lift.js'
-import { arr, Arr } from '../../arrays/value.js'
+import { arr, Arr, selectArray } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import { Areas, E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
@@ -107,14 +107,6 @@ function lookup(cx: Cx, key: V, look: Grid, result?: Arg): V {
   return r < MAX_ROWS && c < MAX_COLS ? cx.scalar(new Rng(result.s, r, c, r, c)) : null
 }
 
-/** Rows r1…r2 and columns c1…c2 of an array, as an array (a 1 × 1 one is its value). */
-function slice(a: Arr, r1: number, c1: number, r2: number, c2: number): Arr {
-  if (r1 === 0 && c1 === 0 && r2 === a.rows - 1 && c2 === a.cols - 1) return a
-  const v: V[] = []
-  for (let r = r1; r <= r2; r++) for (let c = c1; c <= c2; c++) v.push(a.at(r, c))
-  return new Arr(r2 - r1 + 1, c2 - c1 + 1, r2 - r1 + 1, c2 - c1 + 1, v)
-}
-
 /**
  * INDEX: row or column 0 selects all of them; the answer is a reference (of a reference) or an array (of an array).
  * Of a union the area numbered `area` (the first by default) is indexed; a reference across sheets is #VALUE!.
@@ -144,8 +136,10 @@ function index(x: Arg, r: number, c?: number, area?: number): Arg {
   const [c1, c2] = c ? [c - 1, c - 1] : [0, cols - 1]
   // a reference, one cell too: SUM(INDEX(A1:A3,2)) skips text there, as a range does
   if (x instanceof Rng) return new Rng(x.s, x.r1 + r1, x.c1 + c1, x.r1 + r2, x.c1 + c2)
-  // an element of an array is a value; a line selected by 0 stays an array, 1 × 1 too (TYPE(INDEX({1;2},1,0)+0) is 64)
-  if (x instanceof Arr) return r && c ? x.at(r1, c1) : slice(x, r1, c1, r2, c2)
+  // an element of an array is a value; a line selected by 0 stays an array, 1 × 1 too (TYPE(INDEX({1;2},1,0)+0) is 64);
+  // a whole array is given as it is, however thinly stored
+  if (x instanceof Arr)
+    return r && c ? x.at(r1, c1) : r1 === 0 && c1 === 0 && r2 === rows - 1 && c2 === cols - 1 ? x : selectArray(x, r ? [r1] : undefined, c ? [c1] : undefined)
   return x
 }
 

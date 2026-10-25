@@ -3,7 +3,7 @@ import type { FnDef } from '../../args.js'
 import { addMonths, daysInMonth, ymd } from '../../dates.js'
 import { E } from '../../values.js'
 import { atp, need } from '../date/atp.js'
-import { d360, freqAt, us360, validBasis, validFreq } from '../date/daycount.js'
+import { freqAt, euro360, us360, validBasis, validFreq } from '../date/daycount.js'
 import { badCoupon, bondDays, cmp, coupons, normalDays, serialOfYmd, type Ymd } from './coupon.js'
 
 /** Price per 100 at yield `yld`: cash flows discounted from settlement, less accrued interest. */
@@ -78,7 +78,7 @@ function accrint(issue: number, first: number, settlement: number, freq: number,
   const is = ymd(issue)
   const st = ymd(settlement)
   const eom = fi.d === daysInMonth(fi.y, fi.m)
-  const days = (a: Ymd, b: Ymd) => (basis === 0 ? us360(a, b, false) : basis === 4 ? d360(a, b, Math.min(a.d, 30), Math.min(b.d, 30)) : serialOfYmd(b) - serialOfYmd(a))
+  const days = (a: Ymd, b: Ymd) => (basis === 0 ? us360(a, b, false) : basis === 4 ? euro360(a, b) : serialOfYmd(b) - serialOfYmd(a))
   const regular = shift(fi, -months, eom)
   let pcd = regular
   if (calc && cmp(st, fi) > 0) for (let q = fi; cmp(q, st) < 0; q = shift(q, months, eom)) pcd = q

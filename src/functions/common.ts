@@ -64,6 +64,13 @@ export function roundDigits(x: number, digits: number, f: (y: number) => number)
   return Math.sign(x) * (digits > 22 || digits < -22 ? shift(n, -digits) : digits >= 0 ? n / 10 ** digits : n * 10 ** -digits)
 }
 
+/** A polynomial's value by Horner's scheme, the coefficients from the highest degree down (the BESSEL and AS 241 tables are stored lowest first and reversed). */
+export function horner(cs: readonly number[], v: number): number {
+  let z = 0
+  for (const c of cs) z = v * z + c
+  return z
+}
+
 /** Digits in radix `r` (letters of either case) as a number; null at a character that is no digit of it. */
 export function digitsValue(s: string, r: number): number | null {
   let n = 0

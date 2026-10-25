@@ -1,5 +1,5 @@
 /** Workdays: NETWORKDAYS and WORKDAY with weekend codes and holidays. */
-import { toDate, type Cx, type FnDef, type Segment } from '../../args.js'
+import { eachValue, toDate, type Cx, type FnDef, type Segment } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { MAX_SERIAL } from '../../dates.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
@@ -31,16 +31,16 @@ const allWeekend = (w: boolean[]) => w.every(Boolean)
 /** Holidays: whole dates, date text in a range too (the set `findate-edges`); a boolean is #VALUE! (the ToolPak rule), so is other text. */
 function holidaysOf(x: Segment | undefined, rules: Rules): number[] | CErr {
   const out: number[] = []
-  if (x === undefined) return out
-  for (const v of Array.isArray(x) ? (x as readonly V[]) : [x as V]) {
-    if (v === null && Array.isArray(x)) continue
+  const e = x === undefined ? undefined : eachValue([x], (v, fromRange) => {
+    // a blank cell of a holidays range is no holiday; a blank given as a value is a date
+    if (v === null && fromRange) return
     if (isErr(v)) return v
     if (typeof v === 'boolean') return E.VALUE
     const d = toDate(v, rules)
     if (isErr(d)) return d
     out.push(d)
-  }
-  return out
+  })
+  return e ?? out
 }
 
 /** Inclusive count, negative when `end` is earlier. */

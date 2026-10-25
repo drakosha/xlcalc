@@ -4,6 +4,7 @@
  * and beta by series and Lentz continued fractions (Numerical Recipes) with prefactors that keep their
  * precision for large parameters, and a bracketed Newton solver for the inverses.
  */
+import { horner } from '../common.js'
 import { deviate, erfc, gammafn } from '../jstat.js'
 
 const LN_SQRT_2PI = 0.9189385332046728
@@ -199,9 +200,8 @@ export function lognormCdf(z: number): number {
 }
 
 /** Wichura's AS 241 (PPND16) in the middle, |p − 0.5| ≤ 0.425: its rational function of r = 0.180625 − (p − 0.5)². */
-const AS241_A = [3.387132872796366608, 133.14166789178437745, 1971.5909503065514427, 13731.693765509461125, 45921.953931549871457, 67265.770927008700853, 33430.575583588128105, 2509.0809287301226727]
-const AS241_B = [1, 42.313330701600911252, 687.1870074920579083, 5394.1960214247511077, 21213.794301586595867, 39307.89580009271061, 28729.085735721942674, 5226.495278852854561]
-const horner = (cs: readonly number[], r: number) => cs.reduceRight((acc, c) => acc * r + c, 0)
+const AS241_A = [3.387132872796366608, 133.14166789178437745, 1971.5909503065514427, 13731.693765509461125, 45921.953931549871457, 67265.770927008700853, 33430.575583588128105, 2509.0809287301226727].reverse()
+const AS241_B = [1, 42.313330701600911252, 687.1870074920579083, 5394.1960214247511077, 21213.794301586595867, 39307.89580009271061, 28729.085735721942674, 5226.495278852854561].reverse()
 
 /**
  * Φ⁻¹(p) with q = 1 − p given precisely: in the middle AS 241, whose p − 0.5 keeps the digits that 2·min(p, q) loses

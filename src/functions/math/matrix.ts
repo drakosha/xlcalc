@@ -1,22 +1,13 @@
 /** MDETERM, MINVERSE, MMULT and MUNIT: matrices of numbers, by Gaussian elimination with partial pivoting. This engine's own. */
-import { E, type CErr, type V } from '../../values.js'
-import { gridAt, type FnDef, type Grid } from '../../args.js'
+import { E, isErr, type CErr, type V } from '../../values.js'
+import { observations, values, type FnDef, type Grid } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { allot, spend } from '../../exec/budget.js'
 
-/** The rows of a grid filled with numbers only (a blank, text or a boolean is #VALUE!). */
+/** The rows of a grid of numbers (a blank, text or a boolean is #VALUE!; kind M answers an error before it is read). */
 function numbers(g: Grid): number[][] | CErr {
-  const out: number[][] = []
-  for (let r = 0; r < g.rows; r++) {
-    const row: number[] = []
-    for (let c = 0; c < g.cols; c++) {
-      const v = gridAt(g, r * g.cols + c)
-      if (typeof v !== 'number') return E.VALUE
-      row.push(v)
-    }
-    out.push(row)
-  }
-  return out
+  const xs = values(g)
+  return isErr(xs) ? xs : observations(xs, g.rows, g.cols, true)
 }
 
 const square = (g: Grid): number[][] | CErr => (g.rows === g.cols ? numbers(g) : E.VALUE)
