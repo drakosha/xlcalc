@@ -206,16 +206,20 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c), ...f, ...(format !== undefined && format !== null ? { numberFormatCode: code(format) } : {}) }
     })
   }
-  /** A call that changed the book answered: the revision one more, and what changed. */
-  const answer = (s: EngineState, x: Outcome): EditResult => {
-    textsChanged(s, x)
-    const out: EditResult = { revision: ++revision, changes: changes(s, x.keys, x.fields) }
+  /** The layout, the styles, the moves and where to repaint: what a call's `answer` and a preview tell besides their changed cells; `moved` a preview leaves out. */
+  const told = (s: EngineState, x: Outcome, moved: Outcome['moved']): Partial<EditResult> => {
+    const out: Partial<EditResult> = {}
     if (x.layout.size) out.layout = [...x.layout]
     if (x.styles) out.styles = s.input.styles ?? []
-    if (x.moved.length) out.moved = x.moved
+    if (moved.length) out.moved = moved
     const repaint = repaintOf(s.input, x)
     if (repaint) out.repaint = repaint
     return out
+  }
+  /** A call that changed the book answered: the revision one more, and what changed. */
+  const answer = (s: EngineState, x: Outcome): EditResult => {
+    textsChanged(s, x)
+    return { revision: ++revision, changes: changes(s, x.keys, x.fields), ...told(s, x, x.moved) }
   }
   let controlledClock: Clock | undefined
   const tick = (s: EngineState) => {
@@ -565,7 +569,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
           const issue = issueDetail(next, i, row, col)
           return { sheet: c.sheet, cell: c.cell, before, after: c.value, ...(issue ? { issue } : {}) }
         })
-        return { revision: beforeRevision, clock: used, changes: list, impacts, totalChanges: outcome.keys.length, truncated: outcome.keys.length > max, ...(outcome.layout.size ? { layout: [...outcome.layout] } : {}), ...(outcome.styles ? { styles: next.input.styles ?? [] } : {}), ...(repaintOf(next.input, outcome) ? { repaint: repaintOf(next.input, outcome) } : {}) }
+        return { revision: beforeRevision, clock: used, changes: list, impacts, totalChanges: outcome.keys.length, truncated: outcome.keys.length > max, ...told(next, outcome, []) }
       }
       const result = { ...answer(next, outcome), clock: used }
       keep(back)
