@@ -157,3 +157,22 @@ it('which of two arrays spills is found once per graph, not by a walk of what de
   run(applyEdits(state, Array.from({ length: 1000 }, (_, i) => ({ sheet: 'S', cell: `B${3 * i + 2}`, input: { formula: 'SEQUENCE(1,2)' } }))))
   expect(reads).toBeLessThan(500_000)
 })
+
+it('arrays below one long chain find whether they close a cycle without each walking the chain', () => {
+  // a chain of 3,000 formulas, 300 arrays read its end and an array typed into each one's range: the walks back from the
+  // arrays read the graph's turned edges about once per formula of the chain (before 25.10, once per array: 1.8 million)
+  const n = 3000
+  const cells: Record<string, CellInput> = { A1: { value: 1 } }
+  for (let k = 2; k <= n; k++) cells[`A${k}`] = { formula: `A${k - 1}+1` }
+  for (let i = 0; i < 300; i++) cells[`C${n + 2 + 3 * i}`] = { formula: `SEQUENCE(2,2)+0*A${n}` }
+  const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 46300.5, seed: clock.seed })
+  let reads = 0
+  let pred: number[][] | undefined
+  // each list of the turned edges the spills are given counts its reads
+  Object.defineProperty(state.spills, 'pred', { get: () => pred, set: (v?: number[][]) => (pred = v && new Proxy(v, { get: (t, k) => (typeof k === 'string' && /^\d+$/.test(k) && reads++, Reflect.get(t, k)) })) })
+  run(applyEdits(state, Array.from({ length: 300 }, (_, i) => ({ sheet: 'S', cell: `D${n + 3 + 3 * i}`, input: { formula: `SEQUENCE(1,2)+0*A${n}` } }))))
+  expect(reads).toBeLessThan(100_000)
+  // of each pair, which read the same cell, the lower array spills and the upper one waits
+  expect(state.rt.cell(0, n + 2, 3)).toBe(1)
+  expect(state.rt.cell(0, n + 1, 2)).toEqual({ code: 'SPILL' })
+})

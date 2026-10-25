@@ -38,6 +38,8 @@ export interface Spills {
   /** Formulas that read a cell their array may spill over (`rank.ts`), as found, and the graph's edges turned round; dropped with the graph. */
   looped?: Map<number, boolean>
   pred?: number[][]
+  /** By sheet, the box around what each formula and those it comes after read there (`rank.ts`), as found; dropped with the graph. */
+  reach?: Map<number, Map<number, Rect | 0 | 1>>
   /** Steps so far, counted on across rounds: a formula's evaluation, a change of spilled cells. */
   step: number
   /** The step the current round began after: a formula's step in `done` before it is of an earlier round. */
