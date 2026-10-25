@@ -15,7 +15,7 @@ const g = globalThis as unknown as Globals
 export const nowMs = (): number => (g.performance ? g.performance.now() : Date.now())
 
 /** A random uint32 seed: Web Crypto when available, `Math.random` otherwise. */
-export function randomSeed(): number {
+function randomSeed(): number {
   if (g.crypto?.getRandomValues) return g.crypto.getRandomValues(new Uint32Array(1))[0]
   return Math.floor(Math.random() * 0x100000000)
 }

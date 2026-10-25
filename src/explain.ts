@@ -21,7 +21,7 @@ export function checkExplainOptions(v: unknown, path = 'opts'): ExplainOptions {
 }
 
 /** Reference text for `explain` and reasons: `'Sheet'!B3`, `'Sheet'!D:D`, `'Sheet'!A1:C9`. */
-export function rngText(state: EngineState, g: Rng): string {
+function rngText(state: EngineState, g: Rng): string {
   const sheet = quoteSheet(runtimeSheet(state.sheetNames, state.links, g.s))
   if (g.r1 === 0 && g.r2 === MAX_ROWS - 1) return `${sheet}!${indexToCol(g.c1)}:${indexToCol(g.c2)}`
   if (g.c1 === 0 && g.c2 === MAX_COLS - 1) return `${sheet}!${g.r1 + 1}:${g.r2 + 1}`

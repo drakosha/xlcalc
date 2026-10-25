@@ -150,7 +150,7 @@ function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean)
 }
 
 /** The hidden rows of sheet `s` that SUBTOTAL and AGGREGATE read, from its input. */
-export function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
+function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
   const h = hiddenRows(sheet)
   if (h) ctx.hidden.set(s, h)
   else ctx.hidden.delete(s)
