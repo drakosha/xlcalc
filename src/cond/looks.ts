@@ -12,7 +12,7 @@ import { paced, type Steps } from '../exec/budget.js'
 import { MAX_COLS } from '../model.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
 import { COMPARE } from '../operators.js'
-import { intersect, type Rect } from '../structure/area.js'
+import { inside, type Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
 import { E, isErr, type V } from '../values.js'
 import { evaluator, holds, prepare } from './formulas.js'
@@ -242,11 +242,6 @@ function* shade(state: EngineState, s: number, rule: Extract<ConditionalFormat, 
   }
 }
 
-/** The part of a rule's ranges inside the window's rectangles. */
-function clipped(rule: ConditionalFormat, xs: Rect[]): Rect[] {
-  return rectsOf(rule).flatMap((y) => xs.flatMap((x) => intersect(x, y) ?? []))
-}
-
 /**
  * The looks of the cells of rectangle `x` of sheet `s` (of each of several, apart), by `r * MAX_COLS + c`; `only`, the
  * cells to look at when the window is too large to look at every one (the cells it lists). The steps yield between cells.
@@ -259,7 +254,8 @@ export function* windowLooks(state: EngineState, s: number, x: Rect | Rect[], on
   const value = (r: number, c: number) => state.rt.cell(s, r, c)
   const xs = Array.isArray(x) ? x : [x]
   for (const rule of rules) {
-    const parts = clipped(rule, xs)
+    // the part of a rule's ranges inside the window's rectangles
+    const parts = rectsOf(rule).flatMap((y) => inside(xs, y))
     if (!parts.length) continue
     const graded = rule.type === 'colorScale' || rule.type === 'dataBar' || rule.type === 'iconSet'
     const test = graded ? null : yield* styleTest(state, s, rule)

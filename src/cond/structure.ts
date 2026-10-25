@@ -8,7 +8,7 @@
 import type { BookInput, ConditionalFormat, ConditionalValue, SheetInput } from '../contract.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { sheetKey, tokenize } from '../syntax.js'
-import { cornerOf, hasCell, hi, intersect, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
+import { anyMeets, cornerOf, hasCell, hi, inside, lo, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
 import { copyTransform, deleteSpan, formulaAt, growSpan } from '../structure/transform.js'
@@ -143,7 +143,7 @@ const KEEP: Transform = { ref: () => undefined }
  * whose first cell goes has its formulas made for its new first cell; the same list when no rule meets them.
  */
 export function clearConditional(list: ConditionalFormat[] | undefined, holes: Rect[], host: string, names: Map<string, string>): ConditionalFormat[] | undefined {
-  if (!list?.some((rule) => rectsOf(rule).some((x) => holes.some((h) => meets(x, h))))) return list
+  if (!list?.some((rule) => anyMeets(rectsOf(rule), holes))) return list
   const out = list.flatMap((rule) => {
     const stay = holes.reduce((xs, h) => subtract(xs, h), rectsOf(rule))
     return stay.length ? [placed(rule, stay, cornerOf(stay), host, host, KEEP, names).rule] : []
@@ -169,7 +169,7 @@ export function moveConditional(old: BookInput, out: BookInput, p: Paste, t: Tra
     for (const rule of list) {
       const rects = rectsOf(rule)
       const stay = k === fk ? subtract(rects, p.src) : rects
-      const moved = k === fk ? rects.flatMap((x) => intersect(x, p.src) ?? []).map((x) => shiftRect(x, dr, dc)) : []
+      const moved = k === fk ? inside(rects, p.src).map((x) => shiftRect(x, dr, dc)) : []
       const back = (c: Cell) => (moved.some((x) => hasCell(x, c.r, c.c)) ? { r: c.r - dr, c: c.c - dc } : c)
       const next = fk === tk ? [...stay, ...moved] : stay
       if (next.length) {
@@ -206,9 +206,9 @@ export function copyConditional(source: BookInput, out: BookInput, p: Paste, nam
   const [fk, tk] = [sheetKey(p.from), sheetKey(p.to)]
   const target = sheetOf(out, p.to)
   const from = sheetOf(source, p.from).conditionalFormats ?? []
-  const pasted = (rule: ConditionalFormat) => p.offsets.flatMap(([dr, dc]) => rectsOf(rule).flatMap((x) => intersect(x, p.src) ?? []).map((x) => shiftRect(x, dr, dc)))
+  const pasted = (rule: ConditionalFormat) => p.offsets.flatMap(([dr, dc]) => inside(rectsOf(rule), p.src).map((x) => shiftRect(x, dr, dc)))
   const own = target.conditionalFormats ?? []
-  if (!own.length && !from.some((r) => rectsOf(r).some((x) => meets(x, p.src)))) return
+  if (!own.length && !from.some((r) => anyMeets(rectsOf(r), [p.src]))) return
   const kept = own.map((rule) => ({ rule, stay: subtract(rectsOf(rule), p.area) }))
   const added: ConditionalFormat[] = []
   for (const rule of from) {

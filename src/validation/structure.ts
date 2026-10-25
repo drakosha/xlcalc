@@ -8,7 +8,7 @@
  * again for its new first cell.
  */
 import type { BookInput, DataValidation } from '../contract.js'
-import { cornerOf, hi, intersect, LIMIT, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
+import { anyMeets, cornerOf, hi, inside, LIMIT, lo, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
 import { copyTransform, deleteSpan, formulaAt, growSpan } from '../structure/transform.js'
@@ -170,7 +170,7 @@ function withoutAreas(rules: DataValidation[], holes: Rect[], sheet: string, she
 
 /** A sheet's rules without the cells of `holes` (Excel's Clear over them), their ranges joined where they touch; the same array when no rule meets them. */
 export function clearValidations(rules: DataValidation[] | undefined, holes: Rect[], sheet: string, sheets: Map<string, string>): DataValidation[] | undefined {
-  if (!rules?.some((v) => areasOf(v.range)!.some((x) => holes.some((h) => meets(x, h))))) return rules
+  if (!rules?.some((v) => anyMeets(areasOf(v.range)!, holes))) return rules
   const kept = withoutAreas(rules, holes, sheet, sheets).map((v) => tidy(v, sheet, sheets))
   return kept.length ? kept : undefined
 }
@@ -188,7 +188,7 @@ export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t:
   const landed: Rect[] = []
   for (const [dr, dc] of p.offsets)
     for (const v of src) {
-      const pieces = areasOf(v.range)!.flatMap((x) => intersect(x, p.src) ?? [])
+      const pieces = inside(areasOf(v.range)!, p.src)
       if (!pieces.length) continue
       const areas = pieces.map((x) => shiftRect(x, dr, dc))
       landed.push(...areas)
