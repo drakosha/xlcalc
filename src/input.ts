@@ -583,13 +583,18 @@ export function checkEntryWidthOptions(v: unknown, path = 'opts'): EntryWidthOpt
   return { ...checkDisplayOptions(rest, path), ...(bestFit !== undefined ? { bestFit: bestFit as boolean } : {}) }
 }
 
+/** The locale, date system and moment of `entryText`'s options (unchecked there), as entry options, which `checkEntryOptions` checks. */
+export function entryOptionsOf(o: EntryTextOptions): EntryOptions {
+  return { ...(o.locale !== undefined ? { locale: o.locale } : {}), ...(o.dateSystem !== undefined ? { dateSystem: o.dateSystem } : {}), ...(o.now !== undefined ? { now: o.now } : {}) }
+}
+
 /** `entryText`'s and `needsApostrophe`'s options: the cell's number format, the book's locale and date system, the moment for a date without a year. */
 export function checkEntryTextOptions(v: unknown, path = 'opts'): EntryTextOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { numberFormat: '0%', locale: 'ru-RU' }")
   onlyKeys(o, path, ['numberFormat', 'locale', 'dateSystem', 'now'])
   if (o.numberFormat !== undefined) checkFormat(o.numberFormat, `${path}.numberFormat`)
-  checkEntryOptions({ ...(o.locale !== undefined ? { locale: o.locale } : {}), ...(o.dateSystem !== undefined ? { dateSystem: o.dateSystem } : {}), ...(o.now !== undefined ? { now: o.now } : {}) }, path)
+  checkEntryOptions(entryOptionsOf(o as EntryTextOptions), path)
   return o as EntryTextOptions
 }
 
