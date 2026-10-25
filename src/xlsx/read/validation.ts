@@ -6,7 +6,7 @@
  * the valid set `struct-held-2`), an IME mode is not kept, a list's items holding commas are split, and each is reported.
  */
 import type { DataValidation, ValidationOperator, ValidationType } from '../../contract.js'
-import { cornerOf, subtract, type Rect } from '../../structure/area.js'
+import { cornerOf, meets, subtract, type Rect } from '../../structure/area.js'
 import { FILE_TYPES, OPERATORS } from '../../validation/check.js'
 import { COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
 import { formulaAt } from '../../validation/structure.js'
@@ -84,6 +84,41 @@ function rule(raw: RawRule, sheet: string, issues: Issues, opts: FormulaOptions)
   return out
 }
 
+/** Rows of a block of the index of `Taken`, and the blocks a rectangle spans to be tall: one every rectangle is checked against. */
+const BLOCK = 64
+const TALL = 64
+
+/**
+ * The rectangles earlier rules took, by the blocks of rows they span: a rule's rectangle is cut by those it meets alone,
+ * which a sheet with a rule per cell made quadratic when each was cut by all.
+ */
+class Taken {
+  private readonly all: Rect[] = []
+  private readonly tall: number[] = []
+  private readonly blocks = new Map<number, number[]>()
+
+  add(x: Rect): void {
+    const i = this.all.push(x) - 1
+    const [b1, b2] = [Math.floor(x.r1 / BLOCK), Math.floor(x.r2 / BLOCK)]
+    if (b2 - b1 >= TALL) this.tall.push(i)
+    else
+      for (let b = b1; b <= b2; b++) {
+        const at = this.blocks.get(b)
+        if (at) at.push(i)
+        else this.blocks.set(b, [i])
+      }
+  }
+
+  /** The rectangles taken that meet `x`, in the order they were taken. */
+  meeting(x: Rect): Rect[] {
+    const [b1, b2] = [Math.floor(x.r1 / BLOCK), Math.floor(x.r2 / BLOCK)]
+    if (b2 - b1 >= TALL) return this.all.filter((y) => meets(x, y))
+    const at = new Set(this.tall)
+    for (let b = b1; b <= b2; b++) for (const i of this.blocks.get(b) ?? []) at.add(i)
+    return [...at].sort((p, q) => p - q).flatMap((i) => (meets(x, this.all[i]) ? [this.all[i]] : []))
+  }
+}
+
 /**
  * The sheet's rules (`tail`: the worksheet after its cells, without its own extension list, whose content is `ext`),
  * none meeting an earlier one; a rule that loses its first cell so has its formulas written for its new first cell
@@ -93,7 +128,7 @@ export function readValidations(tail: string, ext: string, sheet: string, sheets
   const names = new Map(sheets.map((s) => [sheetKey(s), s]))
   const raws = [...plain(tail, sheet, issues), ...extended(ext)]
   const out: DataValidation[] = []
-  const taken: Rect[] = []
+  const taken = new Taken()
   for (const raw of raws) {
     const where = { sheet, cell: raw.sqref }
     const r = rule(raw, sheet, issues, opts)
@@ -107,10 +142,11 @@ export function readValidations(tail: string, ext: string, sheet: string, sheets
       issues.add('dataValidation', { key: 'ruleNoRange' }, where)
       continue
     }
-    const own = areas.flatMap((x) => taken.reduce(subtract, [x]))
+    // a cut that misses `x` misses its pieces too, and pieces no cut meets keep their identity
+    const own = areas.flatMap((x) => taken.meeting(x).reduce(subtract, [x]))
     if (own.length !== areas.length || own.some((x, i) => x !== areas[i])) issues.add('dataValidation', { key: 'ruleShared' }, where)
     if (!own.length) continue
-    taken.push(...own)
+    for (const x of own) taken.add(x)
     const [from, to] = [cornerOf(areas), cornerOf(own)]
     for (const k of ['formula1', 'formula2'] as const) if (r[k] !== undefined) r[k] = formulaAt(r[k], sheet, from, to, names)
     out.push({ ...r, range: rangeText(own) })

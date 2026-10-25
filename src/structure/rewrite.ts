@@ -4,8 +4,9 @@
  */
 import type { BookInput, CellInput, NameInput, TableColumn, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
-import { FormulaError, parse, quoteSheet, sheetKey, type Tok } from '../syntax.js'
+import { FormulaError, quoteSheet, sheetKey, tokenize, type Tok } from '../syntax.js'
 import { eachToken } from '../syntax/links.js'
+import { parseTokens } from '../syntax/parse.js'
 import { decode, encode, sameArea, span, withSpan, type Area, type Axis } from './area.js'
 
 /** A reference as a transform sees it: the sheet it points to (as the book spells it) and its rectangle. */
@@ -57,19 +58,32 @@ export const sheetOf = <S extends { name: string }>(book: { sheets: S[] }, name:
 
 const same = (a: string | null, b: string | null) => a !== null && b !== null && sheetKey(a) === sheetKey(b)
 
+/** The last formula `formulaTokens` read: a paste or a fill rewrites one source formula for each of its copies. */
+let last: { text: string; union: boolean; toks: Tok[] | null } = { text: '', union: false, toks: null }
+
+/** The tokens of a formula that parses (`union` for a name's formula, which may be one), else null; read once for a run of the same text. */
+export function formulaTokens(text: string, union: boolean): Tok[] | null {
+  if (text === last.text && union === last.union) return last.toks
+  let toks: Tok[] | null
+  try {
+    toks = tokenize(text)
+    parseTokens(text, toks, { union })
+  } catch (e) {
+    if (!(e instanceof FormulaError)) throw e
+    toks = null
+  }
+  last = { text, union, toks }
+  return toks
+}
+
 /**
  * The formula with its references rewritten by `t`. `host` is the formula's sheet before the operation,
  * `moved` after it (a moved formula's references without a sheet get the sheet they point to); null for
- * the reference of a name, which always has its sheet.
+ * the reference of a name, which always has its sheet. `toks`: its `formulaTokens` read already, as a paste
+ * reads each copied formula once for all its copies.
  */
-export function rewriteFormula(text: string, host: string | null, moved: string | null, t: Transform, sheets: Map<string, string>): string {
-  try {
-    // a name's formula may be a union
-    parse(text, { union: host === null })
-  } catch (e) {
-    if (e instanceof FormulaError) return text
-    throw e
-  }
+export function rewriteFormula(text: string, host: string | null, moved: string | null, t: Transform, sheets: Map<string, string>, toks = formulaTokens(text, host === null)): string {
+  if (!toks) return text
   return eachToken(text, (tok, written) =>
     tok.t === 'ref'
       ? tok.last === undefined
@@ -82,6 +96,7 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
           : tok.t === 'ident' && tok.sheet !== undefined
             ? nameText(tok.sheet, tok.v, t, sheets)
             : undefined,
+    toks,
   )
 }
 

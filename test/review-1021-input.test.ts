@@ -3,7 +3,7 @@
  * finite number and a clock that is not a moment the same in every time zone, refused at the boundary as InputError.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, createSession, displayValue, entryText, InputError, parseEntry, type BookInput, type CellInput } from '../src/index.js'
+import { compute, createInlineCalc, createSession, displayValue, editStructure, entryText, InputError, parseEntry, type BookInput, type CellInput } from '../src/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { mergedArea, rangeAddress, rectContains, rectsMeet } from '../src/a1.js'
 import { ASYNC_CALCS, closeCalcs, KINDS, openerFor } from './session-kinds.js'
@@ -107,6 +107,41 @@ describe.each(['closures', 'eval'] as const)('a value that is not a finite numbe
       expect((await s.getResult()).hash).toBe(before)
       await s.close()
     })
+  })
+})
+
+describe.each(['closures', 'eval'] as const)("a book editStructure returned is checked whole, the caller's cells it shares included (speed-u95), %s", (execution) => {
+  afterAll(closeCalcs)
+  const given = (): BookInput => ({ styles: [{}, { font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 1 }, A2: { formula: 'A1+1' } } }] })
+  // the caller changes a cell of its own book after the call: the returned book holds the same cell
+  const changed = (cell: CellInput): BookInput => {
+    const book = given()
+    const r = editStructure(book, { op: 'insertRows', sheet: 'S', row: 3 })
+    if (!r.ok) throw new Error(r.message)
+    Object.assign(book.sheets[0].cells.A1, cell)
+    return r.book
+  }
+  const BAD: [string, string, CellInput][] = [
+    ['a value of NaN', 'value', { value: Number.NaN }],
+    ['a style the book does not have', 'style', { style: 7 }],
+    ['a value that is an object', 'value', { value: { foo: 1 } as never }],
+  ]
+
+  it.each(BAD)('%s: editStructure, compute and createSession refuse it', (_, field, cell) => {
+    const why = { path: `book.sheets[0].cells["A1"].${field}` }
+    expect(refusal(() => editStructure(changed(cell), { op: 'insertRows', sheet: 'S', row: 1 }))).toMatchObject(why)
+    expect(refusal(() => compute(changed(cell), { clock, execution }))).toMatchObject(why)
+    expect(refusal(() => createSession(changed(cell), { clock, execution }))).toMatchObject(why)
+  })
+
+  it.each(ASYNC_CALCS)('compute and createSession %s refuse it', async (_, make) => {
+    const calc = await make()
+    for (const [, field, cell] of BAD) {
+      const why = { path: `book.sheets[0].cells["A1"].${field}` }
+      await expect(calc.compute(changed(cell), { clock, execution })).rejects.toMatchObject(why)
+      await expect(calc.createSession(changed(cell), { clock, execution })).rejects.toMatchObject(why)
+    }
+    await calc.close()
   })
 })
 

@@ -38,6 +38,28 @@ describe.each(['closures', 'eval'] as const)('live workbook additions, %s', (exe
         await s.close()
       }
     })
+    it('a batch that rebuilds keeps the cells its edits changed, added and emptied, in order (speed-u115)', async () => {
+      const s = await session()
+      try {
+        await s.applyChanges([
+          { op: 'replaceCells', edits: [{ sheet: 'S', cell: 'E1', input: { value: 4 } }, { sheet: 'S', cell: 'D1', input: null }, { sheet: 'S', cell: 'A1', input: { value: 5 } }] },
+          { op: 'setCells', edits: [{ sheet: 'S', cell: 'D1', input: { value: 'back' } }, { sheet: 'S', cell: 'F1', input: { formula: 'E1+A1' } }, { sheet: 'S', cell: 'F1', input: null }] },
+          { op: 'setNames', names: [{ name: 'Rate', ref: '3' }] },
+        ])
+        const cells = (await s.getBook()).sheets[0].cells
+        expect(Object.entries(cells)).toEqual([
+          ['A1', { value: 5 }],
+          ['B1', { formula: 'A1*2' }],
+          ['C1', { formula: 'B1+3' }],
+          ['D1', { value: 'back' }],
+          ['E1', { value: 4 }],
+        ])
+        expect((await s.getCell('S', 'C1'))!.value).toBe(13)
+        await check(s)
+      } finally {
+        await s.close()
+      }
+    })
     it('previews dependent changes and errors, with bounded output and no session change', async () => {
       const s = await session(),
         before = await s.getSnapshot()

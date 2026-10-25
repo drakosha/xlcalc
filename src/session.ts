@@ -311,7 +311,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         const [was, now] = [new Set(sheets[i].merges ?? []), new Set(x.merges ?? [])]
         const moved = [...was].filter((m) => !now.has(m)).concat([...now].filter((m) => !was.has(m)))
         if (moved.length) for (const k of yield* applyMerges(s, i, moved.map((m) => parseMerge(m)!))) keys.add(k)
-        if (JSON.stringify(hiddenRows(x) ?? null) !== JSON.stringify(hiddenRows(sheets[i]) ?? null)) for (const k of yield* applyHidden(s, i)) keys.add(k)
+        // rows kept and the filter mode with them keep the hidden rows: a map of many rows is not read twice
+        const hidden = (x.rows !== sheets[i].rows || x.filtered !== sheets[i].filtered) && JSON.stringify(hiddenRows(x) ?? null) !== JSON.stringify(hiddenRows(sheets[i]) ?? null)
+        if (hidden) for (const k of yield* applyHidden(s, i)) keys.add(k)
       }
       const rules = ruled.flatMap(([i, x]) => [...ruleRanges(sheets[i]), ...ruleRanges(x)])
       return [{ ...nothing(), keys: inOrder([...keys], shown ? shownChanges(s, shown) : []), valued: keys.size > 0, layout: new Set([...next.keys()].map((i) => s.sheetNames[i])), rules }, sheets]

@@ -10,7 +10,7 @@
  */
 import type { BookInput, CellInput, LookRange, SheetInput } from '../contract.js'
 import { mergesOf, parseMerge } from '../layout/merges.js'
-import { lineAt } from '../layout/spans.js'
+import { entryAt, lines } from '../layout/spans.js'
 import { say } from '../locale/messages.js'
 import { inputIn } from '../looks/sheet.js'
 import { formatAddress } from '../model.js'
@@ -19,7 +19,7 @@ import { tablesOf } from '../tables/model.js'
 import { cornersText, grown, meets, rectText, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { moveRange } from './move.js'
-import { arraysOf, cellsIn, gridOf } from './grid.js'
+import { arraysOf, cellsIn, gridOf, type Grid } from './grid.js'
 import { holds } from '../array-areas.js'
 
 export { grown }
@@ -41,10 +41,24 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
   const kept = merges.filter((m) => !meets(m, area)).map(cornersText)
   let moved: BookInput = { ...book, sheets: book.sheets.map((t, i) => (i === s ? { ...t, merges: kept } : t)) }
   const geometry: Geometry = []
+  // the cells of the area by row, read once for a grid: across, each row's area takes its own (a walk of the grid per row was O(rows × sheet))
+  let byRow: { g: Grid; rows: Map<number, number[]> } | undefined
+  const cellsOf = (g: Grid, a: Rect): readonly number[] => {
+    if (!across) return cellsIn(g, a)
+    if (byRow?.g !== g) {
+      byRow = { g, rows: new Map() }
+      for (const i of cellsIn(g, area)) {
+        const list = byRow.rows.get(g.row[i])
+        if (list) list.push(i)
+        else byRow.rows.set(g.row[i], [i])
+      }
+    }
+    return byRow.rows.get(a.r1) ?? []
+  }
   for (const a of made) {
     const g = gridOf(moved.sheets[s])
     if (holds(moved.sheets[s].cells[formatAddress(a.r1, a.c1)])) continue
-    const from = cellsIn(g, a)
+    const from = cellsOf(g, a)
       .filter((i) => holds(g.cell[i]))
       .sort((i, j) => g.row[i] - g.row[j] || g.col[i] - g.col[j])[0]
     if (from === undefined) continue
@@ -58,10 +72,11 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
   const cells: Record<string, CellInput> = { ...sh.cells }
   const looks: LookRange[] = []
   let styles = moved.styles ?? []
+  const [rows, cols] = [lines(sh.rows, 'r'), lines(sh.columns, 'c')]
   for (const a of center ? areas : made) {
     const top = formatAddress(a.r1, a.c1)
     const own = inputIn(sh, top, a.r1, a.c1)
-    const [row, col] = [lineAt(sh.rows, 'r', a.r1), lineAt(sh.columns, 'c', a.c1)]
+    const [row, col] = [entryAt(rows, a.r1), entryAt(cols, a.c1)]
     const numberFormat = own?.numberFormat ?? row?.numberFormat ?? col?.numberFormat
     let style = own?.style ?? row?.style ?? col?.style
     if (center) {
@@ -73,7 +88,7 @@ export function mergeCells(book: BookInput, sheet: string, x: Rect, across: bool
     if (center) cells[top] = { ...withoutLook(sh.cells[top]), ...look }
     if (a.r1 === a.r2 && a.c1 === a.c2) continue
     looks.push({ range: cornersText(a), ...look })
-    for (const i of cellsIn(g, a)) {
+    for (const i of cellsOf(g, a)) {
       const addr = g.addr[i]
       if (addr === top) continue
       const kept = cleared(g.cell[i])
