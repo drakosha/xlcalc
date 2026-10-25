@@ -238,17 +238,26 @@ export class Layer {
     return id === NONE ? undefined : this.looks.list[id]
   }
 
-  /** The pieces of the layer in rectangle `x`, row block by row block, each block's runs in order. */
-  *pieces(x: Rect = FULL): Generator<Piece> {
+  /** The pieces of the layer in rectangle `x`, row block by row block, each block's runs in order; `gaps`: with those of no look (NONE) between them. */
+  *pieces(x: Rect = FULL, gaps = false): Generator<Piece> {
+    let next = x.r1
     for (let b = this.firstFrom(x.r1); b < this.at.length && this.r1[b] <= x.r2; b++) {
       const [r1, r2] = [Math.max(this.r1[b], x.r1), Math.min(this.r2[b], x.r2)]
+      if (gaps && r1 > next) yield { r1: next, r2: r1 - 1, c1: x.c1, c2: x.c2, look: NONE }
+      next = r2 + 1
       const p = this.patterns[this.at[b]]
+      let c = x.c1
       for (let k = 0; k < p.length; k += 3) {
         if (p[k + 1] < x.c1) continue
         if (p[k] > x.c2) break
-        yield { r1, r2, c1: Math.max(p[k], x.c1), c2: Math.min(p[k + 1], x.c2), look: p[k + 2] }
+        const [c1, c2] = [Math.max(p[k], x.c1), Math.min(p[k + 1], x.c2)]
+        if (gaps && c1 > c) yield { r1, r2, c1: c, c2: c1 - 1, look: NONE }
+        yield { r1, r2, c1, c2, look: p[k + 2] }
+        c = c2 + 1
       }
+      if (gaps && c <= x.c2) yield { r1, r2, c1: c, c2: x.c2, look: NONE }
     }
+    if (gaps && next <= x.r2) yield { r1: next, r2: x.r2, c1: x.c1, c2: x.c2, look: NONE }
   }
 
   /** The looks its cells show, each once. */
@@ -314,6 +323,20 @@ export function edited(layer: Layer, edits: RowsEdit[], looks: LookTable = layer
     out.rows(lo, hi, next)
   }
   return changed || looks !== layer.looks ? out.build() : layer
+}
+
+/** Rectangles apart, each with a look's number, as edits of the rows they cover, in order. */
+export function rectEdits(xs: readonly Piece[]): RowsEdit[] {
+  const out: RowsEdit[] = []
+  const starts = [...xs].sort((a, b) => a.r1 - b.r1)
+  let active: Piece[] = []
+  let k = 0
+  for (const [lo, hi] of bands(xs.flatMap((x) => [x.r1, x.r2 + 1]))) {
+    active = active.filter((x) => x.r2 >= lo)
+    while (k < starts.length && starts[k].r1 <= lo) active.push(starts[k++])
+    if (active.length) out.push({ lo, hi, top: active.sort((a, b) => a.c1 - b.c1).flatMap((x) => [x.c1, x.c2, x.look]) })
+  }
+  return out
 }
 
 /** Cells' new looks (NONE for none), by row and column, as edits of their rows. */

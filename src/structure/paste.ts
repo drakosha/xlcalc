@@ -19,8 +19,8 @@ import { arrayRefusal } from './arrays.js'
 import type { Applied } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetOf } from './rewrite.js'
-import type { Layer } from '../looks/layer.js'
-import { layerOf } from '../looks/sheet.js'
+import { edited, emptyLayer, LookTable, NONE, rectEdits, type Layer, type Piece } from '../looks/layer.js'
+import { layerOf, setLayer } from '../looks/sheet.js'
 
 export interface Paste {
   from: string
@@ -91,55 +91,55 @@ interface Source {
   tr: Line<RowInput>[]
   tc: Line<ColumnInput>[]
   cells: { row: number; col: number; look: Look }[]
-  /** The positions of `cells`, as `row * MAX_COLS + col`. */
-  own: Set<number>
   looks: Layer | undefined
-  pasted: Layer | undefined
 }
 
 /** The cells of `src` on the old sheet `from`, found once for all the offsets of a paste (a fill pastes one row thousands of times). */
 function sourceOf(from: SheetInput, to: SheetInput, src: Rect): Source {
-  const out: Source = { sr: lines(from.rows, 'r'), sc: lines(from.columns, 'c'), tr: lines(to.rows, 'r'), tc: lines(to.columns, 'c'), cells: [], own: new Set(), looks: layerOf(from), pasted: layerOf(to) }
+  const out: Source = { sr: lines(from.rows, 'r'), sc: lines(from.columns, 'c'), tr: lines(to.rows, 'r'), tc: lines(to.columns, 'c'), cells: [], looks: layerOf(from) }
   const g = gridOf(from)
   for (const i of cellsIn(g, src)) {
     const [row, col, cell] = [g.row[i], g.col[i], g.cell[i]]
     const s = lineLook(out.sr, out.sc, row, col)
-    out.own.add(row * MAX_COLS + col)
     out.cells.push({ row, col, look: { style: cell.style ?? s.style, numberFormat: cell.numberFormat ?? s.numberFormat } })
   }
   return out
 }
 
+/** The fields `cell` takes to show look `s` where the rows and columns show `t`: a style with nothing set (`plain()`) or `General` where `s` has none. */
+function spelled(cell: Look, s: Look, t: Look, plain: () => number): Look {
+  const style = (cell.style ?? t.style) !== s.style ? { style: s.style ?? plain() } : {}
+  const format = (cell.numberFormat ?? t.numberFormat) !== s.numberFormat ? { numberFormat: s.numberFormat ?? 'General' } : {}
+  return { ...style, ...format }
+}
+
 /**
- * Each position of `src` on the old sheet, pasted at (dr, dc) of `to`, shows what it showed: where the
- * rows and columns of `to` would give another style or format, the cell spells out the source's (a style with
- * nothing set, `plain()`, or `General` where the source had none).
+ * Each position of `src` on the old sheet, pasted at (dr, dc) of `to`, shows what it showed: where the rows and columns
+ * of `to` would give another style or format, the cell spells out the source's (`spelled`). A cell of an entry spells it
+ * in its entry; the others, which show the source's looks pasted on the target's, by pieces of those looks, into `laid`
+ * (rectangles of the target with looks of `looks`), never cell by cell: a paste of whole formatted columns covers millions.
  */
-function keepLooks(to: SheetInput, src: Rect, source: Source, dr: number, dc: number, plain: () => number) {
+function keepLooks(to: SheetInput, src: Rect, source: Source, dr: number, dc: number, plain: () => number, laid: Piece[], looks: LookTable) {
   const { sr, sc, tr, tc } = source
-  const spell = (addr: string, s: Look, t: Look, cell: CellInput = to.cells[addr] ?? {}) => {
-    const style = (cell.style ?? t.style) !== s.style ? { style: s.style ?? plain() } : {}
-    const format = (cell.numberFormat ?? t.numberFormat) !== s.numberFormat ? { numberFormat: s.numberFormat ?? 'General' } : {}
-    if (Object.keys(style).length || Object.keys(format).length) to.cells[addr] = { ...cell, ...style, ...format }
-  }
   for (const { row, col, look } of source.cells) {
     spend(1)
-    spell(formatAddress(row + dr, col + dc), look, lineLook(tr, tc, row + dr, col + dc))
+    const addr = formatAddress(row + dr, col + dc)
+    const cell = to.cells[addr] ?? {}
+    const more = spelled(cell, look, lineLook(tr, tc, row + dr, col + dc), plain)
+    if (Object.keys(more).length) to.cells[addr] = { ...cell, ...more }
   }
   for (const [ra, rb] of segments(sr, tr, src.r1, src.r2, dr))
     for (const [ca, cb] of segments(sc, tc, src.c1, src.c2, dc)) {
       const [s, t] = [lineLook(sr, sc, ra, ca), lineLook(tr, tc, ra + dr, ca + dc)]
       if (s.style === t.style && s.numberFormat === t.numberFormat) continue
-      for (let r = ra; r <= rb; r++)
-        for (let c = ca; c <= cb; c++) {
-          spend(1)
-          if (source.own.has(r * MAX_COLS + c)) continue
-          // a cell of the source's looks shows its look over the lines', laid on the target's looks
-          const look = source.looks?.lookAt(r, c)
-          const shown = look ? { style: look.style ?? s.style, numberFormat: look.numberFormat ?? s.numberFormat } : s
-          const addr = formatAddress(r + dr, c + dc)
-          spell(addr, shown, t, to.cells[addr] ?? source.pasted?.lookAt(r + dr, c + dc))
-        }
+      const x = { r1: ra, r2: rb, c1: ca, c2: cb }
+      // a piece of the source's looks shows its look over the lines', pasted on the target's as it is
+      for (const p of source.looks?.pieces(x, true) ?? [{ ...x, look: NONE }]) {
+        spend(1)
+        const look = p.look === NONE ? {} : source.looks!.looks.list[p.look]
+        const more = spelled(look, { style: look.style ?? s.style, numberFormat: look.numberFormat ?? s.numberFormat }, t, plain)
+        if (Object.keys(more).length) laid.push({ r1: p.r1 + dr, r2: p.r2 + dr, c1: p.c1 + dc, c2: p.c2 + dc, look: looks.of({ ...look, ...more }) })
+      }
     }
 }
 
@@ -175,5 +175,10 @@ export function pasteLayout(old: BookInput, out: BookInput, p: Paste) {
     return plainStyle
   }
   const source = sourceOf(oldFrom, to, p.src)
-  for (const [dr, dc] of p.offsets) keepLooks(to, p.src, source, dr, dc, plain)
+  const base = layerOf(to)
+  const looks = new LookTable(base?.looks)
+  const laid: Piece[] = []
+  for (const [dr, dc] of p.offsets) keepLooks(to, p.src, source, dr, dc, plain, laid, looks)
+  // the cells of an entry among them show their own; the engine takes no look under an entry (`looksTaken`)
+  if (laid.length) setLayer(to, edited(base ?? emptyLayer(), rectEdits(laid), looks))
 }
