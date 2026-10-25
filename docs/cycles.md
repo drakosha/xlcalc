@@ -37,7 +37,7 @@ console.log(r.B3.value, r.B4.value) // → 99.999984375 999.999984375
 console.log(compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells.B3.value) // → 0
 ```
 
-Cells are calculated sheet by sheet in the order of the sheet names, row by row. A change of text, a boolean or an error into another one does not count as a change. Every calculation starts from 0, so a session produces what a full calculation produces. Excel continues from the values it holds when it recalculates, which the engine does not do (see [Limitations](limitations.md)).
+Cells are calculated sheet by sheet in the order of the sheet names, row by row. A change of text, a boolean or an error into another one does not count as a change. Every calculation starts from 0, so a session produces what a full calculation produces. An array in a cycle can spill into cells that a formula outside the cycles reads and give them back by the last iteration (a `FILTER` over its own spill that a value further down stops); the cycles are then calculated again for that formula, and once that ends where the time before ended, the calculation stops with those values. Excel continues from the values it holds when it recalculates, which the engine does not do (see [Limitations](limitations.md)).
 
 ## Which cells a cycle stops
 

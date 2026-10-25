@@ -5,8 +5,10 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, createSession, type BookInput, type CellInput, type ComputeResult, type SheetInput } from '../src/index.js'
-import { applyEdits, createState } from '../src/engine.js'
-import { run } from '../src/exec/budget.js'
+import { applyEdits, createState, toCellValue, valueAt } from '../src/engine.js'
+import { Budget, run, withBudget } from '../src/exec/budget.js'
+import { parseAddress } from '../src/model.js'
+import { pool } from './fixtures/pool.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 type Cells = Record<string, CellInput>
@@ -175,4 +177,52 @@ it('arrays below one long chain find whether they close a cycle without each wal
   // of each pair, which read the same cell, the lower array spills and the upper one waits
   expect(state.rt.cell(0, n + 2, 3)).toBe(1)
   expect(state.rt.cell(0, n + 1, 2)).toEqual({ code: 'SPILL' })
+})
+
+describe.each(['closures', 'eval'] as const)('an iteration that spills into cells a formula outside the cycles reads, %s', (execution) => {
+  // FILTER over its own spill grows by one row each iteration until a value below stops it; H1, outside the cycles, reads
+  // the rows it took and gives them back, and H64, over a cycle, reads H1: each round of the computation iterated again
+  // from 0 and ended as the one before, for ever (the s1/engine review's seed 141, on 0.56.0 too)
+  const book = (): BookInput => ({
+    iteration: { maxIterations: 38, maxChange: 0.001 },
+    sheets: [
+      { name: 'S', cells: { H64: { formula: 'SUM(B1:BN3)' }, A159: { value: 12 }, A65: { value: 19 }, J3: { formula: 'J3+1' }, A130: { formula: 'FILTER(A1:A201,A1:A201>18,"no")' }, H1: { formula: 'A131:A135*1' } } },
+      { name: 'D', cells: {} },
+    ],
+  })
+  const answer = { H1: 0, J3: 38, A130: { error: 'SPILL' }, H64: 38 }
+  const opts = { clock: { now: '2026-03-01T10:00:00Z', seed: 7 }, execution }
+
+  it('ends after a few rounds: its work counted in tens of thousands of units, not without end', () => {
+    // a budget of limits alone counts the work (a formula computed, the cells it reads) and looks every 1,024 units: the
+    // new way looks some 45 times, the old one passed 1,000 looks within a second and never ended
+    const b = new Budget({ cells: 1e9 })
+    let looks = 0
+    b.look = () => {
+      if (++looks > 1000) throw new Error('over a million units of work')
+      b.left = 1024
+    }
+    const state = withBudget(b, () => createState(book(), { now: 46082.42, seed: 7, execution }))
+    expect(looks).toBeLessThan(100)
+    const at = (a: string) => toCellValue(valueAt(state, 0, parseAddress(a).row, parseAddress(a).col))
+    expect(Object.keys(answer).map(at)).toEqual(Object.values(answer))
+  })
+
+  it('computes and opens as a session in every kind, the session holding what compute gives', async () => {
+    const r = compute(book(), opts)
+    expect(Object.fromEntries(Object.keys(answer).map((a) => [a, r.sheets[0].cells[a].value]))).toEqual(answer)
+    const sync = createSession(book(), opts)
+    expect(sync.getHash()).toBe(r.hash)
+    for (const calc of [createInlineCalc(), await pool({ threads: 1 })]) {
+      try {
+        // a soft deadline the old way ran past
+        const s = await calc.createSession(book(), { ...opts, timeoutMs: 3000 })
+        expect(await s.getHash()).toBe(r.hash)
+        await s.setCells([{ sheet: 'S', cell: 'A65', input: { value: 20 } }], { timeoutMs: 3000 })
+        expect(await s.getHash()).toBe(compute((await s.getBook()) as BookInput, opts).hash)
+      } finally {
+        await calc.close()
+      }
+    }
+  })
 })
