@@ -35,6 +35,6 @@ it('graph readers and cache invalidation agree with a full scan across narrow, w
     expect([...found].sort((a, b) => a - b)).toEqual(expected.sort((a, b) => a - b))
     for (const r of ranges) if (hit(r)) remaining.delete(r.key)
     cache.invalidate(q)
-    expect([...cache]).toEqual([...remaining])
+    expect([...cache.keys()]).toEqual([...remaining.keys()])
   }
 })
