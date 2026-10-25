@@ -10,7 +10,7 @@
 import { writesMark, writesSince } from '../cell-writes.js'
 import { sheetIndexOf, type EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, placeParts, readAddress } from '../model.js'
+import { colOf, formatAddress, MAX_COLS, MAX_ROWS, placeParts, readAddress, rowOf } from '../model.js'
 import { lowerBound } from '../sorted.js'
 import { parseRange } from '../structure/area.js'
 import type { Outcome } from './answer.js'
@@ -123,7 +123,7 @@ export function kindOf(x: SheetTexts, kind: TextKind): (string | undefined)[] {
 /** A sheet's cells by columns. */
 export function byColumns(x: SheetTexts): NonNullable<SheetTexts['columns']> {
   if (!x.columns) {
-    const keys = Float64Array.from(x.at, (m) => (m % MAX_COLS) * MAX_ROWS + Math.floor(m / MAX_COLS))
+    const keys = Float64Array.from(x.at, (m) => colOf(m) * MAX_ROWS + rowOf(m))
     const ix = Uint32Array.from(keys.keys()).sort((a, b) => keys[a] - keys[b])
     x.columns = { ix, at: Float64Array.from(ix, (i) => keys[i]) }
   }

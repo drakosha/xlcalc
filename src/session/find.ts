@@ -11,7 +11,7 @@ import { InputError } from '../input-error.js'
 import { ERROR_TEXT } from '../syntax/errors.js'
 import { checkBoolean } from '../input/basic.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, placeOf } from '../model.js'
+import { colOf, formatAddress, MAX_COLS, MAX_ROWS, placeOf, rowOf } from '../model.js'
 import { cellValue } from '../result.js'
 import { cellLooks } from '../shown.js'
 import { appearanceOf, windowLooks } from '../cond/looks.js'
@@ -236,10 +236,7 @@ export function finderOf(state: EngineState, query: string, o: FindCellsOptions,
 }
 
 /** A place's row and column; by columns (`c * MAX_ROWS + r`), too. */
-const rc = (m: number): [number, number] => {
-  const r = Math.floor(m / MAX_COLS)
-  return [r, m - r * MAX_COLS]
-}
+const rc = (m: number): [number, number] => [rowOf(m), colOf(m)]
 /** Whether position `a` comes after `b` in Find's order. */
 const later = (a: number[], b: number[]) => {
   for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] > b[k]

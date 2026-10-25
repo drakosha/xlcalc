@@ -6,7 +6,7 @@ import type { SheetExtent } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { parseMerge } from '../layout/merges.js'
 import { layerOf } from '../looks/sheet.js'
-import { MAX_COLS } from '../model.js'
+import { colOf, rowOf } from '../model.js'
 
 export function sheetExtent(state: EngineState, s: number): SheetExtent {
   let rows = 0
@@ -28,7 +28,7 @@ export function sheetExtent(state: EngineState, s: number): SheetExtent {
   }
   // the whole range of each spill, its cells past the stored ones (`spillFill`) too
   for (const x of state.spills.on.values()) if (x.s === s) reach(x.r2, x.c2)
-  for (const k of state.bare.get(s) ?? []) reach(Math.floor(k / MAX_COLS), k % MAX_COLS)
+  for (const k of state.bare.get(s) ?? []) reach(rowOf(k), colOf(k))
   // the cells of a look of the sheet's looks, as cells of a look alone
   const looked = layerOf(state.input.sheets[s])?.bounds()
   if (looked) reach(looked.r2, looked.c2)

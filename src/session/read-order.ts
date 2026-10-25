@@ -8,7 +8,7 @@
 import type { EngineState } from '../engine.js'
 import { paced } from '../exec/budget.js'
 import { layerOf } from '../looks/sheet.js'
-import { formatAddress, MAX_COLS } from '../model.js'
+import { colOf, formatAddress, MAX_COLS, rowOf } from '../model.js'
 import { lowerBound } from '../sorted.js'
 import { hasCell, meets, type Rect } from '../structure/area.js'
 import type { Ref } from './find.js'
@@ -24,8 +24,8 @@ const nextRow = (rows: number[] | null, r: number) => (rows ? (rows[lowerBound(r
 function nextIn(at: Float64Array, x: Rect, rows: number[] | null, start: number, j: number): number {
   while (j < at.length) {
     const m = at[j]
-    const r = Math.floor(m / MAX_COLS)
-    const c = m - r * MAX_COLS
+    const r = rowOf(m)
+    const c = colOf(m)
     const row = nextRow(rows, r)
     if (row > x.r2) return at.length
     if (row > r || c < x.c1) j = lowerBound(at, Math.max(start, row * MAX_COLS + x.c1))
@@ -98,8 +98,8 @@ export function* readOrder(state: EngineState, refs: Ref[], rows: number[] | nul
       const m = heads[k].value as number
       heads[k] = streams[k].next()
       if (paced(1)) yield
-      const r = Math.floor(m / MAX_COLS)
-      const c = m - r * MAX_COLS
+      const r = rowOf(m)
+      const c = colOf(m)
       const addr = formatAddress(r, c)
       // an input cell from the index alone, a spilled cell from its spill alone, a look's cell where neither is
       if ((k === 0) !== (addr in cells) || (k === 2 && spills.some((y) => hasCell(y, r, c))) || (earlier.length && earlier.some((y) => hasCell(y, r, c)))) continue

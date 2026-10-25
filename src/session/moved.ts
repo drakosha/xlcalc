@@ -3,7 +3,7 @@ import type { CellInput, RangeRef } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { same } from '../evaluate.js'
 import { spend } from '../exec/budget.js'
-import { formatAddress, MAX_COLS, placeOf, readAddress } from '../model.js'
+import { colOf, formatAddress, MAX_COLS, placeOf, readAddress, rowOf } from '../model.js'
 import { fieldsBetween, formulaText, hasFields, type FieldChange } from './answer.js'
 import { lookParts, type Looks } from '../shown.js'
 import { shownKey } from './looks.js'
@@ -121,7 +121,7 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
   // the cells of a style, a format, a note or a link alone, which hold no value (one a spill covers was met above)
   for (const [s, cells] of old.bare)
     for (const n of cells) {
-      const [r, c] = [Math.floor(n / MAX_COLS), n % MAX_COLS]
+      const [r, c] = [rowOf(n), colOf(n)]
       const own = (valueAt(old, s, r, c) ?? null) === null
       if (place(at(p, s, r, c))) compare(p.s, p.r, p.c, at(from, s, r, c), own)
       else if (own) diff?.gone(s, r, c)
@@ -150,7 +150,7 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
   for (const [s, cells] of next.bare) {
     if (fresh[s]) continue
     for (const n of cells) {
-      const [r, c] = [Math.floor(n / MAX_COLS), n % MAX_COLS]
+      const [r, c] = [rowOf(n), colOf(n)]
       const came = back(at(p, s, r, c))
       // a new input of a look alone, a spilled one too, from a place of no input
       if (came && !bare(old, p.s, p.r, p.c) && !valued()) unmet(s, r, c)
