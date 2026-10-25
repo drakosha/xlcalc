@@ -14,7 +14,10 @@ import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockOptions } from '../result.js'
 import { areaText } from './area.js'
-import { looksTaken } from '../looks/sheet.js'
+import { layerOf, looksTaken, withLayer } from '../looks/sheet.js'
+import { emptyLayer } from '../looks/layer.js'
+import { withLooseLooks } from './paste.js'
+import { sheetKey } from '../syntax.js'
 import { linesMoved, overLooks } from './looks.js'
 import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry.js'
 import { withGrids } from './grid.js'
@@ -121,8 +124,10 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
   withGrids(() => {
     checkWrites(book, op, values, whole)
     const input = overLooks(book, op)
-    const r = applied(input, op, values, whole)
-    return r.ok ? linesMoved(input, r) : r
+    const [r, loose] = withLooseLooks(() => applied(input, op, values, whole))
+    const out = r.ok ? linesMoved(input, r) : r
+    // the looks a paste laid where no entry is come as the sheet's last field, as the engine took them from entries
+    return out.ok && loose.size ? { ...out, book: { ...out.book, sheets: out.book.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } } : out
   })
 
 function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: boolean): Applied {

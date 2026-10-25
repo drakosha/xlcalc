@@ -256,3 +256,24 @@ describe.each(EXECUTIONS)('formatting whole columns over large looks (patch-look
     })
   })
 })
+
+describe.each(EXECUTIONS)('the fields of a sheet after a paste lays looks (the acceptance of r7/fixes-session), %s', (execution) => {
+  // a book's field order reaches results as it is given: looks laid by a paste where no entry is come last, as the
+  // entries of a look alone they were before 25.10 came; a fill over entries alone keeps the order
+  const sheet = (extra: object): BookInput => ({
+    styles: [{}, { font: { bold: true } }, { font: { italic: true } }],
+    sheets: [{ name: 'S', cells: { D4: { value: 1 }, D5: { value: 2 } }, rows: { '9:12': { style: 1 } }, validations: [{ range: 'A1', type: 'list', formula1: '"a,b"' }], ...extra }],
+  })
+  const rule = { type: 'expression' as const, ranges: ['C3:C4'], formula: 'C3>1', style: { font: { bold: true } } }
+  const CASES: [string, BookInput, StructureOp, string][] = [
+    ['a fill over entries', sheet({ looks: [{ range: 'G7', style: 2 }] }), { op: 'fillRange', sheet: 'S', range: 'D4:D5', to: 'D4:D12', type: 'series' }, 'name,cells,rows,looks,validations'],
+    ['a copy into styled rows', sheet({ conditionalFormats: [rule] }), { op: 'copyRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', range: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    ['a copy into styled rows, with looks', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [rule] }), { op: 'copyRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', range: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    ['a move into styled rows', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [rule] }), { op: 'moveRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', cell: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    ['a copy into styled rows, looks given before the rules', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [{ ...rule, ranges: ['H1'] }] }), { op: 'copyRange', from: { sheet: 'S', range: 'C3:E6' }, to: { sheet: 'S', range: 'C9' } }, 'name,cells,rows,validations,conditionalFormats,looks'],
+    ['a fill into styled rows, looks given before the rules', sheet({ looks: [{ range: 'G7', style: 2 }], conditionalFormats: [{ ...rule, ranges: ['H1'] }] }), { op: 'fillRange', sheet: 'S', range: 'C3:E3', to: 'C3:E12', type: 'copy' }, 'name,cells,rows,validations,conditionalFormats,looks'],
+  ]
+  it.each(CASES)('%s', (_, book, op, fields) => {
+    expect(Object.keys(edited(book, op, execution).sheets[0]).join(',')).toBe(fields)
+  })
+})
