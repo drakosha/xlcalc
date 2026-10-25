@@ -219,23 +219,28 @@ function fillLines(state: EngineState, s: number, addr: string, value: CellValue
   for (const f of state.spills.on.get(state.at.get(placeOf(s, row, col))!)!.fills) out.push({ sheet: state.sheetNames[s], range: cornersText(f), value })
 }
 
-/** The values hasher of a state's configuration, locale and date system; cells are written to it as they are read. */
-const hasher = (state: EngineState) => new ValuesHasher(CONFIG_VERSION, state.input.locale, state.input.dateSystem)
-
-/** The values hash of a state, as its result gives it, without the cells' results (`Session.getHash`). */
-export function* stateHash(state: EngineState): Steps<string> {
-  const w = hasher(state)
+/** The state's cells written to a hasher of its configuration, in the hash's sheet order, with each spill's fills: one walk for the values hash alone and a result. */
+function* hashCells(state: EngineState, cell: (s: number, addr: string, spillOf: string | undefined, row: number, col: number) => { value: CellValue; spillFill?: CellValue }, sorted?: Map<object, string[]>, keys?: Map<object, string[]>): Steps<string> {
+  const w = new ValuesHasher(CONFIG_VERSION, state.input.locale, state.input.dateSystem)
   const fills: FillLine[] = []
   for (const s of sheetOrder(state.input.sheets.map((x) => x.name))) {
     const quoted = JSON.stringify(state.input.sheets[s].name)
-    yield* eachCell(state, s, (addr, _, row, col) => {
-      w.cell(quoted, addr, outValue(toCellValue(valueAt(state, s, row, col))), true)
-      const id = state.at.get(placeOf(s, row, col))
-      const x = id === undefined ? undefined : state.spills.on.get(id)
-      if (x?.fills.length) fillLines(state, s, addr, anchorFields(x).spillFill, fills)
-    })
+    yield* eachCell(state, s, (addr, spillOf, row, col) => {
+      const { value, spillFill } = cell(s, addr, spillOf, row, col)
+      w.cell(quoted, addr, value, true)
+      if (spillFill !== undefined) fillLines(state, s, addr, spillFill, fills)
+    }, sorted, keys)
   }
   return w.hex(fills)
+}
+
+/** The values hash of a state, as its result gives it, without the cells' results (`Session.getHash`). */
+export function* stateHash(state: EngineState): Steps<string> {
+  return yield* hashCells(state, (s, addr, _, row, col) => {
+    const id = state.at.get(placeOf(s, row, col))
+    const x = id === undefined ? undefined : state.spills.on.get(id)
+    return { value: outValue(toCellValue(valueAt(state, s, row, col))), spillFill: x?.fills.length ? anchorFields(x).spillFill : undefined }
+  })
 }
 
 /**
@@ -243,23 +248,16 @@ export function* stateHash(state: EngineState): Steps<string> {
  * listed in the book's. The steps yield between cells, so a large book's result does not hold the thread.
  */
 export function* buildResult(state: EngineState, clock: Clock, t0: number, display: boolean, book = state.input, keys?: Map<object, string[]>): Steps<ComputeResult> {
-  const w = hasher(state)
-  const fills: FillLine[] = []
   const look = display ? cellLooks(state) : null
   const sheets = state.input.sheets.map(({ name }) => ({ name, cells: {} as Record<string, CellResult> }))
   const sorted = new Map<object, string[]>()
-  for (const s of sheetOrder(sheets.map((x) => x.name))) {
-    const { name, cells } = sheets[s]
-    const quoted = JSON.stringify(name)
-    yield* eachCell(state, s, (addr, spillOf, row, col) => {
-      const out = resultAt(state, s, addr, row, col, look, spillOf)
-      // A snapshot's result takes its metadata from the detached book, not from the session's live input.
-      if (out.meta !== undefined && book !== state.input) out.meta = book.sheets[s].cells[addr].meta
-      fillLines(state, s, addr, out.spillFill, fills)
-      cells[addr] = out
-      w.cell(quoted, addr, out.value, true)
-    }, sorted, keys)
-  }
+  const hash = yield* hashCells(state, (s, addr, spillOf, row, col) => {
+    const out = resultAt(state, s, addr, row, col, look, spillOf)
+    // A snapshot's result takes its metadata from the detached book, not from the session's live input.
+    if (out.meta !== undefined && book !== state.input) out.meta = book.sheets[s].cells[addr].meta
+    sheets[s].cells[addr] = out
+    return { value: out.value, spillFill: out.spillFill }
+  }, sorted, keys)
   const inputHash = yield* inputHashSteps(state.input, sorted)
   const volatile = [...state.volatile]
     .map((id) => state.formulas[id]!)
@@ -273,7 +271,7 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
     ],
     volatile,
     clock: { ...clock },
-    hash: w.hex(fills),
+    hash,
     inputHash,
     configVersion: CONFIG_VERSION,
     ms: nowMs() - t0,
