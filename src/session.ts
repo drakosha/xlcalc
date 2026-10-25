@@ -591,7 +591,6 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
           }
         }
       }
-      controlledClock = undefined
     }
   }
   return {
