@@ -83,3 +83,6 @@ useArities((name) => (Object.hasOwn(FUNCTIONS, name) ? FUNCTIONS[name] : undefin
 
 /** The whitelist: every function a formula can call, by its English name, in alphabetical order. */
 export const FUNCTION_NAMES: readonly string[] = [...Object.keys(FUNCTIONS), ...SYNTAX].sort()
+
+/** The names a book gives as its external functions, upper-cased, the whitelisted ones left out: what a check takes as external. */
+export const externalNames = (fns?: readonly string[]): string[] => (fns ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])

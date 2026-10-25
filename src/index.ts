@@ -35,7 +35,7 @@ import { localeBooleans } from './locale/registry.js'
 import { displayRules } from './locale/rules.js'
 import { columnPoints, room } from './numfmt.js'
 import { clockOptions } from './result.js'
-import { FUNCTIONS } from './functions.js'
+import { externalNames } from './functions.js'
 import { prepareNames } from './names.js'
 import { sheetKey, validate, validateName as checkName } from './syntax.js'
 
@@ -115,8 +115,7 @@ export const validateName = /* @__PURE__ */ strict(function validateName(name: s
 export const validateNames = /* @__PURE__ */ strict(function validateNames(names: NameInput[], ctx: NamesContext): NameIssue[] {
   const c = checkNamesContext(ctx)
   const sheetIdx = new Map(c.sheets.map((name, i) => [sheetKey(name), i]))
-  const externalFunctions = (c.externalFunctions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
-  return prepareNames(sheetIdx, checkNames(names, 'names'), externalFunctions, c.tables ?? [], localeBooleans(c.locale), c.externalBooks).issues
+  return prepareNames(sheetIdx, checkNames(names, 'names'), externalNames(c.externalFunctions), c.tables ?? [], localeBooleans(c.locale), c.externalBooks).issues
 })
 
 /** The code that `eval` mode generates for the workbook, in evaluation order, for reading while debugging; not part of the contract. */

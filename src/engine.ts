@@ -11,7 +11,7 @@ import type { BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckC
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
-import { FUNCTIONS } from './functions.js'
+import { externalNames } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
 import { builtAnew, putHeld } from './held.js'
@@ -250,7 +250,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   // no closure here takes \`opts\`: the state's closures share this scope, and \`opts.prior\` holds the state built before
   const { own, keys } = opts
   const input: BookInput = { ...book, sheets: book.sheets.map((x) => looksTaken(x)).map((s) => ({ ...s, cells: own?.(s.cells) ? s.cells : { ...s.cells } })) }
-  const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
+  const externalFunctions = externalNames(opts.externals?.functions)
   const tables = tablesOf(input)
   const prepared = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale), book.externalBooks)
   const linked = linkSheets(book.externalBooks, sheetNames.length)
