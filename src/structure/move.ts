@@ -129,7 +129,7 @@ export function carryNames(names: NameInput[], formulas: string[], from: string,
     walk(ast, (n) => {
       if (n.k !== 'name') return
       const local = own(n.name)
-      if (local && !inputNameFor(names, to, n.name) && !added.some((a) => caseKey(a.name) === caseKey(n.name))) added.push({ name: local.name, ref: repoint(local.ref), scope: to })
+      if (local && !inputNameFor(names, to, n.name) && !added.some((a) => caseKey(a.name) === caseKey(n.name))) added.push({ ...local, ref: repoint(local.ref), scope: to })
     })
   }
   return added

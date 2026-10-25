@@ -93,7 +93,7 @@ function definedNames(book: BookInput, issues: Issues, names: FileNames): string
       continue
     }
     seen.add(key)
-    out.push(`<definedName name="${escapeAttr(n.name)}"${scope === undefined ? '' : ` localSheetId="${scope}"`}>${escapeText(text!)}</definedName>`)
+    out.push(`<definedName name="${escapeAttr(n.name)}"${scope === undefined ? '' : ` localSheetId="${scope}"`}${n.hidden ? ' hidden="1"' : ''}>${escapeText(text!)}</definedName>`)
   }
   return out.length ? `<definedNames>${out.join('')}</definedNames>` : ''
 }

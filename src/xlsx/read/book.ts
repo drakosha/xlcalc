@@ -80,8 +80,7 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
       continue
     }
     const f = readFormula(readText(e.body ?? ''), issues, { name }, { ...opts, union: true })
-    if (flag(a.hidden)) issues.add('name', { key: 'hiddenName' }, { name })
-    out.push(scope === undefined ? { name, ref: f.formula } : { name, ref: f.formula, scope })
+    out.push({ name, ref: f.formula, ...(scope === undefined ? {} : { scope }), ...(flag(a.hidden) ? { hidden: true } : {}) })
   }
   return out
 }

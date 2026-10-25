@@ -74,10 +74,11 @@ export function checkNames(v: unknown, path: string): NameInput[] {
   names.forEach((n, i) => {
     const p = `${path}[${i}]`
     const o = object(n, p, "a name such as { name: 'rate', ref: \"'Data'!$B$1\" }")
-    onlyKeys(o, p, ['name', 'ref', 'scope'])
+    onlyKeys(o, p, ['name', 'ref', 'scope', 'hidden'])
     checkString(o.name, `${p}.name`)
     checkString(o.ref, `${p}.ref`)
     if (o.scope !== undefined) checkString(o.scope, `${p}.scope`)
+    if (o.hidden !== undefined) checkBoolean(o.hidden, `${p}.hidden`)
   })
   return namesTaken(names as NameInput[])
 }
