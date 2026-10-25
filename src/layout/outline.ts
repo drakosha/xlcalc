@@ -25,8 +25,6 @@ export interface OutlineEntry {
 
 type Map<T extends OutlineEntry = OutlineEntry> = Record<string, T>
 
-export { MAX_OUTLINE }
-
 /** A group: lines `lo`..`hi` at `level` or deeper; its summary line (null past the sheet's edge); collapsed as Excel reads it. */
 export interface Group {
   lo: number

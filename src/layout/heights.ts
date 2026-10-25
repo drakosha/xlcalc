@@ -19,8 +19,6 @@ import { sheetLines } from './lines.js'
 import { mergesOf } from './merges.js'
 import { lines as spansOf, spanKey } from './spans.js'
 
-export { DEFAULT_HEIGHT, MAX_HEIGHT }
-
 /** The size of the book's default font, which a style without one shows. */
 const DEFAULT_SIZE = 11
 
