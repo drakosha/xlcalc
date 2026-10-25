@@ -30,9 +30,7 @@ export function addLocale(locale: Locale): void {
 }
 
 /** The locales `registerLocale` loaded, in the order they were loaded; en-US is not among them (the pool sends a thread only those). */
-export function addedLocales(): readonly Locale[] {
-  return [...added.values()]
-}
+export const addedLocales = (): readonly Locale[] => [...added.values()]
 
 /** Hears every locale loaded from now on; the answer stops it. */
 export function onLocale(f: (locale: Locale) => void): () => void {

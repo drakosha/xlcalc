@@ -1,8 +1,7 @@
 /**
- * Excel's wildcard patterns — `*` any text, `?` one character, `~` the next character as it is — as matching: the
- * regular expression a pattern is, a pattern matched whole and by its parts between `*`, and a pattern's literal
- * text escaped. Criteria read them (`src/criteria.ts`), so do lookups and SEARCH (`wildMatcher`), and the `./text`
- * subpath's lexer and Find take the class without the engine: this module imports nothing and computes nothing else.
+ * Excel's wildcard patterns — `*` any text, `?` one character, `~` the next character as it is — as regular
+ * expressions, matched whole or part by part: criteria read them (`src/criteria.ts`), so do lookups and SEARCH, and the
+ * `./text` subpath's lexer and Find take them without the engine (this module imports nothing and computes nothing else).
  */
 
 /** Text matched literally in a regular expression. */

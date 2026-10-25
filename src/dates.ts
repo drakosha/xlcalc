@@ -5,7 +5,9 @@
  */
 import { DAY_MS, EPOCH_MS, fromUtcDays, NUMBER_TEXT, readNumber, serialToUtcMs } from './model.js'
 import { EN_NAMES } from './numfmt/style.js'
-import type { DateSystem } from './contract/values.js'
+
+/** A workbook's date system, as Excel counts serial dates (`BookInput.dateSystem`): 1900, or 1904. */
+export type DateSystem = 1900 | 1904
 
 /** The last serial number Excel accepts: 9999-12-31. */
 export const MAX_SERIAL = 2_958_465

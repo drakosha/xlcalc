@@ -1,6 +1,7 @@
 /** Formula text and typed values without a book: a value shown and typed in by a format and a locale, a sheet's name, the references, call and name at a place of formula text, a function's signature, Find's options over text and the order values compare in. */
 import type { Locale } from '../locale/types.js'
-import type { CellRect, CheckCode, DateSystem, JsonValue, Refusal } from './values.js'
+import type { DateSystem } from '../dates.js'
+import type { CellRect, CheckCode, JsonValue, Refusal } from './values.js'
 import type { CellInput, CellLink, CellNote, ExternalBook, NumberFormat } from './book.js'
 import type { FindCellsOptions } from './reading.js'
 

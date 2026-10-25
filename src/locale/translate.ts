@@ -65,7 +65,6 @@ export function sides(loc: Locale): Sides {
   ]
   const fns = Object.entries(loc.functions)
   const items = TABLE_ITEMS.map((w): [string, string] => [w, loc.tableItems?.[w] ?? w])
-  // the local side; `own` below takes its words and drops the English ones
   const side: Side = {
     tag: loc.tag,
     syn: local,

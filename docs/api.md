@@ -2248,14 +2248,6 @@ interface DataValidation {
 }
 ```
 
-### `DateSystem`
-
-A workbook's date system, as Excel counts serial dates ([`BookInput.dateSystem`](#bookinput)): 1900, or 1904.
-
-```ts
-type DateSystem = 1900 | 1904
-```
-
 ### `DateSystemOptions`
 
 The workbook's date system, as in [`BookInput.dateSystem`](#bookinput): 1900 without one.

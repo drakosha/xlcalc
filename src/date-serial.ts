@@ -5,11 +5,10 @@
  * the system's day 0 or after 9999-12-31 (a cell shows `#` for one, `DATE` gives `#NUM!`), so neither helper makes one:
  * it is an `InputError`.
  */
-import { EPOCH_1904, epochOf, MAX_SERIAL, ymd } from './dates.js'
+import { EPOCH_1904, epochOf, MAX_SERIAL, ymd, type DateSystem } from './dates.js'
 import { InputError, what } from './input-error.js'
 import { checkOneOf, checkString, object, onlyKeys } from './input/basic.js'
 import { DAY_MS, dateToSerial as serialOfText } from './model.js'
-import type { DateSystem } from './contract/values.js'
 
 /** The workbook's date system, as in `BookInput.dateSystem`: 1900 without one. */
 export interface DateSystemOptions {

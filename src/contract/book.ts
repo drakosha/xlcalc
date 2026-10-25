@@ -1,5 +1,6 @@
 /** A book as the engine takes it: cells with their notes and links, sheets with their columns, rows, looks, frozen panes, outline settings, tables and view, the book's names and the workbooks it links to; a book without its cells. */
-import type { CellValue, DateSystem, ErrorCode, JsonValue, Scalar } from './values.js'
+import type { DateSystem } from '../dates.js'
+import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
 import type { CellStyle, ConditionalFormat, DataValidation } from './looks.js'
 
 /**

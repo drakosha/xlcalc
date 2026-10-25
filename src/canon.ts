@@ -5,7 +5,8 @@
  * (`"Sheet"!B4:B1048576 n 0`). The engine configuration version is part of the values hash, and so are a
  * book's locale other than en-US and the 1904 date system.
  */
-import type { BookInput, CellValue, DateSystem } from './contract.js'
+import type { BookInput, CellValue } from './contract.js'
+import type { DateSystem } from './dates.js'
 import { paced, run, type Steps } from './exec/budget.js'
 import { lines, spanKey } from './layout/spans.js'
 import { layerLines, layerOf } from './looks/sheet.js'
