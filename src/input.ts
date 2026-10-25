@@ -18,7 +18,7 @@ import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
 import { array, checkBoolean, checkNumber, checkOneOf, checkString, isObject, object, onlyKeys, onlyOptions } from './input/basic.js'
 import { checkAddress, checkRange } from './input/range.js'
-import { checkFormat, checkStyleIndex, checkStyles } from './input/styles.js'
+import { checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
 import { checkSheetView } from './input-view.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
@@ -139,7 +139,7 @@ function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boo
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
   onlyKeys(o, p, [size, 'bestFit', 'style', 'numberFormat', 'hidden', 'outlineLevel', 'collapsed'])
-  const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
+  const field = (k: string, check: (x: unknown, path: string) => void) => givenIn(patch)(o, k) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
   field('numberFormat', checkFormat)
