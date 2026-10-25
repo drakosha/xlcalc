@@ -16,7 +16,7 @@ import { say } from '../locale/messages.js'
 import { parseAddress } from '../model.js'
 import { arrayPart } from '../spill/fixed.js'
 import { brokenRule } from '../validation/session.js'
-import { CONTENT } from './cells.js'
+import { CONTENT, someField } from './cells.js'
 import { cellValue } from './looks.js'
 
 /** The fields an entry replaces: the content and the number format. */
@@ -44,8 +44,7 @@ export function withTyped(s: EngineState, i: number, r: number, c: number, own: 
   // a cell in General keeps its own General; a format its row or column gives it stays theirs
   const format = typed?.numberFormat ?? own?.numberFormat
   if (format !== undefined && (own?.numberFormat !== undefined || format !== inherited)) out.numberFormat = format
-  for (const k in out) if (out[k] !== undefined) return out as CellInput
-  return null
+  return someField<CellInput>(out)
 }
 
 /** The input `own` of the cell after `text` is typed, edited in place or pasted (`way`) into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */

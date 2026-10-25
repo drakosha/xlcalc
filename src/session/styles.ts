@@ -18,7 +18,7 @@ import { StyleTable } from '../style-table.js'
 import { edited, emptyLayer, LookTable, NONE, type Layer, type RowsEdit } from '../looks/layer.js'
 import { layerOf, lookAlone, hasLook } from '../looks/sheet.js'
 import { inputAt } from './book.js'
-import { CONTENT } from './cells.js'
+import { CONTENT, someField } from './cells.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
 
 /** A rectangle of at most so many cells is read cell by cell. */
@@ -36,8 +36,7 @@ function over<T extends object>(base: T | undefined, patch: { [K in keyof T]?: T
     if (v === null) delete out[k]
     else if (v !== undefined) out[k] = v
   }
-  for (const k in out) if (out[k] !== undefined) return out as T
-  return undefined
+  return someField<T>(out) ?? undefined
 }
 
 /** A style with a patch over it, field by field: the font, the border's sides and the alignment one field at a time, the fill whole. */
@@ -206,8 +205,7 @@ function lookOver(table: StyleTable, input: CellInput | undefined, r: number, c:
     if (look[k] === null) delete out[k]
     else if (look[k] !== undefined) out[k] = look[k]
   }
-  for (const k in out) if (out[k] !== undefined) return out as CellInput
-  return null
+  return someField<CellInput>(out)
 }
 
 /** Whether a look gives an empty cell an input: a field set, or a reset where the cell's lines show a look. */
