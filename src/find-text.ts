@@ -5,7 +5,7 @@
  * in its own.
  */
 import type { FindCellsOptions } from './contract.js'
-import { Wildcard } from './criteria.js'
+import { Wildcard } from './wildcards.js'
 
 /** The text in lower case, each character at its place: `İ` stays (its lower case is two characters). */
 export const lowerInPlace = (t: string) => {

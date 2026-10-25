@@ -3,7 +3,7 @@
  * MIT License (THIRD_PARTY.md); fixed against Excel en-US, see the comments.
  */
 import { directError, eachValue, type Cx, type FnDef, type Segment } from '../../args.js'
-import { Wildcard } from '../../criteria.js'
+import { Wildcard } from '../../wildcards.js'
 import { E, isErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 import { capped, delimiters, joined, MAX_TEXT } from './common.js'

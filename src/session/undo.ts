@@ -53,7 +53,7 @@ const MAX_MB = 64
  * too in a large one, kept as a dictionary), an array 8 bytes an item, a string 24 bytes and a byte a character, a
  * number a heap number of 16. Measured on the cells of a sheet of 506,594 (126 bytes a cell, 118 in V8).
  */
-export function weigh(v: unknown): number {
+function weigh(v: unknown): number {
   if (typeof v === 'string') return 24 + v.length
   if (typeof v === 'number') return 16
   if (v === null || typeof v !== 'object') return 8

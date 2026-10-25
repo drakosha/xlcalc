@@ -65,7 +65,7 @@ export interface RuntimeContext {
   spillRef: (s: number, r: number, c: number) => Rng | CErr
 }
 
-export const BIG_RANGE = 256
+const BIG_RANGE = 256
 
 /** Pseudo-random [0, 1) from the seed, the cell address and an array element (RANDARRAY): the same for the same clock. */
 export function randAt(seed: number, sheet: string, row: number, col: number, k?: number): number {

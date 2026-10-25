@@ -4,6 +4,9 @@
  * the short date, `m/d/yyyy` (the Mac's `m/d/yy`). A locale shows some of them by its own codes (`Style.builtin`): the
  * short and medium dates and times, money, numbers with negatives in parentheses.
  */
+import type { NumberFormat } from '../contract.js'
+import { localeOf } from '../locale/registry.js'
+import type { Locale } from '../locale/types.js'
 
 const SHORT_DATE = 'm/d/yyyy'
 const LONG_TIME = 'h:mm:ss'
@@ -21,8 +24,17 @@ export const EN_BUILTIN: readonly string[] = [
 /** The numbers of the built-in formats: 0 to 49. */
 export const isBuiltin = (id: number) => Number.isInteger(id) && id >= 0 && id < EN_BUILTIN.length
 
+/** The built-in money formats, by their kind: 5 to 8 currency, 41 to 44 accounting; their codes Excel keeps with the symbol quoted. */
+export const BUILTIN_MONEY: ReadonlyMap<number, 'currency' | 'accounting'> = new Map([[5, 'currency'], [6, 'currency'], [7, 'currency'], [8, 'currency'], [41, 'accounting'], [42, 'accounting'], [43, 'accounting'], [44, 'accounting']])
+
 /** The codes of a locale that shows built-in formats otherwise: its own by number, en-US's for the rest. */
 export const builtinCodes =
   (own: Readonly<Record<number, string>>) =>
   (id: number): string =>
     own[id] ?? EN_BUILTIN[id]
+
+/** The codes a locale (a loaded locale's tag or an object; en-US without one) shows the built-in formats by, by number: its own, en-US's for the rest. */
+export const builtinIn = (where: string | Locale | undefined): ((id: number) => string) => builtinCodes(localeOf(where).regional?.builtin ?? {})
+
+/** The code of a number format in en-US: the built-in code of its number, a code itself. */
+export const enCode = (format: NumberFormat): string => (typeof format === 'number' ? EN_BUILTIN[format] : format)

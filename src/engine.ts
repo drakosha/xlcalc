@@ -141,12 +141,6 @@ export interface EngineState {
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
 
-/** Coordinates of an internal cell key, without a split array and a map callback per changed cell. */
-export function keyParts(k: string): [number, number, number] {
-  const a = k.indexOf(':'), b = k.indexOf(':', a + 1)
-  return [+k.slice(0, a), +k.slice(a + 1, b), +k.slice(b + 1)]
-}
-
 /** Marks or unmarks a cell whose formula calls SUBTOTAL or AGGREGATE. */
 function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean) {
   let marks = ctx.nested.get(s)
@@ -156,7 +150,7 @@ function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean)
 }
 
 /** The hidden rows of sheet `s` that SUBTOTAL and AGGREGATE read, from its input. */
-export function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
+function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
   const h = hiddenRows(sheet)
   if (h) ctx.hidden.set(s, h)
   else ctx.hidden.delete(s)

@@ -23,7 +23,7 @@ export function someField<T>(out: Record<string, unknown>): T | null {
  * A cell's input with an edit's fields over it; null when nothing is left of the cell. An edit of null clears the content
  * and the hyperlink, as Excel's Delete key and ClearContents do (the set `lines/clear`).
  */
-export function withFields(input: CellInput | undefined, fields: CellFields | null): CellInput | null {
+function withFields(input: CellInput | undefined, fields: CellFields | null): CellInput | null {
   // a new value or formula, or none, replaces the content whole; a formula removed takes its area along
   const whole = fields === null || fields.value !== undefined || typeof fields.formula === 'string'
   const out: Record<string, unknown> = {}

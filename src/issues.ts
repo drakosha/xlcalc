@@ -104,7 +104,7 @@ export function issues(state: EngineState): Issue[] {
 }
 
 /** The issue of one cell, as `issues` lists it (a cell of a large spill's unstored rest too); null for a cell without an error. */
-export function cellIssue(state: EngineState, s: number, r: number, c: number): Issue | null {
+function cellIssue(state: EngineState, s: number, r: number, c: number): Issue | null {
   const inv = state.invalid.get(key(s, r, c))
   if (inv) return { s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at }
   const id = state.at.get(placeOf(s, r, c))

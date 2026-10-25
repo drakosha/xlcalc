@@ -176,6 +176,19 @@ describe('xlsx: a damaged cell (x-xlsx-4, x-xlsx-8)', () => {
     expect(r.issues.map((i) => i.code)).toEqual(['richText'])
   })
 
+  // a row of number format 10, cells of 14 and of the default; a stored cell of the row without one shows General
+  const styles = '<cellXfs count="3"><xf/><xf numFmtId="10"/><xf numFmtId="14"/></cellXfs>'
+  it.each([
+    ['content, then a look alone', '<c r="A1"><v>1</v></c><c r="B1"><v>2</v></c><c r="A1" s="2"/>', { A1: { numberFormat: 'General', value: 1 }, B1: { numberFormat: 'General', value: 2 } }, undefined],
+    ['a look alone, then content', '<c r="A1" s="2"/><c r="A1"><v>2</v></c>', { A1: { numberFormat: 'General', value: 2 } }, undefined],
+    ['looks alone', '<c r="A1" s="2"/><c r="A1" s="0"/>', {}, [{ range: 'A1', numberFormat: 'General' }]],
+    ['empty cells', '<c r="A1"/><c r="A1"/>', {}, [{ range: 'A1', numberFormat: 'General' }]],
+    ['contents', '<c r="A1"><v>1</v></c><c r="A1"><v>2</v></c>', { A1: { numberFormat: 'General', value: 2 } }, undefined],
+  ])('an address given twice in a row with its own format: %s, as in a row without one (dup-c)', async (_, cells, expected, looks) => {
+    const r = await sheet(`<row r="1" s="1" customFormat="1">${cells}</row>`, { styles })
+    expect([cellsOf(r), r.book.sheets[0].looks, r.book.sheets[0].rows, r.issues]).toEqual([expected, looks, { 1: { numberFormat: 10 } }, []])
+  })
+
   it('cells without </sheetData> are read to the end of the part, and reported', async () => {
     const r = await read({ sheets: [{ name: 'S', body: '<sheetData><row r="1"><c r="A1"><v>1</v></c></row><row r="2"><c r="A2"><v>2</v></c></row>' }] })
     expect(cellsOf(r)).toEqual({ A1: { value: 1 }, A2: { value: 2 } })
@@ -196,6 +209,14 @@ describe('xlsx: a width or height that is no size (x-xlsx-6)', () => {
       ['part', ['A:A', 'B:B', 'C:C', 'D:D'], 'a column width that is not a number of 0 or more is left out'],
       ['part', ['1:1', '2:2', '3:3'], 'a row height that is not a number of 0 or more is left out'],
     ])
+  })
+
+  it('an empty one, or one in hex, is no size either: it hides no row or column (ht-empty)', async () => {
+    const cols = ['', ' ', '0x10', ' 8 '].map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('')
+    const rows = ['', ' ', '0x10', ' 8 '].map((h, i) => `<row r="${i + 1}" ht="${h}" customHeight="1"><c r="A${i + 1}"><v>1</v></c></row>`).join('')
+    const r = await read({ sheets: [{ name: 'S', body: `<cols>${cols}</cols><sheetData>${rows}</sheetData>` }] })
+    expect([r.book.sheets[0].columns, r.book.sheets[0].rows]).toEqual([{ D: { width: 8 } }, { 4: { height: 8 } }])
+    expect(r.issues.map((i) => [i.code, i.cells])).toEqual([['part', ['A:A', 'B:B', 'C:C']], ['part', ['1:1', '2:2', '3:3']]])
   })
 })
 

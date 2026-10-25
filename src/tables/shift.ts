@@ -140,7 +140,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
       const t = tables.find((x) => x.name === ti.name)!
       const r = axis === 'r' ? { r1: p.lo, r2: p.hi, c1: t.c1, c2: t.c2 } : { r1: t.r1, r2: t.r2, c1: p.lo, c2: p.hi }
       const first = r.r1 + (t.headers ? 1 : 0)
-      let columns = p.columns.map((c) => {
+      const columns = p.columns.map((c) => {
         const next = ti.columns.find((x) => x.name === c.name) ?? c
         // References were shifted with the old first row. Re-anchor the template on a newly inserted first row.
         return next.formula !== undefined && axis === 'r' && n > 0 && t.headers && at === t.r1 + 1 && p.grown.length
@@ -149,7 +149,6 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
       })
       if (axis === 'c' && p.grown.length) {
         // new columns take the first free names, left to right
-        columns = columns.map((c) => c)
         for (let i = 0; i < columns.length; i++) {
           if (columns[i].name !== '') continue
           columns[i] = { name: freeColumnName(columns.filter((c) => c.name !== '').map((c) => c.name), b.locale) }
