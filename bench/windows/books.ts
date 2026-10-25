@@ -15,7 +15,7 @@ import type { DisplayCase, DisplaySet } from '../coverage/display/cases.js'
 import { partsOf, type SpillAnswer, type StoredSpill } from '../coverage/spill.js'
 import type { SpillSet } from '../coverage/spill/cases.js'
 import { localeDir } from '../coverage/locales.js'
-import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, unpredicted, writeAnswers, type FileAnswers } from '../coverage/stored.js'
+import { answeredLine, answerSaver, inCaseOrder, keptSame, loadStored, secondsSince, setModule, unpredicted, writeAnswers, type FileAnswers } from '../coverage/stored.js'
 import { cellsOf as structCells, LOOK, lookArgs, lookOf, opArgs, READ, structKey, styled, writeBook as writeStructBook, type RawLook, type StoredStruct } from '../coverage/struct.js'
 import type { StructCase, StructSet } from '../coverage/struct/cases.js'
 import { addsNames, stepLines, tableShapes, withMirrors, type RawTable, type StoredTables } from '../coverage/tables.js'
@@ -46,7 +46,7 @@ export async function stepDisplay(set: string, tag: Tag, e: WinEnv): Promise<voi
   const answers = keptSame({ cases }, loadStored<StoredDisplay>(file), unpredicted)
   const rejected: string[] = []
   const t0 = Date.now()
-  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers), ...(rejected.length ? { rejected } : {}) })
+  const save = answerSaver(file, metaOf(e, tag), false, t0, cases, answers, { after: () => (rejected.length ? { rejected } : {}) })
   const todo = cases.filter((c) => !answers[c.id])
   await inJobs(`display-${set}-${tag}`, inParts(todo), displayBook, (part, a, cutShort) => {
     if (a && 'answers' in a) {
@@ -172,7 +172,7 @@ export async function stepSpill(set: string, tag: Tag, e: WinEnv): Promise<void>
   const file = winFile(`spill/${set}.json`)
   const answers = keptSame({ cases }, loadStored<StoredSpill>(file), unpredicted)
   const t0 = Date.now()
-  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(file, metaOf(e, tag), false, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
   await caseJobs(
     `spill-${set}`,
@@ -233,7 +233,7 @@ export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<vo
   const answers = keptSame({ cases }, loadStored<StoredWorkbook>(file), unpredicted)
   const t0 = Date.now()
   const failed: string[] = []
-  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(file, metaOf(e, tag), false, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
   // the files Excel saved at a case's `save` step, read once the jobs are done
   const saved = new Map<string, Uint8Array>()
@@ -296,7 +296,7 @@ export async function stepTables(set: string, tag: Tag, e: WinEnv): Promise<void
   const file = winFile(`tables/${localeDir(tag)}${set}.json`)
   const answers = keptSame({ cases }, loadStored<StoredTables>(file))
   const t0 = Date.now()
-  const save = () => writeAnswers(file, { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(file, metaOf(e, tag), false, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
   const reads = (c: TableCase): Step[] => c.read.flatMap((g) => [{ do: 'values', ...g }, { do: 'formulas', ...g }, ...(local ? [{ do: 'formulasLocal', ...g }] : [])])
   await caseJobs(

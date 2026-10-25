@@ -2,11 +2,12 @@
 // both builds and HyperFormula in one process, the order changed each round, each build with display false and true.
 // First the values of the synthetic data sheet alone, then the synthetic book with its formulas (values computed).
 import { createRequire } from 'node:module'
-import { hfInput, hfScalar, HF_OPTIONS } from '../hyperformula/shared.mjs'
+import { hfInput, hfScalar, HF_OPTIONS, CLOCK as clock } from '../hyperformula/shared.mjs'
+import { median } from '../stats.mjs'
+import { load } from './pair.mjs'
 const [base, branch, hfDir] = process.argv.slice(2)
 const { HyperFormula } = createRequire(hfDir + '/package.json')('hyperformula')
-const libs = await Promise.all([base, branch].map(async (r) => ({ ...(await import(r + '/dist/index.js')), ...(await import(r + '/dist/synth.js')) })))
-const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
+const libs = await load(base, branch, true)
 const letters = libs[0].colLetters
 const f = (v) => (v < 10 ? v.toFixed(2) : v.toFixed(0))
 const all = (s, sheet, range) => { let cursor, k = 0; do { const p = s.readCells([{ sheet, range }], { fields: ['value'], maxCells: 10000, ...(cursor ? { cursor } : {}) }); k += p.cells.length; cursor = p.cursor } while (cursor); return k }
@@ -59,7 +60,7 @@ function measure(list, cases) {
     // the rows of values each build gives, against HyperFormula's, outside the timer
     const hf = h && list.find(([n]) => n === 'HyperFormula')
     const checked = hf && what.includes('as values') ? list.filter(([n]) => n !== 'HyperFormula').map(([n, s]) => [n, x(s)]).filter(([, v]) => v !== NOT).map(([n, v]) => `${n} ${differing(v, h(hf[1]))}`) : []
-    console.log(`${what}: ${list.map(([n], i) => (ms[i].length ? `${n} ${f(ms[i].sort((a, b) => a - b)[4])} ms` : `${n} not measured`)).join(', ')}${checked.length ? ` (cells differing from HyperFormula: ${checked.join(', ')})` : ''}`)
+    console.log(`${what}: ${list.map(([n], i) => (ms[i].length ? `${n} ${f(median(ms[i]))} ms` : `${n} not measured`)).join(', ')}${checked.length ? ` (cells differing from HyperFormula: ${checked.join(', ')})` : ''}`)
   }
 }
 

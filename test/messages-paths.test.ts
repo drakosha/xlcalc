@@ -8,12 +8,12 @@
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { closeTyped } from '../src/entry/close.js'
-import { createInlineCalc, createSession, parseEntry, editStructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
+import { createInlineCalc, createSession, parseEntry, editStructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { EDIT_MESSAGES } from '../src/locale/edit-messages.js'
 import { say, type EngineMessage, type MessageKey } from '../src/locale/messages.js'
-import { pool } from './fixtures/pool.js'
+import { closedAfter, pool } from './fixtures/pool.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 const reached = new Set<MessageKey>()
@@ -188,8 +188,7 @@ describe('a refused structure operation', () => {
   })
 
   describe.each(['closures', 'eval'] as const)('in sessions, execution %s', (execution) => {
-    const calcs: Calc[] = []
-    afterAll(() => Promise.all(calcs.map((c) => c.close())))
+    const { keep } = closedAfter()
 
     it('a synchronous session', () => {
       for (const [what, book, op, m] of REFUSED) {
@@ -203,8 +202,7 @@ describe('a refused structure operation', () => {
       ['in the same thread', () => createInlineCalc()],
       ['in threads', () => pool({ threads: 1 })],
     ] as const)('a session %s', async (_, make) => {
-      const calc = await make()
-      calcs.push(calc)
+      const calc = keep(await make())
       for (const [what, book, op, m] of REFUSED) {
         const s = await calc.createSession({ locale: 'ru-RU', ...book() }, { execution })
         expect(message(await s.editStructure(op)), what).toBe(ru(m))

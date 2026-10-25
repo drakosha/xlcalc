@@ -5,10 +5,9 @@
  */
 import { describe, expect, it } from 'vitest'
 import { readXlsx } from '../src/xlsx.js'
-import { codes, pack, parts, read, sheet, storedValues } from './xlsx-fixtures.js'
+import { codes, pack, parts, read, rels, sheet, storedValues } from './xlsx-fixtures.js'
 
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-const rels = (items: string) => `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${items}</Relationships>`
 const one = (v: number) => `<sheetData><row r="1"><c r="A1"><v>${v}</v></c></row></sheetData>`
 
 describe('xlsx reader: sheets', () => {

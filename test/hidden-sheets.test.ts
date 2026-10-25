@@ -4,11 +4,11 @@ import { withoutView } from './xlsx-fixtures.js'
  * visible sheet that neither a delete nor a hide takes, values that do not depend on what is hidden, and the xlsx state
  * and active tab, in the synchronous session, in the same thread and in the pool.
  */
-import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, InputError, createSession, editStructure, type BookInput, type Calc, type StructureOp } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { compute, createInlineCalc, InputError, createSession, editStructure, type BookInput, type StructureOp } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
-import { pool } from './fixtures/pool.js'
+import { pool, closedAfter } from './fixtures/pool.js'
 
 const CLOCK = { now: '2026-10-10T12:00:00Z', seed: 1 }
 
@@ -126,8 +126,7 @@ describe.each(['closures', 'eval'] as const)('a session hides and shows sheets (
 })
 
 describe('in the same thread and in the pool', () => {
-  const open: Calc[] = []
-  afterAll(() => Promise.all(open.map((p) => p.close())))
+  const { keep } = closedAfter()
   const steps: StructureOp[] = [
     { op: 'hideSheet', sheet: 'Jan' },
     { op: 'hideSheet', sheet: 'Mar', very: true },
@@ -140,8 +139,7 @@ describe('in the same thread and in the pool', () => {
   ]
 
   it.each([['inline', () => createInlineCalc()], ['pool', () => pool({ threads: 1 })]] as const)('%s: the synchronous session\'s answers and book', async (_, make) => {
-    const calc = await make()
-    open.push(calc)
+    const calc = keep(await make())
     const a = await calc.createSession(book(), { clock: CLOCK })
     const y = createSession(book(), { clock: CLOCK })
     for (const o of steps) {

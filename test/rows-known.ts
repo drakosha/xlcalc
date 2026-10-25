@@ -3,17 +3,14 @@
  * in the row's height or in its cells, by `<tag>:<set>:<id>`, with the reason.
  */
 
+import { knownCases as cases } from './known-cases.js'
+
 export const ROWS_REASONS = {
   font: 'a font other than Calibri (Arial, Times New Roman, Courier New): the engine fits a line of any font as a line of Calibri of its size',
   formulaText: 'a formula typed or pasted over lines: Excel keeps its line breaks in the formula, the engine its canonical text without them (the value is the same)',
 } as const
 
 export type RowsReason = keyof typeof ROWS_REASONS
-
-/** `<tag>:<set>` and its case ids → the same reason. */
-function cases(reason: RowsReason, bySet: Record<string, string[]>): [string, RowsReason][] {
-  return Object.entries(bySet).flatMap(([set, ids]) => ids.map((id): [string, RowsReason] => [`${set}:${id}`, reason]))
-}
 
 /** Against Excel for Mac. */
 export const ROWS_KNOWN: ReadonlyMap<string, RowsReason> = new Map([

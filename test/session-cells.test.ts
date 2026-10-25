@@ -4,14 +4,14 @@
  * closures and eval: the case books, the tables of the table sets, a book with styles, rectangles small (read cell by cell) and large (whole columns, whole
  * rows, the whole sheet), before and after edits.
  */
-import { afterAll, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { buildTableCases } from '../bench/coverage/tables/ops.js'
 import { builtinFormatCode, createInlineCalc, InputError, createSession, type BookInput, type CellView, type ComputeResult, type Execution } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { parseRange } from '../src/structure/area.js'
 import { synthBook } from '../src/synth.js'
 import { BOOKS, CLOCK } from './async-books.js'
-import { pool } from './fixtures/pool.js'
+import { closedAfter } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
 import { cellsOf } from './looks-book.js'
 import { holds } from '../src/array-areas.js'
@@ -57,8 +57,7 @@ async function agree(name: string, book: BookInput, cells: Cells, result: () => 
   for (const sheet of b.sheets) for (const range of RANGES) expect(await cells(sheet.name, range), `${name}: ${sheet.name}!${range}`).toEqual(slice(r, b, sheet.name, range))
 }
 
-const pools: { close(): Promise<void> }[] = []
-afterAll(() => Promise.all(pools.map((p) => p.close())))
+const { made } = closedAfter()
 
 describe.each(['closures', 'eval'] as const)('cells of a rectangle, execution %s', (execution: Execution) => {
   it('a synchronous session', async () => {
@@ -77,8 +76,7 @@ describe.each(['closures', 'eval'] as const)('cells of a rectangle, execution %s
   }, 120_000)
 
   it('in a thread', async () => {
-    const p = await pool({ threads: 2 })
-    pools.push(p)
+    const p = await made({ threads: 2 })
     for (const [name, book] of BOOKS_HERE) {
       const s = await p.createSession(book, { clock: CLOCK, execution })
       await agree(name, book, s.getCells, s.getResult, s.getBook)
@@ -91,8 +89,7 @@ describe('cells of a rectangle', () => {
     const synth = synthBook({ seed: 1, rows: 340 })
     const s = createSession(synth.book, { clock: CLOCK })
     const quiet = createSession(synth.book, { clock: CLOCK, display: false })
-    const p = await pool({ threads: 1 })
-    pools.push(p)
+    const p = await made({ threads: 1 })
     const t = await p.createSession(synth.book, { clock: CLOCK })
     for (const batch of edits(2, 12, synth)) {
       s.setCells(batch)

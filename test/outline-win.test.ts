@@ -8,13 +8,14 @@
  * `OUTLINE_KNOWN` with their reasons; the predictions committed before Excel ran each set are kept with how many cases
  * Excel confirmed.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { isDeepStrictEqual } from 'node:util'
 import { engineSteps, engineViews, excelView, type OutlineAnswer, type OutlineBook, type OutlineCase, type OutlineView } from '../bench/coverage/outline/cases.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
+import { localeDir } from '../bench/coverage/locales.js'
 import { outlineGroups } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
+import { localeSets } from './stored-sets.js'
 
 interface StoredOutline {
   books: Record<string, OutlineBook>
@@ -51,13 +52,7 @@ const CONFIRMED: Record<string, number> = {
   'en-US:rules-held-3': 9,
 }
 
-const RUNS = TAGS.flatMap((tag) => {
-  const dir = new URL(`./excel/win/outline/${localeDir(tag)}`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({ tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredOutline }))
-})
+const RUNS = localeSets<StoredOutline>('win/outline')
 
 const predicted = (set: string): Record<string, OutlineView[]> => JSON.parse(readFileSync(new URL(`../bench/coverage/outline/${set}.predicted.json`, import.meta.url), 'utf8')).cases
 

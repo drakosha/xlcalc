@@ -6,8 +6,9 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { CondSet } from '../bench/coverage/cond/cases.js'
-import { checkCondSets, condSets, PIXEL_HASHES, pinnedCases, type Known } from './cond-excel.js'
+import { checkCondSets, condSets, PIXEL_HASHES, type Known } from './cond-excel.js'
 import { COND_KNOWN, macOnly } from './cond-excel.test.js'
+import { pinnedCases } from './stored-cases.js'
 import './locales.js'
 
 export const WIN_KNOWN: Known = {
@@ -21,7 +22,7 @@ const SETS = [...condSets('win/cond/'), ...condSets('win/cond/ru-RU/')]
 
 describe('conditional formats against Excel for Windows', () => {
   it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'fills-held', 'fills-held-2', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'made', 'sqref-held', 'struct-held']))
-  it('every pinned difference names a case', () => expect(pinnedCases(SETS, WIN_KNOWN)).toEqual([]))
+  it('every pinned difference names a case', () => expect(pinnedCases(SETS, WIN_KNOWN, true)).toEqual([]))
 })
 
 checkCondSets(SETS, WIN_KNOWN, async (name) => (await import(`../bench/coverage/cond/${name}.ts`)) as CondSet, PIXEL_HASHES)

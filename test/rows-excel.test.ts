@@ -7,14 +7,14 @@
  * predictions, written before Excel ran each set (`bench/coverage/rows/<set>.predicted.json`), are kept with how many
  * heights Excel for Mac confirmed.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredRows } from '../bench/coverage/rows.js'
 import type { RowCase, RowSet } from '../bench/coverage/rows/cases.js'
 import { engineRows, type RowsPrediction } from '../bench/coverage/rows/engine.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { createSession } from '../src/index.js'
 import { ROWS_KNOWN, ROWS_REASONS, ROWS_WIN_KNOWN } from './rows-known.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 interface RowSetFile extends StoredRows {
@@ -24,13 +24,7 @@ interface RowSetFile extends StoredRows {
 
 /** The sets stored under `test/excel/<root>rows/`, every locale's. */
 function rowSets(root: '' | 'win/'): RowSetFile[] {
-  return TAGS.flatMap((tag) => {
-    const dir = new URL(`./excel/${root}rows/${localeDir(tag)}`, import.meta.url)
-    if (!existsSync(dir)) return []
-    return readdirSync(dir)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => ({ name: f.slice(0, -5), tag, ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredRows) }))
-  })
+  return localeSets<StoredRows>(`${root}rows`).map((r) => ({ name: r.set, tag: r.tag, ...r.stored }))
 }
 
 const engine = (set: RowSetFile, c: RowCase) => engineRows({ createSession }, c, set.tag, String(set.meta.date))

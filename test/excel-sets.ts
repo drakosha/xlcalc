@@ -3,11 +3,11 @@
  * cases, `npx tsx bench/coverage/run.ts probes <name>` stores Excel's answers (en-US locale, English UI) in
  * `test/excel/cases/<name>.json`. One file per set, so parallel work adds cases without touching shared files.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { Probe, SheetCells } from '../bench/coverage/probes.js'
 import type { BookInput, CellInput } from '../src/contract.js'
 import { caseCells, dataSheet, engineFormula } from './excel-cases.js'
+import { storedSets } from './stored-sets.js'
 
 export interface StoredSet {
   name: string
@@ -15,14 +15,7 @@ export interface StoredSet {
   values: Record<string, Val>
 }
 
-const dir = new URL('./excel/cases/', import.meta.url)
-
-export const SETS: StoredSet[] = existsSync(dir)
-  ? readdirSync(dir)
-      .filter((f) => f.endsWith('.json'))
-      .sort()
-      .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as Omit<StoredSet, 'name'>) }))
-  : []
+export const SETS: StoredSet[] = storedSets<Omit<StoredSet, 'name'>>('cases')
 
 /** Functions that some set has cases for (`fn` of its cases). */
 export const SET_FUNCTIONS: ReadonlySet<string> = new Set(SETS.flatMap((s) => s.cases.flatMap((c) => (c.fn ? [c.fn] : []))))

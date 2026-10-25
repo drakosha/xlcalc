@@ -17,16 +17,16 @@
  * Known differences are in `test/ui-known.ts`; the predictions committed before Excel ran each set
  * (`bench/coverage/ui/<set>.predicted.json`) are kept with how many cases Excel confirmed.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
 import { clipboardText, entriesOf, macOnly, readCells, readColumns, ribbonOf, uiBook, windowOver, type RibbonCell, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
 import { formulaBar } from '../bench/coverage/entry/cases.js'
 import { formatKey, held } from '../bench/coverage/entry/compare.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { numberFormatOf } from '../bench/coverage/stored.js'
 import { createSession, LOCALES, type CellInput } from '../src/index.js'
 import { UI_KNOWN, UI_REASONS } from './ui-known.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 interface Run {
@@ -36,14 +36,9 @@ interface Run {
   stored: StoredUi
 }
 
-const RUNS: Run[] = (['Mac', 'Windows'] as const).flatMap((excel) =>
-  TAGS.flatMap((tag) => {
-    const dir = new URL(`./excel/${excel === 'Windows' ? 'win/' : ''}ui/${localeDir(tag)}`, import.meta.url)
-    if (!existsSync(dir)) return []
-    return readdirSync(dir)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => ({ excel, tag, set: f.slice(0, -5), stored: JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredUi }))
-  }),
+const RUNS: Run[] = (['Mac', 'Windows'] as const).flatMap(
+  (excel) =>
+    localeSets<StoredUi>(`${excel === 'Windows' ? 'win/' : ''}ui`).map((r) => ({ excel, ...r })),
   // Point mode's sets are compared with `refAt` in `point-excel.test.ts`
 ).filter((r) => r.stored.cases.every((c) => c.act.do !== 'point'))
 

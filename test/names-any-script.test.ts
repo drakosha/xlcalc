@@ -8,6 +8,7 @@ import { compute, InputError, createSession, editStructure, toInvariant, toLocal
 import { ruRU } from './locales.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { nameIssues } from './diagnostics.js'
+import { values as sheetValues } from './clock-books.js'
 
 /** Sheet S with A1 = 100 and the formulas given, and the names. */
 const book = (formulas: Record<string, string>, names: NameInput[]): BookInput => ({
@@ -17,7 +18,7 @@ const book = (formulas: Record<string, string>, names: NameInput[]): BookInput =
 
 const values = (b: BookInput) => {
   const r = compute(b, { display: false })
-  return { issues: nameIssues(r), cells: Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value])) }
+  return { issues: nameIssues(r), cells: sheetValues(r) }
 }
 
 /** A global name Ставка (0.2) and one of the sheet Лист (0.3), which Лист!A1 reads; S holds `cells`. */

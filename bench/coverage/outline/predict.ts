@@ -13,10 +13,9 @@
  * `ShowDetail` reads False when all the lines of its innermost group are hidden; Excel saves the mark on the summary line
  * of such a group too.
  */
-import { fileURLToPath } from 'node:url'
 import { lines as spans } from '../../../src/layout/spans.js'
 import { indexToCol, MAX_COLS, MAX_ROWS } from '../../../src/model.js'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { engineViews, linesOf, windowOf, type LineView, type OutlineBook, type OutlineCase, type OutlineCommand, type OutlineSet, type OutlineView, type SavedLine } from './cases.js'
 
 const [set, model] = process.argv.slice(2)
@@ -190,5 +189,5 @@ function grid(b: OutlineBook, c: OutlineCase): OutlineView[] {
 
 const out: Record<string, OutlineView[]> = {}
 for (const c of buildOutlineCases()) out[c.id] = model === 'grid' ? grid(BOOKS[c.book], c) : await engineViews(BOOKS[c.book], c)
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), { model: model === 'grid' ? 'xlcalc-sheet src/local/outline.ts' : 'editStructure', cases: out })
+writePrediction(import.meta.url, `${set}`, { model: model === 'grid' ? 'xlcalc-sheet src/local/outline.ts' : 'editStructure', cases: out })
 console.log(`${set}: ${Object.keys(out).length} cases predicted`)

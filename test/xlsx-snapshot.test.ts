@@ -11,11 +11,9 @@ import { describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/contract.js'
 import { compute, InputError, createSession } from '../src/index.js'
 import { readXlsx, writeXlsx, type XlsxCached } from '../src/xlsx.js'
-import { openArchive } from '../src/xlsx/zip/read.js'
-import { codes, storedOf, storedValues } from './xlsx-fixtures.js'
+import { codes, partText as part, storedOf, storedValues } from './xlsx-fixtures.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 3 }
-const part = async (data: Uint8Array, name: string) => (await openArchive(data).text(name))!
 
 const book: BookInput = {
   sheets: [

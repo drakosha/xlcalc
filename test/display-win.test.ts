@@ -11,14 +11,14 @@ import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { displayValue, type CellValue } from '../src/index.js'
 import { engineShown, formatted, ROUNDED_MOMENT, sameShown } from './display-cases.js'
-import { winFiles } from './excel-win-cases.js'
+import { storedSets } from './stored-sets.js'
 import './locales.js'
 import { currentCases } from './stored-cases.js'
 
 /** The reasons that covered a case, filled as the sets run. */
 const used = new Set<string>()
 
-const SETS = TAGS.flatMap((locale) => winFiles<StoredDisplay>(`display/${localeDir(locale)}`).map((s) => ({ ...s, locale })))
+const SETS = TAGS.flatMap((locale) => storedSets<StoredDisplay>(`win/display/${localeDir(locale)}`).map((s) => ({ ...s, locale })))
 
 /** A case's cell as Excel for Windows showed it and as the engine shows it. */
 interface Shown {

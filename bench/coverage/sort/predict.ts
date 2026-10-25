@@ -3,8 +3,7 @@
  * `sort/<set>.predicted.json`, committed before Excel runs the set. Numbers, text in any case, FALSE then TRUE, errors
  * all equal, then blanks; descending reverses it but for blanks, last either way; equal cells keep their order.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import type { SortSet } from './cases.js'
 
 const name = process.argv[2]
@@ -27,4 +26,4 @@ function order(a: string, b: string, desc: boolean): number {
 }
 
 const answers = Object.fromEntries(set.cases.map((c) => [c.id, [...c.cells].sort((a, b) => order(a, b, !!c.descending))]))
-writeAnswers(fileURLToPath(new URL(`./${name}.predicted.json`, import.meta.url)), { model: "Microsoft's Sort order, errors equal", answers })
+writePrediction(import.meta.url, `${name}`, { model: "Microsoft's Sort order, errors equal", answers })

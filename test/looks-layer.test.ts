@@ -12,17 +12,9 @@ import { readRanges, writeRanges } from '../src/looks/ranges.js'
 import { looksTaken } from '../src/looks/sheet.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../src/model.js'
 import { areaText, parseRange } from '../src/structure/area.js'
+import { seeded } from './looks-book.js'
 
 const [ROWS, COLS] = [14, 12]
-
-/** A generator of numbers below `n`, the same for one seed. */
-function seeded(seed: number): (n: number) => number {
-  let x = seed
-  return (n) => {
-    x = (Math.imul(x, 1103515245) + 12345) & 0x7fffffff
-    return x % n
-  }
-}
 
 /** The look of each cell of the corner, painted rectangle by rectangle (`style|format`, empty for none). */
 function painted(list: LookRange[]): Map<string, string> {

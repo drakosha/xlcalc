@@ -18,6 +18,7 @@ import { checkBook } from '../src/input.js'
 import { readXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { storedSets } from './stored-sets.js'
+import { pinnedCases } from './stored-cases.js'
 
 /** Excel merges the styles of a row and a column it formats across each other; `applySteps` sets the line's style, as `setLayout` does. */
 const MERGED =
@@ -64,10 +65,7 @@ const PLATFORMS: [string, LinesSetFile[]][] = [
 
 describe.each(PLATFORMS)('formats of rows and columns against %s', (_, sets) => {
   it('every set is answered', () => expect(sets.map((s) => s.name).filter((n) => n !== 'clear' && n !== 'patch')).toEqual(['files', 'held']))
-  it('every pinned difference names a case', () => {
-    const ids = new Set(sets.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect(Object.keys(LINES_KNOWN).filter((k) => !ids.has(k.split(':').slice(0, 2).join(':')))).toEqual([])
-  })
+  it('every pinned difference names a case', () => expect(pinnedCases(sets, LINES_KNOWN, true)).toEqual([]))
 
   for (const set of sets)
     describe(set.name, () => {

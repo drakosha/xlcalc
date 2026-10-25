@@ -39,8 +39,8 @@ export async function pool(opts?: CalcPoolOptions, peek?: (inside: PoolInside) =
 }
 
 /**
- * Calcs closed after a test file's tests (`open`, in the order kept): `keep` one made otherwise, `made` a pool (`pool`). Called at the top of a file,
- * where `afterAll` registers the closing.
+ * Calcs closed after a test file's tests (`open`, in the order kept): `keep` one made otherwise, `made` a pool (`pool`). Called where
+ * the closing runs: at the top of a file, or inside a `describe` whose tests alone keep calcs.
  */
 export function closedAfter() {
   const open: Calc[] = []

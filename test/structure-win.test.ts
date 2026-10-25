@@ -7,11 +7,11 @@ import { describe, expect, it } from 'vitest'
 import type { StoredStruct } from '../bench/coverage/struct.js'
 import type { StructCases } from '../bench/coverage/struct/cases.js'
 import type { BookInput } from '../src/index.js'
-import { winFiles } from './excel-win-cases.js'
+import { storedSets } from './stored-sets.js'
 import { differences, STRUCT_KNOWN, structureOf } from './structure-excel.js'
-import { currentStructSet } from './stored-cases.js'
+import { currentStructSet, pinnedCases } from './stored-cases.js'
 
-const SETS = winFiles<StoredStruct>('struct/')
+const SETS = storedSets<StoredStruct>('win/struct')
 
 /** The look at the sheet's edges (styles of rows and columns that reach row 1048576 or column XFD) as Excel for Windows reports it. */
 const EDGE = 'Excel for Windows reports the look at the sheet\'s edges otherwise: the empty cells a span reaching the end takes after the operation read plain'
@@ -70,8 +70,5 @@ for (const set of SETS) {
 }
 
 describe('known differences from Excel for Windows: structure operations', () => {
-  it('every WIN_STRUCT entry names a stored case', () => {
-    const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect(Object.keys(WIN_STRUCT).filter((k) => !keys.has(k))).toEqual([])
-  })
+  it('every WIN_STRUCT entry names a stored case', () => expect(pinnedCases(SETS, WIN_STRUCT)).toEqual([]))
 })

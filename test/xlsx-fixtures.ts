@@ -4,6 +4,7 @@
  */
 import type { BookInput, CellValue, ComputeResult } from '../src/contract.js'
 import { readXlsx, type XlsxCached, type XlsxRead } from '../src/xlsx.js'
+import { openArchive } from '../src/xlsx/zip/read.js'
 import { zip } from '../src/xlsx/zip/write.js'
 
 const enc = new TextEncoder()
@@ -13,6 +14,12 @@ export const pack = (parts: Record<string, string | undefined>): Promise<Uint8Ar
 
 const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+
+/** The text of a part of a zipped package, as the reader's tests read what a file holds. */
+export const partText = async (data: Uint8Array, name: string): Promise<string> => (await openArchive(data).text(name))!
+
+/** A `.rels` part's text around the `<Relationship>` items it holds. */
+export const rels = (items: string) => `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${items}</Relationships>`
 
 export interface FixtureSheet {
   name: string

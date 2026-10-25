@@ -7,7 +7,7 @@
  * `case-book.ts`. `FBOOK_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
 import { join } from 'node:path'
-import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, takenBook, took, unpredicted, writeAnswers } from './stored.js'
+import { answeredLine, answerSaver, keptSame, loadStored, runCases, setModule, takenBook, took, unpredicted } from './stored.js'
 import { answerOf, cellsOf, editOf, fileFormula, MIRRORS, runOnBook } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
@@ -84,7 +84,7 @@ export async function stepWorkbook(set: string): Promise<void> {
   const target = workbookFile(set)
   const answers = keptSame({ cases }, loadStored<StoredWorkbook>(target), unpredicted)
   const t0 = Date.now()
-  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta('en-US'), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(target, { version: excelVersion(), locale: localeMeta('en-US') }, false, t0, cases, answers)
   await ensureExcel('en-US')
   await runCases(cases.filter((c) => !answers[c.id]), 'FBOOK_ONLY', async (c) => void (answers[c.id] = await runCase(c)), (done) => {
     save()

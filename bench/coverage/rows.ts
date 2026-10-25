@@ -14,7 +14,7 @@ import { formatAddress } from '../../src/model.js'
 import { declineRepair, ensureExcel, excelVersion, keyedPart, runWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
-import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, writeAnswers } from './stored.js'
+import { answeredLine, answerSaver, chosen, keptSame, loadStored, setModule, took } from './stored.js'
 import { caseCells, caseColumn, caseRow, cellKey, rowsBook, type RowAnswer, type RowCase, type RowSet } from './rows/cases.js'
 import { HERE, ROOT } from './paths.js'
 
@@ -105,7 +105,7 @@ export async function stepRows(set: string, tag: string): Promise<void> {
   const todo = cases.filter((c) => !answers[c.id] && only(c))
   const t0 = Date.now()
   // the time of the runs before it too
-  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0 - Number(prev?.seconds ?? 0) * 1000) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(target, { version: excelVersion(), locale: localeMeta(tag) }, true, t0, cases, answers, { was: Number(prev?.seconds ?? 0) })
   // the clipboard's text, put back after a set that pastes
   const UTF8 = { ...process.env, LANG: 'en_US.UTF-8' }
   const pastes = todo.some((c) => c.via === 'paste')

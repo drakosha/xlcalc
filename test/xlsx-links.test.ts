@@ -10,12 +10,11 @@ import type { BookInput, ExternalBook } from '../src/contract.js'
 import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
-import { codes, pack, parts, type Fixture } from './xlsx-fixtures.js'
+import { codes, pack, partText as part, parts, rels, type Fixture } from './xlsx-fixtures.js'
 import { ruRU } from './locales.js'
 
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
-const rels = (items: string) => `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${items}</Relationships>`
 const linkPath = (id: string, target: string, kind = `${REL}/externalLinkPath`) => `<Relationship Id="${id}" Type="${kind}" Target="${target}" TargetMode="External"/>`
 
 /** A file whose workbook lists `links` (each an externalLink part's content and its relationships) in the order given by `order`. */
@@ -192,8 +191,6 @@ const BOOK2: ExternalBook = {
     { name: 'Bad', ref: '#REF!' },
   ],
 }
-
-const part = async (data: Uint8Array, name: string) => (await openArchive(data).text(name))!
 
 describe('xlsx links: writing', () => {
   it("each link as Excel writes its part, its relationship and the workbook's reference", async () => {

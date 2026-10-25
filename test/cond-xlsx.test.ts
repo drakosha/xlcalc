@@ -10,8 +10,7 @@ import { editStructure, validateFormula } from '../src/index.js'
 import { buildCondCases as buildBoth } from '../bench/coverage/cond/both.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { withFormula } from '../src/xlsx/write/conditional.js'
-import { openArchive } from '../src/xlsx/zip/read.js'
-import { codes, read } from './xlsx-fixtures.js'
+import { codes, partText as partOf, read } from './xlsx-fixtures.js'
 
 const RED = { fill: { color: '#FFC7CE' }, font: { color: '#9C0006', bold: false } }
 
@@ -35,10 +34,6 @@ const RULES: ConditionalFormat[] = [
 ]
 
 const BOOK: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 } }, conditionalFormats: RULES }, { name: 'T T', cells: {} }] }
-
-async function partOf(data: Uint8Array, name: string): Promise<string> {
-  return (await openArchive(data).text(name))!
-}
 
 describe('conditional formats in xlsx', () => {
   it('every kind and option comes back as written, without issues', async () => {

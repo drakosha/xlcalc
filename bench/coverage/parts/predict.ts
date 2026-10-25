@@ -4,8 +4,7 @@
  * or each sheet's notes, hyperlinks and frozen panes after the operation (what Excel makes is given as made, with its
  * author unknown: `?`); a raw case on the book the reader reads from its file, with what the reader reports.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { editStructure } from '../../../src/index.js'
 import { readXlsx } from '../../../src/xlsx.js'
 import { partsFile } from '../parts.js'
@@ -22,5 +21,5 @@ for (const c of cases) {
   const issues = read?.issues.map((i) => `${i.code} ${i.sheet ?? ''} ${(i.cells ?? []).join(' ')}: ${i.message}`)
   out[c.id] = r.ok ? { ...Object.fromEntries(r.book.sheets.map((s) => [s.name, bookParts(s)])), ...(issues ? { issues } : {}) } : { refused: r.code }
 }
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)
+writePrediction(import.meta.url, `${set}`, out)
 console.log(`${set}: ${cases.length} cases predicted`)

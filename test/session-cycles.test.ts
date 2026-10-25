@@ -8,6 +8,7 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { compute, type AsyncSession, type BookInput, type CachedValues, type CellInput, type Execution } from '../src/index.js'
 import { closeCalcs, keptPool, KINDS, openerFor } from './session-kinds.js'
+import { values as sheetValues } from './clock-books.js'
 import { createInlineCalc } from '../src/index.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -135,7 +136,7 @@ describe.each(['the same thread', 'a thread'] as const)('a calculator computes w
     const calc = kind === 'the same thread' ? createInlineCalc() : await keptPool()
     const r = await calc.compute(book(), { clock, cached: STORED })
     expect(r.hash).toBe(compute(book(), { clock, cached: STORED }).hash)
-    expect(Object.fromEntries(Object.entries(r.sheets[0].cells).map(([k, c]) => [k, c.value]))).toEqual({ A1: 2, B1: 2, C1: 0, E1: 6, K1: 3 })
+    expect(sheetValues(r)).toEqual({ A1: 2, B1: 2, C1: 0, E1: 6, K1: 3 })
   })
 
   it('a large book and large stored values, written as text between turns, keep the session its clock', async () => {

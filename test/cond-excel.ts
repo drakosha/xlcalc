@@ -91,9 +91,3 @@ export function checkCondSets(sets: CondSetFile[], known: Known, load: (name: st
 export const COND_REPAIRED: Readonly<Record<string, string[]>> = {
   'fills-held:dxf-gradient-pattern': ["conditionalFormat S B1:C1: a conditional format's gradient fill beside its pattern is not in the model"],
 }
-
-/** Every pinned difference names a case of the sets. */
-export function pinnedCases(sets: CondSetFile[], known: Known): string[] {
-  const ids = new Set(sets.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-  return Object.keys(known).filter((k) => !ids.has(k.split(':').slice(0, 2).join(':')))
-}

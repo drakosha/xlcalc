@@ -6,12 +6,13 @@
  * (`bench/coverage/hidden/<set>.predicted.json` and the set's `RAW_GUESS`) were committed before Excel ran the set; the
  * ones Excel did not confirm are the set's `MISSED`.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredHidden } from '../bench/coverage/hidden.js'
 import { engineAnswer, excelRefused, hiddenFile, visibleOf, type HiddenAnswer, type HiddenCase, type HiddenCases } from '../bench/coverage/hidden/cases.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { readXlsx } from '../src/xlsx.js'
+import { storedSets } from './stored-sets.js'
 
 interface HiddenModule {
   buildHiddenCases(): HiddenCases
@@ -26,11 +27,7 @@ const PLATFORMS = [
 
 /** The stored sets of a platform. */
 function stored(root: string): (StoredHidden & { name: string })[] {
-  const dir = new URL(`./excel/${root}hidden/`, import.meta.url)
-  if (!existsSync(dir)) return []
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredHidden) }))
+  return storedSets<StoredHidden>(`${root}hidden`)
 }
 
 /** What a prediction said that Excel's answer does not hold, as text; none when it held. */

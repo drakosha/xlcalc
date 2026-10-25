@@ -3,8 +3,7 @@
  * `show:Sheet!A1`), written before Excel runs the set:
  * `npx tsx bench/coverage/workbook/predict.ts <set>` writes `workbook/<set>.predicted.json`, which the set reads.
  */
-import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, writePrediction } from '../stored.js'
 import { cellsOf } from '../case-book.js'
 import type { WorkbookSet } from './cases.js'
 import { engineReads } from '../../../test/workbook-cases.js'
@@ -33,4 +32,4 @@ for (const c of buildWorkbookCases()) {
     return vals
   })
 }
-writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)
+writePrediction(import.meta.url, `${set}`, out)

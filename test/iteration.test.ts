@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, InputError, createSession, type BookInput, type CellReplace, type CellInput } from '../src/index.js'
+import { values as sheetValues } from './clock-books.js'
 import { mulberry32 } from '../src/synth.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -23,7 +24,7 @@ function book(iteration: BookInput['iteration'] | null = {}): BookInput {
   return { sheets: [{ name: 'S', cells }, { name: 'T', cells: { A1: { formula: "'S'!E1" } } }], ...(iteration ? { iteration } : {}) }
 }
 
-const values = (b: BookInput) => Object.fromEntries(Object.entries(compute(b, { clock, display: false }).sheets[0].cells).map(([k, c]) => [k, c.value]))
+const values = (b: BookInput) => sheetValues(compute(b, { clock, display: false }))
 
 describe('iterative calculation', () => {
   it('computes cycles by iterations, and without the setting they hold their values (0 without held)', () => {

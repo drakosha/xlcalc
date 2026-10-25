@@ -2,6 +2,7 @@ import { fork, execFileSync } from 'node:child_process'
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { cpus, totalmem } from 'node:os'
+import { median } from '../stats.mjs'
 
 const args=process.argv.slice(2)
 const option=(name,fallback)=>args.includes(name)?args[args.indexOf(name)+1]:fallback
@@ -26,7 +27,6 @@ function run(root,mode,name){
   child.on('exit',(code,signal)=>{clearTimeout(timer);if(code!==0)reject(new Error(`${name}/${mode}: ${code??signal}: ${stderr}`));else{try{done(JSON.parse(stdout))}catch(error){reject(error)}}})
  })
 }
-const median=xs=>xs.sort((a,b)=>a-b)[Math.floor(xs.length/2)]
 for(const name of selected)for(const mode of(name==='cache-only'?['closures']:['closures','eval'])){
  for(let sample=0;sample<5;sample++){
   const roots=sample%2?[after,before]:[before,after]

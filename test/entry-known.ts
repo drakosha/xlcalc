@@ -5,6 +5,8 @@
  * on the keyboard (`typed-keys`, `typed-keys-held`, `typed-keys-held-2`) give the answer `parseEntry` follows.
  */
 
+import { knownCases as cases } from './known-cases.js'
+
 export const ENTRY_REASONS = {
   sign: "set through Formula2Local, Excel takes text begun by + or - that is no number as text; typed on the keyboard it makes a formula of it (-C1, +1+2 is 1+2), or brings its window for one that does not parse (-1,5 in en-US), as parseEntry does (typed-keys, typed-keys-held)",
   percent: "set through Formula2Local, a number goes into a percent cell as it is (5 is 500%); typed on the keyboard Excel's editor adds % after a number begun by a digit (5 is 5%, 5% becomes the text 5%%), as parseEntry does (typed-keys, typed-keys-held)",
@@ -23,11 +25,6 @@ export const ENTRY_REASONS = {
 } as const
 
 export type EntryReason = keyof typeof ENTRY_REASONS
-
-/** `<tag>:<set>` and its case ids → the same reason. */
-function cases(reason: EntryReason, bySet: Record<string, string[]>): [string, EntryReason][] {
-  return Object.entries(bySet).flatMap(([set, ids]) => ids.map((id): [string, EntryReason] => [`${set}:${id}`, reason]))
-}
 
 const SIGN_TYPED = ['sign-1', 'sign-2', 'sign-3', 'sign-4', 'sign-5', 'sign-7', 'sign-8', 'sign-14', 'sign-15', 'sign-16', 'sign-18', 'sign-19']
 const PERCENT_TYPED = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '15', '16', '17', '18'].flatMap((n) => [`in-pct-${n}`, `in-pct2-${n}`])

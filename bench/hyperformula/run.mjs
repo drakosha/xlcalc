@@ -1,8 +1,9 @@
-import { fork, execFileSync } from 'node:child_process'
+import { execFileSync } from 'node:child_process'
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
 import { cpus, loadavg, platform, arch, totalmem } from 'node:os'
+import { runChild } from '../run-child.mjs'
 import { WORKLOADS } from './workloads.mjs'
 
 const args = process.argv.slice(2)
@@ -28,27 +29,14 @@ const report = {
 mkdirSync(out, { recursive: true })
 
 function execute(id, engine) {
-  return new Promise((done) => {
-    const started = performance.now()
-    const child = fork(new URL('./child.mjs', import.meta.url), [id, engine], { cwd: root, silent: true, execArgv: ['--expose-gc', `--max-old-space-size=${heapLimitMb}`] })
-    let timer, phase = 'startup', phaseStarted = started, received, timedOut = false, stderr = ''
-    const arm = () => {
-      clearTimeout(timer)
-      timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL') }, phaseLimitMs)
-    }
-    arm()
-    child.stderr.on('data', (chunk) => { stderr = (stderr + chunk).slice(-3000) })
-    child.stdout.resume()
-    child.on('message', (m) => {
-      if (m.type === 'phase') { phase = m.name; phaseStarted = performance.now(); arm() }
-      if (m.type === 'result') { received = m.result; clearTimeout(timer) }
-    })
-    child.on('error', (error) => { clearTimeout(timer); done({ status: 'error', message: error.message }) })
-    child.on('exit', (code, signal) => {
-      clearTimeout(timer)
-      done(received ?? { status: timedOut ? 'timeout' : /heap out of memory/i.test(stderr) ? 'out_of_memory' : 'error', phase, phaseElapsedMs: performance.now() - phaseStarted, elapsedMs: performance.now() - started, code, signal, stderr })
-    })
-  })
+  return runChild(new URL('./child.mjs', import.meta.url), [id, engine], { cwd: root, execArgv: ['--expose-gc', `--max-old-space-size=${heapLimitMb}`], phaseLimitMs, stderrTail: 3000 }).then((f) =>
+    f.error
+      ? { status: 'error', message: f.error.message }
+      : f.received ?? {
+          status: f.timedOut ? 'timeout' : /heap out of memory/i.test(f.stderr) ? 'out_of_memory' : 'error',
+          phase: f.phase, phaseElapsedMs: f.phaseElapsedMs, elapsedMs: performance.now() - f.started, code: f.code, signal: f.signal, stderr: f.stderr,
+        },
+  )
 }
 
 function save() {

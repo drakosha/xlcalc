@@ -6,7 +6,7 @@
 import { writeFileSync } from 'node:fs'
 import type { BookInput } from '../../src/contract.js'
 import { writeXlsx } from '../../src/xlsx.js'
-import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, writeAnswers } from '../coverage/stored.js'
+import { answeredLine, answerSaver, keptSame, loadStored } from '../coverage/stored.js'
 import { inJobs, metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
 /** A book of such a set: its filter and the texts typed into it beside what `sent` writes. */
@@ -36,7 +36,7 @@ export async function stepByBook<C extends { id: string; book: string }, A, B ex
   const { kind, set, tag, books, cases, file } = o
   const answers = keptSame<C, A, { books: Record<string, B>; cases: C[] }>({ books, cases }, loadStored<{ books: Record<string, B>; cases: C[]; answers: Record<string, A> }>(file), (c, s) => JSON.stringify([c, s.books[c.book]]))
   const t0 = Date.now()
-  const save = () => writeAnswers(file, { meta: { ...metaOf(o.e, tag), date: new Date().toISOString().slice(0, 10), seconds: secondsSince(t0) }, books, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(file, metaOf(o.e, tag), true, t0, cases, answers, { before: { books } })
   const todo = cases.filter((c) => !answers[c.id])
   const parts = Object.keys(books).map((b) => todo.filter((c) => c.book === b)).filter((p) => p.length)
   const book = async (part: C[], f: string) => {

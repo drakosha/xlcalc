@@ -5,14 +5,13 @@
  * without a year takes its year), into a cell of the case's format, gives Excel's answer, or differs where it is known to;
  * the number Excel's object model gives as the cell's value, where the run read it, is the one its file holds.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { expect } from 'vitest'
 import type { StoredEntry } from '../bench/coverage/entry.js'
 import type { EntryCase, EntrySet } from '../bench/coverage/entry/cases.js'
 import { entryDifferences } from '../bench/coverage/entry/compare.js'
-import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { parseEntry } from '../src/index.js'
 import { ENTRY_REASONS, type EntryReason } from './entry-known.js'
+import { localeSets } from './stored-sets.js'
 import './locales.js'
 
 export interface EntrySetFile extends StoredEntry {
@@ -22,13 +21,7 @@ export interface EntrySetFile extends StoredEntry {
 
 /** The sets stored under `test/excel/<root>entry/`, every locale's. */
 export function entrySets(root: '' | 'win/'): EntrySetFile[] {
-  return TAGS.flatMap((tag) => {
-    const dir = new URL(`./excel/${root}entry/${localeDir(tag)}`, import.meta.url)
-    if (!existsSync(dir)) return []
-    return readdirSync(dir)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => ({ name: f.slice(0, -5), tag, ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredEntry) }))
-  })
+  return localeSets<StoredEntry>(`${root}entry`).map((r) => ({ name: r.set, tag: r.tag, ...r.stored }))
 }
 
 const generators = new Map<string, Promise<EntryCase[]>>()

@@ -7,11 +7,11 @@
 import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
 import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
-import { winFiles } from './excel-win-cases.js'
+import { storedSets } from './stored-sets.js'
 import { differences, differsOrThrows, engineReads, goesOn, predictionCheck } from './workbook-cases.js'
-import { currentCases } from './stored-cases.js'
+import { currentCases, pinnedCases } from './stored-cases.js'
 
-const SETS = winFiles<StoredWorkbook>('workbook/')
+const SETS = storedSets<StoredWorkbook>('win/workbook')
 
 /** `<set>:<case>` → cell → why it differs from Excel for Windows (at any read). */
 const PIXELS = 'a date that does not fit shows `#` across the cell: Excel for Windows measures the column in pixels, the engine in the Mac\'s points, so the count of `#` differs'
@@ -100,9 +100,8 @@ for (const set of SETS) {
 
 describe('known differences from Excel for Windows: book-level features', () => {
   it('every WIN_BOOK entry names a stored case', () => {
-    const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
-    expect(Object.keys(WIN_BOOK).filter((k) => !keys.has(k))).toEqual([])
-    expect(Object.keys(WIN_CASES).filter((k) => !keys.has(k))).toEqual([])
-    expect(Object.keys(WIN_MISSED).filter((k) => !keys.has(k))).toEqual([])
+    expect(pinnedCases(SETS, WIN_BOOK)).toEqual([])
+    expect(pinnedCases(SETS, WIN_CASES)).toEqual([])
+    expect(pinnedCases(SETS, WIN_MISSED)).toEqual([])
   })
 })

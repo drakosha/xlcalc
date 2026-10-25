@@ -1,6 +1,7 @@
 /** Formulas computed for tests of functions: their values, and an error value by its code. */
 import { expect } from 'vitest'
 import { compute, type BookInput, type CellInput, type CellValue, type Clock, type ComputeResult } from '../src/index.js'
+import { values } from './clock-books.js'
 
 /** An error value by its code. */
 export const err = (code: Extract<CellValue, { error: unknown }>['error']): CellValue => ({ error: code })
@@ -21,10 +22,8 @@ export const valuesAt =
 /** The values of sheet S of `cells` computed at `now`, by address. */
 export const sheetValuesAt =
   (now: string) =>
-  (cells: Record<string, CellInput>): Record<string, CellValue> => {
-    const r = compute({ sheets: [{ name: 'S', cells }] }, { clock: { now, seed: 1 } })
-    return Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value]))
-  }
+  (cells: Record<string, CellInput>): Record<string, CellValue> =>
+    values(compute({ sheets: [{ name: 'S', cells }] }, { clock: { now, seed: 1 } }))
 
 /** A book and the same book without some of its parts (`bare`): the same values and hash, another input hash. The book's result. */
 export function sameValuesApart(book: BookInput, bare: BookInput, clock: Clock): ComputeResult {

@@ -9,7 +9,7 @@
 import { execFileSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, takenBook, took, writeAnswers, type StoredBook } from './stored.js'
+import { answeredLine, answerSaver, keptSame, loadStored, runCases, setModule, takenBook, took, type StoredBook } from './stored.js'
 import { answerOf, editOf, mirrorFormulas, MIRRORS, mirrorRanges, refusedOf } from './case-book.js'
 import { columnCells, rowCells } from './struct.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
@@ -156,7 +156,7 @@ export async function stepTables(set: string, tag: string): Promise<void> {
   // FTABLES_AGAIN=id,id runs those cases again (a fix in the harness), keeping the other answers
   for (const id of process.env.FTABLES_AGAIN?.split(',') ?? []) delete answers[id]
   const t0 = Date.now()
-  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta(tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(target, { version: excelVersion(), locale: localeMeta(tag) }, false, t0, cases, answers)
   await ensureExcel(tag)
   await runCases(cases.filter((c) => !answers[c.id]), 'FTABLES_ONLY', async (c) => void (answers[c.id] = await runCase(c, local)), (done) => {
     save()

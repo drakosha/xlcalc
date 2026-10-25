@@ -5,6 +5,7 @@
  * changes and `explain`.
  */
 import { describe, expect, it } from 'vitest'
+import { inputHash } from '../src/canon.js'
 import { compute, createSession, type BookInput, type CellChange, type Session } from '../src/index.js'
 import { apply, withHeld } from './session-edits.js'
 import { spillBook, spillEdits } from './session-spill-edits.js'
@@ -39,9 +40,10 @@ describe('sessions with spilled arrays', () => {
     for (const batch of spillEdits(11, 200)) {
       const { changes } = s.setCells(batch)
       book = apply(book, batch)
-      // the cells a cycle through a spill range came to hold their values
-      expect(s.getResult().hash).toBe(compute(withHeld(book, s.getBook()), { clock }).hash)
-      expect(s.getResult().hash).toBe(compute(s.getBook(), { clock }).hash)
+      // the cells a cycle through a spill range came to hold their values; the book is the one it reads back
+      const full = compute(withHeld(book, s.getBook()), { clock })
+      expect(s.getResult().hash).toBe(full.hash)
+      expect(inputHash(s.getBook())).toBe(full.inputHash)
       agrees(s, changes)
     }
   }, 120_000)

@@ -14,7 +14,7 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import ExcelJS from 'exceljs'
-import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
+import { answeredLine, answerSaver, keptSame, loadStored, setModule, took, unpredicted } from './stored.js'
 import { dialogText, ensureExcel, excelVersion, halving, runScriptWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
@@ -137,7 +137,7 @@ export async function stepDisplay(set: string, tag: string): Promise<void> {
   const target = displayFile(set, tag)
   const answers = keptSame({ cases }, loadStored<StoredDisplay>(target), unpredicted)
   const t0 = Date.now()
-  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta(tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
+  const save = answerSaver(target, { version: excelVersion(), locale: localeMeta(tag) }, false, t0, cases, answers)
   await ensureExcel(tag)
   const todo = cases.filter((c) => !answers[c.id])
   const rejected: string[] = []
