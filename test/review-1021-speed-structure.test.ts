@@ -4,7 +4,7 @@
  * old code took seconds and the new takes a small part of the bound.
  */
 import { describe, expect, it } from 'vitest'
-import { createSession, editStructure, InputError, type BookInput, type StructureResult } from '../src/index.js'
+import { createSession, editStructure, type BookInput } from '../src/index.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
@@ -119,31 +119,5 @@ describe.each(['closures', 'eval'] as const)('%s', (execution) => {
     const sheet = s.getBook().sheets[0]
     expect(sheet.merges?.length).toBe(n)
     expect([sheet.cells.A7?.value, sheet.cells.B7, sheet.cells.D7?.value]).toEqual([7, undefined, 7])
-  })
-
-  describe('editStructure checks the cells it was given, not those it made (speed-u95)', () => {
-    const book = (): BookInput => ({ styles: [{}, { font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 1 }, A2: { formula: '=A1+1' }, B1: { style: 1 } } }, { name: 'T', cells: { A1: { formula: 'S!A2*2' } } }] })
-    const done = (r: StructureResult) => {
-      if (!r.ok) throw new Error(r.message)
-      return r.book
-    }
-
-    it('the book it gave, given again, comes out as a copy of it does', () => {
-      const once = done(editStructure(book(), { op: 'insertRows', sheet: 'S', row: 1 }))
-      const op = { op: 'copyRange', from: { sheet: 'S', range: 'A2:B3' }, to: { sheet: 'S', range: 'C5' } } as const
-      expect(done(editStructure(once, op))).toEqual(done(editStructure(structuredClone(once), op)))
-    })
-
-    it("the caller's own cells are checked on every call, changed in place too", () => {
-      const b = book()
-      done(editStructure(b, { op: 'insertRows', sheet: 'S', row: 1 }))
-      b.sheets[0].cells.A9 = { value: Number.NaN }
-      expect(() => editStructure(b, { op: 'insertRows', sheet: 'S', row: 1 })).toThrow(InputError)
-    })
-
-    it('cells it made are checked again against fewer styles', () => {
-      const once = done(editStructure(book(), { op: 'insertRows', sheet: 'S', row: 1 }))
-      expect(() => editStructure({ ...once, styles: [{}] }, { op: 'insertRows', sheet: 'S', row: 1 })).toThrow(/style/)
-    })
   })
 })

@@ -3,7 +3,7 @@
  * shape throws `InputError`; an operation Excel would refuse returns `{ ok: false, code, message }`.
  */
 import type { BookInput, CellRef, FillType, StructureResult, StructureOp } from '../contract.js'
-import { checkBook, CHECKED } from '../input.js'
+import { checkBook } from '../input.js'
 import { InputError } from '../input-error.js'
 import { checkOneOf, checkString, integer, isObject, onlyKeys } from '../input/basic.js'
 import { checkAddress, checkRange } from '../input/range.js'
@@ -67,18 +67,14 @@ const FILL_TYPES: readonly FillType[] = ['default', 'series', 'copy']
 
 /**
  * Restructures a workbook; the input workbook is not modified. A copy that pastes values (from a filtered sheet)
- * calculates the workbook at the current time. The workbook it returns is read-only: the calls given it next skip
- * checking the cells this call made, so change a copy of it.
+ * calculates the workbook at the current time.
  */
 export function editStructure(book: BookInput, op: StructureOp): StructureResult {
-  const checked = checkBook(book)
+  book = checkBook(book)
   op = opTaken(op)
-  const r = applyOp(checked, op, lazyValues(checked))
+  const r = applyOp(book, op, lazyValues(book))
   if (!r.ok) return r
   const out = { ...r.book, sheets: r.book.sheets.map((s) => looksTaken(s)) }
-  // the cells this call made from checked ones (`CHECKED`): the caller's own are checked on every call
-  const given = new Set(book.sheets.map((s) => s.cells))
-  for (const s of out.sheets) if (!given.has(s.cells)) CHECKED.set(s.cells, out.styles?.length ?? 0)
   return { ok: true, book: out, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(out) }) }
 }
 

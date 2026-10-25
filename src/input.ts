@@ -85,9 +85,6 @@ export function checkNames(v: unknown, path: string): NameInput[] {
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
-/** Cells the library made from checked ones (`editStructure`'s), by the number of styles they were checked against: `checkBook` skips their cells. */
-export const CHECKED = new WeakMap<object, number>()
-
 /**
  * A cell's meta, which the input hash writes as JSON and a thread takes by structured clone: a BigInt or a cycle breaks
  * both, so it is refused; what JSON turns into null or `{}` (a function, NaN, a Date) passes, as it did.
@@ -228,8 +225,7 @@ export function checkBook(v: unknown, path = 'book', looked = false): BookInput 
     const cells = object(sheet.cells, `${p}.cells`, 'an object of cells by address such as { A1: { value: 1 } }')
     // the cells of old-kind array formulas, checked against the sheet once all its cells are
     const arrays: string[] = []
-    const made = CHECKED.get(cells)
-    for (const addr of made === undefined || made > styles ? Object.keys(cells) : []) {
+    for (const addr of Object.keys(cells)) {
       const cell = cells[addr]
       if (!(SURE_ADDRESS.test(addr) && plainCell(cell, styles))) {
         const cp = `${p}.cells[${JSON.stringify(addr)}]`

@@ -218,8 +218,7 @@ function editStructure(book: BookInput, op: StructureOp): StructureResult
 ```
 
 Restructures a workbook; the input workbook is not modified. A copy that pastes values (from a filtered sheet)
-calculates the workbook at the current time. The workbook it returns is read-only: the calls given it next skip
-checking the cells this call made, so change a copy of it.
+calculates the workbook at the current time.
 
 ### <a id="xlcalc-entrytext"></a>`entryText`
 
