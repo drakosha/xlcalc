@@ -141,7 +141,7 @@ export type EditView = Pick<ViewportCell, 'formula' | 'value' | 'spillOf'>
  * area, its own value by the format it shows (a text, which is read as typed, once per format), nothing for a cell
  * without either. `now` completes text read as a date without a year.
  */
-export function editTexts(book: BookInput, s: number, tables: Tables, now: string) {
+function editTexts(book: BookInput, s: number, tables: Tables, now: string) {
   const sheet = book.sheets[s]
   const loc = LOCALES.get(book.locale ?? DEFAULT_LOCALE)!
   const locals = new Map<string, string>()
