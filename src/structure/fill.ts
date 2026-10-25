@@ -25,6 +25,7 @@ import { hi, lo, withBounds, type Axis, type Rect } from './area.js'
 import type { Applied, Geometry } from './geometry.js'
 import { cellsIn, gridOf } from './grid.js'
 import { sheetIndex } from './rewrite.js'
+import { holds } from '../array-areas.js'
 import { checkFillWrites } from './writes.js'
 import { renamedByPaste } from '../tables/moves.js'
 import { tablesOf } from '../tables/model.js'
@@ -104,9 +105,6 @@ function wayOf(src: Rect, target: Rect): { axis: Axis; forward: boolean } | null
   return null
 }
 
-/** A cell that holds nothing a fill reads: none, or one without a value or a formula. */
-const empty = (cell: CellInput | undefined) => !cell || (cell.formula === undefined && (cell.value === undefined || cell.value === null))
-
 /** The cells of positions `added` (from, to along the axis) that a series writes, with their values. */
 function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [number, number], type: FillType): [string, CellInput['value']][] {
   const sheet = book.sheets[s]
@@ -122,7 +120,7 @@ function seriesCells(book: BookInput, s: number, src: Rect, axis: Axis, added: [
   let numbers = type !== 'series'
   for (const i of cellsIn(g, src)) {
     const cell = g.cell[i]
-    if (empty(cell)) continue
+    if (!holds(cell)) continue
     numbers &&= cell.formula === undefined && typeof cell.value === 'number' && shownAs(formatAt(cell, g.row[i], g.col[i])) === 'number'
     const [along, across] = axis === 'r' ? [g.row[i], g.col[i]] : [g.col[i], g.row[i]]
     let line = lines.get(across)
@@ -192,7 +190,7 @@ function ordinal(n: number): string {
 
 /** How a fill reads a cell of its source. */
 function itemOf(cell: CellInput | undefined, format: CellInput['numberFormat'], book: BookInput, lists: (readonly string[])[]): Item {
-  if (empty(cell)) return { k: 'empty' }
+  if (!holds(cell)) return { k: 'empty' }
   if (cell!.formula !== undefined) return { k: 'other' }
   const v = cell!.value
   if (typeof v === 'object' && v !== null) {
