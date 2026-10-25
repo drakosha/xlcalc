@@ -29,3 +29,10 @@ const CASES: [string, string, Val][] = [
 
 /** The set's cases and the answers predicted, by case id. */
 export const { buildProbes, PREDICTED } = heldCases(CASES)
+
+/**
+ * The predictions Excel did not confirm (Excel for Mac 16.114): an array has at most as many columns as a sheet has rows,
+ * 1,048,576: SEQUENCE and RANDARRAY of more are #VALUE!, HSTACK and TOROW #NUM!; TRANSPOSE, WRAPCOLS and WRAPROWS of
+ * such a SEQUENCE take its #VALUE!. The engine then followed.
+ */
+export const MISSED = ['SEQUENCE#1', 'SEQUENCE#2', 'RANDARRAY#1', 'TOROW#1', 'HSTACK#2', 'TRANSPOSE#1', 'WRAPCOLS#1', 'WRAPROWS#1', 'SEQUENCE#4']

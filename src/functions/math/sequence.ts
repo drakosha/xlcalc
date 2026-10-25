@@ -9,13 +9,13 @@ import { E, type V } from '../../values.js'
 const MAX_CELLS = MAX_ROWS * MAX_COLS
 
 /**
- * The size of a new array: negative #VALUE!, more rows than a sheet has #VALUE! (16,385 columns are made, the set
- * `array-size-held`), zero #CALC!, else rows × cols.
+ * The size of a new array: negative #VALUE!, more rows or columns than a sheet has rows #VALUE! (16,385 columns are
+ * made, the sets `array-size-held`), zero #CALC!, else rows × cols.
  */
 function size(rows: number, cols: number): [number, number] | typeof E.VALUE {
   const r = Math.trunc(rows)
   const c = Math.trunc(cols)
-  if (r < 0 || c < 0 || r > MAX_ROWS || r * c > MAX_CELLS) return E.VALUE
+  if (r < 0 || c < 0 || r > MAX_ROWS || c > MAX_ROWS || r * c > MAX_CELLS) return E.VALUE
   return r === 0 || c === 0 ? EMPTY : [r, c]
 }
 

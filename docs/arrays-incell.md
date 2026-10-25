@@ -80,7 +80,7 @@ Every whitelisted function's typical call was run with a two-cell range and a tw
 
 An empty array, such as a `FILTER` that keeps nothing, `TAKE` of zero rows or `DROP` of everything, is `#CALC!`, as in Excel.
 
-An array can have more columns than a sheet: `COLUMNS(SEQUENCE(1,16385))` is 16,385, as in Excel. More rows than a sheet has are refused as Excel refuses them: `SEQUENCE` and `RANDARRAY` of 1,048,577 rows are `#VALUE!`, and `VSTACK` or `TOCOL` that would make them `#NUM!`. Whatever its shape, an array of more than 134,217,728 values (2^27, what one JavaScript array holds) is `#VALUE!`.
+An array can have more columns than a sheet: `COLUMNS(SEQUENCE(1,16385))` is 16,385, as in Excel. In either direction it holds at most as many lines as a sheet has rows, 1,048,576, and more are refused as Excel refuses them: `SEQUENCE` and `RANDARRAY` of 1,048,577 rows or columns are `#VALUE!`, and `VSTACK`, `HSTACK`, `TOCOL` or `TOROW` that would make them `#NUM!`. Whatever its shape, an array of more than 134,217,728 values (2^27, what one JavaScript array holds) is `#VALUE!`.
 
 ## Compilation
 

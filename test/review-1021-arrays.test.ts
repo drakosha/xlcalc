@@ -84,11 +84,13 @@ describe.each(EXECUTIONS)('an array of more values than one JavaScript array hol
   })
 })
 
-describe.each(EXECUTIONS)('arrays of more rows or columns than a sheet has, as Excel makes them (array-size-held), %s', (execution) => {
-  it('refuses more rows from SEQUENCE and RANDARRAY (#VALUE!), VSTACK and TOCOL (#NUM!), and makes more columns', () => {
-    const forms = ['ROWS(SEQUENCE(1048577))', 'ROWS(RANDARRAY(1048577))', 'ROWS(SEQUENCE(2^31))', 'ROWS(VSTACK(SEQUENCE(1048576),1))', 'ROWS(TOCOL(SEQUENCE(1100,1000)))', 'COLUMNS(SEQUENCE(1,16385))', 'COLUMNS(RANDARRAY(1,16385))', 'ROWS(SEQUENCE(1048576,2))', 'ROWS(VSTACK(SEQUENCE(1048575),1))']
+describe.each(EXECUTIONS)('arrays of more rows or columns than a sheet has, as Excel makes them (array-size-held, -2), %s', (execution) => {
+  it('refuses more than 1,048,576 rows or columns from SEQUENCE and RANDARRAY (#VALUE!), VSTACK, HSTACK, TOCOL and TOROW (#NUM!)', () => {
+    const forms = ['ROWS(SEQUENCE(1048577))', 'ROWS(RANDARRAY(1048577))', 'ROWS(SEQUENCE(2^31))', 'ROWS(VSTACK(SEQUENCE(1048576),1))', 'ROWS(TOCOL(SEQUENCE(1100,1000)))', 'COLUMNS(SEQUENCE(1,16385))', 'COLUMNS(RANDARRAY(1,16385))', 'ROWS(SEQUENCE(1048576,2))', 'ROWS(VSTACK(SEQUENCE(1048575),1))',
+      'COLUMNS(SEQUENCE(1,1048577))', 'COLUMNS(RANDARRAY(2,1048577))', 'COLUMNS(HSTACK(SEQUENCE(1,1048576),1))', 'COLUMNS(TOROW(SEQUENCE(1100,1000)))', 'COLUMNS(HSTACK(SEQUENCE(1,16384),1))']
     const cells = Object.fromEntries(forms.map((formula, i) => [`A${i + 1}`, { formula }]))
     const r = compute({ sheets: [{ name: 'S', cells }] }, { execution }).sheets[0].cells
-    expect(forms.map((_, i) => r[`A${i + 1}`].value)).toEqual([{ error: 'VALUE' }, { error: 'VALUE' }, { error: 'VALUE' }, { error: 'NUM' }, { error: 'NUM' }, 16385, 16385, 1048576, 1048576])
+    const [value, num] = [{ error: 'VALUE' }, { error: 'NUM' }]
+    expect(forms.map((_, i) => r[`A${i + 1}`].value)).toEqual([value, value, value, num, num, 16385, 16385, 1048576, 1048576, value, value, num, num, 16385])
   })
 })
