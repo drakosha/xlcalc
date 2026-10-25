@@ -6,10 +6,13 @@
  * `"="` blanks alone, `"<>"` the rest; an error, or its text, matches that error. Numbers, dates and words in the
  * text and the order of text follow the book's locale (`CritRules`, en-US by default).
  */
+import type { ErrorCode } from './contract.js'
 import { collator } from './collate.js'
 import { critTextToNumber, textToNumber } from './dates.js'
 import { spend } from './exec/budget.js'
+import { ERROR_TYPE } from './error-type.js'
 import { readsClock, type RulesClock } from './locale/rules/data.js'
+import { CELL_ERRORS, ERROR_CODE } from './syntax/errors.js'
 import { holds, to15 } from './values.js'
 
 /** A cell value for a criterion; errors are any object. */
@@ -23,24 +26,9 @@ export type Crit =
   | { op: string; kind: 'blank' }
   | { op: string; kind: 'err'; code: string }
 
-/** Error texts in a criterion (any case) and their order, ERROR.TYPE's numbers. */
-const ERRORS: Record<string, [code: string, rank: number]> = {
-  '#NULL!': ['NULL', 1],
-  '#DIV/0!': ['DIV0', 2],
-  '#VALUE!': ['VALUE', 3],
-  '#REF!': ['REF', 4],
-  '#NAME?': ['NAME', 5],
-  '#NUM!': ['NUM', 6],
-  '#N/A': ['NA', 7],
-  '#SPILL!': ['SPILL', 9],
-  '#CALC!': ['CALC', 14],
-}
-// a formula that does not compute (#ERROR!) ranks as ERROR.TYPE numbers it
-const ERROR_RANK: Record<string, number> = { ...Object.fromEntries(Object.values(ERRORS)), ERROR: 1 }
-
 /** A criterion's error text by a locale's error texts (`'#N/A': '#Н/Д'`; one not given keeps its English text): the error code, or undefined. */
 export function errorWords(local: Readonly<Record<string, string>>): (text: string) => string | undefined {
-  const words = new Map(Object.entries(ERRORS).map(([text, [code]]) => [(local[text] ?? text).toUpperCase(), code]))
+  const words = new Map(CELL_ERRORS.map((t) => [(local[t] ?? t).toUpperCase(), ERROR_CODE[t]]))
   return (text) => words.get(text.toUpperCase())
 }
 
@@ -261,11 +249,11 @@ export function matches(v: CritValue, c: Crit | Lowered, rules: CritRules = EN_C
       if (typeof v !== 'string') return c.op === '<>'
       return c.re.test(v) === (c.op === '=')
     case 'err': {
-      // errors only, never text that reads like one; < and > order errors as ERROR.TYPE does
+      // errors only, never text that reads like one; < and > order errors as ERROR.TYPE does (#ERROR! counts as #NULL!)
       const code = v !== null && typeof v === 'object' ? (v as { code?: string }).code : undefined
       if (c.op === '=' || c.op === '<>') return (code === c.code) === (c.op === '=')
-      const r = code === undefined ? undefined : ERROR_RANK[code]
-      return r !== undefined && holds(c.op, ord(r, ERROR_RANK[c.code]))
+      const r = code === undefined ? undefined : ERROR_TYPE[code as ErrorCode]
+      return r !== undefined && holds(c.op, ord(r, ERROR_TYPE[c.code as ErrorCode] as number))
     }
     case 'str':
     case 'low':
