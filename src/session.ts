@@ -67,7 +67,7 @@ import { OUTLINE_FIELDS } from './structure/outline.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
-import { cellValidation, hasRule, withInput, withInputs } from './validation/session.js'
+import { cellValidation, hasRule, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
 import { layerOf, putInputs, putLayers, withLayer, withLooksOf } from './looks/sheet.js'
 import { FILL_OPTIONS, REPLACE_OPTIONS, strictMethods, TEXT_OPTIONS } from './strict-args.js'
@@ -870,13 +870,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (input !== null) input = cellTaken(checkCell(input, 'input', styleCount(s)))
       checkArrayEdits(s, [{ sheet, cell, input }])
       if (!hasRule(s, i, row, col)) return { ok: true }
-      try {
-        return yield* withInput(s, i, row, col, input, () => entryCheck(s, i, row, col))
-      } catch (e) {
-        // the input put in for the check may still be there: the state is built again on the next call
-        stale = true
-        throw e
-      }
+      return yield* previewed(s, [{ i, r: row, c: col, edit: { sheet: s.sheetNames[i], cell: formatAddress(row, col), input } }], () => entryCheck(s, i, row, col))
     },
     *getHash() {
       return yield* stateHash(yield* ready())
