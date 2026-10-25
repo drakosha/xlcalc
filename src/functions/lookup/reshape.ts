@@ -3,7 +3,7 @@
  * VSTACK, TOCOL, TOROW, WRAPROWS, WRAPCOLS. This engine's own. An empty answer is #CALC! in Excel, #VALUE!
  * here (`EMPTY`).
  */
-import type { Arg, Cx, FnDef, Grid, Segment } from '../../args.js'
+import { eachValue, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { isMany } from '../../arrays/lift.js'
 import { Arr, asArray, EMPTY, fromGrid, selectArray } from '../../arrays/value.js'
 import { allot, spend } from '../../exec/budget.js'
@@ -22,15 +22,14 @@ const range = (from: number, to: number) => Array.from({ length: Math.max(0, to 
 /** CHOOSECOLS/CHOOSEROWS indexes: numbers (an array gives each of its values), negative from the end, 0 or past the end #VALUE!. */
 function indexes(segs: readonly Segment[], n: number, rules: Rules): number[] | CErr {
   const out: number[] = []
-  for (const s of segs)
-    for (const v of Array.isArray(s) ? (s as readonly V[]) : [s as V]) {
-      const k = rules.toNum(v)
-      if (isErr(k)) return k
-      const i = Math.trunc(k)
-      if (i === 0 || Math.abs(i) > n) return E.VALUE
-      out.push(i > 0 ? i - 1 : n + i)
-    }
-  return out
+  const e = eachValue(segs, (v) => {
+    const k = rules.toNum(v)
+    if (isErr(k)) return k
+    const i = Math.trunc(k)
+    if (i === 0 || Math.abs(i) > n) return E.VALUE
+    out.push(i > 0 ? i - 1 : n + i)
+  })
+  return e ?? out
 }
 
 /** TAKE and DROP: the first (last, when negative) `n` of `size`, as the zero-based span [from, to): a reference needs only its ends. */
