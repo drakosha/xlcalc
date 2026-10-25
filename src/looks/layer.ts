@@ -7,6 +7,7 @@
 import type { NumberFormat } from '../contract.js'
 import type { Look } from '../layout/lines.js'
 import { MAX_COLS } from '../model.js'
+import { lowerBound } from '../sorted.js'
 import type { Rect } from '../structure/area.js'
 
 /** No look: a cell in a gap of a pattern. */
@@ -16,6 +17,8 @@ export const NONE = -1
 export type Pattern = Int32Array
 
 const EMPTY: Pattern = new Int32Array(0)
+
+const same = (x: number) => x
 
 const formatKey = (f: NumberFormat | undefined) => (f === undefined ? '-' : typeof f === 'number' ? `n${f}` : `s${f}`)
 
@@ -208,25 +211,13 @@ export class Layer {
 
   /** The block holding row `r`, or -1. */
   blockOf(r: number): number {
-    let [lo, hi] = [0, this.at.length - 1]
-    while (lo <= hi) {
-      const m = (lo + hi) >> 1
-      if (this.r1[m] > r) hi = m - 1
-      else if (this.r2[m] < r) lo = m + 1
-      else return m
-    }
-    return -1
+    const b = lowerBound(this.r2, r, same)
+    return b < this.at.length && this.r1[b] <= r ? b : -1
   }
 
   /** The first block that ends at or after row `r`. */
   firstFrom(r: number): number {
-    let [lo, hi] = [0, this.at.length]
-    while (lo < hi) {
-      const m = (lo + hi) >> 1
-      if (this.r2[m] < r) lo = m + 1
-      else hi = m
-    }
-    return lo
+    return lowerBound(this.r2, r, same)
   }
 
   /** The pattern of row `r`; an empty one for a row without looks. */
