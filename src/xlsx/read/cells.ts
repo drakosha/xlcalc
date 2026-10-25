@@ -111,7 +111,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
   // the current row, and when it has a cell format of its own its cells with their own looks, until it ends
   let line: RowInput | undefined
   let lineRow = -1
-  let formatted: { addr: string; col: number; own: Look }[] | undefined
+  let formatted: { addr: string; col: number; own: Look; cell: CellInput }[] | undefined
   const endRow = () => {
     if (!formatted || !line) return
     const at = new Set(formatted.map((x) => x.col))
@@ -121,10 +121,10 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     if (Object.keys(line).length) out.rows.set(lineRow + 1, line)
     for (const x of formatted) {
       const look = ownLook(x.own, lookOf(undefined, line, column(x.col)), ctx)
-      const content = out.cells[x.addr]
-      if (Object.keys(content).length) out.cells[x.addr] = { ...look, ...content }
+      if (Object.keys(x.cell).length) out.cells[x.addr] = { ...look, ...x.cell }
       else {
-        delete out.cells[x.addr]
+        // an address given twice keeps the content another <c> gave it, as in a row without a format
+        if (out.cells[x.addr] === x.cell) delete out.cells[x.addr]
         looks.add(lineRow, x.col, looks.looks.of(look))
       }
     }
@@ -195,9 +195,9 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
     const xf = a.s === undefined ? undefined : xfAt(a.s, ctx, { sheet, cell: addr })
     const own = look(xf, issues, { sheet, cell: addr })
-    // a cell of a formatted row takes its look when the row ends
-    formatted?.push({ addr, col, own })
     const cell: CellInput = formatted ? {} : ownLook(own, lookOf(undefined, line, column(col)), ctx)
+    // a cell of a formatted row takes its look when the row ends
+    formatted?.push({ addr, col, own, cell })
     // value metadata: the type of an error Excel stores as #VALUE! (#SPILL!, #CALC!), or a rich value the model does not have
     const rich = a.vm === undefined ? undefined : ctx.meta.error(Number(a.vm))
     if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', { key: 'valueMetadata' }, { sheet, cell: addr })
