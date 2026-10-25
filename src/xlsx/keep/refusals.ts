@@ -13,9 +13,11 @@ import { quoteSheet, sheetKey } from '../../syntax/print.js'
 import { plain } from '../../syntax/links.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { columnPoints, DEFAULT_ROW_HEIGHT } from '../../column-width.js'
+import { formatAddress } from '../../model.js'
 import { entryAt, lines } from '../../layout/spans.js'
 import { attributes } from '../xml/scan.js'
 import { compared, sheetOfCarrier, type Carriers, type Edit, type Geometry } from './carriers.js'
+import { areasOf } from './refs.js'
 import type { Source } from './source.js'
 
 /** `writeKept`'s refusal: the change would leave a part of the file the model does not hold pointing at the wrong cells. */
@@ -35,6 +37,13 @@ export interface Identity {
   lines: boolean[]
   /** The edits that write the moved references back to the parts. */
   edits: Edit[]
+  /** By sheet of the book read: its cells with what only the file holds that moved, by address now on its sheet of the book written (the address they had), and the addresses they left. */
+  cells: Map<number, Moved>
+}
+
+export interface Moved {
+  to: Map<string, string>
+  left: Set<string>
 }
 
 /** The relationships a sheet deleted may have: parts of its own the model has or that go with it, or that hold no reference. */
@@ -48,7 +57,7 @@ const EMU = 12_700
 export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Carriers): Identity {
   const names = new Map((book1.names ?? []).filter((n) => n.scope === undefined).map((n) => [caseKey(n.name), n]))
   const index = new Map(book1.sheets.map((s, j) => [sheetKey(s.name), j]))
-  const out: Identity = { source: book1.sheets.map(() => undefined), target: new Map(), lines: [], edits: [] }
+  const out: Identity = { source: book1.sheets.map(() => undefined), target: new Map(), lines: [], edits: [], cells: new Map() }
   for (const [k, carrier] of c.sheets.entries()) {
     const was = book0.sheets[k].name
     const n = names.get(caseKey(carrier.name))
@@ -74,6 +83,22 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       const own = src.sheets[k].rels.find((r) => !DELETABLE.has(r.kind))
       if (own) throw new KeptRefusal(`the sheet '${was}' was deleted, and it has a part the workbook does not hold (${own.kind} ${own.target})`)
     }
+  }
+  // the cells with what only the file holds: where each went on its sheet (one moved to another sheet, or deleted, leaves it)
+  for (const [k, list] of c.cells.entries()) {
+    const j = out.target.get(k)
+    if (j === undefined || !list.length) continue
+    const moved: Moved = { to: new Map(), left: new Set() }
+    for (const cell of list) {
+      const n = names.get(caseKey(cell.carrier.name))
+      if (!n) throw new KeptRefusal(`the workbook has no name ${cell.carrier.name}, which tells where the cell ${cell.addr} of '${book0.sheets[k].name}' went: ${OPEN_KEPT}`)
+      const area = areasOf(n.ref)?.[0]
+      const at = area && 'rect' in area && sheetKey(area.sheet) === sheetKey(book1.sheets[j].name) ? formatAddress(area.rect.r1, area.rect.c1) : undefined
+      if (at === cell.addr) continue
+      moved.left.add(cell.addr)
+      if (at !== undefined) moved.to.set(at, cell.addr)
+    }
+    if (moved.left.size) out.cells.set(k, moved)
   }
   /** A sheet's lines in EMUs as the book written has them: a row's height (its sheet's default where it has none), a column's width; hidden ones none. */
   const geometry = (k: number | undefined): Geometry => {

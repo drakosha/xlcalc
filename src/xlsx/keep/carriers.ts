@@ -8,22 +8,26 @@
  * sparklines, a sheet's AutoFilter and sort, the names the model does not take (the print area and titles), page
  * breaks and protected ranges. A part an item cannot write back as Excel would refuses (comment threads, a pivot
  * table cut). Parts whose references are not read (`unparsed`) are known only by their sheet's carrier: rows and
- * columns inserted or deleted there are seen, a range moved over them is not.
+ * columns inserted or deleted there are seen, a range moved over them is not. A cell with what only the file holds
+ * (formatted runs of text, a rich value the writer does not write, phonetic text) has a carrier of its own, which
+ * tells where the cell went; past `KEPT_CELLS` of them on a sheet they have none.
  */
 import type { BookInput, NameInput } from '../../contract.js'
 import { caseKey } from '../../collate.js'
-import { MAX_COLS, MAX_ROWS } from '../../model.js'
+import { ADDR, MAX_COLS, MAX_ROWS, parseAddress } from '../../model.js'
 import type { Rect } from '../../structure/area.js'
 import type { Ast } from '../../syntax/ast.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { canonical, mapAst, quoteSheet, sheetKey, walk } from '../../syntax/print.js'
-import { attr, attributes, placed } from '../xml/scan.js'
+import { attr, attributes, elements, placed } from '../xml/scan.js'
 import { escapeAttr, escapeText, readText } from '../xml/text.js'
 import { parseFormula } from '../read/formulas.js'
+import { cellMetadata } from '../read/metadata.js'
+import { partText } from '../read/package.js'
 import { ABSOLUTE, areasOf, areaText, dollarsOf, plainArea, sheetPrefix, sqrefRects, type Area, type Dollars } from './refs.js'
 import type { Source } from './source.js'
-import { attrsOf, childrenOf, ContentTypes, rootOf } from './xml.js'
+import { attrsOf, childrenOf, ContentTypes, rootOf, type Placed } from './xml.js'
 
 /** The prefix of the carriers' names. */
 export const PREFIX = '_xlcalc.keep.'
@@ -63,9 +67,21 @@ export interface Item {
   fix(now: string[], at: Geometry): Fix
 }
 
+/** A cell of the file with what only the file holds, and its carrier. */
+export interface KeptCell {
+  addr: string
+  carrier: Carrier
+}
+
+/** The cells of a sheet with what only the file holds past which they have no carriers: `writeKept` reports them where rows or columns moved. */
+export const KEPT_CELLS = 5_000
+
 export interface Carriers {
   /** Each of the source's sheets' carrier, in the book's order of them. */
   sheets: Carrier[]
+  /** By sheet of the source: its cells with what only the file holds; none past `KEPT_CELLS`, their count in `uncarried`. */
+  cells: KeptCell[][]
+  uncarried: number[]
   items: Item[]
   /** By sheet of the source: its parts whose references no carrier holds. */
   unparsed: string[][]
@@ -96,6 +112,13 @@ const EXT_KNOWN = new Set(
     '{01252117-D84E-4E92-8308-4BE1C098FCBB}', // ignored errors
   ].map((u) => u.toUpperCase()),
 )
+
+/** Formatted runs of text, or phonetic ones, in the XML of a string. */
+const RUNS = /<(?:[\w.-]+:)?(?:r|rPh)[\s>]/
+/** A cell of a sheet's XML: its attributes and content. */
+const CELL_XML = /<(?:[\w.-]+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?c>)/g
+/** The rich values of errors the writer writes itself (`write/book.ts`). */
+const OWN_ERRORS = new Set(['#SPILL!', '#CALC!'])
 
 /** A rectangle as an absolute reference: `$B$3`, `$B$3:$E$10`, `$C:$D`, `$3:$5`. */
 export const absText = (x: Rect) => areaText(x, ABSOLUTE)
@@ -152,7 +175,7 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
     while (taken.has(caseKey(name))) name = `${PREFIX}${n++}`
     return { name, ref, kind }
   }
-  const out: Carriers = { sheets: [], items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []) }
+  const out: Carriers = { sheets: [], cells: names.map(() => []), uncarried: names.map(() => 0), items: [], unparsed: names.map(() => []), anywhere: [], byName: [], named: names.map(() => []) }
   for (const [i, sheet] of names.entries()) {
     let name = `${PREFIX}s${i}`
     for (let k = 2; taken.has(caseKey(name)); k++) name = `${PREFIX}s${i}.${k}`
@@ -188,13 +211,21 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
     })
   }
 
+  // the shared strings with formatted runs, and the rich values of the cells
+  const part = (kind: string) => partText(src.archive, src.wbRels, kind)
+  const [sst, metaXml, richValues, richStructures] = await Promise.all(['sharedStrings', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure'].map(part))
+  const richStrings = new Set<number>()
+  if (sst && RUNS.test(sst)) elements(sst, 'si').forEach((e, k) => RUNS.test(e.body ?? '') && richStrings.add(k))
+  const meta = cellMetadata(metaXml, richValues, richStructures)
+
   const types = new ContentTypes(src.types)
   for (const [i, s] of src.sheets.entries()) {
     const sheet = names[i]
     const xml = s.xml
     const root = rootOf(xml)
     for (const c of root ? childrenOf(xml, root) : []) {
-      if (UNPARSED.has(c.local)) out.unparsed[i].push(`the ${c.local} of '${sheet}'`)
+      if (c.local === 'sheetData') keptCells(xml, c, i)
+      else if (UNPARSED.has(c.local)) out.unparsed[i].push(`the ${c.local} of '${sheet}'`)
       else if (c.local === 'autoFilter' || c.local === 'sortState') filter(xml, c, i, s.part)
       else if (c.local === 'rowBreaks' || c.local === 'colBreaks') breaks(xml, c, i, s.part)
       else if (c.local === 'protectedRanges') protectedRanges(xml, c, i, s.part)
@@ -249,6 +280,35 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
   return out
 
   /**
+   * A sheet's cells with what only the file holds: a shared string with formatted runs or phonetic text, an inline one
+   * with them, a rich value the writer does not write (a picture in the cell, a data type), phonetic text shown; each
+   * with a carrier of its own, of a name apart from the parts' (`c<sheet>.<n>`). Past `KEPT_CELLS` of them, none.
+   */
+  function keptCells(xml: string, data: Placed, i: number) {
+    if (!richStrings.size && !/ (?:vm|ph)="|<(?:[\w.-]+:)?is>/.test(xml)) return
+    const found: string[] = []
+    for (const m of xml.slice(data.open, data.end).matchAll(CELL_XML)) {
+      const a = attributes(m[1])
+      const body = m[2] ?? ''
+      const kept =
+        (a.t === 's' && richStrings.has(Number(/<(?:[\w.-]+:)?v>(\d+)</.exec(body)?.[1]))) ||
+        (a.t === 'inlineStr' && RUNS.test(body)) ||
+        (a.vm !== undefined && !OWN_ERRORS.has(meta.error(Number(a.vm)) ?? '')) ||
+        (a.ph !== undefined && a.ph !== '0' && a.ph !== 'false')
+      // a cell without its address keeps what it holds only where it stays
+      if (kept && a.r !== undefined && ADDR.test(a.r)) found.push(a.r)
+    }
+    if (found.length > KEPT_CELLS) return void (out.uncarried[i] = found.length)
+    let k = 0
+    out.cells[i] = found.map((addr) => {
+      let name = `${PREFIX}c${i}.${k++}`
+      while (taken.has(caseKey(name))) name = `${PREFIX}c${i}.${k++}`
+      const { row, col } = parseAddress(addr)
+      return { addr, carrier: { name, ref: `${quoteSheet(names[i])}!${absText({ r1: row, r2: row, c1: col, c2: col })}`, kind: 'place' } }
+    })
+  }
+
+  /**
    * A drawing's anchors (`twoCellAnchor`, `oneCellAnchor`; `absoluteAnchor` stays where it is) and how each follows
    * the cells: one that moves and sizes with them (`editAs="twoCell"`, the default) by both its corners, one that only
    * moves with them (`oneCell`, and a one-cell anchor) by its top left corner, its size kept, one fixed (`absolute`)
@@ -294,14 +354,16 @@ export async function carriersOf(src: Source, book: BookInput): Promise<Carriers
           carriers: [place(i, rect), place(i, probe), row(rect.r1), col(rect.c1), ...(sized ? [row(rect.r2), col(rect.c2)] : [])],
           fix([rectNow, probeNow, ...linesNow], at) {
             const [r, p] = [rectsNow(rectNow)?.[0], rectsNow(probeNow)?.[0]]
-            // a drawing that sizes with its cells goes with all of them deleted, as Excel deletes it (the set keep/struct);
-            // the parts only it points at go with it (`writeKept`)
-            if (sized && !r) return children.has(e.start) ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted, in alternate content, which writeKept does not delete` }
             const line = (k: number, axis: 'r' | 'c') => {
               const x = linesNow[k] === undefined ? undefined : rectsNow(linesNow[k])?.[0]
               return x ? (axis === 'r' ? x.r1 : x.c1) : undefined
             }
             const [r1, c1, r2, c2] = [line(0, 'r'), line(1, 'c'), line(2, 'r'), line(3, 'c')]
+            // a drawing that sizes with its cells goes with all its rows or columns deleted, as Excel deletes it (the set
+            // keep/struct); the parts only it points at go with it (`writeKept`). Its cells lost under a range moved over
+            // them, its lines stay: so does it.
+            if (sized && !r && ((r1 === undefined && r2 === undefined) || (c1 === undefined && c2 === undefined)))
+              return children.has(e.start) ? { edits: [{ part, start: e.start, end: e.end, text: '' }] } : { refuse: `${what} lies in cells the change deleted, in alternate content, which writeKept does not delete` }
             // a range moved over the drawing moves its rectangle and not its lines: the drawing would stay behind
             if (r && r1 !== undefined && c1 !== undefined && (r.r1 !== r1 || r.c1 !== c1)) return { refuse: `${what} lies in a range that moved, which writeKept does not move a drawing with` }
             if (!p) return { refuse: `${what} lies in cells deleted with all those below or beside it` }
@@ -533,7 +595,7 @@ function refersToBook(ast: Ast, known: Set<string>): boolean {
 
 /** The carriers as the book's names, hidden ones. */
 export function carrierNames(c: Carriers): NameInput[] {
-  return [...c.sheets, ...c.items.flatMap((x) => x.carriers)].map((x) => ({ name: x.name, ref: x.ref, hidden: true }))
+  return [...c.sheets, ...c.cells.flat().map((x) => x.carrier), ...c.items.flatMap((x) => x.carriers)].map((x) => ({ name: x.name, ref: x.ref, hidden: true }))
 }
 
 /** A carrier's reference as it compares: its canonical text; of a part on a sheet, without the sheet. Null when it does not parse. */

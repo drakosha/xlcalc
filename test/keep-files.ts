@@ -33,6 +33,8 @@ export interface Extra {
   rich?: Record<string, string>
   /** Cell formats given a rotation of their text, by index. */
   rotated?: number[]
+  /** Attributes added to cells of a sheet (`vm="1"` of a rich value, `ph="1"`), by address. */
+  attrs?: { sheet: number; cells: Record<string, string> }
 }
 
 const anchorXml = (x: Anchor, inner: string, editAs?: string) =>
@@ -99,6 +101,7 @@ export async function withParts(book: BookInput, extra: Extra): Promise<Uint8Arr
     inSheet(extra.breaks.sheet, `<rowBreaks count="${extra.breaks.rows.length}" manualBreakCount="${extra.breaks.rows.length}">${b}</rowBreaks>`, ['drawing', 'legacyDrawing', 'tableParts', 'extLst'])
   }
   for (const [text, runs] of Object.entries(extra.rich ?? {})) edit('xl/sharedStrings.xml', (x) => x.replace(`<si><t>${text}</t></si>`, `<si>${runs}</si>`))
+  for (const [cell, attrs] of Object.entries(extra.attrs?.cells ?? {})) edit(`xl/worksheets/sheet${extra.attrs!.sheet + 1}.xml`, (x) => x.replace(new RegExp(`<c r="${cell}"`), `$& ${attrs}`))
   for (const i of extra.rotated ?? [])
     edit('xl/styles.xml', (x) => {
       let k = -1

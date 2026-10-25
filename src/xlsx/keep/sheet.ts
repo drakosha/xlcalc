@@ -4,16 +4,18 @@
  * sheet the model has, a row, a cell. Where they differ the model's XML goes in, except what the file has and the model
  * does not: a cell whose formula did not change keeps its `<f>` (a shared formula, a data table, a formula the engine
  * does not parse) and takes the new value; a cell or a row keeps a cell format of the file that looks the same, and a
- * row the attributes the model does not have. The elements the model does not have stay in their place, in the order
- * of the schema; an element the model adds goes where the schema puts it.
+ * row the attributes the model does not have. A cell with what only the file holds that moved (rows or columns
+ * inserted or deleted, a range moved) takes the file's XML at its new address where the model has it as it was. The
+ * elements the model does not have stay in their place, in the order of the schema; an element the model adds goes
+ * where the schema puts it.
  */
 import type { CellInput, SheetInput } from '../../contract.js'
-import { colToIndex } from '../../model.js'
+import { colToIndex, formatAddress, parseAddress } from '../../model.js'
 import { keyOf } from '../../style-table.js'
 import type { RowWritten, SheetPieces } from '../write/sheet.js'
 import { MAIN } from '../write/xml.js'
 import { attributes } from '../xml/scan.js'
-import { KeptRefusal } from './refusals.js'
+import { KeptRefusal, type Moved } from './refusals.js'
 import type { KeptStyles } from './styles.js'
 import { attrsOf, childrenOf, closing, DOC_REL, opening, rootOf, setAttrs, split, tagEnd, type Placed } from './xml.js'
 
@@ -43,6 +45,8 @@ export interface SpliceInput {
   bound: { hyperlinks?: string; legacyDrawing?: string; tableParts?: string }
   /** Rows or columns were inserted or deleted on the sheet: the ignored errors, whose cells no carrier holds, are left out. */
   lines: boolean
+  /** The file's cells with what only it holds that moved (`refusals.ts`). */
+  moved?: Moved
 }
 
 export interface Spliced {
@@ -67,6 +71,10 @@ interface Gen {
   f: string
   value: string
 }
+
+/** The address of a cell the writer wrote, and of a file's cell. */
+const GEN_ADDR = /^<c r="[A-Z]+\d+"/
+const SRC_ADDR = /^(<(?:[\w.-]+:)?c\b[^>]*?\sr=")[^"]*"/
 
 const GEN = /<c r="([A-Z]+)(\d+)"(?: s="(\d+)")?(?: t="(\w+)")?(?: vm="(\d+)")?( cm="\d+")?(?:\/>|>(<f[^>]*?(?:\/>|>[^<]*<\/f>))?(<v>[^<]*<\/v>|<is>[\s\S]*?<\/is>)?<\/c>)/g
 
@@ -222,6 +230,21 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
     return m
   }
   const rowOut = new Map<number, string>()
+  const gen0 = new Map<number, Map<number, Gen>>()
+  /** The file's cell that moved to `at` from `from`, at its new address, where the model's cell there (`g`) is as it was. */
+  const carried = (from: string, at: string, g: Gen): string | undefined => {
+    const { row, col } = parseAddress(from)
+    const [s, a] = [src.get(row), g0.get(row)]
+    if (!s || !a) return undefined
+    let cells = gen0.get(row)
+    if (!cells) gen0.set(row, (cells = genCells(a.cells)))
+    const [own, was] = [cellsOf(s).get(col), cells.get(col)]
+    // a shared formula's cell means another formula elsewhere
+    if (!own || !was || own.si !== undefined || was.text.replace(GEN_ADDR, '') !== g.text.replace(GEN_ADDR, '')) return undefined
+    return own.text.replace(SRC_ADDR, `$1${at}"`)
+  }
+  // the rows a cell with what only the file holds left or came to
+  const touched = new Set([...(x.moved?.left ?? []), ...(x.moved?.to.keys() ?? [])].map((a) => parseAddress(a).row))
   const merge = (r: number): string => {
     const s = src.get(r)
     const [a, b] = [g0.get(r), g1.get(r)]
@@ -231,8 +254,24 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
     let body = ''
     let rowChanged = false
     for (const col of cols) {
-      const [x0, x1, own] = [c0.get(col), c1.get(col), sc.get(col)]
-      const forced = own?.si !== undefined && !own.master && broken.has(own.si)
+      const [x0, x1] = [c0.get(col), c1.get(col)]
+      let own = sc.get(col)
+      const at = x.moved && formatAddress(r, col)
+      // the file's cell went elsewhere, with what only it holds: the model's goes here
+      const gone = !!at && !!own && x.moved!.left.has(at)
+      if (gone) {
+        if (own!.master) broken.add(own!.si!)
+        own = undefined
+      }
+      const from = at && x.moved!.to.get(at)
+      const moved = from && x1 ? carried(from, at, x1) : undefined
+      if (moved !== undefined) {
+        body += moved
+        rowChanged = true
+        changed = true
+        continue
+      }
+      const forced = gone || (own?.si !== undefined && !own.master && broken.has(own.si))
       if (x0?.text === x1?.text && !forced) {
         // a cell of the file the model has not (one that looks as its row or column) means nothing where lines moved
         if (own && (x0 || !x.lines)) body += own.text
@@ -272,7 +311,7 @@ function sheetData(xml: string, data: Placed, x: SpliceInput, cells: Set<string>
   }
   try {
     // with rows or columns inserted or deleted, every row is looked at for the file's cells the model has not
-    for (const r of all) if (x.lines || !same(r)) rowOut.set(r, merge(r))
+    for (const r of all) if (x.lines || !same(r) || touched.has(r)) rowOut.set(r, merge(r))
     // the copies of shared formulas whose master was written anew, in the rows kept as they were
     if (broken.size)
       for (const s of rows) {

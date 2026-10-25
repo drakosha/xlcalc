@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import { createSession, InputError, type BookInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { KeptRefusal, openKept, writeKept } from '../src/xlsx-keep.js'
+import { KEPT_CELLS } from '../src/xlsx/keep/carriers.js'
 import { changedParts, partsOf, withParts } from './keep-files.js'
 
 const book = (): BookInput => ({
@@ -187,6 +188,66 @@ describe('writeKept: what the model has, written', () => {
   })
 })
 
+describe('writeKept moves the cells that hold what only the file holds', () => {
+  const RUNS = '<r><rPr><b/></rPr><t>No</t></r><r><t>rth</t></r>'
+  /** A file whose A2 (North) holds formatted runs and B3 a rich value, and the Data sheet's cells after `edit`: each cell's XML by address, as the file has it and as written. */
+  const after = async (edit: (s: ReturnType<typeof createSession>) => void) => {
+    const data = await withParts(book(), { rich: { North: RUNS }, attrs: { sheet: 0, cells: { B3: 'vm="1"' } } })
+    const r = await openKept(data)
+    const s = createSession(r.book, { cached: r.cached })
+    edit(s)
+    const w = await writeKept(data, s.getSnapshot())
+    const cells = (xml: string) => Object.fromEntries([...xml.matchAll(/<c r="(\w+)"[^>]*?(?:\/>|>.*?<\/c>)/g)].map((m) => [m[1], m[0]]))
+    const [was, now] = [await partsOf(data), await partsOf(w.data)]
+    return { was: cells(was.get('xl/worksheets/sheet1.xml')!), now: cells(now.get('xl/worksheets/sheet1.xml')!), strings: now.get('xl/sharedStrings.xml') === was.get('xl/sharedStrings.xml'), issues: w.issues }
+  }
+  const at = (xml: string, addr: string) => xml.replace(/^<c r="\w+"/, `<c r="${addr}"`)
+
+  it('openKept gives each a carrier of its own', async () => {
+    const data = await withParts(book(), { rich: { North: RUNS }, attrs: { sheet: 0, cells: { B3: 'vm="1"', B4: 'ph="1"' } } })
+    expect((await openKept(data)).book.names!.filter((n) => /^_xlcalc\.keep\.c/.test(n.name))).toEqual([
+      { name: '_xlcalc.keep.c0.0', ref: "'Data'!$A$2", hidden: true },
+      { name: '_xlcalc.keep.c0.1', ref: "'Data'!$B$3", hidden: true },
+      { name: '_xlcalc.keep.c0.2', ref: "'Data'!$B$4", hidden: true },
+    ])
+  })
+
+  it('rows and columns inserted, a range moved: the file\'s cell at its new address; its old address takes what came there', async () => {
+    let r = await after((s) => s.editStructure({ op: 'insertRows', sheet: 'Data', row: 1, count: 2 }))
+    expect([r.now.A4, r.now.B5]).toEqual([at(r.was.A2, 'A4'), at(r.was.B3, 'B5')])
+    expect(r.strings).toBe(true)
+    r = await after((s) => s.editStructure({ op: 'insertColumns', sheet: 'Data', column: 'A' }))
+    expect([r.now.B2, r.now.C3]).toEqual([at(r.was.A2, 'B2'), at(r.was.B3, 'C3')])
+    r = await after((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Data', range: 'A2' }, to: { sheet: 'Data', cell: 'D10' } }))
+    expect([r.now.D10, r.now.A2]).toEqual([at(r.was.A2, 'D10'), undefined])
+    // the row of North deleted: South moves up into A2, written from the workbook
+    r = await after((s) => s.editStructure({ op: 'deleteRows', sheet: 'Data', row: 2 }))
+    expect([r.now.A2, r.now.B2]).toEqual(['<c r="A2" t="inlineStr"><is><t>South</t></is></c>', at(r.was.B3, 'B2')])
+  })
+
+  it('a cell changed after it moved is written from the workbook; one that stayed is the file\'s', async () => {
+    let r = await after((s) => {
+      s.editStructure({ op: 'insertRows', sheet: 'Data', row: 1 })
+      s.setCells([{ sheet: 'Data', cell: 'A3', input: { value: 'Northeast' } }])
+    })
+    expect(r.now.A3).toBe('<c r="A3" t="inlineStr"><is><t>Northeast</t></is></c>')
+    r = await after((s) => s.editStructure({ op: 'insertRows', sheet: 'Data', row: 10 }))
+    expect([r.now.A2, r.now.B3]).toEqual([r.was.A2, r.was.B3])
+  })
+
+  it(`past ${KEPT_CELLS} of them on a sheet, none has a carrier: rows or columns moved there are reported`, async () => {
+    const cells = Object.fromEntries(Array.from({ length: KEPT_CELLS + 1 }, (_, i) => [`A${i + 1}`, { value: 'North' }]))
+    const data = await withParts({ sheets: [{ name: 'Big', cells }] }, { rich: { North: RUNS } })
+    const r = await openKept(data)
+    expect(r.book.names!.filter((n) => /^_xlcalc\.keep\.c/.test(n.name))).toEqual([])
+    const s = createSession(r.book, { cached: r.cached })
+    s.editStructure({ op: 'insertRows', sheet: 'Big', row: 1 })
+    expect((await writeKept(data, s.getSnapshot())).issues).toEqual([
+      { code: 'richText', sheet: 'Big', message: `rows or columns moved on a sheet with ${KEPT_CELLS + 1} cells holding formatted runs of text or rich values that the workbook does not have, more than writeKept follows: those that moved are written from the workbook, without them` },
+    ])
+  })
+})
+
 /** After `edit` over the charted file: the written file's parts as text, or the refusal's message. */
 async function moved(edit: (s: ReturnType<typeof createSession>) => void, extra = {}): Promise<Map<string, string> | string> {
   const { data, session } = await charted(extra)
@@ -237,6 +298,10 @@ describe('writeKept moves the references of the parts the model does not have', 
 
   it('a range moved over a drawing is refused; a sheet with drawings deleted takes them with it', async () => {
     expect(await moved((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Other', range: 'H1:M6' }, to: { sheet: 'Other', cell: 'H20' } }))).toBe("xlsx/keep: a drawing on 'Other' (xl/drawings/drawing1.xml) lies in a range that moved, which writeKept does not move a drawing with")
+    // a range moved onto all the chart's cells: the chart stays where it is
+    const over = (await moved((s) => s.editStructure({ op: 'moveRange', from: { sheet: 'Other', range: 'A20:F25' }, to: { sheet: 'Other', cell: 'H1' } }))) as Map<string, string>
+    expect(anchors(over)).toEqual(['from 7+1000 0+2000', 'to 12+1000 5+2000', 'from 7+1000 9+2000', 'to 9+1000 13+2000'])
+    expect(over.has('xl/charts/chart1.xml')).toBe(true)
     const parts = (await moved((s) => s.editStructure({ op: 'deleteSheet', sheet: 'Other' }))) as Map<string, string>
     expect([...parts.keys()].filter((p) => /drawing|chart|media/.test(p))).toEqual([])
     expect(parts.get('[Content_Types].xml')).not.toMatch(/drawing1|chart1/)

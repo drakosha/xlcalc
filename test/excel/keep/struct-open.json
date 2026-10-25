@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.1",
-  "seconds": 2,
+  "seconds": 2.9,
   "date": "2026-10-25"
  },
  "cases": {
@@ -442,7 +442,7 @@
    }
   },
   "print-insert": {
-   "sent": "2d25a436b23ff89e61ded6a41e9f2a2ce4fea6171e25bc6f9df44f6430cea920",
+   "sent": "5f818f5a4392b940b5aa5127f2c0d079032036f59ee120614bd316b99285ca14",
    "saved": {
     "charts": 1,
     "chartsheets": 0,
@@ -450,7 +450,7 @@
     "pictures": 1,
     "pivotTables": 0,
     "pivotCaches": 0,
-    "richStrings": 1,
+    "richStrings": 2,
     "themeColors": 2,
     "printAreas": 1,
     "breaks": 1,
@@ -545,7 +545,7 @@
    }
   },
   "all-insert-cols": {
-   "sent": "ce1739360bef11f21b385d964f3b439adf2544f1fd040c0bdf6877ba9512b9f3",
+   "sent": "42703ca9aa9c760ac6d67ee3d95ea9aade3b6f93cd2283184548bfccb250f308",
    "saved": {
     "charts": 2,
     "chartsheets": 1,
@@ -553,7 +553,7 @@
     "pictures": 1,
     "pivotTables": 1,
     "pivotCaches": 1,
-    "richStrings": 0,
+    "richStrings": 2,
     "themeColors": 2,
     "printAreas": 1,
     "breaks": 0,

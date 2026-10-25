@@ -175,6 +175,11 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
   const repaired = src.sheets.findIndex((s, i) => src.decls[s.decl].name !== read.book.sheets[i].name)
   if (repaired >= 0) throw new KeptRefusal(`the file names a sheet '${src.decls[src.sheets[repaired].decl].name}', which Excel does not take (it was read as '${read.book.sheets[repaired].name}')`)
   if (k.formulas && unasked) k.issues.add('noCachedValues', { key: 'noResult' })
+  // a sheet with more cells that hold what only the file holds than have carriers, whose rows or columns moved
+  for (const [i, count] of carriers.uncarried.entries()) {
+    const j = identity.target.get(i)
+    if (count && j !== undefined && identity.lines[i]) k.issues.add('richText', { key: 'keptCells', count }, { sheet: book.sheets[j].name })
+  }
   return { data: await k.zip(), issues: k.issues.list(locale) }
 }
 
@@ -269,7 +274,8 @@ class Kept {
         rels.remove(drawing.id)
         this.unlink(ss.part, drawing.target)
       }
-      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k] })
+      const moved = this.id.cells.get(k)
+      const out = spliceSheet({ xml, p0, p1, s0, s1, styles: this.styles, bound, lines: this.id.lines[k], ...(moved ? { moved } : {}) })
       this.changed ||= out.changed || xml !== ss.xml
       if (out.xml !== undefined || xml !== ss.xml) this.parts.set(ss.part, out.xml ?? xml)
       if (out.xml !== undefined) this.formulas ||= p1.formulas
