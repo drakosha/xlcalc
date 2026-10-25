@@ -38,6 +38,14 @@ export function insertSpan(lo: number, hi: number, at: number, n: number, max: n
   return [a, Math.min(b, max - 1)]
 }
 
+/**
+ * One axis of a rule's range after `n` lines are inserted before index `at`: a range whose last line is the one before
+ * them takes them in, the lines taking the rules of the line before them (the set `cond/struct-held`: rows inserted
+ * right below a conditional format's range join it); otherwise `insertSpan`. Null when it leaves the sheet.
+ */
+export const growSpan = (lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null =>
+  hi === at - 1 ? [lo, Math.min(hi + n, max - 1)] : insertSpan(lo, hi, at, n, max, cell)
+
 /** One axis of a reference after `n` rows (columns) from index `at` are deleted; null when nothing of it is left. */
 export function deleteSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {
   const end = at + n

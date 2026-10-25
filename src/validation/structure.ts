@@ -11,7 +11,7 @@ import type { BookInput, DataValidation } from '../contract.js'
 import { cornerOf, hi, intersect, LIMIT, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
-import { copyTransform, deleteSpan, insertSpan } from '../structure/transform.js'
+import { copyTransform, deleteSpan, growSpan } from '../structure/transform.js'
 import { sheetKey } from '../syntax.js'
 import { anchorOf, areasOf, rangeText } from './rules.js'
 
@@ -87,8 +87,8 @@ export function shiftValidations(rules: DataValidation[] | undefined, sheet: str
     const areas = areasOf(v.range)!.flatMap((x) => {
       const [a, b] = [lo(x, axis), hi(x, axis)]
       const one = a === b && (axis === 'r' ? x.c1 === x.c2 : x.r1 === x.r2)
-      // a range whose last line is the one before the inserted lines takes them in, as their cells take that line's look
-      const s = n > 0 ? (b === at - 1 ? [a, Math.min(b + count, LIMIT[axis] - 1)] : insertSpan(a, b, at, count, LIMIT[axis], one)) : deleteSpan(a, b, at, count, LIMIT[axis], false)
+      // a range of one cell too (the set `edge-held`: B1048576 is B1048575:B1048576 after a row above is deleted)
+      const s = n > 0 ? growSpan(a, b, at, count, LIMIT[axis], one) : deleteSpan(a, b, at, count, LIMIT[axis], false)
       return s ? [withBounds(x, axis, s[0], s[1])] : []
     })
     const corner = areas.length ? cornerOf(areas) : null

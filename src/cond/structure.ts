@@ -11,7 +11,7 @@ import { sheetKey, tokenize } from '../syntax.js'
 import { cornerOf, hasCell, hi, intersect, lo, meets, shiftRect, subtract, withBounds, type Axis, type Rect } from '../structure/area.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, sheetOf, type Transform } from '../structure/rewrite.js'
-import { copyTransform, deleteSpan } from '../structure/transform.js'
+import { copyTransform, deleteSpan, growSpan } from '../structure/transform.js'
 import { originOf, rangesOf, rectsOf } from './rules.js'
 
 type Cell = { r: number; c: number }
@@ -98,17 +98,6 @@ const lastLate = (xs: { rule: ConditionalFormat; late: boolean }[]) => [...xs.fi
 const GRADED = new Set(['colorScale', 'dataBar', 'iconSet', 'top10', 'aboveAverage', 'duplicateValues', 'uniqueValues'])
 
 /**
- * One axis of a rule's range after `n` lines are inserted before `at`: the lines take the format of the line before them,
- * so a range holding that line grows over them (the set `cond/struct-held`: rows inserted right below a range join it);
- * a range at or after `at` moves; a whole column or row stays. Null when it leaves the sheet.
- */
-function grown(lo: number, hi: number, at: number, n: number, max: number): [number, number] | null {
-  if (lo === 0 && hi === max - 1) return [lo, hi]
-  if (lo >= at) return lo + n > max - 1 ? null : [lo + n, Math.min(hi + n, max - 1)]
-  return hi + 1 >= at ? [lo, Math.min(hi + n, max - 1)] : [lo, hi]
-}
-
-/**
  * The rules of the book's sheets after `n` lines are inserted (`n` > 0) or deleted at `at` of `target` (`t`, the
  * references' transform): the target's ranges grow over inserted lines that follow a line of theirs and move with the
  * lines after, shrink with deleted ones, and a rule with none left is gone; every rule's formulas are rewritten. Lines
@@ -131,7 +120,7 @@ export function shiftConditional(sheets: SheetInput[], target: string, axis: Axi
       let cut = false
       for (const x of own ? rectsOf(rule) : []) {
         const [a, b] = [lo(x, axis), hi(x, axis)]
-        const lohi = n > 0 ? grown(a, b, at, count, max) : deleteSpan(a, b, at, count, max, false)
+        const lohi = n > 0 ? growSpan(a, b, at, count, max, false) : deleteSpan(a, b, at, count, max, false)
         cut ||= n < 0 && a < at + count && b >= at
         if (lohi) next.push(withBounds(x, axis, lohi[0], lohi[1]))
       }
