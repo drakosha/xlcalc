@@ -4,7 +4,7 @@
  * `validation/structure.ts`) share.
  */
 import { isFull, LIMIT, span, type Area, type Axis, type Bound } from './area.js'
-import type { Outcome, Transform } from './rewrite.js'
+import { rewriteFormula, type Outcome, type Transform } from './rewrite.js'
 
 /**
  * Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. Off the sheet a
@@ -29,6 +29,14 @@ export function copyTransform(dr: number, dc: number, wrap = false): Transform {
   }
 }
 
+/**
+ * A formula written for cell `from` of `sheet` as at cell `to`: relative references move by the offset, as a copy moves
+ * them. With `wrap`, a reference pushed off the sheet comes round its other edge, as a conditional format's formula computes.
+ */
+export function formulaAt(text: string, sheet: string, from: { r: number; c: number }, to: { r: number; c: number }, sheets: Map<string, string>, wrap = false): string {
+  return from.r === to.r && from.c === to.c ? text : rewriteFormula(text, sheet, sheet, copyTransform(to.r - from.r, to.c - from.c, wrap), sheets)
+}
+
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
 export function insertSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {
   if (!cell && lo === 0 && hi === max - 1) return [lo, hi]
@@ -37,6 +45,14 @@ export function insertSpan(lo: number, hi: number, at: number, n: number, max: n
   if (a > max - 1 || (cell && b > max - 1)) return null
   return [a, Math.min(b, max - 1)]
 }
+
+/**
+ * One axis of a rule's range after `n` lines are inserted before index `at`: a range whose last line is the one before
+ * them takes them in, the lines taking the rules of the line before them (the set `cond/struct-held`: rows inserted
+ * right below a conditional format's range join it); otherwise `insertSpan`. Null when it leaves the sheet.
+ */
+export const growSpan = (lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null =>
+  hi === at - 1 ? [lo, Math.min(hi + n, max - 1)] : insertSpan(lo, hi, at, n, max, cell)
 
 /** One axis of a reference after `n` rows (columns) from index `at` are deleted; null when nothing of it is left. */
 export function deleteSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {

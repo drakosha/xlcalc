@@ -99,9 +99,9 @@ export function layerOf(sheet: Pick<SheetInput, 'looks'>): Layer | undefined {
 /** The look of a cell from the sheet's looks: what a cell without an entry shows as its own. */
 export const lookIn = (sheet: Pick<SheetInput, 'looks'>, r: number, c: number): Look | undefined => layerOf(sheet)?.lookAt(r, c)
 
-/** A cell's entry, else its look from the sheet's looks as an entry of a look alone (a frozen object), else undefined. */
+/** A cell's entry, else its look from the sheet's looks (which is undefined without them) as an entry of a look alone (a frozen object), else undefined. */
 export const inputIn = (sheet: Pick<SheetInput, 'cells' | 'looks'>, addr: string, r: number, c: number): CellInput | undefined =>
-  sheet.cells[addr] ?? (hasLooks(sheet) ? lookIn(sheet, r, c) : undefined)
+  sheet.cells[addr] ?? lookIn(sheet, r, c)
 
 /**
  * Marks `cells` as made of the entries of cells taken (`from`, each moved or its formula rewritten, which makes no entry
