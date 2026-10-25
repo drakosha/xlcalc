@@ -20,6 +20,7 @@ import { inputAt } from '../session/book.js'
 import { inputIn, putInputs } from '../looks/sheet.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
 import { decode } from '../structure/area.js'
+import { sheetNames } from '../structure/rewrite.js'
 import { tableAt } from '../tables/model.js'
 import { Arr } from '../arrays/value.js'
 import { E, isErr, Rng, type V } from '../values.js'
@@ -42,7 +43,7 @@ function ruleOf(state: EngineState, s: number, r: number, c: number): DataValida
 
 /** The rule's formulas as at the cell. */
 function formulas(state: EngineState, s: number, r: number, c: number, v: DataValidation): { formula1?: string; formula2?: string } {
-  const names = new Map(state.sheetNames.map((n) => [sheetKey(n), n]))
+  const names = sheetNames(state.input)
   const at = (text: string) => formulaAt(text, state.sheetNames[s], anchorOf(v), { r, c }, names)
   return { ...(v.formula1 !== undefined ? { formula1: at(v.formula1) } : {}), ...(v.formula2 !== undefined ? { formula2: at(v.formula2) } : {}) }
 }
@@ -114,7 +115,7 @@ export function cellValidation(state: EngineState, s: number, r: number, c: numb
 
 /** A bound as a number: a number, text that reads as one; blank as `blank`; anything else null. */
 function bound(state: EngineState, x: Arg): number | 'blank' | null {
-  const v = x instanceof Rng || x instanceof Arr ? state.rt.scalar(x) : (x as V)
+  const v = state.rt.scalar(x)
   if (v === null) return 'blank'
   if (typeof v === 'number') return v
   if (typeof v === 'string') return state.ctx.rules.valueText(v)
@@ -174,7 +175,7 @@ function meets(state: EngineState, s: number, r: number, c: number, v: DataValid
   if (blankOk && v.type !== 'list' && texts.some((t) => refersToBlank(state, s, t))) return true
   if (v.type === 'custom') {
     const x = computeAt(state, s, r, c, f.formula1!)
-    const y = x instanceof Rng || x instanceof Arr ? state.rt.scalar(x) : (x as V)
+    const y = state.rt.scalar(x)
     return y === null ? blankOk : y === true || (typeof y === 'number' && y !== 0)
   }
   if (v.type === 'list') {
