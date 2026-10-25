@@ -15,6 +15,7 @@ import { nameFor } from '../names.js'
 import { journaled } from '../held.js'
 import { readEntry } from '../entry/index.js'
 import { formatAddress } from '../model.js'
+import { COMPARE } from '../operators.js'
 import { ERROR_TEXT } from '../syntax/ast.js'
 import { inputAt } from '../session/book.js'
 import { inputIn, putInputs } from '../looks/sheet.js'
@@ -123,22 +124,9 @@ function bound(state: EngineState, x: Arg): number | 'blank' | null {
   return null
 }
 
-/** How a value compares with the bounds, by the order of Excel's comparison operators (`a`, `b`: the value against each bound). */
-const COMPARE: Record<string, (a: number, b: number) => boolean> = {
-  // bounds in the wrong order take nothing (the set `entry-held`, column C), where a conditional format's take both ways
-  between: (a, b) => a >= 0 && b <= 0,
-  notBetween: (a, b) => a < 0 || b > 0,
-  equal: (a) => a === 0,
-  notEqual: (a) => a !== 0,
-  greaterThan: (a) => a > 0,
-  lessThan: (a) => a < 0,
-  greaterThanOrEqual: (a) => a >= 0,
-  lessThanOrEqual: (a) => a <= 0,
-}
-
 /**
  * Whether a list's item is the value: a cell's value of the same type, text in any case; a literal item, text in its
- * case, against the value as text (a number as `&` writes it: `1e3` and `+2` are no 1000 and 2), without spaces at
+ * own case, against the value as text (a number as `&` writes it: `1e3` and `+2` are no 1000 and 2), without spaces at
  * either end (the sets `files`, `entry-held`, `lists`, `entry-held-2`, `held-3`).
  */
 function listed(state: EngineState, value: V, item: Item, isLiteral: boolean): boolean {

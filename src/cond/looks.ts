@@ -11,6 +11,7 @@ import type { Looks } from '../shown.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { MAX_COLS } from '../model.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
+import { COMPARE } from '../operators.js'
 import { intersect, type Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
 import { E, isErr, type V } from '../values.js'
@@ -141,28 +142,16 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
       const [fa, fb] = rule.formulas.map(at)
       // a formula's answer as a cell shows it: a blank cell it refers to is 0 (the set `cond/looks`)
       const cmp = (v: V, x: V) => (isErr(x) ? NaN : compareOp(v, x ?? 0))
+      const op = COMPARE[rule.operator]
       return (v, r, c) => {
         if (isErr(v)) return false
         const a = cmp(v, fa(r, c))
         if (Number.isNaN(a)) return false
-        switch (rule.operator) {
-          case 'equal':
-            return a === 0
-          case 'notEqual':
-            return a !== 0
-          case 'greaterThan':
-            return a > 0
-          case 'lessThan':
-            return a < 0
-          case 'greaterThanOrEqual':
-            return a >= 0
-          case 'lessThanOrEqual':
-            return a <= 0
-        }
+        if (rule.operator !== 'between' && rule.operator !== 'notBetween') return op(a, 0)
         const b = cmp(v, fb(r, c))
         if (Number.isNaN(b)) return false
         // the ends either way round (the set `cond/looks`, column E), where data validation's take nothing reversed
-        const inside = (a >= 0 && b <= 0) || (a <= 0 && b >= 0)
+        const inside = COMPARE.between(a, b) || COMPARE.between(b, a)
         return rule.operator === 'between' ? inside : !inside
       }
     }
