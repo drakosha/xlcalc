@@ -69,8 +69,8 @@ export const EN_CRIT: CritRules = {
   critError: errorWords({}),
 }
 
-/** Parsed criteria by value, per locale's rules. */
-const caches = new WeakMap<CritRules, Map<string, Crit>>()
+/** Parsed criteria by value (a Map key: `1` and `'1'` apart, `-0` with `0`), per locale's rules. */
+const caches = new WeakMap<CritRules, Map<number | string | boolean | null, Crit>>()
 
 /** Text matched literally in a regular expression. */
 export const literal = (ch: string) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -196,11 +196,10 @@ export function errorCrit(code: string): Crit {
 export function parseCrit(v: number | string | boolean | null, rules: CritRules = EN_CRIT): Crit {
   let cache = caches.get(rules)
   if (!cache) caches.set(rules, (cache = new Map()))
-  const key = typeof v + ':' + String(v)
-  const hit = cache.get(key)
+  const hit = cache.get(v)
   if (hit) return hit
   const [c, clocked] = readsClock(rules.clock, () => critOf(v, rules))
-  if (!clocked) cache.set(key, c)
+  if (!clocked) cache.set(v, c)
   return c
 }
 

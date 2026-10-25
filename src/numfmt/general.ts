@@ -53,7 +53,11 @@ function sci(a: number, m: number): string {
  */
 export function generalText(n: number, max = 20): string {
   if (n === 0) return '0'
-  const [m, e] = Math.abs(n).toExponential(14).split('e')
+  const a = Math.abs(n)
+  // the shortest decimal text of 15 characters at most is the text rounded to 15 digits (most numbers of a book)
+  const short = String(a)
+  if (short.length <= 15 && !short.includes('e') && max >= 15) return n < 0 ? '-' + short : short
+  const [m, e] = a.toExponential(14).split('e')
   const exp = Number(e)
   const digits = m.replace('.', '').replace(/0+$/, '')
   const fixed =

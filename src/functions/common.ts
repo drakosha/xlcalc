@@ -48,12 +48,20 @@ function shift(x: number, k: number): number {
   return Number(`${m}e${Number(e) + k}`)
 }
 
-/** ROUND, ROUNDUP, ROUNDDOWN and TRUNC: `f` applied to |x| at `digits` decimal places, symmetric around zero. */
+/**
+ * ROUND, ROUNDUP, ROUNDDOWN and TRUNC: `f` applied to |x| at `digits` decimal places, symmetric around zero. Callers
+ * rounding up or down pass 15 significant digits at most (`to15`): such an x is whole at `digits` only when its text is.
+ */
 export function roundDigits(x: number, digits: number, f: (y: number) => number): number {
   if (x === 0) return 0
+  // a number already whole at that many digits (money at 2) is its own rounding
+  const whole = digits >= 0 && digits <= 22 && x * 10 ** digits
+  if (whole && Number.isInteger(whole) && Math.abs(whole) < 2 ** 52) return whole / 10 ** digits
   const y = shift(Math.abs(x), digits)
   if (!Number.isFinite(y) || y >= 2 ** 53) return x
-  return Math.sign(x) * shift(f(y), -digits)
+  const n = f(y)
+  // a whole number below 2^53 over an exact power of ten: the correctly rounded quotient, as the shifted text gives
+  return Math.sign(x) * (digits > 22 || digits < -22 ? shift(n, -digits) : digits >= 0 ? n / 10 ** digits : n * 10 ** -digits)
 }
 
 /** Digits in radix `r` (letters of either case) as a number; null at a character that is no digit of it. */
