@@ -482,6 +482,16 @@ Excel 16.0 for Windows read the same workbooks in ru-RU (`npx tsx bench/windows/
 | `ribbon`, 342 cells | the first run's misses turned into rules | 318 by the prediction, 342 by the rule above |
 | `ribbon-ru-held`, 50 cells | the same | 29 by the prediction, 34 by the rule above; the 16 others are dates and times with `;@` (below) |
 
+The Home tab's buttons (Increase Decimal, Decrease Decimal, Comma Style, Accounting Number Format, AutoSum) were pressed by the `ui` step's action `press`: Excel for Mac in en-US selects the case's range and presses each button by its name through Accessibility, then Return after AutoSum, and the cells, their columns and the saved file are read as for the other `ui` cases. `pressInEngine` (`bench/coverage/ui/cases.ts`) takes the same buttons as a host does: `stepDecimals` of the active cell applied to the range with `patchCells`, the formats 43 and 44, `getAutoSum`'s formula typed with `setCellText`; `test/ui-excel.test.ts` compares the cells, the widths Excel gave the columns and the windows it showed. Three sets ran in turn, each predicted before Excel ran it:
+
+| run | rule committed before it | cases as Excel answered them |
+|---|---|---|
+| `press-held`, 100 cases | General by the decimals the column shows, a code by a `0` more or less, the zero of accounting by a `?`, a limit of 30 decimals; AutoSum by the numbers right above, else left | 79 by the prediction |
+| `press-more-held`, 66 cases | General by all of its decimals when it shows the number whole; AutoSum past the cells without a number, a date no number, subtotals alone | 57 by the prediction |
+| `press-third-held`, 17 cases | General by the decimals the column shows, the number's own for a fraction shown whole, scientific for `#`; a run ending at a `SUM` subtotal | 16 by the prediction; the miss is `SUBTOTAL`, also a subtotal |
+
+Every case agrees with the rules now, but one: Excel gives a sum of percentages their format (`0%`), as it gives a typed formula the format of a date it refers to, which `setCellText` does not (`reference` in `test/ui-known.ts`). Two answers were taken again: a case whose cell held keys typed in another layout at the run's start, and one whose press did not reach the button (no change; the second run changed the format as predicted). Comma Style and Accounting were measured in en-US only, where Excel saves them as codes of the file's own; Excel for Windows did not run these sets.
+
 ### Outlines
 
 From [Outlines](outline.md).

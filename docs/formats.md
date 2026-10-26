@@ -376,6 +376,27 @@ Excel for Mac in ru-RU behaves differently: it compares the code, stored in en-U
 
 The list's items in en-US are General (0), Number (2), Currency (`"$"#,##0.00`), Accounting (44), Short Date (14), Long Date (`[$-F800]dddd\,\ mmmm\ dd\,\ yyyy`), Time (`[$-F400]h:mm:ss\ AM/PM`), Percentage (10), Fraction (12), Scientific (11) and Text (49); in ru-RU they are the same, with their Russian names, and Currency is `#,##0.00\ "₽"`. An item applies the same format whatever the cell contained: Number gives `0.000` the code `0.00`, and Currency gives a euro amount the dollar sign. The codes are written as Excel writes them to a file. Another locale provides its names and its Currency item's code in `regional.formats` ([docs/locale.md](locale.md)), with en-US's used if omitted.
 
+## Increase Decimal, Decrease Decimal, Comma Style and Accounting
+
+The Home tab's Increase Decimal and Decrease Decimal buttons give the selection a format with one decimal more or less, computed from the active cell. `stepDecimals(format, value, step, opts?)` in `xlcalc/text` returns that format for the active cell's format (General without one), its value, `1` or `-1`, and `opts.locale` and `opts.width` (the column's width, Excel's standard without one); a host applies the result to the whole selection with `patchCells`, as Excel does.
+
+```js
+import { stepDecimals } from 'xlcalc/text'
+
+console.log(stepDecimals(undefined, 1.5, 1), stepDecimals('#,##0.00', 1.5, -1), stepDecimals(44, 1, 1))
+// → 0.00 #,##0.0 _($* #,##0.000_);_($* (#,##0.000);_($* "-"??_);_(@_)
+```
+
+- A General cell of a number takes the decimals its column shows, one more or one less: 1.5 becomes `0.00` or `0`, 1/3 in a standard column (`0.333333`) becomes `0.0000000`, in a column of 20 characters (`0.333333333`) `0.0000000000`. A fraction the column shows as a whole number counts its own decimals (12345678.9 shows `12345679` and becomes `0.00` or `0`), a number shown in scientific notation keeps it (`1E+20` becomes `0.0E+00`), and one shown as `#` becomes scientific. With no decimal to take away (5, `1E+20`), or a value that is no number (text, a boolean, a blank), the format stays General.
+- A code takes a decimal more or less in each section of digits, a copy of its last decimal (`#.##` becomes `#.###`, `0.00%` `0.000%`, `0.00E+00` `0.000E+00`); a section without a point gets `.0`, and the last decimal goes with its point. A section of `?` alone, accounting's zero (`"-"??`), stays, and so do the sections of dates, times, fractions and text. There is no limit of 30 decimals: Excel gives 31.
+- When nothing changes, the format given is returned, a built-in format's number included.
+
+Comma Style applies the built-in format 43 and Accounting Number Format 44, which display by the workbook's locale (`_(* #,##0.00_)…` and `_($* #,##0.00_)…` in en-US); a host passes 43 or 44 to `patchCells`. Excel for Mac in en-US saves both as codes of the file's own, which read back as the same formats.
+
+The rules are Excel for Mac's in en-US, from 183 presses in three sets, each predicted before Excel ran it ([docs/development.md](development.md#number-formats-and-displayed-text)); Excel for Windows did not run them.
+
+A format that a number no longer fits widens its column, as Excel widens it after Accounting or a decimal more: `patchCells` with `numberFormat` gives a column without a width of its own the width typing would give it (`bestFit`), in the same undo step.
+
 ## How the engine does it
 
 `src/numfmt/` contains the engine, assembled in `src/numfmt.ts`. `parse.ts` parses a format into sections (color, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths (Cyrillic too), `palette.ts` the colors, and `style.ts` what a locale writes. `formatWith` implements `TEXT` and `displayWith` a cell.

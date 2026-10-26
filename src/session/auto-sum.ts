@@ -1,6 +1,6 @@
 /**
  * Excel's AutoSum at a cell (`Session.getAutoSum`, `test/excel/ui/press-held.json`): going up from the cell, past the
- * cells right above it that hold no number, the run of numbers there up to a `SUM` formula (a subtotal), to the cell;
+ * cells right above it that hold no number, the run of numbers there up to a `SUM` or `SUBTOTAL` formula (a subtotal), to the cell;
  * else the same to the left; and the formula Excel enters over them, `SUM` of that range. When the run's nearest cell
  * is a subtotal, `SUM` of the run's subtotals alone, the nearest first (a grand total). A date or a time is no number
  * here. Without numbers, `SUM()`, which Excel opens for editing and does not take.
@@ -36,7 +36,7 @@ export function autoSumOf(state: EngineState, s: number, r: number, c: number): 
     return out
   }
   const found = run([-1, 0]) ?? run([0, -1])
-  const subtotal = ([i, j]: [number, number]) => /^SUM\(/i.test(sheet.cells[formatAddress(i, j)]?.formula ?? '')
+  const subtotal = ([i, j]: [number, number]) => /^(SUM|SUBTOTAL)\(/i.test(sheet.cells[formatAddress(i, j)]?.formula ?? '')
   const grand = !!found && subtotal(found[0])
   const subtotals = grand ? found.filter(subtotal) : []
   // a run of numbers ends at a subtotal

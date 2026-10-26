@@ -771,6 +771,20 @@ Described under an entry above: [`cellAddress`](#xlcalc-celladdress), [`colLette
 
 Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`scanReferences`](#xlcalc-scanreferences), [`valueComparator`](#xlcalc-valuecomparator).
 
+### <a id="xlcalctext-stepdecimals"></a>`stepDecimals`
+
+```ts
+function stepDecimals(format: NumberFormat | undefined, value: CellValue, step: 1 | -1, opts?: { locale?: string | undefined; width?: number | undefined; }): NumberFormat | undefined
+```
+
+The number format Excel's Increase Decimal (`step` 1) or Decrease Decimal (-1) gives a cell of `format` (General
+without one) holding `value`, in `opts.locale` (a built-in format's code in it) and a column of `opts.width` (Excel's
+standard without one), as Excel for Mac does: a General cell of a number takes its decimals one more or one less
+(`0.00` for 1.5), all of them when General shows the number whole, else those it shows in the column; a code takes a
+decimal more or less in each section of digits, a copy of its last one (`#.##` to `#.###`); a date, a time, a
+fraction, text, accounting's zero (`"-"??`) stay. It returns `format` itself when the step changes nothing: no number
+in General, no decimal to take away. Excel applies the active cell's result to the whole selection.
+
 ## xlcalc/entry
 
 ### <a id="xlcalcentry-entrytext"></a>`entryText`
@@ -1029,6 +1043,7 @@ interface AsyncSession {
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
+  getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>
@@ -1075,6 +1090,26 @@ type AsyncSessionOptions = SessionOptions & CalcOptions
 
 ```ts
 type AsyncStructureResult = SessionStructureResult
+```
+
+### `AutoSumGuess`
+
+Excel's AutoSum at a cell ([`Session.getAutoSum`](#session)): the range it offers to sum and the formula it enters.
+
+```ts
+interface AutoSumGuess {
+  /**
+   * The range to sum, from the run of numbers nearest above the cell (past the cells right above it without a number)
+   * to the cell, else the same to the left (`B2:B9`, `B2` for one), ending at a subtotal (a `SUM` or `SUBTOTAL`
+   * formula); when the nearest is a subtotal, the subtotals alone, nearest first (`B9,B5`); null without numbers. A date
+   * or a time is no number here.
+   */
+  range: string | null
+  /** `SUM` of the range, without `=` (`SUM(B2:B9)`, `SUM()` without a range). */
+  formula: string
+  /** The formula as Excel shows it in the workbook's locale (`СУММ(B2:B9)`). */
+  formulaLocal: string
+}
 ```
 
 ### `AverageFormat`
@@ -3950,6 +3985,12 @@ interface Session {
    * the row or column it moves along, up to where that line's values end; it does not scan the sheet.
    */
   getEnd(sheet: string, cell: string, direction: EndDirection): string
+  /**
+   * What Excel's AutoSum (Home > Editing, Alt+=) offers at a cell: the range of numbers it sums, above the cell, else to
+   * its left, and the `SUM` formula it enters, in the workbook's locale too (`AutoSumGuess`). Without numbers the formula
+   * is `SUM()`, which Excel opens for editing and refuses to enter. It reads the cells along the cell's column and row.
+   */
+  getAutoSum(sheet: string, cell: string): AutoSumGuess
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
