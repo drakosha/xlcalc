@@ -245,7 +245,8 @@ describe('rows across formatted columns, the cells by pieces', () => {
       expect(byRow(whole.getBook()), what).toEqual(byRow(parts.getBook()))
       expect(whole.getHash(), what).toBe(compute(JSON.parse(JSON.stringify(whole.getBook())) as BookInput).hash)
     }
-  })
+    // 4.8 s on the Mac alone, 16 s in CI under its load
+  }, 60_000)
 })
 
 describe('rows across formatted columns in fewer cells than a rectangle holds, cell by cell as before 25.10', () => {
