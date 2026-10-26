@@ -108,8 +108,13 @@ export function nameElements(book: BookInput, issues: Issues, names: FileNames, 
   })
 }
 
+/** The prefix of the hidden names `openKept` gives the references of the parts the model does not have (`xlsx/keep`), which only `writeKept` writes back. */
+export const CARRIER_PREFIX = '_xlcalc.keep.'
+
+/** The book's names as `<definedNames>`, without the carriers of `openKept`: a file written anew holds none of their parts. */
 function definedNames(book: BookInput, issues: Issues, names: FileNames): string {
-  const out = nameElements(book, issues, names).filter((x) => x !== undefined)
+  const own = book.names?.some((n) => n.hidden && n.name.startsWith(CARRIER_PREFIX)) ? { ...book, names: book.names.filter((n) => !(n.hidden && n.name.startsWith(CARRIER_PREFIX))) } : book
+  const out = nameElements(own, issues, names).filter((x) => x !== undefined)
   return out.length ? `<definedNames>${out.join('')}</definedNames>` : ''
 }
 

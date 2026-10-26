@@ -23,14 +23,15 @@ import { canonical, mapAst, quoteSheet, sheetKey, walk } from '../../syntax/prin
 import { attr, attributes, elements, placed } from '../xml/scan.js'
 import { escapeAttr, escapeText, readText } from '../xml/text.js'
 import { parseFormula } from '../read/formulas.js'
+import { CARRIER_PREFIX } from '../write/book.js'
 import { cellMetadata } from '../read/metadata.js'
 import { partText } from '../read/package.js'
 import { ABSOLUTE, areasOf, areaText, dollarsOf, plainArea, sheetPrefix, sqrefRects, type Area, type Dollars } from './refs.js'
 import type { Source } from './source.js'
 import { attrsOf, childrenOf, ContentTypes, rootOf, type Placed } from './xml.js'
 
-/** The prefix of the carriers' names. */
-export const PREFIX = '_xlcalc.keep.'
+/** The prefix of the carriers' names, which `writeXlsx` leaves out. */
+export const PREFIX = CARRIER_PREFIX
 
 /** A reference of a part the model does not have, as a name of the book. */
 export interface Carrier {
