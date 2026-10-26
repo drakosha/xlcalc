@@ -30,7 +30,7 @@ import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkMergesOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
-import { patchedHeights, typedHeights, wrapTyped } from './session/wrap.js'
+import { patchedHeights, patchedNumbers, typedHeights, wrapTyped } from './session/wrap.js'
 import { checkNamesKept } from './session/names.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
@@ -666,8 +666,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkBase(eo, revision)
       const checked = checkPatches(patches, sheetIndex(s), styleCount(s))
       const [next, out, steps] = yield* applyPlan(s, patchPlan(s, checked), 'patchCells', lookCells)
-      // a row whose height Excel keeps fitted fits the fonts its cells show now, in the same step
-      const o = yield* fitted(next, patchedHeights(next, checked), out, steps, 'patchCells')
+      // a column widens for a number its new format does not fit, and a row whose height Excel keeps fitted fits the
+      // fonts its cells show now, in the same step
+      const widths = textWidths(next, patchedNumbers(next, checked)).map((w): SetLayoutEdit => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } }))
+      const o = yield* fitted(next, [...widths, ...patchedHeights(next, checked)], out, steps, 'patchCells')
       if (patches.length) keep(() => manyStep('patchCells', steps.map((f) => f())))
       return answer(next, o)
     },

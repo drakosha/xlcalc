@@ -40,11 +40,13 @@ export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatC
 /**
  * The number format Excel's Increase Decimal (`step` 1) or Decrease Decimal (-1) gives a cell of `format` (General
  * without one) holding `value`, in `opts.locale` (a built-in format's code in it) and a column of `opts.width` (Excel's
- * standard without one): a General cell takes the decimals its number shows there, one more or one less (`0.00` for
- * 1.5); a code takes a decimal more or less in each section of digits; a date, a time, a fraction or text stays. Excel
- * applies the active cell's result to the whole selection.
+ * standard without one), as Excel for Mac does: a General cell of a number takes its decimals one more or one less
+ * (`0.00` for 1.5), all of them when General shows the number whole, else those it shows in the column; a code takes a
+ * decimal more or less in each section of digits, a copy of its last one (`#.##` to `#.###`); a date, a time, a
+ * fraction, text, accounting's zero (`"-"??`) stay. It returns `format` itself when the step changes nothing: no number
+ * in General, no decimal to take away. Excel applies the active cell's result to the whole selection.
  */
-export const stepDecimals = /* @__PURE__ */ strict(function stepDecimals(format: NumberFormat | undefined, value: CellValue, step: 1 | -1, opts?: { locale?: string; width?: number }): NumberFormat {
+export const stepDecimals = /* @__PURE__ */ strict(function stepDecimals(format: NumberFormat | undefined, value: CellValue, step: 1 | -1, opts?: { locale?: string; width?: number }): NumberFormat | undefined {
   if (format !== undefined) checkFormat(format, 'format')
   if (step !== 1 && step !== -1) throw new InputError('step', `expected 1 or -1, got ${what(step)}`)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU', width: 12 }")

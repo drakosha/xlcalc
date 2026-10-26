@@ -74,9 +74,9 @@ function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
       return { cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(cells[x], tag)])), widths: Object.fromEntries(readColumns(c).map((k) => [k, null])), windows: [] }
     }
     if (act.do === 'press') {
-      pressInEngine(s, c, tag)
-      const cells = s.getBook().sheets[0].cells
-      return { cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(cells[x], tag)])), widths: Object.fromEntries(readColumns(c).map((k) => [k, null])), windows: [] }
+      const windows = pressInEngine(s, c, tag)
+      const book = s.getBook().sheets[0]
+      return { cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(book.cells[x], tag)])), widths: Object.fromEntries(readColumns(c).map((k) => [k, book.columns?.[k]?.bestFit ? book.columns[k].width! : null])), windows }
     }
     if (act.do !== 'paste' && act.do !== 'fill' && act.do !== 'edit') throw new Error(`${c.id} is no paste, fill, edit or pick`)
     const r = act.do === 'paste' ? s.pasteText('S', act.at, clipboardText(act)) : act.do === 'fill' ? s.fillCellText('S', act.range, act.text) : s.setCellText('S', act.at, act.text, { inPlace: true })
@@ -240,6 +240,7 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:ribbon': 0,
   'en-US:edit-held': 14,
   'en-US:pick-held': 5,
+  'en-US:press-held': 79,
   'ru-RU:pick-held': 5,
   'ru-RU:edit-held': 13,
 }
@@ -264,6 +265,8 @@ describe('ui sets (Excel for Mac)', () => {
       const a = run.stored.answers[c.id]
       if (ribbonCase(c)) return ribbonOff(c, a, run.tag, p.ribbon).length === 0
       if (c.act.do === 'bars') return c.act.cells.every((x) => p.editText![x] === opened(run, a, x))
+      // a case of press predicted the cells alone
+      if (c.act.do === 'press') return JSON.stringify(readCells(c).map((x) => cellKey(p.after![x].input, run.tag))) === JSON.stringify(readCells(c).map((x) => excelOutcome(c, a, run.tag).cells[x]))
       const got: Outcome = {
         cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(p.after![x].input, run.tag)])),
         widths: Object.fromEntries(readColumns(c).map((k) => [k, p.set!.widths?.find((w) => w.column === k)?.width ?? null])),

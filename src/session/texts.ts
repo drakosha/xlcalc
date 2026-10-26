@@ -152,7 +152,7 @@ export function filledText(s: EngineState, i: number, x: Rect, a: { r: number; c
 }
 
 /** The width each column of the cells takes for the values they hold now, the largest of its cells' (`columnWidening`); none for a column that keeps its width. */
-export function textWidths(s: EngineState, cells: Typed[]): ColumnWidth[] {
+export function textWidths(s: EngineState, cells: Iterable<{ i: number; r: number; c: number }>): ColumnWidth[] {
   const out = new Map<string, ColumnWidth>()
   for (const { i, r, c } of cells) {
     const width = columnWidening(s, i, r, c)

@@ -9,6 +9,7 @@ import type { EngineState } from '../engine.js'
 import { fitHeights, stateRows } from '../layout/heights.js'
 import { sheetLines } from '../layout/lines.js'
 import { inner, MAX_ROWS } from '../model.js'
+import { outCell } from '../result.js'
 import { firstEnding, lines } from '../layout/spans.js'
 import { StyleTable } from '../style-table.js'
 import type { SetLayoutEdit } from './book.js'
@@ -125,5 +126,22 @@ export function fittedHeights(s: EngineState, i: number, spans: [number, number]
       if (at <= y && height !== null) take(at, y, height)
     }
   flush()
+  return out
+}
+
+/**
+ * The cells of numbers of patches that change a number format, which widen their columns as typing does when the
+ * number no longer fits (`textWidths`), as Excel widens a column for Accounting or a decimal more.
+ */
+export function patchedNumbers(s: EngineState, patches: CheckedPatch[]): { i: number; r: number; c: number }[] {
+  const out: { i: number; r: number; c: number }[] = []
+  for (const { i, rect, look } of patches) {
+    if (look.format === undefined) continue
+    const cols = s.ctx.sheets[i].cols
+    for (let c = rect.c1; c <= Math.min(rect.c2, cols.length - 1); c++) {
+      const col = cols[c]
+      if (col) for (let r = rect.r1; r <= Math.min(rect.r2, col.length - 1); r++) if (typeof outCell(col.get(r) ?? null) === 'number') out.push({ i, r, c })
+    }
+  }
   return out
 }

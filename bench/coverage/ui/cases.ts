@@ -202,9 +202,10 @@ export function typedThenRight(texts: readonly string[]): UiCase[] {
 /**
  * A case of `press` taken by the engine, as a host takes the buttons: Increase and Decrease Decimal by `stepDecimals` of
  * the active cell (its format, value and column), its result set on the whole range; Comma Style and Accounting Number
- * Format as the built-in formats 43 and 44; AutoSum by `getAutoSum`'s formula entered into the active cell.
+ * Format as the built-in formats 43 and 44; AutoSum by `getAutoSum`'s formula entered into the active cell, none
+ * without a range (Excel refuses `=SUM()`). The cells a window came up for: an AutoSum without a range.
  */
-export function pressInEngine(s: Session, c: UiCase, tag: string): void {
+export function pressInEngine(s: Session, c: UiCase, tag: string): string[] {
   if (c.act.do !== 'press') throw new Error(`${c.id} is no case of press`)
   const range = c.act.range
   const [at] = cellsOf(range)
@@ -214,7 +215,11 @@ export function pressInEngine(s: Session, c: UiCase, tag: string): void {
     const own = s.getBook().sheets[0].cells[at]
     const format: NumberFormat | undefined =
       b === 'Comma Style' ? 43 : b === 'Accounting Number Format' ? 44 : b === 'AutoSum' ? undefined : stepDecimals(own?.numberFormat, cell?.value ?? null, b === 'Increase Decimal' ? 1 : -1, { locale: tag, width: c.columns?.[column]?.width })
-    if (b === 'AutoSum') s.setCells([{ sheet: 'S', cell: at, input: { formula: s.getAutoSum('S', at).formula } }])
-    else s.patchCells([{ sheet: 'S', range, set: { numberFormat: format } }])
+    if (b === 'AutoSum') {
+      const sum = s.getAutoSum('S', at)
+      if (!sum.range) return [at]
+      s.setCells([{ sheet: 'S', cell: at, input: { formula: sum.formula } }])
+    } else if (format !== own?.numberFormat) s.patchCells([{ sheet: 'S', range, set: { numberFormat: format ?? null } }])
   }
+  return []
 }

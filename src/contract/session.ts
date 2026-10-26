@@ -197,9 +197,9 @@ export interface Session {
    */
   getEnd(sheet: string, cell: string, direction: EndDirection): string
   /**
-   * What Excel's AutoSum (Home > Editing, Alt+=) offers at a cell: the range of numbers it sums, right above the cell,
-   * else right beside it on the left, and the `SUM` formula it enters, in the workbook's locale too. It reads the cells
-   * along the cell's column and row up to the first that holds no number.
+   * What Excel's AutoSum (Home > Editing, Alt+=) offers at a cell: the range of numbers it sums, above the cell, else to
+   * its left, and the `SUM` formula it enters, in the workbook's locale too (`AutoSumGuess`). Without numbers the formula
+   * is `SUM()`, which Excel opens for editing and refuses to enter. It reads the cells along the cell's column and row.
    */
   getAutoSum(sheet: string, cell: string): AutoSumGuess
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation

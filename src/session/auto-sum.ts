@@ -1,26 +1,44 @@
 /**
- * Excel's AutoSum at a cell (`Session.getAutoSum`): the numbers right above the cell, else right beside it on the
- * left, by the values the engine holds, and the formula Excel enters over them, `SUM` of that range; `SUM()` without
- * numbers next to the cell.
+ * Excel's AutoSum at a cell (`Session.getAutoSum`, `test/excel/ui/press-held.json`): going up from the cell, past the
+ * cells right above it that hold no number, the run of numbers there, to the cell; else the same to the left; and the
+ * formula Excel enters over them, `SUM` of that range, or of the `SUM` formulas in the run (subtotals) alone, the
+ * nearest first. A date or a time is no number here. Without numbers, `SUM()`, which Excel opens for editing and does
+ * not take.
  */
 import type { AutoSumGuess } from '../contract.js'
 import type { EngineState } from '../engine.js'
+import { sheetLines } from '../layout/lines.js'
 import { showFormula } from '../locale/index.js'
 import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
+import { numberFormatCategory } from '../numfmt/category.js'
 import { cellValue } from '../result.js'
 
 export function autoSumOf(state: EngineState, s: number, r: number, c: number): AutoSumGuess {
-  const isNumber = (row: number, col: number) => row >= 0 && col >= 0 && typeof cellValue(state, s, row, col) === 'number'
-  let range: string | null = null
-  let k = r - 1
-  while (isNumber(k, c)) k--
-  if (k < r - 1) range = span(k + 1, c, r - 1, c)
-  else {
-    let j = c - 1
-    while (isNumber(r, j)) j--
-    if (j < c - 1) range = span(r, j + 1, r, c - 1)
+  const sheet = state.input.sheets[s]
+  const lines = sheetLines(sheet, state)
+  const isNumber = (row: number, col: number) => {
+    if (typeof cellValue(state, s, row, col) !== 'number') return false
+    const format = lines.format(row, col)
+    const kind = format === undefined ? 'general' : numberFormatCategory(format, state.input.locale).category
+    return kind !== 'date' && kind !== 'time'
   }
+  // from `from` toward the edge by `by` ([row, column]): the cells skipped, then the run of numbers; null without one
+  const run = (by: [number, number]): [number, number][] | null => {
+    const out: [number, number][] = []
+    let [i, j] = [r + by[0], c + by[1]]
+    while (i >= 0 && j >= 0 && !isNumber(i, j)) [i, j] = [i + by[0], j + by[1]]
+    if (i < 0 || j < 0) return null
+    while (i >= 0 && j >= 0 && isNumber(i, j)) {
+      out.push([i, j])
+      ;[i, j] = [i + by[0], j + by[1]]
+    }
+    return out
+  }
+  const cells = run([-1, 0]) ?? run([0, -1])
+  const subtotals = (cells ?? []).filter(([i, j]) => /^SUM\(/i.test(sheet.cells[formatAddress(i, j)]?.formula ?? ''))
+  const top = cells?.[cells.length - 1]
+  const range = subtotals.length ? subtotals.map(([i, j]) => formatAddress(i, j)).join(',') : top ? span(top[0], top[1], r === top[0] ? r : r - 1, c === top[1] ? c : c - 1) : null
   const formula = `SUM(${range ?? ''})`
   const shown = showFormula(formula, LOCALES.get(state.input.locale ?? DEFAULT_LOCALE)!, undefined, state.input.externalBooks)
   return { range, formula, formulaLocal: shown.ok ? shown.formula : formula }

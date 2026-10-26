@@ -349,7 +349,11 @@ export interface CellValidation {
 
 /** Excel's AutoSum at a cell (`Session.getAutoSum`): the range it offers to sum and the formula it enters. */
 export interface AutoSumGuess {
-  /** The numbers right above the cell, else right beside it on the left (`B2:B9`, `B2` for one); null for none. */
+  /**
+   * The range to sum, from the run of numbers nearest above the cell (past the cells right above it without a number)
+   * to the cell, else the same to the left (`B2:B9`, `B2` for one); with `SUM` formulas in the run, those cells alone,
+   * the nearest first (`B9,B5`); null without numbers. A date or a time is no number here.
+   */
   range: string | null
   /** `SUM` of the range, without `=` (`SUM(B2:B9)`, `SUM()` without a range). */
   formula: string
