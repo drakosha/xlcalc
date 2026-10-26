@@ -241,6 +241,7 @@ const CONFIRMED: Record<string, number> = {
   'en-US:edit-held': 14,
   'en-US:pick-held': 5,
   'en-US:press-held': 79,
+  'en-US:press-more-held': 57,
   'ru-RU:pick-held': 5,
   'ru-RU:edit-held': 13,
 }

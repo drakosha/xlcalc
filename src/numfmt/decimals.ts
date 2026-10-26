@@ -1,8 +1,9 @@
 /**
  * Excel's Increase Decimal and Decrease Decimal (Home > Number): the number format a cell gets, from its format and
- * what it shows (`test/excel/ui/press-held.json`). A General cell of a number takes its decimals one more or one less
- * (`0.00` for 1.5): all of them when General shows the number whole, else those it shows in its column; with none
- * left, or no number, it stays. A code gets a decimal more or less in each section of digits after its last one, a
+ * what it shows (`test/excel/ui/press-held.json`, `press-more-held.json`). A General cell of a number takes the decimals
+ * it shows in its column one more or one less (`0.00` for 1.5); the number's own decimals when the column shows a
+ * fraction as a whole number (`12345679` for 12345678.9), scientific notation when it shows `#`; with none left, or
+ * no number, it stays. A code gets a decimal more or less in each section of digits after its last one, a
  * copy of it (`#.##` to `#.###`); a section of `?` alone (accounting's zero, `"-"??`), of a date, a time, a fraction
  * or text stays as it is.
  */
@@ -26,9 +27,9 @@ export function stepDecimals(format: NumberFormat | undefined, value: CellValue,
 
 /** General: the number's decimals one more or one less, null when it has none to take away. */
 function fromGeneral(value: number, step: 1 | -1, width?: number): string | null {
-  const whole = generalFormat(value)
-  // General shows the number whole: its decimals; else the decimals it shows in its column
-  const shown = Number(whole) === Number(value.toPrecision(15)) ? whole : generalFit(value, room(columnPoints(width)))
+  const fit = generalFit(value, room(columnPoints(width)))
+  // a fraction the column shows whole: the number's own decimals, as General writes it; `#` across the cell: scientific
+  const shown = fit.startsWith('#') ? '0E+00' : /^-?\d+$/.test(fit) && !Number.isInteger(value) ? generalFormat(value) : fit
   const m = /^-?\d*(?:\.(\d*))?(E[+-]\d+)?$/.exec(shown)
   const decimals = (m?.[1]?.length ?? 0) + step
   if (decimals < 0) return null

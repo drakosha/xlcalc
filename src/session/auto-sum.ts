@@ -1,9 +1,9 @@
 /**
  * Excel's AutoSum at a cell (`Session.getAutoSum`, `test/excel/ui/press-held.json`): going up from the cell, past the
- * cells right above it that hold no number, the run of numbers there, to the cell; else the same to the left; and the
- * formula Excel enters over them, `SUM` of that range, or of the `SUM` formulas in the run (subtotals) alone, the
- * nearest first. A date or a time is no number here. Without numbers, `SUM()`, which Excel opens for editing and does
- * not take.
+ * cells right above it that hold no number, the run of numbers there up to a `SUM` formula (a subtotal), to the cell;
+ * else the same to the left; and the formula Excel enters over them, `SUM` of that range. When the run's nearest cell
+ * is a subtotal, `SUM` of the run's subtotals alone, the nearest first (a grand total). A date or a time is no number
+ * here. Without numbers, `SUM()`, which Excel opens for editing and does not take.
  */
 import type { AutoSumGuess } from '../contract.js'
 import type { EngineState } from '../engine.js'
@@ -35,8 +35,12 @@ export function autoSumOf(state: EngineState, s: number, r: number, c: number): 
     }
     return out
   }
-  const cells = run([-1, 0]) ?? run([0, -1])
-  const subtotals = (cells ?? []).filter(([i, j]) => /^SUM\(/i.test(sheet.cells[formatAddress(i, j)]?.formula ?? ''))
+  const found = run([-1, 0]) ?? run([0, -1])
+  const subtotal = ([i, j]: [number, number]) => /^SUM\(/i.test(sheet.cells[formatAddress(i, j)]?.formula ?? '')
+  const grand = !!found && subtotal(found[0])
+  const subtotals = grand ? found.filter(subtotal) : []
+  // a run of numbers ends at a subtotal
+  const cells = found && !grand && found.some(subtotal) ? found.slice(0, found.findIndex(subtotal)) : found
   const top = cells?.[cells.length - 1]
   const range = subtotals.length ? subtotals.map(([i, j]) => formatAddress(i, j)).join(',') : top ? span(top[0], top[1], r === top[0] ? r : r - 1, c === top[1] ? c : c - 1) : null
   const formula = `SUM(${range ?? ''})`

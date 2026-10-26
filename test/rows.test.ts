@@ -180,6 +180,15 @@ describe.each(['closures', 'eval'] as const)('patchCells fits the rows of a styl
     expect(s.patchCells([{ sheet: 'S', cell: 'D8', set: { numberFormat: '0.00', note: { text: 'n' } } }]).fitted).toBeUndefined()
     expect(s.getLayout().sheets[0].rows).toEqual({ ...book().sheets[0].rows, 1: { height: 24, bestFit: true } })
   })
+  it('a number format a number no longer fits in widens its column, as typing does; a column of its own width stays', () => {
+    const s = createSession({ sheets: [{ name: 'S', cells: { B2: { value: 1234.5 }, C2: { value: 1234.5 } }, columns: { C: { width: 8 } } }] }, { clock, execution })
+    const r = s.patchCells([{ sheet: 'S', range: 'B2:C2', set: { numberFormat: 44 } }])
+    expect(r.layout).toEqual(['S'])
+    // the width Excel saved for Accounting over 1234.5 (press-held money-4)
+    expect(s.getLayout().sheets[0].columns).toEqual({ B: { width: 10.1640625, bestFit: true }, C: { width: 8 } })
+    s.undo()
+    expect(s.getLayout().sheets[0].columns).toEqual({ C: { width: 8 } })
+  })
   it('over entire columns or the whole sheet, the rows with cells in them; entire rows by their style', () => {
     const s = createSession(book(), { clock, execution })
     const r = s.patchCells([{ sheet: 'S', range: 'B:B', set: { style: { font: { size: 30 } } } }])

@@ -1,0 +1,371 @@
+{
+ "now": "2026-10-26",
+ "locales": {
+  "en-US": {
+   "whole-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": -12345678.9,
+       "numberFormat": "0.00E+00"
+      },
+      "value": -12345678.9
+     }
+    }
+   },
+   "whole-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": -12345678.9,
+       "numberFormat": "0E+00"
+      },
+      "value": -12345678.9
+     }
+    }
+   },
+   "whole-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 99999999.25,
+       "numberFormat": "0.000"
+      },
+      "value": 99999999.25
+     }
+    }
+   },
+   "whole-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 99999999.25,
+       "numberFormat": "0.0"
+      },
+      "value": 99999999.25
+     }
+    }
+   },
+   "whole-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.125,
+       "numberFormat": "0.0000"
+      },
+      "value": 1234567.125
+     }
+    }
+   },
+   "whole-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.125,
+       "numberFormat": "0.00"
+      },
+      "value": 1234567.125
+     }
+    }
+   },
+   "whole-wide-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345678.9,
+       "numberFormat": "0.00"
+      },
+      "value": 12345678.9
+     }
+    }
+   },
+   "hashes-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456789,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 123456789
+     }
+    }
+   },
+   "hashes-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456789
+      },
+      "value": 123456789
+     }
+    }
+   },
+   "hashes-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.000123,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.000123
+     }
+    }
+   },
+   "hashes-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.000123,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.000123
+     }
+    }
+   },
+   "hashes-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765.4,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 98765.4
+     }
+    }
+   },
+   "hashes-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765.4
+      },
+      "value": 98765.4
+     }
+    }
+   },
+   "sum-blocks-1": {
+    "after": {
+     "A7": {
+      "input": {
+       "formula": "SUM(A5:A6)"
+      },
+      "value": 11
+     }
+    }
+   },
+   "sum-blocks-2": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A4,A2)"
+      },
+      "value": 4
+     }
+    }
+   },
+   "sum-other-1": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A1:A4)"
+      },
+      "value": 10
+     }
+    }
+   },
+   "sum-left-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(C2)"
+      },
+      "value": 3
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "whole-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": -12345678.9,
+       "numberFormat": "0.00E+00"
+      },
+      "value": -12345678.9
+     }
+    }
+   },
+   "whole-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": -12345678.9,
+       "numberFormat": "0E+00"
+      },
+      "value": -12345678.9
+     }
+    }
+   },
+   "whole-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 99999999.25,
+       "numberFormat": "0.000"
+      },
+      "value": 99999999.25
+     }
+    }
+   },
+   "whole-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 99999999.25,
+       "numberFormat": "0.0"
+      },
+      "value": 99999999.25
+     }
+    }
+   },
+   "whole-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.125,
+       "numberFormat": "0.0000"
+      },
+      "value": 1234567.125
+     }
+    }
+   },
+   "whole-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.125,
+       "numberFormat": "0.00"
+      },
+      "value": 1234567.125
+     }
+    }
+   },
+   "whole-wide-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345678.9,
+       "numberFormat": "0.00"
+      },
+      "value": 12345678.9
+     }
+    }
+   },
+   "hashes-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456789,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 123456789
+     }
+    }
+   },
+   "hashes-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456789
+      },
+      "value": 123456789
+     }
+    }
+   },
+   "hashes-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.000123,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.000123
+     }
+    }
+   },
+   "hashes-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.000123,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.000123
+     }
+    }
+   },
+   "hashes-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765.4,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 98765.4
+     }
+    }
+   },
+   "hashes-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765.4
+      },
+      "value": 98765.4
+     }
+    }
+   },
+   "sum-blocks-1": {
+    "after": {
+     "A7": {
+      "input": {
+       "formula": "SUM(A5:A6)"
+      },
+      "value": 11
+     }
+    }
+   },
+   "sum-blocks-2": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A4,A2)"
+      },
+      "value": 4
+     }
+    }
+   },
+   "sum-other-1": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A1:A4)"
+      },
+      "value": 10
+     }
+    }
+   },
+   "sum-left-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(C2)"
+      },
+      "value": 3
+     }
+    }
+   }
+  }
+ }
+}

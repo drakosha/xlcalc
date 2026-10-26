@@ -202,7 +202,7 @@ export function typedThenRight(texts: readonly string[]): UiCase[] {
 /**
  * A case of `press` taken by the engine, as a host takes the buttons: Increase and Decrease Decimal by `stepDecimals` of
  * the active cell (its format, value and column), its result set on the whole range; Comma Style and Accounting Number
- * Format as the built-in formats 43 and 44; AutoSum by `getAutoSum`'s formula entered into the active cell, none
+ * Format as the built-in formats 43 and 44; AutoSum by `getAutoSum`'s formula typed into the active cell, none
  * without a range (Excel refuses `=SUM()`). The cells a window came up for: an AutoSum without a range.
  */
 export function pressInEngine(s: Session, c: UiCase, tag: string): string[] {
@@ -218,7 +218,7 @@ export function pressInEngine(s: Session, c: UiCase, tag: string): string[] {
     if (b === 'AutoSum') {
       const sum = s.getAutoSum('S', at)
       if (!sum.range) return [at]
-      s.setCells([{ sheet: 'S', cell: at, input: { formula: sum.formula } }])
+      s.setCellText('S', at, `=${sum.formulaLocal}`)
     } else if (format !== own?.numberFormat) s.patchCells([{ sheet: 'S', range, set: { numberFormat: format ?? null } }])
   }
   return []
