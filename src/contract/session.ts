@@ -6,7 +6,7 @@ import type { BookSnapshot, CachedValues, CalcLimits, CellIssueDetail, ComputeOp
 import type { CellEdit, CellPatch, CellReplace, ChangesOptions, ChangesPreview, ChangesResult, ClearKind, EditOptions, EditResult, EntryCheck, LayoutEdit, PreviewChangesOptions, SessionChange, SessionHistory, SessionOperation, UndoResult } from './edits.js'
 import type { CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, FillTextOptions, FillTextPreview, FillTextResult, PasteTextPreview, PasteTextResult } from './typing.js'
 import type { SessionStructureResult, StructureOp } from './structure.js'
-import type { CellValidation, CellView, CopyTextOptions, DependentsOptions, DependentsResult, EndDirection, FindCellsOptions, RangeSummary, ReadCellsOptions, ReadCellsResult, ReplaceOptions, ReplaceResult, SheetExtent, SummaryOptions, ValuesOptions, Viewport, ViewportOptions } from './reading.js'
+import type { AutoSumGuess, CellValidation, CellView, CopyTextOptions, DependentsOptions, DependentsResult, EndDirection, FindCellsOptions, RangeSummary, ReadCellsOptions, ReadCellsResult, ReplaceOptions, ReplaceResult, SheetExtent, SummaryOptions, ValuesOptions, Viewport, ViewportOptions } from './reading.js'
 
 /**
  * Session options. A session keeps a single clock, `clock` or by default the time it was opened and a random
@@ -196,6 +196,12 @@ export interface Session {
    * the row or column it moves along, up to where that line's values end; it does not scan the sheet.
    */
   getEnd(sheet: string, cell: string, direction: EndDirection): string
+  /**
+   * What Excel's AutoSum (Home > Editing, Alt+=) offers at a cell: the range of numbers it sums, above the cell, else to
+   * its left, and the `SUM` formula it enters, in the workbook's locale too (`AutoSumGuess`). Without numbers the formula
+   * is `SUM()`, which Excel opens for editing and refuses to enter. It reads the cells along the cell's column and row.
+   */
+  getAutoSum(sheet: string, cell: string): AutoSumGuess
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle on a sheet (`B2:D9`, `B2`, entire columns `B:D`, entire rows `2:9`), or of several (a cell
@@ -456,6 +462,7 @@ export interface AsyncSession {
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Promise<string>
+  getAutoSum(sheet: string, cell: string): Promise<AutoSumGuess>
   explain(sheet: string, cell: string, opts?: ExplainOptions & CalcOptions): Promise<Explanation>
   /** Like `Session.getCells`; from a thread, only the rectangles are transferred back, in one call; `signal` and `timeoutMs` stop it as they stop a calculation. */
   getCells(sheet: string, range: string | string[], opts?: CalcOptions): Promise<Record<string, CellView>>

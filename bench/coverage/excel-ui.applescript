@@ -9,6 +9,8 @@
 -- "ribbon" selects each cell in turn and reads the ribbon's Number Format box, "choose" applies an item of the box's list
 -- to each cell (Accessibility: the box's button pressed, then the item) and reads the box after; both give A1 the text
 -- format as a control cell, selected before each cell, and a set leaves A1 and A2 empty.
+-- "press" selects the range (its first cell the active one) and presses each button of the ribbon in turn by its name
+-- (Accessibility), then Return with "enter"; the windows Excel shows are answered.
 -- "point" selects the cell and takes each step in turn, a text typed (the first begins the cell's editing over what it
 -- holds, Enter mode) or a key pressed by its code with Shift or Command held; after each the formula bar's description
 -- is read and a window Excel shows answered; Escape ends what editing is left without writing it.
@@ -18,8 +20,8 @@
 -- array`, with its `formula array`); each column's `column width`, `width` and `use standard width`; save the book as
 -- xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the action as
--- JSON {"do": "bars" | "paste" | "fill" | "edit" | "ribbon" | "choose" | "point" | "none", "cells": [...], "items": [...], "at": cell,
--- "range": range, "text": text, "keys": {"left", "back", "type"}, "steps": [{"type"} | {"key", "shift", "cmd"}]}, the cells to
+-- JSON {"do": "bars" | "paste" | "fill" | "edit" | "ribbon" | "choose" | "point" | "press" | "none", "cells": [...], "items": [...], "at": cell,
+-- "range": range, "buttons": [...], "enter": true, "text": text, "keys": {"left", "back", "type"}, "steps": [{"type"} | {"key", "shift", "cmd"}]}, the cells to
 -- read and the columns as JSON arrays, the path of excel-keys.applescript. "none" takes no action: the book is only read.
 -- Output: JSON {"dialog": text, "bars": [[[description, value] selected, [description, value] in editing, focus, dialog,
 -- [description, value] typed (an edit's)], ...], "ribbon": [[item, box], ...], "point": [[bar's description, dialog], ...], "cells": [[text, code, local, prefix, value, formula, formula local, formula2, formula2
@@ -81,6 +83,8 @@ on run argv
 			set ribbonOut to my ribbon(ws, (act's objectForKey:"cells") as list, (act's objectForKey:"items") as list, bookName, kb)
 		else if todo is "point" then
 			set pointOut to my pointSteps(ws, act, bookName, kb)
+		else if todo is "press" then
+			set said to my press(ws, act, kb)
 		end if
 	on error msg number k
 		-- a step that failed (Excel's window on another desktop) leaves no book open: an editing it left is ended first,
@@ -372,6 +376,43 @@ end openList
 -- The ribbon's Number Format box of the window of the book `bookName`, by its description in English or Russian: the
 -- window lists it only with Excel in front, so it is looked for again until it does; an element of the window's
 -- contents that has gone stale is passed over. Kept in `numberBox`.
+on press(ws, act, kb)
+	tell application "Microsoft Excel" to select range ((act's objectForKey:"range") as text) of ws
+	kb's toFront()
+	repeat with b in ((act's objectForKey:"buttons") as list)
+		my pressButton(b as text)
+		delay 1
+	end repeat
+	if (act's objectForKey:"enter") is not missing value then
+		tell application "System Events" to key code 36
+		delay 1
+	end if
+	return kb's answerDialog()
+end press
+
+-- a button of the ribbon pressed by its name, found in Excel's windows (the list of a window's elements taken once:
+-- a loop over the expression asks for it again at each step and finds nothing)
+on pressButton(n)
+	repeat 10 times
+		tell application "System Events" to set frontmost of process "Microsoft Excel" to true
+		delay 1
+		tell application "System Events" to tell process "Microsoft Excel"
+			repeat with w in windows
+				set els to entire contents of w
+				repeat with e in els
+					try
+						if (role of e is "AXButton" or role of e is "AXMenuButton") and (name of e as text) is n then
+							perform action "AXPress" of e
+							return
+						end if
+					end try
+				end repeat
+			end repeat
+		end tell
+	end repeat
+	error "no button " & n & " on the ribbon"
+end pressButton
+
 on findBox(bookName)
 	global numberBox
 	repeat 10 times

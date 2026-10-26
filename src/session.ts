@@ -17,7 +17,7 @@ import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/q
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outCell } from './result.js'
-import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { AutoSumGuess, BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
 import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
@@ -30,13 +30,15 @@ import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkMergesOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
-import { typedHeights, wrapTyped } from './session/wrap.js'
+import { patchedHeights, patchedNumbers, typedHeights, wrapTyped } from './session/wrap.js'
+import { checkNamesKept } from './session/names.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { subscribers } from './session/subscribers.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
 import { checkDirection, endOf } from './session/end.js'
+import { autoSumOf } from './session/auto-sum.js'
 import { textsChanged } from './session/search.js'
 import { replacedTexts } from './session/replace.js'
 import { snapshotBook } from './session/snapshot.js'
@@ -115,6 +117,7 @@ export interface SessionSteps {
   getLayout(): BookLayout
   getUsedRange(sheet: string): Steps<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Steps<string>
+  getAutoSum(sheet: string, cell: string): Steps<AutoSumGuess>
   undo(opts?: EditOptions): Steps<UndoResult | null>
   redo(opts?: EditOptions): Steps<UndoResult | null>
   readonly history: SessionHistory
@@ -211,6 +214,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     if (x.layout.size) out.layout = [...x.layout]
     if (x.styles) out.styles = s.input.styles ?? []
     if (moved.length) out.moved = moved
+    if (x.fitted?.length) out.fitted = x.fitted
     const repaint = repaintOf(s.input, x)
     if (repaint) out.repaint = repaint
     return out
@@ -390,6 +394,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     return [next, o, steps]
   }
   /** Sheets of a prepared layout put in (`relayout`) after the changes `o`: the changes of both, and the step back added to `steps`. */
+  /** The layout edits a call makes after its changes `o` (widths and heights Excel fits), applied in its step; the rows fitted told. */
+  function* fitted(s: EngineState, edits: SetLayoutEdit[], o: Outcome, steps: (() => Step | null)[], call: Step['call']): Steps<Outcome> {
+    if (!edits.length) return o
+    const shown = display ? snapshot(s, layoutCells(s, edits)) : null
+    const sheets = applyLayout({ ...s.input, sheets: s.input.sheets.slice() }, edits, (name) => sheetIndex(s)(name)!)
+    const rows = edits.flatMap((e) => ('rows' in e && 'set' in e ? [{ sheet: e.sheet, rows: e.rows, height: e.set.height ?? null }] : []))
+    return { ...(yield* laidOut(s, sheets, shown, o, steps, call)), ...(rows.length ? { fitted: rows } : {}) }
+  }
   function* laidOut(s: EngineState, sheets: Map<number, SheetInput>, shown: Map<number, string> | null, o: Outcome, steps: (() => Step | null)[], call: Step['call']): Steps<Outcome> {
     const [lo, before] = yield* relayout(s, sheets, shown)
     steps.push(() => layoutStep(call, before, sheets))
@@ -440,11 +452,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     // a number that does not fit its column widens it, and a row whose cell wraps fits it, as Excel does, in the same step
     const widths = pasted ? [] : textWidths(next, cells)
     const edits: SetLayoutEdit[] = [...(widen ? widths.map((w) => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } })) : []), ...(pasted ? [] : typedHeights(next, cells))]
-    if (edits.length) {
-      const shown = display ? snapshot(next, layoutCells(next, edits)) : null
-      const sheets = applyLayout({ ...next.input, sheets: next.input.sheets.slice() }, edits, (name) => sheetIndex(next)(name)!)
-      o = yield* laidOut(next, sheets, shown, o, steps, call)
-    }
+    o = yield* fitted(next, edits, o, steps, call)
     if (cells.length) keep(() => manyStep(call, steps.map((f) => f())))
     return [next, o, widths]
   }
@@ -656,10 +664,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *patchCells(patches: CellPatch[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const plan = patchPlan(s, checkPatches(patches, sheetIndex(s), styleCount(s)))
-      const [next, out, steps] = yield* applyPlan(s, plan, 'patchCells', lookCells)
+      const checked = checkPatches(patches, sheetIndex(s), styleCount(s))
+      const [next, out, steps] = yield* applyPlan(s, patchPlan(s, checked), 'patchCells', lookCells)
+      // a column widens for a number its new format does not fit, and a row whose height Excel keeps fitted fits the
+      // fonts its cells show now, in the same step
+      const widths = textWidths(next, patchedNumbers(next, checked)).map((w): SetLayoutEdit => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } }))
+      const o = yield* fitted(next, [...widths, ...patchedHeights(next, checked)], out, steps, 'patchCells')
       if (patches.length) keep(() => manyStep('patchCells', steps.map((f) => f())))
-      return answer(next, out)
+      return answer(next, o)
     },
     *setCellText(sheet: string, cell: string, text: string, eo?: CellTextOptions) {
       const { s, opts, i, r, c, typed } = yield* typedCell(sheet, cell, text, eo)
@@ -734,6 +746,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       names = checkNames(names, 'names')
       // tables and names share one namespace
       checkTables({ ...old.input, names }, 'book')
+      checkNamesKept(old, names, 'names')
       // names change the whole graph: the book is rebuilt, changes are collected over all cells (none moved)
       const book = { ...old.input, names }
       const [next, out, diff] = yield* rebuild(old, book, [], false, history.on)
@@ -820,6 +833,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const [i, r, c] = at(s, sheet, cell)
       return formatAddress(...endOf(s, i, r, c, checkDirection(direction)))
+    },
+    *getAutoSum(sheet: string, cell: string) {
+      const s = yield* ready()
+      return autoSumOf(s, ...at(s, sheet, cell))
     },
     *explain(sheet: string, cell: string, eo?: ExplainOptions) {
       const s = yield* ready()
@@ -946,6 +963,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     getLayout: () => core.getLayout(),
     getUsedRange: (sheet) => now(() => core.getUsedRange(sheet)),
     getEnd: (sheet, cell, direction) => now(() => core.getEnd(sheet, cell, direction)),
+    getAutoSum: (sheet, cell) => now(() => core.getAutoSum(sheet, cell)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     getCells: (sheet, range) => now(() => core.getCells(sheet, range)),
     copyText: (sheet, range, o) => now(() => core.copyText(sheet, range, o)),

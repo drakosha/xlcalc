@@ -456,6 +456,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       getLayout: () => value(call('getLayout', [])),
       getUsedRange: (sheet) => value(call('getUsedRange', [sheet])),
       getEnd: (sheet, cell, direction) => value(call('getEnd', [sheet, cell, direction])),
+      getAutoSum: (sheet, cell) => value(call('getAutoSum', [sheet, cell])),
       explain: (sheet, cell, eo) => withCall<ExplainOptions, Explanation>(eo, (rest, co) => value(call('explain', [sheet, cell, rest], co))),
       getCells: (sheet, range, co) => value(call('getCells', [sheet, range], co)),
       copyText: (sheet, range, o) => withCall<CopyTextOptions, string>(o, (rest, co) => value(call('copyText', [sheet, range, rest], co))),

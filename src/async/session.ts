@@ -145,6 +145,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     getLayout: () => plain(() => core.getLayout()),
     getUsedRange: (sheet) => call(() => core.getUsedRange(sheet)),
     getEnd: (sheet, cell, direction) => call(() => core.getEnd(sheet, cell, direction)),
+    getAutoSum: (sheet, cell) => call(() => core.getAutoSum(sheet, cell)),
     explain: (sheet, cell, eo) => withCall<ExplainOptions, Explanation>(eo, (rest, co) => call(() => core.explain(sheet, cell, rest), co)),
     getCells: (sheet, range, co) => call(() => core.getCells(sheet, range), co),
     copyText: (sheet, range, o) => withCall<CopyTextOptions, string>(o, (rest, co) => call(() => core.copyText(sheet, range, rest), co)),

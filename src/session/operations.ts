@@ -18,6 +18,7 @@ import { checkTables } from '../tables/check.js'
 import { checkStylesUsed, applyLayout, inputAt } from './book.js'
 import { checkFieldEdits, resolveEdits } from './cells.js'
 import { clearPlan } from './clear.js'
+import { checkNamesKept } from './names.js'
 import { checkPatches } from './patch.js'
 import { patchPlan, type Plan } from './styles.js'
 
@@ -151,6 +152,7 @@ export function operationsPlan(s: EngineState, given: SessionOperation[], header
       case 'setNames':
         onlyKeys(op, path, ['op', 'names'])
         book.names = checkNames(op.names, `${path}.names`)
+        checkNamesKept(s, book.names, `${path}.names`)
         rebuild = true
         break
       case 'setStyles':

@@ -1,0 +1,1409 @@
+{
+ "now": "2026-10-26",
+ "locales": {
+  "en-US": {
+   "shown-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456.789
+      },
+      "value": 123456.789
+     }
+    }
+   },
+   "general-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456.789,
+       "numberFormat": "0.0000"
+      },
+      "value": 123456.789
+     }
+    }
+   },
+   "general-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456.789,
+       "numberFormat": "0.00"
+      },
+      "value": 123456.789
+     }
+    }
+   },
+   "shown-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "general-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789,
+       "numberFormat": "0.00000"
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "general-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789,
+       "numberFormat": "0.000"
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "shown-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.56789
+      },
+      "value": 1234.56789
+     }
+    }
+   },
+   "general-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.56789,
+       "numberFormat": "0.000000"
+      },
+      "value": 1234.56789
+     }
+    }
+   },
+   "general-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.56789,
+       "numberFormat": "0.0000"
+      },
+      "value": 1234.56789
+     }
+    }
+   },
+   "shown-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345678.9
+      },
+      "value": 12345678.9
+     }
+    }
+   },
+   "general-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345678.9,
+       "numberFormat": "0.00"
+      },
+      "value": 12345678.9
+     }
+    }
+   },
+   "general-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345678.9,
+       "numberFormat": "0"
+      },
+      "value": 12345678.9
+     }
+    }
+   },
+   "shown-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765432.1
+      },
+      "value": 98765432.1
+     }
+    }
+   },
+   "general-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765432.1,
+       "numberFormat": "0.00"
+      },
+      "value": 98765432.1
+     }
+    }
+   },
+   "general-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765432.1,
+       "numberFormat": "0"
+      },
+      "value": 98765432.1
+     }
+    }
+   },
+   "shown-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.30000000000000004
+      },
+      "value": 0.3
+     }
+    }
+   },
+   "general-11": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.30000000000000004,
+       "numberFormat": "0.00"
+      },
+      "value": 0.3
+     }
+    }
+   },
+   "general-12": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.30000000000000004,
+       "numberFormat": "0"
+      },
+      "value": 0.3
+     }
+    }
+   },
+   "shown-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "general-13": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "general-14": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "shown-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.1234567891
+      },
+      "value": 0.1234567891
+     }
+    }
+   },
+   "general-15": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.1234567891,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.1234567891
+     }
+    }
+   },
+   "general-16": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.1234567891,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.1234567891
+     }
+    }
+   },
+   "shown-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.5
+      },
+      "value": 1234567.5
+     }
+    }
+   },
+   "general-17": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.5,
+       "numberFormat": "0.00"
+      },
+      "value": 1234567.5
+     }
+    }
+   },
+   "general-18": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.5,
+       "numberFormat": "0"
+      },
+      "value": 1234567.5
+     }
+    }
+   },
+   "shown-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 3.14159265358979
+      },
+      "value": 3.14159265358979
+     }
+    }
+   },
+   "general-19": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 3.14159265358979,
+       "numberFormat": "0.0000000"
+      },
+      "value": 3.14159265358979
+     }
+    }
+   },
+   "general-20": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 3.14159265358979,
+       "numberFormat": "0.00000"
+      },
+      "value": 3.14159265358979
+     }
+    }
+   },
+   "shown-width-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "general-width-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789,
+       "numberFormat": "0.00000"
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "shown-width-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "general-width-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666,
+       "numberFormat": "0.000"
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "shown-width-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "general-width-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789,
+       "numberFormat": "0.00000"
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "shown-width-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "general-width-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666,
+       "numberFormat": "0.0000000000"
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "code-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.###"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.#"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0##"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000;-0.000;0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0;-0.0;0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000_);(0.000)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0_);(0.0)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-11": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000 \"kg\";-0.000 \"kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-12": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0 \"kg\";-0.0 \"kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-13": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0;[Red]-#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-14": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0;[Red]-#,##0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-15": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_(* #,##0.0_);_(* (#,##0.0);_(* \"-\"_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-16": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": 41
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-17": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_($* #,##0.0_);_($* (#,##0.0);_($* \"-\"_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-18": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": 42
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "sum-far-1": {
+    "after": {
+     "A9": {
+      "input": {
+       "formula": "SUM(A1:A8)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-left-gap-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(A2:C2)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-left-text-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(A2:C2)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-above-blank-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(A2:C2)"
+      },
+      "value": 6
+     }
+    }
+   },
+   "sum-percent-1": {
+    "after": {
+     "A3": {
+      "input": {
+       "formula": "SUM(A1:A2)"
+      },
+      "value": 0.3
+     }
+    }
+   },
+   "sum-error-1": {
+    "after": {
+     "A4": {
+      "input": {
+       "formula": "SUM(A3)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-boolean-1": {
+    "after": {
+     "A4": {
+      "input": {
+       "formula": "SUM(A3)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-subtotal-1": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A3)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-row-1-1": {
+    "after": {
+     "C1": {
+      "input": {
+       "formula": "SUM(A1:B1)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-below-1": {
+    "after": {
+     "A2": {
+      "input": null,
+      "value": null
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "shown-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456.789
+      },
+      "value": 123456.789
+     }
+    }
+   },
+   "general-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456.789,
+       "numberFormat": "0.0000"
+      },
+      "value": 123456.789
+     }
+    }
+   },
+   "general-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 123456.789,
+       "numberFormat": "0.00"
+      },
+      "value": 123456.789
+     }
+    }
+   },
+   "shown-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "general-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789,
+       "numberFormat": "0.00000"
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "general-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789,
+       "numberFormat": "0.000"
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "shown-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.56789
+      },
+      "value": 1234.56789
+     }
+    }
+   },
+   "general-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.56789,
+       "numberFormat": "0.000000"
+      },
+      "value": 1234.56789
+     }
+    }
+   },
+   "general-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.56789,
+       "numberFormat": "0.0000"
+      },
+      "value": 1234.56789
+     }
+    }
+   },
+   "shown-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345678.9
+      },
+      "value": 12345678.9
+     }
+    }
+   },
+   "general-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345678.9,
+       "numberFormat": "0.00"
+      },
+      "value": 12345678.9
+     }
+    }
+   },
+   "general-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345678.9,
+       "numberFormat": "0"
+      },
+      "value": 12345678.9
+     }
+    }
+   },
+   "shown-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765432.1
+      },
+      "value": 98765432.1
+     }
+    }
+   },
+   "general-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765432.1,
+       "numberFormat": "0.00"
+      },
+      "value": 98765432.1
+     }
+    }
+   },
+   "general-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 98765432.1,
+       "numberFormat": "0"
+      },
+      "value": 98765432.1
+     }
+    }
+   },
+   "shown-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.30000000000000004
+      },
+      "value": 0.3
+     }
+    }
+   },
+   "general-11": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.30000000000000004,
+       "numberFormat": "0.00"
+      },
+      "value": 0.3
+     }
+    }
+   },
+   "general-12": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.30000000000000004,
+       "numberFormat": "0"
+      },
+      "value": 0.3
+     }
+    }
+   },
+   "shown-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "general-13": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "general-14": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "shown-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.1234567891
+      },
+      "value": 0.1234567891
+     }
+    }
+   },
+   "general-15": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.1234567891,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.1234567891
+     }
+    }
+   },
+   "general-16": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.1234567891,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.1234567891
+     }
+    }
+   },
+   "shown-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.5
+      },
+      "value": 1234567.5
+     }
+    }
+   },
+   "general-17": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.5,
+       "numberFormat": "0.00"
+      },
+      "value": 1234567.5
+     }
+    }
+   },
+   "general-18": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.5,
+       "numberFormat": "0"
+      },
+      "value": 1234567.5
+     }
+    }
+   },
+   "shown-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 3.14159265358979
+      },
+      "value": 3.14159265358979
+     }
+    }
+   },
+   "general-19": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 3.14159265358979,
+       "numberFormat": "0.0000000"
+      },
+      "value": 3.14159265358979
+     }
+    }
+   },
+   "general-20": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 3.14159265358979,
+       "numberFormat": "0.00000"
+      },
+      "value": 3.14159265358979
+     }
+    }
+   },
+   "shown-width-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "general-width-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789,
+       "numberFormat": "0.00000"
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "shown-width-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "general-width-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666,
+       "numberFormat": "0.000"
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "shown-width-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "general-width-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 12345.6789,
+       "numberFormat": "0.00000"
+      },
+      "value": 12345.6789
+     }
+    }
+   },
+   "shown-width-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "general-width-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.6666666666666666,
+       "numberFormat": "0.0000000000"
+      },
+      "value": 0.666666666666667
+     }
+    }
+   },
+   "code-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.###"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.#"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0##"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000;-0.000;0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0;-0.0;0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000_);(0.000)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0_);(0.0)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-11": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000 \"kg\";-0.000 \"kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-12": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0 \"kg\";-0.0 \"kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-13": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0;[Red]-#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-14": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0;[Red]-#,##0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-15": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0.0_-;-* #,##0.0_-;_-* \"-\"_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-16": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": 41
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-17": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0.0 \"₽\"_-;-* #,##0.0 \"₽\"_-;_-* \"-\" \"₽\"_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-18": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": 42
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "sum-far-1": {
+    "after": {
+     "A9": {
+      "input": {
+       "formula": "SUM(A1:A8)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-left-gap-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(A2:C2)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-left-text-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(A2:C2)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-above-blank-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(A2:C2)"
+      },
+      "value": 6
+     }
+    }
+   },
+   "sum-percent-1": {
+    "after": {
+     "A3": {
+      "input": {
+       "formula": "SUM(A1:A2)"
+      },
+      "value": 0.3
+     }
+    }
+   },
+   "sum-error-1": {
+    "after": {
+     "A4": {
+      "input": {
+       "formula": "SUM(A3)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-boolean-1": {
+    "after": {
+     "A4": {
+      "input": {
+       "formula": "SUM(A3)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-subtotal-1": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A3)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-row-1-1": {
+    "after": {
+     "C1": {
+      "input": {
+       "formula": "SUM(A1:B1)"
+      },
+      "value": 3
+     }
+    }
+   },
+   "sum-below-1": {
+    "after": {
+     "A2": {
+      "input": null,
+      "value": null
+     }
+    }
+   }
+  }
+ }
+}

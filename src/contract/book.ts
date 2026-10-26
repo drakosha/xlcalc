@@ -364,6 +364,14 @@ export interface BookInput {
    * empty.
    */
   externalBooks?: ExternalBook[]
+  /**
+   * The workbook's default font, its Normal style's (in xlsx the first font), in points: what a cell shows whose style
+   * gives no font name or size. Without it, Calibri 11. It is kept, read and written, and the engine measures as for
+   * Calibri 11 whatever it is: column widths in characters, fitted row heights, `####` in a column too narrow and
+   * `entryWidth`, which Excel measures in the default font, so for another font they can differ from Excel's. It is
+   * included in `inputHash` when given.
+   */
+  font?: { name: string; size: number }
 }
 
 /**

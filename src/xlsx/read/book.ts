@@ -159,8 +159,10 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   const plain = () => (plainStyle ??= table.styles.push({}) - 1)
   const isPlain = (style: number) => style === plainStyle
   const cond = { dxfs: readDxfs(stylesXml, colors), palette: colors }
-  if (table.font && (table.font.name !== 'Calibri' || table.font.size !== 11))
-    issues.add('defaultFont', { key: 'defaultFont', ...table.font })
+  // the default font is the book's when it is not the model's; the engine measures as for Calibri 11 either way
+  const read = table.font && { name: table.font.name || 'Calibri', size: table.font.size || 11 }
+  const font = read && (read.name !== 'Calibri' || read.size !== 11) ? read : undefined
+  if (font) issues.add('defaultFont', { key: 'defaultFont', ...table.font })
   const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
   const dateSystem = flag(attributes(element(wb, 'workbookPr')?.attrs ?? '').date1904) ? 1904 : 1900
@@ -235,6 +237,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   if (activeSheet) book.activeSheet = activeSheet
   if (names.length) book.names = names
   if (table.styles.length) book.styles = table.styles
+  if (font) book.font = font
   const tag = await locale(archive, root, issues)
   if (tag) book.locale = tag
   if (dateSystem === 1904) book.dateSystem = 1904

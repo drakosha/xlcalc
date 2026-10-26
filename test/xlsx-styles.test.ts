@@ -73,6 +73,19 @@ describe('xlsx styles: reading', () => {
     ])
     expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1, style: 0, numberFormat: '#,##0.00" ₽"' }, B1: { value: 1, style: 1, numberFormat: 3 }, C1: { value: 1, style: 0, numberFormat: 49 }, D1: { value: 1, style: 1, numberFormat: 14 } })
     expect(codes(r.issues)).toEqual(['defaultFont'])
+    expect(r.book.font).toEqual({ name: 'Arial', size: 10 })
+  })
+
+  it("the default font is the book's font: written as the first font, which a style's font is relative to, and read back", async () => {
+    const book: BookInput = { font: { name: 'Arial', size: 10 }, styles: [{ font: { bold: true } }, { font: { name: 'Calibri', size: 14 } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 0 }, A2: { value: 2, style: 1 } } }] }
+    const file = await writeXlsx({ book }, { values: 'omit' })
+    expect(file.issues).toEqual([])
+    const back = await readXlsx(file.data)
+    expect([back.book.font, back.book.styles]).toEqual([book.font, book.styles])
+    expect(codes(back.issues)).toEqual(['defaultFont'])
+    // Calibri 11 is the model's own: neither read into the book nor reported
+    const plain = await readXlsx((await writeXlsx({ book: { ...book, font: { name: 'Calibri', size: 11 } } }, { values: 'omit' })).data)
+    expect([plain.book.font, codes(plain.issues)]).toEqual([undefined, []])
   })
 
   it('what a style cannot hold is reported on its cells; an East Asian date format is read as its en-US code, an unknown built-in format is left out', async () => {

@@ -20,7 +20,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
-import { clipboardText, entriesOf, macOnly, readCells, readColumns, ribbonOf, uiBook, windowOver, type RibbonCell, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
+import { clipboardText, entriesOf, macOnly, pressInEngine, readCells, readColumns, ribbonOf, uiBook, windowOver, type RibbonCell, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
 import { formulaBar } from '../bench/coverage/entry/cases.js'
 import { formatKey, held } from '../bench/coverage/entry/compare.js'
 import { numberFormatOf } from '../bench/coverage/stored.js'
@@ -56,11 +56,11 @@ function excelOutcome(c: UiCase, a: UiAnswer, tag: string): Outcome {
     cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(a.cells[x].cell, tag)])),
     widths: Object.fromEntries(readColumns(c).map((k) => [k, a.columns[k].saved?.bestFit ? a.columns[k].saved.width : null])),
     // a window comes up for the entry of the active cell, the action's first; an edit's is read with its bar
-    windows: (a.dialog ?? (c.act.do === 'edit' ? a.cells[c.act.at].bar?.dialog : undefined)) ? [entriesOf(c.act)[0].cell] : [],
+    windows: (a.dialog ?? (c.act.do === 'edit' ? a.cells[c.act.at].bar?.dialog : undefined)) ? [entriesOf(c.act)[0]?.cell ?? readCells(c)[0]] : [],
   }
 }
 
-/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`, an edit by `setCellText` in place, a pick by its item's `input` from `getValidation`; a stop alert's call taken back, as the host does. */
+/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`, an edit by `setCellText` in place, a pick by its item's `input` from `getValidation`, the ribbon's buttons by `pressInEngine`; a stop alert's call taken back, as the host does. */
 function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
   const s = createSession(uiBook(c, tag), { clock: { now: `${date}T12:00:00Z`, seed: 1 } })
   try {
@@ -72,6 +72,11 @@ function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
       s.setCells([{ sheet: 'S', cell: act.at, input: list[act.item - 1].input }])
       const cells = s.getBook().sheets[0].cells
       return { cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(cells[x], tag)])), widths: Object.fromEntries(readColumns(c).map((k) => [k, null])), windows: [] }
+    }
+    if (act.do === 'press') {
+      const windows = pressInEngine(s, c, tag)
+      const book = s.getBook().sheets[0]
+      return { cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(book.cells[x], tag)])), widths: Object.fromEntries(readColumns(c).map((k) => [k, book.columns?.[k]?.bestFit ? book.columns[k].width! : null])), windows }
     }
     if (act.do !== 'paste' && act.do !== 'fill' && act.do !== 'edit') throw new Error(`${c.id} is no paste, fill, edit or pick`)
     const r = act.do === 'paste' ? s.pasteText('S', act.at, clipboardText(act)) : act.do === 'fill' ? s.fillCellText('S', act.range, act.text) : s.setCellText('S', act.at, act.text, { inPlace: true })
@@ -235,6 +240,9 @@ const CONFIRMED: Record<string, number> = {
   'ru-RU:ribbon': 0,
   'en-US:edit-held': 14,
   'en-US:pick-held': 5,
+  'en-US:press-held': 79,
+  'en-US:press-more-held': 57,
+  'en-US:press-third-held': 16,
   'ru-RU:pick-held': 5,
   'ru-RU:edit-held': 13,
 }
@@ -259,6 +267,8 @@ describe('ui sets (Excel for Mac)', () => {
       const a = run.stored.answers[c.id]
       if (ribbonCase(c)) return ribbonOff(c, a, run.tag, p.ribbon).length === 0
       if (c.act.do === 'bars') return c.act.cells.every((x) => p.editText![x] === opened(run, a, x))
+      // a case of press predicted the cells alone
+      if (c.act.do === 'press') return JSON.stringify(readCells(c).map((x) => cellKey(p.after![x].input, run.tag))) === JSON.stringify(readCells(c).map((x) => excelOutcome(c, a, run.tag).cells[x]))
       const got: Outcome = {
         cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(p.after![x].input, run.tag)])),
         widths: Object.fromEntries(readColumns(c).map((k) => [k, p.set!.widths?.find((w) => w.column === k)?.width ?? null])),

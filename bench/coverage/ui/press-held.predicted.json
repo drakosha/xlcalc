@@ -1,0 +1,2241 @@
+{
+ "now": "2026-10-26",
+ "locales": {
+  "en-US": {
+   "general-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "general-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "general-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 5,
+       "numberFormat": "0.0"
+      },
+      "value": 5
+     }
+    }
+   },
+   "general-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 5,
+       "numberFormat": "0"
+      },
+      "value": 5
+     }
+    }
+   },
+   "general-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.333333333333333
+     }
+    }
+   },
+   "general-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.333333333333333
+     }
+    }
+   },
+   "general-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.891,
+       "numberFormat": "0.0"
+      },
+      "value": 1234567.891
+     }
+    }
+   },
+   "general-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.891,
+       "numberFormat": "0"
+      },
+      "value": 1234567.891
+     }
+    }
+   },
+   "general-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 100000000000000000000,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 100000000000000000000
+     }
+    }
+   },
+   "general-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 100000000000000000000,
+       "numberFormat": "0E+00"
+      },
+      "value": 100000000000000000000
+     }
+    }
+   },
+   "general-11": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.000012,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.000012
+     }
+    }
+   },
+   "general-12": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.000012,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.000012
+     }
+    }
+   },
+   "general-13": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": -2.25,
+       "numberFormat": "0.000"
+      },
+      "value": -2.25
+     }
+    }
+   },
+   "general-14": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": -2.25,
+       "numberFormat": "0.0"
+      },
+      "value": -2.25
+     }
+    }
+   },
+   "general-width-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": "0.0000000000"
+      },
+      "value": 0.333333333333333
+     }
+    }
+   },
+   "general-width-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": "0.00"
+      },
+      "value": 0.333333333333333
+     }
+    }
+   },
+   "general-other-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc",
+       "numberFormat": "0.0"
+      },
+      "value": "abc"
+     }
+    }
+   },
+   "general-other-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc",
+       "numberFormat": "0"
+      },
+      "value": "abc"
+     }
+    }
+   },
+   "general-other-3": {
+    "after": {
+     "B2": {
+      "input": null,
+      "value": null
+     }
+    }
+   },
+   "general-other-4": {
+    "after": {
+     "B2": {
+      "input": null,
+      "value": null
+     }
+    }
+   },
+   "general-other-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": true,
+       "numberFormat": "0.0"
+      },
+      "value": true
+     }
+    }
+   },
+   "general-other-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": true,
+       "numberFormat": "0"
+      },
+      "value": true
+     }
+    }
+   },
+   "date-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 45688,
+       "numberFormat": "m/d/yyyy"
+      },
+      "value": 45688
+     }
+    }
+   },
+   "again-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "again-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-11": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_($* #,##0.000_);_($* (#,##0.000);_($* \"-\"???_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-12": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_($* #,##0.0_);_($* (#,##0.0);_($* \"-\"?_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-13": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_($* #,##0.0_);_($* (#,##0.0);_($* \"-\"_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-14": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-15": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_(* #,##0.000_);_(* (#,##0.000);_(* \"-\"???_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-16": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_(* #,##0.0_);_(* (#,##0.0);_(* \"-\"?_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-17": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_(* #,##0.0_);_(* (#,##0.0);_(* \"-\"_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-18": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-19": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000E+00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-20": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-21": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-22": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0E+00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-23": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0%"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-24": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0%"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-25": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.00%"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-26": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0%"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-27": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "$#,##0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-28": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "$#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-29": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "\"$\"#,##0.000_);[Red](\"$\"#,##0.000)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-30": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "\"$\"#,##0.0_);[Red](\"$\"#,##0.0)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-31": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.000 [$₽-419]"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-32": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0 [$₽-419]"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-33": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000;-0.000;\"zero\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-34": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0;-0.0;\"zero\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-35": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "[Red]0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-36": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "[Red]0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-37": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000 \"kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-38": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0 \"kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-39": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "General\" kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-40": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "General\" kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-41": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000000000000000000000000000000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-42": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.00000000000000000000000000000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-43": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "m/d/yyyy"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-44": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "m/d/yyyy"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-45": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "h:mm:ss"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-46": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "h:mm:ss"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-47": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "# ?/?"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-48": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "# ?/?"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-49": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "@"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-50": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "@"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-51": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "00.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-52": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "00.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-53": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#.##0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-54": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#.#"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "selection-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000"
+      },
+      "value": 1.5
+     },
+     "B3": {
+      "input": {
+       "value": 2,
+       "numberFormat": "0.000"
+      },
+      "value": 2
+     },
+     "B4": {
+      "input": {
+       "value": 0.25,
+       "numberFormat": "0.000"
+      },
+      "value": 0.25
+     }
+    }
+   },
+   "selection-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 2,
+       "numberFormat": "0"
+      },
+      "value": 2
+     },
+     "B3": {
+      "input": {
+       "value": 2,
+       "numberFormat": "0"
+      },
+      "value": 2
+     },
+     "B4": {
+      "input": {
+       "value": 0.25,
+       "numberFormat": "0"
+      },
+      "value": 0.25
+     }
+    }
+   },
+   "money-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 43
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "money-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 43
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "money-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc",
+       "numberFormat": 43
+      },
+      "value": "abc"
+     }
+    }
+   },
+   "money-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 44
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "money-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 44
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "money-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc",
+       "numberFormat": 44
+      },
+      "value": "abc"
+     }
+    }
+   },
+   "money-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": "_(* #,##0.000_);_(* (#,##0.000);_(* \"-\"???_);_(@_)"
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "sum-above-1": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A2:A4)"
+      },
+      "value": 6
+     }
+    }
+   },
+   "sum-above-2": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A1:A4)"
+      },
+      "value": 10
+     }
+    }
+   },
+   "sum-gap-1": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A3:A4)"
+      },
+      "value": 7
+     }
+    }
+   },
+   "sum-gap-2": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM()"
+      },
+      "value": {
+       "error": "ERROR"
+      }
+     }
+    }
+   },
+   "sum-left-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(A2:C2)"
+      },
+      "value": 6
+     }
+    }
+   },
+   "sum-left-2": {
+    "after": {
+     "E2": {
+      "input": {
+       "formula": "SUM(B2:D2)"
+      },
+      "value": 6
+     }
+    }
+   },
+   "sum-both-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(D1)"
+      },
+      "value": 5
+     }
+    }
+   },
+   "sum-none-1": {
+    "after": {
+     "H9": {
+      "input": {
+       "formula": "SUM()"
+      },
+      "value": {
+       "error": "ERROR"
+      }
+     }
+    }
+   },
+   "sum-text-1": {
+    "after": {
+     "A4": {
+      "input": {
+       "formula": "SUM()"
+      },
+      "value": {
+       "error": "ERROR"
+      }
+     }
+    }
+   },
+   "sum-subtotals-1": {
+    "after": {
+     "A7": {
+      "input": {
+       "formula": "SUM(A1:A6)"
+      },
+      "value": 24
+     }
+    }
+   },
+   "sum-formulas-1": {
+    "after": {
+     "A4": {
+      "input": {
+       "formula": "SUM(A1:A3)"
+      },
+      "value": 7
+     }
+    }
+   },
+   "sum-dates-1": {
+    "after": {
+     "A3": {
+      "input": {
+       "formula": "SUM(A1:A2)"
+      },
+      "value": 91377
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "general-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "general-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "general-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 5,
+       "numberFormat": "0.0"
+      },
+      "value": 5
+     }
+    }
+   },
+   "general-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 5,
+       "numberFormat": "0"
+      },
+      "value": 5
+     }
+    }
+   },
+   "general-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.333333333333333
+     }
+    }
+   },
+   "general-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.333333333333333
+     }
+    }
+   },
+   "general-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.891,
+       "numberFormat": "0.0"
+      },
+      "value": 1234567.891
+     }
+    }
+   },
+   "general-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234567.891,
+       "numberFormat": "0"
+      },
+      "value": 1234567.891
+     }
+    }
+   },
+   "general-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 100000000000000000000,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 100000000000000000000
+     }
+    }
+   },
+   "general-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 100000000000000000000,
+       "numberFormat": "0E+00"
+      },
+      "value": 100000000000000000000
+     }
+    }
+   },
+   "general-11": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.000012,
+       "numberFormat": "0.0000000"
+      },
+      "value": 0.000012
+     }
+    }
+   },
+   "general-12": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.000012,
+       "numberFormat": "0.00000"
+      },
+      "value": 0.000012
+     }
+    }
+   },
+   "general-13": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": -2.25,
+       "numberFormat": "0.000"
+      },
+      "value": -2.25
+     }
+    }
+   },
+   "general-14": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": -2.25,
+       "numberFormat": "0.0"
+      },
+      "value": -2.25
+     }
+    }
+   },
+   "general-width-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": "0.0000000000"
+      },
+      "value": 0.333333333333333
+     }
+    }
+   },
+   "general-width-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": "0.00"
+      },
+      "value": 0.333333333333333
+     }
+    }
+   },
+   "general-other-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc",
+       "numberFormat": "0.0"
+      },
+      "value": "abc"
+     }
+    }
+   },
+   "general-other-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc",
+       "numberFormat": "0"
+      },
+      "value": "abc"
+     }
+    }
+   },
+   "general-other-3": {
+    "after": {
+     "B2": {
+      "input": null,
+      "value": null
+     }
+    }
+   },
+   "general-other-4": {
+    "after": {
+     "B2": {
+      "input": null,
+      "value": null
+     }
+    }
+   },
+   "general-other-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": true,
+       "numberFormat": "0.0"
+      },
+      "value": true
+     }
+    }
+   },
+   "general-other-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": true,
+       "numberFormat": "0"
+      },
+      "value": true
+     }
+    }
+   },
+   "date-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 45688,
+       "numberFormat": "dd.mm.yyyy"
+      },
+      "value": 45688
+     }
+    }
+   },
+   "again-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "again-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-8": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-9": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-10": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-11": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0.000 \"₽\"_-;-* #,##0.000 \"₽\"_-;_-* \"-\"??? \"₽\"_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-12": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0.0 \"₽\"_-;-* #,##0.0 \"₽\"_-;_-* \"-\"? \"₽\"_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-13": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0.0 \"₽\"_-;-* #,##0.0 \"₽\"_-;_-* \"-\" \"₽\"_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-14": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0 \"₽\"_-;-* #,##0 \"₽\"_-;_-* \"-\" \"₽\"_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-15": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0.000_-;-* #,##0.000_-;_-* \"-\"???_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-16": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0.0_-;-* #,##0.0_-;_-* \"-\"?_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-17": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0.0_-;-* #,##0.0_-;_-* \"-\"_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-18": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "_-* #,##0_-;-* #,##0_-;_-* \"-\"_-;_-@_-"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-19": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000E+00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-20": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-21": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0E+00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-22": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0E+00"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-23": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0%"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-24": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0%"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-25": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.00%"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-26": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0%"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-27": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "$#,##0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-28": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "$#,##0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-29": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "\"$\"#,##0.000_);[Red](\"$\"#,##0.000)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-30": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "\"$\"#,##0.0_);[Red](\"$\"#,##0.0)"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-31": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.000 [$₽-419]"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-32": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#,##0.0 [$₽-419]"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-33": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000;-0.000;\"zero\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-34": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0;-0.0;\"zero\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-35": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "[Red]0.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-36": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "[Red]0.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-37": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000 \"kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-38": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.0 \"kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-39": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "General\" kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-40": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "General\" kg\""
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-41": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000000000000000000000000000000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-42": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.00000000000000000000000000000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-43": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "m/d/yyyy"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-44": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "m/d/yyyy"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-45": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "h:mm:ss"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-46": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "h:mm:ss"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-47": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "# ?/?"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-48": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "# ?/?"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-49": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "@"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-50": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "@"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-51": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "00.000"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-52": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "00.0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-53": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#.##0"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "code-54": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "#.#"
+      },
+      "value": 1.5
+     }
+    }
+   },
+   "selection-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": "0.000"
+      },
+      "value": 1.5
+     },
+     "B3": {
+      "input": {
+       "value": 2,
+       "numberFormat": "0.000"
+      },
+      "value": 2
+     },
+     "B4": {
+      "input": {
+       "value": 0.25,
+       "numberFormat": "0.000"
+      },
+      "value": 0.25
+     }
+    }
+   },
+   "selection-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 2,
+       "numberFormat": "0"
+      },
+      "value": 2
+     },
+     "B3": {
+      "input": {
+       "value": 2,
+       "numberFormat": "0"
+      },
+      "value": 2
+     },
+     "B4": {
+      "input": {
+       "value": 0.25,
+       "numberFormat": "0"
+      },
+      "value": 0.25
+     }
+    }
+   },
+   "money-1": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 43
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "money-2": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 43
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "money-3": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc",
+       "numberFormat": 43
+      },
+      "value": "abc"
+     }
+    }
+   },
+   "money-4": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 44
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "money-5": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 44
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "money-6": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": "abc",
+       "numberFormat": 44
+      },
+      "value": "abc"
+     }
+    }
+   },
+   "money-7": {
+    "after": {
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": "_-* #,##0.000_-;-* #,##0.000_-;_-* \"-\"???_-;_-@_-"
+      },
+      "value": 1234.5
+     }
+    }
+   },
+   "sum-above-1": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A2:A4)"
+      },
+      "value": 6
+     }
+    }
+   },
+   "sum-above-2": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A1:A4)"
+      },
+      "value": 10
+     }
+    }
+   },
+   "sum-gap-1": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM(A3:A4)"
+      },
+      "value": 7
+     }
+    }
+   },
+   "sum-gap-2": {
+    "after": {
+     "A5": {
+      "input": {
+       "formula": "SUM()"
+      },
+      "value": {
+       "error": "ERROR"
+      }
+     }
+    }
+   },
+   "sum-left-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(A2:C2)"
+      },
+      "value": 6
+     }
+    }
+   },
+   "sum-left-2": {
+    "after": {
+     "E2": {
+      "input": {
+       "formula": "SUM(B2:D2)"
+      },
+      "value": 6
+     }
+    }
+   },
+   "sum-both-1": {
+    "after": {
+     "D2": {
+      "input": {
+       "formula": "SUM(D1)"
+      },
+      "value": 5
+     }
+    }
+   },
+   "sum-none-1": {
+    "after": {
+     "H9": {
+      "input": {
+       "formula": "SUM()"
+      },
+      "value": {
+       "error": "ERROR"
+      }
+     }
+    }
+   },
+   "sum-text-1": {
+    "after": {
+     "A4": {
+      "input": {
+       "formula": "SUM()"
+      },
+      "value": {
+       "error": "ERROR"
+      }
+     }
+    }
+   },
+   "sum-subtotals-1": {
+    "after": {
+     "A7": {
+      "input": {
+       "formula": "SUM(A1:A6)"
+      },
+      "value": 24
+     }
+    }
+   },
+   "sum-formulas-1": {
+    "after": {
+     "A4": {
+      "input": {
+       "formula": "SUM(A1:A3)"
+      },
+      "value": 7
+     }
+    }
+   },
+   "sum-dates-1": {
+    "after": {
+     "A3": {
+      "input": {
+       "formula": "SUM(A1:A2)"
+      },
+      "value": 91377
+     }
+    }
+   }
+  }
+ }
+}

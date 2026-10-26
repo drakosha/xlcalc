@@ -4,7 +4,7 @@
  * its own style, number format, note or hyperlink changed: those of the edited cells, and after the book was built again (a
  * structure operation, a table's column renamed) those that differ from the cell that was at their old place.
  */
-import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, RangeRef, SheetInput } from '../contract.js'
+import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, FittedRows, RangeRef, SheetInput } from '../contract.js'
 import { sheetIndexOf, type EngineState } from '../engine.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input-error.js'
@@ -30,6 +30,8 @@ export interface Outcome {
   rules: RangeRef[]
   /** Rectangles whose look changed, too large to list by cell (`LISTED_LOOKS`). */
   looks: RangeRef[]
+  /** The rows whose height the call fitted. */
+  fitted?: FittedRows[]
 }
 
 export const nothing = (): Outcome => ({ keys: [], fields: new Map(), valued: false, layout: new Set(), styles: false, moved: [], rules: [], looks: [] })
@@ -61,6 +63,7 @@ export function joined(a: Outcome, b: Outcome): Outcome {
     moved: [...a.moved, ...b.moved],
     rules: [...a.rules, ...b.rules],
     looks: [...a.looks, ...b.looks],
+    ...(a.fitted || b.fitted ? { fitted: [...(a.fitted ?? []), ...(b.fitted ?? [])] } : {}),
   }
 }
 

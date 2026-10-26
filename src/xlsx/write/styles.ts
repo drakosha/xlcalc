@@ -108,7 +108,7 @@ export interface CellFormats {
 }
 
 export class StyleWriter implements CellFormats {
-  private readonly fonts = new Table(fontXml({}))
+  private readonly fonts: Table
   private readonly fills = new Table('<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>')
   private readonly borders = new Table('<border><left/><right/><top/><bottom/><diagonal/></border>')
   private readonly formats = new Map<string, number>()
@@ -116,7 +116,13 @@ export class StyleWriter implements CellFormats {
   private readonly byKey = new Map<string, number>([['\n0', 0]])
   private readonly dxfs = new Table()
 
-  constructor(private readonly styles: CellStyle[] = []) {}
+  /** `base`: the book's default font, the first of the fonts, which a style's font is relative to. */
+  constructor(
+    private readonly styles: CellStyle[] = [],
+    private readonly base: BaseFont = DEFAULT_FONT,
+  ) {
+    this.fonts = new Table(fontXml({}, base))
+  }
 
   private numFmt(code: NumberFormat | undefined): number {
     return numFmtId(code, (c) => {
@@ -135,7 +141,7 @@ export class StyleWriter implements CellFormats {
     let i = this.byKey.get(key)
     if (i !== undefined) return i
     const s = style === undefined ? {} : this.styles[style]
-    const font = s.font ? this.fonts.of(fontXml(s.font)) : 0
+    const font = s.font ? this.fonts.of(fontXml(s.font, this.base)) : 0
     const fill = s.fill ? this.fills.of(fillXml(s.fill)) : 0
     const border = s.border ? this.borders.of(borderXml(s.border)) : 0
     i = this.xfs.of(xfXml(numFmt, font, fill, border, alignmentXml(s.alignment)))

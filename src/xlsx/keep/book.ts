@@ -248,6 +248,8 @@ class Kept {
 
   write(): void {
     const { src, book0, book } = this
+    // the file's first font is the default its styles are written against: another one would change every cell's look
+    if (JSON.stringify(book.font ?? null) !== JSON.stringify(book0.font ?? null)) throw new KeptRefusal('the default font changed, which writeKept does not write')
     const emptied = this.others()
     for (const [j, s1] of book.sheets.entries()) {
       const k = this.id.source[j]

@@ -182,15 +182,15 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     expect(r.book.sheets[0].validations).toEqual([{ range: 'A1', type: 'any', allowBlank: false, showPrompt: false, showError: false }])
   })
 
-  it('the locale from its custom property; an unknown one reported; the default font other than Calibri 11 reported', async () => {
+  it('the locale from its custom property; an unknown one reported; the default font other than Calibri 11 kept and reported', async () => {
     const custom = (tag: string) => ({
       '_rels/.rels': rels(`<Relationship Id="rId1" Type="${REL}/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="${REL}/custom-properties" Target="docProps/custom.xml"/>`),
       'docProps/custom.xml': `<Properties xmlns:vt="v"><property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="2" name="xlcalc.locale"><vt:lpwstr>${tag}</vt:lpwstr></property></Properties>`,
     })
     expect((await read({ sheets: [{ name: 'S', body: one(1) }], parts: custom('ru-RU') })).book.locale).toBe('ru-RU')
     const unknown = await read({ sheets: [{ name: 'S', body: one(1) }], parts: custom('de-DE'), styles: '<fonts count="1"><font><sz val="10"/><name val="Arial"/></font></fonts>' })
-    expect(unknown.book.locale).toBeUndefined()
-    expect(unknown.issues.map((i) => i.message)).toEqual(["the default font Arial 10 is read as Calibri 11, the model's default", 'the locale "de-DE" is not one of the package\'s locales and is left out'])
+    expect([unknown.book.locale, unknown.book.font]).toEqual([undefined, { name: 'Arial', size: 10 }])
+    expect(unknown.issues.map((i) => i.message)).toEqual(['the default font Arial 10 is kept, and measured as Calibri 11', 'the locale "de-DE" is not one of the package\'s locales and is left out'])
   })
 
   it('a sheet without sheetData is an empty sheet', async () => {

@@ -1,0 +1,4477 @@
+{
+ "meta": {
+  "version": "16.114.1",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-26",
+  "seconds": 626.6
+ },
+ "cases": [
+  {
+   "id": "general-1",
+   "cells": {
+    "B2": {
+     "value": 1.5
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-2",
+   "cells": {
+    "B2": {
+     "value": 1.5
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-3",
+   "cells": {
+    "B2": {
+     "value": 5
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-4",
+   "cells": {
+    "B2": {
+     "value": 5
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-5",
+   "cells": {
+    "B2": {
+     "value": 0.3333333333333333
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-6",
+   "cells": {
+    "B2": {
+     "value": 0.3333333333333333
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-7",
+   "cells": {
+    "B2": {
+     "value": 1234567.891
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-8",
+   "cells": {
+    "B2": {
+     "value": 1234567.891
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-9",
+   "cells": {
+    "B2": {
+     "value": 100000000000000000000
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-10",
+   "cells": {
+    "B2": {
+     "value": 100000000000000000000
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-11",
+   "cells": {
+    "B2": {
+     "value": 0.000012
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-12",
+   "cells": {
+    "B2": {
+     "value": 0.000012
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-13",
+   "cells": {
+    "B2": {
+     "value": -2.25
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-14",
+   "cells": {
+    "B2": {
+     "value": -2.25
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-width-1",
+   "cells": {
+    "B2": {
+     "value": 0.3333333333333333
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 20
+    }
+   }
+  },
+  {
+   "id": "general-width-2",
+   "cells": {
+    "B2": {
+     "value": 0.3333333333333333
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   },
+   "columns": {
+    "B": {
+     "width": 4
+    }
+   }
+  },
+  {
+   "id": "general-other-1",
+   "cells": {
+    "B2": {
+     "value": "abc"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-other-2",
+   "cells": {
+    "B2": {
+     "value": "abc"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-other-3",
+   "cells": {
+    "B2": {}
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-other-4",
+   "cells": {
+    "B2": {}
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-other-5",
+   "cells": {
+    "B2": {
+     "value": true
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "general-other-6",
+   "cells": {
+    "B2": {
+     "value": true
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "date-1",
+   "cells": {
+    "B2": {
+     "value": 45688,
+     "numberFormat": 14
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "again-1",
+   "cells": {
+    "B2": {
+     "value": 1.5
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal",
+     "Increase Decimal",
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "again-2",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal",
+     "Decrease Decimal",
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-1",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-2",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-3",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.0"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-4",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.0"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-5",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-6",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-7",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-8",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-9",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-10",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-11",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 44
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-12",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 44
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-13",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 42
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-14",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 42
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-15",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 43
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-16",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 43
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-17",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 41
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-18",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": 41
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-19",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00E+00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-20",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00E+00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-21",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0E+00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-22",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0E+00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-23",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-24",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0%"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-25",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.0%"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-26",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.0%"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-27",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-28",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "$#,##0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-29",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "\"$\"#,##0.00_);[Red](\"$\"#,##0.00)"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-30",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "\"$\"#,##0.00_);[Red](\"$\"#,##0.00)"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-31",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$₽-419]"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-32",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#,##0.00 [$₽-419]"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-33",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00;-0.00;\"zero\""
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-34",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00;-0.00;\"zero\""
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-35",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "[Red]0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-36",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "[Red]0.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-37",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00 \"kg\""
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-38",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00 \"kg\""
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-39",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "General\" kg\""
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-40",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "General\" kg\""
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-41",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.000000000000000000000000000000"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-42",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.000000000000000000000000000000"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-43",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-44",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "m/d/yyyy"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-45",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-46",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "h:mm:ss"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-47",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "# ?/?"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-48",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "# ?/?"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-49",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "@"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-50",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "@"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-51",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "00.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-52",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "00.00"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-53",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#.##"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "code-54",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "#.##"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "selection-1",
+   "cells": {
+    "B2": {
+     "value": 1.5,
+     "numberFormat": "0.00"
+    },
+    "B3": {
+     "value": 2
+    },
+    "B4": {
+     "value": 0.25,
+     "numberFormat": "0.0%"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2:B4",
+    "buttons": [
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "selection-2",
+   "cells": {
+    "B2": {
+     "value": 2
+    },
+    "B3": {
+     "value": 2
+    },
+    "B4": {
+     "value": 0.25,
+     "numberFormat": "0.0%"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2:B4",
+    "buttons": [
+     "Decrease Decimal"
+    ]
+   }
+  },
+  {
+   "id": "money-1",
+   "cells": {
+    "B2": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Comma Style"
+    ]
+   }
+  },
+  {
+   "id": "money-2",
+   "cells": {
+    "B2": {
+     "value": 1234.5,
+     "numberFormat": "0.000"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Comma Style"
+    ]
+   }
+  },
+  {
+   "id": "money-3",
+   "cells": {
+    "B2": {
+     "value": "abc"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Comma Style"
+    ]
+   }
+  },
+  {
+   "id": "money-4",
+   "cells": {
+    "B2": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Accounting Number Format"
+    ]
+   }
+  },
+  {
+   "id": "money-5",
+   "cells": {
+    "B2": {
+     "value": 1234.5,
+     "numberFormat": "0.000"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Accounting Number Format"
+    ]
+   }
+  },
+  {
+   "id": "money-6",
+   "cells": {
+    "B2": {
+     "value": "abc"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Accounting Number Format"
+    ]
+   }
+  },
+  {
+   "id": "money-7",
+   "cells": {
+    "B2": {
+     "value": 1234.5
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "B2",
+    "buttons": [
+     "Comma Style",
+     "Increase Decimal"
+    ]
+   }
+  },
+  {
+   "id": "sum-above-1",
+   "cells": {
+    "A1": {
+     "value": "Amount"
+    },
+    "A2": {
+     "value": 1
+    },
+    "A3": {
+     "value": 2
+    },
+    "A4": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A5",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-above-2",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A2": {
+     "value": 2
+    },
+    "A3": {
+     "value": 3
+    },
+    "A4": {
+     "value": 4
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A5",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-gap-1",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A3": {
+     "value": 3
+    },
+    "A4": {
+     "value": 4
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A5",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-gap-2",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A2": {
+     "value": 2
+    },
+    "A3": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A5",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-left-1",
+   "cells": {
+    "A2": {
+     "value": 1
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "D2",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-left-2",
+   "cells": {
+    "A2": {
+     "value": "Q1"
+    },
+    "B2": {
+     "value": 1
+    },
+    "C2": {
+     "value": 2
+    },
+    "D2": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "E2",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-both-1",
+   "cells": {
+    "D1": {
+     "value": 5
+    },
+    "A2": {
+     "value": 1
+    },
+    "B2": {
+     "value": 2
+    },
+    "C2": {
+     "value": 3
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "D2",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-none-1",
+   "cells": {
+    "A1": {
+     "value": 1
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "H9",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-text-1",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A2": {
+     "value": 2
+    },
+    "A3": {
+     "value": "x"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A4",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-subtotals-1",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A2": {
+     "value": 2
+    },
+    "A3": {
+     "formula": "SUM(A1:A2)"
+    },
+    "A4": {
+     "value": 4
+    },
+    "A5": {
+     "value": 5
+    },
+    "A6": {
+     "formula": "SUM(A4:A5)"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A7",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-formulas-1",
+   "cells": {
+    "A1": {
+     "value": 1
+    },
+    "A2": {
+     "formula": "A1*2"
+    },
+    "A3": {
+     "formula": "A2*2"
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A4",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  },
+  {
+   "id": "sum-dates-1",
+   "cells": {
+    "A1": {
+     "value": 45688,
+     "numberFormat": 14
+    },
+    "A2": {
+     "value": 45689,
+     "numberFormat": 14
+    }
+   },
+   "act": {
+    "do": "press",
+    "range": "A3",
+    "buttons": [
+     "AutoSum"
+    ],
+    "enter": true
+   }
+  }
+ ],
+ "answers": {
+  "general-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 2
+     },
+     "text": "1.50",
+     "code": "0.00",
+     "local": "0.00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 1
+     },
+     "text": "2",
+     "code": "0",
+     "local": "0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-3": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 5,
+      "format": "0.0"
+     },
+     "text": "5.0",
+     "code": "0.0",
+     "local": "0.0",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-4": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 5
+     },
+     "text": "5",
+     "code": "General",
+     "local": "General",
+     "value2": 5,
+     "formula": "5",
+     "formulaLocal": "5",
+     "formula2": "5",
+     "formula2Local": "5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-5": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.3333333333333333,
+      "format": "0.0000000"
+     },
+     "text": "0.3333333",
+     "code": "0.0000000",
+     "local": "0.0000000",
+     "value2": 0.3333333333333333,
+     "formula": "0.333333333333333",
+     "formulaLocal": "0.333333333333333",
+     "formula2": "0.333333333333333",
+     "formula2Local": "0.333333333333333",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.83,
+     "points": 58,
+     "standard": false,
+     "saved": {
+      "width": 9.6640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "general-6": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.3333333333333333,
+      "format": "0.00000"
+     },
+     "text": "0.33333",
+     "code": "0.00000",
+     "local": "0.00000",
+     "value2": 0.3333333333333333,
+     "formula": "0.333333333333333",
+     "formulaLocal": "0.333333333333333",
+     "formula2": "0.333333333333333",
+     "formula2Local": "0.333333333333333",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-7": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234567.891,
+      "format": "0.0000"
+     },
+     "text": "1234567.8910",
+     "code": "0.0000",
+     "local": "0.0000",
+     "value2": 1234567.891,
+     "formula": "1234567.891",
+     "formulaLocal": "1234567.891",
+     "formula2": "1234567.891",
+     "formula2Local": "1234567.891",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 11.83,
+     "points": 76,
+     "standard": false,
+     "saved": {
+      "width": 12.6640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "general-8": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234567.891,
+      "format": 2
+     },
+     "text": "1234567.89",
+     "code": "0.00",
+     "local": "0.00",
+     "value2": 1234567.891,
+     "formula": "1234567.891",
+     "formulaLocal": "1234567.891",
+     "formula2": "1234567.891",
+     "formula2Local": "1234567.891",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 9.83,
+     "points": 64,
+     "standard": false,
+     "saved": {
+      "width": 10.6640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "general-9": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 100000000000000000000,
+      "format": "0.0E+00"
+     },
+     "text": "1.0E+20",
+     "code": "0.0E+00",
+     "local": "0.0E+00",
+     "value2": 100000000000000000000,
+     "formula": "100000000000000000000",
+     "formulaLocal": "100000000000000000000",
+     "formula2": "100000000000000000000",
+     "formula2Local": "100000000000000000000",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-10": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 100000000000000000000
+     },
+     "text": "1E+20",
+     "code": "General",
+     "local": "General",
+     "value2": 100000000000000000000,
+     "formula": "100000000000000000000",
+     "formulaLocal": "100000000000000000000",
+     "formula2": "100000000000000000000",
+     "formula2Local": "100000000000000000000",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-11": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.000012,
+      "format": "0.0000000"
+     },
+     "text": "0.0000120",
+     "code": "0.0000000",
+     "local": "0.0000000",
+     "value2": 0.000012,
+     "formula": "0.000012",
+     "formulaLocal": "0.000012",
+     "formula2": "0.000012",
+     "formula2Local": "0.000012",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.83,
+     "points": 58,
+     "standard": false,
+     "saved": {
+      "width": 9.6640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "general-12": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.000012,
+      "format": "0.00000"
+     },
+     "text": "0.00001",
+     "code": "0.00000",
+     "local": "0.00000",
+     "value2": 0.000012,
+     "formula": "0.000012",
+     "formulaLocal": "0.000012",
+     "formula2": "0.000012",
+     "formula2Local": "0.000012",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-13": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -2.25,
+      "format": "0.000"
+     },
+     "text": "-2.250",
+     "code": "0.000",
+     "local": "0.000",
+     "value2": -2.25,
+     "formula": "-2.25",
+     "formulaLocal": "-2.25",
+     "formula2": "-2.25",
+     "formula2Local": "-2.25",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-14": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": -2.25,
+      "format": "0.0"
+     },
+     "text": "-2.3",
+     "code": "0.0",
+     "local": "0.0",
+     "value2": -2.25,
+     "formula": "-2.25",
+     "formulaLocal": "-2.25",
+     "formula2": "-2.25",
+     "formula2Local": "-2.25",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-width-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.3333333333333333,
+      "format": "0.0000000000"
+     },
+     "text": "0.3333333333",
+     "code": "0.0000000000",
+     "local": "0.0000000000",
+     "value2": 0.3333333333333333,
+     "formula": "0.333333333333333",
+     "formulaLocal": "0.333333333333333",
+     "formula2": "0.333333333333333",
+     "formula2Local": "0.333333333333333",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 19.17,
+     "points": 120,
+     "standard": false,
+     "saved": {
+      "width": 20,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "general-width-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 0.3333333333333333,
+      "format": 2
+     },
+     "text": "###",
+     "code": "0.00",
+     "local": "0.00",
+     "value2": 0.3333333333333333,
+     "formula": "0.333333333333333",
+     "formulaLocal": "0.333333333333333",
+     "formula2": "0.333333333333333",
+     "formula2Local": "0.333333333333333",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 3.17,
+     "points": 24,
+     "standard": false,
+     "saved": {
+      "width": 4,
+      "customWidth": true
+     }
+    }
+   }
+  },
+  "general-other-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": "abc"
+     },
+     "text": "abc",
+     "code": "General",
+     "local": "General",
+     "formula": "abc",
+     "formulaLocal": "abc",
+     "formula2": "abc",
+     "formula2Local": "abc",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-other-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": "abc"
+     },
+     "text": "abc",
+     "code": "General",
+     "local": "General",
+     "formula": "abc",
+     "formulaLocal": "abc",
+     "formula2": "abc",
+     "formula2Local": "abc",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-other-3": {
+   "cells": {
+    "B2": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-other-4": {
+   "cells": {
+    "B2": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-other-5": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": true
+     },
+     "text": "TRUE",
+     "code": "General",
+     "local": "General",
+     "formula": "TRUE",
+     "formulaLocal": "TRUE",
+     "formula2": "TRUE",
+     "formula2Local": "TRUE",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "general-other-6": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": true
+     },
+     "text": "TRUE",
+     "code": "General",
+     "local": "General",
+     "formula": "TRUE",
+     "formulaLocal": "TRUE",
+     "formula2": "TRUE",
+     "formula2Local": "TRUE",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "date-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 45688,
+      "format": 14
+     },
+     "text": "1/31/25",
+     "code": "m/d/yy",
+     "local": "m/d/yy",
+     "formula": "45688",
+     "formulaLocal": "45688",
+     "formula2": "45688",
+     "formula2Local": "45688",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "again-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0000"
+     },
+     "text": "1.5000",
+     "code": "0.0000",
+     "local": "0.0000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "again-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 1
+     },
+     "text": "2",
+     "code": "0",
+     "local": "0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000"
+     },
+     "text": "1.500",
+     "code": "0.000",
+     "local": "0.000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0"
+     },
+     "text": "1.5",
+     "code": "0.0",
+     "local": "0.0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-3": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 2
+     },
+     "text": "1.50",
+     "code": "0.00",
+     "local": "0.00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-4": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 1
+     },
+     "text": "2",
+     "code": "0",
+     "local": "0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-5": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0"
+     },
+     "text": "1.5",
+     "code": "0.0",
+     "local": "0.0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-6": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 1
+     },
+     "text": "2",
+     "code": "0",
+     "local": "0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-7": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.0"
+     },
+     "text": "1.5",
+     "code": "#,##0.0",
+     "local": "#,##0.0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-8": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 3
+     },
+     "text": "2",
+     "code": "#,##0",
+     "local": "#,##0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-9": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.000"
+     },
+     "text": "1.500",
+     "code": "#,##0.000",
+     "local": "#,##0.000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-10": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.0"
+     },
+     "text": "1.5",
+     "code": "#,##0.0",
+     "local": "#,##0.0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-11": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(\"$\"* #,##0.000_);_(\"$\"* \\(#,##0.000\\);_(\"$\"* \"-\"??_);_(@_)"
+     },
+     "text": " $     1.500 ",
+     "code": "_($* #,##0.000_);_($* (#,##0.000);_($* \"-\"??_);_(@_)",
+     "local": "_($* #,##0.000_);_($* (#,##0.000);_($* \"-\"??_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-12": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(\"$\"* #,##0.0_);_(\"$\"* \\(#,##0.0\\);_(\"$\"* \"-\"??_);_(@_)"
+     },
+     "text": " $           1.5 ",
+     "code": "_($* #,##0.0_);_($* (#,##0.0);_($* \"-\"??_);_(@_)",
+     "local": "_($* #,##0.0_);_($* (#,##0.0);_($* \"-\"??_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-13": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(\"$\"* #,##0.0_);_(\"$\"* \\(#,##0.0\\);_(\"$\"* \"-\"_);_(@_)"
+     },
+     "text": " $           1.5 ",
+     "code": "_($* #,##0.0_);_($* (#,##0.0);_($* \"-\"_);_(@_)",
+     "local": "_($* #,##0.0_);_($* (#,##0.0);_($* \"-\"_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-14": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(\"$\"* #,##0_);_(\"$\"* \\(#,##0\\);_(\"$\"* \"-\"_);_(@_)"
+     },
+     "text": " $                2 ",
+     "code": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)",
+     "local": "_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-15": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(* #,##0.000_);_(* \\(#,##0.000\\);_(* \"-\"??_);_(@_)"
+     },
+     "text": "         1.500 ",
+     "code": "_(* #,##0.000_);_(* (#,##0.000);_(* \"-\"??_);_(@_)",
+     "local": "_(* #,##0.000_);_(* (#,##0.000);_(* \"-\"??_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-16": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(* #,##0.0_);_(* \\(#,##0.0\\);_(* \"-\"??_);_(@_)"
+     },
+     "text": "               1.5 ",
+     "code": "_(* #,##0.0_);_(* (#,##0.0);_(* \"-\"??_);_(@_)",
+     "local": "_(* #,##0.0_);_(* (#,##0.0);_(* \"-\"??_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-17": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(* #,##0.0_);_(* \\(#,##0.0\\);_(* \"-\"_);_(@_)"
+     },
+     "text": "               1.5 ",
+     "code": "_(* #,##0.0_);_(* (#,##0.0);_(* \"-\"_);_(@_)",
+     "local": "_(* #,##0.0_);_(* (#,##0.0);_(* \"-\"_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-18": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "_(* #,##0_);_(* \\(#,##0\\);_(* \"-\"_);_(@_)"
+     },
+     "text": "                    2 ",
+     "code": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+     "local": "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-19": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000E+00"
+     },
+     "text": "1.500E+00",
+     "code": "0.000E+00",
+     "local": "0.000E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.5,
+     "points": 56,
+     "standard": false,
+     "saved": {
+      "width": 9.33203125,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "code-20": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0E+00"
+     },
+     "text": "1.5E+00",
+     "code": "0.0E+00",
+     "local": "0.0E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-21": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0E+00"
+     },
+     "text": "1.5E+00",
+     "code": "0.0E+00",
+     "local": "0.0E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-22": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0E+00"
+     },
+     "text": "2E+00",
+     "code": "0E+00",
+     "local": "0E+00",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-23": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0%"
+     },
+     "text": "150.0%",
+     "code": "0.0%",
+     "local": "0.0%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-24": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 9
+     },
+     "text": "150%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-25": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 10
+     },
+     "text": "150.00%",
+     "code": "0.00%",
+     "local": "0.00%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-26": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 9
+     },
+     "text": "150%",
+     "code": "0%",
+     "local": "0%",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-27": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.000"
+     },
+     "text": "$1.500",
+     "code": "\\$#,##0.000",
+     "local": "\\$#,##0.000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-28": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "\\$#,##0.0"
+     },
+     "text": "$1.5",
+     "code": "\\$#,##0.0",
+     "local": "\\$#,##0.0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-29": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "\"$\"#,##0.000_);[Red]\\(\"$\"#,##0.000\\)"
+     },
+     "text": "$1.500 ",
+     "code": "$#,##0.000_);[Red]($#,##0.000)",
+     "local": "$#,##0.000_);[Red]($#,##0.000)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-30": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "\"$\"#,##0.0_);[Red]\\(\"$\"#,##0.0\\)"
+     },
+     "text": "$1.5 ",
+     "code": "$#,##0.0_);[Red]($#,##0.0)",
+     "local": "$#,##0.0_);[Red]($#,##0.0)",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-31": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.000\\ [$₽-419]"
+     },
+     "text": "1.500 ₽",
+     "code": "#,##0.000 [$₽-419]",
+     "local": "#,##0.000 [$₽-419]",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-32": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#,##0.0\\ [$₽-419]"
+     },
+     "text": "1.5 ₽",
+     "code": "#,##0.0 [$₽-419]",
+     "local": "#,##0.0 [$₽-419]",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-33": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000;\\-0.000;\"zero\""
+     },
+     "text": "1.500",
+     "code": "0.000;-0.000;\"zero\"",
+     "local": "0.000;-0.000;\"zero\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-34": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0;\\-0.0;\"zero\""
+     },
+     "text": "1.5",
+     "code": "0.0;-0.0;\"zero\"",
+     "local": "0.0;-0.0;\"zero\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-35": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Red]0.000"
+     },
+     "text": "1.500",
+     "code": "[Red]0.000",
+     "local": "[Red]0.000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-36": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "[Red]0.0"
+     },
+     "text": "1.5",
+     "code": "[Red]0.0",
+     "local": "[Red]0.0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-37": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000\\ \"kg\""
+     },
+     "text": "1.500 kg",
+     "code": "0.000 \"kg\"",
+     "local": "0.000 \"kg\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-38": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0\\ \"kg\""
+     },
+     "text": "1.5 kg",
+     "code": "0.0 \"kg\"",
+     "local": "0.0 \"kg\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-39": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "General\" kg\""
+     },
+     "text": "1.5 kg",
+     "code": "General\" kg\"",
+     "local": "General\" kg\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-40": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "General\" kg\""
+     },
+     "text": "1.5 kg",
+     "code": "General\" kg\"",
+     "local": "General\" kg\"",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-41": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.0000000000000000000000000000000"
+     },
+     "text": "1.5000000000000000000000000000000",
+     "code": "0.0000000000000000000000000000000",
+     "local": "0.0000000000000000000000000000000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 33.5,
+     "points": 206,
+     "standard": false,
+     "saved": {
+      "width": 34.33203125,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "code-42": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.00000000000000000000000000000"
+     },
+     "text": "1.50000000000000000000000000000",
+     "code": "0.00000000000000000000000000000",
+     "local": "0.00000000000000000000000000000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 31.5,
+     "points": 194,
+     "standard": false,
+     "saved": {
+      "width": 32.33203125,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "code-43": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1/1/1900",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-44": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "m/d/yyyy"
+     },
+     "text": "1/1/1900",
+     "code": "m/d/yyyy",
+     "local": "m/d/yyyy",
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-45": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 21
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "h:mm:ss",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-46": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 21
+     },
+     "text": "12:00:00",
+     "code": "h:mm:ss",
+     "local": "h:mm:ss",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-47": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 12
+     },
+     "text": "1 1/2",
+     "code": "# ?/?",
+     "local": "# ?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-48": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 12
+     },
+     "text": "1 1/2",
+     "code": "# ?/?",
+     "local": "# ?/?",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-49": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 49
+     },
+     "text": "1.5",
+     "code": "@",
+     "local": "@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-50": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": 49
+     },
+     "text": "1.5",
+     "code": "@",
+     "local": "@",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-51": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "00.000"
+     },
+     "text": "01.500",
+     "code": "00.000",
+     "local": "00.000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-52": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "00.0"
+     },
+     "text": "01.5",
+     "code": "00.0",
+     "local": "00.0",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-53": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#.###"
+     },
+     "text": "1.5",
+     "code": "#.###",
+     "local": "#.###",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "code-54": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "#.#"
+     },
+     "text": "1.5",
+     "code": "#.#",
+     "local": "#.#",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "selection-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1.5,
+      "format": "0.000"
+     },
+     "text": "1.500",
+     "code": "0.000",
+     "local": "0.000",
+     "value2": 1.5,
+     "formula": "1.5",
+     "formulaLocal": "1.5",
+     "formula2": "1.5",
+     "formula2Local": "1.5",
+     "hasArray": false
+    },
+    "B3": {
+     "cell": {
+      "value": 2,
+      "format": "0.000"
+     },
+     "text": "2.000",
+     "code": "0.000",
+     "local": "0.000",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false
+    },
+    "B4": {
+     "cell": {
+      "value": 0.25,
+      "format": "0.000"
+     },
+     "text": "0.250",
+     "code": "0.000",
+     "local": "0.000",
+     "value2": 0.25,
+     "formula": "0.25",
+     "formulaLocal": "0.25",
+     "formula2": "0.25",
+     "formula2Local": "0.25",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "selection-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false
+    },
+    "B3": {
+     "cell": {
+      "value": 2
+     },
+     "text": "2",
+     "code": "General",
+     "local": "General",
+     "value2": 2,
+     "formula": "2",
+     "formulaLocal": "2",
+     "formula2": "2",
+     "formula2Local": "2",
+     "hasArray": false
+    },
+    "B4": {
+     "cell": {
+      "value": 0.25,
+      "format": "0.0%"
+     },
+     "text": "25.0%",
+     "code": "0.0%",
+     "local": "0.0%",
+     "value2": 0.25,
+     "formula": "0.25",
+     "formulaLocal": "0.25",
+     "formula2": "0.25",
+     "formula2Local": "0.25",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "money-1": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234.5,
+      "format": "_(* #,##0.00_);_(* \\(#,##0.00\\);_(* \"-\"??_);_(@_)"
+     },
+     "text": "   1,234.50 ",
+     "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "local": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.33,
+     "points": 55,
+     "standard": false,
+     "saved": {
+      "width": 9.1640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "money-2": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234.5,
+      "format": "_(* #,##0.00_);_(* \\(#,##0.00\\);_(* \"-\"??_);_(@_)"
+     },
+     "text": "   1,234.50 ",
+     "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "local": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8.33,
+     "points": 55,
+     "standard": false,
+     "saved": {
+      "width": 9.1640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "money-3": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": "abc",
+      "format": "_(* #,##0.00_);_(* \\(#,##0.00\\);_(* \"-\"??_);_(@_)"
+     },
+     "text": " abc ",
+     "code": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "local": "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+     "formula": "abc",
+     "formulaLocal": "abc",
+     "formula2": "abc",
+     "formula2Local": "abc",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "money-4": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234.5,
+      "format": "_(\"$\"* #,##0.00_);_(\"$\"* \\(#,##0.00\\);_(\"$\"* \"-\"??_);_(@_)"
+     },
+     "text": " $  1,234.50 ",
+     "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "local": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 9.33,
+     "points": 61,
+     "standard": false,
+     "saved": {
+      "width": 10.1640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "money-5": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234.5,
+      "format": "_(\"$\"* #,##0.00_);_(\"$\"* \\(#,##0.00\\);_(\"$\"* \"-\"??_);_(@_)"
+     },
+     "text": " $  1,234.50 ",
+     "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "local": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 9.33,
+     "points": 61,
+     "standard": false,
+     "saved": {
+      "width": 10.1640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "money-6": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": "abc",
+      "format": "_(\"$\"* #,##0.00_);_(\"$\"* \\(#,##0.00\\);_(\"$\"* \"-\"??_);_(@_)"
+     },
+     "text": " abc ",
+     "code": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "local": "_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)",
+     "formula": "abc",
+     "formulaLocal": "abc",
+     "formula2": "abc",
+     "formula2Local": "abc",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "money-7": {
+   "cells": {
+    "B2": {
+     "cell": {
+      "value": 1234.5,
+      "format": "_(* #,##0.000_);_(* \\(#,##0.000\\);_(* \"-\"??_);_(@_)"
+     },
+     "text": "   1,234.500 ",
+     "code": "_(* #,##0.000_);_(* (#,##0.000);_(* \"-\"??_);_(@_)",
+     "local": "_(* #,##0.000_);_(* (#,##0.000);_(* \"-\"??_);_(@_)",
+     "value2": 1234.5,
+     "formula": "1234.5",
+     "formulaLocal": "1234.5",
+     "formula2": "1234.5",
+     "formula2Local": "1234.5",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "B": {
+     "columnWidth": 9.33,
+     "points": 61,
+     "standard": false,
+     "saved": {
+      "width": 10.1640625,
+      "customWidth": true,
+      "bestFit": true
+     }
+    }
+   }
+  },
+  "sum-above-1": {
+   "cells": {
+    "A5": {
+     "cell": {
+      "formula": "SUM(A2:A4)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(A2:A4)",
+     "formulaLocal": "=SUM(A2:A4)",
+     "formula2": "=SUM(A2:A4)",
+     "formula2Local": "=SUM(A2:A4)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-above-2": {
+   "cells": {
+    "A5": {
+     "cell": {
+      "formula": "SUM(A1:A4)"
+     },
+     "computed": 10,
+     "text": "10",
+     "code": "General",
+     "local": "General",
+     "value2": 10,
+     "formula": "=SUM(A1:A4)",
+     "formulaLocal": "=SUM(A1:A4)",
+     "formula2": "=SUM(A1:A4)",
+     "formula2Local": "=SUM(A1:A4)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-gap-1": {
+   "cells": {
+    "A5": {
+     "cell": {
+      "formula": "SUM(A3:A4)"
+     },
+     "computed": 7,
+     "text": "7",
+     "code": "General",
+     "local": "General",
+     "value2": 7,
+     "formula": "=SUM(A3:A4)",
+     "formulaLocal": "=SUM(A3:A4)",
+     "formula2": "=SUM(A3:A4)",
+     "formula2Local": "=SUM(A3:A4)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-gap-2": {
+   "cells": {
+    "A5": {
+     "cell": {
+      "formula": "SUM(A1:A4)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(A1:A4)",
+     "formulaLocal": "=SUM(A1:A4)",
+     "formula2": "=SUM(A1:A4)",
+     "formula2Local": "=SUM(A1:A4)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-left-1": {
+   "cells": {
+    "D2": {
+     "cell": {
+      "formula": "SUM(A2:C2)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(A2:C2)",
+     "formulaLocal": "=SUM(A2:C2)",
+     "formula2": "=SUM(A2:C2)",
+     "formula2Local": "=SUM(A2:C2)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "D": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-left-2": {
+   "cells": {
+    "E2": {
+     "cell": {
+      "formula": "SUM(B2:D2)"
+     },
+     "computed": 6,
+     "text": "6",
+     "code": "General",
+     "local": "General",
+     "value2": 6,
+     "formula": "=SUM(B2:D2)",
+     "formulaLocal": "=SUM(B2:D2)",
+     "formula2": "=SUM(B2:D2)",
+     "formula2Local": "=SUM(B2:D2)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "E": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-both-1": {
+   "cells": {
+    "D2": {
+     "cell": {
+      "formula": "SUM(D1)"
+     },
+     "computed": 5,
+     "text": "5",
+     "code": "General",
+     "local": "General",
+     "value2": 5,
+     "formula": "=SUM(D1)",
+     "formulaLocal": "=SUM(D1)",
+     "formula2": "=SUM(D1)",
+     "formula2Local": "=SUM(D1)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "D": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-none-1": {
+   "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cells": {
+    "H9": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "H": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-text-1": {
+   "cells": {
+    "A4": {
+     "cell": {
+      "formula": "SUM(A1:A3)"
+     },
+     "computed": 3,
+     "text": "3",
+     "code": "General",
+     "local": "General",
+     "value2": 3,
+     "formula": "=SUM(A1:A3)",
+     "formulaLocal": "=SUM(A1:A3)",
+     "formula2": "=SUM(A1:A3)",
+     "formula2Local": "=SUM(A1:A3)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-subtotals-1": {
+   "cells": {
+    "A7": {
+     "cell": {
+      "formula": "SUM(A6,A3)"
+     },
+     "computed": 12,
+     "text": "12",
+     "code": "General",
+     "local": "General",
+     "value2": 12,
+     "formula": "=SUM(A6,A3)",
+     "formulaLocal": "=SUM(A6,A3)",
+     "formula2": "=SUM(A6,A3)",
+     "formula2Local": "=SUM(A6,A3)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-formulas-1": {
+   "cells": {
+    "A4": {
+     "cell": {
+      "formula": "SUM(A1:A3)"
+     },
+     "computed": 7,
+     "text": "7",
+     "code": "General",
+     "local": "General",
+     "value2": 7,
+     "formula": "=SUM(A1:A3)",
+     "formulaLocal": "=SUM(A1:A3)",
+     "formula2": "=SUM(A1:A3)",
+     "formula2Local": "=SUM(A1:A3)",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  },
+  "sum-dates-1": {
+   "dialog": "dialog: There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cells": {
+    "A3": {
+     "cell": null,
+     "text": "",
+     "code": "General",
+     "local": "General",
+     "formula": "",
+     "formulaLocal": "",
+     "formula2": "",
+     "formula2Local": "",
+     "hasArray": false
+    }
+   },
+   "columns": {
+    "A": {
+     "columnWidth": 8,
+     "points": 53,
+     "standard": true,
+     "saved": null
+    }
+   }
+  }
+ }
+}
