@@ -392,3 +392,14 @@ describe("the workbook's default font", () => {
       await expect(writeKept(data, { book: { ...opened.book, font } })).rejects.toThrow(new KeptRefusal('the default font changed, which writeKept does not write'))
   })
 })
+
+describe('the carriers outside writeKept', () => {
+  it('writeXlsx leaves them out of a new file; a name of the book stays', async () => {
+    const data = (await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }], names: [{ name: 'rate', ref: "'S'!$A$1" }] } }, { values: 'omit' })).data
+    const opened = await openKept(data)
+    expect(opened.book.names?.some((n) => n.name.startsWith('_xlcalc.keep.'))).toBe(true)
+    const file = await writeXlsx({ book: opened.book }, { values: 'omit' })
+    expect(file.issues).toEqual([])
+    expect((await readXlsx(file.data)).book.names).toEqual([{ name: 'rate', ref: "'S'!$A$1" }])
+  })
+})

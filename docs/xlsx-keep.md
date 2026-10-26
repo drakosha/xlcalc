@@ -58,7 +58,7 @@ What the file holds and the workbook does not is reported by `openKept`'s issues
 
 ## Structure operations
 
-Inserting or deleting rows and columns, moving a range, and renaming, moving or deleting a sheet move references in the parts the workbook does not hold: the series of a chart, the anchor of a picture, the source of a pivot table. `openKept` gives each such reference to the workbook as a hidden name with the reserved prefix `_xlcalc.keep.`, the carrier, and the engine moves these names as it moves every name, by Excel's rules. `writeKept` reads them back, writes each moved reference into its part, and does not write the carriers to the file. A host keeps them among the workbook's names (`setNames` replaces the whole list) and leaves hidden names out of its lists of names, as Excel's Name Manager does.
+Inserting or deleting rows and columns, moving a range, and renaming, moving or deleting a sheet move references in the parts the workbook does not hold: the series of a chart, the anchor of a picture, the source of a pivot table. `openKept` gives each such reference to the workbook as a hidden name with the reserved prefix `_xlcalc.keep.`, the carrier, and the engine moves these names as it moves every name, by Excel's rules. `writeKept` reads them back, writes each moved reference into its part, and does not write the carriers to the file; `writeXlsx` leaves them out too, so a workbook opened by `openKept` can also be saved as a new file. A host keeps them among the workbook's names (`setNames` replaces the whole list) and leaves hidden names out of its lists of names, as Excel's Name Manager does.
 
 What follows the cells this way:
 
