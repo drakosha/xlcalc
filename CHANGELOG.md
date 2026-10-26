@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.59.0 (2026-10-26)
+
+What a grid's Home tab needs from the library: Increase and Decrease Decimal, AutoSum, rows that follow their fonts, the workbook's default font, names refused as the workbook would drop them. Values and hashes of the synthetic workbook are as in 0.58.0.
+
+Added:
+
+- `stepDecimals(format, value, step, opts?)`, in `xlcalc/text` and the root: the number format Excel's Increase Decimal and Decrease Decimal give the active cell, by its format, value and column (a General number by the decimals its column shows; a code by a copy of its last decimal in each section; dates, times, fractions, text and accounting's zero stay). Comma Style and Accounting are the built-in formats 43 and 44 ([Number formats](docs/formats.md#increase-decimal-decrease-decimal-comma-style-and-accounting)).
+- `Session.getAutoSum(sheet, cell)`, in every kind of session: the range Excel's AutoSum offers and its `SUM` formula, in the workbook's locale too (`AutoSumGuess`): the numbers above, past the blanks and labels right above the cell, else to the left; a `SUM` or `SUBTOTAL` subtotal ends the run, and below a subtotal the subtotals alone are summed; a date is no number ([A viewport for a grid](docs/grid.md)).
+- `BookInput.font` (`{ name, size }`): the workbook's default font, its Normal style's. `readXlsx` reads one other than Calibri 11 from the file's first font, `writeXlsx` writes it, `openKept` keeps it and `writeKept` refuses a changed one. It is in `inputHash` when given. The engine still measures widths, fitted heights and `####` as for Calibri 11.
+- `EditResult.fitted` (`FittedRows`): the rows a call fitted, with their heights, so a host reads those rows again rather than the sheet.
+
+Changed:
+
+- `patchCells` that changes a style fits the rows of its cells as Excel keeps them fitted, in the same undo step: a larger font makes a row taller, a smaller one lower again; a row of its own height or hidden stays, and over entire columns or the whole sheet only the rows with cells are fitted. A number format a number no longer fits widens its column, as typing does (Excel widens it for Accounting or a decimal more).
+- The issue `defaultFont` of `readXlsx` says the font is kept and measured as Calibri 11.
+
+Fixed:
+
+- `setNames`, and the operation `setNames` of `applyChanges`, refuse with an `InputError` at the name a name the workbook would leave out, as `validateNames` finds it (`1abc`, `Q1`, `TRUE`, a duplicate, an unknown scope sheet, a formula that does not parse, a reference without its sheet), where they took it and dropped it; a name the workbook already has as it stands is taken back. `compute` and `createSession` still report such names in `diagnostics`.
+
 ## 0.58.0 (2026-10-25)
 
 `writeKept` follows structure operations; arrays larger than the sheet, iterations that never settled and text comparison as Excel. Values and hashes of the synthetic workbook are as in 0.57.0.
