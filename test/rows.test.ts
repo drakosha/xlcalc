@@ -155,3 +155,38 @@ describe('bestFit of a row in xlsx', () => {
     expect((await readXlsx(data)).book.sheets[0].rows).toEqual({ 1: { height: 32, bestFit: true }, 2: { height: 20 } })
   })
 })
+
+describe.each(['closures', 'eval'] as const)('patchCells fits the rows of a style, execution %s', (execution) => {
+  it('a larger font makes the row taller and a smaller one lower again, in the step of the patch, the rows told', () => {
+    const s = createSession(book(), { clock, execution })
+    const big = s.patchCells([{ sheet: 'S', range: 'C8:D9', set: { style: { font: { size: 24 } } } }])
+    expect([big.layout, big.fitted]).toEqual([['S'], [{ sheet: 'S', rows: '8:9', height: 31 }]])
+    expect(s.getLayout().sheets[0].rows).toMatchObject({ '8:9': { height: 31, bestFit: true } })
+    const small = s.patchCells([{ sheet: 'S', range: 'C8:D9', set: { style: { font: { size: 11 } } } }])
+    expect(small.fitted).toEqual([{ sheet: 'S', rows: '8:9', height: null }])
+    expect(s.getLayout().sheets[0].rows).toEqual(book().sheets[0].rows)
+    s.undo()
+    expect(s.getLayout().sheets[0].rows).toMatchObject({ '8:9': { height: 31, bestFit: true } })
+    s.undo()
+    expect(s.getBook()).toEqual(createSession(book(), { clock, execution }).getBook())
+  })
+  it('as AutoFit of the row: the other cells of the row count; a height set by hand, a hidden row and a patch without a style stay', () => {
+    const s = createSession(book(), { clock, execution })
+    // row 1 is not fitted to the 16 points of A1 yet (21): a patch beside it fits it; then 12 points change nothing, 18 make it 24
+    expect(s.patchCells([{ sheet: 'S', cell: 'D1', set: { style: { font: { size: 12 } } } }]).fitted).toEqual([{ sheet: 'S', rows: '1', height: 21 }])
+    expect(s.patchCells([{ sheet: 'S', cell: 'D1', set: { style: { font: { size: 14 } } } }]).fitted).toBeUndefined()
+    expect(s.patchCells([{ sheet: 'S', cell: 'D1', set: { style: { font: { size: 18 } } } }]).fitted).toEqual([{ sheet: 'S', rows: '1', height: 24 }])
+    expect(s.patchCells([{ sheet: 'S', range: 'D3:D4', set: { style: { font: { size: 40 } } } }]).fitted).toBeUndefined()
+    expect(s.patchCells([{ sheet: 'S', cell: 'D8', set: { numberFormat: '0.00', note: { text: 'n' } } }]).fitted).toBeUndefined()
+    expect(s.getLayout().sheets[0].rows).toEqual({ ...book().sheets[0].rows, 1: { height: 24, bestFit: true } })
+  })
+  it('over entire columns or the whole sheet, the rows with cells in them; entire rows by their style', () => {
+    const s = createSession(book(), { clock, execution })
+    const r = s.patchCells([{ sheet: 'S', range: 'B:B', set: { style: { font: { size: 30 } } } }])
+    // B2 is the one cell of column B
+    // three wrapped lines of A2 (44 points above the line) beside a line of 30 points, which needs 9 below
+    expect(r.fitted).toEqual([{ sheet: 'S', rows: '2', height: 53 }])
+    expect(Object.keys(s.getLayout().sheets[0].rows!)).toEqual(['2', '3', '4'])
+    expect(s.patchCells([{ sheet: 'S', range: '10:12', set: { style: { font: { size: 20 } } } }]).fitted).toEqual([{ sheet: 'S', rows: '10:12', height: 26 }])
+  })
+})
