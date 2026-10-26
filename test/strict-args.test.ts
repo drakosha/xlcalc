@@ -26,7 +26,7 @@ const book = (): BookInput => ({ styles: [{ font: { bold: true } }], sheets: [{ 
 const SESSION: Record<string, number> = {
   applyChanges: 2, previewChanges: 2, readCells: 2, findCells: 3, replaceInCells: 4, getDependents: 2, summarizeRanges: 2,
   setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setCellTexts: 2, previewCellTexts: 2, pasteText: 4, previewPasteText: 4, fillCellText: 4, previewFillCellText: 4, setNames: 2, setClock: 2, editStructure: 2, setStyles: 2, setLayout: 2,
-  getBook: 0, getLayout: 0, getUsedRange: 1, getEnd: 3, explain: 3, getCells: 2, copyText: 3, getValues: 3, getCell: 2, getViewport: 3, getCellIssue: 2, getValidation: 2, validateEntry: 3,
+  getBook: 0, getLayout: 0, getUsedRange: 1, getEnd: 3, getAutoSum: 2, explain: 3, getCells: 2, copyText: 3, getValues: 3, getCell: 2, getViewport: 3, getCellIssue: 2, getValidation: 2, validateEntry: 3,
   getResult: 0, getSnapshot: 0, getHash: 0, undo: 1, redo: 1, subscribe: 1, close: 0,
 }
 
@@ -117,10 +117,10 @@ describe('the functions of the package take no options they do not', () => {
       compute: 2, createSession: 2, createInlineCalc: 1, liveBook: 1, viewportOf: 4, editStructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
       toLocal: 3, toInvariant: 3, registerLocale: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, entryWidth: 2, fitColumns: 4, fitRows: 4, displayValue: 2, builtinFormatCode: 2, numberFormatCategory: 2, numberFormatChoices: 1, errorText: 2,
       scanReferences: 2, refAt: 3, callAt: 3, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, internStyle: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, functionSignature: 2,
-      parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2, outlineGroups: 1, nameAt: 3, columnWidthFromChars: 1, columnWidthToChars: 1, compareValues: 3, findMatcher: 2, findReplacer: 3, mergedArea: 2, valueComparator: 1, outlineEdit: 2,
+      parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2, outlineGroups: 1, nameAt: 3, columnWidthFromChars: 1, columnWidthToChars: 1, compareValues: 3, findMatcher: 2, findReplacer: 3, mergedArea: 2, valueComparator: 1, outlineEdit: 2, stepDecimals: 4,
     }],
     ['xlcalc/a1', a1, { parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2, outlineGroups: 1, mergedArea: 2, outlineEdit: 2 }],
-    ['xlcalc/text', text, { scanReferences: 2, refAt: 3, callAt: 3, nameAt: 3, quoteSheetIfNeeded: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, columnWidthFromChars: 1, columnWidthToChars: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, numberFormatCategory: 2, numberFormatChoices: 1, findMatcher: 2, findReplacer: 3, compareValues: 3, valueComparator: 1 }],
+    ['xlcalc/text', text, { scanReferences: 2, refAt: 3, callAt: 3, nameAt: 3, quoteSheetIfNeeded: 2, columnWidthFromPoints: 1, columnWidthToPoints: 1, columnWidthFromChars: 1, columnWidthToChars: 1, escapeColumn: 1, formatClipboard: 2, parseClipboard: 1, numberFormatCategory: 2, numberFormatChoices: 1, findMatcher: 2, findReplacer: 3, compareValues: 3, valueComparator: 1, stepDecimals: 4 }],
     ['xlcalc/entry', typedEntry, { parseEntry: 2, entryText: 2, needsApostrophe: 2 }],
     ['xlcalc/xlsx', xlsx, { readXlsx: 2, writeXlsx: 2, fromLegacy: 2 }],
     ['xlcalc/worker', worker, { createCalcPool: 1 }],

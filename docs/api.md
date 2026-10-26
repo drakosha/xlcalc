@@ -671,6 +671,20 @@ The date and time of a serial number in `opts.dateSystem`, in the form [`CellInp
 just the date for a whole number (`2026-01-31`), otherwise with the time to the millisecond (`2026-01-31T18:00`,
 `2026-01-31T18:00:30.5`). Serial 0 of the 1900 system is `1900-01-00` and 60 is `1900-02-29`, as Excel displays them.
 
+### <a id="xlcalc-stepdecimals"></a>`stepDecimals`
+
+```ts
+function stepDecimals(format: NumberFormat | undefined, value: CellValue, step: 1 | -1, opts?: { locale?: string | undefined; width?: number | undefined; }): NumberFormat | undefined
+```
+
+The number format Excel's Increase Decimal (`step` 1) or Decrease Decimal (-1) gives a cell of `format` (General
+without one) holding `value`, in `opts.locale` (a built-in format's code in it) and a column of `opts.width` (Excel's
+standard without one), as Excel for Mac does: a General cell of a number takes its decimals one more or one less
+(`0.00` for 1.5), all of them when General shows the number whole, else those it shows in the column; a code takes a
+decimal more or less in each section of digits, a copy of its last one (`#.##` to `#.###`); a date, a time, a
+fraction, text, accounting's zero (`"-"??`) stay. It returns `format` itself when the step changes nothing: no number
+in General, no decimal to take away. Excel applies the active cell's result to the whole selection.
+
 ### <a id="xlcalc-toinvariant"></a>`toInvariant`
 
 ```ts
@@ -769,21 +783,7 @@ Described under an entry above: [`cellAddress`](#xlcalc-celladdress), [`colLette
 
 ## xlcalc/text
 
-Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`scanReferences`](#xlcalc-scanreferences), [`valueComparator`](#xlcalc-valuecomparator).
-
-### <a id="xlcalctext-stepdecimals"></a>`stepDecimals`
-
-```ts
-function stepDecimals(format: NumberFormat | undefined, value: CellValue, step: 1 | -1, opts?: { locale?: string | undefined; width?: number | undefined; }): NumberFormat | undefined
-```
-
-The number format Excel's Increase Decimal (`step` 1) or Decrease Decimal (-1) gives a cell of `format` (General
-without one) holding `value`, in `opts.locale` (a built-in format's code in it) and a column of `opts.width` (Excel's
-standard without one), as Excel for Mac does: a General cell of a number takes its decimals one more or one less
-(`0.00` for 1.5), all of them when General shows the number whole, else those it shows in the column; a code takes a
-decimal more or less in each section of digits, a copy of its last one (`#.##` to `#.###`); a date, a time, a
-fraction, text, accounting's zero (`"-"??`) stay. It returns `format` itself when the step changes nothing: no number
-in General, no decimal to take away. Excel applies the active cell's result to the whole selection.
+Described under an entry above: [`callAt`](#xlcalc-callat), [`columnWidthFromChars`](#xlcalc-columnwidthfromchars), [`columnWidthFromPoints`](#xlcalc-columnwidthfrompoints), [`columnWidthToChars`](#xlcalc-columnwidthtochars), [`columnWidthToPoints`](#xlcalc-columnwidthtopoints), [`compareValues`](#xlcalc-comparevalues), [`DEFAULT_ROW_HEIGHT`](#xlcalc-default_row_height), [`escapeColumn`](#xlcalc-escapecolumn), [`findMatcher`](#xlcalc-findmatcher), [`findReplacer`](#xlcalc-findreplacer), [`formatClipboard`](#xlcalc-formatclipboard), [`FUNCTION_CATEGORIES`](#xlcalc-function_categories), [`MAX_OUTLINE`](#xlcalc-max_outline), [`MAX_ROW_HEIGHT`](#xlcalc-max_row_height), [`nameAt`](#xlcalc-nameat), [`numberFormatCategory`](#xlcalc-numberformatcategory), [`numberFormatChoices`](#xlcalc-numberformatchoices), [`parseClipboard`](#xlcalc-parseclipboard), [`quoteSheetIfNeeded`](#xlcalc-quotesheetifneeded), [`refAt`](#xlcalc-refat), [`scanReferences`](#xlcalc-scanreferences), [`stepDecimals`](#xlcalc-stepdecimals), [`valueComparator`](#xlcalc-valuecomparator).
 
 ## xlcalc/entry
 

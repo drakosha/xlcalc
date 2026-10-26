@@ -66,7 +66,7 @@ describe('built package', () => {
     expect(out.contract).toEqual(['MAX_FORMULA_DEPTH', 'MAX_FORMULA_LENGTH'])
     expect(out.internal).toEqual(['function', 'function', 'function'])
     // the root's functions of formula text and the clipboard's are the subpath's own
-    expect(out.text).toEqual({ keys: ['DEFAULT_ROW_HEIGHT', 'FUNCTION_CATEGORIES', 'MAX_OUTLINE', 'MAX_ROW_HEIGHT', 'callAt', 'columnWidthFromChars', 'columnWidthFromPoints', 'columnWidthToChars', 'columnWidthToPoints', 'compareValues', 'escapeColumn', 'findMatcher', 'findReplacer', 'formatClipboard', 'nameAt', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences', 'valueComparator'], same: true })
+    expect(out.text).toEqual({ keys: ['DEFAULT_ROW_HEIGHT', 'FUNCTION_CATEGORIES', 'MAX_OUTLINE', 'MAX_ROW_HEIGHT', 'callAt', 'columnWidthFromChars', 'columnWidthFromPoints', 'columnWidthToChars', 'columnWidthToPoints', 'compareValues', 'escapeColumn', 'findMatcher', 'findReplacer', 'formatClipboard', 'nameAt', 'numberFormatCategory', 'numberFormatChoices', 'parseClipboard', 'quoteSheetIfNeeded', 'refAt', 'scanReferences', 'stepDecimals', 'valueComparator'], same: true })
     expect(out.closed).toEqual(Array(3).fill('ERR_PACKAGE_PATH_NOT_EXPORTED'))
   }, 60_000)
 
