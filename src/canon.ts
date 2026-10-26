@@ -184,6 +184,7 @@ export function* inputHashSteps(book: BookInput, sorted?: Map<object, string[]>)
   // a hidden name's flag after its ref, so a book without hidden names hashes as before
   for (const n of names) h.update(`N ${stableJson(n.hidden ? [n.scope ?? null, n.name, n.ref, true] : [n.scope ?? null, n.name, n.ref])}\n`)
   if (book.styles?.length) h.update(`Y ${stableJson(book.styles)}\n`)
+  if (book.font) h.update(`F ${stableJson(book.font)}\n`)
   const tag = hashedLocale(book.locale)
   if (tag !== undefined) h.update(`L ${JSON.stringify(tag)}\n`)
   if (book.dateSystem === 1904) h.update('D 1904\n')

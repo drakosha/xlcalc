@@ -142,7 +142,7 @@ Excel 365 stores `#SPILL!` and `#CALC!` as `#VALUE!` with a rich value that name
 
 ### Styles and number formats
 
-Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders and alignment. Font fields equal to the workbook's default font are omitted, since the model takes them from the default.
+Each cell format in the file becomes a style in the workbook's table and a number format. Equal styles are shared. A style holds a font, a solid fill, borders and alignment. Font fields equal to the workbook's default font are omitted, since the model takes them from the default. The default font is the file's first font (the Normal style's); one other than Calibri 11 is read into `BookInput.font` and reported (`defaultFont`), since the engine measures widths, fitted heights and `####` as for Calibri 11 whatever the font.
 
 Colors become `#RRGGBB`. A theme color with a tint is calculated as Excel displays it, and the legacy palette or the workbook's own palette resolves indexed colors.
 
@@ -278,7 +278,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `name` | built-in names, names of a sheet that was left out; a linked workbook's name for a sheet it does not have |
 | `calculation` | manual mode, automatic except for data tables, precision as displayed, an iteration count or change out of range |
 | `style` | pattern and gradient fills, diagonal borders, rotation, shrink to fit, subscript and superscript, protection |
-| `defaultFont` | a default font other than Calibri 11 |
+| `defaultFont` | a default font other than Calibri 11, kept in `font` and measured as Calibri 11 |
 | `defaultWidth` | a default column width other than 8 digits |
 | `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
 | `hidden` | a file whose worksheets are all hidden (next to chart sheets): its first worksheet is read as visible |
@@ -368,7 +368,7 @@ Each table is written as a table part, as Excel writes one: its name, range, hea
 
 ### Styles, columns and rows
 
-Styles, number formats, widths, heights, hidden rows and columns, outline levels and merged areas are written as the workbook has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits. Every cell is written with the formatting it displays, its row's or column's where it has none of its own, as Excel writes it ([The cells of formatted rows and columns](#the-cells-of-formatted-rows-and-columns)).
+Styles, number formats, widths, heights, hidden rows and columns, outline levels and merged areas are written as the workbook has them. The default font is the workbook's `font`, Calibri 11 without one, and a column without a width gets Excel's standard width of 8 digits. Every cell is written with the formatting it displays, its row's or column's where it has none of its own, as Excel writes it ([The cells of formatted rows and columns](#the-cells-of-formatted-rows-and-columns)).
 
 The cells in a sheet's `looks` are written as Excel stores them, each as a cell with the cell format of the full formatting it displays (`<c r="B2" s="3"/>`), row by row together with the entries, without an object per cell. Cell formats are numbered in the order cells appear, with the `looks` cells among the entries as in a file that was read, so a workbook read from a file and written again produces the same file the reader would have produced when such cells were entries. A sheet without `looks` is written as given, its entries in their order.
 
@@ -624,7 +624,7 @@ Excel 16.113 for Mac and Excel for Windows opened every file the writer wrote wi
 - In a few places Excel calculates a legacy formula differently from the dynamic formula it displays for it. The engine returns the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
 - An AutoFilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row satisfies, and Excel's Reapply then shows every row.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
-- The model has no default font or default column width of its own. The reader reports a file with different ones, and the writer always writes Calibri 11 and 8 digits.
+- The model has no default column width of its own: the reader reports a file with another one, and the writer always writes 8 digits. The default font is kept (`font`), but the engine measures as for Calibri 11, so a column's `####`, `entryWidth` and AutoFit can differ from Excel's in a workbook of another default font.
 - Excel treats the part of a hyperlink's address after `#` as its location, so `https://example.com/page#top` comes back as the address `https://example.com/page` and the location `top`. It is the same link.
 - Excel saves a space in a hyperlink's address as `%20` and displays it as a space. The reader returns the address as the file stores it.
 - Excel for Windows saves a relative hyperlink address (`other.xlsx`) relative to the folder it saves the file to.

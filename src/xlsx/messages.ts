@@ -52,7 +52,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   pivotTables: () => 'pivot tables are not in the model: their cells are read as stored',
   macros: () => 'macros (a VBA project) are not in the model',
   connections: () => 'data connections and queries are not in the model',
-  defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is read as Calibri 11, the model's default`,
+  defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is kept, and measured as Calibri 11`,
   sheetKind: () => 'a chart, dialog or macro sheet is left out',
   sheetPartMissing: () => 'a sheet whose part is missing is left out',
   sheetNameRepaired: (p) => `the sheet name ${JSON.stringify(p.name)} is not one Excel takes: the sheet is read as ${JSON.stringify(p.sheet)}`,

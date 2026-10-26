@@ -89,6 +89,7 @@ The carriers' names follow the file's parts in order, so a workbook takes `write
 - a sheet deleted that a pivot chart names, or a table or a name deleted that a pivot cache takes its data from;
 - a sheet deleted with parts of its own the workbook does not have (a pivot table, a slicer);
 - the links to other workbooks changed;
+- the workbook's default font (`font`) changed, which every cell without a font of its own would show;
 - a carrier missing: a workbook not opened by `openKept`, or whose hidden names were dropped;
 - a file that names a sheet as Excel would not, which the reader read under another name, or a Strict Open XML file, once anything changed.
 

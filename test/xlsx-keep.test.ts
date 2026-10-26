@@ -380,3 +380,15 @@ describe('openKept and writeKept take what readXlsx and writeXlsx take', () => {
     expect(a.cached).toEqual(b.cached)
   })
 })
+
+describe("the workbook's default font", () => {
+  it('is kept from the file and written as its bytes; another one is refused', async () => {
+    const book: BookInput = { font: { name: 'Arial', size: 10 }, styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, style: 0 } } }] }
+    const data = (await writeXlsx({ book }, { values: 'omit' })).data
+    const opened = await openKept(data)
+    expect(opened.book.font).toEqual(book.font)
+    expect(Buffer.from((await writeKept(data, { book: opened.book })).data).equals(Buffer.from(data))).toBe(true)
+    for (const font of [{ name: 'Arial', size: 12 }, undefined])
+      await expect(writeKept(data, { book: { ...opened.book, font } })).rejects.toThrow(new KeptRefusal('the default font changed, which writeKept does not write'))
+  })
+})

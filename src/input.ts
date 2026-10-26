@@ -200,8 +200,14 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  */
 export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<object, string[]>): BookInput {
   const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks', 'activeSheet'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'externalBooks', 'activeSheet', 'font'])
   if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
+  if (book.font !== undefined) {
+    const f = object(book.font, `${path}.font`, "a font such as { name: 'Arial', size: 10 }")
+    onlyKeys(f, `${path}.font`, ['name', 'size'])
+    if (checkString(f.name, `${path}.font.name`) === '') throw new InputError(`${path}.font.name`, 'expected the name of a font, got an empty string')
+    checkNumber(f.size, `${path}.font.size`, 1, 409)
+  }
   if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (book.iteration !== undefined) {
     const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')

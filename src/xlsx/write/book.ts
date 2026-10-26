@@ -152,7 +152,7 @@ export function bookWriting(book: BookInput): BookWriting {
 export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
   const { book, cells, mode, unasked, locale } = writeArgs(snapshot, opts)
   const issues = new Issues()
-  const styles = new StyleWriter(book.styles)
+  const styles = new StyleWriter(book.styles, book.font)
   const strings = new Map<string, number>()
   let refs = 0
   const string = (s: string) => {
