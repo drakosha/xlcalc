@@ -134,8 +134,10 @@ describe("Excel's rules for names where it was measured (tables/names-more-held,
     expect(r.sheets[0].cells.B1.value).toBe(2)
     expect(compute({ ...ru, locale: 'en-US' }, { display: false }).diagnostics).toEqual([])
     const s = createSession(ru)
-    s.setNames([...names, { name: 'Ложь', ref: '3' }])
-    expect(nameIssues(s.getResult()).map((x) => x.name)).toEqual(['ИСТИНА', 'ложь', 'Ложь'])
+    // the names it was opened with come back as they stand; a new one it would drop is refused
+    s.setNames([...names, { name: 'more', ref: '3' }])
+    expect(() => s.setNames([...names, { name: 'Ложь', ref: '3' }])).toThrow(new InputError('names[3].name', "Ложь is a boolean in the workbook's locale"))
+    expect(nameIssues(s.getResult()).map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
     s.close()
     const file = await writeXlsx({ book: ru }, { values: 'omit' })
     expect(file.issues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])

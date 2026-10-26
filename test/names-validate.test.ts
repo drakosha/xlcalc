@@ -103,3 +103,42 @@ describe('validateNames', () => {
     expect(validateNames([], { sheets: [] })).toEqual([])
   })
 })
+
+describe('setNames refuses a name the workbook would drop', () => {
+  it('as validateNames finds it, at the name, in setNames and in an operation of applyChanges, the book unchanged', () => {
+    for (const locale of [undefined, 'ru-RU']) {
+      const s = createSession({ ...(locale ? { locale } : {}), sheets: [{ name: 'Data', cells: { A1: { value: 1 } } }] }, { display: false })
+      try {
+        const names: NameInput[] = [{ name: 'ok', ref: "'Data'!A1" }, ...['1abc', 'Q1', 'TRUE', ...(locale ? ['ЛОЖЬ'] : [])].map((name) => ({ name, ref: "'Data'!A1" }))]
+        for (let i = 1; i < names.length; i++) {
+          const given = [names[0], names[i]]
+          const [issue] = validateNames(given, { sheets: ['Data'], ...(locale ? { locale } : {}) })
+          expect(() => s.setNames(given)).toThrow(new InputError('names[1].name', issue.reason))
+          expect(() => s.applyChanges([{ op: 'setNames', names: given }])).toThrow(new InputError('operations[0].names[1].name', issue.reason))
+        }
+        for (const [given, path] of [
+          [[{ name: 'x', ref: "'Data'!A1" }, { name: 'X', ref: '2' }], 'names[1].name'],
+          [[{ name: 'x', ref: "'Data'!A1", scope: 'Nowhere' }], 'names[0].name'],
+          [[{ name: 'x', ref: 'A1' }], 'names[0].name'],
+          [[{ name: 'x', ref: 'SUM(' }], 'names[0].name'],
+        ] as [NameInput[], string][])
+          expect(() => s.setNames(given), JSON.stringify(given)).toThrow(path)
+        expect(s.getBook().names ?? []).toEqual([])
+        // a name kept with an error is taken
+        s.setNames([{ name: 'udf', ref: 'NOSUCH(1)' }])
+        expect(s.getBook().names).toEqual([{ name: 'udf', ref: 'NOSUCH(1)' }])
+      } finally { s.close() }
+    }
+  })
+
+  it('takes back a name the book was opened with as it stands, refuses it changed', () => {
+    const had: NameInput[] = [{ name: 'Q1', ref: "'Data'!A1", hidden: true }, { name: 'dup', ref: '1' }, { name: 'DUP', ref: '2' }]
+    const s = createSession({ sheets: [{ name: 'Data', cells: {} }], names: had }, { display: false })
+    try {
+      s.setNames([...had, { name: 'more', ref: '3' }])
+      expect(s.getBook().names).toHaveLength(4)
+      expect(() => s.setNames([{ ...had[0], ref: "'Data'!A2" }])).toThrow('names[0].name')
+      expect(() => s.setNames([had[1], { name: 'Dup', ref: '2' }])).toThrow('names[1].name')
+    } finally { s.close() }
+  })
+})

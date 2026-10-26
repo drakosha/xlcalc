@@ -81,6 +81,8 @@ A name the workbook cannot have is left out: one Excel would not accept, a secon
 
 A result's `diagnostics` list both, with kind `name`, and `dropped` tells them apart. `validateNames(names, { sheets, tables, locale })` returns the same list without the workbook, using the same check, so a host can reject a name before storing it: whether a name is left out depends only on the names, the sheet names and the locale.
 
+A session's `setNames` (and the operation `setNames` of `applyChanges`) refuses a name the workbook would leave out with an `InputError` at that name (`names[1].name`), whose message gives `validateNames`' reason, and changes nothing. A name the workbook already has as it stands is taken back: `setNames` replaces the whole list, so a host sends back the names the workbook was opened with, hidden ones among them, unchanged. `compute` and `createSession` still take such a name and report it in `diagnostics`.
+
 ## References without `$`
 
 A reference without `$` is relative to A1. When used in a cell, it moves by that cell's offset from A1:

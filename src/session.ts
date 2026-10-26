@@ -31,6 +31,7 @@ import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkMergesOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
 import { typedHeights, wrapTyped } from './session/wrap.js'
+import { checkNamesKept } from './session/names.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { subscribers } from './session/subscribers.js'
@@ -734,6 +735,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       names = checkNames(names, 'names')
       // tables and names share one namespace
       checkTables({ ...old.input, names }, 'book')
+      checkNamesKept(old, names, 'names')
       // names change the whole graph: the book is rebuilt, changes are collected over all cells (none moved)
       const book = { ...old.input, names }
       const [next, out, diff] = yield* rebuild(old, book, [], false, history.on)
