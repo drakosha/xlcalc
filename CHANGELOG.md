@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.59.1 (2026-10-26)
+
+Fixed:
+
+- `writeXlsx` leaves out the hidden names `openKept` gives the references of the parts the workbook does not hold (`_xlcalc.keep.*`), so a workbook opened by `openKept` can be saved as a new file; they were written into it. `writeKept` is unchanged.
+
 ## 0.59.0 (2026-10-26)
 
 What a grid's Home tab needs from the library: Increase and Decrease Decimal, AutoSum, rows that follow their fonts, the workbook's default font, names refused as the workbook would drop them. Values and hashes of the synthetic workbook are as in 0.58.0.
