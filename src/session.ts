@@ -17,7 +17,7 @@ import { readQuery, findQuery, dependentsQuery, summaryQuery } from './session/q
 import { tracker } from './evaluate.js'
 import { toCellValue } from './engine.js'
 import { outCell } from './result.js'
-import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { AutoSumGuess, BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellValidationRefusal, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EndDirection, EditResult, EntryCheck, Explanation, ExplainOptions, FillTextOptions, FillTextPreview, FillTextResult, LayoutEdit, NameInput, NumberFormat, PasteTextPreview, PasteTextResult, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, sheetIndexOf, type EngineOptions, type EngineState } from './engine.js'
 import { journaled, priorOf } from './held.js'
 import { CalcError, allotWrites, limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
@@ -38,6 +38,7 @@ import { subscribers } from './session/subscribers.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
 import { checkDirection, endOf } from './session/end.js'
+import { autoSumOf } from './session/auto-sum.js'
 import { textsChanged } from './session/search.js'
 import { replacedTexts } from './session/replace.js'
 import { snapshotBook } from './session/snapshot.js'
@@ -116,6 +117,7 @@ export interface SessionSteps {
   getLayout(): BookLayout
   getUsedRange(sheet: string): Steps<SheetExtent>
   getEnd(sheet: string, cell: string, direction: EndDirection): Steps<string>
+  getAutoSum(sheet: string, cell: string): Steps<AutoSumGuess>
   undo(opts?: EditOptions): Steps<UndoResult | null>
   redo(opts?: EditOptions): Steps<UndoResult | null>
   readonly history: SessionHistory
@@ -830,6 +832,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const [i, r, c] = at(s, sheet, cell)
       return formatAddress(...endOf(s, i, r, c, checkDirection(direction)))
     },
+    *getAutoSum(sheet: string, cell: string) {
+      const s = yield* ready()
+      return autoSumOf(s, ...at(s, sheet, cell))
+    },
     *explain(sheet: string, cell: string, eo?: ExplainOptions) {
       const s = yield* ready()
       const [i, row, col] = at(s, sheet, cell)
@@ -955,6 +961,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     getLayout: () => core.getLayout(),
     getUsedRange: (sheet) => now(() => core.getUsedRange(sheet)),
     getEnd: (sheet, cell, direction) => now(() => core.getEnd(sheet, cell, direction)),
+    getAutoSum: (sheet, cell) => now(() => core.getAutoSum(sheet, cell)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     getCells: (sheet, range) => now(() => core.getCells(sheet, range)),
     copyText: (sheet, range, o) => now(() => core.copyText(sheet, range, o)),

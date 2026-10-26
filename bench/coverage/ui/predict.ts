@@ -7,12 +7,13 @@
  * and the widths of their columns. An edit in place (F2): `pasteText` of its text, which reads it with no percent
  * editor, and the cells after it. The ribbon's box: `numberFormatCategory` of each cell's format; an item of its list
  * applied: the item of `numberFormatChoices`, its name, the format it applies and the box's category after. Point mode:
- * the sheet component's model (`point-model.ts`), the formula bar after each step and the cells after.
+ * the sheet component's model (`point-model.ts`), the formula bar after each step and the cells after. The ribbon's
+ * buttons (`press`): `pressInEngine`, the cells after.
  */
 import { setModule, writePrediction } from '../stored.js'
 import { createSession, type CellInput, type CellValidationAlert, type CellValue } from '../../../src/index.js'
 import { TAGS } from '../locales.js'
-import { entriesOf, readCells, readColumns, ribbonOf, uiBook, windowOver, type UiCase, type UiSet } from './cases.js'
+import { entriesOf, pressInEngine, readCells, readColumns, ribbonOf, uiBook, windowOver, type UiCase, type UiSet } from './cases.js'
 import { pointPrediction } from './point-model.js'
 
 const set = process.argv[2]
@@ -37,6 +38,10 @@ function predict(c: UiCase, tag: string) {
     const after = () => {
       const book = s.getBook().sheets[0]
       return Object.fromEntries(cells.map((a) => [a, { input: book.cells[a] ?? null, value: s.getCell('S', a)?.value ?? null }])) as Record<string, { input: CellInput | null; value: CellValue }>
+    }
+    if (c.act.do === 'press') {
+      pressInEngine(s, c, tag)
+      return { after: after() }
     }
     if (c.act.do === 'edit') {
       const r = s.pasteText('S', c.act.at, c.act.text)

@@ -10,7 +10,8 @@
  */
 import type { BookInput, CellInput, CellValue, ColumnInput, DataValidation, NumberFormat } from '../../../src/contract.js'
 import { formatAddress, indexToCol, parseAddress } from '../../../src/model.js'
-import { numberFormatCategory, numberFormatChoices } from '../../../src/text.js'
+import { numberFormatCategory, numberFormatChoices, stepDecimals } from '../../../src/text.js'
+import type { Session } from '../../../src/contract.js'
 import { groupCollector } from '../collect.js'
 
 export type UiAction =
@@ -37,6 +38,14 @@ export type UiAction =
    * step in turn, a text typed or a key pressed, the formula bar read after each; the windows Excel shows are answered.
    */
   | { do: 'point'; at: string; steps: PointStep[] }
+  /**
+   * Buttons of the ribbon's Home tab pressed in turn (through Accessibility, by their names) with `range` selected, its
+   * first cell the active one; with `enter`, Return after them (AutoSum on one cell opens its editing).
+   */
+  | { do: 'press'; range: string; buttons: PressButton[]; enter?: true }
+
+/** The ribbon's buttons a case of `press` takes, by their names in Excel for Mac in en-US. */
+export type PressButton = 'Increase Decimal' | 'Decrease Decimal' | 'Comma Style' | 'Accounting Number Format' | 'AutoSum'
 
 /** A step of a case of `point`: a text typed, or a key pressed with the modifiers held (Command on the Mac for Excel's Control). */
 export type PointStep = { type: string } | { key: PointKey; shift?: true; cmd?: true }
@@ -125,11 +134,12 @@ export function cellsOf(range: string): string[] {
 }
 
 /** The actions Excel takes only on the Mac's screen: the keyboard's fill, edit and pick, the ribbon's box and list. */
-export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'edit' || act.do === 'pick' || act.do === 'ribbon' || act.do === 'choose' || act.do === 'point'
+export const macOnly = (act: UiAction): boolean => act.do === 'fill' || act.do === 'edit' || act.do === 'pick' || act.do === 'ribbon' || act.do === 'choose' || act.do === 'point' || act.do === 'press'
 
 /** The cells an action selects in turn without writing: the formula bar's and the ribbon's; a choice's cells by its picks. */
 export function selectedOf(act: UiAction): string[] {
   if (act.do === 'bars' || act.do === 'ribbon') return act.cells
+  if (act.do === 'press') return cellsOf(act.range)
   return act.do === 'choose' ? act.picks.map(([cell]) => cell) : []
 }
 
@@ -187,4 +197,24 @@ export function typedThenRight(texts: readonly string[]): UiCase[] {
   const cells: Record<string, CellInput> = { A1: { value: 2 }, D3: { value: 10 }, D4: { value: 20 } }
   for (const text of texts) add('typed', { cells, act: { do: 'point', at: 'C3', steps: [{ type: text }, { key: 'right' }, { key: 'return' }] }, read: ['C4'] })
   return out
+}
+
+/**
+ * A case of `press` taken by the engine, as a host takes the buttons: Increase and Decrease Decimal by `stepDecimals` of
+ * the active cell (its format, value and column), its result set on the whole range; Comma Style and Accounting Number
+ * Format as the built-in formats 43 and 44; AutoSum by `getAutoSum`'s formula entered into the active cell.
+ */
+export function pressInEngine(s: Session, c: UiCase, tag: string): void {
+  if (c.act.do !== 'press') throw new Error(`${c.id} is no case of press`)
+  const range = c.act.range
+  const [at] = cellsOf(range)
+  const column = /^[A-Z]+/.exec(at)![0]
+  for (const b of c.act.buttons) {
+    const cell = s.getCell('S', at)
+    const own = s.getBook().sheets[0].cells[at]
+    const format: NumberFormat | undefined =
+      b === 'Comma Style' ? 43 : b === 'Accounting Number Format' ? 44 : b === 'AutoSum' ? undefined : stepDecimals(own?.numberFormat, cell?.value ?? null, b === 'Increase Decimal' ? 1 : -1, { locale: tag, width: c.columns?.[column]?.width })
+    if (b === 'AutoSum') s.setCells([{ sheet: 'S', cell: at, input: { formula: s.getAutoSum('S', at).formula } }])
+    else s.patchCells([{ sheet: 'S', range, set: { numberFormat: format } }])
+  }
 }

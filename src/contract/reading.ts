@@ -347,6 +347,16 @@ export interface CellValidation {
   list?: { value: CellValue; text: string; input: CellInput | null }[] | { error: ErrorCode }
 }
 
+/** Excel's AutoSum at a cell (`Session.getAutoSum`): the range it offers to sum and the formula it enters. */
+export interface AutoSumGuess {
+  /** The numbers right above the cell, else right beside it on the left (`B2:B9`, `B2` for one); null for none. */
+  range: string | null
+  /** `SUM` of the range, without `=` (`SUM(B2:B9)`, `SUM()` without a range). */
+  formula: string
+  /** The formula as Excel shows it in the workbook's locale (`СУММ(B2:B9)`). */
+  formulaLocal: string
+}
+
 /** Where a sheet's cells end (`Session.getUsedRange`): all content lies within its first `rows` rows and `columns` columns; 0 and 0 for an empty sheet. */
 export interface SheetExtent {
   rows: number

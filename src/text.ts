@@ -8,9 +8,10 @@
  * as an object (`ruRU` of `xlcalc/locales/ru-RU`). Each function refuses options it does not take (`strict-args.ts`).
  */
 import { checkCellValue } from './input.js'
-import { InputError } from './input-error.js'
+import { InputError, what } from './input-error.js'
 import { array, checkBoolean, checkNumber, checkString, object, onlyOptions } from './input/basic.js'
-import type { CellValue, CompareValuesOptions, FindTextOptions } from './contract.js'
+import type { CellValue, CompareValuesOptions, FindTextOptions, NumberFormat } from './contract.js'
+import { checkFormat } from './input/styles.js'
 import { clipboardRows } from './entry/clipboard.js'
 import { folded, matcher, replacer } from './find-text.js'
 import { sameType, sortOrder } from './sort-order.js'
@@ -19,6 +20,7 @@ import { optionalLocale } from './locale/load.js'
 import { charsOfPoints, columnPoints, pointsOfChars, widthOf } from './column-width.js'
 import * as call from './call-at.js'
 import * as category from './numfmt/category.js'
+import * as decimals from './numfmt/decimals.js'
 import * as point from './point.js'
 import * as scan from './scan.js'
 import { strict } from './strict-args.js'
@@ -34,6 +36,23 @@ export const callAt = /* @__PURE__ */ strict(call.callAt)
 export const nameAt = /* @__PURE__ */ strict(call.nameAt)
 export const numberFormatCategory = /* @__PURE__ */ strict(category.numberFormatCategory)
 export const numberFormatChoices = /* @__PURE__ */ strict(category.numberFormatChoices)
+
+/**
+ * The number format Excel's Increase Decimal (`step` 1) or Decrease Decimal (-1) gives a cell of `format` (General
+ * without one) holding `value`, in `opts.locale` (a built-in format's code in it) and a column of `opts.width` (Excel's
+ * standard without one): a General cell takes the decimals its number shows there, one more or one less (`0.00` for
+ * 1.5); a code takes a decimal more or less in each section of digits; a date, a time, a fraction or text stays. Excel
+ * applies the active cell's result to the whole selection.
+ */
+export const stepDecimals = /* @__PURE__ */ strict(function stepDecimals(format: NumberFormat | undefined, value: CellValue, step: 1 | -1, opts?: { locale?: string; width?: number }): NumberFormat {
+  if (format !== undefined) checkFormat(format, 'format')
+  if (step !== 1 && step !== -1) throw new InputError('step', `expected 1 or -1, got ${what(step)}`)
+  const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU', width: 12 }")
+  onlyOptions(o, 'opts', ['locale', 'width'])
+  optionalLocale(o.locale, 'opts.locale')
+  if (o.width !== undefined) checkNumber(o.width, 'opts.width', 0, 255)
+  return decimals.stepDecimals(format, checkCellValue(value, 'value'), step, o.locale as string | undefined, o.width as number | undefined)
+})
 
 /**
  * A column's name in a structured reference as Excel writes it: `'` before each `[`, `]`, `#` and `'` in it, and before

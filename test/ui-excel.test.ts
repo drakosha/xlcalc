@@ -20,7 +20,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredUi } from '../bench/coverage/ui.js'
-import { clipboardText, entriesOf, macOnly, readCells, readColumns, ribbonOf, uiBook, windowOver, type RibbonCell, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
+import { clipboardText, entriesOf, macOnly, pressInEngine, readCells, readColumns, ribbonOf, uiBook, windowOver, type RibbonCell, type UiAnswer, type UiCase, type UiSet } from '../bench/coverage/ui/cases.js'
 import { formulaBar } from '../bench/coverage/entry/cases.js'
 import { formatKey, held } from '../bench/coverage/entry/compare.js'
 import { numberFormatOf } from '../bench/coverage/stored.js'
@@ -56,11 +56,11 @@ function excelOutcome(c: UiCase, a: UiAnswer, tag: string): Outcome {
     cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(a.cells[x].cell, tag)])),
     widths: Object.fromEntries(readColumns(c).map((k) => [k, a.columns[k].saved?.bestFit ? a.columns[k].saved.width : null])),
     // a window comes up for the entry of the active cell, the action's first; an edit's is read with its bar
-    windows: (a.dialog ?? (c.act.do === 'edit' ? a.cells[c.act.at].bar?.dialog : undefined)) ? [entriesOf(c.act)[0].cell] : [],
+    windows: (a.dialog ?? (c.act.do === 'edit' ? a.cells[c.act.at].bar?.dialog : undefined)) ? [entriesOf(c.act)[0]?.cell ?? readCells(c)[0]] : [],
   }
 }
 
-/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`, an edit by `setCellText` in place, a pick by its item's `input` from `getValidation`; a stop alert's call taken back, as the host does. */
+/** The action on the day of the run: a paste by `pasteText`, a fill by `fillCellText`, an edit by `setCellText` in place, a pick by its item's `input` from `getValidation`, the ribbon's buttons by `pressInEngine`; a stop alert's call taken back, as the host does. */
 function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
   const s = createSession(uiBook(c, tag), { clock: { now: `${date}T12:00:00Z`, seed: 1 } })
   try {
@@ -70,6 +70,11 @@ function engineOutcome(c: UiCase, tag: string, date: string): Outcome {
       const list = s.getValidation('S', act.at)?.list
       if (!Array.isArray(list)) throw new Error(`${c.id}: no list at ${act.at}`)
       s.setCells([{ sheet: 'S', cell: act.at, input: list[act.item - 1].input }])
+      const cells = s.getBook().sheets[0].cells
+      return { cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(cells[x], tag)])), widths: Object.fromEntries(readColumns(c).map((k) => [k, null])), windows: [] }
+    }
+    if (act.do === 'press') {
+      pressInEngine(s, c, tag)
       const cells = s.getBook().sheets[0].cells
       return { cells: Object.fromEntries(readCells(c).map((x) => [x, cellKey(cells[x], tag)])), widths: Object.fromEntries(readColumns(c).map((k) => [k, null])), windows: [] }
     }
