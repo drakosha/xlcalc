@@ -20,6 +20,8 @@ export interface ReadFormula {
   /** The syntax tree, when the engine parses the formula. */
   ast?: Ast
   found: Found[]
+  /** The user-defined functions it calls, as `fromFile` finds them. */
+  userFunctions?: string[]
 }
 
 /** How a formula of the file is read. */
@@ -32,9 +34,15 @@ export interface FormulaOptions {
   rename?: (formula: string) => string
 }
 
-/** Reports what the engine cannot take of a formula read, at `where`: a shared formula's copies report their master's. */
+/**
+ * Reports what the engine cannot take of a formula read, at `where`: a shared formula's copies report their master's;
+ * each user-defined function on its own (`XlsxIssue.fn`).
+ */
 export function reportFormula(f: ReadFormula, issues: Issues, where: Where): void {
-  for (const x of f.found) issues.add(...FOUND[x], where)
+  for (const x of f.found) {
+    if (x === 'userFunction') for (const fn of f.userFunctions ?? [undefined]) issues.add(...FOUND[x], { ...where, fn })
+    else issues.add(...FOUND[x], where)
+  }
   if (!f.ast && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', { key: 'formulaUnparsed' }, where)
 }
 

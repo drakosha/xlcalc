@@ -102,6 +102,13 @@ describe('formula parsing', () => {
     expect(code('BALANCE("x")')).toBe('unknown_function')
   })
 
+  it('a failure names its function, upper-case, for an unknown function and an unsupported call alone', () => {
+    const c = { ...ctx, externalFunctions: ['BALANCE'] }
+    expect(validate('1+balance(A1)', c)).toMatchObject({ code: 'unsupported', fn: 'BALANCE', at: 2 })
+    expect(validate('SUM(1)+nope(2)', ctx)).toMatchObject({ code: 'unknown_function', fn: 'NOPE' })
+    for (const f of ['SUM(1,', 'ROUND(1)', 'nope_name*2', 'Нет!A1']) expect(validate(f, ctx)).not.toHaveProperty('fn')
+  })
+
   it('names: letters of any script, not an address, not R1C1, not TRUE', () => {
     for (const ok of ['data_amt', 'Сумма']) expect(validateName(ok).ok).toBe(true)
     for (const bad of ['Q1', 'R1C1', 'R', 'TRUE', '1x', 'a b']) expect(validateName(bad).ok).toBe(false)

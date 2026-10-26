@@ -35,7 +35,7 @@ const spelling = (state: EngineState, named: Named): PrintOptions => ({
 function checked(state: EngineState, enclosing: string | undefined, text: string, toks: Tok[] | null, named: Named): { ok: true; ast: Ast } | { ok: false; invalid: Invalid } {
   const known = (name: string, sheet: string | undefined) => !!named(name, sheet)
   const r = validateTokens(text, toks, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), externalBooks: state.input.externalBooks ?? [], ...(enclosing ? { table: enclosing } : {}) })
-  return r.ok ? r : { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
+  return r.ok ? r : { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code), ...(r.fn !== undefined ? { fn: r.fn } : {}) } }
 }
 
 /**

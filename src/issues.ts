@@ -38,6 +38,7 @@ export interface Issue {
   reason: string
   check?: CheckCode
   at?: number
+  fn?: string
 }
 
 // the cell of a sheet `structure/geometry.ts` already names
@@ -82,7 +83,7 @@ export function issues(state: EngineState): Issue[] {
   const out: Issue[] = []
   for (const [k, inv] of state.invalid) {
     const [s, r, c] = k.split(':').map(Number)
-    out.push({ s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at })
+    out.push({ s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at, ...(inv.fn !== undefined ? { fn: inv.fn } : {}) })
   }
   for (const f of state.formulas) {
     if (!f) continue
@@ -106,7 +107,7 @@ export function issues(state: EngineState): Issue[] {
 /** The issue of one cell, as `issues` lists it (a cell of a large spill's unstored rest too); null for a cell without an error. */
 function cellIssue(state: EngineState, s: number, r: number, c: number): Issue | null {
   const inv = state.invalid.get(key(s, r, c))
-  if (inv) return { s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at }
+  if (inv) return { s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at, ...(inv.fn !== undefined ? { fn: inv.fn } : {}) }
   const id = state.at.get(placeOf(s, r, c))
   if (id !== undefined && stopped(state, id)) return heldIssue(state.formulas[id]!)
   const v = valueAt(state, s, r, c)
@@ -214,7 +215,7 @@ export function wayBack(p: Place, code: ErrorCode, step: (at: Place) => Place | 
 }
 
 /** An issue as `Session.getCellIssue` gives it, with the cell its error began in. */
-export const issueWith = (i: Omit<Issue, 's' | 'r' | 'c'>, origin: CellRef): CellIssueDetail => ({ error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}), origin })
+export const issueWith = (i: Omit<Issue, 's' | 'r' | 'c'>, origin: CellRef): CellIssueDetail => ({ error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}), ...(i.fn !== undefined ? { fn: i.fn } : {}), origin })
 
 /** A cell's issue with the cell its error began in (`Session.getCellIssue`); null for a cell without an error. `memo` as `errorOrigin`'s. */
 export function issueDetail(state: EngineState, s: number, r: number, c: number, memo?: Map<string, Place>): CellIssueDetail | null {

@@ -14,6 +14,8 @@ export interface Where {
   sheet?: string
   cell?: string
   name?: string
+  /** A user-defined function the issue is about (`XlsxIssue.fn`). */
+  fn?: string
 }
 
 export interface Gathered {
@@ -27,7 +29,7 @@ export class Issues {
   protected readonly byKey = new Map<string, Gathered>()
 
   add(code: XlsxIssueCode, message: XlsxMessage, where: Where = {}): void {
-    const key = `${code}\n${where.sheet ?? ''}\n${where.name ?? ''}\n${JSON.stringify(message)}`
+    const key = `${code}\n${where.sheet ?? ''}\n${where.name ?? ''}\n${where.fn ?? ''}\n${JSON.stringify(message)}`
     let issue = this.byKey.get(key)
     if (!issue) this.byKey.set(key, (issue = { code, message, where }))
     if (where.cell !== undefined) (issue.cells ??= []).push(where.cell)
@@ -40,6 +42,7 @@ export class Issues {
       message: issueText(locale, message),
       ...(where.sheet !== undefined ? { sheet: where.sheet } : {}),
       ...(where.name !== undefined ? { name: where.name } : {}),
+      ...(where.fn !== undefined ? { fn: where.fn } : {}),
       ...(cells ? { cells } : {}),
     }))
   }

@@ -17,6 +17,8 @@ export interface Converted {
   found: Found[]
   /** The numbers `[N]` of the links to other workbooks it refers to (`externalLink`), 0 for a book it names otherwise. */
   links?: number[]
+  /** The user-defined functions it calls (`userFunction`), upper-case, in the order of their first call. */
+  userFunctions?: string[]
 }
 
 const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf)\./i
@@ -59,6 +61,7 @@ export function fromFile(src: string): Converted {
   if (!/[_[:]/.test(src)) return { formula: src, found: [] }
   const found = new Set<Found>()
   const links: number[] = []
+  const udfs = new Set<string>()
   const link = (run: string) => {
     found.add('externalLink')
     links.push(Number(LINK.exec(run)?.[1] ?? 0))
@@ -106,7 +109,10 @@ export function fromFile(src: string): Converted {
     }
     const name = IDENT_START.exec(src.slice(i))?.[0] ?? ''
     const upper = name.toUpperCase()
-    if (kind === '_xludf.') found.add('userFunction')
+    if (kind === '_xludf.') {
+      found.add('userFunction')
+      if (upper) udfs.add(upper)
+    }
     if (kind === '_xlpm.' && letNameClash(name)) found.add('letName')
     const open = i + name.length
     const close = src[open] === '(' && (upper === 'SINGLE' || upper === 'ANCHORARRAY') ? closing(src, open) : -1
@@ -114,6 +120,7 @@ export function fromFile(src: string): Converted {
       const inner = fromFile(src.slice(open + 1, close).trim())
       inner.found.forEach((x) => found.add(x))
       links.push(...(inner.links ?? []))
+      inner.userFunctions?.forEach((x) => udfs.add(x))
       if (upper === 'SINGLE' || ANCHOR.test(inner.formula)) {
         out += upper === 'SINGLE' ? single(inner.formula) : `${inner.formula}#`
         i = close + 1
@@ -123,5 +130,5 @@ export function fromFile(src: string): Converted {
     out += name
     i += name.length
   }
-  return { formula: out, found: [...found], ...(links.length ? { links } : {}) }
+  return { formula: out, found: [...found], ...(links.length ? { links } : {}), ...(udfs.size ? { userFunctions: [...udfs] } : {}) }
 }

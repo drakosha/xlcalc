@@ -98,6 +98,12 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
 
 type Checked = ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }>
 
+/** A failed check in `say`'s language, with the function a call to an unknown function or an unsupported one names (`fn`). */
+function refused(code: CheckCode, m: Message, at: number, say: (m: Message) => string): Extract<ValidateResult, { ok: false }> {
+  const fn = (code === 'unknown_function' || code === 'unsupported') && 'fn' in m ? m.fn : undefined
+  return { ok: false, code, message: say(m), at, ...(fn !== undefined ? { fn } : {}) }
+}
+
 /** Formula check: parsing, whitelisted or external functions, sheets, names, argument counts. */
 export function validate(text: string, ctx: ValidateContext & BookCheck = {}): Checked {
   return validateTokens(text, null, ctx)
@@ -110,7 +116,7 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
   try {
     ast = parseTokens(text, toks, { union: ctx.union })
   } catch (e) {
-    if (e instanceof FormulaError) return { ok: false, code: e.code, message: say(e.msg), at: e.at }
+    if (e instanceof FormulaError) return refused(e.code, e.msg, e.at, say)
     throw e
   }
   // nothing to bind without tables, but a reference without a table name, which fails
@@ -142,7 +148,7 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
       if (n.sheet !== undefined) sheets.add(n.sheet)
     }
   })
-  const fail = (code: CheckCode, m: Message, needle: string) => ({ ok: false as const, code, message: say(m), at: positionOf(text, needle) })
+  const fail = (code: CheckCode, m: Message, needle: string) => refused(code, m, positionOf(text, needle), say)
   for (const f of functions) if (!isFunction(f) && !externalSet.has(f)) return fail('unknown_function', { key: 'unknownFunction', fn: f }, f)
   if (ctx.sheets) {
     const known = new Set(ctx.sheets.map(sheetKey))
@@ -155,7 +161,7 @@ export function validateTokens(text: string, toks: Tok[] | null, ctx: ValidateCo
     for (const n of names) if (!known.has(caseKey(n))) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   }
   const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !arityFor(f))
-  if (calls) return { ok: false, code: calls.code, message: say(calls.msg), at: calls.at }
+  if (calls) return refused(calls.code, calls.msg, calls.at, say)
   return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)], tables: bound.tables }
 }
 

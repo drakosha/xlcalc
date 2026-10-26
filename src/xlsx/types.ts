@@ -14,7 +14,8 @@ import type { Locale } from '../locale/types.js'
  * - `externalLink`: a link that is not to a workbook (DDE, OLE) or whose part is missing, kept as a workbook without
  *   sheets; a formula that refers to another workbook not among the links (`[3]Sheet!A1` in a file with two), or that
  *   the engine cannot parse.
- * - `userFunction`: a call to a function the file marks as user-defined (`_xludf.`), a macro or add-in function.
+ * - `userFunction`: calls to a function the file marks as user-defined (`_xludf.`), a macro or add-in function, named
+ *   by `fn`.
  * - `formula`: a formula the engine cannot parse, read as written (its cell calculates to an error), or a formula the
  *   writer could not write (its value is written instead, or an empty cell when it has none).
  * - `errorConstant`: an error typed into a cell as its value, read as a formula of that error.
@@ -99,6 +100,8 @@ export interface XlsxIssue {
   sheet?: string
   cells?: string[]
   name?: string
+  /** The function, upper-case, of a `userFunction` issue: one issue per function, sheet or name, its cells the calls. */
+  fn?: string
 }
 
 /**

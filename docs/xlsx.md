@@ -268,7 +268,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | code | what the workbook cannot represent |
 |---|---|
 | `richText` | formatted runs of text |
-| `userFunction` | a user-defined function (`_xludf.`) |
+| `userFunction` | a user-defined function (`_xludf.`): one issue per function on a sheet or a name, the function in `fn` (upper-case) and its calls in `cells`, so a host can count them without reading `message` |
 | `table` | a table left out (overlapping another table or a merged area, or with a name already in use), a header cell given its column's name, a custom table style, a structured reference without a table name |
 | `externalLink` | a DDE or OLE link, or a link whose part is missing, kept as a workbook without sheets; a formula over a link the file does not contain, or over such a link |
 | `formula` | a formula the engine cannot parse, kept as written |
