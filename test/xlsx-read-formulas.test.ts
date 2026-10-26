@@ -43,7 +43,8 @@ describe("xlsx reader: formulas in the engine's spelling", () => {
   })
 
   it('what the engine has no spelling for is found; references across sheets are read', () => {
-    expect(fromFile('_xludf.MYFN(1)')).toEqual({ formula: 'MYFN(1)', found: ['userFunction'] })
+    expect(fromFile('_xludf.MYFN(1)')).toEqual({ formula: 'MYFN(1)', found: ['userFunction'], userFunctions: ['MYFN'] })
+    expect(fromFile('_xludf.b(1)+_xlfn.SINGLE(_xludf.a(2))+_xludf.B(3)').userFunctions).toEqual(['B', 'A'])
     expect(fromFile('SUM(Table1[Amount])+Table1[[#This Row],[Qty]]')).toEqual({ formula: 'SUM(Table1[Amount])+Table1[[#This Row],[Qty]]', found: [] })
     expect(fromFile('SUM(T[@at])+T[[#Headers],[@b]]').formula).toBe("SUM(T['@at])+T[[#Headers],['@b]]")
     expect(fromFile('[@Qty]*2').found).toEqual(['table'])
@@ -136,5 +137,14 @@ describe('xlsx reader: formulas of the file', () => {
     expect(r.book.sheets[0].cells).toMatchObject({ A1: { formula: '@B1:B3' }, B1: { formula: 'MYFN(1)' }, C1: { formula: 'SUM(T[x])' }, D1: { formula: '[1]S!A1' }, E1: { formula: 'SUM(S:T!A1)' } })
     expect(r.book.sheets[0].cells.F1).toEqual({ formula: 'A1 B1' })
     expect(codes(r.issues)).toEqual(['userFunction B1', 'externalLink D1', 'formula G1'])
+  })
+
+  it('user-defined functions are reported one issue a function, its cells the calls', async () => {
+    const r = await sheet('<row r="1"><c r="A1"><f>_xludf.Tax(1)+_xludf.RATE2(2)</f></c><c r="A2"><f>_xludf.tax(3)</f></c><c r="A3"><f>SUM(1)</f></c></row>')
+    expect(r.issues.filter((x) => x.code === 'userFunction').map(({ fn, cells, sheet }) => ({ fn, cells, sheet }))).toEqual([
+      { fn: 'TAX', cells: ['A1', 'A2'], sheet: 'S' },
+      { fn: 'RATE2', cells: ['A1'], sheet: 'S' },
+    ])
+    expect(r.issues.filter((x) => x.code !== 'userFunction').every((x) => x.fn === undefined)).toBe(true)
   })
 })

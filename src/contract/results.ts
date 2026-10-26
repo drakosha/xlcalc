@@ -137,6 +137,8 @@ export interface CellIssue extends CellRef {
   check?: CheckCode
   /** Position in the formula text for `check`. */
   at?: number
+  /** The function, upper-case, for the checks `unknown_function` and `unsupported` (`ValidateResult`). */
+  fn?: string
 }
 
 /** Why a defined name returns no value: the name, its scope (none for a global name) and the reason. */
@@ -214,7 +216,8 @@ export interface ValidateContext {
 export type ValidateResult =
   /** `tables`: the tables named by the formula's structured references (and bare table names, with `ctx.tables`). */
   | { ok: true; canonical: string; functions: string[]; sheets: string[]; names: string[]; externals: string[]; tables: string[] }
-  | (Refusal<CheckCode> & { at: number })
+  /** `fn`: the function, upper-case, a call to an unknown function (`unknown_function`) or an unsupported call (`unsupported`) names. */
+  | (Refusal<CheckCode> & { at: number; fn?: string })
 
 /**
  * Why Excel would reject a name (`validateName`). `chars`: it does not start with a letter of any script, `_` or `\`,
@@ -247,8 +250,8 @@ export interface NamesContext {
 }
 
 /**
- * Why a cell holds an error, or why a circular reference stops it (`Session.getCellIssue`): its code, reason, check code
- * and position as the result's `diagnostics` reports them, and `origin`, the cell where the error originated, found by
+ * Why a cell holds an error, or why a circular reference stops it (`Session.getCellIssue`): its code, reason, check code,
+ * position and function as the result's `diagnostics` reports them, and `origin`, the cell where the error originated, found by
  * following the cells its reason names (`from 'S'!A2`) to one whose error is its own; in a cycle, the first cell of the
  * cycle that the path reaches, and likewise for a formula stopped by a cycle, through the cells it reads that the cycle
  * also stops.
@@ -258,6 +261,7 @@ export interface CellIssueDetail {
   reason: string
   check?: CheckCode
   at?: number
+  fn?: string
   origin: CellRef
 }
 

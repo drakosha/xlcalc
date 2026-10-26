@@ -1,6 +1,6 @@
 /** Errors as values: the code in the cell, the reason in `diagnostics`; an invalid formula does not break the computation. */
 import { describe, expect, it } from 'vitest'
-import { compute, type BookInput, type CellInput } from '../src/index.js'
+import { compute, createSession, type BookInput, type CellInput } from '../src/index.js'
 import { cellIssues } from './diagnostics.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 1 }
@@ -32,9 +32,16 @@ describe('errors', () => {
   it('#NAME?: unknown function and name', () => {
     const { v, issue } = run({ A1: { formula: 'INDIRECT("B1")' }, A2: { formula: 'nope*2' } })
     expect(v('A1')).toEqual({ error: 'NAME' })
-    expect(issue('A1')).toMatchObject({ check: 'unknown_function', at: 0 })
+    expect(issue('A1')).toMatchObject({ check: 'unknown_function', at: 0, fn: 'INDIRECT' })
     expect(v('A2')).toEqual({ error: 'NAME' })
     expect(issue('A2')!.check).toBe('unknown_name')
+    expect(issue('A2')).not.toHaveProperty('fn')
+  })
+
+  it("a cell's issue names the unknown function as diagnostics name it", () => {
+    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { formula: '1+myfn(2)' }, A2: { formula: 'A1*2' } } }] }, { clock })
+    expect(s.getCellIssue('S', 'A1')).toEqual({ error: 'NAME', reason: 'unknown function MYFN', check: 'unknown_function', at: 2, fn: 'MYFN', origin: { sheet: 'S', cell: 'A1' } })
+    expect(s.getCellIssue('S', 'A2')).not.toHaveProperty('fn')
   })
 
   it('cycle: the cells in the cycle and their dependents hold their values, 0 without held, each with its reason; the rest is computed', () => {

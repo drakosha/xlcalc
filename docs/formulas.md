@@ -66,7 +66,7 @@ Every check returns `{ ok: true, … }` or a rejection of type `Refusal`: `{ ok:
 
 A number literal is refused as Excel refuses it typed (`syntax`): from `1E308` on, and one that is not 0 below `1E-309`; one up to the smallest normal number (2.2250738585072014E-308) is 0, and its text `0` (`=1E-309+1` is stored as `0+1`).
 
-Error codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to a workbook that `ctx.externalBooks` has no link to, see [External references](links.md)), `unknown_function`, `unknown_sheet`, `unknown_name` and `unsupported` (an external function called with non-literal arguments). In `compute`, an invalid formula evaluates to `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise. A formula whose result is an array is valid: it spills.
+Error codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to a workbook that `ctx.externalBooks` has no link to, see [External references](links.md)), `unknown_function`, `unknown_sheet`, `unknown_name` and `unsupported` (an external function called with non-literal arguments). A rejection for `unknown_function` or `unsupported` names its function in `fn`, upper-case, and so does the cell's issue in `diagnostics` and `Session.getCellIssue`. In `compute`, an invalid formula evaluates to `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise. A formula whose result is an array is valid: it spills.
 
 ## Errors
 

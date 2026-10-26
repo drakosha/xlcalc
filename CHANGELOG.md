@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- `fn`, the function upper-case, on what reports a function the engine cannot take, so a host counts them without reading messages: on an `XlsxIssue` of code `userFunction`, which `readXlsx` now gives one per function on a sheet or a name, its `cells` the calls (one issue held all of a sheet's calls); on a `validateFormula` rejection, and a cell's issue in `diagnostics` and `Session.getCellIssue`, for `unknown_function` and `unsupported`.
+
 ## 0.59.1 (2026-10-26)
 
 Fixed:

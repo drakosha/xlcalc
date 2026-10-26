@@ -1569,13 +1569,15 @@ interface CellIssue extends CellRef {
   check?: CheckCode
   /** Position in the formula text for `check`. */
   at?: number
+  /** The function, upper-case, for the checks `unknown_function` and `unsupported` (`ValidateResult`). */
+  fn?: string
 }
 ```
 
 ### `CellIssueDetail`
 
-Why a cell holds an error, or why a circular reference stops it ([`Session.getCellIssue`](#session)): its code, reason, check code
-and position as the result's `diagnostics` reports them, and `origin`, the cell where the error originated, found by
+Why a cell holds an error, or why a circular reference stops it ([`Session.getCellIssue`](#session)): its code, reason, check code,
+position and function as the result's `diagnostics` reports them, and `origin`, the cell where the error originated, found by
 following the cells its reason names (`from 'S'!A2`) to one whose error is its own; in a cycle, the first cell of the
 cycle that the path reaches, and likewise for a formula stopped by a cycle, through the cells it reads that the cycle
 also stops.
@@ -1586,6 +1588,7 @@ interface CellIssueDetail {
   reason: string
   check?: CheckCode
   at?: number
+  fn?: string
   origin: CellRef
 }
 ```
@@ -4696,7 +4699,8 @@ What [`validateFormula`](#xlcalc-validateformula) returns: the formula's canonic
 type ValidateResult =
   /** `tables`: the tables named by the formula's structured references (and bare table names, with `ctx.tables`). */
   | { ok: true; canonical: string; functions: string[]; sheets: string[]; names: string[]; externals: string[]; tables: string[] }
-  | (Refusal<CheckCode> & { at: number })
+  /** `fn`: the function, upper-case, a call to an unknown function (`unknown_function`) or an unsupported call (`unsupported`) names. */
+  | (Refusal<CheckCode> & { at: number; fn?: string })
 ```
 
 ### `ValidationAlert`
@@ -4984,6 +4988,8 @@ interface XlsxIssue {
   sheet?: string
   cells?: string[]
   name?: string
+  /** The function, upper-case, of a `userFunction` issue: one issue per function, sheet or name, its cells the calls. */
+  fn?: string
 }
 ```
 
@@ -5000,7 +5006,8 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
 - `externalLink`: a link that is not to a workbook (DDE, OLE) or whose part is missing, kept as a workbook without
   sheets; a formula that refers to another workbook not among the links (`[3]Sheet!A1` in a file with two), or that
   the engine cannot parse.
-- `userFunction`: a call to a function the file marks as user-defined (`_xludf.`), a macro or add-in function.
+- `userFunction`: calls to a function the file marks as user-defined (`_xludf.`), a macro or add-in function, named
+  by `fn`.
 - `formula`: a formula the engine cannot parse, read as written (its cell calculates to an error), or a formula the
   writer could not write (its value is written instead, or an empty cell when it has none).
 - `errorConstant`: an error typed into a cell as its value, read as a formula of that error.

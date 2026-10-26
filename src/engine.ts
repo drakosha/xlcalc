@@ -55,6 +55,7 @@ export interface Invalid {
   message: string
   at: number
   error: ErrorCode
+  fn?: string
 }
 
 export interface EngineOptions {
