@@ -128,11 +128,12 @@ describe('the structure operations move the AutoFilter as a range reference of i
     expect(after(op, op.op === 'renameSheet' ? 'Sales' : 'Data')).toBe(range)
   })
 
-  it('no other sheet gets it, a moved sheet keeps it, a table over it is refused', () => {
+  it('no other sheet gets it, a moved sheet keeps it, a table over it takes its place', () => {
     expect(after({ op: 'moveRange', from: { sheet: 'Data', range: 'A1:C5' }, to: { sheet: 'Other', cell: 'B2' } }, 'Other')).toBeUndefined()
     expect(after({ op: 'moveSheet', sheet: 'Data' })).toBe('A1:C5')
     const r = editStructure(book(), { op: 'addTable', sheet: 'Data', table: { name: 'T', range: 'C1:D5', columns: [{ name: 'Month' }, { name: 'Total' }] } })
-    expect(r.ok === false && [r.code, r.message]).toEqual(['table', "C1:D5 overlaps the sheet's AutoFilter over A1:C5 (remove the AutoFilter first)"])
+    expect(r.ok && [r.book.sheets[0].tables?.[0].range, 'autoFilter' in r.book.sheets[0]]).toEqual(['C1:D5', false])
+    expect(after({ op: 'addTable', sheet: 'Data', table: { name: 'T', range: 'G1:G2', columns: [{ name: 'g' }] } })).toBe('A1:C5')
   })
 })
 

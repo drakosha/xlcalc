@@ -105,21 +105,24 @@ describe('xlsx/keep in Excel', () => {
     expect(saved.get('xl/pivotCache/_rels/pivotCacheDefinition1.xml.rels')).toContain('relationships/externalLinkPath" Target="book.xlsx" TargetMode="External"')
   }, 60_000)
 
-  it("Excel answers an AutoFilter over a table and a table over an AutoFilter as the engine does: it refuses both", () => {
+  it('Excel answers an AutoFilter over a table and a table over an AutoFilter as the engine does: it refuses the first, and the second takes its place', () => {
     const made = JSON.parse(readFileSync(new URL('made.json', dir), 'utf8')) as MadeRun
     for (const m of MADE_PROBES) {
       const answer = made.books[m.id]?.made
       expect(answer, `${m.id}: no Excel answer: run the keep made step`).toBeDefined()
       expect(answer.map((line, i) => line.slice(0, PROBES[m.id][i]?.length)), m.id).toEqual(PROBES[m.id])
     }
-    // the engine's answers: the AutoFilter over the table an input error, the table over the AutoFilter refused
+    // the engine's answers: the AutoFilter over the table an input error, a table over the AutoFilter or part of it takes its place
     const book = baseBook()
     book.sheets[2].tables = [{ name: 'Plain', range: 'A1:A2', columns: [{ name: 'plain' }] }]
     book.sheets[0].autoFilter = { range: 'A1:C21' }
-    const s = createSession(book)
-    expect(() => s.setLayout([{ sheet: 'Plain', autoFilter: { range: 'A1:B5' } }])).toThrow(InputError)
-    expect(s.editStructure({ op: 'addTable', sheet: 'Data', table: { name: 'T', range: 'A1:C21', columns: [{ name: 'Region' }, { name: 'Amount' }, { name: 'Month' }] } }).ok).toBe(false)
-    s.close()
+    expect(() => createSession(book).setLayout([{ sheet: 'Plain', autoFilter: { range: 'A1:B5' } }])).toThrow(InputError)
+    for (const [range, columns] of [['A1:C21', ['Region', 'Amount', 'Month']], ['B10:D12', ['70', 'M2', 'Column1']]] as const) {
+      const s = createSession(book)
+      expect(s.editStructure({ op: 'addTable', sheet: 'Data', table: { name: 'T', range, columns: columns.map((name) => ({ name })) } }).ok, range).toBe(true)
+      expect(s.getBook().sheets[0].autoFilter, range).toBeUndefined()
+      s.close()
+    }
   })
 
   it("the workbook's AutoFilter after each operation of the structure is the one Excel saved", async () => {

@@ -29,7 +29,6 @@ export const EDIT_MESSAGES: EditMessages = {
   tableNameDefined: (p) => `${JSON.stringify(p.name)} is a defined name (tables and names share one namespace)`,
   tableOverTable: (p) => `${p.range} overlaps the table ${p.table}`,
   tableOverMerge: (p) => `${p.range} overlaps the merged area ${p.area}`,
-  tableOverFilter: (p) => `${p.range} overlaps the sheet's AutoFilter over ${p.filter} (remove the AutoFilter first)`,
   mergeInTable: (p) => `${p.range} overlaps the table ${p.table}, whose cells cannot be merged`,
   arrayInTable: (p) => `the array formula over ${p.area} overlaps the table ${p.table} (Excel does not allow array formulas of several cells in tables)`,
   headerFormula: (p) => `${p.sheet}!${p.cell} is a header cell of the table ${p.table}: it holds its column's name, not a formula`,

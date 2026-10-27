@@ -204,14 +204,25 @@ export const MADE_STRUCT: Made[] = [
 ]
 
 /**
- * A file Excel makes to answer what it does with an AutoFilter beside a table (`excel-keep.applescript`): one asked over
+ * Files Excel makes to answer what it does with an AutoFilter beside a table (`excel-keep.applescript`): one asked over
  * Plain!A1:B5, where a table lies on A1:A2, and on Data, which has an AutoFilter over A1:C21, a table asked over
- * A1:C21. Each line of its answer starts with the feature's name and what Excel did, `done` or `error`.
+ * A1:C21, or over B10:D12 (held out: predicted after the first answer). Each line of an answer starts with the
+ * feature's name and what Excel did, `done` or `error`.
  */
-export const MADE_PROBES: Made[] = [{ id: 'filter-tables', features: ['autofilter', 'overtable', 'tableover'], table: true }]
+export const MADE_PROBES: Made[] = [
+  { id: 'filter-tables', features: ['autofilter', 'overtable', 'tableover'], table: true },
+  { id: 'filter-table-part', features: ['autofilter', 'tablepart'] },
+]
 
-/** The engine's answers to the probes, each line's start: the AutoFilter made; one over a table refused (`checkTables`), and a table over the AutoFilter (`addTable`, `tableOverFilter`). */
-export const PROBES: Record<string, string[]> = { 'filter-tables': ['autofilter $A$1:$C$21', 'overtable error', 'tableover error'] }
+/**
+ * The engine's answers to the probes, each line's start: the AutoFilter made; one over a table refused (`checkTables`);
+ * a table over the AutoFilter or over part of it made, the AutoFilter gone (`addTable`). The engine refused a table over
+ * the AutoFilter until Excel's first answer showed otherwise; the one over part of it was predicted then.
+ */
+export const PROBES: Record<string, string[]> = {
+  'filter-tables': ['autofilter $A$1:$C$21', 'overtable error', 'tableover done; autofilter mode false; tables 1'],
+  'filter-table-part': ['autofilter $A$1:$C$21', 'tablepart done; autofilter mode false; tables 1'],
+}
 
 /** An operation of the structure on a made file, as the session takes it and as `excel-keep-struct.applescript` does it: op, sheet, range, target, cell. */
 export interface Struct {
