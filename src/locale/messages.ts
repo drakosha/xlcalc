@@ -284,6 +284,7 @@ export interface MessageParams extends XlsxMessageParams {
   tableNameDefined: { name: string }
   tableOverTable: { range: string; table: string }
   tableOverMerge: { range: string; area: string }
+  tableOverFilter: { range: string; filter: string }
   mergeInTable: { range: string; table: string }
   arrayInTable: { area: string; table: string }
   // typing into a cell
@@ -309,7 +310,7 @@ export type EngineKey = Exclude<MessageKey, keyof XlsxMessageParams>
 export type EditKey =
   | 'sheetNameTaken' | 'lastSheet' | 'lastVisibleSheet' | 'insertOffSheet' | 'insertMergeOffSheet' | 'arrayPart' | 'moveOffSheet' | 'copyOffSheet'
   | 'writesLimit' | 'moveCutsMerge' | 'pasteOnMerge' | 'contentOnMerge' | 'filteredPaste' | 'tableLands' | 'tableInsertTwo' | 'tableDeleteTwo' | 'tableHeader'
-  | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'mergeInTable' | 'arrayInTable'
+  | 'tableName' | 'tableNameTaken' | 'tableNameDefined' | 'tableOverTable' | 'tableOverMerge' | 'tableOverFilter' | 'mergeInTable' | 'arrayInTable'
   | 'headerFormula' | 'validationError' | 'explainCells' | 'explainSpill' | 'explainValue' | 'explainFormula' | 'explainErrorFrom'
   | 'explainErrorHere' | 'explainHeldFrom' | 'explainHeldHere'
 

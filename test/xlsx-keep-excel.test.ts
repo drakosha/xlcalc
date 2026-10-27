@@ -105,22 +105,23 @@ describe('xlsx/keep in Excel', () => {
     expect(saved.get('xl/pivotCache/_rels/pivotCacheDefinition1.xml.rels')).toContain('relationships/externalLinkPath" Target="book.xlsx" TargetMode="External"')
   }, 60_000)
 
-  it('Excel answers an AutoFilter over a table and a table over an AutoFilter as the engine does: it refuses the first, and the second takes its place', () => {
+  it("Excel answers an AutoFilter over a table and a table over an AutoFilter as the engine does: it refuses the first, and the second but over the AutoFilter's range, where it takes its place", () => {
     const made = JSON.parse(readFileSync(new URL('made.json', dir), 'utf8')) as MadeRun
     for (const m of MADE_PROBES) {
       const answer = made.books[m.id]?.made
       expect(answer, `${m.id}: no Excel answer: run the keep made step`).toBeDefined()
       expect(answer.map((line, i) => line.slice(0, PROBES[m.id][i]?.length)), m.id).toEqual(PROBES[m.id])
     }
-    // the engine's answers: the AutoFilter over the table an input error, a table over the AutoFilter or part of it takes its place
+    // the engine's answers: the AutoFilter over the table an input error, a table over the AutoFilter's range in its place, over other cells of it refused
     const book = baseBook()
     book.sheets[2].tables = [{ name: 'Plain', range: 'A1:A2', columns: [{ name: 'plain' }] }]
     book.sheets[0].autoFilter = { range: 'A1:C21' }
     expect(() => createSession(book).setLayout([{ sheet: 'Plain', autoFilter: { range: 'A1:B5' } }])).toThrow(InputError)
-    for (const [range, columns] of [['A1:C21', ['Region', 'Amount', 'Month']], ['B10:D12', ['70', 'M2', 'Column1']]] as const) {
+    for (const [range, width, made] of [['A1:C21', 3, true], ['B10:D12', 3, false], ['A1:B10', 2, false], ['A1:D22', 4, false]] as const) {
       const s = createSession(book)
-      expect(s.editStructure({ op: 'addTable', sheet: 'Data', table: { name: 'T', range, columns: columns.map((name) => ({ name })) } }).ok, range).toBe(true)
-      expect(s.getBook().sheets[0].autoFilter, range).toBeUndefined()
+      const columns = Array.from({ length: width }, (_, i) => ({ name: `c${i}` }))
+      expect(s.editStructure({ op: 'addTable', sheet: 'Data', table: { name: 'T', range, columns } }).ok, range).toBe(made)
+      expect(s.getBook().sheets[0].autoFilter === undefined, range).toBe(made)
       s.close()
     }
   })

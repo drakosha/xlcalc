@@ -1,7 +1,7 @@
 -- Open a book and give it what the workbook model does not hold, as a person does in Excel's window, then save it as
 -- xlsx under another name and close it. Arguments: the book's path and the path to save to (inside Excel's sandbox),
 -- the saved file's name, the features (a comma list: chart, chartsheet, picture, sized, floating, chartmove, rich, theme,
--- print, breaks, note, autofilter, criteria, overtable, tableover, tablepart) and
+-- print, breaks, note, autofilter, criteria, overtable, tableover, tablepart, tablein, tablearound) and
 -- a picture's path (inside the sandbox). Answers what it made, one feature a line, or the error of one it could not.
 on run argv
 	set p to item 1 of argv
@@ -100,15 +100,17 @@ on run argv
 					set made to made & "tableover error " & k & " " & msg & linefeed
 				end try
 			end if
-			if feats contains "tablepart" then
-				-- a table asked over part of the AutoFilter's data and the column beside it
-				try
-					make new list object at ws with properties {range object:(range "B10:D12" of ws)}
-					set made to made & "tablepart done; autofilter mode " & (autofilter mode of ws) & "; tables " & (count of list objects of ws) & linefeed
-				on error msg number k
-					set made to made & "tablepart error " & k & " " & msg & linefeed
-				end try
-			end if
+			-- a table asked over part of the AutoFilter's data and the column beside it, inside its range, around it
+			repeat with probe in {{"tablepart", "B10:D12"}, {"tablein", "A1:B10"}, {"tablearound", "A1:D22"}}
+				if feats contains (item 1 of probe) then
+					try
+						make new list object at ws with properties {range object:(range (item 2 of probe) of ws)}
+						set made to made & (item 1 of probe) & " done; autofilter mode " & (autofilter mode of ws) & "; tables " & (count of list objects of ws) & linefeed
+					on error msg number k
+						set made to made & (item 1 of probe) & " error " & k & " " & msg & linefeed
+					end try
+				end if
+			end repeat
 			calculate full
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no

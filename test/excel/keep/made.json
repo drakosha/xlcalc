@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.114.2",
-  "seconds": 4.3,
+  "seconds": 1.9,
   "date": "2026-10-27"
  },
  "books": {
@@ -237,6 +237,27 @@
     "printAreas": 0,
     "breaks": 0,
     "notes": 0
+   }
+  },
+  "filter-table-part": {
+   "sent": "a4d4b1630d77cdee49d7f4a554fd5e54c365eedb2810adf77ae2f6d386730b05",
+   "made": [
+    "autofilter $A$1:$C$21",
+    "tablepart error -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   ],
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 0,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0,
+    "autoFilters": 1
    }
   }
  }

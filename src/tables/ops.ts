@@ -9,7 +9,7 @@ import { formatAddress } from '../model.js'
 import { say, type EngineMessage } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'
 import { nameRule } from '../syntax.js'
-import { meets, parseRange, rectCells } from '../structure/area.js'
+import { cornersText, meets, parseRange, rectCells } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
 import { parseMerge } from '../layout/merges.js'
 import { withField } from '../looks/sheet.js'
@@ -72,7 +72,7 @@ export function tableOp(book: BookInput, op: TableOp): Applied {
   return { ok: true, book: withTable(out, key, null), geometry: [] }
 }
 
-/** A table over cells of `sheet`: its header cells take the columns' names; refused over another table or a merged area; the sheet's AutoFilter it meets goes. */
+/** A table over cells of `sheet`: its header cells take the columns' names; refused over another table, a merged area or other cells of the sheet's AutoFilter than its range, which it replaces. */
 function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
   const s = sheetIndex(book, sheet)
   if (s < 0) throw new InputError('op.sheet', `unknown sheet ${JSON.stringify(sheet)}`)
@@ -84,9 +84,11 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
   if (over) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverTable', range: table.range, table: over.name }) }
   const merge = x && (book.sheets[s].merges ?? []).find((m) => meets(parseMerge(m)!, x))
   if (merge) return { ok: false, code: 'merged', message: say(book.locale, { key: 'tableOverMerge', range: table.range, area: merge }) }
-  // a table over the sheet's AutoFilter takes its place, as Excel's does (the keep probes `filter-table*`)
+  // a table over the sheet's AutoFilter's range takes its place, one over other cells of it is refused, as in Excel (the keep probes `filter-table*`)
   const filter = book.sheets[s].autoFilter
-  const own = x && filter && meets(parseRange(filter.range)!, x) ? withField(book.sheets[s], 'autoFilter', undefined) : book.sheets[s]
+  const f = filter && parseRange(filter.range)!
+  if (x && f && meets(f, x) && cornersText(f) !== cornersText(x)) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverFilter', range: table.range, filter: filter!.range }) }
+  const own = x && f && meets(f, x) ? withField(book.sheets[s], 'autoFilter', undefined) : book.sheets[s]
   const cells = { ...own.cells }
   if (x && table.headers !== false && Array.isArray(table.columns))
     table.columns.forEach((c, i) => {
