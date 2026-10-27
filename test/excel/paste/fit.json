@@ -1,0 +1,315 @@
+{
+ "meta": {
+  "version": "16.114.2",
+  "locale": "en-US",
+  "seconds": 17.5
+ },
+ "books": {
+  "fit": {
+   "styles": [
+    {},
+    {
+     "font": {
+      "size": 20,
+      "bold": true
+     }
+    },
+    {
+     "font": {
+      "size": 8
+     }
+    },
+    {
+     "font": {
+      "size": 16
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": "big",
+       "style": 1
+      },
+      "A2": {
+       "value": "small",
+       "style": 2
+      },
+      "A3": {
+       "value": "plain"
+      },
+      "A4": {
+       "value": "mid",
+       "style": 3
+      },
+      "C5": {
+       "value": "x"
+      },
+      "C7": {
+       "value": "y",
+       "style": 1
+      },
+      "C9": {
+       "value": "z"
+      },
+      "C13": {
+       "value": 1
+      },
+      "C14": {
+       "value": 2
+      },
+      "C15": {
+       "value": 3
+      },
+      "C17": {
+       "value": "v"
+      },
+      "D17": {
+       "value": "w",
+       "style": 1
+      }
+     },
+     "rows": {
+      "1": {
+       "height": 26,
+       "bestFit": true
+      },
+      "4": {
+       "height": 21,
+       "bestFit": true
+      },
+      "7": {
+       "height": 26,
+       "bestFit": true
+      },
+      "9": {
+       "height": 30
+      },
+      "17": {
+       "height": 26,
+       "bestFit": true
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "formats-up",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "all-up",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "all"
+  },
+  {
+   "id": "copy-up",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "copy"
+  },
+  {
+   "id": "values-up",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "values"
+  },
+  {
+   "id": "formulas-up",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "formulas"
+  },
+  {
+   "id": "formats-down",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C7"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-small",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C5"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-small-down",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A2"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C7"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-own",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C9"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-empty",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "E11"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-tiled",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A1"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C13:C15"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-under-larger",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A4"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C17"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "formats-column",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A:A"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "G:G"
+   },
+   "what": "formats"
+  },
+  {
+   "id": "copy-down",
+   "book": "fit",
+   "from": {
+    "sheet": "S",
+    "range": "A3"
+   },
+   "to": {
+    "sheet": "S",
+    "range": "C7"
+   },
+   "what": "copy"
+  }
+ ],
+ "sent": {
+  "formats-up": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "all-up": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "copy-up": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "values-up": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formulas-up": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formats-down": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formats-small": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formats-small-down": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formats-own": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formats-empty": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formats-tiled": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formats-under-larger": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "formats-column": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf",
+  "copy-down": "f7a5acd929bb6ece956aa706095bc73eea73d7eaf0f183714ad6174a6052e5cf"
+ },
+ "answers": {
+  "formats-up": {},
+  "all-up": {},
+  "copy-up": {},
+  "values-up": {},
+  "formulas-up": {},
+  "formats-down": {},
+  "formats-small": {},
+  "formats-small-down": {},
+  "formats-own": {},
+  "formats-empty": {},
+  "formats-tiled": {},
+  "formats-under-larger": {},
+  "formats-column": {},
+  "copy-down": {}
+ }
+}

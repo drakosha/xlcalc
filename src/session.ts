@@ -30,7 +30,7 @@ import { checkAddress, checkRange } from './input/range.js'
 import { checkStyles } from './input/styles.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkMergesOutsideTables, checkStylesUsed, contentEdits, inputsOf, type SetLayoutEdit } from './session/book.js'
-import { patchedHeights, patchedNumbers, typedHeights, wrapTyped } from './session/wrap.js'
+import { pastedHeights, patchedHeights, patchedNumbers, typedHeights, wrapTyped } from './session/wrap.js'
 import { checkNamesKept } from './session/names.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
@@ -792,9 +792,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       // the simple way: the state is built again from the new book
       const before = old.sheetNames
       const [next, out, diff] = yield* rebuild(old, r.book, r.geometry, true, history.on)
-      keep(() => diff && bookStep('editStructure', diff, r.book))
       const moved = movesOf(r.geometry, before, next.sheetNames)
-      return { ok: true, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, { ...out, moved }) }
+      const steps = [() => (diff ? bookStep('editStructure', diff, r.book) : null)]
+      // a copy that laid its looks fits the rows of its area that Excel keeps fitted to their fonts, as a patch of styles
+      // does, in the same step (the paste set `fit`)
+      const o = r.looked ? yield* fitted(next, pastedHeights(next, r.looked.s, r.looked.area), { ...out, moved }, steps, 'editStructure') : { ...out, moved }
+      keep(() => (steps.length > 1 ? manyStep('editStructure', steps.map((f) => f())) : steps[0]()))
+      return { ok: true, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, o) }
     },
     setStyles(styles: CellStyle[], eo?: EditOptions) {
       const s = st()

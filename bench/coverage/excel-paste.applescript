@@ -2,7 +2,8 @@
 -- another name. Alerts are off around the paste; a paste Excel refuses comes back as `error`, not a dialog.
 -- Arguments: the book's path and the path to save to (inside Excel's sandbox), the saved file's name, the paste as JSON
 -- ([source sheet, source range, target sheet, target range, what (all, values, formulas, formats, validation,
--- formulasAndNumberFormats, valuesAndNumberFormats, columnWidths, allExceptBorders), transpose "1" or "0"]).
+-- formulasAndNumberFormats, valuesAndNumberFormats, columnWidths, allExceptBorders; copy: a plain copy to the target,
+-- Range.Copy with a destination), transpose "1" or "0"]).
 -- Output: JSON {"error": text}.
 use AppleScript version "2.4"
 use framework "Foundation"
@@ -43,11 +44,16 @@ on run argv
 				set display alerts to false
 				set ws to worksheet (item 1 of op) of wb
 				activate object ws
-				copy range (range (item 2 of op) of ws)
-				set stage to "paste"
 				set wt to worksheet (item 3 of op) of wb
-				activate object wt
-				paste special (range (item 4 of op) of wt) what (my pasteType(item 5 of op)) operation paste special operation none skip blanks false transpose ((item 6 of op) is "1")
+				if (item 5 of op) is "copy" then
+					set stage to "paste"
+					copy range (range (item 2 of op) of ws) destination (range (item 4 of op) of wt)
+				else
+					copy range (range (item 2 of op) of ws)
+					set stage to "paste"
+					activate object wt
+					paste special (range (item 4 of op) of wt) what (my pasteType(item 5 of op)) operation paste special operation none skip blanks false transpose ((item 6 of op) is "1")
+				end if
 				set display alerts to true
 			on error msg number k
 				set display alerts to true

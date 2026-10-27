@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+
+- In a session, a copy that brings its looks (`copyRange` without `paste`, with `all` or `formats`) fits the rows it lands on to their fonts in the same step of undo, as `patchCells` does, and tells them in `fitted`: a larger font makes a row of the default height or a fitted one taller, a smaller one lower again, a row of its own height stays (Excel for Mac, 14 cases predicted before it ran them). The rows kept their heights.
+
 ## 0.60.0 (2026-10-27)
 
 Paste Special for a grid's Paste Special box, and the function an issue reports as a field of its own. Values and hashes of the synthetic workbook are as in 0.59.1.

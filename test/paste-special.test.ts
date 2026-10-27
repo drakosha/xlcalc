@@ -2,7 +2,9 @@
  * Paste Special through `copyRange`'s `paste` and `transpose` (`test/paste-excel.test.ts` checks it against Excel): its
  * input checked; in every kind of session a paste of values takes the session's values as they are after its edits,
  * a paste of formats leaves the cells' contents and their values, each paste is one step of undo, and the same
- * paste gives the same book and hash in each kind; a transposed copy of a reference into the source follows the cell.
+ * paste gives the same book and hash in each kind; a copy that brings its looks fits the rows of its cells to their fonts
+ * in the same step and tells them (`fitted`), and a paste of values fits none; a transposed copy of a reference into the
+ * source follows the cell.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { editStructure, InputError, type BookInput, type StructureOp } from '../src/index.js'
@@ -73,5 +75,26 @@ describe.each(KINDS)('Paste Special in %s', (kind) => {
     // undo and redo keep the cells, not the order of their keys
     expect([await s.getBook(), await s.getHash()]).toEqual([await sync.getBook(), await sync.getHash()])
     await Promise.all([s.close(), sync.close()])
+  })
+})
+
+describe.each(KINDS)('rows fitted after a copy in %s', (kind) => {
+  it('formats, all and a plain copy of a larger font fit the row in the same step; values fit none', async () => {
+    const open = await opener(kind)
+    const big: BookInput = { styles: [{}, { font: { size: 20, bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 'big', style: 1 }, C5: { value: 'x' } } }] }
+    for (const more of [{ paste: 'formats' as const }, { paste: 'all' as const }, {}]) {
+      const s = await open(big, { clock })
+      const r = await s.editStructure(copy('A1', 'C5', more))
+      expect(r.ok && r.fitted).toEqual([{ sheet: 'S', rows: '5', height: 26 }])
+      expect((await s.getBook()).sheets[0].rows).toEqual({ 5: { height: 26, bestFit: true } })
+      await s.undo()
+      expect((await s.getBook()).sheets[0]).toMatchObject({ cells: { C5: { value: 'x' } } })
+      expect((await s.getBook()).sheets[0].rows).toBeUndefined()
+      await s.close()
+    }
+    const s = await open(big, { clock })
+    const r = await s.editStructure(copy('A1', 'C5', { paste: 'values' }))
+    expect(r.ok && r.fitted).toBeUndefined()
+    await s.close()
   })
 })
