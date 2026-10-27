@@ -1033,6 +1033,7 @@ interface AsyncSession {
   fillCellText(sheet: string, range: string, text: string, opts?: CalcOptions & FillTextOptions): Promise<FillTextResult>
   previewFillCellText(sheet: string, range: string, text: string, opts?: CalcOptions & FillTextOptions): Promise<FillTextPreview>
   setNames(names: NameInput[], opts?: AsyncEditOptions): Promise<EditResult>
+  setExternalBooks(books: ExternalBook[], opts?: AsyncEditOptions): Promise<EditResult>
   setClock(clock: Clock, opts?: AsyncEditOptions): Promise<EditResult>
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
@@ -1944,6 +1945,7 @@ type ChangingMethod =
   | 'pasteText'
   | 'fillCellText'
   | 'setNames'
+  | 'setExternalBooks'
   | 'setClock'
   | 'editStructure'
   | 'setStyles'
@@ -3058,8 +3060,8 @@ Why [`writeKept`](#xlcalcxlsxkeep-writekept) refuses, for a program ([`KeptRefus
 workbook, a sheet name Excel does not take, a worksheet in other namespaces); `carriers`, a hidden name [`openKept`](#xlcalcxlsxkeep-openkept)
 gave the workbook is gone; `unread`, a sheet whose rows, columns or name changed has a part with references writeKept
 does not read; `deleted`, cells, a sheet or a table a part of the file refers to or belongs to were deleted; `moved`, a
-part would move or be cut by the change, which writeKept does not write; `links`, the links to other workbooks
-changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
+part would move or be cut by the change, which writeKept does not write; `links`, a link to another workbook was
+removed, moved or pointed at another file, or one of a kind other than a workbook (DDE, OLE) changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
 the conditional formats or the data validation of a sheet changed, and the file has rules of that sheet the workbook
 could not read (its [`readXlsx`](#xlcalcxlsx-readxlsx) issues `conditionalFormat` and `dataValidation`), which writing them again would lose.
 
@@ -3971,6 +3973,13 @@ interface Session {
   /** What `fillCellText` would do, without changing anything. */
   previewFillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextPreview
   setNames(names: NameInput[], opts?: EditOptions): EditResult
+  /**
+   * Replaces the workbook's links to other workbooks (`BookInput.externalBooks`), as a host gives them: a new link with
+   * the values it read from the other workbook, more values of a link, values read again. Formulas read a link by its
+   * number (`'[2]Sheet1'!A1`), so a new link goes after the others, which keep their places; typed text finds a link by
+   * its file name (`[Prices.xlsx]Sheet1!A1`). The workbook is calculated again; one revision and one undo step.
+   */
+  setExternalBooks(books: ExternalBook[], opts?: EditOptions): EditResult
   /** Non-live sessions only: a live session throws `InputError`. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
   /** A structure operation on the session's workbook, followed by recalculation; rejected wherever `editStructure` rejects it. Hiding or unhiding a sheet recalculates nothing. */
@@ -4653,7 +4662,7 @@ type Translation = { ok: true; formula: string } | (Refusal<'syntax' | 'external
 The calls a session can undo: those that change its workbook. `setClock` and a live session's new clock are not steps.
 
 ```ts
-type UndoCall = 'applyChanges' | 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'replaceInCells' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
+type UndoCall = 'applyChanges' | 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'replaceInCells' | 'setNames' | 'setExternalBooks' | 'setStyles' | 'setLayout' | 'editStructure'
 ```
 
 ### `UndoOptions`

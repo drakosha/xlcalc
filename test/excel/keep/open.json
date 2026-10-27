@@ -1,8 +1,8 @@
 {
  "meta": {
-  "version": "16.114.1",
-  "seconds": 28.8,
-  "date": "2026-10-25"
+  "version": "16.114.2",
+  "seconds": 5.8,
+  "date": "2026-10-27"
  },
  "cases": {
   "chart-values": {
@@ -848,6 +848,180 @@
   },
   "all-below": {
    "sent": "eec75f20a22ae9dca7c6af263517ac796341c0a73f2db236d7e145f36caab306",
+   "written": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 1
+   },
+   "saved": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "chart-links": {
+   "sent": "d8c89df8b0db51f83fd20026e71f409afd3f9b74ba8955264fc8e5ab19f70da0",
+   "written": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "picture-links": {
+   "sent": "c07a0232be1cb1f94bf1165ac7372863a96cb7c84f2d71d9fb4af656fc029557",
+   "written": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "saved": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "pivot-links": {
+   "sent": "a7f2b6cc03c4257d8416495dabe838d696244e53b06f6b03274bb6b7b5903a8e",
+   "written": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   },
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "print-links": {
+   "sent": "f95b5d022f230b43f6b7b59d1994c803a62b1afe8d953e05b2a05ee3966af622",
+   "written": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 0
+   },
+   "saved": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 0
+   }
+  },
+  "chartsheet-links": {
+   "sent": "6d44d44596fcff203e645d0722cfa71f8730b5a09888c2121715bb24f579a256",
+   "written": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   },
+   "saved": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "all-links": {
+   "sent": "3667c9b38a3cd3c9996adc327db2ab1bd74c2fd7c29bdcb35eb79f3b8fbfdc76",
    "written": {
     "charts": 2,
     "chartsheets": 1,

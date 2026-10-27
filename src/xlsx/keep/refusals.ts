@@ -8,7 +8,6 @@
  */
 import type { BookInput } from '../../contract.js'
 import { caseKey } from '../../collate.js'
-import { keyOf } from '../../style-table.js'
 import { quoteSheet, sheetKey } from '../../syntax/print.js'
 import { plain } from '../../syntax/links.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
@@ -25,8 +24,8 @@ import type { Source } from './source.js'
  * workbook, a sheet name Excel does not take, a worksheet in other namespaces); `carriers`, a hidden name `openKept`
  * gave the workbook is gone; `unread`, a sheet whose rows, columns or name changed has a part with references writeKept
  * does not read; `deleted`, cells, a sheet or a table a part of the file refers to or belongs to were deleted; `moved`, a
- * part would move or be cut by the change, which writeKept does not write; `links`, the links to other workbooks
- * changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
+ * part would move or be cut by the change, which writeKept does not write; `links`, a link to another workbook was
+ * removed, moved or pointed at another file, or one of a kind other than a workbook (DDE, OLE) changed; `font`, the default font changed; `threads`, the notes of a sheet with comment threads changed; `rules`,
  * the conditional formats or the data validation of a sheet changed, and the file has rules of that sheet the workbook
  * could not read (its `readXlsx` issues `conditionalFormat` and `dataValidation`), which writing them again would lose.
  */
@@ -157,7 +156,10 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
     if (!now) throw new KeptRefusal(`${b.what} is the table or name ${b.name}, which the workbook no longer has`, 'deleted')
     out.edits.push({ part: b.part, start: b.at[0], end: b.at[1], text: escapeAttr(now.name) })
   }
-  if (keyOf(book0.externalBooks ?? []) !== keyOf(book1.externalBooks ?? [])) throw new KeptRefusal('the links to other workbooks changed, which writeKept does not write', 'links')
+  // formulas read a link by its number: the file's links keep theirs, a new one comes after them
+  const [l0, l1] = [book0.externalBooks ?? [], book1.externalBooks ?? []]
+  if (l1.length < l0.length || l0.some((b, i) => b.target !== l1[i].target))
+    throw new KeptRefusal("a link to another workbook was removed, moved or pointed at another file, which the file's formulas would read by another number", 'links')
   return out
 }
 

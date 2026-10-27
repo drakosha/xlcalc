@@ -117,6 +117,7 @@ export type ChangingMethod =
   | 'pasteText'
   | 'fillCellText'
   | 'setNames'
+  | 'setExternalBooks'
   | 'setClock'
   | 'editStructure'
   | 'setStyles'
@@ -180,7 +181,7 @@ export interface ChangesPreview extends ChangesResult {
 export type ClearKind = 'contents' | 'formats' | 'all'
 
 /** The calls a session can undo: those that change its workbook. `setClock` and a live session's new clock are not steps. */
-export type UndoCall = 'applyChanges' | 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'replaceInCells' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
+export type UndoCall = 'applyChanges' | 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'replaceInCells' | 'setNames' | 'setExternalBooks' | 'setStyles' | 'setLayout' | 'editStructure'
 
 /** A session step that was undone or redone (`Session.undo`, `Session.redo`): the edit's result, as the call returned it. */
 export interface UndoResult extends EditResult {

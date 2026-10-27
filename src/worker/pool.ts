@@ -72,7 +72,7 @@ interface Rec {
 }
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
-const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setCellTexts: 'entries', previewCellTexts: 'entries', pasteText: 'text', previewPasteText: 'text', fillCellText: 'text', previewFillCellText: 'text', setLayout: 'edits', setNames: 'names', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setCellTexts: 'entries', previewCellTexts: 'entries', pasteText: 'text', previewPasteText: 'text', fillCellText: 'text', previewFillCellText: 'text', setLayout: 'edits', setNames: 'names', setExternalBooks: 'books', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
@@ -448,6 +448,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       fillCellText: (sheet, range, text, co) => told('fillCellText', value(edit('fillCellText', [sheet, range, text], co, FILL_OPTIONS))),
       previewFillCellText: (sheet, range, text, co) => value(edit('previewFillCellText', [sheet, range, text], co, FILL_OPTIONS)),
       setNames: (names, co) => told('setNames', value(edit('setNames', [names], co))),
+      setExternalBooks: (books, co) => told('setExternalBooks', value(edit('setExternalBooks', [books], co))),
       setClock: (next, co) => told('setClock', value(edit('setClock', [next], co))),
       editStructure: (op, co) => told('editStructure', mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>),
       setStyles: (styles, co) => told('setStyles', value(edit('setStyles', [styles], co))),

@@ -272,7 +272,7 @@ function* take(core: SessionCore, step: Step): Steps<[Taken, Step]> {
       const { geometry: g } = step.diff
       const [book, before] = [yield* applyDiff(s.input, step.diff), s.sheetNames]
       const after = namesOf(book)
-      const [, outcome, diff] = yield* core.rebuild(s, book, g, step.call !== 'setNames', true, true)
+      const [, outcome, diff] = yield* core.rebuild(s, book, g, step.call !== 'setNames' && step.call !== 'setExternalBooks', true, true)
       const t: Taken = { call: step.call, outcome: { ...outcome, moved: movesOf(g, before, after) } }
       if (step.call === 'editStructure') t.mapCell = checkedMapCell({ geometry: g, before, after })
       return [t, bookStep(step.call, diff!, book)]

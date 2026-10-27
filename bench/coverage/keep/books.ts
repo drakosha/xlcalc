@@ -99,6 +99,14 @@ const ok = (r: { ok?: boolean }) => {
 export const EDITS: Edit[] = [
   { id: 'values', what: 'amounts the chart and the pivot table show changed', edit: (s) => void s.setCells([2, 3, 4].map((r) => ({ sheet: 'Data', cell: `B${r}`, input: { value: r * 100 } }))) },
   {
+    id: 'links',
+    what: 'a link to another workbook added with the values the host read, and a formula typed over it by its file name',
+    edit: (s) => {
+      s.setExternalBooks([...(s.getBook().externalBooks ?? []), { target: 'Prices.xlsx', sheets: [{ name: 'Sheet1', cells: { A1: 3, B2: 'x' } }, { name: 'Rates 2', cells: { C3: 0.5 } }] }])
+      ok(s.setCellText('Data', 'F1', "=[Prices.xlsx]Sheet1!A1*2+'[Prices.xlsx]Rates 2'!C3"))
+    },
+  },
+  {
     id: 'formulas-styles',
     what: 'a column of formulas, bold headers, a fill, a number format',
     edit: (s) => {

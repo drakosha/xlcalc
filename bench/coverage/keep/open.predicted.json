@@ -16,6 +16,22 @@
     "notes": 0
    }
   },
+  "chart-links": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 0,
+    "themeColors": 2,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
   "chart-formulas-styles": {
    "opens": true,
    "parts": {
@@ -81,6 +97,22 @@
    }
   },
   "picture-values": {
+   "opens": true,
+   "parts": {
+    "charts": 0,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
+  "picture-links": {
    "opens": true,
    "parts": {
     "charts": 0,
@@ -176,6 +208,22 @@
     "notes": 0
    }
   },
+  "pivot-links": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 0,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 0,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 0
+   }
+  },
   "pivot-formulas-styles": {
    "opens": true,
    "parts": {
@@ -241,6 +289,22 @@
    }
   },
   "print-values": {
+   "opens": true,
+   "parts": {
+    "charts": 1,
+    "chartsheets": 0,
+    "drawings": 1,
+    "pictures": 1,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 1,
+    "notes": 0
+   }
+  },
+  "print-links": {
    "opens": true,
    "parts": {
     "charts": 1,
@@ -336,6 +400,22 @@
     "notes": 1
    }
   },
+  "chartsheet-links": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 0,
+    "pivotTables": 0,
+    "pivotCaches": 0,
+    "richStrings": 2,
+    "themeColors": 0,
+    "printAreas": 0,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
   "chartsheet-formulas-styles": {
    "opens": true,
    "parts": {
@@ -401,6 +481,22 @@
    }
   },
   "all-values": {
+   "opens": true,
+   "parts": {
+    "charts": 2,
+    "chartsheets": 1,
+    "drawings": 2,
+    "pictures": 1,
+    "pivotTables": 1,
+    "pivotCaches": 1,
+    "richStrings": 2,
+    "themeColors": 2,
+    "printAreas": 1,
+    "breaks": 0,
+    "notes": 1
+   }
+  },
+  "all-links": {
    "opens": true,
    "parts": {
     "charts": 2,

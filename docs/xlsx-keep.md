@@ -76,6 +76,10 @@ Each sheet has a carrier of its own on its last cell, which tells which sheet of
 
 The carriers' names follow the file's parts in order, so a workbook takes `writeKept` over the file it was opened from, by the same version of `openKept`.
 
+## Links to other workbooks
+
+A link the workbook has after the file's (one a host added with `setExternalBooks`, or in `BookInput.externalBooks` before it opened the session) is written as `writeXlsx` writes it, in a part of its own (`xl/externalLinks/externalLinkN.xml`) with its relationship to the other file, its content type and an `<externalReference>` of the workbook after the file's. A link of the file whose sheets, names or stored values changed (more values from a host, or the mark Excel and a session put on a link a formula is typed over) is written again from the workbook into its part, through the relationship the part has; a link that did not change keeps its part as the file has it. The links keep their numbers, which the file's formulas read them by: a link removed, moved or pointed at another file is refused. Excel 16.114 for Mac opened, without its repair window, each of six files written over files it had made with a link added and a formula typed over it, kept the link and calculated the formula from the stored values; as with any of its workbooks, it saved the link's target as an absolute path and only the values formulas refer to.
+
 ## Refusals
 
 `writeKept` refuses, with `KeptRefusal`, a change it cannot write as Excel would, or that would leave the file pointing at other cells than the workbook does or lose what it holds. Its `code` (`KeptRefusalCode`) gives the kind for a program, in brackets:
@@ -86,7 +90,7 @@ The carriers' names follow the file's parts in order, so a workbook takes `write
 - the cells of comment threads moved, or notes changed on a sheet with comment threads, which the workbook reads as notes (`threads`);
 - rows or columns inserted or deleted on a sheet with parts whose references are not read, or such a sheet renamed or deleted (`unread`);
 - the conditional formats or the data validation of a sheet changed, by an edit or by rows and columns moving, where the file has rules of that sheet the workbook could not read (those `readXlsx` reports as `conditionalFormat` and `dataValidation` issues): written again from the workbook, they would be lost (`rules`);
-- the links to other workbooks changed (`links`);
+- a link to another workbook removed, moved among the links or pointed at another file, which the file's formulas would read by another number, or a link of the file of another kind (DDE, OLE) changed (`links`);
 - the workbook's default font (`font`) changed, which every cell without a font of its own would show (`font`);
 - a carrier missing: a workbook not opened by `openKept`, or whose hidden names were dropped (`carriers`);
 - a file that names a sheet as Excel would not, which the reader read under another name, or a Strict Open XML file, once anything changed; a worksheet in other namespaces (`file`).

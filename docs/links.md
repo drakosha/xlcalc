@@ -63,7 +63,17 @@ The stored formula numbers the link and quotes its sheet, as every stored refere
 | `[1]!Rate` | `Prices.xlsx` | `Prices.xlsx!Rate` |
 | `[1]!Rate` | `../data/Prices.xlsx` | `'../data/Prices.xlsx'!Rate` |
 
-Typed text can use either form or the number: `toInvariant` with `externalBooks`, `parseEntry` with `externalBooks` and a session's `setCellText` find the link by its file name, matching the full path first, in any case, and number it (`=[Prices.xlsx]Sheet1!A1` becomes `'[1]Sheet1'!A1`). A user who opens a cell for editing and presses Enter keeps the formula. A workbook that the workbook has no link to is rejected with `external_ref` and a message in the workbook's language: creating a new link would require the other file, which is outside the model. `validateFormula` and `validateNames` check references against `ctx.externalBooks`; without it, a reference to another workbook is rejected.
+Typed text can use either form or the number: `toInvariant` with `externalBooks`, `parseEntry` with `externalBooks` and a session's `setCellText` find the link by its file name, matching the full path first, in any case, and number it (`=[Prices.xlsx]Sheet1!A1` becomes `'[1]Sheet1'!A1`). A user who opens a cell for editing and presses Enter keeps the formula. A workbook that the workbook has no link to is rejected with `external_ref` and a message in the workbook's language: the other file is outside the model. A host that has read the other workbook gives the link itself, with the values it needs: in `BookInput.externalBooks` before it opens the workbook, or in a session with `setExternalBooks(books)`, which replaces the links, calculates the workbook again and is one step of undo. A formula reads a link by its number, so a new link goes after the others, which keep their places; then typed text finds it by its file name (`='[Report.xlsx]Sheet'!$I$8`). The same call gives a link more values, or values read again. `writeXlsx` writes every link, and `writeKept` writes a new link and the values of a changed one over the original file ([Writing over the original file](xlsx-keep.md#links-to-other-workbooks)).
+
+```js
+import { createSession } from 'xlcalc'
+
+const s = createSession({ sheets: [{ name: 'S', cells: {} }] })
+s.setExternalBooks([{ target: 'Report.xlsx', sheets: [{ name: 'Sheet', cells: { I8: 42 } }] }])
+s.setCellText('S', 'A1', "='[Report.xlsx]Sheet'!$I$8*2")
+const cell = s.getCell('S', 'A1')
+console.log(cell?.formula, cell?.value) // → '[1]Sheet'!$I$8*2 84
+``` `validateFormula` and `validateNames` check references against `ctx.externalBooks`; without it, a reference to another workbook is rejected.
 
 ## Known differences
 

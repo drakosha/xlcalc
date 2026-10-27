@@ -1,6 +1,6 @@
 /** Sessions: their options, the synchronous `Session`, the live objects over one, and asynchronous computation in portions or in threads with its calculators. */
 import type { CellValue, Clock, RangeRef, Scalar } from './values.js'
-import type { Book, BookInput, BookLayout, CellInput, NameInput, NumberFormat } from './book.js'
+import type { Book, BookInput, BookLayout, CellInput, ExternalBook, NameInput, NumberFormat } from './book.js'
 import type { CellStyle, StylePatch } from './looks.js'
 import type { BookSnapshot, CachedValues, CalcLimits, CellIssueDetail, ComputeOptions, ComputeResult, Execution, ExplainOptions, Explanation, Externals } from './results.js'
 import type { CellEdit, CellPatch, CellReplace, ChangesOptions, ChangesPreview, ChangesResult, ClearKind, EditOptions, EditResult, EntryCheck, LayoutEdit, PreviewChangesOptions, SessionChange, SessionHistory, SessionOperation, UndoResult } from './edits.js'
@@ -149,6 +149,13 @@ export interface Session {
   /** What `fillCellText` would do, without changing anything. */
   previewFillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextPreview
   setNames(names: NameInput[], opts?: EditOptions): EditResult
+  /**
+   * Replaces the workbook's links to other workbooks (`BookInput.externalBooks`), as a host gives them: a new link with
+   * the values it read from the other workbook, more values of a link, values read again. Formulas read a link by its
+   * number (`'[2]Sheet1'!A1`), so a new link goes after the others, which keep their places; typed text finds a link by
+   * its file name (`[Prices.xlsx]Sheet1!A1`). The workbook is calculated again; one revision and one undo step.
+   */
+  setExternalBooks(books: ExternalBook[], opts?: EditOptions): EditResult
   /** Non-live sessions only: a live session throws `InputError`. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
   /** A structure operation on the session's workbook, followed by recalculation; rejected wherever `editStructure` rejects it. Hiding or unhiding a sheet recalculates nothing. */
@@ -452,6 +459,7 @@ export interface AsyncSession {
   fillCellText(sheet: string, range: string, text: string, opts?: CalcOptions & FillTextOptions): Promise<FillTextResult>
   previewFillCellText(sheet: string, range: string, text: string, opts?: CalcOptions & FillTextOptions): Promise<FillTextPreview>
   setNames(names: NameInput[], opts?: AsyncEditOptions): Promise<EditResult>
+  setExternalBooks(books: ExternalBook[], opts?: AsyncEditOptions): Promise<EditResult>
   setClock(clock: Clock, opts?: AsyncEditOptions): Promise<EditResult>
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
