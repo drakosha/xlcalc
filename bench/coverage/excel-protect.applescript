@@ -88,7 +88,9 @@ on run argv
 				end try
 			end repeat
 			try
-				repeat with ws in (worksheets of wb)
+				-- `repeat with ws in (worksheets of wb)` gives a parameter error
+				repeat with i from 1 to (count of worksheets of wb)
+					set ws to worksheet i of wb
 					set po to protection object of ws
 					set allowOut to {allow formatting cells of po, allow formatting columns of po, allow formatting rows of po, allow inserting columns of po, allow inserting rows of po, allow inserting hyperlinks of po, allow deleting columns of po, allow deleting rows of po, allow sorting of po, allow filtering of po, allow using pivot table of po}
 					set end of sheetsOut to {name of ws, protect contents of ws, protect drawing objects of ws, protect scenarios of ws, (enable selection of ws) as text, allowOut}

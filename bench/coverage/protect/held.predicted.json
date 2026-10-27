@@ -1,0 +1,760 @@
+{
+ "lines-written": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": false,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": false,
+     "hidden": false
+    },
+    "C1": {
+     "locked": true,
+     "hidden": false
+    },
+    "D1": {
+     "locked": true,
+     "hidden": false
+    },
+    "E1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": false,
+     "hidden": false
+    },
+    "C2": {
+     "locked": true,
+     "hidden": false
+    },
+    "D2": {
+     "locked": true,
+     "hidden": false
+    },
+    "E2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": false,
+     "hidden": false
+    },
+    "C3": {
+     "locked": true,
+     "hidden": false
+    },
+    "D3": {
+     "locked": true,
+     "hidden": false
+    },
+    "E3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": false,
+     "hidden": true
+    },
+    "B4": {
+     "locked": false,
+     "hidden": true
+    },
+    "C4": {
+     "locked": false,
+     "hidden": true
+    },
+    "D4": {
+     "locked": false,
+     "hidden": true
+    },
+    "E4": {
+     "locked": false,
+     "hidden": true
+    },
+    "A5": {
+     "locked": true,
+     "hidden": false
+    },
+    "B5": {
+     "locked": false,
+     "hidden": false
+    },
+    "C5": {
+     "locked": true,
+     "hidden": false
+    },
+    "D5": {
+     "locked": true,
+     "hidden": false
+    },
+    "E5": {
+     "locked": true,
+     "hidden": false
+    },
+    "A6": {
+     "locked": true,
+     "hidden": false
+    },
+    "B6": {
+     "locked": false,
+     "hidden": false
+    },
+    "C6": {
+     "locked": true,
+     "hidden": false
+    },
+    "D6": {
+     "locked": true,
+     "hidden": false
+    },
+    "E6": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "column-unlocked": {
+  "sheets": {
+   "S": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": false,
+     "hidden": false
+    },
+    "C1": {
+     "locked": true,
+     "hidden": false
+    },
+    "D1": {
+     "locked": false,
+     "hidden": false
+    },
+    "E1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": false,
+     "hidden": false
+    },
+    "C2": {
+     "locked": true,
+     "hidden": false
+    },
+    "D2": {
+     "locked": false,
+     "hidden": false
+    },
+    "E2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": false,
+     "hidden": false
+    },
+    "C3": {
+     "locked": true,
+     "hidden": false
+    },
+    "D3": {
+     "locked": false,
+     "hidden": false
+    },
+    "E3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": false,
+     "hidden": true
+    },
+    "B4": {
+     "locked": false,
+     "hidden": true
+    },
+    "C4": {
+     "locked": false,
+     "hidden": true
+    },
+    "D4": {
+     "locked": false,
+     "hidden": false
+    },
+    "E4": {
+     "locked": false,
+     "hidden": true
+    },
+    "A5": {
+     "locked": true,
+     "hidden": false
+    },
+    "B5": {
+     "locked": false,
+     "hidden": false
+    },
+    "C5": {
+     "locked": true,
+     "hidden": false
+    },
+    "D5": {
+     "locked": false,
+     "hidden": false
+    },
+    "E5": {
+     "locked": true,
+     "hidden": false
+    },
+    "A6": {
+     "locked": true,
+     "hidden": false
+    },
+    "B6": {
+     "locked": false,
+     "hidden": false
+    },
+    "C6": {
+     "locked": true,
+     "hidden": false
+    },
+    "D6": {
+     "locked": false,
+     "hidden": false
+    },
+    "E6": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "rows-below": {
+  "sheets": {
+   "S": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": false,
+     "hidden": false
+    },
+    "C3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": false,
+     "hidden": true
+    },
+    "B4": {
+     "locked": false,
+     "hidden": true
+    },
+    "C4": {
+     "locked": false,
+     "hidden": true
+    },
+    "A5": {
+     "locked": false,
+     "hidden": true
+    },
+    "B5": {
+     "locked": false,
+     "hidden": true
+    },
+    "C5": {
+     "locked": false,
+     "hidden": true
+    },
+    "A6": {
+     "locked": false,
+     "hidden": true
+    },
+    "B6": {
+     "locked": false,
+     "hidden": true
+    },
+    "C6": {
+     "locked": false,
+     "hidden": true
+    },
+    "A7": {
+     "locked": true,
+     "hidden": false
+    },
+    "B7": {
+     "locked": false,
+     "hidden": false
+    },
+    "C7": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "column-copied": {
+  "sheets": {
+   "S": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": false,
+     "hidden": false
+    },
+    "C1": {
+     "locked": true,
+     "hidden": false
+    },
+    "D1": {
+     "locked": true,
+     "hidden": false
+    },
+    "E1": {
+     "locked": false,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": false,
+     "hidden": false
+    },
+    "C2": {
+     "locked": true,
+     "hidden": false
+    },
+    "D2": {
+     "locked": true,
+     "hidden": false
+    },
+    "E2": {
+     "locked": false,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": false,
+     "hidden": false
+    },
+    "C3": {
+     "locked": true,
+     "hidden": false
+    },
+    "D3": {
+     "locked": true,
+     "hidden": false
+    },
+    "E3": {
+     "locked": false,
+     "hidden": false
+    },
+    "A4": {
+     "locked": false,
+     "hidden": true
+    },
+    "B4": {
+     "locked": false,
+     "hidden": true
+    },
+    "C4": {
+     "locked": false,
+     "hidden": true
+    },
+    "D4": {
+     "locked": false,
+     "hidden": true
+    },
+    "E4": {
+     "locked": false,
+     "hidden": true
+    },
+    "A5": {
+     "locked": true,
+     "hidden": false
+    },
+    "B5": {
+     "locked": false,
+     "hidden": false
+    },
+    "C5": {
+     "locked": true,
+     "hidden": false
+    },
+    "D5": {
+     "locked": true,
+     "hidden": false
+    },
+    "E5": {
+     "locked": false,
+     "hidden": false
+    },
+    "A6": {
+     "locked": true,
+     "hidden": false
+    },
+    "B6": {
+     "locked": false,
+     "hidden": false
+    },
+    "C6": {
+     "locked": true,
+     "hidden": false
+    },
+    "D6": {
+     "locked": true,
+     "hidden": false
+    },
+    "E6": {
+     "locked": false,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "row-cleared": {
+  "sheets": {
+   "S": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": false,
+     "hidden": false
+    },
+    "C1": {
+     "locked": true,
+     "hidden": false
+    },
+    "D1": {
+     "locked": true,
+     "hidden": false
+    },
+    "E1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": false,
+     "hidden": false
+    },
+    "C2": {
+     "locked": true,
+     "hidden": false
+    },
+    "D2": {
+     "locked": true,
+     "hidden": false
+    },
+    "E2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": false,
+     "hidden": false
+    },
+    "C3": {
+     "locked": true,
+     "hidden": false
+    },
+    "D3": {
+     "locked": true,
+     "hidden": false
+    },
+    "E3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    },
+    "C4": {
+     "locked": true,
+     "hidden": false
+    },
+    "D4": {
+     "locked": true,
+     "hidden": false
+    },
+    "E4": {
+     "locked": true,
+     "hidden": false
+    },
+    "A5": {
+     "locked": true,
+     "hidden": false
+    },
+    "B5": {
+     "locked": false,
+     "hidden": false
+    },
+    "C5": {
+     "locked": true,
+     "hidden": false
+    },
+    "D5": {
+     "locked": true,
+     "hidden": false
+    },
+    "E5": {
+     "locked": true,
+     "hidden": false
+    },
+    "A6": {
+     "locked": true,
+     "hidden": false
+    },
+    "B6": {
+     "locked": false,
+     "hidden": false
+    },
+    "C6": {
+     "locked": true,
+     "hidden": false
+    },
+    "D6": {
+     "locked": true,
+     "hidden": false
+    },
+    "E6": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "kept-width": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": false,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": false,
+     "hidden": false
+    },
+    "C1": {
+     "locked": true,
+     "hidden": false
+    },
+    "D1": {
+     "locked": true,
+     "hidden": false
+    },
+    "E1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": false,
+     "hidden": false
+    },
+    "C2": {
+     "locked": true,
+     "hidden": false
+    },
+    "D2": {
+     "locked": true,
+     "hidden": false
+    },
+    "E2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": false,
+     "hidden": false
+    },
+    "C3": {
+     "locked": true,
+     "hidden": false
+    },
+    "D3": {
+     "locked": true,
+     "hidden": false
+    },
+    "E3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": false,
+     "hidden": true
+    },
+    "B4": {
+     "locked": false,
+     "hidden": true
+    },
+    "C4": {
+     "locked": false,
+     "hidden": true
+    },
+    "D4": {
+     "locked": false,
+     "hidden": true
+    },
+    "E4": {
+     "locked": false,
+     "hidden": true
+    },
+    "A5": {
+     "locked": true,
+     "hidden": false
+    },
+    "B5": {
+     "locked": false,
+     "hidden": false
+    },
+    "C5": {
+     "locked": true,
+     "hidden": false
+    },
+    "D5": {
+     "locked": true,
+     "hidden": false
+    },
+    "E5": {
+     "locked": true,
+     "hidden": false
+    },
+    "A6": {
+     "locked": true,
+     "hidden": false
+    },
+    "B6": {
+     "locked": false,
+     "hidden": false
+    },
+    "C6": {
+     "locked": true,
+     "hidden": false
+    },
+    "D6": {
+     "locked": true,
+     "hidden": false
+    },
+    "E6": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ }
+}
