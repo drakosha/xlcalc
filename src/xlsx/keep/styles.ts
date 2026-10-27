@@ -9,7 +9,7 @@ import type { CellStyle, ConditionalStyle, NumberFormat } from '../../contract.j
 import { keyOf } from '../../style-table.js'
 import type { StyleTable } from '../styles/read.js'
 import { attributes, element, elements } from '../xml/scan.js'
-import { alignmentXml, borderXml, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
+import { borderXml, DEFAULT_FONT, dxfXml, fillXml, fontXml, numFmtId, StyleWriter, xfXml, type BaseFont, type CellFormats } from '../write/styles.js'
 import { decodeXml, escapeAttr } from '../xml/text.js'
 import { childrenOf, rootOf, setAttrs, type Placed } from './xml.js'
 
@@ -115,7 +115,7 @@ export class KeptStyles {
         const font = s?.font ? this.add('fonts', fontXml(s.font, this.base)) : 0
         const fill = s?.fill ? this.add('fills', fillXml(s.fill)) : 0
         const border = s?.border ? this.add('borders', borderXml(s.border)) : 0
-        i = this.add('cellXfs', xfXml(numFmt, font, fill, border, alignmentXml(s?.alignment)))
+        i = this.add('cellXfs', xfXml(numFmt, font, fill, border, s))
         this.byLook.set(key, i)
         return i
       },

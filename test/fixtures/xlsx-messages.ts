@@ -32,6 +32,8 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   advancedFilter: [{}],
   tableFilter: [{}],
   sheetProtection: [{}],
+  sheetPassword: [{}],
+  protectedRanges: [{}],
   drawings: [{}],
   sparklines: [{}],
   printSettings: [{}],

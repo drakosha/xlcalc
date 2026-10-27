@@ -49,15 +49,22 @@ export function borderXml(b: NonNullable<CellStyle['border']>): string {
 export const fillXml = (f: NonNullable<CellStyle['fill']>) => `<fill><patternFill patternType="solid"><fgColor rgb="${rgb(f.color)}"/><bgColor indexed="64"/></patternFill></fill>`
 
 /** A cell format's alignment, empty without one. */
-export function alignmentXml(a: CellStyle['alignment']): string {
+function alignmentXml(a: CellStyle['alignment']): string {
   return a ? `<alignment${a.horizontal ? ` horizontal="${a.horizontal}"` : ''}${a.vertical ? ` vertical="${a.vertical}"` : ''}${a.wrap ? ' wrapText="1"' : ''}${a.indent ? ` indent="${a.indent}"` : ''}/>` : ''
 }
 
-/** A cell format (`<xf>`) of a number format and a font, fill and border by index, with its alignment. */
-export function xfXml(numFmt: number, font: number, fill: number, border: number, align: string): string {
-  const applied = [numFmt ? ' applyNumberFormat="1"' : '', font ? ' applyFont="1"' : '', fill ? ' applyFill="1"' : '', border ? ' applyBorder="1"' : '', align ? ' applyAlignment="1"' : ''].join('')
+/** A cell format's protection, empty without one. */
+function cellProtectionXml(p: CellStyle['protection']): string {
+  return p && (p.locked === false || p.hidden) ? `<protection${p.locked === false ? ' locked="0"' : ''}${p.hidden ? ' hidden="1"' : ''}/>` : ''
+}
+
+/** A cell format (`<xf>`) of a number format and a font, fill and border by index, with the style's alignment and protection. */
+export function xfXml(numFmt: number, font: number, fill: number, border: number, s: CellStyle | undefined): string {
+  const align = alignmentXml(s?.alignment)
+  const protect = cellProtectionXml(s?.protection)
+  const applied = [numFmt ? ' applyNumberFormat="1"' : '', font ? ' applyFont="1"' : '', fill ? ' applyFill="1"' : '', border ? ' applyBorder="1"' : '', align ? ' applyAlignment="1"' : '', protect ? ' applyProtection="1"' : ''].join('')
   const open = `<xf numFmtId="${numFmt}" fontId="${font}" fillId="${fill}" borderId="${border}" xfId="0"${applied}`
-  return align ? `${open}>${align}</xf>` : `${open}/>`
+  return align || protect ? `${open}>${align}${protect}</xf>` : `${open}/>`
 }
 
 /** A conditional format's differential format, its number format by `numFmt`'s id. */
@@ -144,7 +151,7 @@ export class StyleWriter implements CellFormats {
     const font = s.font ? this.fonts.of(fontXml(s.font, this.base)) : 0
     const fill = s.fill ? this.fills.of(fillXml(s.fill)) : 0
     const border = s.border ? this.borders.of(borderXml(s.border)) : 0
-    i = this.xfs.of(xfXml(numFmt, font, fill, border, alignmentXml(s.alignment)))
+    i = this.xfs.of(xfXml(numFmt, font, fill, border, s))
     this.byKey.set(key, i)
     return i
   }

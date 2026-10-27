@@ -69,6 +69,8 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   advancedFilter: () => 'an advanced filter is not in the model: the sheet is read as filtered, and the rows it hid as hidden',
   tableFilter: () => "a table's filter criteria are not in the model: the sheet is read as filtered, and the rows they hid as hidden",
   sheetProtection: () => 'sheet protection is not in the model',
+  sheetPassword: () => "the sheet protection's password is not in the model: a file written anew protects the sheet without one",
+  protectedRanges: () => 'ranges a protected sheet allows to edit (Allow Edit Ranges) are not in the model',
   drawings: () => 'pictures, charts and shapes are not in the model',
   sparklines: () => 'sparklines are not in the model',
   printSettings: () => 'print settings (headers and footers, page breaks, page setup) are not in the model',
