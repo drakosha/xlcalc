@@ -2453,8 +2453,9 @@ interface EditResult {
   repaint?: RangeRef[]
   /**
    * The rows whose height the call fitted as AutoFit does, in runs of rows of one height (`5`, `2:9`), `height` null for
-   * the default: the rows of cells that typed text wraps, and the rows of cells whose style `patchCells` changed (a font
-   * makes a row taller or lower), where the height is the default or one Excel fitted and the row shows. Their sheets are
+   * the default: the rows of cells that typed text wraps, the rows of cells whose style `patchCells` changed (a font
+   * makes a row taller or lower), and the rows a copy laid its looks on (`editStructure`'s `copyRange` without `paste`,
+   * with `all` or `formats`), where the height is the default or one Excel fitted and the row shows. Their sheets are
    * in `layout`.
    */
   fitted?: FittedRows[]

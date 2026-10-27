@@ -14,6 +14,7 @@ import { firstEnding, lines } from '../layout/spans.js'
 import { StyleTable } from '../style-table.js'
 import type { SetLayoutEdit } from './book.js'
 import type { CheckedPatch } from './patch.js'
+import type { Rect } from '../structure/area.js'
 import { patchStyle } from './styles.js'
 import type { Typed } from './texts.js'
 
@@ -53,22 +54,25 @@ export function typedHeights(s: EngineState, cells: Typed[]): SetLayoutEdit[] {
 }
 
 /**
- * The heights of the rows of patches that change a style (`fittedHeights`, in runs of rows): a font may make them taller
- * or lower. Of a patch over every row (entire columns, the whole sheet), only the rows with cells in it: whether Excel
- * fits the empty ones is not measured.
+ * The rows of rectangles of sheet `i` to fit, as runs: of one over every row (entire columns, the whole sheet), only the
+ * rows with cells in its columns: whether Excel fits the empty ones is not measured.
  */
+function rowSpans(s: EngineState, i: number, rects: Rect[]): [number, number][] {
+  const tall = rects.filter((x) => x.r1 === 0 && x.r2 === MAX_ROWS - 1)
+  const spans = rects.filter((x) => !tall.includes(x)).map((x): [number, number] => [x.r1, x.r2])
+  if (tall.length) for (const [r, c] of stateRows(s, i, 0, MAX_ROWS - 1).cells) if (tall.some((x) => c >= x.c1 && c <= x.c2)) spans.push([r, r])
+  return merged(spans)
+}
+
+/** The heights of the rows of patches that change a style (`fittedHeights`, in runs of rows): a font may make them taller or lower. */
 export function patchedHeights(s: EngineState, patches: CheckedPatch[]): SetLayoutEdit[] {
   const targets = new Map<number, CheckedPatch[]>()
   for (const p of patches) if (p.look.style !== undefined) inner(targets, p.i, () => []).push(p)
-  const out: SetLayoutEdit[] = []
-  for (const [i, list] of targets) {
-    const tall = list.filter((p) => p.rect.r1 === 0 && p.rect.r2 === MAX_ROWS - 1).map((p) => p.rect)
-    const spans = list.filter((p) => !tall.includes(p.rect)).map((p): [number, number] => [p.rect.r1, p.rect.r2])
-    if (tall.length) for (const [r, c] of stateRows(s, i, 0, MAX_ROWS - 1).cells) if (tall.some((x) => c >= x.c1 && c <= x.c2)) spans.push([r, r])
-    out.push(...fittedHeights(s, i, merged(spans), true))
-  }
-  return out
+  return [...targets].flatMap(([i, list]) => fittedHeights(s, i, rowSpans(s, i, list.map((p) => p.rect)), true))
 }
+
+/** The heights of the rows of `area` of sheet `i` after a copy laid its looks there, as after a patch of styles (the paste set `fit`). */
+export const pastedHeights = (s: EngineState, i: number, area: Rect): SetLayoutEdit[] => fittedHeights(s, i, rowSpans(s, i, [area]), true)
 
 /** Rows as runs of consecutive ones, in order. */
 const spansOf = (rows: number[]): [number, number][] => merged(rows.map((r) => [r, r]))

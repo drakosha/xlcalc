@@ -289,6 +289,8 @@ export function pasteCopy(book: BookInput, from: string, src: Rect, to: string, 
     const part: Applied = refused ?? { ...r, book: pastedPart(book, r.book, to, area, o.kind), geometry: writesContent(o.kind) ? r.geometry : [] }
     r = writesContent(o.kind) ? headersPasted(book, to, area)(part) : part
   }
+  // the looks the copy laid, over the rows a session fits to their fonts
+  if (r.ok && area && (o.kind === 'all' || o.kind === 'formats')) r = { ...r, looked: { s: sheetIndex(book, to), area } }
   return { pasted, r }
 }
 

@@ -26,7 +26,11 @@ export type Move =
 export type Geometry = Move[]
 
 /** An operation's result inside the library: the new book and where its cells went, or Excel's refusal. */
-export type Applied = { ok: true; book: BookInput; geometry: Geometry } | Exclude<StructureResult, { ok: true }>
+/**
+ * An operation applied: the new book and where its cells went; `looked`, the area of sheet `s` on which a copy laid the
+ * looks of its source, whose rows a session fits as after a patch of styles.
+ */
+export type Applied = { ok: true; book: BookInput; geometry: Geometry; looked?: { s: number; area: Rect } } | Exclude<StructureResult, { ok: true }>
 
 /** Applies the steps in turn, each to the book the last one gave; the geometry is theirs one after another. */
 export function chain(book: BookInput, steps: ((b: BookInput) => Applied)[]): Applied {

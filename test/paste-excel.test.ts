@@ -11,7 +11,7 @@ import { writeXlsx } from '../src/xlsx.js'
 import type { PasteAnswer, PasteCase, PasteCases } from '../bench/coverage/paste/cases.js'
 import { ENGINE_KINDS, engineOutcome, shownFile } from '../bench/coverage/paste/shown.js'
 
-const SETS = ['probe', 'held', 'merges']
+const SETS = ['probe', 'held', 'merges', 'fit']
 
 /** Where the engine pastes otherwise than Excel, by set and case. */
 const KNOWN: Record<string, string> = {

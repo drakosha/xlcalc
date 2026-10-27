@@ -1,8 +1,8 @@
 /** The cases of the step `paste`: a book, a range copied and pasted with Paste Special at a target. */
 import type { BookInput, RangeRef } from '../../../src/contract.js'
 
-/** What Paste Special pastes, as the harness names Excel's `XlPasteType`. */
-export type PasteWhat = 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats' | 'columnWidths' | 'allExceptBorders'
+/** What Paste Special pastes, as the harness names Excel's `XlPasteType`; `copy`, a plain copy (`Range.Copy` with a destination). */
+export type PasteWhat = 'copy' | 'all' | 'values' | 'formulas' | 'formats' | 'validation' | 'formulasAndNumberFormats' | 'valuesAndNumberFormats' | 'columnWidths' | 'allExceptBorders'
 
 export interface PasteCase {
   id: string

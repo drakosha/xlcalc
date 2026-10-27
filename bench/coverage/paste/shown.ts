@@ -5,7 +5,7 @@
  * compares it, written and read back.
  */
 import type { BookInput, PasteKind, SheetInput } from '../../../src/contract.js'
-import { editStructure, validateFormula } from '../../../src/index.js'
+import { createSession, validateFormula } from '../../../src/index.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { lookOf } from '../../../src/layout/lines.js'
 import { entryAt, lines } from '../../../src/layout/spans.js'
@@ -14,7 +14,7 @@ import { formatAddress } from '../../../src/model.js'
 import type { PasteCase } from './cases.js'
 
 /** The kinds of paste the engine has. */
-export const ENGINE_KINDS: readonly string[] = ['all', 'values', 'formulas', 'formats', 'validation'] satisfies PasteKind[]
+export const ENGINE_KINDS: readonly string[] = ['copy', 'all', 'values', 'formulas', 'formats', 'validation'] satisfies (PasteKind | 'copy')[]
 
 const WINDOW = { rows: 30, cols: 20 }
 
@@ -52,6 +52,7 @@ function shownSheet(book: BookInput, sheet: SheetInput) {
     rules: sorted(sheet.conditionalFormats?.map((f) => ({ ...f, ranges: [...f.ranges].sort() }))),
     validations: sorted(sheet.validations),
     widths: Object.fromEntries(Object.entries(sheet.columns ?? {}).flatMap(([k, v]) => (v.width === undefined ? [] : [[k, v.width]]))),
+    heights: Object.fromEntries(Object.entries(sheet.rows ?? {}).flatMap(([k, v]) => (v.height === undefined || Number(k) > WINDOW.rows ? [] : [[k, v.height]]))),
     tables: (sheet.tables ?? []).map((t) => `${t.name} ${t.range} ${t.columns.map((c) => c.name).join(',')}`),
   }
 }
@@ -62,10 +63,14 @@ export const shownBook = (book: BookInput) => Object.fromEntries(book.sheets.map
 /** What the file of a book shows, written and read back. */
 export const shownFile = async (data: Uint8Array) => shownBook((await readXlsx(data)).book)
 
-/** The engine's outcome of a case: what its book shows after the paste, written and read back, or why it is refused. */
+/**
+ * The engine's outcome of a case in a session, as a host pastes (a session fits the rows a copy laid its looks on): what
+ * its book shows after the paste, written and read back, or why it is refused.
+ */
 export async function engineOutcome(book: BookInput, c: PasteCase): Promise<{ refused: string } | { shown: ReturnType<typeof shownBook> }> {
-  // the harness pastes with Paste Special, `all` too
-  const op = { op: 'copyRange' as const, from: c.from, to: c.to, paste: c.what as PasteKind, ...(c.transpose ? { transpose: true } : {}) }
-  const r = editStructure(book, op)
-  return r.ok ? { shown: await shownFile((await writeXlsx({ book: r.book })).data) } : { refused: r.message }
+  // the harness pastes with Paste Special, `all` too; `copy` is a copy without it
+  const op = { op: 'copyRange' as const, from: c.from, to: c.to, ...(c.what === 'copy' ? {} : { paste: c.what as PasteKind }), ...(c.transpose ? { transpose: true } : {}) }
+  const s = createSession(book, { clock: { now: '2026-10-27T12:00:00Z', seed: 1 } })
+  const r = s.editStructure(op)
+  return r.ok ? { shown: await shownFile((await writeXlsx({ book: s.getBook() })).data) } : { refused: r.message }
 }
