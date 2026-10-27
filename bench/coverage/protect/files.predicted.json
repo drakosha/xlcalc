@@ -1,0 +1,1240 @@
+{
+ "written": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "unlocked cells",
+    "allow": {
+     "formatCells": true,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "written-default": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": false,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "written-allow": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": false,
+    "scenarios": false,
+    "selection": "no selection",
+    "allow": {
+     "formatCells": false,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": true,
+     "deleteColumns": false,
+     "deleteRows": true,
+     "sort": true,
+     "autoFilter": true,
+     "pivotTables": true
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "apply-off": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "unlocked cells",
+    "allow": {
+     "formatCells": true,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "cell-style": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "unlocked cells",
+    "allow": {
+     "formatCells": true,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "sheet-missing": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "sheet-zero": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "sheet-alone": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": false,
+    "scenarios": false,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": false,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "sheet-password": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": false,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": true,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "copy": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "C1": {
+     "locked": false,
+     "hidden": false
+    },
+    "C2": {
+     "locked": true,
+     "hidden": false
+    },
+    "C3": {
+     "locked": true,
+     "hidden": true
+    }
+   }
+  }
+ },
+ "paste-formats": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "T": {
+    "B1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "paste-values": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "C1": {
+     "locked": true,
+     "hidden": false
+    },
+    "C2": {
+     "locked": true,
+     "hidden": false
+    },
+    "C3": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "paste-all-over": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "insert-below": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": false,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": false,
+     "hidden": false
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    },
+    "A5": {
+     "locked": true,
+     "hidden": true
+    },
+    "B5": {
+     "locked": true,
+     "hidden": false
+    },
+    "A6": {
+     "locked": true,
+     "hidden": false
+    },
+    "B6": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "insert-above": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": false,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": true
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "clear-formats": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "lock-cells": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "T": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": false,
+     "hidden": false
+    },
+    "A2": {
+     "locked": false,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": true
+    }
+   }
+  }
+ },
+ "protect-dialog": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": false,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   }
+  },
+  "cells": {
+   "T": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "protect-allow": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": true,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": true,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": true,
+     "autoFilter": true,
+     "pivotTables": false
+    }
+   }
+  },
+  "cells": {
+   "T": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "unprotect": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "kept-value": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "unlocked cells",
+    "allow": {
+     "formatCells": true,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "kept-protection": {
+  "sheets": {
+   "S": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": true,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": true,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": false,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "kept-unprotected": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": true
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": false
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "kept-insert": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": false
+   }
+  },
+  "cells": {
+   "S": {
+    "A1": {
+     "locked": true,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": false,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    },
+    "A3": {
+     "locked": true,
+     "hidden": false
+    },
+    "B3": {
+     "locked": true,
+     "hidden": false
+    },
+    "A4": {
+     "locked": true,
+     "hidden": true
+    },
+    "B4": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ },
+ "kept-new": {
+  "sheets": {
+   "S": {
+    "contents": false
+   },
+   "T": {
+    "contents": true,
+    "objects": true,
+    "scenarios": true,
+    "selection": "no restrictions",
+    "allow": {
+     "formatCells": false,
+     "formatColumns": false,
+     "formatRows": false,
+     "insertColumns": false,
+     "insertRows": false,
+     "insertHyperlinks": false,
+     "deleteColumns": false,
+     "deleteRows": true,
+     "sort": false,
+     "autoFilter": false,
+     "pivotTables": false
+    }
+   }
+  },
+  "cells": {
+   "T": {
+    "A1": {
+     "locked": false,
+     "hidden": false
+    },
+    "B1": {
+     "locked": true,
+     "hidden": false
+    },
+    "A2": {
+     "locked": true,
+     "hidden": false
+    },
+    "B2": {
+     "locked": true,
+     "hidden": false
+    }
+   }
+  }
+ }
+}
